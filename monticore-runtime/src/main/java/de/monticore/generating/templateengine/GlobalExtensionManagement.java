@@ -305,9 +305,9 @@ public class GlobalExtensionManagement {
 
     StringBuilder result = new StringBuilder();
     if (controller.getGeneratorSetup().isTracing()) {
-     result.append(controller.getGeneratorSetup().getCommentStart());
-     result.append("Hookpoint: ");
-     result.append(hookName);
+      result.append(controller.getGeneratorSetup().getCommentStart());
+      result.append("Hookpoint: ");
+      result.append(hookName);
       result.append(controller.getGeneratorSetup().getCommentEnd());
     }
 
