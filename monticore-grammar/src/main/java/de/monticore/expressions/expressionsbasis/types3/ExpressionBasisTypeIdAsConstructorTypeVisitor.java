@@ -7,9 +7,9 @@ import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfFunction;
-import de.monticore.types3.util.OOWithinScopeBasicSymbolsResolver;
 import de.monticore.types3.util.OOWithinTypeBasicSymbolsResolver;
 import de.monticore.types3.util.TypeContextCalculator;
+import de.monticore.types3.util.WithinScopeBasicSymbolsResolver;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,28 +20,12 @@ import java.util.Optional;
 public class ExpressionBasisTypeIdAsConstructorTypeVisitor
     extends ExpressionBasisTypeVisitor {
 
-  OOWithinTypeBasicSymbolsResolver oOWithinTypeResolver;
-
-  TypeContextCalculator typeContextCalculator;
-
-  public ExpressionBasisTypeIdAsConstructorTypeVisitor() {
-    // default values
-    oOWithinTypeResolver = new OOWithinTypeBasicSymbolsResolver();
-    withinScopeResolver = new OOWithinScopeBasicSymbolsResolver();
-    typeContextCalculator = new TypeContextCalculator();
-  }
-
+  /**
+   * @deprecated is now a static delegate
+   */
+  @Deprecated(forRemoval = true)
   public void setOOWithinTypeResolver(
       OOWithinTypeBasicSymbolsResolver oOWithinTypeResolver) {
-    this.oOWithinTypeResolver = oOWithinTypeResolver;
-  }
-
-  protected OOWithinTypeBasicSymbolsResolver getOOWithinTypeResolver() {
-    return oOWithinTypeResolver;
-  }
-
-  protected TypeContextCalculator getTypeContextCalculator() {
-    return typeContextCalculator;
   }
 
   /**
@@ -56,13 +40,13 @@ public class ExpressionBasisTypeIdAsConstructorTypeVisitor
     if (exprType.isEmpty()) {
       IBasicSymbolsScope enclosingScope =
           getAsBasicSymbolsScope(expr.getEnclosingScope());
-      Optional<SymTypeExpression> typeIdType = getWithinScopeResolver()
+      Optional<SymTypeExpression> typeIdType = WithinScopeBasicSymbolsResolver
           .resolveType(enclosingScope, expr.getName());
       if (typeIdType.isPresent()) {
-        AccessModifier accessModifier = getTypeContextCalculator()
+        AccessModifier accessModifier = TypeContextCalculator
             .getAccessModifier(typeIdType.get().getTypeInfo(), enclosingScope);
         List<SymTypeOfFunction> constructors =
-            getOOWithinTypeResolver().resolveConstructors(
+            OOWithinTypeBasicSymbolsResolver.resolveConstructors(
                 typeIdType.get(),
                 accessModifier,
                 c -> true

@@ -11,6 +11,8 @@ import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.check.SymTypeExpressionFactory;
+import de.monticore.types.check.SymTypeInferenceVariable;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.SymTypeOfNumericWithSIUnit;
 import de.monticore.types.check.SymTypeOfObject;
@@ -37,8 +39,6 @@ import static de.monticore.types.check.SymTypeExpressionFactory.createTypeVariab
 import static de.monticore.types.check.SymTypeExpressionFactory.createUnion;
 import static de.monticore.types.check.SymTypeExpressionFactory.createWildcard;
 import static de.monticore.types3.util.DefsTypesForTests.*;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 public class SymTypeCompatibilityTest extends AbstractTypeTest {
 
@@ -259,8 +259,27 @@ public class SymTypeCompatibilityTest extends AbstractTypeTest {
     Assertions.assertTrue(SymTypeRelations.isCompatible(regEx2, regEx1));
     Assertions.assertTrue(SymTypeRelations.isCompatible(_unboxedString, regEx1));
     Assertions.assertTrue(SymTypeRelations.isCompatible(regEx1, _unboxedString));
+  }
+
+  @Test
+  public void isCompatibleRegExOnlyJavaLangString() {
+    // delete String (not java.lang.String)
+    BasicSymbolsMill.globalScope().remove(_unboxedString.getTypeInfo());
+    SymTypeOfRegEx regEx1 = createTypeRegEx("gr(a|e)y");
+    SymTypeOfRegEx regEx2 = createTypeRegEx("gr(e|a)y");
+    Assertions.assertTrue(SymTypeRelations.isCompatible(regEx1, regEx1));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(regEx2, regEx1));
     Assertions.assertTrue(SymTypeRelations.isCompatible(_boxedString, regEx1));
     Assertions.assertTrue(SymTypeRelations.isCompatible(regEx1, _boxedString));
+  }
+
+  @Test
+  public void isCompatibleRegExToStringSuperTypes() {
+    // String extends Person,
+    // just to test if String supertypes are taken care of for RegEx
+    _unboxedString.getTypeInfo().addSuperTypes(_personSymType);
+    SymTypeOfRegEx regEx1 = createTypeRegEx("gr(a|e)y");
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_personSymType, regEx1));
   }
 
   @Test
@@ -552,20 +571,20 @@ public class SymTypeCompatibilityTest extends AbstractTypeTest {
         inScope(someScope, typeVariable("unbounded2"))
     );
     // upper bound Student, e.g., E in List<E extends Student>
-    SymTypeVariable subStudentTVar =
-        createTypeVariable(_bottomType, _studentSymType);
+    SymTypeInferenceVariable subStudentTVar =
+        SymTypeExpressionFactory.createInferenceVariable(_bottomType, _studentSymType);
     // upper bound Person
-    SymTypeVariable subPersonTVar =
-        createTypeVariable(_bottomType, _personSymType);
+    SymTypeInferenceVariable subPersonTVar =
+        SymTypeExpressionFactory.createInferenceVariable(_bottomType, _personSymType);
     // lower bound Student, no direct Java representation available
-    SymTypeVariable superStudentTVar =
-        createTypeVariable(_studentSymType, _topType);
+    SymTypeInferenceVariable superStudentTVar =
+        SymTypeExpressionFactory.createInferenceVariable(_studentSymType, _topType);
     // lower bound Person
-    SymTypeVariable superPersonTVar =
-        createTypeVariable(_personSymType, _topType);
+    SymTypeInferenceVariable superPersonTVar =
+        SymTypeExpressionFactory.createInferenceVariable(_personSymType, _topType);
     // lower and upper Bound
-    SymTypeVariable superSSubCsSTVar =
-        createTypeVariable(_csStudentSymType, _studentSymType);
+    SymTypeInferenceVariable superSSubCsSTVar =
+        SymTypeExpressionFactory.createInferenceVariable(_csStudentSymType, _studentSymType);
 
     // unbounded type variable are like existential types:
     // we don't know enough to do pretty much anything with it

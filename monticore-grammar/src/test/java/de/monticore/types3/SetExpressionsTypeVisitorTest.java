@@ -277,7 +277,7 @@ public class SetExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
             + "y in [\"zeug\", \"platz\"],"
             + "String z = x + y, "
             + "z != \"Feuerplatz\"]",
-        "List<String>"
+        "List<R\"(.*)(?)\">"
     );
 
   }
@@ -335,8 +335,10 @@ public class SetExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
         arguments("{(char)1, (byte)1, (short)1, (int)1, (float)1}", "Set<float>"),
         arguments("[(char)1, (byte)1, (short)1, (int)1, (float)1]", "List<float>"),
         // examples combining non-numeric types
-        arguments("{\"1\", 1}", "Set<(String | int)>"),
-        arguments("{\"1\", varPerson}", "Set<(Person | String)>")
+        arguments("{\"1\", 1}", "Set<(R\"1\" | int)>"),
+        arguments("{\"1\", varPerson}", "Set<(Person | R\"1\")>"),
+        // complex
+        arguments("{{1}}", "Set<Set<int>>")
     );
   }
 
@@ -349,7 +351,9 @@ public class SetExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
   }
 
   @Test
-  public void deriveFromSetEnumerationWithTargetType() throws IOException {
+  public void deriveFormSetEnumerationCTTI() throws IOException {
+    // without values
+    checkExpr("{}", "Set<Person>", "Set<Person>");
     checkExpr("{}", "Set<int>", "Set<int>");
     checkExpr("{}", "Set<? extends Person>", "Set<Person>");
     checkExpr("{}", "Set<? super Person>", "Set<Person>");
@@ -360,6 +364,37 @@ public class SetExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
     checkExpr("[[{[],[]},{}]]",
         "List<List<Set<List<Set<int>>>>>",
         "List<List<Set<List<Set<int>>>>>"
+    );
+    // with values
+    checkExpr("{1}", "Set<int>", "Set<int>");
+    checkExpr("{1}", "Set<float>", "Set<float>");
+    checkExpr("{{1}}", "Set<Set<float>>", "Set<Set<float>>");
+    checkExpr("{[[{1},{}],[]], [[{2.0f}]]}",
+        "Set<List<List<Set<double>>>>",
+        "Set<List<List<Set<double>>>>"
+    );
+    checkExpr("[[],[1,2]]", "List<List<int>>", "List<List<int>>");
+  }
+
+  @Test
+  public void deriveFormSetEnumerationWithBoxingCTTI() throws IOException {
+    // with values
+    checkExpr("{1}", "Set<java.lang.Integer>", "Set<java.lang.Integer>");
+    checkExpr("{1}", "Set<java.lang.Float>", "Set<java.lang.Float>");
+  }
+
+  @ParameterizedTest
+  @MethodSource
+  public void invalidSetEnumerationCTTI(
+      String exprStr, String targetTypeStr, String expectedError
+  ) throws IOException {
+    checkErrorExpr(exprStr, targetTypeStr, expectedError);
+  }
+
+  protected static Stream<Arguments> invalidSetEnumerationCTTI() {
+    return Stream.of(
+        // examples with int
+        arguments("{1}", "Set<Person>", "0xFD451")
     );
   }
 

@@ -491,8 +491,8 @@ public class AbstractService<T extends AbstractService> {
       return false;
     }
     for (int i = 0; i < method1.getCDParameterList().size(); i++) {
-      if (!method1.getCDParameter(i).getMCType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter())
-          .equals(method2.getCDParameter(i).getMCType().printType(MCFullGenericTypesMill.mcFullGenericTypesPrettyPrinter()))) {
+      if (!CD4CodeMill.prettyPrint(method1.getCDParameter(i).getMCType(), false)
+          .equals(CD4CodeMill.prettyPrint(method2.getCDParameter(i).getMCType(), false))) {
         return false;
       }
     }

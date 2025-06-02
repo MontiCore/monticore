@@ -26,46 +26,27 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static de.monticore.types.check.SymTypeExpressionFactory.createIntersection;
 import static de.monticore.types.check.SymTypeExpressionFactory.createObscureType;
+import static de.monticore.types3.SymTypeRelations.isBottom;
 
 public class UglyExpressionsTypeVisitor
     extends AbstractTypeVisitor
     implements UglyExpressionsVisitor2 {
 
-  protected OOWithinTypeBasicSymbolsResolver oOWithinTypeResolver;
-
-  protected TypeContextCalculator typeCtxCalc;
-
-  protected UglyExpressionsTypeVisitor(
-      OOWithinTypeBasicSymbolsResolver oOWithinTypeResolver,
-      TypeContextCalculator typeCtxCalc) {
-    this.oOWithinTypeResolver = oOWithinTypeResolver;
-    this.typeCtxCalc = typeCtxCalc;
-  }
-
-  public UglyExpressionsTypeVisitor() {
-    // default values
-    this(
-        new OOWithinTypeBasicSymbolsResolver(),
-        new TypeContextCalculator()
-    );
-  }
-
+  /**
+   * @deprecated is now a static delegate
+   */
+  @Deprecated(forRemoval = true)
   public void setOOWithinTypeBasicSymbolsResolver(
       OOWithinTypeBasicSymbolsResolver withinTypeResolver) {
-    this.oOWithinTypeResolver = withinTypeResolver;
   }
 
+  /**
+   * @deprecated is now a static delegate
+   */
+  @Deprecated(forRemoval = true)
   public void setTypeContextCalculator(TypeContextCalculator typeCtxCalc) {
-    this.typeCtxCalc = typeCtxCalc;
-  }
-
-  protected OOWithinTypeBasicSymbolsResolver getOOWithinTypeResolver() {
-    return oOWithinTypeResolver;
-  }
-
-  protected TypeContextCalculator getTypeCtxCalc() {
-    return typeCtxCalc;
   }
 
   @Override
@@ -112,7 +93,9 @@ public class UglyExpressionsTypeVisitor
       result = createObscureType();
     }
     else {
-      if (SymTypeRelations.isSubTypeOf(typeResult, exprResult)) {
+      // s. Empowering union and intersection types with integrated subtyping
+      // https://doi.org/10.1145/3276482
+      if (!isBottom(createIntersection(typeResult, exprResult))) {
         result = SymTypeExpressionFactory.createPrimitive(BasicSymbolsMill.BOOLEAN);
       }
       else if (SymTypeRelations.isSubTypeOf(exprResult, typeResult)) {
@@ -328,9 +311,9 @@ public class UglyExpressionsTypeVisitor
       // search for a constructor
       // Hint: to support default constructors,
       // a corresponding OOWithinTypeBasicSymbolsResolver is required
-      AccessModifier modifier = getTypeCtxCalc().getAccessModifier(
+      AccessModifier modifier = TypeContextCalculator.getAccessModifier(
           typeToCreate.getTypeInfo(), creator.getEnclosingScope());
-      constructors = getOOWithinTypeResolver()
+      constructors = OOWithinTypeBasicSymbolsResolver
           .resolveConstructors(typeToCreate, modifier, c -> true);
       if (constructors.isEmpty()) {
         Log.error("0xFD557 could not find constructors for "

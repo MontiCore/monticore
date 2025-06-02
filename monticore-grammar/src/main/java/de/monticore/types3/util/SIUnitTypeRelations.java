@@ -30,16 +30,6 @@ public class SIUnitTypeRelations {
 
   protected static SIUnitTypeRelations delegate;
 
-  public static void init() {
-    Log.trace("init default SIUnitRelations", "TypeCheck setup");
-    SIUnitTypeRelations.delegate = new SIUnitTypeRelations();
-  }
-
-  // initializes this delegate
-  static {
-    init();
-  }
-
   /**
    * List of the base units (without prefixes)
    */
@@ -183,16 +173,18 @@ public class SIUnitTypeRelations {
     conversionTable = Collections.unmodifiableMap(conversionTableTmp);
   }
 
+  // methods
+
   /**
    * whether this is of dimension 1,
    * s. DIN EN ISO 80000-1:2023-08 (chap. 5)
    * e.g.: m/m,º
    */
   public static boolean isOfDimensionOne(SymTypeOfSIUnit siUnit) {
-    return getSIUnitTypeRelations().calculateIsOfDimensionOne(siUnit);
+    return getDelegate()._isOfDimensionOne(siUnit);
   }
 
-  protected boolean calculateIsOfDimensionOne(SymTypeOfSIUnit siUnit) {
+  protected boolean _isOfDimensionOne(SymTypeOfSIUnit siUnit) {
     SymTypeOfSIUnit siUnitNormalized = internal_normalize(siUnit);
     return siUnitNormalized.getNumerator().size() == 0 &&
         siUnitNormalized.getDenominator().size() == 0;
@@ -211,10 +203,10 @@ public class SIUnitTypeRelations {
    * as it requires a lot of domain-specific knowledge / calculations.
    */
   public static SymTypeOfSIUnit internal_normalize(SymTypeOfSIUnit siUnit) {
-    return getSIUnitTypeRelations().calculateNormalize(siUnit);
+    return getDelegate()._normalize(siUnit);
   }
 
-  protected SymTypeOfSIUnit calculateNormalize(SymTypeOfSIUnit siUnit) {
+  protected SymTypeOfSIUnit _normalize(SymTypeOfSIUnit siUnit) {
     SymTypeOfSIUnit siUnitWithBaseUnits = convertToSIBaseUnits(siUnit);
     // collect all exponents
     Map<String, Integer> unit2Exp = new HashMap<>();
@@ -272,10 +264,10 @@ public class SIUnitTypeRelations {
    * any prefixes are removed (except "k" of kg)
    */
   protected static SymTypeOfSIUnit convertToSIBaseUnits(SymTypeOfSIUnit siUnit) {
-    return getSIUnitTypeRelations().calculateConvertToSIBaseUnits(siUnit);
+    return getDelegate()._convertToSIBaseUnits(siUnit);
   }
 
-  protected SymTypeOfSIUnit calculateConvertToSIBaseUnits(SymTypeOfSIUnit siUnit) {
+  protected SymTypeOfSIUnit _convertToSIBaseUnits(SymTypeOfSIUnit siUnit) {
     List<SIUnitBasic> numerator = siUnit.getNumerator().stream()
         .flatMap(unitBasic -> convertToSIBaseUnits(unitBasic).stream())
         .collect(Collectors.toList());
@@ -286,10 +278,10 @@ public class SIUnitTypeRelations {
   }
 
   protected static List<SIUnitBasic> convertToSIBaseUnits(SIUnitBasic unitBasic) {
-    return getSIUnitTypeRelations().calculateConvertToSIBaseUnits(unitBasic);
+    return getDelegate()._convertToSIBaseUnits(unitBasic);
   }
 
-  protected List<SIUnitBasic> calculateConvertToSIBaseUnits(
+  protected List<SIUnitBasic> _convertToSIBaseUnits(
       SIUnitBasic unitBasic
   ) {
     List<SIUnitBasic> converted;
@@ -318,10 +310,10 @@ public class SIUnitTypeRelations {
   }
 
   public static SymTypeOfSIUnit multiply(Collection<SymTypeOfSIUnit> siUnits) {
-    return getSIUnitTypeRelations().calculateMultiply(siUnits);
+    return getDelegate()._multiply(siUnits);
   }
 
-  protected SymTypeOfSIUnit calculateMultiply(
+  protected SymTypeOfSIUnit _multiply(
       Collection<SymTypeOfSIUnit> siUnits
   ) {
     List<SIUnitBasic> newNumerator = new ArrayList<>();
@@ -342,11 +334,10 @@ public class SIUnitTypeRelations {
   public static SymTypeOfNumericWithSIUnit multiplyWithNumerics(
       Collection<SymTypeOfNumericWithSIUnit> numericWithSIUnits
   ) {
-    return getSIUnitTypeRelations()
-        .calculateMultiplyWithNumerics(numericWithSIUnits);
+    return getDelegate()._multiplyWithNumerics(numericWithSIUnits);
   }
 
-  protected SymTypeOfNumericWithSIUnit calculateMultiplyWithNumerics(
+  protected SymTypeOfNumericWithSIUnit _multiplyWithNumerics(
       Collection<SymTypeOfNumericWithSIUnit> numericWithSIUnits
   ) {
     List<SymTypeOfSIUnit> siUnits = numericWithSIUnits.stream()
@@ -370,10 +361,10 @@ public class SIUnitTypeRelations {
   }
 
   public static SymTypeOfSIUnit invert(SymTypeOfSIUnit siUnit) {
-    return getSIUnitTypeRelations().calculateInvert(siUnit);
+    return getDelegate()._invert(siUnit);
   }
 
-  protected SymTypeOfSIUnit calculateInvert(SymTypeOfSIUnit siUnit) {
+  protected SymTypeOfSIUnit _invert(SymTypeOfSIUnit siUnit) {
     return SymTypeExpressionFactory.createSIUnit(
         siUnit.getDenominator(), siUnit.getNumerator()
     );
@@ -394,12 +385,26 @@ public class SIUnitTypeRelations {
     }
   }
 
-  protected static SIUnitTypeRelations getSIUnitTypeRelations() {
-    if (delegate == null) {
-      Log.error("0xFD9CD internal error: "
-          + "SIUnitRelations were not init()-ialized."
-      );
-    }
-    return delegate;
+  // static delegate
+
+  public static void init() {
+    Log.trace("init default SIUnitTypeRelations", "TypeCheck setup");
+    setDelegate(new SIUnitTypeRelations());
   }
+
+  public static void reset() {
+    SIUnitTypeRelations.delegate = null;
+  }
+
+  protected static void setDelegate(SIUnitTypeRelations newDelegate) {
+    SIUnitTypeRelations.delegate = Log.errorIfNull(newDelegate);
+  }
+
+  protected static SIUnitTypeRelations getDelegate() {
+    if (SIUnitTypeRelations.delegate == null) {
+      init();
+    }
+    return SIUnitTypeRelations.delegate;
+  }
+
 }

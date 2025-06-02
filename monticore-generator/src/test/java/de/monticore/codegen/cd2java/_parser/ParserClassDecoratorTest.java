@@ -97,22 +97,22 @@ public class ParserClassDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  public void testNoAttributes(){
-    assertTrue(parserClass.getCDAttributeList().isEmpty());
+  public void testNoOfAttributes(){
+    assertEquals(1, parserClass.getCDAttributeList().size());
   
     assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
-  public void testNoConstructors(){
-    assertTrue(parserClass.getCDConstructorList().isEmpty());
+  public void testConstructors(){
+    assertEquals(1, parserClass.getCDConstructorList().size());
   
     assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMethodCount(){
-    assertEquals(29, parserClass.getCDMethodList().size());
+    assertEquals(30, parserClass.getCDMethodList().size());
   
     assertTrue(Log.getFindings().isEmpty());
   }

@@ -18,6 +18,7 @@ import de.monticore.codegen.cd2java.JavaDoc;
 import de.monticore.codegen.cd2java._parser.ParserService;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
+import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
@@ -27,6 +28,7 @@ import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import de.monticore.umlmodifier._ast.ASTModifier;
 import de.se_rwth.commons.StringTransformations;
@@ -36,8 +38,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static de.monticore.cd.codegen.CD2JavaTemplates.ANNOTATIONS;
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
-import static de.monticore.codegen.CD2JavaTemplatesFix.JAVADOC;
+import static de.monticore.cd.codegen.CD2JavaTemplates.JAVADOC;
 import static de.monticore.cd.codegen.TopDecorator.TOP_SUFFIX;
 import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.*;
@@ -71,6 +74,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
   public ASTCDClass decorate(List<ASTCDPackage> packageList) {
     String millClassName = symbolTableService.getMillSimpleName();
     ASTMCType millType = this.getMCTypeFacade().createQualifiedType(millClassName);
+    ASTMCType millAttrType = millType;
 
     String fullDefinitionName = symbolTableService.getCDSymbol().getFullName();
 
@@ -78,7 +82,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
 
     ASTCDConstructor constructor = this.getCDConstructorFacade().createConstructor(PROTECTED.build(), millClassName);
 
-    ASTCDAttribute millAttribute = this.getCDAttributeFacade().createAttribute(PROTECTED_STATIC.build(), millType, MILL_INFIX);
+    ASTCDAttribute millAttribute = this.getCDAttributeFacade().createAttribute(PROTECTED_STATIC.build(), millAttrType, MILL_INFIX);
     // add all standard methods
     ASTCDMethod getMillMethod = addGetMillMethods(millType);
     ASTCDMethod initMethod = addInitMethod(millType, superSymbolList, fullDefinitionName);
@@ -134,11 +138,6 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
       // add to all class list for reset and initMe method
       allClasses.addAll(classList);
 
-      // add mill attribute for each class
-      List<ASTCDAttribute> attributeList = new ArrayList<>();
-      for (String attributeName : getAttributeNameList(classList)) {
-        attributeList.add(this.getCDAttributeFacade().createAttribute(PROTECTED_STATIC.build(), millType, MILL_INFIX + attributeName));
-      }
       // add pretty printer functionality
       List<ASTCDMember> prettyPrinterMembersList = new ArrayList<>();
       Optional<ASTCDClass> fullPrettyPrinterCandidate = classList.stream().filter(c -> c.getName().endsWith(FULLPRETTYPRINTER_SUFFIX)).findFirst();
@@ -151,13 +150,12 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
           .map(e -> (ASTCDClass) e)
           .filter(c -> c.getName().endsWith(TYPE_DISPATCHER_SUFFIX))
           .findFirst();
-      typeDispatcherClass.ifPresent(c -> typeDispatcherMemberList.addAll(addTypeDispatcherMembers(c, cd, millType)));
+      typeDispatcherClass.ifPresent(c -> typeDispatcherMemberList.addAll(addTypeDispatcherMembers(c, cd)));
 
       //remove the methods that are generated in the code below the for-loop
       classList = classList.stream().filter(this::checkNotGeneratedSpecifically).collect(Collectors.toList());
       List<ASTCDMethod> builderMethodsList = addBuilderMethods(classList, cd);
 
-      millClass.addAllCDMembers(attributeList);
       millClass.addAllCDMembers(builderMethodsList);
       millClass.addAllCDMembers(prettyPrinterMembersList);
       millClass.addAllCDMembers(typeDispatcherMemberList);
@@ -166,10 +164,14 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
     // decorate for traverser
     List<ASTCDMethod> traverserMethods = getAttributeMethods(visitorService.getTraverserSimpleName(),
         visitorService.getTraverserFullName(), TRAVERSER, visitorService.getTraverserInterfaceFullName());
-    this.replaceTemplate(JAVADOC, traverserMethods.get(0), JavaDoc.of("The traverser is the conceptual entry point for every action within the visitor infrastructure.",
+    this.replaceTemplate(JAVADOC, traverserMethods.get(0), JavaDoc.of("A traverser is the conceptual entry point for every action within the visitor infrastructure.",
             "Visitors may be added, which contain the implementations for the visit and endVisit methods.",
             "Handlers may be added to modify the default traversal strategy.",
-            "{@link #inheritanceTraverser()} should be preferred over normal traverser, as they further enable language composition.").asHP());
+            "Each traverser retains their traversed elements to avoid duplicate traversal, ",
+            "possibly requiring {@link de.monticore.visitor.ITraverser#clearTraversedElements()} to be called in case of re-use",
+            "{@link #inheritanceTraverser()} should be preferred over normal traverser, as they further enable language composition.")
+            .block("return", "a new instance of this language's traverser")
+            .asHP());
     millClass.addAllCDMembers(traverserMethods);
 
     // decorate for traverser with InheritanceHandler
@@ -190,9 +192,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
 
 
     if (!symbolTableService.hasComponentStereotype((ASTCDDefinition) symbolTableService.getCDSymbol().getAstNode())) {
-      ASTCDAttribute parserAttribute = getCDAttributeFacade().createAttribute(PROTECTED_STATIC.build(), millType, MILL_INFIX + parserService.getParserClassSimpleName());
       List<ASTCDMethod> parserMethods = getParserMethods();
-      millClass.addCDMember(parserAttribute);
       millClass.addAllCDMembers(parserMethods);
       allClasses.add(CD4AnalysisMill.cDClassBuilder()
           .setName(parserService.getParserClassSimpleName())
@@ -213,10 +213,10 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
     List<ASTCDMethod> superMethodsList = addSuperBuilderMethods(superSymbolList, allClasses);
     millClass.addAllCDMembers(superMethodsList);
 
-    ASTCDMethod initMeMethod = addInitMeMethod(millType, allClasses);
+    ASTCDMethod initMeMethod = addInitMeMethod(millType);
     millClass.addCDMember(initMeMethod);
 
-    ASTCDMethod resetMethod = addResetMethod(allClasses, superSymbolList);
+    ASTCDMethod resetMethod = addResetMethod(superSymbolList);
     millClass.addCDMember(resetMethod);
 
     return millClass;
@@ -278,10 +278,10 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
     return getMillMethod;
   }
 
-  protected ASTCDMethod addInitMeMethod(ASTMCType millType, List<ASTCDClass> astcdClassList) {
+  protected ASTCDMethod addInitMeMethod(ASTMCType millType) {
     ASTCDParameter astcdParameter = getCDParameterFacade().createParameter(millType, "a");
     ASTCDMethod initMeMethod = this.getCDMethodFacade().createMethod(PUBLIC_STATIC.build(), INIT_ME, astcdParameter);
-    this.replaceTemplate(EMPTY_BODY, initMeMethod, new TemplateHookPoint("mill.InitMeMethod", getAttributeNameList(astcdClassList)));
+    this.replaceTemplate(EMPTY_BODY, initMeMethod, new TemplateHookPoint("mill.InitMeMethod"));
     return initMeMethod;
   }
 
@@ -294,9 +294,9 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
     return initMethod;
   }
 
-  protected ASTCDMethod addResetMethod(List<ASTCDClass> astcdClassList, List<DiagramSymbol> superSymbolList) {
+  protected ASTCDMethod addResetMethod(List<DiagramSymbol> superSymbolList) {
     ASTCDMethod resetMethod = this.getCDMethodFacade().createMethod(PUBLIC_STATIC.build(), RESET);
-    this.replaceTemplate(EMPTY_BODY, resetMethod, new TemplateHookPoint("mill.ResetMethod", getAttributeNameList(astcdClassList), superSymbolList));
+    this.replaceTemplate(EMPTY_BODY, resetMethod, new TemplateHookPoint("mill.ResetMethod", superSymbolList));
     return resetMethod;
   }
 
@@ -315,7 +315,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
       ASTModifier modifier = PUBLIC_STATIC.build();
       ASTCDMethod builderMethod = this.getCDMethodFacade().createMethod(modifier, builderType, methodName);
       builderMethodsList.add(builderMethod);
-      this.replaceTemplate(EMPTY_BODY, builderMethod, new TemplateHookPoint("mill.BuilderMethod", astName, methodName));
+      this.replaceTemplate(EMPTY_BODY, builderMethod, new TemplateHookPoint("mill.BuilderMethod", methodName));
 
       // add protected Method for Builder
       ASTModifier protectedModifier = PROTECTED.build();
@@ -342,7 +342,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
     // add public static Method for pretty printing
     ASTCDMethod builderMethod = this.getCDMethodFacade().createMethod(PUBLIC_STATIC.build(), getMCTypeFacade().createStringType(), "prettyPrint", node, printComments);
     prettyPrintMembersList.add(builderMethod);
-    this.replaceTemplate(EMPTY_BODY, builderMethod, new TemplateHookPoint("mill.PrettyPrintBuilderMethod", astName));
+    this.replaceTemplate(EMPTY_BODY, builderMethod, new TemplateHookPoint("mill.PrettyPrintBuilderMethod"));
     this.replaceTemplate(JAVADOC, builderMethod, JavaDoc.of("Uses the composed pretty printer to print an ASTNode of this language")
             .param("node", "The ASTNode to be printed")
             .param("printComments", "Whether comments should be printed")
@@ -355,17 +355,17 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
     this.replaceTemplate(EMPTY_BODY, protectedMethod, new TemplateHookPoint("mill.PrettyPrintProtectedBuilderMethod", fullPrettyPrinterType.printType()));
 
     // attribute for caching the full pretty printer
+    // todo FDr
     prettyPrintMembersList.add(this.getCDAttributeFacade().createAttribute(PROTECTED.build(), fullPrettyPrinterType, "fullPrettyPrinter"));
 
     return prettyPrintMembersList;
   }
 
-  protected List<ASTCDMember> addTypeDispatcherMembers(ASTCDClass cdClass, ASTCDPackage cdPackage, ASTMCType millType) {
+  protected List<ASTCDMember> addTypeDispatcherMembers(ASTCDClass cdClass, ASTCDPackage cdPackage) {
     List<ASTCDMember> typeDispatcherMembers = new ArrayList<>();
 
     String typeDispatcherName = cdClass.getName();
     String packageName = cdPackage.getName();
-    String millDispatcherName = MILL_INFIX + typeDispatcherName;
     ASTMCQualifiedType typeDispatcherType = this.getMCTypeFacade().createQualifiedType(packageName + ".I" + typeDispatcherName);
 
     typeDispatcherMembers.add(this.getCDAttributeFacade().createAttribute(PROTECTED.build(), typeDispatcherType, "typeDispatcher"));
@@ -373,13 +373,12 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
     ASTCDMethod staticGetter = this.getCDMethodFacade().createMethod(PUBLIC_STATIC.build(), typeDispatcherType, "typeDispatcher");
     this.replaceTemplate(EMPTY_BODY, staticGetter,
         new TemplateHookPoint("mill.BuilderMethod",
-            typeDispatcherName, "typeDispatcher"));
+            "typeDispatcher"));
     typeDispatcherMembers.add(staticGetter);
 
     ASTCDMethod protectedGetter = this.getCDMethodFacade().createMethod(PROTECTED.build(), typeDispatcherType, "_typeDispatcher");
     this.replaceTemplate(EMPTY_BODY, protectedGetter,
         new TemplateHookPoint("mill.TypeDispatcherGetter",
-            millDispatcherName,
             packageName + "." + typeDispatcherName));
     typeDispatcherMembers.add(protectedGetter);
 
@@ -418,6 +417,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
     this.replaceTemplate(JAVADOC, ret.get(0), JavaDoc.of("Returns a new ScopeGenitorDelegator.",
                     "Delegates to the ScopeGenitors of composed languages, used for instantiating symbol tables in the context of language composition",
                     "See the delegators #createFromAST method.")
+            .block("return", "a new instance of this language's scope genitor delegator")
             .asHP());
     return ret;
   }
@@ -427,9 +427,10 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
     String scopesGenitorFullName = symbolTableService.getScopesGenitorFullName();
     List<ASTCDMethod> ret = getStaticAndProtectedMethods(StringTransformations.uncapitalize(SCOPES_GENITOR_SUFFIX), scopesGenitorSimpleName, scopesGenitorFullName);
     this.replaceTemplate(JAVADOC, ret.get(0), JavaDoc.of("Returns a new ScopeGenitor.",
-                    "ScopeGenitors are responsible for creating the scope structure of artifacts and linking it with the AST nodes.",
+                    "ScopeGenitors are responsible for creating the scope structure of artifacts of only this language and linking it with the AST nodes.",
                     "Note: ScopeGenitors do NOT delegate to elements of composed languages",
                     "which is why you are most likely looking for {@link #scopesGenitorDelegator()}.")
+            .block("return", "a new instance of this language's scope genitor")
             .asHP());
     return ret;
   }
@@ -441,7 +442,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
     ASTMCType scopesGenitorType = getMCTypeFacade().createQualifiedType(fullName);
 
     ASTCDMethod staticMethod = getCDMethodFacade().createMethod(PUBLIC_STATIC.build(), scopesGenitorType, staticMethodName);
-    this.replaceTemplate(EMPTY_BODY, staticMethod, new TemplateHookPoint("mill.BuilderMethod", name, staticMethodName));
+    this.replaceTemplate(EMPTY_BODY, staticMethod, new TemplateHookPoint("mill.BuilderMethod", staticMethodName));
     methods.add(staticMethod);
 
     ASTCDMethod protectedMethod = getCDMethodFacade().createMethod(PROTECTED.build(), scopesGenitorType, protectedMethodName);
@@ -459,14 +460,18 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
     ASTMCType parserType = getMCTypeFacade().createQualifiedType(parserService.getParserClassFullName());
 
     ASTCDMethod staticMethod = getCDMethodFacade().createMethod(PUBLIC_STATIC.build(), parserType, staticMethodName);
-    this.replaceTemplate(EMPTY_BODY, staticMethod, new TemplateHookPoint("mill.BuilderMethod", parserName, staticMethodName));
+    this.replaceTemplate(EMPTY_BODY, staticMethod, new TemplateHookPoint("mill.BuilderMethod", staticMethodName));
     this.replaceTemplate(JAVADOC, staticMethod, JavaDoc.of("Returns a new instance of this language's parser.",
                     "Respects grammar composition by means of the Mill pattern.")
+            .block("return", "a new instance of this language's parser")
             .asHP());
     parserMethods.add(staticMethod);
 
     ASTCDMethod protectedMethod = getCDMethodFacade().createMethod(PROTECTED.build(), parserType, protectedMethodName);
     this.replaceTemplate(EMPTY_BODY, protectedMethod, new TemplateHookPoint("mill.ProtectedParserMethod", parserService.getParserClassFullName()));
+    // The constructor of the parser class is marked as deprecated and commented
+    // to facilitate usage of the Mill
+    this.replaceTemplate(ANNOTATIONS, protectedMethod, new StringHookPoint(" @SuppressWarnings(\"deprecation\")"));
     parserMethods.add(protectedMethod);
 
     return parserMethods;
@@ -480,7 +485,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
     String protectedMethodName = "_" + staticMethodName;
 
     ASTCDMethod staticMethod = getCDMethodFacade().createMethod(PUBLIC_STATIC.build(), globalScopeAttribute.getMCType(), staticMethodName);
-    this.replaceTemplate(EMPTY_BODY, staticMethod, new TemplateHookPoint("mill.BuilderMethod", StringTransformations.capitalize(attributeName), staticMethodName));
+    this.replaceTemplate(EMPTY_BODY, staticMethod, new TemplateHookPoint("mill.BuilderMethod", staticMethodName));
     globalScopeMethods.add(staticMethod);
 
     ASTCDMethod protectedMethod = getCDMethodFacade().createMethod(PROTECTED.build(), globalScopeAttribute.getMCType(), protectedMethodName);
@@ -510,7 +515,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
     String protectedMethodName = "_" + staticMethodName;
 
     ASTCDMethod staticMethod = getCDMethodFacade().createMethod(PUBLIC_STATIC.build(), returnType, staticMethodName);
-    this.replaceTemplate(EMPTY_BODY, staticMethod, new TemplateHookPoint("mill.BuilderMethod", scopeName, staticMethodName));
+    this.replaceTemplate(EMPTY_BODY, staticMethod, new TemplateHookPoint("mill.BuilderMethod",staticMethodName));
     scopeMethods.add(staticMethod);
 
     ASTCDMethod protectedMethod = getCDMethodFacade().createMethod(PROTECTED.build(), returnType, protectedMethodName);
@@ -582,11 +587,15 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
 
     // static accessor method
     ASTCDMethod staticMethod = getCDMethodFacade().createMethod(PUBLIC_STATIC.build(), returnType, methodName);
-    this.replaceTemplate(EMPTY_BODY, staticMethod, new TemplateHookPoint("mill.BuilderMethod", StringTransformations.capitalize(attributeName), methodName));
-    this.replaceTemplate(JAVADOC, staticMethod, JavaDoc.of("The traverser is the conceptual entry point for every action within the visitor infrastructure.",
+    this.replaceTemplate(EMPTY_BODY, staticMethod, new TemplateHookPoint("mill.BuilderMethod", methodName));
+    this.replaceTemplate(JAVADOC, staticMethod, JavaDoc.of("A traverser is the conceptual entry point for every action within the visitor infrastructure.",
             "Visitors may be added, which contain the implementations for the visit and endVisit methods.",
             "Handlers may be added to modify the default traversal strategy.",
-            "Inheritance Traverser should be preferred over default ones, as they further enable language composition.").asHP());
+            "Each traverser retains their traversed elements to avoid duplicate traversal, ",
+            "possibly requiring {@link de.monticore.visitor.ITraverser#clearTraversedElements()} to be called in case of re-use",
+            "Inheritance Traverser should be preferred over default ones, as they further enable language composition.")
+            .block("return", "a new instance of this language's inheritance traverser")
+            .asHP());
     attributeMethods.add(staticMethod);
 
     // protected internal method
@@ -621,7 +630,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
 
     // static accessor method
     ASTCDMethod staticMethod = getCDMethodFacade().createMethod(PUBLIC_STATIC.build(), returnType, methodName);
-    this.replaceTemplate(EMPTY_BODY, staticMethod, new TemplateHookPoint("mill.BuilderMethod", StringTransformations.capitalize(attributeName), methodName));
+    this.replaceTemplate(EMPTY_BODY, staticMethod, new TemplateHookPoint("mill.BuilderMethod", methodName));
     attributeMethods.add(staticMethod);
 
     // protected internal method

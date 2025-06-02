@@ -15,9 +15,9 @@ import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
+import static de.monticore.cd.codegen.CD2JavaTemplates.JAVADOC;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
-import static de.monticore.codegen.CD2JavaTemplatesFix.JAVADOC;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.ACCEPT_METHOD;
 
 /**
@@ -55,7 +55,9 @@ public class ASTLanguageInterfaceDecorator extends AbstractCreator<ASTCDCompilat
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC_ABSTRACT.build(), ACCEPT_METHOD, visitorParameter);
     this.replaceTemplate(JAVADOC, method,
             JavaDoc.of("Entry point for the Visitor pattern.",
-                    "Cf. MontiCore handbook chapter 8.").asHP());
+                    "Cf. MontiCore handbook chapter 8.")
+                    .param("visitor", "the visitor to dispatch to")
+                    .asHP());
     return method;
   }
 }

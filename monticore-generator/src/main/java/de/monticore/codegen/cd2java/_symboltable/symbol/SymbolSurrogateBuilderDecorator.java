@@ -2,30 +2,37 @@
 package de.monticore.codegen.cd2java._symboltable.symbol;
 
 import de.monticore.cd4analysis.CD4AnalysisMill;
-import de.monticore.cdbasis._ast.*;
-import de.monticore.cd4codebasis._ast.*;
+import de.monticore.cd4code.CD4CodeMill;
+import de.monticore.cd4codebasis._ast.ASTCDConstructor;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._ast.builder.buildermethods.BuilderMutatorMethodDecorator;
-import de.monticore.codegen.cd2java._ast.builder.inheritedmethods.InheritedBuilderMutatorMethodDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.umlmodifier._ast.ASTModifier;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static de.monticore.cd.facade.CDModifier.PROTECTED;
-import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 import static de.monticore.cd.codegen.CD2JavaTemplates.VALUE;
+import static de.monticore.cd.facade.CDModifier.PROTECTED;
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.BUILDER_SUFFIX;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.REAL_BUILDER;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.I_STEREOTYPE_REFERENCE;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.INTERPRETER_VALUE;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.ENCLOSING_SCOPE_VAR;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.NAME_VAR;
+import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.STEREOINFO_VAR;
 
 @Deprecated
 public class SymbolSurrogateBuilderDecorator extends AbstractCreator<ASTCDType, ASTCDClass> {
@@ -76,6 +83,13 @@ public class SymbolSurrogateBuilderDecorator extends AbstractCreator<ASTCDType, 
     List<ASTCDMethod> nameMutatorMethods = mutatorDecorator.decorate(nameAttribute);
     List<ASTCDMethod> nameAccessorMethods = accessorDecorator.decorate(nameAttribute);
 
+    ASTCDAttribute stereoinfoAttribute = createStereoinfoAttribute();
+    List<ASTCDMethod> stereoinfoMutator = mutatorDecorator.decorate(stereoinfoAttribute);
+    List<ASTCDMethod> stereoinfoAccessor = accessorDecorator.decorate(stereoinfoAttribute);
+    List<ASTCDMethod> stereoinfoComfortAccessors = createStereoinfoComfortAccessors(
+      getMCTypeFacade().createQualifiedType(symbolSurrogateBuilderName)
+    );
+
     ASTCDAttribute enclosingScopeAttribute = createEnclosingScopeAttribute(scopeInterfaceFullName);
     List<ASTCDMethod> enclosingScopeMutatorMethods = mutatorDecorator.decorate(enclosingScopeAttribute);
     List<ASTCDMethod> enclosingScopeAccessorMethods = accessorDecorator.decorate(enclosingScopeAttribute);
@@ -90,10 +104,14 @@ public class SymbolSurrogateBuilderDecorator extends AbstractCreator<ASTCDType, 
         .addAllCDMembers(builderAttributes)
         .addCDMember(nameAttribute)
         .addCDMember(enclosingScopeAttribute)
+        .addCDMember(stereoinfoAttribute)
         .addAllCDMembers(accessorMethods)
         .addAllCDMembers(mutatorMethods)
         .addAllCDMembers(nameMutatorMethods)
         .addAllCDMembers(nameAccessorMethods)
+        .addAllCDMembers(stereoinfoMutator)
+        .addAllCDMembers(stereoinfoAccessor)
+        .addAllCDMembers(stereoinfoComfortAccessors)
         .addAllCDMembers(enclosingScopeAccessorMethods)
         .addAllCDMembers(enclosingScopeMutatorMethods)
         .addCDMember(createBuildMethod(symbolSurrogateName, builderAttributes))
@@ -108,6 +126,58 @@ public class SymbolSurrogateBuilderDecorator extends AbstractCreator<ASTCDType, 
 
   protected ASTCDAttribute createNameAttribute() {
     return this.getCDAttributeFacade().createAttribute(PROTECTED.build(), String.class, NAME_VAR);
+  }
+
+  protected ASTCDAttribute createStereoinfoAttribute() {
+    ASTMCType type = getMCTypeFacade().createMapTypeOf(
+      getMCTypeFacade().createQualifiedType(I_STEREOTYPE_REFERENCE),
+      getMCTypeFacade().createOptionalTypeOf(INTERPRETER_VALUE)
+    );
+
+    ASTCDAttribute attr = this.getCDAttributeFacade().createAttribute(
+      PROTECTED.build(), type, STEREOINFO_VAR
+    );
+
+    this.replaceTemplate(VALUE, attr, new StringHookPoint("= new java.util.HashMap<>()"));
+
+    return attr;
+  }
+
+  /**
+   * Creates methods {@code Builder addStereoinfo(IStereotypeSymbol)} and
+   * {@code Builder addStereoinfo(IStereotypeSymbol, Value)}.<p>
+   * Stereoinfo is a map and by default only a getter and setter for it would be generated. These
+   * alone can be uncomfortable to use in a builder setting. Thus this method provides the named,
+   * more convenient, accessors.
+   */
+  protected List<ASTCDMethod> createStereoinfoComfortAccessors(ASTMCType builderType) {
+    ASTMCType stereotypeMCType = getMCTypeFacade().createQualifiedType(I_STEREOTYPE_REFERENCE);
+    ASTMCType valueMCType = getMCTypeFacade().createQualifiedType(INTERPRETER_VALUE);
+
+    ASTCDMethod addWithoutValue = getCDMethodFacade().createMethod(
+      PUBLIC.build(),
+      builderType,
+      "addStereoinfo",
+      getCDParameterFacade().createParameter(stereotypeMCType, "stereotype")
+    );
+    String withoutValueCode =
+      "this." + STEREOINFO_VAR + ".put(stereotype, java.util.Optional.empty());\n" +
+        "return this." + REAL_BUILDER + ";";
+    this.replaceTemplate(EMPTY_BODY, addWithoutValue, new StringHookPoint(withoutValueCode));
+
+    ASTCDMethod addWithValue = getCDMethodFacade().createMethod(
+      PUBLIC.build(),
+      builderType,
+      "addStereoinfo",
+      getCDParameterFacade().createParameter(stereotypeMCType, "stereotype"),
+      getCDParameterFacade().createParameter(valueMCType, "value")
+    );
+    String withValueCode =
+      "this." + STEREOINFO_VAR + ".put(stereotype, java.util.Optional.of(value));\n" +
+        "return this." + REAL_BUILDER + ";";
+    this.replaceTemplate(EMPTY_BODY, addWithValue, new StringHookPoint(withValueCode));
+
+    return Arrays.asList(addWithoutValue, addWithValue);
   }
 
   protected ASTCDAttribute createEnclosingScopeAttribute(String scopeInterface) {
@@ -125,10 +195,10 @@ public class SymbolSurrogateBuilderDecorator extends AbstractCreator<ASTCDType, 
   }
 
   protected void addAttributeDefaultValues(ASTCDAttribute attribute) {
-    if (getDecorationHelper().isListType(attribute.printType())) {
+    if (getDecorationHelper().isListType(CD4CodeMill.prettyPrint(attribute.getMCType(), false))) {
       this.replaceTemplate(VALUE, attribute, new StringHookPoint("= new java.util.ArrayList<>()"));
 
-    } else if (getDecorationHelper().isOptional(attribute.printType())) {
+    } else if (getDecorationHelper().isOptional(CD4CodeMill.prettyPrint(attribute.getMCType(), false))) {
       this.replaceTemplate(VALUE, attribute, new StringHookPoint("= Optional.empty()"));
     }
   }

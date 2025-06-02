@@ -1,5 +1,11 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("glex", "blockData", "grammarName", "astPackage")}
+<#-- @ftlvariable name="tc" type="de.monticore.generating.templateengine.TemplateController" -->
+<#-- @ftlvariable name="glex" type="de.monticore.generating.templateengine.GlobalExtensionManagement" -->
+<#-- @ftlvariable name="blockData" type="de.monticore.codegen.prettyprint.data.BlockData" -->
+<#-- @ftlvariable name="grammarName" type="java.lang.String" -->
+<#-- @ftlvariable name="astPackage" type="java.lang.String" -->
+
 <@block glex blockData grammarName astPackage/>
 
 <#macro block glex blockData grammarName astPackage>

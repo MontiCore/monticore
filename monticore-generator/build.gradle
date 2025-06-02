@@ -38,7 +38,6 @@ dependencies {
 
     implementation "de.se_rwth.commons:se-commons-gradle:$se_commons_version"
 
-    implementation project(":monticore-runtime-fix") // The previous runtime, but with future-ported fixes
     implementation "de.monticore:monticore-grammar:$previous_mc_version"
     implementation "de.se_rwth.commons:se-commons-groovy:$se_commons_version"
     implementation "de.se_rwth.commons:se-commons-logging:$se_commons_version"
@@ -52,6 +51,9 @@ dependencies {
 //  implementation 'org.slf4j:slf4j-api:1.7.10'
     implementation 'ch.qos.logback:logback-classic:1.2.0'
     implementation 'ch.qos.logback:logback-core:1.2.0'
+
+    // Remove after 7.7.0 release
+    compileOnly 'org.reflections:reflections:0.9.9'
 
     implementation "de.monticore.lang:cd4analysis:$cd4a_version"
     implementation "org.antlr:antlr4:$antlr_version"
@@ -110,7 +112,6 @@ tasks.withType(Test) {
         }
     }
     reports {
-        junitXml.required = false
         html.required = false
     }
 }
@@ -123,7 +124,10 @@ shadowJar { // all in one jar
     zip64 true
 }
 
-tasks.register("buildInfo", de.monticore.gradle.common.MCBuildInfoTask) {}
+tasks.register("buildInfo", de.monticore.gradle.common.MCBuildInfoTask) {
+    // With an input property ensuring UP-TO-DATE checks consider the version property
+    version = project.version
+}
 
 processResources.dependsOn("buildInfo")
 
@@ -147,11 +151,36 @@ gradlePlugin.plugins {
 
 publishing {
     // The gradle-plugin plugin deploys automatically a pluginMaven publication (from the main component)
-    repositories.maven {
-        credentials.username mavenUser
-        credentials.password mavenPassword
-        def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-releases/"
-        def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-snapshots/"
-        url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+    repositories {
+        maven {
+            name = "SE-Nexus"
+            credentials.username mavenUser
+            credentials.password mavenPassword
+            def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-releases/"
+            def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-snapshots/"
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+        }
+        // Also publish to the github repository, if run on a github action
+        if (System.getenv("GITHUB_REPOSITORY") != null) {
+            maven {
+                name = "GitHubPackages"
+                url = "https://maven.pkg.github.com/" + System.getenv("GITHUB_REPOSITORY")
+                credentials {
+                    username = System.getenv("GITHUB_ACTOR")
+                    password = System.getenv("GITHUB_TOKEN")
+                }
+            }
+        }
+    }
+    // Add the license information to the publication
+    publications.configureEach {
+        pom {
+            licenses {
+                license {
+                    name = 'MontiCore 3-Level License Model'
+                    url = 'https://monticore.github.io/monticore/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL/'
+                }
+            }
+        }
     }
 }

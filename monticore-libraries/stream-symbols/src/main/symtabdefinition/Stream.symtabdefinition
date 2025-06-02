@@ -1,0 +1,28 @@
+symtabdefinition Stream {
+
+  interface Stream<T> {
+    + long len();
+    + boolean hasInfiniteLen();
+
+    + static <S> Stream<S> repeat(S elem, long n);
+    + static <S> Stream<S> iterate(S -> S elem, S elem);
+    + static <S, U> Stream<S> projFst(Stream<(S,U)> list); // kann man static umgehen?
+    + static <S, U> Stream<U> projSnd(Stream<(S,U)> list);
+
+    + Optional<Stream<T>> dropFirst();
+    + Stream<T> take(long n);
+    + Stream<T> dropMultiple(long n);
+
+    + Stream<T> times(long n); // <2>.times(24)
+    + Stream<T> infTimes();
+    + <U> Stream<U> map(T -> U f);
+    + Stream<T> filter(T -> boolean predicate);
+    + Stream<T> takeWhile(T -> boolean predicate);
+    + Stream<T> dropWhile(T -> boolean predicate);
+    + Stream<T> rcDups();
+    + <U> Stream<(T,U)> zip(Stream<U> second);
+    + Set<T> values();
+    + <U> Stream<U> scanl(U -> T -> U f, U acc);
+  }
+
+}

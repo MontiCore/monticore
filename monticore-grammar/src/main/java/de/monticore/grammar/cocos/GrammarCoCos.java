@@ -75,6 +75,7 @@ public class GrammarCoCos {
     checker.addCoCo(new ExternalNTNoASTRule());
     checker.addCoCo(new DerivedAndManualListName());
     checker.addCoCo(new KeyRuleWithoutName());
+    checker.addCoCo(new KeyRuleMatchingSimpleName());
     checker.addCoCo(new SymbolWithManyNames());
     checker.addCoCo(new OverridingAdditionalAttributes());
     checker.addCoCo(new NoExtensionOfSymbolThatOnlySpansScope());

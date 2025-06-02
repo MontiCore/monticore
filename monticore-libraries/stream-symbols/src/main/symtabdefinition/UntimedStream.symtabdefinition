@@ -1,0 +1,29 @@
+import Stream;
+
+symtabdefinition UntimedStream {
+
+  class UntimedStream<T> implements Stream<T> {
+    + Optional<T> first();
+    + Optional<T> nth(long n);
+
+    + static <S> UntimedStream<S> uRepeat(S elem, long n);
+    + static <S> UntimedStream<S> uIterate(S -> S elem, S elem);
+    + static <S, U> UntimedStream<S> uProjFst(UntimedStream<(S,U)> list); // kann man static umgehen?
+    + static <S, U> UntimedStream<U> uProjSnd(UntimedStream<(S,U)> list);
+
+    // ----------- Implementations
+    + Optional<UntimedStream<T>> dropFirst();
+    + UntimedStream<T> take(long n);
+    + UntimedStream<T> dropMultiple(long n);
+    + UntimedStream<T> times(long n); // <2>.times(24)
+    + UntimedStream<T> infTimes();
+    + <U> UntimedStream<U> map(T -> U f);
+    + UntimedStream<T> filter(T -> boolean predicate);
+    + UntimedStream<T> takeWhile(T -> boolean predicate);
+    + UntimedStream<T> dropWhile(T -> boolean predicate);
+    + UntimedStream<T> rcDups();
+    + <U> UntimedStream<(T,U)> zip(UntimedStream<U> second);
+    + <U> UntimedStream<U> scanl(U -> T -> U f, U acc);
+  }
+
+}

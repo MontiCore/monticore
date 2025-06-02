@@ -22,6 +22,13 @@ sourceSets {
 // let productTest depend on test as test produces code for productTest
 compileProductTestJava.dependsOn(test)
 
+test.configure {
+  // The test task builds the productTest inputs
+  // Disable build cache & up to date check
+  outputs.cacheIf {false}
+  outputs.upToDateWhen {false}
+}
+
 // let check depend on productTest such that it is included in the build
 check.dependsOn(productTest)
 

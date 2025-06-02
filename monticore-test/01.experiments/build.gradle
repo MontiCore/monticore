@@ -18,7 +18,7 @@ subprojects {
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
   }
 
-  generateMCGrammars {
+  tasks.named('generateMCGrammars') {
     genINT = true
     // created by the de.monticore.generator plugin
   }

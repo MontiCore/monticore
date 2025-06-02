@@ -12,10 +12,12 @@ import de.monticore.symboltable.resolving.ResolvedSeveralEntriesForSymbolExcepti
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfFunction;
+import de.monticore.types.check.SymTypeSourceInfo;
 import de.monticore.types3.generics.TypeParameterRelations;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -33,57 +35,39 @@ import java.util.stream.Collectors;
  */
 public class WithinScopeBasicSymbolsResolver {
 
-  protected TypeContextCalculator typeCtxCalc;
+  protected static WithinScopeBasicSymbolsResolver delegate;
 
-  protected WithinTypeBasicSymbolsResolver withinTypeResolver;
-
-  protected WithinScopeBasicSymbolsResolver(
-      TypeContextCalculator typeCtxCalc,
-      WithinTypeBasicSymbolsResolver withinTypeResolver
-  ) {
-    this.typeCtxCalc = typeCtxCalc;
-    this.withinTypeResolver = withinTypeResolver;
-  }
-
-  public WithinScopeBasicSymbolsResolver() {
-    // default values
-    this(
-        new TypeContextCalculator(),
-        new WithinTypeBasicSymbolsResolver()
-    );
-  }
+  // methods
 
   /**
-   * @deprecated use a constructor to set this
+   * @deprecated is now a static delegate
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public void setWithinTypeBasicSymbolsResolver(
       WithinTypeBasicSymbolsResolver withinTypeResolver) {
-    this.withinTypeResolver = withinTypeResolver;
   }
 
   /**
-   * @deprecated use a constructor to set this
+   * @deprecated is now a static delegate
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public void setTypeContextCalculator(TypeContextCalculator typeCtxCalc) {
-    this.typeCtxCalc = typeCtxCalc;
-  }
-
-  protected TypeContextCalculator getTypeCtxCalc() {
-    return typeCtxCalc;
-  }
-
-  protected WithinTypeBasicSymbolsResolver getWithinTypeResolver() {
-    return withinTypeResolver;
   }
 
   /**
    * resolves the name as an expression (variable or function)
    */
-  public Optional<SymTypeExpression> resolveNameAsExpr(
+  public static Optional<SymTypeExpression> resolveNameAsExpr(
       IBasicSymbolsScope enclosingScope,
       String name) {
+    return getDelegate()._resolveNameAsExpr(enclosingScope, name);
+  }
+
+  protected Optional<SymTypeExpression> _resolveNameAsExpr(
+      IBasicSymbolsScope enclosingScope,
+      String name) {
+    Log.errorIfNull(enclosingScope);
+    Log.errorIfNull(name);
     // collect all (potential) types
     Set<SymTypeExpression> types = new HashSet<>();
 
@@ -98,30 +82,41 @@ public class WithinScopeBasicSymbolsResolver {
         resolveFunctionsWithoutSuperTypes(enclosingScope, name);
     // within type
     Optional<TypeSymbol> enclosingType =
-        getTypeCtxCalc().getEnclosingType(enclosingScope);
+        TypeContextCalculator.getEnclosingType(enclosingScope);
     Optional<SymTypeExpression> varInType = Optional.empty();
     List<SymTypeOfFunction> funcsInType = Collections.emptyList();
     if (enclosingType.isPresent()) {
       SymTypeExpression enclosingTypeExpr =
           SymTypeExpressionFactory.createFromSymbol(enclosingType.get());
-      AccessModifier modifier = getTypeCtxCalc()
+      AccessModifier modifier = TypeContextCalculator
           .getAccessModifier(enclosingType.get(), enclosingScope);
-      varInType = getWithinTypeResolver().resolveVariable(
+      varInType = WithinTypeBasicSymbolsResolver.resolveVariable(
           enclosingTypeExpr, name, modifier, getVariablePredicate());
-      funcsInType = getWithinTypeResolver().resolveFunctions(
+      funcsInType = WithinTypeBasicSymbolsResolver.resolveFunctions(
           enclosingTypeExpr, name, modifier, getFunctionPredicate());
     }
     // get the correct variable
     if (varInType.isPresent() && optVar.isPresent()) {
-      if (varInType.get().getTypeInfo() == optVar.get().getTypeInfo()) {
-        types.add(varInType.get());
-      }
-      else if (optVar.get().getTypeInfo().getEnclosingScope()
-          .isProperSubScopeOf(varInType.get().getTypeInfo().getEnclosingScope())) {
-        types.add(optVar.get());
+      SymTypeSourceInfo varInTypeInfo = varInType.get().getSourceInfo();
+      SymTypeSourceInfo optVarInfo = optVar.get().getSourceInfo();
+      if (varInTypeInfo.getSourceSymbol().isPresent() &&
+          optVarInfo.getSourceSymbol().isPresent()
+      ) {
+        ISymbol varInTypeVarSymbol = varInTypeInfo.getSourceSymbol().get();
+        ISymbol optVarVarSymbol = optVarInfo.getSourceSymbol().get();
+        if (optVarVarSymbol.getEnclosingScope()
+            .isProperSubScopeOf(varInTypeVarSymbol.getEnclosingScope())
+        ) {
+          types.add(optVar.get());
+        }
+        else {
+          types.add(varInType.get());
+        }
       }
       else {
-        types.add(varInType.get());
+        Log.error("0xFDA25 internal error: " +
+            "expected variable symbol for resolved variable " + name
+        );
       }
     }
     else if (varInType.isPresent()) {
@@ -158,7 +153,7 @@ public class WithinScopeBasicSymbolsResolver {
   /**
    * @deprecated use {@link #resolveNameAsExpr(IBasicSymbolsScope, String)}
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public Optional<SymTypeExpression> typeOfNameAsExpr(
       IBasicSymbolsScope enclosingScope,
       String name
@@ -175,20 +170,31 @@ public class WithinScopeBasicSymbolsResolver {
       IBasicSymbolsScope enclosingScope,
       String name
   ) {
+    Log.errorIfNull(enclosingScope);
+    Log.errorIfNull(name);
+    Optional<SymTypeExpression> result;
     Optional<VariableSymbol> optVarSym = resolverHotfix(
         () -> enclosingScope.resolveVariable(
             name, AccessModifier.ALL_INCLUSION, getVariablePredicate()
         ));
-    if (optVarSym.isPresent() && optVarSym.get().getType() == null) {
+    if (optVarSym.isEmpty()) {
+      result = Optional.empty();
+    }
+    else if (optVarSym.get().getType() == null) {
       Log.error("0xFD489 internal error: incorrect symbol table, "
           + "variable symbol " + optVarSym.get().getFullName()
           + " has no type set.");
       return Optional.empty();
     }
-    Optional<SymTypeExpression> optVar = optVarSym.map(vs -> vs.getType());
-    Optional<SymTypeExpression> optVarReplacedVariables = optVar
-        .map(t -> TypeParameterRelations.replaceFreeTypeVariables(t, enclosingScope));
-    return optVarReplacedVariables;
+    else {
+      VariableSymbol varSym = optVarSym.get();
+      SymTypeExpression varType = varSym.getType();
+      SymTypeExpression varTypeReplacedVariables = TypeParameterRelations
+          .replaceFreeTypeVariables(varType, enclosingScope);
+      varTypeReplacedVariables.getSourceInfo().setSourceSymbol(varSym);
+      result = Optional.of(varTypeReplacedVariables);
+    }
+    return result;
   }
 
   /**
@@ -200,19 +206,24 @@ public class WithinScopeBasicSymbolsResolver {
       IBasicSymbolsScope enclosingScope,
       String name
   ) {
-    List<SymTypeOfFunction> funcs = enclosingScope
+    Log.errorIfNull(enclosingScope);
+    Log.errorIfNull(name);
+    List<FunctionSymbol> funcSyms = enclosingScope
         .resolveFunctionMany(name, getFunctionPredicate()).stream()
         // todo remove creation of a set
         // after resolver is fixed to not return duplicates
         .collect(Collectors.toSet())
         .stream()
-        .map(FunctionSymbol::getFunctionType)
         .collect(Collectors.toList());
-    // replace free type variables
-    List<SymTypeOfFunction> funcsReplacedVars = funcs.stream()
-        .map(f -> TypeParameterRelations.replaceFreeTypeVariables(f, enclosingScope).asFunctionType())
-        .collect(Collectors.toList());
-    return funcsReplacedVars;
+    List<SymTypeOfFunction> funcs = new ArrayList<>(funcSyms.size());
+    for (FunctionSymbol funcSym : funcSyms) {
+      SymTypeOfFunction funcType = funcSym.getFunctionType();
+      SymTypeOfFunction funcReplacedVars = TypeParameterRelations
+          .replaceFreeTypeVariables(funcType, enclosingScope).asFunctionType();
+      funcReplacedVars.getSourceInfo().setSourceSymbol(funcSym);
+      funcs.add(funcReplacedVars);
+    }
+    return funcs;
   }
 
   /**
@@ -232,11 +243,19 @@ public class WithinScopeBasicSymbolsResolver {
     return v -> true;
   }
 
-  public Optional<SymTypeExpression> resolveType(
+  public static Optional<SymTypeExpression> resolveType(
+      IBasicSymbolsScope enclosingScope,
+      String name) {
+    return getDelegate()._resolveType(enclosingScope, name);
+  }
+
+  protected Optional<SymTypeExpression> _resolveType(
       IBasicSymbolsScope enclosingScope,
       String name
   ) {
-    Optional<SymTypeExpression> type;
+    Log.errorIfNull(enclosingScope);
+    Log.errorIfNull(name);
+    Optional<SymTypeExpression> result;
     // variable
     Optional<TypeVarSymbol> optTypeVar;
     // Java-esque languages do not allow
@@ -247,8 +266,8 @@ public class WithinScopeBasicSymbolsResolver {
     }
     else {
       optTypeVar = resolverHotfix(() ->
-        enclosingScope.resolveTypeVar(
-            name, AccessModifier.ALL_INCLUSION, getTypeVarPredicate())
+          enclosingScope.resolveTypeVar(
+              name, AccessModifier.ALL_INCLUSION, getTypeVarPredicate())
       );
     }
     // object
@@ -264,28 +283,33 @@ public class WithinScopeBasicSymbolsResolver {
               + "\", selecting type variable",
           "TypeVisitor");
     }
-    if (optTypeVar.isPresent()) {
-      type = Optional.of(SymTypeExpressionFactory
-          .createTypeVariable(optTypeVar.get()));
-    }
-    else if (optObj.isPresent()) {
-      type = Optional.of(SymTypeExpressionFactory
-          .createFromSymbol(optObj.get())
-      );
+    if (optTypeVar.isPresent() || optObj.isPresent()) {
+      SymTypeExpression type;
+      ISymbol symbol;
+      if (optTypeVar.isPresent()) {
+        type = SymTypeExpressionFactory.createTypeVariable(optTypeVar.get());
+        symbol = optTypeVar.get();
+      }
+      else {
+        type = SymTypeExpressionFactory.createFromSymbol(optObj.get());
+        symbol = optObj.get();
+      }
+      // replace free type variables
+      SymTypeExpression typeReplacedVars = TypeParameterRelations
+          .replaceFreeTypeVariables(type, enclosingScope);
+      typeReplacedVars.getSourceInfo().setSourceSymbol(symbol);
+      result = Optional.of(typeReplacedVars);
     }
     else {
-      type = Optional.empty();
+      result = Optional.empty();
     }
-    // replace free type variables
-    Optional<SymTypeExpression> typeReplacedVars = type
-        .map(t -> TypeParameterRelations.replaceFreeTypeVariables(t, enclosingScope));
-    return typeReplacedVars;
+    return result;
   }
 
   /**
    * @deprecated use {@link #resolveType}
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public Optional<SymTypeExpression> typeOfNameAsTypeId(
       IBasicSymbolsScope enclosingScope,
       String name) {
@@ -323,24 +347,51 @@ public class WithinScopeBasicSymbolsResolver {
    * note: Exception is not supposed to happen,
    * thus, never rely on this(!) Error being logged (here)
    * some error should be logged, though.
-   * This methods is to be removed in the future
+   * This method is to be removed in the future
+   * <p>
+   * Error considered internal, as the Exception should not have been thrown.
    */
   protected <T> Optional<T> resolverHotfix(java.util.function.Supplier<Optional<T>> s) {
     Optional<T> resolved;
     try {
       resolved = s.get();
-    } catch(ResolvedSeveralEntriesForSymbolException e) {
+    }
+    catch (ResolvedSeveralEntriesForSymbolException e) {
       Log.error("0xFD226 internal error: resolved " + e.getSymbols().size()
-          + "occurences of Symbol"
-          + ", but expected only one:" + System.lineSeparator()
-          + e.getSymbols().stream()
+              + " occurrences of Symbol"
+              + ", but expected only one:" + System.lineSeparator()
+              + e.getSymbols().stream()
               .map(ISymbol::getFullName)
               .collect(Collectors.joining(System.lineSeparator())),
           e
-        );
+      );
       resolved = Optional.empty();
     }
     return resolved;
+  }
+
+  // static delegate
+
+  public static void init() {
+    Log.trace("init default WithinScopeBasicSymbolsResolver", "TypeCheck setup");
+    setDelegate(new WithinScopeBasicSymbolsResolver());
+  }
+
+  public static void reset() {
+    WithinScopeBasicSymbolsResolver.delegate = null;
+  }
+
+  protected static void setDelegate(
+      WithinScopeBasicSymbolsResolver newDelegate
+  ) {
+    WithinScopeBasicSymbolsResolver.delegate = Log.errorIfNull(newDelegate);
+  }
+
+  protected static WithinScopeBasicSymbolsResolver getDelegate() {
+    if (WithinScopeBasicSymbolsResolver.delegate == null) {
+      init();
+    }
+    return WithinScopeBasicSymbolsResolver.delegate;
   }
 
 }

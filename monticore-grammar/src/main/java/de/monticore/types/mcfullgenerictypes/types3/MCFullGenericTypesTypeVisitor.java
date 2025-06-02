@@ -3,6 +3,7 @@ package de.monticore.types.mcfullgenerictypes.types3;
 
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
+import de.monticore.types.mcfullgenerictypes._ast.ASTMCMultipleGenericType;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardTypeArgument;
 import de.monticore.types.mcfullgenerictypes._visitor.MCFullGenericTypesVisitor2;
 import de.monticore.types3.AbstractTypeVisitor;
@@ -64,4 +65,13 @@ public class MCFullGenericTypesTypeVisitor extends AbstractTypeVisitor
     }
     getType4Ast().setTypeOfTypeIdentifier(wildcardType, tex);
   }
+
+  @Override
+  public void endVisit(ASTMCMultipleGenericType node) {
+    Log.error("0xFD577 ASTMCMultipleGenericType not supported (yet).",
+        node.get_SourcePositionStart(),
+        node.get_SourcePositionEnd()
+    );
+  }
+
 }

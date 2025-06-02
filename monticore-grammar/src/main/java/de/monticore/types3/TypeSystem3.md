@@ -5,23 +5,27 @@
 A type system is as set of rules that assign types to terms,
 e.g., the type `int` can be assigned to the literal `2`. 
 In Monticore, the type system implementations assign SymTypeExpressions to
-expressions (e.g., `2`) and type identifiers (e.g., `int`).
+expressions (e.g., `2`) and types (e.g., `int`).
 This is made possible first and foremost by traversing the AST
-of the expressions and type identifiers,
+of the expression or type,
 calculating the SymTypeExpressions of its subnodes,
 and combining their information to the SymTypeExpression currently calculated.
 
 ## Given infrastructure in MontiCore
 
-* [Type4Ast](Type4Ast.java)
-  (maps ASTNodes to SymTypeExpressions, filled by the TypeVisitors)
+* [TypeCheck3](TypeCheck3.java)
+  (offers `typeOf`, etc., to query the SymtypeExpressions of AST nodes.)
+    * [MapBasedTypeCheck3](util/MapBasedTypeCheck3.java)
+      (default implementation of TypeCheck3)
+        * [Type4Ast](Type4Ast.java)
+          (maps ASTNodes to SymTypeExpressions, filled by the TypeVisitors)
 * [SymTypeExpression](../types/check/SymTypeExpression.java)
   (calculated by the TypeVisitors, represents types and "pseudo-types")
     * [ISymTypeVisitor](ISymTypeVisitor.java)
       (interface for traversal of SymTypeExpressions)
     * [SymTypeArray](../types/check/SymTypeArray.java)
       (subclass of SymTypeExpression, represents arrays,
-      e.g., `int[2]`)
+      e.g., `int[]`)
     * [SymTypeObscure](../types/check/SymTypeObscure.java)
       (subclass of SymTypeExpression, pseudo-type representing typing errors)
     * [SymTypeOfFunction](../types/check/SymTypeOfFunction.java)
@@ -50,20 +54,53 @@ and combining their information to the SymTypeExpression currently calculated.
       (subclass of SymTypeExpression, represents primitive types,
       e.g., `int`)
     * [SymTypeVariable](../types/check/SymTypeVariable.java)
-      (subclass of SymTypeExpression, represents type variables,
+      (subclass of SymTypeExpression, represents bound type variables,
       e.g., `T` in `List<T>`)
+    * [SymTypeInferenceVariable](../types/check/SymTypeInferenceVariable.java)
+      (subclass of SymTypeExpression, represents free type variables)
     * [SymTypeVoid](../types/check/SymTypeVoid.java)
       (subclass of SymTypeExpression, pseudo-type corresponding to `void`)
 * [SymTypeExpressionFactory](../types/check/SymTypeExpressionFactory.java)
   (factory for creating instances of the subclasses of SymTypeExpression) 
     * [MCCollectionSymTypeFactory](../types/mccollectiontypes/types3/util/MCCollectionSymTypeFactory.java)
       (factory for CollectionTypes, convenience methods)
-* [SymTypeRelations](SymTypeRelations.java)
-  (relations over SymTypeExpressions, e.g., isSubTypeOf)
+    * [StreamSymTypeFactory](streams/StreamSymTypeFactory.java)
+      (factory for Stream types, convenience methods)
+* Functionality to work with SymTypeExpressions, Expressions
+    * [SymTypeRelations](SymTypeRelations.java)
+      (relations over SymTypeExpressions, e.g., `isSubTypeOf`, `isCompatible`)
     * [MCCollectionSymTypeRelations](../types/mccollectiontypes/types3/MCCollectionSymTypeRelations.java)
-      (relations over MCCollection SymTypeExpressions, e.g., isList)
-* [WithinTypeBasicSymbolsResolver](util/WithinTypeBasicSymbolsResolver.java)
-  (resolves contained fields, methods, etc. within a given type)
+      (relations over MCCollection SymTypeExpressions, e.g., `isList`)
+    * [FunctionRelations](util/FunctionRelations.java)
+      (relations regarding functions, e.g, `canBeCalledWith`)
+    * [SIUnitTypeRelations](util/SIUnitTypeRelations.java)
+      (SIUnit relations, e.g., `multiply`, `isOfDimensionOne`)
+    * [StreamSymTypeRelations](streams/StreamSymTypeRelations.java)
+      (relations over Stream SymTypeExpressions, e.g., isEventStream)
+    * [WithinScopeBasicSymbolsResolver](util/WithinScopeBasicSymbolsResolver.java)
+      (resolves contained variables, functions, ect. within a given scope;
+      unlike symbol resolving this returns SymTypeExpressions)
+        * [OOWithinScopeBasicSymbolsResolver](util/OOWithinScopeBasicSymbolsResolver.java)
+          (resolves using OO-specific rules)
+    * [WithinTypeBasicSymbolsResolver](util/WithinTypeBasicSymbolsResolver.java)
+      (resolves contained fields, methods, etc. within a given type;
+       unlike symbol resolving this returns SymTypeExpressions)
+        * [OOWithinTypeBasicSymbolsResolver](util/OOWithinTypeBasicSymbolsResolver.java)
+          (resolves using OO-specific rules)
+    * [TypeContextCalculator](util/TypeContextCalculator.java)
+      (provides context information for an expression wrt. types, e.g.,
+      whether a type's private members can be accessed)
+    * [LValueRelations](util/LValueRelations.java)
+      (whether an expression is an L-value, e.g., a variable)
+        * [CommonExpressionsLValueRelations](../expressions/commonexpressions/types3/util/CommonExpressionsLValueRelations.java)
+          (implementation of LValueRelations for languages with
+          CommonExpressions and no further LValues)
+    * [TypeVisitorLifting](util/TypeVisitorLifting.java)
+      (used in TypeVisitors to provide consistent handling of, e.g.,
+      union types)
+    * [TypeVisitorOperatorCalculator](util/TypeVisitorOperatorCalculator.java)
+      (used in TypeVisitors to provide consistent handling of
+      operators and similar constructs)
 * TypeVisitors traverse the AST and
   store the calculated SymTypeExpression in the Type4Ast map
     * Expressions
@@ -82,6 +119,24 @@ and combining their information to the SymTypeExpression currently calculated.
         * [LambdaExpressionsTypeVisitor](../expressions/lambdaexpressions/types3/LambdaExpressionsTypeVisitor.java)
           (calculates the SymTypeExpressions for the expressions
           in the grammar LambdaExpressions)
+        * [OCLExpressionsTypeVisitor](../ocl/oclexpressions/types3/OCLExpressionsTypeVisitor.java)
+          (calculates the SymTypeExpressions for the expressions
+          in the grammar OCLExpressions)
+        * [OptionalOperatorsTypeVisitor](../ocl/optionaloperators/types3/OptionalOperatorsTypeVisitor.java)
+          (calculates the SymTypeExpressions for the expressions
+          in the grammar OptionalOperators)
+        * [SetExpressionsTypeVisitor](../ocl/setexpressions/types3/SetExpressionsTypeVisitor.java)
+          (calculates the SymTypeExpressions for the expressions
+          in the grammar SetExpressions)
+        * [StreamExpressionsTypeVisitor](../expressions/streamexpressions/types3/StreamExpressionsTypeVisitor.java)
+          (calculates the SymTypeExpressions for the expressions
+          in the grammar StreamExpressions)
+        * [TupleExpressionsTypeVisitor](../expressions/tupleexpressions/types3/TupleExpressionsTypeVisitor.java)
+          (calculates the SymTypeExpressions for the expressions
+          in the grammar TupleExpressions)
+        * [UglyExpressionsTypeVisitor](../expressions/uglyexpressions/types3/UglyExpressionsTypeVisitor.java)
+          (calculates the SymTypeExpressions for the expressions
+          in the grammar UglyExpressions)
     * Literals
         * [MCCommonLiteralsTypeVisitor](../literals/mccommonliterals/types3/MCCommonLiteralsTypeVisitor.java)
           (calculates the SymTypeExpressions for the literals
@@ -89,33 +144,47 @@ and combining their information to the SymTypeExpression currently calculated.
         * [MCJavaLiteralsTypeVisitor](../literals/mcjavaliterals/types3/MCJavaLiteralsTypeVisitor.java)
           (calculates the SymTypeExpressions for the literals
           in the grammar MCJavaLiterals)
-    * Type Identifiers
+        * [SIUnitLiteralsTypeVisitor](../siunit/siunitliterals/types3/SIUnitLiteralsTypeVisitor.java)
+          (calculates the SymTypeExpressions for the literals
+          in the grammar SIUnitLiterals)
+    * Types
         * [MCArrayTypesTypeVisitor](../types/mcarraytypes/types3/MCArrayTypesTypeVisitor.java)
-          (calculates the SymTypeExpressions for the type identifiers
+          (calculates the SymTypeExpressions for the types
           in the grammar MCArrayTypes)
         * [MCBasicTypesTypeVisitor](../types/mcbasictypes/types3/MCBasicTypesTypeVisitor.java)
-          (calculates the SymTypeExpressions for the type identifiers
+          (calculates the SymTypeExpressions for the types
           in the grammar MCBasicTypes)
         * [MCCollectionTypesTypeVisitor](../types/mccollectiontypes/types3/MCCollectionTypesTypeVisitor.java)
-          (calculates the SymTypeExpressions for the type identifiers
+          (calculates the SymTypeExpressions for the types
           in the grammar MCCollectionTypes)
         * [MCFullGenericTypeVisitor](../types/mcfullgenerictypes/types3/MCFullGenericTypesTypeVisitor.java)
-          (calculates the SymTypeExpressions for the type identifiers
+          (calculates the SymTypeExpressions for the types
           in the grammar MCFullGenericTypes)
         * [MCFunctionTypesTypeVisitor](../types/mcfunctiontypes/types3/MCFunctionTypesTypeVisitor.java)
-          (calculates the SymTypeExpressions for the type identifiers
+          (calculates the SymTypeExpressions for the types
           in the grammar MCFunctionTypes)
         * [MCSimpleGenericTypesTypeVisitor](../types/mcsimplegenerictypes/types3/MCSimpleGenericTypesTypeVisitor.java)
-          (calculates the SymTypeExpressions for the type identifiers
+          (calculates the SymTypeExpressions for the types
           in the grammar MCArrayTypes)
+        * [RegExTypeTypeVisitor](../regex/regextype/types3/RegExTypeTypeVisitor.java)
+          (calculates the SymTypeExpressions for the types
+          in the grammar RegExType)
+        * [SIUnitTypes4ComputingTypeVisitor](../siunit/siunittypes4computing/types3/SIUnitTypes4ComputingTypeVisitor.java)
+          (calculates the SymTypeExpressions for the types
+          in the grammar SIUnitTypes4Computing)
+        * [SIUnitTypes4MathTypeVisitor](../siunit/siunittypes4math/types3/SIUnitTypes4MathTypeVisitor.java)
+          (calculates the SymTypeExpressions for the types
+          in the grammar SIUnitTypes4Math)
+* Generics infrastructure is [documented separately](./generics/Generics.md#given-infrastructure-in-monticore-wrt-type-inference)!
 * [TypeCheck1 Adapters](../types/check/types3wrapper/TypeCheck3AsTypeCalculator.java)
   (adapts the TypeSystem3 to the deprecated TypeCheck1 interface,
   offering implementations for IDerive and ISynthesize,
+  not compatible with generics,
   s. [TypeCheck1 documentation](../types/check/TypeCheck.md))
 
 ## What is the difference between BasicSymbols and SymTypeExpressions?
 
-The Type System uses the Symbols of the BasicSymbols grammar
+The type system uses the Symbols of the BasicSymbols grammar
 and the handwritten SymTypeExpressions.
 While they are very similar,
 there is a big difference between them and when to use them.
@@ -126,14 +195,11 @@ while the SymTypeExpressions represent a type usage
 There is only one type definition,
 but there can be many type usages.   
 The SymTypeExpression knows its corresponding Symbol (if applicable):
-* SymTypeOfGenerics, SymTypeOfObject, and SymTypePrimitive
+* SymTypeOfGenerics, SymTypeOfObject, SymTypePrimitive, and SymTypeVariable
   know their corresponding TypeSymbol
 * SymTypeOfFunction _may_ have a corresponding FunctionSymbol
   (e.g., a named function declaration)
   or not (e.g., a lambda function definition)
-* SymTypeVariable _may_ have a corresponding TypeVarSymbol
-  (e.g., for a named type variable)
-  or not (e.g., a SymTypeVariable calculated based on a wildcard)
 * Other SymTypeExpressions do not have a corresponding symbol.
 
 A type symbol,
@@ -167,8 +233,8 @@ offer the following functionalities:
 
 * Given an expression, the type of the expression is deduced
   (e.g., given expression `2+2`, a SymTypeExpression for `int` is created)
-* Given a type identifier,
-  the SymTypeExpression of the identifier is constructed
+* Given a type,
+  the SymTypeExpression of this type is constructed
   (e.g., given MCType `int` in the model,
   a corresponding SymTypeExpression is created)
 * Given one or more types, a relation is checked
@@ -182,34 +248,134 @@ the SymTypeRelations class is queried using SymTypeExpressions.
 This implies how to select a specific type system implementation
 in the first place:
 To select a type system one selects a set of TypeVisitors 
-and an implementation of SymTypeRelations to use.
+and the implementations of type relations to use.
 This is described in detail further below.
 
-### How to get the type of an ASTNode?
+### How to initialize the Type Visitors?
 
 Types can be calculated for ASTNodes
 representing either expressions (`2+2`)
-or type identifiers (`String`).
+or types (`String`).
+This functionality is offered by the class TypeCheck3,
+which uses a static delegate pattern;
+This static delegate needs to be initialized;
+The default (and currently only) implementation is MapBasedTypeCheck3.
+
 First, a Type4Ast map has to be constructed to store the typing information,
 thus avoiding recalculation if they are queried again,
-e.g., by different CoCos.
-One may assume that one could store 
-Afterward creating the map,
-a traverser is created with the TypeVisitors of the language,
-the TypeVisitors are given the Type4Ast instance.
+e.g., by different CoCos. 
+After creating the map,
+a traverser is created with the TypeVisitors of the language components;
+The TypeVisitors are given the Type4Ast instance.
 **Note:** Multiple type visitors,
 which contain different typing rules,
 may be available for a given sub-grammar,
 the visitor to select is to be specified by the language.
-An example of instantiating a traverser can be found 
-[here](../../../../../test/java/de/monticore/types3/util/CombineExpressionsWithLiteralsTypeTraverserFactory.java).
-Use the traverser to traverses the given AST and
-it stores the calculated SymTypeExpressions in the map.
-Finally, the map can be queried for the ASTNode in question.
+In the end, a MapBasedTypeCheck3 has to be created
+and set as the delegate of TypeCheck3.
 
-As an alternativ to using the traverser and map directly,
-the TypeCheck1 adapters can be used,
-they can be created using the traverser and Type4Ast map.
+Example:
+```java
+// traverser of your language
+// no inheritance traverser is used, as it is recommended
+// to create a new traverser for each language.
+MyLangTraverser traverser = MyLang.traverser();
+// map to store the results
+Type4Ast type4Ast = new Type4Ast();
+
+// one of many type visitors
+// check their documentation, whether further configuration is required
+BitExpressionsTypeVisitor visBitExpressions = new BitExpressionsTypeVisitor();
+visBitExpressions.setType4Ast(type4Ast);
+traverser.add4BitExpressions(visBitExpressions);
+
+// create the TypeCheck3 delegate
+new MapBasedTypeCheck3(traverser, type4Ast)
+    .setThisAsDelegate();
+```
+
+### How to select the Type Relations?
+
+The traverser handles the part of the type calculations that is AST-dependent;
+Rules such as `Student[]` is a subtype of `Person[]` are not AST-dependent.
+The non-AST-dependent rules of the system are available through static methods,
+to modify their behavior, the corresponding static delegate has to be replaced.
+
+Each of the following classes contains typing rules that are AST-independent,
+and their behavior should be modified if required,
+s.a. [Given Infrastructure](#given-infrastructure-in-monticore);
+
+* [SymTypeRelations](SymTypeRelations.java),
+* [MCCollectionSymTypeRelations](../types/mccollectiontypes/types3/MCCollectionSymTypeRelations.java),
+* [WithinScopeBasicSymbolsResolver](util/WithinScopeBasicSymbolsResolver.java),
+* [WithinTypeBasicSymbolsResolver](util/WithinTypeBasicSymbolsResolver.java),
+* [LValueRelations](util/LValueRelations.java)
+  (this uses the AST, but similarly has the same static delegate pattern)
+
+The following are further classes,
+that are unlikely to be required to be modified for a given language.
+They still use the same static delegate pattern.
+* [FunctionRelations](util/FunctionRelations.java),
+* [SIUnitTypeRelations](util/SIUnitTypeRelations.java),
+* [TypeContextCalculator](util/TypeContextCalculator.java),
+* [TypeVisitorLifting](util/TypeVisitorLifting.java),
+* [TypeVisitorOperatorCalculator](util/TypeVisitorOperatorCalculator.java).
+
+The implementation to use can be selected by using the `init()`-method
+of the corresponding class.
+E.g.,
+per default, TypeCheck3 will ignore any OOSymbol-specific rules while resolving
+types, variables, and functions.
+As such, a `private` method can be accessed from outside the class.
+To only allow access to `public` methods from outside the class,
+the corresponding resolvers have to be selected;
+`OOWithinTypeBasicSymbolsResolver.init()` will select
+[OOWithinTypeBasicSymbolsResolver](util/OOWithinTypeBasicSymbolsResolver.java)
+to be used instead of the default
+[WithinTypeBasicSymbolsResolver](util/WithinTypeBasicSymbolsResolver.java),
+thus changing the TypeCheck to one that checks for access modifiers.
+
+These static delegates should be initialized **once** with the Mill;
+It is expected that (nearly) each language only ever
+uses one set of typing rules.
+Any modification during the usage of the Mill
+should be avoided as much as possible.
+
+An example initialization of static delegates;
+
+```java
+// use OO rules to access types, fields, etc.
+OOWithinTypeBasicSymbolsResolver.init();
+OOWithinScopeBasicSymbolsResolver.init();
+// CommonExpressions are used and no further LValues exist in the language.
+CommonExpressionsLValueRelations.init();
+// All other delegates will use their default implementation
+// Explicitly initializing all other delegates the default
+// will avoid issues if multiple Languages are used in the same Java process.
+```
+
+The delegates can be `reset()`,
+which removes the current selected integration/
+This can be integrated into the Mill's `reset()`-method,
+to further avoid issues with multiple languages in the same Java process.
+
+### Full Instantiation
+
+An example of instantiating a traverser can be found 
+[here](https://github.com/MontiCore/ocl/blob/dev/src/main/java/de/monticore/ocl/ocl/types3/OCLTypeCheck3.java).
+It is recommended to initialize the TypeCheck3 directly after the Mill.
+Alternatively, the Mill's `init()` and `reset()` methods can be overridden,
+to add the typecheck's (de-)initalization to the Mill's (de-)initialization.
+
+After initializing the TypeCheck3 delegates,
+TypeCheck3 can be used to query SymTypeExpressions of expressions
+`TypeCheck3.typeOf(expr)`,
+as well as MCTypes
+`TypeCheck3.symTypeFromAST(mcType)`.
+
+Note: If the language supports generics,
+[additional steps](generics/Generics.md#how-to-get-the-type-of-an-astnode-with-generics)
+have to be taken.
 
 ### How to check relations on types?
 
@@ -233,13 +399,13 @@ class,
 but also its subclasses,
 as they can offer further functionality like, e.g.:   
 `boolean isList(SymTypeExpression type)`
-(whether the type is considered a list)
+(whether the type is considered a list).
 
 As different languages have different typing rules,
 the corresponding set of rules has to be selected.
 While this is partially done by selecting the TypeVisitors,
 relations between types are unrelated to the TypeVisitors
-and have to be initialised accordingly.
+and have to be initialized accordingly.
 
 As an example, the default type relations are initialized using
 `SymTypeRelations.init()`.

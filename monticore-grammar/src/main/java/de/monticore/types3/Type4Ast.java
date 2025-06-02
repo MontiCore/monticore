@@ -381,6 +381,7 @@ public class Type4Ast {
               + typeExpr.printFullName(),
           LOG_NAME
       );
+      typeExpr.getSourceInfo()._internal_setSourceNode(node);
       getExpression2Type().put(node, typeExpr);
     }
     else {
@@ -488,6 +489,7 @@ public class Type4Ast {
               + typeExpr.printFullName(),
           LOG_NAME
       );
+      typeExpr.getSourceInfo()._internal_setSourceNode(node);
       getTypeIdentifier2Type().put(node, typeExpr);
     }
     else {
@@ -513,20 +515,20 @@ public class Type4Ast {
   protected void assertNoInferenceVars(ASTNode node, SymTypeExpression type) {
     // todo reenable after https://git.rwth-aachen.de/monticore/monticore/-/issues/4268
     if (false)
-    if (TypeParameterRelations.hasInferenceVariables(type)) {
-      Log.info("0xFD777 internal error: "
-              + "(this is going to be considered an error, currently(!) "
-              + "only ignored for legacy reasons) " + System.lineSeparator()
-              + "tried storing a type with inference variables ("
-              + type.printFullName() + ") in Type4Ast."
-              + " This can occur due to: " + System.lineSeparator()
-              + "1. The TypeCheck of this language does not support"
-              + " type inference and a symbol has been used which requires "
-              + "type inference (in this context)." + System.lineSeparator()
-              + "2. Or, a programming error.",
-          LOG_NAME
-      );
-    }
+      if (TypeParameterRelations.hasInferenceVariables(type)) {
+        Log.info("0xFD777 internal error: "
+                + "(this is going to be considered an error, currently(!) "
+                + "only ignored for legacy reasons) " + System.lineSeparator()
+                + "tried storing a type with inference variables ("
+                + type.printFullName() + ") in Type4Ast."
+                + " This can occur due to: " + System.lineSeparator()
+                + "1. The TypeCheck of this language does not support"
+                + " type inference and a symbol has been used which requires "
+                + "type inference (in this context)." + System.lineSeparator()
+                + "2. Or, a programming error.",
+            LOG_NAME
+        );
+      }
   }
 
   /**

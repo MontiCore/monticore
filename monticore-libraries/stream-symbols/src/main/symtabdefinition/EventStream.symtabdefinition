@@ -1,0 +1,42 @@
+import Stream;
+import SyncStream;
+import ToptStream;
+import UntimedStream;
+
+symtabdefinition EventStream {
+
+  class EventStream<T> implements Stream<T> {
+    + UntimedStream<T> first();
+    + UntimedStream<T> nth(long n);
+
+    + static <S> EventStream<S> eRepeat(S elem, long n);
+    + static <S> EventStream<S> eIterate(S -> S elem, S elem);
+    + static <S, U> EventStream<S> eProjFst(UntimedStream<(S,U)> list);
+    + static <S, U> EventStream<U> eProjSnd(UntimedStream<(S,U)> list);
+
+    // ----------- Implementations
+    + Optional<EventStream<T>> dropFirst();
+    + EventStream<T> take(long n);
+    + EventStream<T> dropMultiple(long n);
+    + EventStream<T> times(long n); // <2>.times(24)
+    + EventStream<T> infTimes();
+    + <U> EventStream<U> map(T -> U f);
+    + EventStream<T> filter(T -> boolean predicate);
+    + EventStream<T> takeWhile(T -> boolean predicate);
+    + EventStream<T> dropWhile(T -> boolean predicate);
+    + EventStream<T> rcDups();
+    + <U> EventStream<(T,U)> zip(EventStream<U> second);
+    + <U> EventStream<U> scanl(U -> T -> U f, U acc);
+
+    // Event specific methods
+    + EventStream<T> delay(long n);
+    + <U> EventStream<U> mapSlice(UntimedStream<T> -> UntimedStream<U> f);
+    + EventStream<T> rougherTime(long slices);
+    + Set<EventStream<T>> finerTime(long slices);
+
+    + UntimedStream<T> untimed();
+    + SyncStream<T> sync();
+    + ToptStream<T> topt();
+  }
+
+}

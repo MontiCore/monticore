@@ -4,6 +4,7 @@ package de.monticore.types.mccollectiontypes.types3.util;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsGlobalScope;
 import de.monticore.types.check.SymTypeOfGenerics;
+import de.monticore.types.mccollectiontypes.types3.MCCollectionSymTypeRelations;
 import de.monticore.types3.AbstractTypeTest;
 import de.monticore.types3.util.DefsTypesForTests;
 import org.junit.jupiter.api.Assertions;
@@ -20,13 +21,8 @@ import static de.monticore.types3.util.DefsTypesForTests._unboxedListSymType;
 import static de.monticore.types3.util.DefsTypesForTests._unboxedMapSymType;
 import static de.monticore.types3.util.DefsTypesForTests._unboxedOptionalSymType;
 import static de.monticore.types3.util.DefsTypesForTests._unboxedSetSymType;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 
 public class MCCollectionSymTypeFactoryTest extends AbstractTypeTest {
-
-  MCCollectionTypeRelations collectionTypeRelations;
 
   @BeforeEach
   public void setup() {
@@ -34,7 +30,7 @@ public class MCCollectionSymTypeFactoryTest extends AbstractTypeTest {
     BasicSymbolsMill.init();
     // make collection types available in unboxed AND boxed form
     DefsTypesForTests.setup();
-    collectionTypeRelations = new MCCollectionTypeRelations();
+    MCCollectionSymTypeRelations.init();
   }
 
   @Test
@@ -47,7 +43,7 @@ public class MCCollectionSymTypeFactoryTest extends AbstractTypeTest {
     Assertions.assertEquals("List", intList.getTypeConstructorFullName());
     Assertions.assertEquals(1, intList.sizeArguments());
     Assertions.assertTrue(_intSymType.deepEquals(intList.getArgument(0)));
-    Assertions.assertTrue(getCollectionTypeRelations().isList(intList));
+    Assertions.assertTrue(MCCollectionSymTypeRelations.isList(intList));
 
     // again, but with the unboxed "List" not being available
     gs.remove(gs.resolveType("List").get());
@@ -57,7 +53,7 @@ public class MCCollectionSymTypeFactoryTest extends AbstractTypeTest {
     Assertions.assertEquals("java.util.List", intList.getTypeConstructorFullName());
     Assertions.assertEquals(1, intList.sizeArguments());
     Assertions.assertTrue(_intSymType.deepEquals(intList.getArgument(0)));
-    Assertions.assertTrue(getCollectionTypeRelations().isList(intList));
+    Assertions.assertTrue(MCCollectionSymTypeRelations.isList(intList));
   }
 
   @Test
@@ -70,7 +66,7 @@ public class MCCollectionSymTypeFactoryTest extends AbstractTypeTest {
     Assertions.assertEquals("Set", intSet.getTypeConstructorFullName());
     Assertions.assertEquals(1, intSet.sizeArguments());
     Assertions.assertTrue(_intSymType.deepEquals(intSet.getArgument(0)));
-    Assertions.assertTrue(getCollectionTypeRelations().isSet(intSet));
+    Assertions.assertTrue(MCCollectionSymTypeRelations.isSet(intSet));
 
     // again, but with the unboxed "Set" not being available
     gs.remove(gs.resolveType("Set").get());
@@ -80,7 +76,7 @@ public class MCCollectionSymTypeFactoryTest extends AbstractTypeTest {
     Assertions.assertEquals("java.util.Set", intSet.getTypeConstructorFullName());
     Assertions.assertEquals(1, intSet.sizeArguments());
     Assertions.assertTrue(_intSymType.deepEquals(intSet.getArgument(0)));
-    Assertions.assertTrue(getCollectionTypeRelations().isSet(intSet));
+    Assertions.assertTrue(MCCollectionSymTypeRelations.isSet(intSet));
   }
 
   @Test
@@ -93,7 +89,7 @@ public class MCCollectionSymTypeFactoryTest extends AbstractTypeTest {
     Assertions.assertEquals("Optional", intOptional.getTypeConstructorFullName());
     Assertions.assertEquals(1, intOptional.sizeArguments());
     Assertions.assertTrue(_intSymType.deepEquals(intOptional.getArgument(0)));
-    Assertions.assertTrue(getCollectionTypeRelations().isOptional(intOptional));
+    Assertions.assertTrue(MCCollectionSymTypeRelations.isOptional(intOptional));
 
     // again, but with the unboxed "Optional" not being available
     gs.remove(gs.resolveType("Optional").get());
@@ -103,7 +99,7 @@ public class MCCollectionSymTypeFactoryTest extends AbstractTypeTest {
     Assertions.assertEquals("java.util.Optional", intOptional.getTypeConstructorFullName());
     Assertions.assertEquals(1, intOptional.sizeArguments());
     Assertions.assertTrue(_intSymType.deepEquals(intOptional.getArgument(0)));
-    Assertions.assertTrue(getCollectionTypeRelations().isOptional(intOptional));
+    Assertions.assertTrue(MCCollectionSymTypeRelations.isOptional(intOptional));
   }
 
   @Test
@@ -118,7 +114,7 @@ public class MCCollectionSymTypeFactoryTest extends AbstractTypeTest {
     Assertions.assertEquals(2, intMap.sizeArguments());
     Assertions.assertTrue(_intSymType.deepEquals(intMap.getArgument(0)));
     Assertions.assertTrue(_floatSymType.deepEquals(intMap.getArgument(1)));
-    Assertions.assertTrue(getCollectionTypeRelations().isMap(intMap));
+    Assertions.assertTrue(MCCollectionSymTypeRelations.isMap(intMap));
 
     // again, but with the unboxed "Map" not being available
     gs.remove(gs.resolveType("Map").get());
@@ -129,12 +125,7 @@ public class MCCollectionSymTypeFactoryTest extends AbstractTypeTest {
     Assertions.assertEquals(2, intMap.sizeArguments());
     Assertions.assertTrue(_intSymType.deepEquals(intMap.getArgument(0)));
     Assertions.assertTrue(_floatSymType.deepEquals(intMap.getArgument(1)));
-    Assertions.assertTrue(getCollectionTypeRelations().isMap(intMap));
+    Assertions.assertTrue(MCCollectionSymTypeRelations.isMap(intMap));
   }
 
-  // Helper
-
-  protected MCCollectionTypeRelations getCollectionTypeRelations() {
-    return collectionTypeRelations;
-  }
 }

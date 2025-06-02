@@ -11,7 +11,8 @@ that we identified and applied as well as alternatives and their specific
 advantages and drawbacks. The list also mentions where the solutions have been
 found and where they have been applied first.
 
-The list is subdivided into several MD files tackling various language design areas.
+The list is subdivided into several files tackling the different 
+language design areas.
 
 The list is partially temporary and also contains compact (incomplete) solutions.
 More detailed descriptions of best practices can be found in the 

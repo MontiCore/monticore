@@ -18,18 +18,11 @@ group = "de.monticore"
 
 def grammarOutDir = "$buildDir/generated-sources/monticore/sourcecode"
 def taggingOutDir = "$buildDir/generated-sources/monticore/tagging"
-def symbolsDir = 'src/main/resources'
 
 sourceSets {
   // Add mlc files to grammars source set (resulting in them being included in the grammars-jar)
   main.grammars.include(["**/*.mlc", "**/*.mc4"])
 
-  symbols {
-    resources {
-      srcDirs(symbolsDir)
-      include "**/*.sym"
-    }
-  }
   // The following is required as we still publish a Feature-variant (with usingSourceSet(grammarsForVariant))
   grammarsForVariant {
     java.srcDirs = []
@@ -85,7 +78,7 @@ dependencies {
 }
 
 
-generateMCGrammars {
+tasks.named('generateMCGrammars') {
   outputDir = file grammarOutDir
   debug = false
   genINT = true
@@ -179,7 +172,6 @@ def grammarDependencies = ext {
   MCSimpleGenericTypes = ["MCCollectionTypes"]
   MCCommonStatements = ["MCVarDeclarationStatements"]
   MCCollectionTypes = ["MCBasicTypes"]
-  StreamExpressions = ["CommonExpressions"]
   MCExceptionStatements = ["MCCommonStatements"]
   MCFunctionTypes = ["MCBasicTypes"]
   MCStructuralTypes = ["MCBasicTypes"]
@@ -205,6 +197,7 @@ def grammarDependencies = ext {
   SIUnitLiterals = ["MCCommonLiterals", "SIUnits"]
   SIUnitTypes4Math = ["MCBasicTypes", "SIUnits"]
   SIUnitTypes4Computing = ["MCBasicTypes", "SIUnitTypes4Math"]
+  StreamExpressions = ["CommonExpressions", "MCCollectionTypes"]
   TypeParameters = ["BasicSymbols", "MCBasicTypes"]
 
   // three dependencies
@@ -232,17 +225,16 @@ def grammarDependencies = ext {
 /**
  * Integration with MLC language and tool
  */
-task showArtifacts {}
-task checkArtifacts {}
+tasks.register('showArtifacts') { group = 'mlc'}
+tasks.register('checkArtifacts') { group = 'mlc'}
 configurations { MLC }
 dependencies {
   MLC(group: 'de.monticore.lang', name: 'mlc-gradle', version: "$version")
   MLC(project(':monticore-runtime')) // Ensure the proper runtime is used for MLC
 }
-StringJoiner joiner = new StringJoiner(" ")
-configurations.compileClasspath.resolve().each { joiner.add(it.toString()) }
-joiner.add "$projectDir/target/symbols"
-String mp = joiner.toString()
+def mlcModelPath = []
+configurations.compileClasspath.resolve().each { mlcModelPath.addAll(["-mp", it.toString()]) }
+mlcModelPath.addAll(["-mp", "$projectDir/target/symbols"])
 
 ///////////// MLC tasks - Start ///////////////////////
 // two tasks per MLC file
@@ -251,23 +243,25 @@ fileTree("src/main/grammars").matching { include '**/*.mlc' }.each {
   def f = it
   def mlcName = it.getName().substring(0, it.getName().lastIndexOf('.'))
 
-  task "showArtifacts${mlcName}"(type: JavaExec) {
+  tasks.register("showArtifacts${mlcName}", JavaExec) {
     classpath = configurations.MLC
     group = 'MLC'
     mainClass = 'de.monticore.mlc.MLCTool'
-    args "-input", f, "-projectDir", projectDir, "-mp", mp, "-s", "-reports", "${buildDir}/reports", "-a", "-noFQ"
+    args = ["-input", f, "-projectDir", projectDir, "-s", "-reports", "${buildDir}/reports", "-a", "-noFQ"]
+    args += mlcModelPath
     dependsOn("generateMCGrammars")
-    showArtifacts.dependsOn("showArtifacts${mlcName}")
   }
+  showArtifacts.dependsOn("showArtifacts${mlcName}")
 
-  task "checkArtifacts${mlcName}"(type: JavaExec) {
+  tasks.register("checkArtifacts${mlcName}", JavaExec) {
     classpath = configurations.MLC
     group = 'MLC'
     mainClass = 'de.monticore.mlc.MLCTool'
-    args "-input", f, "-projectDir", projectDir, "-mp", mp, "-s", "-check", "-reports", "${buildDir}/reports"
+    args = ["-input", f, "-projectDir", projectDir, "-s", "-check", "-reports", "${buildDir}/reports"]
+    args += mlcModelPath
     dependsOn("generateMCGrammars")
-    checkArtifacts.dependsOn("checkArtifacts${mlcName}")
   }
+  checkArtifacts.dependsOn("checkArtifacts${mlcName}")
 }
 
 ///////////// dependencies between check artifacts tasks ///////////////////////
@@ -564,6 +558,11 @@ generateTestMCGrammars {
   dependsOn(tasks.grammarsForVariantJar)
 }
 
+// Ensure the grammars and GrammarsForVariant jars do not conflict
+tasks.grammarsForVariantJar {
+  archiveClassifier = "grammars-compat"
+}
+
 jar.dependsOn(shadowJar)
 
 if (findProperty('ci') == null) {
@@ -577,6 +576,21 @@ if (("true").equals(getProperty('genTR'))) {
   }
 }
 
+// Pack & Publish the reported CD & OD in a jar (without the gradle module system, just a classifier)
+tasks.register('reportsJar', Jar) {
+  from (tasks.generateMCGrammars.getReportDir().dir('src/main/grammars')) {
+    include('**/*.cd', '**/*.od')
+  }
+  dependsOn(tasks.generateMCGrammars)
+  archiveClassifier = 'reports'
+}
+publishing {
+  publications {
+    maven {
+      artifact reportsJar
+    }
+  }
+}
 
 if (("true").equals(getProperty('genTagging'))) {
   // Because tagging is not properly published as a source set we instead add the tag definitions to the main grammar jars

@@ -324,6 +324,9 @@ public class MCPublishingPlugin implements Plugin<Project> {
     TaskProvider<Jar> jarTask = project.getTasks().register(sourceSet.getTaskName(null, target), Jar.class,
             jar -> {
               jar.setGroup("build");
+              // https://docs.gradle.org/current/userguide/working_with_files.html#sec:reproducible_archives
+              jar.setPreserveFileTimestamps(false);
+              jar.setReproducibleFileOrder(true);
               // And for non main source sets, also the archive appendix
               if (!SourceSet.isMain(sourceSet))
                 jar.getArchiveAppendix().set(sourceSet.getName());

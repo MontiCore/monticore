@@ -28,7 +28,7 @@ public class ReturnTypeAssignmentIsValidTest extends JavaLightCocoTest {
   @BeforeEach
   public void initCoco(){
     checker = new JavaLightCoCoChecker();
-    checker.addCoCo(new ReturnTypeAssignmentIsValid(new TypeCalculator(new FullSynthesizeFromCombineExpressionsWithLiterals(), new FullDeriveFromCombineExpressionsWithLiterals())));
+    checker.addCoCo(new ReturnTypeAssignmentIsValid());
   }
   
   public void checkValid(String expressionString) throws IOException {
@@ -65,6 +65,7 @@ public class ReturnTypeAssignmentIsValidTest extends JavaLightCocoTest {
     checkValid("public char test(){return 'c';}");
     checkValid("public double test(){return 1.2;}");
     checkValid("public boolean test(){return false;}");
+    checkValid("public double test(){return 2;}");
 
   }
 

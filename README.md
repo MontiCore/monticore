@@ -5,6 +5,23 @@
 
 # MontiCore - Language Workbench and Development Tool Framework 
 
+<!--
+---
+
+**NEWS**:
+<div align="center">
+  <a href="https://monticore.github.io/monticore/docs/MontiCoreSymposium/" target="_blank">
+  <img src="https://github.com/MontiCore/monticore/raw/dev/docs/docs/MC_Symp_Banner.png">
+  </a>  
+</div>  
+  
+* ISW Stuttgart and RWTH Aachen organize the third **[MontiCore Symposium 2025](docs/MontiCoreSymposium.md)** March 23 - March 26 in Gemünd, Germany
+  * Deadline for submission of papers or abstracts: January, 10th.
+
+---
+
+-->
+
 [MontiCore](https://www.monticore.de) is a language workbench for the efficient 
 development of domain-specific languages (DSLs). It processes an extended 
 grammar format which defines the DSL and generates Java components for processing 
@@ -124,8 +141,10 @@ including commercial use without any license restriction.
 (2) *Tool derivates* created using the MontiCore language 
 workbench mention that it is built using MontiCore. There is 
 no other restriction. (BSD 3 Clause license) 
-(3) Adaptations of MontiCore should mention MontiCore and 
-results published back into this repository (LGPL license). 
+(3) Adaptations of the MontiCore language workbench itself
+should mention MontiCore and
+results are published back into the MontiCore repository (LGPL license)
+-- for other purposes an individual Dual License is available.
 
 For details see [Licenses](00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md).
 

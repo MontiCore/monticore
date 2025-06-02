@@ -151,8 +151,8 @@ public class BasicSymbolsSymbols2JsonTest {
     Assertions.assertEquals("T", deserializedVariable2.get().getType().print());
     Assertions.assertEquals("Type.T", variable2.get().getType().printFullName());
     Assertions.assertEquals("Type.T", deserializedVariable2.get().getType().printFullName());
-    Assertions.assertSame(type.get().getSpannedScope(), variable2.get().getType().getTypeInfo().getEnclosingScope());
-    Assertions.assertSame(deserializedType.get().getSpannedScope(), deserializedVariable2.get().getType().getTypeInfo().getEnclosingScope());
+    Assertions.assertSame(type.get().getSpannedScope(), variable2.get().getType().asTypeVariable().getTypeVarSymbol().getEnclosingScope());
+    Assertions.assertSame(deserializedType.get().getSpannedScope(), deserializedVariable2.get().getType().asTypeVariable().getTypeVarSymbol().getEnclosingScope());
 
     //check for Function function in Type
     Optional<FunctionSymbol> function = typeSpanned.resolveFunction("function");

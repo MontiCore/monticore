@@ -12,7 +12,6 @@ import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor2;
 import de.monticore.types3.AbstractTypeVisitor;
-import de.monticore.types3.util.NameExpressionTypeCalculator;
 import de.monticore.types3.util.TypeContextCalculator;
 import de.monticore.types3.util.WithinScopeBasicSymbolsResolver;
 import de.monticore.types3.util.WithinTypeBasicSymbolsResolver;
@@ -24,52 +23,27 @@ import java.util.stream.Collectors;
 public class MCBasicTypesTypeVisitor extends AbstractTypeVisitor
     implements MCBasicTypesVisitor2 {
 
-  protected WithinScopeBasicSymbolsResolver withinScopeResolver;
-
-  protected WithinTypeBasicSymbolsResolver withinTypeResolver;
-
-  protected TypeContextCalculator typeCtxCalc;
-
-  public MCBasicTypesTypeVisitor() {
-    // defaultValues
-    withinScopeResolver = new NameExpressionTypeCalculator();
-    withinTypeResolver = new WithinTypeBasicSymbolsResolver();
-    typeCtxCalc = new TypeContextCalculator();
-  }
-
-  protected WithinScopeBasicSymbolsResolver getWithinScopeResolver() {
-    return withinScopeResolver;
-  }
-
+  /**
+   * @deprecated is now a static delegate
+   */
+  @Deprecated(forRemoval = true)
   public void setWithinScopeResolver(
       WithinScopeBasicSymbolsResolver nameExprTypeCalc) {
-    this.withinScopeResolver = nameExprTypeCalc;
   }
 
   /**
-   * @deprecated use {@link #setWithinScopeResolver}
+   * @deprecated is now a static delegate
    */
-  @Deprecated
-  public void setNameExpressionTypeCalculator(
-      NameExpressionTypeCalculator nameExprTypeCalc) {
-    setWithinScopeResolver(nameExprTypeCalc);
-  }
-
-  protected WithinTypeBasicSymbolsResolver getWithinTypeResolver() {
-    return withinTypeResolver;
-  }
-
+  @Deprecated(forRemoval = true)
   public void setWithinTypeResolver(
       WithinTypeBasicSymbolsResolver withinTypeResolver) {
-    this.withinTypeResolver = withinTypeResolver;
   }
 
-  protected TypeContextCalculator getTypeCtxCalc() {
-    return typeCtxCalc;
-  }
-
+  /**
+   * @deprecated is now a static delegate
+   */
+  @Deprecated(forRemoval = true)
   public void setTypeContextCalculator(TypeContextCalculator typeCtxCalc) {
-    this.typeCtxCalc = typeCtxCalc;
   }
 
   @Override
@@ -139,17 +113,17 @@ public class MCBasicTypesTypeVisitor extends AbstractTypeVisitor
         String prefix = qName.getPartsList().stream()
             .limit(numberOfPartsUsedForFirstType)
             .collect(Collectors.joining("."));
-        type = getWithinScopeResolver()
-            .typeOfNameAsTypeId(enclosingScope, prefix);
+        type = WithinScopeBasicSymbolsResolver
+            .resolveType(enclosingScope, prefix);
       }
       else {
         SymTypeExpression prefixType = type.get();
         String name = qName.getParts(numberOfPartsUsedForFirstType - 1);
         if (prefixType.isObjectType() || prefixType.isGenericType()) {
-          type = getWithinTypeResolver().resolveType(
+          type = WithinTypeBasicSymbolsResolver.resolveType(
               prefixType,
               name,
-              getTypeCtxCalc().getAccessModifier(
+              TypeContextCalculator.getAccessModifier(
                   prefixType.getTypeInfo(),
                   enclosingScope,
                   true

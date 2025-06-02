@@ -2,12 +2,13 @@
 package de.monticore.expressions.commonexpressions.types3.util;
 
 import de.monticore.expressions.commonexpressions.CommonExpressionsMill;
-import de.monticore.expressions.commonexpressions._util.CommonExpressionsTypeDispatcher;
 import de.monticore.expressions.commonexpressions._util.ICommonExpressionsTypeDispatcher;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.expressions.expressionsbasis.types3.util.ILValueRelations;
+import de.monticore.types3.util.LValueRelations;
+import de.se_rwth.commons.logging.Log;
 
-public class CommonExpressionsLValueRelations implements ILValueRelations {
+public class CommonExpressionsLValueRelations
+    extends LValueRelations {
 
   /**
    * according to Java Spec 20 4.12.3
@@ -15,7 +16,7 @@ public class CommonExpressionsLValueRelations implements ILValueRelations {
    * as the variable might be final (s. OOSymbols) and already assigned to.
    */
   @Override
-  public boolean isLValue(ASTExpression expression) {
+  protected boolean _isLValue(ASTExpression expression) {
     ICommonExpressionsTypeDispatcher dispatcher =
         CommonExpressionsMill.typeDispatcher();
     boolean result;
@@ -33,4 +34,12 @@ public class CommonExpressionsLValueRelations implements ILValueRelations {
     }
     return result;
   }
+
+  // static delegate
+
+  public static void init() {
+    Log.trace("init CommonExpressionsLValueRelations", "TypeCheck setup");
+    setDelegate(new CommonExpressionsLValueRelations());
+  }
+
 }

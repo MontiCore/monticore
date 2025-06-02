@@ -6,9 +6,12 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.Optional;
 
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
+import mc.feature.aststring.aststring.AststringMill;
+import mc.feature.aststring.aststring._ast.ASTTestSingleQuote;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -55,6 +58,12 @@ public class ASTStringParserTest extends GeneratorIntegrationsTest {
     Assertions.assertEquals("ef", ast.getDList().get(2).toString());
   
     Assertions.assertTrue(Log.getFindings().isEmpty());
+  }
+
+  @Test
+  public void testSingleQuote() throws IOException {
+    Optional<ASTTestSingleQuote> ast = AststringMill.parser().parse_StringTestSingleQuote("Alex's Parser probleme");
+    Assertions.assertTrue(ast.isPresent());
   }
   
 }

@@ -2,19 +2,15 @@ package de.monticore.types3.generics;
 
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.check.SymTypeInferenceVariable;
 import de.monticore.types.check.SymTypeVariable;
-import de.monticore.types3.generics.util.SymTypeFreeVariableReplaceVisitor;
-import de.monticore.types3.generics.util.SymTypeVariableReplaceVisitor;
-import de.monticore.types3.generics.util.WildcardCapturer;
-import de.monticore.types3.util.SymTypeCollectionVisitor;
+import de.monticore.types3.generics.util.TypeParameterRelationsDefaultDelegatee;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * A collection of often used helper functions w.r.t. type parameters;
@@ -23,43 +19,14 @@ import java.util.stream.Collectors;
  * * Inference variables
  * * Wildcards
  */
-public class TypeParameterRelations {
-
-  // static delegate
+public abstract class TypeParameterRelations {
 
   protected static TypeParameterRelations delegate;
 
-  public static void init() {
-    Log.trace("init default TypeParameterRelations", "TypeCheck setup");
-    TypeParameterRelations.delegate = new TypeParameterRelations();
-  }
-
-  protected static TypeParameterRelations getDelegate() {
-    if (delegate == null) {
-      init();
-    }
-    return delegate;
-  }
-
-  protected TypeParameterRelations() {
-    this.typeVarReplacer = new SymTypeVariableReplaceVisitor();
-    this.freeVariableReplacer = new SymTypeFreeVariableReplaceVisitor();
-    this.symTypeCollectionVisitor = new SymTypeCollectionVisitor();
-    this.wildCardCapturer = new WildcardCapturer();
-  }
-
-  // delegates
-
-  SymTypeVariableReplaceVisitor typeVarReplacer;
-
-  SymTypeFreeVariableReplaceVisitor freeVariableReplacer;
-
-  SymTypeCollectionVisitor symTypeCollectionVisitor;
-
-  WildcardCapturer wildCardCapturer;
+  // methods
 
   /**
-   * replaces TypeVariables using a given map
+   * replaces bound TypeVariables using a given map
    * e.g., T, {T->int,U->float} -> int
    * e.g., List<T>, {T->int} -> List<int>
    */
@@ -67,15 +34,30 @@ public class TypeParameterRelations {
       SymTypeExpression type,
       Map<SymTypeVariable, ? extends SymTypeExpression> replaceMap
   ) {
-    return getDelegate().calculateReplaceTypeVariables(type, replaceMap);
+    return getDelegate()._replaceTypeVariables(type, replaceMap);
   }
 
-  protected SymTypeExpression calculateReplaceTypeVariables(
+  protected abstract SymTypeExpression _replaceTypeVariables(
       SymTypeExpression type,
       Map<SymTypeVariable, ? extends SymTypeExpression> replaceMap
+  );
+
+  /**
+   * replaces InferenceVariables using a given map
+   * e.g., a, {a->int,b->float} -> int
+   * e.g., List<a>, {a->int} -> List<int>
+   */
+  public static SymTypeExpression replaceInferenceVariables(
+      SymTypeExpression type,
+      Map<SymTypeInferenceVariable, ? extends SymTypeExpression> replaceMap
   ) {
-    return typeVarReplacer.calculate(type, replaceMap);
+    return getDelegate()._replaceInferenceVariables(type, replaceMap);
   }
+
+  protected abstract SymTypeExpression _replaceInferenceVariables(
+      SymTypeExpression type,
+      Map<SymTypeInferenceVariable, ? extends SymTypeExpression> replaceMap
+  );
 
   /**
    * Returns a map that can be used to replace
@@ -85,20 +67,17 @@ public class TypeParameterRelations {
    * @param enclosingScope the enclosing scope used to check
    *                       if the variables are free or bound
    */
-  public static Map<SymTypeVariable, SymTypeVariable> getFreeVariableReplaceMap(
+  public static Map<SymTypeVariable, SymTypeInferenceVariable> getFreeVariableReplaceMap(
       SymTypeExpression type,
       IBasicSymbolsScope enclosingScope
   ) {
-    return getDelegate().calculateGetFreeVariableReplaceMap(type, enclosingScope);
+    return getDelegate()._getFreeVariableReplaceMap(type, enclosingScope);
   }
 
-  protected Map<SymTypeVariable, SymTypeVariable> calculateGetFreeVariableReplaceMap(
+  protected abstract Map<SymTypeVariable, SymTypeInferenceVariable> _getFreeVariableReplaceMap(
       SymTypeExpression type,
       IBasicSymbolsScope enclosingScope
-  ) {
-    // we are not using the calculated type, this could be optimized.
-    return freeVariableReplacer.calculate(type, enclosingScope).getReplaceMap();
-  }
+  );
 
   /**
    * Replaces free type variables with inference variables.
@@ -111,13 +90,12 @@ public class TypeParameterRelations {
     return replaceTypeVariables(type, getFreeVariableReplaceMap(type, enclosingScope));
   }
 
+  /**
+   * use type.isInferenceVariable
+   */
+  @Deprecated(forRemoval = true)
   public static boolean isInferenceVariable(SymTypeExpression type) {
-    return getDelegate().calculateIsInferenceVariable(type);
-  }
-
-  protected boolean calculateIsInferenceVariable(SymTypeExpression type) {
-    return type.isTypeVariable() &&
-        type.asTypeVariable().isInferenceVariable();
+    return type.isInferenceVariable();
   }
 
   /**
@@ -131,31 +109,21 @@ public class TypeParameterRelations {
    * In the Java Spec (v.21 chap. 18) types with inference variables
    * would be called "improper".
    */
-  public static List<SymTypeVariable> getIncludedInferenceVariables(SymTypeExpression... types) {
+  public static List<SymTypeInferenceVariable> getIncludedInferenceVariables(
+      SymTypeExpression... types
+  ) {
     return getIncludedInferenceVariables(Arrays.asList(types));
   }
 
-  public static List<SymTypeVariable> getIncludedInferenceVariables(
+  public static List<SymTypeInferenceVariable> getIncludedInferenceVariables(
       Collection<? extends SymTypeExpression> types
   ) {
-    return getDelegate().calculateGetIncludedInferenceVariables(types);
+    return getDelegate()._getIncludedInferenceVariables(types);
   }
 
-  protected List<SymTypeVariable> calculateGetIncludedInferenceVariables(
+  protected abstract List<SymTypeInferenceVariable> _getIncludedInferenceVariables(
       Collection<? extends SymTypeExpression> types
-  ) {
-    List<SymTypeVariable> infVars = new ArrayList<>();
-    for (SymTypeExpression type : types) {
-      infVars.addAll(
-          symTypeCollectionVisitor.calculate(type, t ->
-                  t.isTypeVariable() && t.asTypeVariable().isInferenceVariable()
-              ).stream()
-              .map(SymTypeExpression::asTypeVariable)
-              .collect(Collectors.toList())
-      );
-    }
-    return infVars;
-  }
+  );
 
   /**
    * s. {@link #getIncludedInferenceVariables(SymTypeExpression...)}
@@ -168,14 +136,10 @@ public class TypeParameterRelations {
    * Whether the SymType contains any wildcards.
    */
   public static boolean hasWildcards(SymTypeExpression type) {
-    return getDelegate().calculateHasWildcards(type);
+    return getDelegate()._hasWildcards(type);
   }
 
-  protected boolean calculateHasWildcards(SymTypeExpression type) {
-    return !symTypeCollectionVisitor
-        .calculate(type, SymTypeExpression::isWildcard)
-        .isEmpty();
-  }
+  protected abstract boolean _hasWildcards(SymTypeExpression type);
 
   /**
    * Capture Conversion (s. Java Spec 20 5.1.10).
@@ -184,11 +148,31 @@ public class TypeParameterRelations {
    * If no type arguments exist, this is the identity relation.
    */
   public static <T extends SymTypeExpression> T getCaptureConverted(T type) {
-    return getDelegate().calculateGetCaptureConverted(type);
+    return getDelegate()._getCaptureConverted(type);
   }
 
-  protected <T extends SymTypeExpression> T calculateGetCaptureConverted(T type) {
-    return wildCardCapturer.getCaptureConverted(type);
+  protected abstract <T extends SymTypeExpression> T _getCaptureConverted(T type);
+
+  // static delegate
+
+  public static void init() {
+    Log.trace("init default TypeParameterRelations", "TypeCheck setup");
+    setDelegate(new TypeParameterRelationsDefaultDelegatee());
+  }
+
+  public static void reset() {
+    TypeParameterRelations.delegate = null;
+  }
+
+  protected static void setDelegate(TypeParameterRelations newDelegate) {
+    TypeParameterRelations.delegate = Log.errorIfNull(newDelegate);
+  }
+
+  protected static TypeParameterRelations getDelegate() {
+    if (TypeParameterRelations.delegate == null) {
+      init();
+    }
+    return TypeParameterRelations.delegate;
   }
 
 }

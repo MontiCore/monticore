@@ -3,7 +3,7 @@
 
 # MontiCore Languages of Level II - an Overview
 
-[[_TOC_]]
+
 
 [MontiCore](https://www.monticore.de) is a language workbench
 with an explicit notion of language components. It uses 
@@ -274,9 +274,9 @@ component InteriorLight {                           // MontiArc language
   language a concrete timing, such as formally grounded by Focus, 
   should be added.
 * Main grammar 
-  [`MontiArc.mc4`](https://github.com/MontiCore/montiarc/blob/develop/languages/montiarc/main/grammars/MontiArc.mc4)
+  [`MontiArc.mc4`](https://github.com/MontiCore/montiarc/blob/dev/languages/montiarc/main/grammars/MontiArc.mc4)
   and 
-  [*detailed description*](https://github.com/MontiCore/montiarc/blob/develop/languages/MontiArc.md)
+  [*detailed description*](https://github.com/MontiCore/montiarc/blob/dev/languages/MontiArc.md)
 
 
 ### [OCL/P](https://github.com/monticore/OCL) (MontiCore Stable)

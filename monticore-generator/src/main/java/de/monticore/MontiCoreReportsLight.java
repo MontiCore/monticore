@@ -54,7 +54,6 @@ public class MontiCoreReportsLight implements ReportManagerFactory {
   public ReportManager provide(String modelName) {
     MontiCoreNodeIdentifierHelper identifierHelper = new MontiCoreNodeIdentifierHelper();
     ReportingRepository repository = new ReportingRepository(identifierHelper);
-    repository.initAllTemplates();
 
     ReportManager reports = new ReportManager(this.outputDirectory);
     

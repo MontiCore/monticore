@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-package de.monticore.tf.ast;
+package mc.tfcs.ast;
 
 import mc.feature.featuredsl._ast.ASTAutomaton;
 import mc.feature.featuredsl._visitor.FeatureDSLHandler;

@@ -1,13 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.io.paths;
 
-import de.se_rwth.commons.Files;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -216,17 +216,16 @@ public class MCPathTest {
   }
 
   @Test
-  public void testCachedSym() throws IOException {
+  public void testCachedSym(@TempDir File tempF) throws IOException {
     // Test if the mcpath-jar-cache respects removal
     Log.clearFindings();
-    File tempF = Files.createTempDir();
-    tempF.mkdirs();
     File jar = new File(tempF, "test.jar");
 
     FileOutputStream fout = new FileOutputStream(jar);
     JarOutputStream jarOut = new JarOutputStream(fout);
     jarOut.putNextEntry(new ZipEntry("de/mc/")); // Folders must end with "/".
     jarOut.putNextEntry(new ZipEntry("de/mc/A.test.sym"));
+    jarOut.putNextEntry(new ZipEntry("B.test.sym"));
     jarOut.write("{}".getBytes());
     jarOut.closeEntry();
 
@@ -236,7 +235,8 @@ public class MCPathTest {
     MCPath path = new MCPath();
     path.addEntry(jar.toPath());
 
-    Assertions.assertTrue(path.find("de.mc.A", ".*sym").isPresent());
+    Assertions.assertTrue(path.find("de.mc.A", ".*sym").isPresent(), "Finding a qualified file failed");
+    Assertions.assertTrue(path.find("B", ".*sym").isPresent(), "Finding an unqualified file failed");
     path.removeEntry(jar.toPath());
     Assertions.assertFalse(path.find("de.mc.A", ".*sym").isPresent(), "removeEntry was not completed");
   }

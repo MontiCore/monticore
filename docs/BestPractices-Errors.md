@@ -2,7 +2,7 @@
 
 # MontiCore Best Practices - Understanding Errors, Defining Errors
 
-[[_TOC_]]
+
 
 Errors happen.
 Some happen because of faults in the code (we call that internal errors),

@@ -51,18 +51,18 @@ task copyTestResources(type: Copy) {
 }
 
 def grammarDir = "${project(':monticore-grammar').projectDir}/src/main/grammars"
-def grammarOutDir = "$buildDir/generated-sources/monticore/sourcecode"
-def testGrammarOutDir = "$buildDir/generated-test-sources/monticore/sourcecode"
 
 sourceSets {
   main.java.srcDirs = [ srcDir]
   main.resources.srcDirs = [ srcResourcesDir]
-  test.java.srcDirs = [ testDir, testGrammarOutDir]
+  test.java.srcDirs += [ testDir]
+  test.grammars.srcDirs = ["${project(':monticore-grammar').projectDir}/src/test/grammars",
+                           "${project(':monticore-grammar').projectDir}/src/main/examples"]
 }
 
 task generate {}
 
-generateMCGrammars {
+tasks.named('generateMCGrammars') {
   grammar.setFrom(file grammarDir)
   script = "de/monticore/monticore_emf.groovy"
   modelPath "${project(':monticore-grammar').projectDir}/src/main/grammars"
@@ -71,13 +71,7 @@ generateMCGrammars {
   dependsOn(copySrc, copyTest, copyTestResources)
 }
 
-def testGrammars = "${project(':monticore-grammar').projectDir}/src/test/grammars"
-def exampleGrammars = "${project(':monticore-grammar').projectDir}/src/main/examples"
-
-tasks.register("generateMCTestGrammars", de.monticore.gradle.gen.MCGenTask.class) {
-  grammar.setFrom(file testGrammars)
-  grammar.from(file exampleGrammars)
-  outputDir = file testGrammarOutDir
+generateTestMCGrammars {
   script = "de/monticore/monticore_emf.groovy"
   modelPath("$grammarDir", "${project(':monticore-grammar').projectDir}/src/test/grammars", "${project(':monticore-grammar').projectDir}/src/main/examples")
   handcodedPath(srcDir, testDir)
@@ -98,11 +92,14 @@ test {
   exclude '**/SynthesizeSymTypeFromMCFullGenericTypesTest.class'
   exclude '**/SynthesizeSymTypeFromMCArrayTypesTest.class'
   exclude '**/MCType2SymTypeExpressionTest.class'
+  exclude '**/ComponentSymbolDeSerTest.class'
 }
 
 
 compileJava.dependsOn (tasks.named("copySrc"))
 compileJava.dependsOn (tasks.named("copySrcResources"))
+processResources.dependsOn (tasks.named("copySrcResources"))
+sourcesJar.dependsOn (tasks.named("copySrcResources"))
 compileTestJava.dependsOn (tasks.named("copyTest"))
 compileTestJava.dependsOn (tasks.named("copyTestResources"))
-compileTestJava.dependsOn (tasks.named("generateMCTestGrammars"))
+processTestResources.dependsOn (tasks.named("copyTestResources"))

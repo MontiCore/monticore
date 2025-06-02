@@ -8,7 +8,6 @@ import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types3.AbstractTypeVisitor;
-import de.monticore.types3.util.NameExpressionTypeCalculator;
 import de.monticore.types3.util.WithinScopeBasicSymbolsResolver;
 import de.se_rwth.commons.logging.Log;
 
@@ -17,29 +16,12 @@ import java.util.Optional;
 public class ExpressionBasisTypeVisitor extends AbstractTypeVisitor
     implements ExpressionsBasisVisitor2 {
 
-  protected WithinScopeBasicSymbolsResolver withinScopeResolver;
-
-  public ExpressionBasisTypeVisitor() {
-    // default values
-    withinScopeResolver = new WithinScopeBasicSymbolsResolver();
-  }
-
+  /**
+   * @deprecated is now a static delegate
+   */
+  @Deprecated(forRemoval = true)
   public void setWithinScopeResolver(
       WithinScopeBasicSymbolsResolver withinScopeResolver) {
-    this.withinScopeResolver = withinScopeResolver;
-  }
-
-  /**
-   * @deprecated use {@link #setWithinScopeResolver}
-   */
-  @Deprecated
-  public void setNameExpressionTypeCalculator(
-      NameExpressionTypeCalculator nameExpressionTypeCalculator) {
-    setWithinScopeResolver(nameExpressionTypeCalculator);
-  }
-
-  protected WithinScopeBasicSymbolsResolver getWithinScopeResolver() {
-    return withinScopeResolver;
   }
 
   /**
@@ -94,7 +76,7 @@ public class ExpressionBasisTypeVisitor extends AbstractTypeVisitor
     final String name = expr.getName();
     IBasicSymbolsScope enclosingScope =
         getAsBasicSymbolsScope(expr.getEnclosingScope());
-    return getWithinScopeResolver().resolveNameAsExpr(enclosingScope, name);
+    return WithinScopeBasicSymbolsResolver.resolveNameAsExpr(enclosingScope, name);
   }
 
   @Override

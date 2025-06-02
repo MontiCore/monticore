@@ -4,6 +4,7 @@ package de.monticore.types3.util;
 import de.monticore.types.check.SymTypeArray;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
+import de.monticore.types.check.SymTypeInferenceVariable;
 import de.monticore.types.check.SymTypeOfFunction;
 import de.monticore.types.check.SymTypeOfIntersection;
 import de.monticore.types.check.SymTypeOfNumericWithSIUnit;
@@ -76,7 +77,7 @@ public class SymTypeNormalizeVisitor extends SymTypeDeepCloneVisitor {
       boolean shouldAdd = true;
       // if A extends B, do not add A if B is in union
       for (SymTypeExpression addedType : uniqueTypes) {
-        if (SymTypeRelations.internal_isSubTypeOfPreNormalized(newType, addedType, false)) {
+        if (SymTypeRelations.internal_constrainSubTypeOfPreNormalized(newType, addedType).isEmpty()) {
           shouldAdd = false;
           break;
         }
@@ -88,7 +89,7 @@ public class SymTypeNormalizeVisitor extends SymTypeDeepCloneVisitor {
         // because A extending C can be represented by replacing A with (A&C)
         // thus (A|C) -> ((A&C)|C) -> C
         uniqueTypes.removeIf(
-            addedType -> SymTypeRelations.internal_isSubTypeOfPreNormalized(addedType, newType, false));
+            addedType -> SymTypeRelations.internal_constrainSubTypeOfPreNormalized(addedType, newType).isEmpty());
         uniqueTypes.add(newType);
       }
     }
@@ -188,7 +189,7 @@ public class SymTypeNormalizeVisitor extends SymTypeDeepCloneVisitor {
       boolean shouldAdd = true;
       // if A extends B, do not add B if A is in intersection
       for (SymTypeExpression addedType : uniqueTypes) {
-        if (SymTypeRelations.internal_isSubTypeOfPreNormalized(addedType, newType, false)) {
+        if (SymTypeRelations.internal_constrainSubTypeOfPreNormalized(addedType, newType).isEmpty()) {
           shouldAdd = false;
           break;
         }
@@ -200,7 +201,7 @@ public class SymTypeNormalizeVisitor extends SymTypeDeepCloneVisitor {
         // because A extending B can be represented by replacing A with (A&B)
         // thus (A&B&C) -> ((A&B)&B&C) -> (A&C)
         uniqueTypes.removeIf(addedType ->
-            SymTypeRelations.internal_isSubTypeOfPreNormalized(newType, addedType, false));
+            SymTypeRelations.internal_constrainSubTypeOfPreNormalized(newType, addedType).isEmpty());
         uniqueTypes.add(newType);
       }
     }
@@ -275,9 +276,13 @@ public class SymTypeNormalizeVisitor extends SymTypeDeepCloneVisitor {
           .filter(SymTypeExpression::isArrayType)
           .map(SymTypeExpression::asArrayType)
           .collect(Collectors.toSet());
-      Set<SymTypeVariable> uniqueVars = uniqueTypes.stream()
+      Set<SymTypeVariable> uniqueBoundVars = uniqueTypes.stream()
           .filter(SymTypeExpression::isTypeVariable)
           .map(SymTypeExpression::asTypeVariable)
+          .collect(Collectors.toSet());
+      Set<SymTypeInferenceVariable> uniqueInfVars = uniqueTypes.stream()
+          .filter(SymTypeExpression::isInferenceVariable)
+          .map(SymTypeExpression::asInferenceVariable)
           .collect(Collectors.toSet());
       boolean hasNull =
           uniqueTypes.stream().anyMatch(SymTypeExpression::isNullType);
@@ -290,7 +295,8 @@ public class SymTypeNormalizeVisitor extends SymTypeDeepCloneVisitor {
               uniqueFunctions,
               uniqueTuples,
               uniqueArrays,
-              uniqueVars
+              uniqueBoundVars,
+              uniqueInfVars
           )
           .map(Set::size)
           .reduce(0, (a, b) -> a + b)
@@ -362,9 +368,13 @@ public class SymTypeNormalizeVisitor extends SymTypeDeepCloneVisitor {
           }
         }
 
-        // handle type variables
+        // handle type variables,
+        // as both free and bound variables describe sets of potential types,
+        // they are handled the same for intersecting
         intersected = intersectedWithoutVars;
-        for (SymTypeVariable var : uniqueVars) {
+        Set<SymTypeExpression> vars = new HashSet<>(uniqueBoundVars);
+        vars.addAll(uniqueInfVars);
+        for (SymTypeExpression var : vars) {
           if (SymTypeRelations.isSubTypeOf(var, intersected)) {
             intersected = var.deepClone();
           }

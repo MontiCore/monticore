@@ -8,6 +8,7 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfFunction;
 import de.monticore.types3.util.OOWithinTypeBasicSymbolsResolver;
+import de.monticore.types3.util.TypeContextCalculator;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,20 +20,6 @@ import java.util.Optional;
  */
 public class CommonExpressionsTypeIdAsConstructorTypeVisitor extends
     CommonExpressionsTypeVisitor {
-
-  OOWithinTypeBasicSymbolsResolver oOWithinTypeResolver;
-
-  public CommonExpressionsTypeIdAsConstructorTypeVisitor() {
-    // default values
-    this.oOWithinTypeResolver =
-        new OOWithinTypeBasicSymbolsResolver();
-    this.withinTypeResolver = oOWithinTypeResolver;
-  }
-
-  @Override
-  public OOWithinTypeBasicSymbolsResolver getWithinTypeResolver() {
-    return oOWithinTypeResolver;
-  }
 
   @Override
   protected Optional<SymTypeExpression> calculateTypeIdFieldAccess(
@@ -72,13 +59,13 @@ public class CommonExpressionsTypeIdAsConstructorTypeVisitor extends
   protected Optional<SymTypeExpression> constructorsOfTypeId(
       SymTypeExpression typeIdType,
       IScope enclosingScope) {
-    AccessModifier accessModifier = getTypeCtxCalc().getAccessModifier(
+    AccessModifier accessModifier = TypeContextCalculator.getAccessModifier(
         typeIdType.getTypeInfo(),
         enclosingScope,
         true
     );
     List<SymTypeOfFunction> constructors =
-        getWithinTypeResolver().resolveConstructors(
+        OOWithinTypeBasicSymbolsResolver.resolveConstructors(
             typeIdType,
             accessModifier,
             c -> true

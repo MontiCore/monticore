@@ -27,9 +27,9 @@ import java.util.List;
 import java.util.Set;
 
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
+import static de.monticore.cd.codegen.CD2JavaTemplates.JAVADOC;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
-import static de.monticore.codegen.CD2JavaTemplatesFix.JAVADOC;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
 
 /**
@@ -104,7 +104,9 @@ public class HandlerDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
     this.replaceTemplate(EMPTY_BODY, handleMethod, new TemplateHookPoint(HANDLER_HANDLE_TEMPLATE, traverse));
     this.replaceTemplate(JAVADOC, handleMethod,
             JavaDoc.of("NOTE: You are most likely looking for " +
-                    "{@link de.monticore.ast.ASTNode#accept(ITraverser)} instead!").asHP());
+                    "{@link de.monticore.ast.ASTNode#accept(ITraverser)} instead!")
+                    .param("node", "the ast node to handle")
+                    .asHP());
     return handleMethod;
   }
 

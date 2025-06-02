@@ -11,7 +11,9 @@ import de.se_rwth.commons.logging.Log;
  * relations for built-in Collection SymTypes of MCCollectionTypes
  * these are List, Set, Optional, Map
  * This does NOT include types that inherit from collection types
+ * @deprecated integrated into MCCollectionSymTypesRelations
  */
+@Deprecated
 public class MCCollectionTypeRelations implements IMCCollectionTypeRelations {
 
   /**

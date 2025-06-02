@@ -3,13 +3,7 @@ package de.monticore.types3;
 
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types3.generics.bounds.Bound;
-import de.monticore.types3.util.BuiltInTypeRelations;
-import de.monticore.types3.util.NominalSuperTypeCalculator;
-import de.monticore.types3.util.SymTypeBoxingVisitor;
-import de.monticore.types3.util.SymTypeCompatibilityCalculator;
-import de.monticore.types3.util.SymTypeLubCalculator;
-import de.monticore.types3.util.SymTypeNormalizeVisitor;
-import de.monticore.types3.util.SymTypeUnboxingVisitor;
+import de.monticore.types3.util.SymTypeRelationsDefaultDelegatee;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Collection;
@@ -21,52 +15,37 @@ import java.util.Optional;
  * <p>
  * some are dependent on the specific type system
  * and as such not hardcoded in the SymTypeExpressions themselves
+ * <p>
+ * Default implementation in
+ * {@link SymTypeRelationsDefaultDelegatee}
  */
-public class SymTypeRelations {
+public abstract class SymTypeRelations {
 
-  protected static SymTypeCompatibilityCalculator compatibilityDelegate;
+  protected static SymTypeRelations delegate;
 
-  protected static NominalSuperTypeCalculator superTypeCalculator;
-
-  protected static SymTypeBoxingVisitor boxingVisitor;
-
-  protected static SymTypeUnboxingVisitor unboxingVisitor;
-
-  protected static SymTypeNormalizeVisitor normalizeVisitor;
-
-  protected static SymTypeLubCalculator lubDelegate;
-
-  protected static BuiltInTypeRelations builtInRelationsDelegate;
-
-  public static void init() {
-    Log.trace("init default SymTypeRelations", "TypeCheck setup");
-    // default values
-    compatibilityDelegate = new SymTypeCompatibilityCalculator();
-    superTypeCalculator = new NominalSuperTypeCalculator();
-    boxingVisitor = new SymTypeBoxingVisitor();
-    unboxingVisitor = new SymTypeUnboxingVisitor();
-    normalizeVisitor = new SymTypeNormalizeVisitor();
-    lubDelegate = new SymTypeLubCalculator();
-    builtInRelationsDelegate = new BuiltInTypeRelations();
-  }
-
-  static {
-    init();
-  }
+  // methods
 
   /**
    * whether the target can be assigned to by the source,
    * e.g., assignment operator: x = 2,
    * -> type of x and type of 2 need to be compatible,
-   * e.g., functions call: (float -> void)(2),
-   * -> float and type of 2 need to be compatible
+   * e.g., function call: (float -> void)(2),
+   * -> float and type of 2 need to be compatible.
    */
-  public static boolean isCompatible(SymTypeExpression target, SymTypeExpression source) {
-    return compatibilityDelegate.isCompatible(target, source);
+  public static boolean isCompatible(
+      SymTypeExpression target,
+      SymTypeExpression source
+  ) {
+    return getDelegate()._isCompatible(target, source);
   }
 
+  protected abstract boolean _isCompatible(
+      SymTypeExpression target,
+      SymTypeExpression source
+  );
+
   /**
-   * whether subType is the sub-type of superType,
+   * Whether subType is the sub-type of superType,
    * Examples:
    * isSubType(Person, Person)
    * isSubType(Student, Person)
@@ -74,9 +53,17 @@ public class SymTypeRelations {
    * isSubType(int, float)
    * !isSubType(float, int)
    */
-  public static boolean isSubTypeOf(SymTypeExpression subType, SymTypeExpression superType) {
-    return compatibilityDelegate.isSubTypeOf(subType, superType);
+  public static boolean isSubTypeOf(
+      SymTypeExpression subType,
+      SymTypeExpression superType
+  ) {
+    return getDelegate()._isSubTypeOf(subType, superType);
   }
+
+  protected abstract boolean _isSubTypeOf(
+      SymTypeExpression subType,
+      SymTypeExpression superType
+  );
 
   /**
    * returns nominal supertypes.
@@ -87,9 +74,15 @@ public class SymTypeRelations {
    * Note that the "direct" supertype-relation is deliberately underspecified,
    * such that it can be refined according to the specific type system's needs.
    */
-  public static List<SymTypeExpression> getNominalSuperTypes(SymTypeExpression thisType) {
-    return superTypeCalculator.getNominalSuperTypes(thisType);
+  public static List<SymTypeExpression> getNominalSuperTypes(
+      SymTypeExpression thisType
+  ) {
+    return getDelegate()._getNominalSuperTypes(thisType);
   }
+
+  protected abstract List<SymTypeExpression> _getNominalSuperTypes(
+      SymTypeExpression thisType
+  );
 
   /**
    * least upper bound for a set of types
@@ -109,13 +102,21 @@ public class SymTypeRelations {
    * empty represents the universal type (aka the lack of a bound)
    * Obscure is returned, if no lub could be calculated, e.g. lub(int, Person)
    */
-  public static Optional<SymTypeExpression> leastUpperBound(Collection<SymTypeExpression> types) {
-    return lubDelegate.leastUpperBound(types);
+  public static Optional<SymTypeExpression> leastUpperBound(
+      Collection<SymTypeExpression> types
+  ) {
+    return getDelegate()._leastUpperBound(types);
   }
 
-  public static Optional<SymTypeExpression> leastUpperBound(SymTypeExpression... types) {
+  public static Optional<SymTypeExpression> leastUpperBound(
+      SymTypeExpression... types
+  ) {
     return leastUpperBound(List.of(types));
   }
+
+  protected abstract Optional<SymTypeExpression> _leastUpperBound(
+      Collection<SymTypeExpression> types
+  );
 
   /**
    * Boxes SymTypeExpressions,
@@ -124,8 +125,10 @@ public class SymTypeRelations {
    * e.g., List -> java.util.List
    */
   public static SymTypeExpression box(SymTypeExpression unboxed) {
-    return boxingVisitor.calculate(unboxed);
+    return getDelegate()._box(unboxed);
   }
+
+  protected abstract SymTypeExpression _box(SymTypeExpression unboxed);
 
   /**
    * Unboxes SymTypeExpressions,
@@ -134,8 +137,10 @@ public class SymTypeRelations {
    * e.g., java.util.List -> List
    */
   public static SymTypeExpression unbox(SymTypeExpression boxed) {
-    return unboxingVisitor.calculate(boxed);
+    return getDelegate()._unbox(boxed);
   }
+
+  protected abstract SymTypeExpression _unbox(SymTypeExpression boxed);
 
   /**
    * normalizes the SymTypeExpression,
@@ -145,8 +150,10 @@ public class SymTypeRelations {
    * This can be used to, e.g., compare SymTypeExpressions
    */
   public static SymTypeExpression normalize(SymTypeExpression type) {
-    return normalizeVisitor.calculate(type);
+    return getDelegate()._normalize(type);
   }
+
+  protected abstract SymTypeExpression _normalize(SymTypeExpression type);
 
   // primitives
 
@@ -157,75 +164,127 @@ public class SymTypeRelations {
    * e.g., short -> int
    * e.g., byte, float -> float
    */
-  public static SymTypeExpression numericPromotion(List<SymTypeExpression> types) {
-    return builtInRelationsDelegate.numericPromotion(types);
+  public static SymTypeExpression numericPromotion(
+      List<SymTypeExpression> types
+  ) {
+    return getDelegate()._numericPromotion(types);
   }
 
-  public static SymTypeExpression numericPromotion(SymTypeExpression... types) {
+  protected abstract SymTypeExpression _numericPromotion(
+      List<SymTypeExpression> types
+  );
+
+  public static SymTypeExpression numericPromotion(
+      SymTypeExpression... types
+  ) {
     return numericPromotion(List.of(types));
   }
 
   /**
-   * test if the expression is of numeric type,
+   * tests if the expression is of numeric type,
    * e.g., in Java: (double, float, long, int, char, short, byte)
    */
   public static boolean isNumericType(SymTypeExpression type) {
-    return builtInRelationsDelegate.isNumericType(type);
+    return getDelegate()._isNumericType(type);
   }
 
+  protected abstract boolean _isNumericType(SymTypeExpression type);
+
   /**
-   * test if the expression is of integral type,
+   * tests if the expression is of integral type,
    * e.g., in Java: (long, int, char, short, byte)
    */
   public static boolean isIntegralType(SymTypeExpression type) {
-    return builtInRelationsDelegate.isIntegralType(type);
+    return getDelegate()._isIntegralType(type);
   }
+
+  protected abstract boolean _isIntegralType(SymTypeExpression type);
 
   public static boolean isBoolean(SymTypeExpression type) {
-    return builtInRelationsDelegate.isBoolean(type);
+    return getDelegate()._isBoolean(type);
   }
+
+  protected abstract boolean _isBoolean(SymTypeExpression type);
 
   public static boolean isInt(SymTypeExpression type) {
-    return builtInRelationsDelegate.isInt(type);
+    return getDelegate()._isInt(type);
   }
+
+  protected abstract boolean _isInt(SymTypeExpression type);
 
   public static boolean isDouble(SymTypeExpression type) {
-    return builtInRelationsDelegate.isDouble(type);
+    return getDelegate()._isDouble(type);
   }
+
+  protected abstract boolean _isDouble(SymTypeExpression type);
 
   public static boolean isFloat(SymTypeExpression type) {
-    return builtInRelationsDelegate.isFloat(type);
+    return getDelegate()._isFloat(type);
   }
+
+  protected abstract boolean _isFloat(SymTypeExpression type);
 
   public static boolean isLong(SymTypeExpression type) {
-    return builtInRelationsDelegate.isLong(type);
+    return getDelegate()._isLong(type);
   }
+
+  protected abstract boolean _isLong(SymTypeExpression type);
 
   public static boolean isChar(SymTypeExpression type) {
-    return builtInRelationsDelegate.isChar(type);
+    return getDelegate()._isChar(type);
   }
+
+  protected abstract boolean _isChar(SymTypeExpression type);
 
   public static boolean isShort(SymTypeExpression type) {
-    return builtInRelationsDelegate.isShort(type);
+    return getDelegate()._isShort(type);
   }
+
+  protected abstract boolean _isShort(SymTypeExpression type);
 
   public static boolean isByte(SymTypeExpression type) {
-    return builtInRelationsDelegate.isByte(type);
+    return getDelegate()._isByte(type);
   }
 
+  protected abstract boolean _isByte(SymTypeExpression type);
+
+  /**
+   * This is most likely NOT the method you need;
+   * This returns whether the type is _exactly_ String.
+   * In most cases, you want to check whether the type
+   * is either compatible to, or a subtype of String.
+   * You may want to use
+   * {@link #isStringOrSubType(SymTypeExpression)} instead.
+   */
   public static boolean isString(SymTypeExpression type) {
-    return builtInRelationsDelegate.isString(type);
+    return getDelegate()._isString(type);
   }
+
+  protected abstract boolean _isString(SymTypeExpression type);
+
+  /**
+   * @param type the SymTypeExpression to check
+   * @return whether it is a String (boxed or unboxed) or a subtype (e.g., a RegEx)
+   */
+  public static boolean isStringOrSubType(SymTypeExpression type) {
+    return getDelegate()._isStringOrSubType(type);
+  }
+
+  protected abstract boolean _isStringOrSubType(SymTypeExpression type);
 
   // Top, Bottom
 
   public static boolean isTop(SymTypeExpression type) {
-    return builtInRelationsDelegate.isTop(type);
+    return getDelegate()._isTop(type);
   }
 
+  protected abstract boolean _isTop(SymTypeExpression type);
+
   public static boolean isBottom(SymTypeExpression type) {
-    return builtInRelationsDelegate.isBottom(type);
+    return getDelegate()._isBottom(type);
   }
+
+  protected abstract boolean _isBottom(SymTypeExpression type);
 
   // Helper, internals
 
@@ -237,8 +296,13 @@ public class SymTypeRelations {
       SymTypeExpression target,
       SymTypeExpression source
   ) {
-    return compatibilityDelegate.constrainCompatible(target, source);
+    return getDelegate()._constrainCompatible(target, source);
   }
+
+  protected abstract List<Bound> _constrainCompatible(
+      SymTypeExpression target,
+      SymTypeExpression source
+  );
 
   /**
    * Same as {@link #isSubTypeOf(SymTypeExpression, SymTypeExpression)},
@@ -248,61 +312,91 @@ public class SymTypeRelations {
       SymTypeExpression subType,
       SymTypeExpression superType
   ) {
-    return compatibilityDelegate.constrainSubTypeOf(subType, superType);
+    return getDelegate()._constrainSubTypeOf(subType, superType);
   }
 
+  protected abstract List<Bound> _constrainSubTypeOf(
+      SymTypeExpression subType,
+      SymTypeExpression superType
+  );
+
   /**
-   * same as {@link #constrainSubTypeOf(SymTypeExpression, SymTypeExpression)},
+   * Same as {@link #constrainSubTypeOf(SymTypeExpression, SymTypeExpression)},
    * but the arguments are expected to have been normalized
-   * (s. {@link #normalize(SymTypeExpression)}).
+   * (see {@link #normalize(SymTypeExpression)}).
    * This is required to not create infinite loops during normalization.
    */
   public static List<Bound> internal_constrainSubTypeOfPreNormalized(
       SymTypeExpression subType,
       SymTypeExpression superType
   ) {
-    return compatibilityDelegate.internal_constrainSubTypeOfPreNormalized(
-        subType, superType
-    );
+    return getDelegate()._internal_constrainSubTypeOfPreNormalized(subType, superType);
   }
+
+  protected abstract List<Bound> _internal_constrainSubTypeOfPreNormalized(
+      SymTypeExpression subType,
+      SymTypeExpression superType
+  );
 
   /**
    * returns the list of Bounds on the free type variables,
    * if the inputs are to be the same type.
    * Due to union/intersection types,
    * this cannot (trivially/at all?) be replaced with constraining
-   * the subtyping relationship in both directions and collection the bounds.
+   * the subtyping relationship in both directions and collecting the bounds.
    */
   public static List<Bound> constrainSameType(
       SymTypeExpression typeA,
-      SymTypeExpression typeB) {
-    return compatibilityDelegate.constrainSameType(typeA, typeB);
+      SymTypeExpression typeB
+  ) {
+    return getDelegate()._constrainSameType(typeA, typeB);
   }
 
+  protected abstract List<Bound> _constrainSameType(
+      SymTypeExpression typeA,
+      SymTypeExpression typeB
+  );
+
   /**
-   * @deprecated use constrain* methods above
+   * @deprecated use constrain* methods above.
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public static boolean internal_isSubTypeOf(
       SymTypeExpression subType,
       SymTypeExpression superType,
       boolean subTypeIsSoft
   ) {
-    return compatibilityDelegate
-        .internal_isSubTypeOf(subType, superType, subTypeIsSoft);
+    return isSubTypeOf(subType, superType);
   }
 
   /**
-   * @deprecated use constrain* methods above
+   * @deprecated Use constrain* methods above.
    */
-  @Deprecated
-  public static boolean internal_isSubTypeOfPreNormalized(
-      SymTypeExpression subType,
-      SymTypeExpression superType,
-      boolean subTypeIsSoft
-  ) {
-    return compatibilityDelegate
-        .internal_isSubTypeOfPreNormalized(subType, superType, subTypeIsSoft);
+  @Deprecated(forRemoval = true)
+  public static boolean internal_isSubTypeOfPreNormalized(SymTypeExpression subType, SymTypeExpression superType, boolean subTypeIsSoft) {
+    return internal_constrainSubTypeOfPreNormalized(subType, superType).isEmpty();
+  }
+
+  // static delegate
+
+  public static void init() {
+    Log.trace("init default SymTypeRelations", "TypeCheck setup");
+    setDelegate(new SymTypeRelationsDefaultDelegatee());
+  }
+
+  public static void reset() {
+    SymTypeRelations.delegate = null;
+  }
+
+  protected static void setDelegate(SymTypeRelations newDelegate) {
+    SymTypeRelations.delegate = Log.errorIfNull(newDelegate);
+  }
+
+  protected static SymTypeRelations getDelegate() {
+    if (SymTypeRelations.delegate == null) {
+      init();
+    }
+    return SymTypeRelations.delegate;
   }
 
 }

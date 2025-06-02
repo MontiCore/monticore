@@ -18,8 +18,8 @@ public class SubTypingBound extends Bound {
   ) {
     this.subType = subType;
     this.superType = superType;
-    if (!TypeParameterRelations.isInferenceVariable(subType) &&
-        !TypeParameterRelations.isInferenceVariable(superType)
+    if (!(subType).isInferenceVariable() &&
+        !superType.isInferenceVariable()
     ) {
       Log.error("0xFD337 internal error: "
           + "expected at least one inference variable, but got "

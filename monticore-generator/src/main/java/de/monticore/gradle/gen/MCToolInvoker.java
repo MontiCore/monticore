@@ -2,6 +2,7 @@
 package de.monticore.gradle.gen;
 
 import de.monticore.AmbiguityException;
+import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.generating.templateengine.freemarker.MontiCoreFreeMarkerException;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.grammar.MCGrammarSymbolTableHelper;
@@ -26,7 +27,7 @@ public class MCToolInvoker {
    * @param args CLI arguments passed to MontiCore
    */
   public static void run(String[] args) {
-    Log.info("Starting MontiCoreTool: " +
+    Log.debug("Starting MontiCoreTool: " +
             "\t  java -jar MontiCoreTool.jar " + Arrays.toString(args), MCToolInvoker.class.getName());
     SyncDeIsolated.run(() -> {
       // The MCTool is expensive with its the class loading (time)
@@ -50,8 +51,14 @@ public class MCToolInvoker {
       MCBasicsMill.globalScope().clear();
       MCBasicsMill.globalScope().clearLoadedFiles();
       MCBasicsMill.globalScope().getSymbolPath().close();
+      Reporting.off();
+      if (Reporting.isEnabled())
+        throw new IllegalStateException("Reporting should be disabled, as we otherwise leak a file handle!");
+      CD4C.reset(); // Reporting should be disabled for this, as we otherwise report on the "cd4c" global variable being changed
       Grammar_WithConceptsMill.reset();
-      Reporting.resetInitializedFlagFix();
+      Reporting.clearReportHooks();
+      Log.internalRemove();
+
     }
   }
 }

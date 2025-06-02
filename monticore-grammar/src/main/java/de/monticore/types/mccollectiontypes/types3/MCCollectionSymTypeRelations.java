@@ -2,47 +2,63 @@
 package de.monticore.types.mccollectiontypes.types3;
 
 import de.monticore.types.check.SymTypeExpression;
-import de.monticore.types.mccollectiontypes.types3.util.MCCollectionTypeRelations;
-import de.monticore.types3.SymTypeRelations;
+import de.monticore.types.check.SymTypeExpressionFactory;
+import de.monticore.types.check.SymTypeOfGenerics;
 import de.se_rwth.commons.logging.Log;
 
 /**
- * relations for built-in Collection SymTypes of MCCollectionTypes
+ * relations for built-in Collection SymTypes of MCCollectionSymTypes
  * these are List, Set, Optional, Map
  * Per default, this does NOT include types that inherit from collection types
  */
-public class MCCollectionSymTypeRelations extends SymTypeRelations {
+public class MCCollectionSymTypeRelations {
 
-  protected static MCCollectionTypeRelations mcCollectionTypeRelations;
+  protected static MCCollectionSymTypeRelations delegate;
 
-  public static void init() {
-    Log.trace("init MCCollectionSymTypeRelations", "TypeCheck setup");
-    SymTypeRelations.init();
-    mcCollectionTypeRelations = new MCCollectionTypeRelations();
-  }
+  // methods
 
   /**
    * whether the type is one of the four collection types
    * from MCCollectionTypes; List, Set, Optional, Map
    */
   public static boolean isMCCollection(SymTypeExpression type) {
-    return getMcCollectionTypeRelations().isMCCollection(type);
+    return getDelegate()._isMCCollection(type);
+  }
+
+  protected boolean _isMCCollection(SymTypeExpression type) {
+    return isList(type) || isSet(type) || isOptional(type) || isMap(type);
   }
 
   public static boolean isList(SymTypeExpression type) {
-    return getMcCollectionTypeRelations().isList(type);
+    return getDelegate()._isList(type);
+  }
+
+  protected boolean _isList(SymTypeExpression type) {
+    return isSpecificCollection(type, "List", "java.util.List", 1);
   }
 
   public static boolean isSet(SymTypeExpression type) {
-    return getMcCollectionTypeRelations().isSet(type);
+    return getDelegate()._isSet(type);
+  }
+
+  protected boolean _isSet(SymTypeExpression type) {
+    return isSpecificCollection(type, "Set", "java.util.Set", 1);
   }
 
   public static boolean isOptional(SymTypeExpression type) {
-    return getMcCollectionTypeRelations().isOptional(type);
+    return getDelegate()._isOptional(type);
+  }
+
+  protected boolean _isOptional(SymTypeExpression type) {
+    return isSpecificCollection(type, "Optional", "java.util.Optional", 1);
   }
 
   public static boolean isMap(SymTypeExpression type) {
-    return getMcCollectionTypeRelations().isMap(type);
+    return getDelegate()._isMap(type);
+  }
+
+  protected boolean _isMap(SymTypeExpression type) {
+    return isSpecificCollection(type, "Map", "java.util.Map", 2);
   }
 
   /**
@@ -50,21 +66,87 @@ public class MCCollectionSymTypeRelations extends SymTypeRelations {
    *     In case of a Map, this is the value type.
    */
   public static SymTypeExpression getCollectionElementType(SymTypeExpression type) {
-    return getMcCollectionTypeRelations().getCollectionElementType(type);
+    return getDelegate()._getCollectionElementType(type);
+  }
+
+  protected SymTypeExpression _getCollectionElementType(SymTypeExpression type) {
+    if (!isCollectionType(type)) {
+      Log.error("0xFD1C7 internal error: tried to get the type "
+          + "of an collection's element of a non collection type");
+      return SymTypeExpressionFactory.createObscureType();
+    }
+    // in case of List, Set, Optional we only have one type parameter,
+    // in case of Map the second type parameter is the value type.
+    SymTypeOfGenerics collectionType = (SymTypeOfGenerics) type;
+    return collectionType.getArgument(collectionType.sizeArguments() - 1);
+  }
+
+  /**
+   * hookpoint for getCollectionElementType
+   */
+  protected boolean isCollectionType(SymTypeExpression type) {
+    return isMCCollection(type);
   }
 
   public static SymTypeExpression getMapKeyType(SymTypeExpression type) {
-    return getMcCollectionTypeRelations().getMapKeyType(type);
+    return getDelegate()._getMapKeyType(type);
+  }
+
+  protected SymTypeExpression _getMapKeyType(SymTypeExpression type) {
+    if (!isMap(type)) {
+      Log.error("0xFD1C8 internal error: tried to get a map's key type "
+          + "of a non map type");
+      return SymTypeExpressionFactory.createObscureType();
+    }
+    return ((SymTypeOfGenerics) type).getArgument(0);
   }
 
   // Helper
 
-  protected static MCCollectionTypeRelations getMcCollectionTypeRelations() {
-    if (mcCollectionTypeRelations == null) {
-      Log.error("0xFD9CC internal error: "
-          + "MCCollectionSymTypes was not init()-ialized."
-      );
+  protected boolean isSpecificCollection(
+      SymTypeExpression type,
+      String unboxedName,
+      String boxedName,
+      int numberOfArgs
+  ) {
+    if (!type.isGenericType()) {
+      return false;
     }
-    return mcCollectionTypeRelations;
+    SymTypeOfGenerics generic = (SymTypeOfGenerics) type;
+    String name = generic.getTypeConstructorFullName();
+    if (!name.equals(unboxedName) && !name.equals(boxedName)) {
+      return false;
+    }
+    if (generic.sizeArguments() != numberOfArgs) {
+      Log.warn("0xFD1C4 encountered generic called "
+          + generic.getTypeConstructorFullName() + " with "
+          + generic.sizeArguments() + " type arguments, "
+          + "but expected " + numberOfArgs);
+      return false;
+    }
+    return true;
   }
+
+  // static delegate
+
+  public static void init() {
+    Log.trace("init default  MCCollectionSymTypeRelations", "TypeCheck setup");
+    setDelegate(new MCCollectionSymTypeRelations());
+  }
+
+  public static void reset() {
+    MCCollectionSymTypeRelations.delegate = null;
+  }
+
+  protected static void setDelegate(MCCollectionSymTypeRelations newDelegate) {
+    MCCollectionSymTypeRelations.delegate = Log.errorIfNull(newDelegate);
+  }
+
+  protected static MCCollectionSymTypeRelations getDelegate() {
+    if (MCCollectionSymTypeRelations.delegate == null) {
+      init();
+    }
+    return MCCollectionSymTypeRelations.delegate;
+  }
+
 }

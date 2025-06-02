@@ -5,9 +5,10 @@ import de.monticore.gradle.common.AToolAction;
 import de.monticore.gradle.internal.isolation.CachedIsolation;
 import org.gradle.api.Action;
 
+import java.util.concurrent.Semaphore;
+
 /**
- * A unit of work, representing a single invocation of the MontiCore Tool,
- * which is
+ * A unit of work, representing a single invocation of the MontiCore Tool.
  */
 public abstract class MCToolAction extends AToolAction {
 
@@ -20,11 +21,56 @@ public abstract class MCToolAction extends AToolAction {
    */
   protected static final CachedIsolation.WithClassPath isolator = new CachedIsolation.WithClassPath();
 
+  protected static int oldMaxParallelMC = guessInitialMaxParallelMC();
+  /**
+   * Unfortunately, Gradle does not allow us to limit the maximum work-actions of a WorkQueue being performed
+   * (without limit the max-worker for the entire project)
+   */
+  protected static final Semaphore semaphore = new Semaphore(oldMaxParallelMC);
+
+  public static synchronized void setMaxConcurrentMC(int maxParallelMC) {
+    if (oldMaxParallelMC < maxParallelMC) {
+      // The limit has been increased -> release/add some permits
+      semaphore.release(maxParallelMC - oldMaxParallelMC);
+      oldMaxParallelMC = maxParallelMC;
+    } else if (oldMaxParallelMC > maxParallelMC) {
+      // The max amount has been lowered -> acquire/remove some permits
+      semaphore.acquireUninterruptibly(oldMaxParallelMC - maxParallelMC);
+      oldMaxParallelMC = maxParallelMC;
+    }
+  }
+
+  public static int getMaxConcurrentMC() {
+    return oldMaxParallelMC;
+  }
+
+  protected static int guessInitialMaxParallelMC() {
+    // We generously estimate 500MB of memory usage per concurrent MCGen execution
+    // This memory footprint includes the runtime object, as well as overhead for loading classes, the jars
+    // within the classpath, etc.
+    long leftOverMemory = Runtime.getRuntime().maxMemory() - Runtime.getRuntime().totalMemory();
+    // We always allow 4 grammars by default (use CONCURRENT_MC_PROPERTY to increase this value)
+    return (int) Math.max(4, leftOverMemory / 500000000d);
+  }
+
   @Override
   protected void doRun(final String[] args) {
-    String logPrefix = "[" + getParameters().getProgressName().get() + "] ";
-    isolator.executeInClassloader(MCToolInvoker.class.getName(), "run",
-            args, logPrefix, getParameters().getExtraClasspathElements());
+    try {
+      // In case we run into the limit of maximum concurrent MontiCore Generation actions,
+      // we wait until another generation has concluded
+      semaphore.acquire();
+    } catch (InterruptedException e) {
+      // Unable to acquire slot to run -> abort
+      throw new RuntimeException(e);
+    }
+    try {
+      String logPrefix = "[" + getParameters().getProgressName().get() + "] ";
+      isolator.executeInClassloader(MCToolInvoker.class.getName(), "run",
+                                    args, logPrefix, getParameters().getExtraClasspathElements());
+    } finally {
+      semaphore.release();
+    }
+
   }
 
 }

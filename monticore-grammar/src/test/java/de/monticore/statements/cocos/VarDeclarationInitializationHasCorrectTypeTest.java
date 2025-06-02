@@ -11,7 +11,6 @@ import de.monticore.statements.testmcvardeclarationstatements._parser.TestMCVarD
 import de.monticore.statements.testmcvardeclarationstatements._visitor.TestMCVarDeclarationStatementsTraverser;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
-import de.monticore.types.check.FullDeriveFromCombineExpressionsWithLiterals;
 import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserFactory;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
@@ -31,7 +30,7 @@ public class VarDeclarationInitializationHasCorrectTypeTest {
 
   protected TestMCVarDeclarationStatementsCoCoChecker checker;
   protected TestMCVarDeclarationStatementsParser parser;
-  
+
   @BeforeEach
   public void init() {
     LogStub.init();
@@ -40,8 +39,7 @@ public class VarDeclarationInitializationHasCorrectTypeTest {
     TestMCVarDeclarationStatementsMill.init();
 
     TestMCVarDeclarationStatementsMill.globalScope().clear();
-    new CombineExpressionsWithLiteralsTypeTraverserFactory()
-        .initTypeCheck3();
+    CombineExpressionsWithLiteralsTypeTraverserFactory.initTypeCheck3();
     BasicSymbolsMill.initializePrimitives();
     addMyTypeToGlobalScope();
     addStringToGlobalScope();

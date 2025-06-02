@@ -1,26 +1,14 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.types3;
 
-import de.monticore.types.check.SymTypeArray;
-import de.monticore.types.check.SymTypeObscure;
-import de.monticore.types.check.SymTypeOfFunction;
-import de.monticore.types.check.SymTypeOfGenerics;
-import de.monticore.types.check.SymTypeOfIntersection;
-import de.monticore.types.check.SymTypeOfNull;
-import de.monticore.types.check.SymTypeOfObject;
-import de.monticore.types.check.SymTypeOfRegEx;
-import de.monticore.types.check.SymTypeOfNumericWithSIUnit;
-import de.monticore.types.check.SymTypeOfSIUnit;
-import de.monticore.types.check.SymTypeOfTuple;
-import de.monticore.types.check.SymTypeOfUnion;
-import de.monticore.types.check.SymTypeOfWildcard;
-import de.monticore.types.check.SymTypePrimitive;
-import de.monticore.types.check.SymTypeVariable;
-import de.monticore.types.check.SymTypeVoid;
+import de.monticore.types.check.*;
 
 public interface ISymTypeVisitor {
 
   default void visit(SymTypeArray array) {
+  }
+
+  default void visit(SymTypeInferenceVariable infVar) {
   }
 
   default void visit(SymTypeObscure obscure) {

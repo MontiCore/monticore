@@ -8,6 +8,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.mc2cd.TransformationHelper;
+import de.monticore.codegen.parser.antlr.InterfaceInliningAlt;
 import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.PredicatePair;
 import de.monticore.grammar.grammar._ast.*;
@@ -60,6 +61,9 @@ public class ParserGeneratorHelper {
   protected boolean embeddedJavaCode;
 
   protected boolean isJava;
+
+  protected InterfaceInliningAlt curInterfaceInliningAlt;
+  protected Map<InterfaceInliningAlt, List<String>> interfaceInliningAltToTmpNames = new LinkedHashMap<>();
 
   /**
    * Constructor for de.monticore.codegen.parser.ParserGeneratorHelper
@@ -146,12 +150,41 @@ public class ParserGeneratorHelper {
   /**
    * @return the name for a lexsymbol that should be used in an Antlr-File
    */
-  public String getLexSymbolName(String constName) {
+  public String getOrComputeLexSymbolName(String constName) {
     Log.errorIfNull(constName);
     if (grammarInfo.getSplitRules().containsKey(constName)) {
       return grammarInfo.getSplitRules().get(constName);
     } else {
       return grammarInfo.getLexNamer().getLexName(grammarSymbol, constName);
+    }
+  }
+
+  public String escapeSingleQuote(String str) {
+    String retStr = "";
+    String del = "";
+    for (String s: str.split("'")) {
+      retStr += del;
+      retStr += s;
+      del = "\\'";
+    }
+    return retStr;
+  }
+
+  /**
+   * Side effect free.
+   * @return the name for a lexsymbol that was used in an Antlr-File
+   */
+  public Optional<String> getCachedLexSymbolName(String constName) {
+    Log.errorIfNull(constName);
+    if (grammarInfo.getSplitRules().containsKey(constName)) {
+      return Optional.of(grammarInfo.getSplitRules().get(constName));
+    } else {
+      // Optimally we would call Map#get directly on the LexNamer
+      // (which is only available with the next release)
+      if (grammarInfo.getLexNamer().getLexnames().contains(constName)) {
+        return Optional.of(grammarInfo.getLexNamer().getLexName(grammarSymbol, constName));
+      }
+      return Optional.empty();
     }
   }
 
@@ -441,9 +474,21 @@ public class ParserGeneratorHelper {
 
   public String getTmpVarName(ASTNode a) {
     if (!tmpVariables.containsKey(a)) {
-      tmpVariables.put(a, getNewTmpVar());
+      String newTmpVar = getNewTmpVar();
+      tmpVariables.put(a, newTmpVar);
+      if(curInterfaceInliningAlt != null){
+        interfaceInliningAltToTmpNames.computeIfAbsent(curInterfaceInliningAlt, e -> new ArrayList<>()).add(newTmpVar);
+      }
     }
     return tmpVariables.get(a);
+  }
+
+  public void setCurInterfaceInliningAlt(InterfaceInliningAlt curInterfaceInliningAlt) {
+    this.curInterfaceInliningAlt = curInterfaceInliningAlt;
+  }
+
+  public Map<InterfaceInliningAlt, List<String>> getInterfaceInliningAltToTmpNames() {
+    return interfaceInliningAltToTmpNames;
   }
 
   protected String getNewTmpVar() {
@@ -453,6 +498,7 @@ public class ParserGeneratorHelper {
   public void resetTmpVarNames() {
     tmpVariables.clear();
     tmp_counter = 0;
+    interfaceInliningAltToTmpNames.clear();
   }
 
   public Map<ASTNode, String> getTmpVariables() {

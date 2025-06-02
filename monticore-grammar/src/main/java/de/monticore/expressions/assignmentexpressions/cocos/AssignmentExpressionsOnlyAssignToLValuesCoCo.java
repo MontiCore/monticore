@@ -13,6 +13,7 @@ import de.monticore.expressions.assignmentexpressions._cocos.AssignmentExpressio
 import de.monticore.expressions.assignmentexpressions._cocos.AssignmentExpressionsASTIncSuffixExpressionCoCo;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis.types3.util.ILValueRelations;
+import de.monticore.types3.util.LValueRelations;
 import de.se_rwth.commons.logging.Log;
 
 public class AssignmentExpressionsOnlyAssignToLValuesCoCo implements
@@ -27,15 +28,12 @@ public class AssignmentExpressionsOnlyAssignToLValuesCoCo implements
    * of the other language components,
    * as such there is no default
    */
-  ILValueRelations lValueRelations = null;
-
+  @Deprecated(forRemoval = true)
   public AssignmentExpressionsOnlyAssignToLValuesCoCo(
       ILValueRelations lValueRelations) {
-    this.lValueRelations = lValueRelations;
   }
 
-  protected ILValueRelations getLValueRelations() {
-    return lValueRelations;
+  public AssignmentExpressionsOnlyAssignToLValuesCoCo() {
   }
 
   @Override
@@ -66,7 +64,7 @@ public class AssignmentExpressionsOnlyAssignToLValuesCoCo implements
   // Helper
 
   protected void failIfNoLValue(ASTExpression expr) {
-    if (!getLValueRelations().isLValue(expr)) {
+    if (!LValueRelations.isLValue(expr)) {
       Log.error("0xFDD47 expression is not a lvalue "
               + "but being assigned to",
           expr.get_SourcePositionStart(),

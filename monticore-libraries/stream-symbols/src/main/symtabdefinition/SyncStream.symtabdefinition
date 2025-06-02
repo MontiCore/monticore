@@ -1,0 +1,39 @@
+import Stream;
+import EventStream;
+import ToptStream;
+import UntimedStream;
+
+symtabdefinition SyncStream {
+
+  class SyncStream<T> implements Stream<T> {
+    + Optional<T> first();
+    + Optional<T> nth(long n); // nicht konform mit TechReport, ist aber sinnvoller
+
+    + static <S> SyncStream<S> syncRepeat(S elem, long n);
+    + static <S> SyncStream<S> syncIterate(S -> S elem, S elem);
+    + static <S, U> SyncStream<S> syncProjFst(SyncStream<(S,U)> list);
+    + static <S, U> SyncStream<U> syncProjSnd(SyncStream<(S,U)> list);
+
+    // ----------- Implementations
+    + Optional<SyncStream<T>> dropFirst();
+    + SyncStream<T> take(long n);
+    + SyncStream<T> dropMultiple(long n);
+    + SyncStream<T> times(long n); // <2>.times(24)
+    + SyncStream<T> infTimes();
+    + <U> SyncStream<U> map(T -> U f);
+    + SyncStream<T> filter(T -> boolean predicate);
+    + SyncStream<T> takeWhile(T -> boolean predicate);
+    + SyncStream<T> dropWhile(T -> boolean predicate);
+    + SyncStream<T> rcDups();
+    + <U> SyncStream<(T,U)> zip(SyncStream<U> second);
+    + <U> SyncStream<U> scanl(U -> T -> U f, U acc);
+
+    // Sync specific methods
+    + SyncStream<T> delay(long n);
+
+    + UntimedStream<T> untimed();
+    + ToptStream<T> topt();
+    + EventStream<T> event();
+  }
+
+}

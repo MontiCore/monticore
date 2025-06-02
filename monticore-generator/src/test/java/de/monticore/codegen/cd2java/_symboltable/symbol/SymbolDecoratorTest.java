@@ -65,6 +65,10 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
 
   private static final String ACCESS_MODIFIER_TYPE = "de.monticore.symboltable.modifiers.AccessModifier";
 
+  private static final String I_STEREOTYPE_REF = "de.monticore.symboltable.stereotypes.IStereotypeReference";
+
+  private static final String VALUE = "de.monticore.interpreter.Value";
+
   private static final String I_AUTOMATON_SCOPE = "de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.IAutomatonSymbolCDScope";
 
   private static final String AUTOMATON_TRAVERSER = "de.monticore.codegen.symboltable.automatonsymbolcd._visitor.AutomatonSymbolCDTraverser";
@@ -158,7 +162,7 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeCount() {
-    assertEquals(7, symbolClassAutomaton.getCDAttributeList().size());
+    assertEquals(8, symbolClassAutomaton.getCDAttributeList().size());
   
     assertTrue(Log.getFindings().isEmpty());
   }
@@ -226,6 +230,21 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
+  public void testStereoinfoAttribute() {
+    ASTCDAttribute astcdAttribute = getAttributeBy("stereoinfo", symbolClassAutomaton);
+    assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
+    assertDeepEquals(
+      mcTypeFacade.createMapTypeOf(
+        mcTypeFacade.createQualifiedType(I_STEREOTYPE_REF),
+        mcTypeFacade.createOptionalTypeOf(VALUE)
+      ),
+      astcdAttribute.getMCType()
+    );
+
+    assertTrue(Log.getFindings().isEmpty());
+  }
+
+  @Test
   public void testSymbolRuleAttributes() {
     ASTCDAttribute fooAttribute = getAttributeBy("foo", symbolClassFoo);
     assertDeepEquals(PROTECTED, fooAttribute.getModifier());
@@ -244,7 +263,7 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethods() {
-    assertEquals(21, symbolClassAutomaton.getCDMethodList().size());
+    assertEquals(23, symbolClassAutomaton.getCDMethodList().size());
   }
 
   @Test
@@ -505,6 +524,45 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
+  public void testGetStereoinfoMethod() {
+    ASTCDMethod method = getMethodBy("getStereoinfo", symbolClassAutomaton);
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertDeepEquals(
+      mcTypeFacade.createMapTypeOf(
+        mcTypeFacade.createQualifiedType(I_STEREOTYPE_REF),
+        mcTypeFacade.createOptionalTypeOf(VALUE)
+      ),
+      method.getMCReturnType().getMCType()
+    );
+
+    assertEquals(0, method.sizeCDParameters());
+
+    assertTrue(Log.getFindings().isEmpty());
+  }
+
+  @Test
+  public void testSetStereoinfoMethod() {
+    ASTCDMethod method = getMethodBy("setStereoinfo", symbolClassAutomaton);
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+
+    assertEquals(1, method.sizeCDParameters());
+    assertDeepEquals(
+      mcTypeFacade.createMapTypeOf(
+        mcTypeFacade.createQualifiedType(I_STEREOTYPE_REF),
+        mcTypeFacade.createOptionalTypeOf(VALUE)
+      ),
+      method.getCDParameter(0).getMCType()
+    );
+    assertEquals("stereoinfo", method.getCDParameter(0).getName());
+
+    assertTrue(Log.getFindings().isEmpty());
+  }
+
+  @Test
   public void testGeneratedCodeAutomaton() {
     GeneratorSetup generatorSetup = new GeneratorSetup();
     generatorSetup.setGlex(glex);
@@ -545,7 +603,7 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeCountStateSymbol() {
-    assertEquals(6, symbolClassState.getCDAttributeList().size());
+    assertEquals(7, symbolClassState.getCDAttributeList().size());
   
     assertTrue(Log.getFindings().isEmpty());
   }
@@ -559,7 +617,7 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodsStateSymbol() {
-    assertEquals(19, symbolClassState.getCDMethodList().size());
+    assertEquals(21, symbolClassState.getCDMethodList().size());
   
     assertTrue(Log.getFindings().isEmpty());
   }

@@ -26,9 +26,12 @@ import de.monticore.types.check.SymTypeOfSIUnit;
 import de.monticore.types.check.SymTypePrimitive;
 import de.monticore.types.check.SymTypeVariable;
 import de.monticore.types.check.SymTypeVoid;
+import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static de.monticore.types.check.SymTypeExpressionFactory.createBottomType;
 import static de.monticore.types.check.SymTypeExpressionFactory.createGenerics;
@@ -58,9 +61,12 @@ public class DefsTypesForTests {
     set_boxedObjects();
     set_unboxedCollections();
     set_boxedCollections();
+    set_streams();
     set_genericsRecursive();
     set_objectTypes();
+    set_specialObjectTypes();
     set_generics();
+    set_specialGenerics();
     set_bottomTopTypes();
     set_siUnitBasic();
     set_siUnitTypes();
@@ -432,10 +438,7 @@ public class DefsTypesForTests {
   public static SymTypeOfObject _ShortSymType;
 
   public static void set_boxedPrimitives() {
-    // add java.lang scope
-    IBasicSymbolsScope javaScope = scope("java");
-    IBasicSymbolsScope langScope = inScope(javaScope, scope("lang"));
-    BasicSymbolsMill.globalScope().addSubScope(javaScope);
+    IBasicSymbolsScope langScope = createJavaLangScope();
     // create boxed primitives
     _IntegerSymType =
         createTypeObject(inScope(langScope, type("Integer")));
@@ -481,9 +484,7 @@ public class DefsTypesForTests {
   public static SymTypeOfObject _boxedString;
 
   public static void set_boxedObjects() {
-    IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();
-    IBasicSymbolsScope javaScope = inScope(gs, scope("java"));
-    IBasicSymbolsScope langScope = inScope(javaScope, scope("lang"));
+    IBasicSymbolsScope langScope = createJavaLangScope();
     _boxedString = createTypeObject(inScope(langScope, type("String")));
   }
 
@@ -586,6 +587,112 @@ public class DefsTypesForTests {
         inScope(utilScope, type("Map", List.of(), List.of(mapVar1, mapVar2))),
         createTypeVariable(mapVar1), createTypeVariable(mapVar2)
     );
+  }
+
+  /*********************************************************************/
+
+  /*
+   * These are the predefined Symbol for Streams.
+   * If their symbols cannot be resolved,
+   * these are null and should not be used.
+   * The symbols have to be made available
+   * as they are part of the symbol library.
+   */
+
+  public static SymTypeOfGenerics _StreamSymType;
+
+  public static SymTypeOfGenerics _EventStreamSymType;
+
+  public static SymTypeOfGenerics _SyncStreamSymType;
+
+  public static SymTypeOfGenerics _ToptStreamSymType;
+
+  public static SymTypeOfGenerics _UntimedStreamSymType;
+
+  public static void set_streams() {
+    IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();
+    Optional<TypeSymbol> symbolOpt = gs.resolveType("Stream");
+    // load from Symbol Table if present
+    if (symbolOpt.isPresent()) {
+      TypeSymbol symbol = symbolOpt.get();
+      TypeVarSymbol tvSym = symbol.getTypeParameterList().get(0);
+      _StreamSymType = createGenerics(symbol, createTypeVariable(tvSym));
+      symbol = gs.resolveType("EventStream").get();
+      tvSym = symbol.getTypeParameterList().get(0);
+      _EventStreamSymType = createGenerics(symbol, createTypeVariable(tvSym));
+      symbol = gs.resolveType("SyncStream").get();
+      tvSym = symbol.getTypeParameterList().get(0);
+      _SyncStreamSymType = createGenerics(symbol, createTypeVariable(tvSym));
+      symbol = gs.resolveType("ToptStream").get();
+      tvSym = symbol.getTypeParameterList().get(0);
+      _ToptStreamSymType = createGenerics(symbol, createTypeVariable(tvSym));
+      symbol = gs.resolveType("UntimedStream").get();
+      tvSym = symbol.getTypeParameterList().get(0);
+      _UntimedStreamSymType = createGenerics(symbol, createTypeVariable(tvSym));
+    }
+    else {
+      Log.trace("Stream could not be resolved,"
+              + " skipping its usual initialization",
+          "DefsTypesForTests"
+      );
+      TypeVarSymbol streamVar = typeVariable("StreamT");
+      _StreamSymType = createGenerics(
+          inScope(gs, type("Stream", List.of(), List.of(streamVar))),
+          createTypeVariable(streamVar)
+      );
+      TypeVarSymbol eventStreamVar = typeVariable("EventStreamT");
+      SymTypeExpression eventStreamSuperType = createGenerics(
+          _StreamSymType.getTypeInfo(),
+          List.of(createTypeVariable(eventStreamVar))
+          );
+      _EventStreamSymType = createGenerics(
+          inScope(gs, type(
+              "EventStream",
+              List.of(eventStreamSuperType),
+              List.of(eventStreamVar)
+          )),
+          createTypeVariable(eventStreamVar)
+      );
+      TypeVarSymbol syncStreamVar = typeVariable("SyncStreamT");
+      SymTypeExpression syncStreamSuperType = createGenerics(
+          _StreamSymType.getTypeInfo(),
+          List.of(createTypeVariable(syncStreamVar))
+      );
+      _SyncStreamSymType = createGenerics(
+          inScope(gs, type(
+              "SyncStream",
+              List.of(syncStreamSuperType),
+              List.of(syncStreamVar)
+          )),
+          createTypeVariable(syncStreamVar)
+      );
+      TypeVarSymbol toptStreamVar = typeVariable("ToptStreamT");
+      SymTypeExpression toptStreamSuperType = createGenerics(
+          _StreamSymType.getTypeInfo(),
+          List.of(createTypeVariable(toptStreamVar))
+      );
+      _ToptStreamSymType = createGenerics(
+          inScope(gs, type(
+              "ToptStream",
+              List.of(toptStreamSuperType),
+              List.of(toptStreamVar)
+          )),
+          createTypeVariable(toptStreamVar)
+      );
+      TypeVarSymbol untimedStreamVar = typeVariable("UntimedStreamT");
+      SymTypeExpression untimedStreamSuperType = createGenerics(
+          _StreamSymType.getTypeInfo(),
+          List.of(createTypeVariable(untimedStreamVar))
+      );
+      _UntimedStreamSymType = createGenerics(
+          inScope(gs, type(
+              "UntimedStream",
+              List.of(untimedStreamSuperType),
+              List.of(untimedStreamVar)
+          )),
+          createTypeVariable(untimedStreamVar)
+      );
+    }
   }
 
   /*********************************************************************/
@@ -715,6 +822,33 @@ public class DefsTypesForTests {
     _schoolSymType = createTypeObject(inScope(gs, type("School")));
   }
 
+  /*
+   * These are some objects types with special behavior wrt. typechecking
+   * (s. a. Java Spec)
+   * (These tend to lie in java.lang)
+   */
+
+  public static SymTypeOfObject _ObjectSymType;
+
+  public static SymTypeOfObject _ThrowableSymType;
+
+  public static SymTypeOfObject _VoidSymType;
+
+  // try-with-resource
+  public static SymTypeOfObject _AutoClosableSymType;
+
+  public static void set_specialObjectTypes() {
+    IBasicSymbolsScope langScope = createJavaLangScope();
+    _ObjectSymType =
+        createTypeObject(inScope(langScope, type("Object")));
+    _ThrowableSymType =
+        createTypeObject(inScope(langScope, type("Throwable")));
+    _VoidSymType =
+        createTypeObject(inScope(langScope, type("Void")));
+    _AutoClosableSymType =
+        createTypeObject(inScope(langScope, type("AutoClosable")));
+  }
+
   /*********************************************************************/
 
   /*
@@ -748,6 +882,35 @@ public class DefsTypesForTests {
             ),
             List.of(mapKVar, mapVVar))
         )
+    );
+  }
+
+
+  /*
+   * These are some generic types with special behavior wrt. typechecking
+   * (s. a. Java Spec)
+   * (These tend to lie in java.lang)
+   */
+
+  public static SymTypeOfGenerics _ClassSymType;
+
+  public static SymTypeOfGenerics _IterableSymType;
+
+  public static void set_specialGenerics() {
+    IBasicSymbolsScope langScope = createJavaLangScope();
+    TypeVarSymbol classVar = typeVariable("T");
+    _ClassSymType = createGenerics(
+        inScope(langScope, type("Class",
+            Collections.emptyList(),
+            List.of(classVar)
+        ))
+    );
+    TypeVarSymbol IterableVar = typeVariable("T");
+    _IterableSymType = createGenerics(
+        inScope(langScope, type("Iterable",
+            Collections.emptyList(),
+            List.of(classVar)
+        ))
     );
   }
 
@@ -1097,6 +1260,18 @@ public class DefsTypesForTests {
     _deg_int_SISymType = createNumericWithSIUnit(_deg_SISymType, _intSymType);
     _rad_int_SISymType = createNumericWithSIUnit(_rad_SISymType, _intSymType);
     _sr_int_SISymType = createNumericWithSIUnit(_sr_SISymType, _intSymType);
+  }
+
+  // Helper
+
+  /**
+   * creates a java.lang scope and adds it to the global scope
+   */
+  protected static IBasicSymbolsScope createJavaLangScope() {
+    IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();
+    IBasicSymbolsScope javaScope = inScope(gs, scope("java"));
+    IBasicSymbolsScope langScope = inScope(javaScope, scope("lang"));
+    return langScope;
   }
 
 }

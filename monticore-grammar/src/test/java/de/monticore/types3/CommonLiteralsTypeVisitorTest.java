@@ -12,8 +12,6 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 public class CommonLiteralsTypeVisitorTest extends AbstractTypeVisitorTest {
 
   @BeforeEach
@@ -64,42 +62,43 @@ public class CommonLiteralsTypeVisitorTest extends AbstractTypeVisitorTest {
     ASTLiteral lit = MCCommonLiteralsMill.stringLiteralBuilder()
         .setSource("Y05H1")
         .build();
-    check(lit, "String");
+    check(lit, "R\"Y05H1\"");
   }
 
   @Test
   public void deriveTFromLiteralStringUnBoxedAvailable() {
     // only String is available
+    // since adding regex types, this should not influence anything
     MCCommonLiteralsMill.globalScope().clear();
     DefsTypesForTests.set_unboxedObjects();
     ASTLiteral lit = MCCommonLiteralsMill.stringLiteralBuilder()
         .setSource("G0M84")
         .build();
-    check(lit, "String");
+    check(lit, "R\"G0M84\"");
   }
 
   @Test
   public void deriveTFromLiteralStringBoxedAvailable() {
     // only java.util.String is available
+    // since adding regex types, this should not influence anything
     MCCommonLiteralsMill.globalScope().clear();
     DefsTypesForTests.set_boxedObjects();
     ASTLiteral lit = MCCommonLiteralsMill.stringLiteralBuilder()
         .setSource("W4210")
         .build();
-    check(lit, "java.lang.String");
+    check(lit, "R\"W4210\"");
   }
 
   @Test
   public void deriveTFromLiteralStringUnavailable() {
-    // only java.util.String is available
+    // no String symbol available
+    // since adding regex types, this should not influence anything
     MCCommonLiteralsMill.globalScope().clear();
     ASTLiteral lit = MCCommonLiteralsMill.stringLiteralBuilder()
         .setSource("50N1C")
         .build();
     lit.setEnclosingScope(CombineExpressionsWithLiteralsMill.globalScope());
-    SymTypeExpression type = TypeCheck3.typeOf(lit);
-    assertTrue(type.isObscureType());
-    assertHasErrorCode("0xD02A6");
+    check(lit, "R\"50N1C\"");
   }
 
   @Test

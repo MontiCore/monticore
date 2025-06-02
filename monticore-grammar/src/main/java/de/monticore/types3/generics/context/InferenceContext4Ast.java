@@ -22,6 +22,9 @@ import java.util.Map;
  * i.e., the type of an expression can be dependent on the context, e.g.:
  * {@code List<A> as = new ArrayList<>();}
  * {@code List<B> bs = new ArrayList<>();}
+ * <p>
+ * The information stored are also used to make free type variable replacement
+ * reproducible
  */
 public class InferenceContext4Ast {
 
@@ -36,6 +39,14 @@ public class InferenceContext4Ast {
    */
   protected Map<ASTNode, InferenceContext> expr2ctx;
 
+  /**
+   * Used to make free type variable replacement reproducible;
+   * Any SymTypeExpression that has been resolved
+   * or acquired in a comparable context is stored here.
+   * Do not rely on this information for any other case!
+   */
+  protected Map<ASTNode, SymTypeExpression> expr2resolved;
+
   protected Map<ASTNode, InferenceContext> getExpression2Context() {
     return expr2ctx;
   }
@@ -46,6 +57,7 @@ public class InferenceContext4Ast {
 
   public void reset() {
     expr2ctx = new HashMap<>();
+    expr2resolved = new HashMap<>();
   }
 
   /**
@@ -53,8 +65,11 @@ public class InferenceContext4Ast {
    * every node below and including the provided root.
    * This can be required to,
    * e.g., rerun the type checker multiple times during type inference.
+   * <p>
+   * Does NOT reset the information required to make
+   * free type variable replacement reproducible!
    */
-  public void reset(ASTNode rootNode) {
+  public void resetContexts(ASTNode rootNode) {
     IVisitor mapReseter = new IVisitor() {
       @Override
       public void visit(ASTNode node) {
@@ -109,6 +124,18 @@ public class InferenceContext4Ast {
     InferenceContext ctx = getContextOfExpression(astExpr);
     ctx.setTargetType(targetType);
     setContextOfExpression(astExpr, ctx);
+  }
+
+  public void setResolvedOfExpression(ASTExpression astExpr, SymTypeExpression resolved) {
+    expr2resolved.put(astExpr, resolved);
+  }
+
+  public boolean hasResolvedOfExpression(ASTExpression astExpr) {
+    return expr2resolved.containsKey(astExpr);
+  }
+
+  public SymTypeExpression getResolvedOfExpression(ASTExpression astExpr) {
+    return expr2resolved.get(astExpr).deepClone();
   }
 
   // Helper

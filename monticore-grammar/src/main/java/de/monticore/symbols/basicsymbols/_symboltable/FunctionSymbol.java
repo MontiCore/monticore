@@ -64,11 +64,17 @@ public class FunctionSymbol extends FunctionSymbolTOP {
     return Lists.newArrayList(getSpannedScope().getLocalVariableSymbols());
   }
 
+  /**
+   * @deprecated use TypeParameterRelations
+   */
+  @Deprecated
   public void replaceTypeVariables(Map<TypeVarSymbol, SymTypeExpression> replaceMap){
     //return type
     SymTypeExpression type = this.getType();
     TypeSymbol realTypeInfo;
-    TypeSymbol typeInfo = type.getTypeInfo();
+    TypeSymbol typeInfo = type.isTypeVariable() ?
+        type.asTypeVariable().getTypeVarSymbol() :
+        type.getTypeInfo();
     if(typeInfo instanceof TypeSymbolSurrogate){
       realTypeInfo = ((TypeSymbolSurrogate) type.getTypeInfo()).lazyLoadDelegate();
     }else{

@@ -2,6 +2,10 @@
 <#--
   Constructor for a FullPrettyPrinter
 -->
+<#-- @ftlvariable name="tc" type="de.monticore.generating.templateengine.TemplateController" -->
+<#-- @ftlvariable name="glex" type="de.monticore.generating.templateengine.GlobalExtensionManagement" -->
+<#-- @ftlvariable name="grammarPackage" type="java.lang.String" -->
+<#-- @ftlvariable name="grammarName" type="java.lang.String" -->
 ${tc.signature("grammarName", "grammarPackage")}
 
 

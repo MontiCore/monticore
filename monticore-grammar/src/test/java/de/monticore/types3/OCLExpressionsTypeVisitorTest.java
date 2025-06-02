@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types3;
 
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
@@ -16,7 +17,6 @@ import static de.monticore.types3.util.DefsTypesForTests._intSymType;
 import static de.monticore.types3.util.DefsTypesForTests.function;
 import static de.monticore.types3.util.DefsTypesForTests.inScope;
 import static de.monticore.types3.util.DefsTypesForTests.variable;
-import static org.junit.Assume.assumeFalse;
 
 public class OCLExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
 
@@ -33,6 +33,7 @@ public class OCLExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
     DefsVariablesForTests.set_boxedPrimitives(gs);
     DefsVariablesForTests.set_unboxedObjects(gs);
     DefsVariablesForTests.set_objectTypes(gs);
+    DefsVariablesForTests.set_unboxedCollections(gs);
     inScope(gs, variable("intArray1", SymTypeExpressionFactory.createTypeArray(_intSymType, 1)));
     inScope(gs, variable("intArray2", SymTypeExpressionFactory.createTypeArray(_intSymType, 2)));
     inScope(gs, variable("intArray3", SymTypeExpressionFactory.createTypeArray(_intSymType, 3)));
@@ -40,8 +41,7 @@ public class OCLExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
 
   @Test
   public void checkTypeIfExpressions() throws IOException {
-    checkExpr("typeif vardouble instanceof double then 5.0 else 2*2", "double");
-    checkExpr("typeif vardouble instanceof int then 5 else 5.0", "double");
+    checkExpr("typeif varPerson instanceof Student then 5.0 else 2*2", "double");
   }
 
   @Test
@@ -60,6 +60,33 @@ public class OCLExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
   }
 
   @Test
+  public void checkTypeIfExpressionCorrectTypeInThen2() throws IOException {
+    // add Student::getHoursToLearn
+    BasicSymbolsMill.globalScope()
+        .resolveType("Student")
+        .get()
+        .addFunctionSymbol(function("getHoursToLearn", _intSymType));
+    // add Teacher::getHoursToTeach
+    BasicSymbolsMill.globalScope()
+        .resolveType("Teacher")
+        .get()
+        .addFunctionSymbol(function("getHoursToTeach", _intSymType));
+    // varStudent.getHoursToTeach() allowed iff varStudent is also a Teacher
+    checkExpr(
+        "typeif varStudent instanceof Teacher "
+            + "then varStudent.getHoursToLearn() + varStudent.getHoursToTeach() <= 24 else true",
+        "boolean"
+    );
+  }
+
+  @Test
+  public void checkTypeIfExpressionsCTTI() throws IOException {
+    checkExpr("typeif varPerson instanceof Student then [] else []",
+        "List<int>", "List<int>"
+    );
+  }
+
+  @Test
   public void checkTypeIfExpressionRedundant() throws IOException {
     checkErrorExpr(
         "typeif varStudent instanceof Person "
@@ -69,11 +96,26 @@ public class OCLExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
   }
 
   @Test
+  public void checkTypeIfExpressionsImpossible() throws IOException {
+    checkErrorExpr("typeif varPerson instanceof int->int then 5.0 else 2*2", "0xFD289");
+  }
+
+  @Test
   public void checkIfThenElseExpressions()
       throws IOException {
     checkExpr("if true then 5.0 else 2*2", "double");
     checkExpr("if true then 5 else 5.0", "double");
     checkExpr("if true then varPerson else varStudent", "Person");
+  }
+
+  @Test
+  public void checkIfThenElseExpressionsCTTI() throws IOException {
+    checkExpr("if varboolean then [] else []",
+        "List<int>", "List<int>"
+    );
+    checkExpr("if varboolean then [] else varintList",
+        "List<int>", "List<int>"
+    );
   }
 
   @Test
@@ -107,6 +149,8 @@ public class OCLExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
     checkExpr("let double a = 5.0 in 2*2", "int");
     checkExpr("let double a = 5.0 in a", "double");
     checkExpr("let double a = 5.0; int b = 5 in a*b", "double");
+    // requires correct order of SymTab completion
+    checkExpr("let Person p = typeif varPerson instanceof Student then varPerson else varPerson in p", "Person");
   }
 
   @Test

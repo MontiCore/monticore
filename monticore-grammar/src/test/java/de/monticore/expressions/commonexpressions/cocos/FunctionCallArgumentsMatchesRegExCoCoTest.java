@@ -6,7 +6,6 @@ import de.monticore.expressions.combineexpressionswithliterals._ast.ASTFoo;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsArtifactScope;
 import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
 import de.monticore.expressions.commonexpressions._cocos.CommonExpressionsCoCoChecker;
-import de.monticore.expressions.commonexpressions.types3.util.CommonExpressionsLValueRelations;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.IDerive;
@@ -29,8 +28,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static junit.framework.TestCase.assertTrue;
-
 public class FunctionCallArgumentsMatchesRegExCoCoTest {
 
   @BeforeEach
@@ -39,7 +36,9 @@ public class FunctionCallArgumentsMatchesRegExCoCoTest {
     Log.enableFailQuick(false);
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
+    new CombineExpressionsWithLiteralsTypeTraverserFactory().initTypeCheck3();
     DefsTypesForTests.setup();
+    CombineExpressionsWithLiteralsTypeTraverserFactory.initTypeCheck3();
   }
 
   @Test
@@ -143,8 +142,8 @@ public class FunctionCallArgumentsMatchesRegExCoCoTest {
   protected void testValid(String expression, List<List<String>> functions, boolean varArgs) throws IOException {
     check(expression, functions, varArgs);
     Assertions.assertTrue(Log.getFindings().isEmpty(), Log.getFindings().stream()
-            .map(Finding::buildMsg)
-            .collect(Collectors.joining(System.lineSeparator())));
+        .map(Finding::buildMsg)
+        .collect(Collectors.joining(System.lineSeparator())));
     Log.clearFindings();
   }
 
@@ -166,7 +165,7 @@ public class FunctionCallArgumentsMatchesRegExCoCoTest {
     CombineExpressionsWithLiteralsTraverser traverser =
         factory.createTraverser(type4Ast);
     TypeCheck3AsIDerive derive = new TypeCheck3AsIDerive(
-        traverser, type4Ast, new CommonExpressionsLValueRelations());
+    );
 
     functions.forEach(parameters -> {
       List<SymTypeExpression> parameterList = parameters.stream()

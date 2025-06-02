@@ -1,0 +1,70 @@
+name: Bug Report
+description: Report an issue with MontiCore
+labels: [bug]
+body:
+  - type: checkboxes
+    id: version
+    attributes:
+      label: Are you able replicate the bug in the latest version of MontiCore.
+      options:
+        - label: I am able to replicate the bug in the [latest version](https://github.com/MontiCore/monticore/releases) of MontiCore
+          required: true
+  - type: textarea
+    id: bugdesc
+    attributes:
+      label: Describe the bug
+      description: |
+        A clear and concise description of what the bug is
+    validations:
+      required: true
+  - type: textarea
+    id: steps_reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Tell us how we can reproduce the issue
+      placeholder: |
+        1. Go to ...  
+        2. Use the ...  
+        3. See error  
+    validations:
+      required: true
+  - type: input
+    id: expectedBehaviour
+    attributes:
+      label: Expected behaviour
+      description: |
+        A clear and concise description of what you expected to happen.
+    validations:
+      required: true
+  - type: textarea
+    id: project_reproduce
+    attributes:
+      label: Minimal reproducible example
+      description: If applicable, provide a minimal grammar/model/code or link to a GitHub project to reproduce your problem.
+    validations:
+      required: false
+  - type: input
+    id: ci
+    attributes:
+      label: Relevant CI workflow/pipeline
+      description: If applicable, provide a link to a CI artifact where this bug occurred.
+    validations:
+      required: false
+  - type: textarea
+    id: gradle_output
+    attributes:
+      label: Gradle Log
+      description: |
+        If applicable, add the Gradle's info log level output.
+        
+        You can customize the log level using the `--info` options, i.e. `gradle build --info`.
+        This helps us determine your Java and Gradle versions.
+    validations:
+      required: false
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional information
+      description: Add any other context about the problem here
+    validations:
+      required: false

@@ -388,6 +388,10 @@ the following steps:
     ```
     gradle generateMCGrammars
     ```
+    In case this command fails, ensure that you are using the correct versions
+    of Java and Gradle by using the commands `java --version` and
+    `gradle --version`. The correct versions are listed in the prerequisites 
+    step of this page.
     By default, the MontiCore Gradle plugin shall process all input grammars in 
     `src/main/grammars`. The processing includes the generation of the language infrastructure.
     Handwritten code in `src/main/grammar` is going to be incorporated into the generated
@@ -1068,7 +1072,7 @@ public class AutomataTool extends AutomataToolTOP {
 
   public ASTAutomaton parse(String model) {
     try {
-      AutomataParser parser = new AutomataParser() ;
+      AutomataParser parser = AutomataMill.parser();
       Optional<ASTAutomaton> optAutomaton = parser.parse(model);
 
       if (!parser.hasErrors() && optAutomaton.isPresent()) {
@@ -1230,19 +1234,19 @@ including the `Automata` tool class `AutomataTool`. For running the
 
     **With Powershell on Windows**
     ```powershell
-    java -jar target/libs/automaton-7.7.0-SNAPSHOT-tool.jar `
+    java -jar target/libs/automaton-7.7.0-tool.jar `
                         -i src/test/resources/automata/parser/PingPong.aut `
                         -s st/PingPong.autsym
     ```
     **With Bash on Unix**
     ```bash
-    java -jar target/libs/automaton-7.7.0-SNAPSHOT-tool.jar \
+    java -jar target/libs/automaton-7.7.0-tool.jar \
                         -i src/test/resources/automata/parser/PingPong.aut \
                         -s st/PingPong.autsym
     ```
     **With cmd on Windows**
     ```batch
-    java -jar target/libs/automaton-7.7.0-SNAPSHOT-tool.jar ^
+    java -jar target/libs/automaton-7.7.0-tool.jar ^
                         -i src/test/resources/automata/parser/PingPong.aut ^
                         -s st/PingPong.autsym
     ```

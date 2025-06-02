@@ -1,8 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types3.generics.util;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
+import de.monticore.types.check.SymTypeInferenceVariable;
 import de.monticore.types.check.SymTypeOfFunction;
 import de.monticore.types.check.SymTypeVariable;
 import de.monticore.types3.SymTypeRelations;
@@ -37,28 +39,15 @@ import java.util.stream.Collectors;
 import static de.monticore.types.check.SymTypeExpressionFactory.createFunction;
 import static de.monticore.types.check.SymTypeExpressionFactory.createIntersectionOrDefault;
 import static de.monticore.types.check.SymTypeExpressionFactory.createObscureType;
-import static de.monticore.types.check.SymTypeExpressionFactory.createTopType;
 import static de.monticore.types.check.SymTypeExpressionFactory.createUnionOrDefault;
 
 public class CompileTimeTypeCalculator {
 
   protected static final String LOG_NAME = "CompileTimeTypeCalculator";
 
-  // static delegate
-
   protected static CompileTimeTypeCalculator delegate;
 
-  public static void init() {
-    Log.trace("init default FunctionRelations", "TypeCheck setup");
-    CompileTimeTypeCalculator.delegate = new CompileTimeTypeCalculator();
-  }
-
-  protected static CompileTimeTypeCalculator getDelegate() {
-    if (delegate == null) {
-      init();
-    }
-    return delegate;
-  }
+  // methods
 
   /**
    * Takes a resolved type (or similar) and tries to infer an instantiation.
@@ -85,7 +74,7 @@ public class CompileTimeTypeCalculator {
       Type4Ast type4Ast,
       InferenceContext4Ast infCtx4Ast
   ) {
-    getDelegate().calculateHandleResolvedType(
+    getDelegate()._handleResolvedType(
         expr, resolvedType, typeTraverser, type4Ast, infCtx4Ast
     );
   }
@@ -111,7 +100,7 @@ public class CompileTimeTypeCalculator {
       Type4Ast type4Ast,
       InferenceContext4Ast infCtx4Ast
   ) {
-    getDelegate().calculateHandleCall(
+    getDelegate()._handleCall(
         expr, funcType, arguments,
         typeTraverser, type4Ast, infCtx4Ast
     );
@@ -142,13 +131,13 @@ public class CompileTimeTypeCalculator {
       Type4Ast type4Ast,
       InferenceContext4Ast infCtx4Ast
   ) {
-    getDelegate().calculateHandleCall(
+    getDelegate()._handleCall(
         callExpr, funcExpr, arguments,
         typeTraverser, type4Ast, infCtx4Ast
     );
   }
 
-  protected void calculateHandleResolvedType(
+  protected void _handleResolvedType(
       ASTExpression expr,
       SymTypeExpression resolvedType,
       ITraverser typeTraverser,
@@ -179,7 +168,7 @@ public class CompileTimeTypeCalculator {
     }
   }
 
-  protected void calculateHandleCall(
+  protected void _handleCall(
       ASTExpression callExpr,
       SymTypeExpression resolvedFuncType,
       List<ASTExpression> arguments,
@@ -207,7 +196,7 @@ public class CompileTimeTypeCalculator {
     );
   }
 
-  protected void calculateHandleCall(
+  protected void _handleCall(
       ASTExpression callExpr,
       ASTExpression funcExpr,
       List<ASTExpression> arguments,
@@ -407,9 +396,11 @@ public class CompileTimeTypeCalculator {
       for (InferenceResult inferenceResult : inferenceResults) {
         constraints.addAll(inferenceResult.getB4C());
       }
+      List<Bound> b3s = new ArrayList<>();
+      inferenceResults.forEach(r -> b3s.addAll(r.getB3()));
       InferenceResult applicabilityRes = new InferenceResult();
       applicabilityRes.setLastInferenceMode(InferenceVisitorMode.EXPRESSION_COMPATIBILITY_REDUCTION);
-      applicabilityRes.setB3(Collections.emptyList());
+      applicabilityRes.setB3(b3s);
       applicabilityRes.setB4C(constraints);
       callCtx.setInferredTypes(List.of(applicabilityRes));
     }
@@ -483,7 +474,7 @@ public class CompileTimeTypeCalculator {
     for (int i = 0; i < arguments.size(); i++) {
       ASTExpression argExpr = arguments.get(i);
       type4Ast.reset(argExpr);
-      infCtx4Ast.reset(argExpr);
+      infCtx4Ast.resetContexts(argExpr);
       infCtx4Ast.getContextOfExpression(argExpr)
           .setVisitorMode(InferenceVisitorMode.TYPE_CHECKING);
       infCtx4Ast.setTargetTypeOfExpression(
@@ -506,7 +497,7 @@ public class CompileTimeTypeCalculator {
               .collect(Collectors.joining(", "))
               + " cannot be used to call the function."
               + " The compile-time function type for the expression "
-              + "has been calculated to be " + targetFunc.printFullName()
+              + "has been calculated to be " + printFunctionForLog(targetFunc)
               + ".",
           callExpr.get_SourcePositionStart(),
           callExpr.get_SourcePositionEnd()
@@ -529,96 +520,69 @@ public class CompileTimeTypeCalculator {
       Type4Ast type4Ast,
       InferenceContext4Ast inferenceContext4Ast
   ) {
+    InferenceVisitorMode mode = inferenceContext.getVisitorMode();
     PartialFunctionInfo funcInfo = inferenceContext.getPartialFunctionInfo();
+    Log.trace("inferCalledFunction(): mode = " + mode.name()
+            + ", resolved-type: " + resolvedType.printFullName()
+        , LOG_NAME);
     replaceExprsWithTypesIffNoTargetTypeRequired(funcInfo,
         typeTraverser, type4Ast, inferenceContext4Ast
     );
     if (!funcInfo.hasParameterCount()) {
       return getResultIfNoFunctionInfoAvailable(resolvedType, inferenceContext);
     }
-    InferenceVisitorMode mode = inferenceContext.getVisitorMode();
 
     // we expect a function, thus get only the functions (filter out vars)
     List<SymTypeOfFunction> resolvedFuncs =
         getFunctionsOfResolvedType(resolvedType);
-    List<SymTypeOfFunction> fixArityFuncs =
-        fixArities(resolvedFuncs, funcInfo.getParameterCount());
-    List<SymTypeOfFunction> potentiallyApplicableFuncs = new ArrayList<>();
-    for (SymTypeOfFunction func : fixArityFuncs) {
-      if (FunctionRelations.internal_canPotentiallyBeCalledWith(func, funcInfo)) {
-        potentiallyApplicableFuncs.add(func);
-      }
-    }
-
+    Optional<List<SymTypeOfFunction>> fixArityFuncsOpt =
+        fixAritiesOrLogError(resolvedFuncs, funcInfo.getParameterCount());
+    Optional<List<SymTypeOfFunction>> potentiallyApplicableFuncsOpt =
+        fixArityFuncsOpt.flatMap(fixArityFuncs ->
+            getPotentiallyApplicableFunctionsOrLogError(fixArityFuncs, funcInfo)
+        );
     // Note: this MUST(!) be Map that uses object identity;
     // otherwise, the case is not identified
     // when there are two identical functions (modulo symbols) resolved.
+    Optional<Map<SymTypeOfFunction, InferenceResult>> func2InferenceResultOpt =
+        potentiallyApplicableFuncsOpt.flatMap(potentiallyApplicableFuncs ->
+            getApplicableFunctionsOrLogError(
+                potentiallyApplicableFuncs, funcInfo
+            )
+        );
+    if (func2InferenceResultOpt.isEmpty()) {
+      InferenceResult result = new InferenceResult();
+      result.setHasErrorOccurred();
+      return result;
+    }
     Map<SymTypeOfFunction, InferenceResult> func2InferenceResult =
-        new HashMap<>();
-    for (SymTypeOfFunction func : potentiallyApplicableFuncs) {
-      InferenceResult result = new InferenceResult();
-      result.setResolvedFunction(func);
-      fillTypeParameterBounds(result);
-      fillApplicabilityBounds(result, funcInfo);
-      if (result.hasErrorOccurred()) {
-        return result;
-      }
-      else if (result.getApplicabilityInstantiation().isPresent()) {
-        func2InferenceResult.put(func, result);
-      }
-    }
-    if (func2InferenceResult.isEmpty()) {
-      StringBuilder argInfo = new StringBuilder();
-      for (int i = 0; i < funcInfo.getParameterCount(); i++) {
-        if (funcInfo.hasArgumentType(i)) {
-          argInfo
-              .append(System.lineSeparator())
-              .append(i)
-              .append(": ")
-              .append(funcInfo.getArgumentType(i).printFullName());
-        }
-      }
-      Log.error("0xFD444 no applicable function found!"
-          + System.lineSeparator() + "Arguments pertinent to applicability:"
-          + argInfo
-          + System.lineSeparator()
-          + " potentially applicable functions (before inference): "
-          + System.lineSeparator() + potentiallyApplicableFuncs.stream()
-          .map(SymTypeExpression::printFullName)
-          .collect(Collectors.joining(System.lineSeparator()))
-      );
-      InferenceResult result = new InferenceResult();
-      result.setHasErrorOccurred();
-      return result;
-    }
-
-    Optional<SymTypeOfFunction> mostSpecificFunctionOpt =
-        FunctionRelations.getMostSpecificFunction(func2InferenceResult.keySet());
-    if (mostSpecificFunctionOpt.isEmpty()) {
-      Log.error("0xFD446 unable to select a most specific function."
-          + System.lineSeparator() + " Applicable functions:"
-          + System.lineSeparator() + func2InferenceResult.keySet().stream()
-          .map(SymTypeExpression::printFullName)
-          .collect(Collectors.joining(System.lineSeparator()))
-      );
-      InferenceResult result = new InferenceResult();
-      result.setHasErrorOccurred();
-      return result;
+        func2InferenceResultOpt.get();
+    if (func2InferenceResult.values().stream().anyMatch(InferenceResult::hasErrorOccurred)) {
+      return func2InferenceResult.values().stream()
+          .filter(InferenceResult::hasErrorOccurred)
+          .findFirst().get();
     }
 
     InferenceResult infResult =
-        func2InferenceResult.get(mostSpecificFunctionOpt.get());
-    infResult.setLastInferenceMode(InferenceVisitorMode.APPLICABILITY_TEST);
+        getInfResultForMostSpecificFuncOrLogError(func2InferenceResult);
+    if (infResult.hasErrorOccurred()) {
+      return infResult;
+    }
+    SymTypeOfFunction mostSpecificFunc = infResult.getResolvedFunction();
 
     if (mode == InferenceVisitorMode.APPLICABILITY_TEST) {
-      SymTypeOfFunction mostSpecificFunc =
-          infResult.getResolvedFunction();
       if (!TypeParameterRelations.hasInferenceVariables(
           mostSpecificFunc.getType()
       )) {
         // enough information to get the type of the expr
         // without relying on target type -> pertinent to applicability
         // -> calculate the type
+        Log.trace("The most specific function "
+                + printFunctionForLog(mostSpecificFunc)
+                + "contains no inference variables in the return type."
+                + "Thus switching modes: " + mode.name()
+                + " -> " + InferenceVisitorMode.TYPE_CHECKING.name(),
+            LOG_NAME);
         mode = InferenceVisitorMode.TYPE_CHECKING;
       }
     }
@@ -629,24 +593,8 @@ public class CompileTimeTypeCalculator {
     // Now a most specific function (compile-time declaration)
     // has been selected
     // Thus, the return type can be added to the constraints
-    fillReturnTypeBounds(infResult, funcInfo);
+    fillAndCheckReturnTypeBounds(infResult, funcInfo);
     if (infResult.hasErrorOccurred()) {
-      return infResult;
-    }
-    if (infResult.getInvocationCompatibilityInstantiation().isEmpty()) {
-      Log.error("0xFD451 the return type"
-          + " of the selected compile-time declaration "
-          + infResult.getResolvedFunction().printFullName()
-          + " (partially instantiated to "
-          + infResult.getApplicabilityInstantiation().get().printFullName()
-          + ") is not compatible with the target type "
-          // There is a return target type, or else there would
-          // have already been an error earlier:
-          + funcInfo.getReturnTargetType().printFullName()
-          + ". Bounds:" + System.lineSeparator()
-          + printBounds(infResult.getB3())
-      );
-      infResult.setHasErrorOccurred();
       return infResult;
     }
 
@@ -668,7 +616,7 @@ public class CompileTimeTypeCalculator {
     ) {
       Log.error("0xFD452 internal error: "
           + "entered final phase of calculating an invocation type for "
-          + mostSpecificFunctionOpt.get().printFullName()
+          + printFunctionForLog(infResult.getResolvedFunction())
           + ", during this, expected a target type without free variables"
           + ", but got " + inferenceContext.getTargetType().printFullName()
       );
@@ -676,28 +624,9 @@ public class CompileTimeTypeCalculator {
       return infResult;
     }
 
-    fillInvocationTypeBounds(
-        infResult, typeTraverser, type4Ast, inferenceContext4Ast
+    fillAndCheckInvocationTypeBounds(
+        infResult, funcInfo, typeTraverser, type4Ast, inferenceContext4Ast
     );
-    if (infResult.hasErrorOccurred()) {
-      return infResult;
-    }
-    infResult.setLastInferenceMode(InferenceVisitorMode.TYPE_CHECKING);
-    if (infResult.getInvocationType().isEmpty()) {
-      Log.error("0xFD447 cannot resolve function invocation type"
-          + " for compile-time declaration " +
-          infResult.getResolvedFunction().printFullName()
-          + (funcInfo.hasReturnTargetType()
-          ? " with the target type "
-          + funcInfo.getReturnTargetType().printFullName()
-          : "")
-          + ". Bounds:" + System.lineSeparator()
-          + printBounds(infResult.getB4())
-      );
-      infResult.setHasErrorOccurred();
-      return infResult;
-    }
-
     return infResult;
   }
 
@@ -722,7 +651,7 @@ public class CompileTimeTypeCalculator {
       if (!funcInfo.hasArgumentType(i) && funcInfo.hasArgumentExpr(i)) {
         ASTExpression expr = funcInfo.getArgumentExpr(i);
         type4Ast.reset(expr);
-        inferenceContext4Ast.reset(expr);
+        inferenceContext4Ast.resetContexts(expr);
         InferenceContext infCtx = inferenceContext4Ast.getContextOfExpression(expr);
         infCtx.setVisitorMode(InferenceVisitorMode.APPLICABILITY_TEST);
         expr.accept(typeTraverser);
@@ -760,7 +689,7 @@ public class CompileTimeTypeCalculator {
           SymTypeExpression argType = type4Ast.getPartialTypeOfExpr(expr);
           funcInfo.setArgumentType(i, argType);
         }
-        inferenceContext4Ast.reset(expr);
+        inferenceContext4Ast.resetContexts(expr);
         type4Ast.reset(expr);
       }
     }
@@ -861,6 +790,99 @@ public class CompileTimeTypeCalculator {
   }
 
   /**
+   * s. {@link FunctionRelations#internal_canPotentiallyBeCalledWith(SymTypeOfFunction, PartialFunctionInfo)}
+   * logs error if no functions exist that are callable.
+   */
+  protected Optional<List<SymTypeOfFunction>> getPotentiallyApplicableFunctionsOrLogError(
+      List<SymTypeOfFunction> fixedArityFunctions,
+      PartialFunctionInfo funcInfo
+  ) {
+    List<SymTypeOfFunction> potentiallyApplicableFuncs = new ArrayList<>();
+    for (SymTypeOfFunction func : fixedArityFunctions) {
+      if (FunctionRelations.internal_canPotentiallyBeCalledWith(func, funcInfo)) {
+        potentiallyApplicableFuncs.add(func);
+      }
+    }
+    if (potentiallyApplicableFuncs.isEmpty()) {
+      Log.error("0xFD44E no applicable function found!"
+          + System.lineSeparator() + "Arguments pertinent to applicability:"
+          + printPertinentToApplicabilityArgInfo(funcInfo) + System.lineSeparator()
+          + " potentially applicable functions (with regards to arity): "
+          + System.lineSeparator() + fixedArityFunctions.stream()
+          .map(this::printFunctionForLog)
+          .collect(Collectors.joining(System.lineSeparator()))
+      );
+      return Optional.empty();
+    }
+    return Optional.of(potentiallyApplicableFuncs);
+  }
+
+  /**
+   * takes potentially applicable functions (s. FunctionRelations)
+   * and returns applicable functions and their inference results.
+   *
+   * @return On error: either empty or a Map with a value that has an error.
+   *     On success: all applicable functions and their inference results.
+   *     Note: this MUST(!) be Map that uses object identity;
+   *     otherwise, the case is not identified
+   *     when there are two identical functions (modulo symbols) resolved.
+   */
+  protected Optional<Map<SymTypeOfFunction, InferenceResult>> getApplicableFunctionsOrLogError(
+      List<SymTypeOfFunction> potentiallyApplicableFuncs,
+      PartialFunctionInfo funcInfo
+  ) {
+    Map<SymTypeOfFunction, InferenceResult> func2InferenceResult =
+        new HashMap<>();
+    for (SymTypeOfFunction func : potentiallyApplicableFuncs) {
+      InferenceResult result = new InferenceResult();
+      result.setResolvedFunction(func);
+      fillTypeParameterBounds(result);
+      fillApplicabilityBounds(result, funcInfo);
+      if (result.hasErrorOccurred()) {
+        return Optional.of(Map.of(func, result));
+      }
+      else if (result.getApplicabilityInstantiation().isPresent()) {
+        func2InferenceResult.put(func, result);
+      }
+    }
+    if (func2InferenceResult.isEmpty()) {
+      Log.error("0xFD444 no applicable function found!"
+          + System.lineSeparator() + "Arguments pertinent to applicability:"
+          + printPertinentToApplicabilityArgInfo(funcInfo) + System.lineSeparator()
+          + " potentially applicable functions (before inference): "
+          + System.lineSeparator() + potentiallyApplicableFuncs.stream()
+          .map(this::printFunctionForLog)
+          .collect(Collectors.joining(System.lineSeparator()))
+      );
+      return Optional.empty();
+    }
+    return Optional.of(func2InferenceResult);
+  }
+
+  /**
+   * Fixes arity to the specified value.
+   * Filters out all functions that cannot have the specified arity,
+   * and logs an error if none can have the arity.
+   */
+  protected Optional<List<SymTypeOfFunction>> fixAritiesOrLogError(
+      List<SymTypeOfFunction> functions,
+      int parameterCount
+  ) {
+    List<SymTypeOfFunction> funcsFixedArity =
+        fixArities(functions, parameterCount);
+    if (funcsFixedArity.isEmpty()) {
+      Log.error("0xFD44D called function with " + parameterCount
+          + " arguments, but no function found has the required arity:"
+          + System.lineSeparator() + functions.stream()
+          .map(this::printFunctionForLog)
+          .collect(Collectors.joining(System.lineSeparator()))
+      );
+      return Optional.empty();
+    }
+    return Optional.of(funcsFixedArity);
+  }
+
+  /**
    * Fixes arity to the specified value.
    * Filters out all functions that cannot have the specified arity.
    */
@@ -881,28 +903,29 @@ public class CompileTimeTypeCalculator {
     List<Bound> bounds = new ArrayList<>();
     SymTypeOfFunction func = inferenceResult.getResolvedFunction();
     if (func.hasSymbol()) {
-      Map<SymTypeVariable, SymTypeVariable> typeParamReplaceMap =
+      Map<SymTypeVariable, SymTypeInferenceVariable> typeParamReplaceMap =
           getParamReplaceMap(func);
-      for (Map.Entry<SymTypeVariable, SymTypeVariable> param2InfVar :
+      for (Map.Entry<SymTypeVariable, SymTypeInferenceVariable> param2InfVar :
           typeParamReplaceMap.entrySet()
       ) {
-        SymTypeVariable typeVar = param2InfVar.getValue();
+        SymTypeInferenceVariable infVar = param2InfVar.getValue();
         SymTypeVariable parameter = param2InfVar.getKey();
         SymTypeExpression upperBound = parameter.getUpperBound();
         SymTypeExpression upperBoundWithInfVars = TypeParameterRelations
             .replaceTypeVariables(upperBound, typeParamReplaceMap);
-        bounds.add(new SubTypingBound(typeVar, upperBoundWithInfVars));
+        bounds.add(new SubTypingBound(infVar, upperBoundWithInfVars));
       }
     }
     else {
       // no symbol => no restrictive parameter bounds,
-      // but, the bound typeVar <: Top is required, thus added here.
+      // unless given as explicitly,
+      // but, at least the bound typeVar <: Top is required, thus added here.
       // this function type most likely has been created
       // as a stand-in for e.g., an operator.
-      List<SymTypeVariable> typeVars = TypeParameterRelations
+      List<SymTypeInferenceVariable> typeVars = TypeParameterRelations
           .getIncludedInferenceVariables(func);
-      for (SymTypeVariable typeVar : typeVars) {
-        bounds.add(new SubTypingBound(typeVar, createTopType()));
+      for (SymTypeInferenceVariable typeVar : typeVars) {
+        bounds.add(new SubTypingBound(typeVar, typeVar.getUpperBound()));
       }
     }
     // can always calculate B0 (assuming no internal error)
@@ -943,6 +966,76 @@ public class CompileTimeTypeCalculator {
     List<Bound> newBounds = ConstraintReduction.reduce(constraints);
     bounds.addAll(newBounds);
     inferenceResult.setB2(bounds);
+  }
+
+  protected InferenceResult getInfResultForMostSpecificFuncOrLogError(
+      Map<SymTypeOfFunction, InferenceResult> func2InferenceResult
+  ) {
+    Optional<SymTypeOfFunction> mostSpecificFunctionOpt =
+        FunctionRelations.getMostSpecificFunction(func2InferenceResult.keySet());
+    if (mostSpecificFunctionOpt.isEmpty()) {
+      Log.error("0xFD446 unable to select a most specific function."
+          + System.lineSeparator() + " Applicable functions:"
+          + System.lineSeparator() + func2InferenceResult.keySet().stream()
+          .map(this::printFunctionForLog)
+          .collect(Collectors.joining(System.lineSeparator()))
+      );
+      InferenceResult result = new InferenceResult();
+      result.setHasErrorOccurred();
+      return result;
+    }
+    else {
+      Log.trace("inferCalledFunction(): Applicable functions:"
+              + System.lineSeparator() + func2InferenceResult.keySet().stream()
+              .map(this::printFunctionForLog)
+              .collect(Collectors.joining(System.lineSeparator()))
+          , LOG_NAME);
+    }
+
+    InferenceResult infResult =
+        func2InferenceResult.get(mostSpecificFunctionOpt.get());
+    infResult.setLastInferenceMode(InferenceVisitorMode.APPLICABILITY_TEST);
+    return infResult;
+  }
+
+  protected void fillAndCheckReturnTypeBounds(
+      InferenceResult infResult,
+      PartialFunctionInfo funcInfo
+  ) {
+    fillReturnTypeBounds(infResult, funcInfo);
+    if (infResult.hasErrorOccurred()) {
+      return;
+    }
+    Optional<SymTypeOfFunction> compatibilityInstantiation =
+        infResult.getInvocationCompatibilityInstantiation();
+    if (compatibilityInstantiation.isEmpty()) {
+      Log.error("0xFD451 the return type"
+          + " of the selected compile-time declaration "
+          + printFunctionForLog(infResult.getResolvedFunction())
+          + " (partially instantiated to "
+          + infResult.getApplicabilityInstantiation().get().printFullName()
+          + ") is not compatible with the target type "
+          // There is a return target type, or else there would
+          // have already been an error earlier:
+          + funcInfo.getReturnTargetType().printFullName()
+          + ". Bounds:" + System.lineSeparator()
+          + printBounds(infResult.getB3())
+      );
+      infResult.setHasErrorOccurred();
+      return;
+    }
+    if (funcInfo.hasReturnTargetType()) {
+      Log.trace("The return type"
+              + " of the selected compile-time declaration "
+              + printFunctionForLog(infResult.getResolvedFunction())
+              + " (previously partially instantiated to "
+              + infResult.getApplicabilityInstantiation().get().printFullName()
+              + ") is compatible with the target type "
+              + funcInfo.getReturnTargetType().printFullName()
+              + "; Newly partially instantiated to "
+              + compatibilityInstantiation.get().printFullName(),
+          LOG_NAME);
+    }
   }
 
   protected void fillReturnTypeBounds(
@@ -994,6 +1087,10 @@ public class CompileTimeTypeCalculator {
   ) {
     List<ExpressionCompatibilityConstraint> constraints = new ArrayList<>();
     SymTypeOfFunction func = inferenceResult.getResolvedFunction();
+    Log.trace("START collecting invocation type constraints for "
+            + printFunctionForLog(func),
+        LOG_NAME
+    );
     for (int i = 0; i < funcInfo.getParameterCount(); i++) {
       int parIdx = Math.min(func.sizeArgumentTypes(), i);
       if (!funcInfo.hasArgumentType(i)) {
@@ -1032,7 +1129,49 @@ public class CompileTimeTypeCalculator {
         }
       }
     }
+    Log.trace("END collecting invocation type constraints for "
+            + printFunctionForLog(func) + ":" + System.lineSeparator()
+            + printConstraints(constraints),
+        LOG_NAME
+    );
     inferenceResult.setB4C(constraints);
+  }
+
+  protected void fillAndCheckInvocationTypeBounds(
+      InferenceResult infResult,
+      // just for logging
+      PartialFunctionInfo funcInfo,
+      // used to evaluate expressions
+      ITraverser typeTraverser,
+      Type4Ast type4Ast,
+      InferenceContext4Ast inferenceContext4Ast
+  ) {
+    fillInvocationTypeBounds(
+        infResult, typeTraverser, type4Ast, inferenceContext4Ast
+    );
+    if (infResult.hasErrorOccurred()) {
+      return;
+    }
+    infResult.setLastInferenceMode(InferenceVisitorMode.TYPE_CHECKING);
+    Optional<SymTypeOfFunction> invocationType = infResult.getInvocationType();
+    String logInfo = " for compile-time declaration "
+        + printFunctionForLog(infResult.getResolvedFunction())
+        + (funcInfo.hasReturnTargetType()
+        ? " with the target type "
+        + funcInfo.getReturnTargetType().printFullName()
+        : "") + ".";
+    if (infResult.getInvocationType().isEmpty()) {
+      Log.error("0xFD447 cannot resolve function invocation type"
+          + logInfo + " Bounds:" + System.lineSeparator()
+          + printBounds(infResult.getB4())
+      );
+      infResult.setHasErrorOccurred();
+      return;
+    }
+    Log.trace("Resolved function invocation type "
+            + invocationType.get().printFullName() + logInfo,
+        LOG_NAME
+    );
   }
 
   protected void fillInvocationTypeBounds(
@@ -1083,11 +1222,12 @@ public class CompileTimeTypeCalculator {
       Type4Ast type4Ast,
       InferenceContext4Ast inferenceContext4Ast
   ) {
+    Log.trace("START reducing: " + constraint.print(), LOG_NAME);
     List<Bound> bounds = new ArrayList<>();
     ASTExpression sourceExpr = constraint.getExpr();
     // may not need to reset here, but kept for consistency
     type4Ast.reset(sourceExpr);
-    inferenceContext4Ast.reset(sourceExpr);
+    inferenceContext4Ast.resetContexts(sourceExpr);
     InferenceContext sourceCtx = inferenceContext4Ast
         .getContextOfExpression(sourceExpr);
     sourceCtx.setVisitorMode(
@@ -1097,7 +1237,7 @@ public class CompileTimeTypeCalculator {
     sourceExpr.accept(typeTraverser);
     sourceCtx = inferenceContext4Ast.getContextOfExpression(sourceExpr);
     type4Ast.reset(sourceExpr);
-    inferenceContext4Ast.reset(sourceExpr);
+    inferenceContext4Ast.resetContexts(sourceExpr);
     if (sourceCtx.getInferenceResults().isEmpty()) {
       Log.error("0xFD77D internal error: "
               + "Got no information returned for reduction of "
@@ -1113,13 +1253,118 @@ public class CompileTimeTypeCalculator {
         return Optional.empty();
       }
       else {
+        Log.trace("END reducing: " + constraint.print()
+                + " to bounds:" + System.lineSeparator()
+                + printBounds(argResult.getB3()),
+            LOG_NAME
+        );
         bounds.addAll(argResult.getB3());
       }
     }
     return Optional.of(bounds);
   }
 
+  /**
+   * Handles compile time type calculation of "pass-through"-expressions;
+   * Pass-through expressions (a subset of JLS 21 15.2 poly expressions)
+   * which pass a value through the expression,
+   * without modifying the value in any way,
+   * while optionally selecting one out of multiple sub-expressions.
+   * Examples are BracketExpression, ConditionalExpression,
+   * SwitchExpression (currently not part of MC, s. Java).
+   *
+   * @param passThroughExpr             the pass-through expression
+   * @param passedThroughSubExpressions expressions that are passed trough
+   * @param typeCheckingModeCalculation calculation to be done during
+   *                                    the type-checking mode of the visitor.
+   *                                    The target type will have been set
+   *                                    iff applicable.
+   *                                    This usually needs to check
+   *                                    the expression used to select
+   *                                    the expression that is passed through.
+   */
+  public static void handlePassThroughExpression(
+      ASTExpression passThroughExpr,
+      List<ASTExpression> passedThroughSubExpressions,
+      Action typeCheckingModeCalculation,
+      ITraverser typeTraverser,
+      Type4Ast type4Ast,
+      InferenceContext4Ast infCtx4Ast
+  ) {
+    getDelegate()._handlePassThroughExpression(
+        passThroughExpr, passedThroughSubExpressions,
+        typeCheckingModeCalculation,
+        typeTraverser, type4Ast, infCtx4Ast
+    );
+  }
+
+  protected void _handlePassThroughExpression(
+      ASTExpression passThroughExpression,
+      List<ASTExpression> passedThroughSubExpressions,
+      Action typeCheckingModeCalculation,
+      ITraverser typeTraverser,
+      Type4Ast type4Ast,
+      InferenceContext4Ast infCtx4Ast
+  ) {
+    if (passedThroughSubExpressions.isEmpty()) {
+      Log.error("0xFD44C internal error: "
+              + "did not expect empty list.",
+          passThroughExpression.get_SourcePositionStart(),
+          passThroughExpression.get_SourcePositionEnd()
+      );
+    }
+
+    // pass context information down to subExpressions
+    InferenceContext infCtx =
+        infCtx4Ast.getContextOfExpression(passThroughExpression);
+    for (ASTExpression passedThroughSubExpression
+        : passedThroughSubExpressions
+    ) {
+      infCtx4Ast.setContextOfExpression(
+          passedThroughSubExpression, infCtx.deepClone()
+      );
+    }
+
+    // calculate inference Results iff applicable
+    List<InferenceResult> infRess = new ArrayList<>();
+    if (infCtx4Ast.getContextOfExpression(passThroughExpression)
+        .getVisitorMode() != InferenceVisitorMode.TYPE_CHECKING
+    ) {
+      for (ASTExpression passedThroughSubExpression
+          : passedThroughSubExpressions
+      ) {
+        passedThroughSubExpression.accept(typeTraverser);
+        infRess.addAll(infCtx4Ast
+            .getContextOfExpression(passedThroughSubExpression)
+            .getInferenceResults()
+        );
+      }
+    }
+
+    // if required, use the type-checking mode calculation
+    if (infRess.isEmpty()) {
+      // usually visit, traverse, endvisit
+      infCtx.setVisitorMode(InferenceVisitorMode.TYPE_CHECKING);
+      typeCheckingModeCalculation.run();
+    }
+    // otherwise, simply pass the inference results upwards
+    else {
+      infCtx4Ast.getContextOfExpression(passThroughExpression)
+          .setInferredTypes(infRess);
+    }
+  }
+
   // Helper
+
+  /**
+   * Only exists as Java is missing a ()->void functional interface.
+   * This is not meant to be used otherwise.
+   * (Runnable is specifically meant to be used for threads)
+   */
+  @FunctionalInterface
+  public interface Action {
+    void run();
+  }
 
   protected List<SymTypeOfFunction> getFunctionsOfResolvedType(
       SymTypeExpression resolvedType
@@ -1179,28 +1424,27 @@ public class CompileTimeTypeCalculator {
    * with the inference variables.
    * In JLS 21 18.1.3: [P1:=α1,...,Pn:=αn]
    */
-  protected Map<SymTypeVariable, SymTypeVariable> getParamReplaceMap(
+  protected Map<SymTypeVariable, SymTypeInferenceVariable> getParamReplaceMap(
       SymTypeOfFunction func
   ) {
-    List<SymTypeVariable> typeVars = func.getTypeArguments().stream()
-        .map(SymTypeExpression::asTypeVariable)
+    List<SymTypeInferenceVariable> infVars = func.getTypeArguments().stream()
+        .map(SymTypeExpression::asInferenceVariable)
         .collect(Collectors.toList());
     SymTypeOfFunction declaredFunc = func.getDeclaredType();
     List<SymTypeVariable> typeParams = declaredFunc.getTypeArguments().stream()
         .map(SymTypeExpression::asTypeVariable)
         .collect(Collectors.toList());
-    Map<SymTypeVariable, SymTypeVariable> typeParamReplaceMap =
+    Map<SymTypeVariable, SymTypeInferenceVariable> typeParamReplaceMap =
         new TreeMap<>(new SymTypeExpressionComparator());
     for (int i = 0; i < typeParams.size(); i++) {
-      typeParamReplaceMap.put(typeParams.get(i), typeVars.get(i));
+      typeParamReplaceMap.put(typeParams.get(i), infVars.get(i));
     }
-    for (int i = 0; i < typeVars.size(); i++) {
-      SymTypeVariable typeVar = typeVars.get(i);
+    for (int i = 0; i < infVars.size(); i++) {
+      SymTypeInferenceVariable infVar = infVars.get(i);
       SymTypeVariable parameter = typeParams.get(i);
       // small check asserting correct input
-      if (!TypeParameterRelations.isInferenceVariable(typeVar) ||
-          TypeParameterRelations.isInferenceVariable(parameter) ||
-          !SymTypeRelations.isBottom(parameter.getLowerBound())) {
+      if (!infVar.isInferenceVariable() ||
+          parameter.isInferenceVariable()) {
         Log.error("0xFD147 internal error: unexpected input to fill B0");
       }
     }
@@ -1211,6 +1455,53 @@ public class CompileTimeTypeCalculator {
     return bounds.stream()
         .map(Bound::print)
         .collect(Collectors.joining(System.lineSeparator()));
+  }
+
+  protected String printConstraints(List<? extends Constraint> constraints) {
+    return constraints.stream()
+        .map(Constraint::print)
+        .collect(Collectors.joining(System.lineSeparator()));
+  }
+
+  protected String printPertinentToApplicabilityArgInfo(PartialFunctionInfo funcInfo) {
+    StringBuilder argInfo = new StringBuilder();
+    for (int i = 0; i < funcInfo.getParameterCount(); i++) {
+      if (funcInfo.hasArgumentType(i)) {
+        argInfo
+            .append(System.lineSeparator())
+            .append(i)
+            .append(": ")
+            .append(funcInfo.getArgumentType(i).printFullName());
+      }
+    }
+    return argInfo.toString();
+  }
+
+  protected String printFunctionForLog(SymTypeOfFunction func) {
+    return func.printFullName()
+        + (func.hasSymbol() ? " [" + func.getSymbol().getFullName() + "]" : "");
+  }
+
+  // static delegate
+
+  public static void init() {
+    Log.trace("init default CompileTimeTypeCalculator", "TypeCheck setup");
+    setDelegate(new CompileTimeTypeCalculator());
+  }
+
+  public static void reset() {
+    CompileTimeTypeCalculator.delegate = null;
+  }
+
+  protected static void setDelegate(CompileTimeTypeCalculator newDelegate) {
+    CompileTimeTypeCalculator.delegate = Log.errorIfNull(newDelegate);
+  }
+
+  protected static CompileTimeTypeCalculator getDelegate() {
+    if (CompileTimeTypeCalculator.delegate == null) {
+      init();
+    }
+    return CompileTimeTypeCalculator.delegate;
   }
 
 }

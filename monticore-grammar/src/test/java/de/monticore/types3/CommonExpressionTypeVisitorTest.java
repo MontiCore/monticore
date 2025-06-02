@@ -67,7 +67,10 @@ public class CommonExpressionTypeVisitorTest
     checkExpr("65536 + 1", "int"); // expected int and provided int
     checkExpr("2147483647 + 0", "int"); // expected int and provided int
     checkExpr("varchar + varchar", "int"); // + applicable to char, char, result is int
-    checkExpr("3 + \"Hallo\"", "String"); // example with String
+    // hardcoded regexes, could be optimized after RegEx normalization exists
+    checkExpr("3 + \"Hallo\"", "R\"(.*)(Hallo)\""); // example with String
+    checkExpr("\"Hallo\" + 3", "R\"(Hallo)(.*)\""); // example with String
+    checkExpr("\"Hallo\" + \" Welt\"", "R\"(Hallo)( Welt)\""); // example with String
     checkExpr("1m + 1m", "[m]<int>");
     checkExpr("1m + 1.0m", "[m]<double>");
     checkExpr("1m^2 + 1m^2", "[m^2]<int>");
@@ -1510,6 +1513,12 @@ public class CommonExpressionTypeVisitorTest
   }
 
   @Test
+  public void deriveFromConditionalExprsCTTI() throws IOException {
+    checkExpr("(varboolean ? [] : [])", "List<int>", "List<int>");
+    checkExpr("(varboolean ? [] : varintList)", "List<int>", "List<int>");
+  }
+
+  @Test
   public void testInvalidConditionalExpression() throws IOException {
     checkErrorExpr("3?true:fvarlse", "0xFD118");
     checkErrorExpr("varbyte ? 0 : 1", "0xB0165"); // ? not applicable to byte
@@ -2024,6 +2033,15 @@ public class CommonExpressionTypeVisitorTest
   }
 
   @Test
+  public void testRegExCallExpression() throws IOException {
+    // add length() to String and access it from String literal.
+    // this basically checks that RegEx-types are set up correctly
+    // to use String as nominal supertype to resolve methods in.
+    inScope(_unboxedString.getTypeInfo().getSpannedScope(), method("length", _intSymType));
+    checkExpr("\"Hello World\".length()", "int");
+  }
+
+  @Test
   public void testRegularAssignmentWithTwoMissingFields() throws IOException {
     checkErrorExpr("missingField = missingField2", "0xFD118");
   }
@@ -2038,6 +2056,8 @@ public class CommonExpressionTypeVisitorTest
    * we only have one scope and the symbols are all in this scope or in subscopes
    */
   public void init_inheritance() {
+    // delete String (not java.lang.String)
+    BasicSymbolsMill.globalScope().remove(_unboxedString.getTypeInfo());
     //inheritance example
     IOOSymbolsGlobalScope globalScope = OOSymbolsMill.globalScope();
     //super
@@ -2115,6 +2135,8 @@ public class CommonExpressionTypeVisitorTest
    */
   @Test
   public void testGenericInheritanceTwoTypeVariables() throws IOException {
+    // delete String (not java.lang.String)
+    BasicSymbolsMill.globalScope().remove(_unboxedString.getTypeInfo());
     // two generic parameters, supertype GenSup<S,V>,
     // create SymType GenSup<String,int>
     IOOSymbolsGlobalScope gs = OOSymbolsMill.globalScope();
@@ -2733,8 +2755,8 @@ public class CommonExpressionTypeVisitorTest
 
     checkErrorExpr("foo2(c, c, c)", "0xFD446");
 
-    checkErrorExpr("foo2(a, a)", "0xFD444");
-    checkErrorExpr("foo2(b, a)", "0xFD444");
+    checkErrorExpr("foo2(a, a)", "0xFD44E");
+    checkErrorExpr("foo2(b, a)", "0xFD44E");
     checkErrorExpr("foo2(c, b)", "0xFD446");
     checkErrorExpr("foo2(c, c)", "0xFD446");
 

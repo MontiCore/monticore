@@ -1,9 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._od;
 
-import de.monticore.cdbasis._ast.*;
 import de.monticore.cd4code.CD4CodeMill;
-import de.monticore.cd4codebasis._ast.*;
+import de.monticore.cd4codebasis._ast.ASTCDConstructor;
+import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cd4codebasis._ast.ASTCDParameter;
+import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDClass;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
@@ -14,9 +19,10 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
 import java.util.ArrayList;
 import java.util.List;
 
-import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 import static de.monticore.cd.codegen.CD2JavaTemplates.VALUE;
+import static de.monticore.cd.facade.CDModifier.PROTECTED;
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java._od.ODConstants.INDENT_PRINTER;
 import static de.monticore.codegen.cd2java._od.ODConstants.REPORTING_REPOSITORY;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.HANDLE;

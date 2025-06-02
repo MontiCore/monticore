@@ -3,6 +3,7 @@
 package de.monticore.codegen.cd2java._symboltable.serialization;
 
 import de.monticore.generating.templateengine.HookPoint;
+import de.monticore.types.check.SymTypeExpression;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -49,6 +50,9 @@ public class BITSer {
     bitsers.put("long", _long);
     bitsers.put("java.lang.Long", _long);
     bitsers.put("Long", _long);
+
+    BITSerStrategy symTypeExpression = new SymTypeExpressionSerStrategy();
+    bitsers.put(SymTypeExpression.class.getName(), symTypeExpression);
   }
 
   /**
@@ -84,21 +88,22 @@ public class BITSer {
    * @param attrType
    * @param attrName
    * @param jsonName
+   * @param scopeName the name of the scope parameter, such as scope or enclosingScope
    * @return
    */
-  public Optional<HookPoint> getDeserialHook(String attrType, String attrName, String jsonName) {
+  public Optional<HookPoint> getDeserialHook(String attrType, String attrName, String jsonName, String scopeName) {
     if (bitsers.containsKey(attrType)) {
-      return Optional.of(bitsers.get(attrType).getDeserialHook(jsonName, attrName));
+      return Optional.of(bitsers.get(attrType).getDeserialHook(jsonName, attrName, scopeName));
     }
 
     Optional<String> listGenType = getListGenType(attrType);
     if (listGenType.isPresent() && bitsers.containsKey(listGenType.get())) {
-      return Optional.of(bitsers.get(listGenType.get()).getListDeserialHook(jsonName, attrName));
+      return Optional.of(bitsers.get(listGenType.get()).getListDeserialHook(jsonName, attrName, scopeName));
     }
 
     Optional<String> optGenType = getOptionalGenType(attrType);
     if (optGenType.isPresent() && bitsers.containsKey(optGenType.get())) {
-      return Optional.of(bitsers.get(optGenType.get()).getOptDeserialHook(jsonName, attrName));
+      return Optional.of(bitsers.get(optGenType.get()).getOptDeserialHook(jsonName, attrName, scopeName));
     }
 
     return Optional.empty();

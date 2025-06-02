@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static de.monticore.types.check.SymTypeExpressionFactory.createStringType;
+
 public class NominalSuperTypeCalculator {
 
   protected final static String LOG_NAME = "NominalSuperTypes";
@@ -110,6 +112,9 @@ public class NominalSuperTypeCalculator {
           .map(lub -> getNominalSuperTypes(lub))
           .orElse(Collections.emptyList());
     }
+    else if (thisType.isRegExType()) {
+      unmodifiedSuperTypes = List.of(createStringType());
+    }
     // extension point
     else {
       Log.debug("tried to get nominal supertypes of "
@@ -127,7 +132,8 @@ public class NominalSuperTypeCalculator {
         type.isGenericType() ||
         type.isTypeVariable() ||
         type.isIntersectionType() ||
-        type.isUnionType();
+        type.isUnionType() ||
+        type.isRegExType();
   }
 
 }

@@ -18,5 +18,6 @@ grammar Aststring extends mc.common.Basics {
   		{_input.LA(1)==2}? "start" 
   		|
   		"start";
- 
+
+  TestSingleQuote = "Alex's Parser probleme";
 }

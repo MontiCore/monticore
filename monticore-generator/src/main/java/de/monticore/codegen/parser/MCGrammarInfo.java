@@ -3,9 +3,6 @@
 package de.monticore.codegen.parser;
 
 import com.google.common.collect.*;
-import de.monticore.codegen.cd2java.DecorationHelper;
-import de.monticore.codegen.mc2cd.TransformationHelper;
-import de.monticore.grammar.DirectLeftRecursionDetector;
 import de.monticore.grammar.LexNamer;
 import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.PredicatePair;
@@ -24,10 +21,8 @@ import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.regex.Pattern;
 
-import static de.monticore.codegen.mc2cd.TransformationHelper.calculateLexPattern;
-import static de.monticore.codegen.mc2cd.TransformationHelper.isFragment;
+import static de.monticore.codegen.mc2cd.TransformationHelper.NAME_PATTERN;
 
 /**
  * Contains information about a grammar which is required for the parser
@@ -39,23 +34,18 @@ public class MCGrammarInfo {
    * Keywords of the processed grammar and its super grammars
    */
   protected Set<String> keywords = Sets.newLinkedHashSet();
-  
-  /**
-   * Lexer patterns
-   */
-  protected Map<MCGrammarSymbol, List<Pattern>> lexerPatterns = new LinkedHashMap<>();
 
   /**
    * Additional java code for parser defined in antlr concepts of the processed
    * grammar and its super grammars
    */
-  protected List<String> additionalParserJavaCode = new ArrayList<String>();
+  protected List<String> additionalParserJavaCode = new ArrayList<>();
   
   /**
    * Additional java code for lexer defined in antlr concepts of the processed
    * grammar and its super grammars
    */
-  protected List<String> additionalLexerJavaCode = new ArrayList<String>();
+  protected List<String> additionalLexerJavaCode = new ArrayList<>();
   
   /**
    * Predicates
@@ -78,7 +68,6 @@ public class MCGrammarInfo {
   
   public MCGrammarInfo(MCGrammarSymbol grammarSymbol) {
     this.grammarSymbol = grammarSymbol;
-    buildLexPatterns();
     findAllKeywords();
     grammarSymbol.getTokenRulesWithInherited().forEach(t -> addSplitRule(t));
     grammarSymbol.getKeywordRulesWithInherited().forEach(k -> keywordRules.add(k));
@@ -117,7 +106,7 @@ public class MCGrammarInfo {
     for (MCGrammarSymbol grammar : grammarsToHandle) {
       HashMap<String, List<ASTRuleReference>> ruleMap = Maps.newLinkedHashMap();
       // Collect superclasses and superinterfaces for classes
-      for (ASTClassProd classProd : ((ASTMCGrammar) grammar.getAstNode())
+      for (ASTClassProd classProd : (grammar.getAstNode())
           .getClassProdList()) {
         List<ASTRuleReference> ruleRefs = Lists.newArrayList();
         ruleRefs.addAll(classProd.getSuperRuleList());
@@ -126,8 +115,7 @@ public class MCGrammarInfo {
       }
       
       // Collect superclasses and superinterfaces for abstract classes
-      for (ASTAbstractProd classProd : ((ASTMCGrammar) grammar.getAstNode())
-          .getAbstractProdList()) {
+      for (ASTAbstractProd classProd : grammar.getAstNode().getAbstractProdList()) {
         List<ASTRuleReference> ruleRefs = Lists.newArrayList();
         ruleRefs.addAll(classProd.getSuperRuleList());
         ruleRefs.addAll(classProd.getSuperInterfaceRuleList());
@@ -135,8 +123,7 @@ public class MCGrammarInfo {
       }
       
       // Collect superinterfaces for interfaces
-      for (ASTInterfaceProd classProd : ((ASTMCGrammar) grammar.getAstNode())
-          .getInterfaceProdList()) {
+      for (ASTInterfaceProd classProd : grammar.getAstNode().getInterfaceProdList()) {
         List<ASTRuleReference> ruleRefs = Lists.newArrayList();
         ruleRefs.addAll(classProd.getSuperInterfaceRuleList());
         ruleMap.put(classProd.getName(), ruleRefs);
@@ -166,20 +153,6 @@ public class MCGrammarInfo {
   }
   
 
-  protected Collection<String> addLeftRecursiveRuleForProd(ASTClassProd ast) {
-    List<ASTProd> superProds = TransformationHelper.getAllSuperProds(ast);
-    Collection<String> names = new ArrayList<>();
-    superProds.forEach(s -> names.add(s.getName()));
-    DirectLeftRecursionDetector detector = new DirectLeftRecursionDetector();
-    for (ASTAlt alt : ast.getAltList()) {
-      if (detector.isAlternativeLeftRecursive(alt, names)) {
-        names.add(ast.getName());
-        return names;
-      }
-    }
-    return Lists.newArrayList();
-  }
-  
   /**
    * @return grammarSymbol
    */
@@ -248,45 +221,22 @@ public class MCGrammarInfo {
   }
   
   /**
-   * Checks if the terminal or constant <code>name</code> is a and has to be
-   * defined in the parser.
+   * Checks if the terminal or constant <code>name</code> is a keyword and could
+   * be replaced by a name
    * 
    * @param name - rule to check
-   * @return true, if the terminal or constant <code>name</code> is a and has to
-   * be defined in the parser.
+   * @return true, if the terminal or constant <code>name</code> is a keyword and could
+   * be replaced by a name
    */
-  public boolean isKeyword(String name, MCGrammarSymbol grammar) {
-    boolean matches = false;
-    boolean found = false;
-    
-    // Check with options
-    if (mustBeKeyword(name)) {
-      matches = true;
-      found = true;
-    }
-    
-    // Automatically detect if not specified
-    if (!found && lexerPatterns.containsKey(grammar)) {
-      for (Pattern p : lexerPatterns.get(grammar)) {
-        
-        if (p.matcher(name).matches()) {
-          matches = true;
-          Log.debug(name + " is considered as a keyword because it matches " + p + " "
-              + "(grammarsymtab)", MCGrammarSymbol.class.getSimpleName());
-          break;
-        }
-        
-      }
-    }
-    
-    return matches;
+  public boolean isKeyword(String name) {
+    return keywords.contains(name);
   }
 
   public List<PredicatePair> getSubRulesForParsing(String ruleName) {
     // Consider superclass
     Optional<ProdSymbol> ruleByName = grammarSymbol.getProdWithInherited(ruleName);
     List<PredicatePair> predicateList = Lists.newArrayList();
-    if (!ruleByName.isPresent()) {
+    if (ruleByName.isEmpty()) {
       return predicateList;
     }
     
@@ -324,9 +274,7 @@ public class MCGrammarInfo {
               }
             }
           }
-          Optional<MCGrammarSymbol> refGrammarSymbol = MCGrammarSymbolTableHelper
-              .getMCGrammarSymbol(astProd.getEnclosingScope());
-          TerminalVisitor tv = new TerminalVisitor(refGrammarSymbol);
+          TerminalVisitor tv = new TerminalVisitor();
           Grammar_WithConceptsTraverser traverser = Grammar_WithConceptsMill.traverser();
           traverser.add4Grammar(tv);
           astProd.accept(traverser);
@@ -335,58 +283,8 @@ public class MCGrammarInfo {
     }
     
   }
-  
-  protected void buildLexPatterns() {
-    buildLexPatterns(grammarSymbol);
-    grammarSymbol.getSuperGrammarSymbols().forEach(g -> buildLexPatterns(g));
-  }
-  
-  protected void buildLexPatterns(MCGrammarSymbol grammar) {
-    List<Pattern> patterns = lexerPatterns.get(grammar);
-    if (patterns == null) {
-      patterns = new ArrayList<>();
-      lexerPatterns.put(grammar, patterns);
-    }
-    
-    for (ProdSymbol rule : grammar.getProdsWithInherited().values()) {
-      if (rule.isPresentAstNode() && rule.isIsLexerProd()) {
-        if (!isFragment(rule.getAstNode())) {
-          Optional<Pattern> lexPattern = calculateLexPattern(
-              grammar,
-                  (ASTLexProd) rule.getAstNode());
-          
-          if (lexPattern.isPresent()) {
-            patterns.add(lexPattern.get());
-          }
-        }
-      }
-    }
-  }
-
-  public static String getListName(ASTNonTerminal a) {
-    String name;
-    if (a.isPresentUsageName()) {
-      name = a.getUsageName();
-    } else {
-      // Use Nonterminal name as attribute name starting with lower case
-      // for a list (iterated) nonterminal a 's' is added for the name
-      name = a.getName();
-    }
-    return name + DecorationHelper.GET_SUFFIX_LIST;
-  }
-
-
-  protected boolean mustBeKeyword(String rule) {
-    return keywords.contains(rule);
-  }
 
   protected class TerminalVisitor implements GrammarVisitor2 {
-
-    TerminalVisitor(Optional<MCGrammarSymbol> refGrammarSymbol) {
-      this.refGrammarSymbol = refGrammarSymbol;
-    }
-
-    Optional<MCGrammarSymbol> refGrammarSymbol;
 
     public GrammarTraverser getTraverser() {
       return traverser;
@@ -400,16 +298,14 @@ public class MCGrammarInfo {
 
     @Override
     public void visit(ASTTerminal keyword) {
-      if (isKeyword(keyword.getName(), grammarSymbol)
-              || (refGrammarSymbol.isPresent() && isKeyword(keyword.getName(), refGrammarSymbol.get()))) {
+      if (NAME_PATTERN.matcher(keyword.getName()).matches()) {
         keywords.add(keyword.getName());
       }
     }
 
     @Override
     public void visit(ASTConstant keyword) {
-      if (isKeyword(keyword.getName(), grammarSymbol)
-              || (refGrammarSymbol.isPresent() && isKeyword(keyword.getName(), refGrammarSymbol.get()))) {
+      if (NAME_PATTERN.matcher(keyword.getName()).matches()) {
         keywords.add(keyword.getName());
       }
     }

@@ -2,7 +2,7 @@
 
 # MontiCore Best Practices - Designing Tools for Command Line Interfaces
 
-[[_TOC_]]
+
 
 Some DSLs require a tool to enable general accessibility via the command line interface (CLI). 
 When designing a tool, we recommend some standard guidelines.

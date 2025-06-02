@@ -116,9 +116,9 @@ public class SymTypeExpressionDeSerTest {
 
     teNumSI1 = createNumericWithSIUnit(teSI3, teInt);
 
-    teVarA = createTypeVariable("A", scope);
+    teVarA = SymTypeExpressionFactory.createTypeVariable("A", scope);
 
-    teVarB = createTypeVariable("B", scope);
+    teVarB = SymTypeExpressionFactory.createTypeVariable("B", scope);
 
     teP = createTypeObject("de.x.Person", scope);
 

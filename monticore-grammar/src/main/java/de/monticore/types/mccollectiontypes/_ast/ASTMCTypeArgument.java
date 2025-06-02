@@ -7,7 +7,8 @@ import de.monticore.types.mccollectiontypes.MCCollectionTypesMill;
 import java.util.Optional;
 
 public interface ASTMCTypeArgument extends ASTMCTypeArgumentTOP {
-  public Optional<ASTMCType> getMCTypeOpt();
+
+  Optional<ASTMCType> getMCTypeOpt();
 
   /**
    * Conversion to a compact string, such as "int", "Person", "List< A >"

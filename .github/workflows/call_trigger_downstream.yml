@@ -1,0 +1,32 @@
+# (c) https://github.com/MontiCore/monticore
+name: "Trigger the downstream projects (workflow-call)"
+
+on:
+  workflow_call:
+    inputs:
+      projects:
+        # An exemplary with-usage can look like the following:
+        # projects: "['MontiCore/xml', 'MontiCore/json', 'MontiCore/ucd', 'MontiCore/automaton']"
+        description: 'The JSON-projects to trigger'
+        type: string
+        required: true
+    secrets:
+      DOWNSTREAM_PAT:
+        required: true
+
+
+jobs:
+  # Trigger all downstream, as given by the projects inputs
+  trigger-github-downstream:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        project: ${{ fromJSON(inputs.projects) }}
+
+    steps:
+      - name: Trigger ${{ matrix.project }}
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.DOWNSTREAM_PAT }}
+          repository: ${{ matrix.project }}
+          event-type: trigger_after_upstream_deploy

@@ -46,6 +46,26 @@ public class SymTypeOfWildcard extends SymTypeExpression {
     return isUpper;
   }
 
+  /**
+   * @return upper bound, TOP if not bounded otherwise
+   */
+  public SymTypeExpression getUpperBound() {
+    if (hasBound() && isUpper()) {
+      return getBound();
+    }
+    return SymTypeExpressionFactory.createTopType();
+  }
+
+  /**
+   * @return lower bound, BOTTOM if not bounded otherwise
+   */
+  public SymTypeExpression getLowerBound() {
+    if (hasBound() && !isUpper()) {
+      return getBound();
+    }
+    return SymTypeExpressionFactory.createBottomType();
+  }
+
   @Override
   public boolean isValidType() {
     return false;
