@@ -303,7 +303,13 @@ public class GlobalExtensionManagement {
    */
   public String defineHookPoint(TemplateController controller, String hookName, ASTNode ast) {
 
-    StringBuffer result = new StringBuffer(controller.getGeneratorSetup().isTracing()?"/* Hookpoint: " + hookName + " */":"");
+    StringBuilder result = new StringBuilder();
+    if (controller.getGeneratorSetup().isTracing()) {
+     result.append(controller.getGeneratorSetup().getCommentStart());
+     result.append("Hookpoint: ");
+     result.append(hookName);
+      result.append(controller.getGeneratorSetup().getCommentEnd());
+    }
 
     // Before replacement
     List<HookPoint> beforeHooks = getBeforeTemplates(hookName, ast);
