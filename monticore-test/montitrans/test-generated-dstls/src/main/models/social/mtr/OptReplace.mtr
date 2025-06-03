@@ -1,0 +1,7 @@
+/* (c) https://github.com/MontiCore/monticore */
+// user wants to replace entry that they are vegetarian
+// with an entry that they are vegan,
+// but only if the vegetarian entry exists
+    user $_ $_ {
+     opt[[ [[ entry vegetarian; :- entry vegan; ]] ]]
+    }
