@@ -17,20 +17,14 @@ import static de.monticore.runtime.junit.MCAssertions.assertNoFindings;
 import static de.monticore.runtime.types3.DefsTypesForTests._carSymType;
 import static de.monticore.runtime.types3.DefsTypesForTests._childSymType;
 import static de.monticore.runtime.types3.DefsTypesForTests._csStudentSymType;
+import static de.monticore.runtime.types3.DefsTypesForTests._DoubleSymType;
+import static de.monticore.runtime.types3.DefsTypesForTests._IntegerSymType;
 import static de.monticore.runtime.types3.DefsTypesForTests._personSymType;
 import static de.monticore.runtime.types3.DefsTypesForTests._studentSymType;
 import static de.monticore.types.check.SymTypeExpressionFactory.createBottomType;
 import static de.monticore.types.check.SymTypeExpressionFactory.createIntersection;
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeArray;
 import static de.monticore.types.check.SymTypeExpressionFactory.createUnion;
-import static de.monticore.types3.util.DefsTypesForTests._DoubleSymType;
-import static de.monticore.types3.util.DefsTypesForTests._IntegerSymType;
-import static de.monticore.types3.util.DefsTypesForTests._carSymType;
-import static de.monticore.types3.util.DefsTypesForTests._childSymType;
-import static de.monticore.types3.util.DefsTypesForTests._csStudentSymType;
-import static de.monticore.types3.util.DefsTypesForTests._personSymType;
-import static de.monticore.types3.util.DefsTypesForTests._studentSymType;
-import static org.junit.Assert.assertEquals;
 
 public class SymTypeLeastUpperBoundTest extends AbstractMCTest {
 
