@@ -15,9 +15,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class ComponentSymbol extends ComponentSymbolTOP {
+public class ComponentTypeSymbol extends ComponentTypeSymbolTOP {
 
-  public ComponentSymbol(String name) {
+  public ComponentTypeSymbol(String name) {
     super(name);
   }
 
@@ -29,6 +29,7 @@ public class ComponentSymbol extends ComponentSymbolTOP {
     return Optional.empty();
   }
 
+  @Override
   public boolean addParameter(@NonNull VariableSymbol parameter) {
     Preconditions.checkNotNull(parameter);
     Preconditions.checkArgument(this.getSpannedScope().getLocalVariableSymbols().contains(parameter));
@@ -192,7 +193,7 @@ public class ComponentSymbol extends ComponentSymbolTOP {
     return this.getAllPorts(new LinkedHashSet<>());
   }
 
-  protected Set<PortSymbol> getAllPorts(Collection<ComponentSymbol> visited) {
+  protected Set<PortSymbol> getAllPorts(Collection<ComponentTypeSymbol> visited) {
     visited.add(this);
     Set<PortSymbol> result = new LinkedHashSet<>(this.getPorts());
     for (CompKindExpression superComponent : this.getSuperComponentsList()) {
@@ -295,18 +296,16 @@ public class ComponentSymbol extends ComponentSymbolTOP {
    * A component without explicit refinements is itself the start on the chain. If there does not exist an unique
    * start (A refines B, C and B, C are unrefined) we throw an error.
    */
-  public Optional<ComponentSymbol> getRefinementStart() {
+  public Optional<ComponentTypeSymbol> getRefinementStart() {
     if(getRefinementsList() == null || getRefinementsList().isEmpty()) {
       return Optional.of(this);
     }
     else {
       var candidates = getRefinementsList().stream()
-          .map(refinement -> refinement.getTypeInfo())
-          .filter(component -> component instanceof ComponentSymbol)
-          .map(component -> (ComponentSymbol)component)
-          .map(mildComponent -> mildComponent.getRefinementStart()) // Rekursion
-          .filter(optComponent -> optComponent.isPresent())
-          .map(optComponent -> optComponent.get())
+          .map(CompKindExpression::getTypeInfo)
+          .map(ComponentTypeSymbol::getRefinementStart) // Recursion
+          .filter(Optional::isPresent)
+          .map(Optional::get)
           .collect(Collectors.toSet());
       if(candidates.size() == 1) {
         return candidates.stream().findFirst();
