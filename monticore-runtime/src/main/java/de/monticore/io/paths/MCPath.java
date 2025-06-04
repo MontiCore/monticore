@@ -227,15 +227,28 @@ public final class MCPath {
     List<URL> resolvedURLs = findResolvedUrls(fixedPath);
 
     if (1 == resolvedURLs.size()) {
-      File resolvedFile = new File(resolvedURLs.get(0).getFile());
-      File parentFile = new File(resolvedFile.getParent());
-      if (parentFile.isDirectory()) {
-        String simpleName = new File(resolvedURLs.get(0).getFile()).getName();
-        if (Arrays.stream(parentFile.listFiles()).anyMatch(f -> simpleName.equals(f.getName()))) {
+      try {
+        // Note: URL#getFile() might be unexpectedly encoded
+        URI resolvedURI = resolvedURLs.get(0).toURI();
+        if (resolvedURI.isOpaque() || !resolvedURI.isAbsolute()) {
+          // For example, a jar:file:/home/.../MyFile.jar!/de/mc/Entry.mc4
+          // As the "parentFile" would be within the jar-filesystem, we do not do the check case-sensitive check
           return Optional.of(resolvedURLs.get(0));
         }
-      } else {
-        return Optional.of(resolvedURLs.get(0));
+        File resolvedFile = new File(resolvedURI);
+        File parentFile = new File(resolvedFile.getParent());
+        if (parentFile.isDirectory()) {
+          // Special handling to ensure the file name matches without ignoring the case
+          String simpleName = new File(resolvedURLs.get(0).getFile()).getName();
+          if (Arrays.stream(parentFile.listFiles()).anyMatch(f -> simpleName.equals(f.getName()))) {
+            return Optional.of(resolvedURLs.get(0));
+          }
+        } else {
+          return Optional.of(resolvedURLs.get(0));
+        }
+      } catch (URISyntaxException e) {
+        Log.error("0xFDAB1: Unexpected uri format " + e.getMessage());
+        throw new RuntimeException(e);
       }
     }
     else if (1 < resolvedURLs.size()) {
