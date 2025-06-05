@@ -597,7 +597,7 @@ if (("true").equals(getProperty('genTagging'))) {
   // Because tagging is not properly published as a source set we instead add the tag definitions to the main grammar jars
   ["grammarsJar", "grammarsForVariantJar"].forEach { taskname ->
     // We have to add it to both the "compability grammarsForVariant", as well as the grammarsJar publication
-    tasks.named(taskname, org.gradle.jvm.tasks.Jar) {
+    tasks.named(taskname, org.gradle.api.tasks.bundling.Jar) {
       from(tasks.generateMCGrammars.outputDir) {
         include "**/*TagDefinition.mc4", "**/*TagSchema.mc4"
       }
