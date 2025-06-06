@@ -121,6 +121,12 @@ public class ${className} {
     Log.debug("Starting odrule generation ", LOG_ID);
     ModelTraversal<${dstlName}Traverser> mt = ModelTraversalFactory.getInstance().create((java.util.function.Supplier)${dstlName}Mill::inheritanceTraverser);
     ast.accept(mt.getTraverser());
+
+    Log.debug("Switching to OD ", LOG_ID);
+    // Switch language to OD
+    ODRulesMill.reset();
+    ODRulesMill.init();
+
     Log.debug("Starting rule2odstate ", LOG_ID);
     Rule2ODState state = new Rule2ODState(new Variable2AttributeMap(), mt.getParents());
     state.getGenRule().setGrammarPackageList(Arrays.asList("${grammarPackage}".split("\\.")));
@@ -128,11 +134,6 @@ public class ${className} {
     ${grammarName}RuleCollectVariables variables = new ${grammarName}RuleCollectVariables(state);
     ${grammarName}Rule2OD rule2OD = new ${grammarName}Rule2OD(state);
     
-    Log.debug("Switching to OD ", LOG_ID);
-    // Switch language to OD
-    ODRulesMill.reset();
-    ODRulesMill.init();
-
     ast.accept(variables.getTraverser());
     
     ast.accept(rule2OD.getTraverser());
