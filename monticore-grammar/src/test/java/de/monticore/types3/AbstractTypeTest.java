@@ -2,6 +2,7 @@
 package de.monticore.types3;
 
 import de.monticore.runtime.junit.AbstractMCTest;
+import de.monticore.runtime.junit.MCAssertions;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 
@@ -21,6 +22,10 @@ public class AbstractTypeTest extends AbstractMCTest {
         .map(Finding::buildMsg)
         .collect(Collectors.joining(System.lineSeparator()))
         ;
+  }
+
+  protected static void assertNoFindings() {
+    MCAssertions.assertNoFindings();
   }
 
 }
