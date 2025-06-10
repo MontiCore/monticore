@@ -54,10 +54,10 @@ public class Subcomponent2VariableAdapter extends VariableSymbol {
   public SymTypeExpression getType() {
     if (!adaptee.isTypePresent()) return SymTypeExpressionFactory.createObscureType();
     if (!adaptee.getType().isGenericComponentType()) {
-      return SymTypeExpressionFactory.createTypeObject(new Component2TypeSymbolAdapter(adaptee.getType().getTypeInfo()));
+      return SymTypeExpressionFactory.createTypeObject(new ComponentType2TypeSymbolAdapter(adaptee.getType().getTypeInfo()));
     } else {
       return SymTypeExpressionFactory.createGenerics(
-        new Component2TypeSymbolAdapter(adaptee.getType().getTypeInfo()), adaptee.getType().asGenericComponentType().getTypeBindingsAsList()
+        new ComponentType2TypeSymbolAdapter(adaptee.getType().getTypeInfo()), adaptee.getType().asGenericComponentType().getTypeBindingsAsList()
       );
     }
   }

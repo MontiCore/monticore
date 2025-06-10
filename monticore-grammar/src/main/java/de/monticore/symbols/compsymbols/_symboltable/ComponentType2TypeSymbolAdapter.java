@@ -11,21 +11,21 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.stream.Collectors;
 
-public class Component2TypeSymbolAdapter extends TypeSymbol {
+public class ComponentType2TypeSymbolAdapter extends TypeSymbol {
 
   protected ComponentTypeSymbol adaptee;
 
-  public Component2TypeSymbolAdapter(@NonNull ComponentTypeSymbol adaptee) {
+  public ComponentType2TypeSymbolAdapter(@NonNull ComponentTypeSymbol adaptee) {
     super(Preconditions.checkNotNull(adaptee).getName());
     this.adaptee = adaptee;
     this.accessModifier = BasicAccessModifier.PUBLIC;
     this.spannedScope = adaptee.getSpannedScope();
     this.superTypes = adaptee.getSuperComponentsList().stream().map(c -> {
       if (!c.isGenericComponentType()) {
-        return SymTypeExpressionFactory.createTypeObject(new Component2TypeSymbolAdapter(c.getTypeInfo()));
+        return SymTypeExpressionFactory.createTypeObject(new ComponentType2TypeSymbolAdapter(c.getTypeInfo()));
       } else {
         return SymTypeExpressionFactory.createGenerics(
-          new Component2TypeSymbolAdapter(c.getTypeInfo()), c.asGenericComponentType().getTypeBindingsAsList()
+          new ComponentType2TypeSymbolAdapter(c.getTypeInfo()), c.asGenericComponentType().getTypeBindingsAsList()
         );
       }
     }).collect(Collectors.toList());
