@@ -2,11 +2,13 @@
 package de.monticore.types.check;
 
 import com.google.common.base.Preconditions;
+import de.monticore.ast.ASTNode;
 import de.monticore.expressions.assignmentexpressions._ast.ASTAssignmentExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
-import de.monticore.symbols.compsymbols._symboltable.ComponentSymbol;
+import de.monticore.symbols.compsymbols._symboltable.ComponentTypeSymbol;
+import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,9 +24,10 @@ import java.util.Optional;
  */
 public abstract class CompKindExpression {
 
-  protected final ComponentSymbol component;
+  protected final ComponentTypeSymbol component;
   protected LinkedHashMap<VariableSymbol, ASTExpression> parameterBindings;
   protected List<ASTExpression> arguments;
+  protected Optional<ASTNode> sourceNode;
 
   /**
    * @return a {@code List} of the configuration arguments of this component.
@@ -39,6 +42,44 @@ public abstract class CompKindExpression {
   public void addArgument(ASTExpression argument) {
     Preconditions.checkNotNull(argument);
     this.arguments.add(argument);
+  }
+
+  /**
+   * Am I simple component type? (such as "C")
+   * (default: no)
+   */
+  public boolean isComponentType() {
+    return false;
+  }
+
+  /**
+   * Logs an error if this is not a component type
+   * @return this expression as a component type
+   */
+  public CompKindOfComponentType asComponentType() {
+    Log.error("0xFDAB1 internal error: "
+      + "tried to convert non-component to a component."
+      + " Actual: " + this.printFullName());
+    return null;
+  }
+
+  /**
+   * Am I a generic component type? (such as "C<int>")
+   * (default: no)
+   */
+  public boolean isGenericComponentType() {
+    return false;
+  }
+
+  /**
+   * Logs an error if this is not a generic component type
+   * @return this expression as a generic component type
+   */
+  public CompKindOfGenericComponentType asGenericComponentType() {
+    Log.error("0xFDAB2 internal error: "
+      + "tried to convert non-generic-component to a generic-component."
+      + " Actual: " + this.printFullName());
+    return null;
   }
 
   /**
@@ -98,14 +139,41 @@ public abstract class CompKindExpression {
 
     this.parameterBindings = parameterBindings;
   }
-  protected CompKindExpression(ComponentSymbol component) {
+
+  /**
+   * The ast node on which this CompKindExpression is based, if present.
+   * <p>
+   * This is ONLY meant to be used to create better log messages!
+   * As CompKindExpressions are moved around, cloned, and modified, it cannot be
+   * assumed that the reference to the AST node holds reliable.
+   */
+  public Optional<ASTNode> getSourceNode() {
+    return this.sourceNode;
+  }
+
+  /**
+   * @param sourceNode Must not be null
+   * @see CompKindExpression#getSourceNode
+   */
+  public void setSourceNode(ASTNode sourceNode) {
+    Preconditions.checkNotNull(sourceNode);
+    this.sourceNode = Optional.of(sourceNode);
+  }
+
+  /** @see CompKindExpression#getSourceNode */
+  public void setSourceNodeAbsent() {
+    this.sourceNode = Optional.empty();
+  }
+
+  protected CompKindExpression(ComponentTypeSymbol component) {
     Preconditions.checkNotNull(component);
     this.component = component;
     this.arguments = new ArrayList<>();
     this.parameterBindings = new LinkedHashMap<>();
+    this.sourceNode = Optional.empty();
   }
 
-  public ComponentSymbol getTypeInfo() {
+  public ComponentTypeSymbol getTypeInfo() {
     return this.component;
   }
 
@@ -151,7 +219,7 @@ public abstract class CompKindExpression {
     return deepClone(getTypeInfo());
   }
 
-  public abstract CompKindExpression deepClone(ComponentSymbol component);
+  public abstract CompKindExpression deepClone(ComponentTypeSymbol component);
 
   public abstract boolean deepEquals(CompKindExpression compSymType);
 }

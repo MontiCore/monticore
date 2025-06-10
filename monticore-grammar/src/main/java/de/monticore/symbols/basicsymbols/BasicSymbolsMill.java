@@ -11,13 +11,6 @@ import java.util.Collections;
 
 public class BasicSymbolsMill extends BasicSymbolsMillTOP {
 
-  protected static BasicSymbolsMill primitiveTypesInitializer;
-
-  public static void initMe (BasicSymbolsMill a)  {
-    BasicSymbolsMillTOP.initMe(a);
-    primitiveTypesInitializer = a;
-  }
-
   public static final String INT = "int";
 
   public static final String DOUBLE = "double";
@@ -45,10 +38,7 @@ public class BasicSymbolsMill extends BasicSymbolsMillTOP {
   public static final String OBJECT = "Object";
 
   public static void initializePrimitives(){
-    if(primitiveTypesInitializer == null){
-      primitiveTypesInitializer = getMill();
-    }
-    primitiveTypesInitializer._initializePrimitives();
+    getMill()._initializePrimitives();
   }
 
   public void _initializePrimitives(){
@@ -77,10 +67,7 @@ public class BasicSymbolsMill extends BasicSymbolsMillTOP {
    */
   public static void initializeString() {
     // reusing the initializer
-    if(primitiveTypesInitializer == null){
-      primitiveTypesInitializer = getMill();
-    }
-    primitiveTypesInitializer._initializeString();
+    getMill()._initializeString();
   }
 
   protected void _initializeString() {
@@ -102,11 +89,7 @@ public class BasicSymbolsMill extends BasicSymbolsMillTOP {
    * It is deliberately a trivial Symbol without any fields / methods.
    */
   public static void initializeObject() {
-    // reusing the initializer
-    if(primitiveTypesInitializer == null){
-      primitiveTypesInitializer = getMill();
-    }
-    primitiveTypesInitializer._initializeObject();
+    getMill()._initializeObject();
   }
 
   protected void _initializeObject() {
@@ -120,11 +103,6 @@ public class BasicSymbolsMill extends BasicSymbolsMillTOP {
       .setAccessModifier(AccessModifier.ALL_INCLUSION)
       .build()
     );
-  }
-
-  public static  void reset ()  {
-    BasicSymbolsMillTOP.reset();
-    primitiveTypesInitializer = null;
   }
 
 }

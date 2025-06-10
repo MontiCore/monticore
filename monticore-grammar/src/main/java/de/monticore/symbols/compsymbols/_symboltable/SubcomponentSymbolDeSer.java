@@ -4,35 +4,40 @@ package de.monticore.symbols.compsymbols._symboltable;
 import com.google.common.base.Preconditions;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.monticore.types.check.CompKindExpression;
-import de.monticore.types.check.FullCompKindExprDeSer;
+import de.monticore.types.check.CompKindExpressionDeSer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 public class SubcomponentSymbolDeSer extends SubcomponentSymbolDeSerTOP {
 
-  private FullCompKindExprDeSer compKindExprDeSer;
+  protected final CompKindExpressionDeSer compKindExprDeSer;
 
   public SubcomponentSymbolDeSer() {
-
-  }
-
-  protected FullCompKindExprDeSer getCompKindExprDeSer() {
-    return this.compKindExprDeSer;
+    compKindExprDeSer = new CompKindExpressionDeSer();
   }
 
   /**
    * @param compKindExprDeSer the DeSer to use for (de)serializing the super components
    */
-  public SubcomponentSymbolDeSer(@NonNull FullCompKindExprDeSer compKindExprDeSer) {
+  public SubcomponentSymbolDeSer(@NonNull CompKindExpressionDeSer compKindExprDeSer) {
     this.compKindExprDeSer = Preconditions.checkNotNull(compKindExprDeSer);
+  }
+
+  protected CompKindExpressionDeSer getCompKindExprDeSer() {
+    return this.compKindExprDeSer;
   }
 
   @Override
   protected void serializeType(CompKindExpression type, CompSymbolsSymbols2Json s2j) {
-    s2j.getJsonPrinter().memberJson("type", this.getCompKindExprDeSer().serializeAsJson(type));
+    s2j.getJsonPrinter().memberJson("type", this.getCompKindExprDeSer().serialize(type));
+  }
+
+  @Override
+  protected CompKindExpression deserializeType(ICompSymbolsScope scope, JsonObject symbolJson) {
+    return this.getCompKindExprDeSer().deserialize(scope, symbolJson.getObjectMember("type"));
   }
 
   @Override
   protected CompKindExpression deserializeType(JsonObject symbolJson) {
-    return this.getCompKindExprDeSer().deserialize(symbolJson.getObjectMember("type"));
+    throw new UnsupportedOperationException();
   }
 }

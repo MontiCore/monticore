@@ -5,13 +5,9 @@ package de.monticore.symbols.compsymbols._symboltable;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.compsymbols.CompSymbolsMill;
-import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.types.check.CompKindExpression;
-import de.monticore.types.check.FullCompKindExprDeSer;
-import de.monticore.types.check.KindOfComponent;
-import de.monticore.types.check.KindOfComponentDeSer;
+import de.monticore.types.check.CompKindOfComponentType;
 import de.monticore.types.check.SymTypeExpressionFactory;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,7 +21,7 @@ public class ComponentSymbolDeSerTest {
 
   protected static final String RELATIVE_DIR = "src/test/resources/de/monticore/symbols/compsymbols/_symboltable/";
 
-  protected ComponentSymbolDeSer deSer;
+  protected ComponentTypeSymbolDeSer deSer;
   protected CompSymbolsSymbols2Json arc2json;
 
   @BeforeEach
@@ -34,9 +30,9 @@ public class ComponentSymbolDeSerTest {
     CompSymbolsMill.init();
     BasicSymbolsMill.initializePrimitives();
 
-    deSer = new ComponentSymbolDeSer(new FullTestCompKindDeser());
+    deSer = new ComponentTypeSymbolDeSer();
     CompSymbolsMill.globalScope().putSymbolDeSer(deSer.getSerializedKind(), deSer);
-    SubcomponentSymbolDeSer subDeSer = new SubcomponentSymbolDeSer(new FullTestCompKindDeser());
+    SubcomponentSymbolDeSer subDeSer = new SubcomponentSymbolDeSer();
     CompSymbolsMill.globalScope().putSymbolDeSer(subDeSer.getSerializedKind(), subDeSer);
     arc2json = new CompSymbolsSymbols2Json();
   }
@@ -45,16 +41,16 @@ public class ComponentSymbolDeSerTest {
   void shouldSerializeSuperComponentType() throws IOException {
     // Given
     // create a symbol for the super component type
-    ComponentSymbol superCType = CompSymbolsMill.componentSymbolBuilder()
+    ComponentTypeSymbol superCType = CompSymbolsMill.componentTypeSymbolBuilder()
       .setName("SuperCType")
       .setSpannedScope(CompSymbolsMill.scope())
       .build();
 
     // create a reference to the super component type
-    CompKindExpression parentType = new KindOfComponent(superCType) {};
+    CompKindExpression parentType = new CompKindOfComponentType(superCType) {};
 
     // create a symbol for a component type, reference its super type
-    ComponentSymbol cType = CompSymbolsMill.componentSymbolBuilder()
+    ComponentTypeSymbol cType = CompSymbolsMill.componentTypeSymbolBuilder()
       .setName("CompTypeWithSuper1")
       .setSpannedScope(CompSymbolsMill.scope())
       .addSuperComponents(parentType)
@@ -75,21 +71,21 @@ public class ComponentSymbolDeSerTest {
   void shouldSerializeSuperComponentType2() throws IOException {
     // Given
     // create symbols for the two super component types
-    ComponentSymbol superCType1 = CompSymbolsMill.componentSymbolBuilder()
+    ComponentTypeSymbol superCType1 = CompSymbolsMill.componentTypeSymbolBuilder()
       .setName("SuperCType1")
       .setSpannedScope(CompSymbolsMill.scope())
       .build();
-    ComponentSymbol superCType2 = CompSymbolsMill.componentSymbolBuilder()
+    ComponentTypeSymbol superCType2 = CompSymbolsMill.componentTypeSymbolBuilder()
       .setName("SuperCType2")
       .setSpannedScope(CompSymbolsMill.scope())
       .build();
 
     // create a reference for to each of the two super component types
-    CompKindExpression parentType1 = new KindOfComponent(superCType1);
-    CompKindExpression parentType2 = new KindOfComponent(superCType2);
+    CompKindExpression parentType1 = new CompKindOfComponentType(superCType1);
+    CompKindExpression parentType2 = new CompKindOfComponentType(superCType2);
 
     // symbol for a component type, reference its super types
-    ComponentSymbol cType = CompSymbolsMill.componentSymbolBuilder()
+    ComponentTypeSymbol cType = CompSymbolsMill.componentTypeSymbolBuilder()
       .setName("CompTypeWithSuper2")
       .setSpannedScope(CompSymbolsMill.scope())
       .addSuperComponents(parentType1)
@@ -110,7 +106,7 @@ public class ComponentSymbolDeSerTest {
   @Test
   void shouldNotSerializeAbsent() throws IOException {
     // Given
-    ComponentSymbol comp = createSimpleComp();
+    ComponentTypeSymbol comp = createSimpleComp();
 
     // When
     String createdJson = deSer.serialize(comp, arc2json);
@@ -126,7 +122,7 @@ public class ComponentSymbolDeSerTest {
   @Test
   void shouldSerializeTypeParameters() throws IOException {
     // Given
-    ComponentSymbol comp = createSimpleComp();
+    ComponentTypeSymbol comp = createSimpleComp();
     comp.getSpannedScope().add(
       CompSymbolsMill.typeVarSymbolBuilder()
         .setName("A")
@@ -154,7 +150,7 @@ public class ComponentSymbolDeSerTest {
   @Test
   void shouldSerializeParameters() throws IOException {
     // Given
-    ComponentSymbol comp = createSimpleComp();
+    ComponentTypeSymbol comp = createSimpleComp();
     VariableSymbol paramA = CompSymbolsMill.variableSymbolBuilder()
       .setName("a")
       .setType(SymTypeExpressionFactory.createPrimitive("int"))
@@ -183,7 +179,7 @@ public class ComponentSymbolDeSerTest {
   @Test
   void shouldSerializePorts() throws IOException {
     // Given
-    ComponentSymbol comp = createSimpleComp();
+    ComponentTypeSymbol comp = createSimpleComp();
     PortSymbol portIncoming = CompSymbolsMill.portSymbolBuilder()
       .setName("inc")
       .setIncoming(true)
@@ -219,7 +215,7 @@ public class ComponentSymbolDeSerTest {
     // When
     Path json = Path.of(RELATIVE_DIR, "WithParent.json");
     String jsonString = readString(json).replaceAll("\\s+", "");
-    ComponentSymbol comp = deSer.deserialize(jsonString);
+    ComponentTypeSymbol comp = deSer.deserialize(CompSymbolsMill.globalScope(), jsonString);
 
     // Then
     Assertions.assertFalse(comp.isEmptySuperComponents(), "Parent not present");
@@ -231,7 +227,7 @@ public class ComponentSymbolDeSerTest {
     // When
     Path json = Path.of(RELATIVE_DIR, "Simple.json");
     String jsonString = readString(json).replaceAll("\\s+", "");
-    ComponentSymbol comp = deSer.deserialize(jsonString);
+    ComponentTypeSymbol comp = deSer.deserialize(CompSymbolsMill.globalScope(), jsonString);
 
     // Then
     Assertions.assertTrue(comp.isEmptySuperComponents(), "Parent is present");
@@ -242,7 +238,7 @@ public class ComponentSymbolDeSerTest {
     // When
     Path json = Path.of(RELATIVE_DIR, "WithTypeParams.json");
     String jsonString = readString(json).replaceAll("\\s+", "");
-    ComponentSymbol comp = deSer.deserialize(jsonString);
+    ComponentTypeSymbol comp = deSer.deserialize(CompSymbolsMill.globalScope(), jsonString);
 
     // Then
     Assertions.assertEquals(2, comp.getTypeParameters().size());
@@ -257,7 +253,7 @@ public class ComponentSymbolDeSerTest {
     // When
     Path json = Path.of(RELATIVE_DIR, "WithParams.json");
     String jsonString = readString(json).replaceAll("\\s+", "");
-    ComponentSymbol comp = deSer.deserialize(jsonString);
+    ComponentTypeSymbol comp = deSer.deserialize(CompSymbolsMill.globalScope(), jsonString);
 
     // Then
     Assertions.assertEquals(2, comp.getParameterList().size());
@@ -277,7 +273,7 @@ public class ComponentSymbolDeSerTest {
     // When
     Path json = Path.of(RELATIVE_DIR, "WithPorts.json");
     String jsonString = readString(json).replaceAll("\\s+", "");
-    ComponentSymbol comp = deSer.deserialize(jsonString);
+    ComponentTypeSymbol comp = deSer.deserialize(CompSymbolsMill.globalScope(), jsonString);
 
     // Then
     Assertions.assertEquals(2, comp.getPorts().size());
@@ -295,11 +291,11 @@ public class ComponentSymbolDeSerTest {
   @Test
   void shouldSerializeSubComponents() throws IOException {
     // Given
-    ComponentSymbol comp = createParentComp();
+    ComponentTypeSymbol comp = createParentComp();
     comp.getSpannedScope().add(
       CompSymbolsMill.subcomponentSymbolBuilder()
         .setName("inst")
-        .setType(new KindOfComponent(createSimpleComp()))
+        .setType(new CompKindOfComponentType(createSimpleComp()))
         .build()
     );
 
@@ -319,7 +315,7 @@ public class ComponentSymbolDeSerTest {
     // When
     Path json = Path.of(RELATIVE_DIR, "WithSub.json");
     String jsonString = readString(json).replaceAll("\\s+", "");
-    ComponentSymbol comp = deSer.deserialize(jsonString);
+    ComponentTypeSymbol comp = deSer.deserialize(CompSymbolsMill.globalScope(), jsonString);
 
     // Then
     Assertions.assertEquals(1, comp.getSubcomponents().size());
@@ -331,31 +327,17 @@ public class ComponentSymbolDeSerTest {
     );
   }
 
-  protected static ComponentSymbol createSimpleComp() {
-    return CompSymbolsMill.componentSymbolBuilder()
+  protected static ComponentTypeSymbol createSimpleComp() {
+    return CompSymbolsMill.componentTypeSymbolBuilder()
       .setName("Comp")
       .setSpannedScope(CompSymbolsMill.scope())
       .build();
   }
 
-  protected static ComponentSymbol createParentComp() {
-    return CompSymbolsMill.componentSymbolBuilder()
+  protected static ComponentTypeSymbol createParentComp() {
+    return CompSymbolsMill.componentTypeSymbolBuilder()
       .setName("Parent")
       .setSpannedScope(CompSymbolsMill.scope())
       .build();
-  }
-
-  static class FullTestCompKindDeser implements FullCompKindExprDeSer {
-    KindOfComponentDeSer kindOfComponentDeSer = new KindOfComponentDeSer();
-
-    @Override
-    public String serializeAsJson(@NonNull CompKindExpression toSerialize) {
-      return kindOfComponentDeSer.serializeAsJson((KindOfComponent) toSerialize);
-    }
-
-    @Override
-    public CompKindExpression deserialize(@NonNull JsonElement serialized) {
-      return kindOfComponentDeSer.deserialize(serialized.getAsJsonObject());
-    }
   }
 }

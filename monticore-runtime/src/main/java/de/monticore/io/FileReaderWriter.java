@@ -247,11 +247,8 @@ public class FileReaderWriter {
         Path p = Paths.get(location.toURI());
         Reporting.reportOpenInputFile(Optional.of(p.getParent()),
           p.getParent().relativize(p));
-        if (location.getFile().charAt(2) == ':') {
-          String filename = URLDecoder.decode(location.getFile(), "UTF-8");
-          return new FileReader(filename.substring(1));
-        }
-        return new FileReader(location.getFile());
+        // Note: URL#getFile() might be unexpectedly encoded
+        return new FileReader(new File(location.toURI()));
       }
       String[] parts = location.toURI().toString().split("!");
       Path p = Paths.get(parts[1].substring(1));

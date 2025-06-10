@@ -14,8 +14,9 @@ import java.util.Optional;
 import static de.monticore.types.check.SymTypeExpressionFactory.createObscureType;
 import static de.monticore.types.check.SymTypeExpressionFactory.createStringType;
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeRegEx;
+import static de.monticore.types3.SymTypeRelations.isNumericType;
 import static de.monticore.types3.SymTypeRelations.isString;
-import static de.monticore.types3.SymTypeRelations.isSubTypeOf;
+import static de.monticore.types3.SymTypeRelations.isStringOrSubType;
 
 /**
  * Implementation of common operators for type visitors,
@@ -63,8 +64,8 @@ public class TypeVisitorOperatorCalculator {
     SymTypeExpression result;
     // if one part of the expression is a String (subtype)
     // then the whole expression is a String (subtype)
-    if (isSubTypeOf(left, createStringType()) ||
-        isSubTypeOf(right, createStringType())
+    if (isStringOrSubType(left) ||
+        isStringOrSubType(right)
     ) {
       result = calculatePlusString(left, right);
     }
@@ -160,7 +161,10 @@ public class TypeVisitorOperatorCalculator {
     SymTypeExpression leftStr = calculateToString(left);
     SymTypeExpression rightStr = calculateToString(right);
 
-    if (isString(leftStr) && isString(rightStr)) {
+    if (leftStr.isObscureType() || rightStr.isObscureType()) {
+      result = createObscureType();
+    }
+    else if (isString(leftStr) && isString(rightStr)) {
       result = leftStr.deepClone();
     }
     else {
@@ -202,16 +206,49 @@ public class TypeVisitorOperatorCalculator {
    * As such, here we try to be as general as possible,
    * and expect specific languages to override this method,
    * if the need for more restrictive types is required.
+   * <p>
+   * Interestingly, this COULD (but should not!) be generalized;
+   * A function (STE target, STE source) -> STE converted,
+   * where source is compatible to target,
+   * and converted is the result of the conversion to the target type,
+   * which is a subType of the target type.
+   * E.g., in this case, a regEx is a strict subtype of String,
+   * because the additional info is requried.
+   * Let's imagine this for further cases, e.g.,
+   * This additonal info is not needed for assignements (I think),
+   * but, e.g.,  for operations like +.
+   * However, this becomes rather unintuitive real quick:
+   * Assume that this conversion is allowed:
+   * (int, int, int) i3 = (1, (2, 3));
+   * Now we could just use this for the +-operator:
+   * (1, 2, 3) + (4, (5, 6)) == (5, 7, 9),
+   * but this gets wierd with
+   * ((1, 2), 3) + (4, (5, 6))
+   * -> need to find (int, int, int) first, as it is not on either side.
+   * Other example: int and tuples can be converted to String,
+   * in this case, the following could be allowed:
+   * 1 + (2, 3) // "1(2, 3)"
+   * which is severely unintuitiv.
+   * As such, currently we avoid generalizing this method,
+   * as we don't have another (reasonable!) use case.
+   * Somewhat simmilar cases would be numeric promotion, autoboxing.
    *
-   * @return either a SymTypeOfRegEx or a SymTypeOfString
+   * @return either a SymTypeOfRegEx or a SymTypeOfString iff compatible,
+   *     SymTypeObscure otherwise
    */
   protected SymTypeExpression calculateToString(SymTypeExpression type) {
     SymTypeExpression strType;
     if (type.isRegExType()) {
       strType = type.deepClone();
     }
-    else {
+    else if (isString(type) ||
+        isNumericType(type)
+    ) {
       strType = createStringType();
+    }
+    // not compatible
+    else {
+      strType = createObscureType();
     }
     return strType;
   }
@@ -907,6 +944,13 @@ public class TypeVisitorOperatorCalculator {
     SymTypeExpression result;
     // allow to cast numbers down, e.g., (int) 5.0 or (byte) 5
     if (SymTypeRelations.isNumericType(target) && SymTypeRelations.isNumericType(source)) {
+      result = target;
+    }
+    // explicitly allow casts for String <-> java.lang.String as well
+    // note: may need to be extended for further boxed types/
+    // add a more general boxing test here,
+    // currently not needed/requirements unknown.
+    else if (isString(target) && isString(source)) {
       result = target;
     }
     // check typecast is possible

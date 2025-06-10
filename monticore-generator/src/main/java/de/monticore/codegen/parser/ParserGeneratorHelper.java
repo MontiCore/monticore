@@ -8,6 +8,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.mc2cd.TransformationHelper;
+import de.monticore.codegen.parser.antlr.InterfaceInliningAlt;
 import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.PredicatePair;
 import de.monticore.grammar.grammar._ast.*;
@@ -60,6 +61,9 @@ public class ParserGeneratorHelper {
   protected boolean embeddedJavaCode;
 
   protected boolean isJava;
+
+  protected InterfaceInliningAlt curInterfaceInliningAlt;
+  protected Map<InterfaceInliningAlt, List<String>> interfaceInliningAltToTmpNames = new LinkedHashMap<>();
 
   /**
    * Constructor for de.monticore.codegen.parser.ParserGeneratorHelper
@@ -153,6 +157,17 @@ public class ParserGeneratorHelper {
     } else {
       return grammarInfo.getLexNamer().getLexName(grammarSymbol, constName);
     }
+  }
+
+  public String escapeSingleQuote(String str) {
+    String retStr = "";
+    String del = "";
+    for (String s: str.split("'")) {
+      retStr += del;
+      retStr += s;
+      del = "\\'";
+    }
+    return retStr;
   }
 
   /**
@@ -459,9 +474,21 @@ public class ParserGeneratorHelper {
 
   public String getTmpVarName(ASTNode a) {
     if (!tmpVariables.containsKey(a)) {
-      tmpVariables.put(a, getNewTmpVar());
+      String newTmpVar = getNewTmpVar();
+      tmpVariables.put(a, newTmpVar);
+      if(curInterfaceInliningAlt != null){
+        interfaceInliningAltToTmpNames.computeIfAbsent(curInterfaceInliningAlt, e -> new ArrayList<>()).add(newTmpVar);
+      }
     }
     return tmpVariables.get(a);
+  }
+
+  public void setCurInterfaceInliningAlt(InterfaceInliningAlt curInterfaceInliningAlt) {
+    this.curInterfaceInliningAlt = curInterfaceInliningAlt;
+  }
+
+  public Map<InterfaceInliningAlt, List<String>> getInterfaceInliningAltToTmpNames() {
+    return interfaceInliningAltToTmpNames;
   }
 
   protected String getNewTmpVar() {
@@ -471,6 +498,7 @@ public class ParserGeneratorHelper {
   public void resetTmpVarNames() {
     tmpVariables.clear();
     tmp_counter = 0;
+    interfaceInliningAltToTmpNames.clear();
   }
 
   public Map<ASTNode, String> getTmpVariables() {

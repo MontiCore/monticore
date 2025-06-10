@@ -7,18 +7,18 @@ import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesTrav
 
 import java.util.Optional;
 
-public class FullSynthesizeComponentFromMCSimpleGenericTypes implements ISynthesizeComponent {
+public class FullSynthesizeCompKindFromMCSimpleGenericTypes implements ISynthesizeComponent {
 
   protected MCSimpleGenericTypesTraverser traverser;
 
-  protected CompTypeCheckResult resultWrapper;
+  protected CompKindCheckResult resultWrapper;
 
   @Override
   public void init() {
     this.traverser = MCSimpleGenericTypesMill.traverser();
-    this.resultWrapper = new CompTypeCheckResult();
-    SynthesizeCompTypeFromMCBasicTypes synFromBasic = new SynthesizeCompTypeFromMCBasicTypes(resultWrapper);
-    SynthesizeCompTypeFromMCSimpleGenericTypes synFromSimple = new SynthesizeCompTypeFromMCSimpleGenericTypes(resultWrapper, new FullSynthesizeFromMCSimpleGenericTypes());
+    this.resultWrapper = new CompKindCheckResult();
+    SynthesizeCompKindFromMCBasicTypes synFromBasic = new SynthesizeCompKindFromMCBasicTypes(resultWrapper);
+    SynthesizeCompKindFromMCSimpleGenericTypes synFromSimple = new SynthesizeCompKindFromMCSimpleGenericTypes(resultWrapper);
 
     traverser.setMCSimpleGenericTypesHandler(synFromSimple);
     traverser.setMCBasicTypesHandler(synFromBasic);

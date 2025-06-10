@@ -16,6 +16,8 @@ import static de.monticore.types.check.SymTypeExpressionFactory.createBottomType
 import static de.monticore.types.check.SymTypeExpressionFactory.createIntersection;
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeArray;
 import static de.monticore.types.check.SymTypeExpressionFactory.createUnion;
+import static de.monticore.types3.util.DefsTypesForTests._DoubleSymType;
+import static de.monticore.types3.util.DefsTypesForTests._IntegerSymType;
 import static de.monticore.types3.util.DefsTypesForTests._carSymType;
 import static de.monticore.types3.util.DefsTypesForTests._childSymType;
 import static de.monticore.types3.util.DefsTypesForTests._csStudentSymType;
@@ -42,6 +44,7 @@ public class SymTypeLeastUpperBoundTest extends AbstractTypeTest {
     checkLub(createUnion(_childSymType, _studentSymType), "Person & Teachable");
     checkLub(createUnion(_childSymType, _csStudentSymType), "Person & Teachable");
     checkLub(createUnion(_childSymType, _carSymType), "Obscure");
+    checkLub(createUnion(_DoubleSymType, _IntegerSymType), "java.lang.Double");
     checkLub(
         createIntersection(
             _personSymType,

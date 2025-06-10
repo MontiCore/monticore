@@ -14,12 +14,8 @@ import org.gradle.api.plugins.JavaPluginExtension;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.SourceSetContainer;
 import org.gradle.api.tasks.TaskProvider;
-import org.gradle.jvm.tasks.Jar;
+import org.gradle.api.tasks.bundling.Jar;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 
 /**

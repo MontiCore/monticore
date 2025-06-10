@@ -139,6 +139,11 @@ public class SymTypeRelationsDefaultDelegatee extends SymTypeRelations {
     return builtInRelationsDelegate.isString(type);
   }
 
+  @Override
+  protected boolean _isStringOrSubType(SymTypeExpression type) {
+    return builtInRelationsDelegate.isStringOrSubType(type);
+  }
+
   // Top, Bottom
 
   @Override

@@ -92,6 +92,8 @@ while (grammarIterator.hasNext()) {
       decorateWithInterpreter(cd, decoratedCD, glex)
     }
 
+    reportDecoratedCD(decoratedCD, report)
+
     // groovy script hook point
     hook(gh2, glex, astGrammar, decoratedCD, cd)
 

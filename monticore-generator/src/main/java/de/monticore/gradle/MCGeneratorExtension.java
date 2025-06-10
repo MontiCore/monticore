@@ -1,19 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.gradle;
 
-import de.monticore.gradle.dependencies.MCPublishingPlugin;
-import de.monticore.gradle.sources.MCGrammarsSourceDirectorySet;
-import org.gradle.api.DomainObjectCollection;
 import org.gradle.api.DomainObjectCollection;
 import org.gradle.api.Project;
-import org.gradle.api.provider.ListProperty;
-import org.gradle.api.provider.Provider;
-import org.gradle.api.publish.maven.plugins.MavenPublishPlugin;
-import org.gradle.api.tasks.Nested;
 import org.gradle.api.tasks.SourceSet;
-import org.gradle.jvm.tasks.Jar;
-
-import javax.annotation.Nonnull;
 
 /**
  * This extension (to a {@link Project}) allows further configuration of the MC Generator plugin

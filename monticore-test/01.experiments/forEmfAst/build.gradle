@@ -26,7 +26,7 @@ dependencies {
 
 
 // generate from grammars in forAst with emf groovy script by modifying the generateMCGrammars MCGenTask
-generateMCGrammars {
+tasks.named('generateMCGrammars') {
   grammar = file grammarDir
   script = 'de/monticore/monticore_emf.groovy'
   handcodedPath "$projectDir/../forAst/src/main/java"

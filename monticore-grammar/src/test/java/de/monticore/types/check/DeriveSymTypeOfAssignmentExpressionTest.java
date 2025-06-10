@@ -272,8 +272,8 @@ public class DeriveSymTypeOfAssignmentExpressionTest extends DeriveSymTypeAbstra
     check("varint+=7", "int");
     //example with long - double
     check("varlong+=5.6", "long");
-    //example with String - Person
-    check("varString+=person1", "String");
+    //example with String - Number
+    check("varString+=2", "String");
   }
 
   @Test

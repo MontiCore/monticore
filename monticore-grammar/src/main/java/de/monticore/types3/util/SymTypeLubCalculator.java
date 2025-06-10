@@ -11,10 +11,10 @@ import de.monticore.types3.SymTypeRelations;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static de.monticore.types.check.SymTypeExpressionFactory.createIntersection;
 import static de.monticore.types.check.SymTypeExpressionFactory.createObscureType;
@@ -97,21 +97,21 @@ public class SymTypeLubCalculator {
     // lub of number
     // based on Java Spec (20): Numeric Conditional Expressions
     else if (typeSet.stream().allMatch(t -> SymTypeRelations.isNumericType(t))) {
-      Stream<SymTypeExpression> numbers = typeSet.stream().map(SymTypeRelations::unbox);
+      List<SymTypeExpression> numbers = typeSet.stream()
+          .map(SymTypeRelations::unbox)
+          .collect(Collectors.toList());
       // lub of byte
-      if (numbers.allMatch(t -> SymTypeRelations.isByte(t))) {
+      if (numbers.stream().allMatch(t -> SymTypeRelations.isByte(t))) {
         lub = Optional.of(createPrimitive(BasicSymbolsMill.BYTE));
       }
       // lub of byte|short
-      else if (numbers.allMatch(t -> SymTypeRelations.isByte(t)
+      else if (numbers.stream().allMatch(t -> SymTypeRelations.isByte(t)
           || SymTypeRelations.isShort(t))) {
         lub = Optional.of(createPrimitive(BasicSymbolsMill.SHORT));
       }
       // lub using numeric promotion
       else {
-        lub = Optional.of(SymTypeRelations.numericPromotion(
-            numbers.collect(Collectors.toList())
-        ));
+        lub = Optional.of(SymTypeRelations.numericPromotion(numbers));
       }
     }
     // lub of incompatible set of primitives

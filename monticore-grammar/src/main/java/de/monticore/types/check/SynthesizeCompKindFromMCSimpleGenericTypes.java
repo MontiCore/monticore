@@ -2,9 +2,8 @@
 package de.monticore.types.check;
 
 import com.google.common.base.Preconditions;
-import de.monticore.symbols.compsymbols._symboltable.ComponentSymbol;
+import de.monticore.symbols.compsymbols._symboltable.ComponentTypeSymbol;
 import de.monticore.symbols.compsymbols._symboltable.ICompSymbolsScope;
-import de.monticore.symboltable.resolving.ResolvedSeveralEntriesForSymbolException;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCBasicTypeArgument;
 import de.monticore.types.mccollectiontypes._ast.ASTMCPrimitiveTypeArgument;
@@ -13,6 +12,7 @@ import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCCustomTypeArgument;
 import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesHandler;
 import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesTraverser;
+import de.monticore.types3.TypeCheck3;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.ArrayList;
@@ -20,28 +20,21 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * A visitor (a handler indeed) that creates a {@link KindOfComponent} from an
+ * A visitor (a handler indeed) that creates a {@link CompKindOfComponentType} from an
  * {@link ASTMCBasicGenericType}, given that there is a matching resolvable
- * component symbol.
+ * component type symbol.
  */
-public class SynthesizeCompTypeFromMCSimpleGenericTypes implements MCSimpleGenericTypesHandler {
+public class SynthesizeCompKindFromMCSimpleGenericTypes implements MCSimpleGenericTypesHandler {
 
   protected MCSimpleGenericTypesTraverser traverser;
 
   /**
    * Common state with other visitors, if this visitor is part of a visitor composition.
    */
-  protected CompTypeCheckResult resultWrapper;
+  protected CompKindCheckResult resultWrapper;
 
-  /**
-   * Used to create {@link SymTypeExpression}s for the ast-representation of the generic component type's type.
-   */
-  protected ISynthesize typeSynth;
-
-  public SynthesizeCompTypeFromMCSimpleGenericTypes(@NonNull CompTypeCheckResult result,
-                                                    @NonNull ISynthesize typeSynth) {
+  public SynthesizeCompKindFromMCSimpleGenericTypes(@NonNull CompKindCheckResult result) {
     this.resultWrapper = result;
-    this.typeSynth = typeSynth;
   }
 
   @Override
@@ -62,21 +55,18 @@ public class SynthesizeCompTypeFromMCSimpleGenericTypes implements MCSimpleGener
 
     ICompSymbolsScope enclScope = (ICompSymbolsScope) mcType.getEnclosingScope();
     String compName = String.join(".", mcType.getNameList());
-    List<ComponentSymbol> compSym = enclScope.resolveComponentMany(compName);
+    List<ComponentTypeSymbol> compSym = enclScope.resolveComponentTypeMany(compName);
 
     if (compSym.isEmpty()) {
       this.resultWrapper.setResultAbsent();
     } else {
       List<SymTypeExpression> typeArgExpressions = typeArgumentsToTypes(mcType.getMCTypeArgumentList()).stream()
-        .map(typeArg -> {
-          TypeCheckResult typeResult = null;
-          try {
-            typeResult = typeSynth.synthesizeType(typeArg);
-          }  catch (ResolvedSeveralEntriesForSymbolException ignored) { }
-          return typeResult != null && typeResult.isPresentResult() ? typeResult.getResult() : null;
-        })
+        .map(TypeCheck3::symTypeFromAST)
         .collect(Collectors.toList());
-      this.resultWrapper.setResult(new KindOfGenericComponent(compSym.get(0), typeArgExpressions));
+
+      CompKindExpression result = new CompKindOfGenericComponentType(compSym.get(0), typeArgExpressions);
+      result.setSourceNode(mcType);
+      this.resultWrapper.setResult(result);
     }
   }
 

@@ -9,17 +9,17 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.rules.TemporaryFolder;
 
+import javax.annotation.concurrent.NotThreadSafe;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.Optional;
 
-import static org.gradle.testkit.runner.TaskOutcome.FROM_CACHE;
-import static org.gradle.testkit.runner.TaskOutcome.SUCCESS;
+import static org.gradle.testkit.runner.TaskOutcome.*;
 
 /**
  * Test if the plugin correctly configures a gradle project
@@ -29,6 +29,8 @@ import static org.gradle.testkit.runner.TaskOutcome.SUCCESS;
  * <p>
  * Note: Due to the JUnit version used, we are unable to use parameterized tests
  */
+@Execution(ExecutionMode.SAME_THREAD) // Do not run in parallel, too memory hungry
+@NotThreadSafe // Technically thread safe, just memory hungry
 public class MCGenPluginTest {
   @Rule
   public TemporaryFolder temporaryFolder = new TemporaryFolder();
@@ -116,7 +118,7 @@ public class MCGenPluginTest {
   // and up-to-date-checks work on modified super files
   void testGenerateGrammar(String version) throws IOException {
     writeFile(settingsFile, "rootProject.name = 'hello-world'");
-    writeFile(propertiesFile, "de.monticore.gradle.show_performance_statistic=true");
+    writeFile(propertiesFile, "de.monticore.gradle.show_performance_statistic=true\norg.gradle.jvmargs=-XX:MaxMetaspaceSize=1g\n");
     String buildFileContent = "plugins {" +
             "    id 'de.monticore.generator' " +
             "}";
@@ -137,13 +139,15 @@ public class MCGenPluginTest {
             .build();
 
     // file MyTestGrammar is worked on
-    Assert.assertTrue(result.getOutput(), result.getOutput().contains("[MyTestGrammar.mc4]"));
+//    Assert.assertTrue(result.getOutput(), result.getOutput().contains("[MyTestGrammar.mc4]"));  // The Log-Prefix is unreliable
+    Assert.assertTrue(result.getOutput(), result.getOutput().contains("/src/main/grammars/MyTestGrammar.mc4"));
     // file MyTestGrammarS is worked on
-    Assert.assertTrue(result.getOutput(), result.getOutput().contains("[MyTestGrammarS.mc4]"));
+//    Assert.assertTrue(result.getOutput(), result.getOutput().contains("[MyTestGrammarS.mc4]")); // The Log-Prefix is unreliable
+    Assert.assertTrue(result.getOutput(), result.getOutput().contains("/src/main/grammars/MyTestGrammarS.mc4"));
     // and the task was successful
     Assert.assertEquals(SUCCESS, result.task(":generateMCGrammars").getOutcome());
 
-    JsonObject taskStats = checkAndGetStats(result.getOutput(), "generateMCGrammars");
+    JsonObject taskStats = checkAndGetStats(result.getOutput(), ":generateMCGrammars");
     Assert.assertFalse(taskStats.getBooleanMember("UpToDate"));
     Assert.assertFalse(taskStats.getBooleanMember("Cached"));
     Assert.assertFalse(taskStats.getBooleanMember("hasError"));
@@ -162,7 +166,7 @@ public class MCGenPluginTest {
     Assert.assertEquals("generateMCGrammars was not cached",
             FROM_CACHE, result.task(":generateMCGrammars").getOutcome());
 
-    taskStats = checkAndGetStats(result.getOutput(), "generateMCGrammars");
+    taskStats = checkAndGetStats(result.getOutput(), ":generateMCGrammars");
     Assert.assertTrue(taskStats.getBooleanMember("UpToDate"));
     Assert.assertTrue(taskStats.getBooleanMember("Cached"));
     Assert.assertFalse(taskStats.getBooleanMember("hasError"));
@@ -186,7 +190,7 @@ public class MCGenPluginTest {
     Assert.assertTrue(result.getOutput(), result.getOutput().contains("MyTestGrammar.mc4 is UP-TO-DATE, no action required"));
     Assert.assertFalse(result.getOutput(), result.getOutput().contains("MyTestGrammarS.mc4 is UP-TO-DATE, no action required"));
 
-    taskStats = checkAndGetStats(result.getOutput(), "generateMCGrammars");
+    taskStats = checkAndGetStats(result.getOutput(), ":generateMCGrammars");
     Assert.assertFalse(taskStats.getBooleanMember("UpToDate")); // Note: The task is not up-to-date, as one of its inputs has changed
     Assert.assertFalse(taskStats.getBooleanMember("Cached"));
     Assert.assertFalse(taskStats.getBooleanMember("hasError"));
@@ -207,12 +211,181 @@ public class MCGenPluginTest {
     Assert.assertFalse(result.getOutput(), result.getOutput().contains("MyTestGrammar.mc4 is UP-TO-DATE, no action required"));
     Assert.assertFalse(result.getOutput(), result.getOutput().contains("MyTestGrammarS.mc4 is UP-TO-DATE, no action required"));
 
-    taskStats = checkAndGetStats(result.getOutput(), "generateMCGrammars");
+    taskStats = checkAndGetStats(result.getOutput(), ":generateMCGrammars");
     Assert.assertFalse(taskStats.getBooleanMember("UpToDate"));
     Assert.assertFalse(taskStats.getBooleanMember("Cached"));
     Assert.assertFalse(taskStats.getBooleanMember("hasError"));
     Assert.assertEquals("de.monticore.gradle.gen.MCGenTask_Decorated", taskStats.getStringMember("Type"));
 
+  }
+
+  //////////////////////
+  @Test
+  public void testMultiProject_v7_4_2() throws IOException {
+    this.testMultiProject("7.4.2");
+  }
+
+  @Test
+  public void testMultiProject_v7_6_4() throws IOException {
+    this.testMultiProject("7.6.4");
+  }
+
+  @Test
+  public void testMultiProject_v8_0_1() throws IOException {
+    this.testMultiProject("8.0.1");
+  }
+
+  @Test
+  public void testMultiProject_v8_7() throws IOException {
+    this.testMultiProject("8.7");
+  }
+
+  // Test if the generate task succeeds within a multi-project build
+  // and is cacheable
+  // and up-to-date-checks work on modified files
+  // and up-to-date-checks work on modified super files
+  void testMultiProject(String version) throws IOException {
+    writeFile(settingsFile, "rootProject.name = 'hello-world'\ninclude('A')\ninclude('B')");
+    writeFile(propertiesFile, "de.monticore.gradle.show_performance_statistic=true\norg.gradle.jvmargs=-XX:MaxMetaspaceSize=1g\n");
+    String buildFileContentA = "plugins {" +
+            "    id 'de.monticore.generator' \n" +
+            "    id 'maven-publish' \n" +
+            "}\n" +
+            "publishing { " +
+            "  publications { " +
+            "    maven(MavenPublication) {\n" +
+            "      groupId = 'de.mc.test'\n" +
+            "      artifactId = 'A'\n" +
+            "      version = '0.1'\n" +
+            "      from components.java\n" +
+            "    }" +
+            "  }" +
+            "}";
+    var aDir = new File(testProjectDir, "A");
+    writeFile(new File(aDir, "build.gradle"), buildFileContentA);
+    // Note: We are unable to load MCBasics or compile,
+    // as the monticore-grammar dependency might not be available yet
+    writeFile(new File(new File(aDir, "src/main/grammars"), "MyTestGrammar.mc4"),
+              "grammar MyTestGrammar { Monti = \"Core\"; }");
+
+    String buildFileContentB = "plugins {" +
+            "    id 'de.monticore.generator' \n" +
+            "}\n" +
+            "dependencies { " +
+            "  grammar(project(':A')) " +
+            "}";
+    var bDir = new File(testProjectDir, "B");
+    writeFile(new File(bDir, "build.gradle"), buildFileContentB);
+
+
+    writeFile(new File(new File(bDir, "src/main/grammars"), "MyTestGrammarS.mc4"),
+              "grammar MyTestGrammarS extends MyTestGrammar { Monti = \"Core\"; }");
+
+
+    BuildResult result = GradleRunner.create()
+            .withPluginClasspath()
+            .withGradleVersion(version)
+            .withProjectDir(testProjectDir)
+            .withArguments("generateMCGrammars", "--build-cache", "--info")
+            .build();
+
+    // file MyTestGrammar is worked on
+    //    Assert.assertTrue(result.getOutput(), result.getOutput().contains("[MyTestGrammar.mc4]"));  // The Log-Prefix is unreliable
+    Assert.assertTrue(result.getOutput(), result.getOutput().contains("/src/main/grammars/MyTestGrammar.mc4"));
+    // file MyTestGrammarS is worked on
+    //    Assert.assertTrue(result.getOutput(), result.getOutput().contains("[MyTestGrammarS.mc4]"));  // The Log-Prefix is unreliable
+    Assert.assertTrue(result.getOutput(), result.getOutput().contains("/src/main/grammars/MyTestGrammarS.mc4"));
+    // and the task was successful
+    Assert.assertEquals(SUCCESS, result.task(":A:generateMCGrammars").getOutcome());
+    Assert.assertEquals(SUCCESS, result.task(":B:generateMCGrammars").getOutcome());
+
+    JsonObject taskStats = checkAndGetStats(result.getOutput(), ":A:generateMCGrammars");
+    Assert.assertFalse(taskStats.getBooleanMember("UpToDate"));
+    Assert.assertFalse(taskStats.getBooleanMember("Cached"));
+    Assert.assertFalse(taskStats.getBooleanMember("hasError"));
+    Assert.assertEquals("de.monticore.gradle.gen.MCGenTask_Decorated", taskStats.getStringMember("Type"));
+
+    // Test build-cache, by first deleting the build dir
+    de.se_rwth.commons.Files.deleteFiles(new File(testProjectDir, "build"));
+    de.se_rwth.commons.Files.deleteFiles(new File(aDir, "build"));
+    de.se_rwth.commons.Files.deleteFiles(new File(bDir, "build"));
+
+    // and run again
+    result = GradleRunner.create()
+            .withPluginClasspath()
+            .withGradleVersion(version)
+            .withProjectDir(testProjectDir)
+            .withArguments("generateMCGrammars", "--build-cache", "--info")
+            .build();
+
+    // and then check, that the build cache was used
+    Assert.assertEquals("A:generateMCGrammars was not cached",
+                        FROM_CACHE, result.task(":A:generateMCGrammars").getOutcome());
+    Assert.assertEquals("B:generateMCGrammars was not cached",
+                        FROM_CACHE, result.task(":B:generateMCGrammars").getOutcome());
+
+
+    taskStats = checkAndGetStats(result.getOutput(), ":B:generateMCGrammars");
+    Assert.assertTrue(taskStats.getBooleanMember("UpToDate"));
+    Assert.assertTrue(taskStats.getBooleanMember("Cached"));
+    Assert.assertFalse(taskStats.getBooleanMember("hasError"));
+    Assert.assertEquals("de.monticore.gradle.gen.MCGenTask_Decorated", taskStats.getStringMember("Type"));
+
+
+    // Next, test up-to-date checks:
+    // by changing MyTestGrammarS
+    writeFile(new File(new File(bDir, "src/main/grammars"), "MyTestGrammarS.mc4"),
+              "grammar MyTestGrammarS extends MyTestGrammar { Monti = \"Core2\"; }");
+    // and run again
+    result = GradleRunner.create()
+            .withPluginClasspath()
+            .withGradleVersion(version)
+            .withProjectDir(testProjectDir)
+            .withArguments("generateMCGrammars", "--build-cache", "--info")
+            .build();
+    // and the B-task was successful
+    Assert.assertEquals(SUCCESS, result.task(":B:generateMCGrammars").getOutcome());
+    // the A-task should be up to date (i.e., not even pulled from the cache)
+    Assert.assertEquals(UP_TO_DATE, result.task(":A:generateMCGrammars").getOutcome());
+    //  and thus, MyTestGrammar should not be printed to the log
+    Assert.assertFalse(result.getOutput(), result.getOutput().contains("MyTestGrammar.mc4 is UP-TO-DATE, no action required"));
+    Assert.assertFalse(result.getOutput(), result.getOutput().contains("MyTestGrammar.mc4 is *NOT* UP-TO-DATE"));
+    // Only MyTestGrammarS SHOULD not be up-to-date
+    Assert.assertFalse(result.getOutput(), result.getOutput().contains("MyTestGrammarS.mc4 is UP-TO-DATE, no action required"));
+    Assert.assertTrue(result.getOutput(), result.getOutput().contains("MyTestGrammarS.mc4 is *NOT* UP-TO-DATE"));
+
+    taskStats = checkAndGetStats(result.getOutput(), ":B:generateMCGrammars");
+    Assert.assertFalse(taskStats.getBooleanMember("UpToDate")); // Note: The task is not up-to-date, as one of its inputs has changed
+    Assert.assertFalse(taskStats.getBooleanMember("Cached"));
+    Assert.assertFalse(taskStats.getBooleanMember("hasError"));
+    Assert.assertEquals("de.monticore.gradle.gen.MCGenTask_Decorated", taskStats.getStringMember("Type"));
+
+
+    // and change MyTestGrammar
+    writeFile(new File(new File(aDir, "src/main/grammars"), "MyTestGrammar.mc4"),
+              "grammar MyTestGrammar { Monti = \"Core2\"; }");
+    // and run again
+    result = GradleRunner.create()
+            .withPluginClasspath()
+            .withGradleVersion(version)
+            .withProjectDir(testProjectDir)
+            .withArguments("generateMCGrammars", "--build-cache", "--info")
+            .build();
+    // Nothing SHOULD not be up-to-date
+    Assert.assertFalse(result.getOutput(), result.getOutput().contains("MyTestGrammar.mc4 is UP-TO-DATE, no action required"));
+    Assert.assertFalse(result.getOutput(), result.getOutput().contains("MyTestGrammarS.mc4 is UP-TO-DATE, no action required"));
+
+    taskStats = checkAndGetStats(result.getOutput(), ":A:generateMCGrammars");
+    Assert.assertFalse(taskStats.getBooleanMember("UpToDate"));
+    Assert.assertFalse(taskStats.getBooleanMember("Cached"));
+    Assert.assertFalse(taskStats.getBooleanMember("hasError"));
+    Assert.assertEquals("de.monticore.gradle.gen.MCGenTask_Decorated", taskStats.getStringMember("Type"));
+
+    taskStats = checkAndGetStats(result.getOutput(), ":B:generateMCGrammars");
+    Assert.assertFalse(taskStats.getBooleanMember("UpToDate"));
+    Assert.assertFalse(taskStats.getBooleanMember("Cached"));
+    Assert.assertFalse(taskStats.getBooleanMember("hasError"));
+    Assert.assertEquals("de.monticore.gradle.gen.MCGenTask_Decorated", taskStats.getStringMember("Type"));
   }
 
 
@@ -222,17 +395,19 @@ public class MCGenPluginTest {
     Files.write(destination.toPath(), Collections.singleton(content));
   }
 
-  JsonObject checkAndGetStats(String output, String taskName) {
-    Optional<String> statLine = Arrays.stream(output.split(System.lineSeparator()))
-            .filter(l -> l.startsWith("{\"Tasks\":")).findFirst();
-    Assert.assertTrue(output, statLine.isPresent());
-    JsonObject stats = JsonParser.parseJsonObject(statLine.get());
-    for (var task : stats.getArrayMember("Tasks")) {
-      if (taskName.equals(task.getAsJsonObject().getStringMember("Name"))) {
-        return task.getAsJsonObject();
+  JsonObject checkAndGetStats(String output, String taskPath) {
+    // In case multiple subprojects have reported stats, we have to check all possible json objects
+    for (String statLine : output.split(System.lineSeparator())) {
+      if(!statLine.startsWith("{\"Tasks\":")) continue;
+      JsonObject stats = JsonParser.parseJsonObject(statLine);
+      for (var task : stats.getArrayMember("Tasks")) {
+        if (taskPath.equals(task.getAsJsonObject().getStringMember("Path"))) {
+          return task.getAsJsonObject();
+        }
       }
     }
-    Assert.fail("Task " + taskName + " was not found within the stats");
+    System.err.println(output);
+    Assert.fail("Task " + taskPath + " was not found within the stats");
     return null;
   }
 }

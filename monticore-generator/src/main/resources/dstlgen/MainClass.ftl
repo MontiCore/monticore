@@ -34,7 +34,7 @@ import org.apache.commons.cli.*;
 public class ${className} {
   
   public static void main(String[] args) {
-    Log.init();
+    Log.ensureInitialization();
     new ${grammarName}TFGenTool().run(args);
   }
   

@@ -1,7 +1,7 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("millDispatcher", "dispatcherType")}
+${tc.signature("dispatcherType")}
 
-if (${millDispatcher}.typeDispatcher == null) {
-${millDispatcher}.typeDispatcher = new ${dispatcherType}();
+if (getMill().typeDispatcher == null) {
+  getMill().typeDispatcher = new ${dispatcherType}();
 }
-return ${millDispatcher}.typeDispatcher;
+return getMill().typeDispatcher;

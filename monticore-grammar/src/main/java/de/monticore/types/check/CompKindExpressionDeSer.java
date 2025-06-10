@@ -2,6 +2,7 @@
 package de.monticore.types.check;
 
 import com.google.common.base.Preconditions;
+import de.monticore.symbols.compsymbols._symboltable.ICompSymbolsScope;
 import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.json.JsonElement;
@@ -10,31 +11,61 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Serializes and deserializes {@link CompKindExpression}s from and to their Json encoding.
- * Implementations of this interface should compose different {@link CompKindExprDeSer}s and delegate to them
- * for the real (de-)serialization.
  */
-public interface FullCompKindExprDeSer {
+public class CompKindExpressionDeSer {
+
+  protected CompKindOfComponentTypeDeSer kindOfComponentDeSer;
+  protected CompKindOfGenericComponentTypeDeSer kindOfGenericComponentDeSer;
+
+  public CompKindExpressionDeSer() {
+    kindOfComponentDeSer = new CompKindOfComponentTypeDeSer();
+    kindOfGenericComponentDeSer = new CompKindOfGenericComponentTypeDeSer();
+  }
 
   /**
    * @param toSerialize {@link CompKindExpression} to serialize as Json
    * @return Json encoded version of the {@link CompKindExpression}.
    */
-  String serializeAsJson(@NonNull CompKindExpression toSerialize);
+  public String serialize(@NonNull CompKindExpression toSerialize) {
+    if (toSerialize.isComponentType()) {
+      return kindOfComponentDeSer.serialize(toSerialize.asComponentType());
+    }
+    if (toSerialize.isGenericComponentType()) {
+      return kindOfGenericComponentDeSer.serialize(toSerialize.asGenericComponentType());
+    }
+
+    throw missingDeSerException(toSerialize);
+  }
 
   /**
    * Deserialize a {@link CompKindExpression} from its Json encoding.
    */
-  default CompKindExpression deserializeFromJsonString(@NonNull String serializedInJson) {
+  public CompKindExpression deserialize(@NonNull ICompSymbolsScope scope, @NonNull String serializedInJson) {
     JsonObject compExpr = JsonParser.parseJsonObject(serializedInJson);
-    return deserialize(compExpr);
+    return deserialize(scope, compExpr);
   }
 
   /**
    * Deserialize a {@link CompKindExpression} from its Json representation.
    */
-  CompKindExpression deserialize(@NonNull JsonElement serialized);
+  public CompKindExpression deserialize(@NonNull ICompSymbolsScope scope, @NonNull JsonElement serialized) {
+    if (!serialized.isJsonObject()) {
+      throw new IllegalArgumentException(serialized.toString());
+    }
 
-  default IllegalStateException missingDeSerException(@NonNull JsonObject unloadableElement) {
+    JsonObject serializedCompExpr = serialized.getAsJsonObject();
+
+    switch (JsonDeSers.getKind(serializedCompExpr)) {
+      case CompKindOfComponentTypeDeSer.SERIALIZED_KIND:
+        return kindOfComponentDeSer.deserialize(scope, serializedCompExpr);
+      case CompKindOfGenericComponentTypeDeSer.SERIALIZED_KIND:
+        return kindOfGenericComponentDeSer.deserialize(scope, serializedCompExpr);
+    }
+
+    throw missingDeSerException(serializedCompExpr);
+  }
+
+  protected IllegalStateException missingDeSerException(@NonNull JsonObject unloadableElement) {
     Preconditions.checkNotNull(unloadableElement);
 
     String typeExprKind = JsonDeSers.getKind(unloadableElement);
@@ -47,7 +78,7 @@ public interface FullCompKindExprDeSer {
     ));
   }
 
-  default IllegalStateException missingDeSerException(@NonNull CompKindExpression unsaveableElement) {
+  protected IllegalStateException missingDeSerException(@NonNull CompKindExpression unsaveableElement) {
     Preconditions.checkNotNull(unsaveableElement);
 
     String typeExpressionKind = unsaveableElement.getClass().getName();
@@ -60,7 +91,7 @@ public interface FullCompKindExprDeSer {
     ));
   }
 
-  default IllegalStateException missingDeSerException(@NonNull String CompKindExpressionKind) {
+  protected IllegalStateException missingDeSerException(@NonNull String CompKindExpressionKind) {
     Preconditions.checkNotNull(CompKindExpressionKind);
 
     String deSerAggregatorName = this.getClass().getName();
