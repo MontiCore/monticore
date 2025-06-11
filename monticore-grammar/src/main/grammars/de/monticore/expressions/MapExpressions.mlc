@@ -1,0 +1,18 @@
+package de.monticore.expressions;
+
+mlc MapExpressions {
+
+  //export the grammar
+  export "$projectDir/src/main/grammars" {
+    include "de/monticore/expressions/MapExpressions.mc4";
+  }
+
+  // export all Java files generated from the grammar
+  export "$projectDir/target/generated-sources/monticore/sourcecode" {
+    include "de/monticore/expressions/mapexpressions/**.java";
+  }
+
+  promote {
+    mlc "de.monticore.expressions.ExpressionsBasis";
+  }
+}

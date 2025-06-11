@@ -38,6 +38,8 @@ with OCL expressions like `a implies b`.
 with Java expressions like `new`.
 * [StreamExpressions](StreamExpressions.mc4): Extends `CommonExpressions`
 with stream expressions like `a : b`.
+* [MapExpressions](MapExpressions.mc4): Extends `ExpressionBasis`
+    with map expressions like `[1 :> "a", 2 :> "b"]`.
 
 Furthermore, composite SI unit expressions are defined in the SI Units project:
 

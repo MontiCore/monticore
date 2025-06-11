@@ -1,0 +1,47 @@
+// (c) https://github.com/MontiCore/monticore
+package de.monticore.expressions;
+
+import de.monticore.expressions.*;
+
+/**
+ * This grammar defines map expressions, e.g.
+ * Map[], [1 :> "Hello", 2 :> "World"], [x :> y -> 42]
+ *
+ * Map expressions hold key-value pairs represented by two
+ * expressions enclosed in brackets.
+ * They can be composed safely (i.e. as conservative extension)
+ * with other forms of expressions given by the MontiCore core project.
+ *
+ * This grammar is part of a hierarchy of expressions, which can be found
+ * under
+ *   https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/
+ *                 src/main/grammars/de/monticore/expressions/Expressions.md
+ *
+ */
+
+component grammar MapExpressions extends ExpressionsBasis {
+
+  /** ASTMapExpression represents map expressions.
+   *
+   * Map expressions are a collection of MapEntries, each representing
+   * a key-value parse using two Expressions.
+   * They are compatible with other collections like SetExpressions,
+   * but require the Map keyword when creating empty maps.
+   * The type of the expressions is a map from the union type
+   * of all contained key expressions mapping to the union type
+   * of all contained value expressions.
+   *
+   * Example:
+   * Map[], [1 :> 2, 27 :> 3.6f], ["a" :> [1,2,3], "b" :> [4,5,6]]
+   */
+  MapExpression implements Expression =
+    key("Map")? "[" (MapEntry || ",")* "]";
+
+  /**
+  * MapEntry is a single key-value pair represented by two expressions.
+  */
+  MapEntry =
+    key:Expression operator:":>" value:Expression;
+
+  splittoken ":>";
+}
