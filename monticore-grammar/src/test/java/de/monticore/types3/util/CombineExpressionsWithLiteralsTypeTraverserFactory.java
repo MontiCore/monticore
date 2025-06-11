@@ -15,6 +15,8 @@ import de.monticore.expressions.expressionsbasis.types3.ExpressionBasisTypeIdAsC
 import de.monticore.expressions.expressionsbasis.types3.ExpressionBasisTypeVisitor;
 import de.monticore.expressions.javaclassexpressions.types3.JavaClassExpressionsTypeVisitor;
 import de.monticore.expressions.lambdaexpressions.types3.LambdaExpressionsTypeVisitor;
+import de.monticore.expressions.mapexpressions.types3.MapExpressionsCTTIVisitor;
+import de.monticore.expressions.mapexpressions.types3.MapExpressionsTypeVisitor;
 import de.monticore.expressions.streamexpressions.types3.StreamExpressionsTypeVisitor;
 import de.monticore.expressions.tupleexpressions.types3.TupleExpressionsTypeVisitor;
 import de.monticore.expressions.uglyexpressions.types3.UglyExpressionsCTTIVisitor;
@@ -209,6 +211,11 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     if (visitors.derSIUnitLiterals != null) {
       visitors.derSIUnitLiterals.setType4Ast(type4Ast);
     }
+    if (visitors.derMapExpressions != null) {
+      visitors.derMapExpressions.setType4Ast(type4Ast);
+    } else if (visitors.cTTIMapExpressions != null) {
+      visitors.cTTIMapExpressions.setType4Ast(type4Ast);
+    }
     // MCTypes
     if (visitors.synMCArrayTypes != null) {
       visitors.synMCArrayTypes.setType4Ast(type4Ast);
@@ -262,6 +269,9 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     if (visitors.cTTIUglyExpressions != null) {
       visitors.cTTIUglyExpressions.setContext4Ast(ctx4Ast);
     }
+    if (visitors.cTTIMapExpressions != null) {
+      visitors.cTTIMapExpressions.setContext4Ast(ctx4Ast);
+    }
   }
 
   protected VisitorList constructVisitorsCTTI() {
@@ -281,6 +291,7 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     visitors.cTTIUglyExpressions = new UglyExpressionsCTTIVisitor();
     visitors.derOfMCCommonLiterals = new MCCommonLiteralsTypeVisitor();
     visitors.derSIUnitLiterals = new SIUnitLiteralsTypeVisitor();
+    visitors.cTTIMapExpressions = new MapExpressionsCTTIVisitor();
     // MCTypes
     visitors.synMCArrayTypes = new MCArrayTypesTypeVisitor();
     visitors.synMCBasicTypes = new MCBasicTypesTypeVisitor();
@@ -312,6 +323,7 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     visitors.derUglyExpressions = new UglyExpressionsTypeVisitor();
     visitors.derOfMCCommonLiterals = new MCCommonLiteralsTypeVisitor();
     visitors.derSIUnitLiterals = new SIUnitLiteralsTypeVisitor();
+    visitors.derMapExpressions = new MapExpressionsTypeVisitor();
     // MCTypes
     visitors.synMCArrayTypes = new MCArrayTypesTypeVisitor();
     visitors.synMCBasicTypes = new MCBasicTypesTypeVisitor();
@@ -421,6 +433,12 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     if (visitors.derSIUnitLiterals != null) {
       traverser.add4SIUnitLiterals(visitors.derSIUnitLiterals);
     }
+    if (visitors.derMapExpressions != null) {
+      traverser.add4MapExpressions(visitors.derMapExpressions);
+    } else if (visitors.cTTIMapExpressions != null) {
+      traverser.add4MapExpressions(visitors.cTTIMapExpressions);
+      traverser.setMapExpressionsHandler(visitors.cTTIMapExpressions);
+    }
     // MCTypes
     if (visitors.synMCArrayTypes != null) {
       traverser.add4MCArrayTypes(visitors.synMCArrayTypes);
@@ -496,6 +514,10 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     public UglyExpressionsTypeVisitor derUglyExpressions;
 
     public UglyExpressionsCTTIVisitor cTTIUglyExpressions;
+    
+    public MapExpressionsTypeVisitor derMapExpressions;
+    
+    public MapExpressionsCTTIVisitor cTTIMapExpressions;
 
     // Literals
 
