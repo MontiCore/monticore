@@ -36,7 +36,7 @@ configure(subprojects.findAll {it.name != 'forParser' })  {
         requireCapability("de.monticore:monticore-grammar-grammars")
       }
     }
-    testImplementation project(":monticore-runtime-tests")
+    testImplementation testFixtures(project(":monticore-runtime"))
   }
 }
 

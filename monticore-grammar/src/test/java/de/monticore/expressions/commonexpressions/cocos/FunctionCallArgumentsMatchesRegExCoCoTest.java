@@ -7,7 +7,7 @@ import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICom
 import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
 import de.monticore.expressions.commonexpressions._cocos.CommonExpressionsCoCoChecker;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.runtime.types3.DefsTypesForTests;
+import de.monticore.types3.util.DefsTypesForTests;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.IDerive;
 import de.monticore.types.check.SymTypeExpression;

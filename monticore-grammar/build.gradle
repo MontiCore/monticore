@@ -11,6 +11,9 @@ plugins {
   // in case a "genTR" property is set to "true", transformation grammars are also created
   id "de.monticore.generator-withtr" version "$version"
   id "jacoco"
+  // this project provides test fixtures. Test fixtures are commonly used to setup the code under test,
+  // or provide utilities aimed at facilitating the tests of a component
+  id 'java-test-fixtures'
 }
 
 description = 'MontiCore: Grammar'
@@ -71,7 +74,9 @@ dependencies {
   testImplementation "org.junit.jupiter:junit-jupiter-params:$junit_version"
   testImplementation "org.junit.vintage:junit-vintage-engine:$junit_version"
   testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
-  testImplementation project(':monticore-runtime-tests')
+  // grammar test fixtures includes runtime test dependencies
+  testFixturesApi testFixtures(project(":monticore-runtime"))
+//  api project(':monticore-runtime-tests') // TODO: Remove this line after 7.8.0 release (added for backwards compability)
   if (("true").equals(getProperty('genTagging'))) {
     // use compileOnly as the tagging- and trafo-artifact are only an extension to the default artifact
     taggingCompileOnly project(path)

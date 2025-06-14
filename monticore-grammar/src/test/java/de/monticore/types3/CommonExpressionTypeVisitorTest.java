@@ -37,7 +37,7 @@ import java.util.List;
 
 import static de.monticore.runtime.junit.MCAssertions.assertHasFindingsStartingWith;
 import static de.monticore.runtime.junit.MCAssertions.assertNoFindings;
-import static de.monticore.runtime.types3.DefsTypesForTests.*;
+import static de.monticore.types3.util.DefsTypesForTests.*;
 import static de.monticore.types.check.SymTypeExpressionFactory.createGenerics;
 import static de.monticore.types.check.SymTypeExpressionFactory.createIntersection;
 import static de.monticore.types.check.SymTypeExpressionFactory.createTuple;

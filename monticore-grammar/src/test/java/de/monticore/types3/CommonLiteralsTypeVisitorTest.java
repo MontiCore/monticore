@@ -4,7 +4,7 @@ package de.monticore.types3;
 import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
 import de.monticore.literals.mccommonliterals.MCCommonLiteralsMill;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
-import de.monticore.runtime.types3.DefsTypesForTests;
+import de.monticore.types3.util.DefsTypesForTests;
 import de.monticore.types.check.SymTypeExpression;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

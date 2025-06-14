@@ -11,7 +11,7 @@ import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
-import de.monticore.runtime.types3.DefsTypesForTests;
+import de.monticore.types3.util.DefsTypesForTests;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
@@ -27,7 +27,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
-import static de.monticore.runtime.types3.DefsTypesForTests.inScope;
+import static de.monticore.types3.util.DefsTypesForTests.inScope;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertSame;

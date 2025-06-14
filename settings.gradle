@@ -48,7 +48,6 @@ if (!inComposite) {
 
 
 include(':monticore-runtime')
-include(':monticore-runtime-tests')
 include(':monticore-grammar')
 if(("true").equals(getProperty('genEMF'))) {
   include(':monticore-runtime-emf')

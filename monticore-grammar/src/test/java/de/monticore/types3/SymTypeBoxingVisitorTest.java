@@ -4,7 +4,7 @@ package de.monticore.types3;
 import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsGlobalScope;
 import de.monticore.runtime.junit.AbstractMCTest;
-import de.monticore.runtime.types3.DefsTypesForTests;
+import de.monticore.types3.util.DefsTypesForTests;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
@@ -15,7 +15,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static de.monticore.runtime.junit.MCAssertions.assertNoFindings;
-import static de.monticore.runtime.types3.DefsTypesForTests.*;
+import static de.monticore.types3.util.DefsTypesForTests.*;
 import static de.monticore.types.check.SymTypeExpressionFactory.createGenerics;
 import static de.monticore.types.check.SymTypeExpressionFactory.createIntersection;
 import static de.monticore.types.check.SymTypeExpressionFactory.createPrimitive;

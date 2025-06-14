@@ -20,7 +20,7 @@ sourceSets {
 }
 
 dependencies {
-  productTestImplementation(project(":monticore-runtime-tests"))
+  productTestImplementation(testFixtures(project(":monticore-runtime")))
 }
 
 // let productTest depend on test as test produces code for productTest

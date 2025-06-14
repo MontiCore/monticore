@@ -1,13 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.runtime.types3;
+package de.monticore.types3.util;
 
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 
-import static de.monticore.runtime.types3.DefsTypesForTests.*;
 import static de.monticore.types.check.SymTypeExpressionFactory.createGenerics;
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeObject;
+import static de.monticore.types3.util.DefsTypesForTests.*;
 
 /**
  * creates default variables for type check tests,
@@ -25,7 +25,9 @@ import static de.monticore.types.check.SymTypeExpressionFactory.createTypeObject
  * if specific variables are needed
  * (e.g., specific generics or two variables of the same type),
  * they ought to be added in the specific test.
+ * @deprecated Use the test fixtures instead
  */
+@Deprecated(forRemoval = true)
 public class DefsVariablesForTests {
 
   /**
@@ -131,13 +133,13 @@ public class DefsVariablesForTests {
 
   public static void set_unboxedCollections(IBasicSymbolsScope scope) {
     _intUnboxedOptionalVarSym = inScope(scope, variable("varintOptional",
-        createGenerics(_unboxedOptionalSymType.getTypeInfo(), _intSymType)));
+            createGenerics(_unboxedOptionalSymType.getTypeInfo(), _intSymType)));
     _intUnboxedSetVarSym = inScope(scope, variable("varintSet",
-        createGenerics(_unboxedSetSymType.getTypeInfo(), _intSymType)));
+            createGenerics(_unboxedSetSymType.getTypeInfo(), _intSymType)));
     _intUnboxedListVarSym = inScope(scope, variable("varintList",
-        createGenerics(_unboxedListSymType.getTypeInfo(), _intSymType)));
+            createGenerics(_unboxedListSymType.getTypeInfo(), _intSymType)));
     _intUnboxedMapVarSym = inScope(scope, variable("varintMap",
-        createGenerics(_unboxedMapSymType.getTypeInfo(), _intSymType, _intSymType)));
+            createGenerics(_unboxedMapSymType.getTypeInfo(), _intSymType, _intSymType)));
   }
 
   /*
@@ -154,13 +156,13 @@ public class DefsVariablesForTests {
 
   public static void set_boxedCollections(IBasicSymbolsScope scope) {
     _boxedOptionalVarSym = inScope(scope, variable("varintBoxedOptional",
-        createGenerics(_boxedOptionalSymType.getTypeInfo(), _intSymType)));
+            createGenerics(_boxedOptionalSymType.getTypeInfo(), _intSymType)));
     _boxedSetVarSym = inScope(scope, variable("varintBoxedSet",
-        createGenerics(_boxedSetSymType.getTypeInfo(), _intSymType)));
+            createGenerics(_boxedSetSymType.getTypeInfo(), _intSymType)));
     _boxedListVarSym = inScope(scope, variable("varintBoxedList",
-        createGenerics(_boxedListSymType.getTypeInfo(), _intSymType)));
+            createGenerics(_boxedListSymType.getTypeInfo(), _intSymType)));
     _boxedMapVarSym = inScope(scope, variable("varintBoxedMap",
-        createGenerics(_boxedMapSymType.getTypeInfo(), _intSymType, _intSymType)));
+            createGenerics(_boxedMapSymType.getTypeInfo(), _intSymType, _intSymType)));
   }
 
   /*
@@ -179,15 +181,15 @@ public class DefsVariablesForTests {
 
   public static void set_streams(IBasicSymbolsScope scope) {
     _intStreamVarSym = inScope(scope, variable("varintStream",
-        createGenerics(_StreamSymType.getTypeInfo(), _intSymType)));
+            createGenerics(_StreamSymType.getTypeInfo(), _intSymType)));
     _intEventStreamVarSym = inScope(scope, variable("varintEventStream",
-        createGenerics(_EventStreamSymType.getTypeInfo(), _intSymType)));
+            createGenerics(_EventStreamSymType.getTypeInfo(), _intSymType)));
     _intSyncStreamVarSym = inScope(scope, variable("varintSyncStream",
-        createGenerics(_SyncStreamSymType.getTypeInfo(), _intSymType)));
+            createGenerics(_SyncStreamSymType.getTypeInfo(), _intSymType)));
     _intToptStreamVarSym = inScope(scope, variable("varintToptStream",
-        createGenerics(_ToptStreamSymType.getTypeInfo(), _intSymType)));
+            createGenerics(_ToptStreamSymType.getTypeInfo(), _intSymType)));
     _intUntimedStreamVarSym = inScope(scope, variable("varintUntimedStream",
-        createGenerics(_UntimedStreamSymType.getTypeInfo(), _intSymType)));
+            createGenerics(_UntimedStreamSymType.getTypeInfo(), _intSymType)));
   }
 
   /*
@@ -214,23 +216,23 @@ public class DefsVariablesForTests {
 
   public static void set_objectTypes(IBasicSymbolsScope scope) {
     _personVarSym = inScope(scope, variable("varPerson",
-        createTypeObject(_personSymType.getTypeInfo())));
+            createTypeObject(_personSymType.getTypeInfo())));
     _teachableVarSym = inScope(scope, variable("varTeachable",
-        createTypeObject(_teachableSymType.getTypeInfo())));
+            createTypeObject(_teachableSymType.getTypeInfo())));
     _studentVarSym = inScope(scope, variable("varStudent",
-        createTypeObject(_studentSymType.getTypeInfo())));
+            createTypeObject(_studentSymType.getTypeInfo())));
     _csStudentVarSym = inScope(scope, variable("varCsStudent",
-        createTypeObject(_csStudentSymType.getTypeInfo())));
+            createTypeObject(_csStudentSymType.getTypeInfo())));
     _firstSemesterCsStudentVarSym = inScope(scope, variable("varFirstSemesterCsStudent",
-        createTypeObject(_firstSemesterCsStudentSymType.getTypeInfo())));
+            createTypeObject(_firstSemesterCsStudentSymType.getTypeInfo())));
     _childVarSym = inScope(scope, variable("varChild",
-        createTypeObject(_childSymType.getTypeInfo())));
+            createTypeObject(_childSymType.getTypeInfo())));
     _teacherVarSym = inScope(scope, variable("varTeacher",
-        createTypeObject(_teacherSymType.getTypeInfo())));
+            createTypeObject(_teacherSymType.getTypeInfo())));
     _carVarSym = inScope(scope, variable("varCar",
-        createTypeObject(_carSymType.getTypeInfo())));
+            createTypeObject(_carSymType.getTypeInfo())));
     _schoolVarSym = inScope(scope, variable("varSchool",
-        createTypeObject(_schoolSymType.getTypeInfo())));
+            createTypeObject(_schoolSymType.getTypeInfo())));
   }
 
   /*
@@ -244,9 +246,9 @@ public class DefsVariablesForTests {
 
   public static void set_generics(IBasicSymbolsScope scope) {
     _intLinkedListVarSym = inScope(scope, variable("varintLinkedList",
-        createGenerics(_linkedListSymType.getTypeInfo(), _intSymType)));
+            createGenerics(_linkedListSymType.getTypeInfo(), _intSymType)));
     _intHashMapVarSym = inScope(scope, variable("varintHashMap",
-        createGenerics(_hashMapSymType.getTypeInfo(), _intSymType, _intSymType)));
+            createGenerics(_hashMapSymType.getTypeInfo(), _intSymType, _intSymType)));
   }
 
   /*

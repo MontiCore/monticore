@@ -1,6 +1,6 @@
 package de.monticore.types.mcbasictypes.cocos;
 
-import de.monticore.runtime.types3.DefsTypesForTests;
+import de.monticore.types3.util.DefsTypesForTests;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._cocos.MCBasicTypesCoCoChecker;
 import de.monticore.types.mcbasictypestest.MCBasicTypesTestMill;
