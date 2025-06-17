@@ -76,7 +76,6 @@ dependencies {
   testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
   // grammar test fixtures includes runtime test dependencies
   testFixturesApi testFixtures(project(":monticore-runtime"))
-//  api project(':monticore-runtime-tests') // TODO: Remove this line after 7.8.0 release (added for backwards compability)
   if (("true").equals(getProperty('genTagging'))) {
     // use compileOnly as the tagging- and trafo-artifact are only an extension to the default artifact
     taggingCompileOnly project(path)
