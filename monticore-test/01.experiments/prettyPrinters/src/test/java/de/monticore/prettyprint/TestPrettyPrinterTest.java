@@ -25,7 +25,7 @@ public class TestPrettyPrinterTest extends PPTestClass {
   @BeforeClass
   public static void setup() {
     TestPrettyPrintersMill.init();
-    LogStub.init();
+    LogStub.initPlusLog();
     Log.enableFailQuick(false);
   }
 
@@ -756,5 +756,16 @@ public class TestPrettyPrinterTest extends PPTestClass {
   // We can un-ignore this test once that behaviour is settled
   public void testAddingProdNamedTerminalNew() throws IOException {
     testPP("newprodNamedTerminal", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringProdNamedTerminal);
+  }
+
+  @Test
+  public void testBrackets() throws IOException {
+    // The AND(A, OR(B, C)) expression may be printed as OR( AND(A, B), C)
+    // if no extra brackets/parentheses are added
+    testPP("entry ;", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringNestedOptFromSysML);
+    testPP("entry A", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringNestedOptFromSysML);
+    testPP("entry B;", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringNestedOptFromSysML);
+    testPP("entry B { }", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringNestedOptFromSysML);
+    testPP("entry B { C }", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringNestedOptFromSysML);
   }
 }
