@@ -25,7 +25,7 @@ subprojects {
 
 }
 
-configure(subprojects.findAll {it.name != 'forParser' })  {
+configure(subprojects.findAll {it.name != 'forParser' && it.name != 'runtimeOnly' })  {
   dependencies {
     implementation "de.se_rwth.commons:se-commons-logging:$se_commons_version"
     implementation "de.se_rwth.commons:se-commons-utilities:$se_commons_version"
