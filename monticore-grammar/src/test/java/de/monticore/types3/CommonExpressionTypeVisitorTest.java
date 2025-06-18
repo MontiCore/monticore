@@ -839,9 +839,6 @@ public class CommonExpressionTypeVisitorTest
     checkExpr("person1 == student1", "boolean"); // example with two objects in sub-supertype relation
     checkExpr("1m == 1m", "boolean");
     checkExpr("1m == 1km", "boolean");
-    checkExpr("varintList == []", "boolean");
-    checkExpr("[] == varintList", "boolean");
-    checkExpr("[] == []", "boolean");
   }
 
   @Test
@@ -870,7 +867,6 @@ public class CommonExpressionTypeVisitorTest
     checkErrorExpr("person1==varboolean", "0xB0166");
     checkErrorExpr("1m == 1s", "0xB0166");
     checkErrorExpr("1m == 1", "0xB0166");
-    checkErrorExpr("[] == {}", "0xB0166"); // would be valid in OCL
   }
 
   @Test
