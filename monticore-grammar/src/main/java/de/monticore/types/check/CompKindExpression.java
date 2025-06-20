@@ -14,7 +14,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Represents all sorts of component kinds. E.g., a {@code ComponentExpression} can represent a generic component with

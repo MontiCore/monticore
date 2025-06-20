@@ -125,22 +125,6 @@ class ComponentTypeSymbolBuilderTest {
     Assertions.assertTrue(child.isEmptyRefinements());
   }
 
-  @Test
-  void shouldHaveOuter() {
-    ComponentTypeSymbol outerComp = CompSymbolsMill.componentTypeSymbolBuilder().setName("A")
-      .setSpannedScope(CompSymbolsMill.scope()).build();
-    ComponentTypeSymbol innerComp = CompSymbolsMill.componentTypeSymbolBuilder().setName("B")
-      .setSpannedScope(CompSymbolsMill.scope()).setOuterComponent(outerComp).build();
-    Assertions.assertTrue(innerComp.getOuterComponent().isPresent());
-  }
-
-  @Test
-  void shouldNotHaveOuter() {
-    ComponentTypeSymbol symbol = CompSymbolsMill.componentTypeSymbolBuilder().setName("A")
-      .setSpannedScope(CompSymbolsMill.scope()).build();
-    Assertions.assertFalse(symbol.getOuterComponent().isPresent());
-  }
-
   @ParameterizedTest
   @MethodSource("compNameAndParametersProvider")
   void shouldBuildWithExpectedParameters(String name, List<VariableSymbol> parameters) {

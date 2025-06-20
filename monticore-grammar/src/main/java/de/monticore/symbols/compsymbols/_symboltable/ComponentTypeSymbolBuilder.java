@@ -9,7 +9,6 @@ import java.util.List;
 
 public class ComponentTypeSymbolBuilder extends ComponentTypeSymbolBuilderTOP {
 
-  protected ComponentTypeSymbol outerComponent;
   protected List<TypeVarSymbol> typeParameters;
 
   public ComponentTypeSymbolBuilder() {
@@ -26,16 +25,6 @@ public class ComponentTypeSymbolBuilder extends ComponentTypeSymbolBuilderTOP {
   public ComponentTypeSymbolBuilder setSpannedScope(@NonNull ICompSymbolsScope spannedScope) {
     Preconditions.checkNotNull(spannedScope);
     return super.setSpannedScope(spannedScope);
-  }
-
-  public ComponentTypeSymbol getOuterComponent() {
-    return this.outerComponent;
-  }
-
-  public ComponentTypeSymbolBuilder setOuterComponent(@NonNull ComponentTypeSymbol outerComponent) {
-    Preconditions.checkArgument(!(outerComponent instanceof ComponentTypeSymbolSurrogate));
-    this.outerComponent = outerComponent;
-    return this.realBuilder;
   }
 
   public List<TypeVarSymbol> getTypeParameters() {
@@ -79,7 +68,6 @@ public class ComponentTypeSymbolBuilder extends ComponentTypeSymbolBuilderTOP {
     if (this.typeParameters != null) {
       this.getTypeParameters().forEach(symbol.getSpannedScope()::add);
     }
-    symbol.setOuterComponent(this.getOuterComponent());
     return symbol;
   }
 

@@ -1,13 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.symbols.compsymbols._symboltable;
 
-
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.compsymbols.CompSymbolsMill;
-import de.monticore.types.check.CompKindExpression;
 import de.monticore.types.check.CompKindOfComponentType;
-import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -56,17 +53,6 @@ public class ComponentTypeSymbolTest {
 
     // Then
     Assertions.assertIterableEquals(List.of(p1, p2), ports);
-  }
-
-  @Test
-  public void shouldStateIfIsInner() {
-    ComponentTypeSymbol outerCompSymbol = CompSymbolsMill.componentTypeSymbolBuilder().setName("Comp1")
-        .setSpannedScope(CompSymbolsMill.scope()).build();
-    ComponentTypeSymbol innerCompSymbol = CompSymbolsMill.componentTypeSymbolBuilder().setName("Comp2")
-        .setSpannedScope(CompSymbolsMill.scope()).build();
-    innerCompSymbol.setOuterComponent(outerCompSymbol);
-    Assertions.assertTrue(innerCompSymbol.isInnerComponent());
-    Assertions.assertFalse(outerCompSymbol.isInnerComponent());
   }
 
   @Test

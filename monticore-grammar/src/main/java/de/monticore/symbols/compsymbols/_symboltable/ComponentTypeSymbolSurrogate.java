@@ -29,33 +29,6 @@ public class ComponentTypeSymbolSurrogate extends ComponentTypeSymbolSurrogateTO
   }
 
   @Override
-  public ComponentTypeSymbol lazyLoadDelegate() {
-    if (this.getDelegate().isEmpty()) {
-      this.setDelegate(this.getEnclosingScope().resolveComponentType(this.getName()).orElse(tryGeneric().orElse(null)));
-    }
-
-    if (this.getDelegate().isPresent()) {
-      return this.getDelegate().get();
-    } else {
-      // Copied error message from the original lazyLoadDelegate
-      Log.error("0xA1038 " + ComponentTypeSymbolSurrogate.class.getSimpleName() +
-        " Could not load full information of '" + name +
-        "' (Kind " + "de.monticore.symbols.compsymbols._symboltabl.ComponentTypeSymbol" + ")."
-      );
-      return this;
-    }
-  }
-
-  protected Optional<ComponentTypeSymbol> tryGeneric() {
-    Optional<TypeVarSymbol> resolvedTypeSymbol = this.getEnclosingScope().resolveTypeVar(this.getName());
-    if (resolvedTypeSymbol.isPresent()) {
-      ComponentTypeSymbol resolvedSymbol = this.getEnclosingScope().resolveComponentType(resolvedTypeSymbol.get().getSuperTypes(0).printFullName()).orElse(null);
-      return Optional.ofNullable(resolvedSymbol);
-    }
-    return Optional.empty();
-  }
-
-  @Override
   public void setSpannedScope(@NonNull ICompSymbolsScope spannedScope) {
     if (checkLazyLoadDelegate()) {
       this.lazyLoadDelegate().setSpannedScope(spannedScope);
@@ -69,29 +42,6 @@ public class ComponentTypeSymbolSurrogate extends ComponentTypeSymbolSurrogateTO
     return checkLazyLoadDelegate() ?
       this.lazyLoadDelegate().getSpannedScope() :
       super.getSpannedScope();  // Avoid infinite recursion with this case
-  }
-
-  @Override
-  public boolean isInnerComponent() {
-    return checkLazyLoadDelegate() ?
-      this.lazyLoadDelegate().isInnerComponent() :
-      super.isInnerComponent();  // Avoid infinite recursion with this case
-  }
-
-  @Override
-  public Optional<ComponentTypeSymbol> getOuterComponent() {
-    return checkLazyLoadDelegate() ?
-      this.lazyLoadDelegate().getOuterComponent() :
-      super.getOuterComponent();  // Avoid infinite recursion with this case
-  }
-
-  @Override
-  public void setOuterComponent(@Nullable ComponentTypeSymbol outerComponent) {
-    if (checkLazyLoadDelegate()) {
-      this.lazyLoadDelegate().setOuterComponent(outerComponent);
-    } else {
-      super.setOuterComponent(outerComponent);  // Avoid infinite recursion with this case
-    }
   }
 
   @Override

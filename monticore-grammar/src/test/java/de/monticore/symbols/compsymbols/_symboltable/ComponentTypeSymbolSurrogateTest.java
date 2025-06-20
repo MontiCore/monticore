@@ -159,61 +159,6 @@ public class ComponentTypeSymbolSurrogateTest {
     Assertions.assertTrue(portOpt.isPresent(), "Port is not present");
     Assertions.assertSame(port, portOpt.get());
   }
-
-  @Test
-  public void isInnerComponentShouldSkipSurrogate() {
-    // Given
-    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair =  createCompWithSurrogate("Comp");
-    ComponentTypeSymbol comp = pair.getKey();
-    ComponentTypeSymbolSurrogate surrogate = pair.getValue();
-
-    ComponentTypeSymbol outer = createCompWithSurrogate("Outer").getKey();
-    comp.setOuterComponent(outer);
-
-    // When
-    boolean isInner = surrogate.isInnerComponent();
-
-    // Then
-    Assertions.assertTrue(isInner);
-  }
-
-  
-  @Test
-  public void getOuterComponentShouldSkipSurrogate() {
-    // Given
-    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair =  createCompWithSurrogate("Comp");
-    ComponentTypeSymbol comp = pair.getKey();
-    ComponentTypeSymbolSurrogate surrogate = pair.getValue();
-
-    ComponentTypeSymbol outer = createCompWithSurrogate("Outer").getKey();
-    comp.setOuterComponent(outer);
-
-    // When
-    Optional<ComponentTypeSymbol> outerOpt = surrogate.getOuterComponent();
-
-    // Then
-    Assertions.assertTrue(outerOpt.isPresent(), "No outer component");
-    Assertions.assertSame(outer, outerOpt.get());
-  }
-
-  
-  @Test
-  void setOuterComponentShouldSkipSurrogate() {
-    // Given
-    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair =  createCompWithSurrogate("Comp");
-    ComponentTypeSymbol comp = pair.getKey();
-    ComponentTypeSymbolSurrogate surrogate = pair.getValue();
-
-    ComponentTypeSymbol outer = createCompWithSurrogate("Outer").getKey();
-
-    // When
-    surrogate.setOuterComponent(outer);
-
-    // Then
-    Assertions.assertTrue(comp.getOuterComponent().isPresent(), "No outer component present");
-    Assertions.assertSame(outer, comp.getOuterComponent().get());
-  }
-
   
   @Test
   void isPresentParentShouldSkipSurrogate() {

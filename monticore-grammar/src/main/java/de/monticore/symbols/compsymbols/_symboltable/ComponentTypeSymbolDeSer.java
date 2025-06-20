@@ -43,11 +43,6 @@ public class ComponentTypeSymbolDeSer extends ComponentTypeSymbolDeSerTOP {
   }
 
   @Override
-  protected void deserializeAddons(ComponentTypeSymbol symbol, JsonObject symbolJson) {
-    symbol.getSpannedScope().getLocalComponentTypeSymbols().forEach(component -> component.setOuterComponent(symbol));
-  }
-
-  @Override
   protected void serializeSuperComponents(@NonNull List<CompKindExpression> superComponents,
                                           @NonNull CompSymbolsSymbols2Json s2j) {
     s2j.getJsonPrinter().beginArray(SUPER);

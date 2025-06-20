@@ -18,8 +18,6 @@ import java.util.stream.Collectors;
 
 public class ComponentTypeSymbol extends ComponentTypeSymbolTOP {
 
-  protected ComponentTypeSymbol outerComponent;
-
   public ComponentTypeSymbol(String name) {
     super(name);
   }
@@ -344,31 +342,5 @@ public class ComponentTypeSymbol extends ComponentTypeSymbolTOP {
   public Optional<VariableSymbol> getField(@NonNull String name) {
     Preconditions.checkNotNull(name);
     return this.getFields().stream().filter(field -> field.getName().equals(name)).findFirst();
-  }
-
-  /**
-   * @return {@code true}, if this is an inner component, else {@code false}.
-   */
-  public boolean isInnerComponent() {
-    return outerComponent != null;
-  }
-
-  /**
-   * @return an {@code Optional} of this component type's outer component, or an empty {@code
-   * Optional} if this is not an inner component type.
-   */
-  public Optional<ComponentTypeSymbol> getOuterComponent() {
-    return Optional.ofNullable(outerComponent);
-  }
-
-  /**
-   * Sets the outer component type that contains this component type and subsequently states
-   * whether this is an inner component type or not.
-   *
-   * @param outerComponent the component type that contains this component type.
-   */
-  public void setOuterComponent(@Nullable ComponentTypeSymbol outerComponent) {
-    Preconditions.checkArgument(!(outerComponent instanceof ComponentTypeSymbolSurrogate));
-    this.outerComponent = outerComponent;
   }
 }
