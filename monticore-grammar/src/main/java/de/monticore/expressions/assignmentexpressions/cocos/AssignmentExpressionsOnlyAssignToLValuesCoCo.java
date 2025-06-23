@@ -12,7 +12,7 @@ import de.monticore.expressions.assignmentexpressions._cocos.AssignmentExpressio
 import de.monticore.expressions.assignmentexpressions._cocos.AssignmentExpressionsASTIncPrefixExpressionCoCo;
 import de.monticore.expressions.assignmentexpressions._cocos.AssignmentExpressionsASTIncSuffixExpressionCoCo;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.expressions.expressionsbasis.types3.util.ILValueRelations;
+import de.monticore.types3.util.ILValueRelations;
 import de.monticore.types3.util.LValueRelations;
 import de.se_rwth.commons.logging.Log;
 

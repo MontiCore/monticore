@@ -2,7 +2,7 @@
 package de.monticore.types.check.types3wrapper;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.expressions.expressionsbasis.types3.util.ILValueRelations;
+import de.monticore.types3.util.ILValueRelations;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.types.check.IDerive;
 import de.monticore.types.check.TypeCheckResult;
