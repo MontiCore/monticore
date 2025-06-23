@@ -16,12 +16,14 @@ public class Subcomponent2VariableAdapterTest {
   void shouldAdaptFields() {
     // Given
     ICompSymbolsScope scope = CompSymbolsMill.scope();
+    ComponentTypeSymbol type = CompSymbolsMill.componentTypeSymbolSurrogateBuilder().setName("empty").setEnclosingScope(scope).build();
+    type.setSpannedScope(CompSymbolsMill.scope());
     SubcomponentSymbol adaptee = CompSymbolsMill.subcomponentSymbolBuilder()
         .setName("sub")
-        .setType(new CompKindOfComponentType(CompSymbolsMill.componentTypeSymbolSurrogateBuilder().setName("empty").setEnclosingScope(scope).build()))
+        .setType(new CompKindOfComponentType(type))
+        .setEnclosingScope(scope)
         .build();
     scope.add(adaptee);
-    adaptee.setEnclosingScope(scope);
 
     Subcomponent2VariableAdapter adapter = new Subcomponent2VariableAdapter(adaptee);
 
@@ -46,12 +48,14 @@ public class Subcomponent2VariableAdapterTest {
   void shouldDeepClone() {
     // Given
     ICompSymbolsScope scope = CompSymbolsMill.scope();
+    ComponentTypeSymbol type = CompSymbolsMill.componentTypeSymbolSurrogateBuilder().setName("empty").setEnclosingScope(scope).build();
+    type.setSpannedScope(CompSymbolsMill.scope());
     SubcomponentSymbol adaptee = CompSymbolsMill.subcomponentSymbolBuilder()
         .setName("sub")
-        .setType(new CompKindOfComponentType(CompSymbolsMill.componentTypeSymbolSurrogateBuilder().setName("empty").setEnclosingScope(scope).build()))
+        .setType(new CompKindOfComponentType(type))
+        .setEnclosingScope(scope)
         .build();
     scope.add(adaptee);
-    adaptee.setEnclosingScope(scope);
 
     Subcomponent2VariableAdapter adapter = new Subcomponent2VariableAdapter(adaptee);
 
