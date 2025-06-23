@@ -169,14 +169,27 @@ public class MCAssertions {
   }
 
   /**
-   * Fails a test with the given failure message.
+   * Fails a test.
    * Additionally, Lists the state of Log-Findings.
    * See Javadoc for {@link Assertions#fail(String, Throwable)}
    * for an explanation of this method's generic return type V.
    *
-   * @param message message to print
    * @return nothing
    */
+  public static <V> V failAndPrintFindings() {
+    return failAndPrintFindings("");
+  }
+
+
+    /**
+     * Fails a test with the given failure message.
+     * Additionally, Lists the state of Log-Findings.
+     * See Javadoc for {@link Assertions#fail(String, Throwable)}
+     * for an explanation of this method's generic return type V.
+     *
+     * @param message message to print
+     * @return nothing
+     */
   public static <V> V failAndPrintFindings(String message) {
     StringBuilder messageWithFindings = new StringBuilder();
     if (!message.isBlank()) {
