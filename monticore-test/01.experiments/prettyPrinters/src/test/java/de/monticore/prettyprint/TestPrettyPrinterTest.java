@@ -25,7 +25,7 @@ public class TestPrettyPrinterTest extends PPTestClass {
   @BeforeClass
   public static void setup() {
     TestPrettyPrintersMill.init();
-    LogStub.initPlusLog();
+    LogStub.init();
     Log.enableFailQuick(false);
   }
 
