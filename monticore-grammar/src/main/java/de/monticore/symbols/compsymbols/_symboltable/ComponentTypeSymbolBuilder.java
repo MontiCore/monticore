@@ -74,7 +74,7 @@ public class ComponentTypeSymbolBuilder extends ComponentTypeSymbolBuilderTOP {
   @Override
   public boolean isValid() {
     return this.name != null
-      && this.spannedScope != null;
+        && this.spannedScope != null;
   }
 
   protected final boolean isValidNumOptParams() {

@@ -61,7 +61,7 @@ public class ComponentTypeSymbol extends ComponentTypeSymbolTOP {
    * exists. Does consider inherited ports if {@code searchSuper} is set
    * to true.
    *
-   * @param name the name of the port
+   * @param name        the name of the port
    * @param searchSuper whether to consider ports of super components
    * @return the port with the given name wrapped in an {@code Optional} or
    * an empty {@code Optional} if no such port exists.
@@ -107,7 +107,7 @@ public class ComponentTypeSymbol extends ComponentTypeSymbolTOP {
    * exists. Does consider inherited ports if {@code searchSuper} is set
    * to true.
    *
-   * @param name the name of the port
+   * @param name        the name of the port
    * @param searchSuper whether to consider ports of super components
    * @return the incoming port with the given name wrapped in an
    * {@code Optional} or an empty {@code Optional} if no such port exists
@@ -153,7 +153,7 @@ public class ComponentTypeSymbol extends ComponentTypeSymbolTOP {
    * if it exists. Does consider inherited ports if {@code searchSuper} is set
    * to true.
    *
-   * @param name the name of the port
+   * @param name        the name of the port
    * @param searchSuper whether to consider ports of super components
    * @return the outgoing port with the given name wrapped in an
    * {@code Optional} or an empty {@code Optional} if no such port exists
@@ -289,28 +289,26 @@ public class ComponentTypeSymbol extends ComponentTypeSymbolTOP {
 
   /**
    * Helper function that transitively determines the start of the refinement chain.<br>
-   *
+   * <p>
    * Example: A refines B, C; B refines D; C refines D;
-   *           The unique start is D.<br>
-   *
+   * The unique start is D.<br>
+   * <p>
    * A component without explicit refinements is itself the start on the chain. If there does not exist an unique
    * start (A refines B, C and B, C are unrefined) we throw an error.
    */
   public Optional<ComponentTypeSymbol> getRefinementStart() {
-    if(getRefinementsList() == null || getRefinementsList().isEmpty()) {
+    if (getRefinementsList() == null || getRefinementsList().isEmpty()) {
       return Optional.of(this);
-    }
-    else {
+    } else {
       var candidates = getRefinementsList().stream()
           .map(CompKindExpression::getTypeInfo)
           .map(ComponentTypeSymbol::getRefinementStart) // Recursion
           .filter(Optional::isPresent)
           .map(Optional::get)
           .collect(Collectors.toSet());
-      if(candidates.size() == 1) {
+      if (candidates.size() == 1) {
         return candidates.stream().findFirst();
-      }
-      else {
+      } else {
         Log.warn("Could not determine a single root component in the refinement chain.");
         return Optional.empty();
       }
@@ -322,10 +320,10 @@ public class ComponentTypeSymbol extends ComponentTypeSymbolTOP {
    */
   public List<VariableSymbol> getFields() {
     return this.getSpannedScope().getLocalVariableSymbols().stream()
-      .filter(f -> !(f instanceof Port2VariableAdapter))
-      .filter(f -> !(f instanceof Subcomponent2VariableAdapter))
-      .filter(f -> !(getParameterList().contains(f)))
-      .collect(Collectors.toList());
+        .filter(f -> !(f instanceof Port2VariableAdapter))
+        .filter(f -> !(f instanceof Subcomponent2VariableAdapter))
+        .filter(f -> !(getParameterList().contains(f)))
+        .collect(Collectors.toList());
   }
 
   /**

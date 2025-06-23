@@ -20,11 +20,11 @@ import java.util.Optional;
 import java.util.Set;
 
 public class ComponentTypeSymbolSurrogateTest {
-  
+
   @Test
   public void setSpannedScopeShouldSkipSurrogate() {
     // Given
-    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair =  createCompWithSurrogate("Comp");
+    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair = createCompWithSurrogate("Comp");
     ComponentTypeSymbol comp = pair.getKey();
     ComponentTypeSymbolSurrogate surrogate = pair.getValue();
 
@@ -40,7 +40,7 @@ public class ComponentTypeSymbolSurrogateTest {
   @Test
   public void getSpannedScopeShouldSkipSurrogate() {
     // Given
-    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair =  createCompWithSurrogate("Comp");
+    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair = createCompWithSurrogate("Comp");
     ComponentTypeSymbol comp = pair.getKey();
     ComponentTypeSymbolSurrogate surrogate = pair.getValue();
 
@@ -54,7 +54,7 @@ public class ComponentTypeSymbolSurrogateTest {
   @Test
   public void getPortsShouldSkipSurrogate() {
     // Given
-    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair =  createCompWithSurrogate("Comp");
+    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair = createCompWithSurrogate("Comp");
     ComponentTypeSymbol comp = pair.getKey();
     ComponentTypeSymbolSurrogate surrogate = pair.getValue();
 
@@ -64,13 +64,13 @@ public class ComponentTypeSymbolSurrogateTest {
     List<PortSymbol> ports = surrogate.getPorts();
 
     // Then
-    Assertions.assertArrayEquals(new PortSymbol[] {port}, ports.toArray());
+    Assertions.assertArrayEquals(new PortSymbol[]{port}, ports.toArray());
   }
 
   @Test
   public void getPortByNameShouldSkipSurrogate() {
     // Given
-    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair =  createCompWithSurrogate("Comp");
+    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair = createCompWithSurrogate("Comp");
     ComponentTypeSymbol comp = pair.getKey();
     ComponentTypeSymbolSurrogate surrogate = pair.getValue();
 
@@ -87,14 +87,14 @@ public class ComponentTypeSymbolSurrogateTest {
   @Test
   public void getInheritedPortByNameShouldSkipSurrogate() {
     // Given
-    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair =  createCompWithSurrogate("Comp");
+    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair = createCompWithSurrogate("Comp");
     ComponentTypeSymbol comp = pair.getKey();
     ComponentTypeSymbolSurrogate surrogate = pair.getValue();
 
     ComponentTypeSymbol parent = CompSymbolsMill.componentTypeSymbolBuilder()
-      .setName("Parent")
-      .setSpannedScope(CompSymbolsMill.scope())
-      .build();
+        .setName("Parent")
+        .setSpannedScope(CompSymbolsMill.scope())
+        .build();
     comp.setSuperComponentsList(Collections.singletonList(new CompKindOfComponentType(parent)));
 
     PortSymbol port = addIncomingPortTo(parent, "parentPort");
@@ -110,7 +110,7 @@ public class ComponentTypeSymbolSurrogateTest {
   @Test
   public void getIncomingPortsShouldSkipSurrogate() {
     // Given
-    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair =  createCompWithSurrogate("Comp");
+    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair = createCompWithSurrogate("Comp");
     ComponentTypeSymbol comp = pair.getKey();
     ComponentTypeSymbolSurrogate surrogate = pair.getValue();
 
@@ -120,13 +120,13 @@ public class ComponentTypeSymbolSurrogateTest {
     List<PortSymbol> ports = surrogate.getIncomingPorts();
 
     // Then
-    Assertions.assertArrayEquals(new PortSymbol[] {port}, ports.toArray());
+    Assertions.assertArrayEquals(new PortSymbol[]{port}, ports.toArray());
   }
 
   @Test
   public void getIncomingPortByNameShouldSkipSurrogate() {
     // Given
-    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair =  createCompWithSurrogate("Comp");
+    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair = createCompWithSurrogate("Comp");
     ComponentTypeSymbol comp = pair.getKey();
     ComponentTypeSymbolSurrogate surrogate = pair.getValue();
 
@@ -143,7 +143,7 @@ public class ComponentTypeSymbolSurrogateTest {
   @Test
   public void getInheritedIncomingPortByNameShouldSkipSurrogate() {
     // Given
-    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair =  createCompWithSurrogate("Comp");
+    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair = createCompWithSurrogate("Comp");
     ComponentTypeSymbol comp = pair.getKey();
     ComponentTypeSymbolSurrogate surrogate = pair.getValue();
 
@@ -159,11 +159,11 @@ public class ComponentTypeSymbolSurrogateTest {
     Assertions.assertTrue(portOpt.isPresent(), "Port is not present");
     Assertions.assertSame(port, portOpt.get());
   }
-  
+
   @Test
   void isPresentParentShouldSkipSurrogate() {
     // Given
-    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair =  createCompWithSurrogate("Comp");
+    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair = createCompWithSurrogate("Comp");
     ComponentTypeSymbol comp = pair.getKey();
     ComponentTypeSymbolSurrogate surrogate = pair.getValue();
 
@@ -177,11 +177,11 @@ public class ComponentTypeSymbolSurrogateTest {
     Assertions.assertTrue(parentIsPresent, "No parent present");
   }
 
-  
+
   @Test
   void getParentShouldSkipSurrogate() {
     // Given
-    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair =  createCompWithSurrogate("Comp");
+    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair = createCompWithSurrogate("Comp");
     ComponentTypeSymbol comp = pair.getKey();
     ComponentTypeSymbolSurrogate surrogate = pair.getValue();
 
@@ -196,11 +196,11 @@ public class ComponentTypeSymbolSurrogateTest {
     Assertions.assertSame(parentExpr, parentCalculated);
   }
 
-  
+
   @Test
   void setParentShouldSkipSurrogate() {
     // Given
-    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair =  createCompWithSurrogate("Comp");
+    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair = createCompWithSurrogate("Comp");
     ComponentTypeSymbol comp = pair.getKey();
     ComponentTypeSymbolSurrogate surrogate = pair.getValue();
 
@@ -268,11 +268,11 @@ public class ComponentTypeSymbolSurrogateTest {
     // Then
     Assertions.assertSame(abstractionExpr, comp.getRefinements(0));
   }
-  
+
   @Test
   void getParameterListShouldSkipSurrogate() {
     // Given
-    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair =  createCompWithSurrogate("Comp");
+    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair = createCompWithSurrogate("Comp");
     ComponentTypeSymbol comp = pair.getKey();
     ComponentTypeSymbolSurrogate surrogate = pair.getValue();
 
@@ -282,13 +282,13 @@ public class ComponentTypeSymbolSurrogateTest {
     List<VariableSymbol> params = surrogate.getParameterList();
 
     // Then
-    Assertions.assertArrayEquals(new VariableSymbol[] {param}, params.toArray());
+    Assertions.assertArrayEquals(new VariableSymbol[]{param}, params.toArray());
   }
 
   @Test
   void getParameterShouldSkipSurrogate() {
     // Given
-    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair =  createCompWithSurrogate("Comp");
+    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair = createCompWithSurrogate("Comp");
     ComponentTypeSymbol comp = pair.getKey();
     ComponentTypeSymbolSurrogate surrogate = pair.getValue();
 
@@ -305,50 +305,50 @@ public class ComponentTypeSymbolSurrogateTest {
   @Test
   void addParameterShouldSkipSurrogate() {
     // Given
-    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair =  createCompWithSurrogate("Comp");
+    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair = createCompWithSurrogate("Comp");
     ComponentTypeSymbol comp = pair.getKey();
     ComponentTypeSymbolSurrogate surrogate = pair.getValue();
 
     VariableSymbol param = CompSymbolsMill
-      .variableSymbolBuilder()
-      .setName("param")
-      .setType(SymTypeExpressionFactory.createObscureType())
-      .build();
+        .variableSymbolBuilder()
+        .setName("param")
+        .setType(SymTypeExpressionFactory.createObscureType())
+        .build();
 
     // When
     surrogate.getSpannedScope().add(param);
     surrogate.addParameter(param);
 
     // Then
-    Assertions.assertArrayEquals(new VariableSymbol[] {param}, comp.getParameterList().toArray());
+    Assertions.assertArrayEquals(new VariableSymbol[]{param}, comp.getParameterList().toArray());
   }
 
 
   @Test
   void addParametersShouldSkipSurrogate() {
     // Given
-    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair =  createCompWithSurrogate("Comp");
+    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair = createCompWithSurrogate("Comp");
     ComponentTypeSymbol comp = pair.getKey();
     ComponentTypeSymbolSurrogate surrogate = pair.getValue();
 
     VariableSymbol param = CompSymbolsMill
-      .variableSymbolBuilder()
-      .setName("param")
-      .setType(SymTypeExpressionFactory.createObscureType())
-      .build();
+        .variableSymbolBuilder()
+        .setName("param")
+        .setType(SymTypeExpressionFactory.createObscureType())
+        .build();
 
     // When
     surrogate.getSpannedScope().add(param);
     surrogate.addAllParameter(Collections.singletonList(param));
 
     // Then
-    Assertions.assertArrayEquals(new VariableSymbol[] {param}, comp.getParameterList().toArray());
+    Assertions.assertArrayEquals(new VariableSymbol[]{param}, comp.getParameterList().toArray());
   }
 
   @Test
   void hasParametersShouldSkipSurrogate() {
     // Given
-    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair =  createCompWithSurrogate("Comp");
+    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair = createCompWithSurrogate("Comp");
     ComponentTypeSymbol comp = pair.getKey();
     ComponentTypeSymbolSurrogate surrogate = pair.getValue();
 
@@ -364,7 +364,7 @@ public class ComponentTypeSymbolSurrogateTest {
   @Test
   void getTypeParametersShouldSkipSurrogate() {
     // Given
-    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair =  createCompWithSurrogate("Comp");
+    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair = createCompWithSurrogate("Comp");
     ComponentTypeSymbol comp = pair.getKey();
     ComponentTypeSymbolSurrogate surrogate = pair.getValue();
 
@@ -374,13 +374,13 @@ public class ComponentTypeSymbolSurrogateTest {
     List<TypeVarSymbol> typeParams = surrogate.getTypeParameters();
 
     // Then
-    Assertions.assertArrayEquals(new TypeVarSymbol[] {typeParam}, typeParams.toArray());
+    Assertions.assertArrayEquals(new TypeVarSymbol[]{typeParam}, typeParams.toArray());
   }
 
   @Test
   void hasTypeParameterShouldSkipSurrogate() {
     // Given
-    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair =  createCompWithSurrogate("Comp");
+    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair = createCompWithSurrogate("Comp");
     ComponentTypeSymbol comp = pair.getKey();
     ComponentTypeSymbolSurrogate surrogate = pair.getValue();
 
@@ -396,7 +396,7 @@ public class ComponentTypeSymbolSurrogateTest {
   @Test
   void getFieldsShouldSkipSurrogate() {
     // Given
-    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair =  createCompWithSurrogate("Comp");
+    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair = createCompWithSurrogate("Comp");
     ComponentTypeSymbol comp = pair.getKey();
     ComponentTypeSymbolSurrogate surrogate = pair.getValue();
 
@@ -406,13 +406,13 @@ public class ComponentTypeSymbolSurrogateTest {
     List<VariableSymbol> fields = surrogate.getFields();
 
     // Then
-    Assertions.assertArrayEquals(new VariableSymbol[] {field}, fields.toArray());
+    Assertions.assertArrayEquals(new VariableSymbol[]{field}, fields.toArray());
   }
 
   @Test
   void getFieldByNameShouldSkipSurrogate() {
     // Given
-    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair =  createCompWithSurrogate("Comp");
+    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair = createCompWithSurrogate("Comp");
     ComponentTypeSymbol comp = pair.getKey();
     ComponentTypeSymbolSurrogate surrogate = pair.getValue();
 
@@ -430,7 +430,7 @@ public class ComponentTypeSymbolSurrogateTest {
   @Test
   void getOutgoingPortsShouldSkipSurrogate() {
     // Given
-    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair =  createCompWithSurrogate("Comp");
+    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair = createCompWithSurrogate("Comp");
     ComponentTypeSymbol comp = pair.getKey();
     ComponentTypeSymbolSurrogate surrogate = pair.getValue();
 
@@ -440,13 +440,13 @@ public class ComponentTypeSymbolSurrogateTest {
     List<PortSymbol> ports = surrogate.getOutgoingPorts();
 
     // Then
-    Assertions.assertArrayEquals(new PortSymbol[] {port}, ports.toArray());
+    Assertions.assertArrayEquals(new PortSymbol[]{port}, ports.toArray());
   }
 
   @Test
   void getOutgoingPortByNameShouldSkipSurrogate() {
     // Given
-    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair =  createCompWithSurrogate("Comp");
+    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair = createCompWithSurrogate("Comp");
     ComponentTypeSymbol comp = pair.getKey();
     ComponentTypeSymbolSurrogate surrogate = pair.getValue();
 
@@ -463,7 +463,7 @@ public class ComponentTypeSymbolSurrogateTest {
   @Test
   void getInheritedOutgoingPortByNameShouldSkipSurrogate() {
     // Given
-    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair =  createCompWithSurrogate("Comp");
+    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair = createCompWithSurrogate("Comp");
     ComponentTypeSymbol comp = pair.getKey();
     ComponentTypeSymbolSurrogate surrogate = pair.getValue();
 
@@ -484,7 +484,7 @@ public class ComponentTypeSymbolSurrogateTest {
   @Test
   void getPortsWithDirectionShouldSkipSurrogate() {
     // Given
-    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair =  createCompWithSurrogate("Comp");
+    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair = createCompWithSurrogate("Comp");
     ComponentTypeSymbol comp = pair.getKey();
     ComponentTypeSymbolSurrogate surrogate = pair.getValue();
 
@@ -495,13 +495,13 @@ public class ComponentTypeSymbolSurrogateTest {
     List<PortSymbol> ports = surrogate.getPorts(true, false);
 
     // Then
-    Assertions.assertArrayEquals(new PortSymbol[] {port}, ports.toArray());
+    Assertions.assertArrayEquals(new PortSymbol[]{port}, ports.toArray());
   }
 
   @Test
   void getAllIncomingPortsShouldSkipSurrogate() {
     // Given
-    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair =  createCompWithSurrogate("Comp");
+    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair = createCompWithSurrogate("Comp");
     ComponentTypeSymbol comp = pair.getKey();
     ComponentTypeSymbolSurrogate surrogate = pair.getValue();
 
@@ -511,13 +511,13 @@ public class ComponentTypeSymbolSurrogateTest {
     Set<PortSymbol> ports = surrogate.getAllIncomingPorts();
 
     // Then
-    Assertions.assertArrayEquals(new PortSymbol[] {port}, ports.toArray());
+    Assertions.assertArrayEquals(new PortSymbol[]{port}, ports.toArray());
   }
 
   @Test
   void getAllOutgoingPortsShouldSkipSurrogate() {
     // Given
-    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair =  createCompWithSurrogate("Comp");
+    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair = createCompWithSurrogate("Comp");
     ComponentTypeSymbol comp = pair.getKey();
     ComponentTypeSymbolSurrogate surrogate = pair.getValue();
 
@@ -527,13 +527,13 @@ public class ComponentTypeSymbolSurrogateTest {
     List<PortSymbol> ports = surrogate.getOutgoingPorts();
 
     // Then
-    Assertions.assertArrayEquals(new PortSymbol[] {port}, ports.toArray());
+    Assertions.assertArrayEquals(new PortSymbol[]{port}, ports.toArray());
   }
 
   @Test
   void getAllPortsWithDirectionShouldSkipSurrogate() {
     // Given
-    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair =  createCompWithSurrogate("Comp");
+    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair = createCompWithSurrogate("Comp");
     ComponentTypeSymbol comp = pair.getKey();
     ComponentTypeSymbolSurrogate surrogate = pair.getValue();
 
@@ -543,13 +543,13 @@ public class ComponentTypeSymbolSurrogateTest {
     Set<PortSymbol> ports = surrogate.getAllPorts(true, false);
 
     // Then
-    Assertions.assertArrayEquals(new PortSymbol[] {port}, ports.toArray());
+    Assertions.assertArrayEquals(new PortSymbol[]{port}, ports.toArray());
   }
 
   @Test
   void getAllPortsShouldSkipSurrogate() {
     // Given
-    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair =  createCompWithSurrogate("Comp");
+    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair = createCompWithSurrogate("Comp");
     ComponentTypeSymbol comp = pair.getKey();
     ComponentTypeSymbolSurrogate surrogate = pair.getValue();
 
@@ -559,13 +559,13 @@ public class ComponentTypeSymbolSurrogateTest {
     Set<PortSymbol> ports = surrogate.getAllPorts();
 
     // Then
-    Assertions.assertArrayEquals(new PortSymbol[] {port}, ports.toArray());
+    Assertions.assertArrayEquals(new PortSymbol[]{port}, ports.toArray());
   }
 
   @Test
   void getSubComponentsShouldSkipSurrogate() {
     // Given
-    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair =  createCompWithSurrogate("Comp");
+    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair = createCompWithSurrogate("Comp");
     ComponentTypeSymbol comp = pair.getKey();
     ComponentTypeSymbolSurrogate surrogate = pair.getValue();
 
@@ -575,13 +575,13 @@ public class ComponentTypeSymbolSurrogateTest {
     List<SubcomponentSymbol> subs = surrogate.getSubcomponents();
 
     // Then
-    Assertions.assertArrayEquals(new SubcomponentSymbol[] {sub}, subs.toArray());
+    Assertions.assertArrayEquals(new SubcomponentSymbol[]{sub}, subs.toArray());
   }
 
   @Test
   void getSubComponentShouldSkipSurrogate() {
     // Given
-    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair =  createCompWithSurrogate("Comp");
+    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair = createCompWithSurrogate("Comp");
     ComponentTypeSymbol comp = pair.getKey();
     ComponentTypeSymbolSurrogate surrogate = pair.getValue();
 
@@ -599,7 +599,7 @@ public class ComponentTypeSymbolSurrogateTest {
   @Test
   void isDecomposedShouldSkipSurrogate() {
     // Given
-    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair =  createCompWithSurrogate("Comp");
+    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair = createCompWithSurrogate("Comp");
     ComponentTypeSymbol comp = pair.getKey();
     ComponentTypeSymbolSurrogate surrogate = pair.getValue();
 
@@ -615,7 +615,7 @@ public class ComponentTypeSymbolSurrogateTest {
   @Test
   void isAtomicShouldSkipSurrogate() {
     // Given
-    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair =  createCompWithSurrogate("Comp");
+    Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> pair = createCompWithSurrogate("Comp");
     ComponentTypeSymbol comp = pair.getKey();
     ComponentTypeSymbolSurrogate surrogate = pair.getValue();
 
@@ -630,6 +630,7 @@ public class ComponentTypeSymbolSurrogateTest {
 
   /**
    * Adds an incoming port symbol to the spanned scope of the component. The port type is only mocked.
+   *
    * @return the created Port
    */
   protected PortSymbol addIncomingPortTo(@NonNull ComponentTypeSymbol compType, @NonNull String portName) {
@@ -638,6 +639,7 @@ public class ComponentTypeSymbolSurrogateTest {
 
   /**
    * Adds an outgoing port symbol to the spanned scope of the component. The port type is only mocked.
+   *
    * @return the created Port
    */
   protected PortSymbol addOutgoingPortTo(@NonNull ComponentTypeSymbol compType, @NonNull String portName) {
@@ -646,6 +648,7 @@ public class ComponentTypeSymbolSurrogateTest {
 
   /**
    * Adds a port symbol to the spanned scope of the component. The port type is only mocked.
+   *
    * @return the created Port
    */
   protected PortSymbol addPortTo(@NonNull ComponentTypeSymbol compType, @NonNull String portName, boolean isIncoming) {
@@ -653,13 +656,13 @@ public class ComponentTypeSymbolSurrogateTest {
     Preconditions.checkNotNull(portName);
 
     PortSymbol port = CompSymbolsMill
-      .portSymbolBuilder()
-      .setName(portName)
-      .setIncoming(isIncoming)
-      .setOutgoing(!isIncoming)
-      .setType(SymTypeExpressionFactory.createObscureType())
-      .setAccessModifier(BasicAccessModifier.PUBLIC)
-      .build();
+        .portSymbolBuilder()
+        .setName(portName)
+        .setIncoming(isIncoming)
+        .setOutgoing(!isIncoming)
+        .setType(SymTypeExpressionFactory.createObscureType())
+        .setAccessModifier(BasicAccessModifier.PUBLIC)
+        .build();
 
     compType.getSpannedScope().add(port);
 
@@ -668,6 +671,7 @@ public class ComponentTypeSymbolSurrogateTest {
 
   /**
    * Adds a subcomponent to the spanned scope of the component. The sub component's type type is only mocked.
+   *
    * @return the created subcomponent
    */
   protected SubcomponentSymbol addSubComponentTo(@NonNull ComponentTypeSymbol compType, @NonNull String subCompName) {
@@ -675,11 +679,11 @@ public class ComponentTypeSymbolSurrogateTest {
     Preconditions.checkNotNull(subCompName);
 
     SubcomponentSymbol subComp = CompSymbolsMill
-      .subcomponentSymbolBuilder()
-      .setName(subCompName)
-      .setType(new CompKindOfComponentType(CompSymbolsMill.componentTypeSymbolSurrogateBuilder().setName("empty").setEnclosingScope(compType.getSpannedScope()).build()))
-      .setAccessModifier(BasicAccessModifier.PUBLIC)
-      .build();
+        .subcomponentSymbolBuilder()
+        .setName(subCompName)
+        .setType(new CompKindOfComponentType(CompSymbolsMill.componentTypeSymbolSurrogateBuilder().setName("empty").setEnclosingScope(compType.getSpannedScope()).build()))
+        .setAccessModifier(BasicAccessModifier.PUBLIC)
+        .build();
 
     compType.getSpannedScope().add(subComp);
 
@@ -688,18 +692,19 @@ public class ComponentTypeSymbolSurrogateTest {
 
   /**
    * Adds an inner component type symbol to the spanned scope of the component.
+   *
    * @return the created inner component type
    */
   protected ComponentTypeSymbol addInnerComponentTypeTo(@NonNull ComponentTypeSymbol compType, @NonNull String innerCompTypeName) {
     Preconditions.checkNotNull(compType);
     Preconditions.checkNotNull(innerCompTypeName);
 
-    ComponentTypeSymbol innerComp =  CompSymbolsMill
-      .componentTypeSymbolBuilder()
-      .setName(innerCompTypeName)
-      .setSpannedScope(CompSymbolsMill.scope())
-      .setAccessModifier(BasicAccessModifier.PUBLIC)
-      .build();
+    ComponentTypeSymbol innerComp = CompSymbolsMill
+        .componentTypeSymbolBuilder()
+        .setName(innerCompTypeName)
+        .setSpannedScope(CompSymbolsMill.scope())
+        .setAccessModifier(BasicAccessModifier.PUBLIC)
+        .build();
 
     compType.getSpannedScope().add(innerComp);
 
@@ -708,6 +713,7 @@ public class ComponentTypeSymbolSurrogateTest {
 
   /**
    * Adds a field to the spanned scope of the component. The field type is only mocked.
+   *
    * @return the created field.
    */
   protected VariableSymbol addFieldTo(@NonNull ComponentTypeSymbol compType, @NonNull String fieldName) {
@@ -715,11 +721,11 @@ public class ComponentTypeSymbolSurrogateTest {
     Preconditions.checkNotNull(fieldName);
 
     VariableSymbol field = CompSymbolsMill
-      .variableSymbolBuilder()
-      .setName(fieldName)
-      .setType(SymTypeExpressionFactory.createObscureType())
-      .setAccessModifier(BasicAccessModifier.PUBLIC)
-      .build();
+        .variableSymbolBuilder()
+        .setName(fieldName)
+        .setType(SymTypeExpressionFactory.createObscureType())
+        .setAccessModifier(BasicAccessModifier.PUBLIC)
+        .build();
 
     compType.getSpannedScope().add(field);
 
@@ -728,6 +734,7 @@ public class ComponentTypeSymbolSurrogateTest {
 
   /**
    * Adds a parameter to the spanned scope of the component. The parameter type is only mocked.
+   *
    * @return the created parameter.
    */
   protected VariableSymbol addParameterTo(@NonNull ComponentTypeSymbol compType, @NonNull String paramName) {
@@ -735,11 +742,11 @@ public class ComponentTypeSymbolSurrogateTest {
     Preconditions.checkNotNull(paramName);
 
     VariableSymbol param = CompSymbolsMill
-      .variableSymbolBuilder()
-      .setName(paramName)
-      .setType(SymTypeExpressionFactory.createObscureType())
-      .setAccessModifier(BasicAccessModifier.PUBLIC)
-      .build();
+        .variableSymbolBuilder()
+        .setName(paramName)
+        .setType(SymTypeExpressionFactory.createObscureType())
+        .setAccessModifier(BasicAccessModifier.PUBLIC)
+        .build();
 
     compType.getSpannedScope().add(param);
     compType.addParameter(param);
@@ -749,6 +756,7 @@ public class ComponentTypeSymbolSurrogateTest {
 
   /**
    * Adds a type parameter to the component.
+   *
    * @return the created type parameter
    */
   protected TypeVarSymbol addTypeParameterTo(@NonNull ComponentTypeSymbol compType,
@@ -757,10 +765,10 @@ public class ComponentTypeSymbolSurrogateTest {
     Preconditions.checkNotNull(typeParamName);
 
     TypeVarSymbol typeVar = CompSymbolsMill
-      .typeVarSymbolBuilder()
-      .setName(typeParamName)
-      .setAccessModifier(BasicAccessModifier.PUBLIC)
-      .build();
+        .typeVarSymbolBuilder()
+        .setName(typeParamName)
+        .setAccessModifier(BasicAccessModifier.PUBLIC)
+        .build();
 
     compType.getSpannedScope().add(typeVar);
 
@@ -768,22 +776,22 @@ public class ComponentTypeSymbolSurrogateTest {
   }
 
   protected static Map.Entry<ComponentTypeSymbol, ComponentTypeSymbolSurrogate> createCompWithSurrogate(
-    @NonNull String compName) {
+      @NonNull String compName) {
     Preconditions.checkNotNull(compName);
 
     ICompSymbolsScope commonScope = CompSymbolsMill.scope();
 
     ComponentTypeSymbol symbol = CompSymbolsMill.componentTypeSymbolBuilder()
-      .setName(compName)
-      .setSpannedScope(CompSymbolsMill.scope())
-      .build();
+        .setName(compName)
+        .setSpannedScope(CompSymbolsMill.scope())
+        .build();
 
     commonScope.add(symbol);
 
     ComponentTypeSymbolSurrogate surrogate = CompSymbolsMill.componentTypeSymbolSurrogateBuilder()
-      .setName(compName)
-      .setEnclosingScope(commonScope)
-      .build();
+        .setName(compName)
+        .setEnclosingScope(commonScope)
+        .build();
 
     return Map.entry(symbol, surrogate);
   }

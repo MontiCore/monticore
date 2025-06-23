@@ -46,16 +46,16 @@ class ComponentTypeSymbolBuilderTest {
   @Test
   void shouldHaveParent() {
     ComponentTypeSymbol parentComp = CompSymbolsMill.componentTypeSymbolBuilder()
-      .setSpannedScope(CompSymbolsMill.scope()).setName("A").build();
+        .setSpannedScope(CompSymbolsMill.scope()).setName("A").build();
     ComponentTypeSymbol childComp = CompSymbolsMill.componentTypeSymbolBuilder().setName("B")
-      .setSpannedScope(CompSymbolsMill.scope()).setSuperComponentsList(Collections.singletonList(new CompKindOfComponentType(parentComp))).build();
+        .setSpannedScope(CompSymbolsMill.scope()).setSuperComponentsList(Collections.singletonList(new CompKindOfComponentType(parentComp))).build();
     Assertions.assertFalse(childComp.isEmptySuperComponents());
   }
 
   @Test
   void shouldNotHaveParent() {
     ComponentTypeSymbol symbol = CompSymbolsMill.componentTypeSymbolBuilder().setName("A")
-      .setSpannedScope(CompSymbolsMill.scope()).build();
+        .setSpannedScope(CompSymbolsMill.scope()).build();
     Assertions.assertTrue(symbol.isEmptySuperComponents());
   }
 
@@ -63,14 +63,14 @@ class ComponentTypeSymbolBuilderTest {
   void shouldHaveSpec() {
     // Given
     ComponentTypeSymbol parentComp = CompSymbolsMill.componentTypeSymbolBuilder()
-      .setName("A")
-      .setSpannedScope(CompSymbolsMill.scope())
-      .build();
+        .setName("A")
+        .setSpannedScope(CompSymbolsMill.scope())
+        .build();
     CompKindExpression parentExpr = new CompKindOfComponentType(parentComp);
     ComponentTypeSymbolBuilder childBuilder = CompSymbolsMill.componentTypeSymbolBuilder()
-      .setName("B")
-      .setSpannedScope(CompSymbolsMill.scope())
-      .setRefinementsList(Collections.singletonList(parentExpr));
+        .setName("B")
+        .setSpannedScope(CompSymbolsMill.scope())
+        .setRefinementsList(Collections.singletonList(parentExpr));
 
     // When
     ComponentTypeSymbol child = childBuilder.build();
@@ -84,21 +84,21 @@ class ComponentTypeSymbolBuilderTest {
   void shouldHaveSpecs() {
     // Given
     ComponentTypeSymbol parentComp1 = CompSymbolsMill.componentTypeSymbolBuilder()
-      .setName("A1")
-      .setSpannedScope(CompSymbolsMill.scope())
-      .build();
+        .setName("A1")
+        .setSpannedScope(CompSymbolsMill.scope())
+        .build();
     ComponentTypeSymbol parentComp2 = CompSymbolsMill.componentTypeSymbolBuilder()
-      .setName("A2")
-      .setSpannedScope(CompSymbolsMill.scope())
-      .build();
+        .setName("A2")
+        .setSpannedScope(CompSymbolsMill.scope())
+        .build();
 
     CompKindExpression parentExpr1 = new CompKindOfComponentType(parentComp1);
     CompKindExpression parentExpr2 = new CompKindOfComponentType(parentComp2);
 
     ComponentTypeSymbolBuilder childBuilder = CompSymbolsMill.componentTypeSymbolBuilder()
-      .setName("B")
-      .setSpannedScope(CompSymbolsMill.scope())
-      .setRefinementsList(List.of(parentExpr1, parentExpr2));
+        .setName("B")
+        .setSpannedScope(CompSymbolsMill.scope())
+        .setRefinementsList(List.of(parentExpr1, parentExpr2));
 
     // When
     ComponentTypeSymbol child = childBuilder.build();
@@ -106,8 +106,8 @@ class ComponentTypeSymbolBuilderTest {
     // Then
     Assertions.assertEquals(2, child.sizeRefinements());
     Assertions.assertAll(
-      () -> Assertions.assertEquals(parentExpr1, child.getRefinements(0)),
-      () -> Assertions.assertEquals(parentExpr2, child.getRefinements(1))
+        () -> Assertions.assertEquals(parentExpr1, child.getRefinements(0)),
+        () -> Assertions.assertEquals(parentExpr2, child.getRefinements(1))
     );
   }
 
@@ -115,8 +115,8 @@ class ComponentTypeSymbolBuilderTest {
   void shouldNotHaveSpecs() {
     // Given
     ComponentTypeSymbolBuilder childBuilder = CompSymbolsMill.componentTypeSymbolBuilder()
-      .setName("A")
-      .setSpannedScope(CompSymbolsMill.scope());
+        .setName("A")
+        .setSpannedScope(CompSymbolsMill.scope());
 
     // When
     ComponentTypeSymbol child = childBuilder.build();
@@ -129,20 +129,20 @@ class ComponentTypeSymbolBuilderTest {
   @MethodSource("compNameAndParametersProvider")
   void shouldBuildWithExpectedParameters(String name, List<VariableSymbol> parameters) {
     ComponentTypeSymbol symbol = CompSymbolsMill.componentTypeSymbolBuilder().setName(name)
-      .setSpannedScope(CompSymbolsMill.scope()).setParameterList(parameters).build();
+        .setSpannedScope(CompSymbolsMill.scope()).setParameterList(parameters).build();
     Assertions.assertEquals(symbol.getName(), name);
     Assertions.assertIterableEquals(parameters, symbol.getParameterList());
   }
 
   static Stream<Arguments> compNameAndParametersProvider() {
     return Stream.of(arguments("Comp1", Collections.emptyList()),
-      arguments("Comp2", Arrays.asList(
-        CompSymbolsMill.variableSymbolBuilder().setName("a").build(),
-        CompSymbolsMill.variableSymbolBuilder().setName("b").build(),
-        CompSymbolsMill.variableSymbolBuilder().setName("c").build())),
-      arguments("Comp3", Arrays.asList(
-        CompSymbolsMill.variableSymbolBuilder().setName("c").build(),
-        CompSymbolsMill.variableSymbolBuilder().setName("d").build())));
+        arguments("Comp2", Arrays.asList(
+            CompSymbolsMill.variableSymbolBuilder().setName("a").build(),
+            CompSymbolsMill.variableSymbolBuilder().setName("b").build(),
+            CompSymbolsMill.variableSymbolBuilder().setName("c").build())),
+        arguments("Comp3", Arrays.asList(
+            CompSymbolsMill.variableSymbolBuilder().setName("c").build(),
+            CompSymbolsMill.variableSymbolBuilder().setName("d").build())));
   }
 
   @Test
@@ -156,11 +156,11 @@ class ComponentTypeSymbolBuilderTest {
 
     // When
     ComponentTypeSymbol symbol = CompSymbolsMill.componentTypeSymbolBuilder()
-      .setName("A")
-      .setParameterList(List.of(symParamA, symParamB, symParamC, symParamD))
-      .setNumOptParams(numberOfOptionalParameters)
-      .setSpannedScope(CompSymbolsMill.scope())
-      .build();
+        .setName("A")
+        .setParameterList(List.of(symParamA, symParamB, symParamC, symParamD))
+        .setNumOptParams(numberOfOptionalParameters)
+        .setSpannedScope(CompSymbolsMill.scope())
+        .build();
 
     // Then
     Assertions.assertEquals(2, symbol.getNumOptParams());
@@ -169,21 +169,21 @@ class ComponentTypeSymbolBuilderTest {
   @ParameterizedTest
   @MethodSource("compNameAndTypeParametersProvider")
   void shouldBuildWithExpectedTypeParameters(String name,
-    List<TypeVarSymbol> typeParameters) {
+                                             List<TypeVarSymbol> typeParameters) {
     ComponentTypeSymbol symbol = CompSymbolsMill.componentTypeSymbolBuilder().setName(name)
-      .setSpannedScope(CompSymbolsMill.scope()).setTypeParameters(typeParameters).build();
+        .setSpannedScope(CompSymbolsMill.scope()).setTypeParameters(typeParameters).build();
     Assertions.assertEquals(symbol.getName(), name);
     Assertions.assertIterableEquals(symbol.getTypeParameters(), typeParameters);
   }
 
   static Stream<Arguments> compNameAndTypeParametersProvider() {
     return Stream.of(
-      arguments("Comp1", Collections.emptyList()),
-      arguments("Comp2", Arrays.asList(
-        CompSymbolsMill.typeVarSymbolBuilder().setName("A").build(),
-        CompSymbolsMill.typeVarSymbolBuilder().setName("B").build(),
-        CompSymbolsMill.typeVarSymbolBuilder().setName("C").build())),
-      arguments("Comp3", Collections.singletonList(
-        CompSymbolsMill.typeVarSymbolBuilder().setName("D").build())));
+        arguments("Comp1", Collections.emptyList()),
+        arguments("Comp2", Arrays.asList(
+            CompSymbolsMill.typeVarSymbolBuilder().setName("A").build(),
+            CompSymbolsMill.typeVarSymbolBuilder().setName("B").build(),
+            CompSymbolsMill.typeVarSymbolBuilder().setName("C").build())),
+        arguments("Comp3", Collections.singletonList(
+            CompSymbolsMill.typeVarSymbolBuilder().setName("D").build())));
   }
 }

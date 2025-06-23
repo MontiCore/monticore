@@ -25,7 +25,7 @@ public class ComponentType2TypeSymbolAdapter extends TypeSymbol {
         return SymTypeExpressionFactory.createTypeObject(new ComponentType2TypeSymbolAdapter(c.getTypeInfo()));
       } else {
         return SymTypeExpressionFactory.createGenerics(
-          new ComponentType2TypeSymbolAdapter(c.getTypeInfo()), c.asGenericComponentType().getTypeBindingsAsList()
+            new ComponentType2TypeSymbolAdapter(c.getTypeInfo()), c.asGenericComponentType().getTypeBindingsAsList()
         );
       }
     }).collect(Collectors.toList());

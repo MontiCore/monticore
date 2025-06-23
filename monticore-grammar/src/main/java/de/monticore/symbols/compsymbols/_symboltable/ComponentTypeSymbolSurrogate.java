@@ -26,15 +26,15 @@ public class ComponentTypeSymbolSurrogate extends ComponentTypeSymbolSurrogateTO
   @Override
   public ICompSymbolsScope getSpannedScope() {
     return checkLazyLoadDelegate() ?
-      this.lazyLoadDelegate().getSpannedScope() :
-      super.getSpannedScope();  // Avoid infinite recursion with this case
+        this.lazyLoadDelegate().getSpannedScope() :
+        super.getSpannedScope();  // Avoid infinite recursion with this case
   }
 
   @Override
   public List<VariableSymbol> getParameterList() {
     return checkLazyLoadDelegate() ?
-      this.lazyLoadDelegate().getParameterList() :
-      super.getParameterList();  // Avoid infinite recursion with this case
+        this.lazyLoadDelegate().getParameterList() :
+        super.getParameterList();  // Avoid infinite recursion with this case
   }
 
   @Override
@@ -49,14 +49,14 @@ public class ComponentTypeSymbolSurrogate extends ComponentTypeSymbolSurrogateTO
   @Override
   public Set<PortSymbol> getAllPorts() {
     return checkLazyLoadDelegate() ?
-      this.lazyLoadDelegate().getAllPorts() :
-      super.getAllPorts();  // Avoid infinite recursion with this case
+        this.lazyLoadDelegate().getAllPorts() :
+        super.getAllPorts();  // Avoid infinite recursion with this case
   }
 
   @Override
   public ASTComponentType getAstNode() {
     return checkLazyLoadDelegate() ?
-      this.lazyLoadDelegate().getAstNode() :
-      super.getAstNode();  // Avoid infinite recursion with this case
+        this.lazyLoadDelegate().getAstNode() :
+        super.getAstNode();  // Avoid infinite recursion with this case
   }
 }

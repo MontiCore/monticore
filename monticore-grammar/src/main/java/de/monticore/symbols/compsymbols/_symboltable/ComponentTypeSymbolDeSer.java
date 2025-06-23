@@ -89,8 +89,8 @@ public class ComponentTypeSymbolDeSer extends ComponentTypeSymbolDeSerTOP {
         parameterResult.add(paramSym);
       } else {
         Log.error(String.format(
-          "0xD0101 Malformed json, parameter '%s' of unsupported kind '%s'",
-          param.getAsJsonObject().getStringMember(JsonDeSers.NAME), paramJsonKind
+            "0xD0101 Malformed json, parameter '%s' of unsupported kind '%s'",
+            param.getAsJsonObject().getStringMember(JsonDeSers.NAME), paramJsonKind
         ));
       }
     }
