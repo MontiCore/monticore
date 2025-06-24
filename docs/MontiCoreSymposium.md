@@ -27,7 +27,7 @@ solutions in the context of DSLs and model-based development.
 
 ### Location
 
-The MontiCore symposium will be located in Köln_Riehl, Germany. 
+The MontiCore symposium will be located in Köln-Riehl, Germany. 
 
 ### Participation
 
@@ -46,7 +46,7 @@ be found [here](https://www.acm.org/publications/proceedings-template). We ask f
  [1] Research papers: 8 pages,
  [2] Vision abstracts: 1 page.
  
-Submissions must be uploaded via (link coming soon). 
+Submissions must be uploaded via [EasyChair](https://easychair.org/conferences/?conf=mcsf25). 
 
 It is planned to produce post-proceedings with extended and improved 
 versions of the papers as result of the symposium. 
