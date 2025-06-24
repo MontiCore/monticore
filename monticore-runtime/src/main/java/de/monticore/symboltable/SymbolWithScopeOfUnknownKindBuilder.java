@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.symboltable;
 
-import de.monticore.interpreter.Value;
+import de.monticore.interpreter.MIValue;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.stereotypes.IStereotypeReference;
 import de.se_rwth.commons.logging.Log;
@@ -22,7 +22,7 @@ public class SymbolWithScopeOfUnknownKindBuilder {
 
   protected AccessModifier accessModifier;
 
-  protected Map<IStereotypeReference, Optional<Value>> stereoinfo = new HashMap<>();
+  protected Map<IStereotypeReference, Optional<MIValue>> stereoinfo = new HashMap<>();
 
   protected IScope enclosingScope;
 
@@ -86,7 +86,7 @@ public class SymbolWithScopeOfUnknownKindBuilder {
     return this.accessModifier;
   }
 
-  public Map<IStereotypeReference, Optional<Value>> getStereoinfo() {
+  public Map<IStereotypeReference, Optional<MIValue>> getStereoinfo() {
     return this.stereoinfo;
   }
 
@@ -119,7 +119,7 @@ public class SymbolWithScopeOfUnknownKindBuilder {
   }
 
   public SymbolWithScopeOfUnknownKindBuilder setStereoinfo(
-    Map<IStereotypeReference, Optional<Value>> stereoinfo) {
+    Map<IStereotypeReference, Optional<MIValue>> stereoinfo) {
 
     this.stereoinfo = stereoinfo;
     return this.realBuilder;
@@ -131,7 +131,7 @@ public class SymbolWithScopeOfUnknownKindBuilder {
   }
 
   public  SymbolWithScopeOfUnknownKindBuilder addStereoinfo(IStereotypeReference stereotype,
-                                                            Value stereovalue) {
+                                                            MIValue stereovalue) {
     this.stereoinfo.put(stereotype, Optional.of(stereovalue));
     return this.realBuilder;
   }

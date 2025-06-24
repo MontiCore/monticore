@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.symbols.basicsymbols._symboltable;
 
-import de.monticore.interpreter.Value;
+import de.monticore.interpreter.MIValue;
 import de.monticore.symboltable.IScope;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.stereotypes.IStereotypeReference;
@@ -22,7 +22,7 @@ public class BasicSymbolsStereoinfoDeSer extends StereoinfoDeSer {
   }
 
   @Override
-  protected Map.Entry<IStereotypeReference, Optional<Value>> doDeserialize(JsonElement json,
+  protected Map.Entry<IStereotypeReference, Optional<MIValue>> doDeserialize(JsonElement json,
                                                                            IScope enclosingScope) {
     if (json.getAsJsonObject().hasMember(STEREO_VALUE)) {
       Log.errorInternal(
