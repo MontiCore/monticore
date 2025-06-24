@@ -45,4 +45,14 @@ public class ByteMIValue implements MIValue {
     return value;
   }
   
+  @Override
+  public String printType() {
+    return "Byte";
+  }
+  
+  @Override
+  public String printValue() {
+    return String.valueOf(value);
+  }
+  
 }

@@ -39,5 +39,15 @@ public class ShortMIValue implements MIValue {
   public double asDouble() {
     return value;
   }
+  
+  @Override
+  public String printType() {
+    return "Short";
+  }
+  
+  @Override
+  public String printValue() {
+    return String.valueOf(value);
+  }
 
 }

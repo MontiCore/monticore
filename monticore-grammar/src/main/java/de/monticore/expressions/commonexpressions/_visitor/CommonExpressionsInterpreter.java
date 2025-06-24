@@ -7,9 +7,11 @@ import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
 import de.monticore.interpreter.InterpreterUtils;
 import de.monticore.interpreter.ModelInterpreter;
 import de.monticore.interpreter.MIValue;
-import de.monticore.interpreter.values.ErrorMIValue;
-import de.monticore.interpreter.values.FunctionMIValue;
+import de.monticore.interpreter.values.*;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
+import de.monticore.symboltable.ISymbol;
+import de.monticore.symboltable.modifiers.StaticAccessModifier;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypePrimitive;
 import de.monticore.types3.SymTypeRelations;
@@ -18,6 +20,7 @@ import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static de.monticore.interpreter.MIValueFactory.createValue;
 
@@ -44,7 +47,7 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
   public MIValue isEqual(SymTypePrimitive leftType, MIValue left, SymTypePrimitive rightType, MIValue right) {
     SymTypePrimitive compatibleType = getCompatibleType(leftType, rightType);
     if (compatibleType == null) {
-      String errorMsg = "Equality operation with operands ot type '" + leftType.print()
+      String errorMsg = "0x57000 Equality operation with operands ot type '" + leftType.print()
           + "' and '" + rightType.print() + "' is not supported.";
       Log.error(errorMsg);
       return new ErrorMIValue(errorMsg);
@@ -69,7 +72,7 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
       return createValue(left.asDouble() == right.asDouble());
     }
     
-    String errorMsg = "Equality operator with operands of type '" + leftType.print()
+    String errorMsg = "0x57001 Equality operator with operands of type '" + leftType.print()
         + "' and '" + rightType.print() + "' is not implemented.";
     Log.error(errorMsg);
     return new ErrorMIValue(errorMsg);
@@ -78,7 +81,7 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
   public MIValue subtract(SymTypePrimitive leftType, MIValue left, SymTypePrimitive rightType, MIValue right) {
     SymTypePrimitive compatibleType = getCompatibleType(leftType, rightType);
     if (compatibleType == null) {
-      String errorMsg = "Greater or Lesser operation with operands ot type '" + leftType.print()
+      String errorMsg = "0x57002 Greater or Lesser operation with operands ot type '" + leftType.print()
           + "' and '" + rightType.print() + "' is not supported.";
       Log.error(errorMsg);
       return new ErrorMIValue(errorMsg);
@@ -101,7 +104,7 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
       return createValue(left.asDouble() - right.asDouble());
     }
     
-    String errorMsg = "Greater or Lesser operation with operands of type '" + leftType.print()
+    String errorMsg = "0x57003 Greater or Lesser operation with operands of type '" + leftType.print()
         + "' and '" + rightType.print() + "' is not supported.";
     Log.error(errorMsg);
     return new ErrorMIValue(errorMsg);
@@ -115,7 +118,7 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
     if (right.isError()) return right;
     
     SymTypeExpression type = TypeCheck3.typeOf(node);
-    return InterpreterUtils.calcOp(left, right, type, Integer::sum, Long::sum, Float::sum, Double::sum, "Plus");
+    return InterpreterUtils.calcOp(left, right, type, Integer::sum, Long::sum, Float::sum, Double::sum, "0x57037 Plus");
   }
 
   @Override
@@ -127,7 +130,7 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
     
     SymTypeExpression type = TypeCheck3.typeOf(node);
     return InterpreterUtils.calcOp(left, right, type, (a, b) -> a - b, (a, b) -> a - b,
-        (a, b) -> a - b, (a, b) -> a - b, "Minus");
+        (a, b) -> a - b, (a, b) -> a - b, "0x57038 Minus");
   }
 
   @Override
@@ -139,7 +142,7 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
     
     SymTypeExpression type = TypeCheck3.typeOf(node);
     return InterpreterUtils.calcOp(left, right, type, (a, b) -> a * b, (a, b) -> a * b,
-        (a, b) -> a * b, (a, b) -> a * b, "Multiplication");
+        (a, b) -> a * b, (a, b) -> a * b, "0x57039 Multiplication");
   }
 
   @Override
@@ -154,17 +157,17 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
       String resultPrimitive = type.asPrimitive().getPrimitiveName();
       
       if (right.asDouble() == 0.0) {
-        String errorMsg = "Division by zero is undefined";
+        String errorMsg = "0x57004 Division by zero is undefined";
         Log.error(errorMsg);
         return new ErrorMIValue(errorMsg);
       }
       
       return InterpreterUtils.calcOpPrimitive(left, right, resultPrimitive,
           (a, b) -> a / b, (a, b) -> a / b, (a, b) -> a / b, (a, b) -> a / b,
-          "Division");
+          "0x57040 Division");
     }
     
-    String errorMsg = "Division operation with result of type '" + type.print() + "' is not supported.";
+    String errorMsg = "0x57005 Division operation with result of type '" + type.print() + "' is not supported.";
     Log.error(errorMsg);
     return new ErrorMIValue(errorMsg);
   }
@@ -178,7 +181,7 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
     
     SymTypeExpression type = TypeCheck3.typeOf(node);
     return InterpreterUtils.calcOp(left, right, type, (a, b) -> a % b, (a, b) -> a % b,
-        (a, b) -> a % b, (a, b) -> a % b, "Modulo");
+        (a, b) -> a % b, (a, b) -> a % b, "0x57041 Modulo");
   }
 
   @Override
@@ -207,7 +210,7 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
       }
     }
     
-    String errorMsg = "Minus Prefix operation with result of type '" + type.print() + "' is not supported.";
+    String errorMsg = "0x57006 Minus Prefix operation with result of type '" + type.print() + "' is not supported.";
     Log.error(errorMsg);
     return new ErrorMIValue(errorMsg);
   }
@@ -222,7 +225,7 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
       return value;
     }
     
-    String errorMsg = "Minus Prefix operation with result of type '" + type.print() + "' is not supported.";
+    String errorMsg = "0x57007 Minus Prefix operation with result of type '" + type.print() + "' is not supported.";
     Log.error(errorMsg);
     return new ErrorMIValue(errorMsg);
   }
@@ -240,7 +243,7 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
       return isEqual(leftType.asPrimitive(), left, rightType.asPrimitive(), right);
     }
     
-    String errorMsg = "Equality operation with operands of type '" + leftType.print()
+    String errorMsg = "0x57008 Equality operation with operands of type '" + leftType.print()
         + "' and '" + rightType.print() + "' is not supported.";
     Log.error(errorMsg);
     return new ErrorMIValue(errorMsg);
@@ -262,7 +265,7 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
       return createValue(!result.asBoolean());
     }
     
-    String errorMsg = "Inequality operation with operands of type '" + leftType.print()
+    String errorMsg = "0x57009 Inequality operation with operands of type '" + leftType.print()
         + "' and '" + rightType.print() + "' is not supported.";
     Log.error(errorMsg);
     return new ErrorMIValue(errorMsg);
@@ -284,7 +287,7 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
       return createValue(result.asDouble() > 0.0);
     }
     
-    String errorMsg = "Greater than operation with operands of type '" + leftType.print()
+    String errorMsg = "0x57010 Greater than operation with operands of type '" + leftType.print()
         + "' and '" + rightType.print() + "' is not supported.";
     Log.error(errorMsg);
     return new ErrorMIValue(errorMsg);
@@ -306,7 +309,7 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
       return createValue(result.asDouble() < 0.0);
     }
     
-    String errorMsg = "Less than operation with operands of type '" + leftType.print()
+    String errorMsg = "0x57011 Less than operation with operands of type '" + leftType.print()
         + "' and '" + rightType.print() + "' is not supported.";
     Log.error(errorMsg);
     return new ErrorMIValue(errorMsg);
@@ -328,7 +331,7 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
       return createValue(result.asDouble() >= 0.0);
     }
     
-    String errorMsg = "Greater equal operation with operands of type '" + leftType.print()
+    String errorMsg = "0x57012Greater equal operation with operands of type '" + leftType.print()
         + "' and '" + rightType.print() + "' is not supported.";
     Log.error(errorMsg);
     return new ErrorMIValue(errorMsg);
@@ -350,7 +353,7 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
       return createValue(result.asDouble() <= 0.0);
     }
     
-    String errorMsg = "Less equal operation with operands of type '" + leftType.print()
+    String errorMsg = "0x57013 Less equal operation with operands of type '" + leftType.print()
         + "' and '" + rightType.print() + "' is not supported.";
     Log.error(errorMsg);
     return new ErrorMIValue(errorMsg);
@@ -378,7 +381,7 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
       }
     }
     
-    String errorMsg = "Bitwise Not operation with operand of type '" + type.print() + "' is not supported.";
+    String errorMsg = "0x57014 Bitwise Not operation with operand of type '" + type.print() + "' is not supported.";
     Log.error(errorMsg);
     return new ErrorMIValue(errorMsg);
   }
@@ -398,7 +401,7 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
       return createValue(!value.asBoolean());
     }
     
-    String errorMsg = "Logical Not operation with operand of type '" + type.print() + "' is not supported.";
+    String errorMsg = "0x57015 Logical Not operation with operand of type '" + type.print() + "' is not supported.";
     Log.error(errorMsg);
     return new ErrorMIValue(errorMsg);
   }
@@ -417,7 +420,7 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
       return createValue(left.asBoolean() && right.asBoolean());
     }
     
-    String errorMsg = "Logical And operation with operands of type '" + leftType.print()
+    String errorMsg = "0x57016 Logical And operation with operands of type '" + leftType.print()
         + "' and '" + rightType.print() + "' is not supported.";
     Log.error(errorMsg);
     return new ErrorMIValue(errorMsg);
@@ -437,7 +440,7 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
       return createValue(left.asBoolean() || right.asBoolean());
     }
     
-    String errorMsg = "Logical Or operation with operands of type '" + leftType.print()
+    String errorMsg = "0x57017 Logical Or operation with operands of type '" + leftType.print()
         + "' and '" + rightType.print() + "' is not supported.";
     Log.error(errorMsg);
     return new ErrorMIValue(errorMsg);
@@ -460,12 +463,53 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
 
   @Override
   public MIValue interpret(ASTFieldAccessExpression node) {
-    String errorMsg = "Field Access operation not supported.";
+    SymTypeExpression type = TypeCheck3.typeOf(node);
+    Optional<ISymbol> symbolOptional = type.getSourceInfo().getSourceSymbol();
+    if (symbolOptional.isEmpty()) {
+    
+    } else {
+      ISymbol symbol = symbolOptional.get();
+      if (symbol.getAccessModifier().getDimensionToModifierMap()
+          .getOrDefault(StaticAccessModifier.DIMENSION, StaticAccessModifier.NON_STATIC) == StaticAccessModifier.STATIC) { // static
+        if (type.isFunctionType()) { // static function
+          FunctionSymbol funcSymbol = (FunctionSymbol)symbol;
+          String funcName = funcSymbol.getName();
+          String className = funcSymbol.getFullName().substring(0, funcName.length() + 1); // remove '.funcName'
+          Class classType;
+          try {
+            classType = Class.forName(className);
+          } catch (ClassNotFoundException e) {
+            String errorMsg = "0x57018 Failed to load class '" + className + "'.";
+            Log.error(errorMsg);
+            return new ErrorMIValue(errorMsg);
+          }
+          return new JavaFunctionMIValue(classType, funcName);
+        } else { // static attribute
+          // TODO
+        }
+        
+      } else { // non-static
+        MIValue leftValue = node.getExpression().evaluate(getRealThis());
+        if (!leftValue.isObject()) {
+          String errorMsg = "0x57019 The Field Access operation expected an object as left side.";
+          Log.error(errorMsg);
+          return new ErrorMIValue(errorMsg);
+        }
+        
+        // If class-declarations are supported this needs to be expanded
+        if (type.isFunctionType()) { // method call on object
+          FunctionSymbol funcSymbol = (FunctionSymbol)symbol;
+          String name = funcSymbol.getName();
+          return new JavaMethodMIValue(leftValue.asObject(), name);
+        } else { // non-static attribute access
+          return InterpreterUtils.getObjectAttribute((ObjectMIValue)leftValue, node.getName(), type);
+        }
+      }
+    }
+    
+    String errorMsg = "0x57020 Field Access operation not supported.";
     Log.error(errorMsg);
     return new ErrorMIValue(errorMsg);
-//    String expression = CommonExpressionsMill.prettyPrint(node, false);
-//    Optional<VariableSymbol> symbol = ((IBasicSymbolsScope) node.getEnclosingScope()).resolveVariable(expression);
-//    return symbol.map(this::load).orElse(new NullValue());
   }
 
   @Override
@@ -481,7 +525,7 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
     // evaluate arguments in current scope & put into new scope
     MIValue value = node.getExpression().evaluate(getRealThis());
     if (!value.isFunction()) {
-      String errorMsg = "Call expression expected a function but got " + TypeCheck3.typeOf(node.getExpression()).print() + ".";
+      String errorMsg = "0x57021 Call expression expected a function but got " + TypeCheck3.typeOf(node.getExpression()).print() + ".";
       Log.error(errorMsg);
       return new ErrorMIValue(errorMsg);
     }
@@ -491,6 +535,11 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
       args.add(argument.evaluate(getRealThis()));
     }
     
-    return ((FunctionMIValue)value).execute(getRealThis(), args);
+    // cast needed in case of subtyping
+    SymTypeExpression returnType = TypeCheck3.typeOf(node);
+    MIValue returnValue = ((FunctionMIValue)value).execute(getRealThis(), args);
+    return InterpreterUtils.convertImplicit(returnType, returnValue);
   }
+  
+  
 }

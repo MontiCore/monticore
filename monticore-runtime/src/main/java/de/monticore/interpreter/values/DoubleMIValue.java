@@ -21,4 +21,14 @@ public class DoubleMIValue implements MIValue {
     return value;
   }
   
+  @Override
+  public String printType() {
+    return "Double";
+  }
+  
+  @Override
+  public String printValue() {
+    return String.valueOf(value);
+  }
+  
 }

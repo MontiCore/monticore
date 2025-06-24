@@ -30,4 +30,14 @@ public class LongMIValue implements MIValue {
   public float asFloat() {
     return value;
   }
+  
+  @Override
+  public String printType() {
+    return "Long";
+  }
+  
+  @Override
+  public String printValue() {
+    return String.valueOf(value);
+  }
 }

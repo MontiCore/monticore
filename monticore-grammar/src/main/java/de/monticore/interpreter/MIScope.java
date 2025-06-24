@@ -26,7 +26,7 @@ public class MIScope {
   
   public void declareFunction(FunctionSymbol symbol, FunctionMIValue value) {
     if (functionMap.containsKey(symbol)) {
-      Log.error("Function was already declared");
+      Log.error("0x57068 Function was already declared");
     }
     this.functionMap.put(symbol, value);
   }
@@ -41,14 +41,14 @@ public class MIScope {
       return parent.loadFunction(symbol);
     }
     
-    String errorMsg = "Failed to load Function by Symbol. Could not find Symbol in the current or any parent scope";
+    String errorMsg = "0x57069 Failed to load Function by Symbol. Could not find Symbol in the current or any parent scope";
     Log.error(errorMsg);
     return new ErrorMIValue(errorMsg);
   }
   
   public void declareVariable(VariableSymbol symbol, MIValue value) {
     if (variableMap.containsKey(symbol)) {
-      Log.error("Variable was already declared");
+      Log.error("0x57070 Variable was already declared");
     }
     this.variableMap.put(symbol, value);
   }
@@ -63,7 +63,7 @@ public class MIScope {
       return parent.loadVariable(symbol);
     }
     
-    String errorMsg = "Failed to load Variable by Symbol. Could not find Symbol in the current or any parent scope";
+    String errorMsg = "0x57071 Failed to load Variable by Symbol. Could not find Symbol in the current or any parent scope";
     Log.error(errorMsg);
     return new ErrorMIValue(errorMsg);
   }
@@ -74,7 +74,7 @@ public class MIScope {
     } else if (parent != null){
       parent.storeVariable(symbol, value);
     } else {
-      Log.error("Failed to store Value in Symbol. Could not find Symbol in the current or any parent scope");
+      Log.error("0x57072 Failed to store Value in Symbol. Could not find Symbol in the current or any parent scope");
     }
   }
   

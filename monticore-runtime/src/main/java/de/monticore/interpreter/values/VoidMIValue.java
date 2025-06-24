@@ -8,4 +8,14 @@ public class VoidMIValue implements MIValue {
   public boolean isVoid() {
     return true;
   }
+  
+  @Override
+  public String printType() {
+    return "Void";
+  }
+  
+  @Override
+  public String printValue() {
+    return "";
+  }
 }

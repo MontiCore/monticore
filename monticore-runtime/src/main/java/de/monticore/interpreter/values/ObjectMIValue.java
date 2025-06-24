@@ -20,4 +20,14 @@ public class ObjectMIValue implements MIValue {
   public Object asObject() {
     return value;
   }
+  
+  @Override
+  public String printType() {
+    return "Object";
+  }
+  
+  @Override
+  public String printValue() {
+    return String.valueOf(value);
+  }
 }

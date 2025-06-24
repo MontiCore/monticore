@@ -1,10 +1,11 @@
 package de.monticore.interpreter;
 
-import de.monticore.interpreter.values.ErrorMIValue;
+import de.monticore.interpreter.values.*;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.SymTypeExpression;
 import de.se_rwth.commons.logging.Log;
 
+import java.lang.reflect.Field;
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
 
@@ -107,7 +108,7 @@ public class InterpreterUtils {
   
   public static MIValue convertToPrimitiveExplicit(String from, String to, MIValue value) {
     if (to.equals(BasicSymbolsMill.BOOLEAN) || from.equals(BasicSymbolsMill.BOOLEAN)) {
-      String errorMsg = "Cast to or from boolean is not supported.";
+      String errorMsg = "0x57060 Cast to or from boolean is not supported.";
       Log.error(errorMsg);
       return new ErrorMIValue(errorMsg);
     }
@@ -169,7 +170,7 @@ public class InterpreterUtils {
       return createValue(value.asDouble());
     }
     
-    String errorMsg = "Cast from " + from + " to " + to + " is not supported.";
+    String errorMsg = "0x57061 Cast from " + from + " to " + to + " is not supported.";
     Log.error(errorMsg);
     return new ErrorMIValue(errorMsg);
   }
@@ -191,9 +192,141 @@ public class InterpreterUtils {
       return createValue(value.asDouble());
     }
     
-    String errorMsg = "Implicit cast to " + targetType + " is not supported.";
+    String errorMsg = "0x57062 Implicit cast to " + targetType + " is not supported.";
     Log.error(errorMsg);
     return new ErrorMIValue(errorMsg);
+  }
+  
+  public static MIValue convertImplicit(SymTypeExpression targetType, MIValue value) {
+    if (targetType.isPrimitive()) {
+      return convertToPrimitiveImplicit(targetType.asPrimitive().getPrimitiveName(), value);
+    } else {
+      return value; // everything else is an object or function which is handled by reflection
+    }
+  }
+  
+  public static MIValue getObjectAttribute(ObjectMIValue object, String attributeName, SymTypeExpression type) {
+    Field attribute;
+    try {
+      attribute = object.getClass().getField(attributeName);
+    } catch (NoSuchFieldException e) {
+      String errorMsg = "0x57063 Tried to access attribute '" + attributeName + "' of class '"
+          + object.getClass().getName() + "'. No such attribute exists.";
+      Log.error(errorMsg);
+      return new ErrorMIValue(errorMsg);
+    }
+    
+    try {
+      if (type.isPrimitive()) {
+        String typeName = type.asPrimitive().getPrimitiveName();
+        if (typeName.equals(BasicSymbolsMill.BOOLEAN)) {
+          return MIValueFactory.createValue(attribute.getBoolean(object));
+        } else if (typeName.equals(BasicSymbolsMill.BYTE)) {
+          return MIValueFactory.createValue(attribute.getByte(object));
+        } else if (typeName.equals(BasicSymbolsMill.SHORT)) {
+          return MIValueFactory.createValue(attribute.getShort(object));
+        } else if (typeName.equals(BasicSymbolsMill.CHAR)) {
+          return MIValueFactory.createValue(attribute.getChar(object));
+        } else if (typeName.equals(BasicSymbolsMill.INT)) {
+          return MIValueFactory.createValue(attribute.getInt(object));
+        } else if (typeName.equals(BasicSymbolsMill.LONG)) {
+          return MIValueFactory.createValue(attribute.getLong(object));
+        } else if (typeName.equals(BasicSymbolsMill.FLOAT)) {
+          return MIValueFactory.createValue(attribute.getFloat(object));
+        } else if (typeName.equals(BasicSymbolsMill.DOUBLE)) {
+          return MIValueFactory.createValue(attribute.getDouble(object));
+        }
+        
+      } else if (type.isObjectType()) {
+        return MIValueFactory.createValue(attribute.get(object));
+      }
+    } catch (IllegalAccessException e) {
+      String errorMsg = "0x57064 Tried to access attribute '" + attributeName + "' of class '"
+          + object.getClass().getName() + "'. Attribute is not accessible.";
+      Log.error(errorMsg);
+      return new ErrorMIValue(errorMsg);
+    }
+    
+    String errorMsg = "0x57065 Attribute Access operation does not support attributes of type '"
+      + type.printFullName() + "'.";
+    Log.error(errorMsg);
+    return new ErrorMIValue(errorMsg);
+  }
+  
+  public static Class<?> typeOfValue(MIValue value) {
+    if (value.isBoolean()) {
+      return boolean.class;
+    } else if (value.isChar()) {
+      return char.class;
+    } else if (value.isByte()) {
+      return byte.class;
+    } else if (value.isShort()) {
+      return short.class;
+    } else if (value.isInt()) {
+      return int.class;
+    } else if (value.isLong()) {
+      return long.class;
+    } else if (value.isFloat()) {
+      return float.class;
+    } else if (value.isDouble()) {
+      return double.class;
+    } else if (value.isObject()) {
+      return value.asObject().getClass();
+    } else if (value.isFunction()) {
+      // TODO maybe abstract method in FunctionMIValue that builds Function-Object
+    }
+    String errorMsg = "0x57066 Failed to get java type of value.";
+    Log.error(errorMsg);
+    return null;
+  }
+  
+  public static Object valueToObject(MIValue value) {
+    if (value.isBoolean()) {
+      return value.asBoolean();
+    } else if (value.isChar()) {
+      return value.asChar();
+    } else if (value.isByte()) {
+      return value.asByte();
+    } else if (value.isShort()) {
+      return value.asShort();
+    } else if (value.isInt()) {
+      return value.asInt();
+    } else if (value.isLong()) {
+      return value.asLong();
+    } else if (value.isFloat()) {
+      return value.asFloat();
+    } else if (value.isDouble()) {
+      return value.asDouble();
+    } else if (value.isObject()) {
+      return value.asObject();
+    } else if (value.isFunction()) {
+      // TODO maybe abstract method in FunctionMIValue that builds Function-Object
+    }
+    String errorMsg = "0x57067 Failed to get java type of value.";
+    Log.error(errorMsg);
+    return null;
+  }
+  
+  public static MIValue objectToValue(Object object) {
+    if (object instanceof Boolean) {
+      return new BooleanMIValue((Boolean)object);
+    } else if (object instanceof Character) {
+      return new CharMIValue((Character)object);
+    } else if (object instanceof Byte) {
+      return new ByteMIValue((Byte)object);
+    } else if (object instanceof Short) {
+      return new ShortMIValue((Short)object);
+    } else if (object instanceof Integer) {
+      return new IntMIValue((Integer)object);
+    } else if (object instanceof Long) {
+      return new LongMIValue((Long)object);
+    } else if (object instanceof Float) {
+      return new FloatMIValue((Float)object);
+    } else if (object instanceof Double) {
+      return new DoubleMIValue((Double)object);
+    }
+    
+    return new ObjectMIValue(object);
   }
   
 }

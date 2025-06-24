@@ -30,7 +30,7 @@ public class ExpressionsBasisInterpreter extends ExpressionsBasisInterpreterTOP 
     if (type.isFunctionType() && type.asFunctionType().hasSymbol()) {
       Optional<FunctionSymbol> symbol = type.getSourceInfo().getSourceSymbol().map(s -> (FunctionSymbol)s);
       if (symbol.isEmpty()) {
-        String errorMsg = "Cannot resolve function '" + n.getName() + "'.";
+        String errorMsg = "0x57053 Cannot resolve function '" + n.getName() + "'.";
         Log.error(errorMsg);
         return new ErrorMIValue(errorMsg);
       }
@@ -39,7 +39,7 @@ public class ExpressionsBasisInterpreter extends ExpressionsBasisInterpreterTOP 
     
     Optional<VariableSymbol> symbol = type.getSourceInfo().getSourceSymbol().map(s -> (VariableSymbol)s);
     if (symbol.isEmpty()) {
-      String errorMsg = "Cannot resolve variable '" + n.getName() + "'.";
+      String errorMsg = "0x57054 Cannot resolve variable '" + n.getName() + "'.";
       Log.error(errorMsg);
       return new ErrorMIValue(errorMsg);
     }

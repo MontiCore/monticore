@@ -35,4 +35,14 @@ public class IntMIValue implements MIValue {
   public float asFloat() {
     return value;
   }
+  
+  @Override
+  public String printType() {
+    return "Integer";
+  }
+  
+  @Override
+  public String printValue() {
+    return String.valueOf(value);
+  }
 }

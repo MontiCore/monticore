@@ -25,4 +25,14 @@ public class FloatMIValue implements MIValue {
   public float asFloat() {
     return value;
   }
+  
+  @Override
+  public String printType() {
+    return "Float";
+  }
+  
+  @Override
+  public String printValue() {
+    return String.valueOf(value);
+  }
 }

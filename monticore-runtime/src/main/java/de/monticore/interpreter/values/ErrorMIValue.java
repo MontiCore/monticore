@@ -19,4 +19,14 @@ public class ErrorMIValue implements MIValue {
     return message;
   }
   
+  @Override
+  public String printType() {
+    return "Error";
+  }
+  
+  @Override
+  public String printValue() {
+    return message;
+  }
+  
 }

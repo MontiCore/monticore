@@ -32,7 +32,7 @@ public class UglyExpressionsInterpreter extends UglyExpressionsInterpreterTOP {
           afterType.asPrimitive().getPrimitiveName(), value);
     }
     
-    String errorMsg = "Type Cast operation from " + beforeType.print() + " to " + afterType.print()
+    String errorMsg = "0x57055 Type Cast operation from " + beforeType.print() + " to " + afterType.print()
         + " is not supported.";
     Log.error(errorMsg);
     return new ErrorMIValue(errorMsg);
@@ -40,7 +40,7 @@ public class UglyExpressionsInterpreter extends UglyExpressionsInterpreterTOP {
   
   public MIValue convertPrimitive(String fromType, String toType, MIValue value) {
     if (toType.equals(BasicSymbolsMill.BOOLEAN) || fromType.equals(BasicSymbolsMill.BOOLEAN)) {
-      String errorMsg = "Cast to or from boolean is not supported.";
+      String errorMsg = "0x57056 Cast to or from boolean is not supported.";
       Log.error(errorMsg);
       return new ErrorMIValue(errorMsg);
     }
@@ -113,7 +113,7 @@ public class UglyExpressionsInterpreter extends UglyExpressionsInterpreterTOP {
       return MIValueFactory.createValue(value.asDouble());
     }
     
-    String errorMsg = "Cast from " + fromType + " to " + toType + " is not supported.";
+    String errorMsg = "0x57057 Cast from " + fromType + " to " + toType + " is not supported.";
     Log.error(errorMsg);
     return new ErrorMIValue(errorMsg);
   }

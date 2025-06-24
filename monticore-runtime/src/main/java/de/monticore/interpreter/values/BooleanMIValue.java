@@ -21,4 +21,13 @@ public class BooleanMIValue implements MIValue {
     return value;
   }
   
+  @Override
+  public String printType() {
+    return "Boolean";
+  }
+  
+  @Override
+  public String printValue() {
+    return String.valueOf(value);
+  }
 }

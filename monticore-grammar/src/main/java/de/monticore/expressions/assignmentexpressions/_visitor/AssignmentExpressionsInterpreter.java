@@ -37,7 +37,7 @@ public class AssignmentExpressionsInterpreter extends AssignmentExpressionsInter
     SymTypeExpression type = TypeCheck3.typeOf(expr);
     Optional<VariableSymbol> symbol = type.getSourceInfo().getSourceSymbol().map(s -> (VariableSymbol)s);
     if (symbol.isEmpty()) {
-      String errorMsg = "Unknown variable symbol detected";
+      String errorMsg = "0x57022 Unknown variable symbol detected";
       Log.error(errorMsg);
       return new ErrorMIValue(errorMsg);
     }
@@ -77,7 +77,7 @@ public class AssignmentExpressionsInterpreter extends AssignmentExpressionsInter
         return value;
       }
     }
-    String errorMsg = "Suffix incrementation operation with operand of type '" + type.print() + "' is not supported.";
+    String errorMsg = "0x57023 Suffix incrementation operation with operand of type '" + type.print() + "' is not supported.";
     Log.error(errorMsg);
     return new ErrorMIValue(errorMsg);
   }
@@ -89,7 +89,7 @@ public class AssignmentExpressionsInterpreter extends AssignmentExpressionsInter
     SymTypeExpression type = TypeCheck3.typeOf(expr);
     Optional<VariableSymbol> symbol = type.getSourceInfo().getSourceSymbol().map(s -> (VariableSymbol)s);
     if (symbol.isEmpty()) {
-      String errorMsg = "Unknown variable symbol detected";
+      String errorMsg = "0x57024 Unknown variable symbol detected";
       Log.error(errorMsg);
       return new ErrorMIValue(errorMsg);
     }
@@ -129,7 +129,7 @@ public class AssignmentExpressionsInterpreter extends AssignmentExpressionsInter
         return res;
       }
     }
-    String errorMsg = "Prefix incrementation operation with operand of type '" + type.print() + "' is not supported.";
+    String errorMsg = "0x57025 Prefix incrementation operation with operand of type '" + type.print() + "' is not supported.";
     Log.error(errorMsg);
     return new ErrorMIValue(errorMsg);
   }
@@ -141,7 +141,7 @@ public class AssignmentExpressionsInterpreter extends AssignmentExpressionsInter
     SymTypeExpression type = TypeCheck3.typeOf(expr);
     Optional<VariableSymbol> symbol = type.getSourceInfo().getSourceSymbol().map(s -> (VariableSymbol)s);
     if (symbol.isEmpty()) {
-      String errorMsg = "Unknown variable symbol detected";
+      String errorMsg = "0x57026 Unknown variable symbol detected";
       Log.error(errorMsg);
       return new ErrorMIValue(errorMsg);
     }
@@ -181,7 +181,7 @@ public class AssignmentExpressionsInterpreter extends AssignmentExpressionsInter
         return value;
       }
     }
-    String errorMsg = "Suffix decrementation operation with operand of type '" + type.print() + "' is not supported.";
+    String errorMsg = "0x57027 Suffix decrementation operation with operand of type '" + type.print() + "' is not supported.";
     Log.error(errorMsg);
     return new ErrorMIValue(errorMsg);
   }
@@ -193,7 +193,7 @@ public class AssignmentExpressionsInterpreter extends AssignmentExpressionsInter
     SymTypeExpression type = TypeCheck3.typeOf(expr);
     Optional<VariableSymbol> symbol = type.getSourceInfo().getSourceSymbol().map(s -> (VariableSymbol)s);
     if (symbol.isEmpty()) {
-      String errorMsg = "Unknown variable symbol detected";
+      String errorMsg = "0x57028 Unknown variable symbol detected";
       Log.error(errorMsg);
       return new ErrorMIValue(errorMsg);
     }
@@ -233,7 +233,7 @@ public class AssignmentExpressionsInterpreter extends AssignmentExpressionsInter
         return res;
       }
     }
-    String errorMsg = "Prefix decrementation operation with operand of type '" + type.print() + "' is not supported.";
+    String errorMsg = "0x57029 Prefix decrementation operation with operand of type '" + type.print() + "' is not supported.";
     Log.error(errorMsg);
     return new ErrorMIValue(errorMsg);
   }
@@ -244,7 +244,7 @@ public class AssignmentExpressionsInterpreter extends AssignmentExpressionsInter
     SymTypeExpression leftType = TypeCheck3.typeOf(leftExpr);
     Optional<VariableSymbol> leftSymbol = leftType.getSourceInfo().getSourceSymbol().map(symbol -> (VariableSymbol)symbol);
     if (leftSymbol.isEmpty()) {
-      String errorMsg = "Unknown variable symbol detected";
+      String errorMsg = "0x57030 Unknown variable symbol detected";
       Log.error(errorMsg);
       return new ErrorMIValue(errorMsg);
     }
@@ -264,7 +264,7 @@ public class AssignmentExpressionsInterpreter extends AssignmentExpressionsInter
       }
       
       if (!SymTypeRelations.isCompatible(leftType, rightType)) {
-        String errorMsg = "A value of type " + rightType.print() + " can not be writen to a variable of type " + leftType.print() + ".";
+        String errorMsg = "0x57031 A value of type " + rightType.print() + " can not be writen to a variable of type " + leftType.print() + ".";
         Log.error(errorMsg);
         return new ErrorMIValue(errorMsg);
       }
@@ -272,7 +272,7 @@ public class AssignmentExpressionsInterpreter extends AssignmentExpressionsInter
       if (leftType.isPrimitive() && rightType.isPrimitive()) {
         rightValue = InterpreterUtils.convertToPrimitiveImplicit(leftType.asPrimitive().getPrimitiveName(), rightValue);
       } else {
-        String errorMsg = "The implicit conversion from " + rightType.print() + " to " + leftType.print() + " is not supported.";
+        String errorMsg = "0x57032 The implicit conversion from " + rightType.print() + " to " + leftType.print() + " is not supported.";
         Log.error(errorMsg);
         return new ErrorMIValue(errorMsg);
       }
@@ -291,28 +291,32 @@ public class AssignmentExpressionsInterpreter extends AssignmentExpressionsInter
       case AND_EQUALS: { //bitwise and
         resultType = TypeVisitorOperatorCalculator.binaryAnd(leftType, rightType).get();
         resultValue = InterpreterUtils.calcBitwiseLogicalOp(leftValue, rightValue, resultType,
-            (a, b) -> a & b, (a, b) -> a & b, (a, b) -> a & b, "Bitwise And Assignment");
+            (a, b) -> a & b, (a, b) -> a & b, (a, b) -> a & b,
+            "0x57042 Bitwise And Assignment");
         break;
       }
 
       case GTGTEQUALS: { //bitwise rightValue shift
         resultType = TypeVisitorOperatorCalculator.signedRightShift(leftType, rightType).get();
         resultValue = InterpreterUtils.calcShift(leftValue, rightValue, resultType,
-            (a, b) -> a >> b, (a, b) -> a >> b, "Bitwise Right Shift Assignment");
+            (a, b) -> a >> b, (a, b) -> a >> b,
+            "0x57043 Bitwise Right Shift Assignment");
         break;
       }
 
       case GTGTGTEQUALS: { //bitwise rightValue shift
         resultType = TypeVisitorOperatorCalculator.unsignedRightShift(leftType, rightType).get();
         resultValue = InterpreterUtils.calcShift(leftValue, rightValue, resultType,
-            (a, b) -> a >>> b, (a, b) -> a >>> b, "Logical Right Shift Assignment");
+            (a, b) -> a >>> b, (a, b) -> a >>> b,
+            "0x57044 Logical Right Shift Assignment");
         break;
       }
 
       case LTLTEQUALS: {
         resultType = TypeVisitorOperatorCalculator.leftShift(leftType, rightType).get();
         resultValue = InterpreterUtils.calcShift(leftValue, rightValue, resultType,
-            (a, b) -> a << b, (a, b) -> a << b, "Bitwise Left Shift Assignment");
+            (a, b) -> a << b, (a, b) -> a << b,
+            "0x57045 Bitwise Left Shift Assignment");
         break;
       }
 
@@ -320,7 +324,7 @@ public class AssignmentExpressionsInterpreter extends AssignmentExpressionsInter
         resultType = TypeVisitorOperatorCalculator.minus(leftType, rightType).get();
         resultValue = InterpreterUtils.calcOp(leftValue, rightValue, resultType,
             (a, b) -> a - b, (a, b) -> a - b, (a, b) -> a - b, (a, b) -> a - b,
-            "Minus Assignment");
+            "0x57046 Minus Assignment");
         break;
       }
 
@@ -328,14 +332,15 @@ public class AssignmentExpressionsInterpreter extends AssignmentExpressionsInter
         resultType = TypeVisitorOperatorCalculator.modulo(leftType, rightType).get();
         resultValue = InterpreterUtils.calcOp(leftValue, rightValue, resultType,
             (a, b) -> a % b, (a, b) -> a % b, (a, b) -> a % b, (a, b) -> a % b,
-            "Modulo Assignment");
+            "0x57047 Modulo Assignment");
         break;
       }
 
       case PIPEEQUALS: {
         resultType = TypeVisitorOperatorCalculator.binaryOr(leftType, rightType).get();
         resultValue = InterpreterUtils.calcBitwiseLogicalOp(leftValue, rightValue, resultType,
-            (a, b) -> a | b, (a, b) -> a | b, (a, b) -> a | b, "Bitwise Or Assignment");
+            (a, b) -> a | b, (a, b) -> a | b, (a, b) -> a | b,
+            "0x57048 Bitwise Or Assignment");
         break;
       }
 
@@ -343,14 +348,15 @@ public class AssignmentExpressionsInterpreter extends AssignmentExpressionsInter
         resultType = TypeVisitorOperatorCalculator.plus(leftType, rightType).get();
         resultValue = InterpreterUtils.calcOp(leftValue, rightValue, resultType,
             Integer::sum, Long::sum, Float::sum, Double::sum,
-              "Plus Assignment");
+            "0x57049 Plus Assignment");
         break;
       }
 
       case ROOFEQUALS: { //XOR
         resultType = TypeVisitorOperatorCalculator.binaryXor(leftType, rightType).get();
         resultValue = InterpreterUtils.calcBitwiseLogicalOp(leftValue, rightValue, resultType,
-              (a, b) -> a ^ b, (a, b) -> a ^ b, (a, b) -> a ^ b, "Bitwise Xor Assignment");
+            (a, b) -> a ^ b, (a, b) -> a ^ b, (a, b) -> a ^ b,
+            "0x57050 Bitwise Xor Assignment");
         break;
       }
 
@@ -360,17 +366,17 @@ public class AssignmentExpressionsInterpreter extends AssignmentExpressionsInter
           String resultPrimitive = resultType.asPrimitive().getPrimitiveName();
           
           if (rightValue.asDouble() == 0.0) {
-            String errorMsg = "Division by zero is undefined";
+            String errorMsg = "0x57033 Division by zero is undefined";
             Log.error(errorMsg);
             return new ErrorMIValue(errorMsg);
           }
           
           resultValue = InterpreterUtils.calcOpPrimitive(leftValue, rightValue, resultPrimitive,
               (a, b) -> a / b, (a, b) -> a / b, (a, b) -> a / b, (a, b) -> a / b,
-              "Division Assignment");
+              "0x57051 Division Assignment");
           break;
         }
-        String errorMsg = "Division Assignment operation with result of type " + resultType + " is not supported.";
+        String errorMsg = "0x57034 Division Assignment operation with result of type " + resultType + " is not supported.";
         Log.error(errorMsg);
         return new ErrorMIValue(errorMsg);
       }
@@ -379,12 +385,13 @@ public class AssignmentExpressionsInterpreter extends AssignmentExpressionsInter
         resultType = TypeVisitorOperatorCalculator.multiply(leftType, rightType).get();
         resultValue = InterpreterUtils.calcOp(leftValue, rightValue, resultType,
             (a, b) -> a * b, (a, b) -> a * b, (a, b) -> a * b, (a, b) -> a * b,
-            "Multiplication Assignment");
+            "0x57052 Multiplication Assignment");
         break;
       }
       default:
-        Log.error("Operator is not defined.");
-        return new ErrorMIValue("Operator is not defined.");
+        String errorMsg = "0x57035 Operator is not defined";
+        Log.error(errorMsg);
+        return new ErrorMIValue(errorMsg);
     }
     
     if (resultValue.isError()) return resultValue;
@@ -394,7 +401,7 @@ public class AssignmentExpressionsInterpreter extends AssignmentExpressionsInter
       resultValue = InterpreterUtils.convertToPrimitiveExplicit(resultType.asPrimitive().getPrimitiveName(),
           leftType.asPrimitive().getPrimitiveName(), resultValue);
     } else {
-      String errorMsg = "Cast from " + resultType.print() + " to " + leftType.print() + " is not supported.";
+      String errorMsg = "0x57036 Cast from " + resultType.print() + " to " + leftType.print() + " is not supported.";
       Log.error(errorMsg);
       return new ErrorMIValue(errorMsg);
     }

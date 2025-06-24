@@ -40,5 +40,15 @@ public class CharMIValue implements MIValue {
   public float asFloat() {
     return value;
   }
+  
+  @Override
+  public String printType() {
+    return "Char";
+  }
+  
+  @Override
+  public String printValue() {
+    return String.valueOf(value);
+  }
 
 }

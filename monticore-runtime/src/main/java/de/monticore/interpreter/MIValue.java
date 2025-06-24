@@ -59,48 +59,58 @@ public interface MIValue {
   
   
   default boolean asBoolean() {
-    Log.error("0x31251 Type boolean is not applicable for result value.");
+    Log.error("0x31251 Type boolean is not applicable for " + printType() + " (" + printValue() + ").");
     return false;
   }
   
   default byte asByte() {
-    Log.error("0x31252 Type byte is not applicable for result value.");
+    Log.error("0x31252 Type byte is not applicable for " + printType() + " (" + printValue() + ").");
     return 0;
   }
   
   default char asChar() {
-    Log.error("0x31253 Type char is not applicable for result value.");
+    Log.error("0x31253 Type char is not applicable for " + printType() + " (" + printValue() + ").");
     return '\0';
   }
   
   default short asShort() {
-    Log.error("0x31254 Type short is not applicable for result value.");
+    Log.error("0x31254 Type short is not applicable for " + printType() + " (" + printValue() + ").");
     return 0;
   }
   
   default int asInt() {
-    Log.error("0x31255 Type int is not applicable for result value.");
+    Log.error("0x31255 Type int is not applicable for " + printType() + " (" + printValue() + ").");
     return 0;
   }
   
   default long asLong() {
-    Log.error("0x31256 Type long is not applicable for result value.");
+    Log.error("0x31256 Type long is not applicable for " + printType() + " (" + printValue() + ").");
     return 0L;
   }
   
   default float asFloat() {
-    Log.error("0x31257 Type float is not applicable for result value.");
+    Log.error("0x31257 Type float is not applicable for " + printType() + " (" + printValue() + ").");
     return 0.0f;
   }
   
   default double asDouble() {
-    Log.error("0x31258 Type double is not applicable for result value.");
+    Log.error("0x31258 Type double is not applicable for " + printType() + " (" + printValue() + ").");
     return 0.0;
   }
   
   default Object asObject() {
-    Log.error("0x31259 Type object is not applicable for result value.");
+    Log.error("0x31259 Type object is not applicable for " + printType() + " (" + printValue() + ").");
     return null;
+  }
+  
+  default String printType() {
+    Log.error("0x31260 printType is not applicable for " + printType() + " (" + printValue() + ").");
+    return "UnknownType";
+  }
+  
+  default String printValue() {
+    Log.error("0x31261 printValue is not applicable for " + printType() + " (" + printValue() + ").");
+    return "UnknownValue";
   }
   
 }
