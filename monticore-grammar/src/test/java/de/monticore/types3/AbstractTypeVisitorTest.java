@@ -1,6 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types3;
 
+import de.monticore.class2mc.Class2MCResolver;
+import de.monticore.class2mc.OOClass2MCResolver;
 import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
 import de.monticore.expressions.combineexpressionswithliterals._ast.ASTFoo;
 import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
@@ -16,6 +18,7 @@ import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
+import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.types.check.IDerive;
 import de.monticore.types.check.ISynthesize;
 import de.monticore.types.check.SymTypeExpression;
@@ -113,6 +116,16 @@ public class AbstractTypeVisitorTest extends AbstractTypeTest {
     typeMapTraverser = tc3.getTypeTraverser();
     setupSymbolTableCompleter(typeMapTraverser, type4Ast);
   }
+  
+  protected void enableClass2MC() {
+    BasicSymbolsMill.globalScope().addAdaptedTypeSymbolResolver(new Class2MCResolver());
+  }
+  
+  protected void enableClass2MC4OO() {
+    OOClass2MCResolver resolver = new OOClass2MCResolver();
+    BasicSymbolsMill.globalScope().addAdaptedTypeSymbolResolver(resolver);
+    OOSymbolsMill.globalScope().addAdaptedOOTypeSymbolResolver(resolver);
+  }
 
   protected void setupSymbolTableCompleter(
       ITraverser typeMapTraverser, Type4Ast type4Ast) {
@@ -203,6 +216,7 @@ public class AbstractTypeVisitorTest extends AbstractTypeTest {
     ICombineExpressionsWithLiteralsArtifactScope rootScope =
         CombineExpressionsWithLiteralsMill.scopesGenitorDelegator()
             .createFromAST(rootNode);
+    
     rootScope.setName("fooRoot");
     // complete the symbol table
     expr.accept(getSymbolTableCompleter());

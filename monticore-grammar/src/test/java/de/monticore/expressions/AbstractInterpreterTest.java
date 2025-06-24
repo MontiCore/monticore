@@ -8,6 +8,7 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.interpreter.MIValue;
 import de.monticore.interpreter.values.ErrorMIValue;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
+import de.monticore.symboltable.ImportStatement;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types3.AbstractTypeVisitorTest;
@@ -17,6 +18,8 @@ import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 
 import static de.monticore.interpreter.MIValueFactory.createValue;
 import static de.monticore.types3.util.DefsTypesForTests.inScope;
@@ -101,12 +104,16 @@ public abstract class AbstractInterpreterTest extends AbstractTypeVisitorTest {
     inScope(CombineExpressionsWithLiteralsMill.globalScope(), varSymbol);
     interpreter.declareVariable(varSymbol, createValue(3.14));
   }
-
+  
   protected void testValidExpression(String expr, MIValue expected) {
+    testValidExpression(expr, expected, Collections.emptyList());
+  }
+
+  protected void testValidExpression(String expr, MIValue expected, List<ImportStatement> imports) {
     Log.clearFindings();
     MIValue interpretationResult = null;
     try {
-      interpretationResult = parseExpressionAndInterpret(expr);
+      interpretationResult = parseExpressionAndInterpret(expr, imports);
     } catch (IOException e) {
       System.out.println(e.getMessage());
     }
@@ -145,13 +152,17 @@ public abstract class AbstractInterpreterTest extends AbstractTypeVisitorTest {
     }
     assertTrue(Log.getFindings().isEmpty());
   }
-
+  
   protected void testInvalidExpression(String expr) {
+    testInvalidExpression(expr, Collections.emptyList());
+  }
+  
+  protected void testInvalidExpression(String expr, List<ImportStatement> imports) {
     Log.clearFindings();
     MIValue interpretationResult;
     
     try {
-      interpretationResult = parseExpressionAndInterpret(expr);
+      interpretationResult = parseExpressionAndInterpret(expr, imports);
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
@@ -160,10 +171,11 @@ public abstract class AbstractInterpreterTest extends AbstractTypeVisitorTest {
     assertFalse(Log.getFindings().isEmpty());
     assertTrue(interpretationResult.isError());
   }
-
-  protected MIValue parseExpressionAndInterpret(String expr) throws IOException {
+  
+  protected MIValue parseExpressionAndInterpret(String expr, List<ImportStatement> imports) throws IOException {
     final ASTExpression ast = parseExpr(expr);
     generateScopes(ast);
+    addImports(imports);
     SymTypeExpression type = TypeCheck3.typeOf(ast);
     if (type.isObscureType()) {
       String errorMsg = "Invalid Expression: " + expr;
@@ -171,6 +183,10 @@ public abstract class AbstractInterpreterTest extends AbstractTypeVisitorTest {
       return new ErrorMIValue(errorMsg);
     }
     return interpreter.interpret(ast);
+  }
+  
+  protected void addImports(List<ImportStatement> imports) {
+    CombineExpressionsWithLiteralsMill.artifactScope().setImportsList(imports);
   }
 
 }
