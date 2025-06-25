@@ -38,7 +38,8 @@ public abstract class AbstractMCTest {
       // the various Finding-methods of MCAssertions check for & remove
       //  expected findings
       MCAssertions.assertNoFindings(
-              "After the test has run, findings were present."
+              "After the test has run, findings were present.\n" +
+                      "(In case they are expected: Use the MCAssertions#assertHasFinding methods to check for them first)"
       );
     } finally {
       Log.clearFindings();
