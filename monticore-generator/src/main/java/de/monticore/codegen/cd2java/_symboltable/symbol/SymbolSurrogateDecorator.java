@@ -325,6 +325,5 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
     methods.add(method);
 
     return methods;
-
   }
 }
