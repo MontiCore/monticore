@@ -60,7 +60,7 @@ public class ${className} {
         // do not continue, when this error is logged
         return;
       }
-  
+
       ${dstlName}Mill.reset();
       ${dstlName}Mill.init();
 
@@ -85,12 +85,13 @@ public class ${className} {
     } catch ( ParseException e) {
         // an unexpected error from the Apache CLI parser:
         Log.error("0xA6153${service.getGeneratedErrorCode(classname)} Could not process CLI parameters: " + e.getMessage());
-      }
+    } finally {
+      ${dstlName}Mill.reset();
+      ODRulesMill.reset();
+    }
   }
   
   public Optional<AST${grammarName}TFRule> parseRule(Path model) {
-    ${dstlName}Mill.reset();
-    ${dstlName}Mill.init();
     Log.debug("Start parsing of the model " + model, LOG_ID);
     try {
       ${dstlName}Parser parser = new ${dstlName}Parser();
