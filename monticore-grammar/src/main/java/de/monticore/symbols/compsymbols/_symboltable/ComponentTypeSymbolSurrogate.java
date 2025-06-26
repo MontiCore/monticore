@@ -13,22 +13,6 @@ public class ComponentTypeSymbolSurrogate extends ComponentTypeSymbolSurrogateTO
   }
 
   @Override
-  public void setSpannedScope(@NonNull ICompSymbolsScope spannedScope) {
-    if (checkLazyLoadDelegate()) {
-      this.lazyLoadDelegate().setSpannedScope(spannedScope);
-    } else {
-      super.setSpannedScope(spannedScope);  // Avoid infinite recursion with this case
-    }
-  }
-
-  @Override
-  public ICompSymbolsScope getSpannedScope() {
-    return checkLazyLoadDelegate() ?
-        this.lazyLoadDelegate().getSpannedScope() :
-        super.getSpannedScope();  // Avoid infinite recursion with this case
-  }
-
-  @Override
   public Set<PortSymbol> getAllPorts() {
     if (!checkLazyLoadDelegate()) {
       return super.getAllPorts();
