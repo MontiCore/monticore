@@ -43,11 +43,6 @@ public class ComponentTypeSymbolDeSer extends ComponentTypeSymbolDeSerTOP {
   }
 
   @Override
-  protected void deserializeAddons(ComponentTypeSymbol symbol, JsonObject symbolJson) {
-    symbol.getParameterList().forEach(symbol.getSpannedScope()::add);
-  }
-
-  @Override
   protected void serializeSuperComponents(@NonNull List<CompKindExpression> superComponents,
                                           @NonNull CompSymbolsSymbols2Json s2j) {
     s2j.getJsonPrinter().beginArray(SUPER);
@@ -94,8 +89,8 @@ public class ComponentTypeSymbolDeSer extends ComponentTypeSymbolDeSerTOP {
         parameterResult.add(paramSym);
       } else {
         Log.error(String.format(
-          "0xD0101 Malformed json, parameter '%s' of unsupported kind '%s'",
-          param.getAsJsonObject().getStringMember(JsonDeSers.NAME), paramJsonKind
+            "0xD0101 Malformed json, parameter '%s' of unsupported kind '%s'",
+            param.getAsJsonObject().getStringMember(JsonDeSers.NAME), paramJsonKind
         ));
       }
     }

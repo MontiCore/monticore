@@ -3,10 +3,8 @@ package de.monticore.types.check;
 
 import com.google.common.base.Preconditions;
 import de.monticore.ast.ASTNode;
-import de.monticore.expressions.assignmentexpressions._ast.ASTAssignmentExpression;
-import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
+import de.monticore.symbols.compsymbols._ast.ASTSubcomponentArgument;
 import de.monticore.symbols.compsymbols._symboltable.ComponentTypeSymbol;
 import de.se_rwth.commons.logging.Log;
 
@@ -25,21 +23,21 @@ import java.util.Optional;
 public abstract class CompKindExpression {
 
   protected final ComponentTypeSymbol component;
-  protected LinkedHashMap<VariableSymbol, ASTExpression> parameterBindings;
-  protected List<ASTExpression> arguments;
+  protected LinkedHashMap<VariableSymbol, ASTSubcomponentArgument> parameterBindings;
+  protected List<ASTSubcomponentArgument> arguments;
   protected Optional<ASTNode> sourceNode;
 
   /**
    * @return a {@code List} of the configuration arguments of this component.
    */
-  public List<ASTExpression> getArguments() {
+  public List<ASTSubcomponentArgument> getArguments() {
     return this.arguments;
   }
 
   /**
    * @param argument the configuration argument to add to this component.
    */
-  public void addArgument(ASTExpression argument) {
+  public void addArgument(ASTSubcomponentArgument argument) {
     Preconditions.checkNotNull(argument);
     this.arguments.add(argument);
   }
@@ -84,46 +82,44 @@ public abstract class CompKindExpression {
 
   /**
    * @param arguments the configuration arguments to add to this component.
-   * @see this#addArgument(ASTExpression)
+   * @see this#addArgument(ASTSubcomponentArgument)
    */
-  public void addArgument(List<ASTExpression> arguments) {
+  public void addArgument(List<? extends ASTSubcomponentArgument> arguments) {
     Preconditions.checkNotNull(arguments);
     Preconditions.checkArgument(!arguments.contains(null));
-    for (ASTExpression argument : arguments) {
+    for (ASTSubcomponentArgument argument : arguments) {
       this.addArgument(argument);
     }
   }
 
-  public Optional<ASTExpression> getParamBindingFor(VariableSymbol var) {
+  public Optional<ASTSubcomponentArgument> getParamBindingFor(VariableSymbol var) {
     Preconditions.checkNotNull(var);
     return Optional.ofNullable(this.getParamBindings().get(var));
   }
 
-  public Map<VariableSymbol, ASTExpression> getParamBindings() {
+  public Map<VariableSymbol, ASTSubcomponentArgument> getParamBindings() {
     return Collections.unmodifiableMap(this.parameterBindings);
   }
 
-  public List<ASTExpression> getParamBindingsAsList() {
+  public List<ASTSubcomponentArgument> getParamBindingsAsList() {
     return new ArrayList<>(this.getParamBindings().values());
   }
 
   public void bindParams() {
-    List<ASTExpression> parameterArguments = this.getArguments();
+    List<ASTSubcomponentArgument> parameterArguments = this.getArguments();
 
     int firstKeywordArgument = 0;
-    LinkedHashMap<String, ASTExpression> keywordExpressionMap = new LinkedHashMap<>();
-    LinkedHashMap<VariableSymbol, ASTExpression> parameterBindings = new LinkedHashMap<>();
+    LinkedHashMap<String, ASTSubcomponentArgument> keywordExpressionMap = new LinkedHashMap<>();
+    LinkedHashMap<VariableSymbol, ASTSubcomponentArgument> parameterBindings = new LinkedHashMap<>();
     // We know LinkedHashMaps are ordered by insertion time. As we rely on the fact that the ordering of the
     // arguments is consistent with the ordering in the map, the following iteration ensures it:
     for (int i = 0; i < this.getTypeInfo().getParameterList().size(); i++) {
       if (i < parameterArguments.size()) // Deal with wrong number of parameters through cocos
-        if (parameterArguments.get(i) instanceof ASTAssignmentExpression
-          && ((ASTAssignmentExpression) parameterArguments.get(i)).getLeft() instanceof ASTNameExpression) {
-          keywordExpressionMap.put(((ASTNameExpression) ((ASTAssignmentExpression) parameterArguments.get(i))
-            .getLeft()).getName(), parameterArguments.get(i));
-        } else {
+        if (!parameterArguments.get(i).isPresentName()) {
           parameterBindings.put(this.getTypeInfo().getParameterList().get(i), parameterArguments.get(i));
           firstKeywordArgument++;
+        } else {
+          keywordExpressionMap.put(parameterArguments.get(i).getName(), parameterArguments.get(i));
         }
     }
 
@@ -214,6 +210,8 @@ public abstract class CompKindExpression {
    * Optional} if the component has no such parameter.
    */
   public abstract Optional<SymTypeExpression> getTypeOfParameter(String parameterName);
+
+  public abstract List<Optional<SymTypeExpression>> getParameterTypes();
 
   public CompKindExpression deepClone() {
     return deepClone(getTypeInfo());
