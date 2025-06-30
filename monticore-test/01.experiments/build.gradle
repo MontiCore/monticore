@@ -14,7 +14,6 @@ subprojects {
   dependencies {
     implementation "de.se_rwth.commons:se-commons-utilities:$se_commons_version"
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
-    testImplementation "org.junit.vintage:junit-vintage-engine:$junit_version"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
   }
 
@@ -37,9 +36,7 @@ configure(subprojects.findAll {it.name != 'forParser' && it.name != 'runtimeOnly
         requireCapability("de.monticore:monticore-grammar-grammars")
       }
     }
-    testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
-    testImplementation "org.junit.vintage:junit-vintage-engine:$junit_version"
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
+    testImplementation testFixtures(project(":monticore-runtime"))
   }
 }
 

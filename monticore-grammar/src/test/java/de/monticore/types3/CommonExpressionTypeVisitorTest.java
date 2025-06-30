@@ -35,6 +35,9 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
+import static de.monticore.runtime.junit.MCAssertions.assertHasFindingsStartingWith;
+import static de.monticore.runtime.junit.MCAssertions.assertNoFindings;
+import static de.monticore.types3.util.DefsTypesForTests.*;
 import static de.monticore.types.check.SymTypeExpressionFactory.createGenerics;
 import static de.monticore.types.check.SymTypeExpressionFactory.createIntersection;
 import static de.monticore.types.check.SymTypeExpressionFactory.createTuple;
@@ -42,7 +45,6 @@ import static de.monticore.types.check.SymTypeExpressionFactory.createTypeArray;
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeObject;
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeVariable;
 import static de.monticore.types.check.SymTypeExpressionFactory.createUnion;
-import static de.monticore.types3.util.DefsTypesForTests.*;
 
 public class CommonExpressionTypeVisitorTest
     extends AbstractTypeVisitorTest {
@@ -2009,7 +2011,7 @@ public class CommonExpressionTypeVisitorTest
       throws IOException {
     // Expression (2 + 3)() and all other Expressions in front of brackets are parsable
     init_advanced();
-    checkErrorExpr("(2 + 3)()", "0xFDABC");
+    checkErrorExpr("(2 + 3)()", "0xFDAB4");
   }
 
   @Test
@@ -2588,7 +2590,9 @@ public class CommonExpressionTypeVisitorTest
   public void testInvalidStaticType() throws IOException {
     init_static_example();
 
-    checkErrorMCType("A.NotAType", "0xA0324");
+    checkErrorMCType("A.NotAType", "0xFDAE3");
+    // legacy error code...
+    assertHasFindingsStartingWith("0xA0324");
   }
 
   @Test

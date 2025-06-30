@@ -3,10 +3,6 @@
 package de.monticore.javalight.cocos;
 
 import de.monticore.javalight._cocos.JavaLightCoCoChecker;
-import de.monticore.testjavalight.TestJavaLightMill;
-import de.monticore.testjavalight._symboltable.ITestJavaLightScope;
-import de.monticore.types.check.SymTypeExpressionFactory;
-import de.monticore.types.check.SymTypeOfObject;
 import de.monticore.types3.util.DefsTypesForTests;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

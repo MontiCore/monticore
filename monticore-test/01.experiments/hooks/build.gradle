@@ -21,6 +21,10 @@ sourceSets {
   productTest.java.srcDirs += ["$buildDir/statepattern" , "$projectDir/src/product/java"]
 }
 
+dependencies {
+  productTestImplementation(testFixtures(project(":monticore-runtime")))
+}
+
 // let productTest depend on test as test produces code for productTest
 compileProductTestJava.dependsOn(test)
 

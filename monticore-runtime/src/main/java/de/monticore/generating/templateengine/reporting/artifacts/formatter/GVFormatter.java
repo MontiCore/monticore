@@ -104,7 +104,7 @@ public class GVFormatter extends AFormatter {
   }
 
   /**
-   * @see mc.codegen.reporting.visualization.printer.AFormatter#getContent(mc.codegen.reporting.visualization.model.RootPkg)
+   * mc.codegen.reporting.visualization.printer.AFormatter#getContent(mc.codegen.reporting.visualization.model.RootPkg)
    */
   @Override
   public List<String> getContent(RootPkg rootPkg) {

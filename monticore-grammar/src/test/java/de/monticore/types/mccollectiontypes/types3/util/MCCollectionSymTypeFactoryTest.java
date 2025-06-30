@@ -1,12 +1,12 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.types.mccollectiontypes.types3.util;
 
+import de.monticore.runtime.junit.AbstractMCTest;
+import de.monticore.types3.util.DefsTypesForTests;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsGlobalScope;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.mccollectiontypes.types3.MCCollectionSymTypeRelations;
-import de.monticore.types3.AbstractTypeTest;
-import de.monticore.types3.util.DefsTypesForTests;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,7 +22,7 @@ import static de.monticore.types3.util.DefsTypesForTests._unboxedMapSymType;
 import static de.monticore.types3.util.DefsTypesForTests._unboxedOptionalSymType;
 import static de.monticore.types3.util.DefsTypesForTests._unboxedSetSymType;
 
-public class MCCollectionSymTypeFactoryTest extends AbstractTypeTest {
+public class MCCollectionSymTypeFactoryTest extends AbstractMCTest {
 
   @BeforeEach
   public void setup() {

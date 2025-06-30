@@ -11,6 +11,7 @@ import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
+import de.monticore.types3.util.DefsTypesForTests;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
@@ -19,7 +20,6 @@ import de.monticore.symboltable.ISymbol;
 import de.monticore.types.check.FlatExpressionScopeSetter;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
-import de.monticore.types3.util.DefsTypesForTests;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -87,8 +87,6 @@ public class SourceSymbolsTest extends AbstractTypeVisitorTest {
     assertTrue(listOfIntType.getSourceInfo().getSourceSymbol().isPresent());
     definingSymbol = listOfIntType.getSourceInfo().getSourceSymbol().get();
     assertSame(this.listOfInt, definingSymbol);
-
-    assertNoFindings();
   }
 
   @Test
@@ -114,8 +112,6 @@ public class SourceSymbolsTest extends AbstractTypeVisitorTest {
     assertTrue(listOfIntType.getSourceInfo().getSourceSymbol().isPresent());
     definingSymbol = listOfIntType.getSourceInfo().getSourceSymbol().get();
     assertEquals(this.listOfInt, definingSymbol);
-
-    assertNoFindings();
   }
 
   @Test
@@ -129,8 +125,6 @@ public class SourceSymbolsTest extends AbstractTypeVisitorTest {
     assertTrue(eType.getSourceInfo().getSourceSymbol().isPresent());
     ISymbol definingSymbol = eType.getSourceInfo().getSourceSymbol().get();
     assertSame(this.e, definingSymbol);
-
-    assertNoFindings();
   }
 
   @Test
@@ -146,8 +140,6 @@ public class SourceSymbolsTest extends AbstractTypeVisitorTest {
     assertTrue(addType.getSourceInfo().getSourceSymbol().isPresent());
     ISymbol definingSymbol = addType.getSourceInfo().getSourceSymbol().get();
     assertSame(this.add, definingSymbol);
-
-    assertNoFindings();
   }
 
   protected CombineExpressionsWithLiteralsTraverser getFlatExpressionScopeSetter(IExpressionsBasisScope scope) {

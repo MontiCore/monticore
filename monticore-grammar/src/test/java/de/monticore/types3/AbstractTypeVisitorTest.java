@@ -6,12 +6,15 @@ import de.monticore.expressions.combineexpressionswithliterals._ast.ASTFoo;
 import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsArtifactScope;
 import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
-import de.monticore.expressions.commonexpressions.types3.util.CommonExpressionsLValueRelations;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.lambdaexpressions._ast.ASTLambdaExpression;
 import de.monticore.expressions.lambdaexpressions._symboltable.LambdaExpressionsSTCompleteTypes2;
 import de.monticore.ocl.oclexpressions.symboltable.OCLExpressionsSymbolTableCompleter;
 import de.monticore.ocl.setexpressions.symboltable.SetExpressionsSymbolTableCompleter;
+import de.monticore.runtime.junit.AbstractMCTest;
+import de.monticore.runtime.junit.MCAssertions;
+import de.monticore.types3.util.DefsTypesForTests;
+import de.monticore.types3.util.DefsVariablesForTests;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
@@ -25,8 +28,6 @@ import de.monticore.types.check.types3wrapper.TypeCheck3AsISynthesize;
 import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserFactory;
-import de.monticore.types3.util.DefsTypesForTests;
-import de.monticore.types3.util.DefsVariablesForTests;
 import de.monticore.types3.util.MapBasedTypeCheck3;
 import de.monticore.types3.util.TypeVisitorOperatorCalculator;
 import de.monticore.types3.util.WithinScopeBasicSymbolsResolver;
@@ -42,6 +43,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static de.monticore.runtime.junit.MCAssertions.assertNoFindings;
 import static de.monticore.types3.util.DefsTypesForTests._booleanSymType;
 import static de.monticore.types3.util.DefsTypesForTests._boxedListSymType;
 import static de.monticore.types3.util.DefsTypesForTests._csStudentSymType;
@@ -62,7 +64,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * main extensions point are the methods
  * setup, setupValues, parseString*, generateScopes, calculateTypes
  */
-public class AbstractTypeVisitorTest extends AbstractTypeTest {
+public class AbstractTypeVisitorTest extends AbstractMCTest {
 
   // Parser, etc. used for convenience:
   // (may be any other Parser that understands CommonExpressions)
@@ -252,13 +254,15 @@ public class AbstractTypeVisitorTest extends AbstractTypeTest {
 
   protected ASTExpression parseExpr(String exprStr) throws IOException {
     Optional<ASTExpression> astExpression = parseStringExpr(exprStr);
-    Assertions.assertTrue(astExpression.isPresent(), getAllFindingsAsString());
+    assertNoFindings();
+    Assertions.assertTrue(astExpression.isPresent());
     return astExpression.get();
   }
 
   protected ASTMCType parseMCType(String typeStr) throws IOException {
     Optional<ASTMCType> mcType = parseStringMCType(typeStr);
-    Assertions.assertTrue(mcType.isPresent(), getAllFindingsAsString());
+    assertNoFindings();
+    Assertions.assertTrue(mcType.isPresent());
     return mcType.get();
   }
 
@@ -433,14 +437,12 @@ public class AbstractTypeVisitorTest extends AbstractTypeTest {
     return getAllErrorCodes().stream().anyMatch(code::equals);
   }
 
+  /**
+   * @deprecated use MCAssertions directly instead
+   */
+  @Deprecated
   protected void assertHasErrorCode(String code) {
-    Assertions.assertTrue(hasErrorCode(code), "Error \"" + code + "\" expected, "
-        + "but instead the errors are:"
-        + System.lineSeparator()
-        + Log.getFindings().stream()
-        .map(Finding::buildMsg)
-        .collect(Collectors.joining(System.lineSeparator()))
-        + System.lineSeparator());
+    MCAssertions.assertHasFindingStartingWith(code);
   }
 
   protected Type4Ast getType4Ast() {

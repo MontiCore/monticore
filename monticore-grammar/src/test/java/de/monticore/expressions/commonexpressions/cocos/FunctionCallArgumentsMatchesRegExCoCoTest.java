@@ -7,6 +7,7 @@ import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICom
 import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
 import de.monticore.expressions.commonexpressions._cocos.CommonExpressionsCoCoChecker;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.types3.util.DefsTypesForTests;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.IDerive;
 import de.monticore.types.check.SymTypeExpression;
@@ -14,7 +15,6 @@ import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.types3wrapper.TypeCheck3AsIDerive;
 import de.monticore.types3.Type4Ast;
 import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserFactory;
-import de.monticore.types3.util.DefsTypesForTests;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;

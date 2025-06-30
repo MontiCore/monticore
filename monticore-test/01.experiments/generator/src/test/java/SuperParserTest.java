@@ -1,32 +1,28 @@
 /* (c) https://github.com/MontiCore/monticore */
 
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import superparser.ModifiedMCParserBase;
 import superparser.SuperParserMill;
 import superparser._parser.SuperParserParser;
 
 import java.io.IOException;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *  Test that the ParserSuperGrammar AntlrOption works
  */
+@TestWithMCLanguage(SuperParserMill.class)
 public class SuperParserTest {
   
-  @Before
-  public void setup() {
-    LogStub.init();         // replace log by a sideffect free variant
-    Log.enableFailQuick(false);
-  }
 
   @Test
   public void test() throws IOException {
     ModifiedMCParserBase.customCalled = 0;
-    SuperParserMill.init();
 
     SuperParserParser parser = SuperParserMill.parser();
 

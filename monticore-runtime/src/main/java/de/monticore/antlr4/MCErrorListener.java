@@ -192,7 +192,11 @@ public class MCErrorListener extends BaseErrorListener {
   /**
    * Similiar to {@link ATN#getExpectedTokens(int, RuleContext)},
    * but we also return the rule numbers
-   * @param expected a set of ruleIndex -> expected token(s) entries
+   * @param atn the atn
+   * @param stateNumber the current state
+   * @param vocabulary {@link Vocabulary}
+   * @param visitedStates the already visited states
+   * @param expected a set of ruleIndex -to- expected token(s) entries
    * @return whether an empty input is accepted
    */
   public boolean getExpectedRulesWithTokens(ATN atn, int stateNumber, Vocabulary vocabulary, Map<Integer, Boolean> visitedStates, Set<Map.Entry<Integer, String>> expected) {
