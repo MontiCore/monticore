@@ -110,6 +110,11 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
     List<ASTCDMethod> enclosingScopeMethods = Lists.newArrayList(createSetEnclosingScopeMethod(enclosingScopeAttribute, symbolTableService.getScopeInterfaceSimpleName()));
     enclosingScopeMethods.add(createGetEnclosingScopeMethod(enclosingScopeAttribute));
 
+    List<ASTCDMethod> spanningScopeMethods = Lists.newArrayList();
+    if (symbolTableService.hasScopeStereotype(symbolInput.getModifier()) || symbolTableService.hasInheritedScopeStereotype(symbolInput.getModifier())) {
+      spanningScopeMethods.addAll(createSpannedScopeMethods(symbolTableService.getScopeInterfaceFullName()));
+    }
+
     List<ASTCDMethod> delegateStereoinfoMethods = createOverriddenStereotypeMethods();
     
     ASTCDClassBuilder builder = CD4AnalysisMill.cDClassBuilder()
@@ -124,7 +129,8 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
       .addCDMember(createOverridenDeterminePackageName())
       .addCDMember(createOverridenDetermineFullName())
       .addAllCDMembers(delegateSymbolRuleMethods)
-      .addAllCDMembers(delegateStereoinfoMethods);
+      .addAllCDMembers(delegateStereoinfoMethods)
+      .addAllCDMembers(spanningScopeMethods);
     return builder
       .addCDMember(delegateAttribute)
       .addAllCDMembers(enclosingScopeMethods)
@@ -302,5 +308,22 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
       result.add(this.getCDMethodFacade().createMethod(PUBLIC.build(), ASTConstants.ACCEPT_METHOD, superVisitorParameter));
     }
     return result;
+  }
+
+  protected List<ASTCDMethod> createSpannedScopeMethods(String scopeInterface) {
+    List<ASTCDMethod> methods = Lists.newArrayList();
+    // getSpannedScope
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), getMCTypeFacade().createQualifiedType(scopeInterface), "getSpannedScope");
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "GetSpannedScopeSymbolSurrogate",
+        scopeInterface));
+    methods.add(method);
+
+    // setSpannedScope
+    ASTCDParameter parameter = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(scopeInterface), "scope");
+    method = getCDMethodFacade().createMethod(PUBLIC.build(), "setSpannedScope", parameter);
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "SetSpannedScopeSymbolSurrogate", scopeInterface));
+    methods.add(method);
+
+    return methods;
   }
 }

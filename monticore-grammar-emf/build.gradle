@@ -93,7 +93,7 @@ test {
   exclude '**/SynthesizeSymTypeFromMCFullGenericTypesTest.class'
   exclude '**/SynthesizeSymTypeFromMCArrayTypesTest.class'
   exclude '**/MCType2SymTypeExpressionTest.class'
-  exclude '**/ComponentSymbolDeSerTest.class'
+  exclude '**/ComponentTypeSymbolDeSerTest.class'
 }
 
 

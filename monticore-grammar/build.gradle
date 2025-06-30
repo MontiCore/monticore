@@ -7,7 +7,7 @@ buildscript {
 
 plugins {
   id "java-library"
-  id "com.github.johnrengelman.shadow" version "7.1.2"
+  id "com.github.johnrengelman.shadow" version "$shadow_plugin_version"
   // in case a "genTR" property is set to "true", transformation grammars are also created
   id "de.monticore.generator-withtr" version "$version"
   id "jacoco"

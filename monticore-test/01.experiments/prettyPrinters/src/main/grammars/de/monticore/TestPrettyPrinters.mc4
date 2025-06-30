@@ -303,4 +303,15 @@ grammar TestPrettyPrinters extends de.monticore.literals.MCCommonLiterals  {
     TestType implements TypeInterface = "TestType" TypeInterface2?;
     UsingTestType = "abc" TypeInterface;
     TestType2 implements TypeInterface2 = "TT2";
+
+    // Inspired by SysMLStates#EntryAction
+    // Tests the condition of B | A ("t")
+    NestedOptFromSysML = "entry" ( ";" |
+                  actionUsage:A |
+                  mCQualifiedName:B
+                  ("{"
+                     sysMLElement:C*
+                   "}" | ";")
+                ) ;
+
 }

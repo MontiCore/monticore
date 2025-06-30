@@ -11,7 +11,7 @@ buildscript {
 plugins {
     id "java-library"
     id "io.github.themrmilchmann.ecj" version "0.2.0" // Eclipse compiler as it's much faster than javac
-    id "com.github.johnrengelman.shadow" version "6.1.0"
+    id "com.github.johnrengelman.shadow" version "$shadow_plugin_version"
     id 'groovy-gradle-plugin'
     id 'maven-publish'
     id "jacoco"
