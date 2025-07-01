@@ -51,7 +51,7 @@ public class MCPublishingPlugin implements Plugin<Project> {
   /**
    * Attribute to differentiate between outgoing configuratons of multiple source sets
    */
-  protected static final Attribute GRAMMAR_SOURCE_SET_ATTRIBUTE = Attribute.of("monticore.generator.sourceset", String.class);
+  protected static final Attribute<String> GRAMMAR_SOURCE_SET_ATTRIBUTE = Attribute.of("monticore.generator.sourceset", String.class);
 
   final SoftwareComponentFactory softwareComponentFactory;
   final TaskDependencyFactory taskDependencyFactory;
@@ -250,19 +250,27 @@ public class MCPublishingPlugin implements Plugin<Project> {
    * Create a lazy {@link org.gradle.api.internal.artifacts.publish.ArchivePublishArtifact} from a given
    * {@link Jar} task.
    * Provides compatibility between gradle 7 and 8
+   * --
+   * This is important for Gradle's dependency substitution to work,
+   * otherwise relocations have to be defined by hand.
    */
-  protected PublishArtifact createPublishedArtifact(TaskProvider<Jar> grammarsJarTask, Project project) {
-    // the LazyPublishArtifact constructor has changed between gradle versions:
+  // TODO: After 7.8.0 release: Remove this method & extends APublishingPlugin
+  protected PublishArtifact createPublishedArtifact(TaskProvider<Jar> jarTaskProvider, Project project) {
+    // The LazyPublishArtifact is a part of Gradle's internals,
+    // but only accessible via the buildScript/groovy/kotlin API
     try {
-      // Gradle 7.4.2
-      return new LazyPublishArtifact(grammarsJarTask, null, ((ProjectInternal) project).getFileResolver());
-    } catch (NoSuchMethodError incompatibleVersion) {
+      // Attempt to use the Gradle 7.4.2 constructor via reflection
+      return LazyPublishArtifact.class
+              .getConstructor(org.gradle.api.provider.Provider.class, String.class, FileResolver.class)
+              .newInstance(jarTaskProvider, null, ((ProjectInternal) project).getFileResolver());
+    } catch (ReflectiveOperationException e7) {
+      // If the 7.4.2 constructor is not found, try the Gradle 8 constructor
       try {
         // Gradle 8 - the TaskDependencyFactory parameter was added
-        return LazyPublishArtifact.class.getConstructor(Provider.class, String.class, FileResolver.class, TaskDependencyFactory.class)
-                .newInstance(grammarsJarTask, null, ((ProjectInternal) project).getFileResolver(), taskDependencyFactory);
-      } catch (ReflectiveOperationException e) {
-        throw new IllegalStateException("Incompatible LazyPublishArtifact constructor in gradle " + project.getGradle().getGradleVersion(), e);
+        return LazyPublishArtifact.class.getConstructor(org.gradle.api.provider.Provider.class, String.class, FileResolver.class, TaskDependencyFactory.class)
+                .newInstance(jarTaskProvider, null, ((ProjectInternal) project).getFileResolver(), taskDependencyFactory);
+      } catch (ReflectiveOperationException e8) {
+        throw new IllegalStateException("Incompatible LazyPublishArtifact constructor in gradle " + project.getGradle().getGradleVersion(), e8);
       }
     }
   }
@@ -352,6 +360,7 @@ public class MCPublishingPlugin implements Plugin<Project> {
     sourcesElementsConfig.getAttributes().attribute(Category.CATEGORY_ATTRIBUTE, project.getObjects().named(Category.class, Category.DOCUMENTATION));
     sourcesElementsConfig.getAttributes().attribute(Bundling.BUNDLING_ATTRIBUTE, project.getObjects().named(Bundling.class, Bundling.EXTERNAL));
     sourcesElementsConfig.getAttributes().attribute(DocsType.DOCS_TYPE_ATTRIBUTE, project.getObjects().named(DocsType.class, docsType));
+    sourcesElementsConfig.getAttributes().attribute(GRAMMAR_SOURCE_SET_ATTRIBUTE, sourceSet.getName());
 
     return sourcesElementsConfig;
   }

@@ -6,6 +6,19 @@ plugins {
   id 'java-test-fixtures'
 }
 
+sourceSets {
+  test {
+    resources {
+      srcDirs += "src/test/java"
+      includes = ["**/*.ftl"]
+    }
+  }
+  tests.java{
+    srcDirs += "$projectDir/src/test/java"
+    includes = ["**/Assert.java"]
+  }
+}
+
 configurations {
   testsImplementation.extendsFrom(testImplementation)
 }
@@ -27,18 +40,7 @@ dependencies {
   testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
 }
 
-sourceSets {
-  test {
-    resources {
-      srcDirs += "src/test/java"
-      includes = ["**/*.ftl"]
-    }
-  }
-  tests.java{
-    srcDirs += "$projectDir/src/test/java"
-    includes = ["**/Assert.java"]
-  }
-}
+
 
 description = 'MontiCore: Runtime'
 

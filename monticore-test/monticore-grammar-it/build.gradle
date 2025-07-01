@@ -40,16 +40,16 @@ java {
   }
 }
 
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile).configureEach {
   sourceCompatibility = JavaVersion.VERSION_11
   targetCompatibility = JavaVersion.VERSION_11
   options.encoding = 'UTF-8'
-  options.deprecation false
+  options.deprecation = false
   options.warnings = false
 }
 
-task testReport(type: TestReport) {
+tasks.register('testReport', TestReport) {
   destinationDirectory = file("$buildDir/reports/allTests")
   // Include the results from the 'test' task
-  testResults.from(tasks.withType(Test).each({it.getBinaryResultsDirectory()}))
+  testResults.from(tasks.withType(Test).each({ it.getBinaryResultsDirectory() }))
 }

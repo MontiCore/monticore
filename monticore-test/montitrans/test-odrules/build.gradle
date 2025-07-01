@@ -15,7 +15,7 @@ dependencies {
 // create a task for each grammar in grammarDir
 fileTree(grammarsDir).each {
   def g = it
-  task  "generate${it.getName().substring(0,it.getName().lastIndexOf('.'))}" (type: MCTask) {
+  tasks.register("generate${it.getName().substring(0,it.getName().lastIndexOf('.'))}", MCTask) {
     grammar = file g
     outputDir = file "$buildDir/generated-sources"
     def uptoDate = incCheck(g.toString().substring(grammarsDir.length() + 1))
@@ -23,7 +23,7 @@ fileTree(grammarsDir).each {
   }
 }
 
-task generateMTOD {
+tasks.register('generateMTOD') {
   group = "montitrans"
   dependsOn(tasks.withType(MCTask))
 }
@@ -31,7 +31,7 @@ task generateMTOD {
 fileTree(dir: "$modelsDir/automaton", include: '*.mtod').each {
   def g = it
   def taskname = "generateAutomatonTRRule${it.getName().substring(0, it.getName().lastIndexOf('.'))}"
-  task "$taskname"(type: MontiTransExec) {
+  tasks.register(taskname, MontiTransExec) {
     group = "montitrans"
     getClassPath().setFrom(project(':monticore-test:montitrans:test-dstl-gen').sourceSets.main.runtimeClasspath)
     TFGenTool = 'de.monticore.tf.odrules.ODRulesCLI'
@@ -43,7 +43,7 @@ fileTree(dir: "$modelsDir/automaton", include: '*.mtod').each {
 fileTree(dir: "$modelsDir/misc", include: '*.mtod').each {
   def g = it
   def taskname = "generateMiscTRRules${it.getName().substring(0, it.getName().lastIndexOf('.'))}"
-  task "$taskname"(type: MontiTransExec) {
+  tasks.register(taskname, MontiTransExec) {
     getClassPath().setFrom(project(':monticore-test:montitrans:test-dstl-gen').sourceSets.main.runtimeClasspath)
     TFGenTool = 'de.monticore.tf.odrules.ODRulesCLI'
     input = file(g)
@@ -51,13 +51,13 @@ fileTree(dir: "$modelsDir/misc", include: '*.mtod').each {
   }
   generateMTOD.dependsOn("$taskname")
 }
-task generatePetrinetTRRules {
+tasks.register('generatePetrinetTRRules') {
   group = "montitrans"
 }
 fileTree(dir: "$modelsDir/petrinet", include: '**/**.mtod').each {
   def g = it
   def taskname = "generatePetrinetTRRules${it.getName().substring(0, it.getName().lastIndexOf('.'))}"
-  task "$taskname"(type: MontiTransExec) {
+  tasks.register(taskname, MontiTransExec) {
     getClassPath().setFrom(project(':monticore-test:montitrans:test-dstl-gen').sourceSets.main.runtimeClasspath)
     TFGenTool = 'de.monticore.tf.odrules.ODRulesCLI'
     input = file(g)
