@@ -97,6 +97,11 @@ public class MCGeneratorPlugin implements Plugin<Project> {
     project.getTasks().named(sourceSet.getCompileJavaTaskName()).configure(compile -> {
       compile.dependsOn(mcGenTaskProvider);
     });
+    // Generate MC must run before the sources jar task (which may or may not be present)
+    final String sourcesJarTaskName = sourceSet.getSourcesJarTaskName();
+    project.getTasks().matching(t->t.getName().equals(sourcesJarTaskName)).configureEach(sourcesJar -> {
+      sourcesJar.dependsOn(mcGenTaskProvider);
+    });
     // Generate MC must run before ProcessResources (e.g. for mc4 grammars)
     project.getTasks().named(sourceSet.getProcessResourcesTaskName()).configure(processResources -> {
       processResources.dependsOn(mcGenTaskProvider);
