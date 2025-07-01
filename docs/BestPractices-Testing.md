@@ -41,7 +41,7 @@ public class CheckScannerlessTest {
   @Test
   public void testType2() throws IOException {
     // A positive test
-    ASTType ast = ScannerlessMill.parser().parse_StringType( " List < Theo > " )
+    ASTType ast = parser.parse_StringType( " List < Theo > " )
             .orElseGet(MCAssertions::failAndPrintFindings);
     assertEquals("List", ast.getName());
     ASTTypeArguments ta = ast.getTypeArguments();
@@ -53,14 +53,13 @@ public class CheckScannerlessTest {
   public void testType8() throws IOException {
     // This cannot be parsed as a Type >> wert
     // This cannot be parsed because of the illegal space in ">>"
-    Optional<ASTExpression> ast0 = ScannerlessMill.parser().parse_StringExpression(
-            "List<Set<Theo>>> >wert" );
-    assertFalse(ast0.isPresent());
-    // We could also check for assertTrue(MCConcreteParser#hasErrors());,
-    // but this is already done by the optional-empty check
+    var parser = ScannerlessMill.parser();
+    parser.parse_StringExpression("List<Set<Theo>>> >wert" );
+    assertTrue(parser.hasErrors()); // check that the parser has errors
     
     // assert a findings is present & remove it from the log
-    MCAssertions.assertHasFinding(finding -> true); 
+    // We ignore the content of the finding, as it is a parser error 
+    MCAssertions.assertHasFinding(); 
   }
   // The @TestWithMCLanguage ensures, that after each test:
   //  - no more findings are present
