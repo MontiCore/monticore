@@ -41,7 +41,7 @@ public class CheckScannerlessTest {
   @Test
   public void testType2() throws IOException {
     // A positive test
-    ASTType ast = parser.parse_StringType( " List < Theo > " )
+    ASTType ast = ScannerlessMill.parser().parse_StringType( " List < Theo > " )
             .orElseGet(MCAssertions::failAndPrintFindings);
     assertEquals("List", ast.getName());
     ASTTypeArguments ta = ast.getTypeArguments();
