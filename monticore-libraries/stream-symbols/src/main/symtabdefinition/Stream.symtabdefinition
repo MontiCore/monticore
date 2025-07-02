@@ -9,7 +9,7 @@ symtabdefinition Stream {
     + static <S, U> Stream<S> projFst(Stream<(S,U)> list); // kann man static umgehen?
     + static <S, U> Stream<U> projSnd(Stream<(S,U)> list);
 
-    + Optional<Stream<T>> dropFirst();
+    + Stream<T> dropFirst();
     + Stream<T> take(long n);
     + Stream<T> dropMultiple(long n);
 
