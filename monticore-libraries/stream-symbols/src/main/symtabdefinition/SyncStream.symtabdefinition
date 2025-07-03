@@ -6,8 +6,8 @@ import UntimedStream;
 symtabdefinition SyncStream {
 
   class SyncStream<T> implements Stream<T> {
-    + Optional<T> first();
-    + Optional<T> nth(long n); // nicht konform mit TechReport, ist aber sinnvoller
+    + T first();
+    + T nth(long n);
 
     + static <S> SyncStream<S> syncRepeat(S elem, long n);
     + static <S> SyncStream<S> syncIterate(S -> S elem, S elem);
@@ -15,7 +15,7 @@ symtabdefinition SyncStream {
     + static <S, U> SyncStream<U> syncProjSnd(SyncStream<(S,U)> list);
 
     // ----------- Implementations
-    + Optional<SyncStream<T>> dropFirst();
+    + SyncStream<T> dropFirst();
     + SyncStream<T> take(long n);
     + SyncStream<T> dropMultiple(long n);
     + SyncStream<T> times(long n); // <2>.times(24)
