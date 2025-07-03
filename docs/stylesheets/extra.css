@@ -4,6 +4,9 @@
 }
 :root {
   --md-primary-fg-color: #006BA5;
+  --md-accent-bg-color: #006BA5;
+  --md-primary-bg-color: #006BA5;
+  --md-default-bg-color: white;
 }
 .tip {
   border: 2px solid grey;
