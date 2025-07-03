@@ -75,7 +75,7 @@ The website is built using mkdocs.
 * Serve locally: `mkdocs serve`
 * (optional) use Gradle to build the javadocs
 
-(A GitHub workflow deploys the website similarly.)
+(A GitHub workflow deploys the website similarly to GitHub pages.)
 
 ## Further Information
 
