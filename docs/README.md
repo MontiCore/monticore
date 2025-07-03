@@ -47,24 +47,24 @@ To show a little of MontiCore's capabilities, the following (incomplete)
 grammar might help:
 
 ```monticore
-    grammar MyStatemachine extends Automata,                  // MontiCore grammar 
-                                   MCBasicTypes, SetExpressions, MCCommonLiterals {     
-      start Automaton;
-    
-      // overriding a nonterminal (to add optional conditions):
-      Transition = from:Name@State ":" Expression? "->" to:Name@State;
+grammar MyStatemachine extends Automata,                  // MontiCore grammar 
+                               MCBasicTypes, SetExpressions, MCCommonLiterals {     
+  start Automaton;
 
-      // add new variants of expressions
-      LogicalNotExpr implements Expression = "!" Expression;
+  // overriding a nonterminal (to add optional conditions):
+  Transition = from:Name@State ":" Expression? "->" to:Name@State;
 
-      XorExpr        implements Expression =
-            left:Expression "xor" right:Expression;
+  // add new variants of expressions
+  LogicalNotExpr implements Expression = "!" Expression;
 
-      scope LetExpr  implements Expression =
-            "let" (VarDeclaration || ",")+ "in" Expression;
+  XorExpr        implements Expression =
+        left:Expression "xor" right:Expression;
 
-      symbol VarDeclaration = MCType? Name "=" Expression ;
-    }
+  scope LetExpr  implements Expression =
+        "let" (VarDeclaration || ",")+ "in" Expression;
+
+  symbol VarDeclaration = MCType? Name "=" Expression ;
+}
 ```
 
 The grammar language has a variety of mechanisms to define
