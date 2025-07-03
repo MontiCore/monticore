@@ -29,7 +29,7 @@ of the handbook.
 * [**Handling Errors 0x.....**](BestPractices-Errors.md) 
 
 * [**Designing Symbols, Scopes and SymbolTables**](BestPractices-Symbols-Scopes.md) 
-* 
+
 * [**Testing a Language**](BestPractices-Testing.md) 
 
 * [**Designing Tools for Command Line Interfaces**](BestPractices-CLI.md) 
