@@ -1176,7 +1176,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
   }
 
   /**
-   * helper method for <=, >=, <, > -> calculates the result of these expressions
+   * helper method for {@code <=, >=, <, > ->} calculates the result of these expressions
    */
   protected SymTypeExpression calculateTypeCompare(SymTypeExpression left, SymTypeExpression right, String op, SourcePosition pos) {
     // if the left and the right part of the expression are numerics,

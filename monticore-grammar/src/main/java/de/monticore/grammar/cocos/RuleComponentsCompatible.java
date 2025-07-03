@@ -10,8 +10,8 @@ import de.se_rwth.commons.logging.Log;
 /**
  * checks for each prod if there exist RuleComponents which have the same usageName but do not have compatible types
  * not compatible if:
- * -> one NonTerminal and one Terminal
- * -> two different NonTerminal types
+ * - one NonTerminal and one Terminal
+ * - two different NonTerminal types
  */
 public class RuleComponentsCompatible implements GrammarASTProdCoCo {
 

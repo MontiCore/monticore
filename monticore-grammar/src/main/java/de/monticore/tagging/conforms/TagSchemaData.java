@@ -9,7 +9,7 @@ import de.monticore.tagging.tagschema._visitor.TagSchemaVisitor2;
 import java.util.*;
 
 /**
- * Stores data of TagTypeSymbols in a [NonTerminal => [TagTypeSymbols]] form
+ * Stores data of TagTypeSymbols in a [NonTerminal =&gt; [TagTypeSymbols]] form
  */
 public class TagSchemaData {
   protected Map<String, List<SimpleTagTypeSymbol>> simpleTagTypes = new HashMap<>();

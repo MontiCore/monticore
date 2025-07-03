@@ -33,7 +33,7 @@ import static de.monticore.types.check.SymTypeExpressionFactory.createTuple;
 /**
  * tries to normalize SymTypeExpressions,
  * including, but not limited to, unions and intersections
- * e.g., (A|A|B) -> A, if A extends B
+ * e.g., {@code (A|A|B) -> A, if A extends B}
  * Usage:
  * calculate(symType)
  * <p>
@@ -683,7 +683,7 @@ public class SymTypeNormalizeVisitor extends SymTypeDeepCloneVisitor {
 
   /**
    * splits up unions
-   * e.g., {(A|(B|C)),D} -> {A,B,C,D}
+   * e.g., {@code {(A|(B|C)),D} -> {A,B,C,D}}
    * used for normalization
    */
   protected Set<SymTypeExpression> splitUnions(Set<SymTypeExpression> types) {
@@ -702,7 +702,7 @@ public class SymTypeNormalizeVisitor extends SymTypeDeepCloneVisitor {
 
   /**
    * splits up intersections
-   * e.g., {(A&(B&C)),D} -> {A,B,C,D}
+   * e.g., {@code {(A&(B&C)),D} -> {A,B,C,D}}
    * used for normalization
    */
   protected Set<SymTypeExpression> splitIntersections(
@@ -723,7 +723,7 @@ public class SymTypeNormalizeVisitor extends SymTypeDeepCloneVisitor {
   /**
    * takes an intersection, which may contain unions
    * and creates a union which contains intersections
-   * A&B&(C|D) -> (A&B&C)|(A&B&D)
+   * {@code A&B&(C|D) -> (A&B&C)|(A&B&D)}
    * Note that this only calculates the given intersection,
    * not the intersection contained within the given intersection.
    * An additional characteristic to mention is that
@@ -781,7 +781,7 @@ public class SymTypeNormalizeVisitor extends SymTypeDeepCloneVisitor {
 
   /**
    * Split tuples by unions.
-   * (A|B,C&D) -> (A,C&D), (B, C&D)
+   * {@code (A|B,C&D) -> (A,C&D), (B, C&D)}
    * does not create deep copies.
    */
   protected List<SymTypeOfTuple> splitTupleByUnion(SymTypeOfTuple tuple) {
@@ -820,7 +820,7 @@ public class SymTypeNormalizeVisitor extends SymTypeDeepCloneVisitor {
 
   /**
    * Split tuples by intersections.
-   * (A|B,C&D) -> (A|B,C), (A|B, D)
+   * {@code (A|B,C&D) -> (A|B,C), (A|B, D)}
    * does not create deep copies.
    */
   protected List<SymTypeOfTuple> splitTupleByIntersection(SymTypeOfTuple tuple) {

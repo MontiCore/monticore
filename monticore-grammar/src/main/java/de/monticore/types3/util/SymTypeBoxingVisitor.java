@@ -17,27 +17,27 @@ import java.util.Optional;
 /**
  * Boxes SymTypeExpressions,
  * including, but not limited to, Java primitive boxing
- * e.g., int -> java.lang.Integer
- * e.g., List -> java.util.List
+ * e.g., {@code int -> java.lang.Integer}
+ * e.g., {@code List -> java.util.List}
  * Usage:
  * calculate(symType)
  */
 public class SymTypeBoxingVisitor extends SymTypeDeepCloneVisitor {
 
   /**
-   * Map for boxing primitive types (e.g. "int" -> "java.lang.Integer")
+   * Map for boxing primitive types (e.g. {@code "int" -> "java.lang.Integer"})
    * Results are fully qualified.
    */
   protected static final Map<String, String> primitiveBoxMap;
 
   /**
-   * Map for boxing object types (e.g. "String" -> "java.lang.String")
+   * Map for boxing object types (e.g. {@code "String" -> "java.lang.String"})
    * Results are fully qualified.
    */
   protected static final Map<String, String> objectBoxMap;
 
   /**
-   * Map for boxing generic types (e.g. "List" -> "java.util.List")
+   * Map for boxing generic types (e.g. {@code "List" -> "java.util.List"})
    * Results are fully qualified.
    */
   protected static final Map<String, String> genericBoxMap;

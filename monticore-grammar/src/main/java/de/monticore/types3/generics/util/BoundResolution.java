@@ -647,7 +647,7 @@ public class BoundResolution {
   /**
    * to be used after incorporation/reduction.
    * Does only include top-most inference variables,
-   * e.g., List<a1> <: a2, with a1,a2 being inference variables, returns a2.
+   * e.g., {@code List<a1> <: a2}, with a1,a2 being inference variables, returns a2.
    */
   protected List<SymTypeInferenceVariable> getInferenceVariablesOfBounds(List<Bound> bounds) {
     List<SymTypeInferenceVariable> inferenceVariables = new ArrayList<>();
@@ -752,7 +752,7 @@ public class BoundResolution {
   /**
    * fills the dependency matrix.
    * any inferenceVariable, which does not have a bound yet,
-   * has the bound added: TV <: #Top
+   * has the bound added: {@code TV <: #Top}
    */
   protected Map<SymTypeInferenceVariable, List<Bound>> completeVarBoundDependencies(
       Map<SymTypeInferenceVariable, List<Bound>> varBoundDependencies

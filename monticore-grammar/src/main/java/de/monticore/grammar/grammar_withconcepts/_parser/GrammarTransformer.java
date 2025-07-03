@@ -36,7 +36,7 @@ public class GrammarTransformer {
 
   /**
    * The shortcut NonTerminalSeparator is replaced by the detailed description.
-   * Example: List(Element || ',')* ==> (List:Element (',' List:Element)+)
+   * Example: {@code List(Element || ',')* ==> (List:Element (',' List:Element)+)}
    */
   public static void removeNonTerminalSeparators(ASTMCGrammar grammar) {
     Map<ASTNonTerminalSeparator, ASTAlt> map = new HashMap<ASTNonTerminalSeparator, ASTAlt>();
@@ -69,9 +69,7 @@ public class GrammarTransformer {
   /**
    * Append suffix "List" to the names of multi-valued att * Append suffix "List" to
    * the names of multi-valued attributes (NonTerminals and attributesinAst) if
-   * no usage names were set. Examples: Name ("." Name&)* ==> names:Name ("."
-   * names:Name&)* (State | Transition)* ==> (states:State |
-   * transitions:Transition)*
+   * no usage names were set. Examples: {@code Name ("." Name&)* ==> names:Name ("." names:Name&)* (State | Transition)* ==> (states:State | transitions:Transition)*}
    */
   public static void uncapitalizeMultivaluedAttributes(ASTMCGrammar grammar) {
     grammar.getASTRuleList().forEach(c -> transformAttributesInAST(c));
