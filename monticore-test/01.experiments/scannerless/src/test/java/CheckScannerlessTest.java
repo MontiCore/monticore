@@ -4,7 +4,6 @@ import de.monticore.runtime.junit.MCAssertions;
 import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.scannerless.ScannerlessMill;
 import de.monticore.scannerless._ast.*;
-import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -23,7 +22,9 @@ public class CheckScannerlessTest {
   // --------------------------------------------------------------------
   @Test
   public void testType1() throws IOException {
-    ASTType ast = ScannerlessMill.parser().parse_StringType( " Theo " ).get();
+    ASTType ast = ScannerlessMill.parser().parse_StringType( " Theo " )
+            .orElseGet(MCAssertions::failAndPrintFindings);
+    MCAssertions.assertNoFindings();
     assertEquals("Theo", ast.getName());
     MCAssertions.assertNoFindings();
   }
@@ -31,7 +32,9 @@ public class CheckScannerlessTest {
   // --------------------------------------------------------------------
   @Test
   public void testType2() throws IOException {
-    ASTType ast = ScannerlessMill.parser().parse_StringType( " List < Theo > " ).get();
+    ASTType ast = ScannerlessMill.parser().parse_StringType( " List < Theo > " )
+            .orElseGet(MCAssertions::failAndPrintFindings);
+    MCAssertions.assertNoFindings();
     assertEquals("List", ast.getName());
     ASTTypeArguments ta = ast.getTypeArguments();
     assertEquals("Theo", ta.getType(0).getName());
@@ -41,7 +44,9 @@ public class CheckScannerlessTest {
   // --------------------------------------------------------------------
   @Test
   public void testType3() throws IOException {
-    ASTType ast = ScannerlessMill.parser().parse_StringType( "List<Theo>" ).get();
+    ASTType ast = ScannerlessMill.parser().parse_StringType( "List<Theo>" )
+            .orElseGet(MCAssertions::failAndPrintFindings);
+    MCAssertions.assertNoFindings();
     assertEquals("List", ast.getName());
     ASTTypeArguments ta = ast.getTypeArguments();
     assertEquals("Theo", ta.getTypeList().get(0).getName());
@@ -51,7 +56,9 @@ public class CheckScannerlessTest {
   // --------------------------------------------------------------------
   @Test
   public void testType4() throws IOException {
-    ASTType ast = ScannerlessMill.parser().parse_StringType( "List<Set<Theo>>" ).get();
+    ASTType ast = ScannerlessMill.parser().parse_StringType( "List<Set<Theo>>" )
+            .orElseGet(MCAssertions::failAndPrintFindings);
+    MCAssertions.assertNoFindings();
     assertEquals("List", ast.getName());
     ASTTypeArguments ta = ast.getTypeArguments();
     assertEquals("Set", ta.getTypeList().get(0).getName());
@@ -64,7 +71,8 @@ public class CheckScannerlessTest {
   @Test
   public void testType5() throws IOException {
     ASTExpression ast0 = ScannerlessMill.parser().parse_StringExpression(
-    	"List<Set<Theo>>" ).get();
+    	"List<Set<Theo>>" ).orElseGet(MCAssertions::failAndPrintFindings);
+    MCAssertions.assertNoFindings();
     assertEquals(ASTTypeAsExpression.class, ast0.getClass());
 
     ASTType ast1 = ((ASTTypeAsExpression)ast0).getType() ;
@@ -76,7 +84,8 @@ public class CheckScannerlessTest {
   @Test
   public void testType6() throws IOException {
     ASTExpression ast0 = ScannerlessMill.parser().parse_StringExpression(
-    	"List<Set<Theo>>>>wert" ).get();
+    	"List<Set<Theo>>>>wert" ).orElseGet(MCAssertions::failAndPrintFindings);
+    MCAssertions.assertNoFindings();
     assertEquals(ASTShiftExpression.class, ast0.getClass());
 
     ASTExpression ast1 = ((ASTShiftExpression)ast0).getLeftExpression() ;
@@ -94,7 +103,8 @@ public class CheckScannerlessTest {
     // This will be parsed as Type >> wert, because the
     // type has a higher precedence
     ASTExpression ast0 = ScannerlessMill.parser().parse_StringExpression(
-    	"List<Set<Theo> > >>wert" ).get();
+    	"List<Set<Theo> > >>wert" ).orElseGet(MCAssertions::failAndPrintFindings);
+    MCAssertions.assertNoFindings();
     assertEquals(ASTShiftExpression.class, ast0.getClass());
 
     ASTExpression ast1 = ((ASTShiftExpression)ast0).getLeftExpression() ;
@@ -125,7 +135,9 @@ public class CheckScannerlessTest {
   // --------------------------------------------------------------------
   @Test
   public void testExpr1() throws IOException {
-    ASTExpression ast = ScannerlessMill.parser().parse_StringExpression( " theo + theo " ).get();
+    ASTExpression ast = ScannerlessMill.parser().parse_StringExpression( " theo + theo " )
+            .orElseGet(MCAssertions::failAndPrintFindings);
+    MCAssertions.assertNoFindings();
     assertEquals(ASTAddExpression.class, ast.getClass());
     MCAssertions.assertNoFindings();
   }
@@ -134,7 +146,8 @@ public class CheckScannerlessTest {
   @Test
   public void testExpr2() throws IOException {
     ASTExpression ast = ScannerlessMill.parser().parse_StringExpression(
-    	" (theo < ox) > theo " ).get();
+    	" (theo < ox) > theo " ).orElseGet(MCAssertions::failAndPrintFindings);
+    MCAssertions.assertNoFindings();
     assertEquals(ASTComparisonExpression.class, ast.getClass());
     MCAssertions.assertNoFindings();
   }
@@ -143,7 +156,8 @@ public class CheckScannerlessTest {
   @Test
   public void testExpr3() throws IOException {
     ASTExpression ast = ScannerlessMill.parser().parse_StringExpression(
-    	" theo >> theo " ).get();
+    	" theo >> theo " ).orElseGet(MCAssertions::failAndPrintFindings);
+    MCAssertions.assertNoFindings();
     assertEquals(ASTShiftExpression.class, ast.getClass());
     MCAssertions.assertNoFindings();
   }
@@ -152,7 +166,8 @@ public class CheckScannerlessTest {
   @Test
   public void testExpr4() throws IOException {
     ASTExpression ast = ScannerlessMill.parser().parse_StringExpression(
-    	"theo > theo >> theo >>> theo >= theo" ).get();
+    	"theo > theo >> theo >>> theo >= theo" ).orElseGet(MCAssertions::failAndPrintFindings);
+    MCAssertions.assertNoFindings();
     assertEquals(ASTComparisonExpression.class, ast.getClass());
     MCAssertions.assertNoFindings();
   }
@@ -183,7 +198,9 @@ public class CheckScannerlessTest {
   // --------------------------------------------------------------------
   @Test
   public void testA() throws IOException {
-    ASTA ast = ScannerlessMill.parser().parse_StringA( "  Theo " ).get();
+    ASTA ast = ScannerlessMill.parser().parse_StringA( "  Theo " ).
+            orElseGet(MCAssertions::failAndPrintFindings);
+    MCAssertions.assertNoFindings();
     assertEquals("Theo", ast.getName());
     MCAssertions.assertNoFindings();
   }
@@ -191,7 +208,9 @@ public class CheckScannerlessTest {
   // --------------------------------------------------------------------
   @Test
   public void testB() throws IOException {
-    ASTB ast = ScannerlessMill.parser().parse_StringB( "Otto \n Karo  " ).get();
+    ASTB ast = ScannerlessMill.parser().parse_StringB( "Otto \n Karo  " ).
+            orElseGet(MCAssertions::failAndPrintFindings);
+    MCAssertions.assertNoFindings();
     assertEquals("Otto", ast.getNameList().get(0));
     assertEquals("Karo", ast.getNameList().get(1));
     MCAssertions.assertNoFindings();
@@ -200,7 +219,9 @@ public class CheckScannerlessTest {
   // --------------------------------------------------------------------
   @Test
   public void testC() throws IOException {
-    ASTC ast = ScannerlessMill.parser().parse_StringC( "    Otto,Karo" ).get();
+    ASTC ast = ScannerlessMill.parser().parse_StringC( "    Otto,Karo" ).
+            orElseGet(MCAssertions::failAndPrintFindings);
+    MCAssertions.assertNoFindings();
     assertEquals("Otto", ast.getNameList().get(0));
     assertEquals("Karo", ast.getNameList().get(1));
     MCAssertions.assertNoFindings();

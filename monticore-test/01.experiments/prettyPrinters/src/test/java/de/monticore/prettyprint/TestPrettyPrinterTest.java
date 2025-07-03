@@ -761,4 +761,15 @@ public class TestPrettyPrinterTest extends PPTestClass {
     KeywordAddingTestPrettyPrintersMill.init();
     testPP("newprodNamedTerminal", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringProdNamedTerminal);
   }
+
+  @Test
+  public void testBrackets() throws IOException {
+    // The AND(A, OR(B, C)) expression may be printed as OR( AND(A, B), C)
+    // if no extra brackets/parentheses are added
+    testPP("entry ;", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringNestedOptFromSysML);
+    testPP("entry A", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringNestedOptFromSysML);
+    testPP("entry B;", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringNestedOptFromSysML);
+    testPP("entry B { }", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringNestedOptFromSysML);
+    testPP("entry B { C }", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringNestedOptFromSysML);
+  }
 }

@@ -112,6 +112,7 @@ import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCo
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsPhasedSTC;
 import de.monticore.grammar.grammar_withconcepts._symboltable.IGrammar_WithConceptsGlobalScope;
 import de.monticore.io.FileReaderWriter;
+import de.monticore.io.FileReaderWriterFix;
 import de.monticore.io.paths.MCPath;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
@@ -1469,7 +1470,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
      */
     @Override
     protected void doRun(String script, Configuration configuration) {
-      FileReaderWriter.init();
+      //FileReaderWriter.init(); remove fix once 7.8.0 released
+      FileReaderWriterFix.init();
 
       GroovyInterpreter.Builder builder = GroovyInterpreter.newInterpreter()
               .withScriptBaseClass(MontiCoreScript.class)

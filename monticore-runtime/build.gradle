@@ -1,6 +1,22 @@
 /* (c) https://github.com/MontiCore/monticore */
 plugins {
   id "jacoco"
+  // this project provides test fixtures. Test fixtures are commonly used to setup the code under test,
+  // or provide utilities aimed at facilitating the tests of a component
+  id 'java-test-fixtures'
+}
+
+sourceSets {
+  test {
+    resources {
+      srcDirs += "src/test/java"
+      includes = ["**/*.ftl"]
+    }
+  }
+  tests.java{
+    srcDirs += "$projectDir/src/test/java"
+    includes = ["**/Assert.java"]
+  }
 }
 
 configurations {
@@ -16,24 +32,15 @@ dependencies {
   implementation 'de.se_rwth.commons:se-commons-utilities:' + se_commons_version
   implementation "org.freemarker:freemarker:$freemarker_version"
   implementation group: 'org.apache.commons', name: 'commons-text', version: '1.10.0'
-  testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
+
+  testFixturesImplementation  "org.junit.jupiter:junit-jupiter-api:$junit_version"
+
   testImplementation "org.junit.jupiter:junit-jupiter-params:$junit_version"
   testImplementation "org.junit.vintage:junit-vintage-engine:$junit_version"
   testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
 }
 
-sourceSets {
-  test {
-    resources {
-      srcDirs += "src/test/java"
-      includes = ["**/*.ftl"]
-    }
-  }
-  tests.java{
-    srcDirs += "$projectDir/src/test/java"
-    includes = ["**/Assert.java"]
-  }
-}
+
 
 description = 'MontiCore: Runtime'
 

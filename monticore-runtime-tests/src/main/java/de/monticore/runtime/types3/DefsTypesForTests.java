@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.runtime.types3;
+package de.monticore.types3.util;
 
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
@@ -47,7 +47,9 @@ import static de.monticore.types.check.SymTypeExpressionFactory.createTypeVariab
  * offers one Symbol-Infrastructure
  * including Scopes etc. that is used to provide relevant Symbols.
  * This infrastructure can be used for testing
+ * @deprecated Use the test fixture instead
  */
+@Deprecated(forRemoval = true)
 public class DefsTypesForTests {
 
   /**
@@ -174,32 +176,32 @@ public class DefsTypesForTests {
     IBasicSymbolsScope scope = BasicSymbolsMill.scope();
     scope.setShadowing(true);
     return BasicSymbolsMill.typeSymbolBuilder()
-        .setSpannedScope(scope)
-        .setName(name)
-        .setAccessModifier(AccessModifier.ALL_INCLUSION)
-        .build();
+            .setSpannedScope(scope)
+            .setName(name)
+            .setAccessModifier(AccessModifier.ALL_INCLUSION)
+            .build();
   }
 
   public static TypeSymbol type(String name,
-      List<SymTypeExpression> superTypeList) {
+                                List<SymTypeExpression> superTypeList) {
     TypeSymbol ts = type(name);
     ts.setSuperTypesList(superTypeList);
     return ts;
   }
 
   public static TypeSymbol type(String name,
-      List<SymTypeExpression> superTypeList,
-      List<TypeVarSymbol> typeVariableList) {
+                                List<SymTypeExpression> superTypeList,
+                                List<TypeVarSymbol> typeVariableList) {
     TypeSymbol ts = type(name, superTypeList);
     typeVariableList.forEach(tv -> inScope(ts.getSpannedScope(), tv));
     return ts;
   }
 
   public static TypeSymbol type(String name,
-      List<SymTypeExpression> superTypeList,
-      List<TypeVarSymbol> typeVariableList,
-      List<FunctionSymbol> functionList,
-      List<VariableSymbol> variableList) {
+                                List<SymTypeExpression> superTypeList,
+                                List<TypeVarSymbol> typeVariableList,
+                                List<FunctionSymbol> functionList,
+                                List<VariableSymbol> variableList) {
     TypeSymbol ts = type(name, superTypeList, typeVariableList);
     functionList.forEach(fs -> inScope(ts.getSpannedScope(), fs));
     variableList.forEach(vs -> inScope(ts.getSpannedScope(), vs));
@@ -212,33 +214,33 @@ public class DefsTypesForTests {
     IOOSymbolsScope scope = OOSymbolsMill.scope();
     scope.setShadowing(true);
     return OOSymbolsMill.oOTypeSymbolBuilder()
-        .setSpannedScope(scope)
-        .setName(name)
-        .setIsPublic(true)
-        .setIsStatic(true)
-        .build();
+            .setSpannedScope(scope)
+            .setName(name)
+            .setIsPublic(true)
+            .setIsStatic(true)
+            .build();
   }
 
   public static OOTypeSymbol oOtype(String name,
-      List<SymTypeExpression> superTypeList) {
+                                    List<SymTypeExpression> superTypeList) {
     OOTypeSymbol ts = oOtype(name);
     ts.setSuperTypesList(superTypeList);
     return ts;
   }
 
   public static OOTypeSymbol oOtype(String name,
-      List<SymTypeExpression> superTypeList,
-      List<TypeVarSymbol> typeVariableList) {
+                                    List<SymTypeExpression> superTypeList,
+                                    List<TypeVarSymbol> typeVariableList) {
     OOTypeSymbol ts = oOtype(name, superTypeList);
     typeVariableList.forEach(tv -> inScope(ts.getSpannedScope(), tv));
     return ts;
   }
 
   public static OOTypeSymbol oOtype(String name,
-      List<SymTypeExpression> superTypeList,
-      List<TypeVarSymbol> typeVariableList,
-      List<MethodSymbol> methodList,
-      List<FieldSymbol> fieldList) {
+                                    List<SymTypeExpression> superTypeList,
+                                    List<TypeVarSymbol> typeVariableList,
+                                    List<MethodSymbol> methodList,
+                                    List<FieldSymbol> fieldList) {
     OOTypeSymbol ts = oOtype(name, superTypeList, typeVariableList);
     methodList.forEach(fs -> inScope(ts.getSpannedScope(), fs));
     fieldList.forEach(vs -> inScope(ts.getSpannedScope(), vs));
@@ -252,102 +254,102 @@ public class DefsTypesForTests {
   }
 
   public static TypeVarSymbol typeVariable(String name,
-      List<SymTypeExpression> superTypeList) {
+                                           List<SymTypeExpression> superTypeList) {
     return BasicSymbolsMill.typeVarSymbolBuilder()
-        .setName(name)
-        .setSuperTypesList(superTypeList)
-        .setSpannedScope(BasicSymbolsMill.scope())
-        .build();
+            .setName(name)
+            .setSuperTypesList(superTypeList)
+            .setSpannedScope(BasicSymbolsMill.scope())
+            .build();
   }
 
   // create FunctionSymbols (some defaults apply)
 
   public static FunctionSymbol function(String name, SymTypeExpression returnType,
-      SymTypeExpression... argumentTypes) {
+                                        SymTypeExpression... argumentTypes) {
     return function(name, returnType, List.of(argumentTypes));
   }
 
   public static FunctionSymbol function(String name, SymTypeExpression returnType,
-      List<SymTypeExpression> argumentTypes) {
+                                        List<SymTypeExpression> argumentTypes) {
     return function(name, returnType, argumentTypes, false);
   }
 
   public static FunctionSymbol function(String name, SymTypeExpression returnType,
-      List<SymTypeExpression> argumentTypes, boolean elliptic) {
+                                        List<SymTypeExpression> argumentTypes, boolean elliptic) {
     IBasicSymbolsScope scope = BasicSymbolsMill.scope();
     scope.setOrdered(true);
     scope.setShadowing(true);
     for (int i = 0; i < argumentTypes.size(); i++) {
       scope.add(
-          BasicSymbolsMill.variableSymbolBuilder()
-              .setType(argumentTypes.get(i))
-              .setName("arg" + i)
-              .build()
+              BasicSymbolsMill.variableSymbolBuilder()
+                      .setType(argumentTypes.get(i))
+                      .setName("arg" + i)
+                      .build()
       );
     }
     return BasicSymbolsMill.functionSymbolBuilder()
-        .setSpannedScope(scope)
-        .setName(name)
-        .setAccessModifier(AccessModifier.ALL_INCLUSION)
-        .setType(returnType)
-        .setIsElliptic(elliptic)
-        .build();
+            .setSpannedScope(scope)
+            .setName(name)
+            .setAccessModifier(AccessModifier.ALL_INCLUSION)
+            .setType(returnType)
+            .setIsElliptic(elliptic)
+            .build();
   }
 
   // create MethodSymbols (some defaults apply)
 
   public static MethodSymbol method(String name, SymTypeExpression returnType,
-      SymTypeExpression... argumentTypes) {
+                                    SymTypeExpression... argumentTypes) {
     return method(name, returnType, List.of(argumentTypes));
   }
 
   public static MethodSymbol method(String name, SymTypeExpression returnType,
-      List<SymTypeExpression> argumentTypes) {
+                                    List<SymTypeExpression> argumentTypes) {
     return method(name, returnType, argumentTypes, false);
   }
 
   public static MethodSymbol method(String name, SymTypeExpression returnType,
-      List<SymTypeExpression> argumentTypes, boolean elliptic) {
+                                    List<SymTypeExpression> argumentTypes, boolean elliptic) {
     IOOSymbolsScope scope = OOSymbolsMill.scope();
     scope.setOrdered(true);
     scope.setShadowing(true);
     for (int i = 0; i < argumentTypes.size(); i++) {
       scope.add(
-          OOSymbolsMill.fieldSymbolBuilder()
-              .setType(argumentTypes.get(i))
-              .setName("arg" + i)
-              .build()
+              OOSymbolsMill.fieldSymbolBuilder()
+                      .setType(argumentTypes.get(i))
+                      .setName("arg" + i)
+                      .build()
       );
     }
     return OOSymbolsMill.methodSymbolBuilder()
-        .setSpannedScope(scope)
-        .setName(name)
-        .setType(returnType)
-        .setIsElliptic(elliptic)
-        .setIsPublic(true)
-        .setIsStatic(false)
-        .build();
+            .setSpannedScope(scope)
+            .setName(name)
+            .setType(returnType)
+            .setIsElliptic(elliptic)
+            .setIsPublic(true)
+            .setIsStatic(false)
+            .build();
   }
 
   // create VariableSymbols (some defaults apply)
 
   public static VariableSymbol variable(String name, SymTypeExpression type) {
     return BasicSymbolsMill.variableSymbolBuilder()
-        .setName(name)
-        .setAccessModifier(AccessModifier.ALL_INCLUSION)
-        .setType(type)
-        .build();
+            .setName(name)
+            .setAccessModifier(AccessModifier.ALL_INCLUSION)
+            .setType(type)
+            .build();
   }
 
   // create FieldSymbols (some defaults apply)
 
   public static FieldSymbol field(String name, SymTypeExpression type) {
     return OOSymbolsMill.fieldSymbolBuilder()
-        .setName(name)
-        .setType(type)
-        .setIsPublic(true)
-        .setIsStatic(false)
-        .build();
+            .setName(name)
+            .setType(type)
+            .setIsPublic(true)
+            .setIsStatic(false)
+            .build();
   }
 
   /*********************************************************************/
@@ -398,21 +400,21 @@ public class DefsTypesForTests {
       BasicSymbolsMill.initializePrimitives();
     }
     _intSymType = createPrimitive(
-        typeSymbolsScope.resolveType(BasicSymbolsMill.INT).get());
+            typeSymbolsScope.resolveType(BasicSymbolsMill.INT).get());
     _charSymType = createPrimitive(
-        typeSymbolsScope.resolveType(BasicSymbolsMill.CHAR).get());
+            typeSymbolsScope.resolveType(BasicSymbolsMill.CHAR).get());
     _booleanSymType = createPrimitive(
-        typeSymbolsScope.resolveType(BasicSymbolsMill.BOOLEAN).get());
+            typeSymbolsScope.resolveType(BasicSymbolsMill.BOOLEAN).get());
     _doubleSymType = createPrimitive(
-        typeSymbolsScope.resolveType(BasicSymbolsMill.DOUBLE).get());
+            typeSymbolsScope.resolveType(BasicSymbolsMill.DOUBLE).get());
     _floatSymType = createPrimitive(
-        typeSymbolsScope.resolveType(BasicSymbolsMill.FLOAT).get());
+            typeSymbolsScope.resolveType(BasicSymbolsMill.FLOAT).get());
     _longSymType = createPrimitive(
-        typeSymbolsScope.resolveType(BasicSymbolsMill.LONG).get());
+            typeSymbolsScope.resolveType(BasicSymbolsMill.LONG).get());
     _byteSymType = createPrimitive(
-        typeSymbolsScope.resolveType(BasicSymbolsMill.BYTE).get());
+            typeSymbolsScope.resolveType(BasicSymbolsMill.BYTE).get());
     _shortSymType = createPrimitive(
-        typeSymbolsScope.resolveType(BasicSymbolsMill.SHORT).get());
+            typeSymbolsScope.resolveType(BasicSymbolsMill.SHORT).get());
   }
 
   /*********************************************************************/
@@ -441,21 +443,21 @@ public class DefsTypesForTests {
     IBasicSymbolsScope langScope = createJavaLangScope();
     // create boxed primitives
     _IntegerSymType =
-        createTypeObject(inScope(langScope, type("Integer")));
+            createTypeObject(inScope(langScope, type("Integer")));
     _CharacterSymType =
-        createTypeObject(inScope(langScope, type("Character")));
+            createTypeObject(inScope(langScope, type("Character")));
     _BooleanSymType =
-        createTypeObject(inScope(langScope, type("Boolean")));
+            createTypeObject(inScope(langScope, type("Boolean")));
     _DoubleSymType =
-        createTypeObject(inScope(langScope, type("Double")));
+            createTypeObject(inScope(langScope, type("Double")));
     _FloatSymType =
-        createTypeObject(inScope(langScope, type("Float")));
+            createTypeObject(inScope(langScope, type("Float")));
     _LongSymType =
-        createTypeObject(inScope(langScope, type("Long")));
+            createTypeObject(inScope(langScope, type("Long")));
     _ByteSymType =
-        createTypeObject(inScope(langScope, type("Byte")));
+            createTypeObject(inScope(langScope, type("Byte")));
     _ShortSymType =
-        createTypeObject(inScope(langScope, type("Short")));
+            createTypeObject(inScope(langScope, type("Short")));
   }
 
   /*********************************************************************/
@@ -472,7 +474,7 @@ public class DefsTypesForTests {
       BasicSymbolsMill.initializeString();
     }
     _unboxedString = createTypeObject(
-        typeSymbolsScope.resolveType(BasicSymbolsMill.STRING).get());
+            typeSymbolsScope.resolveType(BasicSymbolsMill.STRING).get());
   }
 
   /*********************************************************************/
@@ -515,8 +517,8 @@ public class DefsTypesForTests {
     IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();
     TypeVarSymbol optVar = typeVariable("T");
     _unboxedOptionalSymType = createGenerics(
-        inScope(gs, type("Optional", List.of(), List.of(optVar))),
-        createTypeVariable(optVar)
+            inScope(gs, type("Optional", List.of(), List.of(optVar))),
+            createTypeVariable(optVar)
     );
   }
 
@@ -524,8 +526,8 @@ public class DefsTypesForTests {
     IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();
     TypeVarSymbol setVar = typeVariable("T");
     _unboxedSetSymType = createGenerics(
-        inScope(gs, type("Set", List.of(), List.of(setVar))),
-        createTypeVariable(setVar)
+            inScope(gs, type("Set", List.of(), List.of(setVar))),
+            createTypeVariable(setVar)
     );
   }
 
@@ -533,8 +535,8 @@ public class DefsTypesForTests {
     IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();
     TypeVarSymbol listVar = typeVariable("T");
     _unboxedListSymType = createGenerics(
-        inScope(gs, type("List", List.of(), List.of(listVar))),
-        createTypeVariable(listVar)
+            inScope(gs, type("List", List.of(), List.of(listVar))),
+            createTypeVariable(listVar)
     );
   }
 
@@ -543,8 +545,8 @@ public class DefsTypesForTests {
     TypeVarSymbol mapVar1 = typeVariable("T");
     TypeVarSymbol mapVar2 = typeVariable("U");
     _unboxedMapSymType = createGenerics(
-        inScope(gs, type("Map", List.of(), List.of(mapVar1, mapVar2))),
-        createTypeVariable(mapVar1), createTypeVariable(mapVar2)
+            inScope(gs, type("Map", List.of(), List.of(mapVar1, mapVar2))),
+            createTypeVariable(mapVar1), createTypeVariable(mapVar2)
     );
   }
 
@@ -568,24 +570,24 @@ public class DefsTypesForTests {
     IBasicSymbolsScope utilScope = inScope(javaScope, scope("util"));
     TypeVarSymbol optVar = typeVariable("OptT");
     _boxedOptionalSymType = createGenerics(
-        inScope(utilScope, type("Optional", List.of(), List.of(optVar))),
-        createTypeVariable(optVar)
+            inScope(utilScope, type("Optional", List.of(), List.of(optVar))),
+            createTypeVariable(optVar)
     );
     TypeVarSymbol setVar = typeVariable("SetT");
     _boxedSetSymType = createGenerics(
-        inScope(utilScope, type("Set", List.of(), List.of(setVar))),
-        createTypeVariable(setVar)
+            inScope(utilScope, type("Set", List.of(), List.of(setVar))),
+            createTypeVariable(setVar)
     );
     TypeVarSymbol listVar = typeVariable("ListT");
     _boxedListSymType = createGenerics(
-        inScope(utilScope, type("List", List.of(), List.of(listVar))),
-        createTypeVariable(listVar)
+            inScope(utilScope, type("List", List.of(), List.of(listVar))),
+            createTypeVariable(listVar)
     );
     TypeVarSymbol mapVar1 = typeVariable("KeyT");
     TypeVarSymbol mapVar2 = typeVariable("ValueT");
     _boxedMapSymType = createGenerics(
-        inScope(utilScope, type("Map", List.of(), List.of(mapVar1, mapVar2))),
-        createTypeVariable(mapVar1), createTypeVariable(mapVar2)
+            inScope(utilScope, type("Map", List.of(), List.of(mapVar1, mapVar2))),
+            createTypeVariable(mapVar1), createTypeVariable(mapVar2)
     );
   }
 
@@ -632,65 +634,65 @@ public class DefsTypesForTests {
     }
     else {
       Log.trace("Stream could not be resolved,"
-              + " skipping its usual initialization",
-          "DefsTypesForTests"
+                      + " skipping its usual initialization",
+              "DefsTypesForTests"
       );
       TypeVarSymbol streamVar = typeVariable("StreamT");
       _StreamSymType = createGenerics(
-          inScope(gs, type("Stream", List.of(), List.of(streamVar))),
-          createTypeVariable(streamVar)
+              inScope(gs, type("Stream", List.of(), List.of(streamVar))),
+              createTypeVariable(streamVar)
       );
       TypeVarSymbol eventStreamVar = typeVariable("EventStreamT");
       SymTypeExpression eventStreamSuperType = createGenerics(
-          _StreamSymType.getTypeInfo(),
-          List.of(createTypeVariable(eventStreamVar))
+              _StreamSymType.getTypeInfo(),
+              List.of(createTypeVariable(eventStreamVar))
       );
       _EventStreamSymType = createGenerics(
-          inScope(gs, type(
-              "EventStream",
-              List.of(eventStreamSuperType),
-              List.of(eventStreamVar)
-          )),
-          createTypeVariable(eventStreamVar)
+              inScope(gs, type(
+                      "EventStream",
+                      List.of(eventStreamSuperType),
+                      List.of(eventStreamVar)
+              )),
+              createTypeVariable(eventStreamVar)
       );
       TypeVarSymbol syncStreamVar = typeVariable("SyncStreamT");
       SymTypeExpression syncStreamSuperType = createGenerics(
-          _StreamSymType.getTypeInfo(),
-          List.of(createTypeVariable(syncStreamVar))
+              _StreamSymType.getTypeInfo(),
+              List.of(createTypeVariable(syncStreamVar))
       );
       _SyncStreamSymType = createGenerics(
-          inScope(gs, type(
-              "SyncStream",
-              List.of(syncStreamSuperType),
-              List.of(syncStreamVar)
-          )),
-          createTypeVariable(syncStreamVar)
+              inScope(gs, type(
+                      "SyncStream",
+                      List.of(syncStreamSuperType),
+                      List.of(syncStreamVar)
+              )),
+              createTypeVariable(syncStreamVar)
       );
       TypeVarSymbol toptStreamVar = typeVariable("ToptStreamT");
       SymTypeExpression toptStreamSuperType = createGenerics(
-          _StreamSymType.getTypeInfo(),
-          List.of(createTypeVariable(toptStreamVar))
+              _StreamSymType.getTypeInfo(),
+              List.of(createTypeVariable(toptStreamVar))
       );
       _ToptStreamSymType = createGenerics(
-          inScope(gs, type(
-              "ToptStream",
-              List.of(toptStreamSuperType),
-              List.of(toptStreamVar)
-          )),
-          createTypeVariable(toptStreamVar)
+              inScope(gs, type(
+                      "ToptStream",
+                      List.of(toptStreamSuperType),
+                      List.of(toptStreamVar)
+              )),
+              createTypeVariable(toptStreamVar)
       );
       TypeVarSymbol untimedStreamVar = typeVariable("UntimedStreamT");
       SymTypeExpression untimedStreamSuperType = createGenerics(
-          _StreamSymType.getTypeInfo(),
-          List.of(createTypeVariable(untimedStreamVar))
+              _StreamSymType.getTypeInfo(),
+              List.of(createTypeVariable(untimedStreamVar))
       );
       _UntimedStreamSymType = createGenerics(
-          inScope(gs, type(
-              "UntimedStream",
-              List.of(untimedStreamSuperType),
-              List.of(untimedStreamVar)
-          )),
-          createTypeVariable(untimedStreamVar)
+              inScope(gs, type(
+                      "UntimedStream",
+                      List.of(untimedStreamSuperType),
+                      List.of(untimedStreamVar)
+              )),
+              createTypeVariable(untimedStreamVar)
       );
     }
   }
@@ -722,8 +724,8 @@ public class DefsTypesForTests {
     // SimpleCrt<CrtT extends SimpleCrt<CrtT>>
     TypeVarSymbol crtVar = typeVariable("CrtT");
     _simpleCrtSymType = createGenerics(
-        inScope(gs, type("SimpleCrt", List.of(), List.of(crtVar))),
-        createTypeVariable(crtVar)
+            inScope(gs, type("SimpleCrt", List.of(), List.of(crtVar))),
+            createTypeVariable(crtVar)
     );
     crtVar.addSuperTypes(_simpleCrtSymType);
 
@@ -737,10 +739,10 @@ public class DefsTypesForTests {
     nodeSymbol.getSpannedScope().add(nodeNodeVar.getTypeVarSymbol());
     nodeSymbol.getSpannedScope().add(nodeEdgeVar.getTypeVarSymbol());
     nodeNodeVar.getTypeVarSymbol().addSuperTypes(createGenerics(
-        nodeSymbol, List.of(nodeNodeVar, nodeEdgeVar)
+            nodeSymbol, List.of(nodeNodeVar, nodeEdgeVar)
     ));
     nodeEdgeVar.getTypeVarSymbol().addSuperTypes(createGenerics(
-        edgeSymbol, List.of(nodeNodeVar, nodeEdgeVar)
+            edgeSymbol, List.of(nodeNodeVar, nodeEdgeVar)
     ));
     _graphNodeSymType = createGenerics(nodeSymbol, nodeNodeVar, nodeEdgeVar);
     //class Edge <N extends Node<N,E>, E extends Edge<N,E>>
@@ -749,10 +751,10 @@ public class DefsTypesForTests {
     edgeSymbol.getSpannedScope().add(edgeNodeVar.getTypeVarSymbol());
     edgeSymbol.getSpannedScope().add(edgeEdgeVar.getTypeVarSymbol());
     edgeNodeVar.getTypeVarSymbol().addSuperTypes(createGenerics(
-        nodeSymbol, List.of(edgeNodeVar, edgeEdgeVar)
+            nodeSymbol, List.of(edgeNodeVar, edgeEdgeVar)
     ));
     edgeEdgeVar.getTypeVarSymbol().addSuperTypes(createGenerics(
-        edgeSymbol, List.of(edgeNodeVar, edgeEdgeVar)
+            edgeSymbol, List.of(edgeNodeVar, edgeEdgeVar)
     ));
     _graphEdgeSymType = createGenerics(edgeSymbol, edgeNodeVar, edgeEdgeVar);
     //class Graph<N extends Node<N,E>, E extends Edge<N,E>>
@@ -761,10 +763,10 @@ public class DefsTypesForTests {
     graphSymbol.getSpannedScope().add(graphNodeVar.getTypeVarSymbol());
     graphSymbol.getSpannedScope().add(graphEdgeVar.getTypeVarSymbol());
     graphNodeVar.getTypeVarSymbol().addSuperTypes(createGenerics(
-        nodeSymbol, List.of(graphNodeVar, graphEdgeVar)
+            nodeSymbol, List.of(graphNodeVar, graphEdgeVar)
     ));
     graphEdgeVar.getTypeVarSymbol().addSuperTypes(createGenerics(
-        edgeSymbol, List.of(graphNodeVar, graphEdgeVar)
+            edgeSymbol, List.of(graphNodeVar, graphEdgeVar)
     ));
     _graphSymType = createGenerics(graphSymbol, graphNodeVar, graphEdgeVar);
   }
@@ -804,19 +806,19 @@ public class DefsTypesForTests {
     _personSymType = createTypeObject(inScope(gs, type("Person")));
     _teachableSymType = createTypeObject(inScope(gs, type("Teachable")));
     _studentSymType = createTypeObject(inScope(gs,
-        type("Student", List.of(_personSymType, _teachableSymType)))
+            type("Student", List.of(_personSymType, _teachableSymType)))
     );
     _csStudentSymType = createTypeObject(inScope(gs,
-        type("CsStudent", List.of(_studentSymType)))
+            type("CsStudent", List.of(_studentSymType)))
     );
     _firstSemesterCsStudentSymType = createTypeObject(inScope(gs,
-        type("FirstSemesterCsStudent", List.of(_csStudentSymType)))
+            type("FirstSemesterCsStudent", List.of(_csStudentSymType)))
     );
     _childSymType = createTypeObject(inScope(gs,
-        type("Child", List.of(_personSymType, _teachableSymType)))
+            type("Child", List.of(_personSymType, _teachableSymType)))
     );
     _teacherSymType = createTypeObject(inScope(gs,
-        type("Teacher", List.of(_personSymType)))
+            type("Teacher", List.of(_personSymType)))
     );
     _carSymType = createTypeObject(inScope(gs, type("Car")));
     _schoolSymType = createTypeObject(inScope(gs, type("School")));
@@ -840,13 +842,13 @@ public class DefsTypesForTests {
   public static void set_specialObjectTypes() {
     IBasicSymbolsScope langScope = createJavaLangScope();
     _ObjectSymType =
-        createTypeObject(inScope(langScope, type("Object")));
+            createTypeObject(inScope(langScope, type("Object")));
     _ThrowableSymType =
-        createTypeObject(inScope(langScope, type("Throwable")));
+            createTypeObject(inScope(langScope, type("Throwable")));
     _VoidSymType =
-        createTypeObject(inScope(langScope, type("Void")));
+            createTypeObject(inScope(langScope, type("Void")));
     _AutoClosableSymType =
-        createTypeObject(inScope(langScope, type("AutoClosable")));
+            createTypeObject(inScope(langScope, type("AutoClosable")));
   }
 
   /*********************************************************************/
@@ -862,26 +864,26 @@ public class DefsTypesForTests {
 
   public static void set_generics() {
     IBasicSymbolsScope utilScope =
-        _boxedListSymType.getTypeInfo().getEnclosingScope();
+            _boxedListSymType.getTypeInfo().getEnclosingScope();
     TypeVarSymbol listVar = typeVariable("LinkedListT");
     _linkedListSymType = createGenerics(
-        inScope(utilScope, type("LinkedList",
-            List.of(createGenerics(_boxedListSymType.getTypeInfo(),
-                createTypeVariable(listVar))),
-            List.of(listVar)
-        ))
+            inScope(utilScope, type("LinkedList",
+                    List.of(createGenerics(_boxedListSymType.getTypeInfo(),
+                            createTypeVariable(listVar))),
+                    List.of(listVar)
+            ))
     );
     TypeVarSymbol mapKVar = typeVariable("HashMapK");
     TypeVarSymbol mapVVar = typeVariable("HashMapV");
     _hashMapSymType = createGenerics(
-        inScope(utilScope, type("HashMap",
-            List.of(createGenerics(
-                _boxedMapSymType.getTypeInfo(),
-                createTypeVariable(mapKVar),
-                createTypeVariable(mapVVar))
-            ),
-            List.of(mapKVar, mapVVar))
-        )
+            inScope(utilScope, type("HashMap",
+                    List.of(createGenerics(
+                            _boxedMapSymType.getTypeInfo(),
+                            createTypeVariable(mapKVar),
+                            createTypeVariable(mapVVar))
+                    ),
+                    List.of(mapKVar, mapVVar))
+            )
     );
   }
 
@@ -900,17 +902,17 @@ public class DefsTypesForTests {
     IBasicSymbolsScope langScope = createJavaLangScope();
     TypeVarSymbol classVar = typeVariable("T");
     _ClassSymType = createGenerics(
-        inScope(langScope, type("Class",
-            Collections.emptyList(),
-            List.of(classVar)
-        ))
+            inScope(langScope, type("Class",
+                    Collections.emptyList(),
+                    List.of(classVar)
+            ))
     );
     TypeVarSymbol IterableVar = typeVariable("T");
     _IterableSymType = createGenerics(
-        inScope(langScope, type("Iterable",
-            Collections.emptyList(),
-            List.of(classVar)
-        ))
+            inScope(langScope, type("Iterable",
+                    Collections.emptyList(),
+                    List.of(classVar)
+            ))
     );
   }
 

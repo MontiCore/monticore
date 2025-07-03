@@ -41,10 +41,12 @@ public class CheckScannerlessTest {
   @Test
   public void testType2() throws IOException {
     // A positive test
-    ASTType ast = ScannerlessMill.parser().parse_StringType( " List < Theo > " ).get();
+    ASTType ast = ScannerlessMill.parser().parse_StringType( " List < Theo > " )
+            .orElseGet(MCAssertions::failAndPrintFindings);
     assertEquals("List", ast.getName());
     ASTTypeArguments ta = ast.getTypeArguments();
     assertEquals("Theo", ta.getType(0).getName());
+    // MCAssertions.assertNoFindings(); is implicitly called due to @TestWithMCLanguage
   }
 
   @Test
@@ -54,6 +56,9 @@ public class CheckScannerlessTest {
     Optional<ASTExpression> ast0 = ScannerlessMill.parser().parse_StringExpression(
             "List<Set<Theo>>> >wert" );
     assertFalse(ast0.isPresent());
+    // We could also check for assertTrue(MCConcreteParser#hasErrors());,
+    // but this is already done by the optional-empty check
+    
     // assert a findings is present & remove it from the log
     MCAssertions.assertHasFinding(finding -> true); 
   }
@@ -84,9 +89,10 @@ The notable methods are:
 When the generated pretty printer is customized via the TOP-mechanism,
  the `PrettyPrinterTester` class provides functionality for quickly writing a bunch of tests for the pretty printer.
 
-The test functionality of MontiCore is provided by the `de.monticore:monticore-runtime-tests:$mc_version` dependency.
+The test functionality of MontiCore is provided by the [text fixture](https://docs.gradle.org/current/userguide/java_testing.html#sec:java_test_fixtures) 
+`testFixture("de.monticore:monticore-grammar:$mc_version")` dependency.
 For smaller examples of parsing, pretty printing, etc., models can be written within the test class and
-external model files are needed.
+external model files are not needed.
 
 ## Testing Context Conditions
 
@@ -112,8 +118,8 @@ public class TransitionSourceExistsTest {
  @Test
  public void testOnValidModel() throws IOException {
   ASTAutomaton ast = AutomataMill.parser().parse_String(
-      "automaton Simple { state A;  state B;  A -x> A;  B -y> A; }"
-  ).get(); // Parses an automaton model from the given String and stores the AST (2)!
+      "automaton Simple { state A;  state B;  A -x> A;  B -y> A; }" // Parses an automaton model from the given String (2)!
+  ).orElseGet(MCAssertions::failAndPrintFindings);                  // and stores the AST - in case the parsing fails, the findings are printed (3)!
 
   // set up the symbol table
   IAutomataArtifactScope modelTopScope = createSymbolTable(ast); 
@@ -130,7 +136,8 @@ public class TransitionSourceExistsTest {
 ```
 
 1. Sets up the log, initializes the AutomataMill, and tests that no findings are present after each test
-2. Parses an automaton model from the given String and stores the AST
+2. Parses an automaton model from the given String
+3. and stores the AST - in case the parsing fails, the findings are printed
 
 The shown test case demonstrates this by testing the context condition _TransitionSourceExists_.
 First of all, the model is specified in ll. 5f.
@@ -161,7 +168,7 @@ Checking that all expected findings occurred (cf. ll. 18) ensures that the conte
   ASTAutomaton ast = AutomataMill.parser().parse_String(
       "automaton Simple { " +
       "  state A;  state B; A - x > A;  Blubb - y > A; }"
-  ).get();
+  ).orElseGet(MCAssertions::failAndPrintFindings);
    
   // setup the symbol table
   IAutomataArtifactScope modelTopScope = createSymbolTable(ast);

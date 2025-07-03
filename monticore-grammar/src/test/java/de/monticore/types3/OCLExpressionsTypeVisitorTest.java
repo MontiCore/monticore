@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types3;
 
-import de.monticore.runtime.types3.DefsVariablesForTests;
+import de.monticore.types3.util.DefsVariablesForTests;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
@@ -14,10 +14,10 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 
 import static de.monticore.runtime.junit.MCAssertions.assertNoFindings;
-import static de.monticore.runtime.types3.DefsTypesForTests._intSymType;
-import static de.monticore.runtime.types3.DefsTypesForTests.function;
-import static de.monticore.runtime.types3.DefsTypesForTests.inScope;
-import static de.monticore.runtime.types3.DefsTypesForTests.variable;
+import static de.monticore.types3.util.DefsTypesForTests._intSymType;
+import static de.monticore.types3.util.DefsTypesForTests.function;
+import static de.monticore.types3.util.DefsTypesForTests.inScope;
+import static de.monticore.types3.util.DefsTypesForTests.variable;
 
 public class OCLExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
 

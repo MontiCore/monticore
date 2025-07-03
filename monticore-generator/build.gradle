@@ -11,7 +11,7 @@ buildscript {
 plugins {
     id "java-library"
     id "io.github.themrmilchmann.ecj" version "0.2.0" // Eclipse compiler as it's much faster than javac
-    id "com.github.johnrengelman.shadow" version "6.1.0"
+    id "com.github.johnrengelman.shadow" version "$shadow_plugin_version"
     id 'groovy-gradle-plugin'
     id 'maven-publish'
     id "jacoco"
@@ -28,7 +28,7 @@ repositories {
         mavenLocal()
     }
     maven {
-        url repo
+        url = repo
     }
     mavenCentral()
 }
@@ -69,11 +69,11 @@ dependencies {
   testImplementation gradleTestKit()
 }
 
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile).configureEach {
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
     options.encoding = "UTF-8"
-    options.deprecation false
+    options.deprecation = false
     options.warnings = false
 }
 java {
@@ -84,16 +84,16 @@ java {
 }
 
 
-tasks.withType(Test) {
+tasks.withType(Test).configureEach {
     useJUnitPlatform()
 
     testLogging {
         // controls whether test output is shown
         showStandardStreams = !("false").equals(getProperty('showTestOutput'))
-        showExceptions true
-        showCauses true
-        showStackTraces true
-        exceptionFormat TestExceptionFormat.FULL
+        showExceptions = true
+        showCauses = true
+        showStackTraces = true
+        exceptionFormat = TestExceptionFormat.FULL
         info {
             events TestLogEvent.FAILED,
                     TestLogEvent.PASSED,
@@ -116,12 +116,12 @@ tasks.withType(Test) {
     }
 }
 
-shadowJar { // all in one jar
+tasks.named("shadowJar") { // all in one jar
     manifest {
         attributes "Main-Class": "de.monticore.cli.MontiCoreTool"
     }
     archiveClassifier = "mc-tool"
-    zip64 true
+    zip64 = true
 }
 
 tasks.register("buildInfo", de.monticore.gradle.common.MCBuildInfoTask) {
@@ -154,8 +154,8 @@ publishing {
     repositories {
         maven {
             name = "SE-Nexus"
-            credentials.username mavenUser
-            credentials.password mavenPassword
+            credentials.username = mavenUser
+            credentials.password = mavenPassword
             def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-releases/"
             def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-snapshots/"
             url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl

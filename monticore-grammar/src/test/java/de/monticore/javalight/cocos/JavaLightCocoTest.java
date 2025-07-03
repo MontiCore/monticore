@@ -7,7 +7,7 @@ import de.monticore.javalight._ast.ASTJavaLightNode;
 import de.monticore.javalight._ast.ASTJavaMethod;
 import de.monticore.javalight._cocos.JavaLightCoCoChecker;
 import de.monticore.javalight.types3.JavaLightTypeCheck3;
-import de.monticore.runtime.types3.DefsTypesForTests;
+import de.monticore.types3.util.DefsTypesForTests;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
 import de.monticore.testjavalight.TestJavaLightMill;

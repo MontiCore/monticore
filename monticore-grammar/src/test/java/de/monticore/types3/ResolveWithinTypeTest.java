@@ -30,13 +30,13 @@ import java.io.IOException;
 import java.util.List;
 
 import static de.monticore.runtime.junit.MCAssertions.assertNoFindings;
-import static de.monticore.runtime.types3.DefsTypesForTests._booleanSymType;
-import static de.monticore.runtime.types3.DefsTypesForTests.field;
-import static de.monticore.runtime.types3.DefsTypesForTests.inScope;
-import static de.monticore.runtime.types3.DefsTypesForTests.method;
-import static de.monticore.runtime.types3.DefsTypesForTests.oOtype;
-import static de.monticore.runtime.types3.DefsTypesForTests.typeVariable;
-import static de.monticore.runtime.types3.DefsTypesForTests.variable;
+import static de.monticore.types3.util.DefsTypesForTests._booleanSymType;
+import static de.monticore.types3.util.DefsTypesForTests.field;
+import static de.monticore.types3.util.DefsTypesForTests.inScope;
+import static de.monticore.types3.util.DefsTypesForTests.method;
+import static de.monticore.types3.util.DefsTypesForTests.oOtype;
+import static de.monticore.types3.util.DefsTypesForTests.typeVariable;
+import static de.monticore.types3.util.DefsTypesForTests.variable;
 
 /**
  * tests whether we can resolve correctly within a type.

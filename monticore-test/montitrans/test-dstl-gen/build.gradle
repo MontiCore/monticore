@@ -4,13 +4,14 @@ description = 'MontiTrans Test: DSTLGen'
 def grammarsDir = "$projectDir/src/main/grammars"
 def _outputDir = "$buildDir/generated-sources"
 
-task generateSocialNetwork (type: MCTask) {
+tasks.register('generateSocialNetwork', MCTask) {
   grammar = file "$grammarsDir/mc/testcases/social/SocialNetwork.mc4"
   outputDir = file _outputDir
   def uptoDate = incCheck("mc/testcases/social/SocialNetwork.mc4")
   outputs.upToDateWhen { uptoDate }
 }
-task generateSocialNetworkTR (type: MCTask, dependsOn: generateSocialNetwork) {
+tasks.register('generateSocialNetworkTR', MCTask) {
+  dependsOn generateSocialNetwork
   grammar = file "$_outputDir/mc/testcases/social/tr/SocialNetworkTR.mc4"
   outputDir = file _outputDir
   modelPath += file grammarsDir
@@ -19,13 +20,14 @@ task generateSocialNetworkTR (type: MCTask, dependsOn: generateSocialNetwork) {
   outputs.upToDateWhen { uptoDate }
   isDSTL = true
 }
-task generateStatechart (type: MCTask) {
+tasks.register('generateStatechart', MCTask) {
   grammar = file "$grammarsDir/mc/testcases/statechart/Statechart.mc4"
   outputDir = file _outputDir
   def uptoDate = incCheck("mc/testcases/statechart/Statechart.mc4")
   outputs.upToDateWhen { uptoDate }
 }
-task generateStatechartTR (type: MCTask, dependsOn: generateStatechart) {
+tasks.register('generateStatechartTR', MCTask) {
+  dependsOn generateStatechart
   grammar = file "$_outputDir/mc/testcases/statechart/tr/StatechartTR.mc4"
   outputDir = file _outputDir
   modelPath += file grammarsDir
@@ -35,13 +37,14 @@ task generateStatechartTR (type: MCTask, dependsOn: generateStatechart) {
   isDSTL = true
 }
 
-task generateAutomaton (type: MCTask) {
+tasks.register('generateAutomaton', MCTask) {
   grammar = file "$grammarsDir/mc/testcases/automaton/Automaton.mc4"
   outputDir = file _outputDir
   def uptoDate = incCheck("mc/testcases/automaton/Automaton.mc4")
   outputs.upToDateWhen { uptoDate }
 }
-task generateAutomatonTR (type: MCTask, dependsOn: generateAutomaton) {
+tasks.register('generateAutomatonTR', MCTask) {
+  dependsOn generateAutomaton
   grammar = file "$_outputDir/mc/testcases/automaton/tr/AutomatonTR.mc4"
   outputDir = file _outputDir
   modelPath += file grammarsDir
@@ -51,13 +54,14 @@ task generateAutomatonTR (type: MCTask, dependsOn: generateAutomaton) {
   isDSTL = true
 }
 
-task generatePropertiesAutomatonComponent (type: MCTask) {
+tasks.register('generatePropertiesAutomatonComponent', MCTask) {
   grammar = file "$grammarsDir/mc/testcases/DSLWithOtherPropertiesThanAutomatonComponent.mc4"
   outputDir = file _outputDir
   def uptoDate = incCheck("mc/testcases/DSLWithOtherPropertiesThanAutomatonComponent.mc4")
   outputs.upToDateWhen { uptoDate }
 }
-task generatePropertiesAutomatonComponentTR (type: MCTask, dependsOn: generatePropertiesAutomatonComponent) {
+tasks.register('generatePropertiesAutomatonComponentTR', MCTask) {
+  dependsOn generatePropertiesAutomatonComponent
   grammar = file "$_outputDir/mc/testcases/tr/DSLWithOtherPropertiesThanAutomatonComponentTR.mc4"
   outputDir = file _outputDir
   modelPath += file grammarsDir
@@ -67,13 +71,14 @@ task generatePropertiesAutomatonComponentTR (type: MCTask, dependsOn: generatePr
   isDSTL = true
 }
 
-task generatePropertiesAutomaton (type: MCTask) {
+tasks.register('generatePropertiesAutomaton', MCTask) {
   grammar = file "$grammarsDir/mc/testcases/DSLWithOtherPropertiesThanAutomaton.mc4"
   outputDir = file _outputDir
   def uptoDate = incCheck("mc/testcases/DSLWithOtherPropertiesThanAutomaton.mc4")
   outputs.upToDateWhen { uptoDate }
 }
-task generatePropertiesAutomatonTR (type: MCTask, dependsOn: [generatePropertiesAutomaton, generatePropertiesAutomatonComponent, generateAutomaton]) {
+tasks.register('generatePropertiesAutomatonTR', MCTask) {
+  dependsOn(generatePropertiesAutomaton, generatePropertiesAutomatonComponent, generateAutomaton)
   grammar = file "$_outputDir/mc/testcases/tr/DSLWithOtherPropertiesThanAutomatonTR.mc4"
   outputDir = file _outputDir
   modelPath += file grammarsDir
@@ -83,13 +88,14 @@ task generatePropertiesAutomatonTR (type: MCTask, dependsOn: [generateProperties
   isDSTL = true
 }
 
-task generateGenericDSL (type: MCTask) {
+tasks.register('generateGenericDSL', MCTask) {
   grammar = file "$grammarsDir/mc/testcases/GenericDSL.mc4"
   outputDir = file _outputDir
   def uptoDate = incCheck("mc/testcases/GenericDSL.mc4")
   outputs.upToDateWhen { uptoDate }
 }
-task generateGenericDSLTR (type: MCTask, dependsOn: generateGenericDSL) {
+tasks.register('generateGenericDSLTR', MCTask) {
+  dependsOn generateGenericDSL
   grammar = file "$_outputDir/mc/testcases/tr/GenericDSLTR.mc4"
   outputDir = file _outputDir
   modelPath += file grammarsDir
@@ -98,13 +104,14 @@ task generateGenericDSLTR (type: MCTask, dependsOn: generateGenericDSL) {
   outputs.upToDateWhen { uptoDate }
   isDSTL = true
 }
-task generateExpressionDSL(type: MCTask) {
+tasks.register('generateExpressionDSL', MCTask) {
   grammar = file "$grammarsDir/mc/testcases/ExpressionDSL.mc4"
   outputDir = file _outputDir
   def uptoDate = incCheck("mc/testcases/ExpressionDSL.mc4")
   outputs.upToDateWhen { uptoDate }
 }
-task generateExpressionDSLTR(type: MCTask, dependsOn: generateExpressionDSL) {
+tasks.register('generateExpressionDSLTR', MCTask) {
+  dependsOn generateExpressionDSL
   grammar = file "$_outputDir/mc/testcases/tr/ExpressionDSLTR.mc4"
   outputDir = file _outputDir
   modelPath += file grammarsDir
@@ -114,13 +121,14 @@ task generateExpressionDSLTR(type: MCTask, dependsOn: generateExpressionDSL) {
   isDSTL = true
 }
 
-task generateEmptyComponentGrammar (type: MCTask) {
+tasks.register('generateEmptyComponentGrammar', MCTask) {
   grammar = file "$grammarsDir/mc/testcases/EmptyComponentGrammar.mc4"
   outputDir = file _outputDir
   def uptoDate = incCheck("mc/testcases/EmptyComponentGrammar.mc4")
   outputs.upToDateWhen { uptoDate }
 }
-task generateEmptyComponentGrammarTR (type: MCTask, dependsOn: generateEmptyComponentGrammar) {
+tasks.register('generateEmptyComponentGrammarTR', MCTask) {
+  dependsOn generateEmptyComponentGrammar
   grammar = file "$_outputDir/mc/testcases/tr/EmptyComponentGrammarTR.mc4"
   outputDir = file _outputDir
   modelPath += file grammarsDir
@@ -128,25 +136,26 @@ task generateEmptyComponentGrammarTR (type: MCTask, dependsOn: generateEmptyComp
   def uptoDate = incCheck("mc/testcases/tr/EmptyComponentGrammarTR.mc4")
   outputs.upToDateWhen { uptoDate }
   isDSTL = true
-    dependsOn generateEmptyComponentGrammar
+  dependsOn generateEmptyComponentGrammar
 }
 
-task generateUsingEmptyComponentGrammar (type: MCTask) {
-    grammar = file "$grammarsDir/mc/testcases/UsingEmptyComponentGrammar.mc4"
-    outputDir = file _outputDir
-    def uptoDate = incCheck("mc/testcases/UsingEmptyComponentGrammar.mc4")
-    outputs.upToDateWhen { uptoDate }
-    dependsOn generateEmptyComponentGrammar
+tasks.register('generateUsingEmptyComponentGrammar', MCTask) {
+  grammar = file "$grammarsDir/mc/testcases/UsingEmptyComponentGrammar.mc4"
+  outputDir = file _outputDir
+  def uptoDate = incCheck("mc/testcases/UsingEmptyComponentGrammar.mc4")
+  outputs.upToDateWhen { uptoDate }
+  dependsOn generateEmptyComponentGrammar
 }
-task generateUsingEmptyComponentGrammarTR (type: MCTask, dependsOn: generateEmptyComponentGrammar) {
-    grammar = file "$_outputDir/mc/testcases/tr/UsingEmptyComponentGrammarTR.mc4"
-    outputDir = file _outputDir
-    modelPath += file grammarsDir
-    modelPath += file _outputDir
-    def uptoDate = incCheck("mc/testcases/tr/UsingEmptyComponentGrammarTR.mc4")
-    outputs.upToDateWhen { uptoDate }
-    isDSTL = true
-    dependsOn generateEmptyComponentGrammarTR
+tasks.register('generateUsingEmptyComponentGrammarTR', MCTask) {
+  dependsOn generateEmptyComponentGrammar
+  grammar = file "$_outputDir/mc/testcases/tr/UsingEmptyComponentGrammarTR.mc4"
+  outputDir = file _outputDir
+  modelPath += file grammarsDir
+  modelPath += file _outputDir
+  def uptoDate = incCheck("mc/testcases/tr/UsingEmptyComponentGrammarTR.mc4")
+  outputs.upToDateWhen { uptoDate }
+  isDSTL = true
+  dependsOn generateEmptyComponentGrammarTR
 }
 
 // The following explicit task dependencies are required in order to upgrade to Gradle 8+

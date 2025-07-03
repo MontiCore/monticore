@@ -24,7 +24,7 @@ subprojects {
 
 }
 
-configure(subprojects.findAll {it.name != 'forParser' })  {
+configure(subprojects.findAll {it.name != 'forParser' && it.name != 'runtimeOnly' })  {
   dependencies {
     implementation "de.se_rwth.commons:se-commons-logging:$se_commons_version"
     implementation "de.se_rwth.commons:se-commons-utilities:$se_commons_version"
@@ -36,7 +36,7 @@ configure(subprojects.findAll {it.name != 'forParser' })  {
         requireCapability("de.monticore:monticore-grammar-grammars")
       }
     }
-    testImplementation project(":monticore-runtime-tests")
+    testImplementation testFixtures(project(":monticore-runtime"))
   }
 }
 

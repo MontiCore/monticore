@@ -1,22 +1,36 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 plugins {
-  // provides a convenient way to have multiple test sets
-  id 'org.unbroken-dome.test-sets' version '4.0.0'
+  // provides a convenient way to have multiple test suites
+  id 'jvm-test-suite'
 }
 
 description = 'Experiments: automata'
 
 // The grammars of this subproject are built by the generateMCGrammars MCGenTask
 
-// create an additional test set called productTest
-testSets{
-  productTest { extendsFrom unitTest }
+// create an additional test suite called productTest
+testing {
+  suites {
+    test {
+      useJUnitJupiter()
+    }
+
+    productTest(JvmTestSuite) {
+      dependencies {
+        implementation project()
+        implementation testFixtures(project(":monticore-runtime"))
+      }
+      sources {
+        java.srcDirs += ["$buildDir/statepattern" , "$projectDir/src/product/java"]
+      }
+    }
+  }
 }
 
-sourceSets {
-  // add output dir to the sources of productTest
-  productTest.java.srcDirs += ["$buildDir/statepattern" , "$projectDir/src/product/java"]
+// let check depend on productTest such that it is included in the build
+tasks.named('check') {
+  dependsOn(testing.suites.productTest)
 }
 
 dependencies {
@@ -24,7 +38,9 @@ dependencies {
 }
 
 // let productTest depend on test as test produces code for productTest
-compileProductTestJava.dependsOn(test)
+tasks.named("compileProductTestJava") {
+  dependsOn(test)
+}
 
 test.configure {
   // The test task builds the productTest inputs
@@ -33,7 +49,5 @@ test.configure {
   outputs.upToDateWhen {false}
 }
 
-// let check depend on productTest such that it is included in the build
-check.dependsOn(productTest)
 
 
