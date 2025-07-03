@@ -46,6 +46,7 @@ grammar languages are comfortable to use.
 To show a little of MontiCore's capabilities, the following (incomplete)
 grammar might help:
 
+```monticore
     grammar MyStatemachine extends Automata,                  // MontiCore grammar 
                                    MCBasicTypes, SetExpressions, MCCommonLiterals {     
       start Automaton;
@@ -64,6 +65,7 @@ grammar might help:
 
       symbol VarDeclaration = MCType? Name "=" Expression ;
     }
+```
 
 The grammar language has a variety of mechanisms to define
 new nonterminals using constants `"!"`,
