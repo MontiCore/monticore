@@ -14,19 +14,18 @@
 # move all directories that contain *.md files to the docs folder
 # because mkdocs can only find *.md files there
 mkdir docs/docs
-mv docs/*.md docs/docs
-mv docs/further_docs docs/docs/further_docs
-mv monticore-grammar docs/monticore-grammar
-mv monticore-runtime docs/monticore-runtime
-mv 00.org docs/00.org
-mv *.md docs/
-mv *.png docs/
-mv img/ docs/
-echo "[INFO] Moved *.md files to 'docs' folder"
+cp docs/*.md docs/docs
+cp docs/further_docs docs/docs/further_docs
+cp monticore-grammar docs/monticore-grammar
+cp monticore-runtime docs/monticore-runtime
+cp 00.org docs/00.org
+cp *.png docs/
+cp img/ docs/
+echo "[INFO] Copied files to 'docs' folder"
 #
 # remove all occurences of '[[_TOC_]]' in markdown files
 # because mkdocs already renders its own toc
-for file in $(find ./docs -type f -name "*.md")
+for file in $(find ./docs/docs -type f -name "*.md")
 do 
   sed -i 's/\[\[_TOC_\]\]//' $file
   perl -pi -e 's/\[([^\[\]\(\)]*)\]\([^\[\]\(\)]*git.rwth-aachen.de[^\[\]\(\)]*?\)/$1/g' $file

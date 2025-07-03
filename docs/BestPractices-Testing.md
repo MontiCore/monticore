@@ -94,6 +94,13 @@ The test functionality of MontiCore is provided by the [text fixture](https://do
 For smaller examples of parsing, pretty printing, etc., models can be written within the test class and
 external model files are not needed.
 
+## Testing the Symbol Table of a Language
+
+!!! note "This Best Practice is still under development"
+      
+      The testing of symbol table creation, the resolving of symbols, possible adapters, and DeSers is WIP
+
+
 ## Testing Context Conditions
 
 As a best practice for testing context conditions, one should test both, valid and invalid models.
@@ -189,9 +196,19 @@ or complete error message as well.
 However, it is often useful to reduce the assertion to checking the error code (`0xADD03`), 
 because error messages are relatively often modified.
 
-The handbook describes testing of language features in [Section 10.3 and 21.5](https://www.monticore.de/handbook.pdf).
+### Uniqueness of Error Codes
 
-    
+!!! note "This Best Practice is still under development"
+    Check the `check-error-codes` GitHub action for now
+   
+
+## Testing the Command Line Interface of a Language
+
+!!! note "This Best Practice is still under development"
+
+
+The handbook describes testing of language features in [Sections 10.3 and 21.5](https://www.monticore.de/handbook.pdf).
+
 ## Further Information
 
 * [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
