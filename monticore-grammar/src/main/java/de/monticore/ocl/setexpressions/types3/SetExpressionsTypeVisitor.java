@@ -516,7 +516,7 @@ public class SetExpressionsTypeVisitor extends AbstractTypeVisitor
 
   /**
    * Get all expressions within the set enumeration.
-   * E.g.: "{1, 2..4}" -> "1","2","4"
+   * E.g.: {@code "{1, 2..4}" -> "1","2","4"}
    * Returns empty on error (will have been logged)
    */
   protected Optional<List<ASTExpression>> getContainedExpressions(ASTSetEnumeration expr) {
@@ -548,7 +548,7 @@ public class SetExpressionsTypeVisitor extends AbstractTypeVisitor
   /**
    * Get all expressions' types within the set enumeration.
    * They need to be stored in Type4Ast before calling this.
-   * E.g.: "{1, 2..4}" -> int, int, int
+   * E.g.: {@code "{1, 2..4}" -> int, int, int}
    * May contain Obscure (error will have been logged).
    */
   protected List<SymTypeExpression> getContainedExpressionTypes(ASTSetEnumeration expr) {

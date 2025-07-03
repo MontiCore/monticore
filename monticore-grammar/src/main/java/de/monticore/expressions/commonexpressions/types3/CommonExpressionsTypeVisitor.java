@@ -1170,7 +1170,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
    * this analyses the expression and returns a qualified name if possible,
    * which _may_ be of a type / value
    * Note: Java (Spec v.20 chapter 19: Syntax) does not allow type arguments,
-   * e.g., class C<T>{T t;} C<Float>.t = 3.2;
+   * e.g., {@code class C<T>{T t;} C<Float>.t = 3.2;}
    */
   protected Optional<String> getExprAsQName(ASTExpression expr) {
     if (expr instanceof ASTNameExpression) {

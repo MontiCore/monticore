@@ -51,4 +51,10 @@ java {
   withJavadocJar()
 }
 
-jar.dependsOn testsJar
+tasks.named("jar") {
+  dependsOn testsJar
+}
+
+tasks.named("build") {
+  dependsOn javadoc, testFixturesJavadoc
+}

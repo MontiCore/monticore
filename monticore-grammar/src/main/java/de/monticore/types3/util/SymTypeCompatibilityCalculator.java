@@ -1251,19 +1251,19 @@ public class SymTypeCompatibilityCalculator {
    * this helper function (currently) is only to check subtyping of generics.
    * Tuples could be extended in this regard (currently not needed).
    * <p>
-   * Fundamentally, T1 "contains" T2 ("T2 <= T1")
+   * Fundamentally, T1 "contains" T2 ({@code "T2 <= T1"})
    * if the set of types denoted by T1 is (provably) a superSet
    * of the types denoted by T2.
    * This translates to the reflexive and transitive closure of (from spec):
    * <ul>
-   * <li> ? extends T <= ? extends S if T <: S
-   * <li> ? extends T <= ?
-   * <li> ? super T <= ? super S if S <: T
-   * <li> ? super T <= ?
-   * <li> ? super T <= ? extends Object
-   * <li> T <= T
-   * <li> T <= ? extends T
-   * <li> T <= ? super T
+   * <li> {@code ? extends T <= ? extends S if T <: S}
+   * <li> {@code ? extends T <= ?}
+   * <li> {@code ? super T <= ? super S if S <: T}
+   * <li> {@code ? super T <= ?}
+   * <li> {@code ? super T <= ? extends Object}
+   * <li> {@code T <= T}
+   * <li> {@code T <= ? extends T}
+   * <li> {@code T <= ? super T}
    * </ul>
    */
   protected List<Bound> constrainContainsPreNormalized(
@@ -1344,7 +1344,7 @@ public class SymTypeCompatibilityCalculator {
   }
 
   /**
-   * Reduces a constraint <a = b> to the constraints <a <: b>, <b <: a>.
+   * Reduces a constraint {@code <a = b>} to the constraints {@code <a <: b>, <b <: a>}.
    * This is not necessarily ideal wrt. resulting messages,
    * and should be replaced in the future if required.
    * It will most likely result in incorrect values,
