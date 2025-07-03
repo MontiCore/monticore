@@ -48,8 +48,10 @@ else
     cp docs/README.md docs_wd/README.md
     echo "[INFO] Copied site design"
     # Copy the javadoc directories
+    mkdir -p docs_wd/monticore-runtime
     cp -r monticore-runtime/target/docs/javadoc docs_wd/monticore-runtime/javadoc
     cp -r monticore-runtime/target/docs/testFixturesJavadoc docs_wd/monticore-runtime/testFixturesJavadoc
+    mkdir -p docs_wd/monticore-grammar
     cp -r monticore-grammar/target/docs/javadoc docs_wd/monticore-grammar/javadoc
     cp -r monticore-grammar/target/docs/testFixturesJavadoc docs_wd/monticore-grammar/testFixturesJavadoc
     echo "[INFO] Copied JavaDocs"
@@ -62,7 +64,6 @@ for SOURCE_DIR in "00.org" "docs" "monticore-grammar/src" "monticore-runtime/src
      mkdir -p "$(dirname "$target_file")"
      # use snippets to include the original files content
      if [ ! -f "$target_file" ]; then
-       echo $target_file
        echo "--8<-- \"$filepath\"" > "$target_file"
      fi
   done
