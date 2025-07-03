@@ -13,7 +13,8 @@
 #
 # remove all occurrences of '[[_TOC_]]' in markdown files
 # because mkdocs already renders its own toc
-if [[ " $* " == *" inplace "* ]]; then
+case " $* " in
+  *" inplace "*)
   for file in $(find ./docs/docs -type f -name "*.md")
   do
     sed -i 's/\[\[_TOC_\]\]//' $file
@@ -21,28 +22,31 @@ if [[ " $* " == *" inplace "* ]]; then
   done
   echo "[INFO] Removed all occurrences of '[[_TOC_]]' in *.md files"
   echo "[INFO] Removed all links to https://git.rwth-aachen.de in *.md files"
-fi
+    ;;
+esac
 # move all directories that contain *.md files to the docs folder
 # because mkdocs can only find *.md files there
 rm -r docs_wd || true
 
-if [[ " $* " == *" symlink "* ]]; then
-  # use symlinks to track updates
-  mkdir docs_wd
-  ln -s ../docs/overrides docs_wd/
-  ln -s ../docs/stylesheets docs_wd/
-  ln -s ../docs/scripts docs_wd/
-  ln -s ../docs/img docs_wd/
-  ln -s ../docs/README.md docs_wd/
-  # Link to the javadoc directories
-  mkdir -p docs_wd/monticore-runtime
-  ln -s ../../monticore-runtime/target/docs/javadoc docs_wd/monticore-runtime/
-  ln -s ../../monticore-runtime/target/docs/testFixturesJavadoc docs_wd/monticore-runtime/
-  mkdir -p docs_wd/monticore-grammar
-  ln -s ../../monticore-grammar/target/docs/javadoc docs_wd/monticore-grammar/
-  ln -s ../../monticore-grammar/target/docs/testFixturesJavadoc docs_wd/monticore-grammar/
-  echo "[INFO] Using symlinks for live editing"
-else
+case " $* " in
+  *" symlink "*)
+    # use symlinks to track updates
+    mkdir docs_wd
+    ln -s ../docs/overrides docs_wd/
+    ln -s ../docs/stylesheets docs_wd/
+    ln -s ../docs/scripts docs_wd/
+    ln -s ../docs/img docs_wd/
+    ln -s ../docs/README.md docs_wd/
+    # Link to the javadoc directories
+    mkdir -p docs_wd/monticore-runtime
+    ln -s ../../monticore-runtime/target/docs/javadoc docs_wd/monticore-runtime/
+    ln -s ../../monticore-runtime/target/docs/testFixturesJavadoc docs_wd/monticore-runtime/
+    mkdir -p docs_wd/monticore-grammar
+    ln -s ../../monticore-grammar/target/docs/javadoc docs_wd/monticore-grammar/
+    ln -s ../../monticore-grammar/target/docs/testFixturesJavadoc docs_wd/monticore-grammar/
+    echo "[INFO] Using symlinks for live editing"
+    ;;
+  *)
     cp -r docs docs_wd
     rm docs_wd/*.md
     cp docs/README.md docs_wd/README.md
@@ -55,7 +59,8 @@ else
     cp -r monticore-grammar/target/docs/javadoc docs_wd/monticore-grammar/javadoc
     cp -r monticore-grammar/target/docs/testFixturesJavadoc docs_wd/monticore-grammar/testFixturesJavadoc
     echo "[INFO] Copied JavaDocs"
-fi
+    ;;
+esac
 
 for SOURCE_DIR in "00.org" "docs" "monticore-grammar/src" "monticore-runtime/src"; do
   # We link to java & mc4 files in our md files - which is why we have to redirect them too
