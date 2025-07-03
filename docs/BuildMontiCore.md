@@ -66,7 +66,17 @@ lasting tasks.
   * cleaning integration tests:
     * using gradle `gradle clean` within the corresponding subproject (see above)
 
-  
+## Build the website
+
+The website is built using mkdocs.
+
+* Install mkdocs: `pip install mkdocs mkdocs-material`
+* Build the website's files: `/docs/scripts/preprocessing.sh symlink`
+* Serve locally: `mkdocs serve`
+* (optional) use Gradle to build the javadocs
+
+(A GitHub workflow deploys the website similarly.)
+
 ## Further Information
 
 * [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
