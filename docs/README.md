@@ -46,7 +46,7 @@ grammar languages are comfortable to use.
 To show a little of MontiCore's capabilities, the following (incomplete)
 grammar might help:
 
-```monticore
+```monticore title="MyStatemachine.mc4"
 grammar MyStatemachine extends Automata,                  // MontiCore grammar 
                                MCBasicTypes, SetExpressions, MCCommonLiterals {     
   start Automaton;
@@ -91,10 +91,12 @@ frontend and a larger part of the backend of
 a statemachine processor.
 We now can write statemachines like:
 
-    statemachine PingPong {                                         // MyStatemachine
-      state Ping, Pong;
-      Ping : (speed > 14km/h && !missedBall) -> Pong
-    }
+```statemachine title="PingPong.sm"
+statemachine PingPong {                                         // MyStatemachine
+  state Ping, Pong;
+  Ping : (speed > 14km/h && !missedBall) -> Pong
+}
+```
 
 MontiCore provides versions of expressions that use SI
 Units like `240km/h` or `14.2 m/s^2`, but also Java
@@ -180,16 +182,16 @@ For details see [Licenses](00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md).
 ## Further Information
 
 * see also [**MontiCore handbook**](https://www.monticore.de/handbook.pdf)
-* [MontiCore Reference Languages](https://monticore.github.io/monticore/docs/DevelopedLanguages/) - Languages Built Using MontiCore
-* [Build MontiCore](https://monticore.github.io/monticore/docs/BuildMontiCore/) - How to Build MontiCore
-* [Getting Started](https://monticore.github.io/monticore/docs/GettingStarted/) - How to start using MontiCore
+* [MontiCore Reference Languages](docs/DevelopedLanguages.md) - Languages Built Using MontiCore
+* [Build MontiCore](docs/BuildMontiCore.md) - How to Build MontiCore
+* [Getting Started](docs/GettingStarted.md) - How to start using MontiCore
 * [Changelog](00.org/Explanations/CHANGELOG.md) - Release Notes
-* [JavaDocs](JavaDocs.md) - JavaDocs
+* [JavaDocs](docs/JavaDocs.md) - JavaDocs
 * [FAQ](00.org/Explanations/FAQ.md) - FAQ
 * [Licenses](00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md) - MontiCore 3-Level License
 * [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
-* [**List of languages**](https://monticore.github.io/monticore/docs/Languages/)
-* [**MontiCore Core Grammar Library**](https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
-* [Best Practices](https://monticore.github.io/monticore/docs/BestPractices/)
+* [**List of languages**](docs/Languages.md)
+* [**MontiCore Core Grammar Library**](monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
+* [Best Practices](docs/BestPractices.md)
 * [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
 
