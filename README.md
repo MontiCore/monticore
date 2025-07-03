@@ -2,7 +2,7 @@
 <!-- NOTE: This readme will NOT be used when generating the monticore websites!-->
 <!-- Instead, the index in the docs folder will be used! -->
 <center>
-  <div style="text-align:center" ><img src="docs/mc-logo.png" /></div>
+  <div style="text-align:center" ><img src="docs/img/mc-logo.png" /></div>
 </center>
 
 # MontiCore - Language Workbench and Development Tool Framework 
