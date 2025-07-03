@@ -3,6 +3,12 @@ name: Prepare And Deploy Pages
 
 # Preprocess the docs, build a site directory and push its contents to the gh-pages branch
 
+
+env:
+  GRADLE_VERSION: 7.6 # Gradle version used
+  GRADLE_CLI_OPTS: "-Pci" # CLI option passed to Gradle
+
+
 on:
   push:
     branches:
@@ -18,6 +24,12 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
+      - name: Build JavaDocs
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: ${{env.GRADLE_VERSION}}
+          arguments: "monticore-runtime:javadoc monticore-runtime:testFixturesJavadoc monticore-grammar:javadoc monticore-grammar:testFixturesJavadoc"
+
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
@@ -32,7 +44,7 @@ jobs:
           pip install ./monticore-pygments-highlighting
 
       - name: Preprocess the docs
-        run: sh docs/scripts/preprocessing.sh
+        run: sh docs/scripts/preprocessing.sh inplace
 
       - name: Build the docs into a site directory
         run: mkdocs build --verbose --clean --strict
