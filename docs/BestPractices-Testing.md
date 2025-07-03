@@ -76,7 +76,7 @@ Before each test,
 After each test, the log must not have any findings present.
 If no Mill setup is desired, the `AbstractMCTest` class provides the same functionality.
 
-In addition to jUnits `Assertions`, MontiCore provides a `MCAssertions` class for e.g. Log assertions:
+In addition to jUnits `Assertions`, MontiCore provides a [`MCAssertions`](../../monticore-runtime/testFixturesJavadoc) class for e.g. Log assertions:
 
 The notable methods are:
 

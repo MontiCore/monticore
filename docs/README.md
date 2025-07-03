@@ -184,6 +184,7 @@ For details see [Licenses](00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md).
 * [Build MontiCore](https://monticore.github.io/monticore/docs/BuildMontiCore/) - How to Build MontiCore
 * [Getting Started](https://monticore.github.io/monticore/docs/GettingStarted/) - How to start using MontiCore
 * [Changelog](00.org/Explanations/CHANGELOG.md) - Release Notes
+* [JavaDocs](JavaDocs.md) - JavaDocs
 * [FAQ](00.org/Explanations/FAQ.md) - FAQ
 * [Licenses](00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md) - MontiCore 3-Level License
 * [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
