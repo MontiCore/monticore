@@ -464,7 +464,7 @@ corresponding generated builder class.
 
 Parts of the AST data structure generated for the `Automata` grammar.
 
-![](https://github.com/MontiCore/monticore/raw/opendev/docs/docs/GenAutomataAST.png)
+![](https://github.com/MontiCore/monticore/raw/dev/docs/img/GenAutomataAST.png)
 <figcaption>Figure 2.7: Parts of the AST data structure generated for the <code>Automata</code> grammar.</figcaption>
 
 The contents of the AST and builder classes are generated systematically
@@ -493,7 +493,7 @@ found in [Chapter 9 of the MontiCore handbook](https://www.monticore.de/handbook
 
 <div class="tip">
 <div class="tip-header">
-<img src="https://github.com/MontiCore/monticore/raw/opendev/docs/docs/small_bulb.png" width="25">
+<img src="https://github.com/MontiCore/monticore/raw/dev/docs/img/small_bulb.png" width="25">
 Tip 2.8 Generated Symbols and Scopes in the AST
 </div>
 <p>Each <code>AST</code> class contains access to the <code>enclosingScope</code>.</p>
@@ -524,7 +524,7 @@ analogously.
 
 <div class="tip">
 <div class="tip-header">
-<img src="https://github.com/MontiCore/monticore/raw/opendev/docs/docs/small_bulb.png" width="25">
+<img src="https://github.com/MontiCore/monticore/raw/dev/docs/img/small_bulb.png" width="25">
 Tip 2.9 Handwritten AST Class Extensions
 </div>
 <p>If the generator detects that an <code>AST</code> class for a nonterminal is
@@ -560,7 +560,7 @@ Details about the generated parsers and their uses are described in
 Parts of the class `AutomataParser` generated from the `Automata`
 grammar.
 
-![](https://github.com/MontiCore/monticore/raw/opendev/docs/docs/GenAutomataParser.png)
+![](https://github.com/MontiCore/monticore/raw/dev/docs/img/GenAutomataParser.png)
 <figcaption>Figure 2.10: Parts of the class <code>AutomataParser</code> generated from the <code>Automata</code> grammar.</figcaption>
 
 Parts of the generated class `AutomataParser` are depicted in Figure 2.10. The
@@ -573,7 +573,7 @@ object with the fully qualified name of the file as input.
 
 <div class="tip">
 <div class="tip-header">
-<img src="https://github.com/MontiCore/monticore/raw/opendev/docs/docs/small_bulb.png" width="25">
+<img src="https://github.com/MontiCore/monticore/raw/dev/docs/img/small_bulb.png" width="25">
 Tip 2.11 Methods for Parsing
 </div>
 <p>The class <code>AutomataParser</code> contains the methods</p>
@@ -601,12 +601,12 @@ cross-references concerning information defined in different model
 elements that are potentially defined in different models stored in
 different files.
 
-![](https://github.com/MontiCore/monticore/raw/opendev/docs/docs/GenAutomataScopes.png)
+![](https://github.com/MontiCore/monticore/raw/dev/docs/img/GenAutomataScopes.png)
 <figcaption>Figure 2.12: The scope classes generated from the `Automata` grammar.</figcaption>
 
 <div class="tip">
 <div class="tip-header">
-<img src="https://github.com/MontiCore/monticore/raw/opendev/docs/docs/small_bulb.png" width="25">
+<img src="https://github.com/MontiCore/monticore/raw/dev/docs/img/small_bulb.png" width="25">
 Tip 2.13 Scope Classes
 </div>
 <p>For the <code>Automata</code> grammar, the generator produces the classes</p>
@@ -625,7 +625,7 @@ classes and interfaces are depicted in Figure 2.12.</p>
 <code>AutomataScope</code>s represent scopes spanned inside of models.</p>
 </div>
 
-![](https://github.com/MontiCore/monticore/raw/opendev/docs/docs/GenAutomataSymbols.png)
+![](https://github.com/MontiCore/monticore/raw/dev/docs/img/GenAutomataSymbols.png)
 <figcaption>Figure 2.14: Parts of the symbol classes generated from the <code>Automata</code> grammar.</figcaption>
 
 Figure 2.14 depicts parts of the symbol classes generated for the `Automata`
@@ -641,7 +641,7 @@ symbol classes, the MontiCore generator also produces builder classes
 
 <div class="tip">
 <div class="tip-header">
-<img src="https://github.com/MontiCore/monticore/raw/opendev/docs/docs/small_bulb.png" width="25">
+<img src="https://github.com/MontiCore/monticore/raw/dev/docs/img/small_bulb.png" width="25">
 Tip 2.15 Extending Symbol Classes
 </div>
 <p>It is possible to add further methods and attributes in two ways:</p>
@@ -711,7 +711,7 @@ to call for the (de)serialization.
 
 #### Visitor
 
-![](https://github.com/MontiCore/monticore/raw/opendev/docs/docs/GenAutomataVisitors.png)
+![](https://github.com/MontiCore/monticore/raw/dev/docs/img/GenAutomataVisitors.png)
 <figcaption>Figure 2.17: Parts of the visitor infrastructure generated from the <code>Automata</code> grammar</figcaption>
 
 The infrastructure is generated into the directory `out/automata/_visitor`.
@@ -737,7 +737,7 @@ more detailed explanation consider reading
 
 <div class="tip">
 <div class="tip-header">
-<img src="https://github.com/MontiCore/monticore/raw/opendev/docs/docs/small_bulb.png" width="25">
+<img src="https://github.com/MontiCore/monticore/raw/dev/docs/img/small_bulb.png" width="25">
 Tip 2.18 Visitors
 </div>
 <p>MontiCore provides the visitor pattern in a detangled and thus flexible
@@ -832,7 +832,7 @@ singleton.
 
 <div class="tip">
 <div class="tip-header">
-<img src="https://github.com/MontiCore/monticore/raw/opendev/docs/docs/small_bulb.png" width="25">
+<img src="https://github.com/MontiCore/monticore/raw/dev/docs/img/small_bulb.png" width="25">
 Tip 2.20 Mill Use and Automatic Initialization
 </div>
 <p>A mill is a factory for builders and other commonly used functions, such
@@ -873,7 +873,7 @@ of the `AutomataMill`.
 
 <div class="tip">
 <div class="tip-header">
-<img src="https://github.com/MontiCore/monticore/raw/opendev/docs/docs/small_bulb.png" width="25">
+<img src="https://github.com/MontiCore/monticore/raw/dev/docs/img/small_bulb.png" width="25">
 Tip 2.22 Mill Methods
 </div>
 <p>A mill provides <code>public static</code> methods for retrieving the instances of
@@ -1331,7 +1331,7 @@ This makes Eclipse execute the MontiCore Gradle plugin as described in
 After installing and executing MontiCore in Eclipse, your workspace
 should look similar to Figure 2.28.
 
-![](https://github.com/MontiCore/monticore/raw/opendev/docs/docs/Eclipse.png)
+![](https://github.com/MontiCore/monticore/raw/dev/docs/img/Eclipse.png)
 <figcaption>Figure 2.28: Eclipse after importing the example project and executing MontiCore</figcaption>
 
 ## Using MontiCore in IntelliJ IDEA
@@ -1380,7 +1380,7 @@ Projects menu should occur on the right side and you can follow the
 above mentioned steps for the execution. After installing and executing
 MontiCore in IntelliJ IDEA, your workspace should look similar to Figure 2.29.
 
-![](https://github.com/MontiCore/monticore/raw/opendev/docs/docs/IntelliJ-IDEA.png)
+![](https://github.com/MontiCore/monticore/raw/dev/docs/img/IntelliJ-IDEA.png)
 <figcaption>Figure 2.29: IntelliJ IDEA after importing
 the example project and executing MontiCore</figcaption>
 
@@ -1421,9 +1421,9 @@ the project again.
 
 * [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
 * [MontiCore documentation](https://www.monticore.de/)
-* [**List of languages**](https://github.com/MontiCore/monticore/blob/opendev/docs/Languages.md)
+* [**List of languages**](https://github.com/MontiCore/monticore/blob/dev/docs/Languages.md)
 * [**MontiCore Core Grammar Library**](https://github.com/MontiCore/monticore/blob/opendev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
-* [Best Practices](https://github.com/MontiCore/monticore/blob/opendev/docs/BestPractices.md)
+* [Best Practices](https://github.com/MontiCore/monticore/blob/dev/docs/BestPractices.md)
 * [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
 * [License definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)
 
