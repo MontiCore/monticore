@@ -79,7 +79,7 @@ public class WildcardCapturer {
    * as they have no symbols to get type parameters from.
    * E.g.,
    * {@code List<? extends Person> -> Person f = (xs) -> xs.get(0);}
-   * the lambda function "is declared with the type" T -> R,
+   * the lambda function "is declared with the type" {@code T -> R},
    * there T and R are type parameters,
    * and, according to Java Spec 20 15.27.3 the ground target type of
    * {@code List<Person> -> Person}

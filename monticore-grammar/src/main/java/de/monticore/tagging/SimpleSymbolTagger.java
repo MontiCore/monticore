@@ -152,7 +152,7 @@ public class SimpleSymbolTagger extends AbstractTagger implements ISymbolTagger 
   }
 
   /**
-   * Computes a (new) FQN->[ASTTargetElement] mapping of an ASTTagUnit
+   * Computes a (new) {@code FQN->[ASTTargetElement]} mapping of an ASTTagUnit
    */
   protected TagFQNMapping computeFQNMapping(ASTTagUnit tagUnit) {
     Map<String, List<ASTTargetElement>> fqnMapping = new LinkedHashMap<>();
@@ -201,7 +201,7 @@ public class SimpleSymbolTagger extends AbstractTagger implements ISymbolTagger 
 
   /**
    * Buffering iterator of type A with an element of flattening.
-   * calls {@link #doWork(B)} when demanded and iterates on the doWorks return value.
+   * calls  ProgressiveIterator#doWork(B) when demanded and iterates on the doWorks return value.
    */
   protected abstract static class ProgressiveIterator<A, B> implements Iterator<A> {
     // With a buffer of target elements
