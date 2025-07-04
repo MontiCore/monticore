@@ -76,7 +76,7 @@ Before each test,
 After each test, the log must not have any findings present.
 If no Mill setup is desired, the `AbstractMCTest` class provides the same functionality.
 
-In addition to jUnits `Assertions`, MontiCore provides a `MCAssertions` class for e.g. Log assertions:
+In addition to jUnits `Assertions`, MontiCore provides a [`MCAssertions`](../../monticore-runtime/testFixturesJavadoc) class for e.g. Log assertions:
 
 The notable methods are:
 
@@ -93,6 +93,13 @@ The test functionality of MontiCore is provided by the [text fixture](https://do
 `testFixture("de.monticore:monticore-grammar:$mc_version")` dependency.
 For smaller examples of parsing, pretty printing, etc., models can be written within the test class and
 external model files are not needed.
+
+## Testing the Symbol Table of a Language
+
+!!! note "This Best Practice is still under development"
+      
+      The testing of symbol table creation, the resolving of symbols, possible adapters, and DeSers is WIP
+
 
 ## Testing Context Conditions
 
@@ -189,16 +196,26 @@ or complete error message as well.
 However, it is often useful to reduce the assertion to checking the error code (`0xADD03`), 
 because error messages are relatively often modified.
 
-The handbook describes testing of language features in [Section 10.3 and 21.5](https://www.monticore.de/handbook.pdf).
+### Uniqueness of Error Codes
 
-    
+!!! note "This Best Practice is still under development"
+    Check the `check-error-codes` GitHub action for now
+   
+
+## Testing the Command Line Interface of a Language
+
+!!! note "This Best Practice is still under development"
+
+
+The handbook describes testing of language features in [Sections 10.3 and 21.5](https://www.monticore.de/handbook.pdf).
+
 ## Further Information
 
 * [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
 * [MontiCore documentation](https://www.monticore.de/)
-* [**List of languages**](https://github.com/MontiCore/monticore/blob/opendev/docs/Languages.md)
-* [**MontiCore Core Grammar Library**](https://github.com/MontiCore/monticore/blob/opendev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
-* [Best Practices](https://github.com/MontiCore/monticore/blob/opendev/docs/BestPractices.md)
+* [**List of languages**](https://github.com/MontiCore/monticore/blob/dev/docs/Languages.md)
+* [**MontiCore Core Grammar Library**](https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
+* [Best Practices](https://github.com/MontiCore/monticore/blob/dev/docs/BestPractices.md)
 * [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
 * [License definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)
 

@@ -1,6 +1,6 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 <center>
-  <div style="text-align:center" ><img src="https://github.com/MontiCore/monticore/raw/dev/mc-logo.png" /></div>
+  <div style="text-align:center" ><img src="https://github.com/MontiCore/monticore/raw/dev/docs/img/mc-logo.png" /></div>
 </center>
 
 # MontiCore - Language Workbench And Development Tool Framework 
@@ -66,14 +66,24 @@ lasting tasks.
   * cleaning integration tests:
     * using gradle `gradle clean` within the corresponding subproject (see above)
 
-  
+## Build the website
+
+The website is built using mkdocs.
+
+* Install mkdocs: `pip install mkdocs mkdocs-material`
+* Build the website's files: `/docs/scripts/preprocessing.sh symlink`
+* Serve locally: `mkdocs serve`
+* (optional) use Gradle to build the javadocs
+
+(A GitHub workflow deploys the website similarly to GitHub pages.)
+
 ## Further Information
 
 * [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
 * [MontiCore documentation](https://www.monticore.de/)
-* [**List of languages**](https://github.com/MontiCore/monticore/blob/opendev/docs/Languages.md)
-* [**MontiCore Core Grammar Library**](https://github.com/MontiCore/monticore/blob/opendev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
-* [Best Practices](https://github.com/MontiCore/monticore/blob/opendev/docs/BestPractices.md)
+* [**List of languages**](https://github.com/MontiCore/monticore/blob/dev/docs/Languages.md)
+* [**MontiCore Core Grammar Library**](https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
+* [Best Practices](https://github.com/MontiCore/monticore/blob/dev/docs/BestPractices.md)
 * [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
 * [License definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)
 

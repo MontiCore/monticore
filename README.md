@@ -1,6 +1,8 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
+<!-- NOTE: This readme will NOT be used when generating the monticore websites!-->
+<!-- Instead, the index in the docs folder will be used! -->
 <center>
-  <div style="text-align:center" ><img src="mc-logo.png" /></div>
+  <div style="text-align:center" ><img src="docs/img/mc-logo.png" /></div>
 </center>
 
 # MontiCore - Language Workbench and Development Tool Framework 
@@ -119,16 +121,8 @@ Please also note that `PlusExpr` is mutually left-recursive.
 
 ## Quick Start
 
-```
-$ cd /usr/local
-$ wget www.monticore.de/download/aut.tar.gz
-$ tar -xf aut.tar.gz
-$ cd mc-workspace
-$ wget www.monticore.de/download/monticore-cli.jar
-$ java -jar monticore-cli.jar -g Automata.mc4 -hcp hwc/ -mp monticore-cli.jar
-$ javac -cp monticore-cli.jar -sourcepath "src/;out/;hwc/" src/automata/AutomataTool.java
-$ java -cp "src/;out/;hwc/;monticore-cli.jar" automata.AutomataTool example/PingPong.aut PingPong.autsym
-```
+You can follow the [Getting Started](https://monticore.github.io/monticore/docs/GettingStarted/)
+or follow a more in-depth tutorial (coming soon).
 
 ## MontiCore has a Relaxed 3-Level License  
 
