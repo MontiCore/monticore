@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.statements.cocos;
 
+import de.monticore.runtime.junit.MCAssertions;
 import de.monticore.statements.mcvardeclarationstatements._cocos.VarDeclarationNameAlreadyDefinedInScope;
 import de.monticore.statements.mcvardeclarationstatements._symboltable.MCVarDeclarationStatementsSTCompleteTypes;
 import de.monticore.statements.testmcvardeclarationstatements.TestMCVarDeclarationStatementsMill;
@@ -10,17 +11,12 @@ import de.monticore.statements.testmcvardeclarationstatements._parser.TestMCVarD
 import de.monticore.statements.testmcvardeclarationstatements._visitor.TestMCVarDeclarationStatementsTraverser;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserFactory;
-import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.stream.Collectors;
-
 
 public class VarDeclarationNameAlreadyDefinedInScopeTest {
 
@@ -44,14 +40,6 @@ public class VarDeclarationNameAlreadyDefinedInScopeTest {
     parser = TestMCVarDeclarationStatementsMill.parser();
   }
 
-  protected void checkExpectedErrorsPresent(List<String> expectedErrorCodes) {
-    List<String> actualErrors = Log.getFindings().stream()
-        .filter(Finding::isError)
-        .map(err -> err.getMsg().split(" ")[0])
-        .collect(Collectors.toList());
-    Assertions.assertIterableEquals(expectedErrorCodes, actualErrors);
-  }
-
   protected ASTRootVarDeclaration parseAndBuildAST(String decl) throws IOException {
     ASTRootVarDeclaration ast = parser.parse_StringRootVarDeclaration(decl).get();
     TestMCVarDeclarationStatementsMill.scopesGenitorDelegator().createFromAST(ast);
@@ -72,7 +60,7 @@ public class VarDeclarationNameAlreadyDefinedInScopeTest {
     checker.checkAll(astDecl);
 
     // Then
-    checkExpectedErrorsPresent(List.of());
+    MCAssertions.assertNoFindings();
   }
 
   @Test
@@ -84,9 +72,9 @@ public class VarDeclarationNameAlreadyDefinedInScopeTest {
     checker.checkAll(astDecl);
 
     // Then
-    checkExpectedErrorsPresent(List.of(
-        VarDeclarationNameAlreadyDefinedInScope.ERROR_CODE,
-        VarDeclarationNameAlreadyDefinedInScope.ERROR_CODE));
+    MCAssertions.assertHasFindingStartingWith(VarDeclarationNameAlreadyDefinedInScope.ERROR_CODE);
+    MCAssertions.assertHasFindingStartingWith(VarDeclarationNameAlreadyDefinedInScope.ERROR_CODE);
+    MCAssertions.assertNoFindings();
   }
 
   @Test
@@ -98,10 +86,10 @@ public class VarDeclarationNameAlreadyDefinedInScopeTest {
     checker.checkAll(astDecl);
 
     // Then
-    checkExpectedErrorsPresent(List.of(
-        VarDeclarationNameAlreadyDefinedInScope.ERROR_CODE,
-        VarDeclarationNameAlreadyDefinedInScope.ERROR_CODE,
-        VarDeclarationNameAlreadyDefinedInScope.ERROR_CODE));
+    MCAssertions.assertHasFindingStartingWith(VarDeclarationNameAlreadyDefinedInScope.ERROR_CODE);
+    MCAssertions.assertHasFindingStartingWith(VarDeclarationNameAlreadyDefinedInScope.ERROR_CODE);
+    MCAssertions.assertHasFindingStartingWith(VarDeclarationNameAlreadyDefinedInScope.ERROR_CODE);
+    MCAssertions.assertNoFindings();
   }
 
   @Test
@@ -117,7 +105,7 @@ public class VarDeclarationNameAlreadyDefinedInScopeTest {
     checker.checkAll(astDecl);
 
     // Then
-    checkExpectedErrorsPresent(List.of(
-        VarDeclarationNameAlreadyDefinedInScope.ERROR_CODE));
+    MCAssertions.assertHasFindingStartingWith(VarDeclarationNameAlreadyDefinedInScope.ERROR_CODE);
+    MCAssertions.assertNoFindings();
   }
 }
