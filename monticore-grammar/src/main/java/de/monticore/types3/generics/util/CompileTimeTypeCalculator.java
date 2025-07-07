@@ -58,9 +58,9 @@ public class CompileTimeTypeCalculator {
    * and the target type is a function type,
    * filter the results and replace the free type variables.
    * E.g.:
-   * unfiltered type: (T -> byte) & int
-   * target type: short -> short
-   * result: short -> byte
+   * unfiltered type: {@code (T -> byte) & int}
+   * target type: {@code short -> short}
+   * result: {@code short -> byte}
    *
    * @param resolvedType Free type variables must have been replaced
    *                     with inference variables before calling this method.
@@ -85,11 +85,11 @@ public class CompileTimeTypeCalculator {
    * <p>
    * E.g., let the expression be '1 : intStream';
    * The Operator ':' can be represented with the function type
-   * (a, Stream<a>) -> Stream<a> with 'a' being a free type variable.
+   * {@code (a, Stream<a>) -> Stream<a>} with 'a' being a free type variable.
    * The arguments of the function will be '1' and 'intStream'.
    * In this case, this will first calculate the compile-time type
-   * of the operator to be (int, Stream<int>) -> Stream<int>.
-   * Therefore, the type of the expression is Stream<int>,
+   * of the operator to be {@code (int, Stream<int>) -> Stream<int>}.
+   * Therefore, the type of the expression is {@code Stream<int>},
    * which is stored in the type4AstMap.
    */
   public static void handleCall(
@@ -645,7 +645,7 @@ public class CompileTimeTypeCalculator {
    * In the PartialFunctionInfo,
    * given argument-expressions, these are replaced with types,
    * iff a type can be calculated without access to a target type.
-   * E.g., "2+3" is replaced with int, but "new Set<>()" is not replaced,
+   * E.g., {@code "2+3"} is replaced with int, but {@code "new Set<>()"} is not replaced,
    * as the type is not fully known without a target type.
    */
   protected void replaceExprsWithTypesIffNoTargetTypeRequired(
@@ -1215,8 +1215,8 @@ public class CompileTimeTypeCalculator {
   }
 
   /**
-   * Reduces constraints of the form <Expr --> type>.
-   * WARNING: While <Expr --> type> IS a constraint,
+   * Reduces constraints of the form {@code <Expr --> type>}.
+   * WARNING: While {@code <Expr --> type>} IS a constraint,
    * it is only ever used in this class;
    * This is used OUTSIDE of
    * {@link de.monticore.types3.generics.util.ConstraintReduction},
@@ -1368,7 +1368,7 @@ public class CompileTimeTypeCalculator {
   // Helper
 
   /**
-   * Only exists as Java is missing a ()->void functional interface.
+   * Only exists as Java is missing a {@code ()->void} functional interface.
    * This is not meant to be used otherwise.
    * (Runnable is specifically meant to be used for threads)
    */

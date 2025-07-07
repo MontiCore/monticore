@@ -15,7 +15,7 @@ import static de.monticore.types.check.SymTypeExpressionFactory.createTypeVariab
 
 /**
  * Finds instances of circular inheritance,
- * e.g., <T extends U, U extends Person & T>
+ * e.g., {@code <T extends U, U extends Person & T>}
  */
 public class TypeParameterNoCyclicInheritance
     implements TypeParametersASTTypeParameterCoCo {

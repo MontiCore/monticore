@@ -16,21 +16,21 @@ import java.util.stream.Stream;
 
 /**
  * SymTypeOfGenerics stores any kind of TypeConstructor applied
- * to Arguments, such as Map< int,Person >
- * List<Person>, List< Set< List< a >>>.
+ * to Arguments, such as  {@code Map< int,Person >}
+ * {@code List<Person>, List< Set< List< a >>>}.
  * This subsumes all kinds of generic Types from several of the
  * MC-Type grammars.
  */
 public class SymTypeOfGenerics extends SymTypeExpression {
 
   /**
-   * Map for unboxing generic types (e.g. "java.util.Collection" -> "Collection")
+   * Map for unboxing generic types (e.g. {@code "java.util.Collection" -> "Collection"})
    */
   @Deprecated
   public static final Map<String, String> unboxMap;
 
   /**
-   * Map for boxing generic types (e.g. "Collection" -> "java.util.Collection")
+   * Map for boxing generic types (e.g. {@code "Collection" -> "java.util.Collection"})
    * Results are fully qualified.
    */
   @Deprecated
@@ -56,7 +56,7 @@ public class SymTypeOfGenerics extends SymTypeExpression {
   }
 
   /**
-   * unboxing generic types (e.g. "java.util.Collection" -> "Collection").
+   * unboxing generic types (e.g. {@code "java.util.Collection" -> "Collection"}).
    * otherwise return is unchanged
    * @deprecated use SymTypeUnboxingVisitor
    * @param type
@@ -87,7 +87,7 @@ public class SymTypeOfGenerics extends SymTypeExpression {
   }
 
   /**
-   * Boxing generic types (e.g. "Collection" -> "java.util.Collection")
+   * Boxing generic types (e.g. {@code "Collection" -> "java.util.Collection"})
    * Results are fully qualified.
    * Otherwise return is unchanged
    * @deprecated use SymtypeBoxingVisitor
@@ -228,7 +228,7 @@ public class SymTypeOfGenerics extends SymTypeExpression {
 
   /**
    * returns the declared type,
-   * e.g., for List<int>, this will return List<T> where T is a type variable.
+   * e.g., for {@code List<int>}, this will return {@code List<T>} where T is a type variable.
    */
   public SymTypeOfGenerics getDeclaredType() {
     List<SymTypeExpression> typeParams = getTypeInfo().getTypeParameterList()

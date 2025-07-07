@@ -62,7 +62,7 @@ public abstract class CompKindExpression {
   }
 
   /**
-   * Am I a generic component type? (such as "C<int>")
+   * Am I a generic component type? (such as {@code C<int>})
    * (default: no)
    */
   public boolean isGenericComponentType() {
@@ -82,7 +82,7 @@ public abstract class CompKindExpression {
 
   /**
    * @param arguments the configuration arguments to add to this component.
-   * @see this#addArgument(ASTSubcomponentArgument)
+   * @see CompKindExpression#addArgument(ASTSubcomponentArgument)
    */
   public void addArgument(List<? extends ASTSubcomponentArgument> arguments) {
     Preconditions.checkNotNull(arguments);

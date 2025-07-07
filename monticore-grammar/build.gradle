@@ -655,3 +655,7 @@ if (("true").equals(getProperty('genTR'))) {
     }
   }
 }
+
+tasks.named("build") {
+  dependsOn javadoc, testFixturesJavadoc
+}

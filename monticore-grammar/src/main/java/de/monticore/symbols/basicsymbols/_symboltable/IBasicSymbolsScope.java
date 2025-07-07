@@ -12,7 +12,7 @@ public interface IBasicSymbolsScope extends IBasicSymbolsScopeTOP {
 
   /**
    * returns whether a type variable is bound within this scope
-   * e.g. class C<T> {} // T is bound within the class
+   * e.g. {@code class C<T> {}} // T is bound within the class
    */
   default boolean isTypeVariableBound(TypeVarSymbol typeVar) {
     List<TypeVarSymbol> localVars = resolveTypeVarLocallyMany(

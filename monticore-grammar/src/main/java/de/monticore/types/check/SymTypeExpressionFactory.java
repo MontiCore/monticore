@@ -37,7 +37,7 @@ public class SymTypeExpressionFactory {
 
   /**
    * createTypeVariable vor Variables
-   * @deprecated -> create a symbol and use it to create a SymTypeVariable
+   * @deprecated create a symbol and use it to create a SymTypeVariable
    */
   @Deprecated
   public static SymTypeVariable createTypeVariable(String name, IBasicSymbolsScope scope) {

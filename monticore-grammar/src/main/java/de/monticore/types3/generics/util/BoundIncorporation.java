@@ -747,9 +747,9 @@ public class BoundIncorporation {
    * {@link #incorporateNonSymmetrical(SubTypingBound, SubTypingBound)},
    * {@link #incorporateNonSymmetrical(TypeCompatibilityBound, TypeCompatibilityBound)},
    * {@link #incorporate(SubTypingBound, TypeCompatibilityBound)}.
-   * Given a <: A and a <: B, due to them being supertypes of the same type,
+   * Given {@code a <: A and a <: B}, due to them being supertypes of the same type,
    * constraints follow,
-   * e.g., List<a> and List<B> lead to the constraint <a = B>.
+   * e.g., {@code List<a>} and {@code List<B>} lead to the constraint {@code <a = B>}.
    * If different rules apply (e.g., in OCL),
    * then this method could be overwritten.
    * However, as of now it is simply assumed that
@@ -758,7 +758,7 @@ public class BoundIncorporation {
    * which may or may not get unintuitive in combination with boxing.
    * <p>
    * For TypeCompatibilityBounds, we assume the same rules,
-   * e.g. a --> A<b> and a <: A<int> results in <b = int>.
+   * e.g. {@code a --> A<b>} and {@code a <: A<int>} results in {@code <b = int>}.
    * This may need to be overridden for type systems with more flexible
    * compatibility rules, but we currently do not assume there to be a need
    * for such a system, this seems to be a sane restriction to make.
@@ -1013,10 +1013,10 @@ public class BoundIncorporation {
    * <p>
    * note: this allows combinations without common super types,
    * e.g., A and B (each without any supertypes).
-   * This is due to there being the type (A & B),
+   * This is due to there being the type {@code (A & B)},
    * which may exist in a modeling language,
    * e.g., A and B being interfaces in Java-esque languages.
-   * One could add rules like A & B cannot exists
+   * One could add rules like {@code A & B} cannot exists
    * if they are classes (and not interfaces)
    * here (by overriding this method);
    * However, alternatively (and probably the simpler choice),

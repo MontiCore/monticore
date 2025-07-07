@@ -16,27 +16,27 @@ import java.util.Optional;
 /**
  * Unboxes SymTypeExpressions,
  * including, but not limited to, Java primitive unboxing
- * e.g., java.lang.Integer -> int
- * e.g., java.util.List -> List
+ * e.g., {@code java.lang.Integer -> int}
+ * e.g., {@code java.util.List -> List}
  * Usage:
  * calculate(symType)
  */
 public class SymTypeUnboxingVisitor extends SymTypeDeepCloneVisitor {
 
   /**
-   * Map for unboxing to primitive types (e.g. "java.lang.Integer" -> "int")
+   * Map for unboxing to primitive types (e.g. {@code "java.lang.Integer" -> "int"})
    * Results are fully qualified.
    */
   protected static final Map<String, String> primitiveUnboxMap;
 
   /**
-   * Map for unboxing to object types (e.g. "java.lang.String" -> "String")
+   * Map for unboxing to object types (e.g. {@code "java.lang.String" -> "String"})
    * Results are fully qualified.
    */
   protected static final Map<String, String> objectUnboxMap;
 
   /**
-   * Map for unboxing to generic types (e.g. "java.util.List" -> "List")
+   * Map for unboxing to generic types (e.g. {@code "java.util.List" -> "List"})
    * Results are fully qualified.
    */
   protected static final Map<String, String> genericUnboxMap;

@@ -122,7 +122,7 @@ public class MCStructuralTypesTypeVisitor extends AbstractTypeVisitor
    * this is a specific kind of type normalization,
    * which also reduces the complexity of the type printed,
    * which is the reason this has been added here.
-   * E.g., given A & B & C, (A & B & C) is printed rather than ((A & B) & C).
+   * E.g., given {@code A & B & C}, {@code (A & B & C)} is printed rather than {@code ((A & B) & C)}.
    */
   protected List<ASTMCType> transformIntersectionTree2List(ASTMCType mcType) {
     List<ASTMCType> result = new ArrayList<>();
