@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+/**
+ * This grammar is used to test that single quotes ' and double quotes " can be used in implicit tokens.
+ */
+grammar QuoteTest extends de.monticore.MCBasics {
+
+  EscapedNameSingleQuote = "n'" Name "'";
+  
+  EscapedNameDoubleQuote = "n\"" Name "\"";
+
+}
