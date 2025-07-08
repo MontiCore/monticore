@@ -3,8 +3,8 @@ import Stream;
 symtabdefinition UntimedStream {
 
   class UntimedStream<T> implements Stream<T> {
-    + Optional<T> first();
-    + Optional<T> nth(long n);
+    + T first();
+    + T nth(long n);
 
     + static <S> UntimedStream<S> uRepeat(S elem, long n);
     + static <S> UntimedStream<S> uIterate(S -> S elem, S elem);
@@ -12,7 +12,7 @@ symtabdefinition UntimedStream {
     + static <S, U> UntimedStream<U> uProjSnd(UntimedStream<(S,U)> list);
 
     // ----------- Implementations
-    + Optional<UntimedStream<T>> dropFirst();
+    + UntimedStream<T> dropFirst();
     + UntimedStream<T> take(long n);
     + UntimedStream<T> dropMultiple(long n);
     + UntimedStream<T> times(long n); // <2>.times(24)

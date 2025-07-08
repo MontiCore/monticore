@@ -195,7 +195,7 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
   @Override
   public void visit(ASTAlt node) {
     if (blockDataStack.isEmpty()) return; // Only visit in CPs
-    AltData altData = new AltData();
+    AltData altData = new AltData(node);
     blockDataStack.peek().getAltDataList().add(altData);
     altDataStack.push(altData);
   }
@@ -292,7 +292,8 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
       PPGuardComponent component = PPGuardComponent.forNTSingle(isLexType(node) ? substituteLexProdType(node.getName()) : node.getName(),
               refName,
               iteration,
-              isMCCommonLiteralsSuper
+              isMCCommonLiteralsSuper,
+              node
       );
 
       altData.getComponentList().add(component);
@@ -327,7 +328,8 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
             refName,
             iteration,
             isIteratorUsed,
-            isMCCommonLiteralsSuper
+            isMCCommonLiteralsSuper,
+            node
     );
 
     altData.getComponentList().add(component);
@@ -373,11 +375,11 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
       if (currentClassProdData.isIteratorNeeded(usageName)) {
         // In case an iterator is required and the terminal is named, we can handle it like a lexed NonTerminal
         // replacekeyword directive can be ignored here (as the parser handles it with an action)
-        altData.getComponentList().add(PPGuardComponent.forNT("Name", usageName, nodeIteration, true, isMCCommonLiteralsSuper));
+        altData.getComponentList().add(PPGuardComponent.forNT("Name", usageName, nodeIteration, true, isMCCommonLiteralsSuper, node));
         blockDataStack.peek().markListReady(); // Mark that an iterator was used => while can be used
         altData.markListReady();
       } else {
-        altData.getComponentList().add(PPGuardComponent.forT(node.getName(), usageName, nodeIteration));
+        altData.getComponentList().add(PPGuardComponent.forT(node.getName(), usageName, nodeIteration, node));
       }
 
 
@@ -402,7 +404,7 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
       }
     }else {
       // Always use default iteration 0, as we have no control otherwise
-      PPGuardComponent component = PPGuardComponent.forT(string);
+      PPGuardComponent component = PPGuardComponent.forT(string, node);
 
       altData.getComponentList().add(component);
       altData.getExpressionList().add(AltData.TRUE_EXPRESSION); // Push a true condition
@@ -416,7 +418,7 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
     AltData altData = altDataStack.peek();
     BlockData blockData = new BlockData(false, node.getIteration(), getEffectiveIteration(outerBlock.getInheritedIteration(), node.getIteration()), node);
     blockDataStack.push(blockData);
-    altData.getComponentList().add(PPGuardComponent.forBlock(blockData, node.getIteration()));
+    altData.getComponentList().add(PPGuardComponent.forBlock(blockData, node.getIteration(), node));
   }
 
   @Override
@@ -457,7 +459,7 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
       altData.setOptional(maxOpt);
       altData.setRequired(maxReq);
 
-      if (!allAltExpressions.isEmpty())
+      if (!allAltExpressions.isEmpty()) // might contain true || true
         altData.getExpressionList().add(AltData.reduceToOr(allAltExpressions));
 
       // Prevent e.g. (Decimal | ",")* => while (hasDecimal() || true) { ... } endless loops
@@ -509,7 +511,7 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
       constants = constants.stream().limit(1).collect(Collectors.toSet());
     }
 
-    PPGuardComponent component = PPGuardComponent.forCG(getter, constants);
+    PPGuardComponent component = PPGuardComponent.forCG(getter, constants, node);
 
     AltData altData;
     Optional<BlockData> blockDataOpt = Optional.empty();
@@ -517,9 +519,9 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
       // Add a new block with alt for this ConstantGroup
       BlockData outerBlock = blockDataStack.peek();
       blockDataOpt = Optional.of(new BlockData(false, node.getIteration(), getEffectiveIteration(outerBlock.getInheritedIteration(), node.getIteration()), null));
-      altDataStack.peek().getComponentList().add(PPGuardComponent.forBlock(blockDataOpt.get(), node.getIteration()));
+      altDataStack.peek().getComponentList().add(PPGuardComponent.forBlock(blockDataOpt.get(), node.getIteration(), node));
       // And add one alt (without using the stack, as we will only use it in this method)
-      altData = new AltData();
+      altData = new AltData(node);
       blockDataOpt.get().getAltDataList().add(altData);
     }else {
       // If this is not an optional CG, skip the extra block

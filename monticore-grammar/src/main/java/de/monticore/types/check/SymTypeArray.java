@@ -7,12 +7,12 @@ import de.monticore.types3.ISymTypeVisitor;
 import de.se_rwth.commons.logging.Log;
 
 /**
- * Arrays of a certain dimension (>= 1)
+ * Arrays of a certain dimension ({@code >= 1})
  */
 public class SymTypeArray extends SymTypeExpression {
 
   /**
-   * An arrayType has a dimension (>= 1)
+   * An arrayType has a dimension ({@code >= 1})
    */
   protected int dim;
 

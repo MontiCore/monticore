@@ -2,6 +2,7 @@
 package de.monticore.types.check;
 
 import com.google.common.base.Preconditions;
+import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbolTOP;
 import de.monticore.symbols.compsymbols._symboltable.ComponentTypeSymbol;
 import de.monticore.symbols.compsymbols._symboltable.PortSymbol;
@@ -9,6 +10,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Represents a component expression that is solely defined by the component symbol.
@@ -54,6 +56,14 @@ public class CompKindOfComponentType extends CompKindExpression {
   public Optional<SymTypeExpression> getTypeOfParameter(@NonNull String name) {
     Preconditions.checkNotNull(name);
     return this.getTypeInfo().getParameter(name).map(VariableSymbolTOP::getType);
+  }
+
+  @Override
+  public List<Optional<SymTypeExpression>> getParameterTypes() {
+    return this.getTypeInfo().getParameterList()
+      .stream().map(VariableSymbol::getType)
+      .map(Optional::of)
+      .collect(Collectors.toList());
   }
 
   @Override

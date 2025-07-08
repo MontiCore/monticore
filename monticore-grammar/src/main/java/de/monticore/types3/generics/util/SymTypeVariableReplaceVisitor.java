@@ -12,8 +12,8 @@ import java.util.TreeMap;
 
 /**
  * replaces TypeVariables using a given map
- * e.g., T, {T->int,U->float} -> int
- * e.g., List<T>, {T->int} -> List<int>
+ * e.g., T, {@code {T->int,U->float} -> int}
+ * e.g., {@code List<T>, {T->int} -> List<int>}
  * Usage:
  * calculate(symType, replaceMap)
  */

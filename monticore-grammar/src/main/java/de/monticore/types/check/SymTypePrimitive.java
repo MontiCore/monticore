@@ -82,13 +82,13 @@ public class SymTypePrimitive extends SymTypeExpression {
       ));
 
   /**
-   * Map for unboxing const types (e.g. "java.lang.Boolean" -> "boolean")
+   * Map for unboxing const types (e.g. "java.lang.Boolean" -&gt; "boolean")
    */
   @Deprecated
   public static final Map<String, String> unboxMap;
 
   /**
-   * Map for boxing const types (e.g. "boolean" -> "java.lang.Boolean")
+   * Map for boxing const types (e.g. "boolean" -&gt; "java.lang.Boolean")
    * Results are fully qualified.
    */
   @Deprecated
@@ -134,7 +134,7 @@ public class SymTypePrimitive extends SymTypeExpression {
   }
 
   /**
-   * unboxing const types (e.g. "java.lang.Boolean" -> "boolean").
+   * unboxing const types (e.g. {@code "java.lang.Boolean" -> "boolean"}).
    * otherwise return is unchanged
    * @deprecated use SymTypeUnboxingVisitor
    * @param boxedName
@@ -149,7 +149,7 @@ public class SymTypePrimitive extends SymTypeExpression {
   }
 
   /**
-   * Boxing const types (e.g. "boolean" -> "java.lang.Boolean")
+   * Boxing const types (e.g. {@code "boolean" -> "java.lang.Boolean"})
    * Results are fully qualified.
    * Otherwise return is unchanged
    * @deprecated use SymTypeBoxingVisitor

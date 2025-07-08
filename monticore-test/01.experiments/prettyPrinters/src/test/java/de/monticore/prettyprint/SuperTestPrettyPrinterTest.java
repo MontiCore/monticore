@@ -2,29 +2,19 @@
 package de.monticore.prettyprint;
 
 import de.monticore.ast.ASTNode;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.supertestprettyprinters.SuperTestPrettyPrintersMill;
 import de.monticore.supertestprettyprinters._prettyprint.SuperTestPrettyPrintersFullPrettyPrinter;
-import de.se_rwth.commons.logging.Log;
 import org.junit.*;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
 /**
  * Test the PrettyPrinter Generation when it comes to overriden productions
  */
+@TestWithMCLanguage(SuperTestPrettyPrintersMill.class)
 public class SuperTestPrettyPrinterTest extends PPTestClass {
-
-  @BeforeClass
-  public static void setup() {
-    SuperTestPrettyPrintersMill.init();
-    Log.init();
-    Log.enableFailQuick(false);
-  }
-
-  @Before
-  public void beforeEach() {
-    Log.clearFindings();
-  }
 
   @Override
   protected String fullPrettyPrint(ASTNode node){

@@ -7,10 +7,13 @@ buildscript {
 
 plugins {
   id "java-library"
-  id "com.github.johnrengelman.shadow" version "7.1.2"
+  id "com.github.johnrengelman.shadow" version "$shadow_plugin_version"
   // in case a "genTR" property is set to "true", transformation grammars are also created
   id "de.monticore.generator-withtr" version "$version"
   id "jacoco"
+  // this project provides test fixtures. Test fixtures are commonly used to setup the code under test,
+  // or provide utilities aimed at facilitating the tests of a component
+  id 'java-test-fixtures'
 }
 
 description = 'MontiCore: Grammar'
@@ -71,6 +74,8 @@ dependencies {
   testImplementation "org.junit.jupiter:junit-jupiter-params:$junit_version"
   testImplementation "org.junit.vintage:junit-vintage-engine:$junit_version"
   testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
+  // grammar test fixtures includes runtime test dependencies
+  testFixturesApi testFixtures(project(":monticore-runtime"))
   if (("true").equals(getProperty('genTagging'))) {
     // use compileOnly as the tagging- and trafo-artifact are only an extension to the default artifact
     taggingCompileOnly project(path)
@@ -548,11 +553,11 @@ java {
   }
 }
 
-shadowJar {
+tasks.named("shadowJar") {
   from sourceSets.main.grammars
 }
 
-generateTestMCGrammars {
+tasks.named("generateTestMCGrammars") {
 //   Temporary - for optimizations (due to feature)
   genINT = true
   dependsOn(tasks.grammarsForVariantJar)
@@ -570,7 +575,7 @@ if (findProperty('ci') == null) {
 }
 
 if (("true").equals(getProperty('genTR'))) {
-  generateTrafoMCGrammars {
+  tasks.named("generateTrafoMCGrammars") {
     // Temporary - for optimizations
     dependsOn(tasks.grammarsForVariantJar)
   }
@@ -649,4 +654,8 @@ if (("true").equals(getProperty('genTR'))) {
       }
     }
   }
+}
+
+tasks.named("build") {
+  dependsOn javadoc, testFixturesJavadoc
 }

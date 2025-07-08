@@ -20,9 +20,9 @@ public interface ISymTypeRelations {
   /**
    * whether the assignee can be assigned to by the assigner,
    * e.g., assignment operator: x = 2,
-   * -> type of x and type of 2 need to be compatible,
-   * e.g., functions call: (float -> void)(2),
-   * -> float and type of 2 need to be compatible
+   * type of x and type of 2 need to be compatible,
+   * e.g., functions call: {@code (float -> void)(2)},
+   * float and type of 2 need to be compatible
    */
   boolean isCompatible(SymTypeExpression assignee, SymTypeExpression assigner);
 
@@ -51,22 +51,22 @@ public interface ISymTypeRelations {
   /**
    * Boxes SymTypeExpressions,
    * including, but not limited to, Java primitive boxing
-   * e.g., int -> java.lang.Integer
-   * e.g., List -> java.util.List
+   * e.g., {@code int -> java.lang.Integer}
+   * e.g., {@code List -> java.util.List}
    */
   SymTypeExpression box(SymTypeExpression unboxed);
 
   /**
    * Unboxes SymTypeExpressions,
    * including, but not limited to, Java primitive unboxing
-   * e.g., java.lang.Integer -> int
-   * e.g., java.util.List -> List
+   * e.g., {@code java.lang.Integer -> int}
+   * e.g., {@code java.util.List -> List}
    */
   SymTypeExpression unbox(SymTypeExpression boxed);
 
   /**
    * normalizes the SymTypeExpression,
-   * e.g., (A & B[])[] -> (A[] & B[][])
+   * e.g., {@code (A & B[])[] -> (A[] & B[][])}
    * <p>
    * Within our type systems, each type has ONE normalized representation.
    * This can be used to, e.g., compare SymTypeExpressions
@@ -98,8 +98,8 @@ public interface ISymTypeRelations {
    * calculates the one promoted numeric type,
    * ignoring the specifics of the context
    * s. Java spec. 20 5.6
-   * e.g., short -> int
-   * e.g., byte, float -> float
+   * e.g., {@code short -> int}
+   * e.g., {@code byte, float -> float}
    */
   SymTypeExpression numericPromotion(List<SymTypeExpression> types);
 

@@ -4,7 +4,7 @@ import automatatagschema.AutomataTagSchemaMill;
 import de.monticore.tagging.tagschema._ast.ASTTagSchema;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;

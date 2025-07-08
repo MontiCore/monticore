@@ -38,8 +38,8 @@ public class SIUnitTypeRelations {
 
   /**
    * to convert to base units, e.g.,
-   * Hz -> s^-1
-   * J -> m^2*g*s^-2
+   * {@code Hz -> s^-1}
+   * {@code J -> m^2*g*s^-2}
    */
   protected static final Map<String, List<SIUnitBasic>> conversionTable;
 
@@ -195,10 +195,10 @@ public class SIUnitTypeRelations {
    * (s, m, kg, A, K, mol, cd)
    * any prefixes are removed (except "k" of kg)
    * Additionally, only one of each base unit exists in the SymType, e.g.,
-   * kg^2*m*kg -> kg^3*m
+   * {@code kg^2*m*kg -> kg^3*m}
    * and every exponent is positive, e.g.,
-   * kg^-2*m^0*s/K^-2 -> s*K^2/kg^2
-   * <p/>
+   * {@code kg^-2*m^0*s/K^-2 -> s*K^2/kg^2}
+   * <p>
    * this is implemented here (instead of the normalize visitor),
    * as it requires a lot of domain-specific knowledge / calculations.
    */

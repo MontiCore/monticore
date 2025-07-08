@@ -245,7 +245,7 @@ component grammar OCLExpressions
    *   only directly applied to a reflexive association. It 
    *   cannot be applied on chains of associations of the form (a.b.c)**
    *   The transitive closure of an association is also calculated if the
-   *   association’s source and target are not identical or even if they 
+   *   association's source and target are not identical or even if they 
    *   are not subclasses of each other. In that case, the transitive 
    *   closure is identical to the initial association.
    *   Example: this.clique = this.friend**
