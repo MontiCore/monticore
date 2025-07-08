@@ -489,14 +489,6 @@ public class SymTypeExpressionTest {
   }
 
   @Test
-  public void baseNameTest() {
-    Assertions.assertEquals("Person", ((SymTypeOfObject) (teP)).getBaseName());
-    Assertions.assertEquals("Human", ((SymTypeOfObject) (teH)).getBaseName());
-    Assertions.assertEquals("Map", ((SymTypeOfGenerics) (teMap)).getBaseName());
-    Assertions.assertEquals("Set", ((SymTypeOfGenerics) (teSet)).getBaseName());
-  }
-
-  @Test
   public void unboxTest(){
     Assertions.assertEquals("Set<Map<int,de.x.Person>>", SymTypeOfGenerics.unbox((SymTypeOfGenerics)teSetB));
     Assertions.assertEquals("Set<de.x.Person>", SymTypeOfGenerics.unbox((SymTypeOfGenerics)teSet));

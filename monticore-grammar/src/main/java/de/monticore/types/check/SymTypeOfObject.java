@@ -36,7 +36,7 @@ public class SymTypeOfObject extends SymTypeExpression {
    * one may add a getObjFullName() or similar if required
    * also, seems unused in our main projects
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public String getObjName() {
     return typeSymbol.getFullName();
   }
@@ -44,7 +44,7 @@ public class SymTypeOfObject extends SymTypeExpression {
   /**
    * @deprecated unused in main projects
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public void setObjName(String objname) {
     this.typeSymbol.setName(objname);
   }
@@ -52,8 +52,10 @@ public class SymTypeOfObject extends SymTypeExpression {
   /**
    * getBaseName: get the unqualified Name (no ., no Package)
    * @deprecated unused outside of tests, but not required for tests
+   * use {@link de.se_rwth.commons.Names} instead,
+   * or {@code getTypeInfo().getName()}
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public String getBaseName() {
     String[] parts = getObjName().split("\\.");
     return parts[parts.length - 1];
