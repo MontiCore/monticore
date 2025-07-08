@@ -1303,7 +1303,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
       //determine whether the result has to be a constant, generic or object
       if (arrayResult.getTypeInfo().getTypeParameterList().isEmpty()) {
         //if the return type is a primitive
-        if (SymTypePrimitive.boxMap.containsKey(arrayResult.getTypeInfo().getName())) {
+        if (arrayResult.isPrimitive()) {
           wholeResult = SymTypeExpressionFactory.createPrimitive(arrayResult.getTypeInfo().getName());
         }
         else {
