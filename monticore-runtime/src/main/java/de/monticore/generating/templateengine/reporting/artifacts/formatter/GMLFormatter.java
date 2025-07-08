@@ -29,7 +29,7 @@ public class GMLFormatter extends AFormatter {
   protected double edgeSizeRange = 0;
   
   /**
-   * @see AFormatter.printer.APrinter#print(visualization.model.RootPkg)
+   * AFormatter.printer.APrinter#print(visualization.model.RootPkg)
    */
   @Override
   public List<String> getContent(RootPkg rootPkg) {
@@ -144,8 +144,6 @@ public class GMLFormatter extends AFormatter {
   /**
    * Print the dot graph representation of this element
    * 
-   * @param o Open file to write to
-   * @param space Space for indentation
    */
   public List<String> getElementContent(Element element) {
     List<String> lines = Lists.newArrayList();
@@ -176,7 +174,7 @@ public class GMLFormatter extends AFormatter {
   
   /**
    * 
-   * @param name
+   * @param type
    * @return
    */
   protected String getShape(ElementType type) {

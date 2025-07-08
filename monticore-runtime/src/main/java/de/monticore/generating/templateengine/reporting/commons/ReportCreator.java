@@ -57,7 +57,6 @@ public class ReportCreator {
 	 * Opens a file
 	 * 
 	 * @param file
-	 * @return
 	 * @throws IOException
 	 */
 	public void openFile(File file) throws IOException {
@@ -107,7 +106,8 @@ public class ReportCreator {
 	/**
 	 * Removes the file with the given name and extension
 	 * 
-	 * @param detailedFileName
+	 * @param fileName
+	 * @param fileextension
 	 * @return true if file has been deleted, false if file could not be deleted
 	 *         or does not exists
 	 */

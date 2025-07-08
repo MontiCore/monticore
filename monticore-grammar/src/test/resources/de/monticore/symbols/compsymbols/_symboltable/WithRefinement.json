@@ -2,10 +2,10 @@
   "kind": "de.monticore.symbols.compsymbols._symboltable.ComponentTypeSymbol",
   "name": "Comp",
   "fullName": "Comp",
-  "super": [
+  "refinements": [
     {
       "kind": "de.monticore.types.check.CompKindOfComponentType",
-      "componentTypeName": "Parent"
+      "componentTypeName": "RefinementCType"
     }
   ]
 }

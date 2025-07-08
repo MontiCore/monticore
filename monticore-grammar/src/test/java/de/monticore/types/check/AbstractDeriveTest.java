@@ -33,15 +33,15 @@ public class AbstractDeriveTest {
 
   // Parser used for convenience:
   // (may be any other Parser that understands CommonExpressions)
-  AbstractTypeCheckTestParser p = new AbstractTypeCheckTestParser();
+  protected AbstractTypeCheckTestParser p;
 
   // This is an auxiliary
-  FullDeriveFromCombineExpressionsWithLiteralsAbstract derLit = new FullDeriveFromCombineExpressionsWithLiteralsAbstract();
+  protected FullDeriveFromCombineExpressionsWithLiteralsAbstract derLit;
 
   // other arguments not used (and therefore deliberately null)
 
   // This is the TypeChecker under Test:
-  TypeCalculator tc = new TypeCalculator(null, derLit);
+  protected TypeCalculator tc;
 
 
   @BeforeEach
@@ -97,6 +97,11 @@ public class AbstractDeriveTest {
     tc = new TypeCalculator(null, derLit);
     flatExpressionScopeSetter = new FlatExpressionScopeSetter(scope);
     traverser = getTraverser(flatExpressionScopeSetter);
+
+    derLit = new FullDeriveFromCombineExpressionsWithLiteralsAbstract();
+    p = AbstractTypeCheckTestMill.parser();
+    tc = new TypeCalculator(null, derLit);
+
   }
 
   public void add2scope(IBasicSymbolsScope scope, TypeSymbol type){

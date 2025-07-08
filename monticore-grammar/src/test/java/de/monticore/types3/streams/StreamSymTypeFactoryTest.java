@@ -1,32 +1,27 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.types3.streams;
 
+import de.monticore.runtime.junit.AbstractMCTest;
+import de.monticore.types3.util.DefsTypesForTests;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsGlobalScope;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.mccollectiontypes.types3.util.MCCollectionSymTypeFactory;
 import de.monticore.types.mccollectiontypes.types3.util.MCCollectionTypeRelations;
-import de.monticore.types3.AbstractTypeTest;
-import de.monticore.types3.util.DefsTypesForTests;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static de.monticore.types3.util.DefsTypesForTests._boxedListSymType;
-import static de.monticore.types3.util.DefsTypesForTests._boxedMapSymType;
 import static de.monticore.types3.util.DefsTypesForTests._boxedOptionalSymType;
 import static de.monticore.types3.util.DefsTypesForTests._boxedSetSymType;
-import static de.monticore.types3.util.DefsTypesForTests._floatSymType;
 import static de.monticore.types3.util.DefsTypesForTests._intSymType;
 import static de.monticore.types3.util.DefsTypesForTests._unboxedListSymType;
-import static de.monticore.types3.util.DefsTypesForTests._unboxedMapSymType;
 import static de.monticore.types3.util.DefsTypesForTests._unboxedOptionalSymType;
 import static de.monticore.types3.util.DefsTypesForTests._unboxedSetSymType;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class StreamSymTypeFactoryTest extends AbstractTypeTest {
+public class StreamSymTypeFactoryTest extends AbstractMCTest {
 
   MCCollectionTypeRelations collectionTypeRelations;
 

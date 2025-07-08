@@ -1,42 +1,30 @@
 /* (c) https://github.com/MontiCore/monticore */
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
 
+import automata.AutomataMill;
 import automata._ast.ASTAutomaton;
 import automata._ast.ASTState;
 import automata._parser.AutomataParser;
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import de.monticore.runtime.junit.MCAssertions;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * Main class for the some Demonstration to Parse
  */
+@TestWithMCLanguage(AutomataMill.class)
 public class AutomataParseTest {
-  
-  @Before
-  public void setUp() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-    Log.clearFindings();
-    LogStub.clearPrints();
-  }
-  
-  /**
-   * @throws IOException
-   *
-   */
-  @Test
+
+  @org.junit.jupiter.api.Test
   public void testParseMethods() throws IOException {
 
     String filename = "src/test/resources/example/PingPong.aut";
-    AutomataParser p = new AutomataParser();
-    
+    AutomataParser p = AutomataMill.parser();
+
     // parse from a file
     Optional<ASTAutomaton> at = p.parse(filename);
     assertTrue(at.isPresent());
@@ -55,8 +43,8 @@ public class AutomataParseTest {
     // parse for a sublanguage, here: a State
     Optional<ASTState> s = p.parse_StringState("state Ping;");
     assertTrue(s.isPresent());
-  
-    assertTrue(Log.getFindings().isEmpty());
+
+    MCAssertions.assertNoFindings();
   }
   
 }

@@ -5,7 +5,7 @@
 
 # MontiCore - Language Workbench and Development Tool Framework 
 
-<!--
+
 ---
 
 **NEWS**:
@@ -15,12 +15,12 @@
   </a>  
 </div>  
   
-* ISW Stuttgart and RWTH Aachen organize the third **[MontiCore Symposium 2025](docs/MontiCoreSymposium.md)** March 23 - March 26 in Gemünd, Germany
-  * Deadline for submission of papers or abstracts: January, 10th.
+* ISW Stuttgart and RWTH Aachen organize the fourth **[MontiCore Symposium 2025](docs/MontiCoreSymposium.md)** September 28 - October 01 in Köln-Riehl, Germany
+  * Deadline for submission of papers or abstracts: July, 25th.
 
 ---
 
--->
+
 
 [MontiCore](https://www.monticore.de) is a language workbench for the efficient 
 development of domain-specific languages (DSLs). It processes an extended 

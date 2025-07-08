@@ -7,13 +7,13 @@ dependencies {
   implementation project(':monticore-test:montitrans:test-dstl-gen')
 }
 
-task generateStatechartTRRules {
+tasks.register('generateStatechartTRRules') {
   group = "montitrans"
 }
 fileTree(dir: "$projectDir/src/main/models/statechart/mtr", include: '**/**.mtr').each {
   def g = it
   def taskname = "generateStatechartTRRules${it.getName().substring(0, it.getName().lastIndexOf('.'))}"
-  task "$taskname"(type: MontiTransExec) {
+  tasks.register(taskname, MontiTransExec) {
     getClassPath().setFrom(project(':monticore-test:montitrans:test-dstl-gen').sourceSets.main.runtimeClasspath)
     TFGenTool = 'mc.testcases.statechart.tr.StatechartTFGenTool'
     input = file(g)
@@ -22,13 +22,13 @@ fileTree(dir: "$projectDir/src/main/models/statechart/mtr", include: '**/**.mtr'
   generateStatechartTRRules.dependsOn("$taskname")
 }
 
-task generateSocialNetworkTRRules {
+tasks.register('generateSocialNetworkTRRules') {
   group = "montitrans"
 }
 fileTree(dir: "$projectDir/src/main/models/social/mtr", include: '**/**.mtr').each {
   def g = it
   def taskname = "generateSocialNetworkTRRules${it.getName().substring(0, it.getName().lastIndexOf('.'))}"
-  task "$taskname"(type: MontiTransExec) {
+  tasks.register(taskname, MontiTransExec) {
     getClassPath().setFrom(project(':monticore-test:montitrans:test-dstl-gen').sourceSets.main.runtimeClasspath)
     TFGenTool = 'mc.testcases.social.tr.SocialNetworkTFGenTool'
     input = file(g)
@@ -37,13 +37,13 @@ fileTree(dir: "$projectDir/src/main/models/social/mtr", include: '**/**.mtr').ea
   generateSocialNetworkTRRules.dependsOn("$taskname")
 }
 
-task generateExpressionDSLTRRules {
+tasks.register('generateExpressionDSLTRRules') {
   group = "montitrans"
 }
 fileTree(dir: "$projectDir/src/main/models/expressiondsl/mtr", include: '**/**.mtr').each {
   def g = it
   def taskname = "generateExpressionDSLTRRules${it.getName().substring(0, it.getName().lastIndexOf('.'))}"
-  task "$taskname"(type: MontiTransExec) {
+  tasks.register(taskname, MontiTransExec) {
     getClassPath().setFrom(project(':monticore-test:montitrans:test-dstl-gen').sourceSets.main.runtimeClasspath)
     TFGenTool = 'mc.testcases.tr.ExpressionDSLTFGenTool'
     input = file(g)

@@ -1,11 +1,11 @@
 package de.monticore.types3;
 
+import de.monticore.types3.util.DefsVariablesForTests;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsGlobalScope;
 import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
 import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
 import de.monticore.types.check.SymTypeExpressionFactory;
-import de.monticore.types3.util.DefsVariablesForTests;
 import de.monticore.types3.util.OOWithinTypeBasicSymbolsResolver;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

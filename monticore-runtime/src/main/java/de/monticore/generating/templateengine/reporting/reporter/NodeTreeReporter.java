@@ -182,7 +182,6 @@ public class NodeTreeReporter extends AReporter {
    * coming from
    * 
    * @param ast
-   * @return
    */
   protected void deriveTreeStructureAST(ASTNode ast) {
     

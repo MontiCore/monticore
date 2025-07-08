@@ -11,9 +11,9 @@ import de.monticore.tagging.tags._ast.ASTTag;
 import de.monticore.tagging.tags._ast.ASTValuedTag;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.util.List;
@@ -26,16 +26,17 @@ public class GrammarTagTest {
 
   static ISymbolTagger tagger;
 
-  @BeforeClass
+  @BeforeAll
   public static void init() throws Exception {
     TagRepository.clearTags();
     LogStub.init();
     Log.enableFailQuick(false);
+    TagsMill.init();
 
     // Load all relevant models
     Optional<?> opt = TagRepository.loadTagModel(new File("src/test/resources/models/SimpleGrammar.tags"));
     if (opt.isEmpty())
-      Assert.fail("Failed to load Simple.tags");
+      Assertions.fail("Failed to load Simple.tags");
 
     tagger = new SimpleSymbolTagger(TagRepository::getLoadedTagUnits);
 
@@ -51,14 +52,14 @@ public class GrammarTagTest {
   @Test
   public void testAutomaton() {
     List<ASTTag> tags = tagger.getTags(automata.getSymbol());
-    Assert.assertEquals(1, tags.size());
+    Assertions.assertEquals(1, tags.size());
     assertSimpleTag(tags.get(0), "Grammar");
   }
 
   @Test
   public void testAutomatonProdSymbol() {
     List<ASTTag> tags = tagger.getTags(automata.getSpannedScope().resolveProd("Automaton").get());
-    Assert.assertEquals(2, tags.size());
+    Assertions.assertEquals(2, tags.size());
     assertValuedTag(tags.get(0), "SymbolProd", "within");
     assertValuedTag(tags.get(1), "SymbolProd", "fqn");
   }
@@ -66,14 +67,14 @@ public class GrammarTagTest {
   @Test
   public void testFQNAutomaton() {
     List<ASTTag> tags = tagger.getTags(fqnAutomata.getSymbol());
-    Assert.assertEquals(1, tags.size());
+    Assertions.assertEquals(1, tags.size());
     assertSimpleTag(tags.get(0), "FQNGrammar");
   }
 
   @Test
   public void testFQNAutomatonProdSymbol() {
     List<ASTTag> tags = tagger.getTags(fqnAutomata.getSpannedScope().resolveProd("Automaton").get());
-    Assert.assertEquals(2, tags.size());
+    Assertions.assertEquals(2, tags.size());
     assertValuedTag(tags.get(0), "SymbolProd", "within");
     assertValuedTag(tags.get(1), "SymbolProd", "fqn");
   }
@@ -82,34 +83,34 @@ public class GrammarTagTest {
   @Test
   public void testAddRemove() {
     List<ASTTag> tags = tagger.getTags(fqnAutomata.getSpannedScope().resolveProd("Automaton").get());
-    Assert.assertEquals(2, tags.size());
+    Assertions.assertEquals(2, tags.size());
     tagger.addTag(fqnAutomata.getSpannedScope().resolveProd("Automaton").get(),
             TagsMill.simpleTagBuilder().setName("newTag").build());
     tags = tagger.getTags(fqnAutomata.getSpannedScope().resolveProd("Automaton").get());
-    Assert.assertEquals("Add on FQN.Automaton", 3, tags.size());
+    Assertions.assertEquals(3, tags.size(), "Add on FQN.Automaton");
 
     tagger.removeTag(fqnAutomata.getSpannedScope().resolveProd("Automaton").get(), tags.get(2));
     tags = tagger.getTags(fqnAutomata.getSpannedScope().resolveProd("Automaton").get());
-    Assert.assertEquals("Remove on FQN.Automaton", 2, tags.size());
+    Assertions.assertEquals(2, tags.size(), "Remove on FQN.Automaton");
 
 
     tagger.addTag(fqnAutomata.getSpannedScope().resolveProd("State").get(),
             TagsMill.simpleTagBuilder().setName("newTag").build());
     tags = tagger.getTags(fqnAutomata.getSpannedScope().resolveProd("State").get());
-    Assert.assertEquals("Add on (freshly tagged) FQN.State", 1, tags.size());
+    Assertions.assertEquals(1, tags.size(), "Add on (freshly tagged) FQN.State");
   }
 
 
   protected void assertValuedTag(ASTTag tag, String name, String value) {
-    Assert.assertTrue(tag instanceof ASTValuedTag);
+    Assertions.assertInstanceOf(ASTValuedTag.class, tag);
     ASTValuedTag valuedTag = (ASTValuedTag) tag;
-    Assert.assertEquals(name, valuedTag.getName());
-    Assert.assertEquals(value, valuedTag.getValue());
+    Assertions.assertEquals(name, valuedTag.getName());
+    Assertions.assertEquals(value, valuedTag.getValue());
   }
 
   protected void assertSimpleTag(ASTTag tag, String name) {
-    Assert.assertTrue(tag instanceof ASTSimpleTag);
+    Assertions.assertInstanceOf(ASTSimpleTag.class, tag);
     ASTSimpleTag simpleTag = (ASTSimpleTag) tag;
-    Assert.assertEquals(name, simpleTag.getName());
+    Assertions.assertEquals(name, simpleTag.getName());
   }
 }

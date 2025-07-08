@@ -30,14 +30,14 @@ public abstract class SymTypeExpression {
   protected static final String LOG_NAME = "SymTypeExpression";
 
   /**
-   * print: Conversion to a compact string, such as "int", "Person", "List< A >"
+   * print: Conversion to a compact string, such as {@code "int"}, {@code "Person"}, {@code "List< A >"}
    */
   public String print() {
     return new SymTypePrintVisitor().calculate(this);
   }
 
   /**
-   * printFullName: prints the full name of the symbol, such as "java.util.List<java.lang.String>"
+   * printFullName: prints the full name of the symbol, such as {@code "java.util.List<java.lang.String>"}
    * @return
    */
   public String printFullName() {
@@ -79,7 +79,7 @@ public abstract class SymTypeExpression {
   }
 
   /**
-   * Am I a generic type? (such as "List<Integer>")
+   * Am I a generic type? (such as {@code "List<Integer>"})
    */
   public boolean isGenericType() {
     return false;
@@ -191,7 +191,7 @@ public abstract class SymTypeExpression {
   }
 
   /**
-   * Am I a function type (e.g. "String -> Integer")
+   * Am I a function type (e.g. {@code "String -> Integer"})
    */
   public boolean isFunctionType() {
     return false;
@@ -258,7 +258,7 @@ public abstract class SymTypeExpression {
   }
 
   /**
-   * Am I an intersection type (e.g. "(A&B)")
+   * Am I an intersection type (e.g. {@code "(A&B)"})
    */
   public boolean isIntersectionType() {
     return false;

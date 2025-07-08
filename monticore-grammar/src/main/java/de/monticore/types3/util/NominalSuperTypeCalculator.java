@@ -28,8 +28,8 @@ public class NominalSuperTypeCalculator {
    * Practically, this is meant to be used with object types including generics.
    * This returns the list of nominal supertypes,
    * e.g., in Java using extends / implements
-   * e.g. Collection<Integer> is an explicit super type of List<Integer>,
-   * List<? super Integer> is a super type of List<Integer>,
+   * e.g. {@code Collection<Integer>} is an explicit super type of {@code List<Integer>},
+   * {@code List<? super Integer>} is a super type of {@code List<Integer>},
    * but not an explicitly defined one.
    * We consider explicitly defined super types to be the ones
    * given by the list of super types in the type symbol.
