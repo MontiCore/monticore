@@ -3,6 +3,7 @@ package de.monticore.types.check;
 
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.types3.ISymTypeVisitor;
+import de.se_rwth.commons.logging.Log;
 
 /**
  * An objectType is a full qualified class name.
@@ -18,11 +19,13 @@ public class SymTypeOfObject extends SymTypeExpression {
    */
   public SymTypeOfObject(TypeSymbol typeSymbol)
   {
+    Log.errorIfNull(typeSymbol);
     this.typeSymbol = typeSymbol;
   }
 
   @Override
   public boolean hasTypeInfo() {
+    // should allways be true
     return typeSymbol != null;
   }
 
