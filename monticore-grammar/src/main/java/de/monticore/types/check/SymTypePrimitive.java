@@ -33,6 +33,10 @@ public class SymTypePrimitive extends SymTypeExpression {
     return typeSymbol.getName();
   }
 
+  /**
+   * @deprecated use {@link de.monticore.types3.SymTypeRelations#box(SymTypeExpression)}
+   */
+  @Deprecated
   public String getBoxedPrimitiveName() {
     return box(typeSymbol.getName());
   }
