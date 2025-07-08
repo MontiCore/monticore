@@ -4,6 +4,7 @@ package de.monticore.types.check;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.types3.ISymTypeVisitor;
+import de.se_rwth.commons.logging.Log;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -16,11 +17,13 @@ public class SymTypePrimitive extends SymTypeExpression {
   protected TypeSymbol typeSymbol;
 
   public SymTypePrimitive(TypeSymbol typeSymbol) {
+    Log.errorIfNull(typeSymbol);
     this.typeSymbol = typeSymbol;
   }
 
   @Override
   public boolean hasTypeInfo() {
+    // should always return true
     return typeSymbol != null;
   }
 
