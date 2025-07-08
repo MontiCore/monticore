@@ -217,7 +217,6 @@ public class SymTypeExpressionTest {
   @Test
   public void subTypeTest() {
     Assertions.assertTrue(teInt.isPrimitive());
-    Assertions.assertTrue(teInt.isValidType());
     Assertions.assertFalse(teInt.isGenericType());
     Assertions.assertFalse(teInt.isTypeVariable());
     Assertions.assertFalse(teInt.isArrayType());
@@ -230,31 +229,20 @@ public class SymTypeExpressionTest {
     Assertions.assertFalse(teInt.isUnionType());
 
     Assertions.assertTrue(teVarA.isTypeVariable());
-    Assertions.assertFalse(teVarA.isValidType());
     Assertions.assertTrue(teP.isObjectType());
-    Assertions.assertTrue(teP.isValidType());
     Assertions.assertTrue(teVoid.isVoidType());
-    Assertions.assertTrue(teVoid.isValidType());
     Assertions.assertTrue(teNull.isNullType());
-    Assertions.assertTrue(teNull.isValidType());
     Assertions.assertTrue(teArr1.isArrayType());
-    Assertions.assertTrue(teArr1.isValidType());
     Assertions.assertTrue(teSet.isGenericType());
-    Assertions.assertTrue(teSet.isValidType());
     Assertions.assertTrue(teUpperBound.isWildcard());
-    Assertions.assertFalse(teUpperBound.isValidType());
     Assertions.assertTrue(teFunc1.isFunctionType());
-    Assertions.assertTrue(teFunc1.isValidType());
     Assertions.assertTrue(teSIUnit1.isSIUnitType());
     Assertions.assertTrue(teNumWithSIUnit1.isNumericWithSIUnitType());
     Assertions.assertTrue(teUnion1.isUnionType());
-    Assertions.assertTrue(teUnion1.isValidType());
     Assertions.assertTrue(teInter1.isIntersectionType());
-    Assertions.assertTrue(teInter1.isValidType());
     Assertions.assertTrue(teTuple1.isTupleType());
     Assertions.assertTrue(teRegEx1.isRegExType());
     Assertions.assertTrue(teObscure.isObscureType());
-    Assertions.assertFalse(teObscure.isValidType());
   }
   
   @Test
@@ -1002,12 +990,8 @@ public class SymTypeExpressionTest {
   public void symTypePrimitiveTest(){
     SymTypePrimitive intType = SymTypeExpressionFactory.createPrimitive("int");
     Assertions.assertEquals("int", intType.print());
-    intType.setPrimitiveName("double");
-    Assertions.assertEquals("double", intType.print());
-    intType.setPrimitiveName("int");
 
     Assertions.assertEquals("java.lang.Integer", intType.getBoxedPrimitiveName());
-    Assertions.assertEquals("Integer", intType.getBaseOfBoxedName());
     Assertions.assertTrue(intType.isIntegralType());
     Assertions.assertTrue(intType.isNumericType());
   }

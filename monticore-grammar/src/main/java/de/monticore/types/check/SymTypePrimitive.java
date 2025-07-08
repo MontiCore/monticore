@@ -40,7 +40,7 @@ public class SymTypePrimitive extends SymTypeExpression {
   /**
    * @deprecated only used in 1 test ONCE... in our main projects
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public String getBaseOfBoxedName() {
     String[] parts = box(typeSymbol.getName()).split("\\.");
     return parts[parts.length - 1];
@@ -49,7 +49,7 @@ public class SymTypePrimitive extends SymTypeExpression {
   /**
    * @deprecated only used in tests in our main projects
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public void setPrimitiveName(String constName){
     typeSymbol.setName(constName);
   }
@@ -59,7 +59,7 @@ public class SymTypePrimitive extends SymTypeExpression {
    * (on purpose not implemented as enum)
    * @deprecated cannot assume fixed set for all languages
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public static final List<String> primitiveTypes =
       Collections.unmodifiableList(Arrays.asList(
           BasicSymbolsMill.BOOLEAN,
