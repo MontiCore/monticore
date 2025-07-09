@@ -79,7 +79,7 @@ public class NameTranslation implements
             Optional<String> usageName = getUsageName(rootLink.source(), link.source());
             String nameToUse = usageName.isPresent() ? usageName.get() : link.source().getName();
             link.target().setName(nameToUse);
-            TransformationHelper.addStereotypeValue(link.target().getModifier(), MC2CDStereotypes.TERMINAL_DEFAULT_VALUE.name(), link.source().getName());
+            TransformationHelper.addStereotypeValue(link.target().getModifier(), MC2CDStereotypes.TERMINAL_DEFAULT_VALUE.toString(), link.source().getName());
         }
 
         for (Link<ASTConstantGroup, ASTCDAttribute> link : rootLink.getLinks(ASTConstantGroup.class,
