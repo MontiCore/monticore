@@ -2,4 +2,16 @@
 grammar G1 extends de.monticore.MCBasics {
   S = "...S1" a:T;
   T = "T1";
+
+  // Next, we test that the builders do not require the operator
+  TestExprMandatory = l:Name operator:"&&" r:Name;
+  TestExprMandatoryEscaped = l:Name operator:"\"hellö" r:Name;
+  TestExprOpt = l:Name operator:"OPT"? r:Name;
+  TestExprOptGroup = l:Name (operator:"OPT_GROUP")? r:Name;
+  TestExprStar = l:Name operator:"STAR"* r:Name;
+  TestExprStarGroup = l:Name (operator:"STAR_GROUP")* r:Name;
+  TestExprPlus = l:Name operator:"PLUS"+ r:Name;
+  TestExprPlusGroup = l:Name (operator:"PLUS_GROUP")+ r:Name;
+  TestExprALT = l:Name (operator:"ALT1" | operator:"ALT2") r:Name;
+
 }
