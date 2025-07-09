@@ -3,6 +3,7 @@
 package de.monticore.literals;
 
 import de.se_rwth.commons.logging.Log;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 /**
  * This class provides methods for converting literals. The LiteralsHelper is a singleton.
@@ -57,26 +58,7 @@ public class MCLiteralsDecoder {
    * @return decoded string
    */
   public static String decodeString(String s) {
-    StringBuilder ret = new StringBuilder();
-    String in = s;
-    
-    while (in.length() != 0) {
-      if (in.charAt(0) == '\\') {
-        if (in.charAt(1) == 'u') { // unicode
-          ret.append(decodeChar(in.substring(0, 6)));
-          in = in.substring(6);
-        }
-        else { // escape sequence
-          ret.append(decodeChar(in.substring(0, 2)));
-          in = in.substring(2);
-        }
-      }
-      else { // single char
-        ret.append(in.charAt(0));
-        in = in.substring(1);
-      }
-    }
-    return ret.toString();
+    return StringEscapeUtils.unescapeJava(s);
   }
   
   /**
