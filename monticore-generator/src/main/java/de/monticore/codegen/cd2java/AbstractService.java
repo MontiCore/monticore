@@ -29,6 +29,7 @@ import de.monticore.umlmodifier._ast.ASTModifier;
 import de.monticore.umlstereotype._ast.ASTStereoValue;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -269,9 +270,23 @@ public class AbstractService<T extends AbstractService> {
       modifier.getStereotype().getValuesList().stream()
           .filter(value -> value.getName().equals(stereotype.toString()))
           .filter(ASTStereoValue::isPresentText)
-          .forEach(value -> values.add(value.getValue()));
+          .forEach(value -> values.add(getStereoValueValueFix(value))); // TODO: Replace with value.getValue() after 7.8.0-RELEASE
     }
     return values;
+  }
+
+  // TODO: Remove me after 7.8.0-RELEASE
+  protected String getStereoValueValueFix(ASTStereoValue stereoValue) {
+    // The ASTStereoValue#getValue() fails with strings
+    if (stereoValue.getContent() == null) {
+      if (stereoValue.isPresentText()) {
+        stereoValue.setContent(StringEscapeUtils.unescapeJava(stereoValue.getText().getValue()));
+      } else {
+        stereoValue.setContent("");
+      }
+    }
+
+    return stereoValue.getContent();
   }
 
   /**
@@ -313,6 +328,11 @@ public class AbstractService<T extends AbstractService> {
   public String getInheritedGrammarName(ASTCDAttribute attribute) {
     return getStereotypeValues(attribute.getModifier(), MC2CDStereotypes.INHERITED).get(0);
   }
+
+  public List<String> getTerminalDefaultValues(ASTCDAttribute attribute) {
+    return getStereotypeValues(attribute.getModifier(), MC2CDStereotypes.TERMINAL_DEFAULT_VALUE);
+  }
+
 
   public boolean hasDeprecatedStereotype(ASTModifier modifier) {
     return hasStereotype(modifier, MC2CDStereotypes.DEPRECATED);

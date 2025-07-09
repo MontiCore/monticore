@@ -8,6 +8,8 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
+import de.monticore.codegen.mc2cd.MC2CDStereotypes;
+import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.LexNamer;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
@@ -77,6 +79,7 @@ public class NameTranslation implements
             Optional<String> usageName = getUsageName(rootLink.source(), link.source());
             String nameToUse = usageName.isPresent() ? usageName.get() : link.source().getName();
             link.target().setName(nameToUse);
+            TransformationHelper.addStereotypeValue(link.target().getModifier(), MC2CDStereotypes.TERMINAL_DEFAULT_VALUE.toString(), link.source().getName());
         }
 
         for (Link<ASTConstantGroup, ASTCDAttribute> link : rootLink.getLinks(ASTConstantGroup.class,
