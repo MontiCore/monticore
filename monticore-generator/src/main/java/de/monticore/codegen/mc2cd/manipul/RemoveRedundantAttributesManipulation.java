@@ -12,8 +12,8 @@ import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
 
+import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Optional;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
@@ -42,14 +42,9 @@ final class RemoveRedundantAttributesManipulation implements UnaryOperator<ASTCD
    * @param cdAttributes the list of all the attributes in the class
    */
   List<ASTCDAttribute> removeRedundantAttributes(List<ASTCDAttribute> cdAttributes) {
-    ListIterator<ASTCDAttribute> iterator = cdAttributes.listIterator(cdAttributes.size());
-    // We iterate backwards,
-    // as the first attribute, which is created from the classprod/interface
-    // itself, should be kept.
-    // The 2nd attribute is, e.g., created by the InheritedAttributesTranslation,
-    // and should be removed as redundant
-    while (iterator.hasPrevious()) {
-      ASTCDAttribute inspectedAttribute = iterator.previous();
+    Iterator<ASTCDAttribute> iterator = cdAttributes.iterator();
+    while (iterator.hasNext()) {
+      ASTCDAttribute inspectedAttribute = iterator.next();
       List<ASTCDAttribute> remainingAttributes = cdAttributes
           .stream()
           .filter(attribute -> !attribute.equals(inspectedAttribute))
@@ -84,7 +79,25 @@ final class RemoveRedundantAttributesManipulation implements UnaryOperator<ASTCD
     boolean sameOrHigherCategory = inspectedCategory
         .compareTo(AttributeCategory.determineCategory(remainingAttribute)) < 1;
 
-    return sameName && sameType && sameOrHigherCategory;
+    if (sameName && sameType && sameOrHigherCategory) {
+      // In case multiple attributes are present:
+      // The first attribute, which is created from the classprod/interface
+      // itself, should be kept.
+      // The 2nd attribute is, e.g., created by the InheritedAttributesTranslation,
+      // and should be removed as redundant,
+      // but only IFF the second attribute does not have more stereotypes
+      // (in particular, the inherited one)
+      // [a1=Attr[name], a2=Attr[name <<inherited>]] => a2
+      // [a1=Attr[name], a2=Attr[name]] => a1
+      int inspectedStereoCount = inspectedAttribute.getModifier().isPresentStereotype()
+              ? inspectedAttribute.getModifier().getStereotype().getValuesList().size() : 0;
+      int remainingStereoCount = remainingAttribute.getModifier().isPresentStereotype()
+              ? remainingAttribute.getModifier().getStereotype().getValuesList().size() : 0;
+
+      return inspectedStereoCount < remainingStereoCount;
+    }
+
+    return false;
   }
 
   protected static String getOriginalTypeName(ASTCDAttribute cdAttribute) {
