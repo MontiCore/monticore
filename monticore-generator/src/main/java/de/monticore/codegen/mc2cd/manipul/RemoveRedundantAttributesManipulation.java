@@ -76,10 +76,15 @@ final class RemoveRedundantAttributesManipulation implements UnaryOperator<ASTCD
 
     boolean sameType = inspectedType.equals(getOriginalTypeName(remainingAttribute));
 
-    boolean sameOrHigherCategory = inspectedCategory
-        .compareTo(AttributeCategory.determineCategory(remainingAttribute)) < 1;
+    // to check for sameOrHigherCategory
+    int categoryRelation = inspectedCategory
+        .compareTo(AttributeCategory.determineCategory(remainingAttribute));
 
-    if (sameName && sameType && sameOrHigherCategory) {
+    if (sameName && sameType && categoryRelation < 0) {
+      // of higher category -> redundant
+      return true;
+    } else if (sameName && sameType && categoryRelation == 0) {
+      // of the same category:
       // In case multiple attributes are present:
       // The first attribute, which is created from the classprod/interface
       // itself, should be kept.
