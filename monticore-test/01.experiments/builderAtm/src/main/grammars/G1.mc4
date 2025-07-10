@@ -15,10 +15,11 @@ grammar G1 extends de.monticore.MCBasics {
   TestExprALT = l:Name (operator:"ALT1" | operator:"ALT2") r:Name;
 
   // Test the same with inheritance and duplicate attributes
-	interface TestExpression;
-	TestBooleanAndOpExpression implements TestExpression <120>, TestInfixExpression =
-		left:TestExpression operator:"&&" right:TestExpression;
-	interface TestInfixExpression =
-						left:TestExpression operator:"" right:TestExpression;
-	TestNameE implements TestExpression = Name;
+  interface TestExpression;
+  TestBooleanAndOpExpression implements TestExpression <120>, TestInfixExpression =
+    left:TestExpression operator:"&&" right:TestExpression;
+  interface TestInfixExpression =
+    left:TestExpression operator:"" right:TestExpression;
+  TestNameE implements TestExpression = Name;
+
 }
