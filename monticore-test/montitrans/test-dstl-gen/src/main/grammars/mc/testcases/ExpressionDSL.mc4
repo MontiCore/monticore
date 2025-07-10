@@ -13,4 +13,9 @@ grammar ExpressionDSL extends
     Foo = "expr" Expression;
 
     CDAttribute = Modifier MCType Name ("=" initial:Expression)? ";";
+
+		// a production introducing a keyword
+    MyFancyKeywordP = "MyFancyKeyword";
+    // which is then turned into no keyword
+    nokeyword "MyFancyKeyword";
 }
