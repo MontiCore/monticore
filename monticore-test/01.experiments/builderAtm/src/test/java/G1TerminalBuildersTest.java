@@ -68,4 +68,18 @@ public class G1TerminalBuildersTest {
     var elem = G1Mill.testExprALTBuilder().setL("l").setR("r").build();
     Assertions.assertFalse(elem.isPresentOperator());
   }
+
+  @Test
+  public void testBooleanAndOpExpression() {
+    // First, check that we can still call build() without an operator
+    var elem = G1Mill.testBooleanAndOpExpressionBuilder()
+            .setLeft(G1Mill.testNameEBuilder().setName("l").build())
+            .setRight(G1Mill.testNameEBuilder().setName("r").build())
+            .build();
+    // With duplicate attributes: Check that the correct operator-attribute was used
+    Assertions.assertEquals("&&", elem.getOperator());
+    // The InfixExpression's operator:"" MUST not match
+    // (and yes, this is a redundant check)
+    Assertions.assertNotEquals("", elem.getOperator());
+  }
 }

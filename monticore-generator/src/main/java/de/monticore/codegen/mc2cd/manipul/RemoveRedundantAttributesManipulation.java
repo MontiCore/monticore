@@ -12,8 +12,8 @@ import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
 
-import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Optional;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
@@ -42,9 +42,14 @@ final class RemoveRedundantAttributesManipulation implements UnaryOperator<ASTCD
    * @param cdAttributes the list of all the attributes in the class
    */
   List<ASTCDAttribute> removeRedundantAttributes(List<ASTCDAttribute> cdAttributes) {
-    Iterator<ASTCDAttribute> iterator = cdAttributes.iterator();
-    while (iterator.hasNext()) {
-      ASTCDAttribute inspectedAttribute = iterator.next();
+    ListIterator<ASTCDAttribute> iterator = cdAttributes.listIterator(cdAttributes.size());
+    // We iterate backwards,
+    // as the first attribute, which is created from the classprod/interface
+    // itself, should be kept.
+    // The 2nd attribute is, e.g., created by the InheritedAttributesTranslation,
+    // and should be removed as redundant
+    while (iterator.hasPrevious()) {
+      ASTCDAttribute inspectedAttribute = iterator.previous();
       List<ASTCDAttribute> remainingAttributes = cdAttributes
           .stream()
           .filter(attribute -> !attribute.equals(inspectedAttribute))
