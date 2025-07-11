@@ -93,6 +93,8 @@ final class RemoveRedundantAttributesManipulation implements UnaryOperator<ASTCD
    */
   protected static boolean isAttrPreferred(ASTCDAttribute candAttr,
                                            ASTCDAttribute existingAttr) {
+    // The reason behind this heuristic is documented in removeRedundantAttributes
+
     // First: check category
     AttributeCategory candCategory = determineCategory(candAttr);
     int categoryRelation = candCategory
@@ -108,7 +110,7 @@ final class RemoveRedundantAttributesManipulation implements UnaryOperator<ASTCD
     int existingStereoCount = existingAttr.getModifier().isPresentStereotype()
             ? existingAttr.getModifier().getStereotype().getValuesList().size() : 0;
     return candStereoCount > existingStereoCount;
-    // By default, the first attribute is kept
+    // The fallback heuristic is to keep the first attribute
   }
 
   protected static String getOriginalTypeName(ASTCDAttribute cdAttribute) {
