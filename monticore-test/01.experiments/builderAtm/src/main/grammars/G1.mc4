@@ -14,4 +14,12 @@ grammar G1 extends de.monticore.MCBasics {
   TestExprPlusGroup = l:Name (operator:"PLUS_GROUP")+ r:Name;
   TestExprALT = l:Name (operator:"ALT1" | operator:"ALT2") r:Name;
 
+  // Test the same with inheritance and duplicate attributes
+  interface TestExpression;
+  TestBooleanAndOpExpression implements TestExpression <120>, TestInfixExpression =
+    left:TestExpression operator:"&&" right:TestExpression;
+  interface TestInfixExpression =
+    left:TestExpression operator:"" right:TestExpression;
+  TestNameE implements TestExpression = Name;
+
 }
