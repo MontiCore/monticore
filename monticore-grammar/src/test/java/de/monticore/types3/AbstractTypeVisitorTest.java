@@ -120,24 +120,15 @@ public class AbstractTypeVisitorTest extends AbstractMCTest {
       ITraverser typeMapTraverser, Type4Ast type4Ast) {
     CombineExpressionsWithLiteralsTraverser combinedScopesCompleter =
         CombineExpressionsWithLiteralsMill.traverser();
-    IDerive deriver = new TypeCheck3AsIDerive();
-    ISynthesize synthesizer = new TypeCheck3AsISynthesize();
     combinedScopesCompleter.add4LambdaExpressions(
-        new LambdaExpressionsSTCompleteTypes2(
-            typeMapTraverser,
-            getType4Ast()
-        )
+        new LambdaExpressionsSTCompleteTypes2()
     );
     OCLExpressionsSymbolTableCompleter oclExprCompleter =
         new OCLExpressionsSymbolTableCompleter();
-    oclExprCompleter.setDeriver(deriver);
-    oclExprCompleter.setSynthesizer(synthesizer);
     combinedScopesCompleter.add4OCLExpressions(oclExprCompleter);
     combinedScopesCompleter.setOCLExpressionsHandler(oclExprCompleter);
     SetExpressionsSymbolTableCompleter setExprCompleter =
         new SetExpressionsSymbolTableCompleter();
-    setExprCompleter.setDeriver(deriver);
-    setExprCompleter.setSynthesizer(synthesizer);
     combinedScopesCompleter.add4SetExpressions(setExprCompleter);
     combinedScopesCompleter.setSetExpressionsHandler(setExprCompleter);
     symbolTableCompleter = combinedScopesCompleter;
