@@ -196,6 +196,10 @@ public class SymTypeExpressionFactory {
     return new SymTypeArray(argument, dim);
   }
 
+  /**
+   * @deprecated contains mostly deprecated behavior
+   */
+  @Deprecated
   public static SymTypeExpression createTypeExpression(TypeSymbol typeSymbol) {
     SymTypeExpression o;
     if(PRIMITIVE_LIST.contains(typeSymbol.getName())){
@@ -243,6 +247,7 @@ public class SymTypeExpressionFactory {
     return o;
   }
 
+  @Deprecated
   protected static SymTypeExpression createArrayFromString(String type, IBasicSymbolsScope scope){
     //berechne Typen vom Array per createTypeExpression, berechne Dimension von Array durch Anzahl der Klammerpaare am Ende
     int countDim = 0;
@@ -262,6 +267,7 @@ public class SymTypeExpressionFactory {
     return createTypeArray(typeWithoutGenericsAndBraces, scope, countDim, createTypeExpression(typeWithoutBraces, scope));
   }
 
+  @Deprecated
   protected static SymTypeExpression createGenericsFromString(String type, IBasicSymbolsScope scope) {
     int start = type.indexOf("<");
     if (start == -1) {
@@ -278,6 +284,7 @@ public class SymTypeExpressionFactory {
    * If that method for example received {@code Map<String, List<String>>} this Method should get {@code [String, List<String>]} as parameter
    * @param inBrackets list of generics nested one level
    */
+  @Deprecated
   protected static List<SymTypeExpression> getSubGenerics(List<String> inBrackets, IBasicSymbolsScope scope){
     return inBrackets.stream()
         .map(String::trim)
@@ -291,6 +298,7 @@ public class SymTypeExpressionFactory {
    * @param start first occurrence of an opening generic
    * @return all first sub-generics as a list, like {@code [Double; HashMap<String, Integer>]}
    */
+  @Deprecated
   protected static List<String> iterateBrackets(String type, int start){
     List<String> list = new ArrayList<>();
     int depth = 0;
