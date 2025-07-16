@@ -123,7 +123,7 @@ public class SetExpressionsSymbolTableCompleter implements
             LOG_NAME
         );
         symbol.setType(
-            SymTypeExpressionFactory.createTypeObject("Object", ast.getEnclosingScope()));
+            SymTypeExpressionFactory.createTypeObjectViaSurrogate("Object", ast.getEnclosingScope()));
       }
     }
   }

@@ -1308,7 +1308,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
         }
         else {
           //if the return type is an object
-          wholeResult = SymTypeExpressionFactory.createTypeObject(arrayResult.getTypeInfo().getName(), getScope(scope));
+          wholeResult = SymTypeExpressionFactory.createTypeObjectViaSurrogate(arrayResult.getTypeInfo().getName(), getScope(scope));
         }
       }
       else {

@@ -69,7 +69,7 @@ public class AbstractDeriveTest {
     TypeSymbol student = AbstractTypeCheckTestMill.typeSymbolBuilder()
         .setName("Student")
         .setSpannedScope(AbstractTypeCheckTestMill.scope())
-        .setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Person",scope)))
+        .setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObjectViaSurrogate("Person",scope)))
         .setEnclosingScope(scope)
         .build();
     add2scope(scope, student);
@@ -77,7 +77,7 @@ public class AbstractDeriveTest {
     TypeSymbol firstsemesterstudent = AbstractTypeCheckTestMill.typeSymbolBuilder()
         .setName("FirstSemesterStudent")
         .setSpannedScope(AbstractTypeCheckTestMill.scope())
-        .setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student",scope)))
+        .setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObjectViaSurrogate("Student",scope)))
         .setEnclosingScope(scope)
         .build();
     firstsemesterstudent.setSpannedScope(AbstractTypeCheckTestMill.scope());
@@ -91,9 +91,9 @@ public class AbstractDeriveTest {
     add2scope(person.getSpannedScope(), method("foo", SymTypeExpressionFactory.createTypeVoid()));
     add2scope(person.getSpannedScope(), field("bar", SymTypeExpressionFactory.createPrimitive("int")));
     add2scope(scope, firstsemesterstudent);
-    add2scope(scope, field("person1", SymTypeExpressionFactory.createTypeObject("Person", scope)));
+    add2scope(scope, field("person1", SymTypeExpressionFactory.createTypeObjectViaSurrogate("Person", scope)));
     add2scope(scope, field("firstsemester", SymTypeExpressionFactory.
-        createTypeObject("FirstSemesterStudent", scope)));
+        createTypeObjectViaSurrogate("FirstSemesterStudent", scope)));
     tc = new TypeCalculator(null, derLit);
     flatExpressionScopeSetter = new FlatExpressionScopeSetter(scope);
     traverser = getTraverser(flatExpressionScopeSetter);

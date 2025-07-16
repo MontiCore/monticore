@@ -10,6 +10,7 @@ import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisito
 import de.monticore.mcbasics._symboltable.IMCBasicsScope;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsGlobalScope;
+import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
@@ -109,7 +110,8 @@ public class ResolveWithinTypeTest extends AbstractTypeVisitorTest {
 
     OOTypeSymbol oOType = oOtype("t");
     inScope(gs, oOType);
-    inScope(oOType.getSpannedScope(), typeVariable("t"));
+    TypeVarSymbol oOTypeVar =
+        inScope(oOType.getSpannedScope(), typeVariable("t"));
 
     FieldSymbol field = field("t",
         SymTypeExpressionFactory.createTypeObject(oOType));
@@ -118,10 +120,11 @@ public class ResolveWithinTypeTest extends AbstractTypeVisitorTest {
     MethodSymbol method = method("t",
         SymTypeExpressionFactory.createTypeObject(oOType));
     inScope(oOType.getSpannedScope(), method);
-    inScope(method.getSpannedScope(), typeVariable("t"));
+    TypeVarSymbol methodTypeVar =
+        inScope(method.getSpannedScope(), typeVariable("t"));
 
     VariableSymbol variable = variable("t",
-        SymTypeExpressionFactory.createTypeObject(oOType));
+        SymTypeExpressionFactory.createTypeVariable(methodTypeVar));
     inScope(method.getSpannedScope(), variable);
 
     SymTypeExpression type =
@@ -154,7 +157,8 @@ public class ResolveWithinTypeTest extends AbstractTypeVisitorTest {
 
     OOTypeSymbol oOType = oOtype("s");
     inScope(gs, oOType);
-    inScope(oOType.getSpannedScope(), typeVariable("t"));
+    TypeVarSymbol oOTypeVar =
+        inScope(oOType.getSpannedScope(), typeVariable("t"));
 
     OOTypeSymbol oOType1 = oOtype("t");
     inScope(oOType.getSpannedScope(), oOType1);
@@ -163,13 +167,15 @@ public class ResolveWithinTypeTest extends AbstractTypeVisitorTest {
         SymTypeExpressionFactory.createTypeObject(oOType1));
     inScope(oOType.getSpannedScope(), field);
 
+    TypeVarSymbol methodTypeVar = typeVariable("t");
     MethodSymbol method = method("t",
-        SymTypeExpressionFactory.createTypeObject(oOType));
+        SymTypeExpressionFactory.createTypeVariable(methodTypeVar)
+    );
     inScope(oOType.getSpannedScope(), method);
-    inScope(method.getSpannedScope(), typeVariable("t"));
+    inScope(method.getSpannedScope(), methodTypeVar);
 
     VariableSymbol variable = variable("t",
-        SymTypeExpressionFactory.createTypeObject(oOType));
+        SymTypeExpressionFactory.createTypeVariable(oOTypeVar));
     inScope(method.getSpannedScope(), variable);
 
     SymTypeExpression type =
@@ -236,7 +242,7 @@ public class ResolveWithinTypeTest extends AbstractTypeVisitorTest {
 
   // class t<t> {}
   // class s extends t<boolean> {
-  //   t t;
+  //   t<s> t;
   //   => test expression "t" in this class scope
   // }
   @Test
@@ -253,12 +259,15 @@ public class ResolveWithinTypeTest extends AbstractTypeVisitorTest {
     inScope(gs, oOType1);
 
     FieldSymbol field = field("t",
-        SymTypeExpressionFactory.createTypeObject(oOType));
+        SymTypeExpressionFactory.createGenerics(oOType,
+            SymTypeExpressionFactory.createTypeObject(oOType1)
+        )
+    );
     inScope(oOType1.getSpannedScope(), field);
 
     SymTypeExpression type =
         calculateTypeWithinScope("t", oOType1.getSpannedScope());
-    Assertions.assertEquals("t", type.printFullName());
+    Assertions.assertEquals("t<s>", type.printFullName());
     Assertions.assertSame(oOType, type.getTypeInfo());
   }
 
