@@ -1,4 +1,4 @@
-From 54109965fdb66a5133dc848ee0a244fbc30032fd Mon Sep 17 00:00:00 2001
+From 6891c303f3b16db88964642a3ff991bb8edb9bb0 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Alex=20L=C3=BCpges?= <luepges@se-rwth.de>
 Date: Wed, 16 Jul 2025 13:20:22 +0200
 Subject: [PATCH] Replace ASTStereoValue#setText
