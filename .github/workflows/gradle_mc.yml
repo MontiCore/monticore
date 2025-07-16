@@ -192,7 +192,7 @@ jobs:
         with:
           gradle-version: ${{env.GRADLE_VERSION}}
       - name: Apply patches to look into the future
-        run: ./prepare-next-release/applyPatches.sh
+        run: sh ./prepare-next-release/applyPatches.sh
       - name: Build a subset of the monticore project
         run: gradle monticore-generator:build monticore-grammar:build monticore-test:02.experiments:check  ${{env.GRADLE_CLI_OPTS}}
       - name: Publish Test Report
