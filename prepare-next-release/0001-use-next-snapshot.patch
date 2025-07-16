@@ -1,0 +1,56 @@
+From fada35ac7be1e5dcd185f33b331cf9fc7ce3fff5 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Alex=20L=C3=BCpges?= <luepges@se-rwth.de>
+Date: Wed, 16 Jul 2025 12:20:05 +0200
+Subject: [PATCH] use next snapshot
+
+
+diff --git a/gradle.properties b/gradle.properties
+index d18c43197..380c8f98f 100644
+--- a/gradle.properties
++++ b/gradle.properties
+@@ -14,11 +14,11 @@ org.gradle.caching=true
+ # org.gradle.caching.debug=true
+ 
+ # versions used
+-version=7.8.0-SNAPSHOT
+-previous_mc_version =7.7.0
++version=7.9.0-SNAPSHOT
++previous_mc_version =7.8.0-SNAPSHOT
+ 
+ commons_cli_version = 1.4
+-se_commons_version =7.7.0
++se_commons_version =7.8.0-SNAPSHOT
+ antlr_version =4.12.0
+ junit_version =5.10.3
+ emf_compare_version =1.2.0
+@@ -28,4 +28,4 @@ freemarker_version = 2.3.34
+ guava_version =31.1-jre
+ shadow_plugin_version=7.1.2
+ 
+-cd4a_version =7.7.0
++cd4a_version =7.8.0-SNAPSHOT
+diff --git a/monticore-generator/gradle.properties b/monticore-generator/gradle.properties
+index 55fa093b2..1aaebe45f 100644
+--- a/monticore-generator/gradle.properties
++++ b/monticore-generator/gradle.properties
+@@ -9,13 +9,13 @@ useLocalRepo=true
+ showTestOutput=false
+ 
+ # versions used
+-version=7.8.0-SNAPSHOT
+-previous_mc_version =7.7.0
++version=7.9.0-SNAPSHOT
++previous_mc_version =7.8.0-SNAPSHOT
+ 
+-se_commons_version =7.7.0
++se_commons_version =7.8.0-SNAPSHOT
+ antlr_version =4.12.0
+ junit_version =5.10.3
+-cd4a_version =7.7.0
++cd4a_version =7.8.0-SNAPSHOT
+ commons_lang3_version = 3.8.1
+ commons_cli_version = 1.4
+ freemarker_version = 2.3.28
+-- 
+2.42.0.windows.2
+
