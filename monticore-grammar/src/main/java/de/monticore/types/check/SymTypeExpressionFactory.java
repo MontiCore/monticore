@@ -348,7 +348,7 @@ public class SymTypeExpressionFactory {
 
   /**
    * Hint: this is usually(!) not what you want,
-   * s.a. {@link #createGenerics(TypeSymbol, List<SymTypeExpression>)}
+   * s.a. {@link #createGenerics(TypeSymbol, List)}
    *
    * @return the declared type, e.g., Map<K,V>,
    * with K and V being (bound) TypeVariables
