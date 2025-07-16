@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/bash
 # (c) https://github.com/MontiCore/monticore
 # Script for applying all patches to check if we are about to break the next release of MontiCore
 

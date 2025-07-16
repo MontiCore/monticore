@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/bash
 # (c) https://github.com/MontiCore/monticore
 # Script for creating new patch files
 
