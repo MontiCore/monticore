@@ -196,7 +196,7 @@ jobs:
       - name: Apply patches to look into the future
         run: sh ./prepare-next-release/applyPatches.sh
       - name: Build a subset of the monticore project
-        run: gradle monticore-generator:build monticore-grammar:build monticore-test:02.experiments:check  ${{env.GRADLE_CLI_OPTS}}
+        run: gradle monticore-generator:build monticore-grammar:build monticore-test:02experiments:check  ${{env.GRADLE_CLI_OPTS}}
       - name: Publish Test Report
         uses: mikepenz/action-junit-report@a451de5ac1ff45e46508b6150cb4f51a287d0309
         if: always() # always run even if the previous step fails
