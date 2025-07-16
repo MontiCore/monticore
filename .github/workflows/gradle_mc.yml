@@ -191,6 +191,8 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: ${{env.GRADLE_VERSION}}
+      - name: Setup git
+        run: git config --global user.email "ci@monticore.de" && git config --global user.name "ci"
       - name: Apply patches to look into the future
         run: sh ./prepare-next-release/applyPatches.sh
       - name: Build a subset of the monticore project
