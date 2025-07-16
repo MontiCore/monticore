@@ -4,10 +4,15 @@
 
 
 currentBranch=`git rev-parse --abbrev-ref HEAD`
+
+if [[ "$currentBranch" != *"-crystal-ball"* ]]; then
+  echo "Script may only be executed on a branch with applied patches!"
+  exit 1
+fi
 originalBranch="${currentBranch/-crystal-ball/}"
 
 echo "Creating patch difference to $originalBranch"
-git format-patch --no-stat --minimal -N -o .\prepare-next-release\ $originalBranch --
+git format-patch --no-stat --minimal -N -o ./prepare-next-release/ $originalBranch --
 if [ "$?" != "0" ]; then
     echo "Failed to create patch differences"
     exit 1

@@ -4,6 +4,12 @@
 
 # Start by switching to a new branch (using the suffix -crystal-ball)
 currentBranch=`git rev-parse --abbrev-ref HEAD`
+
+if [[ "$currentBranch" == *"-crystal-ball"* ]]; then
+  echo "Script may not be executed on a branch with applied patches!"
+  exit 1
+fi
+
 git checkout -b $currentBranch-crystal-ball
 if [ "$?" != "0" ]; then
     echo "Failed to switch to new branch $currentBranch-crystal-ball"
