@@ -10,6 +10,13 @@ if [[ "$currentBranch" == *"-crystal-ball"* ]]; then
   exit 1
 fi
 
+git diff-index --quiet --cached HEAD --
+if [ "$?" != "0" ]; then
+    echo "Dirty index: won't be able to apply patched"
+    git diff-index --cached HEAD --
+    exit 1
+fi
+
 git checkout -b $currentBranch-crystal-ball
 if [ "$?" != "0" ]; then
     echo "Failed to switch to new branch $currentBranch-crystal-ball"
