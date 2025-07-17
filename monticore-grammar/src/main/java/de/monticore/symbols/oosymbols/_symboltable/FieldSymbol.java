@@ -28,6 +28,7 @@ public class FieldSymbol extends FieldSymbolTOP {
     clone.setIsPublic(this.isPublic);
     clone.setIsStatic(this.isStatic);
     clone.setIsFinal(this.isFinal);
+    clone.setIsEnumConstant(this.isEnumConstant);
     clone.setIsDerived(this.isDerived);
     clone.setIsReadOnly(this.isReadOnly);
     if(isPresentAstNode()) {
