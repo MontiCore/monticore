@@ -182,7 +182,9 @@ public class ResolveWithinTypeTest extends AbstractTypeVisitorTest {
     Assertions.assertTrue(type.isIntersectionType());
     Assertions.assertTrue(((SymTypeOfIntersection) type).getIntersectedTypeSet()
         .stream()
-        .anyMatch(t -> t.hasTypeInfo() && t.getTypeInfo() == oOType));
+        .filter(t -> t.isTypeVariable())
+        .map(t -> t.asTypeVariable())
+        .anyMatch(t -> t.getTypeVarSymbol() == oOTypeVar));
   }
 
   // class s {
