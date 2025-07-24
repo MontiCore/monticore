@@ -18,7 +18,7 @@ Work in your git branch, but please do not have any local, uncommited changes.
 You can reset your local working tree via `git reset --hard yourBranchName`
 
 Apply all previous patches: `./prepare-next-release/applyPatches.sh`
-(this applies all patch files and switches a new branch)
+(this applies all patch files and switches to a new branch)
 
 Modify the source files and ensure that the previously failing tests now work.
 Then create a commit as usual
