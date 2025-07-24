@@ -1,6 +1,7 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.symbols.oosymbols.types3;
 
+import de.monticore.runtime.junit.MCAssertions;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
@@ -133,7 +134,7 @@ public class OOSymbolsSymTypeRelationsTest extends AbstractTypeVisitorTest {
     myEnumVal1Type = getTypeOfExpr("MyEnum.ENUM_VAL1");
     myEnumVal2Type = getTypeOfExpr("MyEnum.ENUM_VAL2");
     myEnumDefaultType = getTypeOfExpr("MyEnum.ENUM_DEFAULT");
-    assertNoFindings();
+    MCAssertions.assertNoFindings();
   }
 
   @Test
