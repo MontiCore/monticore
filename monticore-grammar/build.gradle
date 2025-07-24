@@ -553,11 +553,11 @@ java {
   }
 }
 
-shadowJar {
+tasks.named("shadowJar") {
   from sourceSets.main.grammars
 }
 
-generateTestMCGrammars {
+tasks.named("generateTestMCGrammars") {
 //   Temporary - for optimizations (due to feature)
   genINT = true
   dependsOn(tasks.grammarsForVariantJar)
@@ -575,7 +575,7 @@ if (findProperty('ci') == null) {
 }
 
 if (("true").equals(getProperty('genTR'))) {
-  generateTrafoMCGrammars {
+  tasks.named("generateTrafoMCGrammars") {
     // Temporary - for optimizations
     dependsOn(tasks.grammarsForVariantJar)
   }
@@ -654,4 +654,8 @@ if (("true").equals(getProperty('genTR'))) {
       }
     }
   }
+}
+
+tasks.named("build") {
+  dependsOn javadoc, testFixturesJavadoc
 }

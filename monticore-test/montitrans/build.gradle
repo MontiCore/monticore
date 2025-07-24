@@ -36,7 +36,7 @@ subprojects {
     grammar (project(path: ':monticore-grammar', configuration: 'trafoGrammarSymbolOutElements')) {
       // Due to using the old MCGradle plugin here, no attributes filter the trafo artifacts
       // and gradle is unsure whether to select runtimeElements or grammarSymbolOutElements
-      transitive(false)
+      transitive = false
     }
   }
 

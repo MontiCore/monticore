@@ -6,13 +6,16 @@ pluginManagement {
       mavenLocal()
     }
     maven {
-      credentials.username mavenUser
-      credentials.password mavenPassword
-      url repo
+      credentials.username = mavenUser
+      credentials.password = mavenPassword
+      url = repo
     }
   
     gradlePluginPortal()
   }
+}
+plugins {
+  id 'org.gradle.toolchains.foojay-resolver-convention' version '0.9.0'
 }
 
 boolean isCi = System.getenv().containsKey("CI")

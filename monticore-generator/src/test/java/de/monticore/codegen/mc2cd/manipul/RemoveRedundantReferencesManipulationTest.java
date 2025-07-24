@@ -40,10 +40,12 @@ public class RemoveRedundantReferencesManipulationTest extends TranslationTestCa
     ASTCDAttribute singleAttribute = CD4AnalysisMill.cDAttributeBuilder().uncheckedBuild();
     singleAttribute.setName(firstReferenceName);
     singleAttribute.setMCType(firstReferenceType);
-    
+    singleAttribute.setModifier(CD4AnalysisMill.modifierBuilder().uncheckedBuild());
+
     ASTCDAttribute listAttribute = CD4AnalysisMill.cDAttributeBuilder().uncheckedBuild();
     listAttribute.setName(secondReferenceName);
     listAttribute.setMCType(secondReferenceType);
+    listAttribute.setModifier(CD4AnalysisMill.modifierBuilder().uncheckedBuild());
     
     cdClass.addCDMember(singleAttribute);
     cdClass.addCDMember(listAttribute);

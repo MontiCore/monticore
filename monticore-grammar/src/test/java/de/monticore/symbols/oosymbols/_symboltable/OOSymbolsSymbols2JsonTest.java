@@ -43,7 +43,7 @@ public class OOSymbolsSymbols2JsonTest {
 
     type.setSpannedScope(typeSpannedScope);
 
-    SymTypeExpression symType1 = SymTypeExpressionFactory.createTypeObject("Type", scope);
+    SymTypeExpression symType1 = SymTypeExpressionFactory.createTypeObjectViaSurrogate("Type", scope);
 
     //put subtype into main scope, test if supertypes are serialized correctly
     OOTypeSymbol subtype = OOSymbolsMill.oOTypeSymbolBuilder()

@@ -5,5 +5,5 @@ description = 'Experiments: configTemplate'
 tasks.named('generateMCGrammars') {
   configTemplate = "ct.ftl"
   // Note: Incremental building will not work. Any change to a file within the templatePath will require a full rebuild
-  templatePath "$projectDir/src/main/tpl"
+  templatePath = "$projectDir/src/main/tpl"
 }

@@ -32,9 +32,9 @@ allprojects {
       mavenLocal()
     }
     maven {
-      credentials.username mavenUser
-      credentials.password mavenPassword
-      url repo
+      credentials.username = mavenUser
+      credentials.password = mavenPassword
+      url = repo
     }
     mavenCentral()
   }
@@ -64,11 +64,11 @@ subprojects {
     useJUnitPlatform()
     testLogging {
       // controls whether test output is shown
-      showStandardStreams= ("false").equals(getProperty('showTestOutput'))? false : true
-      showExceptions true
-      showCauses true
-      showStackTraces true
-      exceptionFormat TestExceptionFormat.FULL
+      showStandardStreams = ("false").equals(getProperty('showTestOutput'))? false : true
+      showExceptions = true
+      showCauses = true
+      showStackTraces = true
+      exceptionFormat = TestExceptionFormat.FULL
       info {
         events TestLogEvent.FAILED,
                 TestLogEvent.PASSED,
@@ -91,11 +91,11 @@ subprojects {
     }
   }
 
-  tasks.withType(JavaCompile) {
+  tasks.withType(JavaCompile).configureEach {
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
     options.encoding = "UTF-8"
-    options.deprecation false
+    options.deprecation = false
     options.warnings = false
     options.forkOptions.jvmArgs += ["-Xmx4G"]
   }
@@ -113,9 +113,9 @@ subprojects {
  *  Builds the core projects, i.e. the generator, runtime and grammar library.
  *  Executes JUnit tests and assembles the jars.
  */
-task buildMC {
-  group("build")
-  description('Builds the core projects, i.e. the generator, runtime and grammar library.')
+tasks.register("buildMC") {
+  group = "build"
+  description ='Builds the core projects, i.e. the generator, runtime and grammar library.'
   dependsOn ":monticore-grammar:build"
   dependsOn ":monticore-runtime:build"
   if(("true").equals(getProperty('genEMF'))) {
@@ -130,9 +130,9 @@ buildMC.dependsOn(gradle.includedBuilds*.task(':build'))
  *  Assembles the core projects, i.e. the generator, runtime and grammar library.
  *  Assembles the jars but does not execute JUnit tests.
  */
-task assembleMC {
-  group("build")
-  description('Assembles the core projects, i.e. the generator, runtime and grammar library.')
+tasks.register("assembleMC") {
+  group = "build"
+  description ='Assembles the core projects, i.e. the generator, runtime and grammar library.'
   dependsOn ":monticore-grammar:assemble"
   dependsOn ":monticore-runtime:assemble"
   if(("true").equals(getProperty('genEMF'))) {
@@ -146,9 +146,9 @@ assembleMC.dependsOn(gradle.includedBuilds*.task(':assemble'))
 /**
  *  Executes JUnit tests of the core projects, i.e. the generator, runtime and grammar library.
  */
-task testMC {
-  group("build")
-  description('Tests the core projects, i.e. the generator, runtime and grammar library.')
+tasks.register("testMC") {
+  group = "build"
+  description ='Tests the core projects, i.e. the generator, runtime and grammar library.'
 
   dependsOn ":monticore-grammar:test"
   dependsOn ":monticore-runtime:test"
@@ -165,9 +165,9 @@ testMC.dependsOn(gradle.includedBuilds*.task(':test'))
  *  to the nexus repository.
  *  Assembles the jars and publishes them, but does not execute JUnit tests.
  */
-task deployMC {
-  group("build")
-  description('Publishes the core projects, i.e. the generator, runtime and grammar library.')
+tasks.register("deployMC") {
+  group = "build"
+  description = 'Publishes the core projects, i.e. the generator, runtime and grammar library.'
 
   dependsOn ":monticore-grammar:publish"
   dependsOn ":monticore-runtime:publish"
@@ -185,10 +185,10 @@ deployMC.dependsOn(gradle.includedBuilds*.task(':publish'))
  *  to the local m2 repository. Typically this should not be needed.
  *  Assembles the jars and publishes them, but does not execute JUnit tests.
  */
-task publishMCToMavenLocal {
-  group("build")
-  description('Publishes the core projects, i.e. the generator, runtime and grammar library' +
-          'to the local maven repository.')
+tasks.register("publishMCToMavenLocal") {
+  group = "build"
+  description = 'Publishes the core projects, i.e. the generator, runtime and grammar library' +
+          'to the local maven repository.'
   dependsOn ":monticore-grammar:publishToMavenLocal"
   dependsOn ":monticore-runtime:publishToMavenLocal"
   if(("true").equals(getProperty('genEMF'))) {
@@ -203,9 +203,9 @@ publishMCToMavenLocal.dependsOn(gradle.includedBuilds*.task(':publishToMavenLoca
  *  Build the test projects, i.e. integration tests and experiments.
  *  This includes code generation for these projects and JUnit tests.
  */
-task testIT {
-  group("build")
-  description('Build the test projects, i.e. integration tests and experiments.')
+tasks.register("testIT") {
+  group = "build"
+  description = 'Build the test projects, i.e. integration tests and experiments.'
 
   dependsOn(
           project(":monticore-test").subprojects.collect {
@@ -216,11 +216,11 @@ task testIT {
 
   
   
-task buildAll(type: GradleBuild) {
+tasks.register("buildAll", GradleBuild) {
   dependsOn(subprojects.collect { getTasksByName("build", false) })
 }
 
-task cleanMC {
+tasks.register("cleanMC") {
   dependsOn ":monticore-grammar:clean"
   dependsOn ":monticore-runtime:clean"
   if(("true").equals(getProperty('genEMF'))) {
@@ -236,8 +236,8 @@ cleanMC.dependsOn(
 )
 
 
-task sonarMC (type: GradleBuild) {
-  description('Generates code coverage')
+tasks.register("sonarMC", GradleBuild) {
+  description = 'Generates code coverage'
   dependsOn(
           ":testMC"
   )
@@ -266,8 +266,8 @@ configure(projectsToConfigure){
     repositories {
       maven {
         name = "SE-Nexus"
-        credentials.username mavenUser
-        credentials.password mavenPassword
+        credentials.username = mavenUser
+        credentials.password = mavenPassword
         def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-releases/"
         def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-snapshots/"
         url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl

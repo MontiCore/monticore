@@ -13,12 +13,14 @@ import de.monticore.codegen.cd2java._ast.builder.buildermethods.BuilderMutatorMe
 import de.monticore.codegen.cd2java._ast.builder.inheritedmethods.InheritedBuilderMutatorMethodDecorator;
 import de.monticore.codegen.cd2java.exception.DecorateException;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
+import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.umlmodifier._ast.ASTModifier;
+import org.apache.commons.text.StringEscapeUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -136,6 +138,12 @@ public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
 
     } else if (getDecorationHelper().isOptional(CD4CodeMill.prettyPrint(attribute.getMCType(), false))) {
       this.replaceTemplate(VALUE, attribute, new StringHookPoint("= Optional.empty()"));
+    } else if (service.hasStereotype(attribute.getModifier(), MC2CDStereotypes.TERMINAL_DEFAULT_VALUE)) {
+      // This terminal has a default value -> use it for the builder
+      List<String> terminalValues = service.getTerminalDefaultValues(attribute);
+      if (terminalValues.size() == 1) {
+        this.replaceTemplate(VALUE, attribute, new StringHookPoint("= \"" + StringEscapeUtils.escapeJava(terminalValues.get(0)) + "\""));
+      }
     }
   }
 

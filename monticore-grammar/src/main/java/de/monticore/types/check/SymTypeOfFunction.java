@@ -32,7 +32,7 @@ import java.util.stream.Stream;
 
 /**
  * SymTypeOfFunction stores any kind of Function,
- * such as List<Person>::get, obj::<Integer>getX, i -> i + 2
+ * such as  {@code List<Person>::get},  {@code obj::<Integer>getX}, {@code i -> i + 2}
  */
 public class SymTypeOfFunction extends SymTypeExpression {
 
@@ -178,7 +178,7 @@ public class SymTypeOfFunction extends SymTypeExpression {
 
   /**
    * returns whether the specified amount of arguments can be accepted
-   * E.g., (P, int...) -> int can accept 1,2,3,... arguments, but not 0
+   * E.g., {@code (P, int...) -> int} can accept 1,2,3,... arguments, but not 0
    */
   public boolean canHaveArity(int arity) {
     return ((isElliptic() && sizeArgumentTypes() - 1 <= arity)
@@ -187,7 +187,7 @@ public class SymTypeOfFunction extends SymTypeExpression {
 
   /**
    * returns a clone, with the arity fixed to the specified number
-   * E.g., (P, int...) -> int with arity of 3 is (P, int, int) -> int
+   * E.g., {@code (P, int...) -> int} with arity of 3 is {@code (P, int, int) -> int}
    */
   public SymTypeOfFunction getWithFixedArity(int arity) {
     SymTypeOfFunction clone = (SymTypeOfFunction) deepClone();
@@ -230,7 +230,7 @@ public class SymTypeOfFunction extends SymTypeExpression {
           new TreeMap<>(new SymTypeExpressionComparator());
       for (SymTypeInferenceVariable infVar : infVars) {
         infVar2Skolem.put(infVar,
-            SymTypeExpressionFactory.createTypeObject(
+            SymTypeExpressionFactory.createTypeObjectViaSurrogate(
                 "Skolem#" + infVar.print(),
                 BasicSymbolsMill.scope()
             )
@@ -292,11 +292,11 @@ public class SymTypeOfFunction extends SymTypeExpression {
 
   /**
    * returns the type arguments for a generic function.
-   * E.g., given asList, which has the declared Type <T> (T...) -> List<T>
-   * and this is the instantiation (int, int) -> List<int>,
+   * E.g., given asList, which has the declared Type {@code <T> (T...) -> List<T>}
+   * and this is the instantiation {@code (int, int) -> List<int>},
    * This will return the argument list [int].
    * <p>
-   * Warning: if the instantiation is, e.g., (Person, Car) -> List<int>,
+   * Warning: if the instantiation is, e.g., {@code (Person, Car) -> List<int>},
    * no correct list of arguments can be calculated.
    * <p>
    * Not to be confused with getArgumentTypes,
