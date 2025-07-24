@@ -8,11 +8,16 @@ import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.monticore.symboltable.ISymbol;
+import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfFunction;
+import de.monticore.types3.util.OOWithinTypeBasicSymbolsResolver;
 import de.se_rwth.commons.logging.Log;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * relations for SymTypes of wrt. OOSymbols,
@@ -28,6 +33,9 @@ import java.util.Optional;
  * as those are related to the resolver and not the SymTypeExpressions.
  */
 public class OOSymbolsSymTypeRelations {
+
+  protected static final String LOG_NAME =
+      OOSymbolsSymTypeRelations.class.getName();
 
   protected static OOSymbolsSymTypeRelations delegate;
 
@@ -61,6 +69,55 @@ public class OOSymbolsSymTypeRelations {
     return getOOTypeSymbolIfAvailable(type)
         .map(OOTypeSymbol::isIsEnum)
         .orElse(false);
+  }
+
+  /**
+   * Checks if the type is a functional interface
+   * and returns the abstract method.
+   * S. JLS 21 9.8
+   *
+   * @return the abstract method of the type iff the type is a functional interface
+   */
+  public static Optional<SymTypeOfFunction> getAbstractFunctionOfFunctionalInterFace(
+      SymTypeExpression type
+  ) {
+    return getDelegate()._getAbstractFunctionOfFunctionalInterFace(type);
+  }
+
+  protected Optional<SymTypeOfFunction> _getAbstractFunctionOfFunctionalInterFace(
+      SymTypeExpression type
+  ) {
+    Optional<SymTypeOfFunction> res;
+    if (!isInterface(type)) {
+      res = Optional.empty();
+    }
+    else {
+      // cannot filter for abstract during resolving,
+      // as the method could be overridden
+      Map<String, List<SymTypeOfFunction>> name2AbstractMethods =
+          OOWithinTypeBasicSymbolsResolver.getAllFunctions(
+              type, AccessModifier.ALL_INCLUSION, fs -> true
+          );
+      List<SymTypeOfFunction> methods =
+          name2AbstractMethods.values().stream()
+              .flatMap(List::stream)
+              .collect(Collectors.toList());
+      List<SymTypeOfFunction> abstractMethods = methods.stream()
+          .filter(m -> OOSymbolsMill.typeDispatcher()
+              .isOOSymbolsMethod(m.getSymbol())
+          )
+          .filter(m -> OOSymbolsMill.typeDispatcher()
+              .asOOSymbolsMethod(m.getSymbol()).isIsAbstract()
+          )
+          .collect(Collectors.toList());
+      if (abstractMethods.size() == 1) {
+        res = Optional.of(abstractMethods.get(0));
+      }
+      else {
+        res = Optional.empty();
+      }
+    }
+    return res;
   }
 
   /**
@@ -164,6 +221,13 @@ public class OOSymbolsSymTypeRelations {
     }
     else {
       res = Optional.empty();
+    }
+    if (res.isEmpty()) {
+      Log.trace("tried getting source symbol of a SymTypeExpression of "
+              + type.printFullName() + ", but there was none"
+              + ", this may influence further calculations."
+          , LOG_NAME
+      );
     }
     return res;
   }
