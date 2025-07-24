@@ -399,7 +399,7 @@ public class AbstractTypeVisitorTest extends AbstractMCTest {
     SymTypeExpression type = TypeCheck3.symTypeFromAST(astTargetType);
     assertNoFindings();
     assertFalse(type.isObscureType(),
-        "No type calculated for type " + typeStr
+        "No type calculated for MCType " + typeStr
     );
     return type;
   }
