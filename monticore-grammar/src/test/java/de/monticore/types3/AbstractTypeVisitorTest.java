@@ -283,21 +283,7 @@ public class AbstractTypeVisitorTest extends AbstractMCTest {
       String expectedType,
       boolean allowNormalization
   ) throws IOException {
-    ASTExpression astExpr = parseExpr(exprStr);
-    // target type
-    Optional<SymTypeExpression> targetTypeOpt = getTargetType(targetTypeStr);
-    // calculate expression
-    generateScopes(astExpr);
-    assertNoFindings();
-    SymTypeExpression type;
-    if (targetTypeOpt.isPresent()) {
-      type = TypeCheck3.typeOf(astExpr, targetTypeOpt.get());
-    }
-    else {
-      type = TypeCheck3.typeOf(astExpr);
-    }
-    assertNoFindings();
-    assertFalse(type.isObscureType(), "No type calculated for expression " + exprStr);
+    SymTypeExpression type = getTypeOfExpr(exprStr, targetTypeStr);
     // usually, type normalization is expected and (basically) always allowed
     // for specific tests, however, it may be required to disable this
     SymTypeExpression typeNormalized = SymTypeRelations.normalize(type);
@@ -379,6 +365,44 @@ public class AbstractTypeVisitorTest extends AbstractMCTest {
   }
 
   // Helper
+
+  protected SymTypeExpression getTypeOfExpr(String exprStr, String targetTypeStr)
+      throws IOException {
+    ASTExpression astExpr = parseExpr(exprStr);
+    // target type
+    Optional<SymTypeExpression> targetTypeOpt = getTargetType(targetTypeStr);
+    // calculate expression
+    generateScopes(astExpr);
+    assertNoFindings();
+    SymTypeExpression type;
+    if (targetTypeOpt.isPresent()) {
+      type = TypeCheck3.typeOf(astExpr, targetTypeOpt.get());
+    }
+    else {
+      type = TypeCheck3.typeOf(astExpr);
+    }
+    assertNoFindings();
+    assertFalse(type.isObscureType(), "No type calculated for expression " + exprStr);
+    return type;
+  }
+
+  protected SymTypeExpression getTypeOfExpr(String exprStr)
+      throws IOException {
+    return getTypeOfExpr(exprStr, "");
+  }
+
+
+  protected SymTypeExpression getTypeOfMCType(String typeStr)
+      throws IOException {
+    ASTMCType astTargetType = parseMCType(typeStr);
+    generateScopes(astTargetType);
+    SymTypeExpression type = TypeCheck3.symTypeFromAST(astTargetType);
+    assertNoFindings();
+    assertFalse(type.isObscureType(),
+        "No type calculated for type " + typeStr
+    );
+    return type;
+  }
 
   /**
    * @param targetTypeStr is allowed to be empty
