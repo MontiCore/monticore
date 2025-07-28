@@ -3,7 +3,6 @@ package de.monticore.types.check;
 
 import com.google.common.collect.Lists;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
-import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
@@ -134,7 +133,7 @@ public class SymTypeExpressionTest {
 
     teVarA = SymTypeExpressionFactory.createTypeVariable("A", scope);
 
-    teIntA = createTypeObject("java.lang.Integer",scope);
+    teIntA = createTypeObjectViaSurrogate("java.lang.Integer",scope);
 
     teVarB = SymTypeExpressionFactory.createTypeVariable("B", scope);
 
@@ -142,9 +141,9 @@ public class SymTypeExpressionTest {
 
     teVarLower = SymTypeExpressionFactory.createInferenceVariable(createTopType(), teIntA);
 
-    teP = createTypeObject("de.x.Person", scope);
+    teP = createTypeObjectViaSurrogate("de.x.Person", scope);
 
-    teH = createTypeObject("Human",
+    teH = createTypeObjectViaSurrogate("Human",
             scope);  // on purpose: package missing
 
     teVoid = createTypeVoid();
@@ -679,10 +678,10 @@ public class SymTypeExpressionTest {
     Assertions.assertEquals(2, tPerson.getDim());
     Assertions.assertEquals("de.x.Person", tPerson.getArgument().print());
 
-    SymTypeOfObject tG = SymTypeExpressionFactory.createTypeObject("G",scope);
+    SymTypeOfObject tG = SymTypeExpressionFactory.createTypeObjectViaSurrogate("G",scope);
     Assertions.assertEquals("G", tG.print());
 
-    SymTypeOfObject tH = SymTypeExpressionFactory.createTypeObject("H",scope);
+    SymTypeOfObject tH = SymTypeExpressionFactory.createTypeObjectViaSurrogate("H",scope);
     Assertions.assertEquals("H", tH.print());
 
     SymTypeVariable tT = SymTypeExpressionFactory.createTypeVariable("T",scope);

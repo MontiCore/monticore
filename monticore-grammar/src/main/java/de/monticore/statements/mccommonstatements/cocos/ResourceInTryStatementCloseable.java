@@ -35,7 +35,7 @@ public class ResourceInTryStatementCloseable implements MCExceptionStatementsAST
   public void check(ASTTryStatement3 node) {
     Preconditions.checkNotNull(node);
 
-    SymTypeExpression closeable = SymTypeExpressionFactory.createTypeObject("java.io.Closeable", node.getEnclosingScope());
+    SymTypeExpression closeable = SymTypeExpressionFactory.createTypeObjectViaSurrogate("java.io.Closeable", node.getEnclosingScope());
 
     for (ASTTryLocalVariableDeclaration dec : node.getTryLocalVariableDeclarationList()) {
 

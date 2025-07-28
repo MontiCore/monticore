@@ -1624,7 +1624,7 @@ public class CommonExpressionTypeVisitorTest
         variable("selfVar", createTypeObject(selfReflectiveStudent))
     );
     inScope(globalScope, variable("selfReflectiveStudent",
-        createTypeObject("SelfReflectiveStudent", globalScope))
+        SymTypeExpressionFactory.createTypeObjectViaSurrogate("SelfReflectiveStudent", globalScope))
     );
 
     inScope(artifactScope2, type("AClass"));

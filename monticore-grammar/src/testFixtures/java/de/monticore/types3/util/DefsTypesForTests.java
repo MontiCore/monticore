@@ -35,6 +35,7 @@ import java.util.Optional;
 
 import static de.monticore.types.check.SymTypeExpressionFactory.createBottomType;
 import static de.monticore.types.check.SymTypeExpressionFactory.createGenerics;
+import static de.monticore.types.check.SymTypeExpressionFactory.createGenericsDeclaredType;
 import static de.monticore.types.check.SymTypeExpressionFactory.createNumericWithSIUnit;
 import static de.monticore.types.check.SymTypeExpressionFactory.createPrimitive;
 import static de.monticore.types.check.SymTypeExpressionFactory.createSIUnit;
@@ -736,36 +737,38 @@ public class DefsTypesForTests {
     SymTypeVariable nodeEdgeVar = createTypeVariable(typeVariable("NodeE"));
     nodeSymbol.getSpannedScope().add(nodeNodeVar.getTypeVarSymbol());
     nodeSymbol.getSpannedScope().add(nodeEdgeVar.getTypeVarSymbol());
+    //class Edge <N extends Node<N,E>, E extends Edge<N,E>>
+    SymTypeVariable edgeNodeVar = createTypeVariable(typeVariable("EdgeN"));
+    SymTypeVariable edgeEdgeVar = createTypeVariable(typeVariable("EdgeE"));
+    edgeSymbol.getSpannedScope().add(edgeNodeVar.getTypeVarSymbol());
+    edgeSymbol.getSpannedScope().add(edgeEdgeVar.getTypeVarSymbol());
+    //class Graph<N extends Node<N,E>, E extends Edge<N,E>>
+    SymTypeVariable graphNodeVar = createTypeVariable(typeVariable("GraphN"));
+    SymTypeVariable graphEdgeVar = createTypeVariable(typeVariable("GraphE"));
+    graphSymbol.getSpannedScope().add(graphNodeVar.getTypeVarSymbol());
+    graphSymbol.getSpannedScope().add(graphEdgeVar.getTypeVarSymbol());
+    // TypeVar superTypes
     nodeNodeVar.getTypeVarSymbol().addSuperTypes(createGenerics(
         nodeSymbol, List.of(nodeNodeVar, nodeEdgeVar)
     ));
     nodeEdgeVar.getTypeVarSymbol().addSuperTypes(createGenerics(
         edgeSymbol, List.of(nodeNodeVar, nodeEdgeVar)
     ));
-    _graphNodeSymType = createGenerics(nodeSymbol, nodeNodeVar, nodeEdgeVar);
-    //class Edge <N extends Node<N,E>, E extends Edge<N,E>>
-    SymTypeVariable edgeNodeVar = createTypeVariable(typeVariable("EdgeN"));
-    SymTypeVariable edgeEdgeVar = createTypeVariable(typeVariable("EdgeE"));
-    edgeSymbol.getSpannedScope().add(edgeNodeVar.getTypeVarSymbol());
-    edgeSymbol.getSpannedScope().add(edgeEdgeVar.getTypeVarSymbol());
     edgeNodeVar.getTypeVarSymbol().addSuperTypes(createGenerics(
         nodeSymbol, List.of(edgeNodeVar, edgeEdgeVar)
     ));
     edgeEdgeVar.getTypeVarSymbol().addSuperTypes(createGenerics(
         edgeSymbol, List.of(edgeNodeVar, edgeEdgeVar)
     ));
-    _graphEdgeSymType = createGenerics(edgeSymbol, edgeNodeVar, edgeEdgeVar);
-    //class Graph<N extends Node<N,E>, E extends Edge<N,E>>
-    SymTypeVariable graphNodeVar = createTypeVariable(typeVariable("GraphN"));
-    SymTypeVariable graphEdgeVar = createTypeVariable(typeVariable("GraphE"));
-    graphSymbol.getSpannedScope().add(graphNodeVar.getTypeVarSymbol());
-    graphSymbol.getSpannedScope().add(graphEdgeVar.getTypeVarSymbol());
     graphNodeVar.getTypeVarSymbol().addSuperTypes(createGenerics(
         nodeSymbol, List.of(graphNodeVar, graphEdgeVar)
     ));
     graphEdgeVar.getTypeVarSymbol().addSuperTypes(createGenerics(
         edgeSymbol, List.of(graphNodeVar, graphEdgeVar)
     ));
+    // finally create SymTypeExpressions
+    _graphNodeSymType = createGenerics(nodeSymbol, nodeNodeVar, nodeEdgeVar);
+    _graphEdgeSymType = createGenerics(edgeSymbol, edgeNodeVar, edgeEdgeVar);
     _graphSymType = createGenerics(graphSymbol, graphNodeVar, graphEdgeVar);
   }
 
@@ -864,7 +867,7 @@ public class DefsTypesForTests {
     IBasicSymbolsScope utilScope =
         _boxedListSymType.getTypeInfo().getEnclosingScope();
     TypeVarSymbol listVar = typeVariable("LinkedListT");
-    _linkedListSymType = createGenerics(
+    _linkedListSymType = createGenericsDeclaredType(
         inScope(utilScope, type("LinkedList",
             List.of(createGenerics(_boxedListSymType.getTypeInfo(),
                 createTypeVariable(listVar))),
@@ -873,7 +876,7 @@ public class DefsTypesForTests {
     );
     TypeVarSymbol mapKVar = typeVariable("HashMapK");
     TypeVarSymbol mapVVar = typeVariable("HashMapV");
-    _hashMapSymType = createGenerics(
+    _hashMapSymType = createGenericsDeclaredType(
         inScope(utilScope, type("HashMap",
             List.of(createGenerics(
                 _boxedMapSymType.getTypeInfo(),
@@ -899,14 +902,14 @@ public class DefsTypesForTests {
   public static void set_specialGenerics() {
     IBasicSymbolsScope langScope = createJavaLangScope();
     TypeVarSymbol classVar = typeVariable("T");
-    _ClassSymType = createGenerics(
+    _ClassSymType = createGenericsDeclaredType(
         inScope(langScope, type("Class",
             Collections.emptyList(),
             List.of(classVar)
         ))
     );
     TypeVarSymbol IterableVar = typeVariable("T");
-    _IterableSymType = createGenerics(
+    _IterableSymType = createGenericsDeclaredType(
         inScope(langScope, type("Iterable",
             Collections.emptyList(),
             List.of(classVar)

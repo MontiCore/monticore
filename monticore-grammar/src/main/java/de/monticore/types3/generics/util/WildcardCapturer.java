@@ -202,7 +202,7 @@ public class WildcardCapturer {
 
   protected List<SymTypeVariable> getTypeParameters(SymTypeOfGenerics gen) {
     SymTypeOfGenerics declaredType =
-        SymTypeExpressionFactory.createGenerics(gen.getTypeInfo());
+        SymTypeExpressionFactory.createGenericsDeclaredType(gen.getTypeInfo());
     List<SymTypeVariable> typeParameters = declaredType.getArgumentList()
         .stream().map(SymTypeExpression::asTypeVariable)
         .collect(Collectors.toList());

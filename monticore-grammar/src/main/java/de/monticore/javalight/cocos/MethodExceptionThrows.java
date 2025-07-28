@@ -18,7 +18,7 @@ public class MethodExceptionThrows implements JavaLightASTMethodDeclarationCoCo 
   @Override
   public void check(ASTMethodDeclaration node) {
     if (node.isPresentThrows()) {
-      SymTypeExpression throwable = SymTypeExpressionFactory.createTypeObject("java.lang.Throwable", node.getEnclosingScope());
+      SymTypeExpression throwable = SymTypeExpressionFactory.createTypeObjectViaSurrogate("java.lang.Throwable", node.getEnclosingScope());
       for (SymTypeExpression exception : node.getSymbol().getExceptionsList()) {
         if (!TypeCheck.isSubtypeOf(exception, throwable)) {
           Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, exception.print()),
