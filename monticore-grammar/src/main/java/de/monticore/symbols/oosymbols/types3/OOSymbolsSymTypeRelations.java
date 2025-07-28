@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 
 /**
  * relations for SymTypes of wrt. OOSymbols,
- * e.g, isEnumConstant, etc.
+ * e.g, isEnum, etc.
  * Mostly used as convenience instead of the required, e.g.,
  * <ol>
  *   <li> checking if a symbol exists</li>
