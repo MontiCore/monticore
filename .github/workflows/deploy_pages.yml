@@ -27,7 +27,7 @@ jobs:
       - name: Checkout project sources
         uses: actions/checkout@v4
       - name: Download Javadoc artifact
-        uses: dawidd6/action-download-artifact@v11
+        uses: dawidd6/action-download-artifact@ac66b43f0e6a346234dd65d4d0c8fbb31cb316e5
         with:
           workflow: deploy_snapshot_mc.yml
           workflow_conclusion: success
