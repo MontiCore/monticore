@@ -551,6 +551,7 @@ java {
   registerFeature('tests') {
     usingSourceSet(sourceSets.test)
   }
+  withJavadocJar()
 }
 
 tasks.named("shadowJar") {
