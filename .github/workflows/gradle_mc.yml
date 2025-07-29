@@ -9,10 +9,10 @@ concurrency: # run this test workflow only once per "branch"
 on:
   push: # run this test pipeline on every push
     paths-ignore:
-      - "*.md"
+      - "**.md"
   pull_request: # and pull request  (Note: We can skip pull request events IFF the PR is not done from a fork)
     paths-ignore:
-      - "*.md"
+      - "**.md"
   repository_dispatch: # and on request of upstream projects
     types: [ trigger_after_upstream_deploy ]
 

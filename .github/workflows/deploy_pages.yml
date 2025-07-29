@@ -5,10 +5,10 @@ name: Build MKDocs
 on:
   push: # run this test pipeline on every push
     paths:
-      - "*.md"
+      - "**.md"
   pull_request: # and pull request (Note: We can skip pull request events IFF the PR is not done from a fork)
     paths-ignore:
-      - "*.md"
+      - "**.md"
   workflow_run: # and when the javadocs have been updated
     workflows: [ "Gradle Deploy Snapshot" ]
     types:
