@@ -230,7 +230,7 @@ public class SymTypeOfFunction extends SymTypeExpression {
           new TreeMap<>(new SymTypeExpressionComparator());
       for (SymTypeInferenceVariable infVar : infVars) {
         infVar2Skolem.put(infVar,
-            SymTypeExpressionFactory.createTypeObject(
+            SymTypeExpressionFactory.createTypeObjectViaSurrogate(
                 "Skolem#" + infVar.print(),
                 BasicSymbolsMill.scope()
             )

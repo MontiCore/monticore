@@ -30,7 +30,10 @@ import static de.monticore.types.check.TypeCheck.*;
  * For an OO language, use {@link de.monticore.types.check.DeriveSymTypeOfCommonExpressions} instead, which
  * extends the functionality of this class so that it may be used in an OO-context as well.
  * It can be combined with other expressions in your language by creating a DelegatorVisitor
+ * @deprecated part of typecheck1,
+ * use {@link de.monticore.types3.TypeCheck3} instead.
  */
+@Deprecated
 public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpression implements CommonExpressionsVisitor2, CommonExpressionsHandler {
 
   protected CommonExpressionsTraverser traverser;
@@ -1300,12 +1303,12 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
       //determine whether the result has to be a constant, generic or object
       if (arrayResult.getTypeInfo().getTypeParameterList().isEmpty()) {
         //if the return type is a primitive
-        if (SymTypePrimitive.boxMap.containsKey(arrayResult.getTypeInfo().getName())) {
+        if (arrayResult.isPrimitive()) {
           wholeResult = SymTypeExpressionFactory.createPrimitive(arrayResult.getTypeInfo().getName());
         }
         else {
           //if the return type is an object
-          wholeResult = SymTypeExpressionFactory.createTypeObject(arrayResult.getTypeInfo().getName(), getScope(scope));
+          wholeResult = SymTypeExpressionFactory.createTypeObjectViaSurrogate(arrayResult.getTypeInfo().getName(), getScope(scope));
         }
       }
       else {

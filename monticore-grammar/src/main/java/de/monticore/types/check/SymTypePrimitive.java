@@ -4,6 +4,7 @@ package de.monticore.types.check;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.types3.ISymTypeVisitor;
+import de.se_rwth.commons.logging.Log;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -16,11 +17,13 @@ public class SymTypePrimitive extends SymTypeExpression {
   protected TypeSymbol typeSymbol;
 
   public SymTypePrimitive(TypeSymbol typeSymbol) {
+    Log.errorIfNull(typeSymbol);
     this.typeSymbol = typeSymbol;
   }
 
   @Override
   public boolean hasTypeInfo() {
+    // should always return true
     return typeSymbol != null;
   }
 
@@ -33,6 +36,10 @@ public class SymTypePrimitive extends SymTypeExpression {
     return typeSymbol.getName();
   }
 
+  /**
+   * @deprecated use {@link de.monticore.types3.SymTypeRelations#box(SymTypeExpression)}
+   */
+  @Deprecated
   public String getBoxedPrimitiveName() {
     return box(typeSymbol.getName());
   }
@@ -40,7 +47,7 @@ public class SymTypePrimitive extends SymTypeExpression {
   /**
    * @deprecated only used in 1 test ONCE... in our main projects
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public String getBaseOfBoxedName() {
     String[] parts = box(typeSymbol.getName()).split("\\.");
     return parts[parts.length - 1];
@@ -49,7 +56,7 @@ public class SymTypePrimitive extends SymTypeExpression {
   /**
    * @deprecated only used in tests in our main projects
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public void setPrimitiveName(String constName){
     typeSymbol.setName(constName);
   }
@@ -59,7 +66,7 @@ public class SymTypePrimitive extends SymTypeExpression {
    * (on purpose not implemented as enum)
    * @deprecated cannot assume fixed set for all languages
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public static final List<String> primitiveTypes =
       Collections.unmodifiableList(Arrays.asList(
           BasicSymbolsMill.BOOLEAN,

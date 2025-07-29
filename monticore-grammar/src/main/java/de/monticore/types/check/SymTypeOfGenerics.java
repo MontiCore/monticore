@@ -26,14 +26,14 @@ public class SymTypeOfGenerics extends SymTypeExpression {
   /**
    * Map for unboxing generic types (e.g. {@code "java.util.Collection" -> "Collection"})
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public static final Map<String, String> unboxMap;
 
   /**
    * Map for boxing generic types (e.g. {@code "Collection" -> "java.util.Collection"})
    * Results are fully qualified.
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public static final Map<String, String> boxMap;
 
   /**
@@ -62,7 +62,7 @@ public class SymTypeOfGenerics extends SymTypeExpression {
    * @param type
    * @return
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public static String unbox(SymTypeOfGenerics type){
     List<SymTypeExpression> arguments = type.getArgumentList();
     StringBuilder r = new StringBuilder().append('<');
@@ -78,11 +78,11 @@ public class SymTypeOfGenerics extends SymTypeExpression {
       }
     }
     r.append(">");
-    if (unboxMap.containsKey(type.printTypeWithoutTypeArgument())) {
-      return unboxMap.get(type.printTypeWithoutTypeArgument()) + r.toString();
+    if (unboxMap.containsKey(type.getTypeConstructorFullName())) {
+      return unboxMap.get(type.getTypeConstructorFullName()) + r.toString();
     }
     else {
-      return type.printTypeWithoutTypeArgument() + r.toString();
+      return type.getTypeConstructorFullName() + r.toString();
     }
   }
 
@@ -94,7 +94,7 @@ public class SymTypeOfGenerics extends SymTypeExpression {
    * @param type
    * @return
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public static String box(SymTypeOfGenerics type){
     List<SymTypeExpression> arguments = type.getArgumentList();
     StringBuilder r = new StringBuilder().append('<');
@@ -110,11 +110,11 @@ public class SymTypeOfGenerics extends SymTypeExpression {
       }
     }
     r.append(">");
-    if (boxMap.containsKey(type.printTypeWithoutTypeArgument())) {
-      return boxMap.get(type.printTypeWithoutTypeArgument()) + r.toString();
+    if (boxMap.containsKey(type.getTypeConstructorFullName())) {
+      return boxMap.get(type.getTypeConstructorFullName()) + r.toString();
     }
     else {
-      return type.printTypeWithoutTypeArgument() + r.toString();
+      return type.getTypeConstructorFullName() + r.toString();
     }
   }
 
@@ -129,7 +129,7 @@ public class SymTypeOfGenerics extends SymTypeExpression {
    * @deprecated use SymTypeExpressionFactory
    * The Factory then uses the constructor below
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public SymTypeOfGenerics(TypeSymbol typeSymbol) {
     this(typeSymbol, new LinkedList<>());
   }
@@ -158,16 +158,18 @@ public class SymTypeOfGenerics extends SymTypeExpression {
 
   /**
    * @deprecated same as the the other 2 methods even in spec?
+   * use {@link #getTypeConstructorFullName()}
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public String printTypeWithoutTypeArgument(){
-    return this.getFullName();
+    return getTypeConstructorFullName();
   }
 
   /**
    * @deprecated same as the the other 2 methods even in spec?
+   * use {@link #getTypeConstructorFullName()}
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public String getFullName() {
     return getTypeConstructorFullName();
   }
@@ -175,8 +177,10 @@ public class SymTypeOfGenerics extends SymTypeExpression {
   /**
    * getBaseName: get the unqualified Name (no ., no Package)
    * @deprecated unused outside of tests, but not required for tests
+   * use {@link de.se_rwth.commons.Names} instead,
+   * or {@code getTypeInfo().getName()}
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public String getBaseName() {
     String[] parts = getTypeConstructorFullName().split("\\.");
     return parts[parts.length - 1];
@@ -267,6 +271,11 @@ public class SymTypeOfGenerics extends SymTypeExpression {
     return replaceMap;
   }
 
+  /**
+   * @deprecated use {@link de.monticore.types3.util.WithinTypeBasicSymbolsResolver}
+   *             or {@link de.monticore.types3.util.WithinScopeBasicSymbolsResolver}
+   */
+  @Deprecated
   @Override
   public void replaceTypeVariables(Map<TypeVarSymbol, SymTypeExpression> replaceMap) {
     for(int i = 0; i<this.getArgumentList().size(); i++){

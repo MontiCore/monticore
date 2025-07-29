@@ -78,12 +78,12 @@ public class TypeParametersNoCyclicInheritanceTest {
     artifactScope.setName("aName");
     TypeParametersTestTraverser stCompleter =
         TypeParametersTestMill.traverser();
-    ITypeCalculator tc = getTypeCalculator();
-    stCompleter.add4TypeParameters(new TypeParametersSTCompleteTypes(tc));
+    stCompleter.add4TypeParameters(new TypeParametersSTCompleteTypes());
     astOpt.get().accept(stCompleter);
     return astOpt.get();
   }
 
+  @Deprecated
   protected ITypeCalculator getTypeCalculator() {
     Type4Ast type4Ast = new Type4Ast();
     InferenceContext4Ast infCtx4Ast = new InferenceContext4Ast();

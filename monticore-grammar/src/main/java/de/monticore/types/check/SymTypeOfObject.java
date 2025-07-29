@@ -3,6 +3,7 @@ package de.monticore.types.check;
 
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.types3.ISymTypeVisitor;
+import de.se_rwth.commons.logging.Log;
 
 /**
  * An objectType is a full qualified class name.
@@ -18,11 +19,13 @@ public class SymTypeOfObject extends SymTypeExpression {
    */
   public SymTypeOfObject(TypeSymbol typeSymbol)
   {
+    Log.errorIfNull(typeSymbol);
     this.typeSymbol = typeSymbol;
   }
 
   @Override
   public boolean hasTypeInfo() {
+    // should allways be true
     return typeSymbol != null;
   }
 
@@ -36,7 +39,7 @@ public class SymTypeOfObject extends SymTypeExpression {
    * one may add a getObjFullName() or similar if required
    * also, seems unused in our main projects
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public String getObjName() {
     return typeSymbol.getFullName();
   }
@@ -44,7 +47,7 @@ public class SymTypeOfObject extends SymTypeExpression {
   /**
    * @deprecated unused in main projects
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public void setObjName(String objname) {
     this.typeSymbol.setName(objname);
   }
@@ -52,8 +55,10 @@ public class SymTypeOfObject extends SymTypeExpression {
   /**
    * getBaseName: get the unqualified Name (no ., no Package)
    * @deprecated unused outside of tests, but not required for tests
+   * use {@link de.se_rwth.commons.Names} instead,
+   * or {@code getTypeInfo().getName()}
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public String getBaseName() {
     String[] parts = getObjName().split("\\.");
     return parts[parts.length - 1];

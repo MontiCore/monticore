@@ -10,6 +10,8 @@ import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisito
 import de.monticore.mcbasics._symboltable.IMCBasicsScope;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsGlobalScope;
+import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
+import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
@@ -101,7 +103,8 @@ public class ResolveWithinTypeTest extends AbstractTypeVisitorTest {
   //     t t;
   //     => test expression "t" in this method scope
   //   }
-  //   => test expressions "t" and "t()" in this class scope
+  //   => cannot test expressions "t" in this class scope,
+  //      as target type is missing
   // }
   @Test
   public void test2() throws IOException {
@@ -109,35 +112,32 @@ public class ResolveWithinTypeTest extends AbstractTypeVisitorTest {
 
     OOTypeSymbol oOType = oOtype("t");
     inScope(gs, oOType);
-    inScope(oOType.getSpannedScope(), typeVariable("t"));
+    TypeVarSymbol oOTypeVar =
+        inScope(oOType.getSpannedScope(), typeVariable("t"));
 
     FieldSymbol field = field("t",
         SymTypeExpressionFactory.createTypeObject(oOType));
     inScope(oOType.getSpannedScope(), field);
 
+    TypeVarSymbol methodTypeVar = typeVariable("t");
     MethodSymbol method = method("t",
-        SymTypeExpressionFactory.createTypeObject(oOType));
+        SymTypeExpressionFactory.createTypeVariable(methodTypeVar));
+    inScope(method.getSpannedScope(), methodTypeVar);
     inScope(oOType.getSpannedScope(), method);
-    inScope(method.getSpannedScope(), typeVariable("t"));
 
+    IBasicSymbolsScope methodScope = inScope(method.getSpannedScope(), BasicSymbolsMill.scope());
     VariableSymbol variable = variable("t",
-        SymTypeExpressionFactory.createTypeObject(oOType));
-    inScope(method.getSpannedScope(), variable);
+        SymTypeExpressionFactory.createTypeVariable(oOTypeVar));
+    inScope(methodScope, variable);
 
-    SymTypeExpression type =
-        calculateTypeWithinScope("t", oOType.getSpannedScope());
-    Assertions.assertEquals("(t -> t) & t", type.printFullName());
+    SymTypeExpression type = calculateTypeWithinScope("t", methodScope);
+    Assertions.assertEquals("(() -> t.t.t) & t.t", type.printFullName());
     Assertions.assertTrue(type.isIntersectionType());
     Assertions.assertTrue(((SymTypeOfIntersection) type).getIntersectedTypeSet()
         .stream()
-        .anyMatch(t -> t.hasTypeInfo() && t.getTypeInfo() == oOType));
-
-    type = calculateTypeWithinScope("t", method.getSpannedScope());
-    Assertions.assertEquals("(t -> t) & t", type.printFullName());
-    Assertions.assertTrue(type.isIntersectionType());
-    Assertions.assertTrue(((SymTypeOfIntersection) type).getIntersectedTypeSet()
-        .stream()
-        .anyMatch(t -> t.hasTypeInfo() && t.getTypeInfo() == oOType));
+        .filter(t -> t.isTypeVariable())
+        .map(t -> t.asTypeVariable())
+        .anyMatch(t -> t.getTypeVarSymbol() == oOTypeVar));
   }
 
   // class s<t> {
@@ -145,7 +145,7 @@ public class ResolveWithinTypeTest extends AbstractTypeVisitorTest {
   //   t t;
   //   <t> t t() {
   //     t t;
-  //     => test expression "t" in this class scope
+  //     => test expression "t" in this method scope
   //   }
   // }
   @Test
@@ -154,7 +154,8 @@ public class ResolveWithinTypeTest extends AbstractTypeVisitorTest {
 
     OOTypeSymbol oOType = oOtype("s");
     inScope(gs, oOType);
-    inScope(oOType.getSpannedScope(), typeVariable("t"));
+    TypeVarSymbol oOTypeVar =
+        inScope(oOType.getSpannedScope(), typeVariable("t"));
 
     OOTypeSymbol oOType1 = oOtype("t");
     inScope(oOType.getSpannedScope(), oOType1);
@@ -163,29 +164,27 @@ public class ResolveWithinTypeTest extends AbstractTypeVisitorTest {
         SymTypeExpressionFactory.createTypeObject(oOType1));
     inScope(oOType.getSpannedScope(), field);
 
+    TypeVarSymbol methodTypeVar = typeVariable("t");
     MethodSymbol method = method("t",
-        SymTypeExpressionFactory.createTypeObject(oOType));
+        SymTypeExpressionFactory.createTypeVariable(methodTypeVar)
+    );
     inScope(oOType.getSpannedScope(), method);
-    inScope(method.getSpannedScope(), typeVariable("t"));
+    inScope(method.getSpannedScope(), methodTypeVar);
 
+    IBasicSymbolsScope methodScope = inScope(method.getSpannedScope(), BasicSymbolsMill.scope());
     VariableSymbol variable = variable("t",
-        SymTypeExpressionFactory.createTypeObject(oOType));
-    inScope(method.getSpannedScope(), variable);
+        SymTypeExpressionFactory.createTypeVariable(oOTypeVar));
+    inScope(methodScope, variable);
 
     SymTypeExpression type =
-        calculateTypeWithinScope("t", oOType.getSpannedScope());
-    Assertions.assertEquals("(s -> s) & s.t", type.printFullName());
+        calculateTypeWithinScope("t", methodScope);
+    Assertions.assertEquals("(() -> s.t.t) & s.t", type.printFullName());
     Assertions.assertTrue(type.isIntersectionType());
     Assertions.assertTrue(((SymTypeOfIntersection) type).getIntersectedTypeSet()
         .stream()
-        .anyMatch(t -> t.hasTypeInfo() && t.getTypeInfo() == oOType1));
-
-    type = calculateTypeWithinScope("t", method.getSpannedScope());
-    Assertions.assertEquals("(s -> s) & s", type.printFullName());
-    Assertions.assertTrue(type.isIntersectionType());
-    Assertions.assertTrue(((SymTypeOfIntersection) type).getIntersectedTypeSet()
-        .stream()
-        .anyMatch(t -> t.hasTypeInfo() && t.getTypeInfo() == oOType));
+        .filter(t -> t.isTypeVariable())
+        .map(t -> t.asTypeVariable())
+        .anyMatch(t -> t.getTypeVarSymbol() == oOTypeVar));
   }
 
   // class s {
@@ -236,7 +235,7 @@ public class ResolveWithinTypeTest extends AbstractTypeVisitorTest {
 
   // class t<t> {}
   // class s extends t<boolean> {
-  //   t t;
+  //   t<s> t;
   //   => test expression "t" in this class scope
   // }
   @Test
@@ -253,12 +252,15 @@ public class ResolveWithinTypeTest extends AbstractTypeVisitorTest {
     inScope(gs, oOType1);
 
     FieldSymbol field = field("t",
-        SymTypeExpressionFactory.createTypeObject(oOType));
+        SymTypeExpressionFactory.createGenerics(oOType,
+            SymTypeExpressionFactory.createTypeObject(oOType1)
+        )
+    );
     inScope(oOType1.getSpannedScope(), field);
 
     SymTypeExpression type =
         calculateTypeWithinScope("t", oOType1.getSpannedScope());
-    Assertions.assertEquals("t", type.printFullName());
+    Assertions.assertEquals("t<s>", type.printFullName());
     Assertions.assertSame(oOType, type.getTypeInfo());
   }
 

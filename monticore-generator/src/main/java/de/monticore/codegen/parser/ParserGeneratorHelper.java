@@ -159,15 +159,22 @@ public class ParserGeneratorHelper {
     }
   }
 
+  /**
+   * @param str - A String whose contents were taken directly from a StringLiteral.
+   * @return The original string, but each occurrence of ' is replaced with \'.
+   */
+  @SuppressWarnings("unused") // Used in parser/Lexer.ftl
   public String escapeSingleQuote(String str) {
-    String retStr = "";
-    String del = "";
-    for (String s: str.split("'")) {
-      retStr += del;
-      retStr += s;
-      del = "\\'";
-    }
-    return retStr;
+    return str.replace("'", "\\'");
+  }
+
+  /**
+   * @param str - A String whose contents were taken directly from a StringLiteral.
+   * @return The original string, but each occurrence of \" is replaced by ".
+   */
+  @SuppressWarnings("unused") // Used in parser/Lexer.ftl
+  public String unescapeDoubleQuote(String str) {
+    return str.replace("\\\"", "\"");
   }
 
   /**
