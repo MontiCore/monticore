@@ -53,14 +53,13 @@ public class CheckScannerlessTest {
   public void testType8() throws IOException {
     // This cannot be parsed as a Type >> wert
     // This cannot be parsed because of the illegal space in ">>"
-    Optional<ASTExpression> ast0 = ScannerlessMill.parser().parse_StringExpression(
-            "List<Set<Theo>>> >wert" );
-    assertFalse(ast0.isPresent());
-    // We could also check for assertTrue(MCConcreteParser#hasErrors());,
-    // but this is already done by the optional-empty check
+    var parser = ScannerlessMill.parser();
+    parser.parse_StringExpression("List<Set<Theo>>> >wert" );
+    assertTrue(parser.hasErrors()); // check that the parser has errors
     
     // assert a findings is present & remove it from the log
-    MCAssertions.assertHasFinding(finding -> true); 
+    // We ignore the content of the finding, as it is a parser error 
+    MCAssertions.assertHasFinding(); 
   }
   // The @TestWithMCLanguage ensures, that after each test:
   //  - no more findings are present
@@ -89,7 +88,7 @@ The notable methods are:
 When the generated pretty printer is customized via the TOP-mechanism,
  the `PrettyPrinterTester` class provides functionality for quickly writing a bunch of tests for the pretty printer.
 
-The test functionality of MontiCore is provided by the [text fixture](https://docs.gradle.org/current/userguide/java_testing.html#sec:java_test_fixtures) 
+The test functionality of MontiCore is provided by the [test fixture](https://docs.gradle.org/current/userguide/java_testing.html#sec:java_test_fixtures) 
 `testFixture("de.monticore:monticore-grammar:$mc_version")` dependency.
 For smaller examples of parsing, pretty printing, etc., models can be written within the test class and
 external model files are not needed.

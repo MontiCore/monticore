@@ -114,6 +114,21 @@ public class MCAssertions {
   }
 
   /**
+   * Asserts that at least one Finding is present
+   * and removes that Finding from the Log.
+   * If multiple Findings match, only the first of them will be removed.
+   * This method should NOT be used in conjunction with CoCo-Tests.
+   *
+   * @return returns the found Finding
+   */
+  public static Finding assertHasFinding() {
+    return assertHasFinding(f -> true,
+            "Expected any Log-Finding" +
+                    ", but none were present"
+    );
+  }
+
+  /**
    * Asserts that at least one Finding matches the predicate
    * and removes all matching Findings from the Log
    *
