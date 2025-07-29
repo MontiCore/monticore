@@ -384,6 +384,7 @@ To check relations of SymTypeExpressions,
 the SymTypeExpressions are passed to the corresponding method
 of SymTypeRelations or one of its subclasses.
 A non-exhaustive List of relation methods:
+
 * `boolean isCompatible(SymTypeExpression assignee, SymTypeExpression assigner)`
   (whether an assignment is allowed in the type system)
 * `boolean isSubTypeOf(SymTypeExpression subType, SymTypeExpression)`
