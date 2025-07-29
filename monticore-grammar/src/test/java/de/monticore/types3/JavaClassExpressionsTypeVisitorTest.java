@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types3;
 
-import de.monticore.runtime.types3.DefsVariablesForTests;
+import de.monticore.types3.util.DefsVariablesForTests;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
