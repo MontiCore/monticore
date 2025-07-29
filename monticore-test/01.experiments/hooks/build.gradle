@@ -34,10 +34,6 @@ tasks.named('check') {
   dependsOn(testing.suites.productTest)
 }
 
-dependencies {
-  productTestImplementation(project(":monticore-runtime-tests"))
-}
-
 // let productTest depend on test as test produces code for productTest
 tasks.named("compileProductTestJava") {
   dependsOn(test)
