@@ -16,6 +16,10 @@ related tooling are currently available for download:
 .md-typeset table:not([class]) td {
   padding:.3em .7em;
 }
+/*Hide sidebar/navigation to gain even more space*/
+.md-sidebar--primary {
+  display: none;
+}
 </style>
 
 | Artifact                            | Description                     | Download     |

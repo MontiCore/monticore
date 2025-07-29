@@ -64,7 +64,7 @@ esac
 
 for SOURCE_DIR in "00.org" "docs" "monticore-grammar/src" "monticore-runtime/src"; do
   # We link to java & mc4 files in our md files - which is why we have to redirect them too
-  find "$SOURCE_DIR" -type f \( -name "*.md" -o -name "*.java" -o -name "*.mc4" \) | while read -r filepath; do
+  find "$SOURCE_DIR" -type f \( -name "*.md" \) | while read -r filepath; do
      target_file="docs_wd/$filepath"
      mkdir -p "$(dirname "$target_file")"
      # use snippets to include the original files content
