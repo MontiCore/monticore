@@ -315,6 +315,7 @@ s.a. [Given Infrastructure](#given-infrastructure-in-monticore);
 The following are further classes,
 that are unlikely to be required to be modified for a given language.
 They still use the same static delegate pattern.
+
 * [FunctionRelations](util/FunctionRelations.java),
 * [SIUnitTypeRelations](util/SIUnitTypeRelations.java),
 * [TypeContextCalculator](util/TypeContextCalculator.java),
