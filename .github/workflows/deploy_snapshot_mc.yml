@@ -32,8 +32,8 @@ jobs:
       - name: Deploy the snapshot
         uses: gradle/actions/setup-gradle@v3
         with:
-          gradle-version: ${{env.GRADLE_VERSION}}
-          arguments: deployMC ${{env.GRADLE_CLI_OPTS}} -PmavenPassword=${{secrets.SE_NEXUS_PASSWORD}} -PmavenUser=${{secrets.SE_NEXUS_USER}} -PgenEMF=true -PgenTR=true -PgenTagging=true
+          gradle-version: ${{env.GRADLE_VERSION}} #todo s/publishMCToMavenLocal/deployMC
+          arguments: publishMCToMavenLocal ${{env.GRADLE_CLI_OPTS}} -PmavenPassword=${{secrets.SE_NEXUS_PASSWORD}} -PmavenUser=${{secrets.SE_NEXUS_USER}} -PgenEMF=true -PgenTR=true -PgenTagging=true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Upload Javadoc
@@ -48,18 +48,18 @@ jobs:
             monticore-grammar/target/docs/testFixturesJavadoc/
 
   # Trigger GitHub downstream projects (without reporting the pipeline result)
-  trigger-github-downstream:
-    needs: [ deploy-snapshot ]
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        project: [ "MontiCore/cd4analysis", "MontiCore/feature-diagram", "MontiCore/xml", "MontiCore/json", "MontiCore/ucd", "MontiCore/automaton" ]
-    steps:
-      - name: Trigger ${{ matrix.project }}
-        uses: peter-evans/repository-dispatch@v3
-        with:
-          token: ${{ secrets.DOWNSTREAM_PAT }}
-          repository: ${{ matrix.project }}
-          event-type: trigger_after_upstream_deploy
+#  trigger-github-downstream:
+#    needs: [ deploy-snapshot ]
+#    runs-on: ubuntu-latest
+#    strategy:
+#      matrix:
+#        project: [ "MontiCore/cd4analysis", "MontiCore/feature-diagram", "MontiCore/xml", "MontiCore/json", "MontiCore/ucd", "MontiCore/automaton" ]
+#    steps:
+#      - name: Trigger ${{ matrix.project }}
+#        uses: peter-evans/repository-dispatch@v3
+#        with:
+#          token: ${{ secrets.DOWNSTREAM_PAT }}
+#          repository: ${{ matrix.project }}
+#          event-type: trigger_after_upstream_deploy
 
   # We do not trigger (internal) GitLab downstream projects
