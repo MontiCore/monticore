@@ -8,14 +8,15 @@
 # MontiCore - Language Workbench and Development Tool Framework 
 
 ---
-<!-- DO NOT MOVE THIS LINE - docs/README.md references -->
+<!-- DO NOT MOVE THIS LINE - docs/README.md references it by line number!!! -->
 
 **NEWS**:
 <div align="center">
-  <a href="/docs/MontiCoreSymposium/" target="_blank">
+  <!-- HTML links must be absolute (as they are not covered by mkdocs) -->
+  <a href="https://monticore.github.io/monticore/docs/MontiCoreSymposium" target="_blank">
     <!--Warning: This image is specially handled in the preprocessing.sh script -->
     <img src="docs/img/MC_Symp_Banner.png" alt="MontiCore Symposium Banner">
-  </a>  
+  </a> 
 </div>  
   
 * ISW Stuttgart and RWTH Aachen organize the fourth **[MontiCore Symposium 2025](docs/MontiCoreSymposium.md)** September 28 - October 01 in Köln-Riehl, Germany
