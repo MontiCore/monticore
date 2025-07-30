@@ -75,11 +75,13 @@ Before each test,
 After each test, the log must not have any findings present.
 If no Mill setup is desired, the `AbstractMCTest` class provides the same functionality.
 
-In addition to jUnits `Assertions`, MontiCore provides a [`MCAssertions`](../../monticore-runtime/testFixturesJavadoc) class for e.g. Log assertions:
+In addition to jUnits [`Assertions`](https://docs.junit.org/current/api/org.junit.jupiter.api/org/junit/jupiter/api/Assertions.html), 
+MontiCore provides a [`MCAssertions`](../monticore-runtime/src/testFixtures/java/de/monticore/runtime/junit/MCAssertions.java)
+class for e.g. Log assertions:
 
 The notable methods are:
 
-* `MCAssertions#assertNoFindings(String message)` - Ensure no findings are present (always called after each test)
+* [`MCAssertions#assertNoFindings(String message)](../monticore-runtime/src/testFixtures/java/de/monticore/runtime/junit/MCAssertions.java#assertNoFindings(java.lang.String))` - Ensure no findings are present (always called after each test)
 * `MCAssertions#assertHasFindingStartingWith(String expectedPrefix, String message)` - Ensures that at least one finding starts with the prefix and removes & returns that one finding
 * `MCAssertions#assertHasFindingsStartingWith(String expectedPrefix, String message)` - Ensures that at least one finding starts with the prefix and removes & returns all matching findings
 * `MCAssertions#assertHasFinding(Predicate<Finding> predicate, String message)` - Ensures that at least one finding matches the predicate and removes & returns that one finding
