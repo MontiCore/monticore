@@ -3,12 +3,14 @@ name: Build MKDocs
 
 
 on:
-  push: # run this test pipeline on every push
+  push: # run this test pipeline on every push (if markdown and/or the docs directory was changed)
     paths:
       - "**.md"
+      - "docs/**"
   pull_request: # and pull request (Note: We can skip pull request events IFF the PR is not done from a fork)
-    paths-ignore:
+    paths:
       - "**.md"
+      - "docs/**"
   workflow_run: # and when the javadocs have been updated
     workflows: [ "Gradle Deploy Snapshot" ]
     types:
