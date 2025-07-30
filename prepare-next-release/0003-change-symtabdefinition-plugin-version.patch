@@ -1,0 +1,22 @@
+From 671d244c01307d03a8285b84a60dfae413074c74 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Alex=20L=C3=BCpges?= <luepges@se-rwth.de>
+Date: Wed, 16 Jul 2025 15:16:50 +0200
+Subject: [PATCH] change symtabdefinition plugin version
+
+
+diff --git a/monticore-libraries/stream-symbols/build.gradle b/monticore-libraries/stream-symbols/build.gradle
+index f730fbb39..fbca4c40e 100644
+--- a/monticore-libraries/stream-symbols/build.gradle
++++ b/monticore-libraries/stream-symbols/build.gradle
+@@ -1,6 +1,7 @@
+ /* (c) https://github.com/MontiCore/monticore */
+ plugins {
+-  id "de.rwth.se.symtabdefinition" version "$version"
++  id "de.rwth.se.symtabdefinition" version "$previous_mc_version"
++  // use previous_mc_version to avoid bootstrapping issue
+ }
+ 
+ description = 'MontiCore: Stream Symbols'
+-- 
+2.42.0.windows.2
+
