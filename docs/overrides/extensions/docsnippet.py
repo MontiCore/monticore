@@ -88,22 +88,26 @@ class MCSnippetPreprocessor(snippets.SnippetPreprocessor):
             # which file does the url point to?
             resolved_path = (base_path / url).resolve().relative_to(cwd)
             # step 1: construct a GitHub link
-            github_link = f"[:material-github:](https://github.com/MontiCore/monticore/blob/dev/{resolved_path} \"View file on GitHub\")"
+            github_link = f"https://github.com/MontiCore/monticore/blob/dev/{resolved_path} \"View file on GitHub\""
+            github_icon = f"[:material-github:{{ .nonhighlight}}]({github_link})"
             # step 2: construct a JavaDocs link
             parts = resolved_path.parts
             project = parts[0]  # the project, i.e. monticore-grammar, monticore-runtime, etc
             source_set = parts[2]  # main or testFixtures
             # we have links to non main/testFixtures java files -> no javadoc link
+            link = github_link
             if source_set in ['main', 'testFixtures'] and project in ['monticore-grammar',
                                                                       'monticore-runtime'] and file_ext == 'java':
                 # find the correct file location
                 javadoc_task = 'javadoc' if source_set == 'main' else 'testFixturesJavadoc'
                 back_to_root = '../' * (len(base_path.relative_to(cwd).parts))
                 file = '/'.join(parts[4:])[:-len(".java")]
-                javadoc_link = f"[:material-file-document:]({back_to_root}{project}/{javadoc_task}/{file}.html{anchor} \"View JavaDoc\")"
+                javadoc_link = f"{back_to_root}{project}/{javadoc_task}/{file}.html{anchor} \"View JavaDoc\""
+                javadoc_icon = f"[:material-file-document:{{ .nonhighlight }}]({javadoc_link})"
+                link = javadoc_link
             else:
-                javadoc_link = ''
-            return f"{text} <sup>{github_link} {javadoc_link}</sup>"
+                javadoc_icon = ''
+            return f"[{text}]({link}) <sup>{github_icon} {javadoc_icon}</sup>"
 
         # Apply replacement
         return [pattern_anchor_link.sub(anchor_replacer, pattern_rel_link.sub(link_replacer, md_text)) for md_text in

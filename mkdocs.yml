@@ -25,6 +25,7 @@ copyright: '(c) https://github.com/MontiCore/monticore'
 
 markdown_extensions:
   - admonition
+  - attr_list
   - pymdownx.highlight
   - pymdownx.inlinehilite
   - pymdownx.details
