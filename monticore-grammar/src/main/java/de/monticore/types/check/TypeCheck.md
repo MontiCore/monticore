@@ -2,6 +2,13 @@
 
 <!-- Alpha-version: This is intended to become a MontiCore stable explanation. -->
 
+# Deprecation
+
+TypeCheck1 has been deprecated.
+Please refer to [TypeSystem3](../../types3/TypeSystem3.md).
+
+## Deprecated Documentation
+
 In MontiCore, the TypeCheck is used to calculate the SymTypeExpression of a set of expressions, types and literals.
 This is made possible by traversing the AST of an expression, type or literal, calculating the SymTypeExpression of its
 subexpressions, -types or -literals and combining them to the SymTypeExpression of the main expression, type or literal.
