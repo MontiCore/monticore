@@ -8,7 +8,7 @@ title: MontiCore - Language Workbench and Development Tool Framework
 **NEWS**:
 <div align="center">
   <a href="docs/MontiCoreSymposium/" target="_blank">
-  <img src="docs/img/MC_Symp_Banner.png">
+    <img src="img/MC_Symp_Banner.png" alt="MontiCore Symposium Banner">
   </a>  
 </div>  
 
