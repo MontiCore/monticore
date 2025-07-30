@@ -11,7 +11,7 @@ title: MontiCore - Language Workbench and Development Tool Framework
   </a>  
 </div>  
 
-* ISW Stuttgart and RWTH Aachen organize the fourth **[MontiCore Symposium 2025](MontiCoreSymposium.md)** September 28 - October 01 in Köln-Riehl, Germany
+* ISW Stuttgart and RWTH Aachen organize the fourth **[MontiCore Symposium 2025](../docs/MontiCoreSymposium.md)** September 28 - October 01 in Köln-Riehl, Germany
   * Deadline for submission of papers or abstracts: July, 25th.
 
 ---
