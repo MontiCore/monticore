@@ -71,7 +71,7 @@ lasting tasks.
 The website is built using mkdocs.
 
 * Install mkdocs: `pip install mkdocs mkdocs-material`
-* Build the website's files: `/docs/scripts/preprocessing.sh symlink`
+* Build the website's files: `./docs/scripts/preprocessing.sh symlink`
 * Serve locally: `mkdocs serve`
 * (optional) use Gradle to build the javadocs
 

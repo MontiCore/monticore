@@ -2,8 +2,9 @@
 # (c) https://github.com/MontiCore/monticore  
 # script for all preprocessing steps of the pages job
 # is used to have uniform bases for both gitlab and github pages
-# is used from '.gitlab-ci.yml'(gitlab) and '.travis.yml'(github)
 #
+#
+# old scripts:
 # execute report scripts and print output to *.md file, to use these in pages
 #sh docs/scripts/errorList.sh '../../' 'target/site/errorList' > docs/scripts/ErrorList.md
 #sh docs/scripts/detailedErrorList.sh '../../' 'target/site/detailedErrorList' > docs/scripts/DetailedErrorList.md

@@ -64,7 +64,7 @@ class MCSnippetPreprocessor(snippets.SnippetPreprocessor):
         relative_anchors = {m[0]: m for line in s_lines for m in pattern_anchor.findall(line)}
 
         # Pattern to match relative markdown links: [text](url)
-        pattern_rel_link = re.compile(r'\[([^\]]+)\]\(' + file_pattern + r'\)')
+        pattern_rel_link = re.compile(r'\[([^\]]+)\]\(' + file_pattern + r'(#\S+)?\)')
         # Pattern to match relative markdown links: [text][anchor]
         pattern_anchor_link = re.compile(r'\[([^\]]+)\]\[([a-zA-Z0-9_]+)\]')
 
@@ -81,9 +81,10 @@ class MCSnippetPreprocessor(snippets.SnippetPreprocessor):
             text = match.group(1)  # the text within the link
             url = match.group(2)  # the url including everything
             file_ext = match.group(3)  # the url including everything
-            return replace_link(text, url, file_ext)
+            anchor = match.group(4) or "" # an optional #anchor
+            return replace_link(text, url, file_ext, anchor)
 
-        def replace_link(text, url, file_ext):
+        def replace_link(text, url, file_ext, anchor=""):
             # which file does the url point to?
             resolved_path = (base_path / url).resolve().relative_to(cwd)
             # step 1: construct a GitHub link
@@ -99,7 +100,7 @@ class MCSnippetPreprocessor(snippets.SnippetPreprocessor):
                 javadoc_task = 'javadoc' if source_set == 'main' else 'testFixturesJavadoc'
                 back_to_root = '../' * (len(base_path.relative_to(cwd).parts))
                 file = '/'.join(parts[4:])[:-len(".java")]
-                javadoc_link = f"[:material-file-document:]({back_to_root}{project}/{javadoc_task}/{file}.html \"View JavaDoc\")"
+                javadoc_link = f"[:material-file-document:]({back_to_root}{project}/{javadoc_task}/{file}.html{anchor} \"View JavaDoc\")"
             else:
                 javadoc_link = ''
             return f"{text} <sup>{github_link} {javadoc_link}</sup>"
