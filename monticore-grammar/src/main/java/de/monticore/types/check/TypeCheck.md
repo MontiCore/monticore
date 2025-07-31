@@ -1,11 +1,11 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 
-<!-- Alpha-version: This is intended to become a MontiCore stable explanation. -->
 
 # Deprecation
 
-TypeCheck1 has been deprecated.
-Please refer to [TypeSystem3](../../types3/TypeSystem3.md).
+!!! warning "TypeCheck1 has been deprecated."
+
+    Please refer to [TypeSystem3](../../types3/TypeSystem3.md).
 
 ## Deprecated Documentation
 
