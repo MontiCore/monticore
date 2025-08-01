@@ -9,7 +9,7 @@ ${tc.signature("glex", "blockData", "grammarName", "astPackage")}
 <@block glex blockData grammarName astPackage/>
 
 <#macro block glex blockData grammarName astPackage>
-<#if blockData.getAltDataList()?has_content && blockData.getAltDataList()?first.isAlwaysTrue() && false>
+<#if blockData.getAltDataList()?has_content && blockData.getAltDataList()?first.isAlwaysTrue() >
 <#-- Simplify the Block, as only one always-true Alt is present -->
     // Simplified always true
     ${includeArgs("Alt", ast, blockData.getAltDataList()?first, grammarName, astPackage)}
