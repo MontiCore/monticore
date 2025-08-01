@@ -68,3 +68,4 @@ watch:
   - docs
   - monticore-grammar/src
   - monticore-runtime/src
+  - README.md
