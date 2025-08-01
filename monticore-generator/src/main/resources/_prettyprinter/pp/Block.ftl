@@ -9,7 +9,7 @@ ${tc.signature("glex", "blockData", "grammarName", "astPackage")}
 <@block glex blockData grammarName astPackage/>
 
 <#macro block glex blockData grammarName astPackage>
-<#if blockData.getAltDataList()?has_content && blockData.getAltDataList()?first.isAlwaysTrue() >
+<#if blockData.getAltDataList()?has_content && blockData.getAltDataList()?first.isAlwaysTrue() && false>
 <#-- Simplify the Block, as only one always-true Alt is present -->
     // Simplified always true
     ${includeArgs("Alt", ast, blockData.getAltDataList()?first, grammarName, astPackage)}
@@ -31,7 +31,7 @@ ${tc.signature("glex", "blockData", "grammarName", "astPackage")}
         <#if !alt?is_last || alt.getExpressionList()?has_content> <#--> // Simplify else if (true)  </#-->
             if ( ${alt.getExpressionConj()} )
         </#if>
-        { // opt: ${alt.getOptional()} req: ${alt.getRequired()}
+        { // opt: ${alt.getOptional()} req: ${alt.getRequired()} #list o:${alt.getOptionalSet()?join(",")} / r:${alt.getRequiredSet()?join(",")}
         ${includeArgs("Alt", ast, alt, grammarName, astPackage)}
         }
         <#sep> <#if !blockData.isNotListButNoElse()>else<#else> /* noelse 1 */</#if>
@@ -43,7 +43,7 @@ ${tc.signature("glex", "blockData", "grammarName", "astPackage")}
             <#if !alt?is_last || alt.getExpressionList()?has_content> <#--> // Simplify else if (true)  </#-->
                 if ( ${alt.getExpressionConj()} )
             </#if>
-            { // opt: ${alt.getOptional()} req: ${alt.getRequired()}
+            { // opt: ${alt.getOptional()} req: ${alt.getRequired()} #if o:${alt.getOptionalSet()?join(",")} / r:${alt.getRequiredSet()?join(",")}
             ${includeArgs("Alt", ast, alt, grammarName, astPackage)}
             }
             <#sep> <#if !blockData.isNotListButNoElse()>else<#else> /* noelse 2 */ </#if>

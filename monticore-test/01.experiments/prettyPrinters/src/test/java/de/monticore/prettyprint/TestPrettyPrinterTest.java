@@ -772,4 +772,72 @@ public class TestPrettyPrinterTest extends PPTestClass {
     testPP("entry B { }", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringNestedOptFromSysML);
     testPP("entry B { C }", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringNestedOptFromSysML);
   }
+
+  @Test
+  public void testOptOrdering0() throws IOException {
+    testPP("A", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering0);
+    // Test that the first altenative is only printed when no B is present
+    testPP("B", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering0);
+  }
+
+  @Test
+  public void testOptOrdering1() throws IOException {
+    testPP("A", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering1);
+    testPP("B", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering1);
+    testPP(" ", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering1);
+  }
+
+  @Test
+  public void testOptOrdering2() throws IOException {
+    testPP("A", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering2);
+    testPP("B", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering2);
+    testPP("A C", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering2);
+    testPP("B C", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering2);
+  }
+
+  @Test
+  public void testOptOrdering3() throws IOException {
+    testPP("A", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering3);
+    testPP("B", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering3);
+    testPP(" ", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering3);
+    testPP("A C", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering3);
+    testPP("B C", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering3);
+    testPP("  C", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering3);
+  }
+
+  @Test
+  public void testOptOrdering4() throws IOException {
+    testPP("A", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering4);
+    testPP("B", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering4);
+    testPP(" ", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering4);
+    testPP("A C", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering4);
+    testPP("B C", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering4);
+    testPP("  C", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering4);
+  }
+
+  @Test
+  public void testOptOrdering5() throws IOException {
+    testPP("A", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering5);
+    testPP("B", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering5);
+    testPP("A C", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering5);
+    testPP("B C", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering5);
+  }
+
+  @Test
+  public void testOptOrdering6() throws IOException {
+    testPP("A", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering6);
+    testPP("B", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering6);
+    testPP(" ", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering6);
+    testPP("A C", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering6);
+    testPP("B C", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering6);
+    testPP("  C", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering6);
+  }
+
+  @Test
+  public void testNestedFromTfIdentifier() throws IOException {
+    testPP("foob", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringNestedFromTfIdentifier);
+    testPP("Name foob", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringNestedFromTfIdentifier);
+    testPP("[[ $a :- $b ]]", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringNestedFromTfIdentifier);
+    testPP("[[ fooa :- foob]]", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringNestedFromTfIdentifier);
+  }
 }
