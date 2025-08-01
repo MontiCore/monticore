@@ -100,7 +100,7 @@ When the generated pretty printer is customized via the TOP-mechanism,
  the `PrettyPrinterTester` class provides functionality for quickly writing a bunch of tests for the pretty printer.
 
 The test functionality of MontiCore is provided by the [test fixture](https://docs.gradle.org/current/userguide/java_testing.html#sec:java_test_fixtures) 
-`testFixture("de.monticore:monticore-grammar:$mc_version")` dependency.
+`testImplementation testFixtures("de.monticore:monticore-grammar:$mc_version")` dependency.
 For smaller examples of parsing, pretty printing, etc., models can be written within the test class and
 external model files are not needed.
 
