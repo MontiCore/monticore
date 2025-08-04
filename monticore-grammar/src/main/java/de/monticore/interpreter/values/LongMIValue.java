@@ -10,6 +10,11 @@ public class LongMIValue implements MIValue {
   public LongMIValue(long value) {
     this.value = value;
   }
+  
+  @Override
+  public boolean isPrimitive() {
+    return true;
+  }
 
   @Override
   public boolean isLong() {

@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions.assignmentexpressions._visitor;
 
-import de.monticore.expressions.AbstractInterpreterTest;
+import de.monticore.expressions.AbstractExpressionInterpreterTest;
 import de.monticore.interpreter.MIValue;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -12,7 +12,7 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static de.monticore.interpreter.MIValueFactory.createValue;
 
-public class AssignmentExpressionsInterpreterTest extends AbstractInterpreterTest {
+public class AssignmentExpressionsInterpreterTest extends AbstractExpressionInterpreterTest {
 
   protected static Stream<Arguments> incSuffixExpression() {
     return Stream.of(

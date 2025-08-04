@@ -1,39 +1,71 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.interpreter;
 
+import de.monticore.ast.ASTNode;
 import de.monticore.interpreter.values.FunctionMIValue;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 
-public interface ModelInterpreter extends IModelInterpreter {
+import java.util.Optional;
+import java.util.Stack;
 
+public interface ModelInterpreter extends IModelInterpreter {
+  
   void setRealThis(ModelInterpreter realThis);
 
   ModelInterpreter getRealThis();
-
-  MIScope getCurrentScope();
   
-  void pushScope(MIScope scope);
-  void popScope();
+  Stack<MIScope> getScopeCallstack();
+
+  default MIScope getCurrentScope() {
+    return getRealThis().getScopeCallstack().peek();
+  }
+  
+  /*
+  TODO Explicit cast is needed because:
+    Short version: Dependencies between symbols, scopes, functions & interpreter
+    Long version:
+    ModelFunctionMIValue has VariableSymbols as attributes
+      -> ModelFunctionMIValue must be in mc-grammar
+    MIScope uses Variable-/FunctionSymbol
+      -> must be in mc-grammar
+    ModelFunctionMIValue uses 'pushScope(MIScope)';
+    IModelInterpreter must in mc-rte and has 'MIValue interpret()'
+      -> MIValue must be in mc-rte;
+    MIValue has 'FunctionMIValue asFunction()'
+      -> FunctionMIValue must be in mc-rte
+    FunctionMIValue needs 'execute(IModelInterpreter)'
+      -> ModelFunctionMIValue must use IModelInterpreter
+      -> ModelInterpreter needs 'pushScope(MIScope)'
+    MIScope cant be accessed -> IMIScope
+    IMIscope cant access Variable-/FunctionSymbol -> explicit cast
+   */
+  default void pushScope(IMIScope scope) {
+    getRealThis().getScopeCallstack().push((MIScope)scope);
+  }
+  
+  default void popScope() {
+    getRealThis().getScopeCallstack().pop();
+  }
 
   default void declareFunction(FunctionSymbol symbol, FunctionMIValue value) {
     getCurrentScope().declareFunction(symbol, value);
   }
   
   default MIValue loadFunction(FunctionSymbol symbol) {
-    return getRealThis().loadFunction(symbol);
+    return getCurrentScope().loadFunction(symbol);
   }
   
-  default void declareVariable(VariableSymbol symbol, MIValue value) {
+  default void declareVariable(VariableSymbol symbol, Optional<MIValue> value) {
     getCurrentScope().declareVariable(symbol, value);
   }
   
   default MIValue loadVariable(VariableSymbol symbol) {
-    return getRealThis().loadVariable(symbol);
+    return getCurrentScope().loadVariable(symbol);
   }
 
-  default void storeVariable (VariableSymbol symbol, MIValue value){
-    getRealThis().storeVariable(symbol, value);
+  default void storeVariable(VariableSymbol symbol, MIValue value){
+    getCurrentScope().storeVariable(symbol, value);
   }
-
+  
 }

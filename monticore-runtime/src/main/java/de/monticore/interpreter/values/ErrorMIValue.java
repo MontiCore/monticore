@@ -1,8 +1,6 @@
 package de.monticore.interpreter.values;
 
-import de.monticore.interpreter.MIValue;
-
-public class ErrorMIValue implements MIValue {
+public class ErrorMIValue implements MIFlowControlSignal {
   
   String message;
   
@@ -15,7 +13,8 @@ public class ErrorMIValue implements MIValue {
     return true;
   }
   
-  public String getMessage() {
+  @Override
+  public String asError() {
     return message;
   }
   

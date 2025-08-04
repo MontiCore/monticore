@@ -804,12 +804,14 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   public void decorateWithInterpreter(List<ASTCDCompilationUnit> cds,
                                       ASTCDCompilationUnit decoratedCD,
                                       GlobalExtensionManagement glex) {
+    
+    ASTService astService = new ASTService(cds.get(0));
     VisitorService visitorService = new VisitorService(cds.get(0));
 
     InterpreterInterfaceDecorator interpreterInterfaceDecorator = new InterpreterInterfaceDecorator(glex, visitorService);
     interpreterInterfaceDecorator.decorate(cds.get(0), decoratedCD);
 
-    InterpreterDecorator interpreterDecorator = new InterpreterDecorator(glex, visitorService);
+    InterpreterDecorator interpreterDecorator = new InterpreterDecorator(glex, astService, visitorService);
     interpreterDecorator.decorate(cds.get(0), decoratedCD);
 
     ASTEvaluateDecorator evaluateDecorator = new ASTEvaluateDecorator(glex, visitorService);

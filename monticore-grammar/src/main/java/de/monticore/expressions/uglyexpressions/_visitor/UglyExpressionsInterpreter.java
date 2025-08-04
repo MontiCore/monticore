@@ -1,14 +1,20 @@
 package de.monticore.expressions.uglyexpressions._visitor;
 
+import de.monticore.expressions.uglyexpressions._ast.ASTClassCreator;
+import de.monticore.expressions.uglyexpressions._ast.ASTCreatorExpression;
 import de.monticore.expressions.uglyexpressions._ast.ASTTypeCastExpression;
 import de.monticore.interpreter.ModelInterpreter;
 import de.monticore.interpreter.MIValue;
 import de.monticore.interpreter.MIValueFactory;
 import de.monticore.interpreter.values.ErrorMIValue;
+import de.monticore.interpreter.values.VoidMIValue;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+import de.monticore.symboltable.ISymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types3.TypeCheck3;
 import de.se_rwth.commons.logging.Log;
+
+import java.util.Optional;
 
 public class UglyExpressionsInterpreter extends UglyExpressionsInterpreterTOP {
   
@@ -27,14 +33,39 @@ public class UglyExpressionsInterpreter extends UglyExpressionsInterpreterTOP {
     
     MIValue value = node.getExpression().evaluate(getRealThis());
     
+    if (afterType.isGenericType() || beforeType.isGenericType()) {
+      String errorMsg = "0x57089 Explicit casts with generic types are not supported yet.";
+      Log.error(errorMsg, node.get_SourcePositionStart(), node.get_SourcePositionEnd());
+      return new ErrorMIValue(errorMsg);
+    }
+    
     if (afterType.isPrimitive() && beforeType.isPrimitive()) {
       return convertPrimitive(beforeType.asPrimitive().getPrimitiveName(),
           afterType.asPrimitive().getPrimitiveName(), value);
     }
     
+    if (afterType.isObjectType() && beforeType.isObjectType()) {
+      Class afterClassType;
+      try {
+        afterClassType = Class.forName(afterType.printFullName());
+      } catch (ClassNotFoundException e) {
+        String errorMsg = "0x57089 Failed to load class '" + afterType.printFullName() + "'.";
+        Log.error(errorMsg, node.get_SourcePositionStart(), node.get_SourcePositionEnd());
+        return new ErrorMIValue(errorMsg);
+      }
+      
+      if (!afterClassType.isInstance(value.asObject())) {
+        String errorMsg = "0x57090 Failed to explicitly cast object from '" + value.asObject().getClass().getName()
+            + "' to '" + afterType.printFullName() + "'.";
+        Log.error(errorMsg, node.get_SourcePositionStart(), node.get_SourcePositionEnd());
+        return new ErrorMIValue(errorMsg);
+      }
+      return value;
+    }
+    
     String errorMsg = "0x57055 Type Cast operation from " + beforeType.print() + " to " + afterType.print()
         + " is not supported.";
-    Log.error(errorMsg);
+    Log.error(errorMsg, node.get_SourcePositionStart(), node.get_SourcePositionEnd());
     return new ErrorMIValue(errorMsg);
   }
   
@@ -116,5 +147,23 @@ public class UglyExpressionsInterpreter extends UglyExpressionsInterpreterTOP {
     String errorMsg = "0x57057 Cast from " + fromType + " to " + toType + " is not supported.";
     Log.error(errorMsg);
     return new ErrorMIValue(errorMsg);
+  }
+  
+  @Override
+  public MIValue interpret(ASTCreatorExpression node) {
+    return node.getCreator().evaluate(getRealThis());
+  }
+  
+  @Override
+  public MIValue interpret(ASTClassCreator node) {
+    SymTypeExpression type = TypeCheck3.symTypeFromAST(node.getMCType());
+    Optional<ISymbol> optSymbol = type.getSourceInfo().getSourceSymbol();
+    if (optSymbol.isEmpty()) {
+      String errorMsg = "0x57081 Failed to load Symbol for Class.";
+      Log.error(errorMsg, node.get_SourcePositionStart(), node.get_SourcePositionEnd());
+      return new ErrorMIValue(errorMsg);
+    }
+    
+    return new VoidMIValue();
   }
 }

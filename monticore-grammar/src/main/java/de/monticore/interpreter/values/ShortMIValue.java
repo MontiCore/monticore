@@ -11,6 +11,11 @@ public class ShortMIValue implements MIValue {
   }
   
   @Override
+  public boolean isPrimitive() {
+    return true;
+  }
+  
+  @Override
   public boolean isShort() {
     return true;
   }

@@ -11,5 +11,8 @@ public interface IModelInterpreter {
     Log.error(errorMsg);
     return new ErrorMIValue(errorMsg);
   }
-
+  
+  public void popScope();
+  public void pushScope(IMIScope scope);
+  
 }

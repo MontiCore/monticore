@@ -20,13 +20,6 @@ public class MCCommonLiteralsInterpreter extends MCCommonLiteralsInterpreterTOP 
   }
 
   @Override
-  public MIValue interpret(ASTNullLiteral node) {
-    String errorMsg = "Null should not be used";
-    Log.error(errorMsg);
-    return new ErrorMIValue(errorMsg);
-  }
-
-  @Override
   public MIValue interpret(ASTBooleanLiteral node){
     return createValue(node.getValue());
   }

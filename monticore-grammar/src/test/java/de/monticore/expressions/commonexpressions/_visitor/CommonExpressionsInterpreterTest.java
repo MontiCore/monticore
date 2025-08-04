@@ -1,11 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions.commonexpressions._visitor;
 
-import de.monticore.expressions.AbstractInterpreterTest;
+import de.monticore.expressions.AbstractExpressionInterpreterTest;
 import de.monticore.interpreter.MIValueFactory;
 import org.junit.jupiter.api.Test;
 
-public class CommonExpressionsInterpreterTest extends AbstractInterpreterTest {
+public class CommonExpressionsInterpreterTest extends AbstractExpressionInterpreterTest {
 
   @Test
   public void testInterpretPlusExpression() {

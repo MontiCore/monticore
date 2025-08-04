@@ -9,6 +9,7 @@ import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.codegen.cd2java.AbstractCreator;
+import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
 import de.monticore.codegen.cd2java._visitor.VisitorConstants;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
@@ -17,6 +18,7 @@ import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,13 +30,17 @@ import static de.monticore.codegen.cd2java.interpreter.InterpreterConstants.*;
 
 public class InterpreterDecorator
     extends AbstractCreator<ASTCDCompilationUnit, ASTCDClass> {
+  
+  protected final ASTService astService;
 
-  protected final VisitorService service;
+  protected final VisitorService visitorService;
 
   public InterpreterDecorator(GlobalExtensionManagement glex,
-                              VisitorService service) {
+                              ASTService astService,
+                              VisitorService visitorService) {
     super(glex);
-    this.service = service;
+    this.astService = astService;
+    this.visitorService = visitorService;
   }
 
   public void decorate(ASTCDCompilationUnit input,
@@ -48,7 +54,7 @@ public class InterpreterDecorator
   public ASTCDClass decorate(ASTCDCompilationUnit input) {
     return CD4CodeMill.cDClassBuilder()
         .setModifier(PUBLIC.build())
-        .setName(service.getInterpreterSimpleName())
+        .setName(visitorService.getInterpreterSimpleName())
         .setCDInterfaceUsage(getSuperInterface())
         .addAllCDMembers(getInterpreterAttributes())
         .addAllCDMembers(getConstructors())
@@ -62,7 +68,7 @@ public class InterpreterDecorator
     ASTCDParameter parameter = cdParameterFacade.createParameter(
         MODELINTERPRETER_FULLNAME, "realThis");
 
-    String interpreterName = service.getInterpreterSimpleName();
+    String interpreterName = visitorService.getInterpreterSimpleName();
     ASTCDConstructor constructorNoParams = cdConstructorFacade
         .createConstructor(PUBLIC.build(), interpreterName);
     ASTCDConstructor constructorRealThis = cdConstructorFacade
@@ -71,9 +77,9 @@ public class InterpreterDecorator
     List<String> names = new ArrayList<>();
     List<String> types = new ArrayList<>();
 
-    for (DiagramSymbol symbol : service.getSuperCDsTransitive()) {
-      names.add(service.getInterpreterSimpleName(symbol));
-      types.add(service.getInterpreterFullName(symbol));
+    for (DiagramSymbol symbol : visitorService.getSuperCDsTransitive()) {
+      names.add(visitorService.getInterpreterSimpleName(symbol));
+      types.add(visitorService.getInterpreterFullName(symbol));
     }
 
     replaceTemplate(EMPTY_BODY, constructorRealThis,
@@ -90,25 +96,29 @@ public class InterpreterDecorator
     ASTMCReturnType returnType = CD4CodeMill.mCReturnTypeBuilder()
         .setMCType(mcTypeFacade.createQualifiedType(VALUE_FULLNAME)).build();
 
-    for (CDTypeSymbol typeSymbol : service.getAllCDTypes()) {
+    for (CDTypeSymbol typeSymbol : visitorService.getAllCDTypes()) {
       if (typeSymbol.isIsClass() || typeSymbol.isIsInterface()) {
         ASTCDParameter parameter = cdParameterFacade
-            .createParameter(service.createASTFullName(typeSymbol), NODE_PARAMETER);
+            .createParameter(visitorService.createASTFullName(typeSymbol), NODE_PARAMETER);
         ASTCDMethod method = cdMethodFacade.createMethod(
             PUBLIC.build(), returnType, "interpret", parameter);
-        this.replaceTemplate(
-            EMPTY_BODY, method, new StringHookPoint("return node.evaluate(getRealThis());"));
+        
+        String errorCode = astService.getGeneratedErrorCode(typeSymbol.getFullName());
+        
+        this.replaceTemplate(EMPTY_BODY, method,
+            new TemplateHookPoint("interpreter.NoImplementation",
+                typeSymbol.getFullName(), errorCode));
         methods.add(method);
       }
     }
 
-    for (DiagramSymbol diagramSymbol : service.getSuperCDsTransitive()) {
-      if (diagramSymbol != service.getCDSymbol()) {
-        String interpreterName = uncapFirst(service.getInterpreterSimpleName(diagramSymbol));
-        for (CDTypeSymbol typeSymbol : service.getAllCDTypes(diagramSymbol)) {
+    for (DiagramSymbol diagramSymbol : visitorService.getSuperCDsTransitive()) {
+      if (diagramSymbol != visitorService.getCDSymbol()) {
+        String interpreterName = uncapFirst(visitorService.getInterpreterSimpleName(diagramSymbol));
+        for (CDTypeSymbol typeSymbol : visitorService.getAllCDTypes(diagramSymbol)) {
           if (typeSymbol.isIsClass() || typeSymbol.isIsInterface()) {
             ASTCDParameter parameter = cdParameterFacade
-                .createParameter(service.createASTFullName(typeSymbol), NODE_PARAMETER);
+                .createParameter(visitorService.createASTFullName(typeSymbol), NODE_PARAMETER);
             ASTCDMethod method = cdMethodFacade.createMethod(
                 PUBLIC.build(), returnType, "interpret", parameter);
             this.replaceTemplate(
@@ -127,54 +137,54 @@ public class InterpreterDecorator
   public List<ASTCDMember> createMapMembers() {
     List<ASTCDMember> members = new ArrayList<>();
     
-    members.add(cdAttributeFacade.createAttribute(
-        PROTECTED.build(),
-        mcTypeFacade.createBasicGenericTypeOf("java.util.Stack", INTERPRETER_SCOPE_FULLNAME),
-        "scopeCallstack"));
-
-    ASTCDParameter variableSymbolParameter = cdParameterFacade.createParameter(VARIABLE_SYMBOL_FULLNAME, "symbol");
-    ASTCDParameter functionSymbolParameter = cdParameterFacade.createParameter(FUNCTION_SYMBOL_FULLNAME, "symbol");
-    ASTCDParameter valueParameter = cdParameterFacade.createParameter(VALUE_FULLNAME, "value");
-    ASTCDParameter functionValueParameter = cdParameterFacade.createParameter(FUNCTION_VALUE_FULLNAME, "value");
+    ASTMCType scopeStackType = mcTypeFacade.createBasicGenericTypeOf("java.util.Stack", INTERPRETER_SCOPE_FULLNAME);
     
-    ASTCDMethod declareFuncMethod = cdMethodFacade.createMethod(
-        PUBLIC.build(), "declareFunction", functionSymbolParameter, functionValueParameter);
-    this.replaceTemplate(EMPTY_BODY, declareFuncMethod, new StringHookPoint("getRealThis().getCurrentScope().declareFunction(symbol, value);"));
-    members.add(declareFuncMethod);
+    members.add(cdAttributeFacade.createAttribute(PROTECTED.build(), scopeStackType, "scopeCallstack"));
     
-    ASTCDMethod loadFuncMethod = cdMethodFacade.createMethod(PUBLIC.build(), VALUE_FULLNAME, "loadFunction", functionSymbolParameter);
-    this.replaceTemplate(EMPTY_BODY, loadFuncMethod, new StringHookPoint("return getRealThis().getCurrentScope().loadFunction(symbol);"));
-    members.add(loadFuncMethod);
+//    ASTCDMethod declareFuncMethod = cdMethodFacade.createMethod(
+//        PUBLIC.build(), "declareFunction", functionSymbolParameter, functionValueParameter);
+//    this.replaceTemplate(EMPTY_BODY, declareFuncMethod, new StringHookPoint("getRealThis().getCurrentScope().declareFunction(symbol, value);"));
+//    members.add(declareFuncMethod);
+//
+//    ASTCDMethod loadFuncMethod = cdMethodFacade.createMethod(PUBLIC.build(), VALUE_FULLNAME, "loadFunction", functionSymbolParameter);
+//    this.replaceTemplate(EMPTY_BODY, loadFuncMethod, new StringHookPoint("return getRealThis().getCurrentScope().loadFunction(symbol);"));
+//    members.add(loadFuncMethod);
+//
+//    ASTCDMethod declareVarMethod = cdMethodFacade.createMethod(
+//        PUBLIC.build(), "declareVariable", variableSymbolParameter, optionalValueParameter);
+//    this.replaceTemplate(EMPTY_BODY, declareVarMethod, new StringHookPoint("getRealThis().getCurrentScope().declareVariable(symbol, value);"));
+//    members.add(declareVarMethod);
+//
+//    ASTCDMethod loadVarMethod = cdMethodFacade.createMethod(PUBLIC.build(), VALUE_FULLNAME,
+//        "loadVariable", variableSymbolParameter);
+//    this.replaceTemplate(EMPTY_BODY, loadVarMethod, new StringHookPoint("return getRealThis().getCurrentScope().loadVariable(symbol);"));
+//    members.add(loadVarMethod);
+//
+//    ASTCDMethod storeVarMethod = cdMethodFacade.createMethod(
+//        PUBLIC.build(), "storeVariable", variableSymbolParameter, valueParameter);
+//    this.replaceTemplate(EMPTY_BODY, storeVarMethod, new StringHookPoint("getRealThis().getCurrentScope().storeVariable(symbol, value);"));
+//    members.add(storeVarMethod);
+//
+//    ASTCDMethod getter = cdMethodFacade.createMethod(
+//        PUBLIC.build(),
+//        mcTypeFacade.createQualifiedType(INTERPRETER_SCOPE_FULLNAME),
+//        "getCurrentScope");
+//    this.replaceTemplate(EMPTY_BODY, getter, new StringHookPoint("return getRealThis().scopeCallstack.peek();"));
+//    members.add(getter);
+//
+//    ASTCDParameter scopeParameter = cdParameterFacade.createParameter(INTERPRETER_SCOPE_FULLNAME, "scope");
+//    ASTCDMethod pushScopeMethod = cdMethodFacade.createMethod(PUBLIC.build(), "pushScope", scopeParameter);
+//    this.replaceTemplate(EMPTY_BODY, pushScopeMethod, new StringHookPoint("getRealThis().scopeCallstack.push(scope);"));
+//    members.add(pushScopeMethod);
+//
+//    ASTCDMethod popScopeMethod = cdMethodFacade.createMethod(PUBLIC.build(), "popScope");
+//    this.replaceTemplate(EMPTY_BODY, popScopeMethod, new StringHookPoint("getRealThis().scopeCallstack.pop();"));
+//    members.add(popScopeMethod);
     
-    ASTCDMethod declareVarMethod = cdMethodFacade.createMethod(
-        PUBLIC.build(), "declareVariable", variableSymbolParameter, valueParameter);
-    this.replaceTemplate(EMPTY_BODY, declareVarMethod, new StringHookPoint("getRealThis().getCurrentScope().declareVariable(symbol, value);"));
-    members.add(declareVarMethod);
-    
-    ASTCDMethod loadVarMethod = cdMethodFacade.createMethod(PUBLIC.build(), VALUE_FULLNAME, "loadVariable", variableSymbolParameter);
-    this.replaceTemplate(EMPTY_BODY, loadVarMethod, new StringHookPoint("return getRealThis().getCurrentScope().loadVariable(symbol);"));
-    members.add(loadVarMethod);
-    
-    ASTCDMethod storeVarMethod = cdMethodFacade.createMethod(
-        PUBLIC.build(), "storeVariable", variableSymbolParameter, valueParameter);
-    this.replaceTemplate(EMPTY_BODY, storeVarMethod, new StringHookPoint("getRealThis().getCurrentScope().storeVariable(symbol, value);"));
-    members.add(storeVarMethod);
-
-    ASTCDMethod getter = cdMethodFacade.createMethod(
-        PUBLIC.build(),
-        mcTypeFacade.createQualifiedType(INTERPRETER_SCOPE_FULLNAME),
-        "getCurrentScope");
-    this.replaceTemplate(EMPTY_BODY, getter, new StringHookPoint("return this.scopeCallstack.peek();"));
-    members.add(getter);
-    
-    ASTCDParameter scopeParameter = cdParameterFacade.createParameter(INTERPRETER_SCOPE_FULLNAME, "scope");
-    ASTCDMethod pushScopeMethod = cdMethodFacade.createMethod(PUBLIC.build(), "pushScope", scopeParameter);
-    this.replaceTemplate(EMPTY_BODY, pushScopeMethod, new StringHookPoint("this.scopeCallstack.push(scope);"));
-    members.add(pushScopeMethod);
-    
-    ASTCDMethod popScopeMethod = cdMethodFacade.createMethod(PUBLIC.build(), "popScope");
-    this.replaceTemplate(EMPTY_BODY, popScopeMethod, new StringHookPoint("this.scopeCallstack.pop();"));
-    members.add(popScopeMethod);
+    ASTCDMethod getScopeCallstackMethod = cdMethodFacade.createMethod(PUBLIC.build(), scopeStackType,
+            "getScopeCallstack");
+    this.replaceTemplate(EMPTY_BODY, getScopeCallstackMethod, new StringHookPoint("return scopeCallstack;"));
+    members.add(getScopeCallstackMethod);
 
     return members;
   }
@@ -189,24 +199,24 @@ public class InterpreterDecorator
             "realThis");
     components.add(realThisAttribute);
 
-    MethodDecorator methodDecorator = new MethodDecorator(glex, service);
+    MethodDecorator methodDecorator = new MethodDecorator(glex, visitorService);
     components.addAll(methodDecorator.decorate(realThisAttribute));
 
     return components;
   }
 
   public List<ASTCDAttribute> getInterpreterAttributes() {
-    return service.getSuperCDsTransitive()
+    return visitorService.getSuperCDsTransitive()
         .stream()
         .map(s -> cdAttributeFacade.createAttribute(
-            PROTECTED.build(), service.getInterpreterType(s),
-            uncapFirst(service.getInterpreterSimpleName(s))))
+            PROTECTED.build(), visitorService.getInterpreterType(s),
+            uncapFirst(visitorService.getInterpreterSimpleName(s))))
         .collect(Collectors.toList());
   }
 
   public ASTCDInterfaceUsage getSuperInterface() {
     return CDInterfaceUsageFacade.getInstance()
-        .createCDInterfaceUsage(service.getInterpreterInterfaceSimpleName());
+        .createCDInterfaceUsage(visitorService.getInterpreterInterfaceSimpleName());
   }
 
   protected String uncapFirst(String s) {

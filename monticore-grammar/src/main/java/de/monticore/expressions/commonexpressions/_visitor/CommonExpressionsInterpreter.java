@@ -114,8 +114,8 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
   public MIValue interpret(ASTPlusExpression node) {
     MIValue left = node.getLeft().evaluate(getRealThis());
     MIValue right = node.getRight().evaluate(getRealThis());
-    if (left.isError()) return left;
-    if (right.isError()) return right;
+    if (left.isFlowControlSignal()) return left;
+    if (right.isFlowControlSignal()) return right;
     
     SymTypeExpression type = TypeCheck3.typeOf(node);
     return InterpreterUtils.calcOp(left, right, type, Integer::sum, Long::sum, Float::sum, Double::sum, "0x57037 Plus");
@@ -125,8 +125,8 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
   public MIValue interpret(ASTMinusExpression node) {
     MIValue left = node.getLeft().evaluate(getRealThis());
     MIValue right = node.getRight().evaluate(getRealThis());
-    if (left.isError()) return left;
-    if (right.isError()) return right;
+    if (left.isFlowControlSignal()) return left;
+    if (right.isFlowControlSignal()) return right;
     
     SymTypeExpression type = TypeCheck3.typeOf(node);
     return InterpreterUtils.calcOp(left, right, type, (a, b) -> a - b, (a, b) -> a - b,
@@ -137,8 +137,8 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
   public MIValue interpret(ASTMultExpression node) {
     MIValue left = node.getLeft().evaluate(getRealThis());
     MIValue right = node.getRight().evaluate(getRealThis());
-    if (left.isError()) return left;
-    if (right.isError()) return right;
+    if (left.isFlowControlSignal()) return left;
+    if (right.isFlowControlSignal()) return right;
     
     SymTypeExpression type = TypeCheck3.typeOf(node);
     return InterpreterUtils.calcOp(left, right, type, (a, b) -> a * b, (a, b) -> a * b,
@@ -149,8 +149,8 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
   public MIValue interpret(ASTDivideExpression node) {
     MIValue left = node.getLeft().evaluate(getRealThis());
     MIValue right = node.getRight().evaluate(getRealThis());
-    if (left.isError()) return left;
-    if (right.isError()) return right;
+    if (left.isFlowControlSignal()) return left;
+    if (right.isFlowControlSignal()) return right;
     
     SymTypeExpression type = TypeCheck3.typeOf(node);
     if (type.isPrimitive()) {
@@ -158,7 +158,7 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
       
       if (right.asDouble() == 0.0) {
         String errorMsg = "0x57004 Division by zero is undefined";
-        Log.error(errorMsg);
+        Log.error(errorMsg, node.getRight().get_SourcePositionStart(), node.getRight().get_SourcePositionEnd());
         return new ErrorMIValue(errorMsg);
       }
       
@@ -168,7 +168,7 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
     }
     
     String errorMsg = "0x57005 Division operation with result of type '" + type.print() + "' is not supported.";
-    Log.error(errorMsg);
+    Log.error(errorMsg, node.get_SourcePositionStart(), node.get_SourcePositionEnd());
     return new ErrorMIValue(errorMsg);
   }
 
@@ -176,8 +176,8 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
   public MIValue interpret(ASTModuloExpression node) {
     MIValue left = node.getLeft().evaluate(getRealThis());
     MIValue right = node.getRight().evaluate(getRealThis());
-    if (left.isError()) return left;
-    if (right.isError()) return right;
+    if (left.isFlowControlSignal()) return left;
+    if (right.isFlowControlSignal()) return right;
     
     SymTypeExpression type = TypeCheck3.typeOf(node);
     return InterpreterUtils.calcOp(left, right, type, (a, b) -> a % b, (a, b) -> a % b,
@@ -187,7 +187,7 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
   @Override
   public MIValue interpret(ASTMinusPrefixExpression node) {
     MIValue value = node.getExpression().evaluate(getRealThis());
-    if (value.isError()) return value;
+    if (value.isFlowControlSignal()) return value;
     
     SymTypeExpression type = TypeCheck3.typeOf(node);
     if (type.isPrimitive()) {
@@ -211,14 +211,14 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
     }
     
     String errorMsg = "0x57006 Minus Prefix operation with result of type '" + type.print() + "' is not supported.";
-    Log.error(errorMsg);
+    Log.error(errorMsg, node.get_SourcePositionStart(), node.get_SourcePositionEnd());
     return new ErrorMIValue(errorMsg);
   }
 
   @Override
   public MIValue interpret(ASTPlusPrefixExpression node) {
     MIValue value = node.getExpression().evaluate(getRealThis());
-    if (value.isError()) return value;
+    if (value.isFlowControlSignal()) return value;
     
     SymTypeExpression type = TypeCheck3.typeOf(node);
     if (type.isPrimitive() && (type.asPrimitive().isNumericType() || type.asPrimitive().isIntegralType())) {
@@ -226,7 +226,7 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
     }
     
     String errorMsg = "0x57007 Minus Prefix operation with result of type '" + type.print() + "' is not supported.";
-    Log.error(errorMsg);
+    Log.error(errorMsg, node.get_SourcePositionStart(), node.get_SourcePositionEnd());
     return new ErrorMIValue(errorMsg);
   }
 
@@ -234,8 +234,8 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
   public MIValue interpret(ASTEqualsExpression node) {
     MIValue left = node.getLeft().evaluate(getRealThis());
     MIValue right = node.getRight().evaluate(getRealThis());
-    if (left.isError()) return left;
-    if (right.isError()) return right;
+    if (left.isFlowControlSignal()) return left;
+    if (right.isFlowControlSignal()) return right;
     
     SymTypeExpression leftType = TypeCheck3.typeOf(node.getLeft());
     SymTypeExpression rightType = TypeCheck3.typeOf(node.getRight());
@@ -245,7 +245,7 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
     
     String errorMsg = "0x57008 Equality operation with operands of type '" + leftType.print()
         + "' and '" + rightType.print() + "' is not supported.";
-    Log.error(errorMsg);
+    Log.error(errorMsg, node.get_SourcePositionStart(), node.get_SourcePositionEnd());
     return new ErrorMIValue(errorMsg);
   }
 
@@ -253,21 +253,21 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
   public MIValue interpret(ASTNotEqualsExpression node) {
     MIValue left = node.getLeft().evaluate(getRealThis());
     MIValue right = node.getRight().evaluate(getRealThis());
-    if (left.isError()) return left;
-    if (right.isError()) return right;
+    if (left.isFlowControlSignal()) return left;
+    if (right.isFlowControlSignal()) return right;
     
     SymTypeExpression leftType = TypeCheck3.typeOf(node.getLeft());
     SymTypeExpression rightType = TypeCheck3.typeOf(node.getRight());
     if (leftType.isPrimitive() && rightType.isPrimitive()) {
       MIValue result = isEqual(leftType.asPrimitive(), left, rightType.asPrimitive(), right);
-      if (result.isError()) return result;
+      if (result.isFlowControlSignal()) return result;
       
       return createValue(!result.asBoolean());
     }
     
     String errorMsg = "0x57009 Inequality operation with operands of type '" + leftType.print()
         + "' and '" + rightType.print() + "' is not supported.";
-    Log.error(errorMsg);
+    Log.error(errorMsg, node.get_SourcePositionStart(), node.get_SourcePositionEnd());
     return new ErrorMIValue(errorMsg);
   }
 
@@ -275,21 +275,21 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
   public MIValue interpret(ASTGreaterThanExpression node) {
     MIValue left = node.getLeft().evaluate(getRealThis());
     MIValue right = node.getRight().evaluate(getRealThis());
-    if (left.isError()) return left;
-    if (right.isError()) return right;
+    if (left.isFlowControlSignal()) return left;
+    if (right.isFlowControlSignal()) return right;
     
     SymTypeExpression leftType = TypeCheck3.typeOf(node.getLeft());
     SymTypeExpression rightType = TypeCheck3.typeOf(node.getRight());
     if (leftType.isPrimitive() && rightType.isPrimitive()) {
       MIValue result = subtract(leftType.asPrimitive(), left, rightType.asPrimitive(), right);
-      if (result.isError()) return result;
+      if (result.isFlowControlSignal()) return result;
       
       return createValue(result.asDouble() > 0.0);
     }
     
     String errorMsg = "0x57010 Greater than operation with operands of type '" + leftType.print()
         + "' and '" + rightType.print() + "' is not supported.";
-    Log.error(errorMsg);
+    Log.error(errorMsg, node.get_SourcePositionStart(), node.get_SourcePositionEnd());
     return new ErrorMIValue(errorMsg);
   }
 
@@ -297,21 +297,21 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
   public MIValue interpret(ASTLessThanExpression node) {
     MIValue left = node.getLeft().evaluate(getRealThis());
     MIValue right = node.getRight().evaluate(getRealThis());
-    if (left.isError()) return left;
-    if (right.isError()) return right;
+    if (left.isFlowControlSignal()) return left;
+    if (right.isFlowControlSignal()) return right;
     
     SymTypeExpression leftType = TypeCheck3.typeOf(node.getLeft());
     SymTypeExpression rightType = TypeCheck3.typeOf(node.getRight());
     if (leftType.isPrimitive() && rightType.isPrimitive()) {
       MIValue result = subtract(leftType.asPrimitive(), left, rightType.asPrimitive(), right);
-      if (result.isError()) return result;
+      if (result.isFlowControlSignal()) return result;
       
       return createValue(result.asDouble() < 0.0);
     }
     
     String errorMsg = "0x57011 Less than operation with operands of type '" + leftType.print()
         + "' and '" + rightType.print() + "' is not supported.";
-    Log.error(errorMsg);
+    Log.error(errorMsg, node.get_SourcePositionStart(), node.get_SourcePositionEnd());
     return new ErrorMIValue(errorMsg);
   }
 
@@ -319,21 +319,21 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
   public MIValue interpret(ASTGreaterEqualExpression node) {
     MIValue left = node.getLeft().evaluate(getRealThis());
     MIValue right = node.getRight().evaluate(getRealThis());
-    if (left.isError()) return left;
-    if (right.isError()) return right;
+    if (left.isFlowControlSignal()) return left;
+    if (right.isFlowControlSignal()) return right;
     
     SymTypeExpression leftType = TypeCheck3.typeOf(node.getLeft());
     SymTypeExpression rightType = TypeCheck3.typeOf(node.getRight());
     if (leftType.isPrimitive() && rightType.isPrimitive()) {
       MIValue result = subtract(leftType.asPrimitive(), left, rightType.asPrimitive(), right);
-      if (result.isError()) return result;
+      if (result.isFlowControlSignal()) return result;
       
       return createValue(result.asDouble() >= 0.0);
     }
     
     String errorMsg = "0x57012Greater equal operation with operands of type '" + leftType.print()
         + "' and '" + rightType.print() + "' is not supported.";
-    Log.error(errorMsg);
+    Log.error(errorMsg, node.get_SourcePositionStart(), node.get_SourcePositionEnd());
     return new ErrorMIValue(errorMsg);
   }
 
@@ -341,21 +341,21 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
   public MIValue interpret(ASTLessEqualExpression node) {
     MIValue left = node.getLeft().evaluate(getRealThis());
     MIValue right = node.getRight().evaluate(getRealThis());
-    if (left.isError()) return left;
-    if (right.isError()) return right;
+    if (left.isFlowControlSignal()) return left;
+    if (right.isFlowControlSignal()) return right;
     
     SymTypeExpression leftType = TypeCheck3.typeOf(node.getLeft());
     SymTypeExpression rightType = TypeCheck3.typeOf(node.getRight());
     if (leftType.isPrimitive() && rightType.isPrimitive()) {
       MIValue result = subtract(leftType.asPrimitive(), left, rightType.asPrimitive(), right);
-      if (result.isError()) return result;
+      if (result.isFlowControlSignal()) return result;
       
       return createValue(result.asDouble() <= 0.0);
     }
     
     String errorMsg = "0x57013 Less equal operation with operands of type '" + leftType.print()
         + "' and '" + rightType.print() + "' is not supported.";
-    Log.error(errorMsg);
+    Log.error(errorMsg, node.get_SourcePositionStart(), node.get_SourcePositionEnd());
     return new ErrorMIValue(errorMsg);
   }
 
@@ -363,7 +363,7 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
   @Override
   public MIValue interpret(ASTBooleanNotExpression node) {
     MIValue value = node.getExpression().evaluate(getRealThis());
-    if (value.isError()) return value;
+    if (value.isFlowControlSignal()) return value;
 
     SymTypeExpression type = TypeCheck3.typeOf(node.getExpression());
     if (type.isPrimitive() && type.asPrimitive().isIntegralType()) {
@@ -382,7 +382,7 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
     }
     
     String errorMsg = "0x57014 Bitwise Not operation with operand of type '" + type.print() + "' is not supported.";
-    Log.error(errorMsg);
+    Log.error(errorMsg, node.get_SourcePositionStart(), node.get_SourcePositionEnd());
     return new ErrorMIValue(errorMsg);
   }
 
@@ -393,7 +393,7 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
   @Override
   public MIValue interpret(ASTLogicalNotExpression node) {
     MIValue value = node.getExpression().evaluate(getRealThis());
-    if (value.isError()) return value;
+    if (value.isFlowControlSignal()) return value;
     
     SymTypeExpression type = TypeCheck3.typeOf(node.getExpression());
     
@@ -402,7 +402,7 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
     }
     
     String errorMsg = "0x57015 Logical Not operation with operand of type '" + type.print() + "' is not supported.";
-    Log.error(errorMsg);
+    Log.error(errorMsg, node.get_SourcePositionStart(), node.get_SourcePositionEnd());
     return new ErrorMIValue(errorMsg);
   }
 
@@ -410,8 +410,8 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
   public MIValue interpret(ASTBooleanAndOpExpression node) {
     MIValue left = node.getLeft().evaluate(getRealThis());
     MIValue right = node.getRight().evaluate(getRealThis());
-    if (left.isError()) return left;
-    if (right.isError()) return right;
+    if (left.isFlowControlSignal()) return left;
+    if (right.isFlowControlSignal()) return right;
     
     SymTypeExpression leftType = TypeCheck3.typeOf(node.getLeft());
     SymTypeExpression rightType = TypeCheck3.typeOf(node.getRight());
@@ -422,7 +422,7 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
     
     String errorMsg = "0x57016 Logical And operation with operands of type '" + leftType.print()
         + "' and '" + rightType.print() + "' is not supported.";
-    Log.error(errorMsg);
+    Log.error(errorMsg, node.get_SourcePositionStart(), node.get_SourcePositionEnd());
     return new ErrorMIValue(errorMsg);
   }
 
@@ -430,8 +430,8 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
   public MIValue interpret(ASTBooleanOrOpExpression node) {
     MIValue left = node.getLeft().evaluate(getRealThis());
     MIValue right = node.getRight().evaluate(getRealThis());
-    if (left.isError()) return left;
-    if (right.isError()) return right;
+    if (left.isFlowControlSignal()) return left;
+    if (right.isFlowControlSignal()) return right;
     
     SymTypeExpression leftType = TypeCheck3.typeOf(node.getLeft());
     SymTypeExpression rightType = TypeCheck3.typeOf(node.getRight());
@@ -442,7 +442,7 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
     
     String errorMsg = "0x57017 Logical Or operation with operands of type '" + leftType.print()
         + "' and '" + rightType.print() + "' is not supported.";
-    Log.error(errorMsg);
+    Log.error(errorMsg, node.get_SourcePositionStart(), node.get_SourcePositionEnd());
     return new ErrorMIValue(errorMsg);
   }
 
@@ -454,7 +454,7 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
   @Override
   public MIValue interpret(ASTConditionalExpression node) {
     MIValue condition = node.getCondition().evaluate(getRealThis());
-    if (condition.isError()) return condition;
+    if (condition.isFlowControlSignal()) return condition;
     
     return condition.asBoolean()
         ? node.getTrueExpression().evaluate(getRealThis())
@@ -480,10 +480,10 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
             classType = Class.forName(className);
           } catch (ClassNotFoundException e) {
             String errorMsg = "0x57018 Failed to load class '" + className + "'.";
-            Log.error(errorMsg);
+            Log.error(errorMsg, node.get_SourcePositionStart(), node.get_SourcePositionEnd());
             return new ErrorMIValue(errorMsg);
           }
-          return new JavaFunctionMIValue(classType, funcName);
+          return new JavaStaticMethodMIValue(classType, funcName);
         } else { // static attribute
           // TODO
         }
@@ -492,7 +492,7 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
         MIValue leftValue = node.getExpression().evaluate(getRealThis());
         if (!leftValue.isObject()) {
           String errorMsg = "0x57019 The Field Access operation expected an object as left side.";
-          Log.error(errorMsg);
+          Log.error(errorMsg, node.getExpression().get_SourcePositionStart(), node.getExpression().get_SourcePositionEnd());
           return new ErrorMIValue(errorMsg);
         }
         
@@ -500,7 +500,7 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
         if (type.isFunctionType()) { // method call on object
           FunctionSymbol funcSymbol = (FunctionSymbol)symbol;
           String name = funcSymbol.getName();
-          return new JavaMethodMIValue(leftValue.asObject(), name);
+          return new JavaNonStaticMethodMIValue(leftValue.asObject(), name);
         } else { // non-static attribute access
           return InterpreterUtils.getObjectAttribute((ObjectMIValue)leftValue, node.getName(), type);
         }
@@ -508,7 +508,7 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
     }
     
     String errorMsg = "0x57020 Field Access operation not supported.";
-    Log.error(errorMsg);
+    Log.error(errorMsg, node.get_SourcePositionStart(), node.get_SourcePositionEnd());
     return new ErrorMIValue(errorMsg);
   }
 
@@ -526,7 +526,7 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
     MIValue value = node.getExpression().evaluate(getRealThis());
     if (!value.isFunction()) {
       String errorMsg = "0x57021 Call expression expected a function but got " + TypeCheck3.typeOf(node.getExpression()).print() + ".";
-      Log.error(errorMsg);
+      Log.error(errorMsg, node.getExpression().get_SourcePositionStart(), node.getExpression().get_SourcePositionEnd());
       return new ErrorMIValue(errorMsg);
     }
     
@@ -537,7 +537,7 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
     
     // cast needed in case of subtyping
     SymTypeExpression returnType = TypeCheck3.typeOf(node);
-    MIValue returnValue = ((FunctionMIValue)value).execute(getRealThis(), args);
+    MIValue returnValue = value.asFunction().execute(getRealThis(), args);
     return InterpreterUtils.convertImplicit(returnType, returnValue);
   }
   

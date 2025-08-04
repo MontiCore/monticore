@@ -1,54 +1,63 @@
-/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.interpreter.values;
 
 import de.monticore.interpreter.MIValue;
 
-public class CharMIValue implements MIValue {
-
-  protected char value;
-
-  public CharMIValue(char value){
+public class ByteMIValue implements MIValue {
+  
+  protected byte value;
+  
+  public ByteMIValue(byte value) {
     this.value = value;
   }
-
+  
   @Override
-  public boolean isChar() {
+  public boolean isPrimitive() {
     return true;
   }
-
+  
+  @Override
+  public boolean isByte() {
+    return true;
+  }
+  
+  @Override
+  public byte asByte() {
+    return value;
+  }
+  
+  @Override
+  public short asShort() {
+    return value;
+  }
+  
   @Override
   public int asInt() {
     return value;
   }
-
-  @Override
-  public double asDouble() {
-    return value;
-  }
-
-  @Override
-  public char asChar() {
-    return value;
-  }
-
+  
   @Override
   public long asLong() {
     return value;
   }
-
+  
   @Override
   public float asFloat() {
     return value;
   }
   
   @Override
+  public double asDouble() {
+    return value;
+  }
+  
+  @Override
   public String printType() {
-    return "Char";
+    return "Byte";
   }
   
   @Override
   public String printValue() {
     return String.valueOf(value);
   }
-
+  
 }

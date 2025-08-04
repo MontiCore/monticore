@@ -3,32 +3,32 @@ package de.monticore.interpreter.values;
 
 import de.monticore.interpreter.MIValue;
 
-public class FloatMIValue implements MIValue {
+public class BooleanMIValue implements MIValue {
 
-  protected float value;
+  protected boolean value;
 
-  public FloatMIValue(float value) {
+  public BooleanMIValue(boolean value){
     this.value = value;
   }
 
   @Override
-  public boolean isFloat() {
+  public boolean isBoolean() {
     return true;
   }
-
+  
   @Override
-  public double asDouble() {
-    return value;
+  public boolean isPrimitive() {
+    return true;
   }
-
+  
   @Override
-  public float asFloat() {
+  public boolean asBoolean() {
     return value;
   }
   
   @Override
   public String printType() {
-    return "Float";
+    return "Boolean";
   }
   
   @Override

@@ -29,7 +29,7 @@ public class OCLExpressionsInterpreter extends OCLExpressionsInterpreterTOP {
     }
     
     MIValue conditionValue = expr.getCondition().evaluate(getRealThis());
-    if (conditionValue.isError()) return conditionValue;
+    if (conditionValue.isFlowControlSignal()) return conditionValue;
     
     if (conditionValue.asBoolean()) {
       return expr.getThenExpression().evaluate(getRealThis());

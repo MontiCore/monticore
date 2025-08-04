@@ -3,46 +3,37 @@ package de.monticore.interpreter.values;
 
 import de.monticore.interpreter.MIValue;
 
-public class IntMIValue implements MIValue {
+public class DoubleMIValue implements MIValue {
 
-  protected int value;
+  protected double value;
 
-  public IntMIValue(int value) {
+  public DoubleMIValue(double value) {
     this.value = value;
   }
-
+  
   @Override
-  public boolean isInt() {
+  public boolean isPrimitive() {
     return true;
   }
 
   @Override
-  public int asInt() {
-    return value;
+  public boolean isDouble() {
+    return true;
   }
 
   @Override
   public double asDouble() {
     return value;
   }
-
-  @Override
-  public long asLong() {
-    return value;
-  }
-
-  @Override
-  public float asFloat() {
-    return value;
-  }
   
   @Override
   public String printType() {
-    return "Integer";
+    return "Double";
   }
   
   @Override
   public String printValue() {
     return String.valueOf(value);
   }
+  
 }

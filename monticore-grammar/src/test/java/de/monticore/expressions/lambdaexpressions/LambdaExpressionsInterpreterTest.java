@@ -1,13 +1,14 @@
 package de.monticore.expressions.lambdaexpressions;
 
-import de.monticore.expressions.AbstractInterpreterTest;
+import de.monticore.AbstractInterpreterTest;
+import de.monticore.expressions.AbstractExpressionInterpreterTest;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
 import static de.monticore.interpreter.MIValueFactory.createValue;
 
-public class LambdaExpressionsInterpreterTest extends AbstractInterpreterTest {
+public class LambdaExpressionsInterpreterTest extends AbstractExpressionInterpreterTest {
 
   @Test
   public void testSimpleLambda() throws IOException {

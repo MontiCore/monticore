@@ -7,6 +7,7 @@ import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
+import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
@@ -33,10 +34,11 @@ public class InterpreterDecoratorTest extends DecoratorTestCase {
   @Before
   public void before() {
     originalCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
+    ASTService astService = new ASTService(originalCompilationUnit);
     VisitorService visitorService = new VisitorService(originalCompilationUnit);
     this.glex.setGlobalValue("service", new VisitorService(originalCompilationUnit));
 
-    InterpreterDecorator decorator = new InterpreterDecorator(this.glex, visitorService);
+    InterpreterDecorator decorator = new InterpreterDecorator(this.glex, astService, visitorService);
     this.decoratedClass = decorator.decorate(originalCompilationUnit);
   }
 

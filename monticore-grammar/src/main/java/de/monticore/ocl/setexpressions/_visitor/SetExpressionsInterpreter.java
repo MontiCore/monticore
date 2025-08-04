@@ -37,7 +37,7 @@ public class SetExpressionsInterpreter extends SetExpressionsInterpreterTOP {
     if (rangeType.isEmpty() || rangeType.get().isObscureType()
         || !rangeType.get().isPrimitive() || !rangeType.get().asPrimitive().isIntegralType()) {
       String errorMsg = "0x57076 Failed to get common type of SetValueRange.";
-      Log.error(errorMsg);
+      Log.error(errorMsg, node.get_SourcePositionStart(), node.get_SourcePositionEnd());
       return new ErrorMIValue(errorMsg);
     }
     
@@ -75,24 +75,24 @@ public class SetExpressionsInterpreter extends SetExpressionsInterpreterTOP {
   @Override
   public MIValue interpret(ASTGeneratorDeclaration node) {
     String errorMsg = "0x57080 ASTGeneratorDeclaration should not be evaluated directly.";
-    Log.error(errorMsg);
+    Log.error(errorMsg, node.get_SourcePositionStart(), node.get_SourcePositionEnd());
     return new ErrorMIValue(errorMsg);
   }
   
   @Override
   public MIValue interpret(ASTSetVariableDeclaration node) {
     MIValue value = node.getExpression().evaluate(getRealThis());
-    if (value.isError()) return value;
+    if (value.isFlowControlSignal()) return value;
     
     // should already be declared at start of SetComprehension
-    getRealThis().storeVariable(node.getSymbol(), value);
+    storeVariable(node.getSymbol(), value);
     return new VoidMIValue();
   }
   
   private MIValue evaluateSetComprehensionItems(ASTSetComprehension node, int idx, Collection<Object> results) {
     if (idx >= node.getSetComprehensionItemList().size()) {
       MIValue result = node.getLeft().evaluate(getRealThis());
-      if (result.isError()) return result;
+      if (result.isFlowControlSignal()) return result;
       results.add(InterpreterUtils.valueToObject(result));
       return new VoidMIValue();
     }
@@ -100,24 +100,24 @@ public class SetExpressionsInterpreter extends SetExpressionsInterpreterTOP {
     if (item.isPresentGeneratorDeclaration()) {
       ASTGeneratorDeclaration generatorDeclaration = item.getGeneratorDeclaration();
       MIValue collection = generatorDeclaration.getExpression().evaluate(getRealThis());
-      if (collection.isError()) return collection;
+      if (collection.isFlowControlSignal()) return collection;
       
       Collection<Object> values = (Collection<Object>)collection.asObject();
       for (Object obj : values) {
-        getRealThis().storeVariable(generatorDeclaration.getSymbol(),
+        storeVariable(generatorDeclaration.getSymbol(),
             InterpreterUtils.objectToValue(obj));
         MIValue result = evaluateSetComprehensionItems(node, idx + 1, results);
-        if (result.isError()) return result;
+        if (result.isFlowControlSignal()) return result;
       }
       return MIValueFactory.createValue(results);
       
     } else if (item.isPresentExpression()) {
       MIValue filterValue = item.getExpression().evaluate(getRealThis());
-      if (filterValue.isError()) return filterValue;
+      if (filterValue.isFlowControlSignal()) return filterValue;
       if (!filterValue.isBoolean()) {
         String errorMsg = "0x57078 SetComprehensionItem of type Expression should return a Boolean. Got "
             + filterValue.printType() + " (" + filterValue.printValue() + ").";
-        Log.error(errorMsg);
+        Log.error(errorMsg, item.getExpression().get_SourcePositionStart(), item.getExpression().get_SourcePositionEnd());
         return new ErrorMIValue(errorMsg);
       }
       if (!filterValue.asBoolean()) {
@@ -129,7 +129,10 @@ public class SetExpressionsInterpreter extends SetExpressionsInterpreterTOP {
       item.getSetVariableDeclaration().evaluate(getRealThis());
       return evaluateSetComprehensionItems(node, idx+1, results);
     }
-    return new ErrorMIValue("0x57079 Encountered unexpected type of SetComprehensionItem.");
+    
+    String errorMsg = "0x57079 Encountered unexpected type of SetComprehensionItem.";
+    Log.error(errorMsg, item.get_SourcePositionStart(), item.get_SourcePositionEnd());
+    return new ErrorMIValue(errorMsg);
   }
   
   @Override
@@ -142,19 +145,19 @@ public class SetExpressionsInterpreter extends SetExpressionsInterpreterTOP {
     }
     
     MIScope scope = new MIScope(getRealThis().getCurrentScope());
-    getRealThis().pushScope(scope);
+    pushScope(scope);
     for (ASTSetComprehensionItem item : node.getSetComprehensionItemList()) {
       if (item.isPresentSetVariableDeclaration()) {
         ASTSetVariableDeclaration variableDeclaration = item.getSetVariableDeclaration();
-        getRealThis().declareVariable(variableDeclaration.getSymbol(), null);
+        declareVariable(variableDeclaration.getSymbol(), Optional.empty());
       } else if (item.isPresentGeneratorDeclaration()) {
         ASTGeneratorDeclaration generatorDeclaration = item.getGeneratorDeclaration();
-        getRealThis().declareVariable(generatorDeclaration.getSymbol(), null);
+        declareVariable(generatorDeclaration.getSymbol(), Optional.empty());
       }
     }
     MIValue result = evaluateSetComprehensionItems(node, 0, results);
-    getRealThis().popScope();
-    if (result.isError()) return result;
+    popScope();
+    if (result.isFlowControlSignal()) return result;
     return MIValueFactory.createValue(results);
   }
   
@@ -165,13 +168,13 @@ public class SetExpressionsInterpreter extends SetExpressionsInterpreterTOP {
     } else if (node.isPresentSetVariableDeclaration()) {
       ASTSetVariableDeclaration variableDeclaration = node.getSetVariableDeclaration();
       MIValue value = variableDeclaration.getExpression().evaluate(getRealThis());
-      if (value.isError()) return value;
-      getRealThis().declareVariable(variableDeclaration.getSymbol(), value);
+      if (value.isFlowControlSignal()) return value;
+      getRealThis().declareVariable(variableDeclaration.getSymbol(), Optional.of(value));
       return new VoidMIValue();
     }
     
     String errorMsg = "0x57077 Unexpected type of ASTSetComprehensionItem";
-    Log.error(errorMsg);
+    Log.error(errorMsg, node.get_SourcePositionStart(), node.get_SourcePositionEnd());
     return new ErrorMIValue(errorMsg);
   }
 }

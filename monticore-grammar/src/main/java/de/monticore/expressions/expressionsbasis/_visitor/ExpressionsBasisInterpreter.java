@@ -6,6 +6,7 @@ import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.interpreter.ModelInterpreter;
 import de.monticore.interpreter.MIValue;
 import de.monticore.interpreter.values.ErrorMIValue;
+import de.monticore.interpreter.values.VariableMIValue;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.types.check.SymTypeExpression;
@@ -31,7 +32,7 @@ public class ExpressionsBasisInterpreter extends ExpressionsBasisInterpreterTOP 
       Optional<FunctionSymbol> symbol = type.getSourceInfo().getSourceSymbol().map(s -> (FunctionSymbol)s);
       if (symbol.isEmpty()) {
         String errorMsg = "0x57053 Cannot resolve function '" + n.getName() + "'.";
-        Log.error(errorMsg);
+        Log.error(errorMsg, n.get_SourcePositionStart(), n.get_SourcePositionEnd());
         return new ErrorMIValue(errorMsg);
       }
       return loadFunction(symbol.get());
@@ -40,10 +41,10 @@ public class ExpressionsBasisInterpreter extends ExpressionsBasisInterpreterTOP 
     Optional<VariableSymbol> symbol = type.getSourceInfo().getSourceSymbol().map(s -> (VariableSymbol)s);
     if (symbol.isEmpty()) {
       String errorMsg = "0x57054 Cannot resolve variable '" + n.getName() + "'.";
-      Log.error(errorMsg);
+      Log.error(errorMsg, n.get_SourcePositionStart(), n.get_SourcePositionEnd());
       return new ErrorMIValue(errorMsg);
     }
-    return loadVariable(symbol.get());
+    return new VariableMIValue(getCurrentScope(), symbol.get());
   }
 
   @Override

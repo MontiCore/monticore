@@ -3,6 +3,7 @@ package de.monticore.interpreter;
 import de.monticore.interpreter.values.*;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types3.SymTypeRelations;
 import de.se_rwth.commons.logging.Log;
 
 import java.lang.reflect.Field;
@@ -15,7 +16,6 @@ public class InterpreterUtils {
   
   public static MIValue calcOpPrimitive(MIValue v1, MIValue v2, String resultType, BinaryOperator<Integer> opInt, BinaryOperator<Long> opLong,
       BinaryOperator<Float> opFloat, BinaryOperator<Double> opDouble, String opName) {
-    
     
     switch (resultType) {
       case BasicSymbolsMill.INT: return createValue((int)opInt.apply(v1.asInt(), v2.asInt()));
@@ -199,9 +199,19 @@ public class InterpreterUtils {
   
   public static MIValue convertImplicit(SymTypeExpression targetType, MIValue value) {
     if (targetType.isPrimitive()) {
+      value = unboxType(value);
       return convertToPrimitiveImplicit(targetType.asPrimitive().getPrimitiveName(), value);
+    } else if (isBoxType(targetType)) {
+      SymTypeExpression unboxedType = SymTypeRelations.unbox(targetType);
+      value = convertToPrimitiveImplicit(unboxedType.asPrimitive().getPrimitiveName(), value);
+      value = boxValue(value, targetType);
+      return value;
     } else {
-      return value; // everything else is an object or function which is handled by reflection
+      // value may be primitive with targetType Object; int -> Integer -> Object
+      if (value.isPrimitive()) {
+        value = boxValue(value);
+      }
+      return value;
     }
   }
   
@@ -272,10 +282,9 @@ public class InterpreterUtils {
       return double.class;
     } else if (value.isObject()) {
       return value.asObject().getClass();
-    } else if (value.isFunction()) {
-      // TODO maybe abstract method in FunctionMIValue that builds Function-Object
     }
-    String errorMsg = "0x57066 Failed to get java type of value.";
+    // Functions are not allowed
+    String errorMsg = "0x57066 Failed to get java type of " + value.printType() + ".";
     Log.error(errorMsg);
     return null;
   }
@@ -299,10 +308,9 @@ public class InterpreterUtils {
       return value.asDouble();
     } else if (value.isObject()) {
       return value.asObject();
-    } else if (value.isFunction()) {
-      // TODO maybe abstract method in FunctionMIValue that builds Function-Object
     }
-    String errorMsg = "0x57067 Failed to get java type of value.";
+    // Functions are not allowed
+    String errorMsg = "0x57067 Failed to convert MIValue of type " + value.printType() + " to a java object.";
     Log.error(errorMsg);
     return null;
   }
@@ -327,6 +335,83 @@ public class InterpreterUtils {
     }
     
     return new ObjectMIValue(object);
+  }
+  
+  public static boolean isBoxType(SymTypeExpression type) {
+    return !type.isPrimitive() && (SymTypeRelations.isNumericType(type) || SymTypeRelations.isBoolean(type));
+  }
+  
+  public static MIValue unboxType(MIValue value) {
+    if (!value.isObject()) return value;
+    
+    Object obj = value.asObject();
+    if (obj instanceof Integer) {
+      return new IntMIValue((Integer)obj);
+    } else if (obj instanceof Long) {
+      return new LongMIValue((Long)obj);
+    } else if (obj instanceof Float) {
+      return new FloatMIValue((Float) obj);
+    } else if (obj instanceof Double) {
+      return new DoubleMIValue((Double)obj);
+    } else if (obj instanceof Character) {
+      return new CharMIValue((Character)obj);
+    } else if (obj instanceof Byte) {
+      return new ByteMIValue((Byte)obj);
+    } else if (obj instanceof Short) {
+      return new ShortMIValue((Short)obj);
+    }
+    
+    return value;
+  }
+  
+  public static MIValue boxValue(MIValue value) {
+    if (!value.isPrimitive()) {
+      return value;
+    }
+    
+    if (value.isBoolean()) {
+      return MIValueFactory.createValue((Boolean)value.asBoolean());
+    } else if (value.isChar()) {
+      return MIValueFactory.createValue((Character)value.asChar());
+    } else if (value.isByte()) {
+      return MIValueFactory.createValue((Byte)value.asByte());
+    } else if (value.isShort()) {
+      return MIValueFactory.createValue((Short)value.asShort());
+    } else if (value.isInt()) {
+      return MIValueFactory.createValue((Integer)value.asInt());
+    } else if (value.isLong()) {
+      return MIValueFactory.createValue((Long)value.asLong());
+    } else if (value.isFloat()) {
+      return MIValueFactory.createValue((Float)value.asFloat());
+    } else if (value.isDouble()) {
+      return MIValueFactory.createValue((Double)value.asDouble());
+    }
+    
+    return value;
+  }
+  
+  public static MIValue boxValue(MIValue value, SymTypeExpression boxType) {
+    if (SymTypeRelations.isInt(boxType)) {
+      return MIValueFactory.createValue(Integer.valueOf(value.asInt()));
+    } else if (SymTypeRelations.isLong(boxType)) {
+      return MIValueFactory.createValue(Long.valueOf(value.asLong()));
+    } else if (SymTypeRelations.isFloat(boxType)) {
+      return MIValueFactory.createValue(Float.valueOf(value.asFloat()));
+    } else if (SymTypeRelations.isDouble(boxType)) {
+      return MIValueFactory.createValue(Double.valueOf(value.asDouble()));
+    } else if (SymTypeRelations.isChar(boxType)) {
+      return MIValueFactory.createValue(Character.valueOf(value.asChar()));
+    } else if (SymTypeRelations.isByte(boxType)) {
+      return MIValueFactory.createValue(Byte.valueOf(value.asByte()));
+    } else if (SymTypeRelations.isShort(boxType)) {
+      return MIValueFactory.createValue(Short.valueOf(value.asShort()));
+    } else if (SymTypeRelations.isBoolean(boxType)) {
+      return MIValueFactory.createValue(Boolean.valueOf(value.asBoolean()));
+    }
+    
+    String errorMsg = "0x57084 Tried to convert to unknown boxed type.";
+    Log.error(errorMsg);
+    return new ErrorMIValue(errorMsg);
   }
   
 }

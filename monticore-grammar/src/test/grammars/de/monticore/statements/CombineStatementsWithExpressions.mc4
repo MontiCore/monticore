@@ -1,0 +1,13 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.monticore.statements;
+
+grammar CombineStatementsWithExpressions
+		extends MCCommonStatements,
+						MCReturnStatements,
+						MCLowLevelStatements,
+						de.monticore.expressions.CombineExpressionsWithLiterals {
+
+  start MCBlockStatement;
+
+}

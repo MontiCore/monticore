@@ -5,7 +5,7 @@ import de.monticore.expressions.lambdaexpressions._ast.ASTLambdaExpressionBody;
 import de.monticore.expressions.lambdaexpressions._ast.ASTLambdaParameter;
 import de.monticore.interpreter.ModelInterpreter;
 import de.monticore.interpreter.MIValue;
-import de.monticore.interpreter.values.ASTFunctionMIValue;
+import de.monticore.interpreter.values.ModelFunctionMIValue;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ public class LambdaExpressionsInterpreter extends LambdaExpressionsInterpreterTO
     for (ASTLambdaParameter parameter : node.getLambdaParameters().getLambdaParameterList()) {
       parameterSymbols.add(parameter.getSymbol());
     }
-    return new ASTFunctionMIValue(getRealThis().getCurrentScope(), parameterSymbols, node.getLambdaBody());
+    return new ModelFunctionMIValue(getRealThis().getCurrentScope(), parameterSymbols, node.getLambdaBody());
   }
   
 }

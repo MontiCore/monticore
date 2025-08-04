@@ -1,9 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.interpreter;
 
+import de.monticore.interpreter.values.FunctionMIValue;
 import de.se_rwth.commons.logging.Log;
 
 public interface MIValue {
+  
+  default boolean isWriteable() { return false; }
+  
+  default boolean isPrimitive() { return false; }
 
   default boolean isBoolean() {
     return false;
@@ -53,10 +58,23 @@ public interface MIValue {
     return false;
   }
   
+  default boolean isFlowControlSignal() { return false;}
+  
   default boolean isError() {
     return false;
   }
   
+  default boolean isBreak() {
+    return false;
+  }
+  
+  default boolean isContinue() {
+    return false;
+  }
+  
+  default boolean isReturn() {
+    return false;
+  }
   
   default boolean asBoolean() {
     Log.error("0x31251 Type boolean is not applicable for " + printType() + " (" + printValue() + ").");
@@ -98,18 +116,32 @@ public interface MIValue {
     return 0.0;
   }
   
+  default FunctionMIValue asFunction() {
+    Log.error("0x57099 Type function is not applicable for " + printType() + " (" + printValue() + ").");
+    return null;
+  }
+  
   default Object asObject() {
     Log.error("0x31259 Type object is not applicable for " + printType() + " (" + printValue() + ").");
     return null;
   }
+  default String asError() {
+    Log.error("0x57092 Type Error is not applicable for " + printType() + " (" + printValue() + ").");
+    return null;
+  }
+  
+  default MIValue asReturnValue() {
+    Log.error("0x57083 Type ReturnValue is not applicable for " + printType() + " (" + printValue() + ").");
+    return null;
+  }
   
   default String printType() {
-    Log.error("0x31260 printType is not applicable for " + printType() + " (" + printValue() + ").");
+    Log.error("0x31260 printType is not applicable for '" + getClass().getName() + "'.");
     return "UnknownType";
   }
   
   default String printValue() {
-    Log.error("0x31261 printValue is not applicable for " + printType() + " (" + printValue() + ").");
+    Log.error("0x31261 printValue is not applicable for '" + getClass().getName() + "'.");
     return "UnknownValue";
   }
   
