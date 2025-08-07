@@ -187,10 +187,6 @@ public class MCPublishingPlugin implements Plugin<Project> {
    * Create the Jar tasks for non-main source sets and configure them for publication
    */
   protected void setupNonMainPublish(PublishArtifact grammarsJarArtifact, Project project, SourceSet sourceSet, AdhocComponentWithVariants component) {
-    if (Objects.toString(project.getGroup()).isEmpty()) {
-      doError(project, "Unable to publish MC-source set " + sourceSet.getName() + " due to no group being set");
-    }
-
     // Similar to the java feature, we a source set specific Jar and sourcesJar task
     TaskProvider<Jar> jarTask = createJarTask(sourceSet, project);
     TaskProvider<Jar> sourcesJarTask = createSourcesJarTask(sourceSet, project);
@@ -216,34 +212,38 @@ public class MCPublishingPlugin implements Plugin<Project> {
     component.addVariantsFromConfiguration(compileClasspathConfig, new JavaConfigurationVariantMapping("compile", false));
     compileClasspathConfig.getOutgoing().getArtifacts().add(jarArtifact);
 
-    // Ensure maven-publish is applied
-    @Nullable PublishingExtension publExt = project.getExtensions().findByType(PublishingExtension.class);
-    if (publExt == null) {
-      doError(project, "Publishing using the MontiCore Generator plugin requires the maven-publish plugin to be applied first!");
-      return;
-    }
+    // We have to use afterEvaluate due to accessing the Project#getGroup() value
+    project.afterEvaluate(evalProj -> {
+      // Only register the publication when the maven-publish plugin is loaded
+      evalProj.getPluginManager().withPlugin("maven-publish", mavenPublishPlugin -> {
+        evalProj.getExtensions().configure(PublishingExtension.class, publExt -> {
+          // Set up a Maven publication for non-main source sets
+          publExt.getPublications().create(sourceSet.getName(), MavenPublication.class, mavenPublication -> {
+            // And append the source set name as an appendix to the artifact id
+            mavenPublication.setArtifactId(evalProj.getName() + "-" + sourceSet.getName());
+            // Use the same groupId as the evalProj
+            if (Objects.toString(evalProj.getGroup()).isEmpty()) {
+              doError(evalProj, "Unable to publish MC-source set " + sourceSet.getName() + " due to no group being known for the project " + evalProj.getName() + ". \nTry `group='example'` in your build.gradle");
+            }
+            mavenPublication.setGroupId(evalProj.getGroup().toString());
+            // version is set implicitly
 
-    // Set up a Maven publication for non-main source sets
-    publExt
-            .getPublications().create(sourceSet.getName(), MavenPublication.class, mavenPublication -> {
-              // And append the source set name as an appendix to the artifact id
-              mavenPublication.setArtifactId(project.getName() + "-" + sourceSet.getName());
-              mavenPublication.setGroupId(project.getGroup().toString());
-              // version is set implicitly
+            // and add all three jars as an artifact
+            mavenPublication.getArtifacts().artifact(grammarsJarArtifact);
+            mavenPublication.getArtifacts().artifact(jarArtifact);
+            mavenPublication.getArtifacts().artifact(sourcesJarArtifact);
 
-              // and add all three jars as an artifact
-              mavenPublication.getArtifacts().artifact(grammarsJarArtifact);
-              mavenPublication.getArtifacts().artifact(jarArtifact);
-              mavenPublication.getArtifacts().artifact(sourcesJarArtifact);
+            // Next, provide the source set specific component (for the Gradle module system)
+            mavenPublication.from(component);
 
-              // Next, provide the source set specific component (for the Gradle module system)
-              mavenPublication.from(component);
-
-              // The publication should not be considered when converting project dependencies to published metadata
-              // avoids:
-              // Publishing is not able to resolve a dependency on a project with multiple publications that have different coordinates
-              ((DefaultMavenPublication) mavenPublication).setAlias(true);
-            });
+            // The publication should not be considered when converting project dependencies to published metadata
+            // avoids:
+            // Publishing is not able to resolve a dependency on a project with multiple publications that have different coordinates
+            ((DefaultMavenPublication) mavenPublication).setAlias(true);
+          });
+        });
+      });
+    });
   }
 
   /**
