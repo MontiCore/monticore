@@ -24,7 +24,6 @@ import org.gradle.api.internal.tasks.TaskDependencyFactory;
 import org.gradle.api.plugins.BasePlugin;
 import org.gradle.api.plugins.JavaPluginExtension;
 import org.gradle.api.plugins.internal.JavaConfigurationVariantMapping;
-import org.gradle.api.provider.Provider;
 import org.gradle.api.publish.PublishingExtension;
 import org.gradle.api.publish.maven.MavenPublication;
 import org.gradle.api.publish.maven.internal.publication.DefaultMavenPublication;
@@ -218,32 +217,46 @@ public class MCPublishingPlugin implements Plugin<Project> {
       evalProj.getPluginManager().withPlugin("maven-publish", mavenPublishPlugin -> {
         evalProj.getExtensions().configure(PublishingExtension.class, publExt -> {
           // Set up a Maven publication for non-main source sets
-          publExt.getPublications().create(sourceSet.getName(), MavenPublication.class, mavenPublication -> {
-            // And append the source set name as an appendix to the artifact id
-            mavenPublication.setArtifactId(evalProj.getName() + "-" + sourceSet.getName());
-            // Use the same groupId as the evalProj
-            if (Objects.toString(evalProj.getGroup()).isEmpty()) {
-              doError(evalProj, "Unable to publish MC-source set " + sourceSet.getName() + " due to no group being known for the project " + evalProj.getName() + ". \nTry `group='example'` in your build.gradle");
-            }
-            mavenPublication.setGroupId(evalProj.getGroup().toString());
-            // version is set implicitly
-
-            // and add all three jars as an artifact
-            mavenPublication.getArtifacts().artifact(grammarsJarArtifact);
-            mavenPublication.getArtifacts().artifact(jarArtifact);
-            mavenPublication.getArtifacts().artifact(sourcesJarArtifact);
-
-            // Next, provide the source set specific component (for the Gradle module system)
-            mavenPublication.from(component);
-
-            // The publication should not be considered when converting project dependencies to published metadata
-            // avoids:
-            // Publishing is not able to resolve a dependency on a project with multiple publications that have different coordinates
-            ((DefaultMavenPublication) mavenPublication).setAlias(true);
-          });
+          // First, check if the publication already exists
+          var pubOpt = publExt.getPublications()
+                  .matching(publication -> publication.getName().equals(sourceSet.getName())
+                          && publication instanceof MavenPublication).stream().findAny();
+          if (pubOpt.isPresent()) {
+            // If present, properly configure it
+            configureNonMainPublication(grammarsJarArtifact, sourceSet, component, evalProj, (MavenPublication) pubOpt.get(), jarArtifact, sourcesJarArtifact);
+          } else {
+            // Otherwise create it & configure it then
+            publExt.getPublications().create(sourceSet.getName(), MavenPublication.class, mavenPublication -> {
+              configureNonMainPublication(grammarsJarArtifact, sourceSet, component, evalProj, mavenPublication, jarArtifact, sourcesJarArtifact);
+            });
+          }
         });
       });
     });
+  }
+
+  protected void configureNonMainPublication(PublishArtifact grammarsJarArtifact, SourceSet sourceSet, AdhocComponentWithVariants component, Project evalProj, MavenPublication mavenPublication, PublishArtifact jarArtifact, PublishArtifact sourcesJarArtifact) {
+    // And append the source set name as an appendix to the artifact id
+    mavenPublication.setArtifactId(evalProj.getName() + "-" + sourceSet.getName());
+    // Use the same groupId as the evalProj
+    if (Objects.toString(evalProj.getGroup()).isEmpty()) {
+      doError(evalProj, "Unable to publish MC-source set " + sourceSet.getName() + " due to no group being known for the project " + evalProj.getName() + ". \nTry `group='example'` in your build.gradle");
+    }
+    mavenPublication.setGroupId(evalProj.getGroup().toString());
+    // version is set implicitly
+
+    // and add all three jars as an artifact
+    mavenPublication.getArtifacts().artifact(grammarsJarArtifact);
+    mavenPublication.getArtifacts().artifact(jarArtifact);
+    mavenPublication.getArtifacts().artifact(sourcesJarArtifact);
+
+    // Next, provide the source set specific component (for the Gradle module system)
+    mavenPublication.from(component);
+
+    // The publication should not be considered when converting project dependencies to published metadata
+    // avoids:
+    // Publishing is not able to resolve a dependency on a project with multiple publications that have different coordinates
+    ((DefaultMavenPublication) mavenPublication).setAlias(true);
   }
 
   /**
