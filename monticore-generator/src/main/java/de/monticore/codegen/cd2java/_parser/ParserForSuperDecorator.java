@@ -226,7 +226,7 @@ public class ParserForSuperDecorator extends AbstractDecorator {
   protected boolean overrides(CDTypeSymbol first, CDTypeSymbol second) {
     if (first.equals(second)) {
       // Speed up check for default case
-      return true;
+      return false;
     }
     return getSuperTypesTransitive(first).contains(second.getFullName());
   }
