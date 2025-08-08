@@ -1,7 +1,6 @@
 package de.monticore.statements;
 
 import de.monticore.AbstractInterpreterTest;
-import de.monticore.class2mc.OOClass2MCResolver;
 import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsArtifactScope;
 import de.monticore.expressions.lambdaexpressions._symboltable.LambdaExpressionsSTCompleteTypes2;
