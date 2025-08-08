@@ -11,6 +11,8 @@ import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
+import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.se_rwth.commons.logging.Log;
 import org.junit.After;
@@ -44,7 +46,7 @@ public class InterpreterDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(10, decoratedClass.getCDMethodList().size());
+    assertEquals(3, decoratedClass.getCDMethodList().size());
   }
 
   @Test
@@ -120,148 +122,21 @@ public class InterpreterDecoratorTest extends DecoratorTestCase {
         setMethod.getCDParameter(0).getName());
     assertTrue(setMethod.getMCReturnType().isPresentMCVoidType());
   }
-  
-  @Test
-  public void testFunctionMethods() {
-    Optional<ASTCDMethod> optDeclareMethod = decoratedClass.getCDMethodList()
-        .stream()
-        .filter(m -> m.getName().equals("declareFunction"))
-        .findAny();
-    
-    assertTrue(optDeclareMethod.isPresent());
-    ASTCDMethod declareMethod = optDeclareMethod.get();
-    
-    assertTrue(declareMethod.getMCReturnType().isPresentMCVoidType());
-    assertEquals(2, declareMethod.getCDParameterList().size());
-    assertEquals("symbol", declareMethod.getCDParameter(0).getName());
-    assertEquals(InterpreterConstants.FUNCTION_SYMBOL_FULLNAME,
-        declareMethod.getCDParameter(0).getMCType().printType());
-    assertEquals("value", declareMethod.getCDParameter(1).getName());
-    assertEquals(InterpreterConstants.FUNCTION_VALUE_FULLNAME,
-        declareMethod.getCDParameter(1).getMCType().printType());
-    
-    Optional<ASTCDMethod> optLoadMethod = decoratedClass.getCDMethodList()
-        .stream()
-        .filter(m -> m.getName().equals("loadFunction"))
-        .findAny();
-    
-    assertTrue(optLoadMethod.isPresent());
-    ASTCDMethod loadMethod = optLoadMethod.get();
-    
-    assertEquals(InterpreterConstants.VALUE_FULLNAME,
-        loadMethod.getMCReturnType().printType());
-    assertEquals(1, loadMethod.getCDParameterList().size());
-    assertEquals(InterpreterConstants.FUNCTION_SYMBOL_FULLNAME,
-        loadMethod.getCDParameter(0).getMCType().printType());
-    assertEquals("symbol",
-        loadMethod.getCDParameter(0).getName());
-  }
 
   @Test
-  public void testVariableMethods() {
-    Optional<ASTCDMethod> optDeclareMethod = decoratedClass.getCDMethodList()
+  public void testScopeCallstackMethod() {
+    Optional<ASTCDMethod> optScopeCallstackMethod = decoratedClass.getCDMethodList()
         .stream()
-        .filter(m -> m.getName().equals("declareVariable"))
+        .filter(m -> m.getName().equals("getScopeCallstack"))
         .findAny();
     
-    assertTrue(optDeclareMethod.isPresent());
-    ASTCDMethod declareMethod = optDeclareMethod.get();
-    
-    assertTrue(declareMethod.getMCReturnType().isPresentMCVoidType());
-    assertEquals(2, declareMethod.getCDParameterList().size());
-    assertEquals("symbol", declareMethod.getCDParameter(0).getName());
-    assertEquals(InterpreterConstants.VARIABLE_SYMBOL_FULLNAME,
-        declareMethod.getCDParameter(0).getMCType().printType());
-    assertEquals("value", declareMethod.getCDParameter(1).getName());
-    assertEquals(InterpreterConstants.VALUE_FULLNAME,
-        declareMethod.getCDParameter(1).getMCType().printType());
-    
-    Optional<ASTCDMethod> optStoreMethod = decoratedClass.getCDMethodList()
-        .stream()
-        .filter(m -> m.getName().equals("storeVariable"))
-        .findAny();
-    
-    assertTrue(optStoreMethod.isPresent());
-    ASTCDMethod storeMethod = optStoreMethod.get();
-    
-    assertTrue(storeMethod.getMCReturnType().isPresentMCVoidType());
-    assertEquals(2, storeMethod.getCDParameterList().size());
-    assertEquals("symbol", storeMethod.getCDParameter(0).getName());
-    assertEquals(InterpreterConstants.VARIABLE_SYMBOL_FULLNAME,
-        storeMethod.getCDParameter(0).getMCType().printType());
-    assertEquals("value", storeMethod.getCDParameter(1).getName());
-    assertEquals(InterpreterConstants.VALUE_FULLNAME,
-        storeMethod.getCDParameter(1).getMCType().printType());
+    assertTrue(optScopeCallstackMethod.isPresent());
+    ASTCDMethod scopeCallstackMethod = optScopeCallstackMethod.get();
 
-    Optional<ASTCDMethod> optLoadMethod = decoratedClass.getCDMethodList()
-        .stream()
-        .filter(m -> m.getName().equals("loadVariable"))
-        .findAny();
-
-    assertTrue(optLoadMethod.isPresent());
-    ASTCDMethod loadMethod = optLoadMethod.get();
-
-    assertEquals(InterpreterConstants.VALUE_FULLNAME,
-        loadMethod.getMCReturnType().printType());
-    assertEquals(1, loadMethod.getCDParameterList().size());
-    assertEquals(InterpreterConstants.VARIABLE_SYMBOL_FULLNAME,
-        loadMethod.getCDParameter(0).getMCType().printType());
-    assertEquals("symbol",
-        loadMethod.getCDParameter(0).getName());
-  }
-  
-  @Test
-  public void testScopeMethods() {
-    Optional<ASTCDMethod> optGetCurrentScope = decoratedClass.getCDMethodList()
-        .stream()
-        .filter(m -> m.getName().equals("getCurrentScope"))
-        .findAny();
-    
-    assertTrue(optGetCurrentScope.isPresent());
-    ASTCDMethod getCurrentScopeMethod = optGetCurrentScope.get();
-    
-    assertTrue(getCurrentScopeMethod.getCDParameterList().isEmpty());
+    ASTMCGenericType returnTypeType = (ASTMCGenericType)scopeCallstackMethod.getMCReturnType().getMCType();
+    assertEquals("java.util.Stack", returnTypeType.printWithoutTypeArguments());
     assertEquals(InterpreterConstants.INTERPRETER_SCOPE_FULLNAME,
-        getCurrentScopeMethod.getMCReturnType().getMCType().printType());
-    
-    Optional<ASTCDMethod> optPushScope = decoratedClass.getCDMethodList()
-        .stream()
-        .filter(m -> m.getName().equals("pushScope"))
-        .findAny();
-    
-    assertTrue(optPushScope.isPresent());
-    ASTCDMethod pushScopeMethod = optPushScope.get();
-    
-    assertEquals(1, pushScopeMethod.getCDParameterList().size());
-    assertEquals(InterpreterConstants.INTERPRETER_SCOPE_FULLNAME, pushScopeMethod.getCDParameter(0).getMCType().printType());
-    assertTrue(pushScopeMethod.getMCReturnType().isPresentMCVoidType());
-    
-    Optional<ASTCDMethod> optPopScope = decoratedClass.getCDMethodList()
-        .stream()
-        .filter(m -> m.getName().equals("popScope"))
-        .findAny();
-    
-    assertTrue(optPopScope.isPresent());
-    ASTCDMethod popScopeMethod = optPopScope.get();
-    
-    assertTrue(popScopeMethod.getCDParameterList().isEmpty());
-    assertTrue(pushScopeMethod.getMCReturnType().isPresentMCVoidType());
-  }
-
-  @Test
-  @Ignore
-  public void testInterpretMethods() {
-    List<ASTCDMethod> interpretMethods = decoratedClass.getCDMethodList()
-        .stream()
-        .filter(m -> m.getName().equals("interpret"))
-        .collect(Collectors.toList());
-
-    assertEquals(0, interpretMethods.size());
-    ASTCDMethod method = interpretMethods.get(0);
-
-    assertEquals(1, method.getCDParameterList().size());
-    assertEquals("node", method.getCDParameter(0).getName());
-    assertEquals(InterpreterConstants.VALUE_FULLNAME, method.getMCReturnType().printType());
+            returnTypeType.getMCTypeArgument(0).printType());
   }
 
   @After
