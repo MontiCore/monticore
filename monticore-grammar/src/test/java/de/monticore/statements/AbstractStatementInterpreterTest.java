@@ -56,69 +56,51 @@ public abstract class AbstractStatementInterpreterTest extends AbstractInterpret
   }
   
   protected MIValue testValidModel(String model) {
-    return testValidModel(model, Collections.emptyList());
-  }
-  
-  protected MIValue testValidModel(String model, List<ImportStatement> imports) {
-    Log.clearFindings();
-    Optional<ASTMCBlockStatement> astNodeOpt = Optional.empty();
-    try {
-      astNodeOpt = ((CombineStatementsWithExpressionsParser)parser).parse_String(model);
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-      fail();
-    }
-    
-    if (!Log.getFindings().isEmpty()) {
-      Log.printFindings();
-      fail();
-    }
-    assertTrue(astNodeOpt.isPresent());
-    
-    CombineStatementsWithExpressionsMill.artifactScope().setImportsList(imports);
-    
-    OOClass2MCResolver resolver = new OOClass2MCResolver();
-    
-    OOSymbolsMill.reset();
-    OOSymbolsMill.init();
-    CombineStatementsWithExpressionsMill.reset();
-    CombineStatementsWithExpressionsMill.init();
-    CombineStatementsWithExpressionsMill.globalScope().clear();
-    
-    DefsTypesForTests.setup();
-    
-    CombineStatementsWithExpressionsMill.globalScope().getSymbolPath().addEntry(OOClass2MCResolver.getJRTPath());
-    CombineStatementsWithExpressionsMill.globalScope().addAdaptedTypeSymbolResolver(resolver);
-    CombineStatementsWithExpressionsMill.globalScope().addAdaptedOOTypeSymbolResolver(resolver);
-    
-    CombineStatementsWithExpressionsMill.globalScope().setSymbolPath(new MCPath());
-    
-    ICombineStatementsWithExpressionsArtifactScope rootScope =
-        CombineStatementsWithExpressionsMill.scopesGenitorDelegator()
-            .createFromAST(astNodeOpt.get());
-    
-    rootScope.setName("root");
-    
-    astNodeOpt.get().accept(getSymbolTableCompleter());
-    
-    MIValue interpretationResult = astNodeOpt.get().evaluate(interpreter);
-    
-    assertNotNull(interpretationResult);
-    if (!Log.getFindings().isEmpty()) {
-      Log.printFindings();
-      fail();
-    }
-    
-    assertTrue(interpretationResult.isReturn() || interpretationResult.isVoid());
-    if (interpretationResult.isReturn()) {
-      interpretationResult = interpretationResult.asReturnValue();
-    }
-    
-    return interpretationResult;
-  }
-  
-  protected void addImports(List<ImportStatement> imports) {
-    CombineStatementsWithExpressionsMill.artifactScope().setImportsList(imports);
+      Log.clearFindings();
+      Optional<ASTMCBlockStatement> astNodeOpt = Optional.empty();
+      try {
+          astNodeOpt = ((CombineStatementsWithExpressionsParser)parser).parse_String(model);
+      } catch (IOException e) {
+          System.out.println(e.getMessage());
+          fail();
+      }
+
+      if (!Log.getFindings().isEmpty()) {
+          Log.printFindings();
+          fail();
+      }
+      assertTrue(astNodeOpt.isPresent());
+
+      OOSymbolsMill.reset();
+      OOSymbolsMill.init();
+      CombineStatementsWithExpressionsMill.reset();
+      CombineStatementsWithExpressionsMill.init();
+      CombineStatementsWithExpressionsMill.globalScope().clear();
+
+      DefsTypesForTests.setup();
+
+      ICombineStatementsWithExpressionsArtifactScope rootScope =
+              CombineStatementsWithExpressionsMill.scopesGenitorDelegator()
+                      .createFromAST(astNodeOpt.get());
+
+      rootScope.setName("root");
+
+      astNodeOpt.get().accept(getSymbolTableCompleter());
+
+      MIValue interpretationResult = astNodeOpt.get().evaluate(interpreter);
+
+      assertNotNull(interpretationResult);
+      if (!Log.getFindings().isEmpty()) {
+          Log.printFindings();
+          fail();
+      }
+
+      assertTrue(interpretationResult.isReturn() || interpretationResult.isVoid());
+      if (interpretationResult.isReturn()) {
+          interpretationResult = interpretationResult.asReturnValue();
+      }
+
+      return interpretationResult;
   }
   
   protected void setupSymbolTableCompleter(
