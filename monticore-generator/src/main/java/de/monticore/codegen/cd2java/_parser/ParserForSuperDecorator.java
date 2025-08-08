@@ -321,7 +321,7 @@ public class ParserForSuperDecorator extends AbstractDecorator {
   protected void getSuperTypesTransitive(TypeSymbol typeSymbol, Set<String> superTypes) {
     if (superTypes.contains(typeSymbol.getFullName())) return;
     superTypes.add(typeSymbol.getFullName());
-    var types = ((ICDBasisScope) typeSymbol).getEnclosingScope().resolveCDTypeMany(typeSymbol.getFullName());
+    var types = ((ICDBasisScope) typeSymbol.getEnclosingScope()).resolveCDTypeMany(typeSymbol.getFullName());
     getSuperTypesTransitive(types, superTypes);
   }
 
