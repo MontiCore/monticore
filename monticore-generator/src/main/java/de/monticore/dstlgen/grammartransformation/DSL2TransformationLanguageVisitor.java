@@ -323,7 +323,17 @@ public class DSL2TransformationLanguageVisitor implements
     Log.debug("Visiting ast rule " + srcNode.getType(), LOG);
     List<ASTASTRule> targetAstRuleList = tfLang.getASTRuleList();
     if (!("MCCompilationUnit").equals(srcNode.getType())) {
-      targetAstRuleList.add(astRuleFactory.createASTRule(srcNode, grammarSymbol));
+      ASTASTRule targetNode = astRuleFactory.createASTRule(srcNode, grammarSymbol);
+      
+      boolean hasSuperClass = !targetNode.isEmptyASTSuperClass();
+      boolean hasSuperInterface = !targetNode.isEmptyASTSuperInterface();
+      boolean hasGrammarMethods = !targetNode.isEmptyGrammarMethods();
+      boolean hasAdditionalAttributes = !targetNode.isEmptyAdditionalAttributes();
+      
+      // only create ASTRule if it has any influence
+      if (hasSuperClass || hasSuperInterface || hasGrammarMethods || hasAdditionalAttributes) {
+        targetAstRuleList.add(targetNode);
+      }
     }
   }
 
