@@ -188,8 +188,7 @@ public class AbstractTypeVisitorTest extends AbstractMCTest {
       return parser.parse_StringMCType(mcTypeStr);
     }
     catch (IOException e) {
-      Assertions.fail(e);
-      return Optional.empty();
+      return Assertions.fail(e);
     }
   }
 
