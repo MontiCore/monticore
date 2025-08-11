@@ -38,6 +38,6 @@ public class FloatMIValue implements MIValue {
   
   @Override
   public String printValue() {
-    return String.valueOf(value);
+    return String.valueOf(value) + "f";
   }
 }

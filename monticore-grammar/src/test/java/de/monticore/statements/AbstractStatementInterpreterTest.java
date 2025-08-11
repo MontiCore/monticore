@@ -1,41 +1,30 @@
 package de.monticore.statements;
 
 import de.monticore.AbstractInterpreterTest;
-import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
-import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsArtifactScope;
 import de.monticore.expressions.lambdaexpressions._symboltable.LambdaExpressionsSTCompleteTypes2;
 import de.monticore.interpreter.MIValue;
-import de.monticore.io.paths.MCPath;
 import de.monticore.ocl.oclexpressions.symboltable.OCLExpressionsSymbolTableCompleter;
 import de.monticore.ocl.setexpressions.symboltable.SetExpressionsSymbolTableCompleter;
 import de.monticore.statements.combinestatementswithexpressions.CombineStatementsWithExpressionsMill;
 import de.monticore.statements.combinestatementswithexpressions._parser.CombineStatementsWithExpressionsParser;
-import de.monticore.statements.combinestatementswithexpressions._symboltable.CombineStatementsWithExpressionsScopesGenitorDelegator;
 import de.monticore.statements.combinestatementswithexpressions._symboltable.ICombineStatementsWithExpressionsArtifactScope;
 import de.monticore.statements.combinestatementswithexpressions._visitor.CombineStatementsWithExpressionsInterpreter;
 import de.monticore.statements.combinestatementswithexpressions._visitor.CombineStatementsWithExpressionsTraverser;
 import de.monticore.statements.mccommonstatements._symboltable.MCCommonStatementsSymTabCompletion;
 import de.monticore.statements.mcstatementsbasis._ast.ASTMCBlockStatement;
-import de.monticore.statements.mcstatementsbasis._ast.ASTMCStatement;
 import de.monticore.statements.mcvardeclarationstatements._symboltable.MCVarDeclarationStatementsSymTabCompletion;
-import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
-import de.monticore.symboltable.ImportStatement;
 import de.monticore.types.check.IDerive;
 import de.monticore.types.check.ISynthesize;
-import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.types3wrapper.TypeCheck3AsIDerive;
 import de.monticore.types.check.types3wrapper.TypeCheck3AsISynthesize;
 import de.monticore.types3.Type4Ast;
-import de.monticore.types3.TypeCheck3;
 import de.monticore.types3.util.DefsTypesForTests;
 import de.monticore.visitor.ITraverser;
 import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;

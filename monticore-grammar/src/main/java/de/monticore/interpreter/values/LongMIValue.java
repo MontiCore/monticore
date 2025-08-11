@@ -43,6 +43,6 @@ public class LongMIValue implements MIValue {
   
   @Override
   public String printValue() {
-    return String.valueOf(value);
+    return String.valueOf(value) + "L";
   }
 }

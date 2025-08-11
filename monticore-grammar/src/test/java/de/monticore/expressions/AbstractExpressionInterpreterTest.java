@@ -123,34 +123,7 @@ public class AbstractExpressionInterpreterTest extends AbstractInterpreterTest {
       Log.printFindings();
       fail();
     }
-    if (expected.isBoolean()) {
-      assertTrue(interpretationResult.isBoolean());
-      assertEquals(expected.asBoolean(), interpretationResult.asBoolean());
-    } else if (expected.isByte()) {
-      assertTrue(interpretationResult.isByte());
-      assertEquals(expected.asByte(), interpretationResult.asByte());
-    } else if (expected.isShort()) {
-      assertTrue(interpretationResult.isShort());
-      assertEquals(expected.asShort(), interpretationResult.asShort());
-    } else if (expected.isChar()) {
-      assertTrue(interpretationResult.isChar());
-      assertEquals(expected.asChar(), interpretationResult.asChar());
-    } else if (expected.isInt()) {
-      assertTrue(interpretationResult.isInt());
-      assertEquals(expected.asInt(), interpretationResult.asInt());
-    } else if (expected.isLong()) {
-      assertTrue(interpretationResult.isLong());
-      assertEquals(expected.asLong(), interpretationResult.asLong());
-    } else if (expected.isFloat()) {
-      assertTrue(interpretationResult.isFloat());
-      assertEquals(expected.asFloat(), interpretationResult.asFloat(), delta);
-    } else if (expected.isDouble()) {
-      assertTrue(interpretationResult.isDouble());
-      assertEquals(expected.asDouble(), interpretationResult.asDouble(), delta);
-    } else if (expected.isObject()) {
-      assertTrue(interpretationResult.isObject());
-      assertEquals(expected.asObject(), interpretationResult.asObject());
-    }
+    assertValue(expected, interpretationResult);
     assertTrue(Log.getFindings().isEmpty());
   }
   
@@ -163,8 +136,14 @@ public class AbstractExpressionInterpreterTest extends AbstractInterpreterTest {
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
-    
+
     assertNotNull(interpretationResult);
+
+    if (Log.getFindings().isEmpty() && !interpretationResult.isError()) {
+      fail("Expected an error but interpretation succeeded with result of " + interpretationResult.printType()
+              + " (" + interpretationResult.printValue() + ").");
+    }
+
     assertFalse(Log.getFindings().isEmpty());
     assertTrue(interpretationResult.isError());
   }

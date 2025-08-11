@@ -59,7 +59,8 @@ public abstract class AbstractInterpreterTest {
     TypeVisitorOperatorCalculator.init();
     DefsTypesForTests.setup();
     parser = parserSupplier.get();
-    MapBasedTypeCheck3 tc3 = CombineExpressionsWithLiteralsTypeTraverserFactory.initTypeCheck3();
+    MapBasedTypeCheck3 tc3 = CombineExpressionsWithLiteralsTypeTraverserFactory
+            .initTypeCheck3();
     type4Ast = tc3.getType4Ast();
     typeMapTraverser = tc3.getTypeTraverser();
     setupSymbolTableCompleter(typeMapTraverser, type4Ast);
@@ -86,61 +87,62 @@ public abstract class AbstractInterpreterTest {
   }
   
   public MIValue loadVariable(String name) {
-    VariableSymbol symbol = BasicSymbolsMill.globalScope().resolveVariable(name).get();
+    VariableSymbol symbol = BasicSymbolsMill.globalScope()
+            .resolveVariable(name).get();
     return interpreter.loadVariable(symbol);
   }
   
   public MIValue loadFunction(String name) {
-    FunctionSymbol symbol = BasicSymbolsMill.globalScope().resolveFunction(name).get();
+    FunctionSymbol symbol = BasicSymbolsMill.globalScope()
+            .resolveFunction(name).get();
     return interpreter.loadFunction(symbol);
   }
   
   public void assertValue(MIValue expected, MIValue actual) {
     if (expected.isVoid()) {
-      assertTrue(actual.isVoid());
+      if (actual.isVoid()) return;
     } else if (expected.isError()) {
-      assertTrue(actual.isError());
-      assertEquals(expected.asError(), actual.asError());
+      if (actual.isError() && expected.asError().equals(actual.asError())) return;
     } else if (expected.isBreak()) {
-      assertTrue(actual.isBreak());
+      if (actual.isBreak()) return;
     } else if (expected.isContinue()) {
-      assertTrue(actual.isContinue());
+      if (actual.isContinue()) return;
     } else if (expected.isReturn()) {
-      assertTrue(actual.isReturn());
-      assertValue(expected.asReturnValue(), actual.asReturnValue());
+      if (actual.isReturn()) {
+        assertValue(expected.asReturnValue(), actual.asReturnValue());
+        return;
+      }
     } else if (expected.isBoolean()) {
-      assertTrue(actual.isBoolean());
-      assertEquals(expected.asBoolean(), actual.asBoolean());
+      if (actual.isBoolean() && expected.asBoolean() == actual.asBoolean()) return;
     } else if (expected.isByte()) {
-      assertTrue(actual.isByte());
-      Assertions.assertEquals(expected.asByte(), actual.asByte());
+      if (actual.isByte() && expected.asByte() == actual.asByte()) return;
     } else if (expected.isShort()) {
-      assertTrue(actual.isShort());
-      assertEquals(expected.asShort(), actual.asShort());
+      if (actual.isShort() && expected.asShort() == actual.asShort()) return;
     } else if (expected.isChar()) {
-      assertTrue(actual.isChar());
-      assertEquals(expected.asChar(), actual.asChar());
+      if (actual.isChar() && expected.asChar() == actual.asChar()) return;
     } else if (expected.isInt()) {
-      assertTrue(actual.isInt());
-      assertEquals(expected.asInt(), actual.asInt());
+      if (actual.isInt() && expected.asInt() == actual.asInt()) return;
     } else if (expected.isLong()) {
-      assertTrue(actual.isLong());
-      assertEquals(expected.asLong(), actual.asLong());
+      if (actual.isLong() && expected.asLong() == actual.asLong()) return;
     } else if (expected.isFloat()) {
-      assertTrue(actual.isFloat());
-      assertEquals(expected.asFloat(), actual.asFloat());
+      if (actual.isFloat() && expected.asFloat()  + delta > actual.asFloat()
+              && expected.asFloat() - delta < actual.asFloat()) return;
     } else if (expected.isDouble()) {
-      assertTrue(actual.isDouble());
-      assertEquals(expected.asDouble(), actual.asDouble());
+      if (actual.isDouble() && expected.asDouble() + delta > actual.asDouble()
+              && expected.asDouble() - delta < actual.asDouble()) return;
     } else if (expected.isFunction()) {
-      assertTrue(actual.isFunction());
+      if (actual.isFunction() && expected.asFunction().equals(actual.asFunction())) return;
     } else if (expected.isObject()) {
-      assertTrue(actual.isObject());
-      assertEquals(expected.asObject(), actual.asObject());
+      if (actual.isObject() && expected.asObject().equals(actual.asObject())) return;
     } else {
-      Log.error("Trying to compare unsupported MIValue type '" + expected.printType() + "'.");
+      Log.error("Trying to compare unsupported MIValue type '"
+              + expected.printType() + "'.");
       fail();
     }
+
+    fail("Expected " + expected.printType() + " (" + expected.printValue()
+            + ") but got " + actual.printType() + " (" + actual.printValue()
+            + ").");
   }
 
 }

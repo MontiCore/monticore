@@ -63,6 +63,16 @@ public class CommonExpressionsInterpreterTest extends AbstractExpressionInterpre
   }
 
   @Test
+  public void testInterpretMinusPrefixExpression() {
+      testInvalidExpression("-(true)");
+      testValidExpression("-(1)", MIValueFactory.createValue(-1));
+      testValidExpression("-(2L)", MIValueFactory.createValue(-2L));
+      testValidExpression("-(2.5f)", MIValueFactory.createValue(-2.5f));
+      testValidExpression("-(3.14)", MIValueFactory.createValue(-3.14));
+      testValidExpression("-('a')", MIValueFactory.createValue(-'a'));
+  }
+
+  @Test
   public void testInterpretMinusExpression() {
     testInvalidExpression("true - false");
     testInvalidExpression("true - 1");
@@ -75,6 +85,7 @@ public class CommonExpressionsInterpreterTest extends AbstractExpressionInterpre
     testInvalidExpression("1.5 - false");
     testInvalidExpression("true - 'a'");
     testInvalidExpression("'a' - false");
+
 
     testValidExpression("1 - 2", MIValueFactory.createValue(-1));
     testValidExpression("1L - 2", MIValueFactory.createValue(-1L));
@@ -643,7 +654,10 @@ public class CommonExpressionsInterpreterTest extends AbstractExpressionInterpre
   @Test
   public void testConditionalExpression() {
     testValidExpression("(true) ? 1 : 2", MIValueFactory.createValue(1));
-    testValidExpression("5 <= 10%5 || !true && true ? (3 + 2 * 2) / 14.0 : ((1 > 2L) && ('z' <= 15.243f))", MIValueFactory.createValue(false));
+
+    // has result of union-type
+    testValidExpression("5 <= 10%5 || !true && true ? (3 + 2 * 2) / 14.0 : ((1 > 2L) && ('z' <= 15.243f))",
+            MIValueFactory.createValue(false));
   }
 
   @Test
