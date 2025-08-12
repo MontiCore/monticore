@@ -14,8 +14,8 @@ public class JavaAttributeMIValue extends WriteableMIValue {
   
   Optional<MIValue> innerValue = Optional.empty();
   
-  public JavaAttributeMIValue(Object obj, Field attribute) {
-    this.obj = obj;
+  public JavaAttributeMIValue(Optional<Object> obj, Field attribute) {
+    this.obj = obj.orElse(null);
     this.attribute = attribute;
   }
   

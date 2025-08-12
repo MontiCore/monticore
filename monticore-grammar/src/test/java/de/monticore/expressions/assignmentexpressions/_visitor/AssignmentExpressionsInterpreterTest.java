@@ -12,6 +12,9 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static de.monticore.interpreter.MIValueFactory.createValue;
 
+/**
+ * Tests for all AssignmentExpressions with primitive types
+ */
 public class AssignmentExpressionsInterpreterTest extends AbstractExpressionInterpreterTest {
 
   protected static Stream<Arguments> incSuffixExpression() {

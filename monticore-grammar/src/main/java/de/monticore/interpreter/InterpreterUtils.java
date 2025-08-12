@@ -7,15 +7,23 @@ import de.monticore.types3.SymTypeRelations;
 import de.se_rwth.commons.logging.Log;
 
 import java.lang.reflect.Field;
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
 
 import static de.monticore.interpreter.MIValueFactory.createValue;
 
+/**
+ * Utility class for the interpreter.
+ * Contains methods for implict/explicit casts, conversion from Object to
+ * MIValue or MIValue to object, and the calculation of binary operations.
+ */
 public class InterpreterUtils {
   
-  public static MIValue calcOpPrimitive(MIValue v1, MIValue v2, String resultType, BinaryOperator<Integer> opInt, BinaryOperator<Long> opLong,
-      BinaryOperator<Float> opFloat, BinaryOperator<Double> opDouble, String opName) {
+  public static MIValue calcOpPrimitive(MIValue v1, MIValue v2,
+          String resultType, BinaryOperator<Integer> opInt,
+          BinaryOperator<Long> opLong, BinaryOperator<Float> opFloat,
+          BinaryOperator<Double> opDouble, String opName) {
     
     switch (resultType) {
       case BasicSymbolsMill.INT: return createValue((int)opInt.apply(v1.asInt(), v2.asInt()));
@@ -28,8 +36,9 @@ public class InterpreterUtils {
     return new ErrorMIValue(errorMsg);
   }
   
-  public static MIValue calcBitwiseOpPrimitive(MIValue v1, MIValue v2, String resultType, BinaryOperator<Integer> opInt, BinaryOperator<Long> opLong,
-      String opName) {
+  public static MIValue calcBitwiseOpPrimitive(MIValue v1, MIValue v2,
+          String resultType, BinaryOperator<Integer> opInt,
+          BinaryOperator<Long> opLong, String opName) {
     switch (resultType) {
       case BasicSymbolsMill.INT: return createValue((int)opInt.apply(v1.asInt(), v2.asInt()));
       case BasicSymbolsMill.LONG: return createValue((long)opLong.apply(v1.asLong(), v2.asLong()));
@@ -39,8 +48,10 @@ public class InterpreterUtils {
     return new ErrorMIValue(errorMsg);
   }
   
-  public static MIValue calcBitwiseLogicalOpPrimitive(MIValue v1, MIValue v2, String resultType, BinaryOperator<Boolean> opBool, BinaryOperator<Integer> opInt,
-      BinaryOperator<Long> opLong, String opName) {
+  public static MIValue calcBitwiseLogicalOpPrimitive(MIValue v1, MIValue v2,
+          String resultType, BinaryOperator<Boolean> opBool,
+          BinaryOperator<Integer> opInt, BinaryOperator<Long> opLong,
+          String opName) {
     switch (resultType) {
       case BasicSymbolsMill.BOOLEAN: return createValue((boolean)opBool.apply(v1.asBoolean(), v2.asBoolean()));
       case BasicSymbolsMill.INT: return createValue((int)opInt.apply(v1.asInt(), v2.asInt()));
@@ -51,8 +62,9 @@ public class InterpreterUtils {
     return new ErrorMIValue(errorMsg);
   }
   
-  public static MIValue calcShiftPrimitive(MIValue v1, MIValue v2, String resultType, BiFunction<Integer, Long, Integer> opInt, BinaryOperator<Long> opLong,
-      String opName) {
+  public static MIValue calcShiftPrimitive(MIValue v1, MIValue v2,
+          String resultType, BiFunction<Integer, Long, Integer> opInt,
+          BinaryOperator<Long> opLong, String opName) {
     switch (resultType) {
       case BasicSymbolsMill.INT: return createValue((int)opInt.apply(v1.asInt(), v2.asLong()));
       case BasicSymbolsMill.LONG: return createValue((long)opLong.apply(v1.asLong(), v2.asLong()));
@@ -61,9 +73,25 @@ public class InterpreterUtils {
     Log.error(errorMsg);
     return new ErrorMIValue(errorMsg);
   }
-  
-  public static MIValue calcOp(MIValue v1, MIValue v2, SymTypeExpression resultType, BinaryOperator<Integer> opInt, BinaryOperator<Long> opLong,
-      BinaryOperator<Float> opFloat, BinaryOperator<Double> opDouble, String opName) {
+
+  /**
+   * Calculates the result of a binary operation with the given result type by
+   * using the given lambdas for the calculation. Operation should support
+   * int, long, float & double.
+   * @param v1 left operand
+   * @param v2 right operand
+   * @param resultType result type of the operation
+   * @param opInt lambda for int operation
+   * @param opLong lambda for long operation
+   * @param opFloat lambda for float operation
+   * @param opDouble lambda for double operation
+   * @param opName Name of the operation (for error messages)
+   * @return Result of the operation or an error value if the type is not supported.
+   */
+  public static MIValue calcOp(MIValue v1, MIValue v2,
+          SymTypeExpression resultType, BinaryOperator<Integer> opInt,
+          BinaryOperator<Long> opLong, BinaryOperator<Float> opFloat,
+          BinaryOperator<Double> opDouble, String opName) {
     if (resultType.isPrimitive()) {
       return calcOpPrimitive(v1, v2, resultType.asPrimitive().getPrimitiveName(), opInt, opLong, opFloat, opDouble, opName);
     }
@@ -72,9 +100,21 @@ public class InterpreterUtils {
     Log.error(errorMsg);
     return new ErrorMIValue(errorMsg);
   }
-  
-  public static MIValue calcBitwiseOp(MIValue v1, MIValue v2, SymTypeExpression resultType, BinaryOperator<Integer> opInt, BinaryOperator<Long> opLong,
-      String opName) {
+
+  /**
+   * Calculates the result of a bitwise binary operation with the given result type by using
+   * the given lambdas for the calculation. Operation should support int & long.
+   * @param v1 left operand
+   * @param v2 right operand
+   * @param resultType result type of the operation
+   * @param opInt lambda for int operation
+   * @param opLong lambda for long operation
+   * @param opName Name of the operation (for error messages)
+   * @return Result of the operation or an error value if the type is not supported.
+   */
+  public static MIValue calcBitwiseOp(MIValue v1, MIValue v2,
+          SymTypeExpression resultType, BinaryOperator<Integer> opInt,
+          BinaryOperator<Long> opLong, String opName) {
     if (resultType.isPrimitive()) {
       return calcBitwiseOpPrimitive(v1, v2, resultType.asPrimitive().getPrimitiveName(), opInt, opLong, opName);
     }
@@ -83,30 +123,70 @@ public class InterpreterUtils {
     Log.error(errorMsg);
     return new ErrorMIValue(errorMsg);
   }
-  
-  public static MIValue calcBitwiseLogicalOp(MIValue v1, MIValue v2, SymTypeExpression resultType, BinaryOperator<Boolean> opBool, BinaryOperator<Integer> opInt,
-      BinaryOperator<Long> opLong, String opName) {
+
+  /**
+   * Calculates the result of a bitwise or logical binary operation with the
+   * given result type by using the given lambdas for the calculation.
+   * Operation should support boolean, int & long.
+   * @param v1 left operand
+   * @param v2 right operand
+   * @param resultType result type of the operation
+   * @param opInt lambda for int operation
+   * @param opLong lambda for long operation
+   * @param opName Name of the operation (for error messages)
+   * @return Result of the operation or an error value if the type is not supported.
+   */
+  public static MIValue calcBitwiseLogicalOp(MIValue v1, MIValue v2,
+          SymTypeExpression resultType,
+          BinaryOperator<Boolean> opBool, BinaryOperator<Integer> opInt,
+          BinaryOperator<Long> opLong, String opName) {
     if (resultType.isPrimitive()) {
-      return calcBitwiseLogicalOpPrimitive(v1, v2, resultType.asPrimitive().getPrimitiveName(), opBool, opInt, opLong, opName);
+      return calcBitwiseLogicalOpPrimitive(v1, v2,
+              resultType.asPrimitive().getPrimitiveName(), opBool, opInt,
+              opLong, opName);
     }
     
-    String errorMsg = opName + " operation with result of type " + resultType + " is not supported.";
+    String errorMsg = opName + " operation with result of type " + resultType
+            + " is not supported.";
     Log.error(errorMsg);
     return new ErrorMIValue(errorMsg);
   }
-  
-  public static MIValue calcShift(MIValue v1, MIValue v2, SymTypeExpression resultType, BiFunction<Integer, Long, Integer> opInt,
-      BinaryOperator<Long> opLong, String opName) {
+
+  /**
+   * Calculates the result of a shift-like operation with the
+   * given result type by using the given lambdas for the calculation.
+   * Shift operations always support up to long for the right side.
+   * @param v1 left operand
+   * @param v2 right operand
+   * @param resultType result type of the operation
+   * @param opInt lambda for int operation
+   * @param opLong lambda for long operation
+   * @param opName Name of the operation (for error messages)
+   * @return Result of the operation or an error value if the type is not supported.
+   */
+  public static MIValue calcShift(MIValue v1, MIValue v2,
+          SymTypeExpression resultType,
+          BiFunction<Integer, Long, Integer> opInt,
+          BinaryOperator<Long> opLong, String opName) {
     if (resultType.isPrimitive()) {
-      return calcShiftPrimitive(v1, v2, resultType.asPrimitive().getPrimitiveName(), opInt, opLong, opName);
+      return calcShiftPrimitive(v1, v2,
+              resultType.asPrimitive().getPrimitiveName(), opInt, opLong,
+              opName);
     }
     
-    String errorMsg = opName + " operation with result of type " + resultType + " is not supported.";
+    String errorMsg = opName + " operation with result of type " + resultType
+            + " is not supported.";
     Log.error(errorMsg);
     return new ErrorMIValue(errorMsg);
   }
-  
-  public static MIValue convertToPrimitiveExplicit(String from, String to, MIValue value) {
+
+  /**
+   * Applies an explicit cast on primitive to target primitive type.
+   * @return converted MIValue or ErrorMIValue if the cast is not supported or
+   * not possible.
+   */
+  public static MIValue convertToPrimitiveExplicit(String from, String to,
+          MIValue value) {
     if (to.equals(BasicSymbolsMill.BOOLEAN) || from.equals(BasicSymbolsMill.BOOLEAN)) {
       String errorMsg = "0x57060 Cast to or from boolean is not supported.";
       Log.error(errorMsg);
@@ -170,12 +250,19 @@ public class InterpreterUtils {
       return createValue(value.asDouble());
     }
     
-    String errorMsg = "0x57061 Cast from " + from + " to " + to + " is not supported.";
+    String errorMsg = "0x57061 Cast from " + from + " to " + to
+            + " is not supported.";
     Log.error(errorMsg);
     return new ErrorMIValue(errorMsg);
   }
-  
-  public static MIValue convertToPrimitiveImplicit(String targetType, MIValue value) {
+
+  /**
+   * Applies an implicit cast on primitive to target primitive type
+   * @return converted MIValue or ErrorMIValue if the cast is not supported or
+   * not possible.
+   */
+  public static MIValue convertToPrimitiveImplicit(String targetType,
+          MIValue value) {
     if (targetType.equals(BasicSymbolsMill.BYTE)) {
       return createValue(value.asByte());
     } else if (targetType.equals(BasicSymbolsMill.SHORT)) {
@@ -192,18 +279,30 @@ public class InterpreterUtils {
       return createValue(value.asDouble());
     }
     
-    String errorMsg = "0x57062 Implicit cast to " + targetType + " is not supported.";
+    String errorMsg = "0x57062 Implicit cast to " + targetType
+            + " is not supported.";
     Log.error(errorMsg);
     return new ErrorMIValue(errorMsg);
   }
-  
-  public static MIValue convertImplicit(SymTypeExpression targetType, MIValue value) {
+
+  /**
+   * Applies an implicit cast on value to targetType.
+   * Allows casts of boxtypes and primitives.
+   * @return converted MIValue or ErrorMIValue if the cast is not supported or
+   * not possible.
+   */
+  public static MIValue convertImplicit(SymTypeExpression targetType,
+          MIValue value) {
     if (targetType.isPrimitive()) {
       value = unboxType(value);
-      return convertToPrimitiveImplicit(targetType.asPrimitive().getPrimitiveName(), value);
+      return convertToPrimitiveImplicit(
+              targetType.asPrimitive().getPrimitiveName(), value
+      );
     } else if (isBoxType(targetType)) {
       SymTypeExpression unboxedType = SymTypeRelations.unbox(targetType);
-      value = convertToPrimitiveImplicit(unboxedType.asPrimitive().getPrimitiveName(), value);
+      value = convertToPrimitiveImplicit(
+              unboxedType.asPrimitive().getPrimitiveName(), value
+      );
       value = boxValue(value, targetType);
       return value;
     } else {
@@ -214,55 +313,54 @@ public class InterpreterUtils {
       return value;
     }
   }
-  
-  public static MIValue getObjectAttribute(ObjectMIValue object, String attributeName, SymTypeExpression type) {
+
+  /**
+   * Creates an AttributeMIValue for a non-static attribute of a java-object.
+   * @param object Java-Object as MIValue
+   * @return Value of the attribute as MIValue converted to the given type.
+   * ErrorMIValue if the attribute does not exist or is not accessible.
+   */
+  public static MIValue getNonStaticObjectAttribute(ObjectMIValue object,
+          String attributeName) {
     Field attribute;
     try {
-      attribute = object.getClass().getField(attributeName);
+      attribute = object.asObject().getClass().getField(attributeName);
     } catch (NoSuchFieldException e) {
-      String errorMsg = "0x57063 Tried to access attribute '" + attributeName + "' of class '"
-          + object.getClass().getName() + "'. No such attribute exists.";
+      String errorMsg = "0x57063 Tried to access attribute '" + attributeName
+              + "' of class '" + object.getClass().getName()
+              + "'. No such attribute exists.";
       Log.error(errorMsg);
       return new ErrorMIValue(errorMsg);
     }
-    
-    try {
-      if (type.isPrimitive()) {
-        String typeName = type.asPrimitive().getPrimitiveName();
-        if (typeName.equals(BasicSymbolsMill.BOOLEAN)) {
-          return MIValueFactory.createValue(attribute.getBoolean(object));
-        } else if (typeName.equals(BasicSymbolsMill.BYTE)) {
-          return MIValueFactory.createValue(attribute.getByte(object));
-        } else if (typeName.equals(BasicSymbolsMill.SHORT)) {
-          return MIValueFactory.createValue(attribute.getShort(object));
-        } else if (typeName.equals(BasicSymbolsMill.CHAR)) {
-          return MIValueFactory.createValue(attribute.getChar(object));
-        } else if (typeName.equals(BasicSymbolsMill.INT)) {
-          return MIValueFactory.createValue(attribute.getInt(object));
-        } else if (typeName.equals(BasicSymbolsMill.LONG)) {
-          return MIValueFactory.createValue(attribute.getLong(object));
-        } else if (typeName.equals(BasicSymbolsMill.FLOAT)) {
-          return MIValueFactory.createValue(attribute.getFloat(object));
-        } else if (typeName.equals(BasicSymbolsMill.DOUBLE)) {
-          return MIValueFactory.createValue(attribute.getDouble(object));
-        }
-        
-      } else if (type.isObjectType()) {
-        return MIValueFactory.createValue(attribute.get(object));
-      }
-    } catch (IllegalAccessException e) {
-      String errorMsg = "0x57064 Tried to access attribute '" + attributeName + "' of class '"
-          + object.getClass().getName() + "'. Attribute is not accessible.";
-      Log.error(errorMsg);
-      return new ErrorMIValue(errorMsg);
-    }
-    
-    String errorMsg = "0x57065 Attribute Access operation does not support attributes of type '"
-      + type.printFullName() + "'.";
-    Log.error(errorMsg);
-    return new ErrorMIValue(errorMsg);
+
+    return new JavaAttributeMIValue(Optional.of(object.asObject()), attribute);
   }
-  
+
+  /**
+   * Creates an AttributeMIValue for a non-static attribute of a java-object.
+   * @param classObject Java-Class
+   * @return Value of the attribute as MIValue converted to the given type.
+   * ErrorMIValue if the attribute does not exist or is not accessible.
+   */
+  public static MIValue getStaticObjectAttribute(Class<?> classObject,
+          String attributeName) {
+    Field attribute;
+    try {
+      attribute = classObject.getField(attributeName);
+    } catch (NoSuchFieldException e) {
+      String errorMsg = "0x57063 Tried to access attribute '" + attributeName
+              + "' of class '" + classObject.getName()
+              + "'. No such attribute exists.";
+      Log.error(errorMsg);
+      return new ErrorMIValue(errorMsg);
+    }
+
+    return new JavaAttributeMIValue(Optional.empty(), attribute);
+  }
+
+  /**
+   * Gets the corresponding java type for a given MIValue.
+   */
   public static Class<?> typeOfValue(MIValue value) {
     if (value.isBoolean()) {
       return boolean.class;
@@ -284,11 +382,15 @@ public class InterpreterUtils {
       return value.asObject().getClass();
     }
     // Functions are not allowed
-    String errorMsg = "0x57066 Failed to get java type of " + value.printType() + ".";
+    String errorMsg = "0x57066 Failed to get java type of " + value.printType()
+            + ".";
     Log.error(errorMsg);
     return null;
   }
-  
+
+  /**
+   * Converts a MIValue to a java object.
+   */
   public static Object valueToObject(MIValue value) {
     if (value.isBoolean()) {
       return value.asBoolean();
@@ -310,11 +412,16 @@ public class InterpreterUtils {
       return value.asObject();
     }
     // Functions are not allowed
-    String errorMsg = "0x57067 Failed to convert MIValue of type " + value.printType() + " to a java object.";
+    String errorMsg = "0x57067 Failed to convert MIValue of type "
+            + value.printType() + " to a java object.";
     Log.error(errorMsg);
     return null;
   }
-  
+
+  /**
+   * Converts a java object to a MIValue.
+   * Boxtypes are converted to their corresponding primitive type.
+   */
   public static MIValue objectToValue(Object object) {
     if (object instanceof Boolean) {
       return new BooleanMIValue((Boolean)object);
@@ -336,11 +443,20 @@ public class InterpreterUtils {
     
     return new ObjectMIValue(object);
   }
-  
+
+  /**
+   * Checks if SymTypeExpression is a boxtype
+   */
   public static boolean isBoxType(SymTypeExpression type) {
-    return !type.isPrimitive() && (SymTypeRelations.isNumericType(type) || SymTypeRelations.isBoolean(type));
+    return !type.isPrimitive() && (
+            SymTypeRelations.isNumericType(type)
+            || SymTypeRelations.isBoolean(type)
+    );
   }
-  
+
+  /**
+   * Unboxes a value if it is a boxtype.
+   */
   public static MIValue unboxType(MIValue value) {
     if (!value.isObject()) return value;
     
@@ -363,7 +479,11 @@ public class InterpreterUtils {
     
     return value;
   }
-  
+
+
+  /**
+   * Converts a MIValue into its equivalent Boxtype
+   */
   public static MIValue boxValue(MIValue value) {
     if (!value.isPrimitive()) {
       return value;
@@ -389,7 +509,11 @@ public class InterpreterUtils {
     
     return value;
   }
-  
+
+  /**
+   * Converts a value to the given box type.
+   * @return Boxed value wrapped in an ObjectMIValue
+   */
   public static MIValue boxValue(MIValue value, SymTypeExpression boxType) {
     if (SymTypeRelations.isInt(boxType)) {
       return MIValueFactory.createValue(Integer.valueOf(value.asInt()));

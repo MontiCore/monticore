@@ -43,7 +43,10 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
           : null
     );
   }
-  
+
+  /**
+   * Checks whether the left and right value are equal.
+   */
   public MIValue isEqual(SymTypePrimitive leftType, MIValue left, SymTypePrimitive rightType, MIValue right) {
     SymTypePrimitive compatibleType = getCompatibleType(leftType, rightType);
     if (compatibleType == null) {
@@ -77,7 +80,10 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
     Log.error(errorMsg);
     return new ErrorMIValue(errorMsg);
   }
-  
+
+  /**
+   * Subtracts the right value from the left value while minding the types
+   */
   public MIValue subtract(SymTypePrimitive leftType, MIValue left, SymTypePrimitive rightType, MIValue right) {
     SymTypePrimitive compatibleType = getCompatibleType(leftType, rightType);
     if (compatibleType == null) {
@@ -465,30 +471,43 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
   public MIValue interpret(ASTFieldAccessExpression node) {
     SymTypeExpression type = TypeCheck3.typeOf(node);
     Optional<ISymbol> symbolOptional = type.getSourceInfo().getSourceSymbol();
+    // TODO Definition of Classes with Attributes/Methods in Model
     if (symbolOptional.isEmpty()) {
-    
+      String errorMsg = "0x57018 Field Access operation expected a symbol as source.";
+      Log.error(errorMsg, node.get_SourcePositionStart(), node.get_SourcePositionEnd());
+      return new ErrorMIValue(errorMsg);
     } else {
+      // Java Method/Attribute
       ISymbol symbol = symbolOptional.get();
       if (symbol.getAccessModifier().getDimensionToModifierMap()
-          .getOrDefault(StaticAccessModifier.DIMENSION, StaticAccessModifier.NON_STATIC) == StaticAccessModifier.STATIC) { // static
-        if (type.isFunctionType()) { // static function
-          FunctionSymbol funcSymbol = (FunctionSymbol)symbol;
-          String funcName = funcSymbol.getName();
-          String className = funcSymbol.getFullName().substring(0, funcName.length() + 1); // remove '.funcName'
-          Class classType;
-          try {
-            classType = Class.forName(className);
-          } catch (ClassNotFoundException e) {
-            String errorMsg = "0x57018 Failed to load class '" + className + "'.";
-            Log.error(errorMsg, node.get_SourcePositionStart(), node.get_SourcePositionEnd());
-            return new ErrorMIValue(errorMsg);
-          }
-          return new JavaStaticMethodMIValue(classType, funcName);
-        } else { // static attribute
-          // TODO
+              .getOrDefault(StaticAccessModifier.DIMENSION,
+                  StaticAccessModifier.NON_STATIC) == StaticAccessModifier.STATIC) {
+        // static
+
+        // get Java-Class from symbol
+        String fieldName = symbol.getName();
+        String fullName = symbol.getFullName();
+        String className = fullName.substring(0, (fullName.length()
+                - fieldName.length() - 1));
+        Class classType;
+        try {
+          classType = Class.forName(className);
+        } catch (ClassNotFoundException e) {
+          String errorMsg = "0x57018 Failed to load class '" + className + "'.";
+          Log.error(errorMsg, node.get_SourcePositionStart(), node.get_SourcePositionEnd());
+          return new ErrorMIValue(errorMsg);
+        }
+
+        if (type.isFunctionType()) {
+          // static method
+          return new JavaStaticMethodMIValue(classType, fieldName);
+        } else {
+          // static attribute
+          return InterpreterUtils.getStaticObjectAttribute(classType, fieldName);
         }
         
-      } else { // non-static
+      } else {
+        // non-static
         MIValue leftValue = node.getExpression().evaluate(getRealThis());
         if (!leftValue.isObject()) {
           String errorMsg = "0x57019 The Field Access operation expected an object as left side.";
@@ -497,19 +516,17 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
         }
         
         // If class-declarations are supported this needs to be expanded
-        if (type.isFunctionType()) { // method call on object
+        if (type.isFunctionType()) {
+          // non-static method
           FunctionSymbol funcSymbol = (FunctionSymbol)symbol;
           String name = funcSymbol.getName();
           return new JavaNonStaticMethodMIValue(leftValue.asObject(), name);
-        } else { // non-static attribute access
-          return InterpreterUtils.getObjectAttribute((ObjectMIValue)leftValue, node.getName(), type);
+        } else {
+          // non-static attribute
+          return InterpreterUtils.getNonStaticObjectAttribute((ObjectMIValue)leftValue, node.getName());
         }
       }
     }
-    
-    String errorMsg = "0x57020 Field Access operation not supported.";
-    Log.error(errorMsg, node.get_SourcePositionStart(), node.get_SourcePositionEnd());
-    return new ErrorMIValue(errorMsg);
   }
 
   @Override

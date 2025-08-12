@@ -13,11 +13,11 @@ public class CombineStatementsWithExpressionsTest extends AbstractStatementInter
   @Test
   public void testVarDeclarationStatement() {
     testValidModel("int i = 0;");
-    assertValue(createValue(0), loadVariable("i"));
+    assertValueEquals(createValue(0), loadVariable("i"));
     
     testValidModel("int j = 1, k = 2;");
-    assertValue(createValue(1), loadVariable("j"));
-    assertValue(createValue(2), loadVariable("k"));
+    assertValueEquals(createValue(1), loadVariable("j"));
+    assertValueEquals(createValue(2), loadVariable("k"));
   }
   
   @Test
@@ -34,7 +34,7 @@ public class CombineStatementsWithExpressionsTest extends AbstractStatementInter
         "  return [i, j];   \n" +
         "}                  "
     );
-    assertValue(createValue(List.of(0, 42)), result);
+    assertValueEquals(createValue(List.of(0, 42)), result);
   }
   
   @Test
@@ -49,7 +49,7 @@ public class CombineStatementsWithExpressionsTest extends AbstractStatementInter
         "  return count;            \n" +
         "}                          "
     );
-    assertValue(createValue(8), result);
+    assertValueEquals(createValue(8), result);
   }
   
   @Test
@@ -64,7 +64,7 @@ public class CombineStatementsWithExpressionsTest extends AbstractStatementInter
         "  return count;          \n" +
         "}                        "
     );
-    assertValue(createValue(1), result);
+    assertValueEquals(createValue(1), result);
   }
   
   @Test
@@ -78,7 +78,7 @@ public class CombineStatementsWithExpressionsTest extends AbstractStatementInter
         "  return count;                  \n" +
         "}                                "
     );
-    assertValue(createValue(10), result);
+    assertValueEquals(createValue(10), result);
   }
   
   @Test
@@ -92,7 +92,7 @@ public class CombineStatementsWithExpressionsTest extends AbstractStatementInter
         "  return sum;            \n" +
         "}"
     );
-    assertValue(createValue(10), result);
+    assertValueEquals(createValue(10), result);
   }
   
   @Test
@@ -107,7 +107,7 @@ public class CombineStatementsWithExpressionsTest extends AbstractStatementInter
         "  return count;                  \n" +
         "}                                "
     );
-    assertValue(createValue(5), result);
+    assertValueEquals(createValue(5), result);
   }
   
   @Test
@@ -122,7 +122,7 @@ public class CombineStatementsWithExpressionsTest extends AbstractStatementInter
         "  return count;                  \n" +
         "}                                "
     );
-    assertValue(createValue(7), result);
+    assertValueEquals(createValue(7), result);
   }
   
   @Test

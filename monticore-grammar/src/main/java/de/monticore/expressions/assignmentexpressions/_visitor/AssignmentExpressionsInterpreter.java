@@ -261,7 +261,7 @@ public class AssignmentExpressionsInterpreter extends AssignmentExpressionsInter
     
     SymTypeExpression rightType = TypeCheck3.typeOf(n.getRight());
     
-    // no operation
+    // normal assignment without operation
     if (operator == EQUALS) {
       if (leftType.deepEquals(rightType)) {
         variable.write(rightValue);
@@ -401,6 +401,7 @@ public class AssignmentExpressionsInterpreter extends AssignmentExpressionsInter
     if (resultValue.isFlowControlSignal()) return resultValue;
     
     if (leftType.deepEquals(resultType)) {
+      // nothing left to do
     } else if (leftType.isPrimitive() && resultType.isPrimitive()) {
       resultValue = InterpreterUtils.convertToPrimitiveExplicit(resultType.asPrimitive().getPrimitiveName(),
           leftType.asPrimitive().getPrimitiveName(), resultValue);

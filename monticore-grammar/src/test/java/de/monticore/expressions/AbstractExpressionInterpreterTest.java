@@ -35,6 +35,19 @@ import static de.monticore.types3.util.DefsTypesForTests.inScope;
 import static de.monticore.types3.util.DefsTypesForTests.variable;
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Abstract class for tests that use CombineExpressionsWithLiterals and
+ * only contain expressions.
+ * Creates a variable for each primitive type:<br>
+ * <code>boolean b = true;<br>
+ * char c = 'a';<br>
+ * byte by = 3;<br>
+ * short s = 256;<br>
+ * int i = 1;<br>
+ * long l = 5L;<br>
+ * float f = 1.5f;<br>
+ * double d = 3.14;</code>
+ */
 public class AbstractExpressionInterpreterTest extends AbstractInterpreterTest {
 
   @Override
@@ -63,53 +76,67 @@ public class AbstractExpressionInterpreterTest extends AbstractInterpreterTest {
   }
   
   protected void initBool() throws IOException {
-    VariableSymbol varSymbol = variable("b", SymTypeExpressionFactory.createPrimitive("boolean"));
+    VariableSymbol varSymbol = variable("b", SymTypeExpressionFactory
+            .createPrimitive("boolean"));
     inScope(CombineExpressionsWithLiteralsMill.globalScope(), varSymbol);
     interpreter.declareVariable(varSymbol, Optional.of(createValue(true)));
   }
   
   protected void initChar() throws IOException {
-    VariableSymbol varSymbol = variable("c", SymTypeExpressionFactory.createPrimitive("char"));
+    VariableSymbol varSymbol = variable("c", SymTypeExpressionFactory
+            .createPrimitive("char"));
     inScope(CombineExpressionsWithLiteralsMill.globalScope(), varSymbol);
     interpreter.declareVariable(varSymbol, Optional.of(createValue('a')));
   }
   
   protected void initByte() throws IOException {
-    VariableSymbol varSymbol = variable("by", SymTypeExpressionFactory.createPrimitive("byte"));
+    VariableSymbol varSymbol = variable("by", SymTypeExpressionFactory
+            .createPrimitive("byte"));
     inScope(CombineExpressionsWithLiteralsMill.globalScope(), varSymbol);
     interpreter.declareVariable(varSymbol, Optional.of(createValue((byte)3)));
   }
   
   protected void initShort() throws IOException {
-    VariableSymbol varSymbol = variable("s", SymTypeExpressionFactory.createPrimitive("short"));
+    VariableSymbol varSymbol = variable("s", SymTypeExpressionFactory
+            .createPrimitive("short"));
     inScope(CombineExpressionsWithLiteralsMill.globalScope(), varSymbol);
     interpreter.declareVariable(varSymbol, Optional.of(createValue((short)256)));
   }
   
   protected void initInt() throws IOException {
-    VariableSymbol varSymbol = variable("i", SymTypeExpressionFactory.createPrimitive("int"));
+    VariableSymbol varSymbol = variable("i", SymTypeExpressionFactory
+            .createPrimitive("int"));
     inScope(CombineExpressionsWithLiteralsMill.globalScope(), varSymbol);
     interpreter.declareVariable(varSymbol, Optional.of(createValue(1)));
   }
   
   protected void initLong() throws IOException {
-    VariableSymbol varSymbol = variable("l", SymTypeExpressionFactory.createPrimitive("long"));
+    VariableSymbol varSymbol = variable("l", SymTypeExpressionFactory
+            .createPrimitive("long"));
     inScope(CombineExpressionsWithLiteralsMill.globalScope(), varSymbol);
     interpreter.declareVariable(varSymbol, Optional.of(createValue(5L)));
   }
   
   protected void initFloat() throws IOException {
-    VariableSymbol varSymbol = variable("f", SymTypeExpressionFactory.createPrimitive("float"));
+    VariableSymbol varSymbol = variable("f", SymTypeExpressionFactory
+            .createPrimitive("float"));
     inScope(CombineExpressionsWithLiteralsMill.globalScope(), varSymbol);
     interpreter.declareVariable(varSymbol, Optional.of(createValue(1.5f)));
   }
   
   protected void initDouble() throws IOException {
-    VariableSymbol varSymbol = variable("d", SymTypeExpressionFactory.createPrimitive("double"));
+    VariableSymbol varSymbol = variable("d", SymTypeExpressionFactory
+            .createPrimitive("double"));
     inScope(CombineExpressionsWithLiteralsMill.globalScope(), varSymbol);
     interpreter.declareVariable(varSymbol, Optional.of(createValue(3.14)));
   }
-  
+
+  /**
+   * Interprets expression and checks if the result is as expected.
+   * Fails if parsing, interpretation or comparison fails.
+   * @param expr Expression to interpret
+   * @param expected Expected result of expression
+   */
   protected void testValidExpression(String expr, MIValue expected) {
     Log.clearFindings();
     MIValue interpretationResult = null;
@@ -123,10 +150,15 @@ public class AbstractExpressionInterpreterTest extends AbstractInterpreterTest {
       Log.printFindings();
       fail();
     }
-    assertValue(expected, interpretationResult);
+    assertValueEquals(expected, interpretationResult);
     assertTrue(Log.getFindings().isEmpty());
   }
-  
+
+  /**
+   * Tries to parse and interpret invalid expression.
+   * Fails if parsing and interpretation succeed.
+   * @param expr Invalid expression to check
+   */
   protected void testInvalidExpression(String expr) {
     Log.clearFindings();
     MIValue interpretationResult;
@@ -140,14 +172,21 @@ public class AbstractExpressionInterpreterTest extends AbstractInterpreterTest {
     assertNotNull(interpretationResult);
 
     if (Log.getFindings().isEmpty() && !interpretationResult.isError()) {
-      fail("Expected an error but interpretation succeeded with result of " + interpretationResult.printType()
+      fail("Expected an error but interpretation succeeded with result of "
+              + interpretationResult.printType()
               + " (" + interpretationResult.printValue() + ").");
     }
 
     assertFalse(Log.getFindings().isEmpty());
     assertTrue(interpretationResult.isError());
   }
-  
+
+  /**
+   * Parses and interprets an expression.
+   * @param expr Expression to parse and interpret
+   * @return result of interpretation
+   * @throws IOException if parsing throws IOException
+   */
   protected MIValue parseExpressionAndInterpret(String expr) throws IOException {
     final ASTExpression ast = parseExpr(expr);
     generateScopes(ast);
@@ -159,19 +198,26 @@ public class AbstractExpressionInterpreterTest extends AbstractInterpreterTest {
     }
     return ast.evaluate(interpreter);
   }
-  
+
+  /**
+   * Parses an expression and returns the resulting ASTExpression.
+   * @param exprStr Expression to parse
+   * @return resulting ASTExpression
+   * @throws IOException if parsing throws IOException
+   */
   protected ASTExpression parseExpr(String exprStr) throws IOException {
-    Optional<ASTExpression> astExpression = parseStringExpr(exprStr);
+    Optional<ASTExpression> astExpression =
+            ((CombineExpressionsWithLiteralsParser)parser)
+                    .parse_StringExpression(exprStr);
     Assertions.assertTrue(astExpression.isPresent(), getAllFindingsAsString());
     return astExpression.get();
   }
-  
-  // Parse a String expression of the according language
-  protected Optional<ASTExpression> parseStringExpr(String exprStr)
-      throws IOException {
-    return ((CombineExpressionsWithLiteralsParser)parser).parse_StringExpression(exprStr);
-  }
-  
+
+  /**
+   * Generates Model for a single Expression so the Symboltable and
+   * scopes are build correctly
+   * @param expr Expression to generate model for
+   */
   protected void generateScopes(ASTExpression expr) {
     // create a root
     ASTFoo rootNode = CombineExpressionsWithLiteralsMill.fooBuilder()

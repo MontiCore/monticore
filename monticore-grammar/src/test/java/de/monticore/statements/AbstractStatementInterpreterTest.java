@@ -29,6 +29,9 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Abstract class for tests that use CombineStatementsWithExpressions.
+ */
 public abstract class AbstractStatementInterpreterTest extends AbstractInterpreterTest {
   
   @Override
@@ -42,7 +45,12 @@ public abstract class AbstractStatementInterpreterTest extends AbstractInterpret
     
     interpreter = new CombineStatementsWithExpressionsInterpreter();
   }
-  
+
+  /**
+   * Parses and interprets a given model.
+   * @param model model to parse and interpret
+   * @return result of interpretation
+   */
   protected MIValue testValidModel(String model) {
       Log.clearFindings();
       Optional<ASTMCBlockStatement> astNodeOpt = Optional.empty();

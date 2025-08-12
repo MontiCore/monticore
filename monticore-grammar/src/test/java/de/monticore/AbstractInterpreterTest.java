@@ -4,7 +4,6 @@ package de.monticore;
 import de.monticore.antlr4.MCConcreteParser;
 import de.monticore.interpreter.MIValue;
 import de.monticore.interpreter.ModelInterpreter;
-import de.monticore.interpreter.values.ErrorMIValue;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
@@ -15,7 +14,6 @@ import de.monticore.visitor.ITraverser;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.util.function.Supplier;
@@ -23,6 +21,12 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Abstract class for interpreter tests.
+ * Supplies utils for comparing MIValues and loading functions/variables.
+ * Implementations need to initialize the parserSupplier, resetMill and
+ * initMill-attributes and implement the setupSymbolTableCompleter method.
+ */
 public abstract class AbstractInterpreterTest {
 
   protected static final double delta = 0.00001;
@@ -85,22 +89,41 @@ public abstract class AbstractInterpreterTest {
         .collect(Collectors.joining(System.lineSeparator()))
         ;
   }
-  
+
+
+  /**
+   * Loads variable by full qualified name.
+   * @param name full qualified name
+   * @return stored MIValue or ErrorMIValue if not declared/initialized
+   */
   public MIValue loadVariable(String name) {
     VariableSymbol symbol = BasicSymbolsMill.globalScope()
             .resolveVariable(name).get();
     return interpreter.loadVariable(symbol);
   }
-  
+
+  /**
+   * Loads function by full qualified name.
+   * @param name full qualified name
+   * @return stored FunctionMIValue or ErrorMIValue if not declared
+   */
   public MIValue loadFunction(String name) {
     FunctionSymbol symbol = BasicSymbolsMill.globalScope()
             .resolveFunction(name).get();
     return interpreter.loadFunction(symbol);
   }
-  
-  public void assertValue(MIValue expected, MIValue actual) {
+
+  /**
+   * Compares two MIValues based on type and value.
+   * @param expected
+   * @param actual
+   */
+  public void assertValueEquals(MIValue expected, MIValue actual) {
+    // if you join the ifs with && you can't tell missing comparison implementations for a new value
+    // from value mismatches apart
     if (expected.isVoid()) {
       if (actual.isVoid()) return;
+
     } else if (expected.isError()) {
       if (actual.isError() && expected.asError().equals(actual.asError())) return;
     } else if (expected.isBreak()) {
@@ -109,9 +132,10 @@ public abstract class AbstractInterpreterTest {
       if (actual.isContinue()) return;
     } else if (expected.isReturn()) {
       if (actual.isReturn()) {
-        assertValue(expected.asReturnValue(), actual.asReturnValue());
+        assertValueEquals(expected.asReturnValue(), actual.asReturnValue());
         return;
       }
+
     } else if (expected.isBoolean()) {
       if (actual.isBoolean() && expected.asBoolean() == actual.asBoolean()) return;
     } else if (expected.isByte()) {
@@ -124,16 +148,19 @@ public abstract class AbstractInterpreterTest {
       if (actual.isInt() && expected.asInt() == actual.asInt()) return;
     } else if (expected.isLong()) {
       if (actual.isLong() && expected.asLong() == actual.asLong()) return;
+
     } else if (expected.isFloat()) {
       if (actual.isFloat() && expected.asFloat()  + delta > actual.asFloat()
               && expected.asFloat() - delta < actual.asFloat()) return;
     } else if (expected.isDouble()) {
       if (actual.isDouble() && expected.asDouble() + delta > actual.asDouble()
               && expected.asDouble() - delta < actual.asDouble()) return;
+
     } else if (expected.isFunction()) {
       if (actual.isFunction() && expected.asFunction().equals(actual.asFunction())) return;
     } else if (expected.isObject()) {
       if (actual.isObject() && expected.asObject().equals(actual.asObject())) return;
+
     } else {
       Log.error("Trying to compare unsupported MIValue type '"
               + expected.printType() + "'.");
@@ -143,6 +170,7 @@ public abstract class AbstractInterpreterTest {
     fail("Expected " + expected.printType() + " (" + expected.printValue()
             + ") but got " + actual.printType() + " (" + actual.printValue()
             + ").");
+
   }
 
 }
