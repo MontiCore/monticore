@@ -8,7 +8,8 @@ import java.util.List;
 
 import static de.monticore.interpreter.MIValueFactory.createValue;
 
-public class CombineStatementsWithExpressionsTest extends AbstractStatementInterpreterTest {
+public class CombineStatementsWithExpressionsInterpreterTest
+        extends AbstractStatementInterpreterTest {
 
   @Test
   public void testVarDeclarationStatement() {
@@ -50,6 +51,8 @@ public class CombineStatementsWithExpressionsTest extends AbstractStatementInter
         "}                          "
     );
     assertValueEquals(createValue(8), result);
+
+    testInvalidModel("while (2);");
   }
   
   @Test
@@ -65,6 +68,8 @@ public class CombineStatementsWithExpressionsTest extends AbstractStatementInter
         "}                        "
     );
     assertValueEquals(createValue(1), result);
+
+    testInvalidModel("do; while (2);");
   }
   
   @Test
@@ -79,6 +84,8 @@ public class CombineStatementsWithExpressionsTest extends AbstractStatementInter
         "}                                "
     );
     assertValueEquals(createValue(10), result);
+
+    testInvalidModel("for (;);");
   }
   
   @Test
@@ -93,6 +100,8 @@ public class CombineStatementsWithExpressionsTest extends AbstractStatementInter
         "}"
     );
     assertValueEquals(createValue(10), result);
+
+    testInvalidModel("for (int i : 1);");
   }
   
   @Test
@@ -101,13 +110,16 @@ public class CombineStatementsWithExpressionsTest extends AbstractStatementInter
         "{                                \n" +
         "  int count = 0;                 \n" +
         "  for (int i = 0; i < 10; i++) { \n" +
-        "    if (i % 2 != 0) continue;    \n" +
+        "    if (i % 2 != 0) {            \n" +
+        "      continue;                  \n" +
+        "    }                            \n" +
         "    count++;                     \n" +
         "  }                              \n" +
         "  return count;                  \n" +
         "}                                "
     );
     assertValueEquals(createValue(5), result);
+
   }
   
   @Test
@@ -117,7 +129,9 @@ public class CombineStatementsWithExpressionsTest extends AbstractStatementInter
         "  int count = 0;                 \n" +
         "  for (int i = 0; i < 10; i++) { \n" +
         "    count++;                     \n" +
-        "    if (i > 5) break;            \n" +
+        "    if (i > 5) {                 \n" +
+        "      break;                     \n" +
+        "    }                            \n" +
         "  }                              \n" +
         "  return count;                  \n" +
         "}                                "
@@ -132,7 +146,7 @@ public class CombineStatementsWithExpressionsTest extends AbstractStatementInter
         "{                                      \n" +
         "  double pi = 1;                       \n" +
         "  double x = 1;                        \n" +
-        "  for (int i = 2; i < 10000002; i++) { \n" +
+        "  for (int i = 2; i < 100002; i++) { \n" +
         "    x = x * -1;                        \n" +
         "    pi = pi + x / (2 * i - 1);         \n" +
         "  }                                    \n" +

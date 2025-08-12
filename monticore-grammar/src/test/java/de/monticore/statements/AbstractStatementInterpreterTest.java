@@ -136,5 +136,47 @@ public abstract class AbstractStatementInterpreterTest extends AbstractInterpret
     symbolTableCompleter = combinedScopesCompleter;
     scopeGenitor = combinedScopesCompleter;
   }
+
+  protected void testInvalidModel(String model) {
+    Log.clearFindings();
+    Optional<ASTMCBlockStatement> astNodeOpt = Optional.empty();
+    try {
+      astNodeOpt = ((CombineStatementsWithExpressionsParser)parser).parse_String(model);
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+      return;
+    }
+
+    if (!Log.getFindings().isEmpty() || !astNodeOpt.isPresent()) {
+      return;
+    }
+
+    OOSymbolsMill.reset();
+    OOSymbolsMill.init();
+    CombineStatementsWithExpressionsMill.reset();
+    CombineStatementsWithExpressionsMill.init();
+    CombineStatementsWithExpressionsMill.globalScope().clear();
+
+    DefsTypesForTests.setup();
+
+    ICombineStatementsWithExpressionsArtifactScope rootScope =
+            CombineStatementsWithExpressionsMill.scopesGenitorDelegator()
+                    .createFromAST(astNodeOpt.get());
+
+    rootScope.setName("root");
+
+    astNodeOpt.get().accept(getSymbolTableCompleter());
+
+    MIValue interpretationResult = astNodeOpt.get().evaluate(interpreter);
+
+    assertNotNull(interpretationResult); // this should not happen even if the model is invalid
+    if (!Log.getFindings().isEmpty()) {
+      return;
+    }
+
+    fail("Expected an error but interpretation succeeded with result of "
+            + interpretationResult.printType() + " ("
+            + interpretationResult.printValue() + ").");
+  }
   
 }

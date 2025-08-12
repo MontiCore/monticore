@@ -75,7 +75,12 @@ public class MCCommonStatementsInterpreter extends MCCommonStatementsInterpreter
     }
     
     popScope();
-    if (condition.isFlowControlSignal()) {
+    if (!condition.isBoolean()) {
+      String errorMsg = "0x57009 While condition must be of type boolean. Got " + condition.printType()
+              + " (" + condition.printValue() + ").";
+      Log.error(errorMsg, node.getCondition().get_SourcePositionStart(), node.getCondition().get_SourcePositionEnd());
+      return new ErrorMIValue(errorMsg);
+    } else if (condition.isFlowControlSignal()) {
       return condition;
     } else {
       return new VoidMIValue();
@@ -101,7 +106,12 @@ public class MCCommonStatementsInterpreter extends MCCommonStatementsInterpreter
     }
     
     popScope();
-    if (condition.isFlowControlSignal()) {
+    if (!condition.isBoolean()) {
+      String errorMsg = "0x57009 While condition must be of type boolean. Got " + condition.printType()
+              + " (" + condition.printValue() + ").";
+      Log.error(errorMsg, node.getCondition().get_SourcePositionStart(), node.getCondition().get_SourcePositionEnd());
+      return new ErrorMIValue(errorMsg);
+    } else if (condition.isFlowControlSignal()) {
       return condition;
     } else {
       return new VoidMIValue();

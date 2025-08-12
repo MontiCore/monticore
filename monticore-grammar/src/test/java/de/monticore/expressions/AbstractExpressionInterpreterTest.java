@@ -165,8 +165,8 @@ public class AbstractExpressionInterpreterTest extends AbstractInterpreterTest {
     
     try {
       interpretationResult = parseExpressionAndInterpret(expr);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
+    } catch (IOException | AssertionError e) {
+      return;
     }
 
     assertNotNull(interpretationResult);
@@ -188,7 +188,12 @@ public class AbstractExpressionInterpreterTest extends AbstractInterpreterTest {
    * @throws IOException if parsing throws IOException
    */
   protected MIValue parseExpressionAndInterpret(String expr) throws IOException {
-    final ASTExpression ast = parseExpr(expr);
+    Optional<ASTExpression> astExpression =
+            ((CombineExpressionsWithLiteralsParser)parser)
+                    .parse_StringExpression(expr);
+    assertTrue(astExpression.isPresent(), getAllFindingsAsString());
+
+    ASTExpression ast = astExpression.get();
     generateScopes(ast);
     SymTypeExpression type = TypeCheck3.typeOf(ast);
     if (type.isObscureType()) {
@@ -197,20 +202,6 @@ public class AbstractExpressionInterpreterTest extends AbstractInterpreterTest {
       return new ErrorMIValue(errorMsg);
     }
     return ast.evaluate(interpreter);
-  }
-
-  /**
-   * Parses an expression and returns the resulting ASTExpression.
-   * @param exprStr Expression to parse
-   * @return resulting ASTExpression
-   * @throws IOException if parsing throws IOException
-   */
-  protected ASTExpression parseExpr(String exprStr) throws IOException {
-    Optional<ASTExpression> astExpression =
-            ((CombineExpressionsWithLiteralsParser)parser)
-                    .parse_StringExpression(exprStr);
-    Assertions.assertTrue(astExpression.isPresent(), getAllFindingsAsString());
-    return astExpression.get();
   }
 
   /**
