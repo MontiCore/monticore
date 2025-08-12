@@ -1,6 +1,8 @@
 ---
 template: landingpage.html
 title: MontiCore - Language Workbench and Development Tool Framework
+hide:
+ - footer
 ---
 
 <!-- Include the root Readme as a snippet -->

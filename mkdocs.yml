@@ -11,6 +11,7 @@ theme:
     - toc.follow
     - content.tabs.link
     - content.code.copy
+    - navigation.instant # search index survives navigation
   icon:
     logo: 'fontawesome/solid/desktop'
 
