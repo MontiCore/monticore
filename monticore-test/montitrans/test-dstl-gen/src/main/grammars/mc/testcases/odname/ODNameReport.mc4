@@ -1,0 +1,17 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.testcases.odname;
+
+component grammar ODNameReport extends mc.testcases.odname.ODNameBasis {
+  token ODSpecialName = '@' Name;
+
+  @Override
+  ODName implements ODValue = Name | ODSpecialName;
+
+  astrule ODName =
+      method public String getName() {
+        if (isPresentName()) {
+          return this.name.get();
+        }
+        return "noname";
+       };
+}
