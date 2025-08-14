@@ -10,7 +10,7 @@ public class DoubleMIValue implements MIValue {
   public DoubleMIValue(double value) {
     this.value = value;
   }
-  
+
   @Override
   public boolean isPrimitive() {
     return true;
@@ -25,15 +25,15 @@ public class DoubleMIValue implements MIValue {
   public double asDouble() {
     return value;
   }
-  
+
   @Override
   public String printType() {
     return "Double";
   }
-  
+
   @Override
   public String printValue() {
     return String.valueOf(value);
   }
-  
+
 }

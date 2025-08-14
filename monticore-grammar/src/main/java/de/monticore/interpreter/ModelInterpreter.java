@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.interpreter;
 
-import de.monticore.ast.ASTNode;
 import de.monticore.interpreter.values.FunctionMIValue;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
@@ -10,17 +9,17 @@ import java.util.Optional;
 import java.util.Stack;
 
 public interface ModelInterpreter extends IModelInterpreter {
-  
+
   void setRealThis(ModelInterpreter realThis);
 
   ModelInterpreter getRealThis();
-  
+
   Stack<MIScope> getScopeCallstack();
 
   default MIScope getCurrentScope() {
     return getRealThis().getScopeCallstack().peek();
   }
-  
+
   /*
   TODO Explicit cast is needed because:
     Short version: Dependencies between symbols, scopes, functions & interpreter
@@ -41,9 +40,9 @@ public interface ModelInterpreter extends IModelInterpreter {
     IMIscope cant access Variable-/FunctionSymbol -> explicit cast
    */
   default void pushScope(IMIScope scope) {
-    getRealThis().getScopeCallstack().push((MIScope)scope);
+    getRealThis().getScopeCallstack().push((MIScope) scope);
   }
-  
+
   default void popScope() {
     getRealThis().getScopeCallstack().pop();
   }
@@ -51,21 +50,21 @@ public interface ModelInterpreter extends IModelInterpreter {
   default void declareFunction(FunctionSymbol symbol, FunctionMIValue value) {
     getCurrentScope().declareFunction(symbol, value);
   }
-  
+
   default MIValue loadFunction(FunctionSymbol symbol) {
     return getCurrentScope().loadFunction(symbol);
   }
-  
+
   default void declareVariable(VariableSymbol symbol, Optional<MIValue> value) {
     getCurrentScope().declareVariable(symbol, value);
   }
-  
+
   default MIValue loadVariable(VariableSymbol symbol) {
     return getCurrentScope().loadVariable(symbol);
   }
 
-  default void storeVariable(VariableSymbol symbol, MIValue value){
+  default void storeVariable(VariableSymbol symbol, MIValue value) {
     getCurrentScope().storeVariable(symbol, value);
   }
-  
+
 }

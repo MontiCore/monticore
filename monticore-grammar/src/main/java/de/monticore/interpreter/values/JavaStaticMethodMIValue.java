@@ -12,25 +12,26 @@ import java.util.stream.Collectors;
 
 // TODO change to getting method by SymType
 public class JavaStaticMethodMIValue implements FunctionMIValue {
-  
+
   Class<?> classType;
   String functionName;
-  
+
   public JavaStaticMethodMIValue(Class<?> classType, String methodName) {
     this.classType = classType;
     this.functionName = methodName;
   }
-  
+
   @Override
   public MIValue execute(IModelInterpreter interpreter, List<MIValue> arguments) {
     List<Class<?>> argumentTypes = arguments.stream()
         .map(InterpreterUtils::typeOfValue)
         .collect(Collectors.toList());
-    
+
     Method function;
     try {
       function = classType.getDeclaredMethod(functionName, argumentTypes.toArray(new Class<?>[0]));
-    } catch (NoSuchMethodException e) {
+    }
+    catch (NoSuchMethodException e) {
       StringBuilder sb = new StringBuilder();
       sb.append("0x57058 Failed to find static function '")
           .append(functionName)
@@ -47,13 +48,14 @@ public class JavaStaticMethodMIValue implements FunctionMIValue {
       Log.error(sb.toString());
       return new ErrorMIValue(sb.toString());
     }
-    
+
     Object[] argumentObjects = arguments.stream().map(InterpreterUtils::valueToObject).toArray();
-    
+
     Object returnObject;
     try {
       returnObject = function.invoke(null, argumentObjects);
-    } catch (IllegalAccessException e) {
+    }
+    catch (IllegalAccessException e) {
       throw new RuntimeException(e);
     }
     catch (InvocationTargetException e) {
@@ -61,15 +63,15 @@ public class JavaStaticMethodMIValue implements FunctionMIValue {
       Log.error(errorMsg);
       return new ErrorMIValue(errorMsg);
     }
-    
+
     return InterpreterUtils.objectToValue(returnObject);
   }
-  
+
   @Override
   public String printType() {
     return "Java-Function";
   }
-  
+
   @Override
   public String printValue() {
     return classType.getName() + "." + functionName;

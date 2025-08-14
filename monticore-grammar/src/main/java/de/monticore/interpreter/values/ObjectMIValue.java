@@ -23,7 +23,10 @@ public class ObjectMIValue implements MIValue {
   
   @Override
   public String printType() {
-    return "Object";
+    String typeStr = value != null
+        ? value.getClass().getTypeName()
+        : "null";
+    return "Object(" + typeStr + ")";
   }
   
   @Override

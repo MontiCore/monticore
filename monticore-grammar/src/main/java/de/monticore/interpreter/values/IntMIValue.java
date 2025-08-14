@@ -10,7 +10,7 @@ public class IntMIValue implements MIValue {
   public IntMIValue(int value) {
     this.value = value;
   }
-  
+
   @Override
   public boolean isPrimitive() {
     return true;
@@ -40,12 +40,12 @@ public class IntMIValue implements MIValue {
   public float asFloat() {
     return value;
   }
-  
+
   @Override
   public String printType() {
     return "Integer";
   }
-  
+
   @Override
   public String printValue() {
     return String.valueOf(value);

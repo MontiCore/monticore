@@ -5,18 +5,19 @@ import de.monticore.interpreter.MIValue;
 
 import java.util.List;
 
+@FunctionalInterface
 public interface FunctionMIValue extends MIValue {
-  
+
   @Override
-  public default boolean isFunction() {
+  default boolean isFunction() {
     return true;
   }
-  
+
   @Override
-  public default FunctionMIValue asFunction() {
+  default FunctionMIValue asFunction() {
     return this;
   }
-  
-  public MIValue execute(IModelInterpreter interpreter, List<MIValue> arguments);
-  
+
+  MIValue execute(IModelInterpreter interpreter, List<MIValue> arguments);
+
 }

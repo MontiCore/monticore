@@ -7,7 +7,7 @@ public class BooleanMIValue implements MIValue {
 
   protected boolean value;
 
-  public BooleanMIValue(boolean value){
+  public BooleanMIValue(boolean value) {
     this.value = value;
   }
 
@@ -15,22 +15,22 @@ public class BooleanMIValue implements MIValue {
   public boolean isBoolean() {
     return true;
   }
-  
+
   @Override
   public boolean isPrimitive() {
     return true;
   }
-  
+
   @Override
   public boolean asBoolean() {
     return value;
   }
-  
+
   @Override
   public String printType() {
     return "Boolean";
   }
-  
+
   @Override
   public String printValue() {
     return String.valueOf(value);

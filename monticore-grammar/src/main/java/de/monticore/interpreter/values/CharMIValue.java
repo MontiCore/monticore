@@ -7,10 +7,10 @@ public class CharMIValue implements MIValue {
 
   protected char value;
 
-  public CharMIValue(char value){
+  public CharMIValue(char value) {
     this.value = value;
   }
-  
+
   @Override
   public boolean isPrimitive() {
     return true;
@@ -45,12 +45,12 @@ public class CharMIValue implements MIValue {
   public float asFloat() {
     return value;
   }
-  
+
   @Override
   public String printType() {
     return "Char";
   }
-  
+
   @Override
   public String printValue() {
     return String.valueOf(value);

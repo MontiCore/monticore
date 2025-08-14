@@ -10,7 +10,7 @@ public class LongMIValue implements MIValue {
   public LongMIValue(long value) {
     this.value = value;
   }
-  
+
   @Override
   public boolean isPrimitive() {
     return true;
@@ -35,12 +35,12 @@ public class LongMIValue implements MIValue {
   public float asFloat() {
     return value;
   }
-  
+
   @Override
   public String printType() {
     return "Long";
   }
-  
+
   @Override
   public String printValue() {
     return String.valueOf(value) + "L";

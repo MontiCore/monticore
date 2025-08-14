@@ -10,7 +10,7 @@ public class FloatMIValue implements MIValue {
   public FloatMIValue(float value) {
     this.value = value;
   }
-  
+
   @Override
   public boolean isPrimitive() {
     return true;
@@ -30,12 +30,12 @@ public class FloatMIValue implements MIValue {
   public float asFloat() {
     return value;
   }
-  
+
   @Override
   public String printType() {
     return "Float";
   }
-  
+
   @Override
   public String printValue() {
     return String.valueOf(value) + "f";
