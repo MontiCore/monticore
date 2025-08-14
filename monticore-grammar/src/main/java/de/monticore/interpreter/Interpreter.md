@@ -123,7 +123,8 @@ Create a new Interpreter of your language and use
 ASTNode expr = parseAndCreateSymTabAndRunCoCos("1 + 3");
 ModelInterpreter interpreter = new MyLangInterpreter();
 MIValue result = expr.evaluate(interpreter);
-// check that no error occured with isError()
+// check that no error occurred with isError(),
+// error will be logged already
 if (result.isInt()) {
   System.out.println("1 + 3 = " + result.asInt());
 }
@@ -146,11 +147,12 @@ statement.evaluate(interpreter); // simply returns void
 VariableSymbol iSymbol = // resolve for "i" in the model's scope
 int i = interpreter.loadVariable(iSymbol).asInt(); // i == 2
 int j = interpreter.loadVariable(jSymbol).asInt(); // j == 3
-// j is already in the interpreter's scope, use 'store' to set a new value
+// j is already in the interpreter's scope,
+// use 'store' to set a new value
 interpreter.storeVariable(jSymbol, MIValueFactory.createValue(4));
 ```
 
-## How to use Java Classes in the Interpreter
+## Sandboxing – How to use Java Classes in the Interpreter
 
 Simply initialize Class2MC and Java classes can be used with the interpreter.
 
