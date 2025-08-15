@@ -1,0 +1,97 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore;
+
+component grammar Timer
+          extends de.monticore.literals.MCCommonLiterals,
+                  de.monticore.siunit.SIUnitLiterals {
+
+  /**
+    The Workflow language provides a textual representation of business
+    process models based on the BPMN 2.0 standard. The standard defines
+    events that are triggered at specific times via an EventTriggerTimer.
+    This component grammar defines productions for the specification of
+    timer based conditions used by the EventTriggerTimer in the Workflow
+    language to trigger WFEvents.
+    It extends MCCommonLiterals to make use of existing numeric literals.
+
+    A TimerCondition can specify a trigger for a specific date and time,
+    time intervals, or the completion of a time period / duration.
+
+    TODO: Use custom DateTime DSL for Date and Time concepts.
+   */
+
+  // This interface is implemented by each specific timer condition.
+  interface TimerCondition;
+
+  /* This condition is used to specify a trigger at a specific time of day.
+   * If used as part of a OnDateCondition, the event is triggered on the
+     specified date at the specified time of day. Otherwise, it is
+     triggered every day at the specified time of day.
+   */
+  AtTimeCondition implements TimerCondition =
+      "at" Time
+    ;
+
+  /*
+   * This condition specifies a trigger for a given date, and optionally
+     at a given time of day.
+   * If no time of day is specified, the event may be triggered at any time
+     during that day, with the default being the earliest possible time,
+     i.e., 00:00.
+   */
+  OnDateCondition implements TimerCondition =
+      "on" Date AtTimeCondition?
+    ;
+
+  /*
+   * This condition specifies a trigger that occurs after a given period
+     (or duration) of time.
+   */
+  AfterPeriodCondition implements TimerCondition =
+      "after" Period
+    ;
+
+  /**
+   * This condition is repeatedly triggered everytime the given period
+     of time elapses.
+   * Optionally a starting date and time can be specified.
+   * Additionally, the number of occurrences can be limited.
+   */
+  EveryTimeCondition implements TimerCondition =
+      ("start" start:OnDateCondition ",")?
+      (times:NatLiteral "times")? "every" Period
+    ;
+
+  /* This is used to allow the specification of a ISO8601 cron expression.
+   * The format check is encoded in Java (by a handwritten class extension).
+   */
+  CronCondition implements TimerCondition =
+      "cron" value:String
+    ;
+
+  /**
+   * This nonterminal specifies a point in time that includes hours and
+     minutes, with seconds as an additional option.
+   * If seconds are omitted, the earliest possible time is assumed.
+   */
+  Time =
+      hours:NatLiteral ":" {noSpace()}?
+      minutes:NatLiteral {noSpace()}?
+      (":" {noSpace()}? seconds:NatLiteral {noSpace()}?)?
+    ;
+
+  /*
+   * This nonterminal defines a specific date that includes the year,
+     the month, and the day.
+   */
+  Date = {noSpace(2,3,4,5)}?
+      year:NatLiteral "-" month:NatLiteral "-" day:NatLiteral
+    ;
+
+  /* This nonterminal allows for the specification of ISO8601 time periods or SIUnit Literals,
+     e.g., "P2Y3M2W1DT2H13M20S", or "5s".
+   */
+  Period = SIUnitLiteral | {noSpace(2,3,4,5)}? ("P" (year:NatLiteral "Y")? (month:NatLiteral "M")? (week:NatLiteral "W")? (day:NatLiteral "D")?
+          ("T" (hour:NatLiteral "H")? (minute:NatLiteral "M")? (second:NatLiteral "S")?)?);
+
+}

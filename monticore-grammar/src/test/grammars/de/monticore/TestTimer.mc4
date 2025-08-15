@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore;
+
+grammar TestTimer extends Timer, de.monticore.symbols.BasicSymbols {
+
+  start TimerCondition;
+
+}

@@ -1,0 +1,26 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore;
+
+mlc Timer {
+
+  // export the grammar
+  export "$projectDir/src/main/grammars" {
+    include "de/monticore/Timer.mc4";
+  }
+
+  //export handwritten code
+  export "$projectDir/src/main/java" {
+    include "de/monticore/timer/**.java";
+  }
+
+  // export all Java files generated from the grammar
+  export "$projectDir/target/generated-sources/monticore/sourcecode" {
+    include "de/monticore/timer/**.java";
+  }
+
+  promote {
+    mlc "de.monticore.literals.MCCommonLiterals";
+    mlc "de.monticore.siunit.SIUnitLiterals";
+  }
+
+}
