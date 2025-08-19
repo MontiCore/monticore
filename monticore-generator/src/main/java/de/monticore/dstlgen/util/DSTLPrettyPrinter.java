@@ -75,6 +75,10 @@ public class DSTLPrettyPrinter extends GrammarPrettyPrinter {
       CommentPrettyPrinter.printPostComments(a, getPrinter());
       getPrinter().unindent();
       getPrinter().println();
+    printList(a.iteratorGrammarAnnotations(), " ");
+    getPrinter().println();
+    getPrinter().print(a.getName());
+    getPrinter().print(" ");
   }
 
   @Override
