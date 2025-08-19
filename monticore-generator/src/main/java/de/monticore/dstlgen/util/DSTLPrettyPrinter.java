@@ -29,56 +29,50 @@ public class DSTLPrettyPrinter extends GrammarPrettyPrinter {
    */
   @Override
   public void handle(ASTClassProd a) {
+    CommentPrettyPrinter.printPreComments(a, getPrinter());
     
-      
-      CommentPrettyPrinter.printPreComments(a, getPrinter());
-      
-      getPrinter().print(a.getName());
-      
-      if (!a.getSuperRuleList().isEmpty()) {
-        getPrinter().print(" extends ");
-        printList(a.getSuperRuleList().iterator(), ", ");
-      }
-      
-      if (!a.getSuperInterfaceRuleList().isEmpty()) {
-        getPrinter().print(" implements ");
-        printList(a.getSuperInterfaceRuleList().iterator(), ", ");
-      }
-      
-      if (!a.getASTSuperClassList().isEmpty()) {
-        getPrinter().print(" astextends ");
-        printList(a.getASTSuperClassList().iterator(), "");
-      }
-      
-      if (!a.getASTSuperInterfaceList().isEmpty()) {
-        getPrinter().print(" astimplements ");
-        printList(a.getASTSuperInterfaceList().iterator(), ", ");
-      }
-      
-      if (a.isPresentAction()) {
-        print(" {");
-        getPrinter().println();
-        getPrinter().indent();
-        a.getAction().accept(getTraverser());
-        getPrinter().unindent();
-        print("}");
-      }
-      
-      if (!a.getAltList().isEmpty()) {
-        println(" =");
-        
-        getPrinter().indent();
-        printList(a.getAltList().iterator(), " | ");
-      }
-      println(";");
-      
-      CommentPrettyPrinter.printPostComments(a, getPrinter());
-      getPrinter().unindent();
-      getPrinter().println();
     printList(a.iteratorGrammarAnnotations(), " ");
     getPrinter().println();
     getPrinter().print(a.getName());
     getPrinter().print(" ");
+    
+    if (!a.isEmptySuperRule()) {
+      getPrinter().print("extends ");
+      printList(a.iteratorSuperRule(), ", ");
+    }
+    if (!a.isEmptySuperInterfaceRule()) {
+      getPrinter().print("implements ");
+      printList(a.iteratorSuperInterfaceRule(), ", ");
+    }
+    if (!a.isEmptyASTSuperClass()) {
+      getPrinter().print("astextends ");
+      printList(a.iteratorASTSuperClass(), ", ");
+    }
+    if (!a.isEmptyASTSuperInterface()) {
+      getPrinter().print("astimplements ");
+      printList(a.iteratorASTSuperInterface(), ", ");
+    }
+    
+    if (a.isPresentAction()) {
+      getPrinter().print("{");
+      getPrinter().println();
+      getPrinter().indent();
+      a.getAction().accept(getTraverser());
+      getPrinter().unindent();
+      getPrinter().print("} ");
+    }
+    
+    if (!a.isEmptyAlts()) {
+      getPrinter().print("=");
+      getPrinter().println();
+      getPrinter().indent();
+      printList(a.iteratorAlts(), "| ");
+    }
+    getPrinter().println(";");
+    
+    CommentPrettyPrinter.printPostComments(a, getPrinter());
+    getPrinter().unindent();
+    getPrinter().println();
   }
 
   @Override
@@ -96,60 +90,60 @@ public class DSTLPrettyPrinter extends GrammarPrettyPrinter {
 //      print("*");
 //    }
     if (a.isPresentCard() && a.getCard().isPresentMin()) {
-      print(" min = " + a.getCard().getMin());
+      getPrinter().print(" min = " + a.getCard().getMin());
     }
     if (a.isPresentCard() && a.getCard().isPresentMax()) {
-      print(" max = " + a.getCard().getMax());
+      getPrinter().print(" max = " + a.getCard().getMax());
     }
-    println();
+    getPrinter().println();
   }
 
   @Override
   public void handle(ASTLexProd a) {
     if (a.isFragment()) {
-      this.print("fragment ");
+      getPrinter().print("fragment ");
     }
     
-    CommentPrettyPrinter.printPreComments(a, this.getPrinter());
-    this.print("token ");
-    this.println(a.getName());
-    this.getPrinter().indent();
+    CommentPrettyPrinter.printPreComments(a, getPrinter());
+    getPrinter().print("token ");
+    getPrinter().println(a.getName());
+    getPrinter().indent();
     if (a.isPresentLexOption()) {
       a.getLexOption().accept(this.getTraverser());
     }
     
     if (a.isPresentInitAction()) {
-      this.print(" {");
-      this.getPrinter().println();
-      this.getPrinter().indent();
+      getPrinter().print(" {");
+      getPrinter().println();
+      getPrinter().indent();
       a.getInitAction().accept(this.getTraverser());
-      this.getPrinter().unindent();
-      this.print("}");
+      getPrinter().unindent();
+      getPrinter().print("}");
     }
     
-    this.getPrinter().print("=");
-    this.printList(a.getAltList().iterator(), "|");
+    getPrinter().print("=");
+    printList(a.getAltList().iterator(), "|");
     if (a.isPresentVariable() || a.isPresentEndAction()) {
-      this.getPrinter().print(" : ");
+      getPrinter().print(" : ");
       if (a.isPresentEndAction()) {
-        this.getPrinter().print(" { ");
+        getPrinter().print(" { ");
         a.getEndAction().accept(getTraverser());
-        this.getPrinter().print(" } ");
+        getPrinter().print(" } ");
       }
       if (a.isPresentVariable()) {
-        this.getPrinter().print(a.getVariable());
+        getPrinter().print(a.getVariable());
         if (!a.getTypeList().isEmpty()) {
-          this.getPrinter().print("->");
-          this.getPrinter().print(Names.getQualifiedName(a.getTypeList()));
+          getPrinter().print("->");
+          getPrinter().print(Names.getQualifiedName(a.getTypeList()));
           if (a.isPresentBlock() || a.isPresentEndAction()) {
-            this.getPrinter().print(":");
+            getPrinter().print(":");
             if (a.isPresentEndAction()) {
-              this.print(" {");
-              this.getPrinter().println();
-              this.getPrinter().indent();
+              getPrinter().print(" {");
+              getPrinter().println();
+              getPrinter().indent();
               a.getEndAction().accept(this.getTraverser());
-              this.getPrinter().unindent();
-              this.print("}");
+              getPrinter().unindent();
+              getPrinter().print("}");
             }
 
             if (a.isPresentBlock()) {
@@ -160,23 +154,10 @@ public class DSTLPrettyPrinter extends GrammarPrettyPrinter {
       }
     }
     
-    this.print(";");
-    CommentPrettyPrinter.printPostComments(a, this.getPrinter());
-    this.println();
-    this.getPrinter().unindent();
-    this.println();
+    getPrinter().print(";");
+    CommentPrettyPrinter.printPostComments(a, getPrinter());
+    getPrinter().println();
+    getPrinter().unindent();
+    getPrinter().println();
   }
-
-  protected void print(String o) {
-    getPrinter().print(o);
-  }
-
-  protected void println(String o) {
-    this.getPrinter().println(o);
-  }
-
-  protected void println() {
-    this.getPrinter().println();
-  }
-
 }
