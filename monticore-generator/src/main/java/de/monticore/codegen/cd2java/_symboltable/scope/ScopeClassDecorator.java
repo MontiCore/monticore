@@ -1,7 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._symboltable.scope;
 
+import com.github.javaparser.ast.CompilationUnit;
 import com.google.common.collect.ListMultimap;
+import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd4code.CD4CodeMill;
@@ -22,6 +24,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolTOP;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
@@ -33,8 +36,7 @@ import java.util.stream.Collectors;
 
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 import static de.monticore.cd.codegen.CD2JavaTemplates.VALUE;
-import static de.monticore.cd.facade.CDModifier.PROTECTED;
-import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_INTERFACE;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISITOR_PREFIX;
@@ -122,6 +124,9 @@ public class ScopeClassDecorator extends AbstractDecorator {
     Map<String, ASTCDAttribute> symbolAttributes = createSymbolAttributes(
         symbolInput.getCDDefinition().getCDClassesList(), symbolTableService.getCDSymbol());
     symbolAttributes.putAll(getSuperSymbolAttributes());
+    for(ASTCDAttribute attribute: symbolAttributes.values()) {
+      attribute.setEnclosingScope(scopeInput.getEnclosingScope());
+    }
 
     List<ASTCDMethod> symbolMethods = createSymbolMethods(symbolAttributes.values());
 
@@ -345,6 +350,7 @@ public class ScopeClassDecorator extends AbstractDecorator {
           symbolMethodList.add(createAddSymbolMethod(mcTypeArgument.get(), attribute.getName()));
           symbolMethodList.add(createRemoveSymbolMethod(mcTypeArgument.get(), attribute.getName()));
           symbolMethodList.add(createGetSymbolListMethod(attribute));
+          symbolMethodList.add(createGetSymbolsWithSubKindsMethod(attribute));
         }
       }
     }
@@ -375,6 +381,58 @@ public class ScopeClassDecorator extends AbstractDecorator {
     this.replaceTemplate(EMPTY_BODY, method,
         new StringHookPoint("return " + THIS + astcdAttribute.getName() + ";"));
     return method;
+  }
+
+  protected ASTCDMethod createGetSymbolsWithSubKindsMethod(ASTCDAttribute astcdAttribute) {
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), astcdAttribute.getMCType(),
+            "get" + StringTransformations.capitalize(astcdAttribute.getName())+"WithSubKinds");
+
+    List<CDTypeSymbol> allTypeSymbols = new ArrayList<>(symbolTableService.getAllCDTypes());
+    //TODO allTypeSymbols.removeIf(m-> !hasSuperType(m.getAstNode(), astcdAttribute.getMCType()));
+
+    List<String> symbolSubKinds = allTypeSymbols.stream().map(TypeSymbolTOP::getName).map(StringTransformations::capitalize).collect(Collectors.toList());
+
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "GetSymbolsWithSubKinds",StringTransformations.capitalize(astcdAttribute.getName()), astcdAttribute.getMCType().printType(), symbolSubKinds));
+    return method;
+  }
+
+  private boolean hasSuperType(ASTCDType node, ASTCDType targetNode) {
+    List<ASTCDType> allVisited = new ArrayList<>();
+    allVisited.add(node);
+    List<ASTCDType> lastRoundVisited = new ArrayList<>();
+    lastRoundVisited.add(node);
+    List<ASTCDType> nextRoundVisited = new ArrayList<>();
+
+    while (!lastRoundVisited.isEmpty()) {
+      if(lastRoundVisited.contains(targetNode)) {
+        return true;
+      }
+      for (ASTCDType currentNode : lastRoundVisited) {
+        List<ASTCDType> resultOfTransitiveType = CDSymbolTables.getTransitiveSuperTypes(currentNode);
+        //super class
+        Optional<ASTCDType> resultOfTransitiveClass = resultOfTransitiveType.stream().filter(
+                m -> m instanceof de.monticore.cd4codebasis._ast.ASTCDClass).findFirst();
+        if (resultOfTransitiveClass.isPresent()) {
+          if (!allVisited.contains(resultOfTransitiveClass.get())) {
+            allVisited.add(resultOfTransitiveClass.get());
+            nextRoundVisited.add(resultOfTransitiveClass.get());
+          }
+        }
+
+        //interfaces
+        List<ASTCDType> resultOfTransitiveInterface = resultOfTransitiveType.stream().filter(
+                m -> m instanceof de.monticore.cdinterfaceandenum._ast.ASTCDInterface).collect(
+                Collectors.toList());
+        for (ASTCDType resultOfTransitiveInterfaceElement : resultOfTransitiveInterface) {
+          allVisited.add(resultOfTransitiveInterfaceElement);
+          nextRoundVisited.add(resultOfTransitiveInterfaceElement);
+        }
+      }
+      lastRoundVisited.clear();
+      lastRoundVisited.addAll(nextRoundVisited);
+      nextRoundVisited.clear();
+    }
+    return false;
   }
 
   protected ASTCDAttribute createEnclosingScopeAttribute() {

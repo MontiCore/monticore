@@ -2,6 +2,8 @@
 package de.monticore.codegen.cd2java._symboltable.scope;
 
 import com.google.common.collect.Lists;
+import de.monticore.ast.ASTCNode;
+import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd4code.CD4CodeMill;
@@ -12,6 +14,7 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
+import de.monticore.cdbasis._symboltable.ICDBasisScope;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
@@ -23,6 +26,9 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolTOP;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
@@ -258,6 +264,7 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
       //getSymbols method
       String getSymbolsMethodName = "get" + className + "Symbols";
       resolveMethods.add(createGetSymbolsMethod(getSymbolsMethodName, symbolFullTypeName));
+      resolveMethods.add(createGetSymbolsWithSubKindsMethod(getSymbolsMethodName, symbolFullTypeName, symbolProd.getSymbol()));
 
       //getLocalSymbols method
       String getLocalSymbolsMethodName = "getLocal" + className + "Symbols";
@@ -511,6 +518,12 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
   }
 
   protected ASTCDMethod createGetSymbolsMethod(String methodName, String fullSymbolName) {
+    ASTMCType symbolsMap = getMCTypeFacade().createBasicGenericTypeOf(SYMBOL_MULTI_MAP, "String", fullSymbolName);
+
+    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT.build(), symbolsMap, methodName);
+  }
+
+  protected ASTCDMethod createGetSymbolsWithSubKindsMethod(String methodName, String fullSymbolName, CDTypeSymbol type) {
     ASTMCType symbolsMap = getMCTypeFacade().createBasicGenericTypeOf(SYMBOL_MULTI_MAP, "String", fullSymbolName);
 
     return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT.build(), symbolsMap, methodName);
