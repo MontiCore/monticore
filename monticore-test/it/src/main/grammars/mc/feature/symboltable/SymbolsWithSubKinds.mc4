@@ -4,16 +4,16 @@ package mc.feature.symboltable;
 
 grammar SymbolsWithSubKinds{
 
-  Start = Car "foo" Animal "bar";
+  Start scope = Car "foo" Animal "bar";
   interface Vehicle;
   scope symbol Car implements Vehicle = "car" Name;
   interface Leg;
   scope symbol Animal implements Leg = "animal" Name;
   interface Tire;
-  scope Cabriolet extends Car implements Tire = "cabriolet" Name;
+  scope symbol Cabriolet extends Car implements Tire = "cabriolet" Name;
   Beatle extends Cabriolet = "beatle" Name;
   Mazda extends Cabriolet = "mazda" Name;
-  scope Truck extends Car implements Tire = "truck" Name;
+  scope symbol Truck extends Car implements Tire = "truck" Name;
   Ford extends Truck = "ford" Name;
   Volvo extends Truck = "volvo" Name;
   Dog extends Animal = "dog" Name;
