@@ -2,9 +2,8 @@
 package mc.feature.symboltable;
 
 
-grammar SymbolsWithSubKinds{
+grammar SymbolsWithSubKinds {
 
-  Start scope = Car "foo" Animal "bar";
   interface Vehicle;
   scope symbol Car implements Vehicle = "car" Name;
   interface Leg;
