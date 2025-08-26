@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * resolves within a type,
@@ -81,8 +82,13 @@ public class OOWithinTypeBasicSymbolsResolver
     }
 
     // do not search super types for constructors
-
-    return resolvedSymTypes;
+    
+    List<SymTypeOfFunction> symTypesFreeVarsReplaced = resolvedSymTypes.stream()
+        .map(t -> replaceFreeTypeVariables(thisType, t))
+        .map(SymTypeExpression::asFunctionType)
+        .collect(Collectors.toList());
+    
+    return symTypesFreeVarsReplaced;
   }
 
   // Helper
