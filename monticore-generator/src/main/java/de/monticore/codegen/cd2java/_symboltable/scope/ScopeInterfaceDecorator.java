@@ -33,6 +33,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
+import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardTypeArgument;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
@@ -41,6 +42,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
+import static de.monticore.cd.codegen.CD2JavaTemplates.VALUE;
 import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.ACCEPT_METHOD;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
@@ -264,7 +266,7 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
       //getSymbols method
       String getSymbolsMethodName = "get" + className + "Symbols";
       resolveMethods.add(createGetSymbolsMethod(getSymbolsMethodName, symbolFullTypeName));
-      resolveMethods.add(createGetSymbolsWithSubKindsMethod(getSymbolsMethodName, symbolFullTypeName, symbolProd.getSymbol()));
+      resolveMethods.add(createGetSymbolsWithSubKindsMethod(getSymbolsMethodName+"WithSubKinds", symbolFullTypeName, symbolProd.getSymbol()));
 
       //getLocalSymbols method
       String getLocalSymbolsMethodName = "getLocal" + className + "Symbols";
@@ -524,9 +526,11 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
   }
 
   protected ASTCDMethod createGetSymbolsWithSubKindsMethod(String methodName, String fullSymbolName, CDTypeSymbol type) {
-    ASTMCType symbolsMap = getMCTypeFacade().createBasicGenericTypeOf(SYMBOL_MULTI_MAP, "String", fullSymbolName);
+    ASTMCType generalScopeType =  getMCTypeFacade().createOptionalTypeOf(I_SYMBOL).getMCTypeArgument().getMCTypeOpt().get();
+    ASTMCType symbolMultiMap = getMCTypeFacade()
+            .createBasicGenericTypeOf(SYMBOL_MULTI_MAP, "String", generalScopeType.printType());
 
-    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT.build(), symbolsMap, methodName);
+    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT.build(), symbolMultiMap, methodName);
   }
 
   protected ASTCDMethod createGetLocalSymbolsMethod(String methodName, String className, ASTMCType returnType) {

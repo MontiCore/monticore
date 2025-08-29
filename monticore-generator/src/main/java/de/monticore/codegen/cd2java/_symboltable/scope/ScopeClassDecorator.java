@@ -27,9 +27,12 @@ import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolTOP;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardTypeArgument;
+import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardTypeArgumentBuilder;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
+import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -305,7 +308,7 @@ public class ScopeClassDecorator extends AbstractDecorator {
   }
 
   /**
-   * only returns a attribute if the cdType really defines a symbol
+   * only returns an attribute if the cdType really defines a symbol
    */
   protected Optional<ASTCDAttribute> createSymbolAttribute(ASTCDType cdType,
       DiagramSymbol cdDefinitionSymbol) {
@@ -350,7 +353,7 @@ public class ScopeClassDecorator extends AbstractDecorator {
           symbolMethodList.add(createAddSymbolMethod(mcTypeArgument.get(), attribute.getName()));
           symbolMethodList.add(createRemoveSymbolMethod(mcTypeArgument.get(), attribute.getName()));
           symbolMethodList.add(createGetSymbolListMethod(attribute));
-          symbolMethodList.add(createGetSymbolsWithSubKindsMethod(attribute));
+          symbolMethodList.add(createGetSymbolsWithSubKindsMethod(attribute,astcdAttributes));
         }
       }
     }
@@ -383,16 +386,29 @@ public class ScopeClassDecorator extends AbstractDecorator {
     return method;
   }
 
-  protected ASTCDMethod createGetSymbolsWithSubKindsMethod(ASTCDAttribute astcdAttribute) {
-    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), astcdAttribute.getMCType(),
+  protected ASTCDMethod createGetSymbolsWithSubKindsMethod(ASTCDAttribute astcdAttribute,
+                                                           Collection<ASTCDAttribute> astcdAttributes) {
+    ASTMCType generalScopeType =  getMCTypeFacade().createOptionalTypeOf(I_SYMBOL).getMCTypeArgument().getMCTypeOpt().get();
+    ASTMCType symbolsMap = getMCTypeFacade().createBasicGenericTypeOf(SYMBOL_MULTI_MAP, "String", generalScopeType.printType());
+    ASTCDAttribute returnType = getCDAttributeFacade()
+            .createAttribute(PROTECTED.build(), symbolsMap, astcdAttribute.getName());
+    this.replaceTemplate(VALUE, returnType,
+            new StringHookPoint("= com.google.common.collect.LinkedListMultimap.create()"));
+
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), returnType.getMCType(),
             "get" + StringTransformations.capitalize(astcdAttribute.getName())+"WithSubKinds");
 
-    List<CDTypeSymbol> allTypeSymbols = new ArrayList<>(symbolTableService.getAllCDTypes());
-    //TODO allTypeSymbols.removeIf(m-> !hasSuperType(m.getAstNode(), astcdAttribute.getMCType()));
 
-    List<String> symbolSubKinds = allTypeSymbols.stream().map(TypeSymbolTOP::getName).map(StringTransformations::capitalize).collect(Collectors.toList());
+    //TODO remove all which are not subtypes of the attribute type
 
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "GetSymbolsWithSubKinds",StringTransformations.capitalize(astcdAttribute.getName()), astcdAttribute.getMCType().printType(), symbolSubKinds));
+
+    List<String> symbolSubKinds = new ArrayList<>();
+    symbolSubKinds.addAll(astcdAttributes.stream()
+            .map(m->StringTransformations.capitalize(m.getName())).collect(Collectors.toList()));
+
+
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "GetSymbolsWithSubKinds",
+            StringTransformations.capitalize(astcdAttribute.getName()), returnType.getMCType().printType(), symbolSubKinds));
     return method;
   }
 
