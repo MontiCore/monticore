@@ -667,6 +667,21 @@ public class WithinTypeBasicSymbolsResolver {
     }
     return newModifier;
   }
+  
+  protected Map<SymTypeVariable, SymTypeInferenceVariable> getUnboundVariableReplaceMap(
+      List<SymTypeVariable> varsNotToReplace, SymTypeExpression type) {
+    // 1. find all variables
+    Map<SymTypeVariable, SymTypeInferenceVariable> allVarMap =
+        TypeParameterRelations.getFreeVariableReplaceMap(type, BasicSymbolsMill.scope());
+    // 2. get variables that actually need to be replaced (unbound)
+    Map<SymTypeVariable, SymTypeInferenceVariable> freeVarMap = new HashMap<>();
+    for (Map.Entry<SymTypeVariable, SymTypeInferenceVariable> e : allVarMap.entrySet()) {
+      if (varsNotToReplace.stream().noneMatch(e.getKey()::deepEquals)) {
+        freeVarMap.put(e.getKey(), e.getValue());
+      }
+    }
+    return freeVarMap;
+  }
 
   protected SymTypeExpression replaceFreeTypeVariables(
       SymTypeExpression thisType,
@@ -681,28 +696,20 @@ public class WithinTypeBasicSymbolsResolver {
     // }
     // In the example above, resolving f in B<T,R> will result in
     // () -> C<#FV,T,R> where #FV is a free type variable
-
-    // 1. find all variables
-    Map<SymTypeVariable, SymTypeInferenceVariable> allVarMap = TypeParameterRelations
-        .getFreeVariableReplaceMap(type, BasicSymbolsMill.scope());
-    // 2. find all type variables already bound by the type resolved in
-    List<SymTypeVariable> varsAlreadyBound = new SymTypeCollectionVisitor()
-        .calculate(thisType, SymTypeExpression::isTypeVariable).stream()
-        .map(SymTypeExpression::asTypeVariable)
-        .collect(Collectors.toList());
-    // 3. get variables that actually need to be replaced (unbound)
-    Map<SymTypeVariable, SymTypeInferenceVariable> freeVarMap = new HashMap<>();
-    for (Map.Entry<SymTypeVariable, SymTypeInferenceVariable> e : allVarMap.entrySet()) {
-      if (varsAlreadyBound.stream().noneMatch(e.getKey()::deepEquals)) {
-        freeVarMap.put(e.getKey(), e.getValue());
-      }
-    }
-    // 3.5 double check that the symTab does make any sense
+    
+    // 1. find all type variables already bound by the type resolved in
+    List<SymTypeVariable> varsAlreadyBound =
+        new SymTypeCollectionVisitor().calculate(thisType, SymTypeExpression::isTypeVariable)
+            .stream().map(SymTypeExpression::asTypeVariable).collect(Collectors.toList());
+    // 2. get unbound variable replacement map
+    Map<SymTypeVariable, SymTypeInferenceVariable> freeVarMap =
+        getUnboundVariableReplaceMap(varsAlreadyBound, type);
+    // 2.5 double check that the symTab does make any sense
     assertTypeVarsAreIncluded(type, freeVarMap.keySet());
-    // 4. actually replace the free variables
-    SymTypeExpression typeVarsReplaced = TypeParameterRelations
-        .replaceTypeVariables(type, freeVarMap);
-
+    // 3. actually replace the free variables
+    SymTypeExpression typeVarsReplaced =
+        TypeParameterRelations.replaceTypeVariables(type, freeVarMap);
+    
     return typeVarsReplaced;
   }
 
