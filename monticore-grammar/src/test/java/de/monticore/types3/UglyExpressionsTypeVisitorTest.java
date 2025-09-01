@@ -142,6 +142,14 @@ public class UglyExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
     checkExpr("new List()", "List<int>", "List<int>");
     checkExpr("new List(1)", "List<int>", "List<int>");
     checkExpr("new List(1)", "List<int>");
+    
+    checkExpr("new List<>()", "List<int>", "List<int>");
+    checkExpr("new List<>(1)", "List<int>", "List<int>");
+    checkExpr("new List<>(1)", "List<int>");
+    
+    checkExpr("new List<int>()", "List<int>", "List<int>");
+    checkExpr("new List<int>(1)", "List<int>", "List<int>");
+    checkExpr("new List<int>(1)", "List<int>");
   }
 
   @Test

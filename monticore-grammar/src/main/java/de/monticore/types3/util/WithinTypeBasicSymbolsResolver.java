@@ -8,6 +8,8 @@ import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.basicsymbols._util.IBasicSymbolsTypeDispatcher;
+import de.monticore.symbols.basicsymbols._visitor.BasicSymbolsTraverser;
+import de.monticore.symbols.basicsymbols._visitor.BasicSymbolsVisitor2;
 import de.monticore.symboltable.IScope;
 import de.monticore.symboltable.ISymbol;
 import de.monticore.symboltable.modifiers.AccessModifier;
@@ -28,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -129,6 +132,34 @@ public class WithinTypeBasicSymbolsResolver {
   }
 
   /**
+   * resolves all variables within the type including supertypes
+   */
+  public static Map<String, SymTypeExpression> getAllVariables(
+      SymTypeExpression thisType,
+      AccessModifier accessModifier,
+      Predicate<VariableSymbol> predicate
+  ) {
+    return getDelegate()._getAllVariables(thisType, accessModifier, predicate);
+  }
+
+  protected Map<String, SymTypeExpression> _getAllVariables(
+      SymTypeExpression thisType,
+      AccessModifier accessModifier,
+      Predicate<VariableSymbol> predicate
+  ) {
+    Map<String, SymTypeExpression> allVariables = new HashMap<>();
+    Collection<String> names = _internal_getMemberNames(thisType);
+    for (String name : names) {
+      Optional<SymTypeExpression> varOpt =
+          resolveVariable(thisType, name, accessModifier, predicate);
+      if (varOpt.isPresent()) {
+        allVariables.put(name, varOpt.get());
+      }
+    }
+    return allVariables;
+  }
+
+  /**
    * resolves within a type including supertypes
    */
   public static List<SymTypeOfFunction> resolveFunctions(
@@ -221,6 +252,34 @@ public class WithinTypeBasicSymbolsResolver {
   }
 
   /**
+   * resolves all functions within the type including supertypes
+   */
+  public static Map<String, List<SymTypeOfFunction>> getAllFunctions(
+      SymTypeExpression thisType,
+      AccessModifier accessModifier,
+      Predicate<FunctionSymbol> predicate
+  ) {
+    return getDelegate()._getAllFunctions(thisType, accessModifier, predicate);
+  }
+
+  protected Map<String, List<SymTypeOfFunction>> _getAllFunctions(
+      SymTypeExpression thisType,
+      AccessModifier accessModifier,
+      Predicate<FunctionSymbol> predicate
+  ) {
+    Map<String, List<SymTypeOfFunction>> allFunctions = new HashMap<>();
+    Collection<String> names = _internal_getMemberNames(thisType);
+    for (String name : names) {
+      List<SymTypeOfFunction> functions =
+          resolveFunctions(thisType, name, accessModifier, predicate);
+      if (!functions.isEmpty()) {
+        allFunctions.put(name, functions);
+      }
+    }
+    return allFunctions;
+  }
+
+  /**
    * resolves within a type including supertypes
    */
   public static Optional<SymTypeExpression> resolveType(
@@ -285,6 +344,34 @@ public class WithinTypeBasicSymbolsResolver {
         resolvedSymType.map(t -> replaceFreeTypeVariables(thisType, t));
 
     return symTypeFreeVarsReplaced;
+  }
+
+  /**
+   * resolves all types within the type including supertypes
+   */
+  public static Map<String, SymTypeExpression> getAllTypes(
+      SymTypeExpression thisType,
+      AccessModifier accessModifier,
+      Predicate<TypeSymbol> predicate
+  ) {
+    return getDelegate()._getAllTypes(thisType, accessModifier, predicate);
+  }
+
+  protected Map<String, SymTypeExpression> _getAllTypes(
+      SymTypeExpression thisType,
+      AccessModifier accessModifier,
+      Predicate<TypeSymbol> predicate
+  ) {
+    Map<String, SymTypeExpression> allTypes = new HashMap<>();
+    Collection<String> names = _internal_getMemberNames(thisType);
+    for (String name : names) {
+      Optional<SymTypeExpression> typeOpt =
+          resolveType(thisType, name, accessModifier, predicate);
+      if (typeOpt.isPresent()) {
+        allTypes.put(name, typeOpt.get());
+      }
+    }
+    return allTypes;
   }
 
   /**
@@ -507,6 +594,66 @@ public class WithinTypeBasicSymbolsResolver {
   }
 
   /**
+   * internal; gets all member names,
+   * does not filter in any way, thus not generally applicable
+   */
+  protected List<String> _internal_getMemberNames(SymTypeExpression thisType) {
+    LinkedHashSet<String> names = new LinkedHashSet<>();
+    Optional<IBasicSymbolsScope> thisScopeOpt = getSpannedScope(thisType);
+    if (thisScopeOpt.isPresent()) {
+      IBasicSymbolsScope thisScope = thisScopeOpt.get();
+      names.addAll(_internal_getMemberNamesLocally(thisScope));
+    }
+    List<SymTypeExpression> superTypes = getSuperTypes(thisType);
+    // in rare cases exponential, could be optimized
+    for (SymTypeExpression superType : superTypes) {
+      names.addAll(_internal_getMemberNames(superType));
+    }
+    return new ArrayList<>(names);
+  }
+
+  protected List<String> _internal_getMemberNamesLocally(
+      IBasicSymbolsScope scope
+  ) {
+    LinkedHashSet<String> names = new LinkedHashSet<>();
+    // todo severely inefficient, replace after https://git.rwth-aachen.de/monticore/monticore/-/issues/4732
+    BasicSymbolsTraverser traverser = BasicSymbolsMill.inheritanceTraverser();
+    traverser.add4BasicSymbols(
+        new BasicSymbolsVisitor2() {
+          @Override
+          public void visit(TypeSymbol sym) {
+            if (sym.getEnclosingScope() == scope) {
+              names.add(sym.getName());
+            }
+          }
+
+          @Override
+          public void visit(TypeVarSymbol sym) {
+            if (sym.getEnclosingScope() == scope) {
+              names.add(sym.getName());
+            }
+          }
+
+          @Override
+          public void visit(VariableSymbol sym) {
+            if (sym.getEnclosingScope() == scope) {
+              names.add(sym.getName());
+            }
+          }
+
+          @Override
+          public void visit(FunctionSymbol sym) {
+            if (sym.getEnclosingScope() == scope) {
+              names.add(sym.getName());
+            }
+          }
+        }
+    );
+    scope.accept(traverser);
+    return new ArrayList<>(names);
+  }
+
+  /**
    * replaces any private access with protected access
    * this is done to resolve in supertypes
    * if there is no private access, this is id()
@@ -519,6 +666,21 @@ public class WithinTypeBasicSymbolsResolver {
       map.put(BasicAccessModifier.DIMENSION, BasicAccessModifier.PROTECTED);
     }
     return newModifier;
+  }
+  
+  protected Map<SymTypeVariable, SymTypeInferenceVariable> getUnboundVariableReplaceMap(
+      List<SymTypeVariable> varsNotToReplace, SymTypeExpression type) {
+    // 1. find all variables
+    Map<SymTypeVariable, SymTypeInferenceVariable> allVarMap =
+        TypeParameterRelations.getFreeVariableReplaceMap(type, BasicSymbolsMill.scope());
+    // 2. get variables that actually need to be replaced (unbound)
+    Map<SymTypeVariable, SymTypeInferenceVariable> freeVarMap = new HashMap<>();
+    for (Map.Entry<SymTypeVariable, SymTypeInferenceVariable> e : allVarMap.entrySet()) {
+      if (varsNotToReplace.stream().noneMatch(e.getKey()::deepEquals)) {
+        freeVarMap.put(e.getKey(), e.getValue());
+      }
+    }
+    return freeVarMap;
   }
 
   protected SymTypeExpression replaceFreeTypeVariables(
@@ -534,28 +696,20 @@ public class WithinTypeBasicSymbolsResolver {
     // }
     // In the example above, resolving f in B<T,R> will result in
     // () -> C<#FV,T,R> where #FV is a free type variable
-
-    // 1. find all variables
-    Map<SymTypeVariable, SymTypeInferenceVariable> allVarMap = TypeParameterRelations
-        .getFreeVariableReplaceMap(type, BasicSymbolsMill.scope());
-    // 2. find all type variables already bound by the type resolved in
-    List<SymTypeVariable> varsAlreadyBound = new SymTypeCollectionVisitor()
-        .calculate(thisType, SymTypeExpression::isTypeVariable).stream()
-        .map(SymTypeExpression::asTypeVariable)
-        .collect(Collectors.toList());
-    // 3. get variables that actually need to be replaced (unbound)
-    Map<SymTypeVariable, SymTypeInferenceVariable> freeVarMap = new HashMap<>();
-    for (Map.Entry<SymTypeVariable, SymTypeInferenceVariable> e : allVarMap.entrySet()) {
-      if (varsAlreadyBound.stream().noneMatch(e.getKey()::deepEquals)) {
-        freeVarMap.put(e.getKey(), e.getValue());
-      }
-    }
-    // 3.5 double check that the symTab does make any sense
+    
+    // 1. find all type variables already bound by the type resolved in
+    List<SymTypeVariable> varsAlreadyBound =
+        new SymTypeCollectionVisitor().calculate(thisType, SymTypeExpression::isTypeVariable)
+            .stream().map(SymTypeExpression::asTypeVariable).collect(Collectors.toList());
+    // 2. get unbound variable replacement map
+    Map<SymTypeVariable, SymTypeInferenceVariable> freeVarMap =
+        getUnboundVariableReplaceMap(varsAlreadyBound, type);
+    // 2.5 double check that the symTab does make any sense
     assertTypeVarsAreIncluded(type, freeVarMap.keySet());
-    // 4. actually replace the free variables
-    SymTypeExpression typeVarsReplaced = TypeParameterRelations
-        .replaceTypeVariables(type, freeVarMap);
-
+    // 3. actually replace the free variables
+    SymTypeExpression typeVarsReplaced =
+        TypeParameterRelations.replaceTypeVariables(type, freeVarMap);
+    
     return typeVarsReplaced;
   }
 
