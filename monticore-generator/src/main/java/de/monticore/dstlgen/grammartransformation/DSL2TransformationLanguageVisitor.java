@@ -357,6 +357,7 @@ public class DSL2TransformationLanguageVisitor implements
   }
   
   protected void addASTClassProdAnnotations(ASTClassProd prod, boolean override) {
+    // Add @Override annotation to the production if needed
     if (override) {
       prod.addGrammarAnnotation(productionFactory.createOverrideAnnotation());
     }
