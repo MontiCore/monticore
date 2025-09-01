@@ -403,25 +403,25 @@ public class ScopeClassDecorator extends AbstractDecorator {
 
     List<String> subClassNames = new ArrayList<>();
 
-    //search our attribute type in the symbol productions
-    ASTCDType targetType = null;
-    for(ASTCDType astcdType: symbolProds){
-      if(astcdType.getSymbol().getFullName().equals(astcdAttribute.getSymbol().getFullName())){
-        targetType = astcdType;
-        break;
-      }
-    }
-    if(targetType == null){
-      Log.error("0xA1043 Could not find symbol production for symbol "+astcdAttribute.getSymbol().getFullName());
-      return method;
-    }
-
-    for(ASTCDType node: symbolProds){
-      if(hasSuperType(node,targetType)){
-        System.out.println(node.getName()+" is subkind of "+targetType.getName());
-        subClassNames.add(node.getSymbol().getName());
-      }
-    }
+//    //search our attribute type in the symbol productions
+//    ASTCDType targetType = null;
+//    for(ASTCDType astcdType: symbolProds){
+//      if(astcdType.getSymbol().getFullName().equals(astcdAttribute.getSymbol().getFullName())){
+//        targetType = astcdType;
+//        break;
+//      }
+//    }
+//    if(targetType == null){
+//      Log.error("0xA1043 Could not find symbol production for symbol "+astcdAttribute.getSymbol().getFullName());
+//      return method;
+//    }
+//
+//    for(ASTCDType node: symbolProds){
+//      if(hasSuperType(node,targetType)){
+//        System.out.println(node.getName()+" is subkind of "+targetType.getName());
+//        subClassNames.add(node.getSymbol().getName());
+//      }
+//    }
 
 
 //    List<String> symbolSubKinds = new ArrayList<>();

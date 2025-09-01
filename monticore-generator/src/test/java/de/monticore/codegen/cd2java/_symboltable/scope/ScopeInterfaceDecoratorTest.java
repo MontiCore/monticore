@@ -53,6 +53,8 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
   private static final String PREDICATE = "java.util.function.Predicate<de.monticore.codegen.symboltable.automaton._symboltable.AutomatonSymbol>";
 
+  private static final String AUTOMATON_ISYMBOL_SCOPE_MAP = "com.google.common.collect.LinkedListMultimap<String,de.monticore.symboltable.ISymbol>";
+
 
   @Before
   public void setUp() {
@@ -108,9 +110,32 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(168, scopeInterface.getCDMethodList().size());
+    assertEquals(172, scopeInterface.getCDMethodList().size());
   
     assertTrue(Log.getFindings().isEmpty());
+  }
+
+  @Test
+  public void testGetSymbolWithSubKinds() {
+    ASTCDMethod methodQualifiedName = getMethodBy("getNotASymbolSymbolsWithSubKinds", scopeInterface);
+    assertDeepEquals(PUBLIC_ABSTRACT, methodQualifiedName.getModifier());
+    assertEquals(AUTOMATON_ISYMBOL_SCOPE_MAP, methodQualifiedName.getMCReturnType().printType());
+    assertEquals(0, methodQualifiedName.sizeCDParameters());
+
+    ASTCDMethod methodGetUnknown = getMethodBy("getStateSymbolsWithSubKinds", scopeInterface);
+    assertDeepEquals(PUBLIC_ABSTRACT, methodGetUnknown.getModifier());
+    assertEquals(AUTOMATON_ISYMBOL_SCOPE_MAP, methodGetUnknown.getMCReturnType().printType());
+    assertEquals(0, methodGetUnknown.sizeCDParameters());
+
+    ASTCDMethod methodGetFoo = getMethodBy("getAutomatonSymbolsWithSubKinds", scopeInterface);
+    assertDeepEquals(PUBLIC_ABSTRACT, methodGetFoo.getModifier());
+    assertEquals(AUTOMATON_ISYMBOL_SCOPE_MAP, methodGetFoo.getMCReturnType().printType());
+    assertEquals(0, methodGetFoo.sizeCDParameters());
+
+    ASTCDMethod methodGetState = getMethodBy("getFooSymbolsWithSubKinds", scopeInterface);
+    assertDeepEquals(PUBLIC_ABSTRACT, methodGetState.getModifier());
+    assertEquals(AUTOMATON_ISYMBOL_SCOPE_MAP, methodGetState.getMCReturnType().printType());
+    assertEquals(0, methodGetState.sizeCDParameters());
   }
 
   @Test
