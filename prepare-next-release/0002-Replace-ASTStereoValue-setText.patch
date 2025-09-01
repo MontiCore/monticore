@@ -1,0 +1,23 @@
+From 6891c303f3b16db88964642a3ff991bb8edb9bb0 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Alex=20L=C3=BCpges?= <luepges@se-rwth.de>
+Date: Wed, 16 Jul 2025 13:20:22 +0200
+Subject: [PATCH] Replace ASTStereoValue#setText
+
+
+diff --git a/monticore-generator/src/main/java/de/monticore/codegen/cd2java/AbstractService.java b/monticore-generator/src/main/java/de/monticore/codegen/cd2java/AbstractService.java
+index e50a5e17d..35c9eff4f 100644
+--- a/monticore-generator/src/main/java/de/monticore/codegen/cd2java/AbstractService.java
++++ b/monticore-generator/src/main/java/de/monticore/codegen/cd2java/AbstractService.java
+@@ -444,8 +444,7 @@ public class AbstractService<T extends AbstractService> {
+     ASTStereoValue stereoValue = CD4AnalysisMill.stereoValueBuilder()
+             .setName(MC2CDStereotypes.DEPRECATED.toString()).uncheckedBuild();
+     if (deprecatedValue.isPresent()) {
+-      stereoValue.setText(
+-              CD4AnalysisMill.stringLiteralBuilder().setSource(deprecatedValue.get()).build());
++      stereoValue.setContent(deprecatedValue.get());
+     }
+     stereoValueList.add(stereoValue);
+   }
+-- 
+2.42.0.windows.2
+

@@ -88,6 +88,7 @@ public class CloneTest {
     Assertions.assertEquals(fieldSymbol.isIsProtected(), cloneSymbol.isIsProtected());
     Assertions.assertEquals(fieldSymbol.isIsPublic(), cloneSymbol.isIsPublic());
     Assertions.assertEquals(fieldSymbol.isIsStatic(), cloneSymbol.isIsStatic());
+    Assertions.assertEquals(fieldSymbol.isIsEnumConstant(), cloneSymbol.isIsEnumConstant());
     Assertions.assertEquals(fieldSymbol.isIsDerived(), cloneSymbol.isIsDerived());
     Assertions.assertEquals(fieldSymbol.isIsReadOnly(), cloneSymbol.isIsReadOnly());
   }

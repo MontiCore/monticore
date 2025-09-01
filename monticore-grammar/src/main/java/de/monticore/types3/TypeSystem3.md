@@ -69,6 +69,8 @@ and combining their information to the SymTypeExpression currently calculated.
 * Functionality to work with SymTypeExpressions, Expressions
     * [SymTypeRelations](SymTypeRelations.java)
       (relations over SymTypeExpressions, e.g., `isSubTypeOf`, `isCompatible`)
+    * [OOSymbolsSymTypeRelations](../symbols/oosymbols/types3/OOSymbolsSymTypeRelations.java)
+      (relations wrt. OOSymbols, e.g., `isInterface`, `isEnum`)
     * [MCCollectionSymTypeRelations](../types/mccollectiontypes/types3/MCCollectionSymTypeRelations.java)
       (relations over MCCollection SymTypeExpressions, e.g., `isList`)
     * [FunctionRelations](util/FunctionRelations.java)

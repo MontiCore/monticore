@@ -11,6 +11,9 @@ import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsGlobalScope;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
+import de.monticore.symbols.oosymbols.OOSymbolsMill;
+import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
+import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
 import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
 import de.monticore.symbols.oosymbols._symboltable.MethodSymbolTOP;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
@@ -27,10 +30,13 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static de.monticore.runtime.junit.MCAssertions.assertNoFindings;
 import static de.monticore.types3.util.DefsTypesForTests._intSymType;
+import static de.monticore.types3.util.DefsTypesForTests.field;
 import static de.monticore.types3.util.DefsTypesForTests.inScope;
 import static de.monticore.types3.util.DefsTypesForTests.method;
 import static de.monticore.types3.util.DefsTypesForTests.oOtype;
@@ -132,6 +138,83 @@ public class ResolveWithinOOTypeTest extends AbstractTypeVisitorTest {
     );
     Assertions.assertEquals(1, constructors.size());
     Assertions.assertTrue(constructors.contains(constructor2));
+  }
+
+  // test if we get a list of all resolvable elements
+  // class s {
+  //   public class v {}
+  //   public s s();
+  //   public s s;
+  // }
+  // class t extends s {
+  //  public class u {}
+  //  public t();
+  //  public t u();
+  //  pulbic t u(t t);
+  //  public t v;
+  //  private t w;
+  // }
+  @Test
+  public void resolveAllElementsTest() throws IOException {
+    IOOSymbolsScope gs = OOSymbolsMill.globalScope();
+
+    OOTypeSymbol sType = inScope(gs, oOtype("s"));
+    SymTypeExpression sSymType =
+        SymTypeExpressionFactory.createTypeObject(sType);
+
+    inScope(sType.getSpannedScope(), oOtype("v"));
+    inScope(sType.getSpannedScope(), method("s", sSymType));
+    inScope(sType.getSpannedScope(), field("s", sSymType));
+
+    OOTypeSymbol tType = inScope(gs, oOtype("t", List.of(sSymType)));
+    SymTypeExpression tSymType =
+        SymTypeExpressionFactory.createTypeObject(tType);
+
+    inScope(tType.getSpannedScope(), oOtype("u"));
+    MethodSymbol tConstructor = inScope(
+        tType.getSpannedScope(),
+        method("t", tSymType)
+    );
+    tConstructor.setIsConstructor(true);
+    inScope(tType.getSpannedScope(), method("u", tSymType));
+    inScope(tType.getSpannedScope(),
+        method("u", tSymType, List.of(tSymType))
+    );
+    inScope(tType.getSpannedScope(), field("v", tSymType));
+    FieldSymbol wField = inScope(
+        tType.getSpannedScope(),
+        field("w", tSymType)
+    );
+    wField.setIsPublic(false);
+    wField.setIsPrivate(true);
+
+    Map<String, SymTypeExpression> allTypes =
+        OOWithinTypeBasicSymbolsResolver.getAllTypes(
+            tSymType,
+            BasicAccessModifier.PUBLIC,
+            t -> true
+        );
+    Assertions.assertEquals(Set.of("v", "u"), allTypes.keySet());
+
+    Map<String, List<SymTypeOfFunction>> allFunctions =
+        OOWithinTypeBasicSymbolsResolver.getAllFunctions(
+            tSymType,
+            BasicAccessModifier.PUBLIC,
+            f -> true
+        );
+    // may not contain constructor
+    Assertions.assertEquals(Set.of("s", "u"), allFunctions.keySet());
+    Assertions.assertEquals(1, allFunctions.get("s").size());
+    Assertions.assertEquals(2, allFunctions.get("u").size());
+
+    Map<String, SymTypeExpression> allFields =
+        OOWithinTypeBasicSymbolsResolver.getAllVariables(
+            tSymType,
+            BasicAccessModifier.PUBLIC,
+            v -> true
+        );
+    // may not contain the private w
+    Assertions.assertEquals(Set.of("s", "v"), allFields.keySet());
   }
 
   // Helper
