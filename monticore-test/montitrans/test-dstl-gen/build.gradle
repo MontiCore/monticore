@@ -158,6 +158,43 @@ tasks.register('generateUsingEmptyComponentGrammarTR', MCTask) {
   dependsOn generateEmptyComponentGrammarTR
 }
 
+tasks.register('generateODNameBasis', MCTask) {
+  grammar = file "$grammarsDir/mc/testcases/odname/ODNameBasis.mc4"
+  outputDir = file _outputDir
+  def uptoDate = incCheck("mc/testcases/odname/ODNameBasis.mc4")
+  outputs.upToDateWhen { uptoDate }
+}
+
+tasks.register('generateODNameReport', MCTask) {
+  grammar = file "$grammarsDir/mc/testcases/odname/ODNameReport.mc4"
+  outputDir = file _outputDir
+  def uptoDate = incCheck("mc/testcases/odname/ODNameReport.mc4")
+  outputs.upToDateWhen { uptoDate }
+  dependsOn generateODNameBasis
+}
+
+tasks.register('generateODNameBasisTR', MCTask) {
+  dependsOn generateODNameBasis
+  grammar = file "$_outputDir/mc/testcases/odname/tr/ODNameBasisTR.mc4"
+  outputDir = file _outputDir
+  modelPath += file grammarsDir
+  modelPath += file _outputDir
+  def uptoDate = incCheck("mc/testcases/odname/tr/ODNameBasisTR.mc4")
+  outputs.upToDateWhen { uptoDate }
+  isDSTL = true
+}
+
+tasks.register('generateODNameReportTR', MCTask) {
+  dependsOn generateODNameReport
+  grammar = file "$_outputDir/mc/testcases/odname/tr/ODNameReportTR.mc4"
+  outputDir = file _outputDir
+  modelPath += file grammarsDir
+  modelPath += file _outputDir
+  def uptoDate = incCheck("mc/testcases/odname/tr/ODNameReportTR.mc4")
+  outputs.upToDateWhen { uptoDate }
+  isDSTL = true
+}
+
 // The following explicit task dependencies are required in order to upgrade to Gradle 8+
 // They are not required when using the de.monticore.generator / MCGenTask
 tasks.withType(MCTask.class).configureEach {

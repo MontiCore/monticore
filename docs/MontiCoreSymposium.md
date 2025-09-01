@@ -34,9 +34,9 @@ The MontiCore symposium will be located in Köln-Riehl, Germany.
 Participation is based on acceptance of an abstract or a full paper and 
 requires registration until **12th of September**. 
 
-Registration costs are tbd and include accommodation, 
+Registration costs are 660€ and include accommodation, 
 conference fees, and meals during the symposium.  
-Registration will be open soon.
+[Register now](https://www.eventim-light.com/de/a/67a1d4620555173e53f9cad4/e/686fa9c98efd2b493c3de4a2)
 
 ### Submission
 
