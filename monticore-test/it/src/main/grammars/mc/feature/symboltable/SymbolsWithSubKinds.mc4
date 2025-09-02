@@ -22,27 +22,27 @@ grammar SymbolsWithSubKinds {
   symbol scope Cabriolet extends Car implements Tire =
     "cabriolet" Name;
 
-  Beatle extends Cabriolet =
+  symbol scope Beatle extends Cabriolet =
     "beatle" Name;
 
-  Mazda extends Cabriolet = "mazda" Name;
+  symbol scope Mazda extends Cabriolet = "mazda" Name;
 
   symbol scope Truck extends Car implements Tire =
     "truck" Name;
 
-  Ford extends Truck =
+  symbol scope Ford extends Truck =
     "ford" Name;
 
-  Volvo extends Truck =
+  symbol scope Volvo extends Truck =
     "volvo" Name;
 
-  Dog extends Animal =
+  symbol scope Dog extends Animal =
     "dog" Name;
 
-  Cat extends Animal =
+  symbol scope Cat extends Animal =
     "cat" Name;
 
-  Fish extends Animal =
+  symbol scope Fish extends Animal =
     "fish" Name;
 
   token Name =

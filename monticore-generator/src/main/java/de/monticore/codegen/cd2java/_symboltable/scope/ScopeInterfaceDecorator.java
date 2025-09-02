@@ -526,11 +526,9 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
   }
 
   protected ASTCDMethod createGetSymbolsWithSubKindsMethod(String methodName, String fullSymbolName, CDTypeSymbol type) {
-    ASTMCType generalScopeType =  getMCTypeFacade().createOptionalTypeOf(I_SYMBOL).getMCTypeArgument().getMCTypeOpt().get();
-    ASTMCType symbolMultiMap = getMCTypeFacade()
-            .createBasicGenericTypeOf(SYMBOL_MULTI_MAP, "String", generalScopeType.printType());
+    ASTMCType symbolsMap = getMCTypeFacade().createBasicGenericTypeOf(SYMBOL_MULTI_MAP, "String", fullSymbolName);
 
-    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT.build(), symbolMultiMap, methodName);
+    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT.build(), symbolsMap, methodName);
   }
 
   protected ASTCDMethod createGetLocalSymbolsMethod(String methodName, String className, ASTMCType returnType) {
