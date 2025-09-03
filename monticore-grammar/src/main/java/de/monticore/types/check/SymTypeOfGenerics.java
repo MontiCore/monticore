@@ -138,8 +138,8 @@ public class SymTypeOfGenerics extends SymTypeExpression {
    * Constructor with all parameters that are stored:
    */
   public SymTypeOfGenerics(TypeSymbol typeSymbol, List<SymTypeExpression> arguments) {
-    this.typeSymbol = typeSymbol;
-    this.arguments = arguments;
+    this.typeSymbol = Log.errorIfNull(typeSymbol);
+    this.arguments = Log.errorIfNull(arguments);
   }
 
   @Override
