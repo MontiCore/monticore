@@ -76,6 +76,8 @@ public class SymTypeOfFunction extends SymTypeExpression {
       SymTypeExpression returnType,
       List<? extends SymTypeExpression> argumentTypes,
       boolean elliptic) {
+    Log.errorIfNull(returnType);
+    Log.errorIfNull(argumentTypes);
     super.typeSymbol = new TypeSymbol(TYPESYMBOL_NAME);
     super.typeSymbol.setEnclosingScope(BasicSymbolsMill.scope());
     super.typeSymbol.setSpannedScope(BasicSymbolsMill.scope());

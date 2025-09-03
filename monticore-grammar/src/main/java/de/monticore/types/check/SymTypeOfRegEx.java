@@ -2,13 +2,14 @@
 package de.monticore.types.check;
 
 import de.monticore.types3.ISymTypeVisitor;
+import de.se_rwth.commons.logging.Log;
 
 public class SymTypeOfRegEx extends SymTypeExpression {
 
   protected String regex;
 
   public SymTypeOfRegEx(String regex) {
-    this.regex = regex;
+    this.regex = Log.errorIfNull(regex);
   }
 
   public String getRegExString() {
