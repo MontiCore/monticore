@@ -19,7 +19,7 @@
   protected boolean ${variable.getName()}_is_fix = false;
   private ${variable.getType()} ${variable.getName()};
   </#list>
-  private ModelTraversal <?> t = ModelTraversalFactory.getInstance().create((java.util.function.Supplier)${grammarName}Mill::inheritanceTraverser);
+  private ModelTraversal <?> t = CommentBasedModelTraversalFactory.getInstance().create((java.util.function.Supplier)${grammarName}Mill::inheritanceTraverser);
   <#list ast.getPattern().getAssocList() as association>
   private mc.ast.MCAssociation ${association.getName()};
   </#list>

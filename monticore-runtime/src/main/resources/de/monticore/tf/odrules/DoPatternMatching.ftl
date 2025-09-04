@@ -16,6 +16,9 @@ public boolean doPatternMatching() {
   for(ASTNode a: hostGraph){
     a.accept(t.getTraverser());
   }
+  if (t instanceof CommentBasedModelTraversal) {
+    ((CommentBasedModelTraversal<?>) t).init();
+  }
   if (searchPlan == null) {
     searchPlan = findSearchPlan();
     splitSearchplan(); // for OptList structures
