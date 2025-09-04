@@ -9,7 +9,7 @@ if (nextNode.equals("${normalObject.getObjectName()}")) {
     clearNegativeObjects();
   }
   if (!isBacktracking) {
-    ${normalObject.getObjectName()}_candidates_temp = new ArrayList<>(${normalObject.getObjectName()}_candidates);
+    ${normalObject.getObjectName()}_candidates_temp = new LinkedList<>(${normalObject.getObjectName()}_candidates);
   }
   <#if isOptional>
   // exit condition for optional structures
@@ -36,7 +36,7 @@ if (nextNode.equals("${normalObject.getObjectName()}")) {
       // put the first object of the backtracking stack
       searchPlan.push(backtracking.pop());
       // reset candidates list
-      ${normalObject.getObjectName()}_candidates_temp = new ArrayList<>(${normalObject.getObjectName()}_candidates);
+      ${normalObject.getObjectName()}_candidates_temp = new LinkedList<>(${normalObject.getObjectName()}_candidates);
     }
   } else {
     // stop backtracking
