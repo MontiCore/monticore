@@ -6,7 +6,7 @@ if (nextNode.equals("${notObject.getObjectName()}")) {
   // this is a negative object, reset candidates list
   if (!isBacktracking) {
     if (!isBacktrackingNegative) {
-      ${notObject.getObjectName()}_candidates_temp = new ArrayList<>(${notObject.getObjectName()}_candidates);
+      ${notObject.getObjectName()}_candidates_temp = new LinkedList<>(${notObject.getObjectName()}_candidates);
     }
     // try to find a match
     ${notObject.getObjectName()}_cand = match_${notObject.getObjectName()}();
@@ -31,7 +31,7 @@ if (nextNode.equals("${notObject.getObjectName()}")) {
         // put the first object of the backtracking stack
         searchPlan.push(backtrackingNegative.pop());
         // reset candidates list
-        ${notObject.getObjectName()}_candidates_temp = new ArrayList<>(${notObject.getObjectName()}_candidates);
+        ${notObject.getObjectName()}_candidates_temp = new LinkedList<>(${notObject.getObjectName()}_candidates);
       }
     } else {
       // update candidates for next object to match
@@ -53,7 +53,7 @@ if (nextNode.equals("${notObject.getObjectName()}")) {
           searchPlan.push(backtracking.pop());
         }
         // reset candidates list
-        ${notObject.getObjectName()}_candidates_temp = new ArrayList<>(${notObject.getObjectName()}_candidates);
+        ${notObject.getObjectName()}_candidates_temp = new LinkedList<>(${notObject.getObjectName()}_candidates);
       }
     }
   } else {
