@@ -13,6 +13,10 @@ public boolean doPatternMatching() {
   // (this will skip all attempts to match negative nodes)
   boolean isBacktracking = true;
   boolean isBacktrackingNegative = false;
+
+  resetOptionalCans.forEach(Runnable::run);
+  resetOptionalCans = new LinkedList<>();
+
   for(ASTNode a: hostGraph){
     a.accept(t.getTraverser());
   }
@@ -21,6 +25,7 @@ public boolean doPatternMatching() {
   }
   if (searchPlan == null) {
     searchPlan = findSearchPlan();
+    optimizeSearchplan();
     initializeFastLookupList();
     splitSearchplan(); // for OptList structures
     isBacktracking = false;

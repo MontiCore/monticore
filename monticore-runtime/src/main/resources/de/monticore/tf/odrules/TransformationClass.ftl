@@ -34,6 +34,8 @@ public class ${ast.getClassname()} extends ODRule {
 
   ${tc.include("de.monticore.tf.odrules.FindSearchPlan")}
 
+  ${tc.include("de.monticore.tf.odrules.OptimizeSearchPlan")}
+
   ${tc.include("de.monticore.tf.odrules.SplitSearchplan")}
 
   ${tc.include("de.monticore.tf.odrules.FastLookupList")}
