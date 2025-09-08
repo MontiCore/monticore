@@ -8,6 +8,7 @@
   private GlobalExtensionManagement glex = new GlobalExtensionManagement();
   private List<Match> allMatches;
   private boolean doReplacementExecuted = false;
+  private boolean isHostGraphDirty = true;
   List<Runnable> resetOptionalCans = new LinkedList<>();
   <#-- for each object creates a _candidates, _candidates_temp nodelist and an _cand object-->
 
@@ -67,4 +68,22 @@
   public void doAll(){
     doPatternMatching();
     doReplacement();
+  }
+
+  protected void loadIntoModelTraverser() {
+    for (ASTNode astNode : Log.errorIfNull(hostGraph)) {
+      astNode.accept(t.getTraverser());
+    }
+
+    if (t instanceof CommentBasedModelTraversal) {
+      ((CommentBasedModelTraversal<?>) t).init();
+    }
+  }
+
+  /**
+  * Marks the original model as dirty, same as if {@link #doReplacement} was called.
+  * @see ${ast.getClassname()}#doReplacement()
+  */
+  public void markDirty() {
+    this.isHostGraphDirty = true;
   }

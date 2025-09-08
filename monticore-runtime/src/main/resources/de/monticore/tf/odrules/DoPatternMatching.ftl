@@ -17,12 +17,11 @@ public boolean doPatternMatching() {
   resetOptionalCans.forEach(Runnable::run);
   resetOptionalCans = new LinkedList<>();
 
-  for(ASTNode a: hostGraph){
-    a.accept(t.getTraverser());
+  if (isHostGraphDirty || searchPlan == null) {
+    this.loadIntoModelTraverser();
+    isHostGraphDirty= false;
   }
-  if (t instanceof CommentBasedModelTraversal) {
-    ((CommentBasedModelTraversal<?>) t).init();
-  }
+
   if (searchPlan == null) {
     searchPlan = findSearchPlan();
     optimizeSearchplan();
