@@ -21,6 +21,7 @@ public boolean doPatternMatching() {
   }
   if (searchPlan == null) {
     searchPlan = findSearchPlan();
+    initializeFastLookupList();
     splitSearchplan(); // for OptList structures
     isBacktracking = false;
   }
