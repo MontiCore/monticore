@@ -12,12 +12,6 @@ protected boolean doPatternMatching_${structure.getObjectName()}(boolean isParen
   Stack<String> backtrackingNegative = new Stack<String>();
   Stack<String> searchPlan = (Stack<String>) searchPlan_${structure.getObjectName()}.clone();
 
- <#list structure.getInnerLinkObjectNamesList() as elem>
-   <#if hierarchyHelper.isNoOptionalName(ast.getPattern().getLHSObjectsList(), elem)>
-     ${elem}_cand = null;
-   </#if>
- </#list>
-
   String nextNode = null;
   while(!searchPlan.isEmpty()){
     nextNode = searchPlan.pop();
@@ -37,6 +31,14 @@ protected boolean doPatternMatching_${structure.getObjectName()}(boolean isParen
       <#if object_has_next>else</#if>
     </#list>
   }
+
+  // Cleanup after optionals
+  // TODO: correct here? -> not for lists?
+  resetOptionalCans.add(() -> {
+  <#list ast.getAllInnerNonOptionalNames(ast.getPattern().getLHSObjectsList(), structure) as elem>
+    ${elem}_cand = null;
+  </#list>
+  });
 
   return true;
 }

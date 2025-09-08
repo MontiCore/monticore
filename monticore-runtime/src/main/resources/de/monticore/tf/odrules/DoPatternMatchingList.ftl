@@ -281,6 +281,16 @@ public boolean doPatternMatching_${structure.getObjectName()}(boolean isParentBa
         backtracking.clear();
       }
     }
+
+    // Reset list candidates are match
+    <#list structure.getInnerLinkObjectNamesList() as innerLinkObjectName>
+    <#if hierarchyHelper.isNoOptionalName(ast.getPattern().getLHSObjectsList(), innerLinkObjectName)>
+    ${innerLinkObjectName}_cand = null;
+    </#if>
+    </#list>
+
+    // TODO: Do something similar for optionals (but somehow do not loose them?)
+
     if(${structure.getObjectName()}_candidates.isEmpty()) {
       return false;
     }
