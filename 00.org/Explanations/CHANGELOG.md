@@ -463,7 +463,7 @@ released: 11.11.2020
 
 ### Changes
 * MontiCore now uses Gradle as build tool
-  * some tasks have been introduced for the comfortable control of frequent activities, e.g., `buildMC`, `assembleMC` that can be found in the [`build.gradle`](https://github.com/MontiCore/monticore/blob/opendev/build.gradle)
+  * some tasks have been introduced for the comfortable control of frequent activities, e.g., `buildMC`, `assembleMC` that can be found in the root projects build.gradle
   * relocated the EMF related subprojects:
     * `monticore-emf-grammar` to `monticore-grammar-emf`
     * `monticore-emf-runtime` to `monticore-runtime-emf`
@@ -734,9 +734,9 @@ released: 07.05.2020
 
 * [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
 * [MontiCore documentation](https://www.monticore.de/)
-* [**List of languages**](https://github.com/MontiCore/monticore/blob/opendev/docs/Languages.md)
-* [**MontiCore Core Grammar Library**](https://github.com/MontiCore/monticore/blob/opendev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
-* [Best Practices](https://github.com/MontiCore/monticore/blob/opendev/docs/BestPractices.md)
+* [**List of languages**](../../docs/Languages.md)
+* [**MontiCore Core Grammar Library**](../../monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
+* [Best Practices](../../docs/BestPractices.md)
 * [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
 * [Licence definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)
 
