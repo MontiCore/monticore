@@ -71,7 +71,8 @@
   }
 
   protected void loadIntoModelTraverser() {
-    for (ASTNode astNode : Log.errorIfNull(hostGraph)) {
+    for (ASTNode astNode : Log.errorIfNull(hostGraph,
+            "0xE1200: Hostgraph is null, check constructor arguments!")) {
       astNode.accept(t.getTraverser());
     }
 
