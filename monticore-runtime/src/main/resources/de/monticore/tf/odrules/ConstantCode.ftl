@@ -4,6 +4,8 @@
 <#assign matchObjects = hierarchyHelper.getMandatoryMatchObjects(ast.getPattern().getMatchingObjectsList())>
 <#assign optionalMatchObjects = hierarchyHelper.getOptionalMatchObjects(ast.getPattern().getLHSObjectsList())>
 
+  public static boolean optimizeSP = true;
+
   private List<ASTNode> hostGraph;
   private GlobalExtensionManagement glex = new GlobalExtensionManagement();
   private List<Match> allMatches;
