@@ -649,7 +649,7 @@ if (("true").equals(getProperty('genTR'))) {
 
   publishing {
     publications {
-      "trafo" {
+      "trafo" (MavenPublication) {
         groupId = "de.monticore" // do not use the fake "de.mc" group, which was set during the plugin init phase
       }
     }
