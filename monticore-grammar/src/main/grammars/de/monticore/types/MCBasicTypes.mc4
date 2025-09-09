@@ -1,0 +1,105 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.types;
+
+/* This is a MontiCore stable grammar.
+ * Adaptations -- if any -- are conservative. */
+
+import de.monticore.*;
+
+/**
+ * This grammar defines basic types.
+ *
+ * This eases the reuse of type structures in languages similar to Java,
+ * that are somewhat simplified, e.g. without generics.
+ *
+ * The grammar contains types from Java, e.g., primitives, void,
+ * classes (also sometimes called "reference types").
+ *
+ * This grammar is part of a hierarchy of types, namely
+ * * types.MCBasicTypes.mc4
+ *   * types/MCArrayTypes.mc4
+ *   * types/MCCollectionTypes.mc4
+ *     * types/MCSimpleGenericTypes.mc4
+ *       * types/MCFullGenericTypes.mc4    
+ *
+*/
+
+component grammar MCBasicTypes extends de.monticore.MCBasics {
+
+  /*=================================================================*/
+
+  /** ASTMCType is the top level interface for all kinds of types
+   * (except Void).
+   * It is also an extension point for other forms of types.
+  */
+  interface MCType;
+
+  /*=================================================================*/
+
+  /** The ASTMCQualifiedName represents a possibly qualified name.
+      The different parts of a qualified name are separated by '.'; they are
+      stored in an ASTStringList.
+      @attribute parts A List of ASTStringList concludes all name parts
+  */
+  MCQualifiedName =
+      parts:(Name || ".")+;
+
+  /*=================================================================*/
+
+  /** ASTMCPackageDeclaration represents a package declaration usable
+      for diagrams
+      E.g.: package A.b;
+  */
+  MCPackageDeclaration = "package" MCQualifiedName& ";";
+
+  /** ASTMCImportStatement represents the import list for diagrams
+      E.g.: import A.b;
+      E.g.: import A.*;
+  */
+  MCImportStatement =
+      "import" MCQualifiedName ("." Star:["*"])? ";" ;
+
+  /*=================================================================*/
+  /*= Primitives ====================================================*/
+
+  /** ASTMCPrimitiveType represents every primitive type supported by Java.
+      The type is not realized by an enumeration, because this form
+      of definitions can be conservatively extended.
+      @attribute primitive BOOLEAN, BYTE, CHAR, SHORT, INT, FLOAT, LONG,
+                               or DOUBLE
+  */
+  MCPrimitiveType implements MCType =
+     primitive: [ "boolean" | "byte" | "short" | "int" 
+                  | "long" | "char" |"float" | "double" ];
+
+
+  /*=================================================================*/
+  /*=========== Types (Classes, Interfaces in OO) ===================*/
+
+  /** ASTMCObjectType contains names of freely defined types (which in
+   * Java are mainly classes, interfaces, enums).
+   * They may be qualified by package names.
+   *
+   * This is also an extension point for generic types.
+  */
+  interface  MCObjectType extends MCType;
+
+  /** ASTMCQualifiedType represents types like class or interface types
+          which could have a qualified name like this: a.b.c.D
+  */
+  MCQualifiedType implements MCObjectType = MCQualifiedName;
+
+
+  /*=================================================================*/
+  /*= ReturnTypes and void ==========================================*/
+
+  /* These special types do not implement interface ASTMCType, because
+     they will not appear in the type calculations etc.
+  */
+  MCReturnType = MCVoidType | MCType;
+
+  /** ASTVoidType represents the return type "void".
+  */
+  MCVoidType = "void";
+
+}

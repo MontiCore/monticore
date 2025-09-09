@@ -1,0 +1,20 @@
+package de.monticore.expressions;
+
+mlc UglyExpressions {
+
+  //export the grammar
+  export "$projectDir/src/main/grammars" {
+    include "de/monticore/expressions/UglyExpressions.mc4";
+  }
+
+  // export all Java files generated from the grammar
+  export "$projectDir/target/generated-sources/monticore/sourcecode" {
+    include "de/monticore/expressions/uglyexpressions/**.java";
+  }
+
+  promote {
+    mlc "de.monticore.expressions.ExpressionsBasis";
+    mlc "de.monticore.types.MCBasicTypes";
+  }
+
+}

@@ -1,0 +1,20 @@
+package de.monticore.statements;
+
+mlc MCSynchronizedStatements {
+
+  //export the grammar
+  export "$projectDir/src/main/grammars" {
+    include "de/monticore/statements/MCSynchronizedStatements.mc4";
+  }
+
+  // export all Java files generated from the grammar
+  export "$projectDir/target/generated-sources/monticore/sourcecode" {
+    include "de/monticore/statements/mcsynchronizedstatements/**.java";
+  }
+
+  promote {
+    mlc "de.monticore.statements.MCCommonStatements";
+  }
+
+
+}

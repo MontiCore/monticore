@@ -1,0 +1,7 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package  de.monticore.grammar.cocos.invalid.A4069;
+ grammar A4069Sub extends de.monticore.grammar.cocos.invalid.A4069.A4069Super{
+    token StartTag = "<";
+    token EndTag = ">";
+}

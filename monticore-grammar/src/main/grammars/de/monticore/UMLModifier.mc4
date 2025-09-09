@@ -1,0 +1,57 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore;
+
+/* This is a MontiCore stable grammar.
+ * Adaptations -- if any -- are conservative. */
+
+import de.monticore.*;
+
+/**
+ * Grammar for common elements of the UML/P-Language-Family
+ *
+ * The grammar contains the modifiers that UML provides.
+ * This includes "public" "private", "protected", "final", "abstract", "local",
+ * "derived", "readonly", and "static", but also the
+ * compact syntactic versions "+", "#", "-", "/" and "?" (for readonly).
+ *
+ * UML modifiers are not identical to Java modifiers (e.g. "native" or
+ * "threadsafe" are missing.)
+*/
+
+component grammar UMLModifier extends UMLStereotype {
+
+    /** ASTModifier represents a Modifier for Classes, Interfaces, Methods,
+        Constructors and Attributes in the UML/P
+        @attribute stereotype Optional Stereotype
+        @attribute public     true if Modifier is public
+                              (i.e. Modifier written as "public" or "+")
+        @attribute private    true if Modifier is private
+                              (i.e. Modifier written as "private" or "-")
+        @attribute protected  true if Modifier is protected
+                              (i.e. Modifier written as "protected" or "#")
+        @attribute final      true if Modifier is final
+                              (i.e. Modifier written as "final")
+        @attribute abstract   true if Modifier is abstract
+                              (i.e. Modifier written as "abstract")
+        @attribute local      true if Modifier is local
+                              (i.e. Modifier written as "local")
+        @attribute derived    true if Modifier is derived
+                              (i.e. Modifier written as "derived" or "/")
+        @attribute readonly   true if Modifier is readonly
+                              (i.e. Modifier written as "readonly" or "?")
+        @attribute static     true if Modifier is static
+                              (i.e. Modifier written as "static")
+    */
+    Modifier =
+        Stereotype?
+        (   ["public"]       | [public:"+"]
+          | ["private"]      | [private:"-"]
+          | ["protected"]    | [protected:"#"]
+          | ["final"]
+          | ["abstract"]
+          | ["local"]
+          | ["derived"]      | [derived:"/"]
+          | ["readonly"]     | [readonly:"?"]
+          | ["static"]
+        )*;
+}

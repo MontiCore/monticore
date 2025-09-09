@@ -1,0 +1,17 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.monticore;
+
+grammar Modes extends de.monticore.LexicalsWithMode {
+
+  token Open = "[" : -> pushmode (FOO_MODE);
+
+  token Close = "]" : ->popmode;
+
+  token SLASH(FOO_MODE) = "/";
+
+  @Override
+  token Digit2 =
+          ('0' ..'9')+;
+
+ }

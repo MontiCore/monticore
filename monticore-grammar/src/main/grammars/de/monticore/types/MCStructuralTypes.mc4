@@ -1,0 +1,92 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.types;
+
+/* This is a MontiCore stable grammar.
+ * Adaptations -- if any -- are conservative. */
+
+import de.monticore.types.*;
+
+/**
+ * This grammar introduces additional structural types
+ * as known partially from modern programming languages, like Kotlin.
+ *
+ * Union types: A|B
+ * Intersection types: A&B
+ * Tuple types: (A, B)
+ * Bracket types: (A)  (i.e. actually a tuple with a single argument
+ *          which is regarded to be isomporhic to its argument)
+ *
+ * These structural types simplify the definitipon of new types 
+ * as results of functions, grouping values, providing alternatives
+ * results, etc.
+ *
+ * In a union type A|B value v is either of type A or B 
+ * and only the operations apply, that are shared by both.
+ * In an intersection type A&B value v is necessarily member of both 
+ * types, which is only possible if common subclasses exist, then
+ * all operations of A or B can be applied to v. 
+ *
+ * The above types are actually type constructors with two (or several)
+ * types as arguments and special typing rules.
+ *
+ * This modularity of types and associated expressions greatly eases
+ * the reuse of type structures in languages.
+ *
+ * This grammar is part of a hierarchy of types, which can be found
+ * under
+ *   https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/
+ *                 src/main/grammars/de/monticore/types/Types.md
+ *
+ */
+ 
+component grammar MCStructuralTypes
+          extends MCBasicTypes {
+
+  /** ASTMCUnionType represents union types.
+   *
+   * Values of a union type are of (at least one of) the types in the union.
+   * Example:
+   * String|int   var1 = "Person";
+   * String|int   var2 = 3;
+   */
+  MCUnionType implements MCType <140> =
+    left:MCType "|" right:MCType
+  ;
+
+  /** ASTMCIntersectionType represents intersection types.
+   *
+   * Values of an intersection type are of all the types in the intersection.
+   * Example:
+   * (Assuming Car and Boat are not in a subtyping relationship, but share 
+   * a common subclass AmphibianVehicle)
+   * AmphibianVehicle amphibianVehicle = ...;
+   * Car      c = amphibianVehicle;
+   * Boat     b = amphibianVehicle;
+   * Car&Boat a = amphibianVehicle;
+   */
+  MCIntersectionType implements MCType <160> =
+    left:MCType "&" right:MCType
+  ;
+
+  /** ASTMCTupleType represents tuple types.
+   * Tuple types have at least two elements.
+   *
+   * Values of a tuple type are a tuple of values 
+   * Example:
+   * (float, int) vec2 = (1.1f, -2);
+   */
+  MCTupleType implements MCType <30> =
+    "(" MCType "," (MCType || ",")+ ")"
+  ;
+
+  /** ASTMCBracketType represents a type written in parentheses.
+   *
+   * The type is the type written inside the parentheses, e.g.,
+   * (A | B) is the same type as A | B
+   * (((A))) is the same type as A
+   */
+  MCBracketType implements MCType <300> =
+    "(" MCType ")"
+  ;
+
+}

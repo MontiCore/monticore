@@ -1,0 +1,32 @@
+package de.monticore.types;
+
+mlc MCArrayTypes {
+
+  //export the grammar
+  export "$projectDir/src/main/grammars" {
+    include "de/monticore/types/MCArrayTypes.mc4";
+  }
+
+  //export handwritten code
+  export "$projectDir/src/main/java" {
+    include "de/monticore/types/mcarraytypes/**.java";
+    include "de/monticore/types/MCArrayTypes**.java";
+
+    include "de/monticore/types/check/FullSynthesizeFromMCArrayTypes.java";
+    include "de/monticore/types/check/SynthesizeSymTypeFromMCArrayTypes.java";
+  }
+
+  // export all Java files generated from the grammar
+  export "$projectDir/target/generated-sources/monticore/sourcecode" {
+    include "de/monticore/types/mcarraytypes/**.java";
+  }
+
+  promote {
+    mlc "de.monticore.types.MCBasicTypes";
+  }
+
+  uses {
+    include "$projectDir/src/main/java/de/monticore/types3/AbstractTypeVisitor.java";
+  }
+
+}

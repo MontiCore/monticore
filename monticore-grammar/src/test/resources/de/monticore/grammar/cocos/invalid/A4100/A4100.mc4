@@ -1,0 +1,13 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package  de.monticore.grammar.cocos.invalid.A4100;
+
+grammar A4100 extends de.monticore.common.TestTypes {
+
+  symbol A = "a" Name;
+
+  symbol B = "b" Name;
+
+  C = "c" ref:Name@A ref:Name@B;
+
+}

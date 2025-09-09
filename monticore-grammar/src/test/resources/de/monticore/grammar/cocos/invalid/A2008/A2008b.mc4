@@ -1,0 +1,10 @@
+
+/* (c) https://github.com/MontiCore/monticore */
+
+package  de.monticore.grammar.cocos.invalid.A2008;
+
+grammar A2008b {
+
+    A = "a";
+    B = A+ as:A+;
+}

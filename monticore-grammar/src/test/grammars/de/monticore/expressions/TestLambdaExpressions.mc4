@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.expressions;
+
+grammar TestLambdaExpressions
+    extends de.monticore.expressions.LambdaExpressions,
+            de.monticore.literals.MCCommonLiterals,
+            de.monticore.types.MCBasicTypes {
+
+    start Expression;
+
+}

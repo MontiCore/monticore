@@ -1,0 +1,38 @@
+{
+   "generated-using":"www.MontiCore.de technology",
+   "name":"Enum",
+   "symbols":[
+      {
+         "kind":"de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol",
+         "name":"A",
+         "isEnum":true,
+         "isPublic":true,
+         "spannedScope":{
+            "symbols":[
+               {
+                  "kind":"de.monticore.symbols.oosymbols._symboltable.FieldSymbol",
+                  "name":"Foo",
+                  "isPublic":true,
+                  "isStatic":true,
+                  "isFinal":true,
+                  "type":{
+                     "kind":"de.monticore.types.check.SymTypeOfObject",
+                     "objName":"Enum.A"
+                  },
+                  "isReadOnly":true
+               }
+            ]
+         }
+      },
+      {
+         "kind":"de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol",
+         "name":"B",
+         "isClass":true,
+         "isPublic":true
+      },
+      {
+         "kind":"de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol",
+         "name":"Enum"
+      }
+   ]
+}

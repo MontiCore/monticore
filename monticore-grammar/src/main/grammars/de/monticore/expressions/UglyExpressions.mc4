@@ -1,0 +1,79 @@
+// (c) https://github.com/MontiCore/monticore
+package de.monticore.expressions;
+
+/* This is a MontiCore stable grammar.
+ * Adaptations -- if any -- are conservative. */
+
+import de.monticore.expressions.*;
+import de.monticore.types.*;
+
+/**
+ * This grammar defines expressions that are considered "ugly"
+ * in terms of use, e.g.,
+ *   instanceof, typecasting, and new Class(...)-constructors.
+ * like in 
+ *   person instanceof Student
+ *   (Student)person
+ *   new Person("George")
+ * 
+ * The reason is that each of them uses explicit types and prevents
+ *   easy adaptation and reconfiguration, e.g. for testing.
+ *   new-calls e.g. prevent to inject stubs/mocks when testing.
+ *   Better: Use the Builder or Factory pattern.
+ *
+ * The grammar should be omitted e.g. in functional languages, but is
+ * present for compatibility with Java-Expressions.
+ *
+ * This grammar is part of a hierarchy of expression grammars, 
+ * which can be found under
+ *   https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/
+ *                 src/main/grammars/de/monticore/expressions/Expressions.md
+*/
+
+component grammar UglyExpressions
+          extends MCBasicTypes,
+                  ExpressionsBasis {
+
+  /*=================================================================*/
+
+  /**
+   * ASTTypeCastExpression casts an expression to a given type
+   *   @attribute MCType
+   *              type to cast the expression to
+   *   @attribute Expression
+   *              the expression that should be casted
+   */
+  TypeCastExpression implements Expression <200> =
+    "(" MCType ")" Expression;
+
+  /**
+   * InstanceofExpression checks if an expression has a certain type
+   *   evaluates to true if the expression has the type given by MCType
+   *   otherwise evaluates to false
+   *
+   *   @attribute Expression
+   *              expression whose type is to be checked
+   *   @attribute MCType
+   *              type against which the expression should be checked
+   */
+  InstanceofExpression implements Expression <150> =
+    Expression "instanceof" MCType;
+
+  CreatorExpression implements Expression <235> =
+    "new" Creator;
+
+  interface Creator ;
+
+  ClassCreator implements Creator
+    =   MCType Arguments;
+
+  ArrayCreator implements Creator
+    =   MCType ArrayDimensionSpecifier;
+
+  interface ArrayDimensionSpecifier ;
+
+  ArrayDimensionByExpression implements ArrayDimensionSpecifier
+    =   ("[" Expression "]")+ (dim:"[" "]")*
+    ;
+
+}

@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package  de.monticore.grammar.cocos.invalid.A4030;
+
+grammar A4030 {
+  A;
+
+  abstract B extends A astextends C;
+
+}

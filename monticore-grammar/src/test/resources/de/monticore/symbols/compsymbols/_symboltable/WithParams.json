@@ -1,0 +1,25 @@
+{
+  "kind": "de.monticore.symbols.compsymbols._symboltable.ComponentTypeSymbol",
+  "name": "Comp",
+  "fullName": "Comp",
+  "parameters": [
+    {
+      "kind": "de.monticore.symbols.basicsymbols._symboltable.VariableSymbol",
+      "name": "a",
+      "fullName": "Comp.a",
+      "type": {
+        "kind": "de.monticore.types.check.SymTypePrimitive",
+        "primitiveName": "int"
+      }
+    },
+    {
+      "kind": "de.monticore.symbols.basicsymbols._symboltable.VariableSymbol",
+      "name": "b",
+      "fullName": "Comp.b",
+      "type": {
+        "kind": "de.monticore.types.check.SymTypePrimitive",
+        "primitiveName": "int"
+      }
+    }
+  ]
+}

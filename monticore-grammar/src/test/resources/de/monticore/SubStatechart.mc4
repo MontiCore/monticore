@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.monticore;
+
+grammar SubStatechart extends de.monticore.Statechart {
+
+  First = "Hello";
+  Second = "Bye";
+
+}

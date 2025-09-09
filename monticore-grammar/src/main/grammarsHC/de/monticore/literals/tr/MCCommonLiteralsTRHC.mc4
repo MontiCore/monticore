@@ -1,0 +1,216 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.literals.tr;
+
+/**
+  * Re-adds the literal related getValue ASTRules of literals for (MontiTrans) transformation grammars.
+  * Patterns will return their value, other TF-production-types will fail (but compilation will proceed).
+  */
+component grammar MCCommonLiteralsTRHC extends de.monticore.MCBasics, de.monticore.literals.tr.MCLiteralsBasisTR {
+
+    TfIdentifierString implements TfIdentifier =
+        identifierToken:String
+        | "[[" identifierToken:String ":-" (newIdentifierSchema:TFSchema| newIdentifierToken:String)? "]]"
+        | "[[" (identifierSchema:TFSchema| identifierToken:String)? ":-" newIdentifierToken:String "]]"
+        // | "String" identifierSchema:TFSchema ";" // no abstract syntax matching for string literals - this (automatically derived) alternative is removed using the TRHC mechanism
+        ;
+
+
+    astrule ITFBooleanLiteral =
+        method public boolean getValue() {
+            throw new UnsupportedOperationException("0xD7761 Method not implemented for non patterns");
+        }
+    ;
+    astrule BooleanLiteral_Pat =
+        method public Class _getTFElementType() {
+          return de.monticore.literals.mccommonliterals._ast.ASTBooleanLiteral.class;
+        }
+        method public boolean getValue() {
+            return this.isPresentSource() && this.getSource().getValue();
+        }
+    ;
+
+    astrule ITFCharLiteral =
+        method public char getValue() {
+            throw new UnsupportedOperationException("0xD7762 Method not implemented for non patterns");
+        }
+    ;
+    astrule CharLiteral_Pat =
+        method public Class _getTFElementType() {
+          return de.monticore.literals.mccommonliterals._ast.ASTCharLiteral.class;
+        }
+        method public char getValue() {
+            return de.monticore.literals.MCLiteralsDecoder.decodeChar(getSource().getIdentifier());
+        }
+    ;
+    
+    astrule ITFStringLiteral =
+        method public String getValue() {
+            throw new UnsupportedOperationException("0xD7763 Method not implemented for non patterns");
+        }
+    ;
+    astrule StringLiteral_Pat =
+        method public Class _getTFElementType() {
+          return de.monticore.literals.mccommonliterals._ast.ASTStringLiteral.class;
+        }
+        method public String getValue() {
+            return de.monticore.literals.MCLiteralsDecoder.decodeString(getSource().getIdentifier());
+        }
+    ;    
+
+    astrule ITFNatLiteral =
+        method public String getSource() {
+            throw new UnsupportedOperationException("0xD7764 Method not implemented for non patterns");
+        }
+        method public int getValue() {
+            return de.monticore.literals.MCLiteralsDecoder.decodeNat(getSource());
+        }
+    ;
+    astrule NatLiteral_Pat =
+        method public Class _getTFElementType() {
+          return de.monticore.literals.mccommonliterals._ast.ASTNatLiteral.class;
+        }
+        method public String getSource() {
+            return getDigits().getIdentifier();
+        }
+    ;
+    
+    astrule ITFSignedNatLiteral =
+        method public String getSource() {
+            throw new UnsupportedOperationException("0xD7765 Method not implemented for non patterns");
+        }
+        method public int getValue() {
+            return de.monticore.literals.MCLiteralsDecoder.decodeNat(getSource());
+        }
+    ;
+    astrule SignedNatLiteral_Pat =
+        method public Class _getTFElementType() {
+          return de.monticore.literals.mccommonliterals._ast.ASTSignedNatLiteral.class;
+        }
+        method public String getSource() {
+            return (isPresentNegative() && getNegative().isNegative()?"-":"") + getDigits().getIdentifier();
+        }
+    ;
+
+    astrule ITFBasicLongLiteral =
+        method public String getSource() {
+            throw new UnsupportedOperationException("0xD7766 Method not implemented for non patterns");
+        }
+        method public long getValue() {
+            return de.monticore.literals.MCLiteralsDecoder.decodeLong(getSource());
+        }
+    ;
+    astrule BasicLongLiteral_Pat =
+        method public Class _getTFElementType() {
+          return de.monticore.literals.mccommonliterals._ast.ASTBasicLongLiteral.class;
+        }
+        method public String getSource() {
+            return getDigits().getIdentifier() + "L";
+        }
+    ;
+
+    astrule ITFSignedBasicLongLiteral =
+        method public String getSource() {
+            throw new UnsupportedOperationException("0xD7767 Method not implemented for non patterns");
+        }
+        method public long getValue() {
+            return de.monticore.literals.MCLiteralsDecoder.decodeLong(getSource());
+        }
+    ;
+    astrule SignedBasicLongLiteral_Pat =
+        method public Class _getTFElementType() {
+          return de.monticore.literals.mccommonliterals._ast.ASTSignedBasicLongLiteral.class;
+        }
+        method public String getSource() {
+             return (isPresentNegative() && getNegative().isNegative()?"-":"") + getDigits().getIdentifier() + "L";
+        }
+    ;
+
+    astrule ITFBasicFloatLiteral =
+        method public String getSource() {
+            throw new UnsupportedOperationException("0xD7768 Method not implemented for non patterns");
+        }
+        method public Float getValue() {
+            return de.monticore.literals.MCLiteralsDecoder.decodeFloat(getSource());
+        }
+    ;
+    astrule BasicFloatLiteral_Pat =
+        method public Class _getTFElementType() {
+          return de.monticore.literals.mccommonliterals._ast.ASTBasicFloatLiteral.class;
+        }
+        method public String getSource() {
+            return getPre().getIdentifier() + "." + getPost().getIdentifier() + "F";
+        }
+    ;
+
+    astrule ITFSignedBasicFloatLiteral =
+        method public String getSource() {
+            throw new UnsupportedOperationException("0xD7769 Method not implemented for non patterns");
+        }
+        method public Float getValue() {
+            return de.monticore.literals.MCLiteralsDecoder.decodeFloat(getSource());
+        }
+    ;
+    astrule SignedBasicFloatLiteral_Pat =
+        method public Class _getTFElementType() {
+          return de.monticore.literals.mccommonliterals._ast.ASTSignedBasicFloatLiteral.class;
+        }
+        method public String getSource() {
+             return  (isPresentNegative() && getNegative().isNegative()?"-":"") + getPre().getIdentifier() + "." + getPost().getIdentifier() + "F";
+        }
+    ;
+    
+    
+    astrule ITFBasicDoubleLiteral =
+        method public String getSource() {
+            throw new UnsupportedOperationException("0xD776A Method not implemented for non patterns");
+        }
+        method public Double getValue() {
+            return de.monticore.literals.MCLiteralsDecoder.decodeDouble(getSource());
+        }
+    ;
+    astrule BasicDoubleLiteral_Pat =
+        method public Class _getTFElementType() {
+          return de.monticore.literals.mccommonliterals._ast.ASTBasicDoubleLiteral.class;
+        }
+        method public String getSource() {
+            return getPre().getIdentifier() + "." + getPost().getIdentifier();
+        }
+    ;
+
+    astrule ITFSignedBasicDoubleLiteral =
+        method public String getSource() {
+            throw new UnsupportedOperationException("0xD776B Method not implemented for non patterns");
+        }
+        method public Double getValue() {
+            return de.monticore.literals.MCLiteralsDecoder.decodeDouble(getSource());
+        }
+    ;
+    astrule SignedBasicDoubleLiteral_Pat =
+        method public Class _getTFElementType() {
+          return de.monticore.literals.mccommonliterals._ast.ASTSignedBasicDoubleLiteral.class;
+        }
+        method public String getSource() {
+             return (isPresentNegative() && getNegative().isNegative()?"-":"") + getPre().getIdentifier() + "." + getPost().getIdentifier();
+        }
+    ;
+
+    // Constants are handled slightly different
+
+    astrule ITFMCCommonLiterals_Source_Constant =
+        method public boolean getValue() {
+            throw new UnsupportedOperationException("0xD776C Method not implemented for non patterns");
+        }
+    ;
+    astrule MCCommonLiterals_Source_Constant_Pat =
+        method public boolean getValue() {
+            return this.source == ASTConstantsMCCommonLiteralsTR.TRUE;
+        }
+    ;
+
+    astrule ITFMCCommonLiterals_Negative_Constant =
+        method public boolean isNegative() {
+            throw new UnsupportedOperationException("0xD776D Method not implemented for non patterns");
+        }
+    ;
+
+}

@@ -1,0 +1,22 @@
+/* (c) https://github.com/MontiCore/monticore */
+package  de.monticore.grammar.cocos.valid;
+
+grammar ProdAndOverriddenProdUseSameAttrNameForDiffNTs_sub extends
+   de.monticore.grammar.cocos.valid.ProdAndOverriddenProdUseSameAttrNameForDiffNTs_super{
+
+  B;
+
+  Prod1 = c:B;
+
+  Prod2 = c:B;
+
+  Prod3 = c:B;
+
+  State =
+  "state" Name
+  ("entry:" entry:Name)?
+  ( ("{" (State)* "}") | ";") ;
+
+  Prod4 = u:Digit | u:Char;
+
+}

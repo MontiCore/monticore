@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package  de.monticore.grammar.cocos.invalid.A4060;
+
+grammar A4060 {
+  interface I;
+
+  A implements I = I "+" I;
+
+  B = A;
+
+}

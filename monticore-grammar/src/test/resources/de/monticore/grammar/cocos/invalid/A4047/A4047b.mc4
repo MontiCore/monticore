@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package  de.monticore.grammar.cocos.invalid.A4047;
+
+grammar A4047b {
+  
+  interface A = C;
+  
+  abstract B implements A;
+  
+  C;
+}

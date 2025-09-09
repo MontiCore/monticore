@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package  de.monticore.grammar.cocos.invalid.A4009;
+
+grammar A4009d extends de.monticore.grammar.cocos.invalid.A4009.A4009 {
+
+  external QualifiedName;
+
+}

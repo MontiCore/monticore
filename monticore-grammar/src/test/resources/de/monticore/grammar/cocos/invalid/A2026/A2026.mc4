@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package  de.monticore.grammar.cocos.invalid.A2026;
+
+grammar A2026 {
+
+  a;
+
+  A;
+
+}

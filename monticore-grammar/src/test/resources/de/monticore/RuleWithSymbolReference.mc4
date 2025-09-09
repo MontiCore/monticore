@@ -1,0 +1,20 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.monticore;
+
+component grammar RuleWithSymbolReference {
+
+  Name;
+
+  interface symbol S;
+
+  interface T extends S;
+
+  A implements S = "a";
+
+  B = an:Name@T;
+
+  external symbol E;
+  abstract symbol R;
+
+}

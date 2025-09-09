@@ -1,0 +1,34 @@
+package de.monticore.types;
+
+mlc MCSimpleGenericTypes {
+
+  //export the grammar
+  export "$projectDir/src/main/grammars" {
+    include "de/monticore/types/MCSimpleGenericTypes.mc4";
+  }
+
+  //export handwritten code
+  export "$projectDir/src/main/java" {
+    include "de/monticore/types/mcsimplegenerictypes/**.java";
+    include "de/monticore/types/MCSimpleGenericTypes**.java";
+
+    include "de/monticore/types/check/FullSynthesizeFromMCBasicTypes.java";
+    include "de/monticore/types/check/SynthesizeSymTypeFromMCBasicTypes.java";
+  }
+
+  // export all Java files generated from the grammar
+  export "$projectDir/target/generated-sources/monticore/sourcecode" {
+    include "de/monticore/types/mcsimplegenerictypes/**.java";
+  }
+
+  promote {
+    mlc "de.monticore.types.MCCollectionTypes";
+  }
+
+  uses {
+    include "$projectDir/src/main/java/de/monticore/types3/AbstractTypeVisitor.java";
+    include "$mp/com/google/common/base/Preconditions.class";
+    include "$mp/org/apache/commons/lang3/StringUtils.class";
+  }
+
+}

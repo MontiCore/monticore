@@ -1,0 +1,67 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+/**
+ * This grammar defines several additional literals for Numbers,
+ * which are common in computing, such as hexadecimals.
+ * The goal of this grammar is to ease the reuse of literals 
+ * in Java-like sublanguages
+*/
+
+component grammar MCHexNumbers extends
+                          MCNumbers, de.monticore.MCBasics {
+
+  /*========================================================================*/
+  /*== Hexadecimal =========================================================*/
+  /*========================================================================*/
+
+  /** ASTHexadecimal represents a positive Hexadecimal number.
+      These numbers start with "0x".
+        @attribute source String-representation.
+    */
+  Hexadecimal implements Number =
+    source:HexadecimalToken;
+
+  astrule Hexadecimal =
+    method public int getValueInt() {
+      return Integer.parseInt(getSource().substring(2),16);
+    }
+    method public long getValue() {
+      return Long.parseLong(getSource().substring(2),16);
+    }
+  ;
+
+  token HexadecimalToken
+    = '0' ('x' | 'X') HexDigit HexDigit*;
+
+  fragment token HexDigit
+    = '0'..'9'  | 'a'..'f'  | 'A'..'F' ;
+
+  /*========================================================================*/
+  /*== Hexadezimal with negative number ====================================*/
+  /*========================================================================*/
+
+  /** ASTHexInteger represents a positive or negative Hexadecimal number.
+      These numbers start with "0x" or "-0x".
+        @attribute source String-representation.
+    */
+  HexInteger implements Number =
+     (negative:["-"])? hexadecimalpart:HexadecimalToken;
+
+  astrule HexInteger =
+    method public int getValueInt() {
+      int a = Integer.parseInt(getHexadecimalpart().substring(2),16);
+      return negative ? -a : a;
+    }
+    method public long getValue() {
+      long a = Long.parseLong(getHexadecimalpart().substring(2),16);
+      return negative ? -a : a;
+    }
+    // source is handcoded: it adds the "-"
+    method public String getSource() {
+      String s = getHexadecimalpart();
+      return (negative ? "-" +s : s);
+    }
+  ;
+
+}
+

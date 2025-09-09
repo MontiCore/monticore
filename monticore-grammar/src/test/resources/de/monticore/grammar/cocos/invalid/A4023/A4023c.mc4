@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package  de.monticore.grammar.cocos.invalid.A4023;
+
+grammar A4023c extends de.monticore.grammar.cocos.invalid.A4023b{
+
+ A = "a";
+
+}

@@ -1,0 +1,20 @@
+package de.monticore.ocl;
+
+mlc OCLExpressions {
+
+  //export the grammar
+  export "$projectDir/src/main/grammars" {
+    include "de/monticore/ocl/OCLExpressions.mc4";
+  }
+
+  // export all Java files generated from the grammar
+  export "$projectDir/target/generated-sources/monticore/sourcecode" {
+    include "de/monticore/ocl/oclexpressions/**.java";
+  }
+
+  promote {
+    mlc "de.monticore.expressions.ExpressionsBasis";
+    mlc "de.monticore.types.MCBasicTypes";
+    mlc "de.monticore.symbols.BasicSymbols";
+  }
+}

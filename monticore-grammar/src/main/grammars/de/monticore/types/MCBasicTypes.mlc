@@ -1,0 +1,44 @@
+package de.monticore.types;
+
+mlc MCBasicTypes {
+
+  //export the grammar
+  export "$projectDir/src/main/grammars" {
+    include "de/monticore/types/MCBasicTypes.mc4";
+  }
+
+  //export handwritten code
+  export "$projectDir/src/main/java" {
+    include "de/monticore/types/mcbasictypes/**.java";
+    include "de/monticore/types/MCBasicTypes**.java";
+
+    include "de/monticore/types/check/FullSynthesizeFromMCBasicTypes.java";
+    include "de/monticore/types/check/SynthesizeSymTypeFromMCBasicTypes.java";
+  }
+
+  // export all Java files generated from the grammar
+  export "$projectDir/target/generated-sources/monticore/sourcecode" {
+    include "de/monticore/types/mcbasictypes/**.java";
+  }
+
+  promote {
+    mlc "de.monticore.MCBasics";
+    mlc "de.monticore.symbols.OOSymbols";
+  }
+
+  promote {
+    include "$projectDir/src/main/java/de/monticore/types/check/*.java";
+    // monticore-runtime
+    include "$mp/de/monticore/prettyprint/**";
+  }
+
+  uses {
+    include "$projectDir/src/main/java/de/monticore/types3/AbstractTypeVisitor.java";
+    include "$projectDir/src/main/java/de/monticore/types3/util/NameExpressionTypeCalculator.java";
+    include "$projectDir/src/main/java/de/monticore/types3/util/TypeContextCalculator.java";
+    include "$projectDir/src/main/java/de/monticore/types3/util/WithinScopeBasicSymbolsResolver.java";
+    include "$projectDir/src/main/java/de/monticore/types3/util/WithinTypeBasicSymbolsResolver.java";
+    include "$mp/com/google/common/base/Preconditions.class";
+    include "$mp/org/apache/commons/lang3/StringUtils.class";
+  }
+}

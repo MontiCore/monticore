@@ -1,0 +1,7 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.monticore.grammar;
+
+grammar TestFullyQualifiedGrammarSamePackage extends SamePackage, de.monticore.grammar.pack.DifferentPackage {
+    A = "A";
+}

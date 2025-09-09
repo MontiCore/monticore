@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.monticore.aggregation;
+
+grammar Foo extends de.monticore.expressions.CommonExpressions, de.monticore.MCBasics, de.monticore.literals.MCCommonLiterals {
+
+  symbol scope Bar = "bar" "{" Expression "}" Name;
+
+  ExtLiteral = Literal;
+}

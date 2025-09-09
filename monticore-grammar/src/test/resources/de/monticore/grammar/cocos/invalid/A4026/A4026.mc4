@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package  de.monticore.grammar.cocos.invalid.A4026;
+
+grammar A4026  {
+  token CARDINALITY = ('0'..'9')+ | '*' :
+  x -> int : { // Java code:
+  if (x.equals(" * "))
+  return -1;
+  else
+  return Integer.parseInt(x.getText());
+  };
+
+}

@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package  de.monticore.grammar.cocos.valid;
+
+grammar SymbolAndScopeOverwriting extends de.monticore.grammar.cocos.valid.SubGrammarWithSymbol {
+
+  SubSymbol = Name "sub";
+
+  symbol scope SubNonTer = Name "NonTer";
+
+  SubScope = Name;
+}

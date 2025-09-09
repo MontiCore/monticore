@@ -1,0 +1,20 @@
+{
+  "generated-using": "www.MontiCore.de technology",
+  "name": "Person",
+  "package": "java.lang",
+  "symbols": [
+    {
+      "kind": "de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol",
+      "name": "Person",
+      "isClass": false,
+      "isInterface": false,
+      "isEnum": false,
+      "isAbstract": false,
+      "isPrivate": false,
+      "isProtected": false,
+      "isPublic": false,
+      "isStatic": false,
+      "isFinal": false
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package  de.monticore.grammar.cocos.invalid.A4039;
+
+grammar A4039 extends de.monticore.common.TestTypes {
+
+  symbol A = Name State;
+
+  symbol State = "state" Name;
+
+  B = bstate:State@A;
+
+}

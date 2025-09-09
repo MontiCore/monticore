@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.monticore.testsymtabmill;
+
+grammar TestSymTabMill extends de.monticore.MCBasics {
+
+  symbol scope A = "B" Name;
+
+}

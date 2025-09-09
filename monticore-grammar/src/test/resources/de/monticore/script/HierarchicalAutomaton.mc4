@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+grammar HierarchicalAutomaton extends Automaton {
+  State =  "state" Name
+    ( "<<" ["initial"] ">>" |
+    "<<" ["final"] ">>" )* 
+    ( ";" | "{" State* "}" ) ;
+}

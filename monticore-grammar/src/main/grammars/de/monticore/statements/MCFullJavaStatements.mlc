@@ -1,0 +1,24 @@
+package de.monticore.statements;
+
+mlc MCFullJavaStatements {
+
+  //export the grammar
+  export "$projectDir/src/main/grammars" {
+    include "de/monticore/statements/MCFullJavaStatements.mc4";
+  }
+
+  // export all Java files generated from the grammar
+  export "$projectDir/target/generated-sources/monticore/sourcecode" {
+    include "de/monticore/statements/mcfulljavastatements/**.java";
+  }
+
+  promote {
+    mlc "de.monticore.statements.MCAssertStatements";
+    mlc "de.monticore.statements.MCExceptionStatements";
+    mlc "de.monticore.statements.MCLowLevelStatements";
+    mlc "de.monticore.statements.MCReturnStatements";
+    mlc "de.monticore.statements.MCSynchronizedStatements";
+    mlc "de.monticore.statements.MCArrayStatements";
+  }
+
+}

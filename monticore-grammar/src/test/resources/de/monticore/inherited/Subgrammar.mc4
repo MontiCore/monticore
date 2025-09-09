@@ -1,0 +1,24 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.monticore.inherited;
+
+grammar Subgrammar extends de.monticore.inherited.Supergrammar {
+
+  A = X;
+  
+  B extends X = D;
+  
+  M = K;
+  
+  D = L;
+  
+  // Y = "KK";
+  
+  L implements G  = "JJ";
+  
+  O = X*;
+
+  @Override
+  N = X?;
+ 
+}

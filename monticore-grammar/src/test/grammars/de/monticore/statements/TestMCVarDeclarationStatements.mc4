@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.monticore.statements;
+
+grammar TestMCVarDeclarationStatements extends de.monticore.statements.MCVarDeclarationStatements,
+                                               de.monticore.expressions.CombineExpressionsWithLiterals {
+
+  RootVarDeclaration = LocalVariableDeclarationStatement;
+
+  TModifier implements MCModifier = "private" | "static";
+
+}

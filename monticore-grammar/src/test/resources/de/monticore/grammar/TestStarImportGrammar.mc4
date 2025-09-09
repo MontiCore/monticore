@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.monticore.grammar;
+
+import de.monticore.grammar.*;
+import de.monticore.grammar.pack.*;
+
+grammar TestStarImportGrammar extends SamePackage, DifferentPackage {
+    A = "A";
+}

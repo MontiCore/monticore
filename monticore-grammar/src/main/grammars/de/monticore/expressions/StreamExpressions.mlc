@@ -1,0 +1,19 @@
+package de.monticore.expressions;
+
+mlc StreamExpressions {
+
+  //export the grammar
+  export "$projectDir/src/main/grammars" {
+    include "de/monticore/expressions/StreamExpressions.mc4";
+  }
+
+  // export all Java files generated from the grammar
+  export "$projectDir/target/generated-sources/monticore/sourcecode" {
+    include "de/monticore/expressions/streamexpressions/**.java";
+  }
+
+  promote {
+    mlc "de.monticore.expressions.CommonExpressions";
+  }
+
+}

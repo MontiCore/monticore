@@ -1,0 +1,88 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+/**
+ * This grammar defines several literals for Integer.
+ * The scope of this grammar is to
+ * ease the reuse of literals structures in Java-like sublanguages, e.g., by
+ * grammar inheritance or grammar embedment.
+*/
+
+component grammar MCNumbers extends de.monticore.MCBasics {
+
+  /*========================================================================*/
+  /*== Number ==============================================================*/
+  /*========================================================================*/
+
+  /** ASTNumber is the interface for longs
+        @method getSource() String-representation.
+        @method getValueInt() decoded value as int
+        @method getValue() decoded value as long
+    */
+  interface Number;
+
+  astrule Number =
+    method public String getSource()
+    { throw new UnsupportedOperationException(
+      "0xFF230 Method not implemented"); }
+    method public int getValueInt()
+    { throw new UnsupportedOperationException(
+      "0xFF231 Method not implemented"); }
+    method public long getValue()
+    { throw new UnsupportedOperationException(
+      "0xFF232 Method not implemented"); }
+  ;
+
+  /*========================================================================*/
+  /*== Decimal =============================================================*/
+  /*========================================================================*/
+
+  /** ASTDecimal represents a positive Decimal number.
+        @attribute source String-representation.
+    */
+  Decimal implements Number =
+    source:DecimalToken;
+
+  astrule Decimal =
+    method public int getValueInt() {
+      return Integer.parseInt(getSource());
+    }
+    method public long getValue() {
+      return Long.parseLong(getSource());
+    }
+  ;
+
+  token DecimalToken
+    = '0' | (NonZeroDigit Digit*);
+
+  fragment token Digit = '0'..'9' ;
+
+  fragment token NonZeroDigit = '1'..'9' ;
+
+  /*========================================================================*/
+  /*== Integer =============================================================*/
+  /*========================================================================*/
+
+  /** ASTInteger represents a positive or negative Decimal number.
+        @attribute source String-representation.
+    */
+  Integer implements Number =
+     (negative:["-"])? decimalpart:DecimalToken;
+
+  astrule Integer =
+    method public int getValueInt() {
+      int a = Integer.parseInt(getDecimalpart());
+      return negative ? -a : a;
+    }
+    method public long getValue() {
+      long a = Long.parseLong(getDecimalpart());
+      return negative ? -a : a;
+    }
+    // source is handcoded: it adds the "-"
+    method public String getSource() {
+      String s = getDecimalpart();
+      return (negative ? "-" +s : s);
+    }
+  ;
+
+}
+

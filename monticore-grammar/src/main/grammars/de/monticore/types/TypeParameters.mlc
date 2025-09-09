@@ -1,0 +1,29 @@
+package de.monticore.types;
+
+mlc TypeParameters {
+
+  //export the grammar
+  export "$projectDir/src/main/grammars" {
+    include "de/monticore/types/TypeParameters.mc4";
+  }
+
+  //export handwritten code
+  export "$projectDir/src/main/java" {
+    include "de/monticore/types/typeparameters/**.java";
+  }
+
+  // export all Java files generated from the grammar
+  export "$projectDir/target/generated-sources/monticore/sourcecode" {
+    include "de/monticore/types/typeparameters/**.java";
+  }
+
+  promote {
+    include "$projectDir/src/main/java/de/monticore/types3/*.java";
+  }
+
+  promote {
+    mlc "de.monticore.symbols.BasicSymbols";
+    mlc "de.monticore.types.MCBasicTypes";
+  }
+
+}

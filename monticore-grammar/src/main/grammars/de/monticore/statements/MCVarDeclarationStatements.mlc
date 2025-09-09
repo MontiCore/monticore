@@ -1,0 +1,38 @@
+package de.monticore.statements;
+
+mlc MCVarDeclarationStatements {
+
+  //export the grammar
+  export "$projectDir/src/main/grammars" {
+    include "de/monticore/statements/MCVarDeclarationStatements.mc4";
+  }
+
+  //export the handwritten TOP-classes and pretty printer
+  export "$projectDir/src/main/java" {
+    include "de/monticore/statements/mcvardeclarationstatements/**.java";
+  }
+
+  // export all Java files generated from the grammar
+  export "$projectDir/target/generated-sources/monticore/sourcecode" {
+    include "de/monticore/statements/mcvardeclarationstatements/**.java";
+  }
+
+  promote {
+    mlc "de.monticore.statements.MCStatementsBasis";
+    mlc "de.monticore.types.MCBasicTypes";
+    mlc "de.monticore.expressions.ExpressionsBasis";
+    mlc "de.monticore.symbols.OOSymbols";
+  }
+
+  promote {
+    //must be inlcuded to assign SymTypeExpression to the Declarator (FieldSymbol) of ASTLocalVariableDeclaration
+    include "$projectDir/src/main/java/de/monticore/grammar/grammar_withconcepts/FullSynthesizeFromMCSGT4Grammar.java";
+  }
+
+  uses {
+    // uses type check for CoCos
+    include "$projectDir/src/main/java/de/monticore/types/check/**.java";
+    include "$projectDir/src/main/java/de/monticore/types3/**.java";
+  }
+
+}

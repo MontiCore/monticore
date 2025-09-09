@@ -1,0 +1,106 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore;
+
+/* This is a MontiCore stable grammar.
+ * Adaptations -- if any -- are conservative. */
+
+import de.monticore.statements.*;
+import de.monticore.expressions.*;
+import de.monticore.literals.*;
+import de.monticore.symbols.*;
+import de.monticore.types.*;
+
+/**
+ * The JavaLight language defines a subset of the Java
+ * programming language. The language introduces Java
+ * method declarations, constructor declarations,
+ * interface method declarations, attributes, and
+ * annotations. The JavaLight language neither defines
+ * classes nor interfaces. However, it is easily reusable
+ * and extensible for the creation of more complex
+ * languages such as the complete Java programming language.
+ * For example, the JavaLight language is used in the
+ * MontiCore grammar language for specifying ast rules and
+ * symbol rules.
+*/
+
+component grammar JavaLight extends AssignmentExpressions,
+                                    JavaClassExpressions,
+                                    MCCommonLiterals,
+                                    MCCommonStatements,
+                                    MCArrayStatements,
+                                    MCReturnStatements,
+                                    TypeParameters {
+
+interface ClassBodyDeclaration;
+
+interface InterfaceBodyDeclaration;
+
+interface scope (shadowing non_exporting ordered)
+symbol JavaMethod extends Method = Name;
+
+symbolrule JavaMethod =
+    exceptions: de.monticore.types.check.SymTypeExpression*
+    annotations: de.monticore.types.check.SymTypeExpression*
+    isSynchronized: boolean
+    isNative:boolean
+    isStrictfp: boolean
+    isDefault: boolean;
+
+MethodDeclaration implements JavaMethod, ClassBodyDeclaration, InterfaceBodyDeclaration
+    =   MCModifier* TypeParameters?
+               MCReturnType Name FormalParameters (dim:"[" "]")*
+               ("throws" Throws)? (MCJavaBlock | ";");
+
+ConstructorDeclaration implements JavaMethod, ClassBodyDeclaration
+    =   MCModifier* TypeParameters? Name FormalParameters
+                ("throws" Throws)? MCJavaBlock;
+
+ConstDeclaration extends LocalVariableDeclarationStatement
+                implements ClassBodyDeclaration,
+		            InterfaceBodyDeclaration
+    =   LocalVariableDeclaration ";";
+
+Throws
+    =   (MCQualifiedName || ",")+;
+
+LastFormalParameter
+    =   JavaModifier*  MCType "..." DeclaratorId;
+
+FormalParameterListing
+    =   (FormalParameter || ",")+ ("," LastFormalParameter)?
+    |   LastFormalParameter;
+
+FormalParameters
+    =   "(" FormalParameterListing? ")";
+
+
+// ANNOTATIONS
+
+Annotation implements MCModifier,  ElementValue
+    =   "@" annotationName:MCQualifiedName
+            ( "(" AnnotationArguments? ")" )?;
+
+interface AnnotationArguments ;
+
+AnnotationPairArguments implements AnnotationArguments
+   =   (ElementValuePair || ",")+;
+
+interface ElementValue;
+
+ElementValueOrExpr implements AnnotationArguments
+    = ElementValue | Expression;
+
+ElementValuePair
+    =   Name "=" ElementValueOrExpr;
+
+ElementValueArrayInitializer implements ElementValue
+    =   "{" (ElementValueOrExpr || ",")* (",")? "}";
+
+// ARRAY-Creator
+
+ArrayDimensionByInitializer implements ArrayDimensionSpecifier
+    = (dim:"[" "]")+ ArrayInit;
+
+}
+

@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package  de.monticore.grammar.cocos.invalid.A4062;
+
+grammar A4062b {
+
+  A = "-";
+
+  splittoken "-";
+
+}

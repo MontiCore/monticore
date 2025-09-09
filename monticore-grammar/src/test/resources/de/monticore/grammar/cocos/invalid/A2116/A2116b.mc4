@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package  de.monticore.grammar.cocos.invalid.A2116;
+
+grammar A2116b {
+  external A;
+
+  interface B extends A;
+
+}

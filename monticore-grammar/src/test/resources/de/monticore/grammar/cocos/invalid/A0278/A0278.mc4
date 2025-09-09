@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package  de.monticore.grammar.cocos.invalid.A0278;
+
+grammar A0278 {
+
+  interface A;
+
+  B = A;
+
+}
