@@ -83,8 +83,6 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
 
   private static final String I_LEXICAS_SCOPE = "de.monticore.codegen.ast.lexicals._symboltable.ILexicalsScope";
 
-  private static final String AUTOMATON_ISYMBOL_SCOPE_MAP = "com.google.common.collect.LinkedListMultimap<String,de.monticore.symboltable.ISymbol>";
-
   @Before
   public void setUp() {
     this.mcTypeFacade = mcTypeFacade.getInstance();
@@ -488,27 +486,27 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
   public void testGetSymbolWithSubKindsMethod() {
     ASTCDMethod methodQualifiedName = getMethodBy("getQualifiedNameSymbolsWithSubKinds", scopeClass);
     assertDeepEquals(PUBLIC, methodQualifiedName.getModifier());
-    assertEquals(AUTOMATON_ISYMBOL_SCOPE_MAP, methodQualifiedName.getMCReturnType().printType());
+    assertEquals("com.google.common.collect.LinkedListMultimap<String,de.monticore.codegen.ast.lexicals._symboltable.QualifiedNameSymbol>", methodQualifiedName.getMCReturnType().printType());
     assertEquals(0, methodQualifiedName.sizeCDParameters());
 
     ASTCDMethod methodGetUnknown = getMethodBy("getUnknownSymbolsWithSubKinds", scopeClass);
     assertDeepEquals(PUBLIC, methodGetUnknown.getModifier());
-    assertEquals(AUTOMATON_ISYMBOL_SCOPE_MAP, methodGetUnknown.getMCReturnType().printType());
+    assertEquals("com.google.common.collect.LinkedListMultimap<String,de.monticore.symboltable.SymbolWithScopeOfUnknownKind>", methodGetUnknown.getMCReturnType().printType());
     assertEquals(0, methodGetUnknown.sizeCDParameters());
 
     ASTCDMethod methodGetFoo = getMethodBy("getFooSymbolsWithSubKinds", scopeClass);
     assertDeepEquals(PUBLIC, methodGetFoo.getModifier());
-    assertEquals(AUTOMATON_ISYMBOL_SCOPE_MAP, methodGetFoo.getMCReturnType().printType());
+    assertEquals("com.google.common.collect.LinkedListMultimap<String,de.monticore.codegen.symboltable.automaton._symboltable.FooSymbol>", methodGetFoo.getMCReturnType().printType());
     assertEquals(0, methodGetFoo.sizeCDParameters());
 
     ASTCDMethod methodGetState = getMethodBy("getStateSymbolsWithSubKinds", scopeClass);
     assertDeepEquals(PUBLIC, methodGetState.getModifier());
-    assertEquals(AUTOMATON_ISYMBOL_SCOPE_MAP, methodGetState.getMCReturnType().printType());
+    assertEquals("com.google.common.collect.LinkedListMultimap<String,de.monticore.codegen.symboltable.automaton._symboltable.StateSymbol>", methodGetState.getMCReturnType().printType());
     assertEquals(0, methodGetState.sizeCDParameters());
 
     ASTCDMethod methodGetAutomaton = getMethodBy("getAutomatonSymbolsWithSubKinds", scopeClass);
     assertDeepEquals(PUBLIC, methodGetAutomaton.getModifier());
-    assertEquals(AUTOMATON_ISYMBOL_SCOPE_MAP, methodGetAutomaton.getMCReturnType().printType());
+    assertEquals("com.google.common.collect.LinkedListMultimap<String,de.monticore.codegen.symboltable.automaton._symboltable.AutomatonSymbol>", methodGetAutomaton.getMCReturnType().printType());
     assertEquals(0, methodGetAutomaton.sizeCDParameters());
   }
 
