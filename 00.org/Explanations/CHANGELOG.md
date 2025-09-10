@@ -2,6 +2,91 @@
 
 # Release Notes
 
+## MontiCore 7.8.0
+released: TBD
+
+### Additions:
+
+- Test Framework (#141, #159)
+- Reproducible Gradle tasks (#139, #96)
+- Publish reports of a grammar (#94, #102)
+- FieldSymbols have isEnumConstant-field (#176)
+- Stream symbol library (#163)
+- TypeCheck:
+    - OOSymbolsSymTypeRelations (#176)
+    - Stream support (#93)
+    - Passthrough expression CTTI (#110)
+    - CompKind sourceNode (#124, #127)
+- Interpreter:
+    - Add MCJavaLiteralsInterpreter (#175)
+- Documentation:
+    - Improve generated JavaDocs (#164)
+    - Host JavaDocs online (#178)
+- StringLiteral Linebreak CoCo (#106)
+- Stereotype Symbols (#132)
+
+### Changes:
+
+- Mills:
+    - don't override the logger during init (#89, #100)
+    - Mills now have to be explicitly initialized (#141,  #161)
+    - do not have one delegate per partial grammar (#91)
+    - cleans the global scope during init (#101)
+- Gradle Compability (#160, #147)
+- Updated FreeMarker to 2.3.34  (#130)
+- Use \`src/main/configtemplates\` instead of \`src/main/resources\` as the template path (#108)
+- The MavenPublication type must be now specified explicitly (#182)
+- TypeCheck:
+    - String conversions are more strict (#118)
+- SymbolDeSer:
+    - replace hand-written DeSers with generated ones (#90, #115)
+    - Add scope param to CompKindDeserialization (#103)
+- Allow any expressions in stereotype values (#87)
+
+### Removals:
+
+- continue to deprecate TypeCheck 1 (#83, #166, #170, #177)
+
+### Fixes:
+
+- Handling of filepaths with spaces of the FileReaderWriter (#140)
+- Escaping of quotation symbols ' and " in implicit tokens (#165)
+- (generated) PrettyPrinter:
+    - properly respecting optionals in alts (#179)
+    - properly handle cascading conditions (#150)
+- Surrogates - fix NPE (#117)
+- Extending NonTerminals:
+    - astextends support for non DSL-classes (#183, #188)
+- TypeCheck
+    - partial replacement TC1 with TC3 (#85, #169, #172)
+    - add null checks (#189)
+    - generic constructor fixes (#186, #187)
+    - fix resolving (#154)
+    - Fix ilvaluerelations package (#152)
+    - LuB of numbers (#146)
+    - RegEx types for string literals (#86)
+    - fix RegEx-String SubTyping (#92)
+    - More consistent static delegates (#88)
+    - Variable selection depending on scopes (#142)
+    - Minor fixes (#121)
+- MontiTrans:
+    - fix replacements within nested opts (#145)
+    - DSTL-Generation:
+        - properly Override annotation (#185)
+        - handling of empty productions (#184)
+- OCLExpressions.mc4 make ASCII-128 compatible (#151)
+- Performance:
+    - of the type dispatcher class loading (#122)
+    - of the Groovy Engine (#95)
+    - of the Templating Engine (#128)
+- Parser:
+    - Single Quotation Mark in Terminals (#105)
+    - LSP support for inlined interfaces (#112)
+- Transitive Mill Delegation (#107)
+- Escape Stereo-Value content (#116, #125)
+- Incorrect AST-present, overridden Terminals (#167, #168)
+
+
 ## MontiCore 7.7.0
 released: 20.01.2025
 
