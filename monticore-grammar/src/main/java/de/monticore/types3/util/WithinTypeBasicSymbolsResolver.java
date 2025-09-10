@@ -175,7 +175,8 @@ public class WithinTypeBasicSymbolsResolver {
       SymTypeExpression thisType,
       String name,
       AccessModifier accessModifier,
-      Predicate<FunctionSymbol> predicate) {
+      Predicate<FunctionSymbol> predicate
+  ) {
     List<SymTypeOfFunction> resolvedSymTypes = new ArrayList<>();
     List<SymTypeOfFunction> resolvedInThis =
         resolveFunctionsInThisType(
