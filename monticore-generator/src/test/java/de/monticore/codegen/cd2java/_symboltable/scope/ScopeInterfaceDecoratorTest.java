@@ -19,7 +19,6 @@ import de.monticore.generating.GeneratorSetup;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
-
 import java.util.List;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;

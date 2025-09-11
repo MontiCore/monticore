@@ -2,30 +2,21 @@
 
 package mc.feature.symboltable;
 
-import de.monticore.symboltable.IScopeSpanningSymbol;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import mc.GeneratorIntegrationsTest;
-import mc.feature.symboltable.notopscope.NoTopScopeMill;
-import mc.feature.symboltable.notopscope._ast.ASTFoo;
-import mc.feature.symboltable.notopscope._parser.NoTopScopeParser;
-import mc.feature.symboltable.notopscope._symboltable.INoTopScopeArtifactScope;
-import mc.feature.symboltable.notopscope._symboltable.INoTopScopeGlobalScope;
 import mc.feature.symboltable.symbolswithsubkinds.SymbolsWithSubKindsMill;
 import mc.feature.symboltable.symbolswithsubkinds._ast.*;
 import mc.feature.symboltable.symbolswithsubkinds._parser.SymbolsWithSubKindsParser;
-import mc.feature.symboltable.symbolswithsubkinds._symboltable.ISymbolsWithSubKindsArtifactScope;
 import mc.feature.symboltable.symbolswithsubkinds._symboltable.ISymbolsWithSubKindsGlobalScope;
 import mc.feature.symboltable.symbolswithsubkinds._symboltable.ISymbolsWithSubKindsScope;
 import mc.feature.symboltable.symbolswithsubkinds._symboltable.SymbolsWithSubKindsScope;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Optional;
-
 
 public class SymbolsWithSubKindsTest extends GeneratorIntegrationsTest {
 

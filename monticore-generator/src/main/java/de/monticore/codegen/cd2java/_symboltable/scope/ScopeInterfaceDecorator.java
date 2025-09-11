@@ -2,8 +2,6 @@
 package de.monticore.codegen.cd2java._symboltable.scope;
 
 import com.google.common.collect.Lists;
-import de.monticore.ast.ASTCNode;
-import de.monticore.cd._symboltable.CDSymbolTables;
 import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd4code.CD4CodeMill;
@@ -14,7 +12,6 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
-import de.monticore.cdbasis._symboltable.ICDBasisScope;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.cd2java.AbstractDecorator;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
@@ -26,23 +23,17 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
-import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
-import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
-import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolTOP;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
-import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardTypeArgument;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
-
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
-import static de.monticore.cd.codegen.CD2JavaTemplates.VALUE;
 import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.ACCEPT_METHOD;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.*;
@@ -266,7 +257,10 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
       //getSymbols method
       String getSymbolsMethodName = "get" + className + "Symbols";
       resolveMethods.add(createGetSymbolsMethod(getSymbolsMethodName, symbolFullTypeName));
-      resolveMethods.add(createGetSymbolsWithSubKindsMethod(getSymbolsMethodName+"WithSubKinds", symbolFullTypeName, symbolProd.getSymbol()));
+
+      //getSymbolsWithSubKinds method
+      String getSymbolsWithSubKindsMethodName = "get" + className + "SymbolsWithSubKinds";
+      resolveMethods.add(createGetSymbolsWithSubKindsMethod(getSymbolsWithSubKindsMethodName, symbolFullTypeName, symbolProd.getSymbol()));
 
       //getLocalSymbols method
       String getLocalSymbolsMethodName = "getLocal" + className + "Symbols";

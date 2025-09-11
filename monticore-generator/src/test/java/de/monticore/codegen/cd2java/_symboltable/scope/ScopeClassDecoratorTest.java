@@ -22,8 +22,6 @@ import de.monticore.generating.GeneratorSetup;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.Assertions;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

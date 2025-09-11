@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
-package mc.feature.symboltable;
 
+package mc.feature.symboltable;
 
 grammar SymbolsWithSubKinds extends mc.common.Basics{
     symbol scope Zoo =
@@ -8,43 +8,39 @@ grammar SymbolsWithSubKinds extends mc.common.Basics{
 
     interface Vehicle;
 
-     symbol scope Car extends Zoo implements Vehicle =
-        "car" Name;
+    symbol scope Car extends Zoo implements Vehicle =
+      "car" Name;
 
-      interface Leg;
+    interface Leg;
 
-      symbol scope Animal extends Zoo implements Leg =
-        "animal" Name;
+    symbol scope Animal extends Zoo implements Leg =
+      "animal" Name;
 
 
-      symbol scope Cabriolet extends Car =
-        "cabriolet" Name;
+    symbol scope Cabriolet extends Car =
+      "cabriolet" Name;
 
-      symbol scope Beatle extends Cabriolet =
-        "beatle" Name;
+    symbol scope Beatle extends Cabriolet =
+      "beatle" Name;
 
-      symbol scope Mazda extends Cabriolet = "mazda" Name;
+    symbol scope Mazda extends Cabriolet =
+      "mazda" Name;
 
-      symbol scope Truck extends Car =
-        "truck" Name;
+    symbol scope Truck extends Car =
+      "truck" Name;
 
-      symbol scope Ford extends Truck =
-        "ford" Name;
+    symbol scope Ford extends Truck =
+      "ford" Name;
 
-      symbol scope Volvo extends Truck =
-        "volvo" Name;
+    symbol scope Volvo extends Truck =
+      "volvo" Name;
 
-      symbol scope Dog extends Animal =
-        "dog" Name;
+    symbol scope Dog extends Animal =
+      "dog" Name;
 
-      symbol scope Cat extends Animal =
-        "cat" Name;
+    symbol scope Cat extends Animal =
+      "cat" Name;
 
-      symbol scope Fish extends Animal =
-        "fish" Name;
-
-     Tires = "tires" Name;
-
-     Legs = "legs" Name;
-
+    symbol scope Fish extends Animal =
+      "fish" Name;
 }

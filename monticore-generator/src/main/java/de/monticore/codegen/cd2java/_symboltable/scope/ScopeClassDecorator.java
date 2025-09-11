@@ -1,10 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._symboltable.scope;
 
-import com.github.javaparser.ast.CompilationUnit;
 import com.google.common.collect.ListMultimap;
-import de.monticore.cd._symboltable.CDSymbolTables;
-import de.monticore.cd._symboltable.OOTypeHelper;
 import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd4code.CD4CodeMill;
@@ -25,18 +22,11 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
-import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolTOP;
-import de.monticore.symbols.oosymbols._symboltable.IOOTypeSymbolResolver;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardTypeArgument;
-import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardTypeArgumentBuilder;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
-import de.se_rwth.commons.logging.Log;
-import org.gradle.internal.resolve.resolver.ArtifactResolver;
-
 import java.util.*;
 import java.util.stream.Collectors;
 
