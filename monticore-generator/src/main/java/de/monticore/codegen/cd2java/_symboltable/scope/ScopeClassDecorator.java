@@ -120,9 +120,6 @@ public class ScopeClassDecorator extends AbstractDecorator {
     Map<String, ASTCDAttribute> symbolAttributes = createSymbolAttributes(
         symbolInput.getCDDefinition().getCDClassesList(), symbolTableService.getCDSymbol());
     symbolAttributes.putAll(getSuperSymbolAttributes());
-    for(ASTCDAttribute attribute: symbolAttributes.values()) {
-      attribute.setEnclosingScope(scopeInput.getEnclosingScope());
-    }
 
     List<ASTCDMethod> symbolMethods = createSymbolMethods(symbolAttributes.values(), symbolInput.getCDDefinition());
 
