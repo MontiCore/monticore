@@ -2,50 +2,49 @@
 package mc.feature.symboltable;
 
 
-grammar SymbolsWithSubKinds {
+grammar SymbolsWithSubKinds extends mc.common.Basics{
+    symbol scope Zoo =
+      "zoo" Name "{" (Car | Animal)* "}" ;
 
-  symbol scope Zoo =
-    "zoo" Name "{" (Vehicle | Animal)* "}" ;
+    interface Vehicle;
 
-  interface Vehicle;
+     symbol scope Car extends Zoo implements Vehicle =
+        "car" Name;
 
-  symbol scope Car implements Vehicle =
-    "car" Name;
+      interface Leg;
 
-  interface Leg;
+      symbol scope Animal extends Zoo implements Leg =
+        "animal" Name;
 
-  symbol scope Animal implements Leg =
-    "animal" Name;
 
-  interface Tire;
+      symbol scope Cabriolet extends Car =
+        "cabriolet" Name;
 
-  symbol scope Cabriolet extends Car implements Tire =
-    "cabriolet" Name;
+      symbol scope Beatle extends Cabriolet =
+        "beatle" Name;
 
-  symbol scope Beatle extends Cabriolet =
-    "beatle" Name;
+      symbol scope Mazda extends Cabriolet = "mazda" Name;
 
-  symbol scope Mazda extends Cabriolet = "mazda" Name;
+      symbol scope Truck extends Car =
+        "truck" Name;
 
-  symbol scope Truck extends Car implements Tire =
-    "truck" Name;
+      symbol scope Ford extends Truck =
+        "ford" Name;
 
-  symbol scope Ford extends Truck =
-    "ford" Name;
+      symbol scope Volvo extends Truck =
+        "volvo" Name;
 
-  symbol scope Volvo extends Truck =
-    "volvo" Name;
+      symbol scope Dog extends Animal =
+        "dog" Name;
 
-  symbol scope Dog extends Animal =
-    "dog" Name;
+      symbol scope Cat extends Animal =
+        "cat" Name;
 
-  symbol scope Cat extends Animal =
-    "cat" Name;
+      symbol scope Fish extends Animal =
+        "fish" Name;
 
-  symbol scope Fish extends Animal =
-    "fish" Name;
+     Tires = "tires" Name;
 
-  token Name =
-    ( 'a'..'z' | 'A'..'Z' | '_' | '$' )( 'a'..'z' | 'A'..'Z' | '_' | '0'..'9' | '$' )*;
+     Legs = "legs" Name;
 
 }
