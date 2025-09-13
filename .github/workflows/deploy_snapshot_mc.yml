@@ -36,6 +36,16 @@ jobs:
           arguments: deployMC ${{env.GRADLE_CLI_OPTS}} -PmavenPassword=${{secrets.SE_NEXUS_PASSWORD}} -PmavenUser=${{secrets.SE_NEXUS_USER}} -PgenEMF=true -PgenTR=true -PgenTagging=true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload Javadoc
+        uses: actions/upload-artifact@v4
+        # uploads the Javadocs to be used
+        with:
+          name: javadoc
+          path: |
+            monticore-runtime/target/docs/javadoc/
+            monticore-runtime/target/docs/testFixturesJavadoc/
+            monticore-grammar/target/docs/javadoc/
+            monticore-grammar/target/docs/testFixturesJavadoc/
 
   # Trigger GitHub downstream projects (without reporting the pipeline result)
   trigger-github-downstream:

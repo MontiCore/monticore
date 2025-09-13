@@ -29,7 +29,6 @@ import de.se_rwth.commons.logging.Log;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -176,6 +175,45 @@ public class WithinTypeBasicSymbolsResolver {
       SymTypeExpression thisType,
       String name,
       AccessModifier accessModifier,
+      Predicate<FunctionSymbol> predicate
+  ) {
+    List<SymTypeOfFunction> resolvedSymTypes = new ArrayList<>();
+    List<SymTypeOfFunction> resolvedInThis =
+        resolveFunctionsInThisType(
+            thisType, name, accessModifier, predicate
+        );
+    resolvedSymTypes.addAll(resolvedInThis);
+    // search in super types
+    List<SymTypeOfFunction> resolvedInSuper =
+        resolvedFunctionsInSuperTypes(
+            thisType, name, accessModifier, predicate
+        );
+    // filter based on being overridden / hidden (static)
+    // Java Spec 20 8.4.8.1 overriding methods need to have the SAME signature,
+    // e.g., Integer getX() overrides Number getX()
+    // e.g., void setX(Number x) does not override void setX(Integer x)
+    // we assume that CoCos corresponding to the compile time errors of
+    // Java Spec 20 8.4.8 are used
+    for (SymTypeOfFunction superFunc : resolvedInSuper) {
+      if (resolvedInThis.stream()
+          .noneMatch((f -> f.deepEqualsSignature(superFunc)))) {
+        resolvedSymTypes.add(superFunc);
+      }
+    }
+
+    // replace type variables
+    List<SymTypeOfFunction> symTypesFreeVarsReplaced = resolvedSymTypes.stream()
+        .map(t -> replaceFreeTypeVariables(thisType, t))
+        .map(SymTypeExpression::asFunctionType)
+        .collect(Collectors.toList());
+
+    return symTypesFreeVarsReplaced;
+  }
+
+  protected List<SymTypeOfFunction> resolveFunctionsInThisType(
+      SymTypeExpression thisType,
+      String name,
+      AccessModifier accessModifier,
       Predicate<FunctionSymbol> predicate) {
     List<SymTypeOfFunction> resolvedSymTypes;
     Optional<IBasicSymbolsScope> spannedScopeOpt = getSpannedScope(thisType);
@@ -201,7 +239,14 @@ public class WithinTypeBasicSymbolsResolver {
         resolvedSymTypes.add(funcType);
       }
     }
-    // search in super types
+    return resolvedSymTypes;
+  }
+
+  protected List<SymTypeOfFunction> resolvedFunctionsInSuperTypes(
+      SymTypeExpression thisType,
+      String name,
+      AccessModifier accessModifier,
+      Predicate<FunctionSymbol> predicate) {
     // private -> protected while searching in super types
     AccessModifier superModifier = private2Protected(accessModifier);
     List<SymTypeExpression> superTypes = getSuperTypes(thisType);
@@ -209,20 +254,6 @@ public class WithinTypeBasicSymbolsResolver {
     for (SymTypeExpression superType : superTypes) {
       List<SymTypeOfFunction> resolvedInSuper =
           resolveFunctions(superType, name, superModifier, predicate);
-      // filter based on being overridden / hidden (static)
-      // Java Spec 20 8.4.8.1 overriding methods need to have the SAME signature,
-      // e.g., Integer getX() overrides Number getX()
-      // e.g., void setX(Number x) does not override void setX(Integer x)
-      // we assume that CoCos corresponding to the compile time errors of
-      // Java Spec 20 8.4.8 are used
-      for (Iterator<SymTypeOfFunction> fItr = resolvedInSuper.iterator();
-           fItr.hasNext(); ) {
-        SymTypeOfFunction superFunc = fItr.next();
-        if (resolvedSymTypes.stream()
-            .anyMatch(f -> f.deepEqualsSignature(superFunc))) {
-          fItr.remove();
-        }
-      }
       superFuncs.addAll(resolvedInSuper);
     }
     // filter based on being inherited twice (diamond pattern)
@@ -240,15 +271,7 @@ public class WithinTypeBasicSymbolsResolver {
         filteredSuperFuncs.add(func1);
       }
     }
-    resolvedSymTypes.addAll(filteredSuperFuncs);
-
-    // replace type variables
-    List<SymTypeOfFunction> symTypesFreeVarsReplaced = resolvedSymTypes.stream()
-        .map(t -> replaceFreeTypeVariables(thisType, t))
-        .map(SymTypeExpression::asFunctionType)
-        .collect(Collectors.toList());
-
-    return symTypesFreeVarsReplaced;
+    return filteredSuperFuncs;
   }
 
   /**
@@ -668,6 +691,21 @@ public class WithinTypeBasicSymbolsResolver {
     return newModifier;
   }
 
+  protected Map<SymTypeVariable, SymTypeInferenceVariable> getUnboundVariableReplaceMap(
+      List<SymTypeVariable> varsNotToReplace, SymTypeExpression type) {
+    // 1. find all variables
+    Map<SymTypeVariable, SymTypeInferenceVariable> allVarMap =
+        TypeParameterRelations.getFreeVariableReplaceMap(type, BasicSymbolsMill.scope());
+    // 2. get variables that actually need to be replaced (unbound)
+    Map<SymTypeVariable, SymTypeInferenceVariable> freeVarMap = new HashMap<>();
+    for (Map.Entry<SymTypeVariable, SymTypeInferenceVariable> e : allVarMap.entrySet()) {
+      if (varsNotToReplace.stream().noneMatch(e.getKey()::deepEquals)) {
+        freeVarMap.put(e.getKey(), e.getValue());
+      }
+    }
+    return freeVarMap;
+  }
+
   protected SymTypeExpression replaceFreeTypeVariables(
       SymTypeExpression thisType,
       SymTypeExpression type
@@ -682,26 +720,18 @@ public class WithinTypeBasicSymbolsResolver {
     // In the example above, resolving f in B<T,R> will result in
     // () -> C<#FV,T,R> where #FV is a free type variable
 
-    // 1. find all variables
-    Map<SymTypeVariable, SymTypeInferenceVariable> allVarMap = TypeParameterRelations
-        .getFreeVariableReplaceMap(type, BasicSymbolsMill.scope());
-    // 2. find all type variables already bound by the type resolved in
-    List<SymTypeVariable> varsAlreadyBound = new SymTypeCollectionVisitor()
-        .calculate(thisType, SymTypeExpression::isTypeVariable).stream()
-        .map(SymTypeExpression::asTypeVariable)
-        .collect(Collectors.toList());
-    // 3. get variables that actually need to be replaced (unbound)
-    Map<SymTypeVariable, SymTypeInferenceVariable> freeVarMap = new HashMap<>();
-    for (Map.Entry<SymTypeVariable, SymTypeInferenceVariable> e : allVarMap.entrySet()) {
-      if (varsAlreadyBound.stream().noneMatch(e.getKey()::deepEquals)) {
-        freeVarMap.put(e.getKey(), e.getValue());
-      }
-    }
-    // 3.5 double check that the symTab does make any sense
+    // 1. find all type variables already bound by the type resolved in
+    List<SymTypeVariable> varsAlreadyBound =
+        new SymTypeCollectionVisitor().calculate(thisType, SymTypeExpression::isTypeVariable)
+            .stream().map(SymTypeExpression::asTypeVariable).collect(Collectors.toList());
+    // 2. get unbound variable replacement map
+    Map<SymTypeVariable, SymTypeInferenceVariable> freeVarMap =
+        getUnboundVariableReplaceMap(varsAlreadyBound, type);
+    // 2.5 double check that the symTab does make any sense
     assertTypeVarsAreIncluded(type, freeVarMap.keySet());
-    // 4. actually replace the free variables
-    SymTypeExpression typeVarsReplaced = TypeParameterRelations
-        .replaceTypeVariables(type, freeVarMap);
+    // 3. actually replace the free variables
+    SymTypeExpression typeVarsReplaced =
+        TypeParameterRelations.replaceTypeVariables(type, freeVarMap);
 
     return typeVarsReplaced;
   }

@@ -5,17 +5,19 @@ import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
+import de.monticore.symbols.oosymbols.types3.OOSymbolsSymTypeRelations;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.modifiers.StaticAccessModifier;
 import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.check.SymTypeInferenceVariable;
 import de.monticore.types.check.SymTypeOfFunction;
+import de.monticore.types.check.SymTypeVariable;
+import de.monticore.types3.generics.TypeParameterRelations;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * resolves within a type,
@@ -81,8 +83,13 @@ public class OOWithinTypeBasicSymbolsResolver
     }
 
     // do not search super types for constructors
-
-    return resolvedSymTypes;
+    
+    List<SymTypeOfFunction> symTypesFreeVarsReplaced = resolvedSymTypes.stream()
+        .map(this::replaceFreeConstructorTypeVariables)
+        .map(SymTypeExpression::asFunctionType)
+        .collect(Collectors.toList());
+    
+    return symTypesFreeVarsReplaced;
   }
 
   // Helper
@@ -123,12 +130,20 @@ public class OOWithinTypeBasicSymbolsResolver
     );
   }
 
-  // Helper
+  protected SymTypeExpression replaceFreeConstructorTypeVariables(SymTypeExpression type) {
+    // 1. get unbound variable replacement map
+    Map<SymTypeVariable, SymTypeInferenceVariable> freeVarMap =
+        getUnboundVariableReplaceMap(Collections.emptyList(), type);
+    // 2. actually replace the free variables
+    SymTypeExpression typeVarsReplaced =
+        TypeParameterRelations.replaceTypeVariables(type, freeVarMap);
 
+    return typeVarsReplaced;
+  }
+  
   protected boolean isConstructor(FunctionSymbol func) {
     if (OOSymbolsMill.typeDispatcher().isOOSymbolsMethod(func)) {
-      MethodSymbol method =
-          OOSymbolsMill.typeDispatcher().asOOSymbolsMethod(func);
+      MethodSymbol method = OOSymbolsMill.typeDispatcher().asOOSymbolsMethod(func);
       return method.isIsConstructor();
     }
     return false;
