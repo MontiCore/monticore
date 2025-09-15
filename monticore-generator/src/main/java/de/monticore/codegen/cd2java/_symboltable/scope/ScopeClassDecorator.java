@@ -380,14 +380,12 @@ public class ScopeClassDecorator extends AbstractDecorator {
     ASTMCType returnType = astcdAttribute.getMCType();
     ASTCDAttribute returnAttribute = getCDAttributeFacade()
             .createAttribute(PROTECTED.build(), returnType, astcdAttribute.getName());
-    this.replaceTemplate(VALUE, returnAttribute,
-            new StringHookPoint("= com.google.common.collect.LinkedListMultimap.create()"));
 
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), returnAttribute.getMCType(),
             "get" + StringTransformations.capitalize(astcdAttribute.getName())+"WithSubKinds");
 
     //calculate subkindsMap for the symbol
-    List<String> result = new ArrayList<>();
+    Set<String> result = new HashSet<>();
     List<ASTCDType> symbols = symbolTableService.getSymbolDefiningProds(symbolDefinition);
     symbols.addAll(symbolTableService.getSymbolDefiningSuperProds());
     ListMultimap<String, String> subKinds = SymbolKindHierarchies
@@ -397,7 +395,7 @@ public class ScopeClassDecorator extends AbstractDecorator {
     List<String> lastAttributeNames = new ArrayList<>();
     //as all attribute come in the Form <kind>Symbols,
     // we need to cut the Symbols part away and capitalize the first letter
-    lastAttributeNames.add(StringTransformations.capitalize(astcdAttribute.getName().substring(0, astcdAttribute.getName().length()- 7)));
+    lastAttributeNames.add(StringTransformations.capitalize(symbolTableService.getSimpleNameFromSymbolName(astcdAttribute.getName())));
     while (!lastAttributeNames.isEmpty()){
       List<String> newAttributeNames = new ArrayList<>();
       for(String s: lastAttributeNames){

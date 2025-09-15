@@ -63,17 +63,49 @@ public class SymbolsWithSubKindsTest extends GeneratorIntegrationsTest {
         Assertions.assertSame(4,spannedScope.getAnimalSymbolsWithSubKinds().size());
         Assertions.assertSame(11, spannedScope.getZooSymbolsWithSubKinds().size());
 
-        Assertions.assertEquals("carFordName", spannedScope.getFordSymbolsWithSubKinds().values().get(0).getName());
-        Assertions.assertEquals("carVolvoName", spannedScope.getVolvoSymbolsWithSubKinds().values().get(0).getName());
-        Assertions.assertEquals("carTruckName", spannedScope.getTruckSymbolsWithSubKinds().values().stream().filter(m -> m.getAstNode().getClass().equals(ASTTruck.class)).findAny().get().getName());
-        Assertions.assertEquals("carMazdaName", spannedScope.getMazdaSymbolsWithSubKinds().values().get(0).getName());
-        Assertions.assertEquals("carBeatleName", spannedScope.getBeatleSymbolsWithSubKinds().values().get(0).getName());
+        Assertions.assertEquals("carFordName",      spannedScope.getFordSymbolsWithSubKinds().values().get(0).getName());
+        Assertions.assertEquals("carVolvoName",     spannedScope.getVolvoSymbolsWithSubKinds().values().get(0).getName());
+
+        Assertions.assertEquals("carFordName",      spannedScope.getTruckSymbolsWithSubKinds().values().stream().filter(m -> m.getAstNode().getClass().equals(ASTFord.class)).findAny().get().getName());
+        Assertions.assertEquals("carVolvoName",     spannedScope.getTruckSymbolsWithSubKinds().values().stream().filter(m -> m.getAstNode().getClass().equals(ASTVolvo.class)).findAny().get().getName());
+        Assertions.assertEquals("carTruckName",     spannedScope.getTruckSymbolsWithSubKinds().values().stream().filter(m -> m.getAstNode().getClass().equals(ASTTruck.class)).findAny().get().getName());
+
+        Assertions.assertEquals("carMazdaName",     spannedScope.getMazdaSymbolsWithSubKinds().values().get(0).getName());
+        Assertions.assertEquals("carBeatleName",    spannedScope.getBeatleSymbolsWithSubKinds().values().get(0).getName());
+
+        Assertions.assertEquals("carMazdaName",     spannedScope.getCabrioletSymbolsWithSubKinds().values().stream().filter(m -> m.getAstNode().getClass().equals(ASTMazda.class)).findAny().get().getName());
+        Assertions.assertEquals("carBeatleName",    spannedScope.getCabrioletSymbolsWithSubKinds().values().stream().filter(m -> m.getAstNode().getClass().equals(ASTBeatle.class)).findAny().get().getName());
         Assertions.assertEquals("carCabrioletName", spannedScope.getCabrioletSymbolsWithSubKinds().values().stream().filter(m -> m.getAstNode().getClass().equals(ASTCabriolet.class)).findAny().get().getName());
-        Assertions.assertEquals("carCarName", spannedScope.getCarSymbolsWithSubKinds().values().stream().filter(m -> m.getAstNode().getClass().equals(ASTCar.class)).findAny().get().getName());
-        Assertions.assertEquals("animalDogName", spannedScope.getDogSymbolsWithSubKinds().values().get(0).getName());
-        Assertions.assertEquals("animalCatName", spannedScope.getCatSymbolsWithSubKinds().values().get(0).getName());
-        Assertions.assertEquals("animalFishName", spannedScope.getFishSymbolsWithSubKinds().values().get(0).getName());
+
+        Assertions.assertEquals("carFordName",      spannedScope.getCarSymbolsWithSubKinds().values().stream().filter(m -> m.getAstNode().getClass().equals(ASTFord.class)).findAny().get().getName());
+        Assertions.assertEquals("carVolvoName",     spannedScope.getCarSymbolsWithSubKinds().values().stream().filter(m -> m.getAstNode().getClass().equals(ASTVolvo.class)).findAny().get().getName());
+        Assertions.assertEquals("carTruckName",     spannedScope.getCarSymbolsWithSubKinds().values().stream().filter(m -> m.getAstNode().getClass().equals(ASTTruck.class)).findAny().get().getName());
+        Assertions.assertEquals("carMazdaName",     spannedScope.getCarSymbolsWithSubKinds().values().stream().filter(m -> m.getAstNode().getClass().equals(ASTMazda.class)).findAny().get().getName());
+        Assertions.assertEquals("carBeatleName",    spannedScope.getCarSymbolsWithSubKinds().values().stream().filter(m -> m.getAstNode().getClass().equals(ASTBeatle.class)).findAny().get().getName());
+        Assertions.assertEquals("carCabrioletName", spannedScope.getCarSymbolsWithSubKinds().values().stream().filter(m -> m.getAstNode().getClass().equals(ASTCabriolet.class)).findAny().get().getName());
+        Assertions.assertEquals("carCarName",       spannedScope.getCarSymbolsWithSubKinds().values().stream().filter(m -> m.getAstNode().getClass().equals(ASTCar.class)).findAny().get().getName());
+
+        Assertions.assertEquals("animalDogName",    spannedScope.getDogSymbolsWithSubKinds().values().get(0).getName());
+        Assertions.assertEquals("animalCatName",    spannedScope.getCatSymbolsWithSubKinds().values().get(0).getName());
+        Assertions.assertEquals("animalFishName",   spannedScope.getFishSymbolsWithSubKinds().values().get(0).getName());
+
+        Assertions.assertEquals("animalDogName",    spannedScope.getAnimalSymbolsWithSubKinds().values().stream().filter(m -> m.getAstNode().getClass().equals(ASTDog.class)).findAny().get().getName());
+        Assertions.assertEquals("animalCatName",    spannedScope.getAnimalSymbolsWithSubKinds().values().stream().filter(m -> m.getAstNode().getClass().equals(ASTCat.class)).findAny().get().getName());
+        Assertions.assertEquals("animalFishName",   spannedScope.getAnimalSymbolsWithSubKinds().values().stream().filter(m -> m.getAstNode().getClass().equals(ASTFish.class)).findAny().get().getName());
         Assertions.assertEquals("animalAnimalName", spannedScope.getAnimalSymbolsWithSubKinds().values().stream().filter(m -> m.getAstNode().getClass().equals(ASTAnimal.class)).findAny().get().getName());
+
+        Assertions.assertEquals("carFordName",      spannedScope.getZooSymbolsWithSubKinds().values().stream().filter(m -> m.getAstNode().getClass().equals(ASTFord.class)).findAny().get().getName());
+        Assertions.assertEquals("carVolvoName",     spannedScope.getZooSymbolsWithSubKinds().values().stream().filter(m -> m.getAstNode().getClass().equals(ASTVolvo.class)).findAny().get().getName());
+        Assertions.assertEquals("carTruckName",     spannedScope.getZooSymbolsWithSubKinds().values().stream().filter(m -> m.getAstNode().getClass().equals(ASTTruck.class)).findAny().get().getName());
+        Assertions.assertEquals("carMazdaName",     spannedScope.getZooSymbolsWithSubKinds().values().stream().filter(m -> m.getAstNode().getClass().equals(ASTMazda.class)).findAny().get().getName());
+        Assertions.assertEquals("carBeatleName",    spannedScope.getZooSymbolsWithSubKinds().values().stream().filter(m -> m.getAstNode().getClass().equals(ASTBeatle.class)).findAny().get().getName());
+        Assertions.assertEquals("carCabrioletName", spannedScope.getZooSymbolsWithSubKinds().values().stream().filter(m -> m.getAstNode().getClass().equals(ASTCabriolet.class)).findAny().get().getName());
+        Assertions.assertEquals("carCarName",       spannedScope.getZooSymbolsWithSubKinds().values().stream().filter(m -> m.getAstNode().getClass().equals(ASTCar.class)).findAny().get().getName());
+        Assertions.assertEquals("animalDogName",    spannedScope.getZooSymbolsWithSubKinds().values().stream().filter(m -> m.getAstNode().getClass().equals(ASTDog.class)).findAny().get().getName());
+        Assertions.assertEquals("animalCatName",    spannedScope.getZooSymbolsWithSubKinds().values().stream().filter(m -> m.getAstNode().getClass().equals(ASTCat.class)).findAny().get().getName());
+        Assertions.assertEquals("animalFishName",   spannedScope.getZooSymbolsWithSubKinds().values().stream().filter(m -> m.getAstNode().getClass().equals(ASTFish.class)).findAny().get().getName());
+        Assertions.assertEquals("animalAnimalName", spannedScope.getZooSymbolsWithSubKinds().values().stream().filter(m -> m.getAstNode().getClass().equals(ASTAnimal.class)).findAny().get().getName());
+        Assertions.assertEquals("ZooName",          spannedScope.getZooSymbolsWithSubKinds().values().stream().filter(m -> m.getAstNode().getClass().equals(ASTZoo.class)).findAny().get().getName());
     }
 
     /**

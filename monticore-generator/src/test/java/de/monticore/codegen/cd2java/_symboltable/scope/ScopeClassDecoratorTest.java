@@ -482,6 +482,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testGetSymbolWithSubKindsMethod() {
+    //TODO machen wie oben
     ASTCDMethod methodQualifiedName = getMethodBy("getQualifiedNameSymbolsWithSubKinds", scopeClass);
     assertDeepEquals(PUBLIC, methodQualifiedName.getModifier());
     assertEquals("com.google.common.collect.LinkedListMultimap<String,de.monticore.codegen.ast.lexicals._symboltable.QualifiedNameSymbol>", methodQualifiedName.getMCReturnType().printType());
