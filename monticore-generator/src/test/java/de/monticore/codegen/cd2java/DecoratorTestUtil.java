@@ -87,6 +87,14 @@ public final class DecoratorTestUtil {
         m -> parameterSize == m.getCDParameterList().size()));
   }
 
+  public static List<ASTCDMethod> getMethodsBy(List<ASTCDMethod> methods, List<Predicate<ASTCDMethod>> predicates) {
+    return filterMethods(methods, predicates);
+  }
+
+  public static ASTCDMethod getMethodBy(List<ASTCDMethod> methods, List<Predicate<ASTCDMethod>> predicates) {
+    return filterMethodsOrFail(methods, predicates);
+  }
+
   public static ASTCDMethod getMethodBy(String name, List<ASTCDMethod> methods) {
     return filterMethodsOrFail(methods, Collections.singletonList(
         m -> name.equals(m.getName())));

@@ -26,9 +26,7 @@ grammar SymbolsWithSubKinds extends mc.common.Basics{
     symbol scope Mazda extends Cabriolet =
       "mazda" Name;
 
-    interface symbol Truckbed = Name;
-
-    symbol scope Truck extends Car implements Truckbed =
+    symbol scope Truck extends Car =
       "truck" Name;
 
     symbol scope Ford extends Truck =

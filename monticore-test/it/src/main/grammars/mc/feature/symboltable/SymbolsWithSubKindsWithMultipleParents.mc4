@@ -1,0 +1,48 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package mc.feature.symboltable;
+
+grammar SymbolsWithSubKindsWithMultipleParents extends mc.common.Basics{
+//    symbol scope Zoo =
+//      "zoo" Name "{" (Car | Animal)* "}" ;
+//
+//    interface Vehicle;
+//
+//    symbol scope Car extends Zoo implements Vehicle =
+//      "car" Name;
+//
+//    interface Leg;
+//
+//    symbol scope Animal extends Zoo implements Leg =
+//      "animal" Name;
+//
+//
+//    symbol scope Cabriolet extends Car =
+//      "cabriolet" Name;
+//
+//    symbol scope Beatle extends Cabriolet =
+//      "beatle" Name;
+//
+//    symbol scope Mazda extends Cabriolet =
+//      "mazda" Name;
+//
+//    interface symbol Truckbed = Name;
+//
+//    symbol scope Truck extends Car implements Truckbed =
+//      "truck" Name;
+//
+//    symbol scope Ford extends Truck =
+//      "ford" Name;
+//
+//    symbol scope Volvo extends Truck =
+//      "volvo" Name;
+//
+//    symbol scope Dog extends Animal =
+//      "dog" Name;
+//
+//    symbol scope Cat extends Animal =
+//      "cat" Name;
+//
+//    symbol scope Fish extends Animal =
+//     "fish" Name;
+}
