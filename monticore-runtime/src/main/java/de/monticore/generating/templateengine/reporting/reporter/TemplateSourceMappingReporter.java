@@ -2,14 +2,14 @@ package de.monticore.generating.templateengine.reporting.reporter;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.reporting.commons.AReporter;
-import de.monticore.generating.templateengine.source_mapping.DecodedMapping;
-import de.monticore.generating.templateengine.source_mapping.DecodedSourceMap;
-import de.monticore.generating.templateengine.source_mapping.SourceMapCalculator;
+import de.monticore.sourcemap.DecodedMapping;
+import de.monticore.sourcemap.DecodedSourceMap;
+import de.monticore.generating.templateengine.sourcemap.SourceMapCalculator;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static de.monticore.generating.templateengine.source_mapping.encoding.Encoding.encodeDecodedSourceMapToString;
+import static de.monticore.sourcemap.Encoding.getEncodeSourceMap;
 
 public class TemplateSourceMappingReporter extends AReporter {
   public static boolean FIRST_FILE_WRITE = false;
@@ -54,8 +54,8 @@ public class TemplateSourceMappingReporter extends AReporter {
   }
 
   protected void writeContent(String fileName) {
-    writeLine(encodeDecodedSourceMapToString(new DecodedSourceMap(fileName, this.astMappings)));
-    writeLine(encodeDecodedSourceMapToString(new DecodedSourceMap(fileName, templateMappings)));
+    writeLine(getEncodeSourceMap(new DecodedSourceMap(fileName, this.astMappings)));
+    writeLine(getEncodeSourceMap(new DecodedSourceMap(fileName, templateMappings)));
   }
 
   protected void clearVariables() {
