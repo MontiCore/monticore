@@ -1,4 +1,4 @@
-package de.monticore.generating.templateengine.source_mapping;
+package de.monticore.generating.templateengine.sourcemap;
 
 import de.monticore.generating.templateengine.TemplateController;
 import de.se_rwth.commons.SourcePosition;
@@ -15,7 +15,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static de.monticore.generating.templateengine.source_mapping.SourceMapCalculator.pairId;
+import static de.monticore.generating.templateengine.sourcemap.SourceMapCalculator.pairId;
 
 public class TemplateAdaptionForSourcePositionReporting {
 

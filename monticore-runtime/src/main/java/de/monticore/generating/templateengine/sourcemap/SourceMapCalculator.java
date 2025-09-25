@@ -1,7 +1,10 @@
-package de.monticore.generating.templateengine.source_mapping;
+package de.monticore.generating.templateengine.sourcemap;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.reporting.Reporting;
+import de.monticore.sourcemap.DecodedMapping;
+import de.monticore.sourcemap.DecodedSource;
+import de.monticore.sourcemap.convenience.PositionMapping;
 import de.se_rwth.commons.SourcePosition;
 import freemarker.template.Template;
 import org.apache.commons.lang3.tuple.ImmutablePair;

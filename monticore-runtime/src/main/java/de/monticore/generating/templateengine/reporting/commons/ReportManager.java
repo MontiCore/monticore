@@ -6,8 +6,7 @@ import com.google.common.base.Preconditions;
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.reporting.artifacts.ReportingNameHelper;
-import de.monticore.generating.templateengine.source_mapping.DecodedMapping;
-import de.monticore.generating.templateengine.source_mapping.SourceMapping;
+import de.monticore.sourcemap.DecodedMapping;
 import de.monticore.io.paths.MCPath;
 import de.monticore.symboltable.IScope;
 
