@@ -10,8 +10,8 @@ import java.lang.reflect.InvocationTargetException;
 
 import de.monticore.generating.templateengine.TemplateController;
 import de.monticore.generating.templateengine.reporting.Reporting;
-import de.monticore.generating.templateengine.source_mapping.SourceMapCalculator;
-import de.monticore.generating.templateengine.source_mapping.TemplateAdaptionForSourcePositionReporting;
+import de.monticore.generating.templateengine.sourcemap.SourceMapCalculator;
+import de.monticore.generating.templateengine.sourcemap.TemplateAdaptionForSourcePositionReporting;
 import de.se_rwth.commons.logging.Log;
 import freemarker.log.Logger;
 import freemarker.template.Configuration;

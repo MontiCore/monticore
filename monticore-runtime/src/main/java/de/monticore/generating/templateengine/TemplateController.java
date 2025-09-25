@@ -10,7 +10,7 @@ import de.monticore.generating.templateengine.freemarker.SimpleHashFactory;
 import de.monticore.generating.templateengine.freemarker.alias.*;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.io.FileReaderWriter;
-import de.monticore.generating.templateengine.source_mapping.SourceMapCalculator;
+import de.monticore.generating.templateengine.sourcemap.SourceMapCalculator;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import freemarker.ext.beans.BeansWrapper;
