@@ -1,6 +1,7 @@
 package de.monticore.generating.templateengine.sourcemap;
 
 import de.monticore.ast.ASTNode;
+import de.monticore.generating.templateengine.freemarker.FreeMarkerTemplateEngine;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.sourcemap.DecodedMapping;
 import de.monticore.sourcemap.DecodedSource;
@@ -10,7 +11,6 @@ import freemarker.template.Template;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
@@ -99,11 +99,11 @@ public class SourceMapCalculator {
     }
   }
 
-  final StringWriter sw;
+  final FreeMarkerTemplateEngine.ContentWriter sw;
   final Template template;
 
   // Everytime a template is executed it uses a new StringWriter instance
-  public SourceMapCalculator(StringWriter sw, Template template) {
+  public SourceMapCalculator(FreeMarkerTemplateEngine.ContentWriter sw, Template template) {
     this.sw = sw;
     this.template = template;
   }
@@ -160,31 +160,31 @@ public class SourceMapCalculator {
     return Pair.of(relativeLine, relativeColumn);
   }*/
 
-  public void report(int pairId, int lineInTemplate, int colInTemplate, ASTNode astNode, boolean isStart) {
-    String content = sw.toString();
+  public void report(int pairId, int lineInTemplate, int colInTemplate, String templateSource, ASTNode astNode, boolean isStart) {
+    String content = sw.getCurrentContent();
 
     int numberOfLinesInContent = numberOfNewLines(content);
     int curGeneratedColPos = getColumnOfLastLine(content);
 
     Pair<Integer,Integer> absPos = updateAndGetAbsolutePos(numberOfLinesInContent, curGeneratedColPos);
 
-    SourcePosition positionInGeneratedFile = new SourcePosition(absPos.getLeft(), absPos.getRight(), template.getName());
+    SourcePosition positionInGeneratedFile = new SourcePosition(absPos.getLeft(), absPos.getRight(), "GenOutput");
     addASTMapping(astNode, isStart, positionInGeneratedFile, pairId);
-    addTemplateMapping(lineInTemplate, colInTemplate, positionInGeneratedFile, pairId);
+    addTemplateMapping(lineInTemplate, colInTemplate, templateSource, positionInGeneratedFile, pairId);
 
     assert curAbsolutePos.size() == templates.size();
   }
 
-  public void report(int pairId, int lineInTemplate, int colInTemplate) {
-    String content = sw.toString();
+  public void report(int pairId, int lineInTemplate, int colInTemplate, String templateSource) {
+    String content = sw.getCurrentContent();
 
     int numberOfLinesInContent = numberOfNewLines(content);
     int curGeneratedColPos = getColumnOfLastLine(content);
 
     Pair<Integer,Integer> absPos = updateAndGetAbsolutePos(numberOfLinesInContent, curGeneratedColPos);
 
-    SourcePosition positionInGeneratedFile = new SourcePosition(absPos.getLeft(), absPos.getRight(), template.getName());
-    addTemplateMapping(lineInTemplate, colInTemplate, positionInGeneratedFile, pairId);
+    SourcePosition positionInGeneratedFile = new SourcePosition(absPos.getLeft(), absPos.getRight(), "GenOutput");
+    addTemplateMapping(lineInTemplate, colInTemplate, templateSource, positionInGeneratedFile, pairId);
 
     assert curAbsolutePos.size() == templates.size();
   }
@@ -236,9 +236,17 @@ public class SourceMapCalculator {
     }
   }
 
-  protected void addTemplateMapping(int lineInTemplate, int colInTemplate, SourcePosition positionInGeneratedFile, int pairId) {
-    mappings.add(new SimpleSourceMapping(new SourcePosition(lineInTemplate, colInTemplate, template.getName()),
-        positionInGeneratedFile, pairId));
+  protected void addTemplateMapping(int lineInTemplate, int colInTemplate, String templateSource, SourcePosition positionInGeneratedFile, int pairId) {
+    if(mappings.stream().map(mapping -> mapping.pairId).anyMatch(i -> i == pairId)
+        && mappings.get(mappings.size()-1).pairId != pairId) {
+      mappings.removeIf(m -> m.pairId == pairId);
+    } else if(!mappings.isEmpty() && mappings.get(mappings.size()-1).targetPosition.equals(positionInGeneratedFile) && mappings.get(mappings.size()-1).pairId == pairId) {
+      // Nothing was generated
+      mappings.remove(mappings.size()-1);
+    } else {
+      mappings.add(new SimpleSourceMapping(new SourcePosition(lineInTemplate, colInTemplate, templateSource),
+          positionInGeneratedFile, pairId));
+    }
   }
 
   private static int numberOfNewLines(String wholeContent) {

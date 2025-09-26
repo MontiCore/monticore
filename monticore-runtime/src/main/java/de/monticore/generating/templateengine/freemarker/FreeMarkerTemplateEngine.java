@@ -5,7 +5,7 @@ package de.monticore.generating.templateengine.freemarker;
 import static com.google.common.base.Strings.isNullOrEmpty;
 
 import java.io.IOException;
-import java.io.StringWriter;
+import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 
 import de.monticore.generating.templateengine.TemplateController;
@@ -74,13 +74,7 @@ public class FreeMarkerTemplateEngine {
     Log.errorIfNull(template, "0xA0562 The given template must not be null");
     String seperator = System.getProperty("line.seperator");
 
-    Writer w = new Writer() {
-      public void write(char[] cbuf, int off, int len) {
-        buffer.append(cbuf, off, len);
-      }
-      public void flush() { }
-      public void close() { }
-    };
+    ContentWriter w = new ContentWriter(buffer);
 
     try {
       if(Reporting.isTemplateSourceMappingEnabled()) {
@@ -129,5 +123,24 @@ public class FreeMarkerTemplateEngine {
   public void loadAndRun(String qualifiedTemplateName, StringBuilder buffer, Object data) {
     Template t = loadTemplate(qualifiedTemplateName);
     run(buffer, data, t);
+  }
+
+  public static class ContentWriter extends Writer {
+
+    StringBuilder buffer;
+
+    public ContentWriter(StringBuilder buffer) {
+      this.buffer = buffer;
+    }
+
+    public void write(char[] cbuf, int off, int len) {
+      buffer.append(cbuf, off, len);
+    }
+    public void flush() { }
+    public void close() { }
+
+    public String getCurrentContent() {
+      return buffer.toString();
+    }
   }
 }
