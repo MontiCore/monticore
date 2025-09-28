@@ -39,7 +39,7 @@ public class SymTypeArray extends SymTypeExpression {
 
   public SymTypeArray(SymTypeExpression argument, int dim) {
     this.dim = dim;
-    this.argument = argument;
+    this.argument = Log.errorIfNull(argument);
   }
 
   // ------------------------------------------------------------------ Functions

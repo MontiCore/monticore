@@ -57,7 +57,7 @@ dependencies {
   testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
   testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
   // and add the test fixtures (used to set-up tests)
-  testImplementation testFixtures("de.monticore:monticore-grammar:$mc_version"))
+  testImplementation testFixtures("de.monticore:monticore-grammar:$mc_version")
 }
 
 // Where can we find the dependencies?

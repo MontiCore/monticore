@@ -2,6 +2,7 @@
 package de.monticore.types.check;
 
 import de.monticore.types3.ISymTypeVisitor;
+import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,8 @@ public class SymTypeOfSIUnit extends SymTypeExpression {
       List<SIUnitBasic> numerator,
       List<SIUnitBasic> denominator
   ) {
+    Log.errorIfNull(numerator);
+    Log.errorIfNull(denominator);
     this.numerator = new ArrayList<>(numerator);
     this.denominator = new ArrayList<>(denominator);
   }

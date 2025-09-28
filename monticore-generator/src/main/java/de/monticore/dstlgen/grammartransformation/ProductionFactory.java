@@ -797,5 +797,13 @@ public class ProductionFactory {
               .build());
     }
   }
+  
+  /**
+   * Create a new @Override annotation
+   * @return ASTGrammarAnnotation with override property
+   */
+  protected ASTGrammarAnnotation createOverrideAnnotation() {
+    return GrammarMill.grammarAnnotationBuilder().setOverride(true).build();
+  }
 
 }
