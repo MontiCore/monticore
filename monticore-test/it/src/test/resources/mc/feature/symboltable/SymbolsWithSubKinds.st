@@ -1,4 +1,4 @@
-zoo ZooName {
+lot lotName {
   ford carFordName
   volvo carVolvoName
   truck carTruckName
@@ -6,9 +6,6 @@ zoo ZooName {
   beatle carBeatleName
   cabriolet carCabrioletName
   car carCarName
-  dog animalDogName
-  cat animalCatName
-  fish animalFishName
-  animal animalAnimalName
+  motorcycle motorcycleName
 }
 
