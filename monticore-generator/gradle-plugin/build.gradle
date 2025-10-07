@@ -1,0 +1,57 @@
+/* (c) https://github.com/MontiCore/monticore */
+buildscript {
+  dependencies {
+    classpath "de.se_rwth.commons:se-commons-gradle:$se_commons_version"
+  }
+}
+plugins {
+  id 'java-library'
+  id 'java-gradle-plugin'
+  id 'maven-publish'
+}
+
+configurations {
+  // The plugin's footprint is fairly small, as it loads the generator itself into a "mcTool" configuration
+  // to avoid polluting Gradle's classpath
+  mcTool
+}
+
+dependencies {
+  implementation gradleApi()
+  implementation "de.se_rwth.commons:se-commons-gradle:$se_commons_version"
+  implementation "de.monticore:monticore-runtime:$previous_mc_version" // Required due to json -> substitute this to remove the runtime from the gradle projects classpath
+  mcTool "de.monticore:monticore-generator:$version"
+
+  testImplementation gradleTestKit()
+}
+
+sourceSets {
+  main.compileClasspath += configurations.mcTool
+  test.compileClasspath += configurations.mcTool
+}
+
+
+def pluginName = 'monticore'
+
+gradlePlugin.plugins {
+  monticore {
+    id = pluginName
+    implementationClass = 'de.monticore.MCPlugin'
+  }
+  // New version of our plugin (supporting incremental builds)
+  monticoreGenerator {
+    id = "de.monticore.generator"
+    implementationClass = 'de.monticore.gradle.MCGeneratorPlugin'
+  }
+  monticoreGeneratorWithTR {
+    id = "de.monticore.generator-withtr"
+    implementationClass = 'de.monticore.gradle.MCGeneratorWithTRPlugin'
+  }
+}
+
+tasks.register("buildInfo", de.monticore.gradle.common.MCBuildInfoTask) {
+  // With an input property ensuring UP-TO-DATE checks consider the version property
+  version = project.version
+}
+
+processResources.dependsOn("buildInfo")
