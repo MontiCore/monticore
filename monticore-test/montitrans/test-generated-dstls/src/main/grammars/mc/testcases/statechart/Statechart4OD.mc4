@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.testcases.statechart;
 
-grammar Statechart extends de.monticore.MCBasics{
+grammar Statechart4OD extends de.monticore.MCBasics{
 
 
   Statechart implements SCStructure =

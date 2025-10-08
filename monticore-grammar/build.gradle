@@ -60,6 +60,12 @@ configurations {
       capability("de.monticore:monticore-grammar:$version") // default
     }
   }
+  // We have to give the trafo component a different capability
+  trafoGrammarSymbolOutElements {
+    outgoing {
+      capability("de.monticore:monticore-grammar-trafo:$version") // default
+    }
+  }
 }
 
 
@@ -698,3 +704,4 @@ pluginManager.withPlugin("java-test-fixtures") {
 tasks.named("build") {
   dependsOn javadoc, testFixturesJavadoc
 }
+
