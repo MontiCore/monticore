@@ -49,3 +49,13 @@ tasks.register("buildInfo", de.monticore.gradle.common.MCBuildInfoTask) {
 }
 
 processResources.dependsOn("buildInfo")
+
+tasks.named("test") {
+  // The test uses the output of the generator's shadowJar task
+  dependsOn(project(":").tasks.shadowJar)
+  inputs.files(project(":").tasks.shadowJar)
+
+  // For the MontiVerse
+  systemProperty "maven.repo.local", System.getProperty("maven.repo.local")
+  systemProperty "useLocalRepo", findProperty("useLocalRepo")
+}
