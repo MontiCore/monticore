@@ -50,22 +50,17 @@ dependencies {
     implementation 'ch.qos.logback:logback-classic:1.2.0'
     implementation 'ch.qos.logback:logback-core:1.2.0'
 
-    // Remove after 7.7.0 release
-    compileOnly 'org.reflections:reflections:0.9.9'
-
     implementation "de.monticore.lang:cd4analysis:$cd4a_version"
     implementation "org.antlr:antlr4:$antlr_version"
     implementation 'org.apache.groovy:groovy:4.0.23'
     implementation("com.google.guava:guava:$guava_version")
     implementation "org.apache.commons:commons-lang3:$commons_lang3_version"
     testImplementation 'com.github.javaparser:javaparser-symbol-solver-core:3.24.2'
-    testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
-    testImplementation "org.junit.vintage:junit-vintage-engine:$junit_version"
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
     testImplementation 'org.mockito:mockito-core:4.5.1'
 
 }
 allprojects {
+    apply plugin: "java"
     tasks.withType(JavaCompile).configureEach {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -78,6 +73,11 @@ allprojects {
         toolchain {
             languageVersion = JavaLanguageVersion.of(11)
         }
+    }
+    dependencies {
+        testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
+        testImplementation "org.junit.vintage:junit-vintage-engine:$junit_version"
+        testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
     }
 
 
