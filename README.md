@@ -128,7 +128,7 @@ Please also note that `PlusExpr` is mutually left-recursive.
 ## Quick Start
 
 You can follow the [Getting Started](https://monticore.github.io/monticore/docs/GettingStarted/)
-or follow a more in-depth tutorial (coming soon).
+or follow a more [in-depth tutorial](https://github.com/MontiCore/tutorial/).
 
 ## MontiCore has a Relaxed 3-Level License  
 
