@@ -31,13 +31,7 @@ sourceSets {
 }
 
 
-def pluginName = 'monticore'
-
 gradlePlugin.plugins {
-  monticore {
-    id = pluginName
-    implementationClass = 'de.monticore.MCPlugin'
-  }
   // New version of our plugin (supporting incremental builds)
   monticoreGenerator {
     id = "de.monticore.generator"
