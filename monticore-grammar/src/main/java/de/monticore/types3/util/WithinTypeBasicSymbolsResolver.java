@@ -1,6 +1,7 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.types3.util;
 
+import com.google.common.base.Preconditions;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
@@ -780,7 +781,7 @@ public class WithinTypeBasicSymbolsResolver {
   protected static void setDelegate(
       WithinTypeBasicSymbolsResolver newDelegate
   ) {
-    WithinTypeBasicSymbolsResolver.delegate = Log.errorIfNull(newDelegate);
+    WithinTypeBasicSymbolsResolver.delegate = Preconditions.checkNotNull(newDelegate);
   }
 
   protected static WithinTypeBasicSymbolsResolver getDelegate() {

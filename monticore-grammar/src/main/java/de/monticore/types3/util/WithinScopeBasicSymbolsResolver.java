@@ -1,6 +1,7 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.types3.util;
 
+import com.google.common.base.Preconditions;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
@@ -66,8 +67,8 @@ public class WithinScopeBasicSymbolsResolver {
   protected Optional<SymTypeExpression> _resolveNameAsExpr(
       IBasicSymbolsScope enclosingScope,
       String name) {
-    Log.errorIfNull(enclosingScope);
-    Log.errorIfNull(name);
+    Preconditions.checkNotNull(enclosingScope);
+    Preconditions.checkNotNull(name);
     // collect all (potential) types
     Set<SymTypeExpression> types = new HashSet<>();
 
@@ -170,8 +171,8 @@ public class WithinScopeBasicSymbolsResolver {
       IBasicSymbolsScope enclosingScope,
       String name
   ) {
-    Log.errorIfNull(enclosingScope);
-    Log.errorIfNull(name);
+    Preconditions.checkNotNull(enclosingScope);
+    Preconditions.checkNotNull(name);
     Optional<SymTypeExpression> result;
     Optional<VariableSymbol> optVarSym = resolverHotfix(
         () -> enclosingScope.resolveVariable(
@@ -206,8 +207,8 @@ public class WithinScopeBasicSymbolsResolver {
       IBasicSymbolsScope enclosingScope,
       String name
   ) {
-    Log.errorIfNull(enclosingScope);
-    Log.errorIfNull(name);
+    Preconditions.checkNotNull(enclosingScope);
+    Preconditions.checkNotNull(name);
     List<FunctionSymbol> funcSyms = enclosingScope
         .resolveFunctionMany(name, getFunctionPredicate()).stream()
         // todo remove creation of a set
@@ -253,8 +254,8 @@ public class WithinScopeBasicSymbolsResolver {
       IBasicSymbolsScope enclosingScope,
       String name
   ) {
-    Log.errorIfNull(enclosingScope);
-    Log.errorIfNull(name);
+    Preconditions.checkNotNull(enclosingScope);
+    Preconditions.checkNotNull(name);
     Optional<SymTypeExpression> result;
     // variable
     Optional<TypeVarSymbol> optTypeVar;
@@ -384,7 +385,7 @@ public class WithinScopeBasicSymbolsResolver {
   protected static void setDelegate(
       WithinScopeBasicSymbolsResolver newDelegate
   ) {
-    WithinScopeBasicSymbolsResolver.delegate = Log.errorIfNull(newDelegate);
+    WithinScopeBasicSymbolsResolver.delegate = Preconditions.checkNotNull(newDelegate);
   }
 
   protected static WithinScopeBasicSymbolsResolver getDelegate() {

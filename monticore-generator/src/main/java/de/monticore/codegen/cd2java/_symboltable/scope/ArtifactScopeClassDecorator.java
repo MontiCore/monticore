@@ -90,6 +90,7 @@ public class ArtifactScopeClassDecorator extends AbstractCreator<ASTCDCompilatio
             .build();
     clazz.addAllCDMembers(createAcceptTraverserSuperMethods(clazz));
     CD4C.getInstance().addImport(clazz, "de.monticore.symboltable.*");
+    CD4C.getInstance().addImport(clazz, "com.google.common.base.Preconditions");
     return clazz;
   }
 

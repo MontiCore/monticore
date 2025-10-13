@@ -1,6 +1,7 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.types3.generics.util;
 
+import com.google.common.base.Preconditions;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeInferenceVariable;
@@ -877,7 +878,7 @@ public class BoundResolution {
   }
 
   protected static void setDelegate(BoundResolution newDelegate) {
-    BoundResolution.delegate = Log.errorIfNull(newDelegate);
+    BoundResolution.delegate = Preconditions.checkNotNull(newDelegate);
   }
 
   protected static BoundResolution getDelegate() {

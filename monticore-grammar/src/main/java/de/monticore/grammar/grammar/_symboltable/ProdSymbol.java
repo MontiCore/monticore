@@ -3,11 +3,12 @@
 package de.monticore.grammar.grammar._symboltable;
 
 
+import com.google.common.base.Preconditions;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.google.common.collect.ImmutableList.copyOf;
-import static de.se_rwth.commons.logging.Log.errorIfNull;
 
 public class ProdSymbol extends ProdSymbolTOP {
 
@@ -41,7 +42,7 @@ public class ProdSymbol extends ProdSymbolTOP {
   }
 
   public void addSuperProd(ProdSymbolSurrogate superProdRef) {
-    this.superProds.add(errorIfNull(superProdRef));
+    this.superProds.add(Preconditions.checkNotNull(superProdRef));
   }
 
   public List<ProdSymbolSurrogate> getSuperProds() {
@@ -49,7 +50,7 @@ public class ProdSymbol extends ProdSymbolTOP {
   }
 
   public void addSuperInterfaceProd(ProdSymbolSurrogate superInterfaceProdRef) {
-    this.superInterfaceProds.add(errorIfNull(superInterfaceProdRef));
+    this.superInterfaceProds.add(Preconditions.checkNotNull(superInterfaceProdRef));
   }
 
   public List<ProdSymbolSurrogate> getSuperInterfaceProds() {
@@ -57,7 +58,7 @@ public class ProdSymbol extends ProdSymbolTOP {
   }
 
   public void addAstSuperClass(ProdSymbolSurrogate ref) {
-    astSuperClasses.add(errorIfNull(ref));
+    astSuperClasses.add(Preconditions.checkNotNull(ref));
   }
 
   public List<ProdSymbolSurrogate> getAstSuperClasses() {
@@ -65,7 +66,7 @@ public class ProdSymbol extends ProdSymbolTOP {
   }
 
   public void addAstSuperInterface(ProdSymbolSurrogate ref) {
-    astSuperInterfaces.add(errorIfNull(ref));
+    astSuperInterfaces.add(Preconditions.checkNotNull(ref));
   }
 
   public List<ProdSymbolSurrogate> getAstSuperInterfaces() {

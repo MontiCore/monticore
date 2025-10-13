@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import com.google.common.base.Preconditions;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.types3.ISymTypeVisitor;
@@ -26,7 +27,7 @@ public class SymTypeOfUnion extends SymTypeExpression {
   protected Set<SymTypeExpression> unionizedTypes;
 
   public SymTypeOfUnion(Collection<? extends SymTypeExpression> types) {
-    Log.errorIfNull(types);
+    Preconditions.checkNotNull(types);
     super.typeSymbol = new TypeSymbol(DEFAULT_TYPESYMBOL_NAME);
     super.typeSymbol.setEnclosingScope(BasicSymbolsMill.globalScope());
     super.typeSymbol.setSpannedScope(BasicSymbolsMill.scope());

@@ -1,5 +1,6 @@
 package de.monticore.types3.util;
 
+import com.google.common.base.Preconditions;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types3.SymTypeRelations;
@@ -198,7 +199,7 @@ public class TypeVisitorLifting {
   }
 
   protected static void setDelegate(TypeVisitorLifting newDelegate) {
-    TypeVisitorLifting.delegate = Log.errorIfNull(newDelegate);
+    TypeVisitorLifting.delegate = Preconditions.checkNotNull(newDelegate);
   }
 
   protected static TypeVisitorLifting getDelegate() {

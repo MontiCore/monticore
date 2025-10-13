@@ -1,6 +1,7 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.types3.util;
 
+import com.google.common.base.Preconditions;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._util.IBasicSymbolsTypeDispatcher;
@@ -147,7 +148,7 @@ public class TypeContextCalculator {
   }
 
   protected static void setDelegate(TypeContextCalculator newDelegate) {
-    TypeContextCalculator.delegate = Log.errorIfNull(newDelegate);
+    TypeContextCalculator.delegate = Preconditions.checkNotNull(newDelegate);
   }
 
   protected static TypeContextCalculator getDelegate() {

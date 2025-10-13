@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types3.generics.util;
 
+import com.google.common.base.Preconditions;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
@@ -1505,7 +1506,7 @@ public class CompileTimeTypeCalculator {
   }
 
   protected static void setDelegate(CompileTimeTypeCalculator newDelegate) {
-    CompileTimeTypeCalculator.delegate = Log.errorIfNull(newDelegate);
+    CompileTimeTypeCalculator.delegate = Preconditions.checkNotNull(newDelegate);
   }
 
   protected static CompileTimeTypeCalculator getDelegate() {

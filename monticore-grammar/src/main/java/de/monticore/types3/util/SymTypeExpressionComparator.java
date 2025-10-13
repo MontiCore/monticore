@@ -1,5 +1,6 @@
 package de.monticore.types3.util;
 
+import com.google.common.base.Preconditions;
 import de.monticore.symboltable.ISymbol;
 import de.monticore.types.check.*;
 import de.se_rwth.commons.logging.Log;
@@ -16,8 +17,8 @@ public class SymTypeExpressionComparator
 
   @Override
   public int compare(SymTypeExpression o1, SymTypeExpression o2) {
-    Log.errorIfNull(o1);
-    Log.errorIfNull(o2);
+    Preconditions.checkNotNull(o1);
+    Preconditions.checkNotNull(o2);
     if (o1.deepEquals(o2)) {
       return 0;
     }

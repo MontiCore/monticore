@@ -8,7 +8,9 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
+import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.google.common.base.Preconditions;
 import de.se_rwth.commons.logging.Log;
 import freemarker.log.Logger;
 import freemarker.template.Configuration;
@@ -26,8 +28,7 @@ public class FreeMarkerTemplateEngine {
   protected final Configuration configuration;
   
   public FreeMarkerTemplateEngine(Configuration configuration) {
-    this.configuration = Log
-        .errorIfNull(
+    this.configuration = Preconditions.checkNotNull(
             configuration,
             "0xA4048 Configuration must not be null in FreeMarkerTemplateEngine constructor.");
   }
@@ -64,7 +65,7 @@ public class FreeMarkerTemplateEngine {
    * @param template the template file
    */
   public void run(StringBuilder buffer, Object data, Template template) {
-    Log.errorIfNull(template, "0xA0562 The given template must not be null");
+    Preconditions.checkNotNull(template, "0xA0562 The given template must not be null");
     String seperator = System.getProperty("line.seperator");
 
     Writer w = new Writer() {
