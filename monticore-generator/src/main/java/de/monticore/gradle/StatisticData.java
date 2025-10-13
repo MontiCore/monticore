@@ -91,7 +91,9 @@ public class StatisticData {
     result.putMember("GradleParallel", new JsonBoolean( Boolean.parseBoolean(getGradleProperty("org.gradle.parallel", "false"))));
     result.putMember("GradleCache", new JsonBoolean( Boolean.parseBoolean(getGradleProperty("org.gradle.caching", "false"))));
     result.putMember("HasBuildCacheURL", new JsonBoolean( gradle.getRootProject().getProperties().containsKey("buildCacheURL")));
-    result.putMember("IsCi", new JsonBoolean( gradle.getRootProject().getProperties().containsKey("ci")));
+    // Report as CI when the CI" project property or "CI" environment variable are set
+    result.putMember("IsCi", new JsonBoolean(gradle.getRootProject().getProperties().containsKey("ci")
+            || "true".equalsIgnoreCase(System.getenv("CI"))));
     result.putMember("MaxConcurrentMC", new JsonNumber("" + MCToolAction.getMaxConcurrentMC()));
 
     result.putMember("Tags", new UserJsonString(getGradleProperty("de.monticore.gradle.tags", "")));
