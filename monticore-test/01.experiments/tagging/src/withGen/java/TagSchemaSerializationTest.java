@@ -36,7 +36,7 @@ public class TagSchemaSerializationTest {
     FQNEnhancedAutomataTagSchemaMill.init();
 
     // Load all schemas into the global scope
-    for (File f : Objects.requireNonNull(
+    for (File f : Verify.verifyNotNull(
             new File("src/test/resources/schema/").listFiles(x -> x.getName().endsWith(".tagschema")))) {
       Optional<ASTTagSchema> schemaOpt = FQNEnhancedAutomataTagSchemaMill.parser().parse(f.getAbsolutePath());
       if (schemaOpt.isPresent())
@@ -54,7 +54,7 @@ public class TagSchemaSerializationTest {
 
   @Test
   public void test() throws IOException {
-    for (File f : Objects.requireNonNull(
+    for (File f : Verify.verifyNotNull(
             new File("src/test/resources/schema/").listFiles(x -> x.getName().endsWith(".tagschema")))) {
       Optional<ASTTagSchema> schemaOpt = FQNEnhancedAutomataTagSchemaMill.parser().parse(f.getAbsolutePath());
       if (schemaOpt.isEmpty()) {
