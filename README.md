@@ -10,20 +10,6 @@
 ---
 <!-- DO NOT MOVE THIS LINE - docs/README.md references it by line number!!! -->
 
-**NEWS**:
-<div align="center">
-  <!-- HTML links must be absolute (as they are not covered by mkdocs) -->
-  <a href="https://monticore.github.io/monticore/docs/MontiCoreSymposium" target="_blank">
-    <!--Warning: This image is specially handled in the preprocessing.sh script -->
-    <img src="docs/img/MC_Symp_Banner.png" alt="MontiCore Symposium Banner">
-  </a> 
-</div>  
-  
-* ISW Stuttgart and RWTH Aachen organize the fourth **[MontiCore Symposium 2025](docs/MontiCoreSymposium.md)** September 28 - October 01 in Köln-Riehl, Germany
-  * Deadline for submission of papers or abstracts: July, 25th.
-
----
-
 
 
 [MontiCore](https://www.monticore.de) is a language workbench for the efficient 
@@ -128,7 +114,7 @@ Please also note that `PlusExpr` is mutually left-recursive.
 ## Quick Start
 
 You can follow the [Getting Started](https://monticore.github.io/monticore/docs/GettingStarted/)
-or follow a more in-depth tutorial (coming soon).
+or follow a more [in-depth tutorial](https://github.com/MontiCore/tutorial/).
 
 ## MontiCore has a Relaxed 3-Level License  
 
