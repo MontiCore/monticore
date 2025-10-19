@@ -19,7 +19,7 @@ public class ExternalNTNoASTRule implements GrammarASTASTRuleCoCo {
   public void check(ASTASTRule node) {
     Optional<ProdSymbol> prod = node.getEnclosingScope().resolveProd(node.getType());
     if(prod.isPresent() && prod.get().isIsExternal()){
-      Log.error(ERROR_CODE+String.format(ERROR_MSG_FORMAT, prod.get().getName()));
+      Log.error(ERROR_CODE+String.format(ERROR_MSG_FORMAT, prod.get().getName()), node.get_SourcePositionStart());
     }
   }
 }

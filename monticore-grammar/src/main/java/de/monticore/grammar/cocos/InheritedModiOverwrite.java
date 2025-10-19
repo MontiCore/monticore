@@ -33,7 +33,7 @@ public class InheritedModiOverwrite implements GrammarASTMCGrammarCoCo {
           for (ASTLexProd lex : supLexProdList) {
             if (!lex.isPresentMode()) {
               //warn the user that he inherits a token mode
-              Log.warn(String.format(ERROR_CODE + ERROR_MSG_FORMAT, prodName, grammarName, modeString, prodName, superGrammarName));
+              Log.warn(String.format(ERROR_CODE + ERROR_MSG_FORMAT, prodName, grammarName, modeString, prodName, superGrammarName), lex.get_SourcePositionStart());
             }
           }
         }

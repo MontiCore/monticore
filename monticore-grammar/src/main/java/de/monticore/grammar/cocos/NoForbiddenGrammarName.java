@@ -21,7 +21,7 @@ public class NoForbiddenGrammarName implements GrammarASTMCGrammarCoCo {
   public void check (ASTMCGrammar node){
     String grammarName = node.getName();
     if(forbiddenNames.contains(grammarName)){
-      Log.error(ERROR_CODE + String.format(ERROR_MSG_FORMAT, grammarName));
+      Log.error(ERROR_CODE + String.format(ERROR_MSG_FORMAT, grammarName), node.get_SourcePositionStart());
     }
   }
 
