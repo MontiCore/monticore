@@ -30,7 +30,7 @@ public class OverridingAdditionalAttributes implements GrammarASTMCGrammarCoCo {
       for (AdditionalAttributeSymbol ad: attributes) {
         if (superAttributes.stream().filter(m -> ad.getName().equals(m.getName())
                 && ad.isIsAstAttr()==m.isIsAstAttr()).count()>1) {
-          Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, ad.getName(), prodSymbol.getName()));
+          Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, ad.getName(), prodSymbol.getName()), ad.getAstNode().get_SourcePositionStart());
         }
       }
     }

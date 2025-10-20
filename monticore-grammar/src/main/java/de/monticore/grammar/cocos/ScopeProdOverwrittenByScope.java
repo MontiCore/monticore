@@ -39,7 +39,7 @@ public class ScopeProdOverwrittenByScope implements GrammarASTMCGrammarCoCo {
           if (superProd.isPresent() && superProd.get().isIsScopeSpanning() && prod.isIsScopeSpanning()) {
             // log error if both prod define a scope themselves
               Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, superProd.get().getName(), superGrammar.getName(),
-                  prod.getName(), grammarSymbol.getName()));
+                  prod.getName(), grammarSymbol.getName()), prod.getAstNode().get_SourcePositionStart());
           }
         }
       }
