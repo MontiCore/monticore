@@ -138,6 +138,16 @@ public class ReportLogHook implements ILogHook, IReportEventHandler {
   }
 
   @Override
+  public void reportBeforeFileCreation(String templateName, String qualifiedfilename,
+                                       String fileextension, ASTNode ast) {
+    this.getReportManager().reportBeforeFileCreation(templateName, qualifiedfilename, fileextension, ast);
+  }
+
+  public void reportBeforeFileCreation(String templateName, Path path, ASTNode ast) {
+    this.getReportManager().reportBeforeFileCreation(templateName, path, ast);
+  }
+
+  @Override
   public void reportFileCreation(Path parentPath, Path file) {
     this.getReportManager().reportFileCreation(parentPath, file);
   }

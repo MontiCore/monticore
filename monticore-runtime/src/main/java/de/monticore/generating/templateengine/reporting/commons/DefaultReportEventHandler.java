@@ -43,6 +43,12 @@ public class DefaultReportEventHandler implements IReportEventHandler {
   }
 
   @Override
+  public void reportBeforeFileCreation(String templatename, String qualifiedfilename,
+                                 String fileextension, ASTNode ast) {
+    // default
+  }
+
+  @Override
   public void reportFileCreation(Path parentPath, Path file) {
     // default
   }
