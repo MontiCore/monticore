@@ -92,10 +92,14 @@ public class SourceMapCalculator {
 
   private static URL createSourceURL(Optional<String> fileOpt) {
     try {
-      return new URL("file:/"+fileOpt.orElseGet(() -> "#"));
+      return new URL(fileOpt.orElse(""));
     } catch(MalformedURLException e){
-      // handle somehow
-      throw new RuntimeException(e);
+      try {
+        return new URL("file:/"+fileOpt.orElseGet(() -> "#"));
+      } catch (MalformedURLException e2) {
+        // handle somehow
+        throw new RuntimeException(e2);
+      }
     }
   }
 

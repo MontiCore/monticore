@@ -58,6 +58,12 @@ public class ReportManager implements IReportEventHandler {
     }
   }
 
+  public void reportBeforeFileCreation(String templateName, Path path, ASTNode ast) {
+    String fileExtension = ReportingNameHelper.getFileextension(path);
+
+    this.reportBeforeFileCreation(templateName, path.toString(), fileExtension, ast);
+  }
+
   public void reportFileCreation(String templateName, Path path, ASTNode ast) {
     String qualifiedName = ReportingNameHelper.getQualifiedName(
         this.getOutputDir(), path);
@@ -81,6 +87,15 @@ public class ReportManager implements IReportEventHandler {
       String qualifiedFilename, String fileExtension, ASTNode ast) {
     for (IReportEventHandler handler : this.reportEventHandlers) {
       handler.reportFileCreation(templateName, qualifiedFilename,
+          fileExtension, ast);
+    }
+  }
+
+  @Override
+  public void reportBeforeFileCreation(String templateName,
+                                 String path, String fileExtension, ASTNode ast) {
+    for (IReportEventHandler handler : this.reportEventHandlers) {
+      handler.reportBeforeFileCreation(templateName, path,
           fileExtension, ast);
     }
   }
