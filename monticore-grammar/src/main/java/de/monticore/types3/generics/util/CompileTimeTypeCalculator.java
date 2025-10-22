@@ -239,8 +239,8 @@ public class CompileTimeTypeCalculator {
       }
 
       // specifically, a set of functions must have been resolved
-      if (getNonFunctionOfResolvedType(funcExprType).isPresent() ||
-          getFunctionsOfResolvedType(funcExprType).isEmpty()
+      if (getNonFunctionOfResolvedType(funcExprTypeNotNormalized).isPresent() ||
+          getFunctionsOfResolvedType(funcExprTypeNotNormalized).isEmpty()
       ) {
         Log.error("0xFDAB4 encountered a function call, "
                 + "but the called value does not have a function type, "
@@ -254,8 +254,15 @@ public class CompileTimeTypeCalculator {
       }
 
       // store each function as an inference result.
-      List<SymTypeOfFunction> functions =
-          getFunctionsOfResolvedType(funcExprType);
+      List<SymTypeOfFunction> functionsNotNormalized =
+          getFunctionsOfResolvedType(funcExprTypeNotNormalized);
+      List<SymTypeOfFunction> functions = functionsNotNormalized.stream()
+          .map(SymTypeRelations::normalize)
+          // we know that no Obscure has been created by normalization,
+          // as we already checked against it.
+          .map(SymTypeExpression::asFunctionType)
+          .collect(Collectors.toList());
+      getFunctionsOfResolvedType(funcExprTypeNotNormalized);
       inferenceResults = new ArrayList<>(functions.size());
       for (SymTypeOfFunction function : functions) {
         InferenceResult funcTypeAsInfRes = new InferenceResult();
