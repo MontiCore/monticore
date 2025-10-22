@@ -254,15 +254,8 @@ public class CompileTimeTypeCalculator {
       }
 
       // store each function as an inference result.
-      List<SymTypeOfFunction> functionsNotNormalized =
+      List<SymTypeOfFunction> functions =
           getFunctionsOfResolvedType(funcExprTypeNotNormalized);
-      List<SymTypeOfFunction> functions = functionsNotNormalized.stream()
-          .map(SymTypeRelations::normalize)
-          // we know that no Obscure has been created by normalization,
-          // as we already checked against it.
-          .map(SymTypeExpression::asFunctionType)
-          .collect(Collectors.toList());
-      getFunctionsOfResolvedType(funcExprTypeNotNormalized);
       inferenceResults = new ArrayList<>(functions.size());
       for (SymTypeOfFunction function : functions) {
         InferenceResult funcTypeAsInfRes = new InferenceResult();
@@ -1384,6 +1377,10 @@ public class CompileTimeTypeCalculator {
     void run();
   }
 
+  /**
+   * @param resolvedType must not be normalized
+   * @return List of normalized functions included in the resolved type
+   */
   protected List<SymTypeOfFunction> getFunctionsOfResolvedType(
       SymTypeExpression resolvedType
   ) {
@@ -1391,6 +1388,7 @@ public class CompileTimeTypeCalculator {
     if (resolvedType.isIntersectionType()) {
       resolvedFuncs =
           resolvedType.asIntersectionType().getIntersectedTypeSet().stream()
+              .map(SymTypeRelations::normalize)
               .filter(SymTypeExpression::isFunctionType)
               .map(SymTypeExpression::asFunctionType)
               .collect(Collectors.toList());
@@ -1404,6 +1402,10 @@ public class CompileTimeTypeCalculator {
     return resolvedFuncs;
   }
 
+  /**
+   * @param resolvedType must not be normalized
+   * @return the non-function(s) included in the resolved type
+   */
   protected Optional<SymTypeExpression> getNonFunctionOfResolvedType(
       SymTypeExpression resolvedType
   ) {
@@ -1418,6 +1420,7 @@ public class CompileTimeTypeCalculator {
       resolvedTypes = Collections.singletonList(resolvedType);
     }
     List<SymTypeExpression> nonFuncs = resolvedTypes.stream()
+        .map(SymTypeRelations::normalize)
         .filter(Predicate.not(SymTypeExpression::isFunctionType))
         .collect(Collectors.toList());
     // more than 1 non-function type is in most languages not expected
