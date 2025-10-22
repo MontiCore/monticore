@@ -25,6 +25,9 @@ public interface IReportEventHandler {
   public void reportFileCreation(String templatename,
       String qualifiedfilename, String fileextension, ASTNode ast);
 
+  public void reportBeforeFileCreation(String templatename,
+                                 String path, String fileextension, ASTNode ast);
+
   public void reportFileCreation(Path parentPath, Path file);
 
   public void reportFileFinalization(String templatename,

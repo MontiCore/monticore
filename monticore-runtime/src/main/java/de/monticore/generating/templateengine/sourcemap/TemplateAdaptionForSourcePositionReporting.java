@@ -60,17 +60,33 @@ public class TemplateAdaptionForSourcePositionReporting {
       Log.warn("Could not find fully qualified source URL of Template.");
     }
 
+    int startLine = increasePositionIfNecessary(t.getBeginLine());
+    int startColumn = increasePositionIfNecessary(t.getBeginColumn());
+    int endLine = increasePositionIfNecessary(t.getEndLine());
+    int endColumn = increasePositionIfNecessary(t.getEndColumn());
+
     if(reportAstMapping) {
-      endPos = reportingExpressionEnd(new SourcePosition(t.getEndLine()-1, t.getEndColumn()-1, templateSource), curPairId);
-      startPos = reportingExpressionStart(new SourcePosition(t.getBeginLine()-1, t.getBeginColumn()-1, templateSource), curPairId);
+      endPos = reportingExpressionEnd(new SourcePosition(endLine-1, endColumn-1, templateSource), curPairId);
+      startPos = reportingExpressionStart(new SourcePosition(startLine-1, startColumn-1, templateSource), curPairId);
     } else {
-      endPos = reportingTextStart(new SourcePosition(t.getEndLine()-1, t.getEndColumn()-1, templateSource), curPairId);
-      startPos = reportingTextEnd(new SourcePosition(t.getBeginLine()-1, t.getBeginColumn()-1, templateSource), curPairId);
+      endPos = reportingTextStart(new SourcePosition(endLine-1, endColumn-1, templateSource), curPairId);
+      startPos = reportingTextEnd(new SourcePosition(startLine-1, startColumn-1, templateSource), curPairId);
     }
 
     // Inserting at the endPos first as otherwise we mangle with the String
     sb.insert(lineColumnToOffset(canonicalForm, t.getEndLine(), t.getEndColumn()) + 1, endPos);
     sb.insert(lineColumnToOffset(canonicalForm, t.getBeginLine(), t.getBeginColumn()), startPos);
+  }
+
+  /* Freemarker uses Column position starting at 1, but there seems to exist a
+  * bug, when a Line ends with "sometext\n" where there suddenly is an end column
+  * position at 0 */
+  private static int increasePositionIfNecessary(int pos) {
+    if(pos >= 1) {
+      return pos;
+    } else {
+      return 1;
+    }
   }
 
   protected static String reportingTextStart(SourcePosition p, int pairId) {

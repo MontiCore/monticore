@@ -274,6 +274,22 @@ public class Reporting extends Log {
   }
 
   /**
+   * Reports directly before a template based file creation via the
+   * {@link de.monticore.generating.templateengine.TemplateController#writeArgs(String, String, String, ASTNode, List)
+   * writeArgs} method of the
+   * {@link de.monticore.generating.templateengine.TemplateController
+   * TemplateController}.
+   */
+  public static void reportBeforeFileCreation(String templateName, Path path, ASTNode ast) {
+    if (isEnabled()) {
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportBeforeFileCreation(templateName, path, ast);
+      }
+    }
+  }
+
+
+  /**
    * Reports a file creation
    */
   public static void reportFileCreation(Path parentPath, Path file) {
