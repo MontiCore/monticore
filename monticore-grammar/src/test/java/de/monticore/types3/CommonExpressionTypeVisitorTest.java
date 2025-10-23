@@ -2001,7 +2001,6 @@ public class CommonExpressionTypeVisitorTest
 
   @Test
   public void deriveFromCallExpressionOverloaded() {
-    IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();
     checkExpr("overloadedFunc1(true)", "int");
     checkExpr("overloadedFunc1(42)", "boolean");
   }
