@@ -2000,6 +2000,13 @@ public class CommonExpressionTypeVisitorTest
   }
 
   @Test
+  public void deriveFromCallExpressionOverloaded() {
+    IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();
+    checkExpr("overloadedFunc1(true)", "int");
+    checkExpr("overloadedFunc1(42)", "boolean");
+  }
+
+  @Test
   public void testInvalidCallExpression() throws IOException {
     //method isNot() is not in scope -> method cannot be resolved -> method has no return type
     init_advanced();
