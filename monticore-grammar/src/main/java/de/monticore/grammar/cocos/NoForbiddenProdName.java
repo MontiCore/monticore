@@ -35,10 +35,10 @@ public class NoForbiddenProdName implements GrammarASTMCGrammarCoCo {
     for(ProdSymbol prod: prods){
       String prodName = prod.getName();
       if(forbiddenNames.contains(prodName)){
-        Log.error(ERROR_CODE + String.format(ERROR_MSG_FORMAT, prodName, grammarName), prod.getAstNode().get_SourcePositionStart());
+        Log.error(ERROR_CODE + String.format(ERROR_MSG_FORMAT, prodName, grammarName), prod.getSourcePosition());
       }
       if((grammarName+NODE).equals(prodName) || (CONSTANTS+grammarName).equals(prodName)){
-        Log.error(ERROR_CODE + String.format(ERROR_MSG_FORMAT, prodName, grammarName), prod.getAstNode().get_SourcePositionStart());
+        Log.error(ERROR_CODE + String.format(ERROR_MSG_FORMAT, prodName, grammarName), prod.getSourcePosition());
       }
     }
   }
