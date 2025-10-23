@@ -1384,21 +1384,16 @@ public class CompileTimeTypeCalculator {
   protected List<SymTypeOfFunction> getFunctionsOfResolvedType(
       SymTypeExpression resolvedType
   ) {
-    List<SymTypeOfFunction> resolvedFuncs;
-    if (resolvedType.isIntersectionType()) {
-      resolvedFuncs =
-          resolvedType.asIntersectionType().getIntersectedTypeSet().stream()
-              .map(SymTypeRelations::normalize)
-              .filter(SymTypeExpression::isFunctionType)
-              .map(SymTypeExpression::asFunctionType)
-              .collect(Collectors.toList());
-    }
-    else if (resolvedType.isFunctionType()) {
-      resolvedFuncs = Collections.singletonList(resolvedType.asFunctionType());
-    }
-    else {
-      resolvedFuncs = Collections.emptyList();
-    }
+    List<SymTypeExpression> resolvedTypesNonNormalized =
+        splitResolvedType(resolvedType);
+    List<SymTypeExpression> resolvedTypes =
+        resolvedTypesNonNormalized.stream()
+            .map(SymTypeRelations::normalize)
+            .collect(Collectors.toList());
+    List<SymTypeOfFunction> resolvedFuncs = resolvedTypes.stream()
+        .filter(SymTypeExpression::isFunctionType)
+        .map(SymTypeExpression::asFunctionType)
+        .collect(Collectors.toList());
     return resolvedFuncs;
   }
 
@@ -1410,17 +1405,13 @@ public class CompileTimeTypeCalculator {
       SymTypeExpression resolvedType
   ) {
     Optional<SymTypeExpression> nonFunctionType;
-    List<SymTypeExpression> resolvedTypes;
-    if (resolvedType.isIntersectionType()) {
-      resolvedTypes = new ArrayList<>(
-          resolvedType.asIntersectionType().getIntersectedTypeSet()
-      );
-    }
-    else {
-      resolvedTypes = Collections.singletonList(resolvedType);
-    }
+    List<SymTypeExpression> resolvedTypesNonNormalized =
+        splitResolvedType(resolvedType);
+    List<SymTypeExpression> resolvedTypes =
+        resolvedTypesNonNormalized.stream()
+            .map(SymTypeRelations::normalize)
+            .collect(Collectors.toList());
     List<SymTypeExpression> nonFuncs = resolvedTypes.stream()
-        .map(SymTypeRelations::normalize)
         .filter(Predicate.not(SymTypeExpression::isFunctionType))
         .collect(Collectors.toList());
     // more than 1 non-function type is in most languages not expected
@@ -1437,6 +1428,26 @@ public class CompileTimeTypeCalculator {
       nonFunctionType = Optional.empty();
     }
     return nonFunctionType;
+  }
+
+  /**
+   * splits a (non-normalized) resolved type into it's components
+   *
+   * @return a list of non-normalized types
+   */
+  protected List<SymTypeExpression> splitResolvedType(
+      SymTypeExpression resolvedType
+  ) {
+    List<SymTypeExpression> resolvedTypes;
+    if (resolvedType.isIntersectionType()) {
+      resolvedTypes = new ArrayList<>(
+          resolvedType.asIntersectionType().getIntersectedTypeSet()
+      );
+    }
+    else {
+      resolvedTypes = Collections.singletonList(resolvedType);
+    }
+    return resolvedTypes;
   }
 
   /**
