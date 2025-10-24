@@ -182,7 +182,7 @@ jobs:
 
   # Look ahead in time to check if this would break the next MC release
   test-for-breaking-changes:
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name # do not run duplicate jobs on PRs
+    if: (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name ) && github.ref_name != github.event.repository.default_branch # do not run duplicate jobs on PRs or on dev branch
     runs-on: ubuntu-latest
     steps:
       - name: Checkout project sources
