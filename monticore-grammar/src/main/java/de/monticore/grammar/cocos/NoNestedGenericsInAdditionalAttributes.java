@@ -96,7 +96,9 @@ public class NoNestedGenericsInAdditionalAttributes implements GrammarASTMCGramm
 
   protected void logError(String ruleName, String grammarName, String prodName, ASTAdditionalAttribute astAdditionalAttribute) {
     Log.error(ERROR_CODE + String.format(ERROR_MSG_FORMAT, ruleName, grammarName, prodName,
-        printASTAdditionalAttribute(astAdditionalAttribute)), astAdditionalAttribute.get_SourcePositionStart());
+        printASTAdditionalAttribute(astAdditionalAttribute)),
+      astAdditionalAttribute.get_SourcePositionStart(),
+      astAdditionalAttribute.get_SourcePositionEnd());
   }
 
   protected String printASTAdditionalAttribute(ASTAdditionalAttribute astAdditionalAttribute) {

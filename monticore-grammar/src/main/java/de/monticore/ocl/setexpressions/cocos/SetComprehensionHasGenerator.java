@@ -18,7 +18,9 @@ public class SetComprehensionHasGenerator implements SetExpressionsASTSetCompreh
         }
       }
       Log.error(
-          "0xOCL24 SetComprehension requires at least one generator or a variable Declaration", node.get_SourcePositionStart(), node.get_SourcePositionEnd());
+          "0xOCL24 SetComprehension requires at least one generator or a variable Declaration",
+        node.get_SourcePositionStart(),
+        node.get_SourcePositionEnd());
     }
   }
 }

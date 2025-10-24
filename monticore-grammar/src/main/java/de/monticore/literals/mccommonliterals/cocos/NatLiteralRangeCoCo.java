@@ -30,7 +30,9 @@ public class NatLiteralRangeCoCo implements MCCommonLiteralsASTNatLiteralCoCo {
   public void check(ASTNatLiteral node) {
     BigInteger nodeValue = new BigInteger(node.getSource());
     if(nodeValue.compareTo(this.min) < 0 || nodeValue.compareTo(this.max) > 0) {
-      Log.error(String.format(ERROR_CODE + ERROR_MSG, nodeValue, min, max), node.get_SourcePositionStart());
+      Log.error(String.format(ERROR_CODE + ERROR_MSG, nodeValue, min, max),
+        node.get_SourcePositionStart(),
+        node.get_SourcePositionEnd());
     }
   }
 

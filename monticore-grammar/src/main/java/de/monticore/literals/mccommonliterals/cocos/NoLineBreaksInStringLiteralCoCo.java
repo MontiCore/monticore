@@ -13,7 +13,9 @@ public class NoLineBreaksInStringLiteralCoCo implements MCCommonLiteralsASTStrin
   @Override
   public void check(ASTStringLiteral node) {
     if (node.getValue().contains("\n") || node.getValue().contains("\r")) {
-      Log.error(String.format(ERROR_CODE + ERROR_MSG, node.getValue()), node.get_SourcePositionStart());
+      Log.error(String.format(ERROR_CODE + ERROR_MSG, node.getValue()),
+        node.get_SourcePositionStart(),
+        node.get_SourcePositionEnd());
     }
   }
 

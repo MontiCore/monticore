@@ -405,7 +405,9 @@ public class CompileTimeTypeCalculator {
       callCtx.setInferredTypes(List.of(applicabilityRes));
     }
     else {
-      Log.error("0xFD114 internal error: unexpected inference results");
+      Log.error("0xFD114 internal error: unexpected inference results",
+        callExpr.get_SourcePositionStart(),
+        callExpr.get_SourcePositionEnd());
     }
   }
 
