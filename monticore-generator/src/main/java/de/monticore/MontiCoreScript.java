@@ -1351,6 +1351,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     // reset global scope
     scope.clear();
     BasicSymbolsMill.initializePrimitives();
+    BasicSymbolsMill.initializeString(); // required since 7.7.0 (0xA0324 Cannot find symbol String)
 
     // Set ModelPath
     scope.setSymbolPath(modelPath);
