@@ -105,7 +105,7 @@ public class ScopesGenitorDecorator extends AbstractCreator<ASTCDCompilationUnit
           .addCDMember(createAddToScopeStackMethod())
           .build();
 
-      // add imports
+      // monticore-generator/src/main/java/de/monticore/codegen/cd2java/_symboltable/scopesgenitor/ScopesGenitorDecorator.java
       CD4C.getInstance().addImport(scopesGenitor, "com.google.common.base.Preconditions");
       return Optional.ofNullable(scopesGenitor);
     }
