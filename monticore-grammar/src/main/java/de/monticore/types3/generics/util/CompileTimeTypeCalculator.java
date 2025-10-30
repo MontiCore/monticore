@@ -239,8 +239,8 @@ public class CompileTimeTypeCalculator {
       }
 
       // specifically, a set of functions must have been resolved
-      if (getNonFunctionOfResolvedType(funcExprType).isPresent() ||
-          getFunctionsOfResolvedType(funcExprType).isEmpty()
+      if (getNonFunctionOfResolvedType(funcExprTypeNotNormalized).isPresent() ||
+          getFunctionsOfResolvedType(funcExprTypeNotNormalized).isEmpty()
       ) {
         Log.error("0xFDAB4 encountered a function call, "
                 + "but the called value does not have a function type, "
@@ -255,7 +255,7 @@ public class CompileTimeTypeCalculator {
 
       // store each function as an inference result.
       List<SymTypeOfFunction> functions =
-          getFunctionsOfResolvedType(funcExprType);
+          getFunctionsOfResolvedType(funcExprTypeNotNormalized);
       inferenceResults = new ArrayList<>(functions.size());
       for (SymTypeOfFunction function : functions) {
         InferenceResult funcTypeAsInfRes = new InferenceResult();
@@ -1377,39 +1377,40 @@ public class CompileTimeTypeCalculator {
     void run();
   }
 
+  /**
+   * @param resolvedType must not be normalized
+   * @return List of normalized functions included in the resolved type
+   */
   protected List<SymTypeOfFunction> getFunctionsOfResolvedType(
       SymTypeExpression resolvedType
   ) {
-    List<SymTypeOfFunction> resolvedFuncs;
-    if (resolvedType.isIntersectionType()) {
-      resolvedFuncs =
-          resolvedType.asIntersectionType().getIntersectedTypeSet().stream()
-              .filter(SymTypeExpression::isFunctionType)
-              .map(SymTypeExpression::asFunctionType)
-              .collect(Collectors.toList());
-    }
-    else if (resolvedType.isFunctionType()) {
-      resolvedFuncs = Collections.singletonList(resolvedType.asFunctionType());
-    }
-    else {
-      resolvedFuncs = Collections.emptyList();
-    }
+    List<SymTypeExpression> resolvedTypesNonNormalized =
+        splitResolvedType(resolvedType);
+    List<SymTypeExpression> resolvedTypes =
+        resolvedTypesNonNormalized.stream()
+            .map(SymTypeRelations::normalize)
+            .collect(Collectors.toList());
+    List<SymTypeOfFunction> resolvedFuncs = resolvedTypes.stream()
+        .filter(SymTypeExpression::isFunctionType)
+        .map(SymTypeExpression::asFunctionType)
+        .collect(Collectors.toList());
     return resolvedFuncs;
   }
 
+  /**
+   * @param resolvedType must not be normalized
+   * @return the non-function(s) included in the resolved type
+   */
   protected Optional<SymTypeExpression> getNonFunctionOfResolvedType(
       SymTypeExpression resolvedType
   ) {
     Optional<SymTypeExpression> nonFunctionType;
-    List<SymTypeExpression> resolvedTypes;
-    if (resolvedType.isIntersectionType()) {
-      resolvedTypes = new ArrayList<>(
-          resolvedType.asIntersectionType().getIntersectedTypeSet()
-      );
-    }
-    else {
-      resolvedTypes = Collections.singletonList(resolvedType);
-    }
+    List<SymTypeExpression> resolvedTypesNonNormalized =
+        splitResolvedType(resolvedType);
+    List<SymTypeExpression> resolvedTypes =
+        resolvedTypesNonNormalized.stream()
+            .map(SymTypeRelations::normalize)
+            .collect(Collectors.toList());
     List<SymTypeExpression> nonFuncs = resolvedTypes.stream()
         .filter(Predicate.not(SymTypeExpression::isFunctionType))
         .collect(Collectors.toList());
@@ -1427,6 +1428,26 @@ public class CompileTimeTypeCalculator {
       nonFunctionType = Optional.empty();
     }
     return nonFunctionType;
+  }
+
+  /**
+   * splits a (non-normalized) resolved type into it's components
+   *
+   * @return a list of non-normalized types
+   */
+  protected List<SymTypeExpression> splitResolvedType(
+      SymTypeExpression resolvedType
+  ) {
+    List<SymTypeExpression> resolvedTypes;
+    if (resolvedType.isIntersectionType()) {
+      resolvedTypes = new ArrayList<>(
+          resolvedType.asIntersectionType().getIntersectedTypeSet()
+      );
+    }
+    else {
+      resolvedTypes = Collections.singletonList(resolvedType);
+    }
+    return resolvedTypes;
   }
 
   /**
