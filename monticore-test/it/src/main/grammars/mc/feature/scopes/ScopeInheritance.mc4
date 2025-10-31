@@ -1,0 +1,45 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.feature.scopes;
+
+
+grammar ScopeInheritance extends mc.common.Basics {
+
+  StartProd = (A | B | C | D | E | F | G | H)*;
+
+  interface scope (shadowing non_exporting ordered)
+  symbol ShadowingNonExportingOrdered = Name;
+
+  interface scope (shadowing non_exporting)
+  symbol ShadowingNonExporting = Name;
+
+  interface scope (shadowing ordered)
+  symbol ShadowingOrdered = Name;
+
+  interface scope (non_exporting ordered)
+  symbol NonExportingOrdered = Name;
+
+  interface scope (shadowing)
+  symbol Shadowing = Name;
+
+  interface scope (non_exporting)
+  symbol NonExporting = Name;
+
+  interface scope (ordered)
+  symbol Ordered = Name;
+
+  interface scope
+  symbol DefaultScope = Name;
+
+  symbol scope A implements ShadowingNonExportingOrdered = "A" Name;
+  symbol scope B implements ShadowingNonExporting = "B" Name;
+  symbol scope C implements ShadowingOrdered = "C" Name;
+  symbol scope D implements NonExportingOrdered = "D" Name;
+  symbol scope E implements Shadowing = "E" Name;
+  symbol scope F implements NonExporting = "F" Name;
+  symbol scope G implements Ordered = "G" Name;
+  symbol scope H implements DefaultScope = "H" Name;
+
+
+
+
+}
