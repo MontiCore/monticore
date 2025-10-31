@@ -7,3 +7,4 @@ E Shadowing
 F NonExporting
 G Ordered
 H Default
+IA ShadowingNonExportingOrdered

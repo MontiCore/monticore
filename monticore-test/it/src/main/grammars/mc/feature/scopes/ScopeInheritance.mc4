@@ -4,7 +4,7 @@ package mc.feature.scopes;
 
 grammar ScopeInheritance extends mc.common.Basics {
 
-  StartProd = (A | B | C | D | E | F | G | H)*;
+  StartProd = (A | B | C | D | E | F | G | H | IA)*;
 
   interface scope (shadowing non_exporting ordered)
   symbol ShadowingNonExportingOrdered = Name;
@@ -39,7 +39,5 @@ grammar ScopeInheritance extends mc.common.Basics {
   symbol scope G implements Ordered = "G" Name;
   symbol scope H implements DefaultScope = "H" Name;
 
-
-
-
+  symbol scope IA extends A = "IA" Name;
 }

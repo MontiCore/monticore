@@ -3,8 +3,6 @@ package mc.feature.scopes;
 
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import mc.feature.scopes.scopeattributes.ScopeAttributesMill;
-import mc.feature.scopes.scopeattributes._symboltable.IScopeAttributesGlobalScope;
 import mc.feature.scopes.scopeinheritance.ScopeInheritanceMill;
 import mc.feature.scopes.scopeinheritance._ast.ASTStartProd;
 import mc.feature.scopes.scopeinheritance._parser.ScopeInheritanceParser;
@@ -33,6 +31,8 @@ public class ScopeInheritanceTest {
     public void before() {
         LogStub.init();
         Log.enableFailQuick(false);
+        ScopeInheritanceMill.reset();
+        ScopeInheritanceMill.init();
     }
 
     @BeforeEach
@@ -42,9 +42,6 @@ public class ScopeInheritanceTest {
         Assertions.assertFalse(scopeInheritanceParser.hasErrors());
         Assertions.assertTrue(astSub.isPresent());
         startProd = astSub.get();
-
-        ScopeInheritanceMill.reset();
-        ScopeInheritanceMill.init();
 
         IScopeInheritanceGlobalScope globalScope = ScopeInheritanceMill.globalScope();
         globalScope.setFileExt("st");
@@ -140,6 +137,17 @@ public class ScopeInheritanceTest {
         Assertions.assertTrue(scopeDefault.isExportingSymbols());
         Assertions.assertFalse(scopeDefault.isShadowing());
         Assertions.assertFalse(scopeDefault.isOrdered());
+        Assertions.assertTrue(Log.getFindings().isEmpty());
+    }
+
+    @Test
+    public void testScopeInheritanceIA() {
+        Assertions.assertEquals(1, startProd.getIAList().size());
+        IScopeInheritanceScope scopeShadowingNonExportingOrdered = startProd.getIAList().get(0).getSpannedScope();
+        Preconditions.checkNotNull(scopeShadowingNonExportingOrdered);
+        Assertions.assertFalse(scopeShadowingNonExportingOrdered.isExportingSymbols());
+        Assertions.assertFalse(scopeShadowingNonExportingOrdered.isShadowing());
+        Assertions.assertTrue(scopeShadowingNonExportingOrdered.isOrdered());
         Assertions.assertTrue(Log.getFindings().isEmpty());
     }
 }
