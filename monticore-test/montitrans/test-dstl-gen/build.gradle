@@ -24,7 +24,7 @@ configurations {
   }
 }
 tasks.register("trafoJar", Jar) {
-  classifier "trafo"
+  archiveClassifier = "trafo"
   from sourceSets.trafo.output
 }
 artifacts {
