@@ -47,8 +47,8 @@ dependencies {
     implementation group: 'org.apache.commons', name: 'commons-text', version: '1.10.0'
 
 //  implementation 'org.slf4j:slf4j-api:1.7.10'
-    implementation 'ch.qos.logback:logback-classic:1.2.0'
-    implementation 'ch.qos.logback:logback-core:1.2.0'
+    implementation 'ch.qos.logback:logback-classic:[1.2.9,1.3.0)' // we appear to be incompatible with logback >= 1.3.0
+    implementation 'ch.qos.logback:logback-core:[1.2.9,1.3.0)'
 
     implementation "de.monticore.lang:cd4analysis:$cd4a_version"
     implementation "org.antlr:antlr4:$antlr_version"
