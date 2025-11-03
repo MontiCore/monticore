@@ -94,6 +94,7 @@ import de.monticore.codegen.parser.Languages;
 import de.monticore.codegen.parser.ParserGenerator;
 import de.monticore.codegen.prettyprint.CDPrettyPrinterDecorator;
 import de.monticore.codegen.prettyprint.PrettyPrinterGenerator;
+import de.monticore.de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsPhasedSTCFix;
 import de.monticore.dstlgen.DSTLGenScript;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
@@ -374,7 +375,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     if(grammarSymbol.isPresent()) {
       result = grammarSymbol.get().getAstNode();
     } else {
-      Grammar_WithConceptsPhasedSTC stCreator = new Grammar_WithConceptsPhasedSTC();
+      Grammar_WithConceptsPhasedSTC stCreator = new Grammar_WithConceptsPhasedSTCFix();
       stCreator.createFromAST(result);
     }
 

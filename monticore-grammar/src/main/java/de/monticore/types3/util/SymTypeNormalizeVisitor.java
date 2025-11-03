@@ -457,6 +457,27 @@ public class SymTypeNormalizeVisitor extends SymTypeDeepCloneVisitor {
     return intersected;
   }
 
+  /**
+   * calculates the intersection of function types.
+   * <p>
+   * IMPORTANT: This does filter out cases that can occur
+   * for overloaded functions, e.g.,
+   * {@code intersect(A -> B, (A, A) -> B) = bottom}
+   * This is relevant if no type inference is used,
+   * and within type inference itself;
+   * With this version,
+   * resolved intersections MUST be split before normalization.
+   * An alternativ would be to allow the aforementioned kind of intersection,
+   * But that would lead to allowing values
+   * that are multiple function references at once.
+   * This is highly unintuitive and not supported by (most?) major languages.
+   * <p>
+   * TODO FDr: Figure out if for the non-type-inference version
+   * the intersection has to be calculated differently (to allow for overloads),
+   * or if another representation for overloads would be better suited
+   * (which in turn would probably be turned into an intersection
+   * for the non-inference version anyway).
+   */
   protected SymTypeExpression intersectFunctionTypes(
       Collection<SymTypeOfFunction> functions
   ) {

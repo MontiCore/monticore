@@ -444,8 +444,7 @@ public class AbstractService<T extends AbstractService> {
     ASTStereoValue stereoValue = CD4AnalysisMill.stereoValueBuilder()
             .setName(MC2CDStereotypes.DEPRECATED.toString()).uncheckedBuild();
     if (deprecatedValue.isPresent()) {
-      stereoValue.setText(
-              CD4AnalysisMill.stringLiteralBuilder().setSource(deprecatedValue.get()).build());
+      stereoValue.setContent(deprecatedValue.get());
     }
     stereoValueList.add(stereoValue);
   }
