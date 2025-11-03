@@ -669,34 +669,58 @@ import org.gradle.api.internal.file.FileResolver
 import org.gradle.internal.component.external.model.ProjectDerivedCapability
 import org.gradle.internal.component.external.model.TestFixturesSupport
 
-pluginManager.withPlugin("java-test-fixtures") {
-  def sourceSet = sourceSets["testFixtures"]
-  JvmPluginsHelper.configureDocumentationVariantWithArtifact(
-      sourceSet.sourcesElementsConfigurationName,
-      TestFixturesSupport.TEST_FIXTURE_SOURCESET_NAME,
-      DocsType.SOURCES,
-      [new ProjectDerivedCapability(project, "testFixtures")],
-      sourceSet.sourcesJarTaskName,
-      sourceSet.allSource,
-      components["java"] as AdhocComponentWithVariants,
-      configurations,
-      tasks,
-      objects,
-      project.services.get(FileResolver)
-  )
-  JvmPluginsHelper.configureDocumentationVariantWithArtifact(
-      sourceSet.javadocElementsConfigurationName,
-      TestFixturesSupport.TEST_FIXTURE_SOURCESET_NAME,
-      DocsType.JAVADOC,
-      [new ProjectDerivedCapability(project, "testFixtures")],
-      sourceSet.javadocJarTaskName,
-      tasks.named(sourceSet.javadocTaskName),
-      components["java"] as AdhocComponentWithVariants,
-      configurations,
-      tasks,
-      objects,
-      project.services.get(FileResolver)
-  )
+if(GradleVersion.current() < GradleVersion.version("8.5")){
+  pluginManager.withPlugin("java-test-fixtures") {
+    def sourceSet = sourceSets["testFixtures"]
+    JvmPluginsHelper.configureDocumentationVariantWithArtifact(
+        sourceSet.sourcesElementsConfigurationName,
+        TestFixturesSupport.TEST_FIXTURE_SOURCESET_NAME,
+        DocsType.SOURCES,
+        [new ProjectDerivedCapability(project, "testFixtures")],
+        sourceSet.sourcesJarTaskName,
+        sourceSet.allSource,
+        components["java"] as AdhocComponentWithVariants,
+        configurations,
+        tasks,
+        objects,
+        project.services.get(FileResolver)
+    )
+    JvmPluginsHelper.configureDocumentationVariantWithArtifact(
+        sourceSet.javadocElementsConfigurationName,
+        TestFixturesSupport.TEST_FIXTURE_SOURCESET_NAME,
+        DocsType.JAVADOC,
+        [new ProjectDerivedCapability(project, "testFixtures")],
+        sourceSet.javadocJarTaskName,
+        tasks.named(sourceSet.javadocTaskName),
+        components["java"] as AdhocComponentWithVariants,
+        configurations,
+        tasks,
+        objects,
+        project.services.get(FileResolver)
+    )
+  }
+} else {
+  pluginManager.withPlugin("java-test-fixtures") {
+    def sourceSet = sourceSets["testFixtures"]
+    JvmPluginsHelper.createDocumentationVariantWithArtifact(
+        sourceSet.sourcesElementsConfigurationName,
+        TestFixturesSupport.TEST_FIXTURE_SOURCESET_NAME,
+        DocsType.SOURCES,
+        [new ProjectDerivedCapability(project, "testFixtures")],
+        sourceSet.sourcesJarTaskName,
+        sourceSet.allSource,
+        project
+    )
+    JvmPluginsHelper.createDocumentationVariantWithArtifact(
+        sourceSet.javadocElementsConfigurationName,
+        TestFixturesSupport.TEST_FIXTURE_SOURCESET_NAME,
+        DocsType.JAVADOC,
+        [new ProjectDerivedCapability(project, "testFixtures")],
+        sourceSet.javadocJarTaskName,
+        tasks.named(sourceSet.javadocTaskName),
+        project
+    )
+  }
 }
 //End Workaround
 

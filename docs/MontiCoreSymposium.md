@@ -36,7 +36,7 @@ requires registration until **12th of September**.
 
 Registration costs are 660€ and include accommodation, 
 conference fees, and meals during the symposium.  
-[Register now](https://www.eventim-light.com/de/a/67a1d4620555173e53f9cad4/e/686fa9c98efd2b493c3de4a2)
+~~Register now~~ (registration is closed)
 
 ### Submission
 
@@ -46,7 +46,7 @@ be found [here](https://www.acm.org/publications/proceedings-template). We ask f
  [1] Research papers: 8 pages,
  [2] Vision abstracts: 1 page.
  
-Submissions must be uploaded via [EasyChair](https://easychair.org/conferences/?conf=mcsf25). 
+Submissions must be uploaded via EasyChair (submissions are closed). 
 
 It is planned to produce post-proceedings with extended and improved 
 versions of the papers as result of the symposium. 
