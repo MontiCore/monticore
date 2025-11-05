@@ -13,7 +13,6 @@ import de.monticore.cdbasis._ast.*;
 import de.monticore.cdbasis._symboltable.CDPackageSymbol;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.cdbasis._symboltable.ICDBasisArtifactScope;
-import de.monticore.cdbasis._symboltable.ICDBasisScope;
 import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.cd2java.exception.DecorateException;
@@ -30,7 +29,6 @@ import de.monticore.umlstereotype._ast.ASTStereoValue;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import org.apache.commons.lang3.StringEscapeUtils;
-
 import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -152,6 +150,10 @@ public class AbstractService<T extends AbstractService> {
   /**
    * methods for super CDTypes (CDClass and CDInterface)
    */
+  public List<TypeSymbol> getAllSuperClassesTransitive(ASTCDType astcdType) {
+    return new ArrayList<>(getAllSuperClassesTransitive(astcdType.getSymbol()));
+  }
+
   public List<String> getAllSuperClassesTransitive(ASTCDClass astcdClass) {
     return getAllSuperClassesTransitive(astcdClass.getSymbol())
         .stream()

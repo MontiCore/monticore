@@ -14,12 +14,16 @@ import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.DecorationHelper;
+import de.monticore.codegen.cd2java._symboltable.SymbolKindHierarchies;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedTypeTOP;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
@@ -28,6 +32,7 @@ import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.monticore.umlmodifier._ast.ASTModifier;
 import de.se_rwth.commons.Names;
 
+import java.lang.reflect.Type;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -241,30 +246,19 @@ public class ScopesGenitorDecorator extends AbstractCreator<ASTCDCompilationUnit
   }
 
   private ResolveUpperArtifactAttributes resolveUpperArtifactAttributes(ASTCDType symbolClass) {
-//      List<ASTMCObjectType> topLevelArtifacts = new ArrayList<>();
-//      topLevelArtifacts.addAll(symbolClass.getSuperclassList());
-//      topLevelArtifacts.addAll(symbolClass.getInterfaceList());
-//      boolean shadowing = symbolTableService.hasShadowingStereotype(symbolClass.getModifier());
-//      boolean nonExporting = symbolTableService.hasNonExportingStereotype(symbolClass.getModifier());
-//      boolean ordered = symbolTableService.hasOrderedStereotype(symbolClass.getModifier());
-//      for (ASTMCObjectType type : topLevelArtifacts) {
-//          System.out.println(type.getClass());
-//      }
-//      for (ASTMCObjectType type : topLevelArtifacts) {
-//
-//          //
-//          ASTMCQualifiedTypeTOP astmcQualifiedTypeTOP = (ASTMCQualifiedTypeTOP) type;
-//          CDTypeSymbol symbol =  symbolTableService.resolveCDType(astmcQualifiedTypeTOP.getMCQualifiedName().getQName());
-//          ASTCDType cdType =  symbol.getAstNode();
-//          if (cdType != null) {
-//              ResolveUpperArtifactAttributes upperAttributes = resolveUpperArtifactAttributes(cdType);
-//              shadowing = shadowing || upperAttributes.shadowing;
-//              nonExporting = nonExporting || upperAttributes.nonExporting;
-//              ordered = ordered || upperAttributes.ordered;
-//          }
-//      }
-//      return new ResolveUpperArtifactAttributes(shadowing, nonExporting, ordered);
-      return new ResolveUpperArtifactAttributes(false, false, false);
+      boolean shadowing = false;
+      boolean nonExporting = false;
+      boolean ordered = false;
+      List<TypeSymbol> superCDsTransitive = symbolTableService.getAllSuperClassesTransitive(symbolClass);
+      for (TypeSymbol typeSymbol : superCDsTransitive) {
+          if (typeSymbol != null && typeSymbol.isPresentAstNode()) {
+              ASTCDType astcdType = (ASTCDType) typeSymbol.getAstNode();
+              shadowing = shadowing || symbolTableService.hasShadowingStereotype(astcdType.getModifier());
+              nonExporting = nonExporting || symbolTableService.hasNonExportingStereotype(astcdType.getModifier());
+              ordered = ordered || symbolTableService.hasOrderedStereotype(astcdType.getModifier());
+          }
+      }
+      return new ResolveUpperArtifactAttributes(shadowing, nonExporting, ordered);
   }
 
   protected ASTCDMethod createSymbolEndVisitMethod(String astFullName, ASTCDType symbolClass, String simpleName, String symbolFullName, boolean hasOptionalName) {
