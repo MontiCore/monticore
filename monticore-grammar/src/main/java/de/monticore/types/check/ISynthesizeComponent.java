@@ -33,8 +33,9 @@ public interface ISynthesizeComponent {
     mcType.accept(this.getTraverser());
     Optional<CompKindExpression> res = this.getResult();
     if (res.isEmpty()) {
-      Log.error(String.format("0xD0107 Cannot synthesize component kind from type '%s'", mcType.toString()),
-        mcType.get_SourcePositionStart(), mcType.get_SourcePositionEnd());
+      Log.error(String.format("0xD0104 Cannot resolve component '%s'", mcType.toString()),
+        mcType.get_SourcePositionStart(), mcType.get_SourcePositionEnd()
+      );
     }
     return res;
   }
