@@ -52,7 +52,7 @@ public class ISynthesizeComponentTest {
     ISynthesizeComponent synth = new ISynthesizeComponent() {
       private final MCBasicTypesTraverser traverser = MCBasicTypesMill.traverser();
 
-      @Override public void init() { /* no-op */ }
+      @Override public void init() { }
       @Override public MCBasicTypesTraverser getTraverser() { return traverser; }
       @Override public Optional<CompKindExpression> getResult() { return Optional.empty(); }
     };
