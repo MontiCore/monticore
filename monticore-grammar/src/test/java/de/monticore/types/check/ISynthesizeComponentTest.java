@@ -69,4 +69,34 @@ public class ISynthesizeComponentTest {
     Assertions.assertTrue(msg.contains("0xD0104"), "Expected finding to contain 0xD0104; actual: " + msg);
     Assertions.assertTrue(msg.contains("double"), "Expected message to mention 'double'");
   }
+
+  @Test
+  public void testSynthesizeDoesNotLogCentralErrorWhenResultPresent() throws Exception {
+    var astType = parser.parse_StringMCType("A").orElseThrow();
+
+    ComponentTypeSymbol compSym = CompSymbolsMill.componentTypeSymbolBuilder()
+      .setName("A")
+      .setSpannedScope(CompSymbolsMill.scope())
+      .build();
+
+    ISynthesizeComponent synth = new ISynthesizeComponent() {
+      private final MCBasicTypesTraverser traverser = MCBasicTypesMill.traverser();
+      private final CompKindExpression compKind = new CompKindOfComponentType(compSym);
+
+      @Override public void init() { }
+      @Override public MCBasicTypesTraverser getTraverser() { return traverser; }
+      @Override public Optional<CompKindExpression> getResult() { return Optional.of(compKind); }
+    };
+
+    Log.clearFindings();
+    synth.synthesize(astType);
+
+    boolean hasCentral = Log.getFindings().stream()
+      .anyMatch(f -> {
+        String m = f.getMsg();
+        return m != null && (m.contains("0xD0104"));
+      });
+
+    Assertions.assertFalse(hasCentral, "Did not expect central error 0xD0104 when synthesis returns a result");
+  }
 }
