@@ -702,11 +702,14 @@ if(GradleVersion.current() < GradleVersion.version("8.5")){
 } else {
   pluginManager.withPlugin("java-test-fixtures") {
     def sourceSet = sourceSets["testFixtures"]
+    def caps = [new ProjectDerivedCapability(project, "testFixtures")];
+    if (GradleVersion.current() != GradleVersion.version("8.5"))
+      caps = caps.toSet()
     JvmPluginsHelper.createDocumentationVariantWithArtifact(
         sourceSet.sourcesElementsConfigurationName,
         TestFixturesSupport.TEST_FIXTURE_SOURCESET_NAME,
         DocsType.SOURCES,
-        [new ProjectDerivedCapability(project, "testFixtures")].toSet(),
+        caps,
         sourceSet.sourcesJarTaskName,
         sourceSet.allSource,
         project
@@ -715,7 +718,7 @@ if(GradleVersion.current() < GradleVersion.version("8.5")){
         sourceSet.javadocElementsConfigurationName,
         TestFixturesSupport.TEST_FIXTURE_SOURCESET_NAME,
         DocsType.JAVADOC,
-        [new ProjectDerivedCapability(project, "testFixtures")].toSet(),
+        caps,
         sourceSet.javadocJarTaskName,
         tasks.named(sourceSet.javadocTaskName),
         project
