@@ -706,7 +706,7 @@ if(GradleVersion.current() < GradleVersion.version("8.5")){
         sourceSet.sourcesElementsConfigurationName,
         TestFixturesSupport.TEST_FIXTURE_SOURCESET_NAME,
         DocsType.SOURCES,
-        [new ProjectDerivedCapability(project, "testFixtures")],
+        [new ProjectDerivedCapability(project, "testFixtures")].toSet(),
         sourceSet.sourcesJarTaskName,
         sourceSet.allSource,
         project
@@ -715,7 +715,7 @@ if(GradleVersion.current() < GradleVersion.version("8.5")){
         sourceSet.javadocElementsConfigurationName,
         TestFixturesSupport.TEST_FIXTURE_SOURCESET_NAME,
         DocsType.JAVADOC,
-        [new ProjectDerivedCapability(project, "testFixtures")],
+        [new ProjectDerivedCapability(project, "testFixtures")].toSet(),
         sourceSet.javadocJarTaskName,
         tasks.named(sourceSet.javadocTaskName),
         project

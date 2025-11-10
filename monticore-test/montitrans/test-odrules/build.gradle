@@ -13,6 +13,7 @@ tasks.register('generateMTOD') {
 }
 
 import de.monticore.MontiTransExec
+import de.monticore.gradle.gen.MCGenTask
 
 fileTree(dir: "$modelsDir/automaton", include: '*.mtod').each {
   def g = it
@@ -58,4 +59,8 @@ compileJava {
 
 sourceSets {
   main.java.srcDirs += [ _outputDir ]
+}
+// As we add the MontiTrans output as a main java output, we have to add this crude dependsOn
+tasks.named("generateMCGrammars", MCGenTask) {
+    handWrittenCodeDir.setFrom(["empty_path"]) // Disable handwritten
 }
