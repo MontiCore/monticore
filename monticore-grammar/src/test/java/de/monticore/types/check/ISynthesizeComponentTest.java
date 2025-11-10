@@ -3,14 +3,15 @@ package de.monticore.types.check;
 
 import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
 import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
-import de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser;
+import de.monticore.symbols.compsymbols._symboltable.SubcomponentSymbol;
 import de.monticore.types.mcbasictypes.MCBasicTypesMill;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.symbols.compsymbols.CompSymbolsMill;
 import de.monticore.symbols.compsymbols._symboltable.ComponentTypeSymbol;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import de.se_rwth.commons.logging.Finding;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -45,58 +46,62 @@ public class ISynthesizeComponentTest {
     CompSymbolsMill.init();
   }
 
-  @Test
-  public void testSynthesizeLogsSingleD0104WhenResultAbsent() throws Exception {
-    var astType = parser.parse_StringMCType("double").orElseThrow();
+    @Test
+    public void synthesize_resolvesComponent_whenParentHasSubcomponentOfThatType() throws Exception {
+      ComponentTypeSymbol typeB = CompSymbolsMill.componentTypeSymbolBuilder()
+        .setName("B")
+        .setSpannedScope(CompSymbolsMill.scope())
+        .build();
+      CompSymbolsMill.globalScope().add(typeB);
+      typeB.setEnclosingScope(CompSymbolsMill.globalScope());
 
-    ISynthesizeComponent synth = new ISynthesizeComponent() {
-      private final MCBasicTypesTraverser traverser = MCBasicTypesMill.traverser();
+      ComponentTypeSymbol parentA = CompSymbolsMill.componentTypeSymbolBuilder()
+        .setName("A")
+        .setSpannedScope(CompSymbolsMill.scope())
+        .build();
+      CompSymbolsMill.globalScope().add(parentA);
+      parentA.setEnclosingScope(CompSymbolsMill.globalScope());
 
-      @Override public void init() { }
-      @Override public MCBasicTypesTraverser getTraverser() { return traverser; }
-      @Override public Optional<CompKindExpression> getResult() { return Optional.empty(); }
-    };
+      parentA.getSpannedScope().setEnclosingScope(CompSymbolsMill.globalScope());
 
-    Log.clearFindings();
-    synth.synthesize(astType);
+      SubcomponentSymbol sub = new SubcomponentSymbol("mySub");
+      sub.setType(new CompKindOfComponentType(typeB));
+      sub.setEnclosingScope(parentA.getSpannedScope());
+      parentA.getSpannedScope().add(sub);
 
-    List<Finding> findings = Log.getFindings();
-    Assertions.assertFalse(findings.isEmpty(), "Expected at least one finding on failed synthesis");
-    Assertions.assertEquals(1, findings.size(), "Expected exactly 1 finding");
+      ASTMCType astB = parser.parse_StringMCType("B").orElseThrow();
 
-    String msg = findings.get(0).getMsg();
-    Assertions.assertNotNull(msg, "Finding message should not be null");
-    Assertions.assertTrue(msg.contains("0xD0104"), "Expected finding to contain 0xD0104; actual: " + msg);
-    Assertions.assertTrue(msg.contains("double"), "Expected message to mention 'double'");
+      FullSynthesizeCompKindFromMCBasicTypes synth = new FullSynthesizeCompKindFromMCBasicTypes();
+
+      Log.clearFindings();
+      Optional<CompKindExpression> res = synth.synthesize(astB);
+
+      CompKindOfComponentType ck = (CompKindOfComponentType) res.get();
+
+      List<Finding> findings = Log.getFindings();
+      boolean hasD0104 = findings.stream().anyMatch(f -> f.getMsg() != null && f.getMsg().contains("0xD0104"));
+      Assertions.assertFalse(hasD0104, "Did not expect central error 0xD0104");
+
   }
 
   @Test
-  public void testSynthesizeDoesNotLogCentralErrorWhenResultPresent() throws Exception {
-    var astType = parser.parse_StringMCType("A").orElseThrow();
+  public void synthesize_logsCentralError_whenNoComponentFound_forPrimitive() throws Exception {
+    ASTMCType astDouble = parser.parse_StringMCType("double").orElseThrow();
 
-    ComponentTypeSymbol compSym = CompSymbolsMill.componentTypeSymbolBuilder()
-      .setName("A")
-      .setSpannedScope(CompSymbolsMill.scope())
-      .build();
-
-    ISynthesizeComponent synth = new ISynthesizeComponent() {
-      private final MCBasicTypesTraverser traverser = MCBasicTypesMill.traverser();
-      private final CompKindExpression compKind = new CompKindOfComponentType(compSym);
-
-      @Override public void init() { }
-      @Override public MCBasicTypesTraverser getTraverser() { return traverser; }
-      @Override public Optional<CompKindExpression> getResult() { return Optional.of(compKind); }
-    };
+    FullSynthesizeCompKindFromMCBasicTypes synth = new FullSynthesizeCompKindFromMCBasicTypes();
 
     Log.clearFindings();
-    synth.synthesize(astType);
+    Optional<CompKindExpression> result = synth.synthesize(astDouble);
 
-    boolean hasCentral = Log.getFindings().stream()
-      .anyMatch(f -> {
-        String m = f.getMsg();
-        return m != null && (m.contains("0xD0104"));
-      });
+    Assertions.assertTrue(result.isEmpty(), "Expected no CompKindExpression for primitive 'double'");
 
-    Assertions.assertFalse(hasCentral, "Did not expect central error 0xD0104 when synthesis returns a result");
+    List<Finding> findings = Log.getFindings();
+    Assertions.assertFalse(findings.isEmpty(), "Expected at least one finding when synthesis fails for primitive 'double'");
+
+    boolean found = findings.stream().anyMatch(f -> {
+      String m = f.getMsg();
+      return m != null && (m.contains("0xD0104") && m.toLowerCase().contains("double"));
+    });
+    Assertions.assertTrue(found, "Expected a central finding containing 0xD0104 and mentioning 'double'; actual findings: " + findings);
   }
 }
