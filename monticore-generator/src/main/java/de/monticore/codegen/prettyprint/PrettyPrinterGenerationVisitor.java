@@ -43,7 +43,7 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
   protected static final String ITERATOR_PREFIX = "iter_";
 
   // data from the first phase
-  protected final Map<String, NonTermAccessorVisitor.ClassProdNonTermPrettyPrintData> classProds;
+  protected final Map<String, NonTermAccessorVisitorHandler.ClassProdNonTermPrettyPrintData> classProds;
 
   protected final ASTCDClass ppClass;
 
@@ -60,7 +60,7 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
 
   // Changing attributes
   protected ASTClassProd currentClassProd;
-  protected NonTermAccessorVisitor.ClassProdNonTermPrettyPrintData currentClassProdData;
+  protected NonTermAccessorVisitorHandler.ClassProdNonTermPrettyPrintData currentClassProdData;
 
   protected String grammarName;
   protected Map<String, Collection<String>> replacedKeywords;
@@ -70,7 +70,7 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
   protected NoSpacePredicateVisitor noSpacePredicateVisitor = new NoSpacePredicateVisitor();
   protected Grammar_WithConceptsTraverser noSpacePredicateTraverser;
 
-  public PrettyPrinterGenerationVisitor(GlobalExtensionManagement glex, ASTCDClass ppClass, Map<String, NonTermAccessorVisitor.ClassProdNonTermPrettyPrintData> classProds) {
+  public PrettyPrinterGenerationVisitor(GlobalExtensionManagement glex, ASTCDClass ppClass, Map<String, NonTermAccessorVisitorHandler.ClassProdNonTermPrettyPrintData> classProds) {
     this.glex = glex;
     this.ppClass = ppClass;
     this.classProds = classProds;
