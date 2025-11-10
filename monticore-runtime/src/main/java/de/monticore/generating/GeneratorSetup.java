@@ -108,9 +108,9 @@ public class GeneratorSetup {
   public  Configuration getConfig() {
     Configuration config = new Configuration(FREEMARKER_VERSION);
 
-    DefaultObjectWrapper o = new DefaultObjectWrapperBuilder(GeneratorSetup.FREEMARKER_VERSION).build();
-    o.setTreatDefaultMethodsAsBeanMembers(true);
-    config.setObjectWrapper(o);
+    DefaultObjectWrapperBuilder oBuilder = new DefaultObjectWrapperBuilder(GeneratorSetup.FREEMARKER_VERSION);
+    oBuilder.setTreatDefaultMethodsAsBeanMembers(true);
+    config.setObjectWrapper(oBuilder.build());
     // don't look for templateName.de.ftl when templateName.ftl requested
     config.setLocalizedLookup(false);
     
