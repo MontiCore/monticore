@@ -15,10 +15,9 @@ import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.logging.Log;
 import freemarker.cache.MultiTemplateLoader;
 import freemarker.cache.TemplateLoader;
-import freemarker.core.Macro;
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
-import freemarker.template.TemplateMethodModelEx;
+import freemarker.template.DefaultObjectWrapperBuilder;
 import freemarker.template.Version;
 
 import java.io.File;
@@ -109,7 +108,7 @@ public class GeneratorSetup {
   public  Configuration getConfig() {
     Configuration config = new Configuration(FREEMARKER_VERSION);
 
-    DefaultObjectWrapper o = new DefaultObjectWrapper(FREEMARKER_VERSION);
+    DefaultObjectWrapper o = new DefaultObjectWrapperBuilder(GeneratorSetup.FREEMARKER_VERSION).build();
     o.setTreatDefaultMethodsAsBeanMembers(true);
     config.setObjectWrapper(o);
     // don't look for templateName.de.ftl when templateName.ftl requested
