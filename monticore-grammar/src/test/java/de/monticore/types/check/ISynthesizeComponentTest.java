@@ -54,12 +54,13 @@ public class ISynthesizeComponentTest {
       CompSymbolsMill.globalScope().add(typeA);
       typeA.setEnclosingScope(CompSymbolsMill.globalScope());
 
-      ASTMCType astB = parser.parse_StringMCType("A").orElseThrow();
+      ASTMCType ast = parser.parse_StringMCType("A").orElseThrow();
+      ast.setEnclosingScope(CompSymbolsMill.globalScope());
 
       FullSynthesizeCompKindFromMCBasicTypes synth = new FullSynthesizeCompKindFromMCBasicTypes();
 
       Log.clearFindings();
-      Optional<CompKindExpression> res = synth.synthesize(astB);
+      Optional<CompKindExpression> res = synth.synthesize(ast);
       List<Finding> findings = Log.getFindings();
       boolean hasD0104 = findings.stream().anyMatch(f -> f.getMsg() != null && f.getMsg().contains("0xD0104"));
       Assertions.assertTrue(res.isPresent());
