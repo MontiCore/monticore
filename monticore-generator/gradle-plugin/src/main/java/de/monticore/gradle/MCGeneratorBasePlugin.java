@@ -4,6 +4,7 @@ package de.monticore.gradle;
 import de.monticore.MCMillBuildService;
 import de.monticore.MCPlugin;
 import de.monticore.gradle.common.MCBuildInfoTask;
+import de.monticore.gradle.dependencies.MCToolDependenciesPlugin;
 import de.monticore.gradle.gen.MCGenTask;
 import de.monticore.gradle.gen.MCToolAction;
 import de.monticore.gradle.internal.ProgressLoggerService;
@@ -27,6 +28,8 @@ public abstract class MCGeneratorBasePlugin implements Plugin<Project> {
   public final static String CONCURRENT_MC_PROPERTY = "de.monticore.gradle.max-concurrent-mcgen";
 
   public void apply(Project project) {
+    // Populate the "mcTool" configuration with the generator itself
+    project.getPluginManager().apply(MCToolDependenciesPlugin.class);
     // ServiceProvider to pass a ProgressLogger instance to the workers
     Provider<ProgressLoggerService> serviceProvider = project.getGradle().getSharedServices()
             .registerIfAbsent(ProgressLoggerService.class.getSimpleName(),

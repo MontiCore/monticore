@@ -60,6 +60,12 @@ configurations {
       capability("de.monticore:monticore-grammar:$version") // default
     }
   }
+  // We have to give the trafo component a different capability
+  trafoGrammarSymbolOutElements {
+    outgoing {
+      capability("de.monticore:monticore-grammar-trafo:$version") // default
+    }
+  }
 }
 
 
@@ -696,11 +702,14 @@ if(GradleVersion.current() < GradleVersion.version("8.5")){
 } else {
   pluginManager.withPlugin("java-test-fixtures") {
     def sourceSet = sourceSets["testFixtures"]
+    def caps = [new ProjectDerivedCapability(project, "testFixtures")];
+    if (GradleVersion.current() != GradleVersion.version("8.5"))
+      caps = caps.toSet()
     JvmPluginsHelper.createDocumentationVariantWithArtifact(
         sourceSet.sourcesElementsConfigurationName,
         TestFixturesSupport.TEST_FIXTURE_SOURCESET_NAME,
         DocsType.SOURCES,
-        [new ProjectDerivedCapability(project, "testFixtures")],
+        caps,
         sourceSet.sourcesJarTaskName,
         sourceSet.allSource,
         project
@@ -709,7 +718,7 @@ if(GradleVersion.current() < GradleVersion.version("8.5")){
         sourceSet.javadocElementsConfigurationName,
         TestFixturesSupport.TEST_FIXTURE_SOURCESET_NAME,
         DocsType.JAVADOC,
-        [new ProjectDerivedCapability(project, "testFixtures")],
+        caps,
         sourceSet.javadocJarTaskName,
         tasks.named(sourceSet.javadocTaskName),
         project
@@ -722,3 +731,4 @@ if(GradleVersion.current() < GradleVersion.version("8.5")){
 tasks.named("build") {
   dependsOn javadoc, testFixturesJavadoc
 }
+

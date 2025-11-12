@@ -7,6 +7,7 @@ import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.literals.mccommonliterals._ast.ASTStringLiteral;
 import de.monticore.tf.tfcommons._ast.ASTAssign;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import mc.testcases.tr.expressiondsltr.ExpressionDSLTRMill;
 import mc.testcases.tr.expressiondsltr._parser.ExpressionDSLTRParser;
 import org.junit.Assert;
@@ -23,7 +24,7 @@ import java.util.Optional;
 public class ExpressionDSLTRParseTest {
   @Before
   public void beforeEach() {
-    Log.init();
+    LogStub.init();
     Log.enableFailQuick(false);
     ExpressionDSLTRMill.init();
     Log.clearFindings();
