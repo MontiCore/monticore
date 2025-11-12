@@ -9,17 +9,15 @@ import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.se_rwth.commons.logging.Log;
-import org.checkerframework.checker.interning.qual.FindDistinct;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.jupiter.api.Disabled;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static groovy.test.GroovyTestCase.assertEquals;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class InterpreterInterfaceDecoratorTest extends DecoratorTestCase {
@@ -49,11 +47,11 @@ public class InterpreterInterfaceDecoratorTest extends DecoratorTestCase {
     List<ASTMCObjectType> interfaces = decoratedInterface.getInterfaceList();
     assertEquals(2, interfaces.size());
     assertEquals(
-        ((ASTMCQualifiedType) interfaces.get(0)).getMCQualifiedName().getQName(),
-        "de.monticore.codegen.ast.lexicals._visitor.ILexicalsInterpreter");
+            "de.monticore.codegen.ast.lexicals._visitor.ILexicalsInterpreter",
+            ((ASTMCQualifiedType) interfaces.get(0)).getMCQualifiedName().getQName());
     assertEquals(
-        ((ASTMCQualifiedType) interfaces.get(1)).getMCQualifiedName().getQName(),
-        InterpreterConstants.MODELINTERPRETER_FULLNAME);
+            InterpreterConstants.MODELINTERPRETER_FULLNAME,
+            ((ASTMCQualifiedType) interfaces.get(1)).getMCQualifiedName().getQName());
   }
 
   @Test

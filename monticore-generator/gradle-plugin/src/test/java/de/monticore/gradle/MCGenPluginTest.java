@@ -13,11 +13,12 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.rules.TemporaryFolder;
 
+import javax.annotation.Nullable;
 import javax.annotation.concurrent.NotThreadSafe;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.Collections;
+import java.util.*;
 
 import static org.gradle.testkit.runner.TaskOutcome.*;
 
@@ -119,9 +120,10 @@ public class MCGenPluginTest {
   void testGenerateGrammar(String version) throws IOException {
     writeFile(settingsFile, "rootProject.name = 'hello-world'");
     writeFile(propertiesFile, "de.monticore.gradle.show_performance_statistic=true\norg.gradle.jvmargs=-XX:MaxMetaspaceSize=1g\n");
-    String buildFileContent = "plugins {" +
-            "    id 'de.monticore.generator' " +
-            "}";
+    String buildFileContent = "plugins {\n" +
+            "    id 'de.monticore.generator' \n" +
+            "}\n" +
+            createMCToolDependency();
     writeFile(buildFile, buildFileContent);
     // Note: We are unable to load MCBasics or compile,
     // as the monticore-grammar dependency might not be available yet
@@ -135,7 +137,7 @@ public class MCGenPluginTest {
             .withPluginClasspath()
             .withGradleVersion(version)
             .withProjectDir(testProjectDir)
-            .withArguments("generateMCGrammars", "--build-cache", "--info")
+            .withArguments(withProperties("generateMCGrammars", "--build-cache", "--info", "--stacktrace"))
             .build();
 
     // file MyTestGrammar is worked on
@@ -160,7 +162,7 @@ public class MCGenPluginTest {
             .withPluginClasspath()
             .withGradleVersion(version)
             .withProjectDir(testProjectDir)
-            .withArguments("generateMCGrammars", "--build-cache", "--info")
+            .withArguments(withProperties("generateMCGrammars", "--build-cache", "--info"))
             .build();
     // and then check, that the build cache was used
     Assert.assertEquals("generateMCGrammars was not cached",
@@ -182,7 +184,7 @@ public class MCGenPluginTest {
             .withPluginClasspath()
             .withGradleVersion(version)
             .withProjectDir(testProjectDir)
-            .withArguments("generateMCGrammars", "--build-cache", "--info")
+            .withArguments(withProperties("generateMCGrammars", "--build-cache", "--info"))
             .build();
     // and the task was successful
     Assert.assertEquals(SUCCESS, result.task(":generateMCGrammars").getOutcome());
@@ -205,7 +207,7 @@ public class MCGenPluginTest {
             .withPluginClasspath()
             .withGradleVersion(version)
             .withProjectDir(testProjectDir)
-            .withArguments("generateMCGrammars", "--build-cache", "--info")
+            .withArguments(withProperties("generateMCGrammars", "--build-cache", "--info"))
             .build();
     // Nothing SHOULD not be up-to-date
     Assert.assertFalse(result.getOutput(), result.getOutput().contains("MyTestGrammar.mc4 is UP-TO-DATE, no action required"));
@@ -260,7 +262,7 @@ public class MCGenPluginTest {
             "      from components.java\n" +
             "    }" +
             "  }" +
-            "}";
+            "}\n" + createMCToolDependency();
     var aDir = new File(testProjectDir, "A");
     writeFile(new File(aDir, "build.gradle"), buildFileContentA);
     // Note: We are unable to load MCBasics or compile,
@@ -273,7 +275,8 @@ public class MCGenPluginTest {
             "}\n" +
             "dependencies { " +
             "  grammar(project(':A')) " +
-            "}";
+            "}\n"
+            + createMCToolDependency();
     var bDir = new File(testProjectDir, "B");
     writeFile(new File(bDir, "build.gradle"), buildFileContentB);
 
@@ -286,7 +289,7 @@ public class MCGenPluginTest {
             .withPluginClasspath()
             .withGradleVersion(version)
             .withProjectDir(testProjectDir)
-            .withArguments("generateMCGrammars", "--build-cache", "--info")
+            .withArguments(withProperties("generateMCGrammars", "--build-cache", "--info"))
             .build();
 
     // file MyTestGrammar is worked on
@@ -315,7 +318,7 @@ public class MCGenPluginTest {
             .withPluginClasspath()
             .withGradleVersion(version)
             .withProjectDir(testProjectDir)
-            .withArguments("generateMCGrammars", "--build-cache", "--info")
+            .withArguments(withProperties("generateMCGrammars", "--build-cache", "--info"))
             .build();
 
     // and then check, that the build cache was used
@@ -341,7 +344,7 @@ public class MCGenPluginTest {
             .withPluginClasspath()
             .withGradleVersion(version)
             .withProjectDir(testProjectDir)
-            .withArguments("generateMCGrammars", "--build-cache", "--info")
+            .withArguments(withProperties("generateMCGrammars", "--build-cache", "--info"))
             .build();
     // and the B-task was successful
     Assert.assertEquals(SUCCESS, result.task(":B:generateMCGrammars").getOutcome());
@@ -369,7 +372,7 @@ public class MCGenPluginTest {
             .withPluginClasspath()
             .withGradleVersion(version)
             .withProjectDir(testProjectDir)
-            .withArguments("generateMCGrammars", "--build-cache", "--info")
+            .withArguments(withProperties("generateMCGrammars", "--build-cache", "--info"))
             .build();
     // Nothing SHOULD not be up-to-date
     Assert.assertFalse(result.getOutput(), result.getOutput().contains("MyTestGrammar.mc4 is UP-TO-DATE, no action required"));
@@ -409,5 +412,49 @@ public class MCGenPluginTest {
     System.err.println(output);
     Assert.fail("Task " + taskPath + " was not found within the stats");
     return null;
+  }
+
+
+  Properties loadProperties() {
+    Properties properties = new Properties();
+    try {
+      properties.load(this.getClass().getClassLoader().getResourceAsStream("buildInfo.properties"));
+    }
+    catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+    return properties;
+  }
+
+  List<String> withProperties(String... args) {
+    return withProperties(Arrays.asList(args));
+  }
+
+  List<String> withProperties(List<String> runnerArgs) {
+    List<String> ret = new ArrayList<>(runnerArgs);
+    @Nullable
+    String mavenRepo = System.getProperty("maven.repo.local");
+    if (mavenRepo != null && !mavenRepo.isEmpty()) {
+      ret.add("-Dmaven.repo.local=" + mavenRepo + "");
+    }
+    @Nullable
+    String useLocalRepo = System.getProperty("useLocalRepo");
+    if (useLocalRepo != null && !useLocalRepo.isEmpty()) {
+      ret.add("-PuseLocalRepo=" + useLocalRepo);
+    }
+    return ret;
+  }
+
+  String createMCToolDependency() {
+    String projVersion = loadProperties().getProperty("version");
+    File mcGenToolJar = new File(new File("../target/libs/"), "monticore-generator-" + projVersion + "-mc-tool.jar");
+    return  "repositories {\n" + " if ((\"true\").equals(getProperty('useLocalRepo'))) {\n "
+            + "  mavenLocal()\n" + " }\n"
+            + " maven{ url  'https://nexus.se.rwth-aachen.de/content/groups/public' }\n"
+            + " mavenCentral()\n" + "}\n" +
+            // We have to inject the cdlang jar for this project (as it is not yet published)
+            "dependencies {\n" + " mcTool files('" + mcGenToolJar.getAbsolutePath().replace("\\", "\\\\")
+            + "')\n"
+            + "}\n";
   }
 }
