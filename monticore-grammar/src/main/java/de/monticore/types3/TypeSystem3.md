@@ -197,6 +197,7 @@ while the SymTypeExpressions represent a type usage
 There is only one type definition,
 but there can be many type usages.   
 The SymTypeExpression knows its corresponding Symbol (if applicable):
+
 * SymTypeOfGenerics, SymTypeOfObject, SymTypePrimitive, and SymTypeVariable
   know their corresponding TypeSymbol
 * SymTypeOfFunction _may_ have a corresponding FunctionSymbol
@@ -217,6 +218,7 @@ Thus, multiple identical SymTypeExpressions can be used at the same time.
 
 In MontiCore, the type system implementations have multiple usages.
 For example:
+
 * writing context conditions;
   The CoCos reduce a set of models to those,
   that adhere to the typing rules of the language.   

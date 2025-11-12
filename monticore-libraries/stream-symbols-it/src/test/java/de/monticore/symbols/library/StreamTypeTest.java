@@ -83,6 +83,15 @@ public class StreamTypeTest {
   }
 
   @Test
+  public void resolveStreamMethodIsEmpty() {
+    MethodSymbol method = getMethodSymbol("Stream.isEmpty");
+    Assertions.assertEquals(0, method.getParameterList().size());
+    Assertions.assertTrue(method.getEnclosingScope().getSpanningSymbol() instanceof TypeSymbol);
+    Assertions.assertEquals("Stream", method.getEnclosingScope().getSpanningSymbol().getName());
+    Assertions.assertEquals(BasicSymbolsMill.BOOLEAN, method.getType().getTypeInfo().getName());
+  }
+
+  @Test
   public void resolveStreamFunctions() {
     resolveCommonMemberMethods("EventStream");
     resolveCommonMemberMethods("SyncStream");
@@ -103,6 +112,7 @@ public class StreamTypeTest {
   }
 
   protected void resolveCommonMemberMethods(String streamType) {
+    testResolveMethod(streamType + ".isEmpty");
     testResolveMethod(streamType + ".len");
     testResolveMethod(streamType + ".first");
     testResolveMethod(streamType + ".dropFirst");

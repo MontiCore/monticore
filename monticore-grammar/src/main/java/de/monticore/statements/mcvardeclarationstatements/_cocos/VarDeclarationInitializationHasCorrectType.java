@@ -60,7 +60,7 @@ public class VarDeclarationInitializationHasCorrectType
     } else if(!node.getDeclarator().isPresentSymbol()) {
       Log.error(String.format("Could not find a symbol for variable '%s', thus can not check coco '%s'. Check " +
         "whether you have run the symbol table creation before running this coco.",
-        node.getDeclarator().getName(), this.getClass().getSimpleName()));
+        node.getDeclarator().getName(), this.getClass().getSimpleName()), node.get_SourcePositionStart(), node.get_SourcePositionEnd());
 
     } else { // Proceed with checking the coco
       SymTypeExpression varType = node.getDeclarator().getSymbol().getType();

@@ -20,11 +20,11 @@ import de.monticore.codegen.cd2java.exception.DecorateException;
 import de.monticore.codegen.cd2java.exception.DecoratorErrorCode;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
-import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import de.monticore.umlmodifier._ast.ASTModifier;
 import de.monticore.umlstereotype._ast.ASTStereoValue;
 import de.se_rwth.commons.Joiners;
@@ -155,12 +155,12 @@ public class AbstractService<T extends AbstractService> {
   public List<String> getAllSuperClassesTransitive(ASTCDClass astcdClass) {
     return getAllSuperClassesTransitive(astcdClass.getSymbol())
         .stream()
-        .map(s -> createASTFullName(s))
+        .map(this::createASTFullName)
         .collect(Collectors.toList());
   }
 
-  protected List<CDTypeSymbol> getAllSuperClassesTransitive(CDTypeSymbol cdTypeSymbol) {
-    List<CDTypeSymbol> superSymbolList = new ArrayList<>();
+  protected List<TypeSymbol> getAllSuperClassesTransitive(TypeSymbol cdTypeSymbol) {
+    List<TypeSymbol> superSymbolList = new ArrayList<>();
     if (cdTypeSymbol.isPresentSuperClass()) {
       TypeSymbol superSymbol = cdTypeSymbol.getSuperClass().getTypeInfo();
       if (superSymbol instanceof TypeSymbolSurrogate) {
@@ -170,13 +170,13 @@ public class AbstractService<T extends AbstractService> {
         superSymbol = ((TypeSymbolSurrogate) superSymbol).lazyLoadDelegate();
       }
 
-      superSymbolList.add((CDTypeSymbol) superSymbol);
-      superSymbolList.addAll(getAllSuperClassesTransitive((CDTypeSymbol) superSymbol));
+      superSymbolList.add(superSymbol);
+      superSymbolList.addAll(getAllSuperClassesTransitive(superSymbol));
     }
     return superSymbolList;
   }
 
-  public List<String> getAllSuperInterfacesTransitive(CDTypeSymbol cdTypeSymbol) {
+  public List<String> getAllSuperInterfacesTransitive(TypeSymbol cdTypeSymbol) {
     List<String> superSymbolList = new ArrayList<>();
         List<CDTypeSymbol> localSuperInterfaces = Lists.newArrayList();
         cdTypeSymbol.getSuperTypesList().stream()
@@ -444,8 +444,7 @@ public class AbstractService<T extends AbstractService> {
     ASTStereoValue stereoValue = CD4AnalysisMill.stereoValueBuilder()
             .setName(MC2CDStereotypes.DEPRECATED.toString()).uncheckedBuild();
     if (deprecatedValue.isPresent()) {
-      stereoValue.setText(
-              CD4AnalysisMill.stringLiteralBuilder().setSource(deprecatedValue.get()).build());
+      stereoValue.setContent(deprecatedValue.get());
     }
     stereoValueList.add(stereoValue);
   }
@@ -560,9 +559,10 @@ public class AbstractService<T extends AbstractService> {
   /**
    * adds the '_ast' package to a fullName to create an valid AST-package
    */
-  public String createASTFullName(CDTypeSymbol typeSymbol) {
-    ICDBasisScope scope = typeSymbol.getEnclosingScope();
+  public String createASTFullName(TypeSymbol typeSymbol) {
+    IBasicSymbolsScope scope = typeSymbol.getEnclosingScope();
     List<DiagramSymbol> diagramSymbols = scope.getLocalDiagramSymbols();
+    Objects.nonNull(diagramSymbols);
     while (diagramSymbols.isEmpty()) {
       scope = scope.getEnclosingScope();
       diagramSymbols = scope.getLocalDiagramSymbols();

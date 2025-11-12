@@ -14,7 +14,8 @@ import de.se_rwth.commons.StringTransformations;
 import java.util.*;
 
 
-public class NonTermAccessorVisitor implements GrammarVisitor2 {
+public class NonTermAccessorVisitorHandler extends PrettyPrinterReducedTraverseHandler
+        implements GrammarVisitor2 {
 
   protected final Map<String, ClassProdNonTermPrettyPrintData> classProds = new HashMap<>();
   protected ClassProdNonTermPrettyPrintData currentData;
@@ -23,6 +24,72 @@ public class NonTermAccessorVisitor implements GrammarVisitor2 {
 
   public Map<String, ClassProdNonTermPrettyPrintData> getClassProds() {
     return this.classProds;
+  }
+
+  @Override
+  public void traverse(ASTBlock node) {
+    int effIt = getEffectiveIteration(currentData.effectiveIterationStack.peek(), node.getIteration());
+    boolean doResetExhausted = effIt == ASTConstantsGrammar.DEFAULT || effIt == ASTConstantsGrammar.QUESTION;
+    traverseAltList(node.getAltList(), doResetExhausted);
+  }
+
+  @Override
+  public void traverse(ASTClassProd node) {
+    traverseAltList(node.getAltList(), true);
+  }
+
+  /**
+   * Support blocks which contain a NonTermRef once in each of its alts,
+   * such as  "P | P".
+   * This is only  supported in non-repeated ("trivial") blocks
+   * @param altList the list of alts of the block or class prod
+   * @param doResetExhausted whether the exhausted references should per-alt
+   */
+  protected void traverseAltList(List<ASTAlt> altList, boolean doResetExhausted) {
+    Set<String> exhaustedBefore = new HashSet<>(currentData.exhaustedNonTerminals);
+    Set<String> exhaustedAll = new HashSet<>();
+
+    Map<String, Integer> nonTerminalIterationBefore = new HashMap<>(currentData.nonTerminalIteration);
+    Map<String, Integer> nonTerminalIterationAll = new HashMap<>();
+
+    for (ASTAlt alt : altList) {
+      // Before each alt: reset the exhaustedNonTerminals and nonTerminalIterations to the before-state
+      if (doResetExhausted) {
+        currentData.exhaustedNonTerminals.clear();
+        currentData.exhaustedNonTerminals.addAll(exhaustedBefore);
+
+        currentData.nonTerminalIteration.clear();
+        currentData.nonTerminalIteration.putAll(nonTerminalIterationBefore);
+      }
+      // actually traverse
+      alt.accept(getTraverser());
+
+      if (doResetExhausted) {
+        // keep track of the alt's exhaustedNonTerminals
+        exhaustedAll.addAll(currentData.exhaustedNonTerminals);
+        // and their iteration
+        for (Map.Entry<String, Integer> e : currentData.nonTerminalIteration.entrySet()) {
+          nonTerminalIterationAll.compute(e.getKey(), (k, prevV) -> {
+            if (prevV == null || e.getValue().equals(prevV)) {
+              return e.getValue();
+            } else {
+              boolean isERepeated = e.getValue() == ASTConstantsGrammar.STAR || e.getValue() == ASTConstantsGrammar.PLUS;
+              boolean isOrigRepeated = prevV == ASTConstantsGrammar.STAR || prevV == ASTConstantsGrammar.PLUS;
+              // in case the iteration level changes between the alts -> non-trivial distinguishing
+              if (isERepeated != isOrigRepeated) {
+                currentData.erroringNonTerminals.add(e.getKey()); // indistinguishable alts (with our trivial approach)
+              }
+            }
+            return Math.max(prevV, e.getValue());
+          });
+        }
+      }
+    }
+
+    // After the block/prod: Add the exhausted non-terminals from all blocks
+    currentData.exhaustedNonTerminals.addAll(exhaustedAll);
+    for (var e : nonTerminalIterationAll.entrySet())
+      currentData.nonTerminalIteration.compute(e.getKey(), (k, v) -> Math.max(e.getValue(), v == null ? 0 : v));
   }
 
   @Override
