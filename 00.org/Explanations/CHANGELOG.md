@@ -68,7 +68,7 @@ released: TBD
     - fix RegEx-String SubTyping (#92)
     - More consistent static delegates (#88)
     - Variable selection depending on scopes (#142)
-    - Minor fixes (#121, #191)
+    - Minor fixes (#121)
 - MontiTrans:
     - fix replacements within nested opts (#145)
     - DSTL-Generation:
