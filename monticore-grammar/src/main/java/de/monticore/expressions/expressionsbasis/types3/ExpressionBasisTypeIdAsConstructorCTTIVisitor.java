@@ -15,21 +15,10 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * s. {@link de.monticore.expressions.commonexpressions.types3.CommonExpressionsTypeIdAsConstructorTypeVisitor}
- *
- * @deprecated use {@link ExpressionBasisTypeIdAsConstructorCTTIVisitor}
+ * s. {@link de.monticore.expressions.commonexpressions.types3.CommonExpressionsTypeIdAsConstructorCTTIVisitor}
  */
-@Deprecated
-public class ExpressionBasisTypeIdAsConstructorTypeVisitor
-    extends ExpressionBasisTypeVisitor {
-
-  /**
-   * @deprecated is now a static delegate
-   */
-  @Deprecated(forRemoval = true)
-  public void setOOWithinTypeResolver(
-      OOWithinTypeBasicSymbolsResolver oOWithinTypeResolver) {
-  }
+public class ExpressionBasisTypeIdAsConstructorCTTIVisitor
+    extends ExpressionBasisCTTIVisitor {
 
   /**
    * adds support for the type id to be used as if it were the constructors of the type,
