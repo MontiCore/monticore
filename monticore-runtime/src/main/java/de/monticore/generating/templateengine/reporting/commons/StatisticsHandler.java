@@ -27,7 +27,7 @@ public class StatisticsHandler {
     return _reportSendingExecutorService;
   }
 
-  private static void sendRequest(URI url, String data, String type) throws IOException, InterruptedException {
+  static void sendRequest(URI url, String data, String type) throws IOException, InterruptedException {
     HttpURLConnection connection = (HttpURLConnection) url.toURL().openConnection();
     connection.setRequestMethod("POST");
     connection.setRequestProperty("STAT_TYPE", type);

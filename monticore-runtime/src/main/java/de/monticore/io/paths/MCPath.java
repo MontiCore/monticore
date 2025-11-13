@@ -332,7 +332,7 @@ public final class MCPath {
   }
 
   // A List of all file systems opened for jars.
-  private static Map<File, FileSystem> openedJarFileSystems = new HashMap<>();
+  final static Map<File, FileSystem> openedJarFileSystems = new HashMap<>();
 
   public static FileSystem getJarFS(File jar) {
     if(openedJarFileSystems.containsKey(jar)){
