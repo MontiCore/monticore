@@ -38,7 +38,7 @@ public class ISynthesizeComponentTest {
   }
 
     @Test
-    public void synthesize_resolvesComponent_whenParentHasSubcomponentOfThatType() throws Exception {
+    public void synthesizesCompKind_forResolvableComponentTypeSymbol() throws Exception {
       ComponentTypeSymbol typeA = ComponentSymbolsWithExpressionsAndMCBasicTypesMill.componentTypeSymbolBuilder()
         .setName("A")
         .setSpannedScope(ComponentSymbolsWithExpressionsAndMCBasicTypesMill.scope())
@@ -57,11 +57,10 @@ public class ISynthesizeComponentTest {
       boolean hasD0104 = findings.stream().anyMatch(f -> f.getMsg() != null && f.getMsg().contains("0xD0104"));
       Assertions.assertTrue(res.isPresent());
       Assertions.assertFalse(hasD0104, "Did not expect central error 0xD0104");
-
   }
 
   @Test
-  public void synthesize_logsCentralError_whenNoComponentFound_forPrimitive() throws Exception {
+  public void shouldLogCentralError_whenPrimitiveType() throws Exception {
     ASTMCType astDouble = parser.parse_StringMCType("double").orElseThrow();
 
     FullSynthesizeCompKindFromMCBasicTypes synth = new FullSynthesizeCompKindFromMCBasicTypes();
