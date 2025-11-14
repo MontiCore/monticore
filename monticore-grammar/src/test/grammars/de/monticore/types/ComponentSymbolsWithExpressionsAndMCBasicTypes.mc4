@@ -1,0 +1,6 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.monticore.types;
+
+component grammar ComponentSymbolsWithExpressionsAndMCBasicTypes extends de.monticore.symbols.CompSymbols, de.monticore.expressions.CombineExpressionsWithLiterals, de.monticore.types.MCBasicTypes {
+}

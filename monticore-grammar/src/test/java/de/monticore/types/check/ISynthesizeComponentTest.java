@@ -3,11 +3,9 @@ package de.monticore.types.check;
 
 import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
 import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
-import de.monticore.types.mcbasictypes.MCBasicTypesMill;
+import de.monticore.types.componentsymbolswithexpressionsandmcbasictypes.ComponentSymbolsWithExpressionsAndMCBasicTypesMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.symbols.compsymbols.CompSymbolsMill;
 import de.monticore.symbols.compsymbols._symboltable.ComponentTypeSymbol;
-import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -33,29 +31,23 @@ public class ISynthesizeComponentTest {
   public void setup() {
     Log.clearFindings();
 
-    CombineExpressionsWithLiteralsMill.reset();
-    CombineExpressionsWithLiteralsMill.init();
-
-    BasicSymbolsMill.initializePrimitives();
-    MCBasicTypesMill.init();
-
     parser = CombineExpressionsWithLiteralsMill.parser();
 
-    CompSymbolsMill.reset();
-    CompSymbolsMill.init();
+    ComponentSymbolsWithExpressionsAndMCBasicTypesMill.reset();
+    ComponentSymbolsWithExpressionsAndMCBasicTypesMill.init();
   }
 
     @Test
     public void synthesize_resolvesComponent_whenParentHasSubcomponentOfThatType() throws Exception {
-      ComponentTypeSymbol typeA = CompSymbolsMill.componentTypeSymbolBuilder()
+      ComponentTypeSymbol typeA = ComponentSymbolsWithExpressionsAndMCBasicTypesMill.componentTypeSymbolBuilder()
         .setName("A")
-        .setSpannedScope(CompSymbolsMill.scope())
+        .setSpannedScope(ComponentSymbolsWithExpressionsAndMCBasicTypesMill.scope())
         .build();
-      CompSymbolsMill.globalScope().add(typeA);
-      typeA.setEnclosingScope(CompSymbolsMill.globalScope());
+      ComponentSymbolsWithExpressionsAndMCBasicTypesMill.globalScope().add(typeA);
+      typeA.setEnclosingScope(ComponentSymbolsWithExpressionsAndMCBasicTypesMill.globalScope());
 
       ASTMCType ast = parser.parse_StringMCType("A").orElseThrow();
-      ast.setEnclosingScope(CompSymbolsMill.globalScope());
+      ast.setEnclosingScope(ComponentSymbolsWithExpressionsAndMCBasicTypesMill.globalScope());
 
       FullSynthesizeCompKindFromMCBasicTypes synth = new FullSynthesizeCompKindFromMCBasicTypes();
 
