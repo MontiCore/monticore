@@ -1,20 +1,34 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import de.monticore.symbols.compsymbols._symboltable.ComponentTypeSymbol;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
+
 import de.monticore.types.componentsymbolswithmcbasictypestest.ComponentSymbolsWithMCBasicTypesTestMill;
+import de.monticore.types.componentsymbolswithmcbasictypestest._symboltable.IComponentSymbolsWithMCBasicTypesTestScope;
+import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCBasicTypeArgument;
+import de.monticore.types.mccollectiontypes._ast.ASTMCPrimitiveTypeArgument;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
+import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericTypeBuilder;
+import de.monticore.types.mcsimplegenerictypes._ast.ASTMCCustomTypeArgument;
+
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 
+import org.antlr.v4.runtime.misc.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
 
 public class SynthesizeComponentFromMCSimpleGenericTypesTest {
@@ -28,12 +42,11 @@ public class SynthesizeComponentFromMCSimpleGenericTypesTest {
   @BeforeEach
   public void setup() {
     Log.clearFindings();
-
+    
     ComponentSymbolsWithMCBasicTypesTestMill.reset();
     ComponentSymbolsWithMCBasicTypesTestMill.init();
-
-
   }
+  
   @Test
   public void shouldHandleMCBasicGenericType() {
     // Given
@@ -273,8 +286,46 @@ public class SynthesizeComponentFromMCSimpleGenericTypesTest {
 
     // Then
     Assertions.assertFalse(resultWrapper.getResult().isPresent());
-    /*assertThat(getLoggedErrorCodes())
-      .containsExactlyInAnyOrder(getErrorCodes(MCError.MISSING_COMPONENT));*/
   }
 
+  /**
+   * Returns a {@link ASTMCBasicGenericType} whose format is {@code name.parts<typeArg[0], typeArg[1], ...>}.
+   * All newly created AST objects are enclosed by {@code enclScope}.
+   */
+  protected static ASTMCBasicGenericType createGenericType(@NotNull List<String> nameParts,
+                                                           @NotNull IComponentSymbolsWithMCBasicTypesTestScope enclScope,
+                                                           @NotNull ASTMCType... typeArgs) {
+    Preconditions.checkNotNull(nameParts);
+    Preconditions.checkNotNull(enclScope);
+    Preconditions.checkNotNull(typeArgs);
+    Preconditions.checkArgument(Arrays.stream(typeArgs).allMatch(Objects::nonNull));
+
+    ASTMCBasicGenericTypeBuilder builder = ComponentSymbolsWithMCBasicTypesTestMill.mCBasicGenericTypeBuilder()
+      .setNamesList(nameParts);
+
+    for (ASTMCType typeArg : typeArgs) {
+      if (typeArg instanceof ASTMCPrimitiveType) {
+        ASTMCPrimitiveType asPrimitiveType = (ASTMCPrimitiveType) typeArg;
+        ASTMCPrimitiveTypeArgument asArg = ComponentSymbolsWithMCBasicTypesTestMill.mCPrimitiveTypeArgumentBuilder()
+          .setMCPrimitiveType(asPrimitiveType).build();
+        asArg.setEnclosingScope(enclScope);
+        builder.addMCTypeArgument(asArg);
+
+      } else if (typeArg instanceof ASTMCQualifiedType) {
+        ASTMCQualifiedType asQualType = (ASTMCQualifiedType) typeArg;
+        ASTMCBasicTypeArgument asArg = ComponentSymbolsWithMCBasicTypesTestMill.mCBasicTypeArgumentBuilder().setMCQualifiedType(asQualType).build();
+        asArg.setEnclosingScope(enclScope);
+        builder.addMCTypeArgument(asArg);
+
+      } else {
+        ASTMCCustomTypeArgument asArg = ComponentSymbolsWithMCBasicTypesTestMill.mCCustomTypeArgumentBuilder().setMCType(typeArg).build();
+        asArg.setEnclosingScope(enclScope);
+        builder.addMCTypeArgument(asArg);
+      }
+    }
+
+    ASTMCBasicGenericType type = builder.build();
+    type.setEnclosingScope(enclScope);
+    return type;
+  }
 }

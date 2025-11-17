@@ -3,7 +3,7 @@ package de.monticore.types.check;
 
 import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
 import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
-import de.monticore.types.componentsymbolswithexpressionsandmcbasictypes.ComponentSymbolsWithMCBasicTypesMill;
+import de.monticore.types.componentsymbolswithmcbasictypestest.ComponentSymbolsWithMCBasicTypesTestMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.symbols.compsymbols._symboltable.ComponentTypeSymbol;
 import de.se_rwth.commons.logging.Finding;
@@ -33,21 +33,21 @@ public class ISynthesizeComponentTest {
 
     parser = CombineExpressionsWithLiteralsMill.parser();
 
-    ComponentSymbolsWithMCBasicTypesMill.reset();
-    ComponentSymbolsWithMCBasicTypesMill.init();
+    ComponentSymbolsWithMCBasicTypesTestMill.reset();
+    ComponentSymbolsWithMCBasicTypesTestMill.init();
   }
 
     @Test
     public void synthesizesCompKind_forResolvableComponentTypeSymbol() throws Exception {
-      ComponentTypeSymbol typeA = ComponentSymbolsWithMCBasicTypesMill.componentTypeSymbolBuilder()
+      ComponentTypeSymbol typeA = ComponentSymbolsWithMCBasicTypesTestMill.componentTypeSymbolBuilder()
         .setName("A")
-        .setSpannedScope(ComponentSymbolsWithMCBasicTypesMill.scope())
+        .setSpannedScope(ComponentSymbolsWithMCBasicTypesTestMill.scope())
         .build();
-      ComponentSymbolsWithMCBasicTypesMill.globalScope().add(typeA);
-      typeA.setEnclosingScope(ComponentSymbolsWithMCBasicTypesMill.globalScope());
+      ComponentSymbolsWithMCBasicTypesTestMill.globalScope().add(typeA);
+      typeA.setEnclosingScope(ComponentSymbolsWithMCBasicTypesTestMill.globalScope());
 
       ASTMCType ast = parser.parse_StringMCType("A").orElseThrow();
-      ast.setEnclosingScope(ComponentSymbolsWithMCBasicTypesMill.globalScope());
+      ast.setEnclosingScope(ComponentSymbolsWithMCBasicTypesTestMill.globalScope());
 
       FullSynthesizeCompKindFromMCBasicTypes synth = new FullSynthesizeCompKindFromMCBasicTypes();
 
