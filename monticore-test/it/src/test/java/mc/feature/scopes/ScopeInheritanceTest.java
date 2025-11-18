@@ -44,8 +44,6 @@ public class ScopeInheritanceTest {
         startProd = astInheritance.get();
 
         IScopeInheritanceGlobalScope globalScope = ScopeInheritanceMill.globalScope();
-        globalScope.setFileExt("st");
-        globalScope.getSymbolPath().addEntry(Paths.get("src/test/resources/mc/feature/scopes"));
         scope = ScopeInheritanceMill.scopesGenitorDelegator().createFromAST(astInheritance.get());
     }
 
@@ -54,15 +52,19 @@ public class ScopeInheritanceTest {
      */
     @Test
     public void testScopeInheritanceA() {
-        //TODO
-        // I don't know why 2 elements are in the list.
-        // The IA extends A but that should not lead to two elements in the A list and 0 in the IA list
         Assertions.assertEquals(2, startProd.getAList().size());
         IScopeInheritanceScope scopeShadowingNonExportingOrdered = startProd.getAList().get(0).getSpannedScope();
         Preconditions.checkNotNull(scopeShadowingNonExportingOrdered);
         Assertions.assertFalse(scopeShadowingNonExportingOrdered.isExportingSymbols());
         Assertions.assertTrue(scopeShadowingNonExportingOrdered.isShadowing());
         Assertions.assertTrue(scopeShadowingNonExportingOrdered.isOrdered());
+
+        scopeShadowingNonExportingOrdered = startProd.getAList().get(1).getSpannedScope();
+        Preconditions.checkNotNull(scopeShadowingNonExportingOrdered);
+        Assertions.assertFalse(scopeShadowingNonExportingOrdered.isExportingSymbols());
+        Assertions.assertTrue(scopeShadowingNonExportingOrdered.isShadowing());
+        Assertions.assertTrue(scopeShadowingNonExportingOrdered.isOrdered());
+
         Assertions.assertTrue(Log.getFindings().isEmpty());
     }
 
@@ -140,21 +142,6 @@ public class ScopeInheritanceTest {
         Assertions.assertTrue(scopeDefault.isExportingSymbols());
         Assertions.assertFalse(scopeDefault.isShadowing());
         Assertions.assertFalse(scopeDefault.isOrdered());
-        Assertions.assertTrue(Log.getFindings().isEmpty());
-    }
-
-    @Test
-    public void testScopeInheritanceIA() {
-        //TODO
-        // I don't know why 2 elements are in the list.
-        // The IA extends A but that should not lead to two elements in the A list and 0 in the IA list
-        Assertions.assertEquals(2,startProd.getAList().size());
-        Assertions.assertEquals(0, startProd.getIAList().size());
-        IScopeInheritanceScope scopeShadowingNonExportingOrdered = startProd.getAList().get(1).getSpannedScope();
-        Preconditions.checkNotNull(scopeShadowingNonExportingOrdered);
-        Assertions.assertFalse(scopeShadowingNonExportingOrdered.isExportingSymbols());
-        Assertions.assertTrue(scopeShadowingNonExportingOrdered.isShadowing());
-        Assertions.assertTrue(scopeShadowingNonExportingOrdered.isOrdered());
         Assertions.assertTrue(Log.getFindings().isEmpty());
     }
 }
