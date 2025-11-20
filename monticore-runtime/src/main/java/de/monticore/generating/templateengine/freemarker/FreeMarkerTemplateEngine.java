@@ -8,8 +8,6 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import com.google.common.base.Preconditions;
 import de.se_rwth.commons.logging.Log;
 import freemarker.log.Logger;
