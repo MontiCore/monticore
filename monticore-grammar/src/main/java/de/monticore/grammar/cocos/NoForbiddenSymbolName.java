@@ -1,12 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.grammar.cocos;
 
+import com.google.common.collect.Lists;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.se_rwth.commons.logging.Log;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,6 +19,8 @@ public class NoForbiddenSymbolName implements GrammarASTMCGrammarCoCo {
   public static final String ERROR_MSG_FORMAT = " There must not exist a symbol production with the name %s in the grammar %s.";
 
   protected static final String SYMBOL = "Symbol";
+
+  protected static final List<String> forbiddenSymbolNames = Collections.unmodifiableList(Lists.newArrayList("I", "IScopeSpanning"));
 
   @Override
   public void check(ASTMCGrammar node) {
@@ -29,12 +33,18 @@ public class NoForbiddenSymbolName implements GrammarASTMCGrammarCoCo {
     if(grammarName.endsWith(SYMBOL)){
       String nameWithoutSymbol = grammarName.substring(0,grammarName.lastIndexOf(SYMBOL));
       List<ProdSymbol> forbidden = symbolProds.stream()
-          .filter(p -> p.getName().equals(nameWithoutSymbol))
+          .filter(p -> p.getName().equals(nameWithoutSymbol) )
           .collect(Collectors.toList());
       if(!forbidden.isEmpty()){
         for(ProdSymbol prod: forbidden){
           Log.error(ERROR_CODE + String.format(ERROR_MSG_FORMAT, prod.getName(), grammarName), prod.getSourcePosition());
         }
+      }
+    }
+
+    for(ProdSymbol prod : symbolProds){
+      if(forbiddenSymbolNames.contains(prod.getName())){
+        Log.error(ERROR_CODE + String.format(ERROR_MSG_FORMAT, prod.getName(), grammarName), prod.getSourcePosition());
       }
     }
   }
