@@ -2,7 +2,6 @@
 package de.monticore;
 
 import com.google.common.base.Preconditions;
-import com.google.common.base.Verify;
 
 import java.io.Closeable;
 import java.io.IOException;
