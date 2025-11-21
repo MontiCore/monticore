@@ -162,7 +162,6 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
     return constructor;
   }
 
-  
   protected ASTCDAttribute createNameAttribute() {
     return getCDAttributeFacade().createAttribute(PROTECTED.build(), "String", "name");
   }
