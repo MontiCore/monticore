@@ -149,8 +149,8 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
   }
 
   protected ASTCDMethod createGetThis(String symbolClass) {
-    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), symbolClass, "getThis");
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "GetThis"));
+    ASTCDMethod method = getCDMethodFacade().createMethod(PROTECTED.build(), symbolClass, "getThis");
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "GetThis", symbolClass));
     this.replaceTemplate(ANNOTATIONS, method, new StringHookPoint("@Override"));
     return method;
   }
@@ -209,7 +209,7 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
       symbolName, simpleName, scopeName, generatedError));
     return method;
   }
-  
+
   protected ASTCDMethod createGetFullNameMethod() {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), getMCTypeFacade().createStringType(), "getFullName");
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "GetFullName"));

@@ -1,7 +1,10 @@
-  if(!(obj instanceof de.monticore.symboltable.ISymbol)) {
+<#-- (c) https://github.com/MontiCore/monticore -->
+${tc.signature("symbolName")}
+
+  if(!(obj instanceof ${symbolName})) {
     return false;
   }
-  de.monticore.symboltable.ISymbol s1 = getThis();
-  de.monticore.symboltable.ISymbol s2 = ((de.monticore.symboltable.ISymbol) obj).getThis();
+  ${symbolName} s1 = getThis();
+  ${symbolName} s2 = ((${symbolName}) obj).getThis();
 
   return s1 == s2;

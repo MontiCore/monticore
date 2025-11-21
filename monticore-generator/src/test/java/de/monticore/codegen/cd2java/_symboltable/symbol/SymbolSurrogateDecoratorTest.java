@@ -302,7 +302,6 @@ public class SymbolSurrogateDecoratorTest extends DecoratorTestCase {
     assertTrue(Log.getFindings().isEmpty());
   }
 
-
   @Test
   public void testGeneratedCodeFoo() {
     GeneratorSetup generatorSetup = new GeneratorSetup();
