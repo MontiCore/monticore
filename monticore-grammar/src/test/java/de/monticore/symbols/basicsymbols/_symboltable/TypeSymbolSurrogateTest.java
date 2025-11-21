@@ -5,8 +5,10 @@ import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symboltable.modifiers.BasicAccessModifier;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
+import de.se_rwth.commons.logging.LogStub;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
@@ -15,6 +17,12 @@ import java.util.Map;
 
 /** Tests {@link TypeSymbolSurrogate} */
 public class TypeSymbolSurrogateTest {
+
+  @BeforeEach
+  void setUp() {
+    LogStub.init();
+    BasicSymbolsMill.init();
+  }
 
   @Test
   public void setSpannedScopeShouldSkipSurrogate() {
