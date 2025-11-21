@@ -106,6 +106,125 @@ public class TypeSymbolSurrogateTest {
     Assertions.assertArrayEquals(new TypeVarSymbol[]{typeParam}, typeParams.toArray());
   }
 
+  @Test @SuppressWarnings({"EqualsWithItself", "ConstantConditions"})
+  void equalsShouldEqualSame() {
+    // Given
+    TypeSymbolSurrogate surrogate = BasicSymbolsMill.typeSymbolSurrogateBuilder()
+            .setName("Type")
+            .setEnclosingScope(BasicSymbolsMill.scope())
+            .build();
+
+    // When
+    boolean result = surrogate.equals(surrogate);
+
+    // Then
+    Assertions.assertTrue(result);
+  }
+
+  @Test
+  void equalsShouldNotEqualDifferent1() {
+    // Given
+    TypeSymbolSurrogate surrogate1 = BasicSymbolsMill.typeSymbolSurrogateBuilder()
+            .setName("Type1")
+            .setEnclosingScope(BasicSymbolsMill.scope())
+            .build();
+
+    TypeSymbolSurrogate surrogate2 = BasicSymbolsMill.typeSymbolSurrogateBuilder()
+            .setName("Type2")
+            .setEnclosingScope(BasicSymbolsMill.scope())
+            .build();
+
+    // When
+    boolean result = surrogate1.equals(surrogate2);
+
+    // Then
+    Assertions.assertFalse(result);
+  }
+
+  @Test
+  void equalsShouldNotEqualDifferent2() {
+    // Given
+    IBasicSymbolsScope scope = BasicSymbolsMill.scope();
+
+    TypeSymbol symbol1 = BasicSymbolsMill.typeSymbolBuilder()
+            .setName("Type1")
+            .setSpannedScope(BasicSymbolsMill.scope())
+            .build();
+
+    scope.add(symbol1);
+
+    TypeSymbolSurrogate surrogate1 = BasicSymbolsMill.typeSymbolSurrogateBuilder()
+            .setName("Type1")
+            .setEnclosingScope(BasicSymbolsMill.scope())
+            .build();
+
+    TypeSymbol symbol2 = BasicSymbolsMill.typeSymbolBuilder()
+            .setName("Type2")
+            .setSpannedScope(BasicSymbolsMill.scope())
+            .build();
+
+    scope.add(symbol2);
+
+    TypeSymbolSurrogate surrogate2 = BasicSymbolsMill.typeSymbolSurrogateBuilder()
+            .setName("Type2")
+            .setEnclosingScope(BasicSymbolsMill.scope())
+            .build();
+
+    // When
+    boolean result = surrogate1.equals(surrogate2);
+
+    // Then
+    Assertions.assertFalse(result);
+  }
+
+  @Test
+  void equalsShouldEqualSymbol() {
+    // Given
+    IBasicSymbolsScope scope = BasicSymbolsMill.scope();
+
+    TypeSymbol symbol = BasicSymbolsMill.typeSymbolBuilder()
+            .setName("Type")
+            .setSpannedScope(BasicSymbolsMill.scope())
+            .build();
+
+    scope.add(symbol);
+
+    TypeSymbolSurrogate surrogate = BasicSymbolsMill.typeSymbolSurrogateBuilder()
+            .setName("Type")
+            .setEnclosingScope(scope)
+            .build();
+
+    // When
+    boolean result = surrogate.equals(symbol);
+
+    // Then
+    Assertions.assertTrue(result);
+  }
+
+  @Test
+  void equalsShouldNotEqualSymbol() {
+    // Given
+    IBasicSymbolsScope scope = BasicSymbolsMill.scope();
+
+    TypeSymbol symbol = BasicSymbolsMill.typeSymbolBuilder()
+            .setName("Type1")
+            .setSpannedScope(BasicSymbolsMill.scope())
+            .build();
+
+    scope.add(symbol);
+
+    TypeSymbolSurrogate surrogate = BasicSymbolsMill.typeSymbolSurrogateBuilder()
+            .setName("Type2")
+            .setEnclosingScope(scope)
+            .build();
+
+    // When
+    boolean result = surrogate.equals(symbol);
+
+    // Then
+    Assertions.assertFalse(result);
+  }
+
   /**
    * Adds a type parameter to the type.
    *

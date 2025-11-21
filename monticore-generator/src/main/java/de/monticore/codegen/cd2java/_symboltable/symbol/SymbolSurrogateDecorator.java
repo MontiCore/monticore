@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static de.monticore.cd.codegen.CD2JavaTemplates.ANNOTATIONS;
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
@@ -125,6 +126,7 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
       .addAllCDMembers(nameMethods)
       .addAllCDMembers(delegateSymbolRuleAttributeMethods)
       .addAllCDMembers(delegateAccecptMethods)
+      .addCDMember(createGetThis(this.symbolTableService.getSymbolSimpleName(symbolInput)))
       .addCDMember(createGetFullNameMethod())
       .addCDMember(createOverridenDeterminePackageName())
       .addCDMember(createOverridenDetermineFullName())
@@ -145,6 +147,13 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "SetEnclosingScope4SymbolSurrogate", enclosingScopeAttribute, scopeName));
     return method;
   }
+
+  protected ASTCDMethod createGetThis(String symbolClass) {
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), symbolClass, "getThis");
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "GetThis"));
+    this.replaceTemplate(ANNOTATIONS, method, new StringHookPoint("@Override"));
+    return method;
+  }
   
   protected ASTCDConstructor createConstructor(String symbolSurrogateClass) {
     ASTCDParameter nameParameter = getCDParameterFacade().createParameter(String.class, NAME_VAR);
@@ -152,6 +161,7 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
     this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint(TEMPLATE_PATH + "ConstructorSymbolSurrogate"));
     return constructor;
   }
+
   
   protected ASTCDAttribute createNameAttribute() {
     return getCDAttributeFacade().createAttribute(PROTECTED.build(), "String", "name");

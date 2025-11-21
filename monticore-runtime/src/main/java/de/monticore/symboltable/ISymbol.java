@@ -10,6 +10,7 @@ import de.monticore.symboltable.stereotypes.IStereotypeReference;
 import de.monticore.symboltable.stereotypes.IStereotypeSymbol;
 import de.monticore.visitor.ITraverser;
 import de.se_rwth.commons.SourcePosition;
+import de.se_rwth.commons.Symbol;
 
 import java.util.*;
 
@@ -96,4 +97,7 @@ public interface ISymbol {
     visitor.handle(this);
   }
 
+  default ISymbol getThis() {
+    return this;
+  }
 }
