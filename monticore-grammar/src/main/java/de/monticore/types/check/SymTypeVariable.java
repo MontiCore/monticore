@@ -21,7 +21,7 @@ public class SymTypeVariable extends SymTypeExpression {
     this.typeVarSymbol = Log.errorIfNull(typeSymbol);
   }
 
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public SymTypeVariable(TypeSymbol typeSymbol) {
     this.typeSymbol = typeSymbol;
     if (typeSymbol instanceof TypeVarSymbol) {
@@ -32,7 +32,7 @@ public class SymTypeVariable extends SymTypeExpression {
   /**
    * @deprecated (should) return true
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public boolean hasTypeVarSymbol() {
     return typeVarSymbol != null;
   }
