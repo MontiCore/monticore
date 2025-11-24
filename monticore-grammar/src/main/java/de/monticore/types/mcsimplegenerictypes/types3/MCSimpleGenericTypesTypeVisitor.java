@@ -3,7 +3,6 @@ package de.monticore.types.mcsimplegenerictypes.types3;
 
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
-import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
@@ -24,7 +23,7 @@ public class MCSimpleGenericTypesTypeVisitor extends AbstractTypeVisitor
   @Override
   public void endVisit(ASTMCBasicGenericType genericType) {
 
-    SymTypeExpression symType = null;
+    SymTypeExpression symType;
     List<SymTypeExpression> arguments = new LinkedList<>();
     boolean obscure = false;
     for (int i = 0; i < genericType.sizeMCTypeArguments(); i++) {
@@ -37,7 +36,6 @@ public class MCSimpleGenericTypesTypeVisitor extends AbstractTypeVisitor
             genericType.get_SourcePositionStart(),
             genericType.get_SourcePositionEnd()
         );
-        return;
       }
       SymTypeExpression argSymType = getType4Ast().getPartialTypeOfTypeId(arg);
       arguments.add(argSymType);
@@ -57,15 +55,14 @@ public class MCSimpleGenericTypesTypeVisitor extends AbstractTypeVisitor
             genericType.get_SourcePositionStart(),
             genericType.get_SourcePositionEnd()
         );
-        getType4Ast().setTypeOfTypeIdentifier(genericType,
-            SymTypeExpressionFactory.createObscureType());
+        symType = SymTypeExpressionFactory.createObscureType();
       }
       else {
         Optional<TypeSymbol> type =
             getAsBasicSymbolsScope(genericType.getEnclosingScope())
                 .resolveType(genericType.printWithoutTypeArguments());
         if (type.isPresent()) {
-          if (type.get().getTypeParameterList().size() == 0) {
+          if (type.get().getTypeParameterList().isEmpty()) {
             Log.error("0xB5487 expected a generic type, but \""
                     + type.get().getFullName()
                     + "\" contains no type variables",
@@ -74,7 +71,7 @@ public class MCSimpleGenericTypesTypeVisitor extends AbstractTypeVisitor
             );
           }
           if (type.get().getTypeParameterList().size() != arguments.size()
-              && arguments.size() != 0) {
+              && !arguments.isEmpty()) {
             // we only allow 0 arguments for, e.g., "new ArrayList<>()"
             // in most cases we expect the arguments to be set
             Log.error("0xB5864 The generic type \""
@@ -93,17 +90,17 @@ public class MCSimpleGenericTypesTypeVisitor extends AbstractTypeVisitor
           symType = handleIfNotFound(genericType, arguments);
         }
       }
-      if (null != symType) {
-        getType4Ast().setTypeOfTypeIdentifier(genericType, symType);
-        genericType.setDefiningSymbol(symType.getTypeInfo());
-      }
     }
     else {
       // one of the type arguments could not be synthesized
       // => the generic type itself cannot be synthesized correctly
-      getType4Ast().setTypeOfTypeIdentifier(genericType,
-          SymTypeExpressionFactory.createObscureType());
+      symType = SymTypeExpressionFactory.createObscureType();
     }
+
+    if (symType.hasTypeInfo()) {
+      genericType.setDefiningSymbol(symType.getTypeInfo());
+    }
+    getType4Ast().setTypeOfTypeIdentifier(genericType, symType);
   }
 
   @Override
