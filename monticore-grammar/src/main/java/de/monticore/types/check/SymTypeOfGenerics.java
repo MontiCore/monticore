@@ -201,10 +201,7 @@ public class SymTypeOfGenerics extends SymTypeExpression {
       return false;
     }
     SymTypeOfGenerics symGen = (SymTypeOfGenerics) sym;
-    if(!this.typeSymbol.getEnclosingScope().equals(symGen.typeSymbol.getEnclosingScope())){
-      return false;
-    }
-    if(!this.typeSymbol.getName().equals(symGen.typeSymbol.getName())){
+    if (!this.getTypeInfo().equals(symGen.getTypeInfo())) {
       return false;
     }
     return true;

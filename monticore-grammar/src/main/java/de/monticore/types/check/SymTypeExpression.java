@@ -8,7 +8,6 @@ import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.*;
-import de.monticore.symboltable.ISymbol;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.types3.ISymTypeVisitor;
 import de.monticore.types3.util.SymTypeDeepCloneVisitor;
@@ -72,10 +71,9 @@ public abstract class SymTypeExpression {
   }
 
   public SymTypePrimitive asPrimitive() {
-    Log.error("0xFDAA0 internal error: "
+    throw new UnsupportedOperationException("0xFDAA0 internal error: "
         + "tried to convert non-primitive to a primitive."
         + " Actual: " + this.printFullName());
-    return null;
   }
 
   /**
@@ -86,10 +84,9 @@ public abstract class SymTypeExpression {
   }
 
   public SymTypeOfGenerics asGenericType() {
-    Log.error("0xFDAA1 internal error: "
+    throw new UnsupportedOperationException("0xFDAA1 internal error: "
         + "tried to convert non-generic to a generic."
         + " Actual: " + this.printFullName());
-    return null;
   }
 
   /**
@@ -100,10 +97,9 @@ public abstract class SymTypeExpression {
   }
 
   public SymTypeVariable asTypeVariable() {
-    Log.error("0xFDAA2 internal error: "
+    throw new UnsupportedOperationException("0xFDAA2 internal error: "
         + "tried to convert non-bound-type-variable to a bound-type-variable."
         + " Actual: " + this.printFullName());
-    return null;
   }
 
   /**
@@ -114,10 +110,9 @@ public abstract class SymTypeExpression {
   }
 
   public SymTypeInferenceVariable asInferenceVariable() {
-    Log.error("0xFDAAF internal error: "
+    throw new UnsupportedOperationException("0xFDAAF internal error: "
         + "tried to convert non-inference-variable to an inference-variable."
         + " Actual: " + this.printFullName());
-    return null;
   }
 
   /**
@@ -128,10 +123,9 @@ public abstract class SymTypeExpression {
   }
 
   public SymTypeArray asArrayType() {
-    Log.error("0xFDAA3 internal error: "
+    throw new UnsupportedOperationException("0xFDAA3 internal error: "
         + "tried to convert non-array to an array."
         + " Actual: " + this.printFullName());
-    return null;
   }
 
   /**
@@ -142,10 +136,9 @@ public abstract class SymTypeExpression {
   }
 
   public SymTypeVoid asVoidType() {
-    Log.error("0xFDAA4 internal error: "
+    throw new UnsupportedOperationException("0xFDAA4 internal error: "
         + "tried to convert non-void-type to a void type."
         + " Actual: " + this.printFullName());
-    return null;
   }
 
   /**
@@ -156,10 +149,9 @@ public abstract class SymTypeExpression {
   }
 
   public SymTypeOfNull asNullType() {
-    Log.error("0xFDAA5 internal error: "
+    throw new UnsupportedOperationException("0xFDAA5 internal error: "
         + "tried to convert non-null-type to a null-type."
         + " Actual: " + this.printFullName());
-    return null;
   }
 
   /**
@@ -170,10 +162,9 @@ public abstract class SymTypeExpression {
   }
 
   public SymTypeOfObject asObjectType() {
-    Log.error("0xFDAA6 internal error: "
+    throw new UnsupportedOperationException("0xFDAA6 internal error: "
         + "tried to convert non-object-type to an object-type."
         + " Actual: " + this.printFullName());
-    return null;
   }
 
   /**
@@ -184,10 +175,9 @@ public abstract class SymTypeExpression {
   }
 
   public SymTypeOfRegEx asRegExType() {
-    Log.error("0xFDAAC internal error: "
+    throw new UnsupportedOperationException("0xFDAAC internal error: "
         + "tried to convert non-regex-type to a regex type."
         + " Actual: " + this.printFullName());
-    return null;
   }
 
   /**
@@ -198,35 +188,36 @@ public abstract class SymTypeExpression {
   }
 
   public SymTypeOfFunction asFunctionType() {
-    Log.error("0xFDAA7 internal error: "
+    throw new UnsupportedOperationException("0xFDAA7 internal error: "
         + "tried to convert non-function-type to a function type."
         + " Actual: " + this.printFullName());
-    return null;
   }
 
-  // Am I an SIUnit type (e.g., "km/h")
+  /**
+   * Am I an SIUnit type (e.g., "[km/h]")
+   */
   public boolean isSIUnitType() {
     return false;
   }
 
   public SymTypeOfSIUnit asSIUnitType() {
-    Log.error("0xFDAAC internal error: "
+    throw new UnsupportedOperationException("0xFDAAC internal error: "
         + "tried to convert non-SIUnit type to a SIUnit type."
         + " Actual: " + this.printFullName());
-    return null;
   }
 
-  // Am I a numeric with SIUnit type (e.g., "km/h<float>")
+  /**
+   * Am I a numeric with SIUnit type (e.g., {@code "[km/h]<float>"})
+   */
   public boolean isNumericWithSIUnitType() {
     return false;
   }
 
   public SymTypeOfNumericWithSIUnit asNumericWithSIUnitType() {
-    Log.error("0xFDAAD internal error: "
+    throw new UnsupportedOperationException("0xFDAAD internal error: "
         + "tried to convert non-numeric-with-SIUnit type "
         + "to a numeric-with-SIUnit type."
         + " Actual: " + this.printFullName());
-    return null;
   }
 
   /**
@@ -237,10 +228,9 @@ public abstract class SymTypeExpression {
   }
 
   public SymTypeOfTuple asTupleType() {
-    Log.error("0xFDAAE internal error: "
+    throw new UnsupportedOperationException("0xFDAAE internal error: "
         + "tried to convert non-tuple-type to a tuple type."
         + " Actual: " + this.printFullName());
-    return null;
   }
 
   /**
@@ -251,10 +241,9 @@ public abstract class SymTypeExpression {
   }
 
   public SymTypeOfUnion asUnionType() {
-    Log.error("0xFDAA8 internal error: "
+    throw new UnsupportedOperationException("0xFDAA8 internal error: "
         + "tried to convert non-union-type to a union-type."
         + " Actual: " + this.printFullName());
-    return null;
   }
 
   /**
@@ -265,10 +254,9 @@ public abstract class SymTypeExpression {
   }
 
   public SymTypeOfIntersection asIntersectionType() {
-    Log.error("0xFDAA9 internal error: "
+    throw new UnsupportedOperationException("0xFDAA9 internal error: "
         + "tried to convert non-intersection-type to an intersection-type."
         + " Actual: " + this.printFullName());
-    return null;
   }
 
   /**
@@ -279,10 +267,9 @@ public abstract class SymTypeExpression {
   }
 
   public SymTypeObscure asObscureType() {
-    Log.error("0xFDAAA internal error: "
+    throw new UnsupportedOperationException("0xFDAAA internal error: "
         + "tried to convert non-obscure-type to an obscure-type."
         + " Actual: " + this.printFullName());
-    return null;
   }
 
   /**
@@ -293,10 +280,9 @@ public abstract class SymTypeExpression {
   }
 
   public SymTypeOfWildcard asWildcard() {
-    Log.error("0xFDAAB internal error: "
+    throw new UnsupportedOperationException("0xFDAAB internal error: "
         + "tried to convert non-wildcard-type to a wildcard-type."
         + " Actual: " + this.printFullName());
-    return null;
   }
 
   public SymTypeExpression deepClone() {
@@ -701,11 +687,11 @@ public List<VariableSymbol> getCorrectFields(String fieldName, boolean outerIsTy
     if(typeSymbol != null) {
       return typeSymbol;
     }
-    Log.error("0xFDFDF internal error: getTypeInfo called,"
-        + "but no typeinfo available. Presumably hasTypeInfo() missing?"
+    throw new UnsupportedOperationException(
+        "0xFDFDF internal error: getTypeInfo called"
+        + ", but no typeinfo available. Presumably hasTypeInfo() missing?"
         + " Type: " + printFullName()
     );
-    return null;
   }
 
   protected SymTypeSourceInfo sourceInfo = new SymTypeSourceInfo();

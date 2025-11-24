@@ -750,7 +750,7 @@ public class WithinTypeBasicSymbolsResolver {
           .map(SymTypeExpressionFactory::createTypeVariable)
           .collect(Collectors.toList());
       if (freeTypeVars.stream().anyMatch(
-          ftv -> includedVars.stream().noneMatch(ftv::denotesSameVar))
+          ftv -> includedVars.stream().noneMatch(ftv::deepEquals))
       ) {
         Log.error("0xFD570 resolved " + fSym.getFullName()
             + " with type " + type.printFullName()
