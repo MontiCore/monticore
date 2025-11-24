@@ -291,10 +291,10 @@ public abstract class SymTypeExpression {
 
   public abstract boolean deepEquals(SymTypeExpression sym);
 
-  @Deprecated
+  @Deprecated(forRemoval = true)
   protected List<FunctionSymbol> functionList = new ArrayList<>();
 
-@Deprecated
+@Deprecated(forRemoval = true)
 public List<FunctionSymbol> getMethodList(String methodName, boolean abstractTc) {
   return getMethodList(methodName, abstractTc, AccessModifier.ALL_INCLUSION);
 }
@@ -306,7 +306,7 @@ public List<FunctionSymbol> getMethodList(String methodName, boolean abstractTc)
    * @deprecated use {@link de.monticore.types3.util.WithinTypeBasicSymbolsResolver}
    *             or {@link de.monticore.types3.util.WithinScopeBasicSymbolsResolver}
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public List<FunctionSymbol> getMethodList(String methodname, boolean abstractTc, AccessModifier modifier){
     functionList.clear();
     //get methods from the typesymbol
@@ -314,7 +314,7 @@ public List<FunctionSymbol> getMethodList(String methodName, boolean abstractTc)
     return transformMethodList(methodname,methods);
   }
 
-@Deprecated
+@Deprecated(forRemoval = true)
 public List<FunctionSymbol> getCorrectMethods(String methodName, boolean outerIsType, boolean abstractTc) {
   return getCorrectMethods(methodName, outerIsType, abstractTc, AccessModifier.ALL_INCLUSION);
 }
@@ -334,7 +334,7 @@ public List<FunctionSymbol> getCorrectMethods(String methodName, boolean outerIs
    * @deprecated use {@link de.monticore.types3.util.WithinTypeBasicSymbolsResolver}
    *             or {@link de.monticore.types3.util.WithinScopeBasicSymbolsResolver}
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   protected List<FunctionSymbol> getCorrectMethods(String methodName,
                     boolean outerIsType, boolean abstractTc, AccessModifier modifier){
     if(!abstractTc) {
@@ -383,7 +383,7 @@ public List<FunctionSymbol> getCorrectMethods(String methodName, boolean outerIs
    * @deprecated use {@link de.monticore.types3.util.WithinTypeBasicSymbolsResolver}
    *             or {@link de.monticore.types3.util.WithinScopeBasicSymbolsResolver}
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   protected List<FunctionSymbol> transformMethodList(String methodName, List<FunctionSymbol> functions){
     List<FunctionSymbol> matchingMethods = new ArrayList<>();
     for(FunctionSymbol method: functions){
@@ -466,12 +466,12 @@ public List<FunctionSymbol> getCorrectMethods(String methodName, boolean outerIs
   /**
    * @deprecated use {@link de.monticore.types3.generics.TypeParameterRelations}
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public void replaceTypeVariables(Map<TypeVarSymbol, SymTypeExpression> replaceMap){
     //empty so it only needs to be overridden by some SymTypeExpressions
   }
 
-@Deprecated
+@Deprecated(forRemoval = true)
 public List<FunctionSymbol> getMethodList(String methodName, boolean outerIsType, boolean abstractTc) {
   return getMethodList(methodName, outerIsType, abstractTc, AccessModifier.ALL_INCLUSION);
 }
@@ -487,7 +487,7 @@ public List<FunctionSymbol> getMethodList(String methodName, boolean outerIsType
    * @deprecated use {@link de.monticore.types3.util.WithinTypeBasicSymbolsResolver}
    *             or {@link de.monticore.types3.util.WithinScopeBasicSymbolsResolver}
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public List<FunctionSymbol> getMethodList(String methodName,
                                             boolean outerIsType, boolean abstractTc, AccessModifier modifier) {
     functionList.clear();
@@ -496,7 +496,7 @@ public List<FunctionSymbol> getMethodList(String methodName, boolean outerIsType
     return transformMethodList(methodName,methods);
   }
 
-@Deprecated
+@Deprecated(forRemoval = true)
 public List<VariableSymbol> getFieldList(String fieldName, boolean abstractTc){
   return getFieldList(fieldName, abstractTc, AccessModifier.ALL_INCLUSION);
 }
@@ -507,14 +507,14 @@ public List<VariableSymbol> getFieldList(String fieldName, boolean abstractTc){
    * @deprecated use {@link de.monticore.types3.util.WithinTypeBasicSymbolsResolver}
    *             or {@link de.monticore.types3.util.WithinScopeBasicSymbolsResolver}
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public List<VariableSymbol> getFieldList(String fieldName, boolean abstractTc, AccessModifier modifier){
     //get methods from the typesymbol
     List<VariableSymbol> fields = getCorrectFields(fieldName,false, abstractTc, modifier);
     return transformFieldList(fieldName,fields);
   }
 
-@Deprecated
+@Deprecated(forRemoval = true)
 public List<VariableSymbol> getFieldList(String fieldName, boolean outerIsType, boolean abstractTc){
   return getFieldList(fieldName, outerIsType, abstractTc, AccessModifier.ALL_INCLUSION);
 }
@@ -530,7 +530,7 @@ public List<VariableSymbol> getFieldList(String fieldName, boolean outerIsType, 
    * @deprecated use {@link de.monticore.types3.util.WithinTypeBasicSymbolsResolver}
    *             or {@link de.monticore.types3.util.WithinScopeBasicSymbolsResolver}
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public List<VariableSymbol> getFieldList(String fieldName,
                     boolean outerIsType, boolean abstractTc, AccessModifier modifier) {
     List<VariableSymbol> fields = getCorrectFields(fieldName, 
@@ -538,7 +538,7 @@ public List<VariableSymbol> getFieldList(String fieldName, boolean outerIsType, 
     return transformFieldList(fieldName,fields);
   }
 
-  @Deprecated
+  @Deprecated(forRemoval = true)
 public List<VariableSymbol> getCorrectFields(String fieldName, boolean outerIsType, boolean abstractTc){
   return getCorrectFields(fieldName, outerIsType, abstractTc, AccessModifier.ALL_INCLUSION);
 }
@@ -557,7 +557,7 @@ public List<VariableSymbol> getCorrectFields(String fieldName, boolean outerIsTy
    * @deprecated use {@link de.monticore.types3.util.WithinTypeBasicSymbolsResolver}
    *             or {@link de.monticore.types3.util.WithinScopeBasicSymbolsResolver}
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   protected List<VariableSymbol> getCorrectFields(String fieldName,
                         boolean outerIsType, boolean abstractTc, AccessModifier modifier) {
     if(!abstractTc) {
@@ -605,7 +605,7 @@ public List<VariableSymbol> getCorrectFields(String fieldName, boolean outerIsTy
    * @deprecated use {@link de.monticore.types3.util.WithinTypeBasicSymbolsResolver}
    *             or {@link de.monticore.types3.util.WithinScopeBasicSymbolsResolver}
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   protected List<VariableSymbol> transformFieldList(String fieldName,
                                           List<VariableSymbol> fields) {
     List<VariableSymbol> fieldList = new ArrayList<>();
@@ -658,7 +658,7 @@ public List<VariableSymbol> getCorrectFields(String fieldName, boolean outerIsTy
    * @deprecated TypeSymbols are to be found in the corresponding subclasses,
    * however, not every subclass will have a type symbol
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   protected TypeSymbol typeSymbol;
 
   /**

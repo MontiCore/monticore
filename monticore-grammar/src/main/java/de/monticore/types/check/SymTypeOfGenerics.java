@@ -272,7 +272,7 @@ public class SymTypeOfGenerics extends SymTypeExpression {
    * @deprecated use {@link de.monticore.types3.util.WithinTypeBasicSymbolsResolver}
    *             or {@link de.monticore.types3.util.WithinScopeBasicSymbolsResolver}
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   @Override
   public void replaceTypeVariables(Map<TypeVarSymbol, SymTypeExpression> replaceMap) {
     for(int i = 0; i<this.getArgumentList().size(); i++){

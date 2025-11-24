@@ -39,7 +39,7 @@ public class SymTypePrimitive extends SymTypeExpression {
   /**
    * @deprecated use {@link de.monticore.types3.SymTypeRelations#box(SymTypeExpression)}
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public String getBoxedPrimitiveName() {
     return box(typeSymbol.getName());
   }
