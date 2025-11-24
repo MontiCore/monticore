@@ -151,7 +151,9 @@ public class SymTypeVariable extends SymTypeExpression {
    * Similar to deepEquals, but only checks
    * whether the variables are supposed to be the same variable.
    * E.g., bounds are ignored
+   * @deprecated leftover of old version, simply use deepEquals() instead.
    */
+  @Deprecated(forRemoval = true)
   public boolean denotesSameVar(SymTypeExpression other) {
     if (!other.isTypeVariable()) {
       return false;
@@ -201,7 +203,7 @@ public class SymTypeVariable extends SymTypeExpression {
       return true;
     }
     SymTypeVariable symVar = (SymTypeVariable) sym;
-    if (!denotesSameVar(symVar)) {
+    if (!getTypeVarSymbol().equals(symVar.getTypeVarSymbol())) {
       return false;
     }
     return true;

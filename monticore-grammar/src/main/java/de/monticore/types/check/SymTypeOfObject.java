@@ -78,13 +78,7 @@ public class SymTypeOfObject extends SymTypeExpression {
       return false;
     }
     SymTypeOfObject symCon = (SymTypeOfObject) sym;
-    if(this.typeSymbol == null ||symCon.typeSymbol ==null){
-      return false;
-    }
-    if(!this.typeSymbol.getEnclosingScope().equals(symCon.typeSymbol.getEnclosingScope())){
-      return false;
-    }
-    if(!this.typeSymbol.getName().equals(symCon.typeSymbol.getName())){
+    if (!this.getTypeInfo().equals(symCon.getTypeInfo())) {
       return false;
     }
     return true;

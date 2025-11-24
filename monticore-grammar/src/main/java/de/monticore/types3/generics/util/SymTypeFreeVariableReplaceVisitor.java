@@ -61,7 +61,7 @@ public class SymTypeFreeVariableReplaceVisitor extends SymTypeDeepCloneVisitor {
       // as containsKey uses equals, we need to go other it ourselves
       SymTypeInferenceVariable replacement = null;
       for (SymTypeVariable keyTypeVar : getReplaceMap().keySet()) {
-        if (typeVar.denotesSameVar(keyTypeVar) && replacement == null) {
+        if (typeVar.deepEquals(keyTypeVar) && replacement == null) {
           replacement = getReplaceMap().get(keyTypeVar);
         }
       }

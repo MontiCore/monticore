@@ -84,14 +84,14 @@ public class SymTypePrimitive extends SymTypeExpression {
   /**
    * Map for unboxing const types (e.g. "java.lang.Boolean" -&gt; "boolean")
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public static final Map<String, String> unboxMap;
 
   /**
    * Map for boxing const types (e.g. "boolean" -&gt; "java.lang.Boolean")
    * Results are fully qualified.
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public static final Map<String, String> boxMap;
 
   /**
@@ -136,11 +136,11 @@ public class SymTypePrimitive extends SymTypeExpression {
   /**
    * unboxing const types (e.g. {@code "java.lang.Boolean" -> "boolean"}).
    * otherwise return is unchanged
-   * @deprecated use SymTypeUnboxingVisitor
+   * @deprecated use SymTypeRelations
    * @param boxedName
    * @return
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public static String unbox(String boxedName) {
     if (unboxMap.containsKey(boxedName))
       return unboxMap.get(boxedName);
@@ -152,11 +152,11 @@ public class SymTypePrimitive extends SymTypeExpression {
    * Boxing const types (e.g. {@code "boolean" -> "java.lang.Boolean"})
    * Results are fully qualified.
    * Otherwise return is unchanged
-   * @deprecated use SymTypeBoxingVisitor
+   * @deprecated use SymTypeRelations
    * @param unboxedName
    * @return
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public static String box(String unboxedName) {
     if (boxMap.containsKey(unboxedName))
       return boxMap.get(unboxedName);
@@ -204,10 +204,10 @@ public class SymTypePrimitive extends SymTypeExpression {
       return false;
     }
     SymTypePrimitive symPrim = (SymTypePrimitive) sym;
-    if(!this.typeSymbol.getName().equals(symPrim.typeSymbol.getName())){
+    if(!this.getTypeInfo().equals(symPrim.getTypeInfo())){
       return false;
     }
-    return this.print().equals(symPrim.print());
+    return true;
   }
 
   @Override
