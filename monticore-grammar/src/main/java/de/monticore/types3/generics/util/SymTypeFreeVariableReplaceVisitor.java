@@ -9,7 +9,7 @@ import de.monticore.types.check.SymTypeInferenceVariable;
 import de.monticore.types.check.SymTypeVariable;
 import de.monticore.types3.util.SymTypeDeepCloneVisitor;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -85,7 +85,7 @@ public class SymTypeFreeVariableReplaceVisitor extends SymTypeDeepCloneVisitor {
       IBasicSymbolsScope enclosingScope
   ) {
     Map<SymTypeVariable, SymTypeInferenceVariable> oldMap = this.replaceMap;
-    setReplaceMap(new HashMap<>());
+    setReplaceMap(new LinkedHashMap<>());
     IBasicSymbolsScope oldScope = this.enclosingScope;
     setEnclosingScope(enclosingScope);
 

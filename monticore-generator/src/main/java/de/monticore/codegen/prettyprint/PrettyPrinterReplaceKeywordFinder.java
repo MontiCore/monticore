@@ -74,7 +74,7 @@ public class PrettyPrinterReplaceKeywordFinder {
           // skip replacekeywords which are already present during the PP-generation of a grammar and do NOT require overwriting of a handle method
           if (localReplacedKeywords == null || !localReplacedKeywords.equals(replacingKeywords)) {
             // get keyword -> [replacing keywords] for symbol
-            Map<String, Collection<String>> replacedKeywords = replacedKeywordsInProductions.computeIfAbsent(prodSymbol.get(), x -> new HashMap<>());
+            Map<String, Collection<String>> replacedKeywords = replacedKeywordsInProductions.computeIfAbsent(prodSymbol.get(), x -> new LinkedHashMap<>());
             // get [replacing keywords] and add
             replacedKeywords.computeIfAbsent(keyword, x -> new ArrayList<>()).addAll(replacingKeywords);
           }
@@ -96,7 +96,7 @@ public class PrettyPrinterReplaceKeywordFinder {
   }
 
   public Map<ProdSymbol, Map<String, Collection<String>>> check(ASTMCGrammar astmcGrammar) {
-    replacedKeywordsInProductions = new HashMap<>();
+    replacedKeywordsInProductions = new LinkedHashMap<>();
     replacedKeywordsLocalGrammar = astmcGrammar.getSymbol().getReplacedKeywordsWithInherited();
     traverser.clearTraversedElements();
     astmcGrammar.accept(traverser);

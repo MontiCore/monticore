@@ -19,7 +19,7 @@ import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
@@ -70,7 +70,7 @@ public class WithinScopeBasicSymbolsResolver {
     Log.errorIfNull(enclosingScope);
     Log.errorIfNull(name);
     // collect all (potential) types
-    Set<SymTypeExpression> types = new HashSet<>();
+    Set<SymTypeExpression> types = new LinkedHashSet<>();
 
     // to circumvent current shortcomings in our resolver,
     // we resolve with the resolver AND resolve with the within type resolver

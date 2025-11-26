@@ -322,9 +322,9 @@ public class SymTypeExpressionFactory {
 
   /**
    * splits the type-string along commas, but only on such that are on the first depth of generics
-   * @param type type-string, like {@code Map<Double, HashMap<String, Integer>>}
+   * @param type type-string, like {@code Map<Double, LinkedHashMap<String, Integer>>}
    * @param start first occurrence of an opening generic
-   * @return all first sub-generics as a list, like {@code [Double; HashMap<String, Integer>]}
+   * @return all first sub-generics as a list, like {@code [Double; LinkedHashMap<String, Integer>]}
    */
   @Deprecated(forRemoval = true)
   protected static List<String> iterateBrackets(String type, int start){

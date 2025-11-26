@@ -33,7 +33,7 @@ import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -477,12 +477,12 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
         getType4Ast().getPartialTypeOfExpr(expr.getExpression())
     );
     if (calculatedInner.isIntersectionType()) {
-      inner = new HashSet<>(
+      inner = new LinkedHashSet<>(
           ((SymTypeOfIntersection) calculatedInner).getIntersectedTypeSet()
       );
     }
     else {
-      inner = new HashSet<>();
+      inner = new LinkedHashSet<>();
       inner.add(calculatedInner);
     }
     if (inner.stream().allMatch(SymTypeExpression::isObscureType)) {
@@ -1135,7 +1135,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
       Predicate<VariableSymbol> varPredicate,
       Predicate<FunctionSymbol> funcPredicate
   ) {
-    Set<SymTypeExpression> types = new HashSet<>();
+    Set<SymTypeExpression> types = new LinkedHashSet<>();
     Optional<SymTypeExpression> variable =
         WithinTypeBasicSymbolsResolver.resolveVariable(innerAsExprType,
             name,

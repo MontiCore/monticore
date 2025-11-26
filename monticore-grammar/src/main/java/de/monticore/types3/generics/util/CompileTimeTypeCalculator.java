@@ -28,7 +28,7 @@ import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -845,7 +845,7 @@ public class CompileTimeTypeCalculator {
       PartialFunctionInfo funcInfo
   ) {
     Map<SymTypeOfFunction, InferenceResult> func2InferenceResult =
-        new HashMap<>();
+        new LinkedHashMap<>();
     for (SymTypeOfFunction func : potentiallyApplicableFuncs) {
       InferenceResult result = new InferenceResult();
       result.setResolvedFunction(func);
