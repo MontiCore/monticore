@@ -7,7 +7,7 @@ import de.monticore.types3.ISymTypeVisitor;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Collections;
@@ -98,7 +98,7 @@ public class SymTypePrimitive extends SymTypeExpression {
    * initializing the maps
    */
   static {
-    Map<String, String> unboxMap_temp = new HashMap<String, String>();
+    Map<String, String> unboxMap_temp = new LinkedHashMap<String, String>();
     unboxMap_temp.put("java.lang.Boolean", "boolean");
     unboxMap_temp.put("java.lang.Byte", "byte");
     unboxMap_temp.put("java.lang.Character", "char");
@@ -119,7 +119,7 @@ public class SymTypePrimitive extends SymTypeExpression {
     unboxMap_temp.put("Double", "double");
     unboxMap = Collections.unmodifiableMap(unboxMap_temp);
 
-    Map<String, String> boxMap_temp = new HashMap<String, String>();
+    Map<String, String> boxMap_temp = new LinkedHashMap<String, String>();
     boxMap_temp.put("boolean", "java.lang.Boolean");
     boxMap_temp.put("byte", "java.lang.Byte");
     boxMap_temp.put("char", "java.lang.Character");

@@ -2,7 +2,7 @@
 
 package de.monticore.generating.templateengine.reporting.artifacts.formatter;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,9 +16,9 @@ import de.monticore.generating.templateengine.reporting.artifacts.model.RootPkg;
 
 public class GMLFormatter extends AFormatter {
   
-  protected Map<Element, Integer> elementIds = new HashMap<Element, Integer>();
+  protected Map<Element, Integer> elementIds = new LinkedHashMap<Element, Integer>();
   
-  protected Map<APkg, Integer> packageIds = new HashMap<APkg, Integer>();
+  protected Map<APkg, Integer> packageIds = new LinkedHashMap<APkg, Integer>();
   
   protected int nodeIdCounter = 0;
   

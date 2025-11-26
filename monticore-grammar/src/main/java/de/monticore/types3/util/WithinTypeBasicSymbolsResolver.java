@@ -28,7 +28,7 @@ import de.se_rwth.commons.logging.Log;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -146,7 +146,7 @@ public class WithinTypeBasicSymbolsResolver {
       AccessModifier accessModifier,
       Predicate<VariableSymbol> predicate
   ) {
-    Map<String, SymTypeExpression> allVariables = new HashMap<>();
+    Map<String, SymTypeExpression> allVariables = new LinkedHashMap<>();
     Collection<String> names = _internal_getMemberNames(thisType);
     for (String name : names) {
       Optional<SymTypeExpression> varOpt =
@@ -290,7 +290,7 @@ public class WithinTypeBasicSymbolsResolver {
       AccessModifier accessModifier,
       Predicate<FunctionSymbol> predicate
   ) {
-    Map<String, List<SymTypeOfFunction>> allFunctions = new HashMap<>();
+    Map<String, List<SymTypeOfFunction>> allFunctions = new LinkedHashMap<>();
     Collection<String> names = _internal_getMemberNames(thisType);
     for (String name : names) {
       List<SymTypeOfFunction> functions =
@@ -385,7 +385,7 @@ public class WithinTypeBasicSymbolsResolver {
       AccessModifier accessModifier,
       Predicate<TypeSymbol> predicate
   ) {
-    Map<String, SymTypeExpression> allTypes = new HashMap<>();
+    Map<String, SymTypeExpression> allTypes = new LinkedHashMap<>();
     Collection<String> names = _internal_getMemberNames(thisType);
     for (String name : names) {
       Optional<SymTypeExpression> typeOpt =
@@ -718,7 +718,7 @@ public class WithinTypeBasicSymbolsResolver {
     Map<SymTypeVariable, SymTypeInferenceVariable> allVarMap =
         TypeParameterRelations.getFreeVariableReplaceMap(type, BasicSymbolsMill.scope());
     // 2. get variables that actually need to be replaced (unbound)
-    Map<SymTypeVariable, SymTypeInferenceVariable> freeVarMap = new HashMap<>();
+    Map<SymTypeVariable, SymTypeInferenceVariable> freeVarMap = new LinkedHashMap<>();
     for (Map.Entry<SymTypeVariable, SymTypeInferenceVariable> e : allVarMap.entrySet()) {
       if (varsNotToReplace.stream().noneMatch(e.getKey()::deepEquals)) {
         freeVarMap.put(e.getKey(), e.getValue());

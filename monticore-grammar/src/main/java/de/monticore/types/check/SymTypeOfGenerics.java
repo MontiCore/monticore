@@ -40,14 +40,14 @@ public class SymTypeOfGenerics extends SymTypeExpression {
    * initializing the maps
    */
   static {
-    Map<String, String> unboxMap_temp = new HashMap<String, String>();
+    Map<String, String> unboxMap_temp = new LinkedHashMap<String, String>();
     unboxMap_temp.put("java.util.Optional", "Optional");
     unboxMap_temp.put("java.util.Set", "Set");
     unboxMap_temp.put("java.util.List", "List");
     unboxMap_temp.put("java.util.Map","Map");
     unboxMap = Collections.unmodifiableMap(unboxMap_temp);
 
-    Map<String, String> boxMap_temp = new HashMap<String, String>();
+    Map<String, String> boxMap_temp = new LinkedHashMap<String, String>();
     boxMap_temp.put("Optional", "java.util.Optional");
     boxMap_temp.put("Set", "java.util.Set");
     boxMap_temp.put("List", "java.util.List");
@@ -241,8 +241,8 @@ public class SymTypeOfGenerics extends SymTypeExpression {
   public Map<SymTypeVariable, SymTypeExpression> getTypeVariableReplaceMap() {
     List<TypeVarSymbol> typeVars = getTypeInfo().getTypeParameterList();
     List<SymTypeExpression> arguments = getArgumentList();
-    Map<SymTypeVariable, SymTypeExpression> replaceMap = new HashMap<>();
-    // empty List, e.g. new HashMap<>();
+    Map<SymTypeVariable, SymTypeExpression> replaceMap = new LinkedHashMap<>();
+    // empty List, e.g. new LinkedHashMap<>();
     if (arguments.size() == 0) {
       // no-op
     }

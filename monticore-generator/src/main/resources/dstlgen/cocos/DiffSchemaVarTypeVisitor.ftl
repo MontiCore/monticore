@@ -7,7 +7,7 @@ import ${package}.${grammarNameLower}tr._ast.*;
 import ${package}.${grammarNameLower}tr._visitor.*;
 import ${package}.${grammarNameLower}tr.${ast.getName()}TRMill;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import de.monticore.tf.tfcommons._ast.ASTITFPart;
@@ -21,7 +21,7 @@ public class ${className} implements ${ast.getName()}TRVisitor2, ${ast.getName()
   List<String> variables = new ArrayList<>();
 
 <#list productions as prod>
-  Map<String, AST${prod.getName()}_Pat> vars${prod.getName()}_Pat = new HashMap<>();
+  Map<String, AST${prod.getName()}_Pat> vars${prod.getName()}_Pat = new LinkedHashMap<>();
 </#list>
 
   public final ${ast.getName()}TRTraverser traverser;

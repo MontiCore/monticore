@@ -38,7 +38,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
@@ -133,7 +133,7 @@ public class ParserGenerator {
     setup.setGlex(glex);
 
     if (astGrammar.isComponent()) {
-      ParserInfoGenerator.generateParserInfoForComponent(astGrammar, setup, genHelper.getParserPackage(), lang, new HashMap<>());
+      ParserInfoGenerator.generateParserInfoForComponent(astGrammar, setup, genHelper.getParserPackage(), lang, new LinkedHashMap<>());
       Log.info("No parser generation for the grammar " + astGrammar.getName(), LOG);
       return null;
     }
