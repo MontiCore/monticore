@@ -12,10 +12,9 @@ import de.monticore.visitor.ITraverser;
 import de.se_rwth.commons.Splitters;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.google.common.collect.FluentIterable.from;
-import static de.se_rwth.commons.Joiners.DOT;
-import static java.util.stream.Collectors.toSet;
 
 public interface IScope {
 
@@ -129,7 +128,7 @@ public interface IScope {
   }
 
   default <T extends ISymbol> List<T> filterSymbolsByAccessModifier(AccessModifier modifier, Collection<T> resolvedUnfiltered) {
-    return new ArrayList<>(resolvedUnfiltered.stream().filter(new IncludesAccessModifierSymbolPredicate(modifier)).collect(toSet()));
+    return resolvedUnfiltered.stream().filter(new IncludesAccessModifierSymbolPredicate(modifier)).distinct().collect(Collectors.toList());
   }
 
   default LinkedListMultimap<String, SymbolWithScopeOfUnknownKind> getUnknownSymbols() {
