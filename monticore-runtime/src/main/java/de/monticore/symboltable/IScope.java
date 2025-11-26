@@ -117,14 +117,12 @@ public interface IScope {
   }
 
   default <T extends ISymbol> Optional<T> getResolvedOrThrowException(final Collection<T> resolved) {
-    Set<T> resolvedSet = new HashSet<>(resolved);
-
-    if (resolvedSet.size() == 1) {
-      return Optional.of(resolvedSet.iterator().next());
-    } else if (resolvedSet.size() > 1) {
-      throw new ResolvedSeveralEntriesForSymbolException("0xA4095 Found " + resolvedSet.size()
-          + " symbols: " + resolvedSet.iterator().next().getFullName(),
-          resolvedSet);
+    if (resolved.size() == 1) {
+      return Optional.of(resolved.iterator().next());
+    } else if (resolved.size() > 1) {
+      throw new ResolvedSeveralEntriesForSymbolException("0xA4095 Found " + resolved.size()
+          + " symbols: " + resolved.iterator().next().getFullName(),
+              resolved);
     }
 
     return Optional.empty();
