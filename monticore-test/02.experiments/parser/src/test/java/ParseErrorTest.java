@@ -236,7 +236,7 @@ public class ParseErrorTest {
     // An incorrect input is used in an alt-context
     parser.parse_StringUnknownAlts("X");
     Assertions.assertTrue(parser.hasErrors());
-    Assertions.assertEquals("no viable alternative at input 'X', expecting 'UnknownAltsKey', 'UnknownAltsT' or Name (with additional constraints from unknownAlts) in rule stack: [UnknownAlts]\u00A0\n" +
+    Assertions.assertEquals("no viable alternative at input 'X', expecting 'UnknownAltsT', 'UnknownAltsKey' or Name (with additional constraints from unknownAlts) in rule stack: [UnknownAlts]\u00A0\n" +
             "X\n" +
             "^", Log.getFindings().get(0).getMsg());
   }
