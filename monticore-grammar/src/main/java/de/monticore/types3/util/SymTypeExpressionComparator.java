@@ -359,7 +359,44 @@ public class SymTypeExpressionComparator
   }
 
   protected int compareSymbol(ISymbol o1, ISymbol o2) {
-    return o1.getFullName().compareTo(o2.getFullName());
+    int res;
+    // note: this case is only to speed comparisons up
+    if (o1 == o2 || o1.equals(o2)) {
+      res = 0;
+    }
+    else {
+      int resName = o1.getFullName().compareTo(o2.getFullName());
+      if (resName != 0) {
+        res = resName;
+      }
+      // this is, in most cases, not supposed to happen,
+      // as functions are differentiated by their types,
+      // and otherwise, at this position, we would have two distinct symbols
+      // with the same kind and name.
+      // This only happens in specific situations, e.g.,
+      // creating a broken symbol table and continuing to check CoCos
+      // to find further potential issus with the model (s, e.g., MontiArc).
+      else {
+        int resPos = o1.getSourcePosition().compareTo(o2.getSourcePosition());
+        if (resPos != 0) {
+          res = resPos;
+        }
+        else {
+          Log.warn("0xFD738 internal warning: "
+              + "found two symbols with the same name \""
+              + o1.getFullName() + "\" and the same source position "
+              + o1.getSourcePosition().toStringFullPath()
+              + ", which most likely indicates "
+              + "a wrong symbol table generation."
+              + " Alternatively, the symbol comparison implementation "
+              + "needs to be extended (this is unexpected)."
+          );
+          // just assume that they are identical for now
+          res = 0;
+        }
+      }
+    }
+    return res;
   }
 
   // Helper
