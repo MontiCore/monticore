@@ -42,4 +42,17 @@ public class TypeSymbolSurrogate extends TypeSymbolSurrogateTOP {
     }
     return getName();
   }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (checkLazyLoadDelegate()) {
+      if (obj instanceof TypeSymbol) {
+        return lazyLoadDelegate().equals(((TypeSymbol)obj).getThis());
+      } else {
+        return false;
+      }
+    } else {
+      return super.equals(obj);
+    }
+  }
 }
