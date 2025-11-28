@@ -5,7 +5,7 @@ package de.monticore.emf.util;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -70,7 +70,7 @@ public class AST2ModelFiles {
     // Add instance of package to the contents.
     resource.getContents().add(astNode);
     // Save the contents of the resource to the file system.
-    Map<String, Object> options = new HashMap<>();
+    Map<String, Object> options = new LinkedHashMap<>();
     options.put(XMLResource.OPTION_SCHEMA_LOCATION, Boolean.TRUE);
     try {
       resource.save(options);

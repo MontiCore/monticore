@@ -78,6 +78,8 @@ public abstract class MCTask extends DefaultTask {
 
     // Only one task using MontiCore Mills at the same time
     usesService(project.getGradle().getSharedServices().getRegistrations().findByName(MCPlugin.MC_MILL_BUILD_SERVICE).getService());
+
+    getLogger().warn("The MCTask is deprecated - Please migrate following https://monticore.github.io/monticore/docs/Gradle/");
   }
   
   public final RegularFileProperty grammar = getProject().getObjects().fileProperty();

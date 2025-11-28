@@ -28,7 +28,7 @@ import org.junit.Test;
 import util.TestUtil;
 
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -39,8 +39,8 @@ public class FQNInheritedTagTest {
   static ASTAutomaton model;
 
   static ASTTagUnit tagDefinition;
-  static Map<String, ASTState> states = new HashMap<>();
-  static Map<String, ASTRedState> red_states = new HashMap<>();
+  static Map<String, ASTState> states = new LinkedHashMap<>();
+  static Map<String, ASTRedState> red_states = new LinkedHashMap<>();
   
   protected IFQNEnhancedAutomataTagger fqnAutomataTagger = FQNEnhancedAutomataTagger.getInstance();
 

@@ -6,7 +6,7 @@ import de.monticore.types3.SymTypeRelations;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -96,7 +96,7 @@ public class TypeVisitorLifting {
       Function<SymTypeExpression, SymTypeExpression> func) {
     return (SymTypeExpression symType) -> {
       if (symType.isUnionType()) {
-        Set<SymTypeExpression> results = new HashSet<>();
+        Set<SymTypeExpression> results = new LinkedHashSet<>();
         for (SymTypeExpression unionizedType : symType.asUnionType().getUnionizedTypeSet()) {
           results.add(func.apply(unionizedType));
         }
@@ -116,7 +116,7 @@ public class TypeVisitorLifting {
     return (SymTypeExpression symType1, SymTypeExpression symType2) -> {
       Set<SymTypeExpression> arguments1;
       Set<SymTypeExpression> arguments2;
-      Set<SymTypeExpression> results = new HashSet<>();
+      Set<SymTypeExpression> results = new LinkedHashSet<>();
       if (symType1.isUnionType()) {
         arguments1 = symType1.asUnionType().getUnionizedTypeSet();
       }

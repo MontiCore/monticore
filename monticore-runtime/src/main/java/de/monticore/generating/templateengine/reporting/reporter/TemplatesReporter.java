@@ -98,32 +98,17 @@ public class TemplatesReporter extends AReporter {
   public void reportTemplateStart(String templatename, ASTNode ast) {
     Set<String> hwTemplates = repository.getAllHWTemplateNames();
     // if template is handwritten
-    if (hwTemplates.contains(templatename.replaceAll("\\.", "/").concat(".")
-        .concat(ReportingConstants.TEMPLATE_FILE_EXTENSION))) {
-      realHWTemplateNames.add(templatename.replaceAll("\\.", "/").concat(".")
-          .concat(ReportingConstants.TEMPLATE_FILE_EXTENSION));
+    String templateNameSanitized = templatename.replaceAll("\\.", "/").concat(".")
+            .concat(ReportingConstants.TEMPLATE_FILE_EXTENSION);
+    if (hwTemplates.contains(templateNameSanitized)) {
+      realHWTemplateNames.add(templateNameSanitized);
       templatename = ReportingHelper.getTemplateName(templatename);
-      
-      if (hwTemplateCount.containsKey(templatename)) {
-        Integer actualCount = hwTemplateCount.get(templatename);
-        hwTemplateCount.put(templatename, actualCount + 1);
-      }
-      else {
-        hwTemplateCount.put(templatename, 1);
-      }
+      hwTemplateCount.merge(templatename, 1, Integer::sum);
     }
     else {
-      realTemplateNames.add(templatename.replaceAll("\\.", "/").concat(".")
-          .concat(ReportingConstants.TEMPLATE_FILE_EXTENSION));
+      realTemplateNames.add(templateNameSanitized);
       templatename = ReportingHelper.getTemplateName(templatename);
-      
-      if (templateCount.containsKey(templatename)) {
-        Integer actualCount = templateCount.get(templatename);
-        templateCount.put(templatename, actualCount + 1);
-      }
-      else {
-        templateCount.put(templatename, 1);
-      }
+      templateCount.merge(templatename, 1, Integer::sum);
     }
   }
   

@@ -9,14 +9,14 @@ import java.util.stream.Collectors;
 
 public class CoCoHelper {
   public static <T> List<T> findDuplicates(Collection<T> list) {
-    Set<T> uniques = new HashSet<>();
+    Set<T> uniques = new LinkedHashSet<>();
 
     return list.stream().filter(e -> !uniques.add(e)).collect(Collectors.toList());
   }
 
   public static <T, Inner> List<T> findDuplicatesBy(
     Collection<T> list, java.util.function.Function<T, Inner> function) {
-    Set<Inner> existingElements = new HashSet<>();
+    Set<Inner> existingElements = new LinkedHashSet<>();
     List<T> duplicates = new ArrayList<>();
 
     for (T elem : list) {

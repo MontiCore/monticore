@@ -26,6 +26,7 @@ import org.junit.Test;
 import java.util.*;
 import java.util.function.Predicate;
 
+
 import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertBoolean;
@@ -385,7 +386,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
   public void testRemoveSymbolMethod() {
     List<ASTCDMethod> methodList = getMethodsBy("remove", scopeClass);
 
-    Map<String, ASTCDMethod> methods = new HashMap<>();
+    Map<String, ASTCDMethod> methods = new LinkedHashMap<>();
     methodList.forEach(l -> methods.put(
             CD4CodeMill.prettyPrint(l.getCDParameter(0).getMCType(), false), l)
     );
@@ -428,7 +429,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
   @Test
   public void testAddSymbolMethod() {
     List<ASTCDMethod> methodList = getMethodsBy("add", scopeClass);
-    Map<String, ASTCDMethod> methods = new HashMap<>();
+    Map<String, ASTCDMethod> methods = new LinkedHashMap<>();
     methodList.forEach(l -> methods.put(
         CD4CodeMill.prettyPrint(l.getCDParameter(0).getMCType(), false), l)
     );

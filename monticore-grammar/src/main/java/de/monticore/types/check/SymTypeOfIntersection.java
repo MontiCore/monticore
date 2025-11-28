@@ -5,7 +5,7 @@ import de.monticore.types3.ISymTypeVisitor;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.Spliterator;
@@ -23,7 +23,7 @@ public class SymTypeOfIntersection extends SymTypeExpression {
 
   public SymTypeOfIntersection(Collection<? extends SymTypeExpression> types) {
     Log.errorIfNull(types);
-    this.intersectedTypes = new HashSet<>();
+    this.intersectedTypes = new LinkedHashSet<>();
     this.intersectedTypes.addAll(types);
   }
 
