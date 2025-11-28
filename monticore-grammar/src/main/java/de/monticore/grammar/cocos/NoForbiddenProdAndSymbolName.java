@@ -42,7 +42,7 @@ public class NoForbiddenProdAndSymbolName implements GrammarASTMCGrammarCoCo {
 
     if(!forbidden.isEmpty()){
       for(ProdSymbol prod: forbidden){
-        Log.error(ERROR_CODE + String.format(ERROR_MSG_FORMAT, prodName, grammarName, prod.getName()));
+        Log.error(ERROR_CODE + String.format(ERROR_MSG_FORMAT, prodName, grammarName, prod.getName()), prod.getSourcePosition());
       }
     }
   }

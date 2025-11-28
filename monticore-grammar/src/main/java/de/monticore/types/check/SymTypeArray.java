@@ -31,7 +31,7 @@ public class SymTypeArray extends SymTypeExpression {
    * @param argument Argument Type
    * @param typeSymbol loader for the Type-Symbol that defines this type
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public SymTypeArray(TypeSymbol typeSymbol, int dim, SymTypeExpression argument) {
     this.typeSymbol = typeSymbol;
     this.dim = dim;

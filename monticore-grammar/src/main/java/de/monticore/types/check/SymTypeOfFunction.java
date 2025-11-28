@@ -40,7 +40,7 @@ public class SymTypeOfFunction extends SymTypeExpression {
   /**
    * @deprecated only required for the deprecated type symbol
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public static final String TYPESYMBOL_NAME = "function";
 
   /**
@@ -91,7 +91,7 @@ public class SymTypeOfFunction extends SymTypeExpression {
   /**
    * @deprecated the other constructor is to be used
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public SymTypeOfFunction(SymTypeExpression returnType, List<SymTypeExpression> argumentTypes,
       boolean elliptic) {
     this(null, returnType, argumentTypes, elliptic);

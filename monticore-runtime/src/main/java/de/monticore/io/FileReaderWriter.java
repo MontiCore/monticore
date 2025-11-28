@@ -230,7 +230,7 @@ public class FileReaderWriter {
    * Saves all {@link JarFile}s opened by {@link FileReaderWriter#getReader(URL)} if the protocol "jar:" is used.
    * These files must be closed at the end of programm via {@link FileReaderWriter#closeOpenedJarFiles()}.
    */
-  protected static Set<SharedCloseable<JarFile>> openedJarFiles = new HashSet<>();
+  protected static Set<SharedCloseable<JarFile>> openedJarFiles = new LinkedHashSet<>();
 
   /**
    * Obtains the reader for a passed model coordinate. The resulting reader

@@ -14,7 +14,7 @@ import de.se_rwth.commons.logging.Log;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
@@ -39,7 +39,7 @@ public class GrammarTransformer {
    * Example: {@code List(Element || ',')* ==> (List:Element (',' List:Element)+)}
    */
   public static void removeNonTerminalSeparators(ASTMCGrammar grammar) {
-    Map<ASTNonTerminalSeparator, ASTAlt> map = new HashMap<ASTNonTerminalSeparator, ASTAlt>();
+    Map<ASTNonTerminalSeparator, ASTAlt> map = new LinkedHashMap<ASTNonTerminalSeparator, ASTAlt>();
     RuleComponentListFinder componentListTransformer = new RuleComponentListFinder(map);
 
     Grammar_WithConceptsTraverser traverser = Grammar_WithConceptsMill.traverser();

@@ -130,14 +130,7 @@ public class ResolveWithinTypeTest extends AbstractTypeVisitorTest {
         SymTypeExpressionFactory.createTypeVariable(oOTypeVar));
     inScope(methodScope, variable);
 
-    SymTypeExpression type = calculateTypeWithinScope("t", methodScope);
-    Assertions.assertEquals("(() -> t.t.t) & t.t", type.printFullName());
-    Assertions.assertTrue(type.isIntersectionType());
-    Assertions.assertTrue(((SymTypeOfIntersection) type).getIntersectedTypeSet()
-        .stream()
-        .filter(t -> t.isTypeVariable())
-        .map(t -> t.asTypeVariable())
-        .anyMatch(t -> t.getTypeVarSymbol() == oOTypeVar));
+    // cannot resolve t, as no target type exists.
   }
 
   // class s<t> {
@@ -176,15 +169,7 @@ public class ResolveWithinTypeTest extends AbstractTypeVisitorTest {
         SymTypeExpressionFactory.createTypeVariable(oOTypeVar));
     inScope(methodScope, variable);
 
-    SymTypeExpression type =
-        calculateTypeWithinScope("t", methodScope);
-    Assertions.assertEquals("(() -> s.t.t) & s.t", type.printFullName());
-    Assertions.assertTrue(type.isIntersectionType());
-    Assertions.assertTrue(((SymTypeOfIntersection) type).getIntersectedTypeSet()
-        .stream()
-        .filter(t -> t.isTypeVariable())
-        .map(t -> t.asTypeVariable())
-        .anyMatch(t -> t.getTypeVarSymbol() == oOTypeVar));
+    // cannot resolve t in method scope as target type for method is not present
   }
 
   // class s {

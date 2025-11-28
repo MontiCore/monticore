@@ -13,7 +13,7 @@ import de.se_rwth.commons.logging.Log;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -46,7 +46,7 @@ public class SIUnitTypeRelations {
 
   // initializes the conversion table
   static {
-    Map<String, List<SIUnitBasic>> conversionTableTmp = new HashMap<>();
+    Map<String, List<SIUnitBasic>> conversionTableTmp = new LinkedHashMap<>();
     // already base units:
     conversionTableTmp.put("m", List.of(createSIBaseUnit("m")));
     conversionTableTmp.put("g", List.of(createSIBaseUnit("g")));
@@ -210,7 +210,7 @@ public class SIUnitTypeRelations {
   protected SymTypeOfSIUnit _normalize(SymTypeOfSIUnit siUnit) {
     SymTypeOfSIUnit siUnitWithBaseUnits = convertToSIBaseUnits(siUnit);
     // collect all exponents
-    Map<String, Integer> unit2Exp = new HashMap<>();
+    Map<String, Integer> unit2Exp = new LinkedHashMap<>();
     for (String dimension : baseUnitStrings) {
       unit2Exp.put(dimension, 0);
     }

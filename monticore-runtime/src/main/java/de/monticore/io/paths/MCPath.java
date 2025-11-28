@@ -332,7 +332,7 @@ public final class MCPath {
   }
 
   // A List of all file systems opened for jars.
-  private static Map<File, FileSystem> openedJarFileSystems = new HashMap<>();
+  private static Map<File, FileSystem> openedJarFileSystems = new LinkedHashMap<>();
 
   public static FileSystem getJarFS(File jar) {
     if(openedJarFileSystems.containsKey(jar)){
@@ -401,7 +401,7 @@ public final class MCPath {
    */
   static class CachedPath {
     // *.sym paths
-    final Set<Path> absolutePaths = new HashSet<>();
+    final Set<Path> absolutePaths = new LinkedHashSet<>();
     // path of the filesystem, which will be removed in the filter
     final String replacedFS;
     final Pattern removeFsPattern;

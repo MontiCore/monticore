@@ -3,6 +3,7 @@ package mc.testcases.automaton.transformation.rule._parser;
 
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
+import mc.testcases.automaton.tr.automatontr.AutomatonTRMill;
 import mc.testcases.automaton.tr.automatontr._ast.*;
 import mc.testcases.automaton.tr.automatontr._parser.AutomatonTRParser;
 import org.junit.Before;
@@ -151,6 +152,24 @@ public class AutomatonTransformationRuleParserTest  {
     assertNotNull(b);
     assertEquals("$b", b.getName().getIdentifier());
   
+    assertTrue(Log.getFindings().isEmpty());
+  }
+
+  @Test
+  public void testRulePresence() throws  IOException {
+    AutomatonTRParser parser = new AutomatonTRParser();
+    Optional<ASTAutomatonTFRule> astA = parser.parse_String("automaton MyAut {}");
+    assertFalse(parser.hasErrors());
+    assertTrue(astA.isPresent());
+
+    Optional<ASTAutomatonTFRule> astB = parser.parse_String("Automaton [[ automaton MyAut {} ]]");
+    assertFalse(parser.hasErrors());
+    assertTrue(astB.isPresent());
+
+    // The existence of the rule name might be relevant, e.g.
+    // "Expression [[ a+b ]]" vs "PlusExpression [[ a+b ]]"
+    assertFalse(astA.get().deepEquals(astB.get()));
+
     assertTrue(Log.getFindings().isEmpty());
   }
 }

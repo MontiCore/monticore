@@ -4,7 +4,7 @@ package de.monticore.generating.templateengine.reporting.artifacts.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,12 +15,12 @@ public abstract class APkg {
   /**
    * Maps name of subpackage to subpackage
    */
-  protected Map<String, Pkg> subPkgs = new HashMap<String, Pkg>();
+  protected Map<String, Pkg> subPkgs = new LinkedHashMap<String, Pkg>();
   
   /**
    * Maps fullName of Element ({@link Element#getFullName()}) to Element
    */
-  protected Map<String, Element> elements = new HashMap<String, Element>();
+  protected Map<String, Element> elements = new LinkedHashMap<String, Element>();
   
   protected boolean containsNonFileElement = false;
   
