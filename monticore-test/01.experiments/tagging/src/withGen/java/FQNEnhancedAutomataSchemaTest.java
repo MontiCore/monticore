@@ -37,7 +37,7 @@ public class FQNEnhancedAutomataSchemaTest {
     FQNEnhancedAutomataTagSchemaMill.init();
     FQNEnhancedAutomataTagSchemaMill.globalScope().getSymbolPath().addEntry(new File("src/test/resources/").toPath());
 
-    for (File f : Objects.requireNonNull(
+    for (File f : Preconditions.checkNotNull(
             new File("src/test/resources/schema/").listFiles(x -> x.getName().endsWith(".tagschema")))) {
       Optional<ASTTagSchema> schemaOpt = FQNEnhancedAutomataTagSchemaMill.parser().parse(f.getAbsolutePath());
       if (schemaOpt.isPresent()) {

@@ -2,6 +2,7 @@
 
 package de.monticore.grammar.grammar._symboltable;
 
+import com.google.common.base.Preconditions;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -15,7 +16,6 @@ import de.se_rwth.commons.Names;
 import java.util.*;
 
 import static com.google.common.collect.ImmutableList.copyOf;
-import static de.se_rwth.commons.logging.Log.errorIfNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 
@@ -84,7 +84,7 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
   }
 
   public void addSuperGrammar(MCGrammarSymbolSurrogate superGrammarRef) {
-    this.superGrammars.add(errorIfNull(superGrammarRef));
+    this.superGrammars.add(Preconditions.checkNotNull(superGrammarRef));
   }
 
   public Collection<ProdSymbol> getProds() {

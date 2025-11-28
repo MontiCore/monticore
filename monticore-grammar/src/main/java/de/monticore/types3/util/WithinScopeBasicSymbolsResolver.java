@@ -1,6 +1,7 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.types3.util;
 
+import com.google.common.base.Preconditions;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
@@ -67,8 +68,8 @@ public class WithinScopeBasicSymbolsResolver {
   protected Optional<SymTypeExpression> _resolveNameAsExpr(
       IBasicSymbolsScope enclosingScope,
       String name) {
-    Log.errorIfNull(enclosingScope);
-    Log.errorIfNull(name);
+    Preconditions.checkNotNull(enclosingScope);
+    Preconditions.checkNotNull(name);
     // collect all (potential) types
     Set<SymTypeExpression> types = new LinkedHashSet<>();
 
@@ -171,8 +172,8 @@ public class WithinScopeBasicSymbolsResolver {
       IBasicSymbolsScope enclosingScope,
       String name
   ) {
-    Log.errorIfNull(enclosingScope);
-    Log.errorIfNull(name);
+    Preconditions.checkNotNull(enclosingScope);
+    Preconditions.checkNotNull(name);
     Optional<SymTypeExpression> result;
     Optional<VariableSymbol> optVarSym = resolveVariable(
         enclosingScope,
@@ -209,8 +210,8 @@ public class WithinScopeBasicSymbolsResolver {
       IBasicSymbolsScope enclosingScope,
       String name
   ) {
-    Log.errorIfNull(enclosingScope);
-    Log.errorIfNull(name);
+    Preconditions.checkNotNull(enclosingScope);
+    Preconditions.checkNotNull(name);
     List<FunctionSymbol> funcSyms = resolveFunctionMany(
         enclosingScope,
         name,
@@ -291,8 +292,8 @@ public class WithinScopeBasicSymbolsResolver {
       IBasicSymbolsScope enclosingScope,
       String name
   ) {
-    Log.errorIfNull(enclosingScope);
-    Log.errorIfNull(name);
+    Preconditions.checkNotNull(enclosingScope);
+    Preconditions.checkNotNull(name);
     Optional<SymTypeExpression> result;
     // variable
     Optional<TypeVarSymbol> optTypeVar;
@@ -481,7 +482,7 @@ public class WithinScopeBasicSymbolsResolver {
   protected static void setDelegate(
       WithinScopeBasicSymbolsResolver newDelegate
   ) {
-    WithinScopeBasicSymbolsResolver.delegate = Log.errorIfNull(newDelegate);
+    WithinScopeBasicSymbolsResolver.delegate = Preconditions.checkNotNull(newDelegate);
   }
 
   protected static WithinScopeBasicSymbolsResolver getDelegate() {

@@ -1,6 +1,7 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.types3.generics.util;
 
+import com.google.common.base.Preconditions;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeInferenceVariable;
@@ -1160,7 +1161,7 @@ public class BoundIncorporation {
   }
 
   protected static void setDelegate(BoundIncorporation newDelegate) {
-    BoundIncorporation.delegate = Log.errorIfNull(newDelegate);
+    BoundIncorporation.delegate = Preconditions.checkNotNull(newDelegate);
   }
 
   protected static BoundIncorporation getDelegate() {

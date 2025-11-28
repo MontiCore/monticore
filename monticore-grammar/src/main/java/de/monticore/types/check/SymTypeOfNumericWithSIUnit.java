@@ -2,6 +2,7 @@
 
 package de.monticore.types.check;
 
+import com.google.common.base.Preconditions;
 import de.monticore.types3.ISymTypeVisitor;
 import de.se_rwth.commons.logging.Log;
 
@@ -20,8 +21,8 @@ public class SymTypeOfNumericWithSIUnit extends SymTypeExpression {
       SymTypeOfSIUnit siUnitType,
       SymTypeExpression numericType
   ) {
-    this.siUnitType = Log.errorIfNull(siUnitType);
-    this.numericType = Log.errorIfNull(numericType);
+    this.siUnitType = Preconditions.checkNotNull(siUnitType);
+    this.numericType = Preconditions.checkNotNull(numericType);
   }
 
   public SymTypeOfSIUnit getSIUnitType() {

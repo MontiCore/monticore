@@ -1,6 +1,7 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.types3.util;
 
+import com.google.common.base.Preconditions;
 import de.monticore.types.check.SIUnitBasic;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
@@ -397,7 +398,7 @@ public class SIUnitTypeRelations {
   }
 
   protected static void setDelegate(SIUnitTypeRelations newDelegate) {
-    SIUnitTypeRelations.delegate = Log.errorIfNull(newDelegate);
+    SIUnitTypeRelations.delegate = Preconditions.checkNotNull(newDelegate);
   }
 
   protected static SIUnitTypeRelations getDelegate() {

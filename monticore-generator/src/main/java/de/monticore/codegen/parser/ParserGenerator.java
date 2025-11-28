@@ -3,6 +3,7 @@
 package de.monticore.codegen.parser;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Preconditions;
 import de.monticore.cd.codegen.CDGenerator;
 import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.cd.codegen.TopDecorator;
@@ -122,7 +123,7 @@ public class ParserGenerator {
         astGrammar.getName());
     MCGrammarSymbol grammarSymbol = symbolTable.<MCGrammarSymbol> resolveMCGrammar(
         qualifiedGrammarName).orElse(null);
-    Log.errorIfNull(grammarSymbol, "0xA4034 Grammar " + qualifiedGrammarName
+    Preconditions.checkNotNull(grammarSymbol, "0xA4034 Grammar " + qualifiedGrammarName
         + " can't be resolved in the scope " + symbolTable);
 
     MCGrammarInfo grammarInfo = new MCGrammarInfo(grammarSymbol);
