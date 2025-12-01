@@ -1,0 +1,23 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package mc.feature.inheritance.multipleoverrides;
+
+/**
+ * This grammar extends the standard automaton example language by overriding the methods.
+ */
+
+grammar ExtendedAutomata extends mc.feature.inheritance.multipleoverrides.Automata {
+
+    interface Q;
+
+    @Override
+    Automaton implements Q = "extendedAut" (State | Transition)*;
+
+    @Override
+    State = ["initial"] | ["final"] "state" Name "{" ExtraInfo "}";
+
+    @Override
+    Transition implements Q = from: Name "->" to:Name;
+
+    ExtraInfo = "info" Info:Name;
+}
