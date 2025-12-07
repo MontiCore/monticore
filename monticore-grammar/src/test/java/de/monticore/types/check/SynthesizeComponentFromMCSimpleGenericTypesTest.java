@@ -3,6 +3,8 @@ package de.monticore.types.check;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import de.monticore.runtime.junit.MCAssertions;
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.compsymbols._symboltable.ComponentTypeSymbol;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 
@@ -11,12 +13,18 @@ import de.monticore.types.componentsymbolswithmcbasictypestest._symboltable.ICom
 import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mcbasictypes.types3.MCBasicTypesTypeVisitor;
 import de.monticore.types.mccollectiontypes._ast.ASTMCBasicTypeArgument;
 import de.monticore.types.mccollectiontypes._ast.ASTMCPrimitiveTypeArgument;
+import de.monticore.types.mccollectiontypes.types3.MCCollectionTypesTypeVisitor;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericTypeBuilder;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCCustomTypeArgument;
 
+import de.monticore.types.mcsimplegenerictypes.types3.MCSimpleGenericTypesTypeVisitor;
+import de.monticore.types3.Type4Ast;
+import de.monticore.types3.generics.context.InferenceContext4Ast;
+import de.monticore.types3.util.MapBasedTypeCheck3;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 
@@ -37,6 +45,34 @@ public class SynthesizeComponentFromMCSimpleGenericTypesTest {
   public static void beforeAll() {
     LogStub.init();
     Log.enableFailQuick(false);
+
+    BasicSymbolsMill.reset();
+    BasicSymbolsMill.init();
+    BasicSymbolsMill.initializePrimitives();
+    BasicSymbolsMill.initializeString();
+
+    ComponentSymbolsWithMCBasicTypesTestMill.reset();
+    ComponentSymbolsWithMCBasicTypesTestMill.init();
+
+
+    Type4Ast type4Ast = new Type4Ast();
+    InferenceContext4Ast ctx4Ast = new InferenceContext4Ast();
+
+    var traverser = ComponentSymbolsWithMCBasicTypesTestMill.traverser();
+
+    MCBasicTypesTypeVisitor basicTypesVisitor = new MCBasicTypesTypeVisitor();
+    basicTypesVisitor.setType4Ast(type4Ast);
+    traverser.add4MCBasicTypes(basicTypesVisitor);
+
+    MCCollectionTypesTypeVisitor collVisitor = new MCCollectionTypesTypeVisitor();
+    collVisitor.setType4Ast(type4Ast);
+    traverser.add4MCCollectionTypes(collVisitor);
+
+    MCSimpleGenericTypesTypeVisitor simpleGenVisitor = new MCSimpleGenericTypesTypeVisitor();
+    simpleGenVisitor.setType4Ast(type4Ast);
+    traverser.add4MCSimpleGenericTypes(simpleGenVisitor);
+
+    new MapBasedTypeCheck3(traverser, type4Ast, ctx4Ast).setThisAsDelegate();
   }
 
   @BeforeEach
@@ -159,9 +195,19 @@ public class SynthesizeComponentFromMCSimpleGenericTypesTest {
     Assertions.assertEquals(stringSym,
       ((SymTypeOfGenerics) result4qualAsGeneric.getTypeBindingFor("K").get()).getArgument(0).getTypeInfo()
     );
-  /*  assertThat(Log.getFindings()).isEmpty();
-    assertThat(result4normalAsGeneric.getSourceNode()).contains(astNormalComp);
-    assertThat(result4qualAsGeneric.getSourceNode()).contains(astQualComp);*/
+
+    MCAssertions.assertNoFindings();
+    Assertions.assertTrue(
+      result4normalAsGeneric.getSourceNode().isPresent()
+        && result4normalAsGeneric.getSourceNode().get().equals(astNormalComp),
+      "Expected source node of normal generic Comp to be astNormalComp"
+    );
+    Assertions.assertTrue(
+      result4qualAsGeneric.getSourceNode().isPresent()
+        && result4qualAsGeneric.getSourceNode().get().equals(astQualComp),
+      "Expected source node of qualified generic Comp to be astQualComp"
+    );
+
   }
 
   @Test
@@ -197,8 +243,6 @@ public class SynthesizeComponentFromMCSimpleGenericTypesTest {
 
     // Then
     Assertions.assertFalse(resultWrapper.getResult().isPresent());
-   /* assertThat(getLoggedErrorCodes())
-      .containsExactlyInAnyOrder(getErrorCodes(MCError.MISSING_COMPONENT));*/
   }
 
   @Test
@@ -236,8 +280,6 @@ public class SynthesizeComponentFromMCSimpleGenericTypesTest {
 
     // Then
     Assertions.assertFalse(resultWrapper.getResult().isPresent());
-  /*  assertThat(getLoggedErrorCodes())
-      .containsExactlyInAnyOrder(getErrorCodes(MCError.MISSING_COMPONENT));*/
   }
 
   @Test
