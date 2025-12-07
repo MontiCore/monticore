@@ -1,12 +1,17 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
+import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
+import de.monticore.runtime.junit.MCAssertions;
 import de.monticore.symbols.compsymbols._symboltable.ComponentTypeSymbol;
 import de.monticore.types.MCBasicTypesTest;
 import de.monticore.types.componentsymbolswithmcbasictypestest.ComponentSymbolsWithMCBasicTypesTestMill;
 import de.monticore.types.componentsymbolswithmcbasictypestest._visitor.ComponentSymbolsWithMCBasicTypesTestTraverser;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._ast.ASTMCVoidType;
+import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.Assertions;
@@ -14,7 +19,12 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+import java.util.Optional;
+
 public class SynthesizeComponentFromMCBasicTypesTest extends MCBasicTypesTest {
+
+  private CombineExpressionsWithLiteralsParser parser;
 
   @BeforeAll
   public static void beforeAll() {
@@ -25,9 +35,47 @@ public class SynthesizeComponentFromMCBasicTypesTest extends MCBasicTypesTest {
   @BeforeEach
   public void setup() {
     Log.clearFindings();
+    parser = CombineExpressionsWithLiteralsMill.parser();
 
     ComponentSymbolsWithMCBasicTypesTestMill.reset();
     ComponentSymbolsWithMCBasicTypesTestMill.init();
+  }
+
+  @Test
+  public void synthesizesCompKind_forResolvableComponentTypeSymbol() throws Exception {
+    ComponentTypeSymbol typeA = ComponentSymbolsWithMCBasicTypesTestMill.componentTypeSymbolBuilder()
+      .setName("A")
+      .setSpannedScope(ComponentSymbolsWithMCBasicTypesTestMill.scope())
+      .build();
+    ComponentSymbolsWithMCBasicTypesTestMill.globalScope().add(typeA);
+    typeA.setEnclosingScope(ComponentSymbolsWithMCBasicTypesTestMill.globalScope());
+
+    ASTMCType ast = parser.parse_StringMCType("A").orElseThrow();
+    ast.setEnclosingScope(ComponentSymbolsWithMCBasicTypesTestMill.globalScope());
+
+    FullSynthesizeCompKindFromMCBasicTypes synth = new FullSynthesizeCompKindFromMCBasicTypes();
+
+    Optional<CompKindExpression> res = synth.synthesize(ast);
+    Assertions.assertTrue(res.isPresent());
+    MCAssertions.assertNoFindings("Did not expect central error 0xD0104");
+  }
+
+  @Test
+  public void shouldLogCentralError_whenPrimitiveType() throws Exception {
+    ASTMCType astDouble = parser.parse_StringMCType("double").orElseThrow();
+
+    FullSynthesizeCompKindFromMCBasicTypes synth = new FullSynthesizeCompKindFromMCBasicTypes();
+
+    Optional<CompKindExpression> result = synth.synthesize(astDouble);
+
+    Assertions.assertTrue(result.isEmpty(), "Expected no CompKindExpression for primitive 'double'");
+    MCAssertions.assertHasFindings(
+      f -> {
+        String m = f.getMsg();
+        return m != null && m.contains("0xD0104");
+      },
+      "Expected a central finding containing 0xD0104"
+    );
   }
 
   @Test
@@ -164,6 +212,6 @@ public class SynthesizeComponentFromMCBasicTypesTest extends MCBasicTypesTest {
 
     // Then
     Assertions.assertFalse(resultWrapper.getResult().isPresent());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
 }
