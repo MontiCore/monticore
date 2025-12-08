@@ -17,3 +17,4 @@ plugins {
 }
 
 rootProject.name = 'monticore-generator'
+include "gradle-plugin"

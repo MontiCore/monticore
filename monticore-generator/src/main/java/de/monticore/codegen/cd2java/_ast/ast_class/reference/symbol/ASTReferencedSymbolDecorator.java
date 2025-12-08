@@ -93,7 +93,7 @@ public class ASTReferencedSymbolDecorator<T extends ASTCDType> extends AbstractT
       //if the attribute is a list
       ASTMCType attributeType = getMCTypeFacade().createMapTypeOf(getMCTypeFacade().createStringType(), symbolLoaderType);
       ASTCDAttribute symbolAttribute = this.getCDAttributeFacade().createAttribute(modifier, attributeType, attributeName + SYMBOL);
-      replaceTemplate(VALUE, symbolAttribute, new StringHookPoint("= new HashMap<>()"));
+      replaceTemplate(VALUE, symbolAttribute, new StringHookPoint("= new LinkedHashMap<>()"));
       return symbolAttribute;
     } else {
       //if the attribute is mandatory or optional

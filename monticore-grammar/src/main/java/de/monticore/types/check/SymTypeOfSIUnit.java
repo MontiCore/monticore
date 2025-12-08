@@ -1,9 +1,8 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.types.check;
 
+import com.google.common.base.Preconditions;
 import de.monticore.types3.ISymTypeVisitor;
-import de.se_rwth.commons.logging.Log;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,8 +19,8 @@ public class SymTypeOfSIUnit extends SymTypeExpression {
       List<SIUnitBasic> numerator,
       List<SIUnitBasic> denominator
   ) {
-    Log.errorIfNull(numerator);
-    Log.errorIfNull(denominator);
+    Preconditions.checkNotNull(numerator);
+    Preconditions.checkNotNull(denominator);
     this.numerator = new ArrayList<>(numerator);
     this.denominator = new ArrayList<>(denominator);
   }

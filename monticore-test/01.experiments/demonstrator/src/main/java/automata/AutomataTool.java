@@ -68,13 +68,13 @@ public class AutomataTool extends AutomataToolTOP {
   // the symbol table of the model (after parsing and SymTab creation)
   IAutomataArtifactScope modelTopScope;
   // Two dimensional map: SourceState x Stimulus -> Transition
-  Map<ASTState, Map<String, ASTTransition>> deltaMap = new HashMap<>();
+  Map<ASTState, Map<String, ASTTransition>> deltaMap = new LinkedHashMap<>();
 
   // Map: Name -> State (== State-Symbols)
-  Map<String, ASTState> stateMap = new HashMap<>();
+  Map<String, ASTState> stateMap = new LinkedHashMap<>();
 
   // List of stimuli
-  Set<String> stimuli = new HashSet<>();
+  Set<String> stimuli = new LinkedHashSet<>();
 
   /**
    * Entry method of the AutomataTool:
@@ -350,7 +350,7 @@ public class AutomataTool extends AutomataToolTOP {
     // initialize delta: transition map of maps, and state name2node
     for (ASTState s : ast.getStateList()) {
       stateMap.put(s.getName(), s);
-      deltaMap.put(s, new HashMap<>());
+      deltaMap.put(s, new LinkedHashMap<>());
     }
 
     // Add the transitions to the table

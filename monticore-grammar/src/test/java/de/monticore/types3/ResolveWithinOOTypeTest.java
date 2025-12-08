@@ -52,7 +52,7 @@ public class ResolveWithinOOTypeTest extends AbstractTypeVisitorTest {
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
     // replace the typeMapTraverser with an OO-aware variant
-    new CombineExpressionsWithLiteralsTypeTraverserFactory()
+    CombineExpressionsWithLiteralsTypeTraverserFactory
         .initTypeCheck3ForOO();
   }
 

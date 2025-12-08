@@ -1,6 +1,7 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.types3.util;
 
+import com.google.common.base.Preconditions;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeInferenceVariable;
 import de.monticore.types.check.SymTypeOfFunction;
@@ -261,7 +262,7 @@ public class FunctionRelations {
   }
 
   protected static void setDelegate(FunctionRelations newDelegate) {
-    FunctionRelations.delegate = Log.errorIfNull(newDelegate);
+    FunctionRelations.delegate = Preconditions.checkNotNull(newDelegate);
   }
 
   protected static FunctionRelations getDelegate() {

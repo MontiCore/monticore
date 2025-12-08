@@ -6,7 +6,7 @@ import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisito
 import de.monticore.tf.odrulegeneration._ast.ASTMatchingObject;
 import de.monticore.tf.odrules.HierarchyHelper;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -26,7 +26,7 @@ public class FindOptionalsVisitor implements
     super();
     this.hierarchyHelper = hierarchyHelper;
     this.lhsObjects = lhsObjects;
-    optVars = new HashSet<>();
+    optVars = new LinkedHashSet<>();
   }
 
   @Override

@@ -1,6 +1,7 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.types3.generics.util;
 
+import com.google.common.base.Preconditions;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeInferenceVariable;
@@ -18,7 +19,7 @@ import de.se_rwth.commons.logging.Log;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -100,7 +101,7 @@ public class BoundResolution {
   ) {
     // shortcut reducing log
     if (newBounds.isEmpty() && oldBounds.isEmpty()) {
-      return Optional.of(new HashMap<>());
+      return Optional.of(new LinkedHashMap<>());
     }
     Optional<Map<SymTypeInferenceVariable, SymTypeExpression>> result = Optional.empty();
 
@@ -877,7 +878,7 @@ public class BoundResolution {
   }
 
   protected static void setDelegate(BoundResolution newDelegate) {
-    BoundResolution.delegate = Log.errorIfNull(newDelegate);
+    BoundResolution.delegate = Preconditions.checkNotNull(newDelegate);
   }
 
   protected static BoundResolution getDelegate() {

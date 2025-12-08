@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types3.generics.util;
 
+import com.google.common.base.Preconditions;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
@@ -28,7 +29,7 @@ import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -405,7 +406,9 @@ public class CompileTimeTypeCalculator {
       callCtx.setInferredTypes(List.of(applicabilityRes));
     }
     else {
-      Log.error("0xFD114 internal error: unexpected inference results");
+      Log.error("0xFD114 internal error: unexpected inference results",
+        callExpr.get_SourcePositionStart(),
+        callExpr.get_SourcePositionEnd());
     }
   }
 
@@ -843,7 +846,7 @@ public class CompileTimeTypeCalculator {
       PartialFunctionInfo funcInfo
   ) {
     Map<SymTypeOfFunction, InferenceResult> func2InferenceResult =
-        new HashMap<>();
+        new LinkedHashMap<>();
     for (SymTypeOfFunction func : potentiallyApplicableFuncs) {
       InferenceResult result = new InferenceResult();
       result.setResolvedFunction(func);
@@ -1526,7 +1529,7 @@ public class CompileTimeTypeCalculator {
   }
 
   protected static void setDelegate(CompileTimeTypeCalculator newDelegate) {
-    CompileTimeTypeCalculator.delegate = Log.errorIfNull(newDelegate);
+    CompileTimeTypeCalculator.delegate = Preconditions.checkNotNull(newDelegate);
   }
 
   protected static CompileTimeTypeCalculator getDelegate() {

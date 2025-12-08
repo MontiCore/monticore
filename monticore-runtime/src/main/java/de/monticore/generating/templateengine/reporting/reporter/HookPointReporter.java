@@ -391,16 +391,16 @@ public class HookPointReporter extends AReporter {
   
   protected String getHookPointValue(HookPoint hp) {
     String value = null;
-    if (hp != null && hp instanceof TemplateHookPoint) {
+    if (hp instanceof TemplateHookPoint) {
       value = ((TemplateHookPoint) hp).getTemplateName();
       value = ReportingHelper.getTemplateName(value);
     }
-    else if (hp != null && hp instanceof StringHookPoint) {
+    else if (hp instanceof StringHookPoint) {
       value = ((StringHookPoint) hp).getValue();
       value = ReportingHelper.formatStringToReportingString(value,
           ReportingConstants.REPORTING_ROW_LENGTH - ReportingConstants.FORMAT_LENGTH_2);
     }
-    else if (hp != null && hp instanceof CodeHookPoint) {
+    else if (hp instanceof CodeHookPoint) {
       value = ((CodeHookPoint) hp).getClass().getName();
       value = Names.getSimpleName(value);
     }

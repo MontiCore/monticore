@@ -2,6 +2,7 @@
 
 package de.monticore;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
@@ -321,7 +322,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   public void generateParser(GlobalExtensionManagement glex, ASTCDCompilationUnit astClassDiagram, ASTMCGrammar grammar,
                              IGrammar_WithConceptsGlobalScope symbolTable, MCPath handcodedPath, MCPath templatePath,
                              File outputDirectory) {
-    Log.errorIfNull(
+    Preconditions.checkNotNull(
             grammar,
             "0xA4107 Parser generation can't be processed: the reference to the grammar ast is null");
     ParserGenerator.generateFullParser(glex, astClassDiagram, grammar, symbolTable, handcodedPath, templatePath, outputDirectory);
@@ -337,7 +338,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   public void generateParser(GlobalExtensionManagement glex, ASTMCGrammar grammar, IGrammar_WithConceptsGlobalScope symbolTable,
                              MCPath handcodedPath, MCPath templatePath, File outputDirectory,
                              boolean embeddedJavaCode, Languages lang) {
-    Log.errorIfNull(
+    Preconditions.checkNotNull(
             grammar,
             "0xA4108 Parser generation can't be processed: the reference to the grammar ast is null");
     ParserGenerator.generateParser(glex, grammar, symbolTable, handcodedPath, templatePath, outputDirectory, embeddedJavaCode, lang);
@@ -353,7 +354,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @return a CD for the _prettyprint package
    */
   public ASTCDCompilationUnit generatePrettyPrinter(GlobalExtensionManagement glex, ASTMCGrammar grammar) {
-    Log.errorIfNull(
+    Preconditions.checkNotNull(
             grammar,
             "0xA4109 PrettyPrinter generation can't be processed: the reference to the grammar ast is null");
     return PrettyPrinterGenerator.generatePrettyPrinter(glex, grammar);

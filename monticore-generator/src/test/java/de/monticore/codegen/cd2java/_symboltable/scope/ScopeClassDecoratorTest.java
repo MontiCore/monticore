@@ -23,7 +23,7 @@ import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -386,7 +386,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
   public void testRemoveSymbolMethod() {
     List<ASTCDMethod> methodList = getMethodsBy("remove", scopeClass);
 
-    Map<String, ASTCDMethod> methods = new HashMap<>();
+    Map<String, ASTCDMethod> methods = new LinkedHashMap<>();
     methodList.forEach(l -> methods.put(
             CD4CodeMill.prettyPrint(l.getCDParameter(0).getMCType(), false), l)
     );
@@ -429,7 +429,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
   @Test
   public void testAddSymbolMethod() {
     List<ASTCDMethod> methodList = getMethodsBy("add", scopeClass);
-    Map<String, ASTCDMethod> methods = new HashMap<>();
+    Map<String, ASTCDMethod> methods = new LinkedHashMap<>();
     methodList.forEach(l -> methods.put(
         CD4CodeMill.prettyPrint(l.getCDParameter(0).getMCType(), false), l)
     );

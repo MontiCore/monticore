@@ -6,7 +6,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -27,7 +27,7 @@ public class ReportCreator {
 	 */
 	public ReportCreator(String outputDir) {
 		this.outputDir = outputDir;
-		writers = new HashMap<File, BufferedWriter>();
+		writers = new LinkedHashMap<>();
 		File dir = new File(outputDir);
 		if (!dir.isDirectory()) {
 			dir.mkdirs();
@@ -76,7 +76,7 @@ public class ReportCreator {
 	 */
 	public void writeLineToFile(File file, String content) throws IOException {
 		BufferedWriter writer = writers.get(file);
-		writer.append(content + "\n");
+		writer.append(content).append("\n");
 	}
 
 	/**
