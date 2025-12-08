@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-  Log.errorIfNull(scope);
+  Preconditions.checkNotNull(scope);
 
 if (scope.getEnclosingScope() == null && getCurrentScope().isPresent()) {
     scope.setEnclosingScope(getCurrentScope().get());

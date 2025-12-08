@@ -22,7 +22,7 @@ import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.io.FilenameUtils;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -71,8 +71,8 @@ public class Type4Ast {
   }
 
   public void reset() {
-    expr2type = new HashMap<>();
-    typeID2type = new HashMap<>();
+    expr2type = new LinkedHashMap<>();
+    typeID2type = new LinkedHashMap<>();
   }
 
   /**

@@ -21,7 +21,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -32,7 +32,7 @@ public class TagTest {
 
   static ISymbolTagger tagger;
 
-  static Map<String, ASTState> states = new HashMap<>();
+  static Map<String, ASTState> states = new LinkedHashMap<>();
   
   @BeforeAll
   public static void init() throws Exception {

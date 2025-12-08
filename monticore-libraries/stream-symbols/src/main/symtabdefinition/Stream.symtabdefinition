@@ -3,6 +3,7 @@ symtabdefinition Stream {
   interface Stream<T> {
     + long len();
     + boolean hasInfiniteLen();
+    + boolean isEmpty();
 
     + static <S> Stream<S> repeat(S elem, long n);
     + static <S> Stream<S> iterate(S -> S elem, S elem);

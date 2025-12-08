@@ -618,7 +618,7 @@ public class SymTypeCompatibilityCalculator {
     // as two unbounded type variable are not subTypes of each other otherwise
     if (subType.isTypeVariable() &&
         superType.isTypeVariable() &&
-        subType.asTypeVariable().denotesSameVar(superType)
+        subType.asTypeVariable().deepEquals(superType)
     ) {
       result = Collections.emptyList();
     }

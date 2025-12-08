@@ -171,6 +171,7 @@ tasks.register("deployMC") {
 
   dependsOn ":monticore-grammar:publish"
   dependsOn ":monticore-runtime:publish"
+  dependsOn ":monticore-libraries:stream-symbols:publish"
   if(("true").equals(getProperty('genEMF'))) {
     dependsOn ":monticore-runtime-emf:publish"
     dependsOn ":monticore-grammar-emf:publish"
@@ -191,6 +192,7 @@ tasks.register("publishMCToMavenLocal") {
           'to the local maven repository.'
   dependsOn ":monticore-grammar:publishToMavenLocal"
   dependsOn ":monticore-runtime:publishToMavenLocal"
+  dependsOn ":monticore-libraries:stream-symbols:publishToMavenLocal"
   if(("true").equals(getProperty('genEMF'))) {
     dependsOn ":monticore-runtime-emf:publishToMavenLocal"
     dependsOn   ":monticore-grammar-emf:publishToMavenLocal"
@@ -213,28 +215,6 @@ tasks.register("testIT") {
           }
   )
 }
-
-  
-  
-tasks.register("buildAll", GradleBuild) {
-  dependsOn(subprojects.collect { getTasksByName("build", false) })
-}
-
-tasks.register("cleanMC") {
-  dependsOn ":monticore-grammar:clean"
-  dependsOn ":monticore-runtime:clean"
-  if(("true").equals(getProperty('genEMF'))) {
-    dependsOn ":monticore-runtime-emf:clean"
-    dependsOn   ":monticore-grammar-emf:clean"
-  }
-}
-
-cleanMC.dependsOn(
-        project(":monticore-test").subprojects.collect {
-          it.tasks.getByName "clean"
-        }
-)
-
 
 tasks.register("sonarMC", GradleBuild) {
   description = 'Generates code coverage'

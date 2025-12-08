@@ -840,4 +840,67 @@ public class TestPrettyPrinterTest extends PPTestClass {
     testPP("[[ $a :- $b ]]", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringNestedFromTfIdentifier);
     testPP("[[ fooa :- foob]]", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringNestedFromTfIdentifier);
   }
+
+  @Test
+  public void testExhaustedAlts1() throws IOException {
+    testPP("a A", TestPrettyPrintersMill.parser()::parse_StringExhaustedAlts1);
+    testPP("a A A", TestPrettyPrintersMill.parser()::parse_StringExhaustedAlts1);
+    testPP("A", TestPrettyPrintersMill.parser()::parse_StringExhaustedAlts1);
+    testPP("A A", TestPrettyPrintersMill.parser()::parse_StringExhaustedAlts1);
+  }
+
+  @Test
+  public void testExhaustedAlts2() throws IOException {
+    // Should the first or second alt be selected?
+    // The case-distinction is non-trivial => we abort
+    try {
+      testPP("a A", TestPrettyPrintersMill.parser()::parse_StringExhaustedAlts2);
+      Assertions.fail();
+    } catch (IllegalStateException expected) {
+      Assertions.assertEquals("The NonTerminal(s) [A] caused the automatic generation to fail", expected.getMessage());
+      MCAssertions.assertHasFinding(f -> f.getMsg().contains("The NonTerminal(s) [A] caused the automatic generation to fail"));
+    }
+  }
+
+  @Test
+  public void testExhaustedAlts3() throws IOException {
+    try {
+      testPP("a A", TestPrettyPrintersMill.parser()::parse_StringExhaustedAlts3);
+      Assertions.fail();
+    } catch (IllegalStateException expected) {
+      Assertions.assertEquals("The NonTerminal(s) [A] caused the automatic generation to fail", expected.getMessage());
+      MCAssertions.assertHasFinding(f -> f.getMsg().contains("The NonTerminal(s) [A] caused the automatic generation to fail"));
+    }
+  }
+
+
+  @Test
+  public void testExhaustedAlts4() throws IOException {
+    testPP("a A", TestPrettyPrintersMill.parser()::parse_StringExhaustedAlts4);
+    testPP("a A A", TestPrettyPrintersMill.parser()::parse_StringExhaustedAlts4);
+    testPP("hello", TestPrettyPrintersMill.parser()::parse_StringExhaustedAlts4);
+    testPP("A", TestPrettyPrintersMill.parser()::parse_StringExhaustedAlts4);
+    testPP("A A", TestPrettyPrintersMill.parser()::parse_StringExhaustedAlts4);
+  }
+
+  @Test
+  public void testExhaustedAlts5() throws IOException {
+    try {
+      testPP("hello", TestPrettyPrintersMill.parser()::parse_StringExhaustedAlts5);
+      Assertions.fail();
+    } catch (IllegalStateException expected) {
+      Assertions.assertEquals("The NonTerminal(s) [A] caused the automatic generation to fail", expected.getMessage());
+      MCAssertions.assertHasFinding(f -> f.getMsg().contains("The NonTerminal(s) [A] caused the automatic generation to fail"));
+    }  }
+
+  @Test
+  public void testExhaustedAlts6() throws IOException {
+    try {
+      testPP("a A", TestPrettyPrintersMill.parser()::parse_StringExhaustedAlts6);
+      Assertions.fail();
+    } catch (IllegalStateException expected) {
+      Assertions.assertEquals("The NonTerminal(s) [A] caused the automatic generation to fail", expected.getMessage());
+      MCAssertions.assertHasFinding(f -> f.getMsg().contains("The NonTerminal(s) [A] caused the automatic generation to fail"));
+    }
+  }
 }

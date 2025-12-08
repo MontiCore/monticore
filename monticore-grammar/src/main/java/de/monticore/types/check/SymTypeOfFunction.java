@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import com.google.common.base.Preconditions;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
@@ -39,7 +40,7 @@ public class SymTypeOfFunction extends SymTypeExpression {
   /**
    * @deprecated only required for the deprecated type symbol
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public static final String TYPESYMBOL_NAME = "function";
 
   /**
@@ -76,8 +77,8 @@ public class SymTypeOfFunction extends SymTypeExpression {
       SymTypeExpression returnType,
       List<? extends SymTypeExpression> argumentTypes,
       boolean elliptic) {
-    Log.errorIfNull(returnType);
-    Log.errorIfNull(argumentTypes);
+    Preconditions.checkNotNull(returnType);
+    Preconditions.checkNotNull(argumentTypes);
     super.typeSymbol = new TypeSymbol(TYPESYMBOL_NAME);
     super.typeSymbol.setEnclosingScope(BasicSymbolsMill.scope());
     super.typeSymbol.setSpannedScope(BasicSymbolsMill.scope());
@@ -90,7 +91,7 @@ public class SymTypeOfFunction extends SymTypeExpression {
   /**
    * @deprecated the other constructor is to be used
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public SymTypeOfFunction(SymTypeExpression returnType, List<SymTypeExpression> argumentTypes,
       boolean elliptic) {
     this(null, returnType, argumentTypes, elliptic);

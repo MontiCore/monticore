@@ -17,7 +17,7 @@ public class TypeCD2JavaDecorator extends AbstractCreator<ASTCDCompilationUnit, 
 
   @Override
   public ASTCDCompilationUnit decorate(final ASTCDCompilationUnit compilationUnit) {
-    CD4CodeTraverser traverser = CD4CodeMill.traverser();
+    CD4CodeTraverser traverser = CD4CodeMill.inheritanceTraverser();
     traverser.add4MCBasicTypes(new TypeCD2JavaVisitor(scope));
     compilationUnit.accept(traverser);
     return compilationUnit;

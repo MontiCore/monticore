@@ -14,7 +14,7 @@ public class MC2CD4CodeSymbolTableCompleter {
 
 
   public MC2CD4CodeSymbolTableCompleter() {
-    this.traverser = CD4CodeMill.traverser();
+    this.traverser = CD4CodeMill.inheritanceTraverser();
 
     //New!
     FullSynthesizeFromMCSGT4Grammar synthesize = new FullSynthesizeFromMCSGT4Grammar();

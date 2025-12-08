@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 plugins {
-  id "de.rwth.se.symtabdefinition" version "$version"
+  id "de.rwth.se.symtabdefinition" version "$previous_mc_version"
+  // use previous_mc_version to avoid bootstrapping issue
 }
 
 description = 'MontiCore: Stream Symbols'

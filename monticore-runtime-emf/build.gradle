@@ -18,7 +18,7 @@ dependencies {
 description = 'MontiCore: EMF Runtime Environment'
 
 task testsJar(type: Jar) {
-  classifier = 'tests'
+  archiveClassifier = 'tests'
   from(sourceSets.test.output)
 }
 

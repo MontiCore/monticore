@@ -4,8 +4,8 @@
     setEnclosingScope(enclosingScope.get());
   }
   setExportingSymbols(true);
-  Log.errorIfNull(packageName);
-  Log.errorIfNull(imports);
+  Preconditions.checkNotNull(packageName);
+  Preconditions.checkNotNull(imports);
 
   if (!packageName.isEmpty()) {
     this.packageName = packageName.endsWith(".") ? packageName.substring(0, packageName.length() - 1) : packageName;
