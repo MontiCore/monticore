@@ -228,4 +228,5 @@ public class MCAssertions {
     }
     return Assertions.fail(messageWithFindings.toString());
   }
+
 }
