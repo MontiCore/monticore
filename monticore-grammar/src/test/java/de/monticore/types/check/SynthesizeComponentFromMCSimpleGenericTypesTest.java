@@ -3,11 +3,10 @@ package de.monticore.types.check;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import de.monticore.runtime.junit.MCAssertions;
+import de.monticore.runtime.junit.AbstractMCTest;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.compsymbols._symboltable.ComponentTypeSymbol;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
-
 import de.monticore.types.componentsymbolswithmcbasictypestest.ComponentSymbolsWithMCBasicTypesTestMill;
 import de.monticore.types.componentsymbolswithmcbasictypestest._symboltable.IComponentSymbolsWithMCBasicTypesTestScope;
 import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
@@ -20,17 +19,14 @@ import de.monticore.types.mccollectiontypes.types3.MCCollectionTypesTypeVisitor;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericTypeBuilder;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCCustomTypeArgument;
-
 import de.monticore.types.mcsimplegenerictypes.types3.MCSimpleGenericTypesTypeVisitor;
 import de.monticore.types3.Type4Ast;
 import de.monticore.types3.generics.context.InferenceContext4Ast;
 import de.monticore.types3.util.MapBasedTypeCheck3;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-
 import org.antlr.v4.runtime.misc.NotNull;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -38,23 +34,21 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+public class SynthesizeComponentFromMCSimpleGenericTypesTest extends AbstractMCTest {
 
-public class SynthesizeComponentFromMCSimpleGenericTypesTest {
-
-  @BeforeAll
-  public static void beforeAll() {
+  @BeforeEach
+  public void setup() {
+    Log.clearFindings();
     LogStub.init();
     Log.enableFailQuick(false);
 
-    BasicSymbolsMill.reset();
-    BasicSymbolsMill.init();
+    ComponentSymbolsWithMCBasicTypesTestMill.reset();
+    ComponentSymbolsWithMCBasicTypesTestMill.init();
     BasicSymbolsMill.initializePrimitives();
     BasicSymbolsMill.initializeString();
 
-    ComponentSymbolsWithMCBasicTypesTestMill.reset();
-    ComponentSymbolsWithMCBasicTypesTestMill.init();
 
-
+    // Setup TypeCheck
     Type4Ast type4Ast = new Type4Ast();
     InferenceContext4Ast ctx4Ast = new InferenceContext4Ast();
 
@@ -75,14 +69,6 @@ public class SynthesizeComponentFromMCSimpleGenericTypesTest {
     new MapBasedTypeCheck3(traverser, type4Ast, ctx4Ast).setThisAsDelegate();
   }
 
-  @BeforeEach
-  public void setup() {
-    Log.clearFindings();
-    
-    ComponentSymbolsWithMCBasicTypesTestMill.reset();
-    ComponentSymbolsWithMCBasicTypesTestMill.init();
-  }
-  
   @Test
   public void shouldHandleMCBasicGenericType() {
     // Given
@@ -196,7 +182,6 @@ public class SynthesizeComponentFromMCSimpleGenericTypesTest {
       ((SymTypeOfGenerics) result4qualAsGeneric.getTypeBindingFor("K").get()).getArgument(0).getTypeInfo()
     );
 
-    MCAssertions.assertNoFindings();
     Assertions.assertTrue(
       result4normalAsGeneric.getSourceNode().isPresent()
         && result4normalAsGeneric.getSourceNode().get().equals(astNormalComp),

@@ -228,31 +228,4 @@ public class MCAssertions {
     }
     return Assertions.fail(messageWithFindings.toString());
   }
-
-  /**
-   * Asserts that no Finding matches the given predicate.
-   *
-   * @param predicate the predicate describing disallowed findings
-   * @param message   the message to fail with iff a matching finding was found
-   */
-  public static void assertNotHasFinding(Predicate<Finding> predicate, String message) {
-    boolean hasMatching = Log.getFindings().stream().anyMatch(predicate);
-    if (hasMatching) {
-      failAndPrintFindings(message);
-    }
-  }
-
-  /**
-   * Asserts that there is no Finding whose message starts with the given prefix.
-   *
-   * @param forbiddenPrefix the prefix that must not appear in any finding message
-   * @param message         the message to fail with iff such a finding exists
-   */
-  public static void assertNotHasFindingStartingWith(String forbiddenPrefix, String message) {
-    assertNotHasFinding(
-      f -> f.getMsg() != null && f.getMsg().startsWith(forbiddenPrefix),
-      message
-    );
-  }
-
 }
