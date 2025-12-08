@@ -418,9 +418,8 @@ public class SymTypeExpressionFactory {
    * whenever appropriate
    */
   public static SymTypeExpression createFromSymbol(TypeSymbol typeSymbol) {
-    IBasicSymbolsTypeDispatcher typeDispatcher =
-        BasicSymbolsMill.typeDispatcher();
-    if(typeDispatcher.isBasicSymbolsTypeVar(typeSymbol)) {
+    // TODO: use TypeDispatcher as soon as it is fixed
+    if(typeSymbol instanceof TypeVarSymbol) {
       return createTypeVariable((TypeVarSymbol) typeSymbol);
     }
     if(typeSymbol.getSpannedScope().getLocalTypeVarSymbols().isEmpty()) {
