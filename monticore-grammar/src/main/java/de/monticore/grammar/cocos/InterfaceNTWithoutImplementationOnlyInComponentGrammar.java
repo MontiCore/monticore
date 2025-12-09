@@ -47,7 +47,7 @@ public class InterfaceNTWithoutImplementationOnlyInComponentGrammar implements G
 
       // for every interface production we get all other interfaces implementing it and save it to map of all interface
       // productions mapping to all their subinterfaces
-      Map<String, List<ProdSymbol>> subSymbols = new HashMap<>();
+      Map<String, List<ProdSymbol>> subSymbols = new LinkedHashMap<>();
       for (ProdSymbol interfaceProd : interfaceProds) {
         for (ProdSymbol superInterface : interfaceProd.getSuperInterfaceProds()) {
           if (!subSymbols.containsKey(superInterface.getName())) {

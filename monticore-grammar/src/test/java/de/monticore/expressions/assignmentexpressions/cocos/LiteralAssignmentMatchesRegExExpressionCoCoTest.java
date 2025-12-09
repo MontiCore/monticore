@@ -5,14 +5,8 @@ import de.monticore.expressions.assignmentexpressions._cocos.AssignmentExpressio
 import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
 import de.monticore.expressions.combineexpressionswithliterals._ast.ASTFoo;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsArtifactScope;
-import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
-import de.monticore.expressions.commonexpressions.types3.util.CommonExpressionsLValueRelations;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.types.check.IDerive;
 import de.monticore.types.check.SymTypeExpression;
-import de.monticore.types.check.TypeCheckResult;
-import de.monticore.types.check.types3wrapper.TypeCheck3AsIDerive;
-import de.monticore.types.check.types3wrapper.TypeCheck3AsISynthesize;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types3.Type4Ast;
 import de.monticore.types3.TypeCheck3;
@@ -26,8 +20,6 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class LiteralAssignmentMatchesRegExExpressionCoCoTest {
@@ -38,8 +30,7 @@ public class LiteralAssignmentMatchesRegExExpressionCoCoTest {
     Log.enableFailQuick(false);
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
-    new CombineExpressionsWithLiteralsTypeTraverserFactory()
-        .initTypeCheck3();
+    CombineExpressionsWithLiteralsTypeTraverserFactory.initTypeCheck3();
   }
 
   @Test

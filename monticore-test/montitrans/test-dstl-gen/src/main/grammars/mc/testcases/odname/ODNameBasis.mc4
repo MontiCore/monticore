@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mc.testcases.odname;
+
+component grammar ODNameBasis extends de.monticore.MCBasics {
+  interface ODValue;
+
+  ODName implements ODValue = Name;
+}

@@ -5,6 +5,7 @@ package de.monticore.generating.templateengine.freemarker;
 import java.net.URL;
 import java.util.Optional;
 
+import com.google.common.base.Preconditions;
 import de.monticore.io.FileReaderWriter;
 import de.se_rwth.commons.logging.Log;
 import freemarker.cache.URLTemplateLoader;
@@ -25,7 +26,7 @@ public class MontiCoreTemplateLoader extends URLTemplateLoader {
    * @param classLoader
    */
   public MontiCoreTemplateLoader(ClassLoader classLoader) {
-    Log.errorIfNull(classLoader,
+    Preconditions.checkNotNull(classLoader,
         "0xA4049 ClassLoader must not be null in MontiCoreTemplateLoader constructor.");
     this.classLoader = classLoader;
   }

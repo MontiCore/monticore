@@ -1,6 +1,7 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.types3.util;
 
+import com.google.common.base.Preconditions;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeInferenceVariable;
 import de.monticore.types.check.SymTypeOfFunction;
@@ -40,10 +41,10 @@ public class FunctionRelations {
   public static boolean canBeCalledWith(
       SymTypeOfFunction func,
       List<SymTypeExpression> args) {
-    return getDelegate().calculateCanBeCalledWith(func, args);
+    return getDelegate()._canBeCalledWith(func, args);
   }
 
-  protected boolean calculateCanBeCalledWith(
+  protected boolean _canBeCalledWith(
       SymTypeOfFunction func,
       List<SymTypeExpression> args) {
     if (!internal_canPotentiallyBeCalledWith(func, args)) {
@@ -78,7 +79,7 @@ public class FunctionRelations {
    */
   public static Optional<SymTypeOfFunction> getMostSpecificFunctionOrLogError(
       Collection<SymTypeOfFunction> funcs) {
-    return getDelegate().calculateGetMostSpecificFunctionOrLogError(funcs);
+    return getDelegate()._getMostSpecificFunctionOrLogError(funcs);
   }
 
   /**
@@ -87,10 +88,10 @@ public class FunctionRelations {
    */
   public static Optional<SymTypeOfFunction> getMostSpecificFunction(
       Collection<SymTypeOfFunction> funcs) {
-    return getDelegate().calculateGetMostSpecificFunction(funcs);
+    return getDelegate()._getMostSpecificFunction(funcs);
   }
 
-  protected Optional<SymTypeOfFunction> calculateGetMostSpecificFunctionOrLogError(
+  protected Optional<SymTypeOfFunction> _getMostSpecificFunctionOrLogError(
       Collection<SymTypeOfFunction> funcs) {
     Optional<SymTypeOfFunction> mostSpecificFunction;
     if (funcs.isEmpty()) {
@@ -124,7 +125,7 @@ public class FunctionRelations {
     return mostSpecificFunction;
   }
 
-  protected Optional<SymTypeOfFunction> calculateGetMostSpecificFunction(
+  protected Optional<SymTypeOfFunction> _getMostSpecificFunction(
       Collection<SymTypeOfFunction> funcs) {
     if (funcs.isEmpty()) {
       return Optional.empty();
@@ -187,17 +188,17 @@ public class FunctionRelations {
     for (int i = 0; i < args.size(); i++) {
       target.setArgumentType(i, args.get(i));
     }
-    return getDelegate().calculateCanPotentiallyBeCalledWith(func, target);
+    return getDelegate()._internal_canPotentiallyBeCalledWith(func, target);
   }
 
   public static boolean internal_canPotentiallyBeCalledWith(
       SymTypeOfFunction func,
       PartialFunctionInfo target
   ) {
-    return getDelegate().calculateCanPotentiallyBeCalledWith(func, target);
+    return getDelegate()._internal_canPotentiallyBeCalledWith(func, target);
   }
 
-  protected boolean calculateCanPotentiallyBeCalledWith(
+  protected boolean _internal_canPotentiallyBeCalledWith(
       SymTypeOfFunction func,
       PartialFunctionInfo target
   ) {
@@ -253,7 +254,7 @@ public class FunctionRelations {
 
   public static void init() {
     Log.trace("init default FunctionRelations", "TypeCheck setup");
-    FunctionRelations.delegate = new FunctionRelations();
+    setDelegate(new FunctionRelations());
   }
 
   public static void reset() {
@@ -261,7 +262,7 @@ public class FunctionRelations {
   }
 
   protected static void setDelegate(FunctionRelations newDelegate) {
-    FunctionRelations.delegate = Log.errorIfNull(newDelegate);
+    FunctionRelations.delegate = Preconditions.checkNotNull(newDelegate);
   }
 
   protected static FunctionRelations getDelegate() {

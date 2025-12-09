@@ -32,13 +32,13 @@ public class NoASTExtendsForClasses implements GrammarASTMCGrammarCoCo {
     Map<String, ProdSymbol> allProds = grammarSymbol.getProdsWithInherited();
     
     for (ProdSymbol classProd : grammarSymbol.getProds()) {
-      for (ProdSymbolSurrogate sClass : classProd.getAstSuperClasses()) {
+      for (ProdSymbol sClass : classProd.getAstSuperClasses()) {
         if (!allProds.containsKey(
             sClass.getName().substring("AST".length()))) {
           Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT,
               classProd.getName(),
-              Names.getSimpleName(sClass.getName()),
-              classProd.getAstNode().get_SourcePositionStart()));
+              Names.getSimpleName(sClass.getName())),
+              classProd.getAstNode().get_SourcePositionStart());
         }
       }
     }
@@ -51,8 +51,8 @@ public class NoASTExtendsForClasses implements GrammarASTMCGrammarCoCo {
             String simpleName = simpleName(type);
             if (!allProds.containsKey(simpleName.substring("AST".length()))) {
               Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT,
-                  rule.getType(), simpleName,
-                  rule.get_SourcePositionStart()));
+                  rule.getType(), simpleName),
+                  rule.get_SourcePositionStart());
             }
           }
         }

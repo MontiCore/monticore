@@ -1,3 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-grammar D extends B,C {  P = "p";  }
+grammar D extends B,C {
+ P = "p";
+ @Override MyProd = "hello_world";
+}

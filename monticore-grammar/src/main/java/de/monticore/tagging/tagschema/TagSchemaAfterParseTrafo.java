@@ -6,8 +6,8 @@ import de.monticore.tagging.tagschema._visitor.TagSchemaTraverser;
 import de.monticore.tagging.tagschema._visitor.TagSchemaVisitor2;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -19,11 +19,11 @@ public class TagSchemaAfterParseTrafo {
   protected TagSchemaTraverser traverser;
 
   // TagType => Scope
-  protected Map<String, ASTTagScope> tagScopeMap = new HashMap<>();
+  protected Map<String, ASTTagScope> tagScopeMap = new LinkedHashMap<>();
   // Ensure all tagtypes of the same name are of the same kind (simple, valued, enumerated, ...)
-  protected Map<String, Class<?>> tagKindMap = new HashMap<>();
+  protected Map<String, Class<?>> tagKindMap = new LinkedHashMap<>();
 
-  protected Set<ASTTagType> markedForDeletion = new HashSet<>();
+  protected Set<ASTTagType> markedForDeletion = new LinkedHashSet<>();
 
   public TagSchemaAfterParseTrafo() {
     this.traverser = TagSchemaMill.traverser();

@@ -1,6 +1,7 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.types3.generics.util;
 
+import com.google.common.base.Preconditions;
 import de.monticore.types3.SymTypeRelations;
 import de.monticore.types3.generics.bounds.Bound;
 import de.monticore.types3.generics.constraints.BoundWrapperConstraint;
@@ -24,31 +25,21 @@ public class ConstraintReduction {
 
   protected static ConstraintReduction delegate;
 
-  public static void init() {
-    Log.trace("init default ConstraintReduction", "TypeCheck setup");
-    ConstraintReduction.delegate = new ConstraintReduction();
-  }
-
-  protected static ConstraintReduction getDelegate() {
-    if (delegate == null) {
-      init();
-    }
-    return delegate;
-  }
+  // methods
 
   /**
    * reduces constraints to bounds
    * the resulting set of bounds may not be valid
    */
   public static List<Bound> reduce(List<Constraint> constraints) {
-    return getDelegate().calculateReduce(constraints);
+    return getDelegate()._reduce(constraints);
   }
 
   public static List<Bound> reduce(Constraint constraint) {
     return reduce(List.of(constraint));
   }
 
-  protected List<Bound> calculateReduce(List<Constraint> constraintsIn) {
+  protected List<Bound> _reduce(List<Constraint> constraintsIn) {
     // shortcut to reduce log:
     if (constraintsIn.isEmpty()) {
       return Collections.emptyList();
@@ -135,4 +126,27 @@ public class ConstraintReduction {
         .map(Bound::print)
         .collect(Collectors.joining(System.lineSeparator()));
   }
+
+  // static delegate
+
+  public static void init() {
+    Log.trace("init default ConstraintReduction", "TypeCheck setup");
+    setDelegate(new ConstraintReduction());
+  }
+
+  public static void reset() {
+    ConstraintReduction.delegate = null;
+  }
+
+  protected static void setDelegate(ConstraintReduction newDelegate) {
+    ConstraintReduction.delegate = Preconditions.checkNotNull(newDelegate);
+  }
+
+  protected static ConstraintReduction getDelegate() {
+    if (delegate == null) {
+      init();
+    }
+    return delegate;
+  }
+
 }

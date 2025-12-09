@@ -125,7 +125,7 @@ public class TraverserClassDecorator extends AbstractCreator<ASTCDCompilationUni
   }
 
   /**
-   * Adds a hashset as well as implementations for getting and setting it
+   * Adds a LinkedHashSet as well as implementations for getting and setting it
    *
    * @return The attribute and two methods
    */

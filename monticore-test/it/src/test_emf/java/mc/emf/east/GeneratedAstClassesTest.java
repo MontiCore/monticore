@@ -18,8 +18,8 @@ public class GeneratedAstClassesTest extends GeneratorIntegrationsTest {
   public void testErrorsIfNullByAstNodes() {
     ASTState b = StatechartDSLMill.stateBuilder().uncheckedBuild();
     thrown.expect(NullPointerException.class);
-    // Log.errorIfNull is not generated
-    // thrown.expectMessage("must not be null.");
+    // Preconditions.checkNotNull is not generated
+    // NullPointerException is thrown
     b.setTransitionsList(null);
   }
 

@@ -1,6 +1,7 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.codegen.prettyprint.data;
 
+import de.monticore.ast.ASTNode;
 import de.monticore.grammar.grammar._ast.ASTConstantsGrammar;
 
 import java.util.Map;
@@ -28,8 +29,12 @@ public class PPGuardComponent {
 
   protected boolean hasNoSpace = false;
 
+  // For tracing
+  protected ASTNode node;
+
   public PPGuardComponent(PPGuardType type, BlockData blockData, String name, String nameToUse,
-                          String separator, Set<Map.Entry<String, String>> constants, int iteration, boolean isMCCommonLiteralsSuper) {
+                          String separator, Set<Map.Entry<String, String>> constants, int iteration, boolean isMCCommonLiteralsSuper,
+                          ASTNode node) {
     this.type = type;
     this.blockData = blockData;
     this.name = name;
@@ -38,6 +43,7 @@ public class PPGuardComponent {
     this.constants = constants;
     this.iteration = iteration;
     this.isMCCommonLiteralsSuper = isMCCommonLiteralsSuper;
+    this.node = node;
   }
 
   public PPGuardType getType() {
@@ -149,30 +155,30 @@ public class PPGuardComponent {
   }
 
   public static PPGuardComponent forBlock(BlockData blockData,
-                                          int iteration) {
-    return new PPGuardComponent(PPGuardType.BLOCK, blockData, null, null, null, null, iteration, false);
+                                          int iteration, ASTNode node) {
+    return new PPGuardComponent(PPGuardType.BLOCK, blockData, null, null, null, null, iteration, false, node);
   }
 
   public static PPGuardComponent forNT(String name, String nameToUse,
-                                       int iteration, boolean iterated, boolean isMCCommonLiteralsSuper) {
-    return new PPGuardComponent(iterated ? PPGuardType.NT_ITERATED : PPGuardType.NT, null, name, nameToUse, null, null, iteration, isMCCommonLiteralsSuper);
+                                       int iteration, boolean iterated, boolean isMCCommonLiteralsSuper, ASTNode node) {
+    return new PPGuardComponent(iterated ? PPGuardType.NT_ITERATED : PPGuardType.NT, null, name, nameToUse, null, null, iteration, isMCCommonLiteralsSuper, node);
   }
 
   public static PPGuardComponent forNTSingle(String name, String nameToUse,
-                                             int iteration, boolean isMCCommonLiteralsSuper) {
-    return new PPGuardComponent(PPGuardType.NT_AST_DEF, null, name, nameToUse, null, null, iteration, isMCCommonLiteralsSuper);
+                                             int iteration, boolean isMCCommonLiteralsSuper, ASTNode node) {
+    return new PPGuardComponent(PPGuardType.NT_AST_DEF, null, name, nameToUse, null, null, iteration, isMCCommonLiteralsSuper, node);
   }
 
-  public static PPGuardComponent forT(String name) {
-    return new PPGuardComponent(PPGuardType.T, null, name, name, null, null, ASTConstantsGrammar.DEFAULT, false);
+  public static PPGuardComponent forT(String name, ASTNode node) {
+    return new PPGuardComponent(PPGuardType.T, null, name, name, null, null, ASTConstantsGrammar.DEFAULT, false, node);
   }
 
-  public static PPGuardComponent forT(String name, String usageName, int iteration) {
-    return new PPGuardComponent(PPGuardType.T, null, name, usageName, null, null, iteration, false);
+  public static PPGuardComponent forT(String name, String usageName, int iteration, ASTNode node) {
+    return new PPGuardComponent(PPGuardType.T, null, name, usageName, null, null, iteration, false, node);
   }
 
-  public static PPGuardComponent forCG(String usageName, Set<Map.Entry<String, String>> constants) {
-    return new PPGuardComponent(PPGuardType.CG, null, usageName, usageName, null, constants, 0, false);
+  public static PPGuardComponent forCG(String usageName, Set<Map.Entry<String, String>> constants, ASTNode node) {
+    return new PPGuardComponent(PPGuardType.CG, null, usageName, usageName, null, constants, 0, false, node);
   }
 
 }

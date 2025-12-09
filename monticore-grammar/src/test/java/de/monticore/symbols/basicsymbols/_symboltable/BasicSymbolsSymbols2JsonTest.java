@@ -3,6 +3,7 @@ package de.monticore.symbols.basicsymbols._symboltable;
 
 
 import com.google.common.collect.Lists;
+import de.monticore.runtime.junit.MCAssertions;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
@@ -42,7 +43,7 @@ public class BasicSymbolsSymbols2JsonTest {
         .setEnclosingScope(scope)
         .build();
 
-    SymTypeExpression symType1 = SymTypeExpressionFactory.createTypeObject("Type", scope);
+    SymTypeExpression symType1 = SymTypeExpressionFactory.createTypeObjectViaSurrogate("Type", scope);
 
     //put subtype into main scope, test if supertypes are serialized correctly
     TypeSymbol subtype = BasicSymbolsMill.typeSymbolBuilder()
@@ -161,8 +162,8 @@ public class BasicSymbolsSymbols2JsonTest {
     Assertions.assertTrue(deserializedFunction.isPresent());
     Assertions.assertEquals("int", function.get().getType().print());
     Assertions.assertEquals("int", deserializedFunction.get().getType().print());
-  
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+
+    MCAssertions.assertNoFindings();
   }
 
   @Test

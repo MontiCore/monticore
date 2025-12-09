@@ -1,5 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import g.GMill;
@@ -7,23 +8,16 @@ import g._ast.ASTA;
 import g._ast.ASTB;
 import g._ast.ASTC;
 import g._parser.GParser;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@TestWithMCLanguage(GMill.class)
 public class GTest {
-  
-  @Before
-  public void init() {
-    LogStub.init();         // replace log by a sideffect free variant
-    // LogStub.initPlusLog();  // for manual testing purpose only
-    Log.enableFailQuick(false);
-  }
   
   @Test
   public  void testG() throws IOException {
@@ -33,8 +27,6 @@ public class GTest {
     
     Optional<ASTC> ast2 = p.parse_String("\"foo\": 9");
     assertTrue(ast2.isPresent() && ast2.get() instanceof ASTB);
-    
-    
   }
   
 }

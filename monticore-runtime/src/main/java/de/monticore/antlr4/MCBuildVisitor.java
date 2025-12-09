@@ -67,7 +67,7 @@ public abstract class MCBuildVisitor {
     int column = token.getCharPositionInLine();
     String text = token.getText();
     if (text == null) {
-      throw new IllegalArgumentException("0xA0708 text was null!");
+      throw new IllegalArgumentException("0xA0709 text was null!");
     } else if ("\n".equals(text)) {
       column += text.length();
     } else if (text.indexOf("\n") == -1) {
@@ -174,7 +174,7 @@ public abstract class MCBuildVisitor {
    * Find all (not yet found) hidden/comment tokens
    * and calls the consumer for each
    *
-   * @param addConsumer
+   * @param addConsumer e.g. {@link ASTNode#add_PreComment(Comment)}
    * @param start       {@link IntervalSet#complement(int, int)}
    * @param stop        {@link IntervalSet#complement(int, int)}
    */

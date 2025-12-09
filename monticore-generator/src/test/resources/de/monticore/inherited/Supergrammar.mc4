@@ -15,4 +15,8 @@ component grammar Supergrammar {
   K implements G = "OO";
   
   N;
+
+ ODName_Rep implements ITFODName    ;
+
+ interface ITFODName astextends de.monticore.ast.ASTNode; // any class not specified by a grammar
 }

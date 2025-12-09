@@ -35,6 +35,9 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
+import static de.monticore.runtime.junit.MCAssertions.assertHasFindingsStartingWith;
+import static de.monticore.runtime.junit.MCAssertions.assertNoFindings;
+import static de.monticore.types3.util.DefsTypesForTests.*;
 import static de.monticore.types.check.SymTypeExpressionFactory.createGenerics;
 import static de.monticore.types.check.SymTypeExpressionFactory.createIntersection;
 import static de.monticore.types.check.SymTypeExpressionFactory.createTuple;
@@ -42,7 +45,6 @@ import static de.monticore.types.check.SymTypeExpressionFactory.createTypeArray;
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeObject;
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeVariable;
 import static de.monticore.types.check.SymTypeExpressionFactory.createUnion;
-import static de.monticore.types3.util.DefsTypesForTests.*;
 
 public class CommonExpressionTypeVisitorTest
     extends AbstractTypeVisitorTest {
@@ -67,7 +69,10 @@ public class CommonExpressionTypeVisitorTest
     checkExpr("65536 + 1", "int"); // expected int and provided int
     checkExpr("2147483647 + 0", "int"); // expected int and provided int
     checkExpr("varchar + varchar", "int"); // + applicable to char, char, result is int
-    checkExpr("3 + \"Hallo\"", "String"); // example with String
+    // hardcoded regexes, could be optimized after RegEx normalization exists
+    checkExpr("3 + \"Hallo\"", "R\"(.*)(Hallo)\""); // example with String
+    checkExpr("\"Hallo\" + 3", "R\"(Hallo)(.*)\""); // example with String
+    checkExpr("\"Hallo\" + \" Welt\"", "R\"(Hallo)( Welt)\""); // example with String
     checkExpr("1m + 1m", "[m]<int>");
     checkExpr("1m + 1.0m", "[m]<double>");
     checkExpr("1m^2 + 1m^2", "[m^2]<int>");
@@ -1510,6 +1515,12 @@ public class CommonExpressionTypeVisitorTest
   }
 
   @Test
+  public void deriveFromConditionalExprsCTTI() throws IOException {
+    checkExpr("(varboolean ? [] : [])", "List<int>", "List<int>");
+    checkExpr("(varboolean ? [] : varintList)", "List<int>", "List<int>");
+  }
+
+  @Test
   public void testInvalidConditionalExpression() throws IOException {
     checkErrorExpr("3?true:fvarlse", "0xFD118");
     checkErrorExpr("varbyte ? 0 : 1", "0xB0165"); // ? not applicable to byte
@@ -1613,7 +1624,7 @@ public class CommonExpressionTypeVisitorTest
         variable("selfVar", createTypeObject(selfReflectiveStudent))
     );
     inScope(globalScope, variable("selfReflectiveStudent",
-        createTypeObject("SelfReflectiveStudent", globalScope))
+        SymTypeExpressionFactory.createTypeObjectViaSurrogate("SelfReflectiveStudent", globalScope))
     );
 
     inScope(artifactScope2, type("AClass"));
@@ -1989,6 +2000,12 @@ public class CommonExpressionTypeVisitorTest
   }
 
   @Test
+  public void deriveFromCallExpressionOverloaded() {
+    checkExpr("overloadedFunc1(true)", "int");
+    checkExpr("overloadedFunc1(42)", "boolean");
+  }
+
+  @Test
   public void testInvalidCallExpression() throws IOException {
     //method isNot() is not in scope -> method cannot be resolved -> method has no return type
     init_advanced();
@@ -2000,7 +2017,7 @@ public class CommonExpressionTypeVisitorTest
       throws IOException {
     // Expression (2 + 3)() and all other Expressions in front of brackets are parsable
     init_advanced();
-    checkErrorExpr("(2 + 3)()", "0xFDABC");
+    checkErrorExpr("(2 + 3)()", "0xFDAB4");
   }
 
   @Test
@@ -2024,6 +2041,15 @@ public class CommonExpressionTypeVisitorTest
   }
 
   @Test
+  public void testRegExCallExpression() throws IOException {
+    // add length() to String and access it from String literal.
+    // this basically checks that RegEx-types are set up correctly
+    // to use String as nominal supertype to resolve methods in.
+    inScope(_unboxedString.getTypeInfo().getSpannedScope(), method("length", _intSymType));
+    checkExpr("\"Hello World\".length()", "int");
+  }
+
+  @Test
   public void testRegularAssignmentWithTwoMissingFields() throws IOException {
     checkErrorExpr("missingField = missingField2", "0xFD118");
   }
@@ -2038,6 +2064,8 @@ public class CommonExpressionTypeVisitorTest
    * we only have one scope and the symbols are all in this scope or in subscopes
    */
   public void init_inheritance() {
+    // delete String (not java.lang.String)
+    BasicSymbolsMill.globalScope().remove(_unboxedString.getTypeInfo());
     //inheritance example
     IOOSymbolsGlobalScope globalScope = OOSymbolsMill.globalScope();
     //super
@@ -2115,6 +2143,8 @@ public class CommonExpressionTypeVisitorTest
    */
   @Test
   public void testGenericInheritanceTwoTypeVariables() throws IOException {
+    // delete String (not java.lang.String)
+    BasicSymbolsMill.globalScope().remove(_unboxedString.getTypeInfo());
     // two generic parameters, supertype GenSup<S,V>,
     // create SymType GenSup<String,int>
     IOOSymbolsGlobalScope gs = OOSymbolsMill.globalScope();
@@ -2566,7 +2596,9 @@ public class CommonExpressionTypeVisitorTest
   public void testInvalidStaticType() throws IOException {
     init_static_example();
 
-    checkErrorMCType("A.NotAType", "0xA0324");
+    checkErrorMCType("A.NotAType", "0xFDAE3");
+    // legacy error code...
+    assertHasFindingsStartingWith("0xA0324");
   }
 
   @Test
@@ -2733,8 +2765,8 @@ public class CommonExpressionTypeVisitorTest
 
     checkErrorExpr("foo2(c, c, c)", "0xFD446");
 
-    checkErrorExpr("foo2(a, a)", "0xFD444");
-    checkErrorExpr("foo2(b, a)", "0xFD444");
+    checkErrorExpr("foo2(a, a)", "0xFD44E");
+    checkErrorExpr("foo2(b, a)", "0xFD44E");
     checkErrorExpr("foo2(c, b)", "0xFD446");
     checkErrorExpr("foo2(c, c)", "0xFD446");
 

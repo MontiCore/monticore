@@ -1,12 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import com.google.common.base.Preconditions;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.types3.ISymTypeVisitor;
+import de.se_rwth.commons.logging.Log;
 
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Collections;
@@ -16,11 +18,13 @@ public class SymTypePrimitive extends SymTypeExpression {
   protected TypeSymbol typeSymbol;
 
   public SymTypePrimitive(TypeSymbol typeSymbol) {
+    Preconditions.checkNotNull(typeSymbol);
     this.typeSymbol = typeSymbol;
   }
 
   @Override
   public boolean hasTypeInfo() {
+    // should always return true
     return typeSymbol != null;
   }
 
@@ -33,6 +37,10 @@ public class SymTypePrimitive extends SymTypeExpression {
     return typeSymbol.getName();
   }
 
+  /**
+   * @deprecated use {@link de.monticore.types3.SymTypeRelations#box(SymTypeExpression)}
+   */
+  @Deprecated(forRemoval = true)
   public String getBoxedPrimitiveName() {
     return box(typeSymbol.getName());
   }
@@ -40,7 +48,7 @@ public class SymTypePrimitive extends SymTypeExpression {
   /**
    * @deprecated only used in 1 test ONCE... in our main projects
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public String getBaseOfBoxedName() {
     String[] parts = box(typeSymbol.getName()).split("\\.");
     return parts[parts.length - 1];
@@ -49,7 +57,7 @@ public class SymTypePrimitive extends SymTypeExpression {
   /**
    * @deprecated only used in tests in our main projects
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public void setPrimitiveName(String constName){
     typeSymbol.setName(constName);
   }
@@ -59,7 +67,7 @@ public class SymTypePrimitive extends SymTypeExpression {
    * (on purpose not implemented as enum)
    * @deprecated cannot assume fixed set for all languages
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public static final List<String> primitiveTypes =
       Collections.unmodifiableList(Arrays.asList(
           BasicSymbolsMill.BOOLEAN,
@@ -75,23 +83,23 @@ public class SymTypePrimitive extends SymTypeExpression {
       ));
 
   /**
-   * Map for unboxing const types (e.g. "java.lang.Boolean" -> "boolean")
+   * Map for unboxing const types (e.g. "java.lang.Boolean" -&gt; "boolean")
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public static final Map<String, String> unboxMap;
 
   /**
-   * Map for boxing const types (e.g. "boolean" -> "java.lang.Boolean")
+   * Map for boxing const types (e.g. "boolean" -&gt; "java.lang.Boolean")
    * Results are fully qualified.
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public static final Map<String, String> boxMap;
 
   /**
    * initializing the maps
    */
   static {
-    Map<String, String> unboxMap_temp = new HashMap<String, String>();
+    Map<String, String> unboxMap_temp = new LinkedHashMap<String, String>();
     unboxMap_temp.put("java.lang.Boolean", "boolean");
     unboxMap_temp.put("java.lang.Byte", "byte");
     unboxMap_temp.put("java.lang.Character", "char");
@@ -112,7 +120,7 @@ public class SymTypePrimitive extends SymTypeExpression {
     unboxMap_temp.put("Double", "double");
     unboxMap = Collections.unmodifiableMap(unboxMap_temp);
 
-    Map<String, String> boxMap_temp = new HashMap<String, String>();
+    Map<String, String> boxMap_temp = new LinkedHashMap<String, String>();
     boxMap_temp.put("boolean", "java.lang.Boolean");
     boxMap_temp.put("byte", "java.lang.Byte");
     boxMap_temp.put("char", "java.lang.Character");
@@ -127,13 +135,13 @@ public class SymTypePrimitive extends SymTypeExpression {
   }
 
   /**
-   * unboxing const types (e.g. "java.lang.Boolean" -> "boolean").
+   * unboxing const types (e.g. {@code "java.lang.Boolean" -> "boolean"}).
    * otherwise return is unchanged
-   * @deprecated use SymTypeUnboxingVisitor
+   * @deprecated use SymTypeRelations
    * @param boxedName
    * @return
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public static String unbox(String boxedName) {
     if (unboxMap.containsKey(boxedName))
       return unboxMap.get(boxedName);
@@ -142,14 +150,14 @@ public class SymTypePrimitive extends SymTypeExpression {
   }
 
   /**
-   * Boxing const types (e.g. "boolean" -> "java.lang.Boolean")
+   * Boxing const types (e.g. {@code "boolean" -> "java.lang.Boolean"})
    * Results are fully qualified.
    * Otherwise return is unchanged
-   * @deprecated use SymTypeBoxingVisitor
+   * @deprecated use SymTypeRelations
    * @param unboxedName
    * @return
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public static String box(String unboxedName) {
     if (boxMap.containsKey(unboxedName))
       return boxMap.get(unboxedName);
@@ -197,10 +205,10 @@ public class SymTypePrimitive extends SymTypeExpression {
       return false;
     }
     SymTypePrimitive symPrim = (SymTypePrimitive) sym;
-    if(!this.typeSymbol.getName().equals(symPrim.typeSymbol.getName())){
+    if(!this.getTypeInfo().equals(symPrim.getTypeInfo())){
       return false;
     }
-    return this.print().equals(symPrim.print());
+    return true;
   }
 
   @Override

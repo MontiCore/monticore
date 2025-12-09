@@ -48,7 +48,7 @@ public class SymTypeCompatibilityCalculator {
    *
    * @deprecated use {@link #constrainSubTypeOf(SymTypeExpression, SymTypeExpression)}
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public boolean internal_isSubTypeOf(
       SymTypeExpression subType,
       SymTypeExpression superType,
@@ -57,7 +57,7 @@ public class SymTypeCompatibilityCalculator {
     return constrainSubTypeOf(subType, superType).isEmpty();
   }
 
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public boolean internal_isSubTypeOfPreNormalized(
       SymTypeExpression subType,
       SymTypeExpression superType,
@@ -243,6 +243,7 @@ public class SymTypeCompatibilityCalculator {
       SymTypeExpression source) {
     List<Bound> result;
     if (target.isRegExType() && de.monticore.types3.SymTypeRelations.isString(source)) {
+      // note: heuristic as well
       result = Collections.emptyList();
     }
     else if (target.isRegExType() && source.isRegExType()) {
@@ -617,7 +618,7 @@ public class SymTypeCompatibilityCalculator {
     // as two unbounded type variable are not subTypes of each other otherwise
     if (subType.isTypeVariable() &&
         superType.isTypeVariable() &&
-        subType.asTypeVariable().denotesSameVar(superType)
+        subType.asTypeVariable().deepEquals(superType)
     ) {
       result = Collections.emptyList();
     }
@@ -980,10 +981,7 @@ public class SymTypeCompatibilityCalculator {
       SymTypeExpression superType
   ) {
     List<Bound> result;
-    if (de.monticore.types3.SymTypeRelations.isString(superType) && subType.isRegExType()) {
-      result = Collections.emptyList();
-    }
-    else if (superType.isRegExType()) {
+    if (superType.isRegExType()) {
       if (subType.isRegExType()) {
         // this is incomplete,
         // R"(a|e)" can be considered a subtype of R"(a|e|o)".
@@ -1007,7 +1005,19 @@ public class SymTypeCompatibilityCalculator {
       }
     }
     else {
-      result = Collections.singletonList(getUnsatisfiableBoundForSubTyping(subType, superType));
+      // Search for the nominal superTypes of RegEx types,
+      // this should be at least String.
+      // (simplified, as no constraints are expected here)
+      List<SymTypeExpression> nominalSuperTypesOfRegEx =
+          SymTypeRelations.getNominalSuperTypes(subType);
+      if (nominalSuperTypesOfRegEx.stream().anyMatch(regExSuperType ->
+          internal_constrainSubTypeOfPreNormalized(regExSuperType, superType).isEmpty()
+      )) {
+        result = Collections.emptyList();
+      }
+      else {
+        result = Collections.singletonList(getUnsatisfiableBoundForSubTyping(subType, superType));
+      }
     }
     return result;
   }
@@ -1241,19 +1251,19 @@ public class SymTypeCompatibilityCalculator {
    * this helper function (currently) is only to check subtyping of generics.
    * Tuples could be extended in this regard (currently not needed).
    * <p>
-   * Fundamentally, T1 "contains" T2 ("T2 <= T1")
+   * Fundamentally, T1 "contains" T2 ({@code "T2 <= T1"})
    * if the set of types denoted by T1 is (provably) a superSet
    * of the types denoted by T2.
    * This translates to the reflexive and transitive closure of (from spec):
    * <ul>
-   * <li> ? extends T <= ? extends S if T <: S
-   * <li> ? extends T <= ?
-   * <li> ? super T <= ? super S if S <: T
-   * <li> ? super T <= ?
-   * <li> ? super T <= ? extends Object
-   * <li> T <= T
-   * <li> T <= ? extends T
-   * <li> T <= ? super T
+   * <li> {@code ? extends T <= ? extends S if T <: S}
+   * <li> {@code ? extends T <= ?}
+   * <li> {@code ? super T <= ? super S if S <: T}
+   * <li> {@code ? super T <= ?}
+   * <li> {@code ? super T <= ? extends Object}
+   * <li> {@code T <= T}
+   * <li> {@code T <= ? extends T}
+   * <li> {@code T <= ? super T}
    * </ul>
    */
   protected List<Bound> constrainContainsPreNormalized(
@@ -1334,7 +1344,7 @@ public class SymTypeCompatibilityCalculator {
   }
 
   /**
-   * Reduces a constraint <a = b> to the constraints <a <: b>, <b <: a>.
+   * Reduces a constraint {@code <a = b>} to the constraints {@code <a <: b>, <b <: a>}.
    * This is not necessarily ideal wrt. resulting messages,
    * and should be replaced in the future if required.
    * It will most likely result in incorrect values,
@@ -1348,6 +1358,7 @@ public class SymTypeCompatibilityCalculator {
     result.addAll(internal_constrainSubTypeOfPreNormalized(typeA, typeB));
     result.addAll(internal_constrainSubTypeOfPreNormalized(typeB, typeA));
     // only happens if any type includes inference variables
+    // (or, as of 2025.03.02, only partially supported RegExTypes)
     if (!result.isEmpty()) {
       Log.error("0xFDCAF (internal) error: Constraint to complex"
           + " to evaluate with the current implementation: "
@@ -1400,7 +1411,7 @@ public class SymTypeCompatibilityCalculator {
   }
 
   // not needed anymore
-  @Deprecated
+  @Deprecated(forRemoval = true)
   protected List<SymTypeExpression> getSuperTypes(SymTypeExpression thisType) {
     return SymTypeRelations.getNominalSuperTypes(thisType);
   }

@@ -18,7 +18,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Optional;
 
 public class MCGenericsTypesTest {
@@ -115,7 +115,7 @@ public class MCGenericsTypesTest {
     GenericTypesTestParser parser = new GenericTypesTestParser();
     try {
       // test-data
-      HashMap<String, Integer> testdata = new HashMap<String, Integer>();
+      LinkedHashMap<String, Integer> testdata = new LinkedHashMap<String, Integer>();
       testdata.put("Collection<?>[]", 1);
       testdata.put("L<A>[]", 1);
       testdata.put("C<L<A>>[]", 1);

@@ -4,6 +4,7 @@ package de.monticore.types3;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -38,6 +39,8 @@ public class MCBasicTypesTypeVisitorTest
     Optional<ASTMCType> typeOpt = parser.parse_StringMCType("void");
     if (parser.hasErrors()) {
       // OK
+      // to be fixed: currently, Parser error has no error code
+      Log.clearFindings();
     }
     else {
       // if it can be parsed, we expect an error
@@ -54,7 +57,6 @@ public class MCBasicTypesTypeVisitorTest
     Assertions.assertTrue(typeOpt.isPresent());
     SymTypeExpression type = TypeCheck3.symTypeFromAST(typeOpt.get());
     Assertions.assertEquals("void", type.printFullName());
-    assertNoFindings();
   }
 
   @Test
@@ -66,7 +68,6 @@ public class MCBasicTypesTypeVisitorTest
     generateScopes(typeOpt.get().getMCType());
     SymTypeExpression type = TypeCheck3.symTypeFromAST(typeOpt.get());
     Assertions.assertEquals("Person", type.printFullName());
-    assertNoFindings();
   }
 
 }

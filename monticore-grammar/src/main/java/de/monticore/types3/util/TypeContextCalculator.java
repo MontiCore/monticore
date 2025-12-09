@@ -1,6 +1,7 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.types3.util;
 
+import com.google.common.base.Preconditions;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._util.IBasicSymbolsTypeDispatcher;
@@ -23,29 +24,7 @@ import java.util.Optional;
  */
 public class TypeContextCalculator {
 
-  // static delegate
-
   protected static TypeContextCalculator delegate;
-
-  public static void init() {
-    Log.trace("init default TypeContextCalculator", "TypeCheck setup");
-    setDelegate(new TypeContextCalculator());
-  }
-
-  public static void reset() {
-    TypeContextCalculator.delegate = null;
-  }
-
-  protected static void setDelegate(TypeContextCalculator newDelegate) {
-    TypeContextCalculator.delegate = Log.errorIfNull(newDelegate);
-  }
-
-  protected static TypeContextCalculator getDelegate() {
-    if (TypeContextCalculator.delegate == null) {
-      init();
-    }
-    return TypeContextCalculator.delegate;
-  }
 
   // methods
 
@@ -61,11 +40,9 @@ public class TypeContextCalculator {
     for (IScope scope = enclosingScope;
          scope != null && enclosingType.isEmpty();
          scope = scope.getEnclosingScope()) {
-      if (scope.isPresentSpanningSymbol() &&
-          getTypeDispatcher().isBasicSymbolsType(scope.getSpanningSymbol())) {
-        enclosingType = Optional.of(
-            getTypeDispatcher().asBasicSymbolsType(scope.getSpanningSymbol())
-        );
+      //TODO: use TypeDispatcher as soon as it is fixed
+      if (scope.isPresentSpanningSymbol() && scope.getSpanningSymbol() instanceof TypeSymbol) {
+        enclosingType = Optional.of((TypeSymbol) scope.getSpanningSymbol());
       }
     }
     return enclosingType;
@@ -155,6 +132,28 @@ public class TypeContextCalculator {
 
   protected IBasicSymbolsTypeDispatcher getTypeDispatcher() {
     return BasicSymbolsMill.typeDispatcher();
+  }
+
+  // static delegate
+
+  public static void init() {
+    Log.trace("init default TypeContextCalculator", "TypeCheck setup");
+    setDelegate(new TypeContextCalculator());
+  }
+
+  public static void reset() {
+    TypeContextCalculator.delegate = null;
+  }
+
+  protected static void setDelegate(TypeContextCalculator newDelegate) {
+    TypeContextCalculator.delegate = Preconditions.checkNotNull(newDelegate);
+  }
+
+  protected static TypeContextCalculator getDelegate() {
+    if (TypeContextCalculator.delegate == null) {
+      init();
+    }
+    return TypeContextCalculator.delegate;
   }
 
 }

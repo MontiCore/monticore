@@ -9,6 +9,8 @@ import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisito
 import de.monticore.mcbasics._symboltable.IMCBasicsScope;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsGlobalScope;
+import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.monticore.types.check.SymTypeExpression;
@@ -24,18 +26,21 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
+import static de.monticore.runtime.junit.MCAssertions.assertNoFindings;
 import static de.monticore.types3.util.DefsTypesForTests._floatSymType;
 import static de.monticore.types3.util.DefsTypesForTests._intSymType;
 import static de.monticore.types3.util.DefsTypesForTests.inScope;
 import static de.monticore.types3.util.DefsTypesForTests.method;
 import static de.monticore.types3.util.DefsTypesForTests.oOtype;
+import static de.monticore.types3.util.DefsTypesForTests.typeVariable;
+import static de.monticore.types3.util.DefsTypesForTests.variable;
 
 /**
  * tests whether we can resolve correctly constructors
  * based solely on their Type identifiers,
  * e.g., Foo(1) -> based on Constructor Foo::Foo(int)
- * It mostly tests {@link de.monticore.expressions.expressionsbasis.types3.ExpressionBasisTypeIdAsConstructorTypeVisitor}
- * and {@link de.monticore.expressions.commonexpressions.types3.CommonExpressionsTypeIdAsConstructorTypeVisitor}
+ * It mostly tests {@link de.monticore.expressions.expressionsbasis.types3.ExpressionBasisTypeIdAsConstructorCTTIVisitor}
+ * and {@link de.monticore.expressions.commonexpressions.types3.CommonExpressionsTypeIdAsConstructorCTTIVisitor}
  */
 public class ResolveTypeIdAsConstructorTest extends AbstractTypeVisitorTest {
 
@@ -44,7 +49,7 @@ public class ResolveTypeIdAsConstructorTest extends AbstractTypeVisitorTest {
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
     // replace the typeMapTraverser with an OO-aware variant
-    new CombineExpressionsWithLiteralsTypeTraverserFactory()
+    CombineExpressionsWithLiteralsTypeTraverserFactory
         .initTypeCheck3ForOOWithConstructors();
   }
 
@@ -56,7 +61,7 @@ public class ResolveTypeIdAsConstructorTest extends AbstractTypeVisitorTest {
   // }
   // => test to resolve constructor here
   @Test
-  public void test1() throws IOException {
+  public void test1() {
     IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();
 
     OOTypeSymbol oOType = oOtype("t");
@@ -120,7 +125,7 @@ public class ResolveTypeIdAsConstructorTest extends AbstractTypeVisitorTest {
   // }
   // => test to resolve constructor here
   @Test
-  public void test2() throws IOException {
+  public void test2() {
     IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();
 
     OOTypeSymbol oOType = oOtype("t");
@@ -172,6 +177,36 @@ public class ResolveTypeIdAsConstructorTest extends AbstractTypeVisitorTest {
     assertNoFindings();
   }
 
+  // class t<t> {
+  //   public t() {}
+  // }
+  // => test to resolve constructor here using
+  // t<int> a = t();
+  @Test
+  public void resolveTypeIDAsConstructorCTTI() {
+    IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();
+
+    TypeVarSymbol typeVar = typeVariable("t");
+
+    OOTypeSymbol oOType = oOtype("t");
+    inScope(oOType.getSpannedScope(), typeVar);
+    inScope(gs, oOType);
+
+    SymTypeExpression oOTypeSymType =
+        SymTypeExpressionFactory.createGenericsDeclaredType(oOType);
+
+    MethodSymbol constructor = method("t", oOTypeSymType);
+    constructor.setIsConstructor(true);
+    inScope(oOType.getSpannedScope(), constructor);
+
+    // since it is generic, cannot directly check, thus using assignment
+    VariableSymbol assignee = variable("a",
+        SymTypeExpressionFactory.createGenerics(oOType, _intSymType)
+    );
+    inScope(gs, assignee);
+    checkExpr("a = t()", "t<int>");
+  }
+
   // Helper
 
   /**
@@ -181,7 +216,7 @@ public class ResolveTypeIdAsConstructorTest extends AbstractTypeVisitorTest {
   protected SymTypeExpression calculateTypeWithinScope(
       String exprStr,
       IMCBasicsScope scope
-  ) throws IOException {
+  ) {
     ASTExpression expr = parseExpr(exprStr);
     generateScopes(expr);
     expr.accept(getExpressionScopeSetter(scope));

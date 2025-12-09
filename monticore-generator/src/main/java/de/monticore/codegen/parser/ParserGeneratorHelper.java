@@ -3,12 +3,14 @@
 package de.monticore.codegen.parser;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.codegen.parser.antlr.Grammar2Antlr;
+import de.monticore.codegen.parser.antlr.InterfaceInliningAlt;
 import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.PredicatePair;
 import de.monticore.grammar.grammar._ast.*;
@@ -67,11 +69,14 @@ public class ParserGeneratorHelper {
 
   protected boolean isJava;
 
+  protected InterfaceInliningAlt curInterfaceInliningAlt;
+  protected Map<InterfaceInliningAlt, List<String>> interfaceInliningAltToTmpNames = new LinkedHashMap<>();
+
   /**
    * Constructor for de.monticore.codegen.parser.ParserGeneratorHelper
    */
   public ParserGeneratorHelper(ASTMCGrammar ast, MCGrammarInfo grammarInfo) {
-    Log.errorIfNull(ast);
+    Preconditions.checkNotNull(ast);
     this.astGrammar = ast;
     this.qualifiedGrammarName = astGrammar.getPackageList().isEmpty()
             ? astGrammar.getName()
@@ -85,7 +90,7 @@ public class ParserGeneratorHelper {
   }
 
   public ParserGeneratorHelper(ASTMCGrammar ast, MCGrammarInfo grammarInfo, boolean embeddedJavaCode, Languages lang) {
-    Log.errorIfNull(ast);
+    Preconditions.checkNotNull(ast);
     this.astGrammar = ast;
     this.qualifiedGrammarName = astGrammar.getPackageList().isEmpty()
             ? astGrammar.getName()
@@ -153,7 +158,7 @@ public class ParserGeneratorHelper {
    * @return the name for a lexsymbol that should be used in an Antlr-File
    */
   public String getOrComputeLexSymbolName(String constName) {
-    Log.errorIfNull(constName);
+    Preconditions.checkNotNull(constName);
     if (grammarInfo.getSplitRules().containsKey(constName)) {
       return grammarInfo.getSplitRules().get(constName);
     } else {
@@ -162,11 +167,29 @@ public class ParserGeneratorHelper {
   }
 
   /**
+   * @param str - A String whose contents were taken directly from a StringLiteral.
+   * @return The original string, but each occurrence of ' is replaced with \'.
+   */
+  @SuppressWarnings("unused") // Used in parser/Lexer.ftl
+  public String escapeSingleQuote(String str) {
+    return str.replace("'", "\\'");
+  }
+
+  /**
+   * @param str - A String whose contents were taken directly from a StringLiteral.
+   * @return The original string, but each occurrence of \" is replaced by ".
+   */
+  @SuppressWarnings("unused") // Used in parser/Lexer.ftl
+  public String unescapeDoubleQuote(String str) {
+    return str.replace("\\\"", "\"");
+  }
+
+  /**
    * Side effect free.
    * @return the name for a lexsymbol that was used in an Antlr-File
    */
   public Optional<String> getCachedLexSymbolName(String constName) {
-    Log.errorIfNull(constName);
+    Preconditions.checkNotNull(constName);
     if (grammarInfo.getSplitRules().containsKey(constName)) {
       return Optional.of(grammarInfo.getSplitRules().get(constName));
     } else {
@@ -444,9 +467,21 @@ public class ParserGeneratorHelper {
 
   public String getTmpVarName(ASTNode a) {
     if (!tmpVariables.containsKey(a)) {
-      tmpVariables.put(a, getNewTmpVar());
+      String newTmpVar = getNewTmpVar();
+      tmpVariables.put(a, newTmpVar);
+      if(curInterfaceInliningAlt != null){
+        interfaceInliningAltToTmpNames.computeIfAbsent(curInterfaceInliningAlt, e -> new ArrayList<>()).add(newTmpVar);
+      }
     }
     return tmpVariables.get(a);
+  }
+
+  public void setCurInterfaceInliningAlt(InterfaceInliningAlt curInterfaceInliningAlt) {
+    this.curInterfaceInliningAlt = curInterfaceInliningAlt;
+  }
+
+  public Map<InterfaceInliningAlt, List<String>> getInterfaceInliningAltToTmpNames() {
+    return interfaceInliningAltToTmpNames;
   }
 
   protected String getNewTmpVar() {
@@ -456,6 +491,7 @@ public class ParserGeneratorHelper {
   public void resetTmpVarNames() {
     tmpVariables.clear();
     tmp_counter = 0;
+    interfaceInliningAltToTmpNames.clear();
   }
 
   public Map<ASTNode, String> getTmpVariables() {
@@ -529,7 +565,7 @@ public class ParserGeneratorHelper {
    * @return
    */
   public static String getText(ASTNode node) {
-    Log.errorIfNull(node);
+    Preconditions.checkNotNull(node);
 
     if (node instanceof ASTAction) {
       StringBuilder buffer = new StringBuilder();

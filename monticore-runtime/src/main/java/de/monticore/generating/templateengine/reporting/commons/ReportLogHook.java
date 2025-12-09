@@ -13,7 +13,7 @@ import de.se_rwth.commons.logging.ILogHook;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -69,7 +69,7 @@ public class ReportLogHook implements ILogHook, IReportEventHandler {
   /**
    * Map of model names to actual report managers.
    */
-  protected Map<String, ReportManager> reportManagers = new HashMap<>();
+  protected Map<String, ReportManager> reportManagers = new LinkedHashMap<>();
 
   protected Map<String, ReportManager> getReportManagers() {
     return this.reportManagers;

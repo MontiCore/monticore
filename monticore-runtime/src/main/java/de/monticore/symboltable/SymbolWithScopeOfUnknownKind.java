@@ -3,7 +3,9 @@ package de.monticore.symboltable;
 
 import java.util.*;
 
+import de.monticore.interpreter.Value;
 import de.monticore.symboltable.modifiers.AccessModifier;
+import de.monticore.symboltable.stereotypes.IStereotypeReference;
 import de.monticore.visitor.ITraverser;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
@@ -17,6 +19,8 @@ public class SymbolWithScopeOfUnknownKind implements IScopeSpanningSymbol {
   protected IScope enclosingScope;
 
   protected AccessModifier accessModifier = AccessModifier.ALL_INCLUSION;
+
+  protected Map<IStereotypeReference, Optional<Value>> stereoinfo = new LinkedHashMap<>();
 
   protected String fullName;
 
@@ -91,6 +95,11 @@ public class SymbolWithScopeOfUnknownKind implements IScopeSpanningSymbol {
       this.packageName = determinePackageName();
     }
     return this.packageName;
+  }
+
+  @Override
+  public Map<IStereotypeReference, Optional<Value>> getStereoinfo() {
+    return this.stereoinfo;
   }
 
   @Override

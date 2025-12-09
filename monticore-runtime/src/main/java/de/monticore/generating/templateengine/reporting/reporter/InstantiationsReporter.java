@@ -56,13 +56,7 @@ public class InstantiationsReporter extends AReporter {
   @Override
   public void reportInstantiate(String className, List<Object> params) {
     className = Names.getSimpleName(className);
-    if (instantiateCount.containsKey(className)) {
-      Integer actualCount = instantiateCount.get(className);
-      instantiateCount.put(className, actualCount + 1);
-    }
-    else {
-      instantiateCount.put(className, 1);
-    }
+    instantiateCount.merge(className, 1, Integer::sum);
   }
   
   @Override

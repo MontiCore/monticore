@@ -20,5 +20,8 @@ grammar Subgrammar extends de.monticore.inherited.Supergrammar {
 
   @Override
   N = X?;
+
+  @Override
+  ODName_Rep = "hello"  ;
  
 }

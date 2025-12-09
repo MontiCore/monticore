@@ -1,31 +1,32 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
 
+import de.monticore.runtime.junit.MCAssertions;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import g1.G1Mill;
 import g3.G3Mill;
 import org.antlr.v4.runtime.RecognitionException;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import g1._ast.ASTT;
 import g2.G2Mill;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class Builders4Test {
   
   ASTT t7,t8,t9,t10;
 
-  @Before
+  @BeforeEach
   public void setUp() throws RecognitionException, IOException {
     LogStub.init();
     Log.enableFailQuick(false);
     Log.getFindings().clear();
+    G2Mill.init();
     t7 =  G2Mill.tBuilder().build();
     t8 =  G2Mill.tBuilder().build();
     t9 =  G2Mill.tBuilder().build();
@@ -46,10 +47,10 @@ public class Builders4Test {
     		.setA(t7)
     		.setA(t8)
 		.build();
-    assertTrue(t8 == s.getA());
-    assertTrue(!(t7 == s.getA()));
+    assertSame(t8, s.getA());
+    assertNotSame(t7, s.getA());
     assertEquals(g1._ast.ASTS.class, s.getClass());
-    assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
   
   // tests whether generated build-setters work in G2
@@ -62,12 +63,12 @@ public class Builders4Test {
                 .addC(t9)
                 .addC(t10)
                 .build();
-    assertTrue(t7 == s.getA());
-    assertTrue(t8 == s.getB());
+    assertSame(t7, s.getA());
+    assertSame(t8, s.getB());
     assertEquals(5, s.sizeC());  // 3 are predefined in the hc builder
-    assertTrue(t10 == s.getC(4));
+    assertSame(t10, s.getC(4));
     assertEquals(g2._ast.ASTS.class, s.getClass());
-    assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
 
   // tests: Builder from G2 derived through G1
@@ -80,7 +81,7 @@ public class Builders4Test {
     assertEquals(g2._ast.ASTS.class, s.getClass());
     // 3 are predefined in the hc builder
     assertEquals(3, ((g2._ast.ASTS)s).sizeC());
-    assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
 
   // tests: Builder from G3 derived through G1
@@ -94,7 +95,7 @@ public class Builders4Test {
     // overwritten (so the result is 0) 
     assertEquals(0, s2.sizeC());
     assertEquals(g3._ast.ASTS.class, s2.getClass());
-    assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
 
   // tests: Builder from G3 derived through G1
@@ -108,7 +109,7 @@ public class Builders4Test {
     // overwritten (so the result is 0)
     assertEquals(0, s3.sizeC());
     assertEquals(g3._ast.ASTS.class, s3.getClass());
-    assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
 
 }

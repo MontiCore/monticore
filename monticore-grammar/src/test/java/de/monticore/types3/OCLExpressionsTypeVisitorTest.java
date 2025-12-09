@@ -1,17 +1,19 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types3;
 
+import de.monticore.types3.util.DefsVariablesForTests;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.mccollectiontypes.types3.MCCollectionSymTypeRelations;
-import de.monticore.types3.util.DefsVariablesForTests;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
+import static de.monticore.runtime.junit.MCAssertions.assertNoFindings;
 import static de.monticore.types3.util.DefsTypesForTests._intSymType;
 import static de.monticore.types3.util.DefsTypesForTests.function;
 import static de.monticore.types3.util.DefsTypesForTests.inScope;
@@ -32,6 +34,7 @@ public class OCLExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
     DefsVariablesForTests.set_boxedPrimitives(gs);
     DefsVariablesForTests.set_unboxedObjects(gs);
     DefsVariablesForTests.set_objectTypes(gs);
+    DefsVariablesForTests.set_unboxedCollections(gs);
     inScope(gs, variable("intArray1", SymTypeExpressionFactory.createTypeArray(_intSymType, 1)));
     inScope(gs, variable("intArray2", SymTypeExpressionFactory.createTypeArray(_intSymType, 2)));
     inScope(gs, variable("intArray3", SymTypeExpressionFactory.createTypeArray(_intSymType, 3)));
@@ -78,6 +81,13 @@ public class OCLExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
   }
 
   @Test
+  public void checkTypeIfExpressionsCTTI() throws IOException {
+    checkExpr("typeif varPerson instanceof Student then [] else []",
+        "List<int>", "List<int>"
+    );
+  }
+
+  @Test
   public void checkTypeIfExpressionRedundant() throws IOException {
     checkErrorExpr(
         "typeif varStudent instanceof Person "
@@ -97,6 +107,16 @@ public class OCLExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
     checkExpr("if true then 5.0 else 2*2", "double");
     checkExpr("if true then 5 else 5.0", "double");
     checkExpr("if true then varPerson else varStudent", "Person");
+  }
+
+  @Test
+  public void checkIfThenElseExpressionsCTTI() throws IOException {
+    checkExpr("if varboolean then [] else []",
+        "List<int>", "List<int>"
+    );
+    checkExpr("if varboolean then [] else varintList",
+        "List<int>", "List<int>"
+    );
   }
 
   @Test
@@ -130,6 +150,8 @@ public class OCLExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
     checkExpr("let double a = 5.0 in 2*2", "int");
     checkExpr("let double a = 5.0 in a", "double");
     checkExpr("let double a = 5.0; int b = 5 in a*b", "double");
+    // requires correct order of SymTab completion
+    checkExpr("let Person p = typeif varPerson instanceof Student then varPerson else varPerson in p", "Person");
   }
 
   @Test

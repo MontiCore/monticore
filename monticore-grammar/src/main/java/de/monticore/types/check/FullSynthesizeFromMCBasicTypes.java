@@ -9,6 +9,11 @@ import de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser;
 
 import java.util.Optional;
 
+/**
+ * @deprecated part of typecheck1,
+ * use {@link de.monticore.types3.TypeCheck3} instead.
+ */
+@Deprecated
 public class FullSynthesizeFromMCBasicTypes extends AbstractSynthesize {
 
   public FullSynthesizeFromMCBasicTypes(){

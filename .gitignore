@@ -19,3 +19,5 @@ build
 out
 target-emf/
 .DS_Store
+#mkdocs local build
+docs_wd/

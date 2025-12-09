@@ -21,7 +21,7 @@ public class PostprocessPatternAttributesVisitor implements
         GrammarVisitor2 {
 
   protected final MCGrammarSymbol grammarSymbol;
-  protected final Collection<String> additionallySupportedITFProductions = new HashSet<>();
+  protected final Collection<String> additionallySupportedITFProductions = new LinkedHashSet<>();
 
   public PostprocessPatternAttributesVisitor(MCGrammarSymbol grammarSymbol) {
     this.grammarSymbol = grammarSymbol;

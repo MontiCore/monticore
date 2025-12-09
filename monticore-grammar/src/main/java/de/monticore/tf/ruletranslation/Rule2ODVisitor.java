@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 
 import static de.se_rwth.commons.StringTransformations.capitalize;
 import static de.monticore.tf.ruletranslation.Position.*;
@@ -161,7 +162,7 @@ public abstract class Rule2ODVisitor implements TFCommonsVisitor2 {
     state.getGenRule().setDoBlock(node.getMCJavaBlock().deepClone());
   }
 
-  private de.monticore.tf.odrules._ast.ASTFoldingSet transfromFoldingSet(de.monticore.tf.tfcommons._ast.ASTFoldingSet f) {
+  protected de.monticore.tf.odrules._ast.ASTFoldingSet transfromFoldingSet(de.monticore.tf.tfcommons._ast.ASTFoldingSet f) {
     de.monticore.tf.odrules._ast.ASTFoldingSet s = ODRulesMill.foldingSetBuilder().uncheckedBuild();
     s.setObjectNamesList(new ArrayList<>());
     s.getObjectNamesList().addAll(f.getObjectNamesList());
@@ -184,7 +185,7 @@ public abstract class Rule2ODVisitor implements TFCommonsVisitor2 {
     doHandle(node, o_rhs);
   }
 
-  private void doHandle(IPattern node, ASTODObject obj) {
+  protected void doHandle(IPattern node, ASTODObject obj) {
     obj.setName(state.getNameGen().getNameForElement(node, state.getParents()));
     List<String> qType =
             Splitters.DOT.splitToList(node._getTFElementType().getName());
@@ -205,7 +206,7 @@ public abstract class Rule2ODVisitor implements TFCommonsVisitor2 {
     doHandleList(node, object);
   }
 
-  private void doHandleList(IList node, ASTODObject object) {
+  protected void doHandleList(IList node, ASTODObject object) {
     if (node.isPresentSchemaVarName()) {
       object.setName(node.getSchemaVarName());
     }
@@ -314,28 +315,33 @@ public abstract class Rule2ODVisitor implements TFCommonsVisitor2 {
     }
   }
 
-  protected ASTODLink createLHSComposition(ITFObject parent, ITFElement child, String roleName, String genericType, boolean attrIsIterated, boolean attrIsOptional) {
-    ITFObject component = child instanceof IReplacement ?
-        (ITFObject) ((IReplacement) child).getLhs() :
-        (ITFObject) child.getTFElement();
-    // optionals & lists only group elements, they do not represent elements themselves.
+  protected ITFObject getElementAsObject(ITFElement child, Function<IReplacement, ITFElement> repSide) {
+    // replacements do represent an element themself, instead they refer to a LHS and RHS
     // in order to create links, we need to get the actual element of the optional
-    component = getActualElement(component);
+    if (child instanceof IReplacement) {
+      return getElementAsObject(repSide.apply((IReplacement) child), repSide);
+    } else {
+      // optionals & lists only group elements, they do not represent elements themselves.
+      // in order to create links, we need to get the actual element of the optional
+      ITFElement elem = child.getTFElement();
+      if (elem == child) // Only patterns return themselves as their element
+        return (ITFObject) elem;
+      return getElementAsObject(elem, repSide);
+    }
+  }
+
+  protected ASTODLink createLHSComposition(ITFObject parent, ITFElement child, String roleName, String genericType, boolean attrIsIterated, boolean attrIsOptional) {
+    ITFObject component = getElementAsObject(child, IReplacement::getLhs);
     return createLink(parent, roleName, genericType, component, attrIsIterated, attrIsOptional);
   }
 
   protected ASTODLink createRHSComposition(ITFObject parent, ITFElement child, String roleName, String genericType,
                                            boolean attrIsIterated, boolean attrIsOptional) {
-    ITFObject component = child instanceof IReplacement ?
-        (ITFObject) ((IReplacement) child).getRhs() :
-        (ITFObject) child.getTFElement();
-    // optionals & lists only group elements, they do not represent elements themselves.
-    // in order to create links, we need to get the actual element of the optional
-    component = getActualElement(component);
+    ITFObject component = getElementAsObject(child, IReplacement::getRhs);
     return createLink(parent, roleName, genericType, component, attrIsIterated, attrIsOptional);
   }
 
-  private ITFObject getActualElement(ITFObject component) {
+  protected ITFObject getActualElement(ITFObject component) {
     if (component instanceof IOptional || component instanceof  IList) {
       component = (ITFObject) component.getTFElement();
       return getActualElement(component);

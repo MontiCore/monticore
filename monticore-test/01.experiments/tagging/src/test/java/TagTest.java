@@ -16,12 +16,12 @@ import de.monticore.tagging.tags._ast.ASTTag;
 import de.monticore.tagging.tags._ast.ASTValuedTag;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -32,9 +32,9 @@ public class TagTest {
 
   static ISymbolTagger tagger;
 
-  static Map<String, ASTState> states = new HashMap<>();
+  static Map<String, ASTState> states = new LinkedHashMap<>();
   
-  @BeforeClass
+  @BeforeAll
   public static void init() throws Exception {
     TagRepository.clearTags();
     LogStub.init();
@@ -42,11 +42,11 @@ public class TagTest {
 
     // Load all relevant models
     var emptyTagsOpt1 = TagRepository.loadTagModel(new File("src/test/resources/models/Empty.tags"));
-    Assert.assertTrue("Failed to load Empty.tags", emptyTagsOpt1.isPresent());
+    Assertions.assertTrue(emptyTagsOpt1.isPresent(), "Failed to load Empty.tags");
     var opt = TagRepository.loadTagModel(new File("src/test/resources/models/Simple.tags"));
-    Assert.assertTrue("Failed to load Simple.tags", opt.isPresent());
+    Assertions.assertTrue(opt.isPresent(), "Failed to load Simple.tags");
     var emptyTagsOpt2 = TagRepository.loadTagModel(new File("src/test/resources/models/Empty.tags"));
-    Assert.assertTrue("Failed to load Empty.tags", emptyTagsOpt2.isPresent());
+    Assertions.assertTrue(emptyTagsOpt2.isPresent(), "Failed to load Empty.tags");
 
     tagger = new SimpleSymbolTagger(TagRepository::getLoadedTagUnits);
 
@@ -68,7 +68,7 @@ public class TagTest {
   @Test
   public void testAutomaton() {
     List<ASTTag> tags = tagger.getTags(model.getSymbol());
-    Assert.assertEquals(1, tags.size());
+    Assertions.assertEquals(1, tags.size());
     assertValuedTag(tags.get(0), "Method", "App.call()");
   }
 
@@ -76,7 +76,7 @@ public class TagTest {
   @Test
   public void testStateA() {
     List<ASTTag> tags = tagger.getTags(states.get("A").getSymbol());
-    Assert.assertEquals(1, tags.size());
+    Assertions.assertEquals(1, tags.size());
     assertSimpleTag(tags.get(0), "Monitored");
   }
 
@@ -84,20 +84,20 @@ public class TagTest {
   @Test
   public void testStateBSymbol() {
     List<ASTTag> tags = tagger.getTags(states.get("B").getSymbol());
-    Assert.assertEquals(0, tags.size());
+    Assertions.assertEquals(0, tags.size());
   }
 
   @Test
   public void testStateBASymbol() {
     List<ASTTag> tags = tagger.getTags(states.get("BA").getSymbol());
-    Assert.assertEquals(1, tags.size());
+    Assertions.assertEquals(1, tags.size());
     assertSimpleTag(tags.get(0), "StateTag1");
   }
 
   @Test
   public void testStateBBSymbol() {
     List<ASTTag> tags = tagger.getTags(states.get("BB").getSymbol());
-    Assert.assertEquals(1, tags.size());
+    Assertions.assertEquals(1, tags.size());
     assertSimpleTag(tags.get(0), "StateTag2");
   }
 
@@ -105,44 +105,44 @@ public class TagTest {
   @Test
   public void testSomeScopeCSymbol() {
     List<ASTTag> tags = tagger.getTags(model.getEnclosingScope().resolveScopedState("C").get());
-    Assert.assertEquals(1, tags.size());
+    Assertions.assertEquals(1, tags.size());
     assertValuedTag(tags.get(0), "VerboseLog", "doLogC");
   }
 
   @Test
   public void testStateC_CASymbol() {
     List<ASTTag> tags = tagger.getTags(states.get("C.CA").getSymbol());
-    Assert.assertEquals(1, tags.size());
+    Assertions.assertEquals(1, tags.size());
     assertSimpleTag(tags.get(0), "StateTag1");
   }
 
   @Test
   public void testStateC_CBSymbol() {
     List<ASTTag> tags = tagger.getTags(states.get("C.CB").getSymbol());
-    Assert.assertEquals(1, tags.size());
+    Assertions.assertEquals(1, tags.size());
     assertSimpleTag(tags.get(0), "StateTag2");
   }
 
   @Test
   public void testStateDSymbol() {
     List<ASTTag> tags = tagger.getTags(states.get("D").getSymbol());
-    Assert.assertEquals(2, tags.size());
+    Assertions.assertEquals(2, tags.size());
     assertSimpleTag(tags.get(0), "WildcardedTag");
   }
 
   @Test
   public void testDupSymbols() {
     Optional<StateSymbol> stateSymbolOpt = model.getEnclosingScope().resolveState("Dup");
-    Assert.assertTrue(stateSymbolOpt.isPresent());
+    Assertions.assertTrue(stateSymbolOpt.isPresent());
     Optional<ScopedStateSymbol> scopedStateSymbolOpt = model.getEnclosingScope().resolveScopedState("Dup");
-    Assert.assertTrue(scopedStateSymbolOpt.isPresent());
+    Assertions.assertTrue(scopedStateSymbolOpt.isPresent());
     // Discuss if this type-unaware duplication is desired?
     List<ASTTag> tags = tagger.getTags(stateSymbolOpt.get());
-    Assert.assertEquals(1, tags.size());
+    Assertions.assertEquals(1, tags.size());
     assertSimpleTag(tags.get(0), "WildcardedTag");
 
     tags = tagger.getTags(scopedStateSymbolOpt.get());
-    Assert.assertEquals(1, tags.size());
+    Assertions.assertEquals(1, tags.size());
     assertSimpleTag(tags.get(0), "WildcardedTag");
   }
 
@@ -150,30 +150,30 @@ public class TagTest {
   public void testAddStateE() {
     ASTState stateE = states.get("E");
     List<ASTTag> tags = tagger.getTags(stateE.getSymbol());
-    Assert.assertEquals(0, tags.size());
+    Assertions.assertEquals(0, tags.size());
     // Add new Tag
     ASTTag tag = TagsMill.simpleTagBuilder().setName("TestTag").build();
     tagger.addTag(stateE.getSymbol(), tag);
     tags = tagger.getTags(stateE.getSymbol());
-    Assert.assertEquals(1, tags.size());
+    Assertions.assertEquals(1, tags.size());
     assertSimpleTag(tags.get(0), "TestTag");
     // Remove tag again
     tagger.removeTag(stateE.getSymbol(), tag);
     tags = tagger.getTags(stateE.getSymbol());
-    Assert.assertEquals(0, tags.size());
+    Assertions.assertEquals(0, tags.size());
   }
 
 
   protected void assertValuedTag(ASTTag tag, String name, String value) {
-    Assert.assertTrue(tag instanceof ASTValuedTag);
+    Assertions.assertInstanceOf(ASTValuedTag.class, tag);
     ASTValuedTag valuedTag = (ASTValuedTag) tag;
-    Assert.assertEquals(name, valuedTag.getName());
-    Assert.assertEquals(value, valuedTag.getValue());
+    Assertions.assertEquals(name, valuedTag.getName());
+    Assertions.assertEquals(value, valuedTag.getValue());
   }
 
   protected void assertSimpleTag(ASTTag tag, String name) {
-    Assert.assertTrue(tag instanceof ASTSimpleTag);
+    Assertions.assertInstanceOf(ASTSimpleTag.class, tag);
     ASTSimpleTag simpleTag = (ASTSimpleTag) tag;
-    Assert.assertEquals(name, simpleTag.getName());
+    Assertions.assertEquals(name, simpleTag.getName());
   }
 }

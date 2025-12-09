@@ -40,13 +40,14 @@ public class ThrowIsValidTest {
     checker.setTraverser(TestMCExceptionStatementsMill.traverser());
     checker.addCoCo(new ThrowIsValid(new TypeCalculator(null, new FullDeriveFromCombineExpressionsWithLiterals())));
 
-    SymTypeOfObject sType = SymTypeExpressionFactory.createTypeObject("java.lang.Throwable", TestMCExceptionStatementsMill.globalScope());
-    SymTypeOfObject sTypeA = SymTypeExpressionFactory.createTypeObject("A", TestMCExceptionStatementsMill.globalScope());
+    SymTypeOfObject sType = SymTypeExpressionFactory.createTypeObjectViaSurrogate("java.lang.Throwable", TestMCExceptionStatementsMill.globalScope());
+    SymTypeOfObject sTypeA = SymTypeExpressionFactory.createTypeObjectViaSurrogate("A", TestMCExceptionStatementsMill.globalScope());
 
     TestMCExceptionStatementsMill.globalScope().add(
         TestMCExceptionStatementsMill
             .oOTypeSymbolBuilder()
             .setName("A")
+            .setSpannedScope(TestMCCommonStatementsMill.globalScope())
             .addSuperTypes(sType)
             .build());
 
@@ -63,6 +64,7 @@ public class ThrowIsValidTest {
         TestMCExceptionStatementsMill
             .oOTypeSymbolBuilder()
             .setName("Throwable")
+            .setSpannedScope(TestMCCommonStatementsMill.globalScope())
             .build());
 
     TestMCExceptionStatementsMill.globalScope().add(
@@ -72,12 +74,13 @@ public class ThrowIsValidTest {
             .setType(sTypeA)
             .build());
 
-    SymTypeOfObject sTypeB = SymTypeExpressionFactory.createTypeObject("B", TestMCExceptionStatementsMill.globalScope());
+    SymTypeOfObject sTypeB = SymTypeExpressionFactory.createTypeObjectViaSurrogate("B", TestMCExceptionStatementsMill.globalScope());
 
     TestMCExceptionStatementsMill.globalScope().add(
         TestMCExceptionStatementsMill
             .oOTypeSymbolBuilder()
             .setName("B")
+            .setSpannedScope(TestMCCommonStatementsMill.globalScope())
             .build());
 
     TestMCExceptionStatementsMill.globalScope().add(

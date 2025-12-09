@@ -2,7 +2,7 @@
 package simpleequations._visitor;
 
 import de.monticore.interpreter.Value;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import simpleequations.SimpleEquationsMill;
 import simpleequations._ast.ASTProgram;
 import simpleequations._parser.SimpleEquationsParser;
@@ -10,8 +10,8 @@ import simpleequations._symboltable.SimpleEquationsScopesGenitorDelegator;
 
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SimpleEquationsInterpreterTest {
 

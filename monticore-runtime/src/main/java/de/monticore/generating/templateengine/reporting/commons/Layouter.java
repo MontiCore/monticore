@@ -48,7 +48,7 @@ public class Layouter {
 	/**
 	 * Formats the source position of an ASTnode
 	 * 
-	 * @param a
+	 * @param sp
 	 */
 	public static String sourcePos(SourcePosition sp) {
 		if (sp != null) {
@@ -73,7 +73,7 @@ public class Layouter {
 	 * Provides the Name of the Nonterminal of the AST (no qualifier, no "AST"
 	 * at the beginning)
 	 * 
-	 * @param ast
+	 * @param s
 	 * @return Nonterminalname
 	 */
 	public static String unqualName(String s) {
@@ -149,7 +149,8 @@ public class Layouter {
 	 * Provides the name of the Nonterminal of the AST (no qualifier, no "AST"
 	 * at the beginning)
 	 * 
-	 * @param ast
+	 * @param s
+	 * @param l
 	 * @return Nonterminalname
 	 */
 	public static String unqualNamePadleft(String s, int l) {

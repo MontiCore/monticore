@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
-
+import com.google.common.base.Preconditions;
 import de.se_rwth.commons.logging.Log;
 import freemarker.log.Logger;
 import freemarker.template.Configuration;
@@ -26,8 +26,7 @@ public class FreeMarkerTemplateEngine {
   protected final Configuration configuration;
   
   public FreeMarkerTemplateEngine(Configuration configuration) {
-    this.configuration = Log
-        .errorIfNull(
+    this.configuration = Preconditions.checkNotNull(
             configuration,
             "0xA4048 Configuration must not be null in FreeMarkerTemplateEngine constructor.");
   }
@@ -62,13 +61,19 @@ public class FreeMarkerTemplateEngine {
    * @param buffer contains the result
    * @param data data for the template
    * @param template the template file
-   * @throws IOException
    */
   public void run(StringBuilder buffer, Object data, Template template) {
-    Log.errorIfNull(template, "0xA0562 The given template must not be null");
+    Preconditions.checkNotNull(template, "0xA0562 The given template must not be null");
     String seperator = System.getProperty("line.seperator");
 
-    Writer w = new StringWriter();
+    Writer w = new Writer() {
+      public void write(char[] cbuf, int off, int len) {
+        buffer.append(cbuf, off, len);
+      }
+      public void flush() { }
+      public void close() { }
+    };
+
     try {
       template.process(data, w);
       w.flush();
@@ -96,7 +101,6 @@ public class FreeMarkerTemplateEngine {
       throw new MontiCoreFreeMarkerException("0xA0563 Could not read template " + template.getName() + " : " + e.getLocalizedMessage() +
               seperator + "Exception-type: " + e.getCause())  ;
     }
-    buffer.append(w.toString());
   }
   
   /**

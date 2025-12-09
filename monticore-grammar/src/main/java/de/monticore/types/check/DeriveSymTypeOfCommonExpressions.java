@@ -18,7 +18,10 @@ import java.util.stream.Collectors;
  * It is the OO extension of the class {@link de.monticore.types.check.DeriveSymTypeOfBSCommonExpressions} and adds OO
  * functionalities like modifiers to the derivation of a SymTypeExpression.
  * It can be combined with other expressions in your language by creating a DelegatorVisitor
+ * @deprecated part of typecheck1,
+ * use {@link de.monticore.types3.TypeCheck3} instead.
  */
+@Deprecated
 public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfBSCommonExpressions {
 
   @Override

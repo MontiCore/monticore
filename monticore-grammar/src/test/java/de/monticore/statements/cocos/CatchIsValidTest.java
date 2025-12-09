@@ -19,6 +19,9 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.util.Optional;
 
+import static de.monticore.types.check.SymTypeExpressionFactory.createTypeObject;
+import static de.monticore.types3.util.DefsTypesForTests.inScope;
+import static de.monticore.types3.util.DefsTypesForTests.oOtype;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -39,13 +42,14 @@ public class CatchIsValidTest {
     checker.setTraverser(TestMCExceptionStatementsMill.traverser());
     checker.addCoCo(new CatchIsValid(new TypeCalculator(null, new FullDeriveFromCombineExpressionsWithLiterals())));
 
-    SymTypeOfObject sType = SymTypeExpressionFactory.createTypeObject("java.lang.Throwable", TestMCExceptionStatementsMill.globalScope());
-    SymTypeOfObject sTypeA = SymTypeExpressionFactory.createTypeObject("A", TestMCExceptionStatementsMill.globalScope());
+    SymTypeOfObject sType = SymTypeExpressionFactory.createTypeObjectViaSurrogate("java.lang.Throwable", TestMCExceptionStatementsMill.globalScope());
+    SymTypeOfObject sTypeA = SymTypeExpressionFactory.createTypeObjectViaSurrogate("A", TestMCExceptionStatementsMill.globalScope());
 
     TestMCExceptionStatementsMill.globalScope().add(
         TestMCExceptionStatementsMill.
             oOTypeSymbolBuilder()
             .setName("A")
+            .setSpannedScope(TestMCExceptionStatementsMill.globalScope())
             .addSuperTypes(sType)
             .build());
 
@@ -62,6 +66,7 @@ public class CatchIsValidTest {
         TestMCExceptionStatementsMill
             .oOTypeSymbolBuilder()
             .setName("Throwable")
+            .setSpannedScope(TestMCExceptionStatementsMill.globalScope())
             .build());
 
     TestMCExceptionStatementsMill.globalScope().add(
@@ -71,13 +76,14 @@ public class CatchIsValidTest {
             .setType(sTypeA)
             .build());
 
-    SymTypeOfObject symType = SymTypeExpressionFactory.createTypeObject("java.lang.Object", TestMCExceptionStatementsMill.globalScope());
-    SymTypeOfObject symTypeB = SymTypeExpressionFactory.createTypeObject("B", TestMCExceptionStatementsMill.globalScope());
+    SymTypeOfObject symType = SymTypeExpressionFactory.createTypeObjectViaSurrogate("java.lang.Object", TestMCExceptionStatementsMill.globalScope());
+    SymTypeOfObject symTypeB = SymTypeExpressionFactory.createTypeObjectViaSurrogate("B", TestMCExceptionStatementsMill.globalScope());
 
     TestMCExceptionStatementsMill.globalScope().add(
         TestMCExceptionStatementsMill
             .oOTypeSymbolBuilder()
             .setName("B")
+            .setSpannedScope(TestMCExceptionStatementsMill.globalScope())
             .addSuperTypes(symType)
             .build());
 
@@ -85,6 +91,7 @@ public class CatchIsValidTest {
         TestMCExceptionStatementsMill
             .oOTypeSymbolBuilder()
             .setName("Object")
+            .setSpannedScope(TestMCExceptionStatementsMill.globalScope())
             .build());
 
     TestMCExceptionStatementsMill.globalScope().add(

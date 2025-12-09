@@ -46,9 +46,9 @@ public abstract class MCConcreteParser {
   public abstract Optional<? extends ASTNode> parse(Reader reader) throws IOException;
 
   /**
-   * Returns true, if errors occured while parsing
+   * Returns true, if errors occurred while parsing
    *
-   * @return
+   * @return whether we have errors
    */
   public boolean hasErrors() {
     return hasErrors;

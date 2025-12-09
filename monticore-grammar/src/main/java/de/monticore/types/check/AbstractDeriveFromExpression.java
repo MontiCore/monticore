@@ -18,6 +18,11 @@ import static de.monticore.types.check.TypeCheck.isFloat;
 import static de.monticore.types.check.TypeCheck.isDouble;
 import static de.monticore.types.check.TypeCheck.isLong;
 
+/**
+ * @deprecated part of typecheck1,
+ * use {@link de.monticore.types3.TypeCheck3} instead.
+ */
+@Deprecated
 public abstract class AbstractDeriveFromExpression {
 
   public abstract ExpressionsBasisTraverser getTraverser();

@@ -40,7 +40,6 @@ public interface IDeSer<S extends IScope,
    *
    * @param toSerialize
    * @param symbol2json
-   * @return
    */
   default void serializeAddons(A toSerialize, J symbol2json) {}
 
@@ -50,7 +49,6 @@ public interface IDeSer<S extends IScope,
    *
    * @param toSerialize
    * @param symbol2json
-   * @return
    */
   default void serializeAddons(S toSerialize, J symbol2json) {}
 
@@ -75,7 +73,6 @@ public interface IDeSer<S extends IScope,
    *
    * @param artifactScope
    * @param scopeJson
-   * @return
    */
   default void deserializeAddons(A artifactScope, JsonObject scopeJson) {
   }
@@ -86,7 +83,6 @@ public interface IDeSer<S extends IScope,
    *
    * @param scope
    * @param scopeJson
-   * @return
    */
   default void deserializeAddons(S scope, JsonObject scopeJson) {
   }

@@ -13,6 +13,7 @@ import de.monticore.tf.runtime.ODRule;
 import de.monticore.visitor.ITraverser;
 import de.monticore.visitor.IVisitor;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import mc.testcases.expressiondsl.ExpressionDSLMill;
 import mc.testcases.expressiondsl._ast.ASTCDAttribute;
 import mc.testcases.expressiondsl._ast.ASTFoo;
@@ -34,7 +35,7 @@ public class ExpressionDSLTest {
 
   @BeforeClass
   public static void beforeClass() {
-    Log.init();
+    LogStub.init();
     Log.enableFailQuick(false);
     ExpressionDSLMill.init();
   }

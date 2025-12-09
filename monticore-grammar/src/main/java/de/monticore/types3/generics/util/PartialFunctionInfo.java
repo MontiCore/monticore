@@ -6,7 +6,7 @@ import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfFunction;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -22,9 +22,9 @@ public class PartialFunctionInfo {
 
   Optional<Integer> parameterCount = Optional.empty();
 
-  Map<Integer, ASTExpression> argumentExprs = new HashMap<>();
+  Map<Integer, ASTExpression> argumentExprs = new LinkedHashMap<>();
 
-  Map<Integer, SymTypeExpression> argumentTypes = new HashMap<>();
+  Map<Integer, SymTypeExpression> argumentTypes = new LinkedHashMap<>();
 
   public PartialFunctionInfo() {
   }
@@ -150,8 +150,8 @@ public class PartialFunctionInfo {
     PartialFunctionInfo clone = new PartialFunctionInfo();
     clone.returnTargetType = returnTargetType.map(SymTypeExpression::deepClone);
     clone.parameterCount = parameterCount.map(Function.identity());
-    clone.argumentExprs = new HashMap<>(argumentExprs);
-    clone.argumentTypes = new HashMap<>(argumentTypes);
+    clone.argumentExprs = new LinkedHashMap<>(argumentExprs);
+    clone.argumentTypes = new LinkedHashMap<>(argumentTypes);
     return clone;
   }
 

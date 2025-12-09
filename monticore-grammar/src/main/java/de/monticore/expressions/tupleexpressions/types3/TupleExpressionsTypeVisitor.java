@@ -1,12 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions.tupleexpressions.types3;
 
+import com.google.common.base.Preconditions;
 import de.monticore.expressions.tupleexpressions._ast.ASTTupleExpression;
 import de.monticore.expressions.tupleexpressions._visitor.TupleExpressionsVisitor2;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types3.AbstractTypeVisitor;
-import de.se_rwth.commons.logging.Log;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,7 +16,7 @@ public class TupleExpressionsTypeVisitor extends AbstractTypeVisitor
 
   @Override
   public void endVisit(ASTTupleExpression expr) {
-    Log.errorIfNull(expr);
+    Preconditions.checkNotNull(expr);
     SymTypeExpression result;
     List<SymTypeExpression> listedTypes = expr.streamExpressions()
         .map(e -> getType4Ast().getPartialTypeOfExpr(e))

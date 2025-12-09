@@ -1,5 +1,6 @@
 package de.monticore.types3.util;
 
+import com.google.common.base.Preconditions;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.types.check.SymTypeExpression;
@@ -53,9 +54,9 @@ public class MapBasedTypeCheck3 extends TypeCheck3 {
       Type4Ast type4Ast,
       InferenceContext4Ast ctx4Ast
   ) {
-    this.typeTraverser = Log.errorIfNull(typeTraverser);
-    this.type4Ast = Log.errorIfNull(type4Ast);
-    this.ctx4Ast = Log.errorIfNull(ctx4Ast);
+    this.typeTraverser = Preconditions.checkNotNull(typeTraverser);
+    this.type4Ast = Preconditions.checkNotNull(type4Ast);
+    this.ctx4Ast = Preconditions.checkNotNull(ctx4Ast);
   }
 
   /**

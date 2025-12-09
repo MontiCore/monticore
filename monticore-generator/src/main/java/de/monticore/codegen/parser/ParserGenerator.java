@@ -3,6 +3,7 @@
 package de.monticore.codegen.parser;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Preconditions;
 import de.monticore.cd.codegen.CDGenerator;
 import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.cd.codegen.TopDecorator;
@@ -38,6 +39,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
@@ -121,7 +123,7 @@ public class ParserGenerator {
         astGrammar.getName());
     MCGrammarSymbol grammarSymbol = symbolTable.<MCGrammarSymbol> resolveMCGrammar(
         qualifiedGrammarName).orElse(null);
-    Log.errorIfNull(grammarSymbol, "0xA4034 Grammar " + qualifiedGrammarName
+    Preconditions.checkNotNull(grammarSymbol, "0xA4034 Grammar " + qualifiedGrammarName
         + " can't be resolved in the scope " + symbolTable);
 
     MCGrammarInfo grammarInfo = new MCGrammarInfo(grammarSymbol);
@@ -132,7 +134,7 @@ public class ParserGenerator {
     setup.setGlex(glex);
 
     if (astGrammar.isComponent()) {
-      ParserInfoGenerator.generateParserInfoForComponent(astGrammar, setup, genHelper.getParserPackage(), lang);
+      ParserInfoGenerator.generateParserInfoForComponent(astGrammar, setup, genHelper.getParserPackage(), lang, new LinkedHashMap<>());
       Log.info("No parser generation for the grammar " + astGrammar.getName(), LOG);
       return null;
     }
@@ -183,8 +185,10 @@ public class ParserGenerator {
                     gLexer.toString().replace('\\', '/'), // fix windows paths unicode \\u
                     gParser.toString().replace('\\', '/') },
             grammarSymbol,
-            grammar2Antlr.getTmpNameDict()
+            grammar2Antlr.getProdInfoMap()
     );
+
+    // collects parser states
     antlrTool.processGrammarsOnCommandLine();
 
     removeGeneratedFromComment(gLexer.toFile(), lang);
@@ -192,7 +196,15 @@ public class ParserGenerator {
 
     Log.debug("End parser generation for the grammar " + astGrammar.getName(), LOG);
 
-    ParserInfoGenerator.generateParserInfo(astGrammar, setup, antlrTool.getNonTerminalToParserStates(), genHelper.getParserPackage(), lang);
+    // saves parser states
+    ParserInfoGenerator.generateParserInfo(
+        astGrammar,
+        setup,
+        antlrTool.getRhsNodeToParserStates(),
+        genHelper.getParserPackage(),
+        lang,
+        grammar2Antlr.getProdInfoMap()
+    );
 
     antlrTool.cleanUp();
 

@@ -12,7 +12,7 @@ import de.monticore.tagtest.cdbasis4tags.CDBasis4TagsMill;
 import de.monticore.umlstereotype.UMLStereotypeMill;
 import de.monticore.umlstereotype._ast.ASTStereoValue;
 import de.monticore.umlstereotype._ast.ASTStereoValueBuilder;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import de.monticore.tagging.TagRepository;

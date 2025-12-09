@@ -3,6 +3,8 @@ package de.monticore.prettyprint;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.keywordaddingtestprettyprinters.KeywordAddingTestPrettyPrintersMill;
+import de.monticore.runtime.junit.MCAssertions;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.testprettyprinters.TestPrettyPrintersMill;
 import de.monticore.testprettyprinters._ast.ASTProdNamedTerminal;
 import de.monticore.testprettyprinters._ast.ASTToBeReplacedKeyword;
@@ -11,6 +13,9 @@ import de.monticore.testprettyprinters._prettyprint.TestPrettyPrintersFullPretty
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -20,23 +25,12 @@ import java.util.function.Function;
 /**
  * Test the PrettyPrinter Generation
  */
+@TestWithMCLanguage(TestPrettyPrintersMill.class)
 public class TestPrettyPrinterTest extends PPTestClass {
-
-  @BeforeClass
-  public static void setup() {
-    TestPrettyPrintersMill.init();
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-
-  @Before
-  public void beforeEach() {
-    Log.clearFindings();
-  }
 
   @Override
   protected String fullPrettyPrint(ASTNode astNode){
-    return  (new TestPrettyPrintersFullPrettyPrinter(new IndentPrinter())).prettyprint(astNode);
+    return  TestPrettyPrintersMill.prettyPrint(astNode, true);
   }
 
   @Test
@@ -331,7 +325,7 @@ public class TestPrettyPrinterTest extends PPTestClass {
   }
 
   @Test
-  @Ignore
+  @Disabled
   public void testCPAstList() throws IOException {
     // Currently throws "Contains a list of Alts where one is not iterator ready!"
     // as it generates a while ((node.isPresentA()) || (iter_b.hasNext()) || ...
@@ -355,9 +349,10 @@ public class TestPrettyPrinterTest extends PPTestClass {
   public void testCPCGUnsupName() throws IOException {
     try {
       testPP(".dot", TestPrettyPrintersMill.parser()::parse_StringCPCGUnsupName);
-      Assert.fail();
+      Assertions.fail();
     } catch (IllegalStateException expected) {
-      Assert.assertEquals("Unable to find good Constant name for getEnding and value ", expected.getMessage());
+      Assertions.assertEquals("Unable to find good Constant name for getEnding and value ", expected.getMessage());
+      MCAssertions.assertHasFinding(f -> f.getMsg().contains("Unable to find good Constant name for getEnding and value"));
     }
   }
 
@@ -560,9 +555,10 @@ public class TestPrettyPrinterTest extends PPTestClass {
   public void testNoSpace2017() throws IOException {
     try {
       testPP("  n1.n2", TestPrettyPrintersMill.parser()::parse_StringNoWhiteSpaceA2017);
-      Assert.fail();
+      Assertions.fail();
     } catch (IllegalStateException expected) {
-      Assert.assertEquals("Unable to target the previous token using the noSpace control directive. You may also need to override the printing methods of productions using this NonTerminal", expected.getMessage());
+      Assertions.assertEquals("Unable to target the previous token using the noSpace control directive. You may also need to override the printing methods of productions using this NonTerminal", expected.getMessage());
+      MCAssertions.assertHasFinding(f -> f.getMsg().contains("Unable to target the previous token using the noSpace control directive. You may also need to override the printing methods of productions using this NonTerminal"));
     }
   }
 
@@ -579,15 +575,18 @@ public class TestPrettyPrinterTest extends PPTestClass {
   public void testNoSpaceAltsOpt() throws IOException {
     try {
       testPP("-n1 +", TestPrettyPrintersMill.parser()::parse_StringNoSpaceAltsOpt);
-      Assert.fail();
+      Assertions.fail();
     } catch (IllegalStateException expected) {
-      Assert.assertEquals("Unable to handle noSpace control directive for block of non-default iteration", expected.getMessage());
+      Assertions.assertEquals("Unable to handle noSpace control directive for block of non-default iteration", expected.getMessage());
+      MCAssertions.assertHasFinding(f -> f.getMsg().contains("Unable to handle noSpace control directive for block of non-default iteration"));
+      MCAssertions.assertNoFindings();
     }
     try {
       testPP("n1+", TestPrettyPrintersMill.parser()::parse_StringNoSpaceAltsOpt);
-      Assert.fail();
+      Assertions.fail();
     } catch (IllegalStateException expected) {
-      Assert.assertEquals("Unable to handle noSpace control directive for block of non-default iteration", expected.getMessage());
+      Assertions.assertEquals("Unable to handle noSpace control directive for block of non-default iteration", expected.getMessage());
+      MCAssertions.assertHasFinding(f -> f.getMsg().contains("Unable to handle noSpace control directive for block of non-default iteration"));
     }
   }
 
@@ -595,9 +594,10 @@ public class TestPrettyPrinterTest extends PPTestClass {
   public void testNoSpaceAltsOverflow() throws IOException {
     try {
       testPP("-n1.n2", TestPrettyPrintersMill.parser()::parse_StringNoSpaceAltsOverflow);
-      Assert.fail();
+      Assertions.fail();
     } catch (IllegalStateException expected) {
-      Assert.assertEquals("Unable to handle noSpace control directive for block with multiple alts of different length", expected.getMessage());
+      Assertions.assertEquals("Unable to handle noSpace control directive for block with multiple alts of different length", expected.getMessage());
+      MCAssertions.assertHasFinding(f -> f.getMsg().contains("Unable to handle noSpace control directive for block with multiple alts of different length"));
     }
   }
 
@@ -685,16 +685,16 @@ public class TestPrettyPrinterTest extends PPTestClass {
   public void testTrimRight() {
     IndentPrinter printer = new IndentPrinter();
     printer.stripTrailing();
-    Assert.assertEquals("", printer.getContent());
+    Assertions.assertEquals("", printer.getContent());
     printer.print("Hello world");
     printer.stripTrailing();
-    Assert.assertEquals("Hello world", printer.getContent());
+    Assertions.assertEquals("Hello world", printer.getContent());
     printer.print(" ");
     printer.stripTrailing();
-    Assert.assertEquals("Hello world", printer.getContent());
+    Assertions.assertEquals("Hello world", printer.getContent());
     printer.println();
     printer.stripTrailing();
-    Assert.assertEquals("Hello world\n", printer.getContent());
+    Assertions.assertEquals("Hello world\n", printer.getContent());
   }
 
   @Test
@@ -718,7 +718,8 @@ public class TestPrettyPrinterTest extends PPTestClass {
   public void testReplaceKeywordFail() throws IOException {
     TestPrettyPrintersParser parser = TestPrettyPrintersMill.parser();
     Optional<ASTToBeReplacedKeyword> astOpt = parser.parse_StringToBeReplacedKeyword("ReplacedKeyword");
-    Assert.assertTrue(astOpt.isEmpty());
+    Assertions.assertTrue(astOpt.isEmpty());
+    MCAssertions.assertHasFinding(f -> f.getMsg().contains("mismatched input 'ReplacedKeyword' expecting 'ActuallyReplacedKeyword'"));
   }
 
   @Test
@@ -738,23 +739,168 @@ public class TestPrettyPrinterTest extends PPTestClass {
 
 
   @Test
-  @Ignore // Ignored - monticore/monticore#3328 - non-terminals with attributes do not behave with replacekeyword
+  @Disabled // Ignored - monticore/monticore#3328 - non-terminals with attributes do not behave with replacekeyword
   // We can un-ignore this test once that behaviour is settled
   public void testProdNamedTerminalParser() throws IOException {
+    KeywordAddingTestPrettyPrintersMill.init();
     Optional<ASTProdNamedTerminal> astOpt = KeywordAddingTestPrettyPrintersMill.parser().parse_StringProdNamedTerminal("newprodNamedTerminal");
-    Assert.assertTrue(astOpt.isPresent());
-    Assert.assertEquals("newprodNamedTerminal", astOpt.get().getTerm()); // Parser Action does otherwise
+    Assertions.assertTrue(astOpt.isPresent());
+    Assertions.assertEquals("newprodNamedTerminal", astOpt.get().getTerm()); // Parser Action does otherwise
   }
 
   @Test
   public void testAddingProdNamedTerminalOld() throws IOException {
+    KeywordAddingTestPrettyPrintersMill.init();
     testPP("prodNamedTerminal", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringProdNamedTerminal);
   }
 
   @Test
-  @Ignore // Ignored - monticore/monticore#3328 - non-terminals with attributes do not behave with replacekeyword
+  @Disabled // Ignored - monticore/monticore#3328 - non-terminals with attributes do not behave with replacekeyword
   // We can un-ignore this test once that behaviour is settled
   public void testAddingProdNamedTerminalNew() throws IOException {
+    KeywordAddingTestPrettyPrintersMill.init();
     testPP("newprodNamedTerminal", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringProdNamedTerminal);
+  }
+
+  @Test
+  public void testBrackets() throws IOException {
+    // The AND(A, OR(B, C)) expression may be printed as OR( AND(A, B), C)
+    // if no extra brackets/parentheses are added
+    testPP("entry ;", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringNestedOptFromSysML);
+    testPP("entry A", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringNestedOptFromSysML);
+    testPP("entry B;", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringNestedOptFromSysML);
+    testPP("entry B { }", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringNestedOptFromSysML);
+    testPP("entry B { C }", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringNestedOptFromSysML);
+  }
+
+  @Test
+  public void testOptOrdering0() throws IOException {
+    testPP("A", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering0);
+    // Test that the first altenative is only printed when no B is present
+    testPP("B", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering0);
+  }
+
+  @Test
+  public void testOptOrdering1() throws IOException {
+    testPP("A", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering1);
+    testPP("B", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering1);
+    testPP(" ", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering1);
+  }
+
+  @Test
+  public void testOptOrdering2() throws IOException {
+    testPP("A", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering2);
+    testPP("B", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering2);
+    testPP("A C", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering2);
+    testPP("B C", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering2);
+  }
+
+  @Test
+  public void testOptOrdering3() throws IOException {
+    testPP("A", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering3);
+    testPP("B", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering3);
+    testPP(" ", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering3);
+    testPP("A C", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering3);
+    testPP("B C", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering3);
+    testPP("  C", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering3);
+  }
+
+  @Test
+  public void testOptOrdering4() throws IOException {
+    testPP("A", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering4);
+    testPP("B", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering4);
+    testPP(" ", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering4);
+    testPP("A C", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering4);
+    testPP("B C", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering4);
+    testPP("  C", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering4);
+  }
+
+  @Test
+  public void testOptOrdering5() throws IOException {
+    testPP("A", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering5);
+    testPP("B", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering5);
+    testPP("A C", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering5);
+    testPP("B C", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering5);
+  }
+
+  @Test
+  public void testOptOrdering6() throws IOException {
+    testPP("A", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering6);
+    testPP("B", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering6);
+    testPP(" ", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering6);
+    testPP("A C", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering6);
+    testPP("B C", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering6);
+    testPP("  C", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringOptOrdering6);
+  }
+
+  @Test
+  public void testNestedFromTfIdentifier() throws IOException {
+    testPP("foob", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringNestedFromTfIdentifier);
+    testPP("Name foob", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringNestedFromTfIdentifier);
+    testPP("[[ $a :- $b ]]", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringNestedFromTfIdentifier);
+    testPP("[[ fooa :- foob]]", KeywordAddingTestPrettyPrintersMill.parser()::parse_StringNestedFromTfIdentifier);
+  }
+
+  @Test
+  public void testExhaustedAlts1() throws IOException {
+    testPP("a A", TestPrettyPrintersMill.parser()::parse_StringExhaustedAlts1);
+    testPP("a A A", TestPrettyPrintersMill.parser()::parse_StringExhaustedAlts1);
+    testPP("A", TestPrettyPrintersMill.parser()::parse_StringExhaustedAlts1);
+    testPP("A A", TestPrettyPrintersMill.parser()::parse_StringExhaustedAlts1);
+  }
+
+  @Test
+  public void testExhaustedAlts2() throws IOException {
+    // Should the first or second alt be selected?
+    // The case-distinction is non-trivial => we abort
+    try {
+      testPP("a A", TestPrettyPrintersMill.parser()::parse_StringExhaustedAlts2);
+      Assertions.fail();
+    } catch (IllegalStateException expected) {
+      Assertions.assertEquals("The NonTerminal(s) [A] caused the automatic generation to fail", expected.getMessage());
+      MCAssertions.assertHasFinding(f -> f.getMsg().contains("The NonTerminal(s) [A] caused the automatic generation to fail"));
+    }
+  }
+
+  @Test
+  public void testExhaustedAlts3() throws IOException {
+    try {
+      testPP("a A", TestPrettyPrintersMill.parser()::parse_StringExhaustedAlts3);
+      Assertions.fail();
+    } catch (IllegalStateException expected) {
+      Assertions.assertEquals("The NonTerminal(s) [A] caused the automatic generation to fail", expected.getMessage());
+      MCAssertions.assertHasFinding(f -> f.getMsg().contains("The NonTerminal(s) [A] caused the automatic generation to fail"));
+    }
+  }
+
+
+  @Test
+  public void testExhaustedAlts4() throws IOException {
+    testPP("a A", TestPrettyPrintersMill.parser()::parse_StringExhaustedAlts4);
+    testPP("a A A", TestPrettyPrintersMill.parser()::parse_StringExhaustedAlts4);
+    testPP("hello", TestPrettyPrintersMill.parser()::parse_StringExhaustedAlts4);
+    testPP("A", TestPrettyPrintersMill.parser()::parse_StringExhaustedAlts4);
+    testPP("A A", TestPrettyPrintersMill.parser()::parse_StringExhaustedAlts4);
+  }
+
+  @Test
+  public void testExhaustedAlts5() throws IOException {
+    try {
+      testPP("hello", TestPrettyPrintersMill.parser()::parse_StringExhaustedAlts5);
+      Assertions.fail();
+    } catch (IllegalStateException expected) {
+      Assertions.assertEquals("The NonTerminal(s) [A] caused the automatic generation to fail", expected.getMessage());
+      MCAssertions.assertHasFinding(f -> f.getMsg().contains("The NonTerminal(s) [A] caused the automatic generation to fail"));
+    }  }
+
+  @Test
+  public void testExhaustedAlts6() throws IOException {
+    try {
+      testPP("a A", TestPrettyPrintersMill.parser()::parse_StringExhaustedAlts6);
+      Assertions.fail();
+    } catch (IllegalStateException expected) {
+      Assertions.assertEquals("The NonTerminal(s) [A] caused the automatic generation to fail", expected.getMessage());
+      MCAssertions.assertHasFinding(f -> f.getMsg().contains("The NonTerminal(s) [A] caused the automatic generation to fail"));
+    }
   }
 }

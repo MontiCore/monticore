@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import com.google.common.base.Preconditions;
 import de.monticore.types3.ISymTypeVisitor;
 import de.se_rwth.commons.logging.Log;
 
@@ -23,7 +24,7 @@ public class SymTypeOfTuple extends SymTypeExpression {
   protected List<SymTypeExpression> types;
 
   public SymTypeOfTuple(List<SymTypeExpression> types) {
-    this.types = Log.errorIfNull(types);
+    this.types = Preconditions.checkNotNull(types);
   }
 
   @Override

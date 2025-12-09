@@ -16,6 +16,10 @@ related tooling are currently available for download:
 .md-typeset table:not([class]) td {
   padding:.3em .7em;
 }
+/*Hide sidebar/navigation to gain even more space*/
+.md-sidebar--primary {
+  display: none;
+}
 </style>
 
 | Artifact                            | Description                     | Download     |
@@ -25,6 +29,8 @@ related tooling are currently available for download:
 | Automaton Example Project           | Example language definition project that can be used with MontiCore.                                                                                                                                                                                                             | [Download JAR](https://www.monticore.de/download/aut.tar.gz)                        |
 | Automaton Example Project in Gradle | Example language definition project that can be used with MontiCore's Gradle integration.                                                                                                                                                                                                                             | [Download JAR](https://www.monticore.de/download/Automaton.zip)                     |
 | CD Tool                             | Parser, well-formedness checker, pretty printer, semantic and syntactic differencing, merging for the [MontiCore Class Diagrams](https://github.com/MontiCore/cd4analysis/blob/develop/README.md).                                                               | [Download JAR](https://www.monticore.de/download/MCCD.jar)                          |
+| STD Tool                             | Parser, well-formedness checker, pretty printer for the [SymTabDefinition](https://github.com/MontiCore/cd4analysis/blob/dev/cdlang/src/main/grammars/de/monticore/SymTabDefinition.md) language, for defining basic and object-oriented symbols based symbol tables.                                                                                                                        | [Download JAR](https://www.monticore.de/download/MCSTD.jar)                          |
+| Symbol Library                      | Symbols for Streams-Types, first and formost to be used in conjunction with [StreamExpressions](https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md).                                                                             | [Download JAR](https://www.monticore.de/download/stream-symbols.jar)                 |
 | FACT Tool                           | Finds valid configurations for [MontiCore Feature Diagrams](https://github.com/MontiCore/feature-diagram/blob/develop/README.md), completes incomplete feature configurations and checks validity of complete feature configurations.                                                                                                          | [Download JAR](https://www.monticore.de/download/MCFeatureDiagram.jar)                        |
 | MLC Tool                            | Modelling and maintaining architectural drift in language components (especially usable in MontiCore language definitions).                                                                                                                                                                                                                          | [Download JAR](https://www.monticore.de/download/MCMLC.jar)                         |
 | OCL Tool                            | Parser, well-formedness checker, pretty printer for the [MontiCore Object Constraint Language](https://github.com/MontiCore/ocl/blob/develop/README.md).                                                                                                                  | [Download JAR](https://www.monticore.de/download/MCOCL.jar)                         |
@@ -49,6 +55,6 @@ Please note the [MontiCore 3-Level License](../00.org/Licenses/LICENSE-MONTICORE
 * [Licenses](../00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md) - MontiCore 3-Level License
 * [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
 * [**List of languages**](https://monticore.github.io/monticore/docs/Languages/)
-* [**MontiCore Core Grammar Library**](https://github.com/MontiCore/monticore/blob/opendev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
+* [**MontiCore Core Grammar Library**](https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
 * [Best Practices](https://monticore.github.io/monticore/docs/BestPractices/)
 * [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)

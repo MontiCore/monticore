@@ -15,11 +15,11 @@ public class PortSymbol extends PortSymbolTOP {
   }
 
   /**
-   * @param name      the name of this port.
-   * @param incoming  whether the port is incoming.
-   * @param outgoing  whether the port is outgoing.
-   * @param type      the type of this port.
-   * @param timing    the timing of this port.
+   * @param name     the name of this port.
+   * @param incoming whether the port is incoming.
+   * @param outgoing whether the port is outgoing.
+   * @param type     the type of this port.
+   * @param timing   the timing of this port.
    */
   protected PortSymbol(String name,
                        boolean incoming,
@@ -49,7 +49,7 @@ public class PortSymbol extends PortSymbolTOP {
 
   public TypeSymbol getTypeInfo() {
     return this.getType().getTypeInfo() instanceof TypeSymbolSurrogate ?
-      ((TypeSymbolSurrogate) this.getType().getTypeInfo()).lazyLoadDelegate() : this.getType().getTypeInfo();
+        ((TypeSymbolSurrogate) this.getType().getTypeInfo()).lazyLoadDelegate() : this.getType().getTypeInfo();
   }
 
   @Override

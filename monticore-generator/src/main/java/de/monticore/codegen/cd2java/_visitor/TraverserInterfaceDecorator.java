@@ -31,8 +31,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
+import static de.monticore.cd.codegen.CD2JavaTemplates.JAVADOC;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
-import static de.monticore.codegen.CD2JavaTemplatesFix.JAVADOC;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
 
 /**

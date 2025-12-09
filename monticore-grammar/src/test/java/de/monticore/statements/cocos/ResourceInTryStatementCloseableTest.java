@@ -41,13 +41,14 @@ public class ResourceInTryStatementCloseableTest {
     checker.setTraverser(TestMCExceptionStatementsMill.traverser());
     checker.addCoCo(new ResourceInTryStatementCloseable(new TypeCalculator(null, new FullDeriveFromCombineExpressionsWithLiterals())));
 
-    SymTypeOfObject sType = SymTypeExpressionFactory.createTypeObject("java.io.Closeable", TestMCExceptionStatementsMill.globalScope());
-    SymTypeOfObject sTypeA = SymTypeExpressionFactory.createTypeObject("A", TestMCExceptionStatementsMill.globalScope());
+    SymTypeOfObject sType = SymTypeExpressionFactory.createTypeObjectViaSurrogate("java.io.Closeable", TestMCExceptionStatementsMill.globalScope());
+    SymTypeOfObject sTypeA = SymTypeExpressionFactory.createTypeObjectViaSurrogate("A", TestMCExceptionStatementsMill.globalScope());
 
     TestMCExceptionStatementsMill.globalScope().add(
         TestMCExceptionStatementsMill
             .oOTypeSymbolBuilder()
             .setName("A")
+            .setSpannedScope(TestMCCommonStatementsMill.globalScope())
             .addSuperTypes(sType)
             .build());
 
@@ -64,6 +65,7 @@ public class ResourceInTryStatementCloseableTest {
         TestMCExceptionStatementsMill
             .oOTypeSymbolBuilder()
             .setName("Closeable")
+            .setSpannedScope(TestMCCommonStatementsMill.globalScope())
             .build());
 
     TestMCExceptionStatementsMill.globalScope().add(
@@ -73,12 +75,13 @@ public class ResourceInTryStatementCloseableTest {
             .setType(sTypeA)
             .build());
 
-    SymTypeOfObject sTypeB = SymTypeExpressionFactory.createTypeObject("B", TestMCExceptionStatementsMill.globalScope());
+    SymTypeOfObject sTypeB = SymTypeExpressionFactory.createTypeObjectViaSurrogate("B", TestMCExceptionStatementsMill.globalScope());
 
     TestMCExceptionStatementsMill.globalScope().add(
         TestMCExceptionStatementsMill
             .oOTypeSymbolBuilder()
             .setName("B")
+            .setSpannedScope(TestMCCommonStatementsMill.globalScope())
             .build());
 
     TestMCExceptionStatementsMill.globalScope().add(

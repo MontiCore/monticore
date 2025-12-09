@@ -9,7 +9,7 @@ import java.util.*;
  * Recursive data structure for hierarchical tag definition
  */
 public class TagData {
-  protected final Map<String, TagData> inner = new HashMap<>();
+  protected final Map<String, TagData> inner = new LinkedHashMap<>();
 
   protected final List<ASTTag> tags = new ArrayList<>();
 

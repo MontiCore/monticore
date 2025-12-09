@@ -62,7 +62,7 @@ public class NoExtensionOfSymbolThatOnlySpansScope implements GrammarASTMCGramma
   }
 
   protected void logError(ProdSymbol original, ProdSymbol superProd){
-    Log.error(ERROR_CODE + String.format(ERROR_MSG_FORMAT, original, superProd));
+    Log.error(ERROR_CODE + String.format(ERROR_MSG_FORMAT, original, superProd), original.getSourcePosition());
   }
 
 

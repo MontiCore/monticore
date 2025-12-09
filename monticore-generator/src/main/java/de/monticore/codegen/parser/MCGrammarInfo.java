@@ -104,7 +104,7 @@ public class MCGrammarInfo {
         .newLinkedHashSet(Arrays.asList(grammarSymbol));
     grammarsToHandle.addAll(MCGrammarSymbolTableHelper.getAllSuperGrammars(grammarSymbol));
     for (MCGrammarSymbol grammar : grammarsToHandle) {
-      HashMap<String, List<ASTRuleReference>> ruleMap = Maps.newLinkedHashMap();
+      LinkedHashMap<String, List<ASTRuleReference>> ruleMap = Maps.newLinkedHashMap();
       // Collect superclasses and superinterfaces for classes
       for (ASTClassProd classProd : (grammar.getAstNode())
           .getClassProdList()) {

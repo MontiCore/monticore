@@ -26,7 +26,7 @@ import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -304,7 +304,7 @@ public class TaggerDecorator extends AbstractDecorator {
   protected boolean isIndirectSymbol(ProdSymbol symbol){
     if (symbol.isIsSymbolDefinition()) return true;
     LinkedList<ProdSymbol> toCheck = new LinkedList<>();
-    Set<ProdSymbol> checked = new HashSet<>();
+    Set<ProdSymbol> checked = new LinkedHashSet<>();
     toCheck.add(symbol);
     while (!toCheck.isEmpty()) {
       ProdSymbol symbolToCheck = toCheck.removeFirst();

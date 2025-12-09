@@ -98,7 +98,7 @@ public class ReportingRepository {
    * Method that converts the ASTNode into a formatted string with a source position if this is
    * possible. The structure of the string is
    *
-   * @nodeName!nodeType(x,y) or @nodeName!nodeType(!ID).
+   * <code>@nodeName!nodeType(x,y)</code> or <code>@nodeName!nodeType(!ID)</code>.
    * @param a that should be converted into unique String
    * @return representation of the ASTNode that contains either the position or a unique
    * identification number for the object
@@ -112,7 +112,7 @@ public class ReportingRepository {
    * Method that converts the Symbol into a formatted string with a source position if this is
    * possible. The structure of the string is
    *
-   * @symbolName!symbolType(x,y) or @symbolName!symbolType(!ID).
+   * <code>@symbolName!symbolType(x,y)</code> or <code>@symbolName!symbolType(!ID)</code>.
    * @param symbol The symbol that should be converted into unique String
    * @return representation of the ASTNode that contains either the position or a unique
    * identification number for the object
@@ -126,7 +126,7 @@ public class ReportingRepository {
    * Method that converts the Symbol into a formatted string with a source position if this is
    * possible. The structure of the string is
    *
-   * @symbolName!symbolType(x,y) or @symbolName!symbolType(!ID).
+   * <code>@symbolName!symbolType(x,y)</code> or <code>@symbolName!symbolType(!ID)</code>.
    * @param scope The scope that should be converted into unique String
    * @return representation of the ASTNode that contains either the position or a unique
    * identification number for the object

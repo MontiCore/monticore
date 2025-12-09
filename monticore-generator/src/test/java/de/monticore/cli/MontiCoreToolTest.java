@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -203,7 +203,7 @@ public class MontiCoreToolTest {
     File reproOutDir1 = Paths.get("target/test-run-repo/repo1/").toFile();
     File reproOutDir2 = Paths.get("target/test-run-repo/repo2/").toFile();
 
-    Set<Path> allowedDirtyFiles = new HashSet<>();
+    Set<Path> allowedDirtyFiles = new LinkedHashSet<>();
     allowedDirtyFiles.add(path);
       // "20_Statistics" contains the execution duration, which varies between runs
 

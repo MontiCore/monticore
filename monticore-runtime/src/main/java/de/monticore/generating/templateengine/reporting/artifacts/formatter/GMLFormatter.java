@@ -2,7 +2,7 @@
 
 package de.monticore.generating.templateengine.reporting.artifacts.formatter;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,9 +16,9 @@ import de.monticore.generating.templateengine.reporting.artifacts.model.RootPkg;
 
 public class GMLFormatter extends AFormatter {
   
-  protected Map<Element, Integer> elementIds = new HashMap<Element, Integer>();
+  protected Map<Element, Integer> elementIds = new LinkedHashMap<Element, Integer>();
   
-  protected Map<APkg, Integer> packageIds = new HashMap<APkg, Integer>();
+  protected Map<APkg, Integer> packageIds = new LinkedHashMap<APkg, Integer>();
   
   protected int nodeIdCounter = 0;
   
@@ -29,7 +29,7 @@ public class GMLFormatter extends AFormatter {
   protected double edgeSizeRange = 0;
   
   /**
-   * @see AFormatter.printer.APrinter#print(visualization.model.RootPkg)
+   * AFormatter.printer.APrinter#print(visualization.model.RootPkg)
    */
   @Override
   public List<String> getContent(RootPkg rootPkg) {
@@ -144,8 +144,6 @@ public class GMLFormatter extends AFormatter {
   /**
    * Print the dot graph representation of this element
    * 
-   * @param o Open file to write to
-   * @param space Space for indentation
    */
   public List<String> getElementContent(Element element) {
     List<String> lines = Lists.newArrayList();
@@ -176,7 +174,7 @@ public class GMLFormatter extends AFormatter {
   
   /**
    * 
-   * @param name
+   * @param type
    * @return
    */
   protected String getShape(ElementType type) {

@@ -22,7 +22,7 @@ import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.io.FilenameUtils;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -45,7 +45,7 @@ public class Type4Ast {
    * strictly seperated from the map for type identifiers
    * we use ASTNode to support non-ASTExpression Nodes (e.g., literals)
    * however, we do NOT support non-expression ASTNodes,
-   * e.g. in MyClass.myMethod() -> the "MyClass" is not an expression by itself
+   * e.g. in MyClass.myMethod(): the "MyClass" is not an expression by itself
    */
   protected Map<ASTNode, SymTypeExpression> expr2type;
 
@@ -71,8 +71,8 @@ public class Type4Ast {
   }
 
   public void reset() {
-    expr2type = new HashMap<>();
-    typeID2type = new HashMap<>();
+    expr2type = new LinkedHashMap<>();
+    typeID2type = new LinkedHashMap<>();
   }
 
   /**

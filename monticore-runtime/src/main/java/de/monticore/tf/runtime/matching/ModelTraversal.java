@@ -8,9 +8,9 @@ import java.util.*;
 
 public class ModelTraversal<E extends ITraverser> {
 
-  protected Map<String, Collection<ASTNode>> cName2instances = new HashMap<>();
+  protected Map<String, Collection<ASTNode>> cName2instances = new LinkedHashMap<>();
   protected List<ASTNode> all = new ArrayList<>();
-  protected Map<ASTNode, ASTNode> parents= new HashMap<>();
+  protected Map<ASTNode, ASTNode> parents= new LinkedHashMap<>();
   protected Stack<ASTNode> currentparents = new Stack<>();
 
   private final E traverser;

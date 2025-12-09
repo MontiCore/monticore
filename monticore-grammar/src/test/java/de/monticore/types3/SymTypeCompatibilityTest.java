@@ -5,6 +5,8 @@ package de.monticore.types3;
 import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsGlobalScope;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsScope;
+import de.monticore.runtime.junit.AbstractMCTest;
+import de.monticore.types3.util.DefsTypesForTests;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsGlobalScope;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
@@ -18,7 +20,6 @@ import de.monticore.types.check.SymTypeOfNumericWithSIUnit;
 import de.monticore.types.check.SymTypeOfObject;
 import de.monticore.types.check.SymTypeOfRegEx;
 import de.monticore.types.check.SymTypeVariable;
-import de.monticore.types3.util.DefsTypesForTests;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,6 +27,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Collections;
 import java.util.List;
 
+import static de.monticore.types3.util.DefsTypesForTests.*;
 import static de.monticore.types.check.SymTypeExpressionFactory.createFunction;
 import static de.monticore.types.check.SymTypeExpressionFactory.createGenerics;
 import static de.monticore.types.check.SymTypeExpressionFactory.createIntersection;
@@ -38,11 +40,8 @@ import static de.monticore.types.check.SymTypeExpressionFactory.createTypeRegEx;
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeVariable;
 import static de.monticore.types.check.SymTypeExpressionFactory.createUnion;
 import static de.monticore.types.check.SymTypeExpressionFactory.createWildcard;
-import static de.monticore.types3.util.DefsTypesForTests.*;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
-public class SymTypeCompatibilityTest extends AbstractTypeTest {
+public class SymTypeCompatibilityTest extends AbstractMCTest {
 
   protected ICombineExpressionsWithLiteralsScope scope;
 
@@ -130,7 +129,6 @@ public class SymTypeCompatibilityTest extends AbstractTypeTest {
 
     Assertions.assertFalse(SymTypeRelations.isCompatible(_booleanSymType, _personSymType));
     Assertions.assertTrue(SymTypeRelations.isCompatible(_booleanSymType, _BooleanSymType));
-    assertNoFindings();
   }
 
   @Test
@@ -209,7 +207,6 @@ public class SymTypeCompatibilityTest extends AbstractTypeTest {
 
     Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_booleanSymType, _personSymType));
     Assertions.assertFalse(SymTypeRelations.isSubTypeOf(_booleanSymType, _BooleanSymType));
-    assertNoFindings();
   }
 
   @Test
@@ -250,7 +247,6 @@ public class SymTypeCompatibilityTest extends AbstractTypeTest {
         createTypeArray(_personSymType, 0)));
     Assertions.assertFalse(SymTypeRelations.isCompatible(_personSymType, _unboxedMapSymType));
     Assertions.assertFalse(SymTypeRelations.isCompatible(_personSymType, _BooleanSymType));
-    assertNoFindings();
   }
 
   @Test
@@ -261,8 +257,27 @@ public class SymTypeCompatibilityTest extends AbstractTypeTest {
     Assertions.assertTrue(SymTypeRelations.isCompatible(regEx2, regEx1));
     Assertions.assertTrue(SymTypeRelations.isCompatible(_unboxedString, regEx1));
     Assertions.assertTrue(SymTypeRelations.isCompatible(regEx1, _unboxedString));
+  }
+
+  @Test
+  public void isCompatibleRegExOnlyJavaLangString() {
+    // delete String (not java.lang.String)
+    BasicSymbolsMill.globalScope().remove(_unboxedString.getTypeInfo());
+    SymTypeOfRegEx regEx1 = createTypeRegEx("gr(a|e)y");
+    SymTypeOfRegEx regEx2 = createTypeRegEx("gr(e|a)y");
+    Assertions.assertTrue(SymTypeRelations.isCompatible(regEx1, regEx1));
+    Assertions.assertTrue(SymTypeRelations.isCompatible(regEx2, regEx1));
     Assertions.assertTrue(SymTypeRelations.isCompatible(_boxedString, regEx1));
     Assertions.assertTrue(SymTypeRelations.isCompatible(regEx1, _boxedString));
+  }
+
+  @Test
+  public void isCompatibleRegExToStringSuperTypes() {
+    // String extends Person,
+    // just to test if String supertypes are taken care of for RegEx
+    _unboxedString.getTypeInfo().addSuperTypes(_personSymType);
+    SymTypeOfRegEx regEx1 = createTypeRegEx("gr(a|e)y");
+    Assertions.assertTrue(SymTypeRelations.isCompatible(_personSymType, regEx1));
   }
 
   @Test
@@ -294,16 +309,15 @@ public class SymTypeCompatibilityTest extends AbstractTypeTest {
     Assertions.assertFalse(SymTypeRelations.isCompatible(listOfPerson, listOfBoolean));
     Assertions.assertFalse(SymTypeRelations.isCompatible(listOfBoolean, subPersonList));
     Assertions.assertFalse(SymTypeRelations.isCompatible(subPersonList, listOfPerson));
-    assertNoFindings();
   }
 
   @Test
   public void isSubTypeGenericsDoNotIgnoreTypeArguments() {
     //s. https://git.rwth-aachen.de/monticore/monticore/-/issues/2977
     // Test if we do not ignore TypeVariables in the description of the supertypes.
-    // e.g., given HashMap<K, V> extends Map<K, V>
+    // e.g., given LinkedHashMap<K, V> extends Map<K, V>
     // do not ignore the identity of the variables, e.g., do not allow
-    // Map<Integer, String> x = new HashMap<String, Integer>();
+    // Map<Integer, String> x = new LinkedHashMap<String, Integer>();
     SymTypeOfGenerics iSMap = createGenerics(
         _boxedMapSymType.getTypeInfo(), _IntegerSymType, _boxedString);
     SymTypeOfGenerics iSHashMap = createGenerics(
@@ -313,7 +327,6 @@ public class SymTypeCompatibilityTest extends AbstractTypeTest {
 
     Assertions.assertTrue(SymTypeRelations.isCompatible(iSMap, iSHashMap));
     Assertions.assertFalse(SymTypeRelations.isCompatible(iSMap, sIHashMap));
-    assertNoFindings();
   }
 
   @Test
@@ -334,7 +347,6 @@ public class SymTypeCompatibilityTest extends AbstractTypeTest {
     Assertions.assertFalse(SymTypeRelations.isCompatible(
         createUnion(_studentSymType, _teacherSymType), _personSymType
     ));
-    assertNoFindings();
   }
 
   @Test
@@ -356,7 +368,6 @@ public class SymTypeCompatibilityTest extends AbstractTypeTest {
     Assertions.assertFalse(SymTypeRelations.isCompatible(
         createIntersection(_personSymType, _carSymType), _personSymType
     ));
-    assertNoFindings();
   }
 
   @Test
@@ -436,8 +447,6 @@ public class SymTypeCompatibilityTest extends AbstractTypeTest {
         createFunction(_personSymType, List.of(_intSymType), true),
         createFunction(_personSymType, _intSymType)
     ));
-
-    assertNoFindings();
   }
 
   @Test
@@ -613,8 +622,6 @@ public class SymTypeCompatibilityTest extends AbstractTypeTest {
     Assertions.assertTrue(SymTypeRelations.isCompatible(_studentSymType, superSSubCsSTVar));
     Assertions.assertFalse(SymTypeRelations.isCompatible(_csStudentSymType, superSSubCsSTVar));
     Assertions.assertFalse(SymTypeRelations.isCompatible(_firstSemesterCsStudentSymType, superSSubCsSTVar));
-
-    assertNoFindings();
   }
 
   @Test
@@ -676,8 +683,6 @@ public class SymTypeCompatibilityTest extends AbstractTypeTest {
     Assertions.assertTrue(SymTypeRelations.isCompatible(pSubList, sSubLinkedList));
     Assertions.assertFalse(SymTypeRelations.isCompatible(sSubList, pSubLinkedList));
     Assertions.assertTrue(SymTypeRelations.isCompatible(sSubList, sSubLinkedList));
-
-    assertNoFindings();
   }
 
   @Test
@@ -729,8 +734,6 @@ public class SymTypeCompatibilityTest extends AbstractTypeTest {
     Assertions.assertFalse(SymTypeRelations.isCompatible(pSuperList, sSuperLinkedList));
     Assertions.assertTrue(SymTypeRelations.isCompatible(sSuperList, pSuperLinkedList));
     Assertions.assertTrue(SymTypeRelations.isCompatible(sSuperList, sSuperLinkedList));
-
-    assertNoFindings();
   }
 
   @Test

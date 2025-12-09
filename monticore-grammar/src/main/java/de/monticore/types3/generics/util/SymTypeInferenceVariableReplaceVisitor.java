@@ -12,8 +12,8 @@ import java.util.TreeMap;
 
 /**
  * replaces InferenceVariables using a given map
- * e.g., a, {a->int,b->float} -> int
- * e.g., List<a>, {a->int} -> List<int>
+ * e.g., {@code a, @code {a->int,b->float} -> int}
+ * e.g., {@code List<a>, {a->int} -> List<int>}
  * Usage:
  * calculate(symType, replaceMap)
  */

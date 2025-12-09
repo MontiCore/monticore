@@ -36,7 +36,7 @@ public class SynchronizedArgIsReftypeTest {
     checker = new TestMCSynchronizedStatementsCoCoChecker();
     checker.addCoCo(new SynchronizedArgIsReftype(new TypeCalculator(null, new FullDeriveFromCombineExpressionsWithLiterals())));
 
-    SymTypeOfObject sType = SymTypeExpressionFactory.createTypeObject("java.lang.Object", TestMCExceptionStatementsMill.globalScope());
+    SymTypeOfObject sType = SymTypeExpressionFactory.createTypeObjectViaSurrogate("java.lang.Object", TestMCExceptionStatementsMill.globalScope());
     TestMCExceptionStatementsMill.globalScope().add(TestMCExceptionStatementsMill.oOTypeSymbolBuilder().setName("java.lang.Object").build());
     TestMCExceptionStatementsMill.globalScope().add(TestMCExceptionStatementsMill.fieldSymbolBuilder().setName("a1").setType(sType).build());
   }

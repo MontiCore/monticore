@@ -5,6 +5,11 @@ package de.monticore.types.check;
 import de.monticore.types.mccollectiontypes.MCCollectionTypesMill;
 import de.monticore.types.mccollectiontypes._visitor.MCCollectionTypesTraverser;
 
+/**
+ * @deprecated part of typecheck1,
+ * use {@link de.monticore.types3.TypeCheck3} instead.
+ */
+@Deprecated
 public class FullSynthesizeFromMCCollectionTypes extends AbstractSynthesize {
 
   public FullSynthesizeFromMCCollectionTypes(){

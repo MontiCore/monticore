@@ -7,7 +7,7 @@ package de.monticore.generating.templateengine.freemarker;
 
 import de.monticore.generating.GeneratorSetup;
 import freemarker.log.Logger;
-import freemarker.template.DefaultObjectWrapper;
+import freemarker.template.DefaultObjectWrapperBuilder;
 import freemarker.template.ObjectWrapper;
 import freemarker.template.SimpleHash;
 
@@ -37,11 +37,11 @@ public class SimpleHashFactory {
   }
   
   public SimpleHash createSimpleHash() {
-    return new SimpleHash(new DefaultObjectWrapper(GeneratorSetup.FREEMARKER_VERSION));
+    return new SimpleHash(new DefaultObjectWrapperBuilder(GeneratorSetup.FREEMARKER_VERSION).build());
   }
   
   public SimpleHash createSimpleHash(Map<?, ?> map) {
-    return new SimpleHash(map, new DefaultObjectWrapper(GeneratorSetup.FREEMARKER_VERSION));
+    return new SimpleHash(map, new DefaultObjectWrapperBuilder(GeneratorSetup.FREEMARKER_VERSION).build());
   }
   
   public SimpleHash createSimpleHash(ObjectWrapper wrapper) {

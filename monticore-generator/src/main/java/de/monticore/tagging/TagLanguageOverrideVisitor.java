@@ -5,7 +5,7 @@ import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._visitor.GrammarVisitor2;
 import de.se_rwth.commons.Joiners;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -15,13 +15,13 @@ import java.util.Map;
 public class TagLanguageOverrideVisitor implements GrammarVisitor2 {
   protected final ASTMCGrammar grammar;
 
-  protected final Map<String, ASTClassProd> classProdMap = new HashMap<>();
-  protected final Map<String, ASTEnumProd> enumProdMap = new HashMap<>();
-  protected final Map<String, ASTInterfaceProd> interfaceProdMap = new HashMap<>();
-  protected final Map<String, ASTAbstractProd> abstractProdMap = new HashMap<>();
-  protected final Map<String, ASTExternalProd> externalProdMap = new HashMap<>();
-  protected final Map<String, ASTLexProd> lexProdMap = new HashMap<>();
-  protected final Map<String, ASTASTRule> astRuleMap = new HashMap<>();
+  protected final Map<String, ASTClassProd> classProdMap = new LinkedHashMap<>();
+  protected final Map<String, ASTEnumProd> enumProdMap = new LinkedHashMap<>();
+  protected final Map<String, ASTInterfaceProd> interfaceProdMap = new LinkedHashMap<>();
+  protected final Map<String, ASTAbstractProd> abstractProdMap = new LinkedHashMap<>();
+  protected final Map<String, ASTExternalProd> externalProdMap = new LinkedHashMap<>();
+  protected final Map<String, ASTLexProd> lexProdMap = new LinkedHashMap<>();
+  protected final Map<String, ASTASTRule> astRuleMap = new LinkedHashMap<>();
 
   /**
    *

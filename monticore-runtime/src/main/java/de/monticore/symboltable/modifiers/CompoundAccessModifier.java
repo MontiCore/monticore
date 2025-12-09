@@ -4,7 +4,7 @@ package de.monticore.symboltable.modifiers;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -14,7 +14,7 @@ public class CompoundAccessModifier implements AccessModifier {
   protected Map<String, AccessModifier> dimensionToModifier;
 
   public CompoundAccessModifier(List<AccessModifier> modifiers) {
-    this.dimensionToModifier = new HashMap<>();
+    this.dimensionToModifier = new LinkedHashMap<>();
     for(AccessModifier modifier: modifiers){
       Map<String, AccessModifier> modifierMap = modifier.getDimensionToModifierMap();
       for(Map.Entry<String, AccessModifier> entry: modifierMap.entrySet()){

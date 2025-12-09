@@ -10,34 +10,34 @@ import de.monticore.types.check.SymTypePrimitive;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 
 /**
  * Boxes SymTypeExpressions,
  * including, but not limited to, Java primitive boxing
- * e.g., int -> java.lang.Integer
- * e.g., List -> java.util.List
+ * e.g., {@code int -> java.lang.Integer}
+ * e.g., {@code List -> java.util.List}
  * Usage:
  * calculate(symType)
  */
 public class SymTypeBoxingVisitor extends SymTypeDeepCloneVisitor {
 
   /**
-   * Map for boxing primitive types (e.g. "int" -> "java.lang.Integer")
+   * Map for boxing primitive types (e.g. {@code "int" -> "java.lang.Integer"})
    * Results are fully qualified.
    */
   protected static final Map<String, String> primitiveBoxMap;
 
   /**
-   * Map for boxing object types (e.g. "String" -> "java.lang.String")
+   * Map for boxing object types (e.g. {@code "String" -> "java.lang.String"})
    * Results are fully qualified.
    */
   protected static final Map<String, String> objectBoxMap;
 
   /**
-   * Map for boxing generic types (e.g. "List" -> "java.util.List")
+   * Map for boxing generic types (e.g. {@code "List" -> "java.util.List"})
    * Results are fully qualified.
    */
   protected static final Map<String, String> genericBoxMap;
@@ -58,7 +58,7 @@ public class SymTypeBoxingVisitor extends SymTypeDeepCloneVisitor {
    * initializing the maps
    */
   static {
-    Map<String, String> primitiveBoxMap_temp = new HashMap<>();
+    Map<String, String> primitiveBoxMap_temp = new LinkedHashMap<>();
     primitiveBoxMap_temp.put("boolean", "java.lang.Boolean");
     primitiveBoxMap_temp.put("byte", "java.lang.Byte");
     primitiveBoxMap_temp.put("char", "java.lang.Character");
@@ -69,11 +69,11 @@ public class SymTypeBoxingVisitor extends SymTypeDeepCloneVisitor {
     primitiveBoxMap_temp.put("short", "java.lang.Short");
     primitiveBoxMap = Collections.unmodifiableMap(primitiveBoxMap_temp);
 
-    Map<String, String> objectBoxMap_temp = new HashMap<>();
+    Map<String, String> objectBoxMap_temp = new LinkedHashMap<>();
     objectBoxMap_temp.put("String", "java.lang.String");
     objectBoxMap = Collections.unmodifiableMap(objectBoxMap_temp);
 
-    Map<String, String> genericBoxMap_temp = new HashMap<>();
+    Map<String, String> genericBoxMap_temp = new LinkedHashMap<>();
     genericBoxMap_temp.put("Optional", "java.util.Optional");
     genericBoxMap_temp.put("Set", "java.util.Set");
     genericBoxMap_temp.put("List", "java.util.List");

@@ -14,7 +14,7 @@ public class SymTypeOfWildcard extends SymTypeExpression {
    * @deprecated use the Factory,
    * the Factory uses the constructor below
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public SymTypeOfWildcard(){
   }
 

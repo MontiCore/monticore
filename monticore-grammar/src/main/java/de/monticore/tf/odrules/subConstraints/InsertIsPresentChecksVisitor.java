@@ -31,8 +31,8 @@ import java.util.Set;
  * <p>
  * Examples for normal variable $A and optional variable $O:
  * <p>
- * $A && $O results in $A && (!$O.isPresent || isValid($O))
- * $A || $O results in $A || ($O.isPresent && isValid($O))
+ * {@code $A && $O} results in {@code $A && (!$O.isPresent || isValid($O))}
+ * {@code $A} || $O results in {@code $A || ($O.isPresent && isValid($O))}
  */
 public class InsertIsPresentChecksVisitor implements CommonExpressionsVisitor2 {
 

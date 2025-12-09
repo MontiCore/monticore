@@ -5,6 +5,11 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.visitor.ITraverser;
 
+/**
+ * @deprecated part of typecheck1,
+ * use {@link de.monticore.types3.TypeCheck3} instead.
+ */
+@Deprecated
 public abstract class AbstractDerive implements IDerive {
 
   protected ITraverser traverser;

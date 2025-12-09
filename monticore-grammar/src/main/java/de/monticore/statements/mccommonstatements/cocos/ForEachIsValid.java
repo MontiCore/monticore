@@ -43,8 +43,8 @@ public class ForEachIsValid implements MCCommonStatementsASTEnhancedForControlCo
       expression = TypeCheck3.typeOf(node.getExpression());
     }
 
-    SymTypeExpression arrays = SymTypeExpressionFactory.createTypeObject("java.util.Arrays", node.getEnclosingScope());
-    SymTypeExpression lists = SymTypeExpressionFactory.createTypeObject("java.lang.Iterable", node.getEnclosingScope());
+    SymTypeExpression arrays = SymTypeExpressionFactory.createTypeObjectViaSurrogate("java.util.Arrays", node.getEnclosingScope());
+    SymTypeExpression lists = SymTypeExpressionFactory.createTypeObjectViaSurrogate("java.lang.Iterable", node.getEnclosingScope());
 
     if (!SymTypeRelations.isSubTypeOf(expression, arrays)) {
       if (!SymTypeRelations.isSubTypeOf(expression, lists)) {

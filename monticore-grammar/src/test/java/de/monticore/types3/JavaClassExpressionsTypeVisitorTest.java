@@ -10,6 +10,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.io.IOException;
 import java.util.stream.Stream;
 
+import static de.monticore.runtime.junit.MCAssertions.assertNoFindings;
+
 public class JavaClassExpressionsTypeVisitorTest
     extends AbstractTypeVisitorTest {
 

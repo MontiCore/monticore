@@ -31,6 +31,8 @@ public class JsonDeSers {
 
   public static final String SPANNED_SCOPE = "spannedScope";
 
+  public static final String STEREO_INFO = "stereoinfo";
+
   /**
    * This method deserializes a stored package. If no package is stored, the default
    * empty package ("") is returned.
@@ -84,7 +86,6 @@ public class JsonDeSers {
    *
    * @param deSerKind
    * @param serializedElement
-   * @return
    */
   public static void checkCorrectDeSerForKind(String deSerKind, JsonElement serializedElement) {
     if (!serializedElement.isJsonObject()) {

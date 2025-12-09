@@ -1,6 +1,13 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 
-<!-- Alpha-version: This is intended to become a MontiCore stable explanation. -->
+
+# Deprecation
+
+!!! warning "TypeCheck1 has been deprecated."
+
+    Please refer to [TypeSystem3](../../types3/TypeSystem3.md).
+
+## Deprecated Documentation
 
 In MontiCore, the TypeCheck is used to calculate the SymTypeExpression of a set of expressions, types and literals.
 This is made possible by traversing the AST of an expression, type or literal, calculating the SymTypeExpression of its
@@ -137,15 +144,15 @@ public void check(ASTExpression expr){
 ```
 
 An example for the case that a plus expression needs to return 'int' can be found
-[here](https://github.com/MontiCore/monticore/blob/opendev/monticore-test/monticore-grammar-it/src/main/java/mc/typescalculator/myownlanguage/_cocos/PlusExpressionReturnsInt.java).
+[here](../../../../../../../../monticore-test/monticore-grammar-it/src/main/java/mc/typescalculator/myownlanguage/_cocos/PlusExpressionReturnsInt.java).
 
 ## Further Information
 
 * [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
 * [MontiCore documentation](https://www.monticore.de/)
-* [**List of languages**](https://github.com/MontiCore/monticore/blob/opendev/docs/Languages.md)
-* [**MontiCore Core Grammar Library**](https://github.com/MontiCore/monticore/blob/opendev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
-* [Best Practices](https://github.com/MontiCore/monticore/blob/opendev/docs/BestPractices.md)
+* [**List of languages**](../../../../../../../../docs/Languages.md)
+* [**MontiCore Core Grammar Library**](../../../../../grammars/de/monticore/Grammars.md)
+* [Best Practices](../../../../../../../../docs/BestPractices.md)
 * [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
 * [Licence definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)
 

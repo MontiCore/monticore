@@ -281,6 +281,7 @@ public class ParseErrorTest {
     parser.parse_StringCDLike("cd cl");
     Assertions.assertTrue(parser.hasErrors());
     Assertions.assertEquals("mismatched input 'cl', expected EOF (found: Name) in rule stack: [CDLike]\u00A0\n" +
+    Assertions.assertEquals("no viable alternative at input 'cl', expecting '<<', 'public', '+', 'private', 'class', 'package', 'association' or 'composition' in rule stack: [CDLike]\u00A0\n" +
                                     "cd cl\n" +
                                     "   ^", Log.getFindings().get(0).getMsg());
   }
@@ -291,6 +292,7 @@ public class ParseErrorTest {
     parser.parse_StringCDLike("cd publ");
     Assertions.assertTrue(parser.hasErrors());
     Assertions.assertEquals("mismatched input 'publ', expected EOF (found: Name) in rule stack: [CDLike]\u00A0\n" +
+    Assertions.assertEquals("no viable alternative at input 'publ', expecting '<<', 'public', '+', 'private', 'class', 'package', 'association' or 'composition' in rule stack: [CDLike]\u00A0\n" +
                                     "cd publ\n" +
                                     "   ^", Log.getFindings().get(0).getMsg());
   }
@@ -310,10 +312,11 @@ public class ParseErrorTest {
     // Incorrect/wrong "keyword", but EOF was possible => We are unable to recover the other expected tokens
     parser.parse_StringCDLike("cd \n class C1{}\n xxx\n association A1;");
     Assertions.assertTrue(parser.hasErrors());
-    Assertions.assertEquals("mismatched input 'xxx', expected EOF (found: Name) in rule stack: [CDLike]\u00A0\n" +
+    Assertions.assertEquals("no viable alternative at input 'xxx', expecting '<<', 'public', '+', 'private', 'class', 'package', 'association' or 'composition' in rule stack: [CDLike]\u00A0\n" +
                                     " xxx\n" +
                                     " ^", Log.getFindings().get(0).getMsg());
   }
+
 
   @Test
   public void testCDAssocB() throws IOException {
@@ -321,8 +324,8 @@ public class ParseErrorTest {
     parser.parse_StringCDLikeB("cd { \n class C1{}\n xxx\n association A1; \n }");
     Assertions.assertTrue(parser.hasErrors());
     Assertions.assertEquals("extraneous input 'xxx' expecting {'<<', 'private', 'association', 'public', 'composition', 'class', 'package', '+', '}'} in rule stack: [CDLikeB]\u00A0\n" +
-                                    " xxx\n" +
-                                    " ^", Log.getFindings().get(0).getMsg());
+            " xxx\n" +
+            " ^", Log.getFindings().get(0).getMsg());
   }
 
   @Test

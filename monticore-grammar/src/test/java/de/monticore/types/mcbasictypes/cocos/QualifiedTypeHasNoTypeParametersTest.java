@@ -1,5 +1,6 @@
 package de.monticore.types.mcbasictypes.cocos;
 
+import de.monticore.types3.util.DefsTypesForTests;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._cocos.MCBasicTypesCoCoChecker;
 import de.monticore.types.mcbasictypestest.MCBasicTypesTestMill;
@@ -7,7 +8,6 @@ import de.monticore.types.mcbasictypestest._parser.MCBasicTypesTestParser;
 import de.monticore.types.mcbasictypeswithbasicsymbolstest.MCBasicTypesWithBasicSymbolsTestMill;
 import de.monticore.types.mcbasictypeswithbasicsymbolstest._symboltable.IMCBasicTypesWithBasicSymbolsTestArtifactScope;
 import de.monticore.types.mcbasictypeswithbasicsymbolstest.types3.MCBasicTypesWithBasicSymbolsTestTypeCheck3;
-import de.monticore.types3.util.DefsTypesForTests;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.BeforeEach;

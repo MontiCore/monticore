@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.Optional;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 
 public class DSTLGenInheritanceHelper {
 
@@ -36,11 +36,11 @@ public class DSTLGenInheritanceHelper {
    * The names of all lexical productions known to TFCommons.
    * Required, as the transformation languages are all extending TFCommons
    */
-  protected final Collection<String> tfCommonLexProds = new HashSet<>();
+  protected final Collection<String> tfCommonLexProds = new LinkedHashSet<>();
   /**
    * FQN of TFCommons and all its super grammars
    */
-  protected final Collection<String> tfCommonSuperFQNs = new HashSet<>();
+  protected final Collection<String> tfCommonSuperFQNs = new LinkedHashSet<>();
 
   /**
    * Constructor for de.monticore.tf.ruletranslation.InheritanceHelper

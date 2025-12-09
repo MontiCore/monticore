@@ -1,18 +1,19 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import com.google.common.base.Preconditions;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
 import de.monticore.types3.ISymTypeVisitor;
 import de.se_rwth.commons.logging.Log;
 
 /**
- * Arrays of a certain dimension (>= 1)
+ * Arrays of a certain dimension ({@code >= 1})
  */
 public class SymTypeArray extends SymTypeExpression {
 
   /**
-   * An arrayType has a dimension (>= 1)
+   * An arrayType has a dimension ({@code >= 1})
    */
   protected int dim;
 
@@ -30,7 +31,7 @@ public class SymTypeArray extends SymTypeExpression {
    * @param argument Argument Type
    * @param typeSymbol loader for the Type-Symbol that defines this type
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public SymTypeArray(TypeSymbol typeSymbol, int dim, SymTypeExpression argument) {
     this.typeSymbol = typeSymbol;
     this.dim = dim;
@@ -39,7 +40,7 @@ public class SymTypeArray extends SymTypeExpression {
 
   public SymTypeArray(SymTypeExpression argument, int dim) {
     this.dim = dim;
-    this.argument = argument;
+    this.argument = Preconditions.checkNotNull(argument);
   }
 
   // ------------------------------------------------------------------ Functions

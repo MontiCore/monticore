@@ -23,6 +23,7 @@ import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
 import de.monticore.grammar.grammar_withconcepts._symboltable.IGrammar_WithConceptsGlobalScope;
 import de.monticore.io.paths.MCPath;
+import de.monticore.runtime.junit.MCAssertions;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.apache.commons.cli.*;
@@ -107,7 +108,7 @@ public class MontiCoreScriptTest {
     Assertions.assertNotNull(grammar);
     Assertions.assertEquals("Statechart", grammar.getName());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
 
   /**
@@ -126,7 +127,7 @@ public class MontiCoreScriptTest {
             new MCPath(), f);
     f.delete();
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
 
   @Test
@@ -140,7 +141,7 @@ public class MontiCoreScriptTest {
     Assertions.assertNotNull(cdCompilationUnit.getCDDefinition());
     Assertions.assertEquals("Statechart", cdCompilationUnit.getCDDefinition().getName());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
 
   @Test
@@ -154,7 +155,7 @@ public class MontiCoreScriptTest {
     Assertions.assertNotNull(cdCompilationUnit.getCDDefinition());
     Assertions.assertEquals("Statechart", cdCompilationUnit.getCDDefinition().getName());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
 
   @Test
@@ -193,7 +194,7 @@ public class MontiCoreScriptTest {
       }
     }
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
 
   @Test
@@ -209,7 +210,7 @@ public class MontiCoreScriptTest {
       Assertions.fail();
     }
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
 
   static String[] templateArgs = {"-" + GRAMMAR,
@@ -232,7 +233,7 @@ public class MontiCoreScriptTest {
       Assertions.fail();
     }
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
 
   static String[] subsubgrammarArgs = {"-" + GRAMMAR,
@@ -244,18 +245,14 @@ public class MontiCoreScriptTest {
   public void testDefaultScriptSubsubgrammarArgs() {
     Log.getFindings().clear();
     testDefaultScript(subsubgrammarArgs);
-    Assertions.assertEquals(0, Log.getErrorCount());
-  
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
 
   @Test
   public void testDefaultScriptSubsubgrammarArgs_EMF() {
     Log.getFindings().clear();
     testDefaultScriptWithEmf(subsubgrammarArgs);
-    Assertions.assertEquals(0, Log.getErrorCount());
-  
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
 
   static String[] inheritedgrammarArgs = {"-" + GRAMMAR,
@@ -289,18 +286,14 @@ public class MontiCoreScriptTest {
   public void testDefaultScriptSupersubgrammarArgs() {
     Log.getFindings().clear();
     testDefaultScript(supersubgrammarArgs);
-    Assertions.assertEquals(0, Log.getErrorCount());
-  
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
 
   @Test
   public void testDefaultScriptSupersubgrammarArgs_EMF() {
     Log.getFindings().clear();
     testDefaultScriptWithEmf(supersubgrammarArgs);
-    Assertions.assertEquals(0, Log.getErrorCount());
-  
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
 
   private void testDefaultScript(String[] args) {
@@ -318,7 +311,6 @@ public class MontiCoreScriptTest {
     // Reporting is enabled in the monticore_standard.groovy script but needs to be disabled for other tests
     // because Reporting is static directly disable it again here
     Reporting.off();
-    Assertions.assertTrue(!false);
   }
 
   private void testDefaultScriptWithEmf(String[] args) {
@@ -360,8 +352,8 @@ public class MontiCoreScriptTest {
     Assertions.assertEquals("StatechartSymbols", symbolCDOfParsedGrammar.getCDDefinition().getName());
     // no symbol defined
     Assertions.assertEquals(0, symbolCDOfParsedGrammar.getCDDefinition().getCDClassesList().size());
-  
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+
+    MCAssertions.assertNoFindings();
   }
 
   @Test
@@ -385,8 +377,8 @@ public class MontiCoreScriptTest {
     Assertions.assertEquals("StatechartScope", scopeCDOfParsedGrammar.getCDDefinition().getName());
     Assertions.assertEquals(1, scopeCDOfParsedGrammar.getCDDefinition().getCDClassesList().size());
     Assertions.assertEquals("Statechart", scopeCDOfParsedGrammar.getCDDefinition().getCDClassesList().get(0).getName());
-  
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+
+    MCAssertions.assertNoFindings();
   }
 
   @Test
@@ -415,8 +407,8 @@ public class MontiCoreScriptTest {
     assertDeepEquals("java.util.List<de.monticore.statechart.Statechart.ASTState>", listSuffixStateChartClass.getCDAttributeList().get(1).getMCType());
     // attribute with 's' at the end now
     Assertions.assertEquals("states", listSuffixStateChartClass.getCDAttributeList().get(1).getName());
-  
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+
+    MCAssertions.assertNoFindings();
   }
 
   @Test
@@ -456,8 +448,8 @@ public class MontiCoreScriptTest {
     Assertions.assertEquals("ICommonStatechartSymbol", symbolPackageCD.getCDDefinition().getCDInterfacesList().get(index++).getName());
     Assertions.assertEquals("IStatechartGlobalScope", symbolPackageCD.getCDDefinition().getCDInterfacesList().get(index++).getName());
     Assertions.assertEquals("IStatechartArtifactScope", symbolPackageCD.getCDDefinition().getCDInterfacesList().get(index++).getName());
-  
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+
+    MCAssertions.assertNoFindings();
   }
 
   @Test
@@ -484,8 +476,8 @@ public class MontiCoreScriptTest {
     Assertions.assertEquals("StatechartTraverser", visitorPackageCD.getCDDefinition().getCDInterfacesList().get(0).getName());
     Assertions.assertEquals("StatechartVisitor2", visitorPackageCD.getCDDefinition().getCDInterfacesList().get(1).getName());
     Assertions.assertEquals("StatechartHandler", visitorPackageCD.getCDDefinition().getCDInterfacesList().get(2).getName());
-  
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+
+    MCAssertions.assertNoFindings();
   }
 
   @Test
@@ -521,7 +513,7 @@ public class MontiCoreScriptTest {
     Assertions.assertEquals("StatechartASTClassbodyExtCoCo", cocoPackageCD.getCDDefinition().getCDInterfacesList().get(11).getName());
     Assertions.assertEquals("StatechartASTStatechartNodeCoCo", cocoPackageCD.getCDDefinition().getCDInterfacesList().get(12).getName());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
 
   @Test
@@ -568,7 +560,7 @@ public class MontiCoreScriptTest {
     Assertions.assertEquals(1, astPackageCD.getCDDefinition().getCDEnumsList().size());
     Assertions.assertEquals("StatechartLiterals", astPackageCD.getCDDefinition().getCDEnumsList().get(0).getName());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
 
   @Test
@@ -617,7 +609,7 @@ public class MontiCoreScriptTest {
     Assertions.assertEquals(1, astEmfPackageCD.getCDDefinition().getCDEnumsList().size());
     Assertions.assertEquals("StatechartLiterals", astEmfPackageCD.getCDDefinition().getCDEnumsList().get(0).getName());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
 
   @Test
@@ -642,7 +634,7 @@ public class MontiCoreScriptTest {
     Assertions.assertTrue(odPackage.getCDDefinition().getCDInterfacesList().isEmpty());
     Assertions.assertTrue(odPackage.getCDDefinition().getCDEnumsList().isEmpty());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
 
   @Test
@@ -670,7 +662,7 @@ public class MontiCoreScriptTest {
     Assertions.assertEquals("Statechart", decoratedCompilationUnit.getCDDefinition().getName());
     Assertions.assertEquals(1, millPackage.get().getCDElementList().size());
 
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
 
   @Test
@@ -695,7 +687,7 @@ public class MontiCoreScriptTest {
     Assertions.assertTrue(decoratedCd.getCDDefinition().getCDInterfacesList().isEmpty());
     Assertions.assertTrue(decoratedCd.getCDDefinition().getCDEnumsList().isEmpty());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
 
   /**

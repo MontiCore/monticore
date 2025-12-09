@@ -7,10 +7,13 @@ buildscript {
 
 plugins {
   id "java-library"
-  id "com.github.johnrengelman.shadow" version "7.1.2"
+  id "com.github.johnrengelman.shadow" version "$shadow_plugin_version"
   // in case a "genTR" property is set to "true", transformation grammars are also created
   id "de.monticore.generator-withtr" version "$version"
   id "jacoco"
+  // this project provides test fixtures. Test fixtures are commonly used to setup the code under test,
+  // or provide utilities aimed at facilitating the tests of a component
+  id 'java-test-fixtures'
 }
 
 description = 'MontiCore: Grammar'
@@ -18,18 +21,11 @@ group = "de.monticore"
 
 def grammarOutDir = "$buildDir/generated-sources/monticore/sourcecode"
 def taggingOutDir = "$buildDir/generated-sources/monticore/tagging"
-def symbolsDir = 'src/main/resources'
 
 sourceSets {
   // Add mlc files to grammars source set (resulting in them being included in the grammars-jar)
   main.grammars.include(["**/*.mlc", "**/*.mc4"])
 
-  symbols {
-    resources {
-      srcDirs(symbolsDir)
-      include "**/*.sym"
-    }
-  }
   // The following is required as we still publish a Feature-variant (with usingSourceSet(grammarsForVariant))
   grammarsForVariant {
     java.srcDirs = []
@@ -64,6 +60,12 @@ configurations {
       capability("de.monticore:monticore-grammar:$version") // default
     }
   }
+  // We have to give the trafo component a different capability
+  trafoGrammarSymbolOutElements {
+    outgoing {
+      capability("de.monticore:monticore-grammar-trafo:$version") // default
+    }
+  }
 }
 
 
@@ -78,6 +80,8 @@ dependencies {
   testImplementation "org.junit.jupiter:junit-jupiter-params:$junit_version"
   testImplementation "org.junit.vintage:junit-vintage-engine:$junit_version"
   testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
+  // grammar test fixtures includes runtime test dependencies
+  testFixturesApi testFixtures(project(":monticore-runtime"))
   if (("true").equals(getProperty('genTagging'))) {
     // use compileOnly as the tagging- and trafo-artifact are only an extension to the default artifact
     taggingCompileOnly project(path)
@@ -85,7 +89,7 @@ dependencies {
 }
 
 
-generateMCGrammars {
+tasks.named('generateMCGrammars') {
   outputDir = file grammarOutDir
   debug = false
   genINT = true
@@ -179,7 +183,6 @@ def grammarDependencies = ext {
   MCSimpleGenericTypes = ["MCCollectionTypes"]
   MCCommonStatements = ["MCVarDeclarationStatements"]
   MCCollectionTypes = ["MCBasicTypes"]
-  StreamExpressions = ["CommonExpressions"]
   MCExceptionStatements = ["MCCommonStatements"]
   MCFunctionTypes = ["MCBasicTypes"]
   MCStructuralTypes = ["MCBasicTypes"]
@@ -205,6 +208,7 @@ def grammarDependencies = ext {
   SIUnitLiterals = ["MCCommonLiterals", "SIUnits"]
   SIUnitTypes4Math = ["MCBasicTypes", "SIUnits"]
   SIUnitTypes4Computing = ["MCBasicTypes", "SIUnitTypes4Math"]
+  StreamExpressions = ["CommonExpressions", "MCCollectionTypes"]
   TypeParameters = ["BasicSymbols", "MCBasicTypes"]
 
   // three dependencies
@@ -232,17 +236,16 @@ def grammarDependencies = ext {
 /**
  * Integration with MLC language and tool
  */
-task showArtifacts {}
-task checkArtifacts {}
+tasks.register('showArtifacts') { group = 'mlc'}
+tasks.register('checkArtifacts') { group = 'mlc'}
 configurations { MLC }
 dependencies {
   MLC(group: 'de.monticore.lang', name: 'mlc-gradle', version: "$version")
   MLC(project(':monticore-runtime')) // Ensure the proper runtime is used for MLC
 }
-StringJoiner joiner = new StringJoiner(" ")
-configurations.compileClasspath.resolve().each { joiner.add(it.toString()) }
-joiner.add "$projectDir/target/symbols"
-String mp = joiner.toString()
+def mlcModelPath = []
+configurations.compileClasspath.resolve().each { mlcModelPath.addAll(["-mp", it.toString()]) }
+mlcModelPath.addAll(["-mp", "$projectDir/target/symbols"])
 
 ///////////// MLC tasks - Start ///////////////////////
 // two tasks per MLC file
@@ -251,23 +254,25 @@ fileTree("src/main/grammars").matching { include '**/*.mlc' }.each {
   def f = it
   def mlcName = it.getName().substring(0, it.getName().lastIndexOf('.'))
 
-  task "showArtifacts${mlcName}"(type: JavaExec) {
+  tasks.register("showArtifacts${mlcName}", JavaExec) {
     classpath = configurations.MLC
     group = 'MLC'
     mainClass = 'de.monticore.mlc.MLCTool'
-    args "-input", f, "-projectDir", projectDir, "-mp", mp, "-s", "-reports", "${buildDir}/reports", "-a", "-noFQ"
+    args = ["-input", f, "-projectDir", projectDir, "-s", "-reports", "${buildDir}/reports", "-a", "-noFQ"]
+    args += mlcModelPath
     dependsOn("generateMCGrammars")
-    showArtifacts.dependsOn("showArtifacts${mlcName}")
   }
+  showArtifacts.dependsOn("showArtifacts${mlcName}")
 
-  task "checkArtifacts${mlcName}"(type: JavaExec) {
+  tasks.register("checkArtifacts${mlcName}", JavaExec) {
     classpath = configurations.MLC
     group = 'MLC'
     mainClass = 'de.monticore.mlc.MLCTool'
-    args "-input", f, "-projectDir", projectDir, "-mp", mp, "-s", "-check", "-reports", "${buildDir}/reports"
+    args = ["-input", f, "-projectDir", projectDir, "-s", "-check", "-reports", "${buildDir}/reports"]
+    args += mlcModelPath
     dependsOn("generateMCGrammars")
-    checkArtifacts.dependsOn("checkArtifacts${mlcName}")
   }
+  checkArtifacts.dependsOn("checkArtifacts${mlcName}")
 }
 
 ///////////// dependencies between check artifacts tasks ///////////////////////
@@ -552,13 +557,14 @@ java {
   registerFeature('tests') {
     usingSourceSet(sourceSets.test)
   }
+  withJavadocJar()
 }
 
-shadowJar {
+tasks.named("shadowJar") {
   from sourceSets.main.grammars
 }
 
-generateTestMCGrammars {
+tasks.named("generateTestMCGrammars") {
 //   Temporary - for optimizations (due to feature)
   genINT = true
   dependsOn(tasks.grammarsForVariantJar)
@@ -576,18 +582,33 @@ if (findProperty('ci') == null) {
 }
 
 if (("true").equals(getProperty('genTR'))) {
-  generateTrafoMCGrammars {
+  tasks.named("generateTrafoMCGrammars") {
     // Temporary - for optimizations
     dependsOn(tasks.grammarsForVariantJar)
   }
 }
 
+// Pack & Publish the reported CD & OD in a jar (without the gradle module system, just a classifier)
+tasks.register('reportsJar', Jar) {
+  from (tasks.generateMCGrammars.getReportDir().dir('src/main/grammars')) {
+    include('**/*.cd', '**/*.od')
+  }
+  dependsOn(tasks.generateMCGrammars)
+  archiveClassifier = 'reports'
+}
+publishing {
+  publications {
+    maven {
+      artifact reportsJar
+    }
+  }
+}
 
 if (("true").equals(getProperty('genTagging'))) {
   // Because tagging is not properly published as a source set we instead add the tag definitions to the main grammar jars
   ["grammarsJar", "grammarsForVariantJar"].forEach { taskname ->
     // We have to add it to both the "compability grammarsForVariant", as well as the grammarsJar publication
-    tasks.named(taskname, org.gradle.jvm.tasks.Jar) {
+    tasks.named(taskname, org.gradle.api.tasks.bundling.Jar) {
       from(tasks.generateMCGrammars.outputDir) {
         include "**/*TagDefinition.mc4", "**/*TagSchema.mc4"
       }
@@ -635,9 +656,79 @@ if (("true").equals(getProperty('genTR'))) {
 
   publishing {
     publications {
-      "trafo" {
+      "trafo" (MavenPublication) {
         groupId = "de.monticore" // do not use the fake "de.mc" group, which was set during the plugin init phase
       }
     }
   }
 }
+
+// Workaround for https://github.com/gradle/gradle/issues/20539
+import org.gradle.api.plugins.internal.JvmPluginsHelper
+import org.gradle.api.internal.file.FileResolver
+import org.gradle.internal.component.external.model.ProjectDerivedCapability
+import org.gradle.internal.component.external.model.TestFixturesSupport
+
+if(GradleVersion.current() < GradleVersion.version("8.5")){
+  pluginManager.withPlugin("java-test-fixtures") {
+    def sourceSet = sourceSets["testFixtures"]
+    JvmPluginsHelper.configureDocumentationVariantWithArtifact(
+        sourceSet.sourcesElementsConfigurationName,
+        TestFixturesSupport.TEST_FIXTURE_SOURCESET_NAME,
+        DocsType.SOURCES,
+        [new ProjectDerivedCapability(project, "testFixtures")],
+        sourceSet.sourcesJarTaskName,
+        sourceSet.allSource,
+        components["java"] as AdhocComponentWithVariants,
+        configurations,
+        tasks,
+        objects,
+        project.services.get(FileResolver)
+    )
+    JvmPluginsHelper.configureDocumentationVariantWithArtifact(
+        sourceSet.javadocElementsConfigurationName,
+        TestFixturesSupport.TEST_FIXTURE_SOURCESET_NAME,
+        DocsType.JAVADOC,
+        [new ProjectDerivedCapability(project, "testFixtures")],
+        sourceSet.javadocJarTaskName,
+        tasks.named(sourceSet.javadocTaskName),
+        components["java"] as AdhocComponentWithVariants,
+        configurations,
+        tasks,
+        objects,
+        project.services.get(FileResolver)
+    )
+  }
+} else {
+  pluginManager.withPlugin("java-test-fixtures") {
+    def sourceSet = sourceSets["testFixtures"]
+    def caps = [new ProjectDerivedCapability(project, "testFixtures")];
+    if (GradleVersion.current() != GradleVersion.version("8.5"))
+      caps = caps.toSet()
+    JvmPluginsHelper.createDocumentationVariantWithArtifact(
+        sourceSet.sourcesElementsConfigurationName,
+        TestFixturesSupport.TEST_FIXTURE_SOURCESET_NAME,
+        DocsType.SOURCES,
+        caps,
+        sourceSet.sourcesJarTaskName,
+        sourceSet.allSource,
+        project
+    )
+    JvmPluginsHelper.createDocumentationVariantWithArtifact(
+        sourceSet.javadocElementsConfigurationName,
+        TestFixturesSupport.TEST_FIXTURE_SOURCESET_NAME,
+        DocsType.JAVADOC,
+        caps,
+        sourceSet.javadocJarTaskName,
+        tasks.named(sourceSet.javadocTaskName),
+        project
+    )
+  }
+}
+//End Workaround
+
+
+tasks.named("build") {
+  dependsOn javadoc, testFixturesJavadoc
+}
+

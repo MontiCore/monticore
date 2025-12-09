@@ -9,34 +9,34 @@ import de.monticore.types.check.SymTypeOfObject;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 
 /**
  * Unboxes SymTypeExpressions,
  * including, but not limited to, Java primitive unboxing
- * e.g., java.lang.Integer -> int
- * e.g., java.util.List -> List
+ * e.g., {@code java.lang.Integer -> int}
+ * e.g., {@code java.util.List -> List}
  * Usage:
  * calculate(symType)
  */
 public class SymTypeUnboxingVisitor extends SymTypeDeepCloneVisitor {
 
   /**
-   * Map for unboxing to primitive types (e.g. "java.lang.Integer" -> "int")
+   * Map for unboxing to primitive types (e.g. {@code "java.lang.Integer" -> "int"})
    * Results are fully qualified.
    */
   protected static final Map<String, String> primitiveUnboxMap;
 
   /**
-   * Map for unboxing to object types (e.g. "java.lang.String" -> "String")
+   * Map for unboxing to object types (e.g. {@code "java.lang.String" -> "String"})
    * Results are fully qualified.
    */
   protected static final Map<String, String> objectUnboxMap;
 
   /**
-   * Map for unboxing to generic types (e.g. "java.util.List" -> "List")
+   * Map for unboxing to generic types (e.g. {@code "java.util.List" -> "List"})
    * Results are fully qualified.
    */
   protected static final Map<String, String> genericUnboxMap;
@@ -57,7 +57,7 @@ public class SymTypeUnboxingVisitor extends SymTypeDeepCloneVisitor {
    * initializing the maps
    */
   static {
-    Map<String, String> primitiveUnboxMap_temp = new HashMap<>();
+    Map<String, String> primitiveUnboxMap_temp = new LinkedHashMap<>();
     primitiveUnboxMap_temp.put("java.lang.Boolean", "boolean");
     primitiveUnboxMap_temp.put("java.lang.Byte", "byte");
     primitiveUnboxMap_temp.put("java.lang.Character", "char");
@@ -68,11 +68,11 @@ public class SymTypeUnboxingVisitor extends SymTypeDeepCloneVisitor {
     primitiveUnboxMap_temp.put("java.lang.Short", "short");
     primitiveUnboxMap = Collections.unmodifiableMap(primitiveUnboxMap_temp);
 
-    Map<String, String> objectUnboxMap_temp = new HashMap<>();
+    Map<String, String> objectUnboxMap_temp = new LinkedHashMap<>();
     objectUnboxMap_temp.put("java.lang.String", "String");
     objectUnboxMap = Collections.unmodifiableMap(objectUnboxMap_temp);
 
-    Map<String, String> genericUnboxMap_temp = new HashMap<>();
+    Map<String, String> genericUnboxMap_temp = new LinkedHashMap<>();
     genericUnboxMap_temp.put("java.util.Optional", "Optional");
     genericUnboxMap_temp.put("java.util.Set", "Set");
     genericUnboxMap_temp.put("java.util.List", "List");

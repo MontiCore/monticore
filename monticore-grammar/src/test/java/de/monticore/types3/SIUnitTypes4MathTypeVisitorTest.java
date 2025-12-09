@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import static de.monticore.runtime.junit.MCAssertions.assertNoFindings;
 import static de.monticore.types3.util.SIUnitIteratorForTests.get2UnitsGroup;
 import static de.monticore.types3.util.SIUnitIteratorForTests.getPrefixedUnits;
 import static de.monticore.types3.util.SIUnitIteratorForTests.getUnits;

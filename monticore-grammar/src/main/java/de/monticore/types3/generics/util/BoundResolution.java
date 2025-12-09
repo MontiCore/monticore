@@ -1,6 +1,7 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.types3.generics.util;
 
+import com.google.common.base.Preconditions;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeInferenceVariable;
@@ -18,7 +19,7 @@ import de.se_rwth.commons.logging.Log;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -41,17 +42,7 @@ public class BoundResolution {
 
   protected static BoundResolution delegate;
 
-  public static void init() {
-    Log.trace("init default BoundResolution", "TypeCheck setup");
-    BoundResolution.delegate = new BoundResolution();
-  }
-
-  protected static BoundResolution getDelegate() {
-    if (delegate == null) {
-      init();
-    }
-    return delegate;
-  }
+  // methods
 
   /**
    * Aims to find instantiations for inference variables
@@ -84,7 +75,17 @@ public class BoundResolution {
       List<Bound> oldBounds,
       List<SymTypeInferenceVariable> toBeResolved
   ) {
-    return getDelegate().calculateResolve(
+    return getDelegate()._resolve(
+        newBounds, oldBounds, toBeResolved
+    );
+  }
+
+  protected Optional<Map<SymTypeInferenceVariable, SymTypeExpression>> _resolve(
+      List<Bound> newBounds,
+      List<Bound> oldBounds,
+      List<SymTypeInferenceVariable> toBeResolved
+  ) {
+    return recursiveResolve(
         newBounds, oldBounds, toBeResolved, Collections.emptySet()
     );
   }
@@ -92,7 +93,7 @@ public class BoundResolution {
   /**
    * @param lastSetOfUninstantiated used to stop infinite recursion
    */
-  protected Optional<Map<SymTypeInferenceVariable, SymTypeExpression>> calculateResolve(
+  protected Optional<Map<SymTypeInferenceVariable, SymTypeExpression>> recursiveResolve(
       List<Bound> newBounds,
       List<Bound> oldBounds,
       List<SymTypeInferenceVariable> toBeResolved,
@@ -100,7 +101,7 @@ public class BoundResolution {
   ) {
     // shortcut reducing log
     if (newBounds.isEmpty() && oldBounds.isEmpty()) {
-      return Optional.of(new HashMap<>());
+      return Optional.of(new LinkedHashMap<>());
     }
     Optional<Map<SymTypeInferenceVariable, SymTypeExpression>> result = Optional.empty();
 
@@ -289,7 +290,7 @@ public class BoundResolution {
             varsToResolveNext, var2LowerBounds, var2UpperBounds, var2SourceBounds, var2TargetBounds
         );
         // use the new-found instantiations to reiterate
-        result = calculateResolve(
+        result = recursiveResolve(
             new ArrayList<>(newEqualityBounds), reducedBounds, toBeResolved,
             varsWithoutInstantiation
         );
@@ -370,7 +371,7 @@ public class BoundResolution {
           }
         }
         Optional<Map<SymTypeInferenceVariable, SymTypeExpression>> potentialResult =
-            calculateResolve(
+            recursiveResolve(
                 new ArrayList<>(newInfVarsBounds),
                 reducedBoundsFiltered,
                 toBeResolved,
@@ -549,6 +550,7 @@ public class BoundResolution {
                 LOG_NAME
             );
             lubSubtyping = Optional.empty();
+            break;
           }
         }
       }
@@ -646,7 +648,7 @@ public class BoundResolution {
   /**
    * to be used after incorporation/reduction.
    * Does only include top-most inference variables,
-   * e.g., List<a1> <: a2, with a1,a2 being inference variables, returns a2.
+   * e.g., {@code List<a1> <: a2}, with a1,a2 being inference variables, returns a2.
    */
   protected List<SymTypeInferenceVariable> getInferenceVariablesOfBounds(List<Bound> bounds) {
     List<SymTypeInferenceVariable> inferenceVariables = new ArrayList<>();
@@ -751,7 +753,7 @@ public class BoundResolution {
   /**
    * fills the dependency matrix.
    * any inferenceVariable, which does not have a bound yet,
-   * has the bound added: TV <: #Top
+   * has the bound added: {@code TV <: #Top}
    */
   protected Map<SymTypeInferenceVariable, List<Bound>> completeVarBoundDependencies(
       Map<SymTypeInferenceVariable, List<Bound>> varBoundDependencies
@@ -863,4 +865,27 @@ public class BoundResolution {
         .map(Bound::print)
         .collect(Collectors.joining(System.lineSeparator()));
   }
+
+  // static delegate
+
+  public static void init() {
+    Log.trace("init default BoundResolution", "TypeCheck setup");
+    setDelegate(new BoundResolution());
+  }
+
+  public static void reset() {
+    BoundResolution.delegate = null;
+  }
+
+  protected static void setDelegate(BoundResolution newDelegate) {
+    BoundResolution.delegate = Preconditions.checkNotNull(newDelegate);
+  }
+
+  protected static BoundResolution getDelegate() {
+    if (BoundResolution.delegate == null) {
+      init();
+    }
+    return BoundResolution.delegate;
+  }
+
 }

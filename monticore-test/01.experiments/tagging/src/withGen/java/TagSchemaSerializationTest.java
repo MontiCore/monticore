@@ -15,7 +15,7 @@ import de.monticore.tagging.tags._ast.ASTTagUnit;
 import de.monticore.tagging.tagschema._ast.ASTTagSchema;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -36,7 +36,7 @@ public class TagSchemaSerializationTest {
     FQNEnhancedAutomataTagSchemaMill.init();
 
     // Load all schemas into the global scope
-    for (File f : Objects.requireNonNull(
+    for (File f : Preconditions.checkNotNull(
             new File("src/test/resources/schema/").listFiles(x -> x.getName().endsWith(".tagschema")))) {
       Optional<ASTTagSchema> schemaOpt = FQNEnhancedAutomataTagSchemaMill.parser().parse(f.getAbsolutePath());
       if (schemaOpt.isPresent())
@@ -54,7 +54,7 @@ public class TagSchemaSerializationTest {
 
   @Test
   public void test() throws IOException {
-    for (File f : Objects.requireNonNull(
+    for (File f : Preconditions.checkNotNull(
             new File("src/test/resources/schema/").listFiles(x -> x.getName().endsWith(".tagschema")))) {
       Optional<ASTTagSchema> schemaOpt = FQNEnhancedAutomataTagSchemaMill.parser().parse(f.getAbsolutePath());
       if (schemaOpt.isEmpty()) {

@@ -70,7 +70,9 @@ public class TestAutomaton extends GeneratorIntegrationsTest {
       throws IOException
   {
     byte[] encoded = Files.readAllBytes(Paths.get(path));
-    return new String(encoded, encoding);
+    String read =  new String(encoded, encoding);
+    // test even if using incorrect git settings
+    return read.replace("\r\n", "\n");
   }
 
 }

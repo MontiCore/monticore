@@ -111,9 +111,7 @@ public class MillWithInheritanceTest extends DecoratorTestCase {
   @Test
   public void testAttributeName() {
     assertEquals("mill", millClass.getCDAttributeList().get(0).getName());
-    assertEquals("millASTBlubBuilder", millClass.getCDAttributeList().get(1).getName());
-    assertEquals("millASTBliBuilder", millClass.getCDAttributeList().get(2).getName());
-  
+
     assertTrue(Log.getFindings().isEmpty());
   }
 

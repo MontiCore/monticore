@@ -1,12 +1,13 @@
 package de.monticore.types3.util;
 
+import com.google.common.base.Preconditions;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types3.SymTypeRelations;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -29,20 +30,20 @@ public class TypeVisitorLifting {
    */
   public static Function<SymTypeExpression, SymTypeExpression> liftDefault(
       Function<SymTypeExpression, SymTypeExpression> func) {
-    return getDelegate().calculateLiftDefault(func);
+    return getDelegate()._liftDefault(func);
   }
 
-  protected Function<SymTypeExpression, SymTypeExpression> calculateLiftDefault(
+  protected Function<SymTypeExpression, SymTypeExpression> _liftDefault(
       Function<SymTypeExpression, SymTypeExpression> func) {
     return liftForNonNormalized(liftForObscure(liftForUnion(func)));
   }
 
   public static BiFunction<SymTypeExpression, SymTypeExpression, SymTypeExpression> liftDefault(
       BiFunction<SymTypeExpression, SymTypeExpression, SymTypeExpression> func) {
-    return getDelegate().calculateLiftDefault(func);
+    return getDelegate()._liftDefault(func);
   }
 
-  protected BiFunction<SymTypeExpression, SymTypeExpression, SymTypeExpression> calculateLiftDefault(
+  protected BiFunction<SymTypeExpression, SymTypeExpression, SymTypeExpression> _liftDefault(
       BiFunction<SymTypeExpression, SymTypeExpression, SymTypeExpression> func) {
     return liftForNonNormalized(liftForObscure(liftForUnion(func)));
   }
@@ -52,10 +53,10 @@ public class TypeVisitorLifting {
    */
   public static Function<SymTypeExpression, SymTypeExpression> liftForObscure(
       Function<SymTypeExpression, SymTypeExpression> func) {
-    return getDelegate().calculateLiftForObscure(func);
+    return getDelegate()._liftForObscure(func);
   }
 
-  protected Function<SymTypeExpression, SymTypeExpression> calculateLiftForObscure(
+  protected Function<SymTypeExpression, SymTypeExpression> _liftForObscure(
       Function<SymTypeExpression, SymTypeExpression> func) {
     return (SymTypeExpression symType) -> {
       if (symType.isObscureType()) {
@@ -68,10 +69,10 @@ public class TypeVisitorLifting {
 
   public static BiFunction<SymTypeExpression, SymTypeExpression, SymTypeExpression> liftForObscure(
       BiFunction<SymTypeExpression, SymTypeExpression, SymTypeExpression> func) {
-    return getDelegate().calculateLiftForObscure(func);
+    return getDelegate()._liftForObscure(func);
   }
 
-  protected BiFunction<SymTypeExpression, SymTypeExpression, SymTypeExpression> calculateLiftForObscure(
+  protected BiFunction<SymTypeExpression, SymTypeExpression, SymTypeExpression> _liftForObscure(
       BiFunction<SymTypeExpression, SymTypeExpression, SymTypeExpression> func) {
     return (SymTypeExpression symType1, SymTypeExpression symType2) -> {
       if (symType1.isObscureType() || symType2.isObscureType()) {
@@ -89,14 +90,14 @@ public class TypeVisitorLifting {
    */
   public static Function<SymTypeExpression, SymTypeExpression> liftForUnion(
       Function<SymTypeExpression, SymTypeExpression> func) {
-    return getDelegate().calculateLiftForUnion(func);
+    return getDelegate()._liftForUnion(func);
   }
 
-  protected Function<SymTypeExpression, SymTypeExpression> calculateLiftForUnion(
+  protected Function<SymTypeExpression, SymTypeExpression> _liftForUnion(
       Function<SymTypeExpression, SymTypeExpression> func) {
     return (SymTypeExpression symType) -> {
       if (symType.isUnionType()) {
-        Set<SymTypeExpression> results = new HashSet<>();
+        Set<SymTypeExpression> results = new LinkedHashSet<>();
         for (SymTypeExpression unionizedType : symType.asUnionType().getUnionizedTypeSet()) {
           results.add(func.apply(unionizedType));
         }
@@ -108,15 +109,15 @@ public class TypeVisitorLifting {
 
   public static BiFunction<SymTypeExpression, SymTypeExpression, SymTypeExpression> liftForUnion(
       BiFunction<SymTypeExpression, SymTypeExpression, SymTypeExpression> func) {
-    return getDelegate().calculateLiftForUnion(func);
+    return getDelegate()._liftForUnion(func);
   }
 
-  protected BiFunction<SymTypeExpression, SymTypeExpression, SymTypeExpression> calculateLiftForUnion(
+  protected BiFunction<SymTypeExpression, SymTypeExpression, SymTypeExpression> _liftForUnion(
       BiFunction<SymTypeExpression, SymTypeExpression, SymTypeExpression> func) {
     return (SymTypeExpression symType1, SymTypeExpression symType2) -> {
       Set<SymTypeExpression> arguments1;
       Set<SymTypeExpression> arguments2;
-      Set<SymTypeExpression> results = new HashSet<>();
+      Set<SymTypeExpression> results = new LinkedHashSet<>();
       if (symType1.isUnionType()) {
         arguments1 = symType1.asUnionType().getUnionizedTypeSet();
       }
@@ -143,10 +144,10 @@ public class TypeVisitorLifting {
    */
   public static Function<SymTypeExpression, SymTypeExpression> liftForNonNormalized(
       Function<SymTypeExpression, SymTypeExpression> func) {
-    return getDelegate().calculateLiftForNonNormalized(func);
+    return getDelegate()._liftForNonNormalized(func);
   }
 
-  protected Function<SymTypeExpression, SymTypeExpression> calculateLiftForNonNormalized(
+  protected Function<SymTypeExpression, SymTypeExpression> _liftForNonNormalized(
       Function<SymTypeExpression, SymTypeExpression> func) {
     return (SymTypeExpression symType) -> {
       return func.apply(SymTypeRelations.normalize(symType));
@@ -155,10 +156,10 @@ public class TypeVisitorLifting {
 
   public static BiFunction<SymTypeExpression, SymTypeExpression, SymTypeExpression> liftForNonNormalized(
       BiFunction<SymTypeExpression, SymTypeExpression, SymTypeExpression> func) {
-    return getDelegate().calculateLiftForNonNormalized(func);
+    return getDelegate()._liftForNonNormalized(func);
   }
 
-  protected BiFunction<SymTypeExpression, SymTypeExpression, SymTypeExpression> calculateLiftForNonNormalized(
+  protected BiFunction<SymTypeExpression, SymTypeExpression, SymTypeExpression> _liftForNonNormalized(
       BiFunction<SymTypeExpression, SymTypeExpression, SymTypeExpression> func) {
     return (SymTypeExpression symType1, SymTypeExpression symType2) -> {
       return func.apply(SymTypeRelations.normalize(symType1), SymTypeRelations.normalize(symType2));
@@ -190,7 +191,7 @@ public class TypeVisitorLifting {
 
   public static void init() {
     Log.trace("init default TypeVisitorLifting", "TypeCheck setup");
-    TypeVisitorLifting.delegate = new TypeVisitorLifting();
+    setDelegate(new TypeVisitorLifting());
   }
 
   public static void reset() {
@@ -198,7 +199,7 @@ public class TypeVisitorLifting {
   }
 
   protected static void setDelegate(TypeVisitorLifting newDelegate) {
-    TypeVisitorLifting.delegate = Log.errorIfNull(newDelegate);
+    TypeVisitorLifting.delegate = Preconditions.checkNotNull(newDelegate);
   }
 
   protected static TypeVisitorLifting getDelegate() {

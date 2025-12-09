@@ -2,6 +2,7 @@
 
 package de.monticore.grammar;
 
+import com.google.common.base.Preconditions;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -214,8 +215,8 @@ public class MCGrammarSymbolTableHelper {
   }
 
   public static boolean areSameTypes(ProdSymbol type1, ProdSymbol type2) {
-    Log.errorIfNull(type1);
-    Log.errorIfNull(type2);
+    Preconditions.checkNotNull(type1);
+    Preconditions.checkNotNull(type2);
 
     if (type1 == type2) {
       return true;

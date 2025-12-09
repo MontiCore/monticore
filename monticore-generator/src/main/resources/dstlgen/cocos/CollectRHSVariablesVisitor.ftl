@@ -6,7 +6,6 @@ import ${package}.${grammarNameLower}tr._visitor.*;
 import ${package}.${grammarNameLower}tr._ast.*;
 import ${package}.${grammarNameLower}tr.${ast.getName()}TRMill;
 import de.monticore.tf.tfcommons._ast.ASTTfIdentifier;
-import java.util.HashSet;
 import java.util.Set;
 import de.monticore.tf.grammartransformation.CollectCoCoInformationState;
 import de.monticore.tf.tfcommons._ast.ASTITFPart;

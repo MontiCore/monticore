@@ -83,7 +83,12 @@ public enum MC2CDStereotypes {
   /**
    * To mark an interface generated from an external prod
    */
-  EXTERNAL_INTERFACE("externalInterface");
+  EXTERNAL_INTERFACE("externalInterface"),
+
+  /**
+   * To store the value of a terminal, i.e. operator:"&&"
+   */
+  TERMINAL_DEFAULT_VALUE("defaultTerminalValue");
 
   protected final String stereotype;
 

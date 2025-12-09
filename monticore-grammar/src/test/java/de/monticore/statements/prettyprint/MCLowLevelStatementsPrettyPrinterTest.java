@@ -22,9 +22,7 @@ import static org.junit.Assert.assertTrue;
 
 public class MCLowLevelStatementsPrettyPrinterTest  {
 
-  private TestMCLowLevelStatementsParser parser = new TestMCLowLevelStatementsParser();
-
-  private MCLowLevelStatementsFullPrettyPrinter prettyPrinter = new MCLowLevelStatementsFullPrettyPrinter(new IndentPrinter());
+  private TestMCLowLevelStatementsParser parser;
 
   @BeforeEach
   public void init() {
@@ -32,7 +30,7 @@ public class MCLowLevelStatementsPrettyPrinterTest  {
     Log.enableFailQuick(false);
     TestMCLowLevelStatementsMill.reset();
     TestMCLowLevelStatementsMill.init();
-    prettyPrinter.getPrinter().clearBuffer();
+    parser = TestMCLowLevelStatementsMill.parser();
   }
 
   @Test
@@ -42,7 +40,7 @@ public class MCLowLevelStatementsPrettyPrinterTest  {
     Assertions.assertTrue(result.isPresent());
     ASTLabelledBreakStatement ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestMCLowLevelStatementsMill.prettyPrint(ast, true);
 
     result = parser.parse_StringLabelledBreakStatement(output);
     Assertions.assertFalse(parser.hasErrors());
@@ -60,7 +58,7 @@ public class MCLowLevelStatementsPrettyPrinterTest  {
     Assertions.assertTrue(result.isPresent());
     ASTLabel ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestMCLowLevelStatementsMill.prettyPrint(ast, true);
 
     result = parser.parse_StringLabel(output);
     Assertions.assertFalse(parser.hasErrors());
@@ -78,7 +76,7 @@ public class MCLowLevelStatementsPrettyPrinterTest  {
     Assertions.assertTrue(result.isPresent());
     ASTContinueStatement ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestMCLowLevelStatementsMill.prettyPrint(ast, true);
 
     result = parser.parse_StringContinueStatement(output);
     Assertions.assertFalse(parser.hasErrors());

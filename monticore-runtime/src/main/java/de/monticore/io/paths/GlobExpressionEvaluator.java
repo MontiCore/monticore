@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -36,7 +36,7 @@ public class GlobExpressionEvaluator extends SimpleFileVisitor<Path> {
     pattern = Pattern.compile(pathRegex);
     this.fileSystem = fs;
 
-    result = new HashSet<>();
+    result = new LinkedHashSet<>();
   }
 
   @Override

@@ -9,7 +9,7 @@ import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 public class MethodFormalParametersDifferentName implements JavaLightASTMethodDeclarationCoCo {
@@ -21,7 +21,7 @@ public class MethodFormalParametersDifferentName implements JavaLightASTMethodDe
   //JLS3 8.4.1-1
   @Override
   public void check(ASTMethodDeclaration node) {
-    Collection<String> names = new HashSet<>();
+    Collection<String> names = new LinkedHashSet<>();
     if (node.getFormalParameters().isPresentFormalParameterListing()) {
       if(node.getFormalParameters().getFormalParameterListing().isPresentLastFormalParameter()){
         names.add(node.getFormalParameters().getFormalParameterListing().getLastFormalParameter()

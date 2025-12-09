@@ -275,13 +275,13 @@ public class SummaryReporter extends AReporter {
   public void reportCallAfterHookPoint(String oldTemplate, Collection<HookPoint> afterHPs,
       ASTNode ast) {
     for (HookPoint hp : afterHPs) {
-      if (hp != null && hp instanceof CodeHookPoint) {
+      if (hp instanceof CodeHookPoint) {
         numCallCodeHookpoints++;
       }
-      else if (hp != null && hp instanceof TemplateHookPoint) {
+      else if (hp instanceof TemplateHookPoint) {
         numCallTemplateHookpoints++;
       }
-      else if (hp != null && hp instanceof StringHookPoint) {
+      else if (hp instanceof StringHookPoint) {
         numCallStringHookpoints++;
       }
     }
@@ -295,13 +295,13 @@ public class SummaryReporter extends AReporter {
   public void reportCallBeforeHookPoint(String oldTemplate, Collection<HookPoint> beforeHPs,
       ASTNode ast) {
     for (HookPoint hp : beforeHPs) {
-      if (hp != null && hp instanceof CodeHookPoint) {
+      if (hp instanceof CodeHookPoint) {
         numCallCodeHookpoints++;
       }
-      else if (hp != null && hp instanceof TemplateHookPoint) {
+      else if (hp instanceof TemplateHookPoint) {
         numCallTemplateHookpoints++;
       }
-      else if (hp != null && hp instanceof StringHookPoint) {
+      else if (hp instanceof StringHookPoint) {
         numCallStringHookpoints++;
       }
     }
@@ -314,13 +314,13 @@ public class SummaryReporter extends AReporter {
   @Override
   public void reportCallReplacementHookPoint(String oldTemplate, List<HookPoint> hps, ASTNode ast) {
     for (HookPoint hp : hps) {
-      if (hp != null && hp instanceof CodeHookPoint) {
+      if (hp instanceof CodeHookPoint) {
         numCallCodeHookpoints++;
       }
-      else if (hp != null && hp instanceof TemplateHookPoint) {
+      else if (hp instanceof TemplateHookPoint) {
         numCallTemplateHookpoints++;
       }
-      else if (hp != null && hp instanceof StringHookPoint) {
+      else if (hp instanceof StringHookPoint) {
         numCallStringHookpoints++;
       }
     }
@@ -475,13 +475,13 @@ public class SummaryReporter extends AReporter {
    */
   @Override
   public void reportSetHookPoint(String hookName, HookPoint hp) {
-    if (hp != null && hp instanceof CodeHookPoint) {
+    if (hp instanceof CodeHookPoint) {
       numSetCodeHookpoints++;
     }
-    else if (hp != null && hp instanceof TemplateHookPoint) {
+    else if (hp instanceof TemplateHookPoint) {
       numSetTemplateHookpoints++;
     }
-    else if (hp != null && hp instanceof StringHookPoint) {
+    else if (hp instanceof StringHookPoint) {
       numSetStringHookpoints++;
     }
   }
@@ -492,13 +492,13 @@ public class SummaryReporter extends AReporter {
    */
   @Override
   public void reportCallHookPointStart(String hookName, HookPoint hp, ASTNode ast) {
-    if (hp != null && hp instanceof CodeHookPoint) {
+    if (hp instanceof CodeHookPoint) {
       numCallCodeHookpoints++;
     }
-    else if (hp != null && hp instanceof TemplateHookPoint) {
+    else if (hp instanceof TemplateHookPoint) {
       numCallTemplateHookpoints++;
     }
-    else if (hp != null && hp instanceof StringHookPoint) {
+    else if (hp instanceof StringHookPoint) {
       numCallStringHookpoints++;
     }
     calledUnsetHookpoints.add(ReportingHelper.getHookPointName(hookName));
@@ -521,13 +521,13 @@ public class SummaryReporter extends AReporter {
   @Override
   public void reportSetBeforeTemplate(String template, Optional<ASTNode> ast, List<? extends HookPoint> beforeHps) {
     for (HookPoint hp : beforeHps) {
-      if (hp != null && hp instanceof CodeHookPoint) {
+      if (hp instanceof CodeHookPoint) {
         numSetCodeHookpoints++;
       }
-      else if (hp != null && hp instanceof TemplateHookPoint) {
+      else if (hp instanceof TemplateHookPoint) {
         numSetTemplateHookpoints++;
       }
-      else if (hp != null && hp instanceof StringHookPoint) {
+      else if (hp instanceof StringHookPoint) {
         numSetStringHookpoints++;
       }
     }
@@ -540,13 +540,13 @@ public class SummaryReporter extends AReporter {
   @Override
   public void reportSetAfterTemplate(String template, Optional<ASTNode> ast, List<? extends HookPoint> afterHps) {
     for (HookPoint hp : afterHps) {
-      if (hp != null && hp instanceof CodeHookPoint) {
+      if (hp instanceof CodeHookPoint) {
         numSetCodeHookpoints++;
       }
-      else if (hp != null && hp instanceof TemplateHookPoint) {
+      else if (hp instanceof TemplateHookPoint) {
         numSetTemplateHookpoints++;
       }
-      else if (hp != null && hp instanceof StringHookPoint) {
+      else if (hp instanceof StringHookPoint) {
         numSetStringHookpoints++;
       }
     }
@@ -559,13 +559,13 @@ public class SummaryReporter extends AReporter {
   @Override
   public void reportTemplateReplacement(String oldTemplate, List<? extends HookPoint> newHps) {
     for (HookPoint hp : newHps) {
-      if (hp != null && hp instanceof CodeHookPoint) {
+      if (hp instanceof CodeHookPoint) {
         numSetCodeHookpoints++;
       }
-      else if (hp != null && hp instanceof TemplateHookPoint) {
+      else if (hp instanceof TemplateHookPoint) {
         numSetTemplateHookpoints++;
       }
-      else if (hp != null && hp instanceof StringHookPoint) {
+      else if (hp instanceof StringHookPoint) {
         numSetStringHookpoints++;
       }
     }

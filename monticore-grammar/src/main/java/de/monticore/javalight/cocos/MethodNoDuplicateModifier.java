@@ -9,7 +9,7 @@ import de.monticore.statements.mcstatementsbasis._ast.ASTMCModifier;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -26,8 +26,8 @@ public class MethodNoDuplicateModifier implements JavaLightASTMethodDeclarationC
   }
 
   public Set<String> findDuplicates(List<String> listContainingDuplicates) {
-    final Set<String> setToReturn = new HashSet<>();
-    final Set<String> set1 = new HashSet<>();
+    final Set<String> setToReturn = new LinkedHashSet<>();
+    final Set<String> set1 = new LinkedHashSet<>();
 
     for (String modifierName : listContainingDuplicates) {
       if (!set1.add(modifierName)) {

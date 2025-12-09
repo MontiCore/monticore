@@ -78,16 +78,16 @@ public class MC2PPTranslation extends AbstractCreator<ASTMCGrammar, ASTCDCompila
     GrammarTraverser traverser = Grammar_WithConceptsMill.traverser();
 
     // Collect information about the NonTerminals first
-    NonTermAccessorVisitor nonTermAccessorVisitor = new NonTermAccessorVisitor();
-    traverser.add4Grammar(nonTermAccessorVisitor);
-    traverser.setGrammarHandler(new PrettyPrinterReducedTraverseHandler());
+    NonTermAccessorVisitorHandler nonTermAccessorCollector = new NonTermAccessorVisitorHandler();
+    traverser.add4Grammar(nonTermAccessorCollector);
+    traverser.setGrammarHandler(nonTermAccessorCollector);
     grammar.accept(traverser);
 
 
     // Traverse the Grammar ast and decorate the PP-handle methods
     PrettyPrinterGenerationVisitor transformer = new PrettyPrinterGenerationVisitor(glex,
             prettyPrinterCDClass,
-            nonTermAccessorVisitor.getClassProds());
+            nonTermAccessorCollector.getClassProds());
     traverser = Grammar_WithConceptsMill.traverser();
     traverser.setGrammarHandler(new PrettyPrinterReducedTraverseHandler());
     traverser.add4Grammar(transformer);
@@ -209,7 +209,7 @@ public class MC2PPTranslation extends AbstractCreator<ASTMCGrammar, ASTCDCompila
 
   protected Map<String, Map<ProdSymbol, Map<String, Collection<String>>>> findReplacedKeywords(MCGrammarSymbol grammarSymbol) {
     PrettyPrinterReplaceKeywordFinder finder = new PrettyPrinterReplaceKeywordFinder(grammarSymbol.getReplacedKeywordsWithInherited());
-    Map<String, Map<ProdSymbol, Map<String, Collection<String>>>> ret = new HashMap<>();
+    Map<String, Map<ProdSymbol, Map<String, Collection<String>>>> ret = new LinkedHashMap<>();
 
     Map<ProdSymbol, Map<String, Collection<String>>> finds = finder.check(grammarSymbol.getAstNode());
     if (!finds.isEmpty())

@@ -1,11 +1,11 @@
 package de.monticore.types3;
 
+import de.monticore.types3.util.DefsVariablesForTests;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsGlobalScope;
 import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
 import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
 import de.monticore.types.check.SymTypeExpressionFactory;
-import de.monticore.types3.util.DefsVariablesForTests;
 import de.monticore.types3.util.OOWithinTypeBasicSymbolsResolver;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -108,7 +108,7 @@ public class UglyExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
     MethodSymbol constructor1 = method("Person", _personSymType, _intSymType);
     constructor1.setIsConstructor(true);
     personScope.add(constructor1);
-    checkErrorExpr("new Person(1.2f)", "0xFD444");
+    checkErrorExpr("new Person(1.2f)", "0xFD44E");
     // constructors: () -> Person, (int) -> Person, (int) -> Person
     // no most specific constructor exists
     MethodSymbol constructor2 = method("Person", _personSymType, _intSymType);
@@ -142,6 +142,14 @@ public class UglyExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
     checkExpr("new List()", "List<int>", "List<int>");
     checkExpr("new List(1)", "List<int>", "List<int>");
     checkExpr("new List(1)", "List<int>");
+    
+    checkExpr("new List<>()", "List<int>", "List<int>");
+    checkExpr("new List<>(1)", "List<int>", "List<int>");
+    checkExpr("new List<>(1)", "List<int>");
+    
+    checkExpr("new List<int>()", "List<int>", "List<int>");
+    checkExpr("new List<int>(1)", "List<int>", "List<int>");
+    checkExpr("new List<int>(1)", "List<int>");
   }
 
   @Test

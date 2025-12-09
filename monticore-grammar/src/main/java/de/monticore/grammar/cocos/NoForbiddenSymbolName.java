@@ -33,7 +33,7 @@ public class NoForbiddenSymbolName implements GrammarASTMCGrammarCoCo {
           .collect(Collectors.toList());
       if(!forbidden.isEmpty()){
         for(ProdSymbol prod: forbidden){
-          Log.error(ERROR_CODE + String.format(ERROR_MSG_FORMAT, prod.getName(), grammarName));
+          Log.error(ERROR_CODE + String.format(ERROR_MSG_FORMAT, prod.getName(), grammarName), prod.getSourcePosition());
         }
       }
     }

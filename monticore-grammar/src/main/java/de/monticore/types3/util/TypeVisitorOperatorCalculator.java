@@ -1,6 +1,7 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.types3.util;
 
+import com.google.common.base.Preconditions;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
@@ -10,6 +11,13 @@ import de.se_rwth.commons.logging.Log;
 
 import java.util.Arrays;
 import java.util.Optional;
+
+import static de.monticore.types.check.SymTypeExpressionFactory.createObscureType;
+import static de.monticore.types.check.SymTypeExpressionFactory.createStringType;
+import static de.monticore.types.check.SymTypeExpressionFactory.createTypeRegEx;
+import static de.monticore.types3.SymTypeRelations.isNumericType;
+import static de.monticore.types3.SymTypeRelations.isString;
+import static de.monticore.types3.SymTypeRelations.isStringOrSubType;
 
 /**
  * Implementation of common operators for type visitors,
@@ -25,29 +33,11 @@ import java.util.Optional;
  */
 public class TypeVisitorOperatorCalculator {
 
+  protected static final String REGEX_STRING = ".*";
+
   // static delegate
 
   protected static TypeVisitorOperatorCalculator delegate;
-
-  public static void init() {
-    Log.trace("init default TypeVisitorOperatorCalculator", "TypeCheck setup");
-    setDelegate(new TypeVisitorOperatorCalculator());
-  }
-
-  public static void reset() {
-    TypeVisitorOperatorCalculator.delegate = null;
-  }
-
-  protected static void setDelegate(TypeVisitorOperatorCalculator newDelegate) {
-    TypeVisitorOperatorCalculator.delegate = Log.errorIfNull(newDelegate);
-  }
-
-  protected static TypeVisitorOperatorCalculator getDelegate() {
-    if (TypeVisitorOperatorCalculator.delegate == null) {
-      init();
-    }
-    return TypeVisitorOperatorCalculator.delegate;
-  }
 
   // arithmetic: +, -, *, /, %
 
@@ -73,13 +63,12 @@ public class TypeVisitorOperatorCalculator {
       SymTypeExpression right
   ) {
     SymTypeExpression result;
-    // if one part of the expression is a String
-    // then the whole expression is a String
-    if (SymTypeRelations.isString(left)) {
-      result = SymTypeExpressionFactory.createTypeObject(left.getTypeInfo());
-    }
-    else if (SymTypeRelations.isString(right)) {
-      result = SymTypeExpressionFactory.createTypeObject(right.getTypeInfo());
+    // if one part of the expression is a String (subtype)
+    // then the whole expression is a String (subtype)
+    if (isStringOrSubType(left) ||
+        isStringOrSubType(right)
+    ) {
+      result = calculatePlusString(left, right);
     }
     // no String in the expression
     // -> use the normal calculation for the basic arithmetic operators
@@ -163,6 +152,106 @@ public class TypeVisitorOperatorCalculator {
     }
 
     return result;
+  }
+
+  protected SymTypeExpression calculatePlusString(
+      SymTypeExpression left,
+      SymTypeExpression right
+  ) {
+    SymTypeExpression result;
+    SymTypeExpression leftStr = calculateToString(left);
+    SymTypeExpression rightStr = calculateToString(right);
+
+    if (leftStr.isObscureType() || rightStr.isObscureType()) {
+      result = createObscureType();
+    }
+    else if (isString(leftStr) && isString(rightStr)) {
+      result = leftStr.deepClone();
+    }
+    else {
+      // convert String to RegEx
+      if (isString(leftStr)) {
+        leftStr = createTypeRegEx(REGEX_STRING);
+      }
+      if (isString(rightStr)) {
+        rightStr = createTypeRegEx(REGEX_STRING);
+      }
+      if (!leftStr.isRegExType() || !rightStr.isRegExType()) {
+        Log.error("0xFD572 internal error: expected String (sub-)types"
+            + ", but got " + leftStr.printFullName()
+            + " and " + rightStr.printFullName()
+        );
+        return createObscureType();
+      }
+      // concat the two RegEx
+      // todo should be done better, but that requires extended regex support,
+      // currently, this may break groups, does not filter ^, $,
+      // and may have further issues
+      result = createTypeRegEx(
+          "(" + leftStr.asRegExType().getRegExString() + ")"
+              + "(" + rightStr.asRegExType().getRegExString() + ")"
+      );
+    }
+    return result;
+  }
+
+  /**
+   * Assume that toString (or the conceptual equivalent operation)
+   * is used on the set of possible values of the given type.
+   * This returns the type after the operation, e.g.,
+   * for an int, one could return the type R"-?\d+".
+   * However, one could use R"-?[0-9]{1,10}",
+   * or be even more precise.
+   * Alternatively, one could print a 3000 as "3*10^3",
+   * which does not fit the regexes above.
+   * As such, here we try to be as general as possible,
+   * and expect specific languages to override this method,
+   * if the need for more restrictive types is required.
+   * <p>
+   * Interestingly, this COULD (but should not!) be generalized;
+   * A function (STE target, STE source) -&gt; STE converted,
+   * where source is compatible to target,
+   * and converted is the result of the conversion to the target type,
+   * which is a subType of the target type.
+   * E.g., in this case, a regEx is a strict subtype of String,
+   * because the additional info is requried.
+   * Let's imagine this for further cases, e.g.,
+   * This additonal info is not needed for assignements (I think),
+   * but, e.g.,  for operations like +.
+   * However, this becomes rather unintuitive real quick:
+   * Assume that this conversion is allowed:
+   * (int, int, int) i3 = (1, (2, 3));
+   * Now we could just use this for the +-operator:
+   * (1, 2, 3) + (4, (5, 6)) == (5, 7, 9),
+   * but this gets wierd with
+   * ((1, 2), 3) + (4, (5, 6))
+   * -&gt; need to find (int, int, int) first, as it is not on either side.
+   * Other example: int and tuples can be converted to String,
+   * in this case, the following could be allowed:
+   * 1 + (2, 3) // "1(2, 3)"
+   * which is severely unintuitiv.
+   * As such, currently we avoid generalizing this method,
+   * as we don't have another (reasonable!) use case.
+   * Somewhat simmilar cases would be numeric promotion, autoboxing.
+   *
+   * @return either a SymTypeOfRegEx or a SymTypeOfString iff compatible,
+   *     SymTypeObscure otherwise
+   */
+  protected SymTypeExpression calculateToString(SymTypeExpression type) {
+    SymTypeExpression strType;
+    if (type.isRegExType()) {
+      strType = type.deepClone();
+    }
+    else if (isString(type) ||
+        isNumericType(type)
+    ) {
+      strType = createStringType();
+    }
+    // not compatible
+    else {
+      strType = createObscureType();
+    }
+    return strType;
   }
 
   public static Optional<SymTypeExpression> multiply(
@@ -518,7 +607,7 @@ public class TypeVisitorOperatorCalculator {
   }
 
   /**
-   * calculates <, <=, >, =>
+   * calculates {@code <, <=, >, =>}
    */
   protected SymTypeExpression calculateNumericComparison(
       SymTypeExpression left,
@@ -595,7 +684,7 @@ public class TypeVisitorOperatorCalculator {
   }
 
   /**
-   * calculates &&, ||
+   * calculates {@code &&, ||}
    */
   protected SymTypeExpression calculateConditionalBooleanOp(
       SymTypeExpression left,
@@ -683,7 +772,7 @@ public class TypeVisitorOperatorCalculator {
   }
 
   /**
-   * calculates &, |, ^
+   * calculates {@code &, |, ^}
    */
   protected SymTypeExpression calculateBinaryInfixOp(
       SymTypeExpression left,
@@ -858,6 +947,13 @@ public class TypeVisitorOperatorCalculator {
     if (SymTypeRelations.isNumericType(target) && SymTypeRelations.isNumericType(source)) {
       result = target;
     }
+    // explicitly allow casts for String <-> java.lang.String as well
+    // note: may need to be extended for further boxed types/
+    // add a more general boxing test here,
+    // currently not needed/requirements unknown.
+    else if (isString(target) && isString(source)) {
+      result = target;
+    }
     // check typecast is possible
     else if (
         SymTypeRelations.isSubTypeOf(target, source) || // downcast
@@ -935,6 +1031,28 @@ public class TypeVisitorOperatorCalculator {
     else {
       return SymTypeExpressionFactory.createObscureType();
     }
+  }
+
+  // static delegate
+
+  public static void init() {
+    Log.trace("init default TypeVisitorOperatorCalculator", "TypeCheck setup");
+    setDelegate(new TypeVisitorOperatorCalculator());
+  }
+
+  public static void reset() {
+    TypeVisitorOperatorCalculator.delegate = null;
+  }
+
+  protected static void setDelegate(TypeVisitorOperatorCalculator newDelegate) {
+    TypeVisitorOperatorCalculator.delegate = Preconditions.checkNotNull(newDelegate);
+  }
+
+  protected static TypeVisitorOperatorCalculator getDelegate() {
+    if (TypeVisitorOperatorCalculator.delegate == null) {
+      init();
+    }
+    return TypeVisitorOperatorCalculator.delegate;
   }
 
 }

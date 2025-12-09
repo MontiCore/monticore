@@ -5,6 +5,7 @@ package de.monticore.expressions;
  * Adaptations -- if any -- are conservative. */
 
 import de.monticore.expressions.ExpressionsBasis;
+import de.monticore.types.MCCollectionTypes;
 
 /**
  * This grammar extends the available expressions with
@@ -36,7 +37,9 @@ import de.monticore.expressions.ExpressionsBasis;
  *
 */
 
-component grammar StreamExpressions extends CommonExpressions {
+component grammar StreamExpressions
+                  extends CommonExpressions,
+                          MCCollectionTypes {
 
   /* ------ Special Syntax for Functions on Streams ---------------- */
 
@@ -45,33 +48,56 @@ component grammar StreamExpressions extends CommonExpressions {
    * <> denotes the empty stream
    * <a> is equal to a:<>
    * <a,b> is equal to a:<b> and transitively a:b:<>
+   * ~ denotes the absence of a value (Topt streams only)
+   * <a,~> is equal to a:Abs:<>
+   * <~,~,a,b> is equal to Abs:Abs:a:b:<>
+   * Tick denotes the end of a time slice (Event streams only)
+   * <Tick,a> is equal to Tick:a:<>
    * the default stream timing is (timed) event
    * Stream constructor has to bind harder than name expressions to avoid
    * the scanner recognizing timing keywords as names
    */
   StreamConstructorExpression implements Expression <360> =
-    ({noSpace(2)}? 
-    timing:[key("Event") | key("Sync") | key("Topt") | key("Untimed")])?
-    "<" (Expression || ",")* ">";
+    ({noSpace(2)}? timing:[key("Event") | key("Sync") | key("Topt") | key("Untimed")])?
+    ("<" MCTypeArgument {noSpace(2)}? ">")?
+    "<" (StreamConstructorElement || ",")* ">";
+  StreamConstructorElement =
+    tick:key("Tick") | absent:"~" | Expression;
 
-  /* 
+  /*
    * Append first element 
    * a:b:c  is equal to  a:(b:c), hence <rightassoc>
    * a:b^^c  is equal to  a:(b^^c)
    * a+b:c  is equal to  (a+b):c, and
    * (even so they are semantically associative)
-   * a <= b:c  is equal to  a <= (b:c), hence the priority 154, 156
+   * a <= b:c  is equal to  a <= (b:c), hence the priority 360, 370
    */
-  AppendStreamExpression implements Expression <154>, InfixExpression = 
+  AppendStreamExpression implements Expression <360>, InfixExpression =
     <rightassoc>
     left:Expression operator:":" right:Expression;
+
+  /*
+   * Appends the absence of an element to the front of a Topt stream.
+   * Priority must be higher than NameExpression, thus 360
+   */
+  AppendAbsentStreamExpression implements Expression <360> =
+  <rightassoc>
+  key("Abs") operator:":" stream:Expression;
+
+  /*
+   * Appends a tick to the front of an event stream.
+   * Priority must be higher than NameExpression, thus 360
+   */
+  AppendTickStreamExpression implements Expression <360> =
+  <rightassoc>
+  key("Tick") operator:":" stream:Expression;
 
   /*
    * Concatenation of two streams 
    * a^^b^^c  is equal to  a^^(b^^c),  hence <rightassoc>
    * (even so it is semantically associative)
    */
-  ConcatStreamExpression implements Expression <156>, InfixExpression = 
+  ConcatStreamExpression implements Expression <370>, InfixExpression =
     <rightassoc>
     left:Expression operator:"^^" right:Expression;
 

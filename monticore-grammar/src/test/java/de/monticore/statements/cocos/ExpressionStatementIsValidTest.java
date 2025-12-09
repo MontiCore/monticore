@@ -10,12 +10,7 @@ import de.monticore.statements.testmccommonstatements._visitor.TestMCCommonState
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 import de.monticore.types.check.FlatExpressionScopeSetter;
-import de.monticore.types.check.FullDeriveFromCombineExpressionsWithLiterals;
-import de.monticore.types.check.FullSynthesizeFromCombineExpressionsWithLiterals;
-import de.monticore.types.check.IDerive;
-import de.monticore.types.check.ISynthesize;
 import de.monticore.types.check.SymTypeExpressionFactory;
-import de.monticore.types.check.TypeCalculator;
 import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserFactory;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -25,9 +20,6 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 public class ExpressionStatementIsValidTest {
 
@@ -40,8 +32,7 @@ public class ExpressionStatementIsValidTest {
     TestMCCommonStatementsMill.reset();
     TestMCCommonStatementsMill.init();
     TestMCCommonStatementsMill.globalScope().clear();
-    new CombineExpressionsWithLiteralsTypeTraverserFactory()
-        .initTypeCheck3();
+    CombineExpressionsWithLiteralsTypeTraverserFactory.initTypeCheck3();
     BasicSymbolsMill.initializePrimitives();
     initSymbols();
 

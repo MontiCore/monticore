@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-  HashSet<String> names = new HashSet<>();
+  LinkedHashSet<String> names = new LinkedHashSet<>();
   names.add(name);
 
   // calculate all prefixes

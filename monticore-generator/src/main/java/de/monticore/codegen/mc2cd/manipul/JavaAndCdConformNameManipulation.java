@@ -23,7 +23,7 @@ public class JavaAndCdConformNameManipulation implements UnaryOperator<ASTCDComp
 
   @Override
   public ASTCDCompilationUnit apply(ASTCDCompilationUnit cdCompilationUnit) {
-    CD4AnalysisTraverser traverser = CD4AnalysisMill.traverser();
+    CD4AnalysisTraverser traverser = CD4AnalysisMill.inheritanceTraverser();
     traverser.add4CDBasis(new ManipulateVisitor(cdCompilationUnit.getCDPackageList(), cdCompilationUnit.getCDDefinition().getName()));
     cdCompilationUnit.accept(traverser);
     return cdCompilationUnit;

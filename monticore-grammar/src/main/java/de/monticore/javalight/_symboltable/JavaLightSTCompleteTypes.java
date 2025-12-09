@@ -15,6 +15,7 @@ import de.monticore.types.check.TypeCheckResult;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types3.TypeCheck3;
 
 import static de.monticore.statements.mccommonstatements._ast.ASTConstantsMCCommonStatements.*;
 
@@ -106,32 +107,14 @@ public class JavaLightSTCompleteTypes implements JavaLightVisitor2 {
   }
 
   protected SymTypeExpression createTypeLoader(ASTMCQualifiedName ast) {
-    FullSynthesizeFromMCSGT4Grammar synFromFull = new FullSynthesizeFromMCSGT4Grammar();
-    // Start visitor
-    TypeCheckResult typeCheckResult = synFromFull.synthesizeType(ast);
-    if(typeCheckResult.isPresentResult()){
-      return typeCheckResult.getResult();
-    }
-    return new SymTypeOfNull();
+    return TypeCheck3.symTypeFromAST(ast);
   }
 
   protected SymTypeExpression createTypeLoader(ASTMCType ast) {
-    FullSynthesizeFromMCSGT4Grammar synFromFull = new FullSynthesizeFromMCSGT4Grammar();
-    // Start visitor
-    TypeCheckResult typeCheckResult = synFromFull.synthesizeType(ast);
-    if(typeCheckResult.isPresentResult()){
-      return typeCheckResult.getResult();
-    }
-    return new SymTypeOfNull();
+    return TypeCheck3.symTypeFromAST(ast);
   }
 
   protected SymTypeExpression createTypeLoader(ASTMCReturnType ast) {
-    FullSynthesizeFromMCSGT4Grammar synFromFull = new FullSynthesizeFromMCSGT4Grammar();
-    // Start visitor
-    TypeCheckResult typeCheckResult = synFromFull.synthesizeType(ast);
-    if(typeCheckResult.isPresentResult()){
-      return typeCheckResult.getResult();
-    }
-    return new SymTypeOfNull();
+    return TypeCheck3.symTypeFromAST(ast);
   }
 }

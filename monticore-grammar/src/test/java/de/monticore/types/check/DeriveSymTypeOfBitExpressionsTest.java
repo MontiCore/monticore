@@ -45,9 +45,9 @@ public class DeriveSymTypeOfBitExpressionsTest extends DeriveSymTypeAbstractTest
     // some FieldSymbols (ie. Variables, Attributes)
     OOTypeSymbol p = new OOTypeSymbol("Person");
     OOTypeSymbol s = new OOTypeSymbol("Student");
-    s.setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Person", scope)));
+    s.setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObjectViaSurrogate("Person", scope)));
     OOTypeSymbol f = new OOTypeSymbol("FirstSemesterStudent");
-    f.setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student", scope)));
+    f.setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObjectViaSurrogate("Student", scope)));
     add2scope(scope, field("foo", _intSymType));
     add2scope(scope, field("bar2", _booleanSymType));
     add2scope(scope, field("vardouble", _doubleSymType));
@@ -55,12 +55,12 @@ public class DeriveSymTypeOfBitExpressionsTest extends DeriveSymTypeAbstractTest
     add2scope(scope, field("varfloat", _floatSymType));
     add2scope(scope, field("varlong", _longSymType));
     add2scope(scope, field("varint", _intSymType));
-    add2scope(scope, field("varString",SymTypeExpressionFactory.createTypeObject("String",scope)));
-    add2scope(scope, field("person1",SymTypeExpressionFactory.createTypeObject("Person",scope)));
-    add2scope(scope, field("person2",SymTypeExpressionFactory.createTypeObject("Person",scope)));
-    add2scope(scope, field("student1",SymTypeExpressionFactory.createTypeObject("Student",scope)));
-    add2scope(scope,field("student2",SymTypeExpressionFactory.createTypeObject("Student",scope)));
-    add2scope(scope,field("firstsemester",SymTypeExpressionFactory.createTypeObject("FirstSemesterStudent",scope)));
+    add2scope(scope, field("varString",SymTypeExpressionFactory.createTypeObjectViaSurrogate("String",scope)));
+    add2scope(scope, field("person1",SymTypeExpressionFactory.createTypeObjectViaSurrogate("Person",scope)));
+    add2scope(scope, field("person2",SymTypeExpressionFactory.createTypeObjectViaSurrogate("Person",scope)));
+    add2scope(scope, field("student1",SymTypeExpressionFactory.createTypeObjectViaSurrogate("Student",scope)));
+    add2scope(scope,field("student2",SymTypeExpressionFactory.createTypeObjectViaSurrogate("Student",scope)));
+    add2scope(scope,field("firstsemester",SymTypeExpressionFactory.createTypeObjectViaSurrogate("FirstSemesterStudent",scope)));
 
     setFlatExpressionScopeSetter(scope);
   }

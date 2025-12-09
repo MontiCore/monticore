@@ -15,7 +15,10 @@ import java.util.List;
  * Visitor for Derivation of SymType from MCBasicTypes
  * i.e. for
  * types/MCBasicTypes.mc4
+ * @deprecated part of typecheck1,
+ * use {@link de.monticore.types3.TypeCheck3} instead.
  */
+@Deprecated
 public class SynthesizeSymTypeFromMCCollectionTypes extends AbstractSynthesizeFromType implements MCCollectionTypesVisitor2, MCCollectionTypesHandler {
 
 

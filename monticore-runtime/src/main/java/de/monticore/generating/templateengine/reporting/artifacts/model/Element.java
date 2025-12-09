@@ -3,7 +3,7 @@
 package de.monticore.generating.templateengine.reporting.artifacts.model;
 
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import de.monticore.generating.templateengine.reporting.artifacts.ReportingNameHelper;
@@ -24,10 +24,10 @@ public class Element {
   protected APkg pkg;
   
   // List of links going from this element
-  protected Map<String, Element> links = new HashMap<String, Element>();
+  protected Map<String, Element> links = new LinkedHashMap<String, Element>();
   
   // Number of Link calls per Link
-  protected Map<String, Long> numberOfLinkCalls = new HashMap<String, Long>();
+  protected Map<String, Long> numberOfLinkCalls = new LinkedHashMap<String, Long>();
   
   protected boolean hasLinkToFile = false;
   

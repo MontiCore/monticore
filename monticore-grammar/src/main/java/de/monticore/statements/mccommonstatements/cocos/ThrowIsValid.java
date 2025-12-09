@@ -35,7 +35,7 @@ public class ThrowIsValid implements MCExceptionStatementsASTThrowStatementCoCo 
   public void check(ASTThrowStatement node) {
     Preconditions.checkNotNull(node);
 
-    SymTypeExpression throwable = SymTypeExpressionFactory.createTypeObject("java.lang.Throwable", node.getEnclosingScope());
+    SymTypeExpression throwable = SymTypeExpressionFactory.createTypeObjectViaSurrogate("java.lang.Throwable", node.getEnclosingScope());
 
     SymTypeExpression expression;
 

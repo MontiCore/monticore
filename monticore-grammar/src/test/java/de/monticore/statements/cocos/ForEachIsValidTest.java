@@ -19,6 +19,9 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.util.Optional;
 
+import static de.monticore.types.check.SymTypeExpressionFactory.createTypeObject;
+import static de.monticore.types3.util.DefsTypesForTests.inScope;
+import static de.monticore.types3.util.DefsTypesForTests.oOtype;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -38,12 +41,13 @@ public class ForEachIsValidTest {
     checker = new TestMCCommonStatementsCoCoChecker();
     checker.addCoCo(new ForEachIsValid(new TypeCalculator(new FullSynthesizeFromCombineExpressionsWithLiterals(), new FullDeriveFromCombineExpressionsWithLiterals())));
 
-    SymTypeOfObject iterableType = SymTypeExpressionFactory.createTypeObject("java.lang.Iterable", TestMCCommonStatementsMill.globalScope());
-    SymTypeOfObject aObjectType = SymTypeExpressionFactory.createTypeObject("A", TestMCCommonStatementsMill.globalScope());
+    SymTypeOfObject iterableType = SymTypeExpressionFactory.createTypeObjectViaSurrogate("java.lang.Iterable", TestMCCommonStatementsMill.globalScope());
+    SymTypeOfObject aObjectType = SymTypeExpressionFactory.createTypeObjectViaSurrogate("A", TestMCCommonStatementsMill.globalScope());
 
     TestMCCommonStatementsMill.globalScope().add(TestMCCommonStatementsMill
         .oOTypeSymbolBuilder()
         .setName("A")
+        .setSpannedScope(TestMCCommonStatementsMill.scope())
         .addSuperTypes(iterableType)
         .build());
 
@@ -59,6 +63,7 @@ public class ForEachIsValidTest {
     langScope.add(TestMCCommonStatementsMill
         .oOTypeSymbolBuilder()
         .setName("Iterable")
+        .setSpannedScope(TestMCCommonStatementsMill.scope())
         .build());
 
     ITestMCCommonStatementsScope utilScope = TestMCCommonStatementsMill.scope();
@@ -68,6 +73,7 @@ public class ForEachIsValidTest {
 
     utilScope.add(TestMCCommonStatementsMill
         .oOTypeSymbolBuilder().setName("Arrays")
+        .setSpannedScope(TestMCCommonStatementsMill.scope())
         .build());
 
     TestMCCommonStatementsMill.globalScope().add(TestMCCommonStatementsMill
@@ -76,11 +82,7 @@ public class ForEachIsValidTest {
         .setType(aObjectType)
         .build());
 
-    SymTypeOfObject objectType = SymTypeExpressionFactory.createTypeObject("Object", TestMCCommonStatementsMill.globalScope());
-    TestMCCommonStatementsMill.globalScope().add(TestMCCommonStatementsMill
-        .oOTypeSymbolBuilder()
-        .setName("Object")
-        .build());
+    SymTypeOfObject objectType = createTypeObject(inScope(TestMCCommonStatementsMill.globalScope(), oOtype("Object")));
 
     TestMCCommonStatementsMill.globalScope().add(TestMCCommonStatementsMill
         .fieldSymbolBuilder()

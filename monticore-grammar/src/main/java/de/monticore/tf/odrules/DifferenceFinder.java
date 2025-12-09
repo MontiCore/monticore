@@ -43,7 +43,7 @@ public class DifferenceFinder {
   private List<ASTODLink> unchangedLinks = new LinkedList<>();
   private ASTODDefinition lhs;
 
-  private HashMap<ASTODObject, List<ASTODLink>> toCreateObjectsAttr = new HashMap();
+  private LinkedHashMap<ASTODObject, List<ASTODLink>> toCreateObjectsAttr = new LinkedHashMap();
 
   private HierarchyHelper hierarchyHelper;
 
@@ -310,7 +310,7 @@ public class DifferenceFinder {
       for(ASTODLink former : rhsLinks){
         if(!right.deepEquals(former) &&  referencesAreEqual(former.getRightReferenceNameList(),right.getRightReferenceNameList())){
           ASTStereotype stereotype = ODRulesMill.stereotypeBuilder().build();
-          ASTStereoValue value = ODRulesMill.stereoValueBuilder().setName("copy").setContent("").build();
+          ASTStereoValue value = ODRulesMill.stereoValueBuilder().setName("copy").build();
           stereotype.getValuesList().add(value);
           right.setStereotype(stereotype);
         }

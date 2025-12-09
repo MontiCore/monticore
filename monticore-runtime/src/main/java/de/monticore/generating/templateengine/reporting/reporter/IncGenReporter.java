@@ -13,7 +13,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Optional;
@@ -36,7 +36,7 @@ public abstract class IncGenReporter extends AReporter {
 
   protected Set<Path> outputFiles = new OrderedHashSet<>();
 
-  protected static Map<Path, Path> modelToArtifactMap = new HashMap<>();
+  protected static Map<Path, Path> modelToArtifactMap = new LinkedHashMap<>();
 
   protected Path inputFile;
 
