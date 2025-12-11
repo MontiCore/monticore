@@ -32,7 +32,6 @@ public abstract class PrettyPrinterTester {
    *                        {@code ast -> MyMill.prettyPrint(ast, true)}
    * @param additionalCheck additional check on the pretty printed String
    * @param <N>             the type of the ASTNode after parsing
-   * @throws IOException    thrown by the parser
    */
   public static <N extends ASTNode> void testPrettyPrinter(
       String model,
@@ -40,9 +39,16 @@ public abstract class PrettyPrinterTester {
       ParseFunction<N> parseFunc,
       Function<N, String> prettyPrintFunc,
       Predicate<String> additionalCheck
-  ) throws IOException {
+  ) {
     // parse the model
-    Optional<N> astOpt = parseFunc.apply(model);
+    Optional<N> astOpt;
+    try {
+      astOpt = parseFunc.apply(model);
+    }
+    catch (IOException e) {
+      Assertions.fail("Failed to parse input, exception occurred", e);
+      return;
+    }
     MCAssertions.assertNoFindings();
     assertTrue(astOpt.isPresent(), "Failed to parse input");
     assertFalse(parser.hasErrors(), "Parser has Errors");
@@ -51,7 +57,17 @@ public abstract class PrettyPrinterTester {
     String prettyPrinted = prettyPrintFunc.apply(ast);
     MCAssertions.assertNoFindings();
     // parse the pretty printed model
-    Optional<N> prettyPrintedAstOpt = parseFunc.apply(prettyPrinted);
+    Optional<N> prettyPrintedAstOpt;
+    try {
+      prettyPrintedAstOpt = parseFunc.apply(prettyPrinted);
+    }
+    catch (IOException e) {
+      Assertions.fail(
+          "Failed to parse pretty printed model"
+              + ", exception occurred", e
+      );
+      return;
+    }
     MCAssertions.assertNoFindings();
     assertFalse(parser.hasErrors());
     assertTrue(prettyPrintedAstOpt.isPresent());
@@ -78,14 +94,13 @@ public abstract class PrettyPrinterTester {
    * @param prettyPrintFunc the actual pretty printing operation, e.g.,
    *                        {@code ast -> MyMill.prettyPrint(ast, true)}
    * @param <N>             the type of the ASTNode after parsing
-   * @throws IOException
    */
   public static <N extends ASTNode> void testPrettyPrinter(
       String model,
       MCConcreteParser parser,
       ParseFunction<N> parseFunc,
       Function<N, String> prettyPrintFunc
-  ) throws IOException {
+  ) {
     testPrettyPrinter(model, parser, parseFunc, prettyPrintFunc, m -> true);
   }
 
