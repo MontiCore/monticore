@@ -9,10 +9,9 @@ import de.monticore.statements.testmccommonstatements._symboltable.ITestMCCommon
 import de.monticore.statements.testmcexceptionstatements.TestMCExceptionStatementsMill;
 import de.monticore.statements.testmcexceptionstatements._cocos.TestMCExceptionStatementsCoCoChecker;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
-import de.monticore.types.check.FullDeriveFromCombineExpressionsWithLiterals;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfObject;
-import de.monticore.types.check.TypeCalculator;
+import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserFactory;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,6 +33,7 @@ class ThrowIsValidTest {
 
     TestMCExceptionStatementsMill.reset();
     TestMCExceptionStatementsMill.init();
+    CombineExpressionsWithLiteralsTypeTraverserFactory.initTypeCheck3();
     BasicSymbolsMill.initializePrimitives();
 
     // Define basic Throwable and hierarchy
@@ -96,8 +96,7 @@ class ThrowIsValidTest {
     // Given
     TestMCExceptionStatementsCoCoChecker checker = new TestMCExceptionStatementsCoCoChecker();
     checker.setTraverser(TestMCExceptionStatementsMill.traverser());
-    checker.addCoCo(new ThrowIsValid(
-      new TypeCalculator(null, new FullDeriveFromCombineExpressionsWithLiterals())));
+    checker.addCoCo(new ThrowIsValid());
 
     ASTThrowStatement ast = parser().parse_StringThrowStatement(expr).orElseThrow();
     ast.setEnclosingScope(TestMCExceptionStatementsMill.globalScope());
@@ -116,8 +115,7 @@ class ThrowIsValidTest {
     // Given
     TestMCExceptionStatementsCoCoChecker checker = new TestMCExceptionStatementsCoCoChecker();
     checker.setTraverser(TestMCExceptionStatementsMill.traverser());
-    checker.addCoCo(new ThrowIsValid(
-      new TypeCalculator(null, new FullDeriveFromCombineExpressionsWithLiterals())));
+    checker.addCoCo(new ThrowIsValid());
 
     ASTThrowStatement ast = parser().parse_StringThrowStatement(expr).orElseThrow();
     ast.setEnclosingScope(TestMCExceptionStatementsMill.globalScope());

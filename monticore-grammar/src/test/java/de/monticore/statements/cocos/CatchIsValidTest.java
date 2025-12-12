@@ -8,10 +8,9 @@ import de.monticore.statements.testmccommonstatements._symboltable.ITestMCCommon
 import de.monticore.statements.testmcexceptionstatements.TestMCExceptionStatementsMill;
 import de.monticore.statements.testmcexceptionstatements._cocos.TestMCExceptionStatementsCoCoChecker;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
-import de.monticore.types.check.FullDeriveFromCombineExpressionsWithLiterals;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfObject;
-import de.monticore.types.check.TypeCalculator;
+import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserFactory;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,6 +33,7 @@ class CatchIsValidTest {
 
     TestMCExceptionStatementsMill.reset();
     TestMCExceptionStatementsMill.init();
+    CombineExpressionsWithLiteralsTypeTraverserFactory.initTypeCheck3();
     BasicSymbolsMill.initializePrimitives();
 
     SymTypeOfObject sType = SymTypeExpressionFactory.createTypeObjectViaSurrogate("java.lang.Throwable", globalScope());
@@ -82,7 +82,7 @@ class CatchIsValidTest {
   void testValid(String expr) throws IOException {
     // Given
     TestMCExceptionStatementsCoCoChecker checker = new TestMCExceptionStatementsCoCoChecker();
-    checker.addCoCo(new CatchIsValid(new TypeCalculator(null, new FullDeriveFromCombineExpressionsWithLiterals())));
+    checker.addCoCo(new CatchIsValid());
 
     ASTCatchClause ast = parser().parse_StringCatchClause(expr).orElseThrow();
 
@@ -104,7 +104,7 @@ class CatchIsValidTest {
   void testInvalid(String expr) throws IOException {
     // Given
     TestMCExceptionStatementsCoCoChecker checker = new TestMCExceptionStatementsCoCoChecker();
-    checker.addCoCo(new CatchIsValid(new TypeCalculator(null, new FullDeriveFromCombineExpressionsWithLiterals())));
+    checker.addCoCo(new CatchIsValid());
 
     ASTCatchClause ast = parser().parse_StringCatchClause(expr).orElseThrow();
 

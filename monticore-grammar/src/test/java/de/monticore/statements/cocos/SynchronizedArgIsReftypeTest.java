@@ -8,10 +8,9 @@ import de.monticore.statements.testmcexceptionstatements.TestMCExceptionStatemen
 import de.monticore.statements.testmcsynchronizedstatements.TestMCSynchronizedStatementsMill;
 import de.monticore.statements.testmcsynchronizedstatements._cocos.TestMCSynchronizedStatementsCoCoChecker;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
-import de.monticore.types.check.FullDeriveFromCombineExpressionsWithLiterals;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfObject;
-import de.monticore.types.check.TypeCalculator;
+import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserFactory;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,6 +31,7 @@ class SynchronizedArgIsReftypeTest {
     Log.enableFailQuick(false);
     TestMCSynchronizedStatementsMill.reset();
     TestMCSynchronizedStatementsMill.init();
+    CombineExpressionsWithLiteralsTypeTraverserFactory.initTypeCheck3();
     BasicSymbolsMill.initializePrimitives();
 
     SymTypeOfObject objectType =
@@ -56,8 +56,7 @@ class SynchronizedArgIsReftypeTest {
   void testValid(String expr) throws IOException {
     // Given
     TestMCSynchronizedStatementsCoCoChecker checker = new TestMCSynchronizedStatementsCoCoChecker();
-    checker.addCoCo(new SynchronizedArgIsReftype(
-      new TypeCalculator(null, new FullDeriveFromCombineExpressionsWithLiterals())));
+    checker.addCoCo(new SynchronizedArgIsReftype());
 
     ASTSynchronizedStatement ast = parser().parse_StringSynchronizedStatement(expr).orElseThrow();
     ast.getExpression().setEnclosingScope(TestMCExceptionStatementsMill.globalScope());
@@ -78,8 +77,7 @@ class SynchronizedArgIsReftypeTest {
   void testInvalid(String expr) throws IOException {
     // Given
     TestMCSynchronizedStatementsCoCoChecker checker = new TestMCSynchronizedStatementsCoCoChecker();
-    checker.addCoCo(new SynchronizedArgIsReftype(
-      new TypeCalculator(null, new FullDeriveFromCombineExpressionsWithLiterals())));
+    checker.addCoCo(new SynchronizedArgIsReftype());
 
     ASTSynchronizedStatement ast = parser().parse_StringSynchronizedStatement(expr).orElseThrow();
     ast.getExpression().setEnclosingScope(TestMCExceptionStatementsMill.globalScope());

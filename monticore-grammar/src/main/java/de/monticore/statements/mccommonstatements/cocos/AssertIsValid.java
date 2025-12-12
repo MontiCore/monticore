@@ -30,6 +30,8 @@ public class AssertIsValid implements MCAssertStatementsASTAssertStatementCoCo {
     this.typeCheck = typeCheck;
   }
 
+  public AssertIsValid() { }
+
   @Override
   public void check(ASTAssertStatement node) {
     Preconditions.checkNotNull(node);

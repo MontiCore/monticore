@@ -9,7 +9,6 @@ import de.monticore.statements.testmccommonstatements._visitor.TestMCCommonState
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 import de.monticore.types.check.FlatExpressionScopeSetter;
-import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserFactory;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;

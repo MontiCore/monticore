@@ -11,9 +11,8 @@ import de.monticore.statements.testmccommonstatements._visitor.TestMCCommonState
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.types.check.FlatExpressionScopeSetter;
-import de.monticore.types.check.FullDeriveFromCombineExpressionsWithLiterals;
 import de.monticore.types.check.SymTypeExpressionFactory;
-import de.monticore.types.check.TypeCalculator;
+import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserFactory;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,6 +32,7 @@ class SwitchStatementValidTest {
     Log.enableFailQuick(false);
     TestMCCommonStatementsMill.reset();
     TestMCCommonStatementsMill.init();
+    CombineExpressionsWithLiteralsTypeTraverserFactory.initTypeCheck3();
     BasicSymbolsMill.initializePrimitives();
   }
 
@@ -44,8 +44,7 @@ class SwitchStatementValidTest {
   void testValid(String expr) throws IOException {
     // Given
     TestMCCommonStatementsCoCoChecker checker = new TestMCCommonStatementsCoCoChecker();
-    checker.addCoCo(new SwitchStatementValid(
-      new TypeCalculator(null, new FullDeriveFromCombineExpressionsWithLiterals())));
+    checker.addCoCo(new SwitchStatementValid());
 
     ASTMCBlockStatement ast = parser().parse_StringMCBlockStatement(expr).orElseThrow();
 
@@ -65,8 +64,7 @@ class SwitchStatementValidTest {
   void testInvalid(String expr) throws IOException {
     // Given
     TestMCCommonStatementsCoCoChecker checker = new TestMCCommonStatementsCoCoChecker();
-    checker.addCoCo(new SwitchStatementValid(
-      new TypeCalculator(null, new FullDeriveFromCombineExpressionsWithLiterals())));
+    checker.addCoCo(new SwitchStatementValid());
 
     ASTMCBlockStatement ast = parser().parse_StringMCBlockStatement(expr).orElseThrow();
 
@@ -93,8 +91,7 @@ class SwitchStatementValidTest {
     TestMCCommonStatementsMill.globalScope().add(variable);
 
     TestMCCommonStatementsCoCoChecker checker = new TestMCCommonStatementsCoCoChecker();
-    checker.addCoCo(new SwitchStatementValid(
-      new TypeCalculator(null, new FullDeriveFromCombineExpressionsWithLiterals())));
+    checker.addCoCo(new SwitchStatementValid());
 
     ASTMCBlockStatement ast = parser().parse_StringMCBlockStatement(expr).orElseThrow();
 
@@ -125,8 +122,7 @@ class SwitchStatementValidTest {
     TestMCCommonStatementsMill.globalScope().add(variable);
 
     TestMCCommonStatementsCoCoChecker checker = new TestMCCommonStatementsCoCoChecker();
-    checker.addCoCo(new SwitchStatementValid(
-      new TypeCalculator(null, new FullDeriveFromCombineExpressionsWithLiterals())));
+    checker.addCoCo(new SwitchStatementValid());
 
     ASTMCBlockStatement ast = parser().parse_StringMCBlockStatement(expr).orElseThrow();
 
