@@ -4,9 +4,11 @@ package de.monticore.types.check;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import de.monticore.runtime.junit.AbstractMCTest;
+import de.monticore.runtime.junit.MCAssertions;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.compsymbols._symboltable.ComponentTypeSymbol;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
+import de.monticore.types.MCTypeFacade;
 import de.monticore.types.componentsymbolswithmcbasictypestest.ComponentSymbolsWithMCBasicTypesTestMill;
 import de.monticore.types.componentsymbolswithmcbasictypestest._symboltable.IComponentSymbolsWithMCBasicTypesTestScope;
 import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
@@ -29,6 +31,8 @@ import org.antlr.v4.runtime.misc.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.Arrays;
 import java.util.List;
@@ -45,8 +49,6 @@ public class SynthesizeComponentFromMCSimpleGenericTypesTest extends AbstractMCT
     ComponentSymbolsWithMCBasicTypesTestMill.reset();
     ComponentSymbolsWithMCBasicTypesTestMill.init();
     BasicSymbolsMill.initializePrimitives();
-    BasicSymbolsMill.initializeString();
-
 
     // Setup TypeCheck
     Type4Ast type4Ast = new Type4Ast();
@@ -69,12 +71,16 @@ public class SynthesizeComponentFromMCSimpleGenericTypesTest extends AbstractMCT
     new MapBasedTypeCheck3(traverser, type4Ast, ctx4Ast).setThisAsDelegate();
   }
 
-  @Test
-  public void shouldHandleMCBasicGenericType() {
+  @ParameterizedTest
+  @ValueSource(booleans = {false, true})
+  public void shouldHandleMCBasicGenericType(boolean useQualifiedVariant) {
     // Given
-    // First, we build OOSymbols for String and List<T> and a ComponentTypeSymbol for Comp<K,V>. We put them in a
-    // common sub scope of the global scope.
     String compName = "Comp";
+    String stringName = "MyString";
+    String listName = "MyList";
+    String scopeName = "scoop";
+
+    // Component Comp<K, V>
     ComponentTypeSymbol compSym = ComponentSymbolsWithMCBasicTypesTestMill.componentTypeSymbolBuilder()
       .setName(compName)
       .setSpannedScope(ComponentSymbolsWithMCBasicTypesTestMill.scope())
@@ -83,29 +89,28 @@ public class SynthesizeComponentFromMCSimpleGenericTypesTest extends AbstractMCT
         ComponentSymbolsWithMCBasicTypesTestMill.typeVarSymbolBuilder().setName("V").build()
       )).build();
 
-    String nameOfCompScope = "scoop";
-    var scopeOfComp = ComponentSymbolsWithMCBasicTypesTestMill.scope();
-    scopeOfComp.setName(nameOfCompScope);
-    scopeOfComp.add(compSym);
-    scopeOfComp.addSubScope(compSym.getSpannedScope());
-    ComponentSymbolsWithMCBasicTypesTestMill.globalScope().addSubScope(scopeOfComp);
+    var compScope = ComponentSymbolsWithMCBasicTypesTestMill.scope();
+    compScope.setName(scopeName);
+    compScope.add(compSym);
+    compScope.addSubScope(compSym.getSpannedScope());
+    ComponentSymbolsWithMCBasicTypesTestMill.globalScope().addSubScope(compScope);
 
-    String stringName = "String";
+    // MyString type in comp scope
     OOTypeSymbol stringSym = ComponentSymbolsWithMCBasicTypesTestMill.oOTypeSymbolBuilder()
       .setName(stringName)
       .setSpannedScope(ComponentSymbolsWithMCBasicTypesTestMill.scope())
       .build();
-    scopeOfComp.add(stringSym);
-    scopeOfComp.addSubScope(stringSym.getSpannedScope());
+    compScope.add(stringSym);
+    compScope.addSubScope(stringSym.getSpannedScope());
 
-    String listName = "List";
+    // MyList<T> type in comp scope
     OOTypeSymbol listSym = ComponentSymbolsWithMCBasicTypesTestMill.oOTypeSymbolBuilder()
       .setName(listName)
       .setSpannedScope(ComponentSymbolsWithMCBasicTypesTestMill.scope())
       .build();
     listSym.addTypeVarSymbol(ComponentSymbolsWithMCBasicTypesTestMill.typeVarSymbolBuilder().setName("T").build());
-    scopeOfComp.add(listSym);
-    scopeOfComp.addSubScope(listSym.getSpannedScope());
+    compScope.add(listSym);
+    compScope.addSubScope(listSym.getSpannedScope());
 
     // Now we build generic ast types Comp<String, List<String>> and scoop.Comp<scoop.List<scoop.String>, scoop.String>
     // That lay a) in the scope where the symbols lay and b) in the global scope.
@@ -114,91 +119,142 @@ public class SynthesizeComponentFromMCSimpleGenericTypesTest extends AbstractMCT
         .addParts(stringName)
         .build())
       .build();
+    astString.setEnclosingScope(compScope);
+    astString.getMCQualifiedName().setEnclosingScope(compScope);
+
     ASTMCQualifiedType astQualString = ComponentSymbolsWithMCBasicTypesTestMill.mCQualifiedTypeBuilder()
       .setMCQualifiedName(ComponentSymbolsWithMCBasicTypesTestMill.mCQualifiedNameBuilder()
-        .addParts(nameOfCompScope)
+        .addParts(scopeName)
         .addParts(stringName)
         .build())
       .build();
-    astString.setEnclosingScope(scopeOfComp);
-    astString.getMCQualifiedName().setEnclosingScope(scopeOfComp);
     astQualString.setEnclosingScope(ComponentSymbolsWithMCBasicTypesTestMill.globalScope());
-    astQualString.getMCQualifiedName().setEnclosingScope(scopeOfComp);
+    astQualString.getMCQualifiedName().setEnclosingScope(compScope);
 
-    ASTMCType astListOfString = createGenericType(ImmutableList.of(listName), scopeOfComp, astString);
+    // MyList<MyString> in comp scope
+    ASTMCType astListOfString = createGenericType(ImmutableList.of(listName), compScope, astString);
+
+    // scoop.MyList<scoop.MyString> from global scope
     ASTMCType astQualListOfString = createGenericType(
-      ImmutableList.of(nameOfCompScope, listName), ComponentSymbolsWithMCBasicTypesTestMill.globalScope(), astQualString);
+      ImmutableList.of(scopeName, listName), ComponentSymbolsWithMCBasicTypesTestMill.globalScope(), astQualString);
 
     // Now build qualified and unqualified generic types
     ASTMCBasicGenericType astNormalComp = createGenericType(
       ImmutableList.of(compName),
-      scopeOfComp,
+      compScope,
       astString, astListOfString
     );
+    astNormalComp.setEnclosingScope(compScope);
+
+    // scoop.Comp<scoop.MyList<scoop.MyString>, scoop.MyString> in global scope
     ASTMCBasicGenericType astQualComp = createGenericType(
-      ImmutableList.of(nameOfCompScope, compName),
+      ImmutableList.of(scopeName, compName),
       ComponentSymbolsWithMCBasicTypesTestMill.globalScope(),
       astQualListOfString, astQualString
     );
-
-    astNormalComp.setEnclosingScope(scopeOfComp);
     astQualComp.setEnclosingScope(ComponentSymbolsWithMCBasicTypesTestMill.globalScope());
 
-    CompKindCheckResult result4normal = new CompKindCheckResult();
-    CompKindCheckResult result4qual = new CompKindCheckResult();
-    SynthesizeCompKindFromMCSimpleGenericTypes synth4normal = new SynthesizeCompKindFromMCSimpleGenericTypes(result4normal);
-    SynthesizeCompKindFromMCSimpleGenericTypes synth4qual = new SynthesizeCompKindFromMCSimpleGenericTypes(result4qual);
+    ASTMCBasicGenericType ast = useQualifiedVariant ? astQualComp : astNormalComp;
+
+    CompKindCheckResult result = new CompKindCheckResult();
+    SynthesizeCompKindFromMCSimpleGenericTypes synth = new SynthesizeCompKindFromMCSimpleGenericTypes(result);
 
     // When
-    synth4normal.handle(astNormalComp);
-    synth4qual.handle(astQualComp);
+    synth.handle(ast);
 
     // Then
-    Assertions.assertTrue(result4normal.getResult().isPresent());
-    Assertions.assertTrue(result4qual.getResult().isPresent());
-    Assertions.assertInstanceOf(CompKindOfGenericComponentType.class, result4normal.getResult().get());
-    Assertions.assertInstanceOf(CompKindOfGenericComponentType.class, result4qual.getResult().get());
+    Assertions.assertTrue(result.getResult().isPresent());
+    Assertions.assertInstanceOf(CompKindOfGenericComponentType.class, result.getResult().get());
 
+    CompKindOfGenericComponentType generic =
+      (CompKindOfGenericComponentType) result.getResult().get();
 
-    CompKindOfGenericComponentType result4normalAsGeneric =
-      (CompKindOfGenericComponentType) result4normal.getResult().get();
-    CompKindOfGenericComponentType result4qualAsGeneric =
-      (CompKindOfGenericComponentType) result4qual.getResult().get();
+    Assertions.assertEquals(compSym, generic.getTypeInfo());
+    Assertions.assertTrue(generic.getSourceNode().isPresent());
+    Assertions.assertEquals(ast, generic.getSourceNode().get());
 
-    Assertions.assertEquals(compSym, result4normal.getResult().get().getTypeInfo());
-    Assertions.assertEquals(compSym, result4qual.getResult().get().getTypeInfo());
-    Assertions.assertInstanceOf(SymTypeOfObject.class, result4normalAsGeneric.getTypeBindingFor("K").get());
-    Assertions.assertInstanceOf(SymTypeOfGenerics.class, result4normalAsGeneric.getTypeBindingFor("V").get());
-    Assertions.assertEquals(stringSym, result4normalAsGeneric.getTypeBindingFor("K").get().getTypeInfo());
-    Assertions.assertEquals(listSym, result4normalAsGeneric.getTypeBindingFor("V").get().getTypeInfo());
-    Assertions.assertEquals(stringSym,
-      ((SymTypeOfGenerics) result4normalAsGeneric.getTypeBindingFor("V").get()).getArgument(0).getTypeInfo()
+    SymTypeExpression kBinding = generic.getTypeBindingFor("K").get();
+    SymTypeExpression vBinding = generic.getTypeBindingFor("V").get();
+
+    if (!useQualifiedVariant) {
+      // Comp<MyString, MyList<MyString>>: K = MyString, V = MyList<MyString>
+      Assertions.assertInstanceOf(SymTypeOfObject.class, kBinding);
+      Assertions.assertInstanceOf(SymTypeOfGenerics.class, vBinding);
+      Assertions.assertEquals(stringSym, kBinding.getTypeInfo());
+      Assertions.assertEquals(listSym, vBinding.getTypeInfo());
+      Assertions.assertEquals(stringSym,
+        ((SymTypeOfGenerics) vBinding).getArgument(0).getTypeInfo()
+      );
+    } else {
+      // scoop.Comp<scoop.MyList<scoop.MyString>, scoop.MyString>:
+      // K = MyList<MyString>, V = MyString
+      Assertions.assertInstanceOf(SymTypeOfGenerics.class, kBinding);
+      Assertions.assertInstanceOf(SymTypeOfObject.class, vBinding);
+      Assertions.assertEquals(listSym, kBinding.getTypeInfo());
+      Assertions.assertEquals(stringSym, vBinding.getTypeInfo());
+      Assertions.assertEquals(stringSym, ((SymTypeOfGenerics) kBinding).getArgument(0).getTypeInfo());
+    }
+  }
+
+  @Test
+  public void shouldLogErrorWhenMultipleComponentTypesMatch() {
+    String compName = "Comp";
+    String stringName = "MyString";
+
+    var globalScope = ComponentSymbolsWithMCBasicTypesTestMill.globalScope();
+
+    // Two component symbols with the same name "Comp"
+    ComponentTypeSymbol comp1 = ComponentSymbolsWithMCBasicTypesTestMill.componentTypeSymbolBuilder()
+      .setName(compName)
+      .setSpannedScope(ComponentSymbolsWithMCBasicTypesTestMill.scope())
+      .build();
+    ComponentTypeSymbol comp2 = ComponentSymbolsWithMCBasicTypesTestMill.componentTypeSymbolBuilder()
+      .setName(compName)
+      .setSpannedScope(ComponentSymbolsWithMCBasicTypesTestMill.scope())
+      .build();
+
+    globalScope.add(comp1);
+    globalScope.addSubScope(comp1.getSpannedScope());
+    globalScope.add(comp2);
+    globalScope.addSubScope(comp2.getSpannedScope());
+
+    // MyString type used as type argument
+    OOTypeSymbol stringSym = ComponentSymbolsWithMCBasicTypesTestMill.oOTypeSymbolBuilder()
+      .setName(stringName)
+      .setSpannedScope(ComponentSymbolsWithMCBasicTypesTestMill.scope())
+      .build();
+    globalScope.add(stringSym);
+    globalScope.addSubScope(stringSym.getSpannedScope());
+
+    ASTMCType astString = MCTypeFacade.getInstance().createQualifiedType(stringName);
+    astString.setEnclosingScope(globalScope);
+    if (astString instanceof ASTMCQualifiedType) {
+      ((ASTMCQualifiedType) astString).getMCQualifiedName().setEnclosingScope(globalScope);
+    }
+
+    ASTMCBasicGenericType astComp = createGenericType(
+      ImmutableList.of(compName),
+      globalScope,
+      astString
     );
-    Assertions.assertInstanceOf(SymTypeOfGenerics.class, result4qualAsGeneric.getTypeBindingFor("K").get());
-    Assertions.assertInstanceOf(SymTypeOfObject.class, result4qualAsGeneric.getTypeBindingFor("V").get());
-    Assertions.assertEquals(stringSym, result4qualAsGeneric.getTypeBindingFor("V").get().getTypeInfo());
-    Assertions.assertEquals(listSym, result4qualAsGeneric.getTypeBindingFor("K").get().getTypeInfo());
-    Assertions.assertEquals(stringSym,
-      ((SymTypeOfGenerics) result4qualAsGeneric.getTypeBindingFor("K").get()).getArgument(0).getTypeInfo()
-    );
 
-    Assertions.assertTrue(
-      result4normalAsGeneric.getSourceNode().isPresent()
-        && result4normalAsGeneric.getSourceNode().get().equals(astNormalComp),
-      "Expected source node of normal generic Comp to be astNormalComp"
-    );
-    Assertions.assertTrue(
-      result4qualAsGeneric.getSourceNode().isPresent()
-        && result4qualAsGeneric.getSourceNode().get().equals(astQualComp),
-      "Expected source node of qualified generic Comp to be astQualComp"
-    );
+    CompKindCheckResult result = new CompKindCheckResult();
+    SynthesizeCompKindFromMCSimpleGenericTypes synth =
+      new SynthesizeCompKindFromMCSimpleGenericTypes(result);
 
+    // When
+    synth.handle(astComp);
+
+    // Then
+    Assertions.assertTrue(result.getResult().isPresent());
+    Assertions.assertEquals(comp1, result.getResult().get().getTypeInfo());
+    MCAssertions.assertHasFindingStartingWith("0xD0105");
   }
 
   @Test
   public void shouldNotHandleMCBasicGenericTypeBecauseCompTypeUnresolvable() {
     // Given
-    String stringName = "String"; // Opposed to the component type, the type argument is present.
+    String stringName = "MyString";
     OOTypeSymbol stringSym = ComponentSymbolsWithMCBasicTypesTestMill.oOTypeSymbolBuilder()
       .setName(stringName)
       .setSpannedScope(ComponentSymbolsWithMCBasicTypesTestMill.scope())
@@ -206,13 +262,12 @@ public class SynthesizeComponentFromMCSimpleGenericTypesTest extends AbstractMCT
     ComponentSymbolsWithMCBasicTypesTestMill.globalScope().add(stringSym);
     ComponentSymbolsWithMCBasicTypesTestMill.globalScope().addSubScope(stringSym.getSpannedScope());
 
-    ASTMCQualifiedType astString = ComponentSymbolsWithMCBasicTypesTestMill.mCQualifiedTypeBuilder()
-      .setMCQualifiedName(ComponentSymbolsWithMCBasicTypesTestMill.mCQualifiedNameBuilder()
-        .addParts(stringName)
-        .build())
-      .build();
+    ASTMCType astString = MCTypeFacade.getInstance().createQualifiedType(stringName);
     astString.setEnclosingScope(ComponentSymbolsWithMCBasicTypesTestMill.globalScope());
-    astString.getMCQualifiedName().setEnclosingScope(ComponentSymbolsWithMCBasicTypesTestMill.globalScope());
+    if (astString instanceof ASTMCQualifiedType) {
+      ((ASTMCQualifiedType) astString).getMCQualifiedName()
+        .setEnclosingScope(ComponentSymbolsWithMCBasicTypesTestMill.globalScope());
+    }
 
     ASTMCBasicGenericType astComp = createGenericType(
       ImmutableList.of("Unresolvable"),
@@ -243,13 +298,12 @@ public class SynthesizeComponentFromMCSimpleGenericTypesTest extends AbstractMCT
     ComponentSymbolsWithMCBasicTypesTestMill.globalScope().add(compSym);
     ComponentSymbolsWithMCBasicTypesTestMill.globalScope().addSubScope(compSym.getSpannedScope());
 
-    ASTMCQualifiedType astString = ComponentSymbolsWithMCBasicTypesTestMill.mCQualifiedTypeBuilder()
-      .setMCQualifiedName(ComponentSymbolsWithMCBasicTypesTestMill.mCQualifiedNameBuilder()
-        .addParts("String")
-        .build())
-      .build();
+    ASTMCType astString = MCTypeFacade.getInstance().createQualifiedType("MyString");
     astString.setEnclosingScope(ComponentSymbolsWithMCBasicTypesTestMill.globalScope());
-    astString.getMCQualifiedName().setEnclosingScope(ComponentSymbolsWithMCBasicTypesTestMill.globalScope());
+    if (astString instanceof ASTMCQualifiedType) {
+      ((ASTMCQualifiedType) astString).getMCQualifiedName()
+        .setEnclosingScope(ComponentSymbolsWithMCBasicTypesTestMill.globalScope());
+    }
 
     ASTMCBasicGenericType astComp = createGenericType(
       ImmutableList.of("Unresolvable"),
@@ -280,7 +334,7 @@ public class SynthesizeComponentFromMCSimpleGenericTypesTest extends AbstractMCT
     ComponentSymbolsWithMCBasicTypesTestMill.globalScope().add(compSym);
     ComponentSymbolsWithMCBasicTypesTestMill.globalScope().addSubScope(compSym.getSpannedScope());
 
-    String listName = "List";
+    String listName = "MyList";
     OOTypeSymbol listSym = ComponentSymbolsWithMCBasicTypesTestMill.oOTypeSymbolBuilder()
       .setName(listName)
       .setSpannedScope(ComponentSymbolsWithMCBasicTypesTestMill.scope())
@@ -289,15 +343,18 @@ public class SynthesizeComponentFromMCSimpleGenericTypesTest extends AbstractMCT
     ComponentSymbolsWithMCBasicTypesTestMill.globalScope().add(listSym);
     ComponentSymbolsWithMCBasicTypesTestMill.globalScope().addSubScope(listSym.getSpannedScope());
 
-    ASTMCQualifiedType astString = ComponentSymbolsWithMCBasicTypesTestMill.mCQualifiedTypeBuilder()
-      .setMCQualifiedName(ComponentSymbolsWithMCBasicTypesTestMill.mCQualifiedNameBuilder()
-        .addParts("String")
-        .build())
-      .build();
+    ASTMCType astString = MCTypeFacade.getInstance().createQualifiedType("MyString");
     astString.setEnclosingScope(ComponentSymbolsWithMCBasicTypesTestMill.globalScope());
-    astString.getMCQualifiedName().setEnclosingScope(ComponentSymbolsWithMCBasicTypesTestMill.globalScope());
+    if (astString instanceof ASTMCQualifiedType) {
+      ((ASTMCQualifiedType) astString).getMCQualifiedName()
+        .setEnclosingScope(ComponentSymbolsWithMCBasicTypesTestMill.globalScope());
+    }
 
-    ASTMCType astListOfString = createGenericType(ImmutableList.of(listName), ComponentSymbolsWithMCBasicTypesTestMill.globalScope(), astString);
+    ASTMCType astListOfString = createGenericType(
+      ImmutableList.of(listName),
+      ComponentSymbolsWithMCBasicTypesTestMill.globalScope(),
+      astString
+    );
 
     ASTMCBasicGenericType astComp = createGenericType(
       ImmutableList.of("Unresolvable"),
