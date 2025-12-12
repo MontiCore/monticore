@@ -8,27 +8,27 @@ import de.monticore.statements.testmccommonstatements.TestMCCommonStatementsMill
 import de.monticore.statements.testmccommonstatements._symboltable.ITestMCCommonStatementsScope;
 import de.monticore.statements.testmcexceptionstatements.TestMCExceptionStatementsMill;
 import de.monticore.statements.testmcexceptionstatements._cocos.TestMCExceptionStatementsCoCoChecker;
-import de.monticore.statements.testmcexceptionstatements._parser.TestMCExceptionStatementsParser;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
-import de.monticore.types.check.*;
+import de.monticore.types.check.FullDeriveFromCombineExpressionsWithLiterals;
+import de.monticore.types.check.SymTypeExpressionFactory;
+import de.monticore.types.check.SymTypeOfObject;
+import de.monticore.types.check.TypeCalculator;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.IOException;
-import java.util.Optional;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static de.monticore.statements.testmcexceptionstatements.TestMCExceptionStatementsMill.parser;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ThrowIsValidTest {
-
-  protected TestMCExceptionStatementsCoCoChecker checker;
+class ThrowIsValidTest {
 
   @BeforeEach
-  public void init() {
+  void init() {
     LogStub.init();
     Log.enableFailQuick(false);
 
@@ -36,96 +36,97 @@ public class ThrowIsValidTest {
     TestMCExceptionStatementsMill.init();
     BasicSymbolsMill.initializePrimitives();
 
-    checker = new TestMCExceptionStatementsCoCoChecker();
-    checker.setTraverser(TestMCExceptionStatementsMill.traverser());
-    checker.addCoCo(new ThrowIsValid(new TypeCalculator(null, new FullDeriveFromCombineExpressionsWithLiterals())));
+    // Define basic Throwable and hierarchy
+    SymTypeOfObject throwableType =
+      SymTypeExpressionFactory.createTypeObjectViaSurrogate("java.lang.Throwable", TestMCExceptionStatementsMill.globalScope());
+    SymTypeOfObject aType =
+      SymTypeExpressionFactory.createTypeObjectViaSurrogate("A", TestMCExceptionStatementsMill.globalScope());
+    SymTypeOfObject bType =
+      SymTypeExpressionFactory.createTypeObjectViaSurrogate("B", TestMCExceptionStatementsMill.globalScope());
 
-    SymTypeOfObject sType = SymTypeExpressionFactory.createTypeObjectViaSurrogate("java.lang.Throwable", TestMCExceptionStatementsMill.globalScope());
-    SymTypeOfObject sTypeA = SymTypeExpressionFactory.createTypeObjectViaSurrogate("A", TestMCExceptionStatementsMill.globalScope());
-
+    // A extends Throwable
     TestMCExceptionStatementsMill.globalScope().add(
-        TestMCExceptionStatementsMill
-            .oOTypeSymbolBuilder()
-            .setName("A")
-            .setSpannedScope(TestMCCommonStatementsMill.globalScope())
-            .addSuperTypes(sType)
-            .build());
+      TestMCExceptionStatementsMill.oOTypeSymbolBuilder()
+        .setName("A")
+        .setSpannedScope(TestMCCommonStatementsMill.globalScope())
+        .addSuperTypes(throwableType)
+        .build()
+    );
+
+    // B does not extend Throwable
+    TestMCExceptionStatementsMill.globalScope().add(
+      TestMCExceptionStatementsMill.oOTypeSymbolBuilder()
+        .setName("B")
+        .setSpannedScope(TestMCCommonStatementsMill.globalScope())
+        .build()
+    );
 
     ITestMCCommonStatementsScope javaScope = TestMCCommonStatementsMill.scope();
     javaScope.setName("java");
-
     ITestMCCommonStatementsScope langScope = TestMCCommonStatementsMill.scope();
     langScope.setName("lang");
 
     TestMCCommonStatementsMill.globalScope().addSubScope(javaScope);
     javaScope.addSubScope(langScope);
 
-    langScope.add(
-        TestMCExceptionStatementsMill
-            .oOTypeSymbolBuilder()
-            .setName("Throwable")
-            .setSpannedScope(TestMCCommonStatementsMill.globalScope())
-            .build());
+    langScope.add(TestMCExceptionStatementsMill.oOTypeSymbolBuilder()
+      .setName("Throwable")
+      .setSpannedScope(TestMCCommonStatementsMill.globalScope())
+      .build());
+
+    // Add variables a and b
+    TestMCExceptionStatementsMill.globalScope().add(
+      TestMCExceptionStatementsMill.fieldSymbolBuilder()
+        .setName("a")
+        .setType(aType)
+        .build()
+    );
 
     TestMCExceptionStatementsMill.globalScope().add(
-        TestMCExceptionStatementsMill
-            .fieldSymbolBuilder()
-            .setName("a")
-            .setType(sTypeA)
-            .build());
-
-    SymTypeOfObject sTypeB = SymTypeExpressionFactory.createTypeObjectViaSurrogate("B", TestMCExceptionStatementsMill.globalScope());
-
-    TestMCExceptionStatementsMill.globalScope().add(
-        TestMCExceptionStatementsMill
-            .oOTypeSymbolBuilder()
-            .setName("B")
-            .setSpannedScope(TestMCCommonStatementsMill.globalScope())
-            .build());
-
-    TestMCExceptionStatementsMill.globalScope().add(
-        TestMCExceptionStatementsMill
-            .fieldSymbolBuilder()
-            .setName("b")
-            .setType(sTypeB)
-            .build());
+      TestMCExceptionStatementsMill.fieldSymbolBuilder()
+        .setName("b")
+        .setType(bType)
+        .build()
+    );
   }
 
-  public void checkValid(String expressionString) throws IOException {
+  @ParameterizedTest
+  @ValueSource(strings = {"throw a;"})
+  void testValid(String expr) throws IOException {
+    // Given
+    TestMCExceptionStatementsCoCoChecker checker = new TestMCExceptionStatementsCoCoChecker();
+    checker.setTraverser(TestMCExceptionStatementsMill.traverser());
+    checker.addCoCo(new ThrowIsValid(
+      new TypeCalculator(null, new FullDeriveFromCombineExpressionsWithLiterals())));
 
-    TestMCExceptionStatementsParser parser = new TestMCExceptionStatementsParser();
-    Optional<ASTThrowStatement> optAST = parser.parse_StringThrowStatement(expressionString);
-    Assertions.assertTrue(optAST.isPresent());
-    ASTThrowStatement ast = optAST.get();
+    ASTThrowStatement ast = parser().parse_StringThrowStatement(expr).orElseThrow();
     ast.setEnclosingScope(TestMCExceptionStatementsMill.globalScope());
     ast.getExpression().setEnclosingScope(TestMCExceptionStatementsMill.globalScope());
-    Log.getFindings().clear();
-    checker.checkAll((ASTMCExceptionStatementsNode) optAST.get());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
 
+    // When
+    checker.checkAll((ASTMCExceptionStatementsNode) ast);
+
+    // Then
+    assertTrue(Log.getFindings().isEmpty(), () -> Log.getFindings().toString());
   }
 
-  public void checkInvalid(String expressionString) throws IOException {
+  @ParameterizedTest
+  @ValueSource(strings = {"throw b;"})
+  void testInvalid(String expr) throws IOException {
+    // Given
+    TestMCExceptionStatementsCoCoChecker checker = new TestMCExceptionStatementsCoCoChecker();
+    checker.setTraverser(TestMCExceptionStatementsMill.traverser());
+    checker.addCoCo(new ThrowIsValid(
+      new TypeCalculator(null, new FullDeriveFromCombineExpressionsWithLiterals())));
 
-    TestMCExceptionStatementsParser parser = new TestMCExceptionStatementsParser();
-    Optional<ASTThrowStatement> optAST = parser.parse_StringThrowStatement(expressionString);
-    Assertions.assertTrue(optAST.isPresent());
-    ASTThrowStatement ast = optAST.get();
+    ASTThrowStatement ast = parser().parse_StringThrowStatement(expr).orElseThrow();
     ast.setEnclosingScope(TestMCExceptionStatementsMill.globalScope());
     ast.getExpression().setEnclosingScope(TestMCExceptionStatementsMill.globalScope());
-    Log.getFindings().clear();
-    checker.checkAll((ASTMCExceptionStatementsNode) optAST.get());
-    Assertions.assertFalse(Log.getFindings().isEmpty());
 
-  }
+    // When
+    checker.checkAll((ASTMCExceptionStatementsNode) ast);
 
-  @Test
-  public void testValid() throws IOException {
-    checkValid("throw a;");
-  }
-
-  @Test
-  public void testInvalid() throws IOException {
-    checkInvalid("throw b;");
+    // Then
+    assertFalse(Log.getFindings().isEmpty(), () -> Log.getFindings().toString());
   }
 }
