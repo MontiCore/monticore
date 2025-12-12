@@ -41,6 +41,7 @@ class AssertIsValidTest {
   @ValueSource(strings = {
     "assert 5 >= 0;",
     "assert !(true||false)&&(5<6);",
+    // todo enable after https://git.rwth-aachen.de/monticore/monticore/-/issues/4423
     //"assert 5 >= 0: 1+1;"
   })
   void testValid(String expr) throws IOException {
