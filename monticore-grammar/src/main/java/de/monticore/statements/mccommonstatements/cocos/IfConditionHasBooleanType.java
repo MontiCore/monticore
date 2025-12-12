@@ -13,7 +13,7 @@ public class IfConditionHasBooleanType implements MCCommonStatementsASTIfStateme
 
   public static final String ERROR_CODE = "0xA0909";
 
-  public static final String ERROR_MSG_FORMAT = " Condition in if-statement must be a boolean expression.";
+  public static final String ERROR_MSG_FORMAT = "Condition in if-statement must be a boolean expression.";
 
   //JLS3 14.9-1
   @Override
@@ -23,7 +23,7 @@ public class IfConditionHasBooleanType implements MCCommonStatementsASTIfStateme
     SymTypeExpression result = TypeCheck3.typeOf(node.getCondition());
 
     if (!SymTypeRelations.isBoolean(result)) {
-      Log.error(ERROR_CODE + ERROR_MSG_FORMAT, node.get_SourcePositionStart());
+      Log.error(ERROR_CODE + " " + ERROR_MSG_FORMAT, node.get_SourcePositionStart());
     }
   }
 }

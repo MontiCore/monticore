@@ -14,7 +14,7 @@ public class ThrowIsValid implements MCExceptionStatementsASTThrowStatementCoCo 
 
   public static final String ERROR_CODE = "0xA0918";
 
-  public static final String ERROR_MSG_FORMAT = " Exception in throw-statement must be Throwable or subtype of it.";
+  public static final String ERROR_MSG_FORMAT = "Exception in throw-statement must be Throwable or subtype of it.";
 
   //JLS3 14.18-1
   @Override
@@ -26,7 +26,7 @@ public class ThrowIsValid implements MCExceptionStatementsASTThrowStatementCoCo 
     SymTypeExpression expression = TypeCheck3.typeOf(node.getExpression());
 
     if (!SymTypeRelations.isSubTypeOf(expression, throwable)) {
-      Log.error(ERROR_CODE + ERROR_MSG_FORMAT, node.get_SourcePositionStart());
+      Log.error(ERROR_CODE + " " +ERROR_MSG_FORMAT, node.get_SourcePositionStart());
     }
   }
 }

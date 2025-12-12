@@ -15,7 +15,7 @@ public class ResourceInTryStatementCloseable implements MCExceptionStatementsAST
 
   public static final String ERROR_CODE = "0xA0920";
 
-  public static final String ERROR_MSG_FORMAT = " Resource in try-statement must be closeable or subtype of it.";
+  public static final String ERROR_MSG_FORMAT = "Resource in try-statement must be closeable or subtype of it.";
 
 
   @Override
@@ -29,7 +29,7 @@ public class ResourceInTryStatementCloseable implements MCExceptionStatementsAST
       SymTypeExpression expression = TypeCheck3.typeOf(dec.getExpression());
 
       if (!SymTypeRelations.isSubTypeOf(expression, closeable)) {
-        Log.error(ERROR_CODE + ERROR_MSG_FORMAT, node.get_SourcePositionStart());
+        Log.error(ERROR_CODE + " " + ERROR_MSG_FORMAT, node.get_SourcePositionStart());
       }
     }
   }
