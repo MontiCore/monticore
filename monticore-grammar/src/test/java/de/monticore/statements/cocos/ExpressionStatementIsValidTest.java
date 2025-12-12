@@ -1,4 +1,4 @@
-/* (c) https://github.com/MontiCore/monticore */
+/* (c) [https://github.com/MontiCore/monticore](https://github.com/MontiCore/monticore) */
 package de.monticore.statements.cocos;
 
 import de.monticore.statements.mccommonstatements.cocos.ExpressionStatementIsValid;
@@ -14,16 +14,20 @@ import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static de.monticore.statements.testmccommonstatements.TestMCCommonStatementsMill.*;
 import static de.monticore.types.check.SymTypeExpressionFactory.createPrimitive;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 class ExpressionStatementIsValidTest {
 
@@ -70,10 +74,8 @@ class ExpressionStatementIsValidTest {
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {
-    "anInt = true;"
-  })
-  void testInvalid(String expr) throws IOException {
+  @MethodSource("exprAndErrorProvider")
+  void testInvalid(String expr, String error) throws IOException {
     // Given
     TestMCCommonStatementsCoCoChecker checker = new TestMCCommonStatementsCoCoChecker();
     checker.addCoCo(new ExpressionStatementIsValid());
@@ -88,8 +90,14 @@ class ExpressionStatementIsValidTest {
     checker.checkAll(ast);
 
     // Then
-    assertEquals(List.of("0xA0179"), Log.getFindings()
+    assertEquals(List.of(error), Log.getFindings()
       .stream().map(f -> f.getMsg().substring(0, 7)).collect(Collectors.toList())
+    );
+  }
+
+  static Stream<Arguments> exprAndErrorProvider() {
+    return Stream.of(
+      arguments("anInt = true;", "0xA0179")
     );
   }
 }

@@ -1,4 +1,4 @@
-/* (c) https://github.com/MontiCore/monticore */
+/* (c) [https://github.com/MontiCore/monticore](https://github.com/MontiCore/monticore) */
 package de.monticore.statements.cocos;
 
 import de.monticore.statements.mccommonstatements._ast.ASTEnhancedForControl;
@@ -16,17 +16,21 @@ import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeObject;
 import static de.monticore.types3.util.DefsTypesForTests.inScope;
 import static de.monticore.types3.util.DefsTypesForTests.oOtype;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 class ForEachIsValidTest {
 
@@ -127,11 +131,8 @@ class ForEachIsValidTest {
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {
-    "Object o : 3",
-    "Object o : o"
-  })
-  void testInvalid(String expr) throws IOException {
+  @MethodSource("exprAndErrorProvider")
+  void testInvalid(String expr, String error) throws IOException {
     // Given
     TestMCCommonStatementsCoCoChecker checker = new TestMCCommonStatementsCoCoChecker();
     checker.addCoCo(new ForEachIsValid());
@@ -149,8 +150,15 @@ class ForEachIsValidTest {
     checker.checkAll(ast);
 
     // Then
-    assertEquals(List.of(ForEachIsValid.ERROR_CODE), Log.getFindings()
+    assertEquals(List.of(error), Log.getFindings()
       .stream().map(f -> f.getMsg().substring(0, 7)).collect(Collectors.toList())
+    );
+  }
+
+  static Stream<Arguments> exprAndErrorProvider() {
+    return Stream.of(
+      arguments("Object o : 3", ForEachIsValid.ERROR_CODE),
+      arguments("Object o : o", ForEachIsValid.ERROR_CODE)
     );
   }
 }

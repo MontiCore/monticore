@@ -1,4 +1,4 @@
-/* (c) https://github.com/MontiCore/monticore */
+/* (c) [https://github.com/MontiCore/monticore](https://github.com/MontiCore/monticore) */
 package de.monticore.statements.cocos;
 
 import de.monticore.statements.mccommonstatements.cocos.ResourceInTryStatementCloseable;
@@ -17,15 +17,19 @@ import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static de.monticore.statements.testmcexceptionstatements.TestMCExceptionStatementsMill.parser;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 class ResourceInTryStatementCloseableTest {
 
@@ -121,10 +125,8 @@ class ResourceInTryStatementCloseableTest {
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {
-    "try(B c = b){}"
-  })
-  void testInvalid(String expr) throws IOException {
+  @MethodSource("exprAndErrorProvider")
+  void testInvalid(String expr, String error) throws IOException {
     // Given
     TestMCExceptionStatementsCoCoChecker checker = new TestMCExceptionStatementsCoCoChecker();
     checker.setTraverser(TestMCExceptionStatementsMill.traverser());
@@ -143,8 +145,14 @@ class ResourceInTryStatementCloseableTest {
     checker.checkAll((ASTMCExceptionStatementsNode) ast);
 
     // Then
-    assertEquals(List.of(ResourceInTryStatementCloseable.ERROR_CODE), Log.getFindings()
+    assertEquals(List.of(error), Log.getFindings()
       .stream().map(f -> f.getMsg().substring(0, 7)).collect(Collectors.toList())
+    );
+  }
+
+  static Stream<Arguments> exprAndErrorProvider() {
+    return Stream.of(
+      arguments("try(B c = b){}", ResourceInTryStatementCloseable.ERROR_CODE)
     );
   }
 }
