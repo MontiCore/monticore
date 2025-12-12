@@ -11,9 +11,9 @@ import de.monticore.types3.SymTypeRelations;
 import de.se_rwth.commons.logging.Log;
 
 public class CatchIsValid implements MCExceptionStatementsASTCatchClauseCoCo {
-  
+
   public static final String ERROR_CODE = "0xA0903";
-  
+
   public static final String ERROR_MSG_FORMAT = "Parameter in catch-statement has to be throwable or subtype of it.";
 
   /**
@@ -27,14 +27,14 @@ public class CatchIsValid implements MCExceptionStatementsASTCatchClauseCoCo {
   @Override
   public void check(ASTCatchClause node) {
     Preconditions.checkNotNull(node);
-  
+
     SymTypeExpression throwable = SymTypeExpressionFactory.createTypeObjectViaSurrogate("java.lang.Throwable", node.getEnclosingScope());
-  
+
     for (int i = 0; i < node.getCatchTypeList().sizeMCQualifiedNames(); i++) {
       String name = node.getCatchTypeList().getMCQualifiedName(i).getQName();
-  
+
       SymTypeExpression result = SymTypeExpressionFactory.createTypeObjectViaSurrogate(name, node.getEnclosingScope());
-  
+
       if (!SymTypeRelations.isSubTypeOf(result, throwable)) {
         Log.error(ERROR_CODE + ERROR_MSG_FORMAT, node.get_SourcePositionStart());
       }
