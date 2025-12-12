@@ -158,7 +158,8 @@ class ForEachIsValidTest {
   static Stream<Arguments> exprAndErrorProvider() {
     return Stream.of(
       arguments("Object o : 3", ForEachIsValid.ERROR_CODE),
-      arguments("Object o : o", ForEachIsValid.ERROR_CODE)
+      arguments("Object o : o", ForEachIsValid.ERROR_CODE),
+      arguments("Object o : true + 1", "0xB0163")
     );
   }
 }

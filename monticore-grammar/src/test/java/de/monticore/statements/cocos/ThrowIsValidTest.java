@@ -139,7 +139,8 @@ class ThrowIsValidTest {
 
   static Stream<Arguments> exprAndErrorProvider() {
     return Stream.of(
-      arguments("throw b;", ThrowIsValid.ERROR_CODE)
+      arguments("throw b;", ThrowIsValid.ERROR_CODE),
+      arguments("throw true + 1;", "0xB0163")
     );
   }
 }

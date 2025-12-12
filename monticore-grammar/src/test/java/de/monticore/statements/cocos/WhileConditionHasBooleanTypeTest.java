@@ -80,7 +80,8 @@ class WhileConditionHasBooleanTypeTest {
     return Stream.of(
       arguments("while(1+1){}", WhileConditionHasBooleanType.ERROR_CODE),
       arguments("while('c'+10){}", WhileConditionHasBooleanType.ERROR_CODE),
-      arguments("while(1.2-5.5){}", WhileConditionHasBooleanType.ERROR_CODE)
+      arguments("while(1.2-5.5){}", WhileConditionHasBooleanType.ERROR_CODE),
+      arguments("while(true + 1){}", "0xB0163")
     );
   }
 }

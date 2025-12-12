@@ -102,7 +102,8 @@ class SynchronizedArgIsReftypeTest {
     return Stream.of(
       arguments("synchronized('f'){}", SynchronizedArgIsReftype.ERROR_CODE),
       arguments("synchronized(5.5){}", SynchronizedArgIsReftype.ERROR_CODE),
-      arguments("synchronized(false){}", SynchronizedArgIsReftype.ERROR_CODE)
+      arguments("synchronized(false){}", SynchronizedArgIsReftype.ERROR_CODE),
+      arguments("synchronized(true + 1){}", "0xB0163")
     );
   }
 }

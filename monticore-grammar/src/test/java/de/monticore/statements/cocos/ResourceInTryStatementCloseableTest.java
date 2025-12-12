@@ -152,7 +152,8 @@ class ResourceInTryStatementCloseableTest {
 
   static Stream<Arguments> exprAndErrorProvider() {
     return Stream.of(
-      arguments("try(B c = b){}", ResourceInTryStatementCloseable.ERROR_CODE)
+      arguments("try(B c = b){}", ResourceInTryStatementCloseable.ERROR_CODE),
+      arguments("try(B c = true + 1){}", "0xB0163")
     );
   }
 }

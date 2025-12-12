@@ -153,7 +153,8 @@ class SwitchStatementValidTest {
 
   static Stream<Arguments> enumExprAndErrorProvider() {
     return Stream.of(
-      arguments("switch(d){}", SwitchStatementValid.ERROR_CODE)
+      arguments("switch(d){}", SwitchStatementValid.ERROR_CODE),
+      arguments("switch(true + 1){}", "0xB0163")
     );
   }
 }

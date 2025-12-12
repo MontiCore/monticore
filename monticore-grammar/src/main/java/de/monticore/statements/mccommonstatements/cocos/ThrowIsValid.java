@@ -25,7 +25,7 @@ public class ThrowIsValid implements MCExceptionStatementsASTThrowStatementCoCo 
 
     SymTypeExpression expression = TypeCheck3.typeOf(node.getExpression());
 
-    if (!SymTypeRelations.isSubTypeOf(expression, throwable)) {
+    if (!expression.isObscureType() && !SymTypeRelations.isSubTypeOf(expression, throwable)) {
       Log.error(ERROR_CODE + " " +ERROR_MSG_FORMAT, node.get_SourcePositionStart());
     }
   }

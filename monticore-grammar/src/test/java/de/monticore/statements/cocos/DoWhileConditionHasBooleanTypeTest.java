@@ -80,7 +80,8 @@ class DoWhileConditionHasBooleanTypeTest {
     return Stream.of(
       arguments("do{}while(5+5);", DoWhileConditionHasBooleanType.ERROR_CODE),
       arguments("do{}while('c');", DoWhileConditionHasBooleanType.ERROR_CODE),
-      arguments("do{}while(1.2-3.4);", DoWhileConditionHasBooleanType.ERROR_CODE)
+      arguments("do{}while(1.2-3.4);", DoWhileConditionHasBooleanType.ERROR_CODE),
+      arguments("do{}while(true + 1);", "0xB0163")
     );
   }
 }

@@ -20,7 +20,7 @@ public class SynchronizedArgIsReftype implements MCSynchronizedStatementsASTSync
 
     SymTypeExpression result = TypeCheck3.typeOf(node.getExpression());
 
-    if (!result.isObjectType()) {
+    if (!result.isObscureType() && !result.isObjectType()) {
       Log.error(ERROR_CODE + " " + ERROR_MSG_FORMAT, node.get_SourcePositionStart());
     }
   }
