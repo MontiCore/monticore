@@ -20,6 +20,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static de.monticore.statements.testmccommonstatements.TestMCCommonStatementsMill.parser;
 import static org.junit.jupiter.api.Assertions.*;
@@ -72,7 +74,9 @@ class SwitchStatementValidTest {
     checker.checkAll(ast);
 
     // Then
-    assertFalse(Log.getFindings().isEmpty(), () -> Log.getFindings().toString());
+    assertEquals(List.of(SwitchStatementValid.ERROR_CODE), Log.getFindings()
+      .stream().map(f -> f.getMsg().substring(0, 7)).collect(Collectors.toList())
+    );
   }
 
   @ParameterizedTest
@@ -134,7 +138,8 @@ class SwitchStatementValidTest {
     checker.checkAll(ast);
 
     // Then
-    assertEquals(1, Log.getFindings().size(), () -> Log.getFindings().toString());
-    assertTrue(Log.getFindings().get(0).getMsg().startsWith(SwitchStatementValid.ERROR_CODE));
+    assertEquals(List.of(SwitchStatementValid.ERROR_CODE), Log.getFindings()
+      .stream().map(f -> f.getMsg().substring(0, 7)).collect(Collectors.toList())
+    );
   }
 }

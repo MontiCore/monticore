@@ -19,11 +19,13 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeObject;
 import static de.monticore.types3.util.DefsTypesForTests.inScope;
 import static de.monticore.types3.util.DefsTypesForTests.oOtype;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ForEachIsValidTest {
@@ -147,6 +149,8 @@ class ForEachIsValidTest {
     checker.checkAll(ast);
 
     // Then
-    assertFalse(Log.getFindings().isEmpty(), () -> Log.getFindings().toString());
+    assertEquals(List.of(ForEachIsValid.ERROR_CODE), Log.getFindings()
+      .stream().map(f -> f.getMsg().substring(0, 7)).collect(Collectors.toList())
+    );
   }
 }

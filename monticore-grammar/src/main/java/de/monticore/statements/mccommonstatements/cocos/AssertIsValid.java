@@ -46,7 +46,7 @@ public class AssertIsValid implements MCAssertStatementsASTAssertStatementCoCo {
     }
   
     if(!SymTypeRelations.isBoolean(assertion)){
-      Log.error(ERROR_CODE + ERROR_MSG_FORMAT, node.getAssertion().get_SourcePositionStart());
+      Log.error(ERROR_CODE + " " + ERROR_MSG_FORMAT, node.getAssertion().get_SourcePositionStart());
     }
 
     if(node.isPresentMessage()) {
@@ -61,7 +61,7 @@ public class AssertIsValid implements MCAssertStatementsASTAssertStatementCoCo {
       }
 
       if (message.isVoidType()) {
-        Log.error(ERROR_CODE_2 + ERROR_MSG_FORMAT_2, node.getMessage().get_SourcePositionStart());
+        Log.error(ERROR_CODE_2 + " " + ERROR_MSG_FORMAT_2, node.getMessage().get_SourcePositionStart());
       }
     }
   }

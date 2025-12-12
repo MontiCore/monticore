@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static de.monticore.statements.testmcvardeclarationstatements.TestMCVarDeclarationStatementsMill.parser;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class VarDeclarationInitializationHasCorrectTypeTest {
@@ -89,21 +90,16 @@ public class VarDeclarationInitializationHasCorrectTypeTest {
     TestMCVarDeclarationStatementsCoCoChecker checker = new TestMCVarDeclarationStatementsCoCoChecker();
     checker.addCoCo(new VarDeclarationInitializationHasCorrectType());
 
-    List<String> expectedErrors = Lists.newArrayList(
-      VarDeclarationInitializationHasCorrectType.ERROR_CODE,
-      VarDeclarationInitializationHasCorrectType.ERROR_CODE
-    );
     ASTRootVarDeclaration ast = parseAndBuildAST("int a = \"oh no\", b = 10, c, d = \"no no no\";");
 
     // When
     checker.checkAll(ast);
 
     // Then
-    List<String> actualErrors = Log.getFindings().stream()
-      .filter(Finding::isError)
-      .map(err -> err.getMsg().split(" ")[0])
-      .collect(Collectors.toList());
-    Assertions.assertEquals(expectedErrors, actualErrors);
+    assertEquals(List.of(VarDeclarationInitializationHasCorrectType.ERROR_CODE,
+      VarDeclarationInitializationHasCorrectType.ERROR_CODE), Log.getFindings()
+      .stream().map(f -> f.getMsg().substring(0, 7)).collect(Collectors.toList())
+    );
   }
 
   @Test
@@ -112,20 +108,14 @@ public class VarDeclarationInitializationHasCorrectTypeTest {
     TestMCVarDeclarationStatementsCoCoChecker checker = new TestMCVarDeclarationStatementsCoCoChecker();
     checker.addCoCo(new VarDeclarationInitializationHasCorrectType());
 
-    List<String> expectedErrors = Lists.newArrayList(
-      "0xFD118",
-      VarDeclarationInitializationHasCorrectType.ERROR_CODE
-    );
     ASTRootVarDeclaration ast = parseAndBuildAST("int a = 3, b, c = MyType, d = \"no no no\";");
 
     // When
     checker.checkAll(ast);
 
     // Then
-    List<String> actualErrors = Log.getFindings().stream()
-      .filter(Finding::isError)
-      .map(err -> err.getMsg().split(" ")[0])
-      .collect(Collectors.toList());
-    Assertions.assertEquals(expectedErrors, actualErrors);
+    assertEquals(List.of("0xFD118", VarDeclarationInitializationHasCorrectType.ERROR_CODE), Log.getFindings()
+      .stream().map(f -> f.getMsg().substring(0, 7)).collect(Collectors.toList())
+    );
   }
 }

@@ -18,9 +18,11 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static de.monticore.statements.testmcsynchronizedstatements.TestMCSynchronizedStatementsMill.parser;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class SynchronizedArgIsReftypeTest {
@@ -86,6 +88,8 @@ class SynchronizedArgIsReftypeTest {
     checker.checkAll((ASTMCSynchronizedStatementsNode) ast);
 
     // Then
-    assertFalse(Log.getFindings().isEmpty(), () -> Log.getFindings().toString());
+    assertEquals(List.of(SynchronizedArgIsReftype.ERROR_CODE), Log.getFindings()
+      .stream().map(f -> f.getMsg().substring(0, 7)).collect(Collectors.toList())
+    );
   }
 }
