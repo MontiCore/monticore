@@ -28,7 +28,8 @@ public class ForEachIsValid implements MCCommonStatementsASTEnhancedForControlCo
     this.typeCheck = typeCheck;
   }
 
-  public ForEachIsValid() { }
+  public ForEachIsValid() {
+  }
 
   @Override
   public void check(ASTEnhancedForControl node) {
@@ -39,10 +40,10 @@ public class ForEachIsValid implements MCCommonStatementsASTEnhancedForControlCo
     SymTypeExpression arrays = SymTypeExpressionFactory.createTypeObjectViaSurrogate("java.util.Arrays", node.getEnclosingScope());
     SymTypeExpression lists = SymTypeExpressionFactory.createTypeObjectViaSurrogate("java.lang.Iterable", node.getEnclosingScope());
 
-    if (!SymTypeRelations.isSubTypeOf(expression, arrays)) {
-      if (!SymTypeRelations.isSubTypeOf(expression, lists)) {
-        Log.error(ERROR_CODE + " " + ERROR_MSG_FORMAT, node.get_SourcePositionStart());
-      }
+    if (!expression.isObscureType()
+      && !SymTypeRelations.isSubTypeOf(expression, arrays)
+      && !SymTypeRelations.isSubTypeOf(expression, lists)) {
+      Log.error(ERROR_CODE + " " + ERROR_MSG_FORMAT, node.get_SourcePositionStart());
     }
   }
 }

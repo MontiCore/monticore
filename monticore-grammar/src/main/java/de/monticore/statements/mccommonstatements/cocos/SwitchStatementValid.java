@@ -26,7 +26,8 @@ public class SwitchStatementValid implements MCCommonStatementsASTSwitchStatemen
 
     SymTypeExpression result = TypeCheck3.typeOf(node.getExpression());
 
-    if (!(SymTypeRelations.isChar(result) || SymTypeRelations.isByte(result)
+    if (!result.isObscureType()
+      && !(SymTypeRelations.isChar(result) || SymTypeRelations.isByte(result)
       || SymTypeRelations.isShort(result) || SymTypeRelations.isInt(result)
       || isEnumMember(result))) {
       Log.error(ERROR_CODE + " " +ERROR_MSG_FORMAT, node.get_SourcePositionStart());

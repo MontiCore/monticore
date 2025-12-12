@@ -77,7 +77,8 @@ class ForConditionHasBooleanTypeTest {
 
   static Stream<Arguments> exprAndErrorProvider() {
     return Stream.of(
-      arguments("for(1+1; 2+2; 'x'){}", ForConditionHasBooleanType.ERROR_CODE)
+      arguments("for(i = 0; 2 + 2; i++){}", ForConditionHasBooleanType.ERROR_CODE),
+      arguments("for(i = 0; true + 1; i++){}", "0xB0163")
     );
   }
 }

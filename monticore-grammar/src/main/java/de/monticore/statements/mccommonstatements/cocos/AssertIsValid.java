@@ -25,7 +25,7 @@ public class AssertIsValid implements MCAssertStatementsASTAssertStatementCoCo {
 
     SymTypeExpression assertion = TypeCheck3.typeOf(node.getAssertion());
 
-    if (!SymTypeRelations.isBoolean(assertion)) {
+    if (!assertion.isObscureType() && !SymTypeRelations.isBoolean(assertion)) {
       Log.error(ERROR_CODE + " " + ERROR_MSG_FORMAT, node.getAssertion().get_SourcePositionStart());
     }
 
@@ -33,7 +33,7 @@ public class AssertIsValid implements MCAssertStatementsASTAssertStatementCoCo {
 
       SymTypeExpression message = TypeCheck3.typeOf(node.getMessage());
 
-      if (message.isVoidType()) {
+      if (!message.isObscureType() && message.isVoidType()) {
         Log.error(ERROR_CODE_2 + " " + ERROR_MSG_FORMAT_2, node.getMessage().get_SourcePositionStart());
       }
     }

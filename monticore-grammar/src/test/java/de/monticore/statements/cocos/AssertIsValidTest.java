@@ -78,7 +78,8 @@ class AssertIsValidTest {
   static Stream<Arguments> exprAndErrorProvider() {
     return Stream.of(
       arguments("assert 4;", AssertIsValid.ERROR_CODE),
-      arguments("assert 'c';", AssertIsValid.ERROR_CODE)
+      arguments("assert 'c';", AssertIsValid.ERROR_CODE),
+      arguments("assert true + 1; ", "0xB0163")
     );
   }
 }

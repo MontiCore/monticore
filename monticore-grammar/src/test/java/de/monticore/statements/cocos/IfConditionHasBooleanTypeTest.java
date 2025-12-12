@@ -80,7 +80,8 @@ class IfConditionHasBooleanTypeTest {
     return Stream.of(
       arguments("if(1+1){}", IfConditionHasBooleanType.ERROR_CODE),
       arguments("if('c'+10){}", IfConditionHasBooleanType.ERROR_CODE),
-      arguments("if(1.2-5.5){}", IfConditionHasBooleanType.ERROR_CODE)
+      arguments("if(1.2-5.5){}", IfConditionHasBooleanType.ERROR_CODE),
+      arguments("if(true + 1){}", "0xB0163")
     );
   }
 }

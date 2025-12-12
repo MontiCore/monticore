@@ -28,7 +28,7 @@ public class ResourceInTryStatementCloseable implements MCExceptionStatementsAST
 
       SymTypeExpression expression = TypeCheck3.typeOf(dec.getExpression());
 
-      if (!SymTypeRelations.isSubTypeOf(expression, closeable)) {
+      if (!expression.isObscureType() && !SymTypeRelations.isSubTypeOf(expression, closeable)) {
         Log.error(ERROR_CODE + " " + ERROR_MSG_FORMAT, node.get_SourcePositionStart());
       }
     }
