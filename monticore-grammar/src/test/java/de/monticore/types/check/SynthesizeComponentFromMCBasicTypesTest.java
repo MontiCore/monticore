@@ -29,31 +29,64 @@ public class SynthesizeComponentFromMCBasicTypesTest extends AbstractMCTest {
     ComponentSymbolsWithMCBasicTypesTestMill.init();
   }
 
-  @ParameterizedTest
-  @ValueSource(strings = {"Foo", "qual.Foo"})
-  public void shouldHandleMCQualifiedType(String qualifiedCompName) {
-    // Given
-    ASTMCQualifiedType ast = MCTypeFacade.getInstance().createQualifiedType(qualifiedCompName);
-    ast.setEnclosingScope(ComponentSymbolsWithMCBasicTypesTestMill.globalScope());
+  @Test
+  public void shouldHandleMCQualifiedType() {
+    var globalScope = ComponentSymbolsWithMCBasicTypesTestMill.globalScope();
 
+    // Case 1: simple name "Foo"
+    String simpleName = "Foo";
+    ASTMCQualifiedType astFoo = MCTypeFacade.getInstance().createQualifiedType(simpleName);
+    astFoo.setEnclosingScope(globalScope);
 
-    ComponentTypeSymbol compSymbol = ComponentSymbolsWithMCBasicTypesTestMill.componentTypeSymbolBuilder()
-      .setName(ast.getMCQualifiedName().getBaseName())
-      .setSpannedScope(ComponentSymbolsWithMCBasicTypesTestMill.scope())
-      .build();
-    ComponentSymbolsWithMCBasicTypesTestMill.globalScope().add(compSymbol);
-    ComponentSymbolsWithMCBasicTypesTestMill.globalScope().addSubScope(compSymbol.getSpannedScope());
+    ComponentTypeSymbol fooSymbol = ComponentSymbolsWithMCBasicTypesTestMill.componentTypeSymbolBuilder()
+        .setName(astFoo.getMCQualifiedName().getBaseName())
+        .setSpannedScope(ComponentSymbolsWithMCBasicTypesTestMill.scope())
+        .build();
 
-    CompKindCheckResult result = new CompKindCheckResult();
-    SynthesizeCompKindFromMCBasicTypes synth = new SynthesizeCompKindFromMCBasicTypes(result);
+    globalScope.add(fooSymbol);
+    globalScope.addSubScope(fooSymbol.getSpannedScope());
+
+    CompKindCheckResult resultFoo = new CompKindCheckResult();
+    SynthesizeCompKindFromMCBasicTypes synthFoo =
+      new SynthesizeCompKindFromMCBasicTypes(resultFoo);
 
     // When
-    synth.handle(ast);
+    synthFoo.handle(astFoo);
 
     // Then
-    Assertions.assertTrue(result.getResult().isPresent());
-    Assertions.assertTrue(result.getResult().get().isComponentType());
-    Assertions.assertEquals(compSymbol, result.getResult().get().getTypeInfo());
+    Assertions.assertTrue(resultFoo.getResult().isPresent());
+    Assertions.assertTrue(resultFoo.getResult().get().isComponentType());
+    Assertions.assertEquals(fooSymbol, resultFoo.getResult().get().getTypeInfo());
+
+    // Case 2: qualified name "qual.Foo"
+    String qualifiedName = "qual.Foo";
+    ASTMCQualifiedType astQualFoo = MCTypeFacade.getInstance().createQualifiedType(qualifiedName);
+    astQualFoo.setEnclosingScope(globalScope);
+
+    ComponentTypeSymbol qualFooSymbol =
+      ComponentSymbolsWithMCBasicTypesTestMill.componentTypeSymbolBuilder()
+        .setName(astQualFoo.getMCQualifiedName().getBaseName()) // "Foo"
+        .setSpannedScope(ComponentSymbolsWithMCBasicTypesTestMill.scope())
+        .build();
+
+    // Build qualifier scope "qual" and put Foo inside it
+    var qualScope = ComponentSymbolsWithMCBasicTypesTestMill.scope();
+    qualScope.setName("qual");
+    qualScope.add(qualFooSymbol);
+    qualScope.addSubScope(qualFooSymbol.getSpannedScope());
+    globalScope.addSubScope(qualScope);
+
+    CompKindCheckResult resultQualFoo = new CompKindCheckResult();
+    SynthesizeCompKindFromMCBasicTypes synthQualFoo =
+      new SynthesizeCompKindFromMCBasicTypes(resultQualFoo);
+
+    // When
+    synthQualFoo.handle(astQualFoo);
+
+    // Then
+    Assertions.assertTrue(resultQualFoo.getResult().isPresent());
+    Assertions.assertTrue(resultQualFoo.getResult().get().isComponentType());
+    Assertions.assertEquals(qualFooSymbol, resultQualFoo.getResult().get().getTypeInfo());
   }
 
   @Test
