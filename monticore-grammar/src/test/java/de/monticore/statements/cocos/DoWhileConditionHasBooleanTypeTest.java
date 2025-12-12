@@ -5,75 +5,69 @@ import de.monticore.statements.mccommonstatements.cocos.DoWhileConditionHasBoole
 import de.monticore.statements.mcstatementsbasis._ast.ASTMCBlockStatement;
 import de.monticore.statements.testmccommonstatements.TestMCCommonStatementsMill;
 import de.monticore.statements.testmccommonstatements._cocos.TestMCCommonStatementsCoCoChecker;
-import de.monticore.statements.testmccommonstatements._parser.TestMCCommonStatementsParser;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.FullDeriveFromCombineExpressionsWithLiterals;
 import de.monticore.types.check.TypeCalculator;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.IOException;
-import java.util.Optional;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static de.monticore.statements.testmccommonstatements.TestMCCommonStatementsMill.parser;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class DoWhileConditionHasBooleanTypeTest {
-  
-  protected TestMCCommonStatementsCoCoChecker checker;
-  
+class DoWhileConditionHasBooleanTypeTest {
+
   @BeforeEach
-  public void init() {
+  void init() {
     LogStub.init();
     Log.enableFailQuick(false);
     TestMCCommonStatementsMill.reset();
     TestMCCommonStatementsMill.init();
     BasicSymbolsMill.initializePrimitives();
-    checker = new TestMCCommonStatementsCoCoChecker();
-    checker.addCoCo(new DoWhileConditionHasBooleanType(new TypeCalculator(null,new FullDeriveFromCombineExpressionsWithLiterals())));
   }
-  
-  public void checkValid(String expressionString) throws IOException {
-    
-    TestMCCommonStatementsParser parser = new TestMCCommonStatementsParser();
-    Optional<ASTMCBlockStatement> optAST = parser.parse_StringMCBlockStatement(expressionString);
-    Assertions.assertTrue(optAST.isPresent());
-    Log.getFindings().clear();
-    checker.checkAll(optAST.get());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
-    
+
+  @ParameterizedTest
+  @ValueSource(strings = {
+    "do{}while(5>6);",
+    "do{}while(true||false);",
+    "do{}while(!true&&(5==6));"
+  })
+  void testValid(String expr) throws IOException {
+    // Given
+    TestMCCommonStatementsCoCoChecker checker = new TestMCCommonStatementsCoCoChecker();
+    checker.addCoCo(new DoWhileConditionHasBooleanType(new TypeCalculator(null, new FullDeriveFromCombineExpressionsWithLiterals())));
+
+    ASTMCBlockStatement ast = parser().parse_StringMCBlockStatement(expr).orElseThrow();
+
+    // When
+    checker.checkAll(ast);
+
+    // Then
+    assertTrue(Log.getFindings().isEmpty(), () -> Log.getFindings().toString());
   }
-  
-  public void checkInvalid(String expressionString) throws IOException {
-    
-    TestMCCommonStatementsParser parser = new TestMCCommonStatementsParser();
-    Optional<ASTMCBlockStatement> optAST = parser.parse_StringMCBlockStatement(expressionString);
-    Assertions.assertTrue(optAST.isPresent());
-    Log.getFindings().clear();
-    checker.checkAll(optAST.get());
-    Assertions.assertFalse(Log.getFindings().isEmpty());
-    
+
+  @ParameterizedTest
+  @ValueSource(strings = {
+    "do{}while(5+5);",
+    "do{}while('c');",
+    "do{}while(1.2-3.4);"
+  })
+  void testInvalid(String expr) throws IOException {
+    // Given
+    TestMCCommonStatementsCoCoChecker checker = new TestMCCommonStatementsCoCoChecker();
+    checker.addCoCo(new DoWhileConditionHasBooleanType(new TypeCalculator(null, new FullDeriveFromCombineExpressionsWithLiterals())));
+
+    ASTMCBlockStatement ast = parser().parse_StringMCBlockStatement(expr).orElseThrow();
+
+    // When
+    checker.checkAll(ast);
+
+    // Then
+    assertFalse(Log.getFindings().isEmpty(), () -> Log.getFindings().toString());
   }
-  
-  @Test
-  public void testValid() throws IOException {
-    
-    checkValid("do{}while(5>6);");
-    checkValid("do{}while(true||false);");
-    checkValid("do{}while(!true&&(5==6));");
-    
-  }
-  
-  @Test
-  public void testInvalid() throws IOException {
-    
-    checkInvalid("do{}while(5+5);");
-    checkInvalid("do{}while('c');");
-    checkInvalid("do{}while(1.2-3.4);");
-  
-  }
-  
 }

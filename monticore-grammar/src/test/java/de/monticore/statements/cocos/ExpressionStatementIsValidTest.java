@@ -5,7 +5,6 @@ import de.monticore.statements.mccommonstatements.cocos.ExpressionStatementIsVal
 import de.monticore.statements.mcstatementsbasis._ast.ASTMCBlockStatement;
 import de.monticore.statements.testmccommonstatements.TestMCCommonStatementsMill;
 import de.monticore.statements.testmccommonstatements._cocos.TestMCCommonStatementsCoCoChecker;
-import de.monticore.statements.testmccommonstatements._parser.TestMCCommonStatementsParser;
 import de.monticore.statements.testmccommonstatements._visitor.TestMCCommonStatementsTraverser;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
@@ -14,75 +13,80 @@ import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserFactory;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.IOException;
-import java.util.Optional;
 
-public class ExpressionStatementIsValidTest {
+import static de.monticore.statements.testmccommonstatements.TestMCCommonStatementsMill.*;
+import static de.monticore.types.check.SymTypeExpressionFactory.createPrimitive;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-  protected TestMCCommonStatementsCoCoChecker checker;
+class ExpressionStatementIsValidTest {
 
   @BeforeEach
-  public void init() {
+  void init() {
     LogStub.init();
     Log.enableFailQuick(false);
     TestMCCommonStatementsMill.reset();
     TestMCCommonStatementsMill.init();
-    TestMCCommonStatementsMill.globalScope().clear();
     CombineExpressionsWithLiteralsTypeTraverserFactory.initTypeCheck3();
     BasicSymbolsMill.initializePrimitives();
     initSymbols();
-
-    checker = new TestMCCommonStatementsCoCoChecker();
-    checker.addCoCo(new ExpressionStatementIsValid());
   }
 
-  protected static void initSymbols() {
-    FieldSymbol anInt = TestMCCommonStatementsMill.fieldSymbolBuilder()
-      .setName("anInt")
-      .setType(SymTypeExpressionFactory.createPrimitive(BasicSymbolsMill.INT))
-      .setEnclosingScope(TestMCCommonStatementsMill.globalScope())
+  private static void initSymbols() {
+    FieldSymbol anInt = fieldSymbolBuilder().setName("anInt")
+      .setType(createPrimitive(BasicSymbolsMill.INT))
+      .setEnclosingScope(globalScope())
       .setAstNodeAbsent()
       .build();
-    TestMCCommonStatementsMill.globalScope().add(anInt);
+    globalScope().add(anInt);
   }
 
-  public void checkValid(String expressionString) throws IOException {
-    TestMCCommonStatementsParser parser = new TestMCCommonStatementsParser();
-    Optional<ASTMCBlockStatement> ast = parser.parse_StringMCBlockStatement(expressionString);
+  @ParameterizedTest
+  @ValueSource(strings = {
+    "anInt = 5;"
+  })
+  void testValid(String expr) throws IOException {
+    // Given
+    TestMCCommonStatementsCoCoChecker checker = new TestMCCommonStatementsCoCoChecker();
+    checker.addCoCo(new ExpressionStatementIsValid());
 
-    TestMCCommonStatementsTraverser traverser = TestMCCommonStatementsMill.inheritanceTraverser();
-    FlatExpressionScopeSetter scopeSetter = new FlatExpressionScopeSetter(TestMCCommonStatementsMill.globalScope());
-    traverser.add4ExpressionsBasis(scopeSetter);
-    ast.orElseThrow().accept(traverser);
+    ASTMCBlockStatement ast = parser().parse_StringMCBlockStatement(expr).orElseThrow();
 
-    checker.checkAll(ast.orElseThrow());
-    Assertions.assertTrue(Log.getFindings().isEmpty(), Log.getFindings().toString());
+    TestMCCommonStatementsTraverser traverser = inheritanceTraverser();
+    traverser.add4ExpressionsBasis(new FlatExpressionScopeSetter(globalScope()));
+    ast.accept(traverser);
+
+    // When
+    checker.checkAll(ast);
+
+    // Then
+    assertTrue(Log.getFindings().isEmpty(), () -> Log.getFindings().toString());
   }
 
-  public void checkInvalid(String expressionString) throws IOException {
-    TestMCCommonStatementsParser parser = new TestMCCommonStatementsParser();
-    Optional<ASTMCBlockStatement> ast = parser.parse_StringMCBlockStatement(expressionString);
+  @ParameterizedTest
+  @ValueSource(strings = {
+    "anInt = true;"
+  })
+  void testInvalid(String expr) throws IOException {
+    // Given
+    TestMCCommonStatementsCoCoChecker checker = new TestMCCommonStatementsCoCoChecker();
+    checker.addCoCo(new ExpressionStatementIsValid());
 
-    TestMCCommonStatementsTraverser traverser = TestMCCommonStatementsMill.inheritanceTraverser();
-    FlatExpressionScopeSetter scopeSetter = new FlatExpressionScopeSetter(TestMCCommonStatementsMill.globalScope());
-    traverser.add4ExpressionsBasis(scopeSetter);
-    ast.orElseThrow().accept(traverser);
+    ASTMCBlockStatement ast = parser().parse_StringMCBlockStatement(expr).orElseThrow();
 
-    checker.checkAll(ast.orElseThrow());
-    Assertions.assertFalse(Log.getFindings().isEmpty(), Log.getFindings().toString());
-  }
+    TestMCCommonStatementsTraverser traverser = inheritanceTraverser();
+    traverser.add4ExpressionsBasis(new FlatExpressionScopeSetter(globalScope()));
+    ast.accept(traverser);
 
-  @Test
-  public void testIsValid() throws IOException {
-    checkValid("anInt = 5;");
-  }
+    // When
+    checker.checkAll(ast);
 
-  @Test
-  public void testIsInvalid() throws IOException {
-    checkInvalid("anInt = true;");
+    // Then
+    assertFalse(Log.getFindings().isEmpty(), () -> Log.getFindings().toString());
   }
 }

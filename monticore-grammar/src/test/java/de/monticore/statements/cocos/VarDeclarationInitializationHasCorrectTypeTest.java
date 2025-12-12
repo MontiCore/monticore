@@ -7,7 +7,6 @@ import de.monticore.statements.mcvardeclarationstatements._symboltable.MCVarDecl
 import de.monticore.statements.testmcvardeclarationstatements.TestMCVarDeclarationStatementsMill;
 import de.monticore.statements.testmcvardeclarationstatements._ast.ASTRootVarDeclaration;
 import de.monticore.statements.testmcvardeclarationstatements._cocos.TestMCVarDeclarationStatementsCoCoChecker;
-import de.monticore.statements.testmcvardeclarationstatements._parser.TestMCVarDeclarationStatementsParser;
 import de.monticore.statements.testmcvardeclarationstatements._visitor.TestMCVarDeclarationStatementsTraverser;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
@@ -20,16 +19,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.assertEquals;
+import static de.monticore.statements.testmcvardeclarationstatements.TestMCVarDeclarationStatementsMill.parser;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class VarDeclarationInitializationHasCorrectTypeTest {
-
-  protected TestMCVarDeclarationStatementsCoCoChecker checker;
-  protected TestMCVarDeclarationStatementsParser parser;
 
   @BeforeEach
   public void init() {
@@ -43,11 +39,6 @@ public class VarDeclarationInitializationHasCorrectTypeTest {
     BasicSymbolsMill.initializePrimitives();
     addMyTypeToGlobalScope();
     addStringToGlobalScope();
-
-    checker = new TestMCVarDeclarationStatementsCoCoChecker();
-    checker.setTraverser(TestMCVarDeclarationStatementsMill.traverser());
-    checker.addCoCo(new VarDeclarationInitializationHasCorrectType());
-    parser = new TestMCVarDeclarationStatementsParser();
   }
 
   protected static void addMyTypeToGlobalScope() {
@@ -68,61 +59,75 @@ public class VarDeclarationInitializationHasCorrectTypeTest {
     TestMCVarDeclarationStatementsMill.globalScope().addSubScope(type.getSpannedScope());
   }
 
-  protected void checkExpectedErrors(ASTRootVarDeclaration decl, List<String> expectedErrorCodes) {
-    TestMCVarDeclarationStatementsMill.scopesGenitorDelegator().createFromAST(decl);
+  protected ASTRootVarDeclaration parseAndBuildAST(String decl) throws IOException {
+    ASTRootVarDeclaration ast = parser().parse_StringRootVarDeclaration(decl).orElseThrow();
+    TestMCVarDeclarationStatementsMill.scopesGenitorDelegator().createFromAST(ast);
     TestMCVarDeclarationStatementsTraverser completerTraverser = TestMCVarDeclarationStatementsMill.traverser();
     completerTraverser.add4MCVarDeclarationStatements(new MCVarDeclarationStatementsSTCompleteTypes());
-    decl.accept(completerTraverser);
+    ast.accept(completerTraverser);
     // We must manually set a name for the ArtifactScope. Else we get an exception.
-    decl.getEnclosingScope().setName("Foo");
+    ast.getEnclosingScope().setName("Foo");
+    return ast;
+  }
+
+  @Test
+  public void testValidMultiVarDeclaration() throws IOException {
+    // Given
+    TestMCVarDeclarationStatementsCoCoChecker checker = new TestMCVarDeclarationStatementsCoCoChecker();
+    checker.addCoCo(new VarDeclarationInitializationHasCorrectType());
+
+    ASTRootVarDeclaration ast = parseAndBuildAST("int a = 10, b, c = -12;");
 
     // When
-    checker.checkAll(decl);
+    checker.checkAll(ast);
+
+    // Then
+    assertTrue(Log.getFindings().isEmpty(), () -> Log.getFindings().toString());
+  }
+
+  @Test
+  public void testInvalidMultiVarDeclaration() throws IOException {
+    // Given
+    TestMCVarDeclarationStatementsCoCoChecker checker = new TestMCVarDeclarationStatementsCoCoChecker();
+    checker.addCoCo(new VarDeclarationInitializationHasCorrectType());
+
+    List<String> expectedErrors = Lists.newArrayList(
+      VarDeclarationInitializationHasCorrectType.ERROR_CODE,
+      VarDeclarationInitializationHasCorrectType.ERROR_CODE
+    );
+    ASTRootVarDeclaration ast = parseAndBuildAST("int a = \"oh no\", b = 10, c, d = \"no no no\";");
+
+    // When
+    checker.checkAll(ast);
 
     // Then
     List<String> actualErrors = Log.getFindings().stream()
       .filter(Finding::isError)
       .map(err -> err.getMsg().split(" ")[0])
       .collect(Collectors.toList());
-    Assertions.assertEquals(expectedErrorCodes, actualErrors);
-  }
-
-  @Test
-  public void testValidMultiVarDeclaration() throws IOException {
-    // Given
-    String multiVarDeclaration = "int a = 10, b, c = -12;";
-    List<String> expectedErrors = new ArrayList<>();
-    ASTRootVarDeclaration astDecl = parser.parse_StringRootVarDeclaration(multiVarDeclaration).get();
-
-    // When & Then
-    checkExpectedErrors(astDecl, expectedErrors);
-  }
-
-  @Test
-  public void testInvalidMultiVarDeclaration() throws IOException {
-    // Given
-    String multiVarDeclaration = "int a = \"oh no\", b = 10, c, d = \"no no no\";";
-    List<String> expectedErrors = Lists.newArrayList(
-      VarDeclarationInitializationHasCorrectType.ERROR_CODE,
-      VarDeclarationInitializationHasCorrectType.ERROR_CODE
-    );
-    ASTRootVarDeclaration astDecl = parser.parse_StringRootVarDeclaration(multiVarDeclaration).get();
-
-    // When & Then
-    checkExpectedErrors(astDecl, expectedErrors);
+    Assertions.assertEquals(expectedErrors, actualErrors);
   }
 
   @Test
   public void testInvalidMultiVarDeclarationWithTypeReference() throws IOException {
     // Given
-    String multiVarDeclaration = "int a = 3, b, c = MyType, d = \"no no no\";";
+    TestMCVarDeclarationStatementsCoCoChecker checker = new TestMCVarDeclarationStatementsCoCoChecker();
+    checker.addCoCo(new VarDeclarationInitializationHasCorrectType());
+
     List<String> expectedErrors = Lists.newArrayList(
       "0xFD118",
       VarDeclarationInitializationHasCorrectType.ERROR_CODE
     );
-    ASTRootVarDeclaration astDecl = parser.parse_StringRootVarDeclaration(multiVarDeclaration).get();
+    ASTRootVarDeclaration ast = parseAndBuildAST("int a = 3, b, c = MyType, d = \"no no no\";");
 
-    // When & Then
-    checkExpectedErrors(astDecl, expectedErrors);
+    // When
+    checker.checkAll(ast);
+
+    // Then
+    List<String> actualErrors = Log.getFindings().stream()
+      .filter(Finding::isError)
+      .map(err -> err.getMsg().split(" ")[0])
+      .collect(Collectors.toList());
+    Assertions.assertEquals(expectedErrors, actualErrors);
   }
 }

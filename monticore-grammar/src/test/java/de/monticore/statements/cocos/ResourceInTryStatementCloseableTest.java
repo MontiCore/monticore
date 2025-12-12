@@ -9,27 +9,27 @@ import de.monticore.statements.testmccommonstatements.TestMCCommonStatementsMill
 import de.monticore.statements.testmccommonstatements._symboltable.ITestMCCommonStatementsScope;
 import de.monticore.statements.testmcexceptionstatements.TestMCExceptionStatementsMill;
 import de.monticore.statements.testmcexceptionstatements._cocos.TestMCExceptionStatementsCoCoChecker;
-import de.monticore.statements.testmcexceptionstatements._parser.TestMCExceptionStatementsParser;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
-import de.monticore.types.check.*;
+import de.monticore.types.check.FullDeriveFromCombineExpressionsWithLiterals;
+import de.monticore.types.check.SymTypeExpressionFactory;
+import de.monticore.types.check.SymTypeOfObject;
+import de.monticore.types.check.TypeCalculator;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.IOException;
-import java.util.Optional;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static de.monticore.statements.testmcexceptionstatements.TestMCExceptionStatementsMill.parser;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ResourceInTryStatementCloseableTest {
-
-  protected TestMCExceptionStatementsCoCoChecker checker;
+class ResourceInTryStatementCloseableTest {
 
   @BeforeEach
-  public void init() {
+  void init() {
     LogStub.init();
     Log.enableFailQuick(false);
 
@@ -37,105 +37,110 @@ public class ResourceInTryStatementCloseableTest {
     TestMCExceptionStatementsMill.init();
     BasicSymbolsMill.initializePrimitives();
 
-    checker = new TestMCExceptionStatementsCoCoChecker();
-    checker.setTraverser(TestMCExceptionStatementsMill.traverser());
-    checker.addCoCo(new ResourceInTryStatementCloseable(new TypeCalculator(null, new FullDeriveFromCombineExpressionsWithLiterals())));
+    // Setup type hierarchy
+    SymTypeOfObject closeableType =
+      SymTypeExpressionFactory.createTypeObjectViaSurrogate("java.io.Closeable", TestMCExceptionStatementsMill.globalScope());
+    SymTypeOfObject typeA =
+      SymTypeExpressionFactory.createTypeObjectViaSurrogate("A", TestMCExceptionStatementsMill.globalScope());
+    SymTypeOfObject typeB =
+      SymTypeExpressionFactory.createTypeObjectViaSurrogate("B", TestMCExceptionStatementsMill.globalScope());
 
-    SymTypeOfObject sType = SymTypeExpressionFactory.createTypeObjectViaSurrogate("java.io.Closeable", TestMCExceptionStatementsMill.globalScope());
-    SymTypeOfObject sTypeA = SymTypeExpressionFactory.createTypeObjectViaSurrogate("A", TestMCExceptionStatementsMill.globalScope());
-
+    // Define A extending Closeable
     TestMCExceptionStatementsMill.globalScope().add(
-        TestMCExceptionStatementsMill
-            .oOTypeSymbolBuilder()
-            .setName("A")
-            .setSpannedScope(TestMCCommonStatementsMill.globalScope())
-            .addSuperTypes(sType)
-            .build());
+      TestMCExceptionStatementsMill.oOTypeSymbolBuilder()
+        .setName("A")
+        .setSpannedScope(TestMCCommonStatementsMill.globalScope())
+        .addSuperTypes(closeableType)
+        .build()
+    );
 
+    // Define B not extending Closeable
+    TestMCExceptionStatementsMill.globalScope().add(
+      TestMCExceptionStatementsMill.oOTypeSymbolBuilder()
+        .setName("B")
+        .setSpannedScope(TestMCCommonStatementsMill.globalScope())
+        .build()
+    );
+
+    // Setup java.io hierarchy
     ITestMCCommonStatementsScope javaScope = TestMCCommonStatementsMill.scope();
     javaScope.setName("java");
-
     ITestMCCommonStatementsScope ioScope = TestMCCommonStatementsMill.scope();
     ioScope.setName("io");
-
     javaScope.addSubScope(ioScope);
     TestMCCommonStatementsMill.globalScope().addSubScope(javaScope);
 
     ioScope.add(
-        TestMCExceptionStatementsMill
-            .oOTypeSymbolBuilder()
-            .setName("Closeable")
-            .setSpannedScope(TestMCCommonStatementsMill.globalScope())
-            .build());
+      TestMCExceptionStatementsMill.oOTypeSymbolBuilder()
+        .setName("Closeable")
+        .setSpannedScope(TestMCCommonStatementsMill.globalScope())
+        .build()
+    );
 
+    // Add fields
     TestMCExceptionStatementsMill.globalScope().add(
-        TestMCExceptionStatementsMill
-            .fieldSymbolBuilder()
-            .setName("a")
-            .setType(sTypeA)
-            .build());
-
-    SymTypeOfObject sTypeB = SymTypeExpressionFactory.createTypeObjectViaSurrogate("B", TestMCExceptionStatementsMill.globalScope());
-
+      TestMCExceptionStatementsMill.fieldSymbolBuilder()
+        .setName("a")
+        .setType(typeA)
+        .build()
+    );
     TestMCExceptionStatementsMill.globalScope().add(
-        TestMCExceptionStatementsMill
-            .oOTypeSymbolBuilder()
-            .setName("B")
-            .setSpannedScope(TestMCCommonStatementsMill.globalScope())
-            .build());
-
-    TestMCExceptionStatementsMill.globalScope().add(
-        TestMCExceptionStatementsMill
-            .fieldSymbolBuilder()
-            .setName("b")
-            .setType(sTypeB)
-            .build());
+      TestMCExceptionStatementsMill.fieldSymbolBuilder()
+        .setName("b")
+        .setType(typeB)
+        .build()
+    );
   }
 
-  public void checkValid(String expressionString) throws IOException {
-    TestMCExceptionStatementsParser parser = TestMCExceptionStatementsMill.parser();
+  @ParameterizedTest
+  @ValueSource(strings = {
+    "try(A c = a){}"
+  })
+  void testValid(String expr) throws IOException {
+    // Given
+    TestMCExceptionStatementsCoCoChecker checker = new TestMCExceptionStatementsCoCoChecker();
+    checker.setTraverser(TestMCExceptionStatementsMill.traverser());
+    checker.addCoCo(new ResourceInTryStatementCloseable(new TypeCalculator(null, new FullDeriveFromCombineExpressionsWithLiterals())));
 
-    Optional<ASTTryStatement3> optAST = parser.parse_StringTryStatement3(expressionString);
-    Assertions.assertTrue(optAST.isPresent());
-    ASTTryStatement3 ast = optAST.get();
-
+    ASTTryStatement3 ast = parser().parse_StringTryStatement3(expr).orElseThrow();
     ast.setEnclosingScope(TestMCExceptionStatementsMill.globalScope());
 
     for (ASTTryLocalVariableDeclaration dec : ast.getTryLocalVariableDeclarationList()) {
       dec.getExpression().setEnclosingScope(TestMCExceptionStatementsMill.globalScope());
-
-      Log.getFindings().clear();
-      checker.checkAll((ASTMCExceptionStatementsNode) optAST.get());
-      Assertions.assertTrue(Log.getFindings().isEmpty());
     }
+
+    Log.getFindings().clear();
+
+    // When
+    checker.checkAll((ASTMCExceptionStatementsNode) ast);
+
+    // Then
+    assertTrue(Log.getFindings().isEmpty(), () -> Log.getFindings().toString());
   }
 
-  public void checkInvalid(String expressionString) throws IOException {
-    TestMCExceptionStatementsParser parser = TestMCExceptionStatementsMill.parser();
+  @ParameterizedTest
+  @ValueSource(strings = {
+    "try(B c = b){}"
+  })
+  void testInvalid(String expr) throws IOException {
+    // Given
+    TestMCExceptionStatementsCoCoChecker checker = new TestMCExceptionStatementsCoCoChecker();
+    checker.setTraverser(TestMCExceptionStatementsMill.traverser());
+    checker.addCoCo(new ResourceInTryStatementCloseable(new TypeCalculator(null, new FullDeriveFromCombineExpressionsWithLiterals())));
 
-    Optional<ASTTryStatement3> optAST = parser.parse_StringTryStatement3(expressionString);
-    Assertions.assertTrue(optAST.isPresent());
-    ASTTryStatement3 ast = optAST.get();
-
+    ASTTryStatement3 ast = parser().parse_StringTryStatement3(expr).orElseThrow();
     ast.setEnclosingScope(TestMCExceptionStatementsMill.globalScope());
 
     for (ASTTryLocalVariableDeclaration dec : ast.getTryLocalVariableDeclarationList()) {
       dec.getExpression().setEnclosingScope(TestMCExceptionStatementsMill.globalScope());
-
-      Log.getFindings().clear();
-      checker.checkAll((ASTMCExceptionStatementsNode) optAST.get());
-      Assertions.assertFalse(Log.getFindings().isEmpty());
     }
-  }
 
-  @Test
-  public void testValid() throws IOException {
-    checkValid("try(A c = a){}");
-  }
+    Log.getFindings().clear();
 
-  @Test
-  public void testInvalid() throws IOException {
-    checkInvalid("try(B c = b){}");
-  }
+    // When
+    checker.checkAll((ASTMCExceptionStatementsNode) ast);
 
+    // Then
+    assertFalse(Log.getFindings().isEmpty(), () -> Log.getFindings().toString());
+  }
 }
