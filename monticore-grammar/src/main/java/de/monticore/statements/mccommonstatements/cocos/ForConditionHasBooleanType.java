@@ -23,7 +23,7 @@ public class ForConditionHasBooleanType implements MCCommonStatementsASTForState
     SymTypeExpression result = TypeCheck3.typeOf(((ASTCommonForControl) node.getForControl()).getCondition());
 
     if (!SymTypeRelations.isBoolean(result)) {
-      Log.error(ERROR_CODE + ERROR_MSG_FORMAT, node.get_SourcePositionStart());
+      Log.error(ERROR_CODE + " " + ERROR_MSG_FORMAT, node.get_SourcePositionStart());
     }
   }
 }

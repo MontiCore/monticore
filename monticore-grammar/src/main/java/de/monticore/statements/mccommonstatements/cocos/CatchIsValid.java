@@ -27,7 +27,7 @@ public class CatchIsValid implements MCExceptionStatementsASTCatchClauseCoCo {
       SymTypeExpression result = SymTypeExpressionFactory.createTypeObjectViaSurrogate(name, node.getEnclosingScope());
 
       if (!SymTypeRelations.isSubTypeOf(result, throwable)) {
-        Log.error(ERROR_CODE + ERROR_MSG_FORMAT, node.get_SourcePositionStart());
+        Log.error(ERROR_CODE + " " + ERROR_MSG_FORMAT, node.get_SourcePositionStart());
       }
     }
   }

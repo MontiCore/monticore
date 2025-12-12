@@ -29,7 +29,7 @@ public class SwitchStatementValid implements MCCommonStatementsASTSwitchStatemen
     if (!(SymTypeRelations.isChar(result) || SymTypeRelations.isByte(result)
       || SymTypeRelations.isShort(result) || SymTypeRelations.isInt(result)
       || isEnumMember(result))) {
-      Log.error(ERROR_CODE + ERROR_MSG_FORMAT, node.get_SourcePositionStart());
+      Log.error(ERROR_CODE + " " +ERROR_MSG_FORMAT, node.get_SourcePositionStart());
     }
   }
 
