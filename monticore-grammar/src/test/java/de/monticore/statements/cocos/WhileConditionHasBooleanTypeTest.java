@@ -6,8 +6,7 @@ import de.monticore.statements.mcstatementsbasis._ast.ASTMCBlockStatement;
 import de.monticore.statements.testmccommonstatements.TestMCCommonStatementsMill;
 import de.monticore.statements.testmccommonstatements._cocos.TestMCCommonStatementsCoCoChecker;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
-import de.monticore.types.check.FullDeriveFromCombineExpressionsWithLiterals;
-import de.monticore.types.check.TypeCalculator;
+import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserFactory;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,6 +27,7 @@ class WhileConditionHasBooleanTypeTest {
     Log.enableFailQuick(false);
     TestMCCommonStatementsMill.reset();
     TestMCCommonStatementsMill.init();
+    CombineExpressionsWithLiteralsTypeTraverserFactory.initTypeCheck3();
     BasicSymbolsMill.initializePrimitives();
   }
 
@@ -41,8 +41,7 @@ class WhileConditionHasBooleanTypeTest {
   void testValid(String expr) throws IOException {
     // Given
     TestMCCommonStatementsCoCoChecker checker = new TestMCCommonStatementsCoCoChecker();
-    checker.addCoCo(new WhileConditionHasBooleanType(
-      new TypeCalculator(null, new FullDeriveFromCombineExpressionsWithLiterals())));
+    checker.addCoCo(new WhileConditionHasBooleanType());
 
     ASTMCBlockStatement ast = parser().parse_StringMCBlockStatement(expr).orElseThrow();
 
@@ -62,8 +61,7 @@ class WhileConditionHasBooleanTypeTest {
   void testInvalid(String expr) throws IOException {
     // Given
     TestMCCommonStatementsCoCoChecker checker = new TestMCCommonStatementsCoCoChecker();
-    checker.addCoCo(new WhileConditionHasBooleanType(
-      new TypeCalculator(null, new FullDeriveFromCombineExpressionsWithLiterals())));
+    checker.addCoCo(new WhileConditionHasBooleanType());
 
     ASTMCBlockStatement ast = parser().parse_StringMCBlockStatement(expr).orElseThrow();
 

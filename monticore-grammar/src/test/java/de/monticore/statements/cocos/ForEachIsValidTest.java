@@ -8,7 +8,10 @@ import de.monticore.statements.testmccommonstatements._cocos.TestMCCommonStateme
 import de.monticore.statements.testmccommonstatements._symboltable.ITestMCCommonStatementsScope;
 import de.monticore.statements.testmccommonstatements._visitor.TestMCCommonStatementsTraverser;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
-import de.monticore.types.check.*;
+import de.monticore.types.check.FlatExpressionScopeSetter;
+import de.monticore.types.check.SymTypeExpressionFactory;
+import de.monticore.types.check.SymTypeOfObject;
+import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserFactory;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,6 +35,7 @@ class ForEachIsValidTest {
 
     TestMCCommonStatementsMill.reset();
     TestMCCommonStatementsMill.init();
+    CombineExpressionsWithLiteralsTypeTraverserFactory.initTypeCheck3();
     BasicSymbolsMill.initializePrimitives();
 
     // Prepare type and symbol setup
@@ -102,9 +106,7 @@ class ForEachIsValidTest {
   void testValid(String expr) throws IOException {
     // Given
     TestMCCommonStatementsCoCoChecker checker = new TestMCCommonStatementsCoCoChecker();
-    checker.addCoCo(new ForEachIsValid(new TypeCalculator(
-      new FullSynthesizeFromCombineExpressionsWithLiterals(),
-      new FullDeriveFromCombineExpressionsWithLiterals())));
+    checker.addCoCo(new ForEachIsValid());
 
     ASTEnhancedForControl ast = TestMCCommonStatementsMill.parser()
       .parse_StringEnhancedForControl(expr)
@@ -130,9 +132,7 @@ class ForEachIsValidTest {
   void testInvalid(String expr) throws IOException {
     // Given
     TestMCCommonStatementsCoCoChecker checker = new TestMCCommonStatementsCoCoChecker();
-    checker.addCoCo(new ForEachIsValid(new TypeCalculator(
-      new FullSynthesizeFromCombineExpressionsWithLiterals(),
-      new FullDeriveFromCombineExpressionsWithLiterals())));
+    checker.addCoCo(new ForEachIsValid());
 
     ASTEnhancedForControl ast = TestMCCommonStatementsMill.parser()
       .parse_StringEnhancedForControl(expr)

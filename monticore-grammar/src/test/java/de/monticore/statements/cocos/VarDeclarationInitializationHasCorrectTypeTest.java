@@ -33,8 +33,6 @@ public class VarDeclarationInitializationHasCorrectTypeTest {
     Log.enableFailQuick(false);
     TestMCVarDeclarationStatementsMill.reset();
     TestMCVarDeclarationStatementsMill.init();
-
-    TestMCVarDeclarationStatementsMill.globalScope().clear();
     CombineExpressionsWithLiteralsTypeTraverserFactory.initTypeCheck3();
     BasicSymbolsMill.initializePrimitives();
     addMyTypeToGlobalScope();
