@@ -5,7 +5,6 @@ import com.google.common.base.Preconditions;
 import de.monticore.statements.mcassertstatements._ast.ASTAssertStatement;
 import de.monticore.statements.mcassertstatements._cocos.MCAssertStatementsASTAssertStatementCoCo;
 import de.monticore.types.check.SymTypeExpression;
-import de.monticore.types.check.TypeCalculator;
 import de.monticore.types3.SymTypeRelations;
 import de.monticore.types3.TypeCheck3;
 import de.se_rwth.commons.logging.Log;
@@ -20,30 +19,11 @@ public class AssertIsValid implements MCAssertStatementsASTAssertStatementCoCo {
 
   public static final String ERROR_MSG_FORMAT_2 = "Assert-statement must not be of void type.";
 
-  TypeCalculator typeCheck;
-
-  /**
-   * @deprecated use default constructor
-   */
-  @Deprecated
-  public AssertIsValid(TypeCalculator typeCheck) {
-    this.typeCheck = typeCheck;
-  }
-
-  public AssertIsValid() { }
-
   @Override
   public void check(ASTAssertStatement node) {
     Preconditions.checkNotNull(node);
 
-    SymTypeExpression assertion;
-
-    if (typeCheck != null) {
-      // support deprecated behavior
-      assertion = typeCheck.typeOf(node.getAssertion());
-    } else {
-      assertion = TypeCheck3.typeOf(node.getAssertion());
-    }
+    SymTypeExpression assertion = TypeCheck3.typeOf(node.getAssertion());
 
     if (!SymTypeRelations.isBoolean(assertion)) {
       Log.error(ERROR_CODE + " " + ERROR_MSG_FORMAT, node.getAssertion().get_SourcePositionStart());
@@ -51,14 +31,7 @@ public class AssertIsValid implements MCAssertStatementsASTAssertStatementCoCo {
 
     if (node.isPresentMessage()) {
 
-      SymTypeExpression message;
-
-      if (typeCheck != null) {
-        // support deprecated behavior
-        message = typeCheck.typeOf(node.getMessage());
-      } else {
-        message = TypeCheck3.typeOf(node.getMessage());
-      }
+      SymTypeExpression message = TypeCheck3.typeOf(node.getMessage());
 
       if (message.isVoidType()) {
         Log.error(ERROR_CODE_2 + " " + ERROR_MSG_FORMAT_2, node.getMessage().get_SourcePositionStart());

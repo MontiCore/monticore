@@ -34,14 +34,7 @@ public class ForEachIsValid implements MCCommonStatementsASTEnhancedForControlCo
   public void check(ASTEnhancedForControl node) {
     Preconditions.checkNotNull(node);
 
-    SymTypeExpression expression;
-
-    if (typeCheck != null) {
-      // support deprecated behavior
-      expression = typeCheck.typeOf(node.getExpression());
-    } else {
-      expression = TypeCheck3.typeOf(node.getExpression());
-    }
+    SymTypeExpression expression = TypeCheck3.typeOf(node.getExpression());
 
     SymTypeExpression arrays = SymTypeExpressionFactory.createTypeObjectViaSurrogate("java.util.Arrays", node.getEnclosingScope());
     SymTypeExpression lists = SymTypeExpressionFactory.createTypeObjectViaSurrogate("java.lang.Iterable", node.getEnclosingScope());
