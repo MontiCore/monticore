@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static de.monticore.runtime.junit.MCAssertions.assertHasFindingStartingWith;
 import static de.monticore.runtime.junit.MCAssertions.assertNoFindings;
 import static de.monticore.statements.testmcvardeclarationstatements.TestMCVarDeclarationStatementsMill.parser;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -65,33 +64,21 @@ class VarDeclarationNameAlreadyDefinedInScopeTest {
     TestMCVarDeclarationStatementsCoCoChecker checker = new TestMCVarDeclarationStatementsCoCoChecker();
     checker.addCoCo(new VarDeclarationNameAlreadyDefinedInScope());
 
-    ASTRootVarDeclaration astDecl = parseAndBuildAST("int a, a;");
-
-    // When
-    checker.checkAll(astDecl);
-
-    // Then
-    assertHasFindingStartingWith(VarDeclarationNameAlreadyDefinedInScope.ERROR_CODE);
-    assertHasFindingStartingWith(VarDeclarationNameAlreadyDefinedInScope.ERROR_CODE);
-    assertNoFindings();
-  }
-
-  @Test
-  void testInvalidMultiVarDeclarationWithValue() throws IOException {
-    // Given
-    TestMCVarDeclarationStatementsCoCoChecker checker = new TestMCVarDeclarationStatementsCoCoChecker();
-    checker.addCoCo(new VarDeclarationNameAlreadyDefinedInScope());
-
     ASTRootVarDeclaration astDecl = parseAndBuildAST("int a = 10, a, a = -12;");
 
+    List<String> expected = List.of(
+      VarDeclarationNameAlreadyDefinedInScope.ERROR_CODE,
+      VarDeclarationNameAlreadyDefinedInScope.ERROR_CODE,
+      VarDeclarationNameAlreadyDefinedInScope.ERROR_CODE
+    );
+
     // When
     checker.checkAll(astDecl);
 
     // Then
-    assertHasFindingStartingWith(VarDeclarationNameAlreadyDefinedInScope.ERROR_CODE);
-    assertHasFindingStartingWith(VarDeclarationNameAlreadyDefinedInScope.ERROR_CODE);
-    assertHasFindingStartingWith(VarDeclarationNameAlreadyDefinedInScope.ERROR_CODE);
-    assertNoFindings();
+    assertEquals(expected, Log.getFindings()
+      .stream().map(f -> f.getMsg().substring(0, 7)).collect(Collectors.toList())
+    );
   }
 
   @Test

@@ -11,15 +11,19 @@ import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static de.monticore.statements.testmcassertstatements.TestMCAssertStatementsMill.parser;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 class AssertIsValidTest {
 
@@ -54,11 +58,8 @@ class AssertIsValidTest {
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {
-    "assert 4;",
-    "assert 'c';"
-  })
-  void testInvalid(String expr) throws IOException {
+  @MethodSource("exprAndErrorProvider")
+  void testInvalid(String expr, String error) throws IOException {
     // Given
     TestMCAssertStatementsCoCoChecker checker = new TestMCAssertStatementsCoCoChecker();
     checker.addCoCo(new AssertIsValid());
@@ -69,8 +70,15 @@ class AssertIsValidTest {
     checker.checkAll(ast);
 
     // Then
-    assertEquals(List.of(AssertIsValid.ERROR_CODE), Log.getFindings()
+    assertEquals(List.of(error), Log.getFindings()
       .stream().map(f -> f.getMsg().substring(0, 7)).collect(Collectors.toList())
+    );
+  }
+
+  static Stream<Arguments> exprAndErrorProvider() {
+    return Stream.of(
+      arguments("assert 4;", AssertIsValid.ERROR_CODE),
+      arguments("assert 'c';", AssertIsValid.ERROR_CODE)
     );
   }
 }

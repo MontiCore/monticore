@@ -1,4 +1,4 @@
-/* (c) https://github.com/MontiCore/monticore */
+/* (c) [https://github.com/MontiCore/monticore](https://github.com/MontiCore/monticore) */
 package de.monticore.statements.cocos;
 
 import de.monticore.statements.mccommonstatements.cocos.SynchronizedArgIsReftype;
@@ -15,15 +15,19 @@ import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static de.monticore.statements.testmcsynchronizedstatements.TestMCSynchronizedStatementsMill.parser;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 class SynchronizedArgIsReftypeTest {
 
@@ -37,7 +41,10 @@ class SynchronizedArgIsReftypeTest {
     BasicSymbolsMill.initializePrimitives();
 
     SymTypeOfObject objectType =
-      SymTypeExpressionFactory.createTypeObjectViaSurrogate("java.lang.Object", TestMCExceptionStatementsMill.globalScope());
+      SymTypeExpressionFactory.createTypeObjectViaSurrogate(
+        "java.lang.Object",
+        TestMCExceptionStatementsMill.globalScope()
+      );
 
     TestMCExceptionStatementsMill.globalScope().add(
       TestMCExceptionStatementsMill.oOTypeSymbolBuilder()
@@ -71,12 +78,8 @@ class SynchronizedArgIsReftypeTest {
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {
-    "synchronized('f'){}",
-    "synchronized(5.5){}",
-    "synchronized(false){}"
-  })
-  void testInvalid(String expr) throws IOException {
+  @MethodSource("exprAndErrorProvider")
+  void testInvalid(String expr, String error) throws IOException {
     // Given
     TestMCSynchronizedStatementsCoCoChecker checker = new TestMCSynchronizedStatementsCoCoChecker();
     checker.addCoCo(new SynchronizedArgIsReftype());
@@ -88,8 +91,18 @@ class SynchronizedArgIsReftypeTest {
     checker.checkAll((ASTMCSynchronizedStatementsNode) ast);
 
     // Then
-    assertEquals(List.of(SynchronizedArgIsReftype.ERROR_CODE), Log.getFindings()
-      .stream().map(f -> f.getMsg().substring(0, 7)).collect(Collectors.toList())
+    assertEquals(List.of(error), Log.getFindings()
+      .stream()
+      .map(f -> f.getMsg().substring(0, 7))
+      .collect(Collectors.toList())
+    );
+  }
+
+  static Stream<Arguments> exprAndErrorProvider() {
+    return Stream.of(
+      arguments("synchronized('f'){}", SynchronizedArgIsReftype.ERROR_CODE),
+      arguments("synchronized(5.5){}", SynchronizedArgIsReftype.ERROR_CODE),
+      arguments("synchronized(false){}", SynchronizedArgIsReftype.ERROR_CODE)
     );
   }
 }
