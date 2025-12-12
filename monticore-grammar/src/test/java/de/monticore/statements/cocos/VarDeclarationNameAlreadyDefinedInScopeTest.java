@@ -15,10 +15,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static de.monticore.runtime.junit.MCAssertions.assertHasFindingStartingWith;
 import static de.monticore.runtime.junit.MCAssertions.assertNoFindings;
 import static de.monticore.statements.testmcvardeclarationstatements.TestMCVarDeclarationStatementsMill.parser;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class VarDeclarationNameAlreadyDefinedInScopeTest {
 
@@ -99,15 +102,16 @@ class VarDeclarationNameAlreadyDefinedInScopeTest {
 
     ASTRootVarDeclaration astDecl = parseAndBuildAST("int a = 10;");
     astDecl.getEnclosingScope().add(TestMCVarDeclarationStatementsMill.variableSymbolBuilder()
-        .setName("a")
-        .setEnclosingScope(astDecl.getEnclosingScope())
-        .build());
+      .setName("a")
+      .setEnclosingScope(astDecl.getEnclosingScope())
+      .build());
 
     // When
     checker.checkAll(astDecl);
 
     // Then
-    assertHasFindingStartingWith(VarDeclarationNameAlreadyDefinedInScope.ERROR_CODE);
-    assertNoFindings();
+    assertEquals(List.of(VarDeclarationNameAlreadyDefinedInScope.ERROR_CODE), Log.getFindings()
+      .stream().map(f -> f.getMsg().substring(0, 7)).collect(Collectors.toList())
+    );
   }
 }

@@ -16,7 +16,7 @@ public class ForEachIsValid implements MCCommonStatementsASTEnhancedForControlCo
   @Deprecated
   TypeCalculator typeCheck;
 
-  public static final String ERROR_CODE = "0xA0907 ";
+  public static final String ERROR_CODE = "0xA0907";
 
   public static final String ERROR_MSG_FORMAT = "For-each loop expression must be an array of subtype of list.";
 
@@ -48,7 +48,7 @@ public class ForEachIsValid implements MCCommonStatementsASTEnhancedForControlCo
 
     if (!SymTypeRelations.isSubTypeOf(expression, arrays)) {
       if (!SymTypeRelations.isSubTypeOf(expression, lists)) {
-        Log.error(ERROR_CODE + ERROR_MSG_FORMAT, node.get_SourcePositionStart());
+        Log.error(ERROR_CODE + " " + ERROR_MSG_FORMAT, node.get_SourcePositionStart());
       }
     }
   }
