@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.statements.cocos;
 
-import com.google.common.collect.Lists;
 import de.monticore.statements.mcvardeclarationstatements._cocos.VarDeclarationInitializationHasCorrectType;
 import de.monticore.statements.mcvardeclarationstatements._symboltable.MCVarDeclarationStatementsSTCompleteTypes;
 import de.monticore.statements.testmcvardeclarationstatements.TestMCVarDeclarationStatementsMill;
@@ -11,10 +10,8 @@ import de.monticore.statements.testmcvardeclarationstatements._visitor.TestMCVar
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserFactory;
-import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
