@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${signature("isOptional")}
+${signature("isOptional", "parentObject")}
 
 <#assign optObject = ast>
 if (nextNode.equals("${optObject.getObjectName()}")) {
@@ -32,6 +32,8 @@ if (nextNode.equals("${optObject.getObjectName()}")) {
       // no match of the pattern can be found
       <#if !isOptional>
       foundMatch = false;
+      <#elseif parentObject?has_content>
+      reset_${parentObject.getObjectName()}();
       </#if>
       break;
     } else {

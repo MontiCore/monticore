@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${signature("isOptional")}
+${signature("isOptional", "parentObject")}
 
 <#assign notObject = ast>
 if (nextNode.equals("${notObject.getObjectName()}")) {

@@ -20,13 +20,13 @@ protected boolean doPatternMatching_${structure.getObjectName()}(boolean isParen
     <#-- <#list ast.getPattern().getLHSObjectsList() as object> -->
     <#list hierarchyHelper.getInnerLinkObjectsLHS(ast.getPattern().getLHSObjectsList(), structure) as object>
       <#if object.isListObject()>
-        ${tc.includeArgs("de.monticore.tf.odrules.dopatternmatching.HandleListObject", object, [true])}
+        ${tc.includeArgs("de.monticore.tf.odrules.dopatternmatching.HandleListObject", object, [true, structure])}
       <#elseif object.isOptObject()>
-        ${tc.includeArgs("de.monticore.tf.odrules.dopatternmatching.HandleOptObject", object, [true])}
+        ${tc.includeArgs("de.monticore.tf.odrules.dopatternmatching.HandleOptObject", object, [true, structure])}
       <#elseif object.isNotObject()>
-        ${tc.includeArgs("de.monticore.tf.odrules.dopatternmatching.HandleNotObject", object, [true])}
+        ${tc.includeArgs("de.monticore.tf.odrules.dopatternmatching.HandleNotObject", object, [true, structure])}
       <#else>
-        ${tc.includeArgs("de.monticore.tf.odrules.dopatternmatching.HandleNormalObject", object, [true])}
+        ${tc.includeArgs("de.monticore.tf.odrules.dopatternmatching.HandleNormalObject", object, [true, structure])}
       </#if>
       <#if object_has_next>else</#if>
     </#list>
