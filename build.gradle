@@ -125,7 +125,6 @@ tasks.register("buildMC") {
 }
 
 buildMC.dependsOn(gradle.includedBuilds*.task(':build'))
-buildMC.dependsOn(gradle.includedBuilds*.task(':gradle-plugin:build'))
 
 /**
  *  Assembles the core projects, i.e. the generator, runtime and grammar library.
@@ -143,7 +142,6 @@ tasks.register("assembleMC") {
 }
 
 assembleMC.dependsOn(gradle.includedBuilds*.task(':assemble'))
-assembleMC.dependsOn(gradle.includedBuilds*.task(':gradle-plugin:assemble'))
 
 /**
  *  Executes JUnit tests of the core projects, i.e. the generator, runtime and grammar library.
@@ -161,7 +159,6 @@ tasks.register("testMC") {
 }
 
 testMC.dependsOn(gradle.includedBuilds*.task(':test'))
-testMC.dependsOn(gradle.includedBuilds*.task(':gradle-plugin:test'))
 
 /**
  *  Publishes the jars of the core projects, i.e. the generator, runtime and grammar library
@@ -183,7 +180,6 @@ tasks.register("deployMC") {
 }
 
 deployMC.dependsOn(gradle.includedBuilds*.task(':publish'))
-deployMC.dependsOn(gradle.includedBuilds*.task(':gradle-plugin:publish'))
 
 /**
  *  Publishes the jars of the core projects, i.e. the generator, runtime and grammar library
@@ -204,7 +200,6 @@ tasks.register("publishMCToMavenLocal") {
 }
 
 publishMCToMavenLocal.dependsOn(gradle.includedBuilds*.task(':publishToMavenLocal'))
-publishMCToMavenLocal.dependsOn(gradle.includedBuilds*.task(':gradle-plugin:publishToMavenLocal'))
 
 /**
  *  Build the test projects, i.e. integration tests and experiments.
