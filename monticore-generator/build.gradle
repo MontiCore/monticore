@@ -147,7 +147,17 @@ allprojects {
                 }
             }
         }
+
     }
+}
+publishing {
+  publications {
+    "maven"(MavenPublication) {
+      // the gradle plugin is published implicitly via the java-gradle-plugin plugin
+      // but the generator has to be published explicitly
+      from components.java
+    }
+  }
 }
 
 tasks.named("shadowJar") { // all in one jar
