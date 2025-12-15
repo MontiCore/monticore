@@ -8,7 +8,6 @@ import de.monticore.runtime.junit.MCAssertions;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.compsymbols._symboltable.ComponentTypeSymbol;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
-import de.monticore.types.MCTypeFacade;
 import de.monticore.types.componentsymbolswithmcbasictypestest.ComponentSymbolsWithMCBasicTypesTestMill;
 import de.monticore.types.componentsymbolswithmcbasictypestest._symboltable.IComponentSymbolsWithMCBasicTypesTestScope;
 import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
@@ -32,13 +31,20 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 public class SynthesizeComponentFromMCSimpleGenericTypesTest extends AbstractMCTest {
+
+  private static final String COMP = "Comp";
+  private static final String SCOPE = "scoop";
+  private static final String STRING = "String";
+  private static final String LIST = "List";
 
   @BeforeEach
   public void setup() {
@@ -71,162 +77,246 @@ public class SynthesizeComponentFromMCSimpleGenericTypesTest extends AbstractMCT
     new MapBasedTypeCheck3(traverser, type4Ast, ctx4Ast).setThisAsDelegate();
   }
 
-  protected static class GenericTestSetup {
-    ComponentTypeSymbol compSym;
-    OOTypeSymbol stringSym;
-    OOTypeSymbol listSym;
-    ASTMCBasicGenericType astNormalComp; // Comp<MyString, MyList<MyString>>
-    ASTMCBasicGenericType astQualComp;   // scoop.Comp<scoop.MyList<scoop.MyString>, scoop.MyString>
+  private static final class PositiveCase {
+    final String name;
+    final boolean qualified;
+
+    PositiveCase(String name, boolean qualified) {
+      this.name = name;
+      this.qualified = qualified;
+    }
+
+    @Override
+    public String toString() {
+      return name;
+    }
   }
 
-  protected GenericTestSetup createGenericTestSetup() {
-    GenericTestSetup setup = new GenericTestSetup();
+  static Stream<Arguments> positiveCases() {
+    return Stream.of(
+      Arguments.of(new PositiveCase("normal Comp<String, List<String>>", false)),
+      Arguments.of(new PositiveCase("qualified scoop.Comp<scoop.List<scoop.String>, scoop.String>", true))
+    );
+  }
 
-    String compName = "Comp";
-    String stringName = "MyString";
-    String listName = "MyList";
-    String scopeName = "scoop";
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("positiveCases")
+  public void shouldHandleMCBasicGenericType_parametrized(PositiveCase pc) {
 
-    // Component Comp<K, V>
-    setup.compSym = ComponentSymbolsWithMCBasicTypesTestMill.componentTypeSymbolBuilder()
-      .setName(compName)
+    var global = ComponentSymbolsWithMCBasicTypesTestMill.globalScope();
+
+    ComponentTypeSymbol compSym = ComponentSymbolsWithMCBasicTypesTestMill.componentTypeSymbolBuilder()
+      .setName(COMP)
       .setSpannedScope(ComponentSymbolsWithMCBasicTypesTestMill.scope())
       .setTypeParameters(ImmutableList.of(
         ComponentSymbolsWithMCBasicTypesTestMill.typeVarSymbolBuilder().setName("K").build(),
         ComponentSymbolsWithMCBasicTypesTestMill.typeVarSymbolBuilder().setName("V").build()
-      ))
-      .build();
+      )).build();
 
-    var compScope = ComponentSymbolsWithMCBasicTypesTestMill.scope();
-    compScope.setName(scopeName);
-    compScope.add(setup.compSym);
-    compScope.addSubScope(setup.compSym.getSpannedScope());
-    ComponentSymbolsWithMCBasicTypesTestMill.globalScope().addSubScope(compScope);
+    var scopeOfComp = ComponentSymbolsWithMCBasicTypesTestMill.scope();
+    scopeOfComp.setName(SCOPE);
+    scopeOfComp.add(compSym);
+    scopeOfComp.addSubScope(compSym.getSpannedScope());
+    global.addSubScope(scopeOfComp);
 
-    // MyString type in comp scope
-    setup.stringSym = ComponentSymbolsWithMCBasicTypesTestMill.oOTypeSymbolBuilder()
-      .setName(stringName)
+    OOTypeSymbol stringSym = ComponentSymbolsWithMCBasicTypesTestMill.oOTypeSymbolBuilder()
+      .setName(STRING)
       .setSpannedScope(ComponentSymbolsWithMCBasicTypesTestMill.scope())
       .build();
-    compScope.add(setup.stringSym);
-    compScope.addSubScope(setup.stringSym.getSpannedScope());
+    scopeOfComp.add(stringSym);
+    scopeOfComp.addSubScope(stringSym.getSpannedScope());
 
-    // MyList<T> type in comp scope
-    setup.listSym = ComponentSymbolsWithMCBasicTypesTestMill.oOTypeSymbolBuilder()
-      .setName(listName)
+    OOTypeSymbol listSym = ComponentSymbolsWithMCBasicTypesTestMill.oOTypeSymbolBuilder()
+      .setName(LIST)
       .setSpannedScope(ComponentSymbolsWithMCBasicTypesTestMill.scope())
       .build();
-    setup.listSym.addTypeVarSymbol(
-      ComponentSymbolsWithMCBasicTypesTestMill.typeVarSymbolBuilder().setName("T").build()
-    );
-    compScope.add(setup.listSym);
-    compScope.addSubScope(setup.listSym.getSpannedScope());
+    listSym.addTypeVarSymbol(ComponentSymbolsWithMCBasicTypesTestMill.typeVarSymbolBuilder().setName("T").build());
+    scopeOfComp.add(listSym);
+    scopeOfComp.addSubScope(listSym.getSpannedScope());
 
-    // astString: "MyString" in comp scope
-    ASTMCQualifiedType astString = ComponentSymbolsWithMCBasicTypesTestMill.mCQualifiedTypeBuilder()
-      .setMCQualifiedName(ComponentSymbolsWithMCBasicTypesTestMill.mCQualifiedNameBuilder()
-        .addParts(stringName)
-        .build())
-      .build();
-    astString.setEnclosingScope(compScope);
-    astString.getMCQualifiedName().setEnclosingScope(compScope);
+    ASTMCQualifiedType astString = mkQualifiedType(STRING, scopeOfComp);
+    ASTMCQualifiedType astQualString = mkQualifiedType(SCOPE, STRING, global); // QUALIFIED => name scope = global
 
-    // astQualString: "scoop.MyString" visible from global
-    ASTMCQualifiedType astQualString = ComponentSymbolsWithMCBasicTypesTestMill.mCQualifiedTypeBuilder()
-      .setMCQualifiedName(ComponentSymbolsWithMCBasicTypesTestMill.mCQualifiedNameBuilder()
-        .addParts(scopeName)
-        .addParts(stringName)
-        .build())
-      .build();
-    astQualString.setEnclosingScope(ComponentSymbolsWithMCBasicTypesTestMill.globalScope());
-    astQualString.getMCQualifiedName().setEnclosingScope(compScope);
-
-    // MyList<MyString> in comp scope
-    ASTMCType astListOfString = createGenericType(
-      ImmutableList.of(listName),
-      compScope,
-      astString
-    );
-
-    // scoop.MyList<scoop.MyString> from global scope
+    ASTMCType astListOfString = createGenericType(ImmutableList.of(LIST), scopeOfComp, astString);
     ASTMCType astQualListOfString = createGenericType(
-      ImmutableList.of(scopeName, listName),
-      ComponentSymbolsWithMCBasicTypesTestMill.globalScope(),
+      ImmutableList.of(SCOPE, LIST),
+      global,
       astQualString
     );
 
-    // Comp<MyString, MyList<MyString>> in comp scope
-    setup.astNormalComp = createGenericType(
-      ImmutableList.of(compName),
-      compScope,
-      astString,
-      astListOfString
+    ASTMCBasicGenericType astNormalComp = createGenericType(
+      ImmutableList.of(COMP),
+      scopeOfComp,
+      astString, astListOfString
     );
-    setup.astNormalComp.setEnclosingScope(compScope);
-
-    // scoop.Comp<scoop.MyList<scoop.MyString>, scoop.MyString> in global scope
-    setup.astQualComp = createGenericType(
-      ImmutableList.of(scopeName, compName),
-      ComponentSymbolsWithMCBasicTypesTestMill.globalScope(),
-      astQualListOfString,
-      astQualString
+    ASTMCBasicGenericType astQualComp = createGenericType(
+      ImmutableList.of(SCOPE, COMP),
+      global,
+      astQualListOfString, astQualString
     );
-    setup.astQualComp.setEnclosingScope(ComponentSymbolsWithMCBasicTypesTestMill.globalScope());
 
-    return setup;
+    CompKindCheckResult result4normal = new CompKindCheckResult();
+    CompKindCheckResult result4qual = new CompKindCheckResult();
+    new SynthesizeCompKindFromMCSimpleGenericTypes(result4normal).handle(astNormalComp);
+    new SynthesizeCompKindFromMCSimpleGenericTypes(result4qual).handle(astQualComp);
+
+    // --- assertions communes ---
+    Assertions.assertTrue(result4normal.getResult().isPresent());
+    Assertions.assertTrue(result4qual.getResult().isPresent());
+    Assertions.assertInstanceOf(CompKindOfGenericComponentType.class, result4normal.getResult().get());
+    Assertions.assertInstanceOf(CompKindOfGenericComponentType.class, result4qual.getResult().get());
+
+    CompKindOfGenericComponentType normal = (CompKindOfGenericComponentType) result4normal.getResult().get();
+    CompKindOfGenericComponentType qual = (CompKindOfGenericComponentType) result4qual.getResult().get();
+
+    if (!pc.qualified) {
+      Assertions.assertEquals(compSym, normal.getTypeInfo());
+      Assertions.assertInstanceOf(SymTypeOfObject.class, normal.getTypeBindingFor("K").get());
+      Assertions.assertInstanceOf(SymTypeOfGenerics.class, normal.getTypeBindingFor("V").get());
+      Assertions.assertEquals(stringSym, normal.getTypeBindingFor("K").get().getTypeInfo());
+      Assertions.assertEquals(listSym, normal.getTypeBindingFor("V").get().getTypeInfo());
+      Assertions.assertEquals(stringSym,
+        ((SymTypeOfGenerics) normal.getTypeBindingFor("V").get()).getArgument(0).getTypeInfo()
+      );
+      Assertions.assertTrue(normal.getSourceNode().isPresent());
+      Assertions.assertEquals(astNormalComp, normal.getSourceNode().get());
+    }
+    else {
+      Assertions.assertEquals(compSym, qual.getTypeInfo());
+      Assertions.assertInstanceOf(SymTypeOfGenerics.class, qual.getTypeBindingFor("K").get());
+      Assertions.assertInstanceOf(SymTypeOfObject.class, qual.getTypeBindingFor("V").get());
+      Assertions.assertEquals(stringSym, qual.getTypeBindingFor("V").get().getTypeInfo());
+      Assertions.assertEquals(listSym, qual.getTypeBindingFor("K").get().getTypeInfo());
+      Assertions.assertEquals(stringSym,
+        ((SymTypeOfGenerics) qual.getTypeBindingFor("K").get()).getArgument(0).getTypeInfo()
+      );
+      Assertions.assertTrue(qual.getSourceNode().isPresent());
+      Assertions.assertEquals(astQualComp, qual.getSourceNode().get());
+    }
   }
 
-  @ParameterizedTest
-  @ValueSource(booleans = {false, true})
-  public void shouldHandleMCBasicGenericType(boolean useQualifiedVariant) {
-    GenericTestSetup setup = createGenericTestSetup();
+  private static ASTMCQualifiedType mkQualifiedType(String simpleName, IComponentSymbolsWithMCBasicTypesTestScope encl) {
+    ASTMCQualifiedType t = ComponentSymbolsWithMCBasicTypesTestMill.mCQualifiedTypeBuilder()
+      .setMCQualifiedName(ComponentSymbolsWithMCBasicTypesTestMill.mCQualifiedNameBuilder()
+        .addParts(simpleName)
+        .build())
+      .build();
+    t.setEnclosingScope(encl);
+    t.getMCQualifiedName().setEnclosingScope(encl);
+    return t;
+  }
 
-    ASTMCBasicGenericType ast = useQualifiedVariant
-      ? setup.astQualComp
-      : setup.astNormalComp;
+  private static ASTMCQualifiedType mkQualifiedType(String p1, String p2, IComponentSymbolsWithMCBasicTypesTestScope encl) {
+    ASTMCQualifiedType t = ComponentSymbolsWithMCBasicTypesTestMill.mCQualifiedTypeBuilder()
+      .setMCQualifiedName(ComponentSymbolsWithMCBasicTypesTestMill.mCQualifiedNameBuilder()
+        .addParts(p1)
+        .addParts(p2)
+        .build())
+      .build();
+    t.setEnclosingScope(encl);
+    t.getMCQualifiedName().setEnclosingScope(encl);
+    return t;
+  }
 
-    CompKindCheckResult result = new CompKindCheckResult();
-    SynthesizeCompKindFromMCSimpleGenericTypes synth =
-      new SynthesizeCompKindFromMCSimpleGenericTypes(result);
+  private enum NegativeKind {
+    COMP_TYPE_UNRESOLVABLE,
+    TYPE_ARGUMENT_UNRESOLVABLE,
+    NESTED_TYPE_ARGUMENT_UNRESOLVABLE
+  }
 
-    // When
-    synth.handle(ast);
+  private static final class NegativeScenario {
+    final String name;
+    final NegativeKind kind;
 
-    // Then: basic properties
-    Assertions.assertTrue(result.getResult().isPresent());
-    Assertions.assertInstanceOf(CompKindOfGenericComponentType.class, result.getResult().get());
+    NegativeScenario(String name, NegativeKind kind) {
+      this.name = name;
+      this.kind = kind;
+    }
 
-    CompKindOfGenericComponentType generic =
-      (CompKindOfGenericComponentType) result.getResult().get();
+    @Override
+    public String toString() {
+      return name;
+    }
+  }
 
-    Assertions.assertEquals(setup.compSym, generic.getTypeInfo());
-    Assertions.assertTrue(generic.getSourceNode().isPresent());
-    Assertions.assertEquals(ast, generic.getSourceNode().get());
+  static Stream<Arguments> negativeScenarios() {
+    return Stream.of(
+      Arguments.of(new NegativeScenario("Comp type unresolvable", NegativeKind.COMP_TYPE_UNRESOLVABLE)),
+      Arguments.of(new NegativeScenario("Type argument unresolvable", NegativeKind.TYPE_ARGUMENT_UNRESOLVABLE)),
+      Arguments.of(new NegativeScenario("Nested type argument unresolvable", NegativeKind.NESTED_TYPE_ARGUMENT_UNRESOLVABLE))
+    );
+  }
 
-    SymTypeExpression kBinding = generic.getTypeBindingFor("K").get();
-    SymTypeExpression vBinding = generic.getTypeBindingFor("V").get();
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("negativeScenarios")
+  public void shouldNotHandleMCBasicGenericType_parametrized(NegativeScenario scenario) {
 
-    if (!useQualifiedVariant) {
-      // Comp<MyString, MyList<MyString>>: K = MyString, V = MyList<MyString>
-      Assertions.assertInstanceOf(SymTypeOfObject.class, kBinding);
-      Assertions.assertInstanceOf(SymTypeOfGenerics.class, vBinding);
-      Assertions.assertEquals(setup.stringSym, kBinding.getTypeInfo());
-      Assertions.assertEquals(setup.listSym, vBinding.getTypeInfo());
-      Assertions.assertEquals(
-        setup.stringSym,
-        ((SymTypeOfGenerics) vBinding).getArgument(0).getTypeInfo()
-      );
-    } else {
-      // scoop.Comp<scoop.MyList<scoop.MyString>, scoop.MyString>:
-      // K = MyList<MyString>, V = MyString
-      Assertions.assertInstanceOf(SymTypeOfGenerics.class, kBinding);
-      Assertions.assertInstanceOf(SymTypeOfObject.class, vBinding);
-      Assertions.assertEquals(setup.listSym, kBinding.getTypeInfo());
-      Assertions.assertEquals(setup.stringSym, vBinding.getTypeInfo());
-      Assertions.assertEquals(
-        setup.stringSym,
-        ((SymTypeOfGenerics) kBinding).getArgument(0).getTypeInfo()
-      );
+    ASTMCBasicGenericType astComp = buildNegativeAst(scenario.kind);
+
+    CompKindCheckResult resultWrapper = new CompKindCheckResult();
+    new SynthesizeCompKindFromMCSimpleGenericTypes(resultWrapper).handle(astComp);
+
+    Assertions.assertFalse(resultWrapper.getResult().isPresent());
+  }
+
+  private ASTMCBasicGenericType buildNegativeAst(NegativeKind kind) {
+    var global = ComponentSymbolsWithMCBasicTypesTestMill.globalScope();
+
+    switch (kind) {
+      case COMP_TYPE_UNRESOLVABLE: {
+        OOTypeSymbol stringSym = ComponentSymbolsWithMCBasicTypesTestMill.oOTypeSymbolBuilder()
+          .setName(STRING)
+          .setSpannedScope(ComponentSymbolsWithMCBasicTypesTestMill.scope())
+          .build();
+        global.add(stringSym);
+        global.addSubScope(stringSym.getSpannedScope());
+
+        ASTMCQualifiedType astString = mkQualifiedType(STRING, global);
+
+        return createGenericType(ImmutableList.of("Unresolvable"), global, astString);
+      }
+
+      case TYPE_ARGUMENT_UNRESOLVABLE: {
+        ComponentTypeSymbol compSym = ComponentSymbolsWithMCBasicTypesTestMill.componentTypeSymbolBuilder()
+          .setName(COMP)
+          .setSpannedScope(ComponentSymbolsWithMCBasicTypesTestMill.scope())
+          .setTypeParameters(ImmutableList.of(
+            ComponentSymbolsWithMCBasicTypesTestMill.typeVarSymbolBuilder().setName("T").build()
+          )).build();
+        global.add(compSym);
+        global.addSubScope(compSym.getSpannedScope());
+
+        ASTMCQualifiedType astString = mkQualifiedType(STRING, global);
+
+        return createGenericType(ImmutableList.of("Unresolvable"), global, astString);
+      }
+
+      case NESTED_TYPE_ARGUMENT_UNRESOLVABLE: {
+        ComponentTypeSymbol compSym = ComponentSymbolsWithMCBasicTypesTestMill.componentTypeSymbolBuilder()
+          .setName(COMP)
+          .setSpannedScope(ComponentSymbolsWithMCBasicTypesTestMill.scope())
+          .setTypeParameters(ImmutableList.of(
+            ComponentSymbolsWithMCBasicTypesTestMill.typeVarSymbolBuilder().setName("T").build()
+          )).build();
+        global.add(compSym);
+        global.addSubScope(compSym.getSpannedScope());
+
+        OOTypeSymbol listSym = ComponentSymbolsWithMCBasicTypesTestMill.oOTypeSymbolBuilder()
+          .setName(LIST)
+          .setSpannedScope(ComponentSymbolsWithMCBasicTypesTestMill.scope())
+          .build();
+        listSym.addTypeVarSymbol(ComponentSymbolsWithMCBasicTypesTestMill.typeVarSymbolBuilder().setName("T").build());
+        global.add(listSym);
+        global.addSubScope(listSym.getSpannedScope());
+
+        ASTMCQualifiedType astString = mkQualifiedType(STRING, global);
+
+        ASTMCType astListOfString = createGenericType(ImmutableList.of(LIST), global, astString);
+        return createGenericType(ImmutableList.of("Unresolvable"), global, astListOfString);
+      }
+
+      default:
+        throw new IllegalStateException("Unhandled NegativeKind: " + kind);
     }
   }
 
@@ -260,11 +350,7 @@ public class SynthesizeComponentFromMCSimpleGenericTypesTest extends AbstractMCT
     globalScope.add(stringSym);
     globalScope.addSubScope(stringSym.getSpannedScope());
 
-    ASTMCType astString = MCTypeFacade.getInstance().createQualifiedType(stringName);
-    astString.setEnclosingScope(globalScope);
-    if (astString instanceof ASTMCQualifiedType) {
-      ((ASTMCQualifiedType) astString).getMCQualifiedName().setEnclosingScope(globalScope);
-    }
+    ASTMCQualifiedType astString = mkQualifiedType(stringName, globalScope);
 
     ASTMCBasicGenericType astComp = createGenericType(
       ImmutableList.of(compName),
@@ -273,137 +359,13 @@ public class SynthesizeComponentFromMCSimpleGenericTypesTest extends AbstractMCT
     );
 
     CompKindCheckResult result = new CompKindCheckResult();
-    SynthesizeCompKindFromMCSimpleGenericTypes synth =
-      new SynthesizeCompKindFromMCSimpleGenericTypes(result);
+    new SynthesizeCompKindFromMCSimpleGenericTypes(result).handle(astComp);
 
-    // When
-    synth.handle(astComp);
-
-    // Then
     Assertions.assertTrue(result.getResult().isPresent());
     Assertions.assertEquals(comp1, result.getResult().get().getTypeInfo());
+
     MCAssertions.assertHasFindingStartingWith("0xD0105");
-  }
-
-  @Test
-  public void shouldNotHandleMCBasicGenericTypeBecauseCompTypeUnresolvable() {
-    // Given
-    String stringName = "MyString";
-    OOTypeSymbol stringSym = ComponentSymbolsWithMCBasicTypesTestMill.oOTypeSymbolBuilder()
-      .setName(stringName)
-      .setSpannedScope(ComponentSymbolsWithMCBasicTypesTestMill.scope())
-      .build();
-    ComponentSymbolsWithMCBasicTypesTestMill.globalScope().add(stringSym);
-    ComponentSymbolsWithMCBasicTypesTestMill.globalScope().addSubScope(stringSym.getSpannedScope());
-
-    ASTMCType astString = MCTypeFacade.getInstance().createQualifiedType(stringName);
-    astString.setEnclosingScope(ComponentSymbolsWithMCBasicTypesTestMill.globalScope());
-    if (astString instanceof ASTMCQualifiedType) {
-      ((ASTMCQualifiedType) astString).getMCQualifiedName()
-        .setEnclosingScope(ComponentSymbolsWithMCBasicTypesTestMill.globalScope());
-    }
-
-    ASTMCBasicGenericType astComp = createGenericType(
-      ImmutableList.of("Unresolvable"),
-      ComponentSymbolsWithMCBasicTypesTestMill.globalScope(),
-      astString
-    );
-
-    CompKindCheckResult resultWrapper = new CompKindCheckResult();
-    SynthesizeCompKindFromMCSimpleGenericTypes synth = new SynthesizeCompKindFromMCSimpleGenericTypes(resultWrapper);
-
-    // When
-    synth.handle(astComp);
-
-    // Then
-    Assertions.assertFalse(resultWrapper.getResult().isPresent());
-  }
-
-  @Test
-  public void shouldHandleMCBasicGenericTypeBecauseTypeArgumentUnresolvable() {
-    // Given
-    String compName = "Comp";
-    ComponentTypeSymbol compSym = ComponentSymbolsWithMCBasicTypesTestMill.componentTypeSymbolBuilder()
-      .setName(compName)
-      .setSpannedScope(ComponentSymbolsWithMCBasicTypesTestMill.scope())
-      .setTypeParameters(ImmutableList.of(
-        ComponentSymbolsWithMCBasicTypesTestMill.typeVarSymbolBuilder().setName("T").build()
-      )).build();
-    ComponentSymbolsWithMCBasicTypesTestMill.globalScope().add(compSym);
-    ComponentSymbolsWithMCBasicTypesTestMill.globalScope().addSubScope(compSym.getSpannedScope());
-
-    ASTMCType astString = MCTypeFacade.getInstance().createQualifiedType("MyString");
-    astString.setEnclosingScope(ComponentSymbolsWithMCBasicTypesTestMill.globalScope());
-    if (astString instanceof ASTMCQualifiedType) {
-      ((ASTMCQualifiedType) astString).getMCQualifiedName()
-        .setEnclosingScope(ComponentSymbolsWithMCBasicTypesTestMill.globalScope());
-    }
-
-    ASTMCBasicGenericType astComp = createGenericType(
-      ImmutableList.of("Unresolvable"),
-      ComponentSymbolsWithMCBasicTypesTestMill.globalScope(),
-      astString
-    );
-
-    CompKindCheckResult resultWrapper = new CompKindCheckResult();
-    SynthesizeCompKindFromMCSimpleGenericTypes synth = new SynthesizeCompKindFromMCSimpleGenericTypes(resultWrapper);
-
-    // When
-    synth.handle(astComp);
-
-    // Then
-    Assertions.assertFalse(resultWrapper.getResult().isPresent());
-  }
-
-  @Test
-  public void shouldHandleMCBasicGenericTypeBecauseNestedTypeArgumentUnresolvable() {
-    // Given
-    String compName = "Comp";
-    ComponentTypeSymbol compSym = ComponentSymbolsWithMCBasicTypesTestMill.componentTypeSymbolBuilder()
-      .setName(compName)
-      .setSpannedScope(ComponentSymbolsWithMCBasicTypesTestMill.scope())
-      .setTypeParameters(ImmutableList.of(
-        ComponentSymbolsWithMCBasicTypesTestMill.typeVarSymbolBuilder().setName("T").build()
-      )).build();
-    ComponentSymbolsWithMCBasicTypesTestMill.globalScope().add(compSym);
-    ComponentSymbolsWithMCBasicTypesTestMill.globalScope().addSubScope(compSym.getSpannedScope());
-
-    String listName = "MyList";
-    OOTypeSymbol listSym = ComponentSymbolsWithMCBasicTypesTestMill.oOTypeSymbolBuilder()
-      .setName(listName)
-      .setSpannedScope(ComponentSymbolsWithMCBasicTypesTestMill.scope())
-      .build();
-    listSym.addTypeVarSymbol(ComponentSymbolsWithMCBasicTypesTestMill.typeVarSymbolBuilder().setName("T").build());
-    ComponentSymbolsWithMCBasicTypesTestMill.globalScope().add(listSym);
-    ComponentSymbolsWithMCBasicTypesTestMill.globalScope().addSubScope(listSym.getSpannedScope());
-
-    ASTMCType astString = MCTypeFacade.getInstance().createQualifiedType("MyString");
-    astString.setEnclosingScope(ComponentSymbolsWithMCBasicTypesTestMill.globalScope());
-    if (astString instanceof ASTMCQualifiedType) {
-      ((ASTMCQualifiedType) astString).getMCQualifiedName()
-        .setEnclosingScope(ComponentSymbolsWithMCBasicTypesTestMill.globalScope());
-    }
-
-    ASTMCType astListOfString = createGenericType(
-      ImmutableList.of(listName),
-      ComponentSymbolsWithMCBasicTypesTestMill.globalScope(),
-      astString
-    );
-
-    ASTMCBasicGenericType astComp = createGenericType(
-      ImmutableList.of("Unresolvable"),
-      ComponentSymbolsWithMCBasicTypesTestMill.globalScope(),
-      astListOfString
-    );
-
-    CompKindCheckResult resultWrapper = new CompKindCheckResult();
-    SynthesizeCompKindFromMCSimpleGenericTypes synth = new SynthesizeCompKindFromMCSimpleGenericTypes(resultWrapper);
-
-    // When
-    synth.handle(astComp);
-
-    // Then
-    Assertions.assertFalse(resultWrapper.getResult().isPresent());
+    Log.clearFindings();
   }
 
   /**
