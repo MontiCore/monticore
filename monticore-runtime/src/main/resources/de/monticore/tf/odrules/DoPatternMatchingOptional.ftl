@@ -31,15 +31,6 @@ protected boolean doPatternMatching_${structure.getObjectName()}(boolean isParen
       <#if object_has_next>else</#if>
     </#list>
   }
-
-  // Cleanup after optionals
-  // TODO: correct here? -> not for lists?
-  resetOptionalCans.add(() -> {
-  <#list ast.getAllInnerNonOptionalNames(ast.getPattern().getLHSObjectsList(), structure) as elem>
-    ${elem}_cand = null;
-  </#list>
-  });
-
   return true;
 }
 </#list>
