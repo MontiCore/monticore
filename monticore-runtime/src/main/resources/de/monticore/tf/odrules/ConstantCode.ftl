@@ -11,7 +11,6 @@
   private List<Match> allMatches;
   private boolean doReplacementExecuted = false;
   private boolean isHostGraphDirty = true;
-  List<Runnable> resetOptionalCans = new LinkedList<>();
   <#-- for each object creates a _candidates, _candidates_temp nodelist and an _cand object-->
 
   // Matches

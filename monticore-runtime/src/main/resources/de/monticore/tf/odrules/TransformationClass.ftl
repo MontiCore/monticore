@@ -24,6 +24,8 @@ public class ${ast.getClassname()} extends ODRule {
 
   ${tc.include("de.monticore.tf.odrules.DoPatternMatchingList")}
 
+  ${tc.include("de.monticore.tf.odrules.ResetOptionals")}
+
   ${tc.include("de.monticore.tf.odrules.CheckConstraints")}
 
   ${tc.include("de.monticore.tf.odrules.CheckSubConstraints")}

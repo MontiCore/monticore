@@ -14,8 +14,9 @@ public boolean doPatternMatching() {
   boolean isBacktracking = true;
   boolean isBacktrackingNegative = false;
 
-  resetOptionalCans.forEach(Runnable::run);
-  resetOptionalCans = new LinkedList<>();
+<#list hierarchyHelper.getOptionalMatchObjects(ast.getPattern().getLHSObjectsList()) as optional>
+  reset_${optional.getObjectName()}();
+</#list>
 
   if (isHostGraphDirty || searchPlan == null) {
     this.loadIntoModelTraverser();
