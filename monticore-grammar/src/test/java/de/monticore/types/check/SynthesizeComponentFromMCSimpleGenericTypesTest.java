@@ -101,7 +101,7 @@ public class SynthesizeComponentFromMCSimpleGenericTypesTest extends AbstractMCT
 
   @ParameterizedTest(name = "{0}")
   @MethodSource("positiveCases")
-  public void shouldHandleMCBasicGenericType_parametrized(PositiveCase pc) {
+  public void shouldHandleMCBasicGenericType(PositiveCase pc) {
 
     var global = ComponentSymbolsWithMCBasicTypesTestMill.globalScope();
 
