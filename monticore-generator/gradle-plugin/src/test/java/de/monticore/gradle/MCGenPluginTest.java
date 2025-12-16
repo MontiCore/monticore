@@ -132,7 +132,7 @@ public class MCGenPluginTest {
     writeFile(new File(grammarDir, "MyTestGrammarS.mc4"),
             "grammar MyTestGrammarS extends MyTestGrammar { Monti = \"Core\"; }");
 
-    // use a custom gradle home directory to ensure fresh cashes
+    // use a custom gradle home directory to ensure fresh caches
     File gradleHome = temporaryFolder.newFolder("gradleHome");
 
     BuildResult result = GradleRunner.create()
