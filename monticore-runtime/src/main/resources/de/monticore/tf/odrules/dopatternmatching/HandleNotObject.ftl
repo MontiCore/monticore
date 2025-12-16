@@ -34,6 +34,7 @@ if (nextNode.equals("${notObject.getObjectName()}")) {
         ((FastLookupList<?>)${notObject.getObjectName()}_candidates_temp).reset();
       }
     } else {
+      // TODO: We are most likely missing a reset of optionals here (when using NOT in OPT)
       // update candidates for next object to match
       if(!searchPlan.isEmpty()) {
         // put object on backtracking stack
