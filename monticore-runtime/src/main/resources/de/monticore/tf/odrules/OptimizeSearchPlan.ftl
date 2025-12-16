@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 
-  private void optimizeSearchplan() {
+  protected void optimizeSearchplan() {
 
     // Optimization 1: With parent->child compositions: Ensure the parent is checked first
     Map<String, List<String>> compositionDependencies = new HashMap<>();
