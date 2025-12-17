@@ -90,7 +90,7 @@ public class SynthesizeComponentFromMCSimpleGenericTypesTest extends AbstractMCT
 
   @ParameterizedTest
   @MethodSource("compRefs")
-  public void shouldSynthesizeGenericComponentKind(List<String> compNameParts, boolean qualified) {
+  public void shouldHandleMCBasicGenericType(List<String> compNameParts, boolean qualified) {
     // Given
     IComponentSymbolsWithMCBasicTypesTestScope localScope = ComponentSymbolsWithMCBasicTypesTestMill.scope();
     localScope.setName("scoop");
