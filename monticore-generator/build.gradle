@@ -39,7 +39,7 @@ dependencies {
     implementation "de.monticore:monticore-grammar:$previous_mc_version"
     implementation "de.se_rwth.commons:se-commons-groovy:$se_commons_version"
     implementation "de.se_rwth.commons:se-commons-logging:$se_commons_version"
-    implementation "de.se_rwth.commons:se-commons-gradle:$se_commons_version"
+    implementation "de.se_rwth.commons:se-commons-gradle:$se_gradle_version"
 
     implementation "org.apache.commons:commons-lang3:$commons_lang3_version"
     implementation "org.freemarker:freemarker:$freemarker_version"
