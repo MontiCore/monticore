@@ -1,8 +1,19 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.tf.runtime;
 
 import java.util.AbstractList;
 import java.util.ConcurrentModificationException;
 import java.util.List;
+
+/**
+ * A sliding range, read-only window of list.
+ * Alternative to myList = new ArrayList(list);
+ * myList.remove(0);
+ * Calling {@link #remove(int)} of this class instead moves the read-window ahead.
+ * Does not support updates to the underlying list.
+ *
+ * @param <T> type of the list
+ */
 
 public class FastLookupList<T> extends AbstractList<T> {
   
