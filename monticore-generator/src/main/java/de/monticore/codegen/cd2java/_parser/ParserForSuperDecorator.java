@@ -192,7 +192,7 @@ public class ParserForSuperDecorator extends AbstractDecorator {
    */
   protected void calculateOverriddenCds(DiagramSymbol cd, Collection<String> nativeClasses, Map<DiagramSymbol,
       Collection<CDTypeSymbol>> overridden, Collection<CDTypeSymbol> firstClasses) {
-    HashMap<String, CDTypeSymbol> l = Maps.newLinkedHashMap();
+    LinkedHashMap<String, CDTypeSymbol> l = Maps.newLinkedHashMap();
     //get all super cds / imports of the original cd
     Collection<DiagramSymbol> importedClasses = ((ICDBasisArtifactScope) cd.getEnclosingScope()).getImportsList().stream()
         .map(i -> i.getStatement())
@@ -306,7 +306,7 @@ public class ParserForSuperDecorator extends AbstractDecorator {
   }
 
   protected Set<String> getSuperTypesTransitive(CDTypeSymbol startType) {
-    Set<String> superTypeNames = new HashSet<>();
+    Set<String> superTypeNames = new LinkedHashSet<>();
     getSuperTypesTransitive(startType, superTypeNames);
     return superTypeNames;
   }

@@ -1,6 +1,7 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.types3.generics.bounds;
 
+import com.google.common.base.Preconditions;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeInferenceVariable;
@@ -32,7 +33,7 @@ public class CaptureBound extends Bound {
   public CaptureBound(
       SymTypeExpression toBeCaptured
   ) {
-    Log.errorIfNull(toBeCaptured);
+    Preconditions.checkNotNull(toBeCaptured);
     if (!toBeCaptured.isGenericType() && !toBeCaptured.isFunctionType()) {
       Log.error("0xFD229 internal error: " +
           "tried to create CaptureBound with unsupported type "

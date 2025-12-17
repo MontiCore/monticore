@@ -1,6 +1,7 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.types3.util;
 
+import com.google.common.base.Preconditions;
 import de.monticore.types.check.SIUnitBasic;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
@@ -12,7 +13,7 @@ import de.se_rwth.commons.logging.Log;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -45,7 +46,7 @@ public class SIUnitTypeRelations {
 
   // initializes the conversion table
   static {
-    Map<String, List<SIUnitBasic>> conversionTableTmp = new HashMap<>();
+    Map<String, List<SIUnitBasic>> conversionTableTmp = new LinkedHashMap<>();
     // already base units:
     conversionTableTmp.put("m", List.of(createSIBaseUnit("m")));
     conversionTableTmp.put("g", List.of(createSIBaseUnit("g")));
@@ -209,7 +210,7 @@ public class SIUnitTypeRelations {
   protected SymTypeOfSIUnit _normalize(SymTypeOfSIUnit siUnit) {
     SymTypeOfSIUnit siUnitWithBaseUnits = convertToSIBaseUnits(siUnit);
     // collect all exponents
-    Map<String, Integer> unit2Exp = new HashMap<>();
+    Map<String, Integer> unit2Exp = new LinkedHashMap<>();
     for (String dimension : baseUnitStrings) {
       unit2Exp.put(dimension, 0);
     }
@@ -397,7 +398,7 @@ public class SIUnitTypeRelations {
   }
 
   protected static void setDelegate(SIUnitTypeRelations newDelegate) {
-    SIUnitTypeRelations.delegate = Log.errorIfNull(newDelegate);
+    SIUnitTypeRelations.delegate = Preconditions.checkNotNull(newDelegate);
   }
 
   protected static SIUnitTypeRelations getDelegate() {

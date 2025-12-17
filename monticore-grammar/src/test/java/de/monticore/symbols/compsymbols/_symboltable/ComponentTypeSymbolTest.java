@@ -14,7 +14,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -123,7 +123,7 @@ public class ComponentTypeSymbolTest {
 
   @ParameterizedTest
   @MethodSource("portNameAndDirectionProvider")
-  public void shouldReturnIncomingPortsOnly(HashMap<String, Boolean> ports) {
+  public void shouldReturnIncomingPortsOnly(Map<String, Boolean> ports) {
     ComponentTypeSymbol symbol = buildTestComponentWithPorts(ports);
     Assertions.assertIterableEquals(ports.entrySet().stream()
             .filter(p -> p.getValue().equals(true)).map(Map.Entry::getKey).collect(Collectors.toList()),
@@ -132,7 +132,7 @@ public class ComponentTypeSymbolTest {
 
   @ParameterizedTest
   @MethodSource("portNameAndDirectionProvider")
-  public void shouldReturnOutgoingPortsOnly(HashMap<String, Boolean> ports) {
+  public void shouldReturnOutgoingPortsOnly(Map<String, Boolean> ports) {
     ComponentTypeSymbol symbol = buildTestComponentWithPorts(ports);
     Assertions.assertIterableEquals(ports.entrySet().stream()
             .filter(p -> p.getValue().equals(false)).map(Map.Entry::getKey).collect(Collectors.toList()),
@@ -141,7 +141,7 @@ public class ComponentTypeSymbolTest {
 
   @ParameterizedTest
   @MethodSource("portNameAndDirectionProvider")
-  public void shouldFindPortWithExpectedDirection(HashMap<String, Boolean> ports) {
+  public void shouldFindPortWithExpectedDirection(Map<String, Boolean> ports) {
     ComponentTypeSymbol symbol = buildTestComponentWithPorts(ports);
     for (String port : ports.keySet()) {
       if (ports.get(port)) {
@@ -156,7 +156,7 @@ public class ComponentTypeSymbolTest {
 
   @ParameterizedTest
   @MethodSource("portNameAndDirectionProvider")
-  public void shouldStateCorrectlyIFHasPorts(HashMap<String, Boolean> ports) {
+  public void shouldStateCorrectlyIFHasPorts(Map<String, Boolean> ports) {
     ComponentTypeSymbol symbol = buildTestComponentWithPorts(ports);
     if (ports.isEmpty()) {
       Assertions.assertFalse(symbol.hasPorts());
@@ -166,14 +166,14 @@ public class ComponentTypeSymbolTest {
   }
 
   static Stream<Arguments> portNameAndDirectionProvider() {
-    HashMap<String, Boolean> ports1 = new HashMap<>();
-    HashMap<String, Boolean> ports2 = new HashMap<>();
+    LinkedHashMap<String, Boolean> ports1 = new LinkedHashMap<>();
+    LinkedHashMap<String, Boolean> ports2 = new LinkedHashMap<>();
     ports2.put("o1", false);
     ports2.put("o2", false);
-    HashMap<String, Boolean> ports3 = new HashMap<>();
+    LinkedHashMap<String, Boolean> ports3 = new LinkedHashMap<>();
     ports3.put("i1", true);
     ports3.put("i2", true);
-    HashMap<String, Boolean> ports4 = new HashMap<>();
+    LinkedHashMap<String, Boolean> ports4 = new LinkedHashMap<>();
     ports4.put("i1", true);
     ports4.put("o1", false);
     ports4.put("i2", true);
@@ -181,7 +181,7 @@ public class ComponentTypeSymbolTest {
     return Stream.of(arguments(ports1), arguments(ports2), arguments(ports3), arguments(ports4));
   }
 
-  private ComponentTypeSymbol buildTestComponentWithPorts(HashMap<String, Boolean> ports) {
+  private ComponentTypeSymbol buildTestComponentWithPorts(Map<String, Boolean> ports) {
     ComponentTypeSymbol compSymbol = CompSymbolsMill.componentTypeSymbolBuilder().setName("Comp")
         .setSpannedScope(CompSymbolsMill.scope()).build();
     for (String port : ports.keySet()) {

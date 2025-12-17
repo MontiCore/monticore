@@ -147,7 +147,17 @@ allprojects {
                 }
             }
         }
+
     }
+}
+publishing {
+  publications {
+    "maven"(MavenPublication) {
+      // the gradle plugin is published implicitly via the java-gradle-plugin plugin
+      // but the generator has to be published explicitly
+      from components.java
+    }
+  }
 }
 
 tasks.named("shadowJar") { // all in one jar
@@ -172,5 +182,11 @@ artifacts {
 configurations {
   shadow {
     outgoing.capability("de.monticore:monticore-generator-shadow:$version")
+  }
+}
+// Ensure the gradle plugin's subproject is also published
+['publish', 'publishToMavenLocal', 'assemble', 'check', 'test'].forEach {taskname ->
+  tasks.named(taskname).configure {
+    dependsOn subprojects*.tasks*.named(taskname)
   }
 }

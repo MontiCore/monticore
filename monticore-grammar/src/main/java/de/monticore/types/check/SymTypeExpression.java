@@ -8,7 +8,6 @@ import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.*;
-import de.monticore.symboltable.ISymbol;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.types3.ISymTypeVisitor;
 import de.monticore.types3.util.SymTypeDeepCloneVisitor;
@@ -72,10 +71,9 @@ public abstract class SymTypeExpression {
   }
 
   public SymTypePrimitive asPrimitive() {
-    Log.error("0xFDAA0 internal error: "
+    throw new UnsupportedOperationException("0xFDAA0 internal error: "
         + "tried to convert non-primitive to a primitive."
         + " Actual: " + this.printFullName());
-    return null;
   }
 
   /**
@@ -86,10 +84,9 @@ public abstract class SymTypeExpression {
   }
 
   public SymTypeOfGenerics asGenericType() {
-    Log.error("0xFDAA1 internal error: "
+    throw new UnsupportedOperationException("0xFDAA1 internal error: "
         + "tried to convert non-generic to a generic."
         + " Actual: " + this.printFullName());
-    return null;
   }
 
   /**
@@ -100,10 +97,9 @@ public abstract class SymTypeExpression {
   }
 
   public SymTypeVariable asTypeVariable() {
-    Log.error("0xFDAA2 internal error: "
+    throw new UnsupportedOperationException("0xFDAA2 internal error: "
         + "tried to convert non-bound-type-variable to a bound-type-variable."
         + " Actual: " + this.printFullName());
-    return null;
   }
 
   /**
@@ -114,10 +110,9 @@ public abstract class SymTypeExpression {
   }
 
   public SymTypeInferenceVariable asInferenceVariable() {
-    Log.error("0xFDAAF internal error: "
+    throw new UnsupportedOperationException("0xFDAAF internal error: "
         + "tried to convert non-inference-variable to an inference-variable."
         + " Actual: " + this.printFullName());
-    return null;
   }
 
   /**
@@ -128,10 +123,9 @@ public abstract class SymTypeExpression {
   }
 
   public SymTypeArray asArrayType() {
-    Log.error("0xFDAA3 internal error: "
+    throw new UnsupportedOperationException("0xFDAA3 internal error: "
         + "tried to convert non-array to an array."
         + " Actual: " + this.printFullName());
-    return null;
   }
 
   /**
@@ -142,10 +136,9 @@ public abstract class SymTypeExpression {
   }
 
   public SymTypeVoid asVoidType() {
-    Log.error("0xFDAA4 internal error: "
+    throw new UnsupportedOperationException("0xFDAA4 internal error: "
         + "tried to convert non-void-type to a void type."
         + " Actual: " + this.printFullName());
-    return null;
   }
 
   /**
@@ -156,10 +149,9 @@ public abstract class SymTypeExpression {
   }
 
   public SymTypeOfNull asNullType() {
-    Log.error("0xFDAA5 internal error: "
+    throw new UnsupportedOperationException("0xFDAA5 internal error: "
         + "tried to convert non-null-type to a null-type."
         + " Actual: " + this.printFullName());
-    return null;
   }
 
   /**
@@ -170,10 +162,9 @@ public abstract class SymTypeExpression {
   }
 
   public SymTypeOfObject asObjectType() {
-    Log.error("0xFDAA6 internal error: "
+    throw new UnsupportedOperationException("0xFDAA6 internal error: "
         + "tried to convert non-object-type to an object-type."
         + " Actual: " + this.printFullName());
-    return null;
   }
 
   /**
@@ -184,10 +175,9 @@ public abstract class SymTypeExpression {
   }
 
   public SymTypeOfRegEx asRegExType() {
-    Log.error("0xFDAAC internal error: "
+    throw new UnsupportedOperationException("0xFDAAC internal error: "
         + "tried to convert non-regex-type to a regex type."
         + " Actual: " + this.printFullName());
-    return null;
   }
 
   /**
@@ -198,35 +188,36 @@ public abstract class SymTypeExpression {
   }
 
   public SymTypeOfFunction asFunctionType() {
-    Log.error("0xFDAA7 internal error: "
+    throw new UnsupportedOperationException("0xFDAA7 internal error: "
         + "tried to convert non-function-type to a function type."
         + " Actual: " + this.printFullName());
-    return null;
   }
 
-  // Am I an SIUnit type (e.g., "km/h")
+  /**
+   * Am I an SIUnit type (e.g., "[km/h]")
+   */
   public boolean isSIUnitType() {
     return false;
   }
 
   public SymTypeOfSIUnit asSIUnitType() {
-    Log.error("0xFDAAC internal error: "
+    throw new UnsupportedOperationException("0xFDAAC internal error: "
         + "tried to convert non-SIUnit type to a SIUnit type."
         + " Actual: " + this.printFullName());
-    return null;
   }
 
-  // Am I a numeric with SIUnit type (e.g., "km/h<float>")
+  /**
+   * Am I a numeric with SIUnit type (e.g., {@code "[km/h]<float>"})
+   */
   public boolean isNumericWithSIUnitType() {
     return false;
   }
 
   public SymTypeOfNumericWithSIUnit asNumericWithSIUnitType() {
-    Log.error("0xFDAAD internal error: "
+    throw new UnsupportedOperationException("0xFDAAD internal error: "
         + "tried to convert non-numeric-with-SIUnit type "
         + "to a numeric-with-SIUnit type."
         + " Actual: " + this.printFullName());
-    return null;
   }
 
   /**
@@ -237,10 +228,9 @@ public abstract class SymTypeExpression {
   }
 
   public SymTypeOfTuple asTupleType() {
-    Log.error("0xFDAAE internal error: "
+    throw new UnsupportedOperationException("0xFDAAE internal error: "
         + "tried to convert non-tuple-type to a tuple type."
         + " Actual: " + this.printFullName());
-    return null;
   }
 
   /**
@@ -251,10 +241,9 @@ public abstract class SymTypeExpression {
   }
 
   public SymTypeOfUnion asUnionType() {
-    Log.error("0xFDAA8 internal error: "
+    throw new UnsupportedOperationException("0xFDAA8 internal error: "
         + "tried to convert non-union-type to a union-type."
         + " Actual: " + this.printFullName());
-    return null;
   }
 
   /**
@@ -265,10 +254,9 @@ public abstract class SymTypeExpression {
   }
 
   public SymTypeOfIntersection asIntersectionType() {
-    Log.error("0xFDAA9 internal error: "
+    throw new UnsupportedOperationException("0xFDAA9 internal error: "
         + "tried to convert non-intersection-type to an intersection-type."
         + " Actual: " + this.printFullName());
-    return null;
   }
 
   /**
@@ -279,10 +267,9 @@ public abstract class SymTypeExpression {
   }
 
   public SymTypeObscure asObscureType() {
-    Log.error("0xFDAAA internal error: "
+    throw new UnsupportedOperationException("0xFDAAA internal error: "
         + "tried to convert non-obscure-type to an obscure-type."
         + " Actual: " + this.printFullName());
-    return null;
   }
 
   /**
@@ -293,10 +280,9 @@ public abstract class SymTypeExpression {
   }
 
   public SymTypeOfWildcard asWildcard() {
-    Log.error("0xFDAAB internal error: "
+    throw new UnsupportedOperationException("0xFDAAB internal error: "
         + "tried to convert non-wildcard-type to a wildcard-type."
         + " Actual: " + this.printFullName());
-    return null;
   }
 
   public SymTypeExpression deepClone() {
@@ -305,10 +291,10 @@ public abstract class SymTypeExpression {
 
   public abstract boolean deepEquals(SymTypeExpression sym);
 
-  @Deprecated
+  @Deprecated(forRemoval = true)
   protected List<FunctionSymbol> functionList = new ArrayList<>();
 
-@Deprecated
+@Deprecated(forRemoval = true)
 public List<FunctionSymbol> getMethodList(String methodName, boolean abstractTc) {
   return getMethodList(methodName, abstractTc, AccessModifier.ALL_INCLUSION);
 }
@@ -320,7 +306,7 @@ public List<FunctionSymbol> getMethodList(String methodName, boolean abstractTc)
    * @deprecated use {@link de.monticore.types3.util.WithinTypeBasicSymbolsResolver}
    *             or {@link de.monticore.types3.util.WithinScopeBasicSymbolsResolver}
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public List<FunctionSymbol> getMethodList(String methodname, boolean abstractTc, AccessModifier modifier){
     functionList.clear();
     //get methods from the typesymbol
@@ -328,7 +314,7 @@ public List<FunctionSymbol> getMethodList(String methodName, boolean abstractTc)
     return transformMethodList(methodname,methods);
   }
 
-@Deprecated
+@Deprecated(forRemoval = true)
 public List<FunctionSymbol> getCorrectMethods(String methodName, boolean outerIsType, boolean abstractTc) {
   return getCorrectMethods(methodName, outerIsType, abstractTc, AccessModifier.ALL_INCLUSION);
 }
@@ -348,7 +334,7 @@ public List<FunctionSymbol> getCorrectMethods(String methodName, boolean outerIs
    * @deprecated use {@link de.monticore.types3.util.WithinTypeBasicSymbolsResolver}
    *             or {@link de.monticore.types3.util.WithinScopeBasicSymbolsResolver}
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   protected List<FunctionSymbol> getCorrectMethods(String methodName,
                     boolean outerIsType, boolean abstractTc, AccessModifier modifier){
     if(!abstractTc) {
@@ -397,7 +383,7 @@ public List<FunctionSymbol> getCorrectMethods(String methodName, boolean outerIs
    * @deprecated use {@link de.monticore.types3.util.WithinTypeBasicSymbolsResolver}
    *             or {@link de.monticore.types3.util.WithinScopeBasicSymbolsResolver}
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   protected List<FunctionSymbol> transformMethodList(String methodName, List<FunctionSymbol> functions){
     List<FunctionSymbol> matchingMethods = new ArrayList<>();
     for(FunctionSymbol method: functions){
@@ -429,7 +415,7 @@ public List<FunctionSymbol> getCorrectMethods(String methodName, boolean outerIs
         ((SymTypeOfGenerics)this.deepClone()).getArgumentList();
       List<TypeVarSymbol> typeVariableArguments = 
         getTypeInfo().getTypeParameterList();
-      Map<TypeVarSymbol,SymTypeExpression> map = new HashMap<>();
+      Map<TypeVarSymbol,SymTypeExpression> map = new LinkedHashMap<>();
       if(arguments.size()!=typeVariableArguments.size()){
         Log.error("0xA1300 Different number of type arguments in TypeSymbol and SymTypeExpression");
       }
@@ -480,12 +466,12 @@ public List<FunctionSymbol> getCorrectMethods(String methodName, boolean outerIs
   /**
    * @deprecated use {@link de.monticore.types3.generics.TypeParameterRelations}
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public void replaceTypeVariables(Map<TypeVarSymbol, SymTypeExpression> replaceMap){
     //empty so it only needs to be overridden by some SymTypeExpressions
   }
 
-@Deprecated
+@Deprecated(forRemoval = true)
 public List<FunctionSymbol> getMethodList(String methodName, boolean outerIsType, boolean abstractTc) {
   return getMethodList(methodName, outerIsType, abstractTc, AccessModifier.ALL_INCLUSION);
 }
@@ -501,7 +487,7 @@ public List<FunctionSymbol> getMethodList(String methodName, boolean outerIsType
    * @deprecated use {@link de.monticore.types3.util.WithinTypeBasicSymbolsResolver}
    *             or {@link de.monticore.types3.util.WithinScopeBasicSymbolsResolver}
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public List<FunctionSymbol> getMethodList(String methodName,
                                             boolean outerIsType, boolean abstractTc, AccessModifier modifier) {
     functionList.clear();
@@ -510,7 +496,7 @@ public List<FunctionSymbol> getMethodList(String methodName, boolean outerIsType
     return transformMethodList(methodName,methods);
   }
 
-@Deprecated
+@Deprecated(forRemoval = true)
 public List<VariableSymbol> getFieldList(String fieldName, boolean abstractTc){
   return getFieldList(fieldName, abstractTc, AccessModifier.ALL_INCLUSION);
 }
@@ -521,14 +507,14 @@ public List<VariableSymbol> getFieldList(String fieldName, boolean abstractTc){
    * @deprecated use {@link de.monticore.types3.util.WithinTypeBasicSymbolsResolver}
    *             or {@link de.monticore.types3.util.WithinScopeBasicSymbolsResolver}
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public List<VariableSymbol> getFieldList(String fieldName, boolean abstractTc, AccessModifier modifier){
     //get methods from the typesymbol
     List<VariableSymbol> fields = getCorrectFields(fieldName,false, abstractTc, modifier);
     return transformFieldList(fieldName,fields);
   }
 
-@Deprecated
+@Deprecated(forRemoval = true)
 public List<VariableSymbol> getFieldList(String fieldName, boolean outerIsType, boolean abstractTc){
   return getFieldList(fieldName, outerIsType, abstractTc, AccessModifier.ALL_INCLUSION);
 }
@@ -544,7 +530,7 @@ public List<VariableSymbol> getFieldList(String fieldName, boolean outerIsType, 
    * @deprecated use {@link de.monticore.types3.util.WithinTypeBasicSymbolsResolver}
    *             or {@link de.monticore.types3.util.WithinScopeBasicSymbolsResolver}
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public List<VariableSymbol> getFieldList(String fieldName,
                     boolean outerIsType, boolean abstractTc, AccessModifier modifier) {
     List<VariableSymbol> fields = getCorrectFields(fieldName, 
@@ -552,7 +538,7 @@ public List<VariableSymbol> getFieldList(String fieldName, boolean outerIsType, 
     return transformFieldList(fieldName,fields);
   }
 
-  @Deprecated
+  @Deprecated(forRemoval = true)
 public List<VariableSymbol> getCorrectFields(String fieldName, boolean outerIsType, boolean abstractTc){
   return getCorrectFields(fieldName, outerIsType, abstractTc, AccessModifier.ALL_INCLUSION);
 }
@@ -571,7 +557,7 @@ public List<VariableSymbol> getCorrectFields(String fieldName, boolean outerIsTy
    * @deprecated use {@link de.monticore.types3.util.WithinTypeBasicSymbolsResolver}
    *             or {@link de.monticore.types3.util.WithinScopeBasicSymbolsResolver}
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   protected List<VariableSymbol> getCorrectFields(String fieldName,
                         boolean outerIsType, boolean abstractTc, AccessModifier modifier) {
     if(!abstractTc) {
@@ -619,7 +605,7 @@ public List<VariableSymbol> getCorrectFields(String fieldName, boolean outerIsTy
    * @deprecated use {@link de.monticore.types3.util.WithinTypeBasicSymbolsResolver}
    *             or {@link de.monticore.types3.util.WithinScopeBasicSymbolsResolver}
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   protected List<VariableSymbol> transformFieldList(String fieldName,
                                           List<VariableSymbol> fields) {
     List<VariableSymbol> fieldList = new ArrayList<>();
@@ -638,7 +624,7 @@ public List<VariableSymbol> getCorrectFields(String fieldName, boolean outerIsTy
         ((SymTypeOfGenerics)this.deepClone()).getArgumentList();
       List<TypeVarSymbol> typeVariableArguments = 
         getTypeInfo().getTypeParameterList();
-      Map<TypeVarSymbol,SymTypeExpression> map = new HashMap<>();
+      Map<TypeVarSymbol,SymTypeExpression> map = new LinkedHashMap<>();
       if(arguments.size()!=typeVariableArguments.size()){
         Log.error("0xA1301 Different number of type arguments in TypeSymbol and SymTypeExpression");
       }
@@ -672,7 +658,7 @@ public List<VariableSymbol> getCorrectFields(String fieldName, boolean outerIsTy
    * @deprecated TypeSymbols are to be found in the corresponding subclasses,
    * however, not every subclass will have a type symbol
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   protected TypeSymbol typeSymbol;
 
   /**
@@ -701,11 +687,11 @@ public List<VariableSymbol> getCorrectFields(String fieldName, boolean outerIsTy
     if(typeSymbol != null) {
       return typeSymbol;
     }
-    Log.error("0xFDFDF internal error: getTypeInfo called,"
-        + "but no typeinfo available. Presumably hasTypeInfo() missing?"
+    throw new UnsupportedOperationException(
+        "0xFDFDF internal error: getTypeInfo called"
+        + ", but no typeinfo available. Presumably hasTypeInfo() missing?"
         + " Type: " + printFullName()
     );
-    return null;
   }
 
   protected SymTypeSourceInfo sourceInfo = new SymTypeSourceInfo();

@@ -315,9 +315,9 @@ public class SymTypeCompatibilityTest extends AbstractMCTest {
   public void isSubTypeGenericsDoNotIgnoreTypeArguments() {
     //s. https://git.rwth-aachen.de/monticore/monticore/-/issues/2977
     // Test if we do not ignore TypeVariables in the description of the supertypes.
-    // e.g., given HashMap<K, V> extends Map<K, V>
+    // e.g., given LinkedHashMap<K, V> extends Map<K, V>
     // do not ignore the identity of the variables, e.g., do not allow
-    // Map<Integer, String> x = new HashMap<String, Integer>();
+    // Map<Integer, String> x = new LinkedHashMap<String, Integer>();
     SymTypeOfGenerics iSMap = createGenerics(
         _boxedMapSymType.getTypeInfo(), _IntegerSymType, _boxedString);
     SymTypeOfGenerics iSHashMap = createGenerics(

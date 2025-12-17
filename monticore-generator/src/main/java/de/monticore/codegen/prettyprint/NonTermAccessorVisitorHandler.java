@@ -17,7 +17,7 @@ import java.util.*;
 public class NonTermAccessorVisitorHandler extends PrettyPrinterReducedTraverseHandler
         implements GrammarVisitor2 {
 
-  protected final Map<String, ClassProdNonTermPrettyPrintData> classProds = new HashMap<>();
+  protected final Map<String, ClassProdNonTermPrettyPrintData> classProds = new LinkedHashMap<>();
   protected ClassProdNonTermPrettyPrintData currentData;
 
   protected Collection<AdditionalAttributeSymbol> astAttributes;
@@ -46,11 +46,11 @@ public class NonTermAccessorVisitorHandler extends PrettyPrinterReducedTraverseH
    * @param doResetExhausted whether the exhausted references should per-alt
    */
   protected void traverseAltList(List<ASTAlt> altList, boolean doResetExhausted) {
-    Set<String> exhaustedBefore = new HashSet<>(currentData.exhaustedNonTerminals);
-    Set<String> exhaustedAll = new HashSet<>();
+    Set<String> exhaustedBefore = new LinkedHashSet<>(currentData.exhaustedNonTerminals);
+    Set<String> exhaustedAll = new LinkedHashSet<>();
 
-    Map<String, Integer> nonTerminalIterationBefore = new HashMap<>(currentData.nonTerminalIteration);
-    Map<String, Integer> nonTerminalIterationAll = new HashMap<>();
+    Map<String, Integer> nonTerminalIterationBefore = new LinkedHashMap<>(currentData.nonTerminalIteration);
+    Map<String, Integer> nonTerminalIterationAll = new LinkedHashMap<>();
 
     for (ASTAlt alt : altList) {
       // Before each alt: reset the exhaustedNonTerminals and nonTerminalIterations to the before-state
@@ -193,15 +193,15 @@ public class NonTermAccessorVisitorHandler extends PrettyPrinterReducedTraverseH
    */
   public static class ClassProdNonTermPrettyPrintData {
     // Count NonTerminal (references)
-    protected final Map<String, Integer> nonTerminals = new HashMap<>();
-    protected final Map<String, Integer> nonTerminalIteration = new HashMap<>();
+    protected final Map<String, Integer> nonTerminals = new LinkedHashMap<>();
+    protected final Map<String, Integer> nonTerminalIteration = new LinkedHashMap<>();
     // As soon as a NT* was used, we won't be able to automatically generate in case of further NT references
-    protected final Set<String> exhaustedNonTerminals = new HashSet<>();
+    protected final Set<String> exhaustedNonTerminals = new LinkedHashSet<>();
     // Referenced NTs after being exhausted - e.g. NT* NT
-    protected final Set<String> erroringNonTerminals = new HashSet<>();
-    protected final Map<String, ASTRuleComponent> nonTerminalNodes = new HashMap<>();
-    protected final Map<String, Multiplicity> nonTerminalMultiplicities = new HashMap<>();
-    protected final Set<String> effectiveIterationIteratorNonTerminals = new HashSet<>();
+    protected final Set<String> erroringNonTerminals = new LinkedHashSet<>();
+    protected final Map<String, ASTRuleComponent> nonTerminalNodes = new LinkedHashMap<>();
+    protected final Map<String, Multiplicity> nonTerminalMultiplicities = new LinkedHashMap<>();
+    protected final Set<String> effectiveIterationIteratorNonTerminals = new LinkedHashSet<>();
     protected final Stack<Integer> effectiveIterationStack = new Stack<>();
 
     // Note: As of now the scope is somewhat useless, due to GrammarTransformer#removeNonTerminalSeparators, etc. changing the AST but not the symbol table

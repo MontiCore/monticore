@@ -209,7 +209,7 @@ public class MC2PPTranslation extends AbstractCreator<ASTMCGrammar, ASTCDCompila
 
   protected Map<String, Map<ProdSymbol, Map<String, Collection<String>>>> findReplacedKeywords(MCGrammarSymbol grammarSymbol) {
     PrettyPrinterReplaceKeywordFinder finder = new PrettyPrinterReplaceKeywordFinder(grammarSymbol.getReplacedKeywordsWithInherited());
-    Map<String, Map<ProdSymbol, Map<String, Collection<String>>>> ret = new HashMap<>();
+    Map<String, Map<ProdSymbol, Map<String, Collection<String>>>> ret = new LinkedHashMap<>();
 
     Map<ProdSymbol, Map<String, Collection<String>>> finds = finder.check(grammarSymbol.getAstNode());
     if (!finds.isEmpty())

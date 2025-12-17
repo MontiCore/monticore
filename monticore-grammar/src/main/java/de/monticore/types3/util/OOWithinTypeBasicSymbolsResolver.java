@@ -1,11 +1,11 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.types3.util;
 
+import com.google.common.base.Preconditions;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
-import de.monticore.symbols.oosymbols.types3.OOSymbolsSymTypeRelations;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.modifiers.StaticAccessModifier;
 import de.monticore.types.check.SymTypeExpression;
@@ -99,19 +99,19 @@ public class OOWithinTypeBasicSymbolsResolver
    * this filters out constructors
    */
   @Override
-  protected List<FunctionSymbol> resolveFunctionLocally(
+  protected List<FunctionSymbol> resolveFunctionLocallyMany(
       IBasicSymbolsScope scope,
       String name,
       AccessModifier accessModifier,
       Predicate<FunctionSymbol> predicate) {
-    return super.resolveFunctionLocally(
+    return super.resolveFunctionLocallyMany(
         scope, name, accessModifier,
         predicate.and(Predicate.not(this::isConstructor))
     );
   }
 
   /**
-   * same as {@link #resolveFunctionLocally}
+   * same as {@link #resolveFunctionLocallyMany}
    * but does only returns constructors
    *
    * @deprecated is to be made private, use {@link #resolveConstructors}
@@ -123,7 +123,7 @@ public class OOWithinTypeBasicSymbolsResolver
       AccessModifier accessModifier,
       Predicate<FunctionSymbol> predicate
   ) {
-    return super.resolveFunctionLocally(
+    return super.resolveFunctionLocallyMany(
         scope, name,
         removeStaticness(accessModifier),
         predicate.and(this::isConstructor)
@@ -176,7 +176,7 @@ public class OOWithinTypeBasicSymbolsResolver
   protected static void setDelegate(
       OOWithinTypeBasicSymbolsResolver newDelegate
   ) {
-    OOWithinTypeBasicSymbolsResolver.delegate = Log.errorIfNull(newDelegate);
+    OOWithinTypeBasicSymbolsResolver.delegate = Preconditions.checkNotNull(newDelegate);
     WithinTypeBasicSymbolsResolver.setDelegate(newDelegate);
   }
 

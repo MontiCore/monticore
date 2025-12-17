@@ -132,12 +132,14 @@ public class MCGenPluginTest {
     writeFile(new File(grammarDir, "MyTestGrammarS.mc4"),
             "grammar MyTestGrammarS extends MyTestGrammar { Monti = \"Core\"; }");
 
+    // use a custom gradle home directory to ensure fresh caches
+    File gradleHome = temporaryFolder.newFolder("gradleHome");
 
     BuildResult result = GradleRunner.create()
             .withPluginClasspath()
             .withGradleVersion(version)
             .withProjectDir(testProjectDir)
-            .withArguments(withProperties("generateMCGrammars", "--build-cache", "--info", "--stacktrace"))
+            .withArguments(withProperties("generateMCGrammars", "--build-cache", "--info", "--stacktrace", "-g", gradleHome.getAbsolutePath()))
             .build();
 
     // file MyTestGrammar is worked on
@@ -162,7 +164,7 @@ public class MCGenPluginTest {
             .withPluginClasspath()
             .withGradleVersion(version)
             .withProjectDir(testProjectDir)
-            .withArguments(withProperties("generateMCGrammars", "--build-cache", "--info"))
+            .withArguments(withProperties("generateMCGrammars", "--build-cache", "--info", "-g", gradleHome.getAbsolutePath()))
             .build();
     // and then check, that the build cache was used
     Assert.assertEquals("generateMCGrammars was not cached",
@@ -184,7 +186,7 @@ public class MCGenPluginTest {
             .withPluginClasspath()
             .withGradleVersion(version)
             .withProjectDir(testProjectDir)
-            .withArguments(withProperties("generateMCGrammars", "--build-cache", "--info"))
+            .withArguments(withProperties("generateMCGrammars", "--build-cache", "--info", "-g", gradleHome.getAbsolutePath()))
             .build();
     // and the task was successful
     Assert.assertEquals(SUCCESS, result.task(":generateMCGrammars").getOutcome());
@@ -207,7 +209,7 @@ public class MCGenPluginTest {
             .withPluginClasspath()
             .withGradleVersion(version)
             .withProjectDir(testProjectDir)
-            .withArguments(withProperties("generateMCGrammars", "--build-cache", "--info"))
+            .withArguments(withProperties("generateMCGrammars", "--build-cache", "--info", "-g", gradleHome.getAbsolutePath()))
             .build();
     // Nothing SHOULD not be up-to-date
     Assert.assertFalse(result.getOutput(), result.getOutput().contains("MyTestGrammar.mc4 is UP-TO-DATE, no action required"));
@@ -284,12 +286,14 @@ public class MCGenPluginTest {
     writeFile(new File(new File(bDir, "src/main/grammars"), "MyTestGrammarS.mc4"),
               "grammar MyTestGrammarS extends MyTestGrammar { Monti = \"Core\"; }");
 
+    // use a custom gradle home directory to ensure fresh cashes
+    File gradleHome = temporaryFolder.newFolder("gradleHome");
 
     BuildResult result = GradleRunner.create()
             .withPluginClasspath()
             .withGradleVersion(version)
             .withProjectDir(testProjectDir)
-            .withArguments(withProperties("generateMCGrammars", "--build-cache", "--info"))
+            .withArguments(withProperties("generateMCGrammars", "--build-cache", "--info", "-g", gradleHome.getAbsolutePath()))
             .build();
 
     // file MyTestGrammar is worked on
@@ -318,7 +322,7 @@ public class MCGenPluginTest {
             .withPluginClasspath()
             .withGradleVersion(version)
             .withProjectDir(testProjectDir)
-            .withArguments(withProperties("generateMCGrammars", "--build-cache", "--info"))
+            .withArguments(withProperties("generateMCGrammars", "--build-cache", "--info", "-g", gradleHome.getAbsolutePath()))
             .build();
 
     // and then check, that the build cache was used
@@ -344,7 +348,7 @@ public class MCGenPluginTest {
             .withPluginClasspath()
             .withGradleVersion(version)
             .withProjectDir(testProjectDir)
-            .withArguments(withProperties("generateMCGrammars", "--build-cache", "--info"))
+            .withArguments(withProperties("generateMCGrammars", "--build-cache", "--info", "-g", gradleHome.getAbsolutePath()))
             .build();
     // and the B-task was successful
     Assert.assertEquals(SUCCESS, result.task(":B:generateMCGrammars").getOutcome());
@@ -372,7 +376,7 @@ public class MCGenPluginTest {
             .withPluginClasspath()
             .withGradleVersion(version)
             .withProjectDir(testProjectDir)
-            .withArguments(withProperties("generateMCGrammars", "--build-cache", "--info"))
+            .withArguments(withProperties("generateMCGrammars", "--build-cache", "--info", "-g", gradleHome.getAbsolutePath()))
             .build();
     // Nothing SHOULD not be up-to-date
     Assert.assertFalse(result.getOutput(), result.getOutput().contains("MyTestGrammar.mc4 is UP-TO-DATE, no action required"));
