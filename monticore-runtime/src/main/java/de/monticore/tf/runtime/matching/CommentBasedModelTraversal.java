@@ -8,7 +8,7 @@ import de.monticore.visitor.ITraverser;
 import java.util.*;
 
 /**
- * This CommentBasedModelTraversal is a more efficient implementation of a transformation
+ * This CommentBasedModelTraversal is a more efficient implementation of the default
  * ModelTraversal. Instead of using a HashMap to store node parents, which showed unexpected
  * performance issues due to the suboptimal hash function of ASTNodes, this Traversal stores
  * node parents as Comment objects in the respective child nodes.
