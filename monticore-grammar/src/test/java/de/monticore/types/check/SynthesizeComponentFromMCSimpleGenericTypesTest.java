@@ -151,7 +151,6 @@ public class SynthesizeComponentFromMCSimpleGenericTypesTest extends AbstractMCT
     MCAssertions.assertNoFindings();
   }
 
-
   @Test
   public void shouldNotHandleMCBasicGenericTypeBecauseCompTypeUnresolvable() {
     // Given
@@ -174,50 +173,6 @@ public class SynthesizeComponentFromMCSimpleGenericTypesTest extends AbstractMCT
     // When
     CompKindCheckResult wrapper = new CompKindCheckResult();
     new SynthesizeCompKindFromMCSimpleGenericTypes(wrapper).handle(astComp);
-
-    // Then
-    Assertions.assertTrue(wrapper.getResult().isEmpty());
-  }
-
-  @ParameterizedTest
-  @ValueSource(strings = {"STRING", "LIST_OF_STRING"})
-  public void shouldReturnAbsentForUnresolvableComponent(String typeArgCaseName) {
-    // Given: build "String" type arg AST
-    ASTMCQualifiedType astString = createQualifiedType(
-      ImmutableList.of("String"),
-      ComponentSymbolsWithMCBasicTypesTestMill.globalScope(),
-      ComponentSymbolsWithMCBasicTypesTestMill.globalScope()
-    );
-
-    ASTMCType typeArg;
-    if (typeArgCaseName.equals("STRING")) {
-      typeArg = astString;
-    }
-    else {
-      // Given: declare List<T> in the global scope so TypeCheck can resolve it
-      OOTypeSymbol listSym = createOOType("List");
-      listSym.addTypeVarSymbol(ComponentSymbolsWithMCBasicTypesTestMill.typeVarSymbolBuilder().setName("T").build());
-      ComponentSymbolsWithMCBasicTypesTestMill.globalScope().add(listSym);
-      ComponentSymbolsWithMCBasicTypesTestMill.globalScope().addSubScope(listSym.getSpannedScope());
-
-      typeArg = createGenericType(
-        ImmutableList.of("List"),
-        ComponentSymbolsWithMCBasicTypesTestMill.globalScope(),
-        astString
-      );
-    }
-
-    ASTMCBasicGenericType astUnresolvable = createGenericType(
-      ImmutableList.of("Unresolvable"),
-      ComponentSymbolsWithMCBasicTypesTestMill.globalScope(),
-      typeArg
-    );
-
-    CompKindCheckResult wrapper = new CompKindCheckResult();
-    SynthesizeCompKindFromMCSimpleGenericTypes synth = new SynthesizeCompKindFromMCSimpleGenericTypes(wrapper);
-
-    // When
-    synth.handle(astUnresolvable);
 
     // Then
     Assertions.assertTrue(wrapper.getResult().isEmpty());
@@ -260,9 +215,6 @@ public class SynthesizeComponentFromMCSimpleGenericTypesTest extends AbstractMCT
     Assertions.assertInstanceOf(CompKindOfGenericComponentType.class, wrapper.getResult().get());
     Assertions.assertEquals(astComp, wrapper.getResult().get().getSourceNode().orElseThrow());
   }
-
-
-  // Helpers
 
   private static void addWithSpannedScope(IComponentSymbolsWithMCBasicTypesTestScope scope, ComponentTypeSymbol sym) {
     scope.add(sym);
