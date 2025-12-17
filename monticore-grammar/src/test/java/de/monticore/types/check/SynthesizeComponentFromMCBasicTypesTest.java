@@ -31,7 +31,7 @@ public class SynthesizeComponentFromMCBasicTypesTest extends AbstractMCTest {
 
   @ParameterizedTest
   @ValueSource(strings = {"Foo", "qual.Foo"})
-  public void shouldHandleMCQualifiedType(String qualifiedCompName) {
+  public void shouldHandleMCBasicGenericType(String qualifiedCompName) {
     var globalScope = ComponentSymbolsWithMCBasicTypesTestMill.globalScope();
 
     ASTMCQualifiedType ast = MCTypeFacade.getInstance().createQualifiedType(qualifiedCompName);
