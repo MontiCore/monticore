@@ -65,7 +65,7 @@ public abstract class MCToolAction extends AToolAction {
     }
     try {
       String logPrefix = "[" + getParameters().getProgressName().get() + "] ";
-      isolator.executeInClassloader(MCToolInvoker.class.getName(), "run",
+      isolator.executeInClassloader("de.monticore.gradle.gen.MCToolInvoker", "run",
                                     args, logPrefix, getParameters().getExtraClasspathElements());
     } finally {
       semaphore.release();

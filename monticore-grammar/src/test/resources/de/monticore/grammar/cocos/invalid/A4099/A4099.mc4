@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.grammar.cocos.invalid.A4099;
+
+grammar A4099 {
+
+  StartProd = (A | I)*;
+
+  symbol A = "A";
+
+  symbol I = "I";
+}
