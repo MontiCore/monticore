@@ -5,6 +5,7 @@ import de.monticore.MontiCoreConfiguration;
 import de.monticore.gradle.AMontiCoreConfiguration;
 import de.monticore.gradle.common.AToolAction;
 import de.monticore.gradle.common.MCSingleFileTask;
+import de.monticore.gradle.queue.ICachedQueueTask;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.FileTree;
 import org.gradle.api.file.RegularFileProperty;
@@ -25,7 +26,7 @@ import java.util.function.Function;
  *
  */
 @CacheableTask // this task produces reproducible and relocatable output
-public abstract class MCGenTask extends MCSingleFileTask {
+public abstract class MCGenTask extends MCSingleFileTask implements ICachedQueueTask {
 
 
   public MCGenTask() {
@@ -289,4 +290,9 @@ public abstract class MCGenTask extends MCSingleFileTask {
     this.getTmplDir().set(getProject().file(path));
   }
 
+  @Override
+  protected void prepareWorkQueue() {
+    // Use the improved shared-isolated-work-queue of se-commons
+    this.workQueue = doGetSharedQueueService().newWorkQueue(getWorkerExecutor(), getExtraClasspathElements());
+  }
 }

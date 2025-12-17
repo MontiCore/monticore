@@ -307,6 +307,35 @@ This might be fixed by [8078641](https://github.com/openjdk/jdk/commit/21012f2bb
 * Ensure the generation target is NOT added to the java sources (otherwise the TOP mechanism will fail)
 * Ensure no resources.srcDirs += grammarOutDir is used (otherwise your build will depend on itself)
 
+### Root-Warning
+
+Only applies if you see the following warning:
+> WARNING: The se-commons cached work queue is setup multiple times.  
+> Reporting, log prefixes, and performance might be incorrect.  
+> Please add the (possibly MontiCore Generator) plugin to your root plugin (possible with apply false).  
+
+Gradle separates the plugins of subprojects against the plugins of other subprojects.
+As MontiCore (and other generation plugins) schedules its work,
+ this might separation leads to issues.
+While the plugin tries to work around the separation,
+ the performance decreases, the log prefixes might be missing,
+ and the `reportCachedQueueService` task does not contain the tasknames.
+
+You can solve this problem by adding the offending plugin in the (shared) root project
+ of your subprojects:
+
+```gradle
+//build.gradle
+plugins {
+    id 'de.monticore.generator' version "$mc_version" apply false // see https://monticore.github.io/monticore/docs/Gradle/#root-warning
+}
+//subproject/build.gradle
+plugins {
+    id 'de.monticore.generator' // plugin's version is specified in the root project
+}
+```
+
+
 ### Using legacy-dependencies with the new plugin
 
 Due to the diverging capabilities/variants of the new plugin,

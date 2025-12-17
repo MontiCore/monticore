@@ -6,8 +6,10 @@ import de.monticore.MCPlugin;
 import de.monticore.gradle.common.MCBuildInfoTask;
 import de.monticore.gradle.dependencies.MCToolDependenciesPlugin;
 import de.monticore.gradle.gen.MCGenTask;
-import de.monticore.gradle.gen.MCToolAction;
 import de.monticore.gradle.internal.ProgressLoggerService;
+import de.monticore.gradle.queue.CachedQueueService;
+import de.monticore.gradle.queue.CachedQueueServicePlugin;
+import de.monticore.gradle.queue.ICachedQueueService;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.provider.Provider;
@@ -28,6 +30,8 @@ public abstract class MCGeneratorBasePlugin implements Plugin<Project> {
   public final static String CONCURRENT_MC_PROPERTY = "de.monticore.gradle.max-concurrent-mcgen";
 
   public void apply(Project project) {
+    // Set up the improved work-queue
+    project.getPluginManager().apply(CachedQueueServicePlugin.class);
     // Populate the "mcTool" configuration with the generator itself
     project.getPluginManager().apply(MCToolDependenciesPlugin.class);
     // ServiceProvider to pass a ProgressLogger instance to the workers
@@ -53,7 +57,9 @@ public abstract class MCGeneratorBasePlugin implements Plugin<Project> {
     project.getTasks().withType(MCGenTask.class).configureEach(t -> {
       t.dependsOn(writeMCBuildInfo);
       try {
-        t.getProgressLoggerService().set(serviceProvider);
+        // "Build services cannot be serialized"
+        // This results in suboptimal Gradle-reporting of the ProgressLogger-Operations
+        // t.getProgressLoggerService().set(serviceProvider);
       }catch (IllegalArgumentException ignored){
         // Sometimes a "Cannot set the value of task" exception occurs
         // due to progressLoggerService being isolated somehow
@@ -65,7 +71,9 @@ public abstract class MCGeneratorBasePlugin implements Plugin<Project> {
 
     // Limit the maximum amount
     if (project.findProperty(CONCURRENT_MC_PROPERTY) != null) {
-      MCToolAction.setMaxConcurrentMC(Integer.parseInt(project.findProperty(CONCURRENT_MC_PROPERTY).toString()));
+      var sp = project.getGradle().getSharedServices().registerIfAbsent(CachedQueueService.NAME, CachedQueueService.class, spec->{});
+      ICachedQueueService.asICachedQueueService(sp.get())
+              .setMaxConcurrentMC(Integer.parseInt(project.findProperty(CONCURRENT_MC_PROPERTY).toString()));
     }
 
     // Statistics Logging
