@@ -7,8 +7,11 @@ import org.junit.jupiter.api.Test;
 
 public class NoForbiddenSymbolNameTest extends CocoTest{
 
-  private final String MESSAGE = " There must not exist a symbol production with the name A4099 in the grammar A4099Symbol.";
-  private final String grammar = "de.monticore.grammar.cocos.invalid.A4099.A4099Symbol";
+  private final String MESSAGE1 = " There must not exist a symbol production with the name A4099 in the grammar A4099Symbol.";
+  private final String grammar1 = "de.monticore.grammar.cocos.invalid.A4099.A4099Symbol";
+
+  private final String MESSAGE2 = " There must not exist a symbol production with the name I in the grammar A4099.";
+    private final String grammar2 = "de.monticore.grammar.cocos.invalid.A4099.A4099";
 
   @BeforeEach
   public void init() {
@@ -18,7 +21,12 @@ public class NoForbiddenSymbolNameTest extends CocoTest{
 
   @Test
   public void testInvalid1(){
-    testInvalidGrammar(grammar, NoForbiddenSymbolName.ERROR_CODE, MESSAGE, checker);
+    testInvalidGrammar(grammar1, NoForbiddenSymbolName.ERROR_CODE, MESSAGE1, checker);
+  }
+
+  @Test
+  public void testInvalid2(){
+      testInvalidGrammar(grammar2, NoForbiddenSymbolName.ERROR_CODE, MESSAGE2, checker);
   }
 
   @Test
