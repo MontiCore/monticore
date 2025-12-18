@@ -87,7 +87,6 @@ public class SynthesizeComponentFromMCSimpleGenericTypesTest extends AbstractMCT
     // Given
     var globalScope = ComponentSymbolsWithMCBasicTypesTestMill.globalScope();
 
-    // local scope "scoop" sous le global
     IComponentSymbolsWithMCBasicTypesTestScope localScope = ComponentSymbolsWithMCBasicTypesTestMill.scope();
     localScope.setName("scoop");
     globalScope.addSubScope(localScope);
