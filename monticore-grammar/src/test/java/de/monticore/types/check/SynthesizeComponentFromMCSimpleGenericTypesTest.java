@@ -81,13 +81,6 @@ public class SynthesizeComponentFromMCSimpleGenericTypesTest extends AbstractMCT
     new MapBasedTypeCheck3(traverser, type4Ast, ctx4Ast).setThisAsDelegate();
   }
 
-  static Stream<Arguments> compRefs() {
-    return Stream.of(
-      Arguments.of(ImmutableList.of("Comp"), false),
-      Arguments.of(ImmutableList.of("scoop", "Comp"), true)
-    );
-  }
-
   @ParameterizedTest
   @ValueSource(strings = {"Comp", "scoop.Comp"})
   public void shouldHandleMCBasicGenericType(String qualifiedCompName) {
