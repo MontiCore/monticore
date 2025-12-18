@@ -47,7 +47,6 @@ public class SynthesizeComponentFromMCSimpleGenericTypesTest extends AbstractMCT
     Log.enableFailQuick(false);
     Log.clearFindings();
 
-
     BasicSymbolsMill.initializePrimitives();
     BasicSymbolsMill.initializeString();
   }
