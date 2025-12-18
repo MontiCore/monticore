@@ -8,6 +8,7 @@ import de.monticore.runtime.junit.MCAssertions;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.compsymbols._symboltable.ComponentTypeSymbol;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
+import de.monticore.types.MCTypeFacade;
 import de.monticore.types.componentsymbolswithmcbasictypestest.ComponentSymbolsWithMCBasicTypesTestMill;
 import de.monticore.types.componentsymbolswithmcbasictypestest._symboltable.IComponentSymbolsWithMCBasicTypesTestScope;
 import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
@@ -32,7 +33,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -89,12 +89,15 @@ public class SynthesizeComponentFromMCSimpleGenericTypesTest extends AbstractMCT
   }
 
   @ParameterizedTest
-  @MethodSource("compRefs")
-  public void shouldHandleMCBasicGenericType(List<String> compNameParts, boolean qualified) {
+  @ValueSource(strings = {"Comp", "scoop.Comp"})
+  public void shouldHandleMCBasicGenericType(String qualifiedCompName) {
     // Given
+    var globalScope = ComponentSymbolsWithMCBasicTypesTestMill.globalScope();
+
+    // local scope "scoop" sous le global
     IComponentSymbolsWithMCBasicTypesTestScope localScope = ComponentSymbolsWithMCBasicTypesTestMill.scope();
     localScope.setName("scoop");
-    ComponentSymbolsWithMCBasicTypesTestMill.globalScope().addSubScope(localScope);
+    globalScope.addSubScope(localScope);
 
     ComponentTypeSymbol compSym = createComponentType("Comp", "K", "V");
     addWithSpannedScope(localScope, compSym);
@@ -104,7 +107,6 @@ public class SynthesizeComponentFromMCSimpleGenericTypesTest extends AbstractMCT
 
     OOTypeSymbol listSym = createOOType("List");
     listSym.addTypeVarSymbol(ComponentSymbolsWithMCBasicTypesTestMill.typeVarSymbolBuilder().setName("T").build());
-
     addWithSpannedScope(localScope, listSym);
 
     ASTMCQualifiedType astStringLocal = createQualifiedType(
@@ -119,24 +121,28 @@ public class SynthesizeComponentFromMCSimpleGenericTypesTest extends AbstractMCT
       astStringLocal
     );
 
-    IComponentSymbolsWithMCBasicTypesTestScope enclScope =
-      qualified ? ComponentSymbolsWithMCBasicTypesTestMill.globalScope() : localScope;
+    ASTMCQualifiedType compNameAst = MCTypeFacade.getInstance().createQualifiedType(qualifiedCompName);
+    List<String> compNameParts = compNameAst.getMCQualifiedName().getPartsList();
+    boolean qualified = compNameParts.size() > 1;
+
+    IComponentSymbolsWithMCBasicTypesTestScope enclScope = qualified ? globalScope : localScope;
 
     ASTMCBasicGenericType astComp = createGenericType(
       compNameParts,
       enclScope,
-      astStringLocal, astListOfStringLocal
+      astStringLocal,
+      astListOfStringLocal
     );
 
     // When
     CompKindCheckResult wrapper = new CompKindCheckResult();
     new SynthesizeCompKindFromMCSimpleGenericTypes(wrapper).handle(astComp);
 
+    // Then
     Assertions.assertTrue(wrapper.getResult().isPresent(), "Expected synthesis result to be present");
     Assertions.assertInstanceOf(CompKindOfGenericComponentType.class, wrapper.getResult().get());
     CompKindOfGenericComponentType result = (CompKindOfGenericComponentType) wrapper.getResult().get();
 
-    // Then
     Assertions.assertEquals(compSym, result.getTypeInfo());
     Assertions.assertEquals(astComp, result.getSourceNode().orElseThrow());
 
