@@ -20,7 +20,7 @@ dependencies {
   implementation gradleApi()
   implementation "de.se_rwth.commons:se-commons-gradle:$se_commons_version"
   implementation "de.monticore:monticore-runtime:$previous_mc_version" // Required due to json -> substitute this to remove the runtime from the gradle projects classpath
-  mcTool "de.monticore:monticore-generator:$version"
+  mcTool project(":") // depend on the generator subproject
 
   testImplementation gradleTestKit()
 }
@@ -58,4 +58,30 @@ tasks.named("test") {
   // For the MontiVerse
   systemProperty "maven.repo.local", System.getProperty("maven.repo.local")
   systemProperty "useLocalRepo", findProperty("useLocalRepo")
+}
+publishing {
+  // The gradle-plugin plugin adds&configures a publication automatically.
+  // But we have to specify the repositories explicitly (again)
+  // allprojects in the generator project does not appear to work for this.
+  repositories {
+    maven {
+      name = "SE-Nexus"
+      credentials.username = mavenUser
+      credentials.password = mavenPassword
+      def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-releases/"
+      def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-snapshots/"
+      url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+    }
+    // Also publish to the github repository, if run on a github action
+    if (System.getenv("GITHUB_REPOSITORY") != null) {
+      maven {
+        name = "GitHubPackages"
+        url = "https://maven.pkg.github.com/" + System.getenv("GITHUB_REPOSITORY")
+        credentials {
+          username = System.getenv("GITHUB_ACTOR")
+          password = System.getenv("GITHUB_TOKEN")
+        }
+      }
+    }
+  }
 }
