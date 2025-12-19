@@ -6,6 +6,7 @@ import com.google.common.collect.ImmutableList;
 import de.monticore.runtime.junit.AbstractMCTest;
 import de.monticore.runtime.junit.MCAssertions;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.compsymbols._symboltable.ComponentTypeSymbol;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.monticore.types.MCTypeFacade;
@@ -29,7 +30,6 @@ import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.api.Test;
@@ -41,22 +41,17 @@ import java.util.Objects;
 
 public class SynthesizeComponentFromMCSimpleGenericTypesTest extends AbstractMCTest {
 
-  @BeforeAll
-  public static void beforeAll() {
+  @BeforeEach
+  public void setup() {
+    Log.clearFindings();
     LogStub.init();
     Log.enableFailQuick(false);
     Log.clearFindings();
 
-    BasicSymbolsMill.initializePrimitives();
-    BasicSymbolsMill.initializeString();
-  }
-
-  @BeforeEach
-  public void setup() {
-    Log.clearFindings();
-
     ComponentSymbolsWithMCBasicTypesTestMill.reset();
     ComponentSymbolsWithMCBasicTypesTestMill.init();
+    BasicSymbolsMill.initializePrimitives();
+    BasicSymbolsMill.initializeString();
 
     Type4Ast type4Ast = new Type4Ast();
     InferenceContext4Ast ctx4Ast = new InferenceContext4Ast();
@@ -91,8 +86,9 @@ public class SynthesizeComponentFromMCSimpleGenericTypesTest extends AbstractMCT
     ComponentTypeSymbol compSym = createComponentType("Comp", "K", "V");
     addWithSpannedScope(localScope, compSym);
 
-    OOTypeSymbol stringSym = createOOType("String");
-    addWithSpannedScope(localScope, stringSym);
+    TypeSymbol stringSym = BasicSymbolsMill.globalScope()
+      .resolveType(BasicSymbolsMill.STRING)
+      .orElseThrow(() -> new AssertionError("String should be resolvable after initializeString()"));
 
     OOTypeSymbol listSym = createOOType("List");
     listSym.addTypeVarSymbol(ComponentSymbolsWithMCBasicTypesTestMill.typeVarSymbolBuilder().setName("T").build());
@@ -184,9 +180,6 @@ public class SynthesizeComponentFromMCSimpleGenericTypesTest extends AbstractMCT
     ComponentTypeSymbol comp2 = createComponentType("Comp", "T");
     addWithSpannedScope(localScope, comp1);
     addWithSpannedScope(localScope, comp2);
-
-    OOTypeSymbol stringSym = createOOType("String");
-    addWithSpannedScope(localScope, stringSym);
 
     ASTMCQualifiedType astString = createQualifiedType(
       ImmutableList.of("String"),
