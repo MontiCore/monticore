@@ -28,13 +28,13 @@ import de.monticore.types3.generics.context.InferenceContext4Ast;
 import de.monticore.types3.util.MapBasedTypeCheck3;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.antlr.v4.runtime.misc.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -90,7 +90,10 @@ public class SynthesizeComponentFromMCSimpleGenericTypesTest extends AbstractMCT
       .resolveType(BasicSymbolsMill.STRING)
       .orElseThrow();
 
-    OOTypeSymbol listSym = createOOType("List");
+    OOTypeSymbol listSym = ComponentSymbolsWithMCBasicTypesTestMill.oOTypeSymbolBuilder()
+      .setName("List")
+      .setSpannedScope(ComponentSymbolsWithMCBasicTypesTestMill.scope())
+      .build();
     listSym.addTypeVarSymbol(ComponentSymbolsWithMCBasicTypesTestMill.typeVarSymbolBuilder().setName("T").build());
     addWithSpannedScope(localScope, listSym);
 
@@ -145,10 +148,6 @@ public class SynthesizeComponentFromMCSimpleGenericTypesTest extends AbstractMCT
   @Test
   public void shouldNotHandleMCBasicGenericTypeBecauseCompTypeUnresolvable() {
     // Given
-    OOTypeSymbol stringSym = createOOType("String");
-    ComponentSymbolsWithMCBasicTypesTestMill.globalScope().add(stringSym);
-    ComponentSymbolsWithMCBasicTypesTestMill.globalScope().addSubScope(stringSym.getSpannedScope());
-
     ASTMCQualifiedType astString = createQualifiedType(
       ImmutableList.of("String"),
       ComponentSymbolsWithMCBasicTypesTestMill.globalScope(),
@@ -228,13 +227,6 @@ public class SynthesizeComponentFromMCSimpleGenericTypesTest extends AbstractMCT
     return builder.build();
   }
 
-  private static OOTypeSymbol createOOType(String name) {
-    return ComponentSymbolsWithMCBasicTypesTestMill.oOTypeSymbolBuilder()
-      .setName(name)
-      .setSpannedScope(ComponentSymbolsWithMCBasicTypesTestMill.scope())
-      .build();
-  }
-
   private static ASTMCQualifiedType createQualifiedType(
     List<String> nameParts,
     IComponentSymbolsWithMCBasicTypesTestScope typeEnclosingScope,
@@ -255,9 +247,9 @@ public class SynthesizeComponentFromMCSimpleGenericTypesTest extends AbstractMCT
    * Returns a {@link ASTMCBasicGenericType} whose format is {@code name.parts<typeArg[0], typeArg[1], ...>}.
    * All newly created AST objects are enclosed by {@code enclScope}.
    */
-  protected static ASTMCBasicGenericType createGenericType(@NotNull List<String> nameParts,
-                                                           @NotNull IComponentSymbolsWithMCBasicTypesTestScope enclScope,
-                                                           @NotNull ASTMCType... typeArgs) {
+  protected static ASTMCBasicGenericType createGenericType(@Nonnull List<String> nameParts,
+                                                           @Nonnull IComponentSymbolsWithMCBasicTypesTestScope enclScope,
+                                                           @Nonnull ASTMCType... typeArgs) {
     Preconditions.checkNotNull(nameParts);
     Preconditions.checkNotNull(enclScope);
     Preconditions.checkNotNull(typeArgs);
