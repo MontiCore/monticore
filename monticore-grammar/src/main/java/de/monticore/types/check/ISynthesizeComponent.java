@@ -3,6 +3,7 @@ package de.monticore.types.check;
 
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser;
+import de.se_rwth.commons.logging.Log;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.Optional;
@@ -30,6 +31,12 @@ public interface ISynthesizeComponent {
   default Optional<CompKindExpression> synthesize(@NonNull ASTMCType mcType) {
     this.init();
     mcType.accept(this.getTraverser());
-    return this.getResult();
+    Optional<CompKindExpression> res = this.getResult();
+    if (res.isEmpty()) {
+      Log.error(String.format("0xD0104 Cannot resolve component '%s'", mcType.toString()),
+        mcType.get_SourcePositionStart(), mcType.get_SourcePositionEnd()
+      );
+    }
+    return res;
   }
 }
