@@ -87,6 +87,19 @@ public class DecorationHelper extends MCBasicTypesHelper {
         || "ArrayList".equals(type) || "java.util.ArrayList".equals(type);
   }
 
+  public boolean isArrayType(String type) {
+    return type.endsWith("[]");
+  }
+
+  public boolean isCollectionType(String type){
+    int index = type.indexOf('<');
+    if (index != -1) {
+      type = type.substring(0, index);
+    }
+    return "Collection".equals(type) || "java.util.Collection".equals(type)
+        || "ArrayList".equals(type) || "java.util.ArrayList".equals(type);
+  }
+
   public boolean isMapType(String type) {
     int index = type.indexOf('<');
     if (index != -1) {

@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast.builder.buildermethods;
 
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
@@ -10,6 +11,7 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes.MCBasicTypesMill;
+import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,8 +48,23 @@ public class BuilderListMutatorDecorator extends ListMutatorDecorator {
       String parameterCall = m.getCDParameterList().stream()
           .map(ASTCDParameter::getName)
           .collect(Collectors.joining(", "));
-      this.replaceTemplate(EMPTY_BODY, m, new TemplateHookPoint("_ast.builder.MethodDelegate4ASTBuilder",
-          attribute, methodName, parameterCall));
+
+      List<ASTCDParameter> parameters = m.getCDParameterList();
+      String castType = "";
+      if (parameters != null && !parameters.isEmpty()) {
+        ASTMCType lastParameterType = parameters.get(parameters.size() - 1).getMCType();
+        if(attribute.getMCType() instanceof ASTMCBasicGenericType && lastParameterType.printType().equals(((ASTMCBasicGenericType)attribute.getMCType()).getMCTypeArgument(0).printType())){
+          castType = "List<" + lastParameterType.printType() + ">";
+        }
+        if(attribute.getMCType().printType().startsWith("UnaryOperator")){
+          System.out.println(attribute.getMCType().printType());
+        }
+      }
+
+
+
+      this.replaceTemplate(EMPTY_BODY, m, new TemplateHookPoint("builder.MethodDelegate4ASTBuilderGeneric",
+          attribute, methodName, parameterCall, castType));
     }
     return methods;
   }
@@ -58,7 +75,7 @@ public class BuilderListMutatorDecorator extends ListMutatorDecorator {
     ASTCDMethod method = this.getCDMethodFacade().createMethodByDefinition(signature);
     ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(builderType).build();
     method.setMCReturnType(returnType);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.builder.Set4ASTBuilder", ast));
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("builder.Set4ASTBuilderGeneric", ast));
     return method;
   }
 }

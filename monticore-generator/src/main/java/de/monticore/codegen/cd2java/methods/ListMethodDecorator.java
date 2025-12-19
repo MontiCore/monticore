@@ -9,10 +9,10 @@ import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
+import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import org.apache.commons.lang3.StringUtils;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,11 +42,19 @@ public abstract class ListMethodDecorator extends AbstractCreator<ASTCDAttribute
     }
     this.attributeType = getAttributeType(ast);
 
-    List<ASTCDMethod> methods = getMethodSignatures().stream()
-        .map(getCDMethodFacade()::createMethodByDefinition)
-        .collect(Collectors.toList());
+    List<ASTCDMethod> methods;
+    boolean isGeneric = getDecorationHelper().isAstNode(ast);
+    if (isGeneric) {
+      methods = getMethodSignaturesGeneric().stream()
+          .map(getCDMethodFacade()::createMethodByDefinition)
+          .collect(Collectors.toList());
+    } else {
+      methods = getMethodSignatures().stream()
+          .map(getCDMethodFacade()::createMethodByDefinition)
+          .collect(Collectors.toList());
+    }
 
-    methods.forEach(m -> this.replaceTemplate(EMPTY_BODY, m, createListImplementation(m)));
+    methods.forEach(m -> this.replaceTemplate(EMPTY_BODY, m, createListImplementation(m,isGeneric)));
     return methods;
   }
 
@@ -60,22 +68,46 @@ public abstract class ListMethodDecorator extends AbstractCreator<ASTCDAttribute
 
   protected abstract List<String> getMethodSignatures();
 
+  protected abstract List<String> getMethodSignaturesGeneric();
+
   protected String getTypeArgumentFromListType(ASTMCType type) {
     String typeString = CD4CodeMill.prettyPrint(type, false);
     int lastListIndex = typeString.lastIndexOf("List<") + 5;
     return typeString.substring(lastListIndex, typeString.length() - 1);
   }
 
-  protected HookPoint createListImplementation(final ASTCDMethod method) {
+  protected HookPoint createListImplementation(final ASTCDMethod method, boolean isGeneric) {
+    String errorCode = "0Xdsidusd";
     String attributeName = StringUtils.uncapitalize(capitalizedAttributeNameWithOutS);
     int attributeIndex = method.getName().lastIndexOf(capitalizedAttributeNameWithOutS);
     String methodName = method.getName().substring(0, attributeIndex);
     String parameterCall = method.getCDParameterList().stream()
         .map(ASTCDParameter::getName)
         .collect(Collectors.joining(", "));
-    String returnType = CD4CodeMill.prettyPrint(method.getMCReturnType(), false);
 
-    return new TemplateHookPoint("methods.MethodDelegate", attributeName, methodName, parameterCall, returnType);
+    List<ASTCDParameter> parameters = method.getCDParameterList();
+    ASTMCType lastParameterType = null;
+    if (parameters != null && !parameters.isEmpty()) {
+      lastParameterType = parameters.get(parameters.size() - 1).getMCType();
+    }
+
+    //TODO this is bad and should not be merged in this state
+    String returnType = CD4CodeMill.prettyPrint(method.getMCReturnType(), false);
+    if(isGeneric) {
+      String parameterAttribute = parameterCall.split(", ")[parameterCall.split(", ").length-1];
+      String parameterType="";
+      if(lastParameterType != null && (getDecorationHelper().isListType(lastParameterType.printType()) || getDecorationHelper().isCollectionType(lastParameterType.printType()))){
+        parameterType = "Collection";
+      }
+      if(lastParameterType != null && getDecorationHelper().isArrayType(lastParameterType.printType())){
+        parameterType = "Array";
+      }
+
+      return new TemplateHookPoint("mc.methods.ListMethodDelegate", attributeName, methodName, parameterCall, returnType, attributeType, parameterType, parameterAttribute, errorCode);
+
+    }else{
+      return new TemplateHookPoint("methods.MethodDelegate", attributeName, methodName, parameterCall, returnType);
+    }
   }
 
   public String getCapitalizedAttributeNameWithS(ASTCDAttribute attribute) {

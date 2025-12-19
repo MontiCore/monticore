@@ -15,6 +15,7 @@ import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 public class ListMutatorDecorator extends ListMethodDecorator {
 
   protected static final String SET_LIST = "public void set%sList(List<%s> %s);";
+  protected static final String SET_LIST_GENERIC = "public void set%sList(List<? extends %s> %s);";
   protected static final String CLEAR = "public void clear%s();";
   protected static final String ADD = "public boolean add%s(%s element);";
   protected static final String ADD_ALL = "public boolean addAll%s(Collection<? extends %s> collection);";
@@ -42,19 +43,47 @@ public class ListMutatorDecorator extends ListMethodDecorator {
   }
 
   protected ASTCDMethod createSetListMethod(ASTCDAttribute ast) {
-    String signature = String.format(SET_LIST, capitalizedAttributeNameWithOutS, attributeType, ast.getName());
-    ASTCDMethod getList = this.getCDMethodFacade().createMethodByDefinition(signature);
-    this.replaceTemplate(EMPTY_BODY, getList, new TemplateHookPoint("methods.Set", ast));
-    return getList;
+    String errorCode = "0X23232";
+    if(getDecorationHelper().isAstNode(ast)){
+      String signature = String.format(SET_LIST_GENERIC, capitalizedAttributeNameWithOutS, attributeType, ast.getName());
+      ASTCDMethod setListMethod = getCDMethodFacade().createMethodByDefinition(signature);
+      this.replaceTemplate(EMPTY_BODY, setListMethod, new TemplateHookPoint("mc.methods.ListSetGeneric", ast, ast.getMCType().printType(), errorCode));
+      return setListMethod;
+    }else{
+      String signature = String.format(SET_LIST, capitalizedAttributeNameWithOutS, attributeType, ast.getName());
+      ASTCDMethod setListMethod = getCDMethodFacade().createMethodByDefinition(signature);
+      this.replaceTemplate(EMPTY_BODY, setListMethod, new TemplateHookPoint("methods.Set", ast));
+      return setListMethod;
+    }
   }
 
-  protected List<ASTCDMethod> createSetter(ASTCDAttribute ast){
+  protected List<ASTCDMethod> createSetter(ASTCDAttribute ast) {
     return super.decorate(ast);
   }
 
 
   @Override
   protected List<String> getMethodSignatures() {
+    return Arrays.asList(
+        String.format(CLEAR, capitalizedAttributeNameWithS),
+        String.format(ADD, capitalizedAttributeNameWithOutS, attributeType),
+        String.format(ADD_ALL, capitalizedAttributeNameWithS, attributeType),
+        String.format(REMOVE, capitalizedAttributeNameWithOutS),
+        String.format(REMOVE_ALL, capitalizedAttributeNameWithS),
+        String.format(RETAIN_ALL, capitalizedAttributeNameWithS),
+        String.format(REMOVE_IF, capitalizedAttributeNameWithOutS, attributeType),
+        String.format(FOR_EACH, capitalizedAttributeNameWithS, attributeType),
+        String.format(ADD_, capitalizedAttributeNameWithOutS, attributeType),
+        String.format(ADD_ALL_, capitalizedAttributeNameWithS, attributeType),
+        String.format(REMOVE_, attributeType, capitalizedAttributeNameWithOutS),
+        String.format(SET, attributeType, capitalizedAttributeNameWithOutS, attributeType),
+        String.format(REPLACE_ALL, capitalizedAttributeNameWithS, attributeType),
+        String.format(SORT, capitalizedAttributeNameWithS, attributeType)
+    );
+  }
+
+  @Override
+  protected List<String> getMethodSignaturesGeneric() {
     return Arrays.asList(
         String.format(CLEAR, capitalizedAttributeNameWithS),
         String.format(ADD, capitalizedAttributeNameWithOutS, attributeType),
