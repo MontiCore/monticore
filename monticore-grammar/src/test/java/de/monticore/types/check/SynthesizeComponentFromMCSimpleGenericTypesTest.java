@@ -88,7 +88,7 @@ public class SynthesizeComponentFromMCSimpleGenericTypesTest extends AbstractMCT
 
     TypeSymbol stringSym = BasicSymbolsMill.globalScope()
       .resolveType(BasicSymbolsMill.STRING)
-      .orElseThrow(() -> new AssertionError("String should be resolvable after initializeString()"));
+      .orElseThrow();
 
     OOTypeSymbol listSym = createOOType("List");
     listSym.addTypeVarSymbol(ComponentSymbolsWithMCBasicTypesTestMill.typeVarSymbolBuilder().setName("T").build());
