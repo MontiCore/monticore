@@ -62,6 +62,6 @@ public class FullSynthesizeCompKindFromMCBasicTypesTest extends AbstractMCTest {
 
     // Then
     Assertions.assertTrue(result.isEmpty(), "Expected no CompKindExpression for primitive 'int'");
-    MCAssertions.assertHasFindingStartingWith("0xD0104");
+    MCAssertions.assertHasFindingStartingWith("0xD0104 Cannot resolve component 'int'");
   }
 }
