@@ -7,53 +7,40 @@ import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.Files;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.*;
-import org.junit.rules.TemporaryFolder;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Collection;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 /**
  * This class tests the {@link IncChecker} testing against the expected incCheck result after changing the files.
  */
-@RunWith(Parameterized.class)
 public class IncCheckerTest {
 
-  @Rule
-  public TemporaryFolder temporaryFolder = new TemporaryFolder();
-
-  // Test for the default mc4, a short sc, and a longer file ending
-  @Parameterized.Parameters(name = "{0}")
-  public static Collection<Object[]> fileEndings() {
-    return Arrays.asList(new Object[][]{
-      {"mc4"}, {"sc"}, {"longerEnding"}
-    });
-  }
+  @TempDir
+  public File temporaryFolder;
   
-  @Before
+  
+  @BeforeEach
   public void initLog() {
     LogStub.init();
     Log.enableFailQuick(false);
   }
-  
-  protected final String fileEnding;
 
-  public IncCheckerTest(String fileEnding) {
-    this.fileEnding = fileEnding;
-  }
-
-  @Test
-  public void testIncCheck() throws IOException {
-    File tempDir = temporaryFolder.newFolder();
+  @ParameterizedTest
+  @ValueSource(strings = {"mc4", "sc", "longerEnding"})
+  public void testIncCheck(String fileEnding) throws IOException {
+    File tempDir = new File(temporaryFolder, "tempDir");
+    tempDir.createNewFile();
     File outDir = new File(tempDir, "out");
     File repDir = new File(tempDir, "reports");
     outDir.mkdirs();
@@ -75,8 +62,8 @@ public class IncCheckerTest {
     MCPath mcPath = new MCPath(tempDir.toPath());
 
     // Test that the MCPath is behaving correctly for both HW Files
-    Assert.assertTrue("Existing file not found in MCPath", mcPath.find(existingHWFile.getName()).isPresent());
-    Assert.assertFalse("Missing file found in MCPath", mcPath.find(missingHWFile.getName()).isPresent());
+    assertTrue(mcPath.find(existingHWFile.getName()).isPresent(), "Existing file not found in MCPath");
+    assertFalse(mcPath.find(missingHWFile.getName()).isPresent(), "Missing file found in MCPath");
 
     // Create the IncGenGradleCheck file and fill its content
     File modelRepDir = new File(repDir, modelName.replaceAll("\\.", "/").toLowerCase());
@@ -85,42 +72,49 @@ public class IncCheckerTest {
     modelRepDir.mkdirs();
     incGenGradleCheckFile.createNewFile();
     Files.writeToFile(CharSource.wrap(
-      calcChacheEntry(inputFile) + "\n" +
+      calcChacheEntry(inputFile, fileEnding) + "\n" +
       calcHwcEntry(existingHWFile) + "\n" +
       calcGenEntry(missingHWFile) + "\n"
     ).asByteSource(StandardCharsets.UTF_8).openStream(), incGenGradleCheckFile);
 
     // Has the IncGenGradleCheck file been created?
-    Assert.assertTrue("IncGenGradleCheck.txt does not exists: " + incGenGradleCheckFile.getAbsolutePath(), incGenGradleCheckFile.exists());
+    assertTrue(incGenGradleCheckFile.exists(),
+        "IncGenGradleCheck.txt does not exists: " + incGenGradleCheckFile.getAbsolutePath());
 
     // Next, actually test the IncCheck
     // First without any changes
-    Assert.assertTrue("IncCheck without changes failed", IncChecker.incCheck(incGenGradleCheckFile, modelName, logger, fileEnding, ""));
+    assertTrue(IncChecker.incCheck(incGenGradleCheckFile, modelName, logger, fileEnding, ""),
+        "IncCheck without changes failed");
 
     // Check when a HW file has been added
     missingHWFile.createNewFile();
-    Assert.assertFalse("IncCheck with added HW file did not fire", IncChecker.incCheck(incGenGradleCheckFile, modelName, logger, fileEnding, ""));
+    assertFalse(IncChecker.incCheck(incGenGradleCheckFile, modelName, logger, fileEnding, ""),
+        "IncCheck with added HW file did not fire");
     missingHWFile.delete();
 
     // Test with no changes again (after deleting the added HW file)
-    Assert.assertTrue("IncCheck without changes (after deleting) failed", IncChecker.incCheck(incGenGradleCheckFile, modelName, logger, fileEnding, ""));
+    assertTrue(IncChecker.incCheck(incGenGradleCheckFile, modelName, logger, fileEnding, ""),
+        "IncCheck without changes (after deleting) failed");
 
     // Delete the existing HW file and test
     existingHWFile.delete();
-    Assert.assertFalse("IncCheck with deleted HW file did not fire", IncChecker.incCheck(incGenGradleCheckFile, modelName, logger, fileEnding, ""));
+    assertFalse(IncChecker.incCheck(incGenGradleCheckFile, modelName, logger, fileEnding, ""),
+        "IncCheck with deleted HW file did not fire");
     existingHWFile.createNewFile();
 
     // Test with no changes again (after re-adding the deleted HW file)
-    Assert.assertTrue("IncCheck without changes (after re-adding) failed", IncChecker.incCheck(incGenGradleCheckFile, modelName, logger, fileEnding, ""));
+    assertTrue(IncChecker.incCheck(incGenGradleCheckFile, modelName, logger, fileEnding, ""),
+        "IncCheck without changes (after re-adding) failed");
 
     // Change input model/content
     Files.writeToFile(CharSource.wrap("new file content").asByteSource(StandardCharsets.UTF_8).openStream(), inputFile);
-    Assert.assertFalse("IncCheck with changed input model did not fire", IncChecker.incCheck(incGenGradleCheckFile, modelName, logger, fileEnding, ""));
+    assertFalse(IncChecker.incCheck(incGenGradleCheckFile, modelName, logger, fileEnding, ""),
+        "IncCheck with changed input model did not fire");
     
     assertTrue(Log.getFindings().isEmpty());
   }
 
-  private String calcChacheEntry(File file) throws IOException {
+  private String calcChacheEntry(File file, String fileEnding) throws IOException {
     StringBuilder cacheEntry = new StringBuilder();
     cacheEntry.append(fileEnding + ":");
     cacheEntry.append(file.getAbsolutePath());
