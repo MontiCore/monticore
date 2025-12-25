@@ -10,15 +10,14 @@ import de.monticore.statements.testmclowlevelstatements.TestMCLowLevelStatements
 import de.monticore.statements.testmclowlevelstatements._parser.TestMCLowLevelStatementsParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MCLowLevelStatementsPrettyPrinterTest  {
 
@@ -36,54 +35,54 @@ public class MCLowLevelStatementsPrettyPrinterTest  {
   @Test
   public void testBreakStatement() throws IOException {
     Optional<ASTLabelledBreakStatement> result = parser.parse_StringLabelledBreakStatement("break a ;");
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(result.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
     ASTLabelledBreakStatement ast = result.get();
 
     String output = TestMCLowLevelStatementsMill.prettyPrint(ast, true);
 
     result = parser.parse_StringLabelledBreakStatement(output);
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(result.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
 
-    Assertions.assertTrue(ast.deepEquals(result.get()));
+    assertTrue(ast.deepEquals(result.get()));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testLabeledStatement() throws IOException {
     Optional<ASTLabel> result = parser.parse_StringLabel("a : break foo;");
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(result.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
     ASTLabel ast = result.get();
 
     String output = TestMCLowLevelStatementsMill.prettyPrint(ast, true);
 
     result = parser.parse_StringLabel(output);
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(result.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
 
-    Assertions.assertTrue(ast.deepEquals(result.get()));
+    assertTrue(ast.deepEquals(result.get()));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testContinueStatement() throws IOException {
     Optional<ASTContinueStatement> result = parser.parse_StringContinueStatement("continue foo;");
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(result.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
     ASTContinueStatement ast = result.get();
 
     String output = TestMCLowLevelStatementsMill.prettyPrint(ast, true);
 
     result = parser.parse_StringContinueStatement(output);
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(result.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
 
-    Assertions.assertTrue(ast.deepEquals(result.get()));
+    assertTrue(ast.deepEquals(result.get()));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

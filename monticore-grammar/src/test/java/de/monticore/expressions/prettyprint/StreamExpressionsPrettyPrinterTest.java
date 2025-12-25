@@ -6,13 +6,15 @@ import de.monticore.expressions.teststreamexpressions.TestStreamExpressionsMill;
 import de.monticore.expressions.teststreamexpressions._parser.TestStreamExpressionsParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.IOException;
 import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class StreamExpressionsPrettyPrinterTest {
 
@@ -44,18 +46,18 @@ public class StreamExpressionsPrettyPrinterTest {
   })
   public void testPrettyPrint(String input) throws IOException {
     Optional<ASTExpression> result = parser.parse_StringExpression(input);
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(result.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
     ASTExpression ast = result.get();
 
     String output = TestStreamExpressionsMill.prettyPrint(ast, true);
 
     result = parser.parse_StringExpression(output);
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(result.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
 
-    Assertions.assertTrue(ast.deepEquals(result.get()));
+    assertTrue(ast.deepEquals(result.get()));
 
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

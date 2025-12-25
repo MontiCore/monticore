@@ -9,11 +9,13 @@ import de.monticore.types.componentsymbolswithmcbasictypestest.ComponentSymbolsW
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class FullSynthesizeCompKindFromMCBasicTypesTest extends AbstractMCTest {
 
@@ -46,9 +48,9 @@ public class FullSynthesizeCompKindFromMCBasicTypesTest extends AbstractMCTest {
     Optional<CompKindExpression> res = synth.synthesize(ast);
 
     // Then
-    Assertions.assertTrue(res.isPresent());
-    Assertions.assertTrue(res.get().isComponentType());
-    Assertions.assertEquals(typeA, res.get().getTypeInfo());
+    assertTrue(res.isPresent());
+    assertTrue(res.get().isComponentType());
+    assertEquals(typeA, res.get().getTypeInfo());
   }
 
   @Test
@@ -61,7 +63,7 @@ public class FullSynthesizeCompKindFromMCBasicTypesTest extends AbstractMCTest {
     Optional<CompKindExpression> result = synth.synthesize(ast);
 
     // Then
-    Assertions.assertTrue(result.isEmpty(), "Expected no CompKindExpression for primitive 'int'");
+    assertTrue(result.isEmpty(), "Expected no CompKindExpression for primitive 'int'");
     MCAssertions.assertHasFindingStartingWith("0xD0104 Cannot resolve component 'int'");
   }
 }
