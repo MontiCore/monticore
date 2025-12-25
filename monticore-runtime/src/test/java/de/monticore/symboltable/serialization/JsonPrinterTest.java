@@ -4,15 +4,14 @@ package de.monticore.symboltable.serialization;
 import com.google.common.collect.Lists;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests the JsonPrinter
@@ -43,17 +42,17 @@ public class JsonPrinterTest {
     printer.endObject();
 
     String serialized = printer.getContent();
-    Assertions.assertTrue(null != JsonParser.parseJsonObject(serialized));
-    Assertions.assertTrue(!serialized.contains("kindHierarchy"));
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(null != JsonParser.parseJsonObject(serialized));
+    assertTrue(!serialized.contains("kindHierarchy"));
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testEscapeSequences() {
     JsonPrinter printer = new JsonPrinter();
     printer.value("\"\t\\\n'");
-    Assertions.assertEquals("\"\\\"\\t\\\\\\n'\"", printer.toString());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertEquals("\"\\\"\\t\\\\\\n'\"", printer.toString());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -61,13 +60,13 @@ public class JsonPrinterTest {
     JsonPrinter printer = new JsonPrinter(true);
     printer.beginObject();
     printer.endObject();
-    Assertions.assertEquals("{}", printer.toString());
+    assertEquals("{}", printer.toString());
 
     printer = new JsonPrinter(false);
     printer.beginObject();
     printer.endObject();
-    Assertions.assertEquals("", printer.toString());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertEquals("", printer.toString());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -76,14 +75,14 @@ public class JsonPrinterTest {
     printer.beginObject();
     printer.member("s", "");
     printer.endObject();
-    Assertions.assertEquals("", printer.toString());
+    assertEquals("", printer.toString());
 
     printer = new JsonPrinter(true);
     printer.beginObject();
     printer.member("s", "");
     printer.endObject();
-    Assertions.assertEquals("{\"s\":\"\"}", printer.toString());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertEquals("{\"s\":\"\"}", printer.toString());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -92,14 +91,14 @@ public class JsonPrinterTest {
     printer.beginObject();
     printer.member("i", 0);
     printer.endObject();
-    Assertions.assertEquals("", printer.toString());
+    assertEquals("", printer.toString());
 
     printer = new JsonPrinter(true);
     printer.beginObject();
     printer.member("i", 0);
     printer.endObject();
-    Assertions.assertEquals("{\"i\":0}", printer.toString());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertEquals("{\"i\":0}", printer.toString());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -108,14 +107,14 @@ public class JsonPrinterTest {
     printer.beginObject();
     printer.member("b", false);
     printer.endObject();
-    Assertions.assertEquals("", printer.toString());
+    assertEquals("", printer.toString());
 
     printer = new JsonPrinter(true);
     printer.beginObject();
     printer.member("b", false);
     printer.endObject();
-    Assertions.assertEquals("{\"b\":false}", printer.toString());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertEquals("{\"b\":false}", printer.toString());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -123,27 +122,27 @@ public class JsonPrinterTest {
     JsonPrinter printer = new JsonPrinter(true);
     printer.beginArray();
     printer.endArray();
-    Assertions.assertEquals("[]", printer.toString());
+    assertEquals("[]", printer.toString());
 
     printer = new JsonPrinter(true);
     printer.beginObject();
     printer.beginArray("emptyList");
     printer.endArray();
     printer.endObject();
-    Assertions.assertEquals("{\"emptyList\":[]}", printer.toString());
+    assertEquals("{\"emptyList\":[]}", printer.toString());
 
     printer = new JsonPrinter(false);
     printer.beginArray();
     printer.endArray();
-    Assertions.assertEquals("", printer.toString());
+    assertEquals("", printer.toString());
 
     printer = new JsonPrinter(false);
     printer.beginObject();
     printer.beginArray("emptyList");
     printer.endArray();
     printer.endObject();
-    Assertions.assertEquals("", printer.toString());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertEquals("", printer.toString());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -152,32 +151,32 @@ public class JsonPrinterTest {
     printer.beginObject();
     printer.member("booleanAttribute", true);
     printer.endObject();
-    Assertions.assertEquals("{\"booleanAttribute\":true}", printer.toString());
+    assertEquals("{\"booleanAttribute\":true}", printer.toString());
 
     printer = new JsonPrinter();
     printer.beginObject();
     printer.member("intAttribute", -1);
     printer.endObject();
-    Assertions.assertEquals("{\"intAttribute\":-1}", printer.toString());
+    assertEquals("{\"intAttribute\":-1}", printer.toString());
 
     printer = new JsonPrinter();
     printer.beginObject();
     printer.member("floatAttribute", 47.11f);
     printer.endObject();
-    Assertions.assertEquals("{\"floatAttribute\":47.11}", printer.toString());
+    assertEquals("{\"floatAttribute\":47.11}", printer.toString());
 
     printer = new JsonPrinter();
     printer.beginObject();
     printer.member("doubleAttribute", 47.11);
     printer.endObject();
-    Assertions.assertEquals("{\"doubleAttribute\":47.11}", printer.toString());
+    assertEquals("{\"doubleAttribute\":47.11}", printer.toString());
 
     printer = new JsonPrinter();
     printer.beginObject();
     printer.member("longAttribute", 123456789L);
     printer.endObject();
-    Assertions.assertEquals("{\"longAttribute\":123456789}", printer.toString());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertEquals("{\"longAttribute\":123456789}", printer.toString());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -186,50 +185,50 @@ public class JsonPrinterTest {
     printer.beginObject();
     printer.member("optionalAttribute", Optional.of("presentOptional"));
     printer.endObject();
-    Assertions.assertEquals("{\"optionalAttribute\":\"presentOptional\"}", printer.toString());
+    assertEquals("{\"optionalAttribute\":\"presentOptional\"}", printer.toString());
 
     printer = new JsonPrinter(false);
     printer.beginObject();
     printer.member("optionalAttribute", Optional.of("presentOptional"));
     printer.endObject();
-    Assertions.assertEquals("{\"optionalAttribute\":\"presentOptional\"}", printer.toString());
+    assertEquals("{\"optionalAttribute\":\"presentOptional\"}", printer.toString());
 
     printer = new JsonPrinter(true);
     printer.beginObject();
     printer.member("optionalAttribute", Optional.empty());
     printer.endObject();
-    Assertions.assertEquals("{\"optionalAttribute\":null}", printer.toString());
+    assertEquals("{\"optionalAttribute\":null}", printer.toString());
 
     printer = new JsonPrinter(false);
     printer.beginObject();
     printer.member("optionalAttribute", Optional.empty());
     printer.endObject();
-    Assertions.assertEquals("", printer.toString());
+    assertEquals("", printer.toString());
 
     printer = new JsonPrinter(true);
     printer.beginObject();
     printer.member("listAttribute", new ArrayList<>());
     printer.endObject();
-    Assertions.assertEquals("{\"listAttribute\":[]}", printer.toString());
+    assertEquals("{\"listAttribute\":[]}", printer.toString());
 
     printer = new JsonPrinter(false);
     printer.beginObject();
     printer.member("listAttribute", new ArrayList<>());
     printer.endObject();
-    Assertions.assertEquals("", printer.toString());
+    assertEquals("", printer.toString());
 
     printer = new JsonPrinter(true);
     printer.beginObject();
     printer.member("listAttribute", Lists.newArrayList("first", "second"));
     printer.endObject();
-    Assertions.assertEquals("{\"listAttribute\":[\"first\",\"second\"]}", printer.toString());
+    assertEquals("{\"listAttribute\":[\"first\",\"second\"]}", printer.toString());
 
     printer = new JsonPrinter(false);
     printer.beginObject();
     printer.member("listAttribute", Lists.newArrayList("first", "second"));
     printer.endObject();
-    Assertions.assertEquals("{\"listAttribute\":[\"first\",\"second\"]}", printer.toString());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertEquals("{\"listAttribute\":[\"first\",\"second\"]}", printer.toString());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -241,7 +240,7 @@ public class JsonPrinterTest {
     printer.beginObject();
     printer.endObject();
     printer.getContent();
-    Assertions.assertEquals(1, Log.getFindings().size());
+    assertEquals(1, Log.getFindings().size());
 
     Log.clearFindings();
     printer = new JsonPrinter();
@@ -249,7 +248,7 @@ public class JsonPrinterTest {
     printer.endObject();
     printer.endObject();
     printer.getContent();
-    Assertions.assertEquals(1, Log.getFindings().size());
+    assertEquals(1, Log.getFindings().size());
 
     Log.clearFindings();
     printer = new JsonPrinter();
@@ -257,7 +256,7 @@ public class JsonPrinterTest {
     printer.beginArray();
     printer.endArray();
     printer.getContent();
-    Assertions.assertEquals(1, Log.getFindings().size());
+    assertEquals(1, Log.getFindings().size());
 
     Log.clearFindings();
     printer = new JsonPrinter();
@@ -265,7 +264,7 @@ public class JsonPrinterTest {
     printer.endArray();
     printer.endArray();
     printer.getContent();
-    Assertions.assertEquals(1, Log.getFindings().size());
+    assertEquals(1, Log.getFindings().size());
 
     Log.clearFindings();
     printer = new JsonPrinter();
@@ -275,7 +274,7 @@ public class JsonPrinterTest {
     printer.endArray();
     printer.endObject();
     printer.getContent();
-    Assertions.assertEquals(3, Log.getFindings().size());
+    assertEquals(3, Log.getFindings().size());
   }
 
 }
