@@ -7,27 +7,26 @@ import mc.testcases.automaton.tr.automatontr._ast.*;
 import mc.testcases.automaton.tr.automatontr._cocos.AutomatonTRCoCoChecker;
 import mc.testcases.automaton.tr.automatontr._cocos.NoOptOnRHSCoCo;
 import mc.testcases.automaton.tr.automatontr._parser.AutomatonTRParser;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by DW
  */
 public class NoOptOnRHSCoCoTest {
   
-  @Before
+  @BeforeEach
   public void disableFailQuick() {
     LogStub.init();
     Log.enableFailQuick(false);
   }
 
-  @Before
+  @BeforeEach
   public void setUp() {
     Log.getFindings().clear();
   }

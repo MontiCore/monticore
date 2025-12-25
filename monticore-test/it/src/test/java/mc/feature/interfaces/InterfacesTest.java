@@ -2,22 +2,20 @@
 
 package mc.feature.interfaces;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
 
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 
 import mc.GeneratorIntegrationsTest;
 import mc.feature.interfaces.sub._ast.ASTA;
 import mc.feature.interfaces.sub._parser.SubParser;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class InterfacesTest extends GeneratorIntegrationsTest {
   
@@ -33,10 +31,10 @@ public class InterfacesTest extends GeneratorIntegrationsTest {
     SubParser parser = new SubParser();    
     Optional<mc.feature.interfaces.sub._ast.ASTA> ast = parser.parseA(new StringReader("Hello Otto Mustermann"));
     
-    Assertions.assertTrue(ast.get() instanceof ASTA);
+    assertInstanceOf(ASTA.class, ast.get());
     ASTA astA = ast.get();
-    Assertions.assertNotNull(astA.getB());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertNotNull(astA.getB());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
 }
