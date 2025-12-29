@@ -15,8 +15,8 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import static de.monticore.codegen.mc2cd.TransformationHelper.typeToString;
-import static org.junit.jupiter.api.assertEquals;
-import static org.junit.jupiter.api.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Test for the proper transformation of ASTAbstractProds to corresponding
