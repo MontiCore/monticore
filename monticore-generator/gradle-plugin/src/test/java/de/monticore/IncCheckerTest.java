@@ -40,11 +40,10 @@ public class IncCheckerTest {
   @ValueSource(strings = {"mc4", "sc", "longerEnding"})
   public void testIncCheck(String fileEnding) throws IOException {
     File tempDir = new File(temporaryFolder, "tempDir");
-    tempDir.createNewFile();
     File outDir = new File(tempDir, "out");
     File repDir = new File(tempDir, "reports");
-    outDir.mkdirs();
-    repDir.mkdirs();
+    assertTrue(outDir.mkdirs());
+    assertTrue(repDir.mkdirs());
     String modelName = "IncCheckExample";
     Logger logger = LoggerFactory.getLogger("nop");
 
