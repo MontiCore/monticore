@@ -26,14 +26,7 @@ import de.monticore.types3.SymTypeRelations;
 import de.monticore.types3.generics.TypeParameterRelations;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -101,19 +94,27 @@ public class WithinTypeBasicSymbolsResolver {
       AccessModifier superModifier = private2Protected(accessModifier);
       List<SymTypeExpression> superTypes = getSuperTypes(thisType);
       resolvedSymType = Optional.empty();
+
+      // During OCL collection flattening, the same type is resolved twice for a field access of List<X>,
+      // since List<X> extends Collection<X> (only valid in OCL).
+      // Thus, exactly equal types are filtered out.
+      Set<SymTypeExpression> resolvedTypes = new TreeSet<>(new SymTypeExpressionComparator());
       for (SymTypeExpression superType : superTypes) {
         Optional<SymTypeExpression> resolvedInSuper =
             resolveVariable(superType, name, superModifier, predicate);
-        if (resolvedSymType.isPresent() && resolvedInSuper.isPresent()) {
-          Log.error("0xFD222 found variables with name \""
-              + name + "\" in multiple super types of \""
-              + thisType.printFullName() + "\"");
+        if (resolvedInSuper.isPresent()) {
+          resolvedTypes.add(resolvedInSuper.get());
         }
-        else if (resolvedSymType.isEmpty() && resolvedInSuper.isPresent()) {
-          resolvedSymType = resolvedInSuper;
-        }
-        //filter based on local variables
       }
+
+      if (resolvedTypes.size() > 1) {
+        Log.error("0xFD222 found variables with name \""
+            + name + "\" in multiple super types of \""
+            + thisType.printFullName() + "\"");
+      } else if (resolvedTypes.size() == 1) {
+        resolvedSymType = Optional.of(resolvedTypes.iterator().next());
+      }
+      //filter based on local variables
     }
 
     // not expecting free type variables for fields,

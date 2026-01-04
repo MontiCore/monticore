@@ -3,12 +3,9 @@ package de.monticore.types.check;
 
 import com.google.common.base.Preconditions;
 import de.monticore.types3.ISymTypeVisitor;
+import de.monticore.types3.util.SymTypeExpressionComparator;
 
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.Spliterator;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -22,7 +19,8 @@ public class SymTypeOfIntersection extends SymTypeExpression {
 
   public SymTypeOfIntersection(Collection<? extends SymTypeExpression> types) {
     Preconditions.checkNotNull(types);
-    this.intersectedTypes = new LinkedHashSet<>();
+    // TreeSet with comparator properly filters equal types
+    this.intersectedTypes = new TreeSet<>(new SymTypeExpressionComparator());
     this.intersectedTypes.addAll(types);
   }
 
