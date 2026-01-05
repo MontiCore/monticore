@@ -49,22 +49,8 @@ public class BuilderListMutatorDecorator extends ListMutatorDecorator {
           .map(ASTCDParameter::getName)
           .collect(Collectors.joining(", "));
 
-      List<ASTCDParameter> parameters = m.getCDParameterList();
-      String castType = "";
-      if (parameters != null && !parameters.isEmpty()) {
-        ASTMCType lastParameterType = parameters.get(parameters.size() - 1).getMCType();
-        if(attribute.getMCType() instanceof ASTMCBasicGenericType && lastParameterType.printType().equals(((ASTMCBasicGenericType)attribute.getMCType()).getMCTypeArgument(0).printType())){
-          castType = "List<" + lastParameterType.printType() + ">";
-        }
-        if(attribute.getMCType().printType().startsWith("UnaryOperator")){
-          System.out.println(attribute.getMCType().printType());
-        }
-      }
-
-
-
       this.replaceTemplate(EMPTY_BODY, m, new TemplateHookPoint("builder.MethodDelegate4ASTBuilderGeneric",
-          attribute, methodName, parameterCall, castType));
+          attribute, methodName, parameterCall));
     }
     return methods;
   }

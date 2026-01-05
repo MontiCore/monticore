@@ -6,13 +6,18 @@ import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.codegen.cd2java.methods.ListMethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-
-import java.util.Arrays;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
+import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
+import de.se_rwth.commons.logging.Log;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 
 public class ListMutatorDecorator extends ListMethodDecorator {
+  String ERROR_CODE = "0xA3232";
 
   protected static final String SET_LIST = "public void set%sList(List<%s> %s);";
   protected static final String SET_LIST_GENERIC = "public void set%sList(List<? extends %s> %s);";
@@ -43,11 +48,15 @@ public class ListMutatorDecorator extends ListMethodDecorator {
   }
 
   protected ASTCDMethod createSetListMethod(ASTCDAttribute ast) {
-    String errorCode = "0X23232";
     if(getDecorationHelper().isAstNode(ast)){
+      if(!getDecorationHelper().isListType(ast.getMCType().printType()) && !(ast.getMCType().getClass() == ASTMCListType.class)
+      && ((ASTMCBasicGenericType) ast.getMCType()).getMCTypeArgumentList().isEmpty() && ((ASTMCBasicGenericType) ast.getMCType()).getMCTypeArgumentList().get(0).getMCTypeOpt().isEmpty()){
+        Log.error(ERROR_CODE + " The attribute " + ast.getName() + " is marked as AST node list but does not provide a generic type argument.");
+      }
+      ASTMCType mcType = ((ASTMCBasicGenericType)ast.getMCType()).getMCTypeArgumentList().get(0).getMCTypeOpt().get();
       String signature = String.format(SET_LIST_GENERIC, capitalizedAttributeNameWithOutS, attributeType, ast.getName());
       ASTCDMethod setListMethod = getCDMethodFacade().createMethodByDefinition(signature);
-      this.replaceTemplate(EMPTY_BODY, setListMethod, new TemplateHookPoint("mc.methods.ListSetGeneric", ast, ast.getMCType().printType(), errorCode));
+      this.replaceTemplate(EMPTY_BODY, setListMethod, new TemplateHookPoint("mc.methods.ListSetGeneric", ast, mcType.printType(), ERROR_CODE));
       return setListMethod;
     }else{
       String signature = String.format(SET_LIST, capitalizedAttributeNameWithOutS, attributeType, ast.getName());
@@ -63,42 +72,42 @@ public class ListMutatorDecorator extends ListMethodDecorator {
 
 
   @Override
-  protected List<String> getMethodSignatures() {
-    return Arrays.asList(
-        String.format(CLEAR, capitalizedAttributeNameWithS),
-        String.format(ADD, capitalizedAttributeNameWithOutS, attributeType),
-        String.format(ADD_ALL, capitalizedAttributeNameWithS, attributeType),
-        String.format(REMOVE, capitalizedAttributeNameWithOutS),
-        String.format(REMOVE_ALL, capitalizedAttributeNameWithS),
-        String.format(RETAIN_ALL, capitalizedAttributeNameWithS),
-        String.format(REMOVE_IF, capitalizedAttributeNameWithOutS, attributeType),
-        String.format(FOR_EACH, capitalizedAttributeNameWithS, attributeType),
-        String.format(ADD_, capitalizedAttributeNameWithOutS, attributeType),
-        String.format(ADD_ALL_, capitalizedAttributeNameWithS, attributeType),
-        String.format(REMOVE_, attributeType, capitalizedAttributeNameWithOutS),
-        String.format(SET, attributeType, capitalizedAttributeNameWithOutS, attributeType),
-        String.format(REPLACE_ALL, capitalizedAttributeNameWithS, attributeType),
-        String.format(SORT, capitalizedAttributeNameWithS, attributeType)
-    );
+  protected Map<String, String> getMethodSignatures() {
+    Map<String, String> signatures = new LinkedHashMap<>();
+    signatures.put("clear", String.format(CLEAR, capitalizedAttributeNameWithS));
+    signatures.put("add", String.format(ADD, capitalizedAttributeNameWithOutS, attributeType));
+    signatures.put("addAll", String.format(ADD_ALL, capitalizedAttributeNameWithS, attributeType));
+    signatures.put("remove", String.format(REMOVE, capitalizedAttributeNameWithOutS));
+    signatures.put("removeAll", String.format(REMOVE_ALL, capitalizedAttributeNameWithS));
+    signatures.put("retainAll", String.format(RETAIN_ALL, capitalizedAttributeNameWithS));
+    signatures.put("removeIf", String.format(REMOVE_IF, capitalizedAttributeNameWithOutS, attributeType));
+    signatures.put("forEach", String.format(FOR_EACH, capitalizedAttributeNameWithS, attributeType));
+    signatures.put("add_", String.format(ADD_, capitalizedAttributeNameWithOutS, attributeType));
+    signatures.put("addAll_", String.format(ADD_ALL_, capitalizedAttributeNameWithS, attributeType));
+    signatures.put("remove_", String.format(REMOVE_, attributeType, capitalizedAttributeNameWithOutS));
+    signatures.put("set", String.format(SET, attributeType, capitalizedAttributeNameWithOutS, attributeType));
+    signatures.put("replaceAll", String.format(REPLACE_ALL, capitalizedAttributeNameWithS, attributeType));
+    signatures.put("sort", String.format(SORT, capitalizedAttributeNameWithS, attributeType));
+    return signatures;
   }
 
   @Override
-  protected List<String> getMethodSignaturesGeneric() {
-    return Arrays.asList(
-        String.format(CLEAR, capitalizedAttributeNameWithS),
-        String.format(ADD, capitalizedAttributeNameWithOutS, attributeType),
-        String.format(ADD_ALL, capitalizedAttributeNameWithS, attributeType),
-        String.format(REMOVE, capitalizedAttributeNameWithOutS),
-        String.format(REMOVE_ALL, capitalizedAttributeNameWithS),
-        String.format(RETAIN_ALL, capitalizedAttributeNameWithS),
-        String.format(REMOVE_IF, capitalizedAttributeNameWithOutS, attributeType),
-        String.format(FOR_EACH, capitalizedAttributeNameWithS, attributeType),
-        String.format(ADD_, capitalizedAttributeNameWithOutS, attributeType),
-        String.format(ADD_ALL_, capitalizedAttributeNameWithS, attributeType),
-        String.format(REMOVE_, attributeType, capitalizedAttributeNameWithOutS),
-        String.format(SET, attributeType, capitalizedAttributeNameWithOutS, attributeType),
-        String.format(REPLACE_ALL, capitalizedAttributeNameWithS, attributeType),
-        String.format(SORT, capitalizedAttributeNameWithS, attributeType)
-    );
+  protected Map<String, String> getMethodSignaturesGeneric() {
+    Map<String, String> signatures = new LinkedHashMap<>();
+    signatures.put("clear", String.format(CLEAR, capitalizedAttributeNameWithS));
+    signatures.put("add", String.format(ADD, capitalizedAttributeNameWithOutS, attributeType));
+    signatures.put("addAll", String.format(ADD_ALL, capitalizedAttributeNameWithS, attributeType));
+    signatures.put("remove", String.format(REMOVE, capitalizedAttributeNameWithOutS));
+    signatures.put("removeAll", String.format(REMOVE_ALL, capitalizedAttributeNameWithS));
+    signatures.put("retainAll", String.format(RETAIN_ALL, capitalizedAttributeNameWithS));
+    signatures.put("removeIf", String.format(REMOVE_IF, capitalizedAttributeNameWithOutS, attributeType));
+    signatures.put("forEach", String.format(FOR_EACH, capitalizedAttributeNameWithS, attributeType));
+    signatures.put("add_", String.format(ADD_, capitalizedAttributeNameWithOutS, attributeType));
+    signatures.put("addAll_", String.format(ADD_ALL_, capitalizedAttributeNameWithS, attributeType));
+    signatures.put("remove_", String.format(REMOVE_, attributeType, capitalizedAttributeNameWithOutS));
+    signatures.put("set", String.format(SET, attributeType, capitalizedAttributeNameWithOutS, attributeType));
+    signatures.put("replaceAll", String.format(REPLACE_ALL, capitalizedAttributeNameWithS, attributeType));
+    signatures.put("sort", String.format(SORT, capitalizedAttributeNameWithS, attributeType));
+    return signatures;
   }
 }

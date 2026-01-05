@@ -6,11 +6,19 @@ import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.codegen.cd2java.methods.ListMethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import java.util.Arrays;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
+import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
+import de.se_rwth.commons.logging.Log;
+
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 
 public class ListAccessorDecorator extends ListMethodDecorator {
+  String ERROR_CODE = "0xA9099";
 
   protected static final String GET_LIST = "public List<%s> get%sList();";
   protected static final String GET_LIST_GENERIC = "public List<? extends %s> get%sList();";
@@ -51,12 +59,17 @@ public class ListAccessorDecorator extends ListMethodDecorator {
     return methods;
   }
 
-
   protected ASTCDMethod createGetListMethod(ASTCDAttribute ast) {
     if (getDecorationHelper().isAstNode(ast)) {
+      if(!getDecorationHelper().isListType(ast.getMCType().printType()) && !(ast.getMCType().getClass() == ASTMCListType.class)
+          && ((ASTMCBasicGenericType) ast.getMCType()).getMCTypeArgumentList().isEmpty() && ((ASTMCBasicGenericType) ast.getMCType()).getMCTypeArgumentList().get(0).getMCTypeOpt().isEmpty()){
+        Log.error(ERROR_CODE + " The attribute " + ast.getName() + " is marked as AST node list but does not provide a generic type argument.");
+      }
+      ASTMCType mcType = ((ASTMCBasicGenericType)ast.getMCType()).getMCTypeArgumentList().get(0).getMCTypeOpt().get();
+
       String signature = String.format(GET_LIST_GENERIC, attributeType, capitalizedAttributeNameWithOutS);
       ASTCDMethod getList = this.getCDMethodFacade().createMethodByDefinition(signature);
-      this.replaceTemplate(EMPTY_BODY, getList, new TemplateHookPoint("methods.Get", ast));
+      this.replaceTemplate(EMPTY_BODY, getList, new TemplateHookPoint("mc.methods.GetGeneric", ast, mcType, ERROR_CODE));
       return getList;
     } else {
       String signature = String.format(GET_LIST, attributeType, capitalizedAttributeNameWithOutS);
@@ -64,54 +77,53 @@ public class ListAccessorDecorator extends ListMethodDecorator {
       this.replaceTemplate(EMPTY_BODY, getList, new TemplateHookPoint("methods.Get", ast));
       return getList;
     }
-
   }
 
   @Override
-  protected List<String> getMethodSignatures() {
-    return Arrays.asList(
-        String.format(CONTAINS, capitalizedAttributeNameWithOutS),
-        String.format(CONTAINS_ALL, capitalizedAttributeNameWithS),
-        String.format(IS_EMPTY, capitalizedAttributeNameWithS),
-        String.format(ITERATOR, attributeType, capitalizedAttributeNameWithS),
-        String.format(SIZE, capitalizedAttributeNameWithS),
-        String.format(TO_ARRAY, attributeType, capitalizedAttributeNameWithS, attributeType),
-        String.format(TO_ARRAY_, capitalizedAttributeNameWithS),
-        String.format(SPLITERATOR, attributeType, capitalizedAttributeNameWithS),
-        String.format(STREAM, attributeType, capitalizedAttributeNameWithS),
-        String.format(PARALLEL_STREAM, attributeType, capitalizedAttributeNameWithS),
-        String.format(GET, attributeType, capitalizedAttributeNameWithOutS),
-        String.format(INDEX_OF, capitalizedAttributeNameWithOutS),
-        String.format(LAST_INDEX_OF, capitalizedAttributeNameWithOutS),
-        String.format(EQUALS, capitalizedAttributeNameWithS),
-        String.format(HASHCODE, capitalizedAttributeNameWithS),
-        String.format(LIST_ITERATOR, attributeType, capitalizedAttributeNameWithS),
-        String.format(LIST_ITERATOR_, attributeType, capitalizedAttributeNameWithS),
-        String.format(SUBLIST, attributeType, capitalizedAttributeNameWithS)
-    );
+  protected Map<String, String> getMethodSignatures() {
+    Map<String, String> signatures = new LinkedHashMap<>();
+    signatures.put("contains", String.format(CONTAINS, capitalizedAttributeNameWithOutS));
+    signatures.put("containsAll", String.format(CONTAINS_ALL, capitalizedAttributeNameWithS));
+    signatures.put("isEmpty", String.format(IS_EMPTY, capitalizedAttributeNameWithS));
+    signatures.put("iterator", String.format(ITERATOR, attributeType, capitalizedAttributeNameWithS));
+    signatures.put("size", String.format(SIZE, capitalizedAttributeNameWithS));
+    signatures.put("toArray", String.format(TO_ARRAY, attributeType, capitalizedAttributeNameWithS, attributeType));
+    signatures.put("toArray_", String.format(TO_ARRAY_, capitalizedAttributeNameWithS));
+    signatures.put("spliterator", String.format(SPLITERATOR, attributeType, capitalizedAttributeNameWithS));
+    signatures.put("stream", String.format(STREAM, attributeType, capitalizedAttributeNameWithS));
+    signatures.put("parallelStream", String.format(PARALLEL_STREAM, attributeType, capitalizedAttributeNameWithS));
+    signatures.put("get", String.format(GET, attributeType, capitalizedAttributeNameWithOutS));
+    signatures.put("indexOf", String.format(INDEX_OF, capitalizedAttributeNameWithOutS));
+    signatures.put("lastIndexOf", String.format(LAST_INDEX_OF, capitalizedAttributeNameWithOutS));
+    signatures.put("equals", String.format(EQUALS, capitalizedAttributeNameWithS));
+    signatures.put("hashCode", String.format(HASHCODE, capitalizedAttributeNameWithS));
+    signatures.put("listIterator", String.format(LIST_ITERATOR, attributeType, capitalizedAttributeNameWithS));
+    signatures.put("listIterator_", String.format(LIST_ITERATOR_, attributeType, capitalizedAttributeNameWithS));
+    signatures.put("subList", String.format(SUBLIST, attributeType, capitalizedAttributeNameWithS));
+    return signatures;
   }
 
   @Override
-  protected List<String> getMethodSignaturesGeneric() {
-    return Arrays.asList(
-        String.format(CONTAINS, capitalizedAttributeNameWithOutS),
-        String.format(CONTAINS_ALL, capitalizedAttributeNameWithS),
-        String.format(IS_EMPTY, capitalizedAttributeNameWithS),
-        String.format(ITERATOR_GENERIC, attributeType, capitalizedAttributeNameWithS),
-        String.format(SIZE, capitalizedAttributeNameWithS),
-        String.format(TO_ARRAY, attributeType, capitalizedAttributeNameWithS, attributeType),
-        String.format(TO_ARRAY_, capitalizedAttributeNameWithS),
-        String.format(SPLITERATOR_GENERIC, attributeType, capitalizedAttributeNameWithS),
-        String.format(STREAM_GENERIC, attributeType, capitalizedAttributeNameWithS),
-        String.format(PARALLEL_STREAM_GENERIC, attributeType, capitalizedAttributeNameWithS),
-        String.format(GET, attributeType, capitalizedAttributeNameWithOutS),
-        String.format(INDEX_OF, capitalizedAttributeNameWithOutS),
-        String.format(LAST_INDEX_OF, capitalizedAttributeNameWithOutS),
-        String.format(EQUALS, capitalizedAttributeNameWithS),
-        String.format(HASHCODE, capitalizedAttributeNameWithS),
-        String.format(LIST_ITERATOR_GENERIC, attributeType, capitalizedAttributeNameWithS),
-        String.format(LIST_ITERATOR_GENERIC_, attributeType, capitalizedAttributeNameWithS),
-        String.format(SUBLIST_GENERIC, attributeType, capitalizedAttributeNameWithS)
-    );
+  protected Map<String, String> getMethodSignaturesGeneric() {
+    Map<String, String> signatures = new LinkedHashMap<>();
+    signatures.put("contains", String.format(CONTAINS, capitalizedAttributeNameWithOutS));
+    signatures.put("containsAll", String.format(CONTAINS_ALL, capitalizedAttributeNameWithS));
+    signatures.put("isEmpty", String.format(IS_EMPTY, capitalizedAttributeNameWithS));
+    signatures.put("iterator_generic", String.format(ITERATOR_GENERIC, attributeType, capitalizedAttributeNameWithS));
+    signatures.put("size", String.format(SIZE, capitalizedAttributeNameWithS));
+    signatures.put("toArray", String.format(TO_ARRAY, attributeType, capitalizedAttributeNameWithS, attributeType));
+    signatures.put("toArray_", String.format(TO_ARRAY_, capitalizedAttributeNameWithS));
+    signatures.put("spliterator_generic", String.format(SPLITERATOR_GENERIC, attributeType, capitalizedAttributeNameWithS));
+    signatures.put("stream_generic", String.format(STREAM_GENERIC, attributeType, capitalizedAttributeNameWithS));
+    signatures.put("parallelStream_generic", String.format(PARALLEL_STREAM_GENERIC, attributeType, capitalizedAttributeNameWithS));
+    signatures.put("get", String.format(GET, attributeType, capitalizedAttributeNameWithOutS));
+    signatures.put("indexOf", String.format(INDEX_OF, capitalizedAttributeNameWithOutS));
+    signatures.put("lastIndexOf", String.format(LAST_INDEX_OF, capitalizedAttributeNameWithOutS));
+    signatures.put("equals", String.format(EQUALS, capitalizedAttributeNameWithS));
+    signatures.put("hashCode", String.format(HASHCODE, capitalizedAttributeNameWithS));
+    signatures.put("listIterator_generic", String.format(LIST_ITERATOR_GENERIC, attributeType, capitalizedAttributeNameWithS));
+    signatures.put("listIterator_generic_", String.format(LIST_ITERATOR_GENERIC_, attributeType, capitalizedAttributeNameWithS));
+    signatures.put("subList_generic", String.format(SUBLIST_GENERIC, attributeType, capitalizedAttributeNameWithS));
+    return signatures;
   }
 }

@@ -27,7 +27,7 @@ if (get${handler}().isPresent()) {
     <#assign attrGetter = genHelper.getPlainGetter(attr)>
     <#assign astChildTypeName = genHelper.getNativeTypeName(attr.getMCType())>
     {
-      Iterator<${astChildTypeName}> iter_${attrName} = node.${attrGetter}().iterator();
+      Iterator<${astChildTypeName}> iter_${attrName} = (Iterator<${astChildTypeName}>) node.${attrGetter}().iterator();
       while (iter_${attrName}.hasNext()) {
         iter_${attrName}.next().accept(${topCast}this);
       }

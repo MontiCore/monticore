@@ -14,7 +14,7 @@ if (this.isPrintComments()) {
     de.monticore.prettyprint.CommentPrettyPrinter.printPreComments(node, getPrinter());
 }
 <#list iterators as it>
-    ${it.getValue().getType()} iter_${it.getKey()?uncap_first} = node.${it.getValue().getGetter()}().iterator();
+    ${it.getValue().getType()} iter_${it.getKey()?uncap_first} = (${it.getValue().getType()})node.${it.getValue().getGetter()}().iterator();
 </#list>
 
 <#if blockData.getAltDataList()?size == 1 && !blockData.getAltDataList()?first.getExpressionList()?has_content> <#comment>If only one alt is present without condition, skip the condition</#comment>

@@ -41,7 +41,7 @@ ${tc.signature("cdClass", "classFullName")}
     <#elseif genHelper.isListAstNode(attr)>
     <#assign astChildTypeName = genHelper.getNativeTypeName(attr.getMCType())>
   {
-    Iterator<${astChildTypeName}> iter_${attr.getName()} = node.${attrGetter}().iterator();
+    Iterator<${astChildTypeName}> iter_${attr.getName()} = (Iterator<${astChildTypeName}>) node.${attrGetter}().iterator();
     boolean isEmpty = true;
     if (iter_${attr.getName()}.hasNext()) {
       pp.print("${attr.getName()}");
@@ -80,7 +80,7 @@ ${tc.signature("cdClass", "classFullName")}
       <#else>
     String str = "";
       </#if>
-    Iterator<?> it = node.${attrGetter}().iterator();
+    Iterator<?> it = (Iterator<${astChildTypeName}>) node.${attrGetter}().iterator();
     boolean isEmpty = true;
     if (it.hasNext() || printEmptyList) {
       pp.print("${attr.getName()}" + " = [");

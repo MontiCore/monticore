@@ -5,7 +5,7 @@ boolean allElementsValid = true;
 
 if(${attribute.getName()} != null) {
   for(Object element: ${attribute.getName()}) {
-    if(!(${attribute.getName()} instanceof ${attributeType})){
+    if(!(${attribute.getName()}.getClass() ==  ${attributeType}.class)){
       allElementsValid = false;
       break;
     }

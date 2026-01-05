@@ -9,11 +9,11 @@ import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
-import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import org.apache.commons.lang3.StringUtils;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
@@ -25,6 +25,8 @@ public abstract class ListMethodDecorator extends AbstractCreator<ASTCDAttribute
   protected String capitalizedAttributeNameWithOutS;
 
   protected String attributeType;
+
+  String ERROR_CODE = "0xA9091";
 
   public ListMethodDecorator(final GlobalExtensionManagement glex) {
     super(glex);
@@ -43,18 +45,25 @@ public abstract class ListMethodDecorator extends AbstractCreator<ASTCDAttribute
     this.attributeType = getAttributeType(ast);
 
     List<ASTCDMethod> methods;
+    List<String> methodTypes;
     boolean isGeneric = getDecorationHelper().isAstNode(ast);
     if (isGeneric) {
-      methods = getMethodSignaturesGeneric().stream()
+      methods = getMethodSignaturesGeneric().values().stream()
           .map(getCDMethodFacade()::createMethodByDefinition)
           .collect(Collectors.toList());
+      methodTypes = getMethodSignaturesGeneric().keySet().stream().collect(Collectors.toList());
     } else {
-      methods = getMethodSignatures().stream()
+      methods = getMethodSignatures().values().stream()
           .map(getCDMethodFacade()::createMethodByDefinition)
           .collect(Collectors.toList());
+      methodTypes = getMethodSignatures().keySet().stream().collect(Collectors.toList());
     }
 
-    methods.forEach(m -> this.replaceTemplate(EMPTY_BODY, m, createListImplementation(m,isGeneric)));
+    for(int i = 0; i < methods.size(); i++) {
+      String methodSignature = methodTypes.get(i);
+      ASTCDMethod method = methods.get(i);
+      this.replaceTemplate(EMPTY_BODY, method, createListImplementation(method,methodSignature,isGeneric));
+    }
     return methods;
   }
 
@@ -66,9 +75,9 @@ public abstract class ListMethodDecorator extends AbstractCreator<ASTCDAttribute
             .anyMatch(v -> v.getName().equals(MC2CDStereotypes.DERIVED_ATTRIBUTE_NAME.toString()));
   }
 
-  protected abstract List<String> getMethodSignatures();
+  protected abstract Map<String, String> getMethodSignatures();
 
-  protected abstract List<String> getMethodSignaturesGeneric();
+  protected abstract Map<String, String> getMethodSignaturesGeneric();
 
   protected String getTypeArgumentFromListType(ASTMCType type) {
     String typeString = CD4CodeMill.prettyPrint(type, false);
@@ -76,8 +85,7 @@ public abstract class ListMethodDecorator extends AbstractCreator<ASTCDAttribute
     return typeString.substring(lastListIndex, typeString.length() - 1);
   }
 
-  protected HookPoint createListImplementation(final ASTCDMethod method, boolean isGeneric) {
-    String errorCode = "0Xdsidusd";
+  protected HookPoint createListImplementation(final ASTCDMethod method, final String methodSignature, boolean isGeneric) {
     String attributeName = StringUtils.uncapitalize(capitalizedAttributeNameWithOutS);
     int attributeIndex = method.getName().lastIndexOf(capitalizedAttributeNameWithOutS);
     String methodName = method.getName().substring(0, attributeIndex);
@@ -85,26 +93,9 @@ public abstract class ListMethodDecorator extends AbstractCreator<ASTCDAttribute
         .map(ASTCDParameter::getName)
         .collect(Collectors.joining(", "));
 
-    List<ASTCDParameter> parameters = method.getCDParameterList();
-    ASTMCType lastParameterType = null;
-    if (parameters != null && !parameters.isEmpty()) {
-      lastParameterType = parameters.get(parameters.size() - 1).getMCType();
-    }
-
-    //TODO this is bad and should not be merged in this state
     String returnType = CD4CodeMill.prettyPrint(method.getMCReturnType(), false);
     if(isGeneric) {
-      String parameterAttribute = parameterCall.split(", ")[parameterCall.split(", ").length-1];
-      String parameterType="";
-      if(lastParameterType != null && (getDecorationHelper().isListType(lastParameterType.printType()) || getDecorationHelper().isCollectionType(lastParameterType.printType()))){
-        parameterType = "Collection";
-      }
-      if(lastParameterType != null && getDecorationHelper().isArrayType(lastParameterType.printType())){
-        parameterType = "Array";
-      }
-
-      return new TemplateHookPoint("mc.methods.ListMethodDelegate", attributeName, methodName, parameterCall, returnType, attributeType, parameterType, parameterAttribute, errorCode);
-
+      return new TemplateHookPoint("mc.methods.MethodDelegateGeneric", attributeName, methodName, parameterCall, returnType, attributeType, methodSignature, ERROR_CODE);
     }else{
       return new TemplateHookPoint("methods.MethodDelegate", attributeName, methodName, parameterCall, returnType);
     }
