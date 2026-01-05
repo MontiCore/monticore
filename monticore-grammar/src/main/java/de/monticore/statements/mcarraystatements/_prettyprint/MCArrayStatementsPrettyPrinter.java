@@ -18,7 +18,7 @@ public class MCArrayStatementsPrettyPrinter extends MCArrayStatementsPrettyPrint
       CommentPrettyPrinter.printPreComments(node, getPrinter());
     }
 
-    Iterator<ASTVariableInit> iter_variableInit = node.getVariableInitList().iterator();
+    Iterator<ASTVariableInit> iter_variableInit = (Iterator<ASTVariableInit>) node.getVariableInitList().iterator();
     getPrinter().println("{ ");
     getPrinter().indent();
 

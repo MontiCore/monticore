@@ -106,7 +106,7 @@ public class UglyExpressionsCTTIVisitor
         getTraverser(), getType4Ast(), getInferenceContext4Ast()
     );
     CompileTimeTypeCalculator.handleCall(
-        expr, tmpFuncExpr, creator.getArguments().getExpressionList(),
+        expr, tmpFuncExpr, (List<ASTExpression>) creator.getArguments().getExpressionList(),
         getTraverser(), getType4Ast(), getInferenceContext4Ast()
     );
     // clean the map by removing the temporary ASTExpression

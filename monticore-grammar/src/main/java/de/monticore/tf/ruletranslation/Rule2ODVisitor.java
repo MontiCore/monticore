@@ -150,8 +150,8 @@ public abstract class Rule2ODVisitor implements TFCommonsVisitor2 {
         ASTAssignment assignment = ODRulesMill.assignmentBuilder().uncheckedBuild();
         assignment.setLhs(key);
         assignment.setRhs(new ODRulesParser().parse_StringExpression(value).get());
-        state.getGenRule().getAssignmentList().add(0,assignment);      }
-      catch (IOException e) {
+        ((List<ASTAssignment>) state.getGenRule().getAssignmentList()).add(0, assignment);
+      } catch (IOException e) {
         Log.error("0xF0901: Invalid Java Expression used in Transformation Rule", e);
       }
     }

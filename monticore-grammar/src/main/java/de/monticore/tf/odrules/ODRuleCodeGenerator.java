@@ -632,7 +632,7 @@ public class ODRuleCodeGenerator {
     for (ASTODObject odObject : Util.getAllODObjects(ast.getLhs())) {
       result.put(odObject.getName(), new ArrayList<String>());
     }
-    List<ASTFoldingSet> f = ast.getFoldingSetList();
+    List<ASTFoldingSet> f = (List<ASTFoldingSet>) ast.getFoldingSetList();
     for (ASTFoldingSet t : f) {
       for (String o1 : t.getObjectNamesList()) {
         for (String o2 : t.getObjectNamesList()) {
@@ -662,7 +662,7 @@ public class ODRuleCodeGenerator {
 
     for (ASTChangeOperation co : changesList) {
 
-      List<ASTChange> setAttributeList = co.getSetAttributeOperationsList();
+      List<ASTChange> setAttributeList = (List<ASTChange>) co.getSetAttributeOperationsList();
 
       for (ASTChange set : setAttributeList) {
         // if the value is collected from other objects
@@ -718,7 +718,7 @@ public class ODRuleCodeGenerator {
     List<ASTChange> changesSequence = new ArrayList<>();
 
     for (ASTChangeOperation co : changesList) {
-      List<ASTChange> setAttributeList = co.getSetAttributeOperationsList();
+      List<ASTChange> setAttributeList = (List<ASTChange>) co.getSetAttributeOperationsList();
 
       for (ASTChange set : setAttributeList) {
         if (set.isPresentValue() && requirementNames.get(set.getValue()) != null) {

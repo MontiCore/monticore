@@ -107,7 +107,7 @@ public class ChangeOperationFactory {
     List<ASTChange> setOperations = new ArrayList<>();
     createOperations.add(createCreate(type, objectName, !obj.getStereotypeValue("noBuilder").isEmpty()));
 
-    List<ASTODAttribute> attributes = obj.getAttributesList();
+    List<ASTODAttribute> attributes = (List<ASTODAttribute>) obj.getAttributesList();
     for (ASTODAttribute att : attributes) {
       setOperations.add(createSetAttribute( obj, att));
     }
@@ -158,7 +158,7 @@ public class ChangeOperationFactory {
     if (attribute.isPresentList() ) {
       ASTArrayInit listValue = attribute.getList();
       StringBuilder valuesList = new StringBuilder();
-      Iterator<ASTVariableInit> i = listValue.getVariableInitList().iterator();
+      Iterator<ASTVariableInit> i = (Iterator<ASTVariableInit>) listValue.getVariableInitList().iterator();
       while (i.hasNext()) {
         ASTVariableInit next = i.next();
         TFExpressionFullPrettyPrinter printer = new TFExpressionFullPrettyPrinter(new IndentPrinter());

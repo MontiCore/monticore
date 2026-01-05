@@ -25,12 +25,12 @@ public class AbstractTagger {
   }
 
   protected static Stream<ASTTargetElement> findTargetsBy(ASTTagUnit astTag, String symbolName) {
-    return astTag.getTagsList().stream()
+    return (Stream<ASTTargetElement>) astTag.getTagsList().stream()
             .filter(t -> t.getModelElementIdentifierList().stream().anyMatch(i -> isIdentified(i, symbolName)));
   }
 
   protected static Stream<ASTTargetElement> findTargetsBy(ASTContext astContext, String symbolName) {
-    return astContext.getTagsList().stream()
+    return (Stream<ASTTargetElement>) astContext.getTagsList().stream()
             .filter(t -> t.getModelElementIdentifierList().stream().anyMatch(i -> isIdentified(i, symbolName)));
   }
 
@@ -42,12 +42,12 @@ public class AbstractTagger {
   }
 
   protected static Stream<ASTContext> findContextBy(ASTTagUnit astTag, String symbolName) {
-    return astTag.getContextsList().stream()
+    return (Stream<ASTContext>) astTag.getContextsList().stream()
             .filter(c -> isIdentified(c.getModelElementIdentifier(), symbolName));
   }
 
   protected static Stream<ASTContext> findContextBy(ASTContext astTag, String symbolName) {
-    return astTag.getContextsList().stream()
+    return (Stream<ASTContext>) astTag.getContextsList().stream()
             .filter(c -> isIdentified(c.getModelElementIdentifier(), symbolName));
   }
 

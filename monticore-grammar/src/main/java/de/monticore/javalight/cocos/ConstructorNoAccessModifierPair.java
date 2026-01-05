@@ -25,7 +25,7 @@ public class ConstructorNoAccessModifierPair implements JavaLightASTConstructorD
   // JLS3 8.8.3-2
   @Override
   public void check(ASTConstructorDeclaration node) {
-    List<ASTMCModifier> modifiers = node.getMCModifierList();
+    List<ASTMCModifier> modifiers = (List<ASTMCModifier>) node.getMCModifierList();
 
     int mod = 0;
 

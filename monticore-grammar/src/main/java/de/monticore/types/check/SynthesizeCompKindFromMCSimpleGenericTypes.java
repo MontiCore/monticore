@@ -69,7 +69,7 @@ public class SynthesizeCompKindFromMCSimpleGenericTypes implements MCSimpleGener
             mcType.get_SourcePositionStart(), mcType.get_SourcePositionEnd()
         );
       }
-      List<SymTypeExpression> typeArgExpressions = typeArgumentsToTypes(mcType.getMCTypeArgumentList()).stream()
+      List<SymTypeExpression> typeArgExpressions = typeArgumentsToTypes((List<ASTMCTypeArgument>) mcType.getMCTypeArgumentList()).stream()
           .map(TypeCheck3::symTypeFromAST)
           .collect(Collectors.toList());
 

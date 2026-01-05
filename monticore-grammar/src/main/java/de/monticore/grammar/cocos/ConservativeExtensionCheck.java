@@ -22,7 +22,7 @@ public class ConservativeExtensionCheck implements GrammarASTMCGrammarCoCo {
   public void check(ASTMCGrammar node) {
     MCGrammarSymbol g = node.getSymbol();
     for (ProdSymbol nt : g.getProds()) {
-      if (!hasNonConservativeAnno(nt.getAstNode().getGrammarAnnotationList())) {
+      if (!hasNonConservativeAnno((List<ASTGrammarAnnotation>) nt.getAstNode().getGrammarAnnotationList())) {
         //check when you extend a class not conservative directly (Subclass extends Superclass = ...)
         if (nt.isClass() && !nt.getSuperProds().isEmpty()
                 && !MCGrammarSymbolTableHelper.getAllSuperProds(nt).isEmpty()) {

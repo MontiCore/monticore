@@ -9,8 +9,9 @@ public class ASTMCBasicGenericType extends ASTMCBasicGenericTypeTOP {
 
   protected ISymbol definingSymbol;
 
+
   @Override
-  public Optional<ISymbol> getDefiningSymbol() {
+  public Optional<? extends ISymbol> getDefiningSymbol() {
     return Optional.ofNullable(this.definingSymbol);
   }
 

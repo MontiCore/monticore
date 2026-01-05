@@ -19,7 +19,7 @@ public class UnnamedTerminalInInterface implements GrammarASTInterfaceProdCoCo {
 
   @Override
   public void check(ASTInterfaceProd node) {
-    checkUnnamedTerminal(node.getName(), node.getAltList());
+    checkUnnamedTerminal(node.getName(), (List<ASTAlt>) node.getAltList());
   }
 
   protected void checkUnnamedTerminal(String interfaceName, List<ASTAlt> astAltList) {
@@ -32,7 +32,7 @@ public class UnnamedTerminalInInterface implements GrammarASTInterfaceProdCoCo {
         } else if (astRuleComponent instanceof ASTTokenTerminal && !((ASTTokenTerminal) astRuleComponent).isPresentUsageName()) {
           Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, interfaceName, "KeyTerminal", astRuleComponent.getName()));
         } else if (astRuleComponent instanceof ASTBlock) {
-          checkUnnamedTerminal(interfaceName, ((ASTBlock) astRuleComponent).getAltList());
+          checkUnnamedTerminal(interfaceName, (List<ASTAlt>) ((ASTBlock) astRuleComponent).getAltList());
         }
       }
     }

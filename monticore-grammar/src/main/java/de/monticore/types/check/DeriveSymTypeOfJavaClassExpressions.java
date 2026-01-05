@@ -166,7 +166,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
   protected SymTypeExpression handleSuperSuffix(ASTSuperSuffix superSuffix, SymTypeExpression superClass){
     if (superSuffix.isPresentArguments()) {
       //case 1 -> Expression.super.<TypeArgument>Method(Args)
-      List<SymTypeExpression> typeArgsList = calculateTypeArguments(superSuffix.getMCTypeArgumentList());
+      List<SymTypeExpression> typeArgsList = calculateTypeArguments((List<ASTMCTypeArgument>) superSuffix.getMCTypeArgumentList());
       List<FunctionSymbol> methods = superClass.getMethodList(superSuffix.getName(), false, AccessModifier.ALL_INCLUSION);
       if (!methods.isEmpty() && null != superSuffix.getArguments()) {
         //check if the methods fit and return the right returntype
@@ -301,7 +301,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
     //the only case where you can calculate a result is Expression.<TypeArguments>method()
     //because the other cases of the GenericInvocationSuffix can only be calculated if the expression
     //is a PrimaryGenericInvocationExpression
-    List<SymTypeExpression> typeArgsList = calculateTypeArguments(node.getPrimaryGenericInvocationExpression().getMCTypeArgumentList());
+    List<SymTypeExpression> typeArgsList = calculateTypeArguments((List<ASTMCTypeArgument>) node.getPrimaryGenericInvocationExpression().getMCTypeArgumentList());
 
     //search in the scope of the type that before the "." for a method that has the right name
     if(node.getPrimaryGenericInvocationExpression().getGenericInvocationSuffix().isPresentName()) {
@@ -428,7 +428,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
         if(!methods.isEmpty() && node.getGenericInvocationSuffix().isPresentArguments()){
           //check if the methods fit and return the right returntype
           ASTArguments args = node.getGenericInvocationSuffix().getArguments();
-          List<SymTypeExpression> typeArgsList = calculateTypeArguments(node.getMCTypeArgumentList());
+          List<SymTypeExpression> typeArgsList = calculateTypeArguments((List<ASTMCTypeArgument>) node.getMCTypeArgumentList());
           if(!typeArgsList.isEmpty()){
             getTypeCheckResult().unsetType();
           }
@@ -445,7 +445,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
           if (!methods.isEmpty() && null != node.getGenericInvocationSuffix().getArguments()) {
             //check if the constructors fit and return the right returntype
             ASTArguments args = node.getGenericInvocationSuffix().getArguments();
-            List<SymTypeExpression> typeArgsList = calculateTypeArguments(node.getMCTypeArgumentList());
+            List<SymTypeExpression> typeArgsList = calculateTypeArguments((List<ASTMCTypeArgument>) node.getMCTypeArgumentList());
             wholeResult = checkMethodsAndReplaceTypeVariables(methods, args, typeArgsList);
           }
         }
@@ -463,7 +463,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
           if(!methods.isEmpty() && superSuffix.isPresentArguments()){
             //check if the constructors fit and return the right returntype
             ASTArguments args = superSuffix.getArguments();
-            List<SymTypeExpression> typeArgsList = calculateTypeArguments(node.getMCTypeArgumentList());
+            List<SymTypeExpression> typeArgsList = calculateTypeArguments((List<ASTMCTypeArgument>) node.getMCTypeArgumentList());
             wholeResult = checkMethodsAndReplaceTypeVariables(methods,args,typeArgsList);
           }
         }

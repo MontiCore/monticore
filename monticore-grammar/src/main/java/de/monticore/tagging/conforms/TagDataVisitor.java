@@ -69,7 +69,7 @@ public abstract class TagDataVisitor implements TagsVisitor2 {
   @Override
   public void visit(final ASTTargetElement node) {
     // "tag" (ModelElementIdentifier || ",")+ "with" (Tag || ",")+ ";";
-    tagsToAdd = node.getTagList();
+    tagsToAdd = (List<ASTTag>) node.getTagList();
     node.getModelElementIdentifierList().forEach(id -> id.accept(getIdentifierTraverser()));
     tagsToAdd = Collections.emptyList(); // invalidate tagsToAdd by means of an empty list
   }

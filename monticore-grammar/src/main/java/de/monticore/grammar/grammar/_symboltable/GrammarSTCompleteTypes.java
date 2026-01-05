@@ -124,10 +124,10 @@ public class GrammarSTCompleteTypes implements GrammarVisitor2 {
     ProdSymbol prodSymbol = node.getSymbol();
     prodSymbol.setIsInterface(true);
 
-    setSymbolDefinition(prodSymbol, node.getSymbolDefinitionList());
+    setSymbolDefinition(prodSymbol, (List<ASTSymbolDefinition>) node.getSymbolDefinitionList());
 
     setSuperProdsAndTypes(prodSymbol, emptyList(),
-            emptyList(), node.getSuperInterfaceRuleList(), node.getASTSuperInterfaceList());
+            emptyList(), (List<ASTRuleReference>) node.getSuperInterfaceRuleList(), (List<ASTMCType>) node.getASTSuperInterfaceList());
   }
 
   @Override
@@ -146,10 +146,11 @@ public class GrammarSTCompleteTypes implements GrammarVisitor2 {
   @Override
   public void endVisit(ASTClassProd ast) {
     ProdSymbol prodSymbol = ast.getSymbol();
-    setSymbolDefinition(prodSymbol, ast.getSymbolDefinitionList());
+    setSymbolDefinition(prodSymbol, (List<ASTSymbolDefinition>) ast.getSymbolDefinitionList());
 
-    setSuperProdsAndTypes(prodSymbol, ast.getSuperRuleList(),
-            ast.getASTSuperClassList(), ast.getSuperInterfaceRuleList(), ast.getASTSuperInterfaceList());
+    setSuperProdsAndTypes(prodSymbol, (List<ASTRuleReference>) ast.getSuperRuleList(),
+        (List<ASTMCType>) ast.getASTSuperClassList(), (List<ASTRuleReference>) ast.getSuperInterfaceRuleList(),
+        (List<ASTMCType>) ast.getASTSuperInterfaceList());
   }
 
   @Override
@@ -157,10 +158,10 @@ public class GrammarSTCompleteTypes implements GrammarVisitor2 {
     ProdSymbol prodSymbol = ast.getSymbol();
     prodSymbol.setIsAbstract(true);
 
-    setSymbolDefinition(prodSymbol, ast.getSymbolDefinitionList());
+    setSymbolDefinition(prodSymbol, (List<ASTSymbolDefinition>) ast.getSymbolDefinitionList());
 
-    setSuperProdsAndTypes(prodSymbol, ast.getSuperRuleList(),
-            ast.getASTSuperClassList(), ast.getSuperInterfaceRuleList(), ast.getASTSuperInterfaceList());
+    setSuperProdsAndTypes(prodSymbol, (List<ASTRuleReference>) ast.getSuperRuleList(),
+        (List<ASTMCType>) ast.getASTSuperClassList(), (List<ASTRuleReference>) ast.getSuperInterfaceRuleList(), (List<ASTMCType>) ast.getASTSuperInterfaceList());
   }
 
   @Override
@@ -168,7 +169,7 @@ public class GrammarSTCompleteTypes implements GrammarVisitor2 {
     ProdSymbol prodSymbol = ast.getSymbol();
     prodSymbol.setIsExternal(true);
 
-    setSymbolDefinition(prodSymbol, ast.getSymbolDefinitionList());
+    setSymbolDefinition(prodSymbol, (List<ASTSymbolDefinition>) ast.getSymbolDefinitionList());
   }
 
   @Override

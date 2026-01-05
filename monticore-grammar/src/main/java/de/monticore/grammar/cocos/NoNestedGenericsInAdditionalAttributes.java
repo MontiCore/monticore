@@ -33,15 +33,15 @@ public class NoNestedGenericsInAdditionalAttributes implements GrammarASTMCGramm
     String grammarName = node.getName();
     // astrule
     for (ASTASTRule astastRule : node.getASTRuleList()) {
-      findMultipleGenericAttributes(astastRule.getAdditionalAttributeList(), "Ast", grammarName, astastRule.getType());
+      findMultipleGenericAttributes((List<ASTAdditionalAttribute>) astastRule.getAdditionalAttributeList(), "Ast", grammarName, astastRule.getType());
     }
     // symbolrule
     for (ASTSymbolRule astSymbolRule : node.getSymbolRuleList()) {
-      findMultipleGenericAttributes(astSymbolRule.getAdditionalAttributeList(), "Symbol", grammarName, astSymbolRule.getType());
+      findMultipleGenericAttributes((List<ASTAdditionalAttribute>) astSymbolRule.getAdditionalAttributeList(), "Symbol", grammarName, astSymbolRule.getType());
     }
     // scoperule
     if (node.isPresentScopeRule()) {
-      findMultipleGenericAttributes(node.getScopeRule().getAdditionalAttributeList(), "Scope", grammarName, grammarName + "Scope");
+      findMultipleGenericAttributes((List<ASTAdditionalAttribute>) node.getScopeRule().getAdditionalAttributeList(), "Scope", grammarName, grammarName + "Scope");
     }
   }
 

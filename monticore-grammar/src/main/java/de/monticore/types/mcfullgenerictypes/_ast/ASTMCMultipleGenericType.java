@@ -35,7 +35,7 @@ public class ASTMCMultipleGenericType extends ASTMCMultipleGenericTypeTOP {
 
   @Override
   public List<ASTMCTypeArgument> getMCTypeArgumentList() {
-    return getMCInnerType(sizeMCInnerTypes()-1).getMCTypeArgumentList();
+    return (List<ASTMCTypeArgument>) getMCInnerType(sizeMCInnerTypes()-1).getMCTypeArgumentList();
   }
 
   @Override

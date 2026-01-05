@@ -95,8 +95,8 @@ public class DifferenceFinder {
       //calculate the list of created objects
       calculateObjectsToCreate(leftObjects, rightObjects);
 
-      List<ASTODLink> lhsLinks = lhs.getODLinkList();
-      List<ASTODLink> rhsLinks = rule.getRhs().getODLinkList();
+      List<ASTODLink> lhsLinks = (List<ASTODLink>) lhs.getODLinkList();
+      List<ASTODLink> rhsLinks = (List<ASTODLink>) rule.getRhs().getODLinkList();
 
       // calculate the list of deleted links
       calculateLinksToDelete(lhsLinks, rhsLinks);
@@ -248,8 +248,8 @@ public class DifferenceFinder {
           }
           else {
             match = isMatchForLink(left, right);
-            unchanged = match && referencesAreEqual(left.getRightReferenceNameList(),
-                right.getRightReferenceNameList());
+            unchanged = match && referencesAreEqual((List<ASTMCQualifiedName>) left.getRightReferenceNameList(),
+                (List<ASTMCQualifiedName>) right.getRightReferenceNameList());
           }
           if (match) {
             if (unchanged) {
@@ -272,8 +272,10 @@ public class DifferenceFinder {
   }
 
   private boolean isMatchForSetValuedLink(ASTODLink left, ASTODLink right){
-    return (referencesAreEqual(left.getLeftReferenceNameList(),right.getLeftReferenceNameList())
-        && referencesAreEqual(left.getRightReferenceNameList(),right.getRightReferenceNameList()))
+    return (referencesAreEqual((List<ASTMCQualifiedName>) left.getLeftReferenceNameList(),
+        (List<ASTMCQualifiedName>) right.getLeftReferenceNameList())
+        && referencesAreEqual((List<ASTMCQualifiedName>) left.getRightReferenceNameList(),
+        (List<ASTMCQualifiedName>) right.getRightReferenceNameList()))
         && areRolesEqual(left, right);
   }
 
@@ -283,7 +285,8 @@ public class DifferenceFinder {
   }
 
   private boolean isMatchForLink(ASTODLink left, ASTODLink right){
-    return referencesAreEqual(left.getLeftReferenceNameList(),right.getLeftReferenceNameList())
+    return referencesAreEqual((List<ASTMCQualifiedName>) left.getLeftReferenceNameList(),
+        (List<ASTMCQualifiedName>) right.getLeftReferenceNameList())
         && areRolesEqual(left, right);
   }
 
@@ -308,10 +311,11 @@ public class DifferenceFinder {
       }
 
       for(ASTODLink former : rhsLinks){
-        if(!right.deepEquals(former) &&  referencesAreEqual(former.getRightReferenceNameList(),right.getRightReferenceNameList())){
+        if(!right.deepEquals(former) &&  referencesAreEqual((List<ASTMCQualifiedName>) former.getRightReferenceNameList(),
+            (List<ASTMCQualifiedName>) right.getRightReferenceNameList())){
           ASTStereotype stereotype = ODRulesMill.stereotypeBuilder().build();
           ASTStereoValue value = ODRulesMill.stereoValueBuilder().setName("copy").build();
-          stereotype.getValuesList().add(value);
+          ((List<ASTStereoValue>)stereotype.getValuesList()).add(value);
           right.setStereotype(stereotype);
         }
       }

@@ -14,7 +14,7 @@ public interface ASTMCGenericType extends ASTMCGenericTypeTOP {
     Getter for MCTypeArgumentList
    */
 
-  List<ASTMCTypeArgument> getMCTypeArgumentList();
+  List<? extends ASTMCTypeArgument> getMCTypeArgumentList();
 
   default boolean containsMCTypeArgument(Object element) {
     return getMCTypeArgumentList().contains(element);
@@ -29,7 +29,7 @@ public interface ASTMCGenericType extends ASTMCGenericTypeTOP {
   }
 
   default Iterator<ASTMCTypeArgument> iteratorMCTypeArguments() {
-    return getMCTypeArgumentList().iterator();
+    return (Iterator<ASTMCTypeArgument>) getMCTypeArgumentList().iterator();
   }
 
   default int sizeMCTypeArguments() {
@@ -45,15 +45,15 @@ public interface ASTMCGenericType extends ASTMCGenericTypeTOP {
   }
 
   default Spliterator<ASTMCTypeArgument> spliteratorMCTypeArguments() {
-    return getMCTypeArgumentList().spliterator();
+    return (Spliterator<ASTMCTypeArgument>) getMCTypeArgumentList().spliterator();
   }
 
   default Stream<ASTMCTypeArgument> streamMCTypeArguments() {
-    return getMCTypeArgumentList().stream();
+    return (Stream<ASTMCTypeArgument>) getMCTypeArgumentList().stream();
   }
 
   default Stream<ASTMCTypeArgument> parallelStreamMCTypeArguments() {
-    return getMCTypeArgumentList().parallelStream();
+    return (Stream<ASTMCTypeArgument>) getMCTypeArgumentList().parallelStream();
   }
 
   default ASTMCTypeArgument getMCTypeArgument(int index) {
@@ -73,15 +73,15 @@ public interface ASTMCGenericType extends ASTMCGenericTypeTOP {
   }
 
   default ListIterator<ASTMCTypeArgument> listIteratorMCTypeArguments() {
-    return getMCTypeArgumentList().listIterator();
+    return (ListIterator<ASTMCTypeArgument>) getMCTypeArgumentList().listIterator();
   }
 
   default ListIterator<ASTMCTypeArgument> listIteratorMCTypeArguments(int index) {
-    return getMCTypeArgumentList().listIterator(index);
+    return (ListIterator<ASTMCTypeArgument>) getMCTypeArgumentList().listIterator(index);
   }
 
   default List<ASTMCTypeArgument> subListMCTypeArguments(int start, int end) {
-    return getMCTypeArgumentList().subList(start, end);
+    return (List<ASTMCTypeArgument>) getMCTypeArgumentList().subList(start, end);
   }
 
   /*

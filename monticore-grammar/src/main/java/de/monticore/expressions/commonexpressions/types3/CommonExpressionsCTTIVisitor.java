@@ -71,8 +71,8 @@ public class CommonExpressionsCTTIVisitor
     }
 
     visitForInference(expr);
-    CompileTimeTypeCalculator.handleCall(expr, expr.getExpression(),
-        expr.getArguments().getExpressionList(),
+    CompileTimeTypeCalculator.handleCall(expr, (SymTypeExpression) expr.getExpression(),
+            (List<ASTExpression>) expr.getArguments().getExpressionList(),
         getTraverser(), getType4Ast(), getInferenceContext4Ast());
     if (getType4Ast().hasPartialTypeOfExpression(expr) &&
         !SymTypeRelations.normalize(getType4Ast().getPartialTypeOfExpr(expr))

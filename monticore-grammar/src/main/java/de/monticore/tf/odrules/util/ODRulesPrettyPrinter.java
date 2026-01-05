@@ -214,7 +214,7 @@ public class ODRulesPrettyPrinter  implements ODRulesVisitor2,
     /*if(node.getLeftModifier().isPresent())
     node.getLeftModifier().get().accept(this);*/
     // print objects referenced on the left side of the link
-    printQualifiedNameList(node.getLeftReferenceNameList().iterator(), ", ");
+    printQualifiedNameList((Iterator<ASTMCQualifiedName>) node.getLeftReferenceNameList().iterator(), ", ");
     printer.append(" ");
     // print left qualifier
     /*if (node.leftQualifierIsPresent()) {
@@ -244,7 +244,7 @@ public class ODRulesPrettyPrinter  implements ODRulesVisitor2,
     }*/
     // print objects referenced on the right side of the link
     printer.append(" ");
-    printQualifiedNameList(node.getRightReferenceNameList().iterator(), ", ");
+    printQualifiedNameList((Iterator<ASTMCQualifiedName>) node.getRightReferenceNameList().iterator(), ", ");
     printer.append(" ");
     // print right modifier
     /*if(node.getRightModifier().isPresent())

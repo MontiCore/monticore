@@ -29,7 +29,7 @@ public class OCLExpressionsPrettyPrinter extends OCLExpressionsPrettyPrinterTOP 
     }
 
     Iterator<ASTInDeclarationVariable> astInDeclarationIterator =
-        node.iteratorInDeclarationVariables();
+        (Iterator<ASTInDeclarationVariable>) node.iteratorInDeclarationVariables();
     astInDeclarationIterator.next().accept(getTraverser());
     while (astInDeclarationIterator.hasNext()) {
       getPrinter().print(", ");

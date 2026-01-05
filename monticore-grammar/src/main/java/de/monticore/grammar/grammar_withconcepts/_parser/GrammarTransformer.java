@@ -15,6 +15,7 @@ import de.se_rwth.commons.logging.Log;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
@@ -58,7 +59,7 @@ public class GrammarTransformer {
           Log.debug("Remove NonTerminalSeparator", GrammarTransformer.class.getName());
           parent.getComponentList().remove(ind);
           Log.debug("Added new generated block", GrammarTransformer.class.getName());
-          parent.getComponentList().add(ind, block.get());
+          ((List<ASTBlock>)parent.getComponentList()).add(ind, block.get());
         } else {
           Log.error("0xA1009 Can't transform grammar");
         }

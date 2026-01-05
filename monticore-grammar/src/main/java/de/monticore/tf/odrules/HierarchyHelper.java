@@ -44,15 +44,15 @@ public final class HierarchyHelper {
     listChildNamesLhs = new ArrayList<>();
     listChildNamesRhs = new ArrayList<>();
     // Calculate ListChildPairs for the LHS
-    listChildPairs = getListChildPairs(lhs.getODObjectList());
-    listChildPairsLhs = getListChildPairs(lhs.getODObjectList());
+    listChildPairs = getListChildPairs((List<ASTODObject>) lhs.getODObjectList());
+    listChildPairsLhs = getListChildPairs((List<ASTODObject>) lhs.getODObjectList());
     for (String key : listChildPairs.keySet()) {
       listChildNamesLhs.addAll(listChildPairs.get(key));
     }
 
-    listChildPairsWithOptionals = getListChildPairsWithOptionals(lhs.getODObjectList());
+    listChildPairsWithOptionals = getListChildPairsWithOptionals((List<ASTODObject>) lhs.getODObjectList());
     Map<String, List<String>> rhsListChildPairs = rhs.isPresent() ?
-            getListChildPairs(rhs.get().getODObjectList()) : new HashMap<>();
+            getListChildPairs((List<ASTODObject>) rhs.get().getODObjectList()) : new HashMap<>();
     for (String key : rhsListChildPairs.keySet()) {
       // Every list on the lhs is also on the rhs
       // If there are objects to create in a list put them to the Map

@@ -3,10 +3,11 @@
 package de.monticore.grammar.grammar._ast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public interface ASTProd extends ASTProdTOP {
   
-  default java.util.List<ASTSymbolDefinition> getSymbolDefinitionList()  {
+  default List<? extends ASTSymbolDefinition> getSymbolDefinitionList()  {
     return new ArrayList<ASTSymbolDefinition>();
  } 
     
