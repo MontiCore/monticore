@@ -90,7 +90,7 @@ public class TestCD4AnalysisSTCompleteTypes implements TestCD4AnalysisVisitor2 {
     // Interfaces are always abstract
     interfaceSymbol.setIsAbstract(true);
 
-    addInterfacesToType(interfaceSymbol, astInterface.getInterfaceList());
+    addInterfacesToType(interfaceSymbol, (List<ASTMCObjectType>) astInterface.getInterfaceList());
 
     // Interfaces are always abstract
     interfaceSymbol.setIsAbstract(true);
@@ -130,7 +130,7 @@ public class TestCD4AnalysisSTCompleteTypes implements TestCD4AnalysisVisitor2 {
       symbol.setSuperClass(superClassSymbol);
     }
 
-    addInterfacesToType(symbol, astClass.getInterfaceList());
+    addInterfacesToType(symbol, (List<ASTMCObjectType>) astClass.getInterfaceList());
   }
 
 }

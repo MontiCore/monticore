@@ -31,7 +31,7 @@ public class TransitionSourceExistsTest {
        "automaton Simple { state A;  state B;  A - x > A;  A - y > A; }"
     ).get();
     assertEquals("Simple", ast.getName());
-    List<ASTState> st = ast.getStateList();
+    List<ASTState> st = (List<ASTState>) ast.getStateList();
     assertEquals(2, st.size());
     MCAssertions.assertNoFindings();
   }

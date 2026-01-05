@@ -2,10 +2,9 @@
 ${tc.signature("attribute","attributeType","errorCode")}
 ${defineHookPoint("Setter:Before")}
 boolean allElementsValid = true;
-
 if(${attribute.getName()} != null) {
-  for(Object element: ${attribute.getName()}) {
-    if(!(${attribute.getName()}.getClass() ==  ${attributeType}.class)){
+  for(Object elementOf${attribute.getName()}: ${attribute.getName()}) {
+    if(!(elementOf${attribute.getName()}.getClass() ==  ${attributeType}.class)){
       allElementsValid = false;
       break;
     }

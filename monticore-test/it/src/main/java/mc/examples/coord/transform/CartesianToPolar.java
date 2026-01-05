@@ -4,9 +4,11 @@ package mc.examples.coord.transform;
 
 import mc.examples.cartesian.coordcartesian._visitor.CoordcartesianVisitor2;
 import mc.examples.polar.coordpolar.CoordpolarMill;
+import mc.examples.polar.coordpolar._ast.ASTCoordinate;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.List;
 import java.util.Locale;
 
 public class CartesianToPolar implements CoordcartesianVisitor2 {
@@ -54,6 +56,6 @@ public class CartesianToPolar implements CoordcartesianVisitor2 {
     
     // angle = atan2(y,x)
     double angle = Math.atan2(a.getY(), a.getX());
-    result.getCoordinateList().add(CoordpolarMill.coordinateBuilder().setD(d).setPhi(angle).build());
+    ((List<ASTCoordinate>)result.getCoordinateList()).add(CoordpolarMill.coordinateBuilder().setD(d).setPhi(angle).build());
   }
 }
