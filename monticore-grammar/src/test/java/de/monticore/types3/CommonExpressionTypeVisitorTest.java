@@ -1725,6 +1725,11 @@ public class CommonExpressionTypeVisitorTest
         SymTypeExpressionFactory.createTypeExpression(oneFieldMember));
     firstLayer.setIsStatic(true);
     inScope(deepNesting.getSpannedScope(), firstLayer);
+
+    // specifically not normalized intersection
+    inScope(globalScope, variable("intersectionNotNormalized",
+        createIntersection(createTypeObject(testType), createTypeObject(testType))
+    ));
   }
 
   @Test
@@ -1780,6 +1785,16 @@ public class CommonExpressionTypeVisitorTest
     Assertions.assertFalse(getType4Ast().hasTypeOfExpression(astTypes3));
     Assertions.assertFalse(getType4Ast().hasTypeOfTypeIdentifierForName(astTypes3));
     assertNoFindings();
+  }
+
+  /**
+   * tests whether intersection types are properly supported
+   */
+  @Test
+  public void deriveFromFieldAccessExpressionDoubleIntersection() {
+    init_advanced();
+
+    checkExpr("intersectionNotNormalized.variable", "int");
   }
 
   /**
