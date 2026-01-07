@@ -47,13 +47,6 @@ public class OOWithinTypeBasicSymbolsResolver
       SymTypeExpression thisType,
       AccessModifier accessModifier,
       Predicate<FunctionSymbol> predicate) {
-    return resolveConstructorsRecursive(thisType, accessModifier, predicate);
-  }
-
-  protected List<SymTypeOfFunction> resolveConstructorsRecursive(
-      SymTypeExpression thisType,
-      AccessModifier accessModifier,
-      Predicate<FunctionSymbol> predicate) {
     List<SymTypeOfFunction> resolvedSymTypes;
     Optional<IBasicSymbolsScope> spannedScopeOpt = getSpannedScope(thisType);
     if (spannedScopeOpt.isEmpty()) {
