@@ -276,7 +276,7 @@ public class WithinTypeBasicSymbolsResolver {
     List<SymTypeOfFunction> superFuncs = new ArrayList<>();
     for (SymTypeExpression superType : superTypes) {
       List<SymTypeOfFunction> resolvedInSuper =
-          resolveFunctions(superType, name, superModifier, predicate);
+          resolveFunctionsRecursive(superType, name, superModifier, predicate);
       superFuncs.addAll(resolvedInSuper);
     }
     // filter based on being inherited twice (diamond pattern)
