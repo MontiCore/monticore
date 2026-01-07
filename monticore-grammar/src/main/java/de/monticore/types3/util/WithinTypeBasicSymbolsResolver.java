@@ -70,6 +70,14 @@ public class WithinTypeBasicSymbolsResolver {
       String name,
       AccessModifier accessModifier,
       Predicate<VariableSymbol> predicate) {
+    return resolveVariableRecursive(thisType, name, accessModifier, predicate);
+  }
+
+  protected Optional<SymTypeExpression> resolveVariableRecursive(
+      SymTypeExpression thisType,
+      String name,
+      AccessModifier accessModifier,
+      Predicate<VariableSymbol> predicate) {
     Optional<SymTypeExpression> resolvedSymType;
     Optional<IBasicSymbolsScope> spannedScopeOpt = getSpannedScope(thisType);
     if (spannedScopeOpt.isEmpty()) {
@@ -103,11 +111,16 @@ public class WithinTypeBasicSymbolsResolver {
       resolvedSymType = Optional.empty();
       for (SymTypeExpression superType : superTypes) {
         Optional<SymTypeExpression> resolvedInSuper =
-            resolveVariable(superType, name, superModifier, predicate);
+            resolveVariableRecursive(superType, name, superModifier, predicate);
         if (resolvedSymType.isPresent() && resolvedInSuper.isPresent()) {
           Log.error("0xFD222 found variables with name \""
-              + name + "\" in multiple super types of \""
-              + thisType.printFullName() + "\"");
+                  + name + "\" in multiple super types of \""
+                  + thisType.printFullName() + "\"."
+                  + " Nominal super types:"
+                  + superTypes.stream().map(st ->
+                  System.lineSeparator() + st.printFullName()
+              )
+          );
         }
         else if (resolvedSymType.isEmpty() && resolvedInSuper.isPresent()) {
           resolvedSymType = resolvedInSuper;
@@ -173,6 +186,15 @@ public class WithinTypeBasicSymbolsResolver {
   }
 
   protected List<SymTypeOfFunction> _resolveFunctions(
+      SymTypeExpression thisType,
+      String name,
+      AccessModifier accessModifier,
+      Predicate<FunctionSymbol> predicate
+  ) {
+    return resolveFunctionsRecursive(thisType, name, accessModifier, predicate);
+  }
+
+  protected List<SymTypeOfFunction> resolveFunctionsRecursive(
       SymTypeExpression thisType,
       String name,
       AccessModifier accessModifier,
@@ -321,6 +343,14 @@ public class WithinTypeBasicSymbolsResolver {
       String name,
       AccessModifier accessModifier,
       Predicate<TypeSymbol> predicate) {
+    return resolveTypeRecursive(thisType, name, accessModifier, predicate);
+  }
+
+  protected Optional<SymTypeExpression> resolveTypeRecursive(
+      SymTypeExpression thisType,
+      String name,
+      AccessModifier accessModifier,
+      Predicate<TypeSymbol> predicate) {
     Optional<SymTypeExpression> resolvedSymType;
     Optional<IBasicSymbolsScope> spannedScopeOpt = getSpannedScope(thisType);
     if (spannedScopeOpt.isEmpty()) {
@@ -354,11 +384,16 @@ public class WithinTypeBasicSymbolsResolver {
       resolvedSymType = Optional.empty();
       for (SymTypeExpression superType : superTypes) {
         Optional<SymTypeExpression> resolvedInSuper =
-            resolveType(superType, name, superModifier, predicate);
+            resolveTypeRecursive(superType, name, superModifier, predicate);
         if (resolvedSymType.isPresent() && resolvedInSuper.isPresent()) {
           Log.error("0xFD224 found type with name \""
-              + name + "\" in multiple super types of \""
-              + thisType.printFullName() + "\"");
+                  + name + "\" in multiple super types of \""
+                  + thisType.printFullName() + "\"."
+                  + " Nominal super types:"
+                  + superTypes.stream().map(st ->
+                  System.lineSeparator() + st.printFullName()
+              )
+          );
         }
         resolvedSymType = resolvedInSuper;
       }
