@@ -47,6 +47,13 @@ public class OOWithinTypeBasicSymbolsResolver
       SymTypeExpression thisType,
       AccessModifier accessModifier,
       Predicate<FunctionSymbol> predicate) {
+    return resolveConstructorsRecursive(thisType, accessModifier, predicate);
+  }
+
+  protected List<SymTypeOfFunction> resolveConstructorsRecursive(
+      SymTypeExpression thisType,
+      AccessModifier accessModifier,
+      Predicate<FunctionSymbol> predicate) {
     List<SymTypeOfFunction> resolvedSymTypes;
     Optional<IBasicSymbolsScope> spannedScopeOpt = getSpannedScope(thisType);
     if (spannedScopeOpt.isEmpty()) {
@@ -83,12 +90,12 @@ public class OOWithinTypeBasicSymbolsResolver
     }
 
     // do not search super types for constructors
-    
+
     List<SymTypeOfFunction> symTypesFreeVarsReplaced = resolvedSymTypes.stream()
         .map(this::replaceFreeConstructorTypeVariables)
         .map(SymTypeExpression::asFunctionType)
         .collect(Collectors.toList());
-    
+
     return symTypesFreeVarsReplaced;
   }
 
@@ -140,7 +147,7 @@ public class OOWithinTypeBasicSymbolsResolver
 
     return typeVarsReplaced;
   }
-  
+
   protected boolean isConstructor(FunctionSymbol func) {
     if (OOSymbolsMill.typeDispatcher().isOOSymbolsMethod(func)) {
       MethodSymbol method = OOSymbolsMill.typeDispatcher().asOOSymbolsMethod(func);
