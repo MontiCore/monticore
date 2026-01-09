@@ -50,9 +50,6 @@ public class SynthesizeCompKindFromMCBasicTypes implements MCBasicTypesHandler {
     List<ComponentTypeSymbol> comp = enclScope.resolveComponentTypeMany(node.getMCQualifiedName().getQName());
 
     if (comp.isEmpty()) {
-      Log.error(String.format("0xD0104 Cannot resolve component '%s'", node.getMCQualifiedName().getQName()),
-        node.get_SourcePositionStart(), node.get_SourcePositionEnd()
-      );
       this.resultWrapper.setResultAbsent();
     } else {
       CompKindExpression result = new CompKindOfComponentType(comp.get(0));

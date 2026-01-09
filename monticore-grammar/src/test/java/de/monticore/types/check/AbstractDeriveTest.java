@@ -33,15 +33,15 @@ public class AbstractDeriveTest {
 
   // Parser used for convenience:
   // (may be any other Parser that understands CommonExpressions)
-  AbstractTypeCheckTestParser p = new AbstractTypeCheckTestParser();
+  protected AbstractTypeCheckTestParser p;
 
   // This is an auxiliary
-  FullDeriveFromCombineExpressionsWithLiteralsAbstract derLit = new FullDeriveFromCombineExpressionsWithLiteralsAbstract();
+  protected FullDeriveFromCombineExpressionsWithLiteralsAbstract derLit;
 
   // other arguments not used (and therefore deliberately null)
 
   // This is the TypeChecker under Test:
-  TypeCalculator tc = new TypeCalculator(null, derLit);
+  protected TypeCalculator tc;
 
 
   @BeforeEach
@@ -69,7 +69,7 @@ public class AbstractDeriveTest {
     TypeSymbol student = AbstractTypeCheckTestMill.typeSymbolBuilder()
         .setName("Student")
         .setSpannedScope(AbstractTypeCheckTestMill.scope())
-        .setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Person",scope)))
+        .setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObjectViaSurrogate("Person",scope)))
         .setEnclosingScope(scope)
         .build();
     add2scope(scope, student);
@@ -77,7 +77,7 @@ public class AbstractDeriveTest {
     TypeSymbol firstsemesterstudent = AbstractTypeCheckTestMill.typeSymbolBuilder()
         .setName("FirstSemesterStudent")
         .setSpannedScope(AbstractTypeCheckTestMill.scope())
-        .setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student",scope)))
+        .setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObjectViaSurrogate("Student",scope)))
         .setEnclosingScope(scope)
         .build();
     firstsemesterstudent.setSpannedScope(AbstractTypeCheckTestMill.scope());
@@ -91,12 +91,17 @@ public class AbstractDeriveTest {
     add2scope(person.getSpannedScope(), method("foo", SymTypeExpressionFactory.createTypeVoid()));
     add2scope(person.getSpannedScope(), field("bar", SymTypeExpressionFactory.createPrimitive("int")));
     add2scope(scope, firstsemesterstudent);
-    add2scope(scope, field("person1", SymTypeExpressionFactory.createTypeObject("Person", scope)));
+    add2scope(scope, field("person1", SymTypeExpressionFactory.createTypeObjectViaSurrogate("Person", scope)));
     add2scope(scope, field("firstsemester", SymTypeExpressionFactory.
-        createTypeObject("FirstSemesterStudent", scope)));
+        createTypeObjectViaSurrogate("FirstSemesterStudent", scope)));
     tc = new TypeCalculator(null, derLit);
     flatExpressionScopeSetter = new FlatExpressionScopeSetter(scope);
     traverser = getTraverser(flatExpressionScopeSetter);
+
+    derLit = new FullDeriveFromCombineExpressionsWithLiteralsAbstract();
+    p = AbstractTypeCheckTestMill.parser();
+    tc = new TypeCalculator(null, derLit);
+
   }
 
   public void add2scope(IBasicSymbolsScope scope, TypeSymbol type){

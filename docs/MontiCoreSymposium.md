@@ -1,6 +1,6 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 
-## Third MontiCore Symposium 23. March - 26. March 2025
+## Fourth MontiCore Symposium 28. September - 01. October 2025
 
 ![](https://github.com/MontiCore/monticore/raw/dev/docs/docs/MC_Symp_Banner.png)
 
@@ -27,16 +27,16 @@ solutions in the context of DSLs and model-based development.
 
 ### Location
 
-The MontiCore symposium will be located in Gemünd, Germany. 
+The MontiCore symposium will be located in Köln-Riehl, Germany. 
 
 ### Participation
 
 Participation is based on acceptance of an abstract or a full paper and 
-requires registration until **07th of March**. 
+requires registration until **12th of September**. 
 
 Registration costs are 660€ and include accommodation, 
 conference fees, and meals during the symposium.  
-~~You can register via this link~~ Registration is closed.
+~~Register now~~ (registration is closed)
 
 ### Submission
 
@@ -46,16 +46,16 @@ be found [here](https://www.acm.org/publications/proceedings-template). We ask f
  [1] Research papers: 8 pages,
  [2] Vision abstracts: 1 page.
  
-Submissions must be uploaded through [EasyChair via this link](https://easychair.org/conferences/?conf=mcs25). 
+Submissions must be uploaded via EasyChair (submissions are closed). 
 
 It is planned to produce post-proceedings with extended and improved 
 versions of the papers as result of the symposium. 
 
 ### Important Dates (deadlines extended) 
- * **10.01.2025**: Paper Submission Deadline 
- * **28.02.2025**: Acceptance Notification 
- * **07.03.2025**: Registration Deadline 
- * **23.03.2025-26.03.2025**: MontiCore Symposium 
+ * **25.07.2025**: Paper Submission Deadline 
+ * **22.08.2025**: Acceptance Notification 
+ * **12.09.2025**: Registration Deadline 
+ * **28.09.2025-01.10.2025**: MontiCore Symposium 
 
 
 ### Call for Papers

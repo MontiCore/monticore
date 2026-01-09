@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types3;
 
+import com.google.common.base.Preconditions;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types3.generics.bounds.Bound;
 import de.monticore.types3.util.SymTypeRelationsDefaultDelegatee;
@@ -28,9 +29,9 @@ public abstract class SymTypeRelations {
   /**
    * whether the target can be assigned to by the source,
    * e.g., assignment operator: x = 2,
-   * -> type of x and type of 2 need to be compatible,
-   * e.g., function call: (float -> void)(2),
-   * -> float and type of 2 need to be compatible.
+   * type of x and type of 2 need to be compatible,
+   * e.g., function call: {@code (float -> void)(2)},
+   * float and type of 2 need to be compatible.
    */
   public static boolean isCompatible(
       SymTypeExpression target,
@@ -121,8 +122,8 @@ public abstract class SymTypeRelations {
   /**
    * Boxes SymTypeExpressions,
    * including, but not limited to, Java primitive boxing
-   * e.g., int -> java.lang.Integer
-   * e.g., List -> java.util.List
+   * e.g., {@code int -> java.lang.Integer}
+   * e.g., {@code List -> java.util.List}
    */
   public static SymTypeExpression box(SymTypeExpression unboxed) {
     return getDelegate()._box(unboxed);
@@ -133,8 +134,8 @@ public abstract class SymTypeRelations {
   /**
    * Unboxes SymTypeExpressions,
    * including, but not limited to, Java primitive unboxing
-   * e.g., java.lang.Integer -> int
-   * e.g., java.util.List -> List
+   * e.g., {@code java.lang.Integer -> int}
+   * e.g., {@code java.util.List -> List}
    */
   public static SymTypeExpression unbox(SymTypeExpression boxed) {
     return getDelegate()._unbox(boxed);
@@ -144,7 +145,7 @@ public abstract class SymTypeRelations {
 
   /**
    * normalizes the SymTypeExpression,
-   * e.g., (A & B[])[] -> (A[] & B[][])
+   * e.g., {@code (A & B[])[] -> (A[] & B[][])}
    * <p>
    * Within our type systems, each type has ONE normalized representation.
    * This can be used to, e.g., compare SymTypeExpressions
@@ -161,8 +162,8 @@ public abstract class SymTypeRelations {
    * calculates the one promoted numeric type,
    * ignoring the specifics of the context
    * s. Java spec. 20 5.6
-   * e.g., short -> int
-   * e.g., byte, float -> float
+   * e.g., {@code short -> int}
+   * e.g., {@code byte, float -> float}
    */
   public static SymTypeExpression numericPromotion(
       List<SymTypeExpression> types
@@ -389,7 +390,7 @@ public abstract class SymTypeRelations {
   }
 
   protected static void setDelegate(SymTypeRelations newDelegate) {
-    SymTypeRelations.delegate = Log.errorIfNull(newDelegate);
+    SymTypeRelations.delegate = Preconditions.checkNotNull(newDelegate);
   }
 
   protected static SymTypeRelations getDelegate() {

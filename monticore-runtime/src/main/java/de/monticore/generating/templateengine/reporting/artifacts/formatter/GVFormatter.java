@@ -2,7 +2,7 @@
 
 package de.monticore.generating.templateengine.reporting.artifacts.formatter;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,7 +16,7 @@ import de.monticore.generating.templateengine.reporting.artifacts.model.RootPkg;
 
 public class GVFormatter extends AFormatter {
   
-  protected Map<ElementType, String> shapes = new HashMap<ElementType, String>();
+  protected Map<ElementType, String> shapes = new LinkedHashMap<ElementType, String>();
   
   public GVFormatter() {
     this.shapes.put(ElementType.HELPER, "cds");
@@ -104,7 +104,7 @@ public class GVFormatter extends AFormatter {
   }
 
   /**
-   * @see mc.codegen.reporting.visualization.printer.AFormatter#getContent(mc.codegen.reporting.visualization.model.RootPkg)
+   * mc.codegen.reporting.visualization.printer.AFormatter#getContent(mc.codegen.reporting.visualization.model.RootPkg)
    */
   @Override
   public List<String> getContent(RootPkg rootPkg) {

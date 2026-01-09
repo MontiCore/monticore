@@ -6,22 +6,19 @@ import de.monticore.expressions.combineexpressionswithliterals._ast.ASTFoo;
 import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsArtifactScope;
 import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
-import de.monticore.expressions.commonexpressions.types3.util.CommonExpressionsLValueRelations;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.lambdaexpressions._ast.ASTLambdaExpression;
 import de.monticore.expressions.lambdaexpressions._symboltable.LambdaExpressionsSTCompleteTypes2;
 import de.monticore.ocl.oclexpressions.symboltable.OCLExpressionsSymbolTableCompleter;
 import de.monticore.ocl.setexpressions.symboltable.SetExpressionsSymbolTableCompleter;
+import de.monticore.runtime.junit.AbstractMCTest;
+import de.monticore.runtime.junit.MCAssertions;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
-import de.monticore.types.check.IDerive;
-import de.monticore.types.check.ISynthesize;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
-import de.monticore.types.check.types3wrapper.TypeCheck3AsIDerive;
-import de.monticore.types.check.types3wrapper.TypeCheck3AsISynthesize;
 import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserFactory;
@@ -42,6 +39,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static de.monticore.runtime.junit.MCAssertions.assertNoFindings;
 import static de.monticore.types3.util.DefsTypesForTests._booleanSymType;
 import static de.monticore.types3.util.DefsTypesForTests._boxedListSymType;
 import static de.monticore.types3.util.DefsTypesForTests._csStudentSymType;
@@ -62,7 +60,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * main extensions point are the methods
  * setup, setupValues, parseString*, generateScopes, calculateTypes
  */
-public class AbstractTypeVisitorTest extends AbstractTypeTest {
+public class AbstractTypeVisitorTest extends AbstractMCTest {
 
   // Parser, etc. used for convenience:
   // (may be any other Parser that understands CommonExpressions)
@@ -118,24 +116,15 @@ public class AbstractTypeVisitorTest extends AbstractTypeTest {
       ITraverser typeMapTraverser, Type4Ast type4Ast) {
     CombineExpressionsWithLiteralsTraverser combinedScopesCompleter =
         CombineExpressionsWithLiteralsMill.traverser();
-    IDerive deriver = new TypeCheck3AsIDerive();
-    ISynthesize synthesizer = new TypeCheck3AsISynthesize();
     combinedScopesCompleter.add4LambdaExpressions(
-        new LambdaExpressionsSTCompleteTypes2(
-            typeMapTraverser,
-            getType4Ast()
-        )
+        new LambdaExpressionsSTCompleteTypes2()
     );
     OCLExpressionsSymbolTableCompleter oclExprCompleter =
         new OCLExpressionsSymbolTableCompleter();
-    oclExprCompleter.setDeriver(deriver);
-    oclExprCompleter.setSynthesizer(synthesizer);
     combinedScopesCompleter.add4OCLExpressions(oclExprCompleter);
     combinedScopesCompleter.setOCLExpressionsHandler(oclExprCompleter);
     SetExpressionsSymbolTableCompleter setExprCompleter =
         new SetExpressionsSymbolTableCompleter();
-    setExprCompleter.setDeriver(deriver);
-    setExprCompleter.setSynthesizer(synthesizer);
     combinedScopesCompleter.add4SetExpressions(setExprCompleter);
     combinedScopesCompleter.setSetExpressionsHandler(setExprCompleter);
     symbolTableCompleter = combinedScopesCompleter;
@@ -184,15 +173,23 @@ public class AbstractTypeVisitorTest extends AbstractTypeTest {
   }
 
   // Parse a String expression of the according language
-  protected Optional<ASTExpression> parseStringExpr(String exprStr)
-      throws IOException {
-    return parser.parse_StringExpression(exprStr);
+  protected Optional<ASTExpression> parseStringExpr(String exprStr) {
+    try {
+      return parser.parse_StringExpression(exprStr);
+    }
+    catch (IOException e) {
+      return Assertions.fail(e);
+    }
   }
 
   // Parse a String type identifier of the according language
-  protected Optional<ASTMCType> parseStringMCType(String mcTypeStr)
-      throws IOException {
-    return parser.parse_StringMCType(mcTypeStr);
+  protected Optional<ASTMCType> parseStringMCType(String mcTypeStr) {
+    try {
+      return parser.parse_StringMCType(mcTypeStr);
+    }
+    catch (IOException e) {
+      return Assertions.fail(e);
+    }
   }
 
   protected void generateScopes(ASTExpression expr) {
@@ -250,15 +247,17 @@ public class AbstractTypeVisitorTest extends AbstractTypeTest {
     rootScope.setName("fooRoot");
   }
 
-  protected ASTExpression parseExpr(String exprStr) throws IOException {
+  protected ASTExpression parseExpr(String exprStr) {
     Optional<ASTExpression> astExpression = parseStringExpr(exprStr);
-    Assertions.assertTrue(astExpression.isPresent(), getAllFindingsAsString());
+    assertNoFindings();
+    Assertions.assertTrue(astExpression.isPresent());
     return astExpression.get();
   }
 
-  protected ASTMCType parseMCType(String typeStr) throws IOException {
+  protected ASTMCType parseMCType(String typeStr) {
     Optional<ASTMCType> mcType = parseStringMCType(typeStr);
-    Assertions.assertTrue(mcType.isPresent(), getAllFindingsAsString());
+    assertNoFindings();
+    Assertions.assertTrue(mcType.isPresent());
     return mcType.get();
   }
 
@@ -266,18 +265,17 @@ public class AbstractTypeVisitorTest extends AbstractTypeTest {
       String exprStr,
       String targetTypeStr,
       String expectedType
-  ) throws IOException {
+  ) {
     checkExpr(exprStr, targetTypeStr, expectedType, true);
   }
 
-  protected void checkExpr(String exprStr, String expectedType)
-      throws IOException {
+  protected void checkExpr(String exprStr, String expectedType) {
     checkExpr(exprStr, expectedType, true);
   }
 
   protected void checkExpr(
       String exprStr, String expectedType, boolean allowNormalization
-  ) throws IOException {
+  ) {
     checkExpr(exprStr, "", expectedType, allowNormalization);
   }
 
@@ -287,22 +285,8 @@ public class AbstractTypeVisitorTest extends AbstractTypeTest {
       String targetTypeStr,
       String expectedType,
       boolean allowNormalization
-  ) throws IOException {
-    ASTExpression astExpr = parseExpr(exprStr);
-    // target type
-    Optional<SymTypeExpression> targetTypeOpt = getTargetType(targetTypeStr);
-    // calculate expression
-    generateScopes(astExpr);
-    assertNoFindings();
-    SymTypeExpression type;
-    if (targetTypeOpt.isPresent()) {
-      type = TypeCheck3.typeOf(astExpr, targetTypeOpt.get());
-    }
-    else {
-      type = TypeCheck3.typeOf(astExpr);
-    }
-    assertNoFindings();
-    assertFalse(type.isObscureType(), "No type calculated for expression " + exprStr);
+  ) {
+    SymTypeExpression type = getTypeOfExpr(exprStr, targetTypeStr);
     // usually, type normalization is expected and (basically) always allowed
     // for specific tests, however, it may be required to disable this
     SymTypeExpression typeNormalized = SymTypeRelations.normalize(type);
@@ -313,8 +297,7 @@ public class AbstractTypeVisitorTest extends AbstractTypeTest {
     }
   }
 
-  protected void checkType(String typeStr, String expectedType)
-      throws IOException {
+  protected void checkType(String typeStr, String expectedType) {
     ASTMCType astType = parseMCType(typeStr);
     checkType(astType, expectedType);
   }
@@ -332,12 +315,11 @@ public class AbstractTypeVisitorTest extends AbstractTypeTest {
   /**
    * roundtrip test: parse, calculate type, print, compare
    */
-  protected void checkTypeRoundTrip(String typeStr) throws IOException {
+  protected void checkTypeRoundTrip(String typeStr) {
     checkType(typeStr, typeStr);
   }
 
-  protected void checkErrorExpr(String exprStr, String expectedError)
-      throws IOException {
+  protected void checkErrorExpr(String exprStr, String expectedError) {
     checkErrorExpr(exprStr, "", expectedError);
   }
 
@@ -345,7 +327,7 @@ public class AbstractTypeVisitorTest extends AbstractTypeTest {
       String exprStr,
       String targetTypeStr,
       String expectedError
-  ) throws IOException {
+  ) {
     ASTExpression astExpr = parseExpr(exprStr);
     // add target type
     Optional<SymTypeExpression> targetTypeOpt = getTargetType(targetTypeStr);
@@ -368,8 +350,7 @@ public class AbstractTypeVisitorTest extends AbstractTypeTest {
     Log.getFindings().clear();
   }
 
-  protected void checkErrorMCType(String typeStr, String expectedError)
-      throws IOException {
+  protected void checkErrorMCType(String typeStr, String expectedError) {
     ASTMCType astType = parseMCType(typeStr);
     generateScopes(astType);
     assertNoFindings();
@@ -385,11 +366,44 @@ public class AbstractTypeVisitorTest extends AbstractTypeTest {
 
   // Helper
 
+  protected SymTypeExpression getTypeOfExpr(String exprStr, String targetTypeStr) {
+    ASTExpression astExpr = parseExpr(exprStr);
+    // target type
+    Optional<SymTypeExpression> targetTypeOpt = getTargetType(targetTypeStr);
+    // calculate expression
+    generateScopes(astExpr);
+    assertNoFindings();
+    SymTypeExpression type;
+    if (targetTypeOpt.isPresent()) {
+      type = TypeCheck3.typeOf(astExpr, targetTypeOpt.get());
+    }
+    else {
+      type = TypeCheck3.typeOf(astExpr);
+    }
+    assertNoFindings();
+    assertFalse(type.isObscureType(), "No type calculated for expression " + exprStr);
+    return type;
+  }
+
+  protected SymTypeExpression getTypeOfExpr(String exprStr) {
+    return getTypeOfExpr(exprStr, "");
+  }
+
+  protected SymTypeExpression getTypeOfMCType(String typeStr) {
+    ASTMCType astTargetType = parseMCType(typeStr);
+    generateScopes(astTargetType);
+    SymTypeExpression type = TypeCheck3.symTypeFromAST(astTargetType);
+    assertNoFindings();
+    assertFalse(type.isObscureType(),
+        "No type calculated for MCType " + typeStr
+    );
+    return type;
+  }
+
   /**
    * @param targetTypeStr is allowed to be empty
    */
-  protected Optional<SymTypeExpression> getTargetType(String targetTypeStr)
-      throws IOException {
+  protected Optional<SymTypeExpression> getTargetType(String targetTypeStr) {
     if (!targetTypeStr.isEmpty()) {
       ASTMCType astTargetType = parseMCType(targetTypeStr);
       generateScopes(astTargetType);
@@ -433,14 +447,12 @@ public class AbstractTypeVisitorTest extends AbstractTypeTest {
     return getAllErrorCodes().stream().anyMatch(code::equals);
   }
 
+  /**
+   * @deprecated use MCAssertions directly instead
+   */
+  @Deprecated
   protected void assertHasErrorCode(String code) {
-    Assertions.assertTrue(hasErrorCode(code), "Error \"" + code + "\" expected, "
-        + "but instead the errors are:"
-        + System.lineSeparator()
-        + Log.getFindings().stream()
-        .map(Finding::buildMsg)
-        .collect(Collectors.joining(System.lineSeparator()))
-        + System.lineSeparator());
+    MCAssertions.assertHasFindingStartingWith(code);
   }
 
   protected Type4Ast getType4Ast() {

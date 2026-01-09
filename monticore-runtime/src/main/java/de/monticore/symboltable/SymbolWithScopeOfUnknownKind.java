@@ -20,7 +20,7 @@ public class SymbolWithScopeOfUnknownKind implements IScopeSpanningSymbol {
 
   protected AccessModifier accessModifier = AccessModifier.ALL_INCLUSION;
 
-  protected Map<IStereotypeReference, Optional<Value>> stereoinfo = new HashMap<>();
+  protected Map<IStereotypeReference, Optional<Value>> stereoinfo = new LinkedHashMap<>();
 
   protected String fullName;
 

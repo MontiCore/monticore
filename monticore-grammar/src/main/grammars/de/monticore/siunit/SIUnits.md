@@ -192,9 +192,9 @@ It is up to the developer of a generator to decide which solution to take.
 [SIUnitLiteralsGrammar]: SIUnitLiterals.mc4
 [SIUnitTypes4MathGrammar]: SIUnitTypes4Math.mc4
 [SIUnitTypes4ComputingGrammar]: SIUnitTypes4Computing.mc4
-[MCCommonLiteralsGrammar]: https://github.com/MontiCore/monticore/blob/opendev/monticore-grammar/src/main/grammars/de/monticore/literals/MCCommonLiterals.mc4
-[MCBasicTypesGrammar]: https://github.com/MontiCore/monticore/blob/opendev/monticore-grammar/src/main/grammars/de/monticore/types/MCBasicTypes.mc4
-[OOSymbols]: https://github.com/MontiCore/monticore/blob/opendev/monticore-grammar/src/main/grammars/de/monticore/symbols/OOSymbols.mc4
+[MCCommonLiteralsGrammar]: ../literals/MCCommonLiterals.mc4
+[MCBasicTypesGrammar]: ../types/MCBasicTypes.mc4
+[OOSymbols]: ../symbols/OOSymbols.mc4
 
 [SIUnitBasic]: ../../../../java/de/monticore/types/check/SIUnitBasic.java
 [SymTypeOfSIUnit]: ../../../../java/de/monticore/types/check/SymTypeOfSIUnit.java
@@ -211,8 +211,8 @@ It is up to the developer of a generator to decide which solution to take.
 
 * [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
 * [MontiCore documentation](http://www.monticore.de/)
-* [**List of languages**](https://github.com/MontiCore/monticore/blob/opendev/docs/Languages.md)
-* [**MontiCore Core Grammar Library**](https://github.com/MontiCore/monticore/blob/opendev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
-* [Best Practices](https://github.com/MontiCore/monticore/blob/opendev/docs/BestPractices.md)
+* [**List of languages**](../../../../../../../docs/Languages.md)
+* [**MontiCore Core Grammar Library**](../Grammars.md)
+* [Best Practices](../../../../../../../docs/BestPractices.md)
 * [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
 * [Licence definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)

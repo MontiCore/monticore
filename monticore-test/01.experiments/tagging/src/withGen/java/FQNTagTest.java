@@ -16,14 +16,14 @@ import de.monticore.tagging.tags._ast.ASTTagUnit;
 import de.monticore.tagging.tags._ast.ASTValuedTag;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.Ignore;
 import util.TestUtil;
 
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,7 +33,7 @@ public class FQNTagTest {
   static ASTAutomaton model;
 
   static ASTTagUnit tagDefinition;
-  static Map<String, ASTState> states = new HashMap<>();
+  static Map<String, ASTState> states = new LinkedHashMap<>();
   
   protected IFQNAutomataTagger fqnAutomataTagger = FQNAutomataTagger.getInstance();
 

@@ -10,9 +10,9 @@ import java.util.function.Predicate;
 
 /**
  * Collects contained SymTypeExpressions based on a predicate, e.g.,
- * type: (List<A>, Set<List<C>>) -> void
+ * type: {@code (List<A>, Set<List<C>>) -> void}
  * predicate: isList
- * result: List<A>, List<C>
+ * result: {@code List<A>, List<C>}
  * Usage:
  * calculate(mySymType, predicate)
  */

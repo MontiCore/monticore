@@ -120,9 +120,9 @@ public class SymTypeExpressionDeSerTest {
 
     teVarB = SymTypeExpressionFactory.createTypeVariable("B", scope);
 
-    teP = createTypeObject("de.x.Person", scope);
+    teP = createTypeObjectViaSurrogate("de.x.Person", scope);
 
-    teH = createTypeObject("Human", scope);  // on purpose: package missing
+    teH = createTypeObjectViaSurrogate("Human", scope);  // on purpose: package missing
 
     teVoid = createTypeVoid();
 

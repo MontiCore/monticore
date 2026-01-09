@@ -11,12 +11,12 @@ import de.monticore.tagging.tags._ast.ASTTag;
 import de.monticore.tagging.tags._ast.ASTTagUnit;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
@@ -30,7 +30,7 @@ public class NotQuiteAutomataTest {
 
   protected IAutomataTagger automataTagger = AutomataTagger.getInstance();
 
-  protected static Map<String, ASTNode> nodes = new HashMap<>();
+  protected static Map<String, ASTNode> nodes = new LinkedHashMap<>();
 
   @BeforeClass
   public static void init() throws Exception {

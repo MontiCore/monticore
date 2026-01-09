@@ -45,7 +45,7 @@ public class AutomataSchemaTest {
 
     // Serialize all schemas and store the .sym files (so they can be loaded later on)
     // Note, that the resolving using packages is not supported for tagschemas
-    for (File f : Objects.requireNonNull(
+    for (File f : Preconditions.checkNotNull(
             new File("src/test/resources/schema/").listFiles(x -> x.getName().endsWith(".tagschema")))) {
       Optional<ASTTagSchema> schemaOpt = AutomataTagSchemaMill.parser().parse(f.getAbsolutePath());
       if (schemaOpt.isPresent()) {

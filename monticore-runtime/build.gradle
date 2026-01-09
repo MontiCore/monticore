@@ -1,25 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 plugins {
   id "jacoco"
-}
-
-configurations {
-  testsImplementation.extendsFrom(testImplementation)
-}
-
-dependencies {
-  api 'de.se_rwth.commons:se-commons-logging:' + se_commons_version
-  api "org.antlr:antlr4-runtime:$antlr_version"
-  api "commons-cli:commons-cli:$commons_cli_version"
-  api "com.google.guava:guava:$guava_version"
-
-  implementation 'de.se_rwth.commons:se-commons-utilities:' + se_commons_version
-  implementation "org.freemarker:freemarker:$freemarker_version"
-  implementation group: 'org.apache.commons', name: 'commons-text', version: '1.10.0'
-  testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
-  testImplementation "org.junit.jupiter:junit-jupiter-params:$junit_version"
-  testImplementation "org.junit.vintage:junit-vintage-engine:$junit_version"
-  testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
+  // this project provides test fixtures. Test fixtures are commonly used to setup the code under test,
+  // or provide utilities aimed at facilitating the tests of a component
+  id 'java-test-fixtures'
 }
 
 sourceSets {
@@ -35,12 +19,106 @@ sourceSets {
   }
 }
 
+configurations {
+  testsImplementation.extendsFrom(testImplementation)
+}
+
+dependencies {
+  api 'de.se_rwth.commons:se-commons-logging:' + se_commons_version
+  api "org.antlr:antlr4-runtime:$antlr_version"
+  api "commons-cli:commons-cli:$commons_cli_version"
+  api "com.google.guava:guava:$guava_version"
+
+  implementation 'de.se_rwth.commons:se-commons-utilities:' + se_commons_version
+  implementation "org.freemarker:freemarker:$freemarker_version"
+  implementation group: 'org.apache.commons', name: 'commons-text', version: '1.10.0'
+
+  testFixturesImplementation  "org.junit.jupiter:junit-jupiter-api:$junit_version"
+
+  testImplementation "org.junit.jupiter:junit-jupiter-params:$junit_version"
+  testImplementation "org.junit.vintage:junit-vintage-engine:$junit_version"
+  testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
+}
+
+
+
 description = 'MontiCore: Runtime'
 
 java {
   registerFeature('tests') {
     usingSourceSet(sourceSets.tests)
   }
+  withJavadocJar()
 }
 
-jar.dependsOn testsJar
+tasks.named("jar") {
+  dependsOn testsJar
+}
+
+// Workaround for https://github.com/gradle/gradle/issues/20539
+import org.gradle.api.plugins.internal.JvmPluginsHelper
+import org.gradle.api.internal.file.FileResolver
+import org.gradle.internal.component.external.model.ProjectDerivedCapability
+import org.gradle.internal.component.external.model.TestFixturesSupport
+
+if(GradleVersion.current() < GradleVersion.version("8.5")){
+  pluginManager.withPlugin("java-test-fixtures") {
+    def sourceSet = sourceSets["testFixtures"]
+    JvmPluginsHelper.configureDocumentationVariantWithArtifact(
+        sourceSet.sourcesElementsConfigurationName,
+        TestFixturesSupport.TEST_FIXTURE_SOURCESET_NAME,
+        DocsType.SOURCES,
+        [new ProjectDerivedCapability(project, "testFixtures")],
+        sourceSet.sourcesJarTaskName,
+        sourceSet.allSource,
+        components["java"] as AdhocComponentWithVariants,
+        configurations,
+        tasks,
+        objects,
+        project.services.get(FileResolver)
+    )
+    JvmPluginsHelper.configureDocumentationVariantWithArtifact(
+        sourceSet.javadocElementsConfigurationName,
+        TestFixturesSupport.TEST_FIXTURE_SOURCESET_NAME,
+        DocsType.JAVADOC,
+        [new ProjectDerivedCapability(project, "testFixtures")],
+        sourceSet.javadocJarTaskName,
+        tasks.named(sourceSet.javadocTaskName),
+        components["java"] as AdhocComponentWithVariants,
+        configurations,
+        tasks,
+        objects,
+        project.services.get(FileResolver)
+    )
+  }
+} else {
+  pluginManager.withPlugin("java-test-fixtures") {
+    def sourceSet = sourceSets["testFixtures"]
+    def caps = [new ProjectDerivedCapability(project, "testFixtures")];
+    if (GradleVersion.current() != GradleVersion.version("8.5"))
+      caps = caps.toSet()
+    JvmPluginsHelper.createDocumentationVariantWithArtifact(
+        sourceSet.sourcesElementsConfigurationName,
+        TestFixturesSupport.TEST_FIXTURE_SOURCESET_NAME,
+        DocsType.SOURCES,
+        caps,
+        sourceSet.sourcesJarTaskName,
+        sourceSet.allSource,
+        project
+    )
+    JvmPluginsHelper.createDocumentationVariantWithArtifact(
+        sourceSet.javadocElementsConfigurationName,
+        TestFixturesSupport.TEST_FIXTURE_SOURCESET_NAME,
+        DocsType.JAVADOC,
+        caps,
+        sourceSet.javadocJarTaskName,
+        tasks.named(sourceSet.javadocTaskName),
+        project
+    )
+  }
+}
+//End Workaround
+
+tasks.named("build") {
+  dependsOn javadoc, testFixturesJavadoc
+}

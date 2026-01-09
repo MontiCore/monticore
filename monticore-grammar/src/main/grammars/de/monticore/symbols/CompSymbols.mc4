@@ -4,7 +4,7 @@ package de.monticore.symbols;
 /**
  * Common symbols for component-connector ADLs.
  */
-component grammar CompSymbols extends de.monticore.symbols.BasicSymbols {
+component grammar CompSymbols extends de.monticore.symbols.BasicSymbols, de.monticore.expressions.ExpressionsBasis {
 
   interface scope symbol ComponentType = Name;
 
@@ -49,4 +49,5 @@ component grammar CompSymbols extends de.monticore.symbols.BasicSymbols {
     stronglyCausal: Boolean
   ;
 
+  interface SubcomponentArgument = Name? Expression;
 }

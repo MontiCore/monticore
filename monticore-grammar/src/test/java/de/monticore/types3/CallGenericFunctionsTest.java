@@ -17,12 +17,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static de.monticore.types.check.SymTypeExpressionFactory.createFunction;
-import static de.monticore.types.check.SymTypeExpressionFactory.createGenerics;
-import static de.monticore.types.check.SymTypeExpressionFactory.createTypeObject;
-import static de.monticore.types.check.SymTypeExpressionFactory.createTypeVariable;
-import static de.monticore.types.check.SymTypeExpressionFactory.createWildcard;
-import static de.monticore.types.mccollectiontypes.types3.util.MCCollectionSymTypeFactory.createList;
+import static de.monticore.runtime.junit.MCAssertions.assertNoFindings;
 import static de.monticore.types3.util.DefsTypesForTests._IntegerSymType;
 import static de.monticore.types3.util.DefsTypesForTests._carSymType;
 import static de.monticore.types3.util.DefsTypesForTests._floatSymType;
@@ -38,6 +33,12 @@ import static de.monticore.types3.util.DefsTypesForTests.typeVariable;
 import static de.monticore.types3.util.DefsTypesForTests.variable;
 import static de.monticore.types3.util.DefsVariablesForTests._carVarSym;
 import static de.monticore.types3.util.DefsVariablesForTests._personVarSym;
+import static de.monticore.types.check.SymTypeExpressionFactory.createFunction;
+import static de.monticore.types.check.SymTypeExpressionFactory.createGenerics;
+import static de.monticore.types.check.SymTypeExpressionFactory.createTypeObject;
+import static de.monticore.types.check.SymTypeExpressionFactory.createTypeVariable;
+import static de.monticore.types.check.SymTypeExpressionFactory.createWildcard;
+import static de.monticore.types.mccollectiontypes.types3.util.MCCollectionSymTypeFactory.createList;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 public class CallGenericFunctionsTest

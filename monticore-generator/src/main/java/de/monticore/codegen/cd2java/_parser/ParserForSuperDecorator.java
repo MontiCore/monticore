@@ -21,6 +21,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
@@ -191,7 +192,7 @@ public class ParserForSuperDecorator extends AbstractDecorator {
    */
   protected void calculateOverriddenCds(DiagramSymbol cd, Collection<String> nativeClasses, Map<DiagramSymbol,
       Collection<CDTypeSymbol>> overridden, Collection<CDTypeSymbol> firstClasses) {
-    HashMap<String, CDTypeSymbol> l = Maps.newLinkedHashMap();
+    LinkedHashMap<String, CDTypeSymbol> l = Maps.newLinkedHashMap();
     //get all super cds / imports of the original cd
     Collection<DiagramSymbol> importedClasses = ((ICDBasisArtifactScope) cd.getEnclosingScope()).getImportsList().stream()
         .map(i -> i.getStatement())
@@ -222,8 +223,12 @@ public class ParserForSuperDecorator extends AbstractDecorator {
     firstClasses.addAll(l.values());
   }
 
-  protected boolean overrides(CDTypeSymbol first, CDTypeSymbol second){
-     return getSuperTypesTransitive(first).stream().map(CDTypeSymbol::getFullName).collect(Collectors.toList()).contains(second.getFullName());
+  protected boolean overrides(CDTypeSymbol first, CDTypeSymbol second) {
+    if (first.equals(second)) {
+      // Speed up check for default case
+      return false;
+    }
+    return getSuperTypesTransitive(first).contains(second.getFullName());
   }
 
   protected List<ASTCDMethod> getOverriddenMethods(CDTypeSymbol type, DiagramSymbol grammar, Collection<CDTypeSymbol> firstClasses){
@@ -300,26 +305,43 @@ public class ParserForSuperDecorator extends AbstractDecorator {
     return methods;
   }
 
-  protected List<CDTypeSymbol> getSuperTypesTransitive(CDTypeSymbol startType) {
-    List<CDTypeSymbol> superTypes = new ArrayList();
-    if (startType.isPresentSuperClass()) {
-      SymTypeExpression ste = startType.getSuperClass();
-      CDTypeSymbolSurrogate s = new CDTypeSymbolSurrogate(ste.getTypeInfo().getFullName());
-      s.setEnclosingScope(ste.getTypeInfo().getEnclosingScope());
-      superTypes.add(s.lazyLoadDelegate());
-      superTypes.addAll(getSuperTypesTransitive(s.lazyLoadDelegate()));
-    }
-
-    for (SymTypeExpression ste : startType.getSuperTypesList()) {
-      CDTypeSymbolSurrogate tss = new CDTypeSymbolSurrogate(ste.getTypeInfo().getFullName());
-      tss.setEnclosingScope(ste.getTypeInfo().getEnclosingScope());
-      CDTypeSymbol i = tss.lazyLoadDelegate();
-      superTypes.add(i);
-      superTypes.addAll(getSuperTypesTransitive(i));
-    }
-    return superTypes;
+  protected Set<String> getSuperTypesTransitive(CDTypeSymbol startType) {
+    Set<String> superTypeNames = new LinkedHashSet<>();
+    getSuperTypesTransitive(startType, superTypeNames);
+    return superTypeNames;
   }
 
+  protected void getSuperTypesTransitive(CDTypeSymbol cdTypeSymbol, Set<String> superTypes) {
+    if (superTypes.contains(cdTypeSymbol.getFullName())) return; // typeSymbol already visited
+    // Add the name of the type symbol to the set
+    superTypes.add(cdTypeSymbol.getFullName());
+    // and delve into its super types
+    List<CDTypeSymbol> types = cdTypeSymbol.getEnclosingScope().resolveCDTypeMany(cdTypeSymbol.getFullName());
+    getSuperTypesTransitive(types, superTypes);
+  }
 
+  protected void getSuperTypesTransitive(TypeSymbol typeSymbol, Set<String> superTypes) {
+    if (superTypes.contains(typeSymbol.getFullName())) return; // typeSymbol already visited
+    // Add the name of the type symbol to the set
+    superTypes.add(typeSymbol.getFullName());
+    // and delve into its super types
+    List<CDTypeSymbol> types = ((ICDBasisScope) typeSymbol.getEnclosingScope()).resolveCDTypeMany(typeSymbol.getFullName());
+    getSuperTypesTransitive(types, superTypes);
+  }
+
+  protected void getSuperTypesTransitive(List<CDTypeSymbol> resolvedTypes, Set<String> superTypes) {
+    // if types is empty: CD Symbol not loaded (e.g., external type?) => unable to continue to load supertypes
+    if (!resolvedTypes.isEmpty()) {
+      CDTypeSymbol startTypeSymbol = resolvedTypes.get(0); // we expect to only find 1 symbol
+      if (startTypeSymbol.isPresentSuperClass()) {
+        // if a superclass is present: delve into it
+        getSuperTypesTransitive(startTypeSymbol.getSuperClass().getTypeInfo(), superTypes);
+      }
+      // Delve into all supertypes
+      for (SymTypeExpression ste : startTypeSymbol.getSuperTypesList()) {
+        getSuperTypesTransitive(ste.getTypeInfo(), superTypes);
+      }
+    }
+  }
 
 }

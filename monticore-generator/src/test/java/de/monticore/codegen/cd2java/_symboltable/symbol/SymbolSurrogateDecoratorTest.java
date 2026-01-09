@@ -141,7 +141,8 @@ public class SymbolSurrogateDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethods() {
-    assertEquals(13, symbolClassAutomaton.getCDMethodList().size());
+
+    assertEquals(17, symbolClassAutomaton.getCDMethodList().size());
   
     assertTrue(Log.getFindings().isEmpty());
   }
@@ -210,6 +211,32 @@ public class SymbolSurrogateDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
+  public void testGetSpannedScopeNameMethod() {
+    ASTCDMethod method = getMethodBy("getSpannedScope", symbolClassAutomaton);
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertDeepEquals(mcTypeFacade.createQualifiedType(I_AUTOMATON_SCOPE)
+        , method.getMCReturnType().getMCType());
+
+    assertTrue(method.isEmptyCDParameters());
+
+    assertTrue(Log.getFindings().isEmpty());
+  }
+
+  @Test
+  public void testSetSpannedScopeNameMethod() {
+    ASTCDMethod method = getMethodBy("setSpannedScope", symbolClassAutomaton);
+    assertDeepEquals(PUBLIC, method.getModifier());
+
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+
+    assertEquals(1, method.sizeCDParameters());
+    assertEquals("scope", method.getCDParameter(0).getName());
+    assertDeepEquals(I_AUTOMATON_SCOPE, method.getCDParameter(0).getMCType());
+
+    assertTrue(Log.getFindings().isEmpty());
+  }
+
+  @Test
   public void testGetFullNameMethod() {
     ASTCDMethod method = getMethodBy("getFullName", symbolClassAutomaton);
     assertDeepEquals(PUBLIC, method.getModifier());
@@ -274,7 +301,6 @@ public class SymbolSurrogateDecoratorTest extends DecoratorTestCase {
   
     assertTrue(Log.getFindings().isEmpty());
   }
-
 
   @Test
   public void testGeneratedCodeFoo() {

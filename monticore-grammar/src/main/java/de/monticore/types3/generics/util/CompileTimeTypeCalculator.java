@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types3.generics.util;
 
+import com.google.common.base.Preconditions;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
@@ -28,7 +29,7 @@ import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -58,9 +59,9 @@ public class CompileTimeTypeCalculator {
    * and the target type is a function type,
    * filter the results and replace the free type variables.
    * E.g.:
-   * unfiltered type: (T -> byte) & int
-   * target type: short -> short
-   * result: short -> byte
+   * unfiltered type: {@code (T -> byte) & int}
+   * target type: {@code short -> short}
+   * result: {@code short -> byte}
    *
    * @param resolvedType Free type variables must have been replaced
    *                     with inference variables before calling this method.
@@ -85,11 +86,11 @@ public class CompileTimeTypeCalculator {
    * <p>
    * E.g., let the expression be '1 : intStream';
    * The Operator ':' can be represented with the function type
-   * (a, Stream<a>) -> Stream<a> with 'a' being a free type variable.
+   * {@code (a, Stream<a>) -> Stream<a>} with 'a' being a free type variable.
    * The arguments of the function will be '1' and 'intStream'.
    * In this case, this will first calculate the compile-time type
-   * of the operator to be (int, Stream<int>) -> Stream<int>.
-   * Therefore, the type of the expression is Stream<int>,
+   * of the operator to be {@code (int, Stream<int>) -> Stream<int>}.
+   * Therefore, the type of the expression is {@code Stream<int>},
    * which is stored in the type4AstMap.
    */
   public static void handleCall(
@@ -239,8 +240,8 @@ public class CompileTimeTypeCalculator {
       }
 
       // specifically, a set of functions must have been resolved
-      if (getNonFunctionOfResolvedType(funcExprType).isPresent() ||
-          getFunctionsOfResolvedType(funcExprType).isEmpty()
+      if (getNonFunctionOfResolvedType(funcExprTypeNotNormalized).isPresent() ||
+          getFunctionsOfResolvedType(funcExprTypeNotNormalized).isEmpty()
       ) {
         Log.error("0xFDAB4 encountered a function call, "
                 + "but the called value does not have a function type, "
@@ -255,7 +256,7 @@ public class CompileTimeTypeCalculator {
 
       // store each function as an inference result.
       List<SymTypeOfFunction> functions =
-          getFunctionsOfResolvedType(funcExprType);
+          getFunctionsOfResolvedType(funcExprTypeNotNormalized);
       inferenceResults = new ArrayList<>(functions.size());
       for (SymTypeOfFunction function : functions) {
         InferenceResult funcTypeAsInfRes = new InferenceResult();
@@ -405,7 +406,9 @@ public class CompileTimeTypeCalculator {
       callCtx.setInferredTypes(List.of(applicabilityRes));
     }
     else {
-      Log.error("0xFD114 internal error: unexpected inference results");
+      Log.error("0xFD114 internal error: unexpected inference results",
+        callExpr.get_SourcePositionStart(),
+        callExpr.get_SourcePositionEnd());
     }
   }
 
@@ -531,6 +534,17 @@ public class CompileTimeTypeCalculator {
     if (!funcInfo.hasParameterCount()) {
       return getResultIfNoFunctionInfoAvailable(resolvedType, inferenceContext);
     }
+    // check that arguments have not been calculated to Obscure
+    for (int i = 0; i < funcInfo.getParameterCount(); i++) {
+      if (funcInfo.hasArgumentType(i) &&
+          SymTypeRelations.normalize(funcInfo.getArgumentType(i))
+              .isObscureType()
+      ) {
+        InferenceResult result = new InferenceResult();
+        result.setHasErrorOccurred();
+        return result;
+      }
+    }
 
     // we expect a function, thus get only the functions (filter out vars)
     List<SymTypeOfFunction> resolvedFuncs =
@@ -634,7 +648,7 @@ public class CompileTimeTypeCalculator {
    * In the PartialFunctionInfo,
    * given argument-expressions, these are replaced with types,
    * iff a type can be calculated without access to a target type.
-   * E.g., "2+3" is replaced with int, but "new Set<>()" is not replaced,
+   * E.g., {@code "2+3"} is replaced with int, but {@code "new Set<>()"} is not replaced,
    * as the type is not fully known without a target type.
    */
   protected void replaceExprsWithTypesIffNoTargetTypeRequired(
@@ -832,7 +846,7 @@ public class CompileTimeTypeCalculator {
       PartialFunctionInfo funcInfo
   ) {
     Map<SymTypeOfFunction, InferenceResult> func2InferenceResult =
-        new HashMap<>();
+        new LinkedHashMap<>();
     for (SymTypeOfFunction func : potentiallyApplicableFuncs) {
       InferenceResult result = new InferenceResult();
       result.setResolvedFunction(func);
@@ -1204,8 +1218,8 @@ public class CompileTimeTypeCalculator {
   }
 
   /**
-   * Reduces constraints of the form <Expr --> type>.
-   * WARNING: While <Expr --> type> IS a constraint,
+   * Reduces constraints of the form {@code <Expr --> type>}.
+   * WARNING: While {@code <Expr --> type>} IS a constraint,
    * it is only ever used in this class;
    * This is used OUTSIDE of
    * {@link de.monticore.types3.generics.util.ConstraintReduction},
@@ -1357,7 +1371,7 @@ public class CompileTimeTypeCalculator {
   // Helper
 
   /**
-   * Only exists as Java is missing a ()->void functional interface.
+   * Only exists as Java is missing a {@code ()->void} functional interface.
    * This is not meant to be used otherwise.
    * (Runnable is specifically meant to be used for threads)
    */
@@ -1366,39 +1380,40 @@ public class CompileTimeTypeCalculator {
     void run();
   }
 
+  /**
+   * @param resolvedType must not be normalized
+   * @return List of normalized functions included in the resolved type
+   */
   protected List<SymTypeOfFunction> getFunctionsOfResolvedType(
       SymTypeExpression resolvedType
   ) {
-    List<SymTypeOfFunction> resolvedFuncs;
-    if (resolvedType.isIntersectionType()) {
-      resolvedFuncs =
-          resolvedType.asIntersectionType().getIntersectedTypeSet().stream()
-              .filter(SymTypeExpression::isFunctionType)
-              .map(SymTypeExpression::asFunctionType)
-              .collect(Collectors.toList());
-    }
-    else if (resolvedType.isFunctionType()) {
-      resolvedFuncs = Collections.singletonList(resolvedType.asFunctionType());
-    }
-    else {
-      resolvedFuncs = Collections.emptyList();
-    }
+    List<SymTypeExpression> resolvedTypesNonNormalized =
+        splitResolvedType(resolvedType);
+    List<SymTypeExpression> resolvedTypes =
+        resolvedTypesNonNormalized.stream()
+            .map(SymTypeRelations::normalize)
+            .collect(Collectors.toList());
+    List<SymTypeOfFunction> resolvedFuncs = resolvedTypes.stream()
+        .filter(SymTypeExpression::isFunctionType)
+        .map(SymTypeExpression::asFunctionType)
+        .collect(Collectors.toList());
     return resolvedFuncs;
   }
 
+  /**
+   * @param resolvedType must not be normalized
+   * @return the non-function(s) included in the resolved type
+   */
   protected Optional<SymTypeExpression> getNonFunctionOfResolvedType(
       SymTypeExpression resolvedType
   ) {
     Optional<SymTypeExpression> nonFunctionType;
-    List<SymTypeExpression> resolvedTypes;
-    if (resolvedType.isIntersectionType()) {
-      resolvedTypes = new ArrayList<>(
-          resolvedType.asIntersectionType().getIntersectedTypeSet()
-      );
-    }
-    else {
-      resolvedTypes = Collections.singletonList(resolvedType);
-    }
+    List<SymTypeExpression> resolvedTypesNonNormalized =
+        splitResolvedType(resolvedType);
+    List<SymTypeExpression> resolvedTypes =
+        resolvedTypesNonNormalized.stream()
+            .map(SymTypeRelations::normalize)
+            .collect(Collectors.toList());
     List<SymTypeExpression> nonFuncs = resolvedTypes.stream()
         .filter(Predicate.not(SymTypeExpression::isFunctionType))
         .collect(Collectors.toList());
@@ -1416,6 +1431,26 @@ public class CompileTimeTypeCalculator {
       nonFunctionType = Optional.empty();
     }
     return nonFunctionType;
+  }
+
+  /**
+   * splits a (non-normalized) resolved type into it's components
+   *
+   * @return a list of non-normalized types
+   */
+  protected List<SymTypeExpression> splitResolvedType(
+      SymTypeExpression resolvedType
+  ) {
+    List<SymTypeExpression> resolvedTypes;
+    if (resolvedType.isIntersectionType()) {
+      resolvedTypes = new ArrayList<>(
+          resolvedType.asIntersectionType().getIntersectedTypeSet()
+      );
+    }
+    else {
+      resolvedTypes = Collections.singletonList(resolvedType);
+    }
+    return resolvedTypes;
   }
 
   /**
@@ -1494,7 +1529,7 @@ public class CompileTimeTypeCalculator {
   }
 
   protected static void setDelegate(CompileTimeTypeCalculator newDelegate) {
-    CompileTimeTypeCalculator.delegate = Log.errorIfNull(newDelegate);
+    CompileTimeTypeCalculator.delegate = Preconditions.checkNotNull(newDelegate);
   }
 
   protected static CompileTimeTypeCalculator getDelegate() {

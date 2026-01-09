@@ -174,7 +174,7 @@ public abstract class MCBuildVisitor {
    * Find all (not yet found) hidden/comment tokens
    * and calls the consumer for each
    *
-   * @param addConsumer
+   * @param addConsumer e.g. {@link ASTNode#add_PreComment(Comment)}
    * @param start       {@link IntervalSet#complement(int, int)}
    * @param stop        {@link IntervalSet#complement(int, int)}
    */

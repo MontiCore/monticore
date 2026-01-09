@@ -86,7 +86,6 @@ public class JsonDeSers {
    *
    * @param deSerKind
    * @param serializedElement
-   * @return
    */
   public static void checkCorrectDeSerForKind(String deSerKind, JsonElement serializedElement) {
     if (!serializedElement.isJsonObject()) {

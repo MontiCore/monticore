@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static de.monticore.cd.codegen.CD2JavaTemplates.ANNOTATIONS;
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
@@ -110,6 +111,11 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
     List<ASTCDMethod> enclosingScopeMethods = Lists.newArrayList(createSetEnclosingScopeMethod(enclosingScopeAttribute, symbolTableService.getScopeInterfaceSimpleName()));
     enclosingScopeMethods.add(createGetEnclosingScopeMethod(enclosingScopeAttribute));
 
+    List<ASTCDMethod> spanningScopeMethods = Lists.newArrayList();
+    if (symbolTableService.hasScopeStereotype(symbolInput.getModifier()) || symbolTableService.hasInheritedScopeStereotype(symbolInput.getModifier())) {
+      spanningScopeMethods.addAll(createSpannedScopeMethods(symbolTableService.getScopeInterfaceFullName()));
+    }
+
     List<ASTCDMethod> delegateStereoinfoMethods = createOverriddenStereotypeMethods();
     
     ASTCDClassBuilder builder = CD4AnalysisMill.cDClassBuilder()
@@ -120,11 +126,14 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
       .addAllCDMembers(nameMethods)
       .addAllCDMembers(delegateSymbolRuleAttributeMethods)
       .addAllCDMembers(delegateAccecptMethods)
+      .addCDMember(createEqualsMethod(this.symbolTableService.getSymbolSimpleName(symbolInput)))
+      .addCDMember(createGetThis(this.symbolTableService.getSymbolSimpleName(symbolInput)))
       .addCDMember(createGetFullNameMethod())
       .addCDMember(createOverridenDeterminePackageName())
       .addCDMember(createOverridenDetermineFullName())
       .addAllCDMembers(delegateSymbolRuleMethods)
-      .addAllCDMembers(delegateStereoinfoMethods);
+      .addAllCDMembers(delegateStereoinfoMethods)
+      .addAllCDMembers(spanningScopeMethods);
     return builder
       .addCDMember(delegateAttribute)
       .addAllCDMembers(enclosingScopeMethods)
@@ -139,6 +148,21 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "SetEnclosingScope4SymbolSurrogate", enclosingScopeAttribute, scopeName));
     return method;
   }
+
+  protected ASTCDMethod createEqualsMethod(String symbolClass) {
+    ASTCDParameter parameter = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType("Object"), "obj");
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), getMCTypeFacade().createBooleanType(), "equals", parameter);
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "Equals", symbolClass));
+    this.replaceTemplate(ANNOTATIONS, method, new StringHookPoint("@Override"));
+    return method;
+  }
+
+  protected ASTCDMethod createGetThis(String symbolClass) {
+    ASTCDMethod method = getCDMethodFacade().createMethod(PROTECTED.build(), symbolClass, "getThis");
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "GetThis", symbolClass));
+    this.replaceTemplate(ANNOTATIONS, method, new StringHookPoint("@Override"));
+    return method;
+  }
   
   protected ASTCDConstructor createConstructor(String symbolSurrogateClass) {
     ASTCDParameter nameParameter = getCDParameterFacade().createParameter(String.class, NAME_VAR);
@@ -146,7 +170,7 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
     this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint(TEMPLATE_PATH + "ConstructorSymbolSurrogate"));
     return constructor;
   }
-  
+
   protected ASTCDAttribute createNameAttribute() {
     return getCDAttributeFacade().createAttribute(PROTECTED.build(), "String", "name");
   }
@@ -193,7 +217,7 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
       symbolName, simpleName, scopeName, generatedError));
     return method;
   }
-  
+
   protected ASTCDMethod createGetFullNameMethod() {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), getMCTypeFacade().createStringType(), "getFullName");
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "GetFullName"));
@@ -302,5 +326,22 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
       result.add(this.getCDMethodFacade().createMethod(PUBLIC.build(), ASTConstants.ACCEPT_METHOD, superVisitorParameter));
     }
     return result;
+  }
+
+  protected List<ASTCDMethod> createSpannedScopeMethods(String scopeInterface) {
+    List<ASTCDMethod> methods = Lists.newArrayList();
+    // getSpannedScope
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), getMCTypeFacade().createQualifiedType(scopeInterface), "getSpannedScope");
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "GetSpannedScopeSymbolSurrogate",
+        scopeInterface));
+    methods.add(method);
+
+    // setSpannedScope
+    ASTCDParameter parameter = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType(scopeInterface), "scope");
+    method = getCDMethodFacade().createMethod(PUBLIC.build(), "setSpannedScope", parameter);
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "SetSpannedScopeSymbolSurrogate", scopeInterface));
+    methods.add(method);
+
+    return methods;
   }
 }

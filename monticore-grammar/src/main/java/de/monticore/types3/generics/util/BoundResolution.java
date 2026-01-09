@@ -1,6 +1,7 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.types3.generics.util;
 
+import com.google.common.base.Preconditions;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeInferenceVariable;
@@ -18,7 +19,7 @@ import de.se_rwth.commons.logging.Log;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -100,7 +101,7 @@ public class BoundResolution {
   ) {
     // shortcut reducing log
     if (newBounds.isEmpty() && oldBounds.isEmpty()) {
-      return Optional.of(new HashMap<>());
+      return Optional.of(new LinkedHashMap<>());
     }
     Optional<Map<SymTypeInferenceVariable, SymTypeExpression>> result = Optional.empty();
 
@@ -647,7 +648,7 @@ public class BoundResolution {
   /**
    * to be used after incorporation/reduction.
    * Does only include top-most inference variables,
-   * e.g., List<a1> <: a2, with a1,a2 being inference variables, returns a2.
+   * e.g., {@code List<a1> <: a2}, with a1,a2 being inference variables, returns a2.
    */
   protected List<SymTypeInferenceVariable> getInferenceVariablesOfBounds(List<Bound> bounds) {
     List<SymTypeInferenceVariable> inferenceVariables = new ArrayList<>();
@@ -752,7 +753,7 @@ public class BoundResolution {
   /**
    * fills the dependency matrix.
    * any inferenceVariable, which does not have a bound yet,
-   * has the bound added: TV <: #Top
+   * has the bound added: {@code TV <: #Top}
    */
   protected Map<SymTypeInferenceVariable, List<Bound>> completeVarBoundDependencies(
       Map<SymTypeInferenceVariable, List<Bound>> varBoundDependencies
@@ -877,7 +878,7 @@ public class BoundResolution {
   }
 
   protected static void setDelegate(BoundResolution newDelegate) {
-    BoundResolution.delegate = Log.errorIfNull(newDelegate);
+    BoundResolution.delegate = Preconditions.checkNotNull(newDelegate);
   }
 
   protected static BoundResolution getDelegate() {
