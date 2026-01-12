@@ -3,10 +3,12 @@ package de.monticore.gradle;
 
 import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.json.JsonObject;
+import org.apache.commons.io.FileUtils;
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.GradleRunner;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.gradle.tooling.internal.consumer.ConnectorServices;
+import org.gradle.tooling.internal.consumer.DefaultGradleConnector;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
@@ -15,8 +17,13 @@ import javax.annotation.Nullable;
 import javax.annotation.concurrent.NotThreadSafe;
 import java.io.File;
 import java.io.IOException;
+import java.net.JarURLConnection;
+import java.net.URLConnection;
+import java.nio.file.FileVisitResult;
+import java.nio.file.FileVisitor;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
 
 import static org.gradle.testkit.runner.TaskOutcome.*;
@@ -33,13 +40,18 @@ import static org.junit.jupiter.api.Assertions.*;
 @Execution(ExecutionMode.SAME_THREAD) // Do not run in parallel, too memory hungry
 @NotThreadSafe // Technically thread safe, just memory hungry
 public class MCGenPluginTest {
-  @TempDir
+  // TODO: Use @TempDir instead of manual creation and deletion of the temporary folder
+  // see: https://github.com/gradle/gradle/issues/12535
+  // @TempDir
   public Path temporaryFolder;
   File testProjectDir;
   File settingsFile;
   File propertiesFile;
   File buildFile;
   File grammarDir;
+  
+  // TODO: Remove when using TempDir
+  private static List<Path> workingDirs = new ArrayList<>();
 
   @BeforeEach
   public void setup() throws IOException {
@@ -48,6 +60,29 @@ public class MCGenPluginTest {
     buildFile = new File(testProjectDir, "build.gradle");
     propertiesFile = new File(testProjectDir, "gradle.properties");
     grammarDir = new File(testProjectDir, "src/main/grammars");
+  }
+  
+  // TODO: Remove when using TempDir
+  @BeforeEach
+  void createWorkspace() throws IOException{
+    this.temporaryFolder = Files.createTempDirectory(getClass().getSimpleName());
+    workingDirs.add(this.temporaryFolder);
+  }
+  
+  // TODO: Remove when using TempDir
+  @AfterEach
+  void resetGradleConnector() {
+    ConnectorServices.reset();
+  }
+  
+  // TODO: Remove when using TempDir
+  @AfterAll
+  static void deleteWorkspace() throws IOException, InterruptedException {
+    DefaultGradleConnector.close();
+    Thread.sleep(100);
+    for (Path workingDir : workingDirs) {
+      FileUtils.forceDelete(workingDir.toFile());
+    }
   }
   
   File createDirectory(Path path) throws IOException{
@@ -466,5 +501,39 @@ public class MCGenPluginTest {
             "dependencies {\n" + " mcTool files('" + mcGenToolJar.getAbsolutePath().replace("\\", "\\\\")
             + "')\n"
             + "}\n";
+  }
+  
+  void cleanupTry() throws IOException{
+    System.gc();
+    Files.walkFileTree(temporaryFolder, new FileVisitor<Path>() {
+      
+      @Override
+      public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs)
+          throws IOException {
+        return FileVisitResult.CONTINUE;
+      }
+      
+      @Override
+      public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+        if (file.toFile().getName().endsWith(".jar")) {
+          JarURLConnection jarURLConnection =
+             (JarURLConnection) file.toFile().toURI().toURL().openConnection();
+          jarURLConnection.getJarFile().close();
+          System.out.println("Closed jar file: " + file.toAbsolutePath());
+        }
+        
+        return FileVisitResult.CONTINUE;
+      }
+      
+      @Override
+      public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+        return FileVisitResult.CONTINUE;
+      }
+      
+      @Override
+      public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+        return FileVisitResult.CONTINUE;
+      }
+    });
   }
 }
