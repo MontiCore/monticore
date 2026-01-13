@@ -22,7 +22,7 @@ public class STRulesToolTest {
   public void testFooFileSystem() {
     LogStub.init();
     //    Log.enableFailQuick(false);
-    STRulesTool.main(new String[] { "-i", "src/test/resources/FooFileSystem.str"});
+    new STRulesTool().run(new String[] { "-i", "src/test/resources/FooFileSystem.str"});
     assertEquals(0, Log.getErrorCount());
     MCAssertions.assertNoFindings();
   }

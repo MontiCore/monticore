@@ -435,7 +435,7 @@ public abstract class MCTask extends DefaultTask {
     String[] p = getParameters();
     try {
       // execute Monticore with the given parameters
-      MontiCoreTool.main(p);
+      new MontiCoreTool().run(p);
       MCBasicsMill.globalScope().getSymbolPath().close();
     } catch(MCTaskError e){
       // in case of failure print the error and fail
