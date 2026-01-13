@@ -38,7 +38,7 @@ public class MCToolInvoker {
       MCGradleTool.preLoad();
     });
     try {
-      MCGradleTool.main(args);
+      new MCGradleTool().run(args);
     }catch (final AmbiguityException | MontiCoreFreeMarkerException e) {
       RuntimeException newThrow = e;
       if (e.getCause() instanceof AmbiguityException) { // Freemarker adds special Freemarker Exceptions
