@@ -14,4 +14,5 @@ ${tc.signature("grammarname")}
               + " and does not indicate an issue with any provided models.",
           exception
       );
+      System.exit(1);
     }
