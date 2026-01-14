@@ -15,6 +15,15 @@ import java.util.Comparator;
 public class SymTypeExpressionComparator
     implements Comparator<SymTypeExpression> {
 
+  protected static SymTypeExpressionComparator delegate;
+
+  public static int compareSymTypeExpressions(
+      SymTypeExpression o1,
+      SymTypeExpression o2
+  ) {
+    return getDelegate().compare(o1, o2);
+  }
+
   @Override
   public int compare(SymTypeExpression o1, SymTypeExpression o2) {
     Preconditions.checkNotNull(o1);
@@ -409,6 +418,29 @@ public class SymTypeExpressionComparator
   protected int logUnimplemented() {
     Log.error("0xFD445 internal error: unimplemented comparison.");
     return 0;
+  }
+
+  // static delegate
+
+  public static void init() {
+    Log.trace("init default SymTypeExpressionComparator", "TypeCheck setup");
+    setDelegate(new SymTypeExpressionComparator());
+  }
+
+  public static void reset() {
+    SymTypeExpressionComparator.delegate = null;
+  }
+
+  protected static void setDelegate(SymTypeExpressionComparator newDelegate) {
+    SymTypeExpressionComparator.delegate =
+        Preconditions.checkNotNull(newDelegate);
+  }
+
+  protected static SymTypeExpressionComparator getDelegate() {
+    if (SymTypeExpressionComparator.delegate == null) {
+      init();
+    }
+    return SymTypeExpressionComparator.delegate;
   }
 
 }
