@@ -18,20 +18,55 @@ public abstract class Constraint {
     return false;
   }
 
+  public BoundWrapperConstraint asBoundWrapperConstraint() {
+    throw new UnsupportedOperationException(
+        "Tried to convert constraint " + print()
+            + " to BoundWrapperConstraint, which it is not."
+    );
+  }
+
   public boolean isExpressionCompatibilityConstraint() {
     return false;
+  }
+
+  public ExpressionCompatibilityConstraint asExpressionCompatibilityConstraint() {
+    throw new UnsupportedOperationException(
+        "Tried to convert constraint " + print()
+            + " to ExpressionCompatibilityConstraint, which it is not."
+    );
   }
 
   public boolean isSubTypingConstraint() {
     return false;
   }
 
+  public SubTypingConstraint asSubTypingConstraint() {
+    throw new UnsupportedOperationException(
+        "Tried to convert constraint " + print()
+            + " to SubTypingConstraint, which it is not."
+    );
+  }
+
   public boolean isTypeCompatibilityConstraint() {
     return false;
   }
 
+  public TypeCompatibilityConstraint asTypeCompatibilityConstraint() {
+    throw new UnsupportedOperationException(
+        "Tried to convert constraint " + print()
+            + " to TypeCompatibilityConstraint, which it is not."
+    );
+  }
+
   public boolean isTypeEqualityConstraint() {
     return false;
+  }
+
+  public TypeEqualityConstraint asTypeEqualityConstraint() {
+    throw new UnsupportedOperationException(
+        "Tried to convert constraint " + print()
+            + " to TypeEqualityConstraint, which it is not."
+    );
   }
 
   public abstract boolean deepEquals(Constraint other);
