@@ -1139,12 +1139,14 @@ public class BoundIncorporation {
 
   protected String printConstraints(List<Constraint> constraints) {
     return constraints.stream()
+        .sorted()
         .map(Constraint::print)
         .collect(Collectors.joining(System.lineSeparator()));
   }
 
   protected String printBounds(List<Bound> bounds) {
     return bounds.stream()
+        .sorted()
         .map(Bound::print)
         .collect(Collectors.joining(System.lineSeparator()));
   }

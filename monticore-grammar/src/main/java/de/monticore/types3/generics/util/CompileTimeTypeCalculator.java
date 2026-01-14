@@ -1488,12 +1488,14 @@ public class CompileTimeTypeCalculator {
 
   protected String printBounds(List<Bound> bounds) {
     return bounds.stream()
+        .sorted()
         .map(Bound::print)
         .collect(Collectors.joining(System.lineSeparator()));
   }
 
   protected String printConstraints(List<? extends Constraint> constraints) {
     return constraints.stream()
+        .sorted()
         .map(Constraint::print)
         .collect(Collectors.joining(System.lineSeparator()));
   }

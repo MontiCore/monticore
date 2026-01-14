@@ -862,6 +862,7 @@ public class BoundResolution {
 
   protected String printBounds(List<? extends Bound> constraints) {
     return constraints.stream()
+        .sorted()
         .map(Bound::print)
         .collect(Collectors.joining(System.lineSeparator()));
   }
