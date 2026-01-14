@@ -18,7 +18,8 @@ import java.util.List;
  * the instantiations will then be calculated by
  * {@link BoundResolution}.
  */
-public abstract class Bound {
+public abstract class Bound
+    implements Comparable<Bound> {
 
   public boolean isCaptureBound() {
     return false;
@@ -76,6 +77,11 @@ public abstract class Bound {
   }
 
   public abstract boolean deepEquals(Bound other);
+
+  @Override
+  public int compareTo(Bound o) {
+    return BoundComparator.compareBounds(this, o);
+  }
 
   /**
    * returns a human-readable String, e.g., for the log
