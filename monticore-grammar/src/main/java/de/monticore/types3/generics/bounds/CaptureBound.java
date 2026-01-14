@@ -9,7 +9,6 @@ import de.monticore.types.check.SymTypeOfFunction;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.SymTypeVariable;
 import de.monticore.types3.generics.TypeParameterRelations;
-import de.monticore.types3.util.SymTypeExpressionComparator;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -155,8 +154,7 @@ public class CaptureBound extends Bound {
     List<SymTypeVariable> typeParams = getTypeArguments(declType).stream()
         .map(SymTypeExpression::asTypeVariable)
         .collect(Collectors.toList());
-    Map<SymTypeVariable, SymTypeInferenceVariable> param2InfVar =
-        new TreeMap<>(new SymTypeExpressionComparator());
+    Map<SymTypeVariable, SymTypeInferenceVariable> param2InfVar = new TreeMap<>();
     for (int i = 0; i < typeParams.size(); i++) {
       param2InfVar.put(typeParams.get(i), infVars.get(i));
     }
@@ -203,7 +201,7 @@ public class CaptureBound extends Bound {
           .stream().map(SymTypeExpression::asTypeVariable)
           .collect(Collectors.toList());
       Map<SymTypeVariable, SymTypeInferenceVariable> infVarReplaceMap =
-          new TreeMap<>(new SymTypeExpressionComparator());
+          new TreeMap<>();
       for (SymTypeVariable typeParam : typeParams) {
         infVarReplaceMap.put(typeParam,
             SymTypeExpressionFactory.createInferenceVariable(

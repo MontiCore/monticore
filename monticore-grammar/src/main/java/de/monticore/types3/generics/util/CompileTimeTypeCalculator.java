@@ -23,7 +23,6 @@ import de.monticore.types3.generics.context.InferenceContext4Ast;
 import de.monticore.types3.generics.context.InferenceResult;
 import de.monticore.types3.generics.context.InferenceVisitorMode;
 import de.monticore.types3.util.FunctionRelations;
-import de.monticore.types3.util.SymTypeExpressionComparator;
 import de.monticore.visitor.ITraverser;
 import de.se_rwth.commons.logging.Log;
 
@@ -1470,7 +1469,7 @@ public class CompileTimeTypeCalculator {
         .map(SymTypeExpression::asTypeVariable)
         .collect(Collectors.toList());
     Map<SymTypeVariable, SymTypeInferenceVariable> typeParamReplaceMap =
-        new TreeMap<>(new SymTypeExpressionComparator());
+        new TreeMap<>();
     for (int i = 0; i < typeParams.size(); i++) {
       typeParamReplaceMap.put(typeParams.get(i), infVars.get(i));
     }
