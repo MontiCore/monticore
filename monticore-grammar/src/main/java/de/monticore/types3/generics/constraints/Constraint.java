@@ -12,7 +12,8 @@ import java.util.List;
  * Constraints lead to {@link de.monticore.types3.generics.bounds.Bound}s,
  * by means of {@link ConstraintReduction}.
  */
-public abstract class Constraint {
+public abstract class Constraint
+    implements Comparable<Constraint> {
 
   public boolean isBoundWrapperConstraint() {
     return false;
@@ -70,6 +71,11 @@ public abstract class Constraint {
   }
 
   public abstract boolean deepEquals(Constraint other);
+
+  @Override
+  public int compareTo(Constraint o) {
+    return ConstraintComparator.compareConstraints(this, o);
+  }
 
   /**
    * returns a human-readable String, e.g., for the log
