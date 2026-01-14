@@ -1174,7 +1174,7 @@ public class CompileTimeTypeCalculator {
         ? " with the target type "
         + funcInfo.getReturnTargetType().printFullName()
         : "") + ".";
-    if (infResult.getInvocationType().isEmpty()) {
+    if (invocationType.isEmpty()) {
       Log.error("0xFD447 cannot resolve function invocation type"
           + logInfo + " Bounds:" + System.lineSeparator()
           + printBounds(infResult.getB4())
