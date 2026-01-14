@@ -58,6 +58,11 @@ public class CaptureBound extends Bound {
   }
 
   @Override
+  public CaptureBound asCaptureBound() {
+    return this;
+  }
+
+  @Override
   public boolean deepEquals(Bound other) {
     if (this == other) {
       return true;

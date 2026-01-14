@@ -24,20 +24,55 @@ public abstract class Bound {
     return false;
   }
 
+  public CaptureBound asCaptureBound() {
+    throw new UnsupportedOperationException(
+        "Tried to convert bound " + print()
+            + " to CaptureBound, which it is not."
+    );
+  }
+
   public boolean isSubTypingBound() {
     return false;
+  }
+
+  public SubTypingBound asSubTypingBound() {
+    throw new UnsupportedOperationException(
+        "Tried to convert bound " + print()
+            + " to SubTypingBound, which it is not."
+    );
   }
 
   public boolean isTypeCompatibilityBound() {
     return false;
   }
 
+  public TypeCompatibilityBound asTypeCompatibilityBound() {
+    throw new UnsupportedOperationException(
+        "Tried to convert bound " + print()
+            + " to TypeCompatibilityBound, which it is not."
+    );
+  }
+
   public boolean isTypeEqualityBound() {
     return false;
   }
 
+  public TypeEqualityBound asTypeEqualityBound() {
+    throw new UnsupportedOperationException(
+        "Tried to convert bound " + print()
+            + " to TypeEqualityBound, which it is not."
+    );
+  }
+
   public boolean isUnsatisfiableBound() {
     return false;
+  }
+
+  public UnsatisfiableBound asUnsatisfiableBound() {
+    throw new UnsupportedOperationException(
+        "Tried to convert bound " + print()
+            + " to UnsatisfiableBound, which it is not."
+    );
   }
 
   public abstract boolean deepEquals(Bound other);
