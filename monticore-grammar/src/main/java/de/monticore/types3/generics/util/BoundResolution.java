@@ -13,7 +13,6 @@ import de.monticore.types3.generics.bounds.SubTypingBound;
 import de.monticore.types3.generics.bounds.TypeCompatibilityBound;
 import de.monticore.types3.generics.bounds.TypeEqualityBound;
 import de.monticore.types3.generics.constraints.Constraint;
-import de.monticore.types3.util.SymTypeExpressionComparator;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -264,8 +263,7 @@ public class BoundResolution {
           .collect(Collectors.toList());
     }
     for (SymTypeInferenceVariable var : varsWithoutInstantiation) {
-      Set<SymTypeInferenceVariable> deps =
-          new TreeSet<>(new SymTypeExpressionComparator());
+      Set<SymTypeInferenceVariable> deps = new TreeSet<>();
       deps.add(var);// should not be necessary, just in case
       deps.addAll(varInterDependencies.get(var));
       if (deps.size() < varsToResolveNextNotFinal.size()) {
@@ -758,8 +756,7 @@ public class BoundResolution {
   protected Map<SymTypeInferenceVariable, List<Bound>> completeVarBoundDependencies(
       Map<SymTypeInferenceVariable, List<Bound>> varBoundDependencies
   ) {
-    Map<SymTypeInferenceVariable, List<Bound>> completeDependencies =
-        new TreeMap<>(new SymTypeExpressionComparator());
+    Map<SymTypeInferenceVariable, List<Bound>> completeDependencies = new TreeMap<>();
     completeDependencies.putAll(varBoundDependencies);
     List<SymTypeExpression> includedTypes = new ArrayList<>();
     for (List<Bound> bounds : varBoundDependencies.values()) {
@@ -767,8 +764,7 @@ public class BoundResolution {
         includedTypes.addAll(bound.getIncludedTypes());
       }
     }
-    Set<SymTypeInferenceVariable> includedVariables =
-        new TreeSet<>(new SymTypeExpressionComparator());
+    Set<SymTypeInferenceVariable> includedVariables = new TreeSet<>();
     includedVariables.addAll(includedTypes.stream().flatMap(t ->
             TypeParameterRelations.getIncludedInferenceVariables(t).stream()
         ).collect(Collectors.toList())
@@ -838,10 +834,13 @@ public class BoundResolution {
   /**
    * returns a map that does not rely on hashes
    * (which does not work well with SymTypeExpressions)
+   *
+   * @deprecated simply use a {@link TreeMap}
    */
+  @Deprecated(forRemoval = true)
   protected <S extends SymTypeExpression, T>
   Map<S, T> createSymTypeExprMap() {
-    return new TreeMap<>(new SymTypeExpressionComparator());
+    return new TreeMap<>();
   }
 
   /**

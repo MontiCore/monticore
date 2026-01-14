@@ -24,7 +24,6 @@ import de.monticore.types3.generics.constraints.SubTypingConstraint;
 import de.monticore.types3.generics.constraints.TypeCompatibilityConstraint;
 import de.monticore.types3.generics.constraints.TypeEqualityConstraint;
 import de.monticore.types3.util.SymTypeCollectionVisitor;
-import de.monticore.types3.util.SymTypeExpressionComparator;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -1032,7 +1031,7 @@ public class BoundIncorporation {
     List<Constraint> constraints = new ArrayList<>();
     // get all paths
     Map<SymTypeExpression, List<List<SymTypeExpression>>> startType2Paths =
-        new TreeMap<>(new SymTypeExpressionComparator());
+        new TreeMap<>();
     for (SymTypeExpression startType : startTypes) {
       startType2Paths.put(startType, getNominalSuperTypePaths(startType));
     }
