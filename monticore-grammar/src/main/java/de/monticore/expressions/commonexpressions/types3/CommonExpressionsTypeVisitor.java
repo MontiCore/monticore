@@ -812,8 +812,9 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
       type = Optional.empty();
     }
     else {
-      SymTypeExpression innerAsExprType =
-          getType4Ast().getPartialTypeOfExpr(expr.getExpression());
+      SymTypeExpression innerAsExprType = SymTypeRelations.normalize(
+          getType4Ast().getPartialTypeOfExpr(expr.getExpression())
+      );
       if (WithinTypeBasicSymbolsResolver.canResolveIn(innerAsExprType)) {
         AccessModifier modifier = innerAsExprType.hasTypeInfo() ?
             TypeContextCalculator.getAccessModifier(
