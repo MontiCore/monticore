@@ -17,13 +17,8 @@ import javax.annotation.Nullable;
 import javax.annotation.concurrent.NotThreadSafe;
 import java.io.File;
 import java.io.IOException;
-import java.net.JarURLConnection;
-import java.net.URLConnection;
-import java.nio.file.FileVisitResult;
-import java.nio.file.FileVisitor;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
 
 import static org.gradle.testkit.runner.TaskOutcome.*;
@@ -501,39 +496,5 @@ public class MCGenPluginTest {
             "dependencies {\n" + " mcTool files('" + mcGenToolJar.getAbsolutePath().replace("\\", "\\\\")
             + "')\n"
             + "}\n";
-  }
-  
-  void cleanupTry() throws IOException{
-    System.gc();
-    Files.walkFileTree(temporaryFolder, new FileVisitor<Path>() {
-      
-      @Override
-      public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs)
-          throws IOException {
-        return FileVisitResult.CONTINUE;
-      }
-      
-      @Override
-      public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-        if (file.toFile().getName().endsWith(".jar")) {
-          JarURLConnection jarURLConnection =
-             (JarURLConnection) file.toFile().toURI().toURL().openConnection();
-          jarURLConnection.getJarFile().close();
-          System.out.println("Closed jar file: " + file.toAbsolutePath());
-        }
-        
-        return FileVisitResult.CONTINUE;
-      }
-      
-      @Override
-      public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
-        return FileVisitResult.CONTINUE;
-      }
-      
-      @Override
-      public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-        return FileVisitResult.CONTINUE;
-      }
-    });
   }
 }
