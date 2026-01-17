@@ -19,7 +19,7 @@ public class EmfListMutatorDecorator extends ListMutatorDecorator {
   protected String className;
 
   public EmfListMutatorDecorator(GlobalExtensionManagement glex, ASTService astService) {
-    super(glex);
+    super(glex, astService);
     this.astService = astService;
   }
 

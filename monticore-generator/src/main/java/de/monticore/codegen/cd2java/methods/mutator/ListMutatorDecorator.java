@@ -3,6 +3,8 @@ package de.monticore.codegen.cd2java.methods.mutator;
 
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cdbasis._symboltable.CDTypeSymbol;
+import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.methods.ListMethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
@@ -36,8 +38,11 @@ public class ListMutatorDecorator extends ListMethodDecorator {
   protected static final String REPLACE_ALL = "public void replaceAll%s(UnaryOperator<%s> operator);";
   protected static final String SORT = "public void sort%s(Comparator<? super %s> comparator);";
 
-  public ListMutatorDecorator(final GlobalExtensionManagement glex) {
+  protected final AbstractService service;
+
+  public ListMutatorDecorator(final GlobalExtensionManagement glex, AbstractService service) {
     super(glex);
+    this.service = service;
   }
 
   @Override
@@ -49,6 +54,10 @@ public class ListMutatorDecorator extends ListMethodDecorator {
 
   protected ASTCDMethod createSetListMethod(ASTCDAttribute ast) {
     if(getDecorationHelper().isAstNode(ast)){
+
+      CDTypeSymbol cdTypeSymbol =  service.resolveCDType(ast.getMCType().printType());
+      //TODO magic here
+
       if(!getDecorationHelper().isListType(ast.getMCType().printType()) && !(ast.getMCType().getClass() == ASTMCListType.class)
       && ((ASTMCBasicGenericType) ast.getMCType()).getMCTypeArgumentList().isEmpty() && ((ASTMCBasicGenericType) ast.getMCType()).getMCTypeArgumentList().get(0).getMCTypeOpt().isEmpty()){
         Log.error(ERROR_CODE + " The attribute " + ast.getName() + " is marked as AST node list but does not provide a generic type argument.");

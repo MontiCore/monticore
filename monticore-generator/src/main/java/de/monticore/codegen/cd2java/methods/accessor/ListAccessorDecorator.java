@@ -3,6 +3,10 @@ package de.monticore.codegen.cd2java.methods.accessor;
 
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cdbasis._symboltable.CDTypeSymbol;
+import de.monticore.codegen.cd2java.AbstractCreator;
+import de.monticore.codegen.cd2java.AbstractService;
+import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java.methods.ListMethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
@@ -48,8 +52,11 @@ public class ListAccessorDecorator extends ListMethodDecorator {
   protected static final String SUBLIST = "public List<%s> subList%s(int start, int end);";
   protected static final String SUBLIST_GENERIC = "public List<? extends %s> subList%s(int start, int end);";
 
-  public ListAccessorDecorator(final GlobalExtensionManagement glex) {
+  protected final AbstractService service;
+
+  public ListAccessorDecorator(final GlobalExtensionManagement glex, AbstractService service) {
     super(glex);
+    this.service = service;
   }
 
   @Override
@@ -61,6 +68,10 @@ public class ListAccessorDecorator extends ListMethodDecorator {
 
   protected ASTCDMethod createGetListMethod(ASTCDAttribute ast) {
     if (getDecorationHelper().isAstNode(ast)) {
+
+      CDTypeSymbol cdTypeSymbol =  service.resolveCDType(ast.getMCType().printType());
+      //TODO magic here
+
       if(!getDecorationHelper().isListType(ast.getMCType().printType()) && !(ast.getMCType().getClass() == ASTMCListType.class)
           && ((ASTMCBasicGenericType) ast.getMCType()).getMCTypeArgumentList().isEmpty() && ((ASTMCBasicGenericType) ast.getMCType()).getMCTypeArgumentList().get(0).getMCTypeOpt().isEmpty()){
         Log.error(ERROR_CODE + " The attribute " + ast.getName() + " is marked as AST node list but does not provide a generic type argument.");

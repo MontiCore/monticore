@@ -17,7 +17,7 @@ public class MethodDecorator extends AbstractCreator<ASTCDAttribute, List<ASTCDM
   protected final AbstractCreator<ASTCDAttribute, List<ASTCDMethod>> mutatorDecorator;
 
   public MethodDecorator(final GlobalExtensionManagement glex, final AbstractService service) {
-    this(glex, new AccessorDecorator(glex, service), new MutatorDecorator(glex));
+    this(glex, new AccessorDecorator(glex, service), new MutatorDecorator(glex, service));
   }
 
   public MethodDecorator(final GlobalExtensionManagement glex,

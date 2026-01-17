@@ -89,7 +89,7 @@ public class SymbolBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDCla
       // add delegate-Method
       // overwrite setters since they need to return the correct Builder type
       ASTMCType builderType = this.getMCTypeFacade().createQualifiedType(symbolBuilder.getName());
-      BuilderMutatorMethodDecorator builderMutatorMethodDecorator =  new BuilderMutatorMethodDecorator(glex, builderType);
+      BuilderMutatorMethodDecorator builderMutatorMethodDecorator =  new BuilderMutatorMethodDecorator(glex, symbolTableService, builderType);
       symbolBuilder.addAllCDMembers(
               getMethodsForDefaultAttrs(defaultAttrs, builderMutatorMethodDecorator));
       // Override getScope-Methods

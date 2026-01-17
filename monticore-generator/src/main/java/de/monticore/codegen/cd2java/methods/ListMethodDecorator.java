@@ -6,12 +6,15 @@ import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.codegen.cd2java.AbstractCreator;
+import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -44,6 +47,9 @@ public abstract class ListMethodDecorator extends AbstractCreator<ASTCDAttribute
     }
     this.attributeType = getAttributeType(ast);
 
+    //scan die service die mir den typen geben dann den hohsten top typen finden
+
+
     List<ASTCDMethod> methods;
     List<String> methodTypes;
     boolean isGeneric = getDecorationHelper().isAstNode(ast);
@@ -51,12 +57,12 @@ public abstract class ListMethodDecorator extends AbstractCreator<ASTCDAttribute
       methods = getMethodSignaturesGeneric().values().stream()
           .map(getCDMethodFacade()::createMethodByDefinition)
           .collect(Collectors.toList());
-      methodTypes = getMethodSignaturesGeneric().keySet().stream().collect(Collectors.toList());
+      methodTypes = new ArrayList<>(getMethodSignaturesGeneric().keySet());
     } else {
       methods = getMethodSignatures().values().stream()
           .map(getCDMethodFacade()::createMethodByDefinition)
           .collect(Collectors.toList());
-      methodTypes = getMethodSignatures().keySet().stream().collect(Collectors.toList());
+      methodTypes = new ArrayList<>(getMethodSignatures().keySet());
     }
 
     for(int i = 0; i < methods.size(); i++) {

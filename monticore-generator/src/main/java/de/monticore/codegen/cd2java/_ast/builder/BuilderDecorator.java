@@ -104,13 +104,13 @@ public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
         .flatMap(List::stream)
         .collect(Collectors.toList());
 
-    BuilderMutatorMethodDecorator mutatorDecorator = new BuilderMutatorMethodDecorator(glex, builderType);
+    BuilderMutatorMethodDecorator mutatorDecorator = new BuilderMutatorMethodDecorator(glex, service, builderType);
     List<ASTCDMethod> mutatorMethods = builderAttributes.stream()
         .map(mutatorDecorator::decorate)
         .flatMap(List::stream)
         .collect(Collectors.toList());
 
-    InheritedBuilderMutatorMethodDecorator inheritedMutatorDecorator = new InheritedBuilderMutatorMethodDecorator(glex, builderType);
+    InheritedBuilderMutatorMethodDecorator inheritedMutatorDecorator = new InheritedBuilderMutatorMethodDecorator(glex, service, builderType);
     List<ASTCDMethod> inheritedMutatorMethods = inheritedAttributes.stream()
         .map(inheritedMutatorDecorator::decorate)
         .flatMap(List::stream)

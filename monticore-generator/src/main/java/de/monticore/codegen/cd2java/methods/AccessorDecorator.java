@@ -15,7 +15,7 @@ import java.util.List;
 public class AccessorDecorator extends SpecificMethodDecorator {
 
   public AccessorDecorator(final GlobalExtensionManagement glex, AbstractService service) {
-    super(glex, new MandatoryAccessorDecorator(glex), new OptionalAccessorDecorator(glex,service), new ListAccessorDecorator(glex));
+    super(glex, new MandatoryAccessorDecorator(glex), new OptionalAccessorDecorator(glex,service), new ListAccessorDecorator(glex, service));
   }
 
   public AccessorDecorator(final GlobalExtensionManagement glex,

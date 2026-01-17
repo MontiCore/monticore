@@ -20,7 +20,7 @@ public class ReferencedSymbolListAccessorDecorator extends ListAccessorDecorator
 
   public ReferencedSymbolListAccessorDecorator(final GlobalExtensionManagement glex,
                                                final SymbolTableService symbolTableService) {
-    super(glex);
+    super(glex, symbolTableService);
     this.symbolTableService = symbolTableService;
   }
 

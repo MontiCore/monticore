@@ -5,6 +5,7 @@ import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
+import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.methods.mutator.ListMutatorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
@@ -25,8 +26,8 @@ public class BuilderListMutatorDecorator extends ListMutatorDecorator {
 
   protected final ASTMCType builderType;
 
-  public BuilderListMutatorDecorator(GlobalExtensionManagement glex, final ASTMCType builderType) {
-    super(glex);
+  public BuilderListMutatorDecorator(GlobalExtensionManagement glex, AbstractService service, final ASTMCType builderType) {
+    super(glex, service);
     this.builderType = builderType;
   }
 

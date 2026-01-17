@@ -4,6 +4,7 @@ package de.monticore.codegen.cd2java.methods;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.codegen.cd2java.AbstractCreator;
+import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.methods.mutator.ListMutatorDecorator;
 import de.monticore.codegen.cd2java.methods.mutator.MandatoryMutatorDecorator;
 import de.monticore.codegen.cd2java.methods.mutator.OptionalMutatorDecorator;
@@ -13,8 +14,8 @@ import java.util.List;
 
 public class MutatorDecorator extends SpecificMethodDecorator {
 
-  public MutatorDecorator(final GlobalExtensionManagement glex) {
-    super(glex, new MandatoryMutatorDecorator(glex), new OptionalMutatorDecorator(glex), new ListMutatorDecorator(glex));
+  public MutatorDecorator(final GlobalExtensionManagement glex, AbstractService service) {
+    super(glex, new MandatoryMutatorDecorator(glex), new OptionalMutatorDecorator(glex), new ListMutatorDecorator(glex, service));
   }
 
   public MutatorDecorator(final GlobalExtensionManagement glex,

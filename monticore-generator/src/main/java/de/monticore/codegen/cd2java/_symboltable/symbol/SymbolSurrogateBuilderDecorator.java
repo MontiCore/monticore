@@ -73,7 +73,7 @@ public class SymbolSurrogateBuilderDecorator extends AbstractCreator<ASTCDType, 
         .flatMap(List::stream)
         .collect(Collectors.toList());
 
-    BuilderMutatorMethodDecorator mutatorDecorator = new BuilderMutatorMethodDecorator(glex, getMCTypeFacade().createQualifiedType(symbolSurrogateBuilderName));
+    BuilderMutatorMethodDecorator mutatorDecorator = new BuilderMutatorMethodDecorator(glex, symbolTableService, getMCTypeFacade().createQualifiedType(symbolSurrogateBuilderName));
     List<ASTCDMethod> mutatorMethods = builderAttributes.stream()
         .map(mutatorDecorator::decorate)
         .flatMap(List::stream)

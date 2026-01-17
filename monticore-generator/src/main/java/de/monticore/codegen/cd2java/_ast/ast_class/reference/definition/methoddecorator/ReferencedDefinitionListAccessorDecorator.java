@@ -22,7 +22,7 @@ public class ReferencedDefinitionListAccessorDecorator extends ListAccessorDecor
 
   public ReferencedDefinitionListAccessorDecorator(final GlobalExtensionManagement glex,
                                                    final SymbolTableService symbolTableService) {
-    super(glex);
+    super(glex, symbolTableService);
     this.symbolTableService = symbolTableService;
   }
 

@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._ast.builder.inheritedmethods;
 
+import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.methods.MutatorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
@@ -12,9 +13,10 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 public class InheritedBuilderMutatorMethodDecorator extends MutatorDecorator {
 
   public InheritedBuilderMutatorMethodDecorator(final GlobalExtensionManagement glex,
+                                                AbstractService service,
                                                 final ASTMCType builderType) {
     super(glex, new InheritedBuilderMandatoryMutatorDecorator(glex, builderType),
         new InheritedBuilderOptionalMutatorDecorator(glex, builderType),
-        new InheritedBuilderListMutatorDecorator(glex, builderType));
+        new InheritedBuilderListMutatorDecorator(glex, service, builderType));
   }
 }

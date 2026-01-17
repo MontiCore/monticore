@@ -3,6 +3,7 @@ package de.monticore.codegen.cd2java._ast.builder.inheritedmethods;
 
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java._ast.builder.buildermethods.BuilderListMutatorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
@@ -17,8 +18,8 @@ import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
  */
 public class InheritedBuilderListMutatorDecorator extends BuilderListMutatorDecorator {
 
-  public InheritedBuilderListMutatorDecorator(GlobalExtensionManagement glex, final ASTMCType builderType) {
-    super(glex, builderType);
+  public InheritedBuilderListMutatorDecorator(GlobalExtensionManagement glex, AbstractService service, final ASTMCType builderType) {
+    super(glex, service, builderType);
   }
 
   @Override
