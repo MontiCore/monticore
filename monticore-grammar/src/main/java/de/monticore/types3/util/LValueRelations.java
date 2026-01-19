@@ -1,6 +1,7 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.types3.util;
 
+import com.google.common.base.Preconditions;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.se_rwth.commons.logging.Log;
 
@@ -57,7 +58,7 @@ public class LValueRelations {
   }
 
   protected static void setDelegate(LValueRelations newDelegate) {
-    LValueRelations.delegate = Log.errorIfNull(newDelegate);
+    LValueRelations.delegate = Preconditions.checkNotNull(newDelegate);
   }
 
   protected static LValueRelations getDelegate() {

@@ -3,23 +3,25 @@ package trafo;
 
 import de.monticore.tf.EliminateDo;
 import de.se_rwth.commons.logging.LogStub;
-import junit.framework.TestCase;
 import mc.testcases.statechart.statechart._ast.*;
 import mc.testcases.statechart.statechart._parser.StatechartParser;
-import org.junit.Before;
-import org.junit.BeforeClass;
 
 import java.io.IOException;
 import de.se_rwth.commons.logging.Log;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class Test02_EliminateDoTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class Test02_EliminateDoTest {
     
-    @Before
+    @BeforeEach
     public void before() {
         LogStub.init();
         Log.enableFailQuick(false);
     }
     
+    @Test
     public void testDoAll() throws IOException {
         StatechartParser p = new StatechartParser();
 
@@ -36,20 +38,20 @@ public class Test02_EliminateDoTest extends TestCase {
         assertNotNull(state);
 
         ASTEntryAction entryAction =  state.getEntryAction();
-        assertNotNull("entry action has not been added", entryAction);
-        assertNotNull("entry action is empty", entryAction.getBlock());
+        assertNotNull(entryAction, "entry action has not been added");
+        assertNotNull(entryAction.getBlock(), "entry action is empty");
 
-        assertFalse("do action has not been removed", state.isPresentDoAction());
+        assertFalse(state.isPresentDoAction(), "do action has not been removed");
 
         ASTExitAction exitAction =  state.getExitAction();
-        assertNotNull("exit action has not been added", exitAction);
-        assertNotNull("exit action is empty", exitAction.getBlock());
+        assertNotNull(exitAction, "exit action has not been added");
+        assertNotNull(exitAction.getBlock(), "exit action is empty");
 
         ASTInternTransition internTransition = state.getInternTransition(0);
-        assertNotNull("intern transition has not been created", internTransition);
+        assertNotNull(internTransition, "intern transition has not been created");
         ASTBlockStatement internAction = internTransition.getAction();
-        assertNotNull("intern transition has no action", internAction);
-        assertEquals("incorrect number of statements in intern action", 2, internAction.getStatementList().size());
+        assertNotNull(internAction, "intern transition has no action");
+        assertEquals(2, internAction.getStatementList().size(), "incorrect number of statements in intern action");
 
         testee.undoReplacement();
         assertFalse(state.isPresentEntryAction());

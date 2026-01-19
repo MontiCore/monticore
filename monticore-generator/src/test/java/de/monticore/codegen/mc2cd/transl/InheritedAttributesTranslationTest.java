@@ -9,7 +9,6 @@ import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.codegen.mc2cd.TranslationTestCase;
 import de.se_rwth.commons.logging.Log;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -18,6 +17,7 @@ import java.util.Optional;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class InheritedAttributesTranslationTest extends TranslationTestCase {
 
@@ -39,7 +39,7 @@ public class InheritedAttributesTranslationTest extends TranslationTestCase {
   public void setupInheritedAttributesTranslationTest() {
     Optional<ASTCDCompilationUnit> cdCompilationUnitSuper = TestHelper.parseAndTransform(Paths
         .get("src/test/resources/mc2cdtransformation/SuperInheritedAttributesGrammar.mc4"));
-    Assertions.assertTrue(cdCompilationUnitSuper.isPresent());
+    assertTrue(cdCompilationUnitSuper.isPresent());
 
     //get classes from super grammar
     astASuper = getClassBy("ASTA", cdCompilationUnitSuper.get());
@@ -50,7 +50,7 @@ public class InheritedAttributesTranslationTest extends TranslationTestCase {
 
     Optional<ASTCDCompilationUnit> cdCompilationUnitSub = TestHelper.parseAndTransform(Paths
         .get("src/test/resources/mc2cdtransformation/SubInheritedAttributesGrammar.mc4"));
-    Assertions.assertTrue(cdCompilationUnitSub.isPresent());
+    assertTrue(cdCompilationUnitSub.isPresent());
 
     //get classes from sub grammar
     astASub = getClassBy("ASTA", cdCompilationUnitSub.get());
@@ -59,66 +59,66 @@ public class InheritedAttributesTranslationTest extends TranslationTestCase {
 
   @Test
   public void testASuper() {
-    Assertions.assertTrue(astASuper.getCDAttributeList().stream().noneMatch(this::hasInheritedStereotype));
+    assertTrue(astASuper.getCDAttributeList().stream().noneMatch(this::hasInheritedStereotype));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testESuper() {
-    Assertions.assertTrue(astESuper.getCDAttributeList().stream().noneMatch(this::hasInheritedStereotype));
+    assertTrue(astESuper.getCDAttributeList().stream().noneMatch(this::hasInheritedStereotype));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testBSuper() {
-    Assertions.assertTrue(astB.getCDAttributeList().stream().allMatch(this::hasInheritedStereotype));
+    assertTrue(astB.getCDAttributeList().stream().allMatch(this::hasInheritedStereotype));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testCSuper() {
     for (ASTCDAttribute astcdAttribute : astC.getCDAttributeList()) {
       if (!astcdAttribute.getName().equals("name2")) {
-        Assertions.assertTrue(hasInheritedStereotype(astcdAttribute));
+        assertTrue(hasInheritedStereotype(astcdAttribute));
       } else {
-        Assertions.assertFalse(hasInheritedStereotype(astcdAttribute));
+        assertFalse(hasInheritedStereotype(astcdAttribute));
       }
     }
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testFSuper() {
     for (ASTCDAttribute astcdAttribute : astF.getCDAttributeList()) {
       if (!astcdAttribute.getName().equals("name2")) {
-        Assertions.assertTrue(hasInheritedStereotype(astcdAttribute));
+        assertTrue(hasInheritedStereotype(astcdAttribute));
       } else {
-        Assertions.assertFalse(hasInheritedStereotype(astcdAttribute));
+        assertFalse(hasInheritedStereotype(astcdAttribute));
       }
     }
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testASub() {
-    Assertions.assertTrue(astASub.getCDAttributeList().stream().allMatch(this::hasInheritedStereotype));
+    assertTrue(astASub.getCDAttributeList().stream().allMatch(this::hasInheritedStereotype));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testESub() {
-    Assertions.assertEquals(1, astESub.getCDAttributeList().size());
+    assertEquals(1, astESub.getCDAttributeList().size());
     ASTCDAttribute name2Attr = astESub.getCDAttributeList().get(0);
-    Assertions.assertEquals("name2", name2Attr.getName());
+    assertEquals("name2", name2Attr.getName());
     assertDeepEquals(String.class, name2Attr.getMCType());
-    Assertions.assertFalse(hasInheritedStereotype(name2Attr));
+    assertFalse(hasInheritedStereotype(name2Attr));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   private boolean hasInheritedStereotype(ASTCDAttribute astcdAttribute) {

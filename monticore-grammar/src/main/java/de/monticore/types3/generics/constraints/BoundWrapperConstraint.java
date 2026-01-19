@@ -1,10 +1,9 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.types3.generics.constraints;
 
+import com.google.common.base.Preconditions;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types3.generics.bounds.Bound;
-import de.se_rwth.commons.logging.Log;
-
 import java.util.List;
 
 /**
@@ -19,7 +18,7 @@ public class BoundWrapperConstraint extends Constraint {
   public BoundWrapperConstraint(
       Bound bound
   ) {
-    this.bound = Log.errorIfNull(bound);
+    this.bound = Preconditions.checkNotNull(bound);
   }
 
   public Bound getBound() {

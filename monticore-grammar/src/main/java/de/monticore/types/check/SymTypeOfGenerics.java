@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import com.google.common.base.Preconditions;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
@@ -138,8 +139,8 @@ public class SymTypeOfGenerics extends SymTypeExpression {
    * Constructor with all parameters that are stored:
    */
   public SymTypeOfGenerics(TypeSymbol typeSymbol, List<SymTypeExpression> arguments) {
-    this.typeSymbol = Log.errorIfNull(typeSymbol);
-    this.arguments = Log.errorIfNull(arguments);
+    this.typeSymbol = Preconditions.checkNotNull(typeSymbol);
+    this.arguments = Preconditions.checkNotNull(arguments);
   }
 
   @Override

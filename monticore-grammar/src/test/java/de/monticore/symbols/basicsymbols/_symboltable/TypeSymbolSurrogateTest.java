@@ -1,19 +1,31 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.symbols.basicsymbols._symboltable;
 
+import de.monticore.ast.ASTNode;
+import de.monticore.interpreter.Value;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+import de.monticore.symboltable.IScope;
+import de.monticore.symboltable.ISymbol;
+import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.modifiers.BasicAccessModifier;
+import de.monticore.symboltable.stereotypes.IStereotypeReference;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
+import de.monticore.visitor.ITraverser;
+import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.LogStub;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /** Tests {@link TypeSymbolSurrogate} */
 public class TypeSymbolSurrogateTest {
@@ -37,7 +49,7 @@ public class TypeSymbolSurrogateTest {
     surrogate.setSpannedScope(scopeToSet);
 
     // Then
-    Assertions.assertSame(scopeToSet, type.getSpannedScope());
+    assertSame(scopeToSet, type.getSpannedScope());
   }
 
   @Test
@@ -51,7 +63,7 @@ public class TypeSymbolSurrogateTest {
     IBasicSymbolsScope scope = surrogate.getSpannedScope();
 
     // Then
-    Assertions.assertSame(type.getSpannedScope(), scope);
+    assertSame(type.getSpannedScope(), scope);
   }
 
   @Test
@@ -69,7 +81,7 @@ public class TypeSymbolSurrogateTest {
     SymTypeExpression superClassCalculated = surrogate.getSuperClass();
 
     // Then
-    Assertions.assertSame(superClassExpr, superClassCalculated);
+    assertSame(superClassExpr, superClassCalculated);
   }
 
 
@@ -87,7 +99,7 @@ public class TypeSymbolSurrogateTest {
     surrogate.setSuperTypesList(Collections.singletonList(superClassExpr));
 
     // Then
-    Assertions.assertSame(superClassExpr, type.getSuperClass());
+    assertSame(superClassExpr, type.getSuperClass());
   }
 
   @Test
@@ -103,7 +115,7 @@ public class TypeSymbolSurrogateTest {
     List<TypeVarSymbol> typeParams = surrogate.getTypeParameterList();
 
     // Then
-    Assertions.assertArrayEquals(new TypeVarSymbol[]{typeParam}, typeParams.toArray());
+    assertArrayEquals(new TypeVarSymbol[]{typeParam}, typeParams.toArray());
   }
 
   @Test @SuppressWarnings({"EqualsWithItself", "ConstantConditions"})
@@ -118,7 +130,7 @@ public class TypeSymbolSurrogateTest {
     boolean result = surrogate.equals(surrogate);
 
     // Then
-    Assertions.assertTrue(result);
+    assertTrue(result);
   }
 
   @Test
@@ -138,7 +150,7 @@ public class TypeSymbolSurrogateTest {
     boolean result = surrogate1.equals(surrogate2);
 
     // Then
-    Assertions.assertFalse(result);
+    assertFalse(result);
   }
 
   @Test
@@ -155,7 +167,7 @@ public class TypeSymbolSurrogateTest {
 
     TypeSymbolSurrogate surrogate1 = BasicSymbolsMill.typeSymbolSurrogateBuilder()
             .setName("Type1")
-            .setEnclosingScope(BasicSymbolsMill.scope())
+            .setEnclosingScope(scope)
             .build();
 
     TypeSymbol symbol2 = BasicSymbolsMill.typeSymbolBuilder()
@@ -167,14 +179,14 @@ public class TypeSymbolSurrogateTest {
 
     TypeSymbolSurrogate surrogate2 = BasicSymbolsMill.typeSymbolSurrogateBuilder()
             .setName("Type2")
-            .setEnclosingScope(BasicSymbolsMill.scope())
+            .setEnclosingScope(scope)
             .build();
 
     // When
     boolean result = surrogate1.equals(surrogate2);
 
     // Then
-    Assertions.assertFalse(result);
+    assertFalse(result);
   }
 
   @Test
@@ -198,7 +210,7 @@ public class TypeSymbolSurrogateTest {
     boolean result = surrogate.equals(symbol);
 
     // Then
-    Assertions.assertTrue(result);
+    assertTrue(result);
   }
 
   @Test
@@ -222,7 +234,153 @@ public class TypeSymbolSurrogateTest {
     boolean result = surrogate.equals(symbol);
 
     // Then
-    Assertions.assertFalse(result);
+    assertFalse(result);
+
+    // When
+    boolean resultSymmetric = symbol.equals(surrogate);
+
+    // Then
+    assertFalse(resultSymmetric);
+  }
+
+  @Test
+  public void equalsShouldNotEqualAdapted() {
+    SymbolMock mock1 = new SymbolMock("Type1");
+    SymbolMock mock2 = new SymbolMock("Type2");
+
+    IBasicSymbolsScope scope = new BasicSymbolsScopeWithAdapted(List.of(mock1, mock2));
+
+    // we don't use the builder because it automatically loads the delegate
+    TypeSymbolSurrogate surrogate1 = new TypeSymbolSurrogate("Type1");
+    surrogate1.setName("Type1");
+    surrogate1.setFullName("Type1");
+    surrogate1.setEnclosingScope(scope);
+
+    TypeSymbolSurrogate surrogate2 = new TypeSymbolSurrogate("Type2");
+    surrogate2.setName("Type2");
+    surrogate2.setFullName("Type2");
+    surrogate2.setEnclosingScope(scope);
+
+
+    var result = surrogate1.equals(surrogate2);
+
+    assertFalse(result);
+  }
+
+  @Test
+  public void equalsShouldEqualAdapted() {
+    SymbolMock mock = new SymbolMock("Type1");
+
+    IBasicSymbolsScope scope = new BasicSymbolsScopeWithAdapted(List.of(mock));
+
+    // we don't use the builder because it automatically loads the delegate
+    TypeSymbolSurrogate surrogate1 = new TypeSymbolSurrogate("Type1");
+    surrogate1.setName("Type1");
+    surrogate1.setFullName("Type1");
+    surrogate1.setEnclosingScope(scope);
+
+    TypeSymbolSurrogate surrogate2 = new TypeSymbolSurrogate("Type1");
+    surrogate2.setName("Type1");
+    surrogate2.setFullName("Type1");
+    surrogate2.setEnclosingScope(scope);
+
+
+    var result = surrogate1.equals(surrogate2);
+
+    assertTrue(result);
+  }
+
+  private static class SymbolMock implements ISymbol {
+    private final String name;
+
+    SymbolMock(String name) {
+      this.name = name;
+    }
+    public SymbolMock getThis() {
+      return this;
+    }
+    public boolean equals (Object obj) {
+      if(!(obj instanceof SymbolMock)) {
+        return false;
+      }
+      SymbolMock s1 = getThis();
+      SymbolMock s2 = ((SymbolMock) obj).getThis();
+
+      return s1 == s2;
+    }
+
+    @Override
+    public String getName() {
+      return name;
+    }
+    // Boilerplate
+    @Override
+    public String getPackageName() {
+      return null;
+    }
+    @Override
+    public String getFullName() {
+      return null;
+    }
+    @Override
+    public IScope getEnclosingScope() {
+      return null;
+    }
+    @Override
+    public void setAccessModifier(AccessModifier accessModifier) {
+    }
+    @Override
+    public Map<IStereotypeReference, Optional<Value>> getStereoinfo() {
+      return null;
+    }
+    @Override
+    public boolean isPresentAstNode() {
+      return false;
+    }
+    @Override
+    public ASTNode getAstNode() {
+      return null;
+    }
+    @Override
+    public SourcePosition getSourcePosition() {
+      return null;
+    }
+    @Override
+    public void accept(ITraverser visitor) {
+    }
+  }
+
+  private static class SymbolMock2TypeSymbolAdapter extends TypeSymbol {
+    private final SymbolMock adaptee;
+    SymbolMock2TypeSymbolAdapter(SymbolMock adaptee) {
+      super(adaptee.getName());
+      this.adaptee = adaptee;
+    }
+
+    public SymbolMock getAdaptee() {
+      return adaptee;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (obj instanceof SymbolMock2TypeSymbolAdapter) {
+        return getAdaptee().equals(((SymbolMock2TypeSymbolAdapter) obj).getAdaptee());
+      }
+      else {
+        return super.equals(obj);
+      }
+    }
+  }
+
+  private static class BasicSymbolsScopeWithAdapted extends BasicSymbolsScope {
+    public BasicSymbolsScopeWithAdapted(List<SymbolMock> adaptees) {
+      this.adaptees = adaptees;
+    }
+    private final List<SymbolMock> adaptees;
+    @Override
+    public List<TypeSymbol> resolveAdaptedTypeLocallyMany(boolean foundSymbols, String name, AccessModifier modifier, Predicate<TypeSymbol> predicate) {
+      return adaptees.stream().filter(symbol -> symbol.getName().equals(name)).map(SymbolMock2TypeSymbolAdapter::new).collect(Collectors.toList());
+    }
   }
 
   /**

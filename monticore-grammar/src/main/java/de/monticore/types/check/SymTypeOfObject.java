@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import com.google.common.base.Preconditions;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.types3.ISymTypeVisitor;
 import de.se_rwth.commons.logging.Log;
@@ -19,7 +20,7 @@ public class SymTypeOfObject extends SymTypeExpression {
    */
   public SymTypeOfObject(TypeSymbol typeSymbol)
   {
-    Log.errorIfNull(typeSymbol);
+    Preconditions.checkNotNull(typeSymbol);
     this.typeSymbol = typeSymbol;
   }
 

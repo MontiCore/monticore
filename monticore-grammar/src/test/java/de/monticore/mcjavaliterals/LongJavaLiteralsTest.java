@@ -13,6 +13,8 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class LongJavaLiteralsTest {
 
 
@@ -26,10 +28,10 @@ public class LongJavaLiteralsTest {
 
   private void checkLongLiteral(long l, String s) throws IOException {
     ASTLiteral lit = MCJavaLiteralsTestHelper.getInstance().parseLiteral(s);
-    Assertions.assertTrue(lit instanceof ASTLongLiteral);
-    Assertions.assertEquals(l, ((ASTLongLiteral) lit).getValue());
+    assertInstanceOf(ASTLongLiteral.class, lit);
+    assertEquals(l, ((ASTLongLiteral) lit).getValue());
     
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -59,7 +61,7 @@ public class LongJavaLiteralsTest {
       checkLongLiteral(00017L, "00017L");
     }
     catch (IOException e) {
-      Assertions.fail(e.getMessage());
+      fail(e.getMessage());
     }
   }
 }

@@ -3,6 +3,7 @@
 package de.monticore.io;
 
 import com.google.common.base.Charsets;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import de.monticore.AmbiguityException;
 import de.monticore.generating.templateengine.reporting.Reporting;
@@ -127,7 +128,7 @@ public class FileReaderWriter {
       Log.debug("IOException while trying to read the content of " + sourcePath
         + ".", e, this.getClass().getName());
     }
-    Log.errorIfNull(content);
+    Preconditions.checkNotNull(content);
     return content;
   }
 
@@ -165,7 +166,7 @@ public class FileReaderWriter {
       Log.debug("IOException while trying to read the content of " + sourcePath
         + ".", e, this.getClass().getName());
     }
-    Log.errorIfNull(content);
+    Preconditions.checkNotNull(content);
     return content;
   }
 
@@ -176,7 +177,7 @@ public class FileReaderWriter {
   protected String _readFromFile(Reader reader) {
     BufferedReader buffer = new BufferedReader(reader);
     String content = buffer.lines().collect(Collectors.joining());
-    Log.errorIfNull(content);
+    Preconditions.checkNotNull(content);
     return content;
   }
 

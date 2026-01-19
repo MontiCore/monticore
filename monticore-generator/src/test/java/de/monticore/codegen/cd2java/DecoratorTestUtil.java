@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public final class DecoratorTestUtil {
 
@@ -24,7 +24,8 @@ public final class DecoratorTestUtil {
     List<ASTCDClass> filtered = ast.getCDDefinition().getCDClassesList().stream()
         .filter(c -> name.equals(c.getName()))
         .collect(Collectors.toList());
-    assertEquals(String.format("Expected to find 1 class, but found '%s'", filtered.size()), 1, filtered.size());
+    assertEquals(1, filtered.size(),
+        String.format("Expected to find 1 class, but found '%s'", filtered.size()));
     return filtered.get(0);
   }
 
@@ -32,7 +33,8 @@ public final class DecoratorTestUtil {
     List<ASTCDInterface> filtered = ast.getCDDefinition().getCDInterfacesList().stream()
         .filter(c -> name.equals(c.getName()))
         .collect(Collectors.toList());
-    assertEquals(String.format("Expected to find 1 interface, but found '%s'", filtered.size()), 1, filtered.size());
+    assertEquals(1, filtered.size(),
+        String.format("Expected to find 1 interface, but found '%s'", filtered.size()));
     return filtered.get(0);
   }
 
@@ -40,7 +42,8 @@ public final class DecoratorTestUtil {
     List<ASTCDEnum> filtered = ast.getCDDefinition().getCDEnumsList().stream()
         .filter(c -> name.equals(c.getName()))
         .collect(Collectors.toList());
-    assertEquals(String.format("Expected to find 1 enum, but found '%s'", filtered.size()), 1, filtered.size());
+    assertEquals(1, filtered.size(),
+        String.format("Expected to find 1 enum, but found '%s'", filtered.size()));
     return filtered.get(0);
   }
 
@@ -108,7 +111,8 @@ public final class DecoratorTestUtil {
 
   private static ASTCDMethod filterMethodsOrFail(List<ASTCDMethod> methods, List<Predicate<ASTCDMethod>> predicates) {
     List<ASTCDMethod> filtered = filterMethods(methods, predicates);
-    assertEquals(String.format("Expected find 1 method, but found '%s'", filtered.size()), 1, filtered.size());
+    assertEquals(1, filtered.size(),
+        String.format("Expected find 1 method, but found '%s'", filtered.size()));
     return filtered.get(0);
   }
 
@@ -124,7 +128,8 @@ public final class DecoratorTestUtil {
     List<ASTCDAttribute> filtered = clazz.getCDAttributeList().stream()
         .filter(attribute -> name.equals(attribute.getName()))
         .collect(Collectors.toList());
-    assertEquals(String.format("Expected find 1 attribute, but found '%s'", filtered.size()), 1, filtered.size());
+    assertEquals(1, filtered.size(),
+        String.format("Expected find 1 attribute, but found '%s'", filtered.size()));
     return filtered.get(0);
   }
 
@@ -133,7 +138,8 @@ public final class DecoratorTestUtil {
     List<ASTCDAttribute> filtered = clazz.getCDAttributeList().stream()
         .filter(attribute -> name.equals(attribute.getName()))
         .collect(Collectors.toList());
-    assertEquals(String.format("Expected find 1 attribute, but found '%s'", filtered.size()), 1, filtered.size());
+    assertEquals(1, filtered.size(),
+        String.format("Expected find 1 attribute, but found '%s'", filtered.size()));
     return filtered.get(0);
   }
 }

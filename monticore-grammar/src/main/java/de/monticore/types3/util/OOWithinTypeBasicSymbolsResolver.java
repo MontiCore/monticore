@@ -1,6 +1,7 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.types3.util;
 
+import com.google.common.base.Preconditions;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
@@ -82,12 +83,12 @@ public class OOWithinTypeBasicSymbolsResolver
     }
 
     // do not search super types for constructors
-    
+
     List<SymTypeOfFunction> symTypesFreeVarsReplaced = resolvedSymTypes.stream()
         .map(this::replaceFreeConstructorTypeVariables)
         .map(SymTypeExpression::asFunctionType)
         .collect(Collectors.toList());
-    
+
     return symTypesFreeVarsReplaced;
   }
 
@@ -139,7 +140,7 @@ public class OOWithinTypeBasicSymbolsResolver
 
     return typeVarsReplaced;
   }
-  
+
   protected boolean isConstructor(FunctionSymbol func) {
     if (OOSymbolsMill.typeDispatcher().isOOSymbolsMethod(func)) {
       MethodSymbol method = OOSymbolsMill.typeDispatcher().asOOSymbolsMethod(func);
@@ -175,7 +176,7 @@ public class OOWithinTypeBasicSymbolsResolver
   protected static void setDelegate(
       OOWithinTypeBasicSymbolsResolver newDelegate
   ) {
-    OOWithinTypeBasicSymbolsResolver.delegate = Log.errorIfNull(newDelegate);
+    OOWithinTypeBasicSymbolsResolver.delegate = Preconditions.checkNotNull(newDelegate);
     WithinTypeBasicSymbolsResolver.setDelegate(newDelegate);
   }
 
