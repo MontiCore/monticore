@@ -11,8 +11,8 @@ import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.types.MCTypeFacade;
 import de.se_rwth.commons.logging.Log;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
@@ -24,8 +24,8 @@ import static de.monticore.codegen.cd2java.DecoratorAssert.assertListOf;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertVoid;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodsBy;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class GlobalScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
@@ -49,7 +49,7 @@ public class GlobalScopeInterfaceDecoratorTest extends DecoratorTestCase {
 
   private static final String PREDICATE_QUALIFIED_NAME = "java.util.function.Predicate<de.monticore.codegen.ast.lexicals._symboltable.QualifiedNameSymbol>";
 
-  @Before
+  @BeforeEach
   public void setUp() {
     this.mcTypeFacade = MCTypeFacade.getInstance();
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");

@@ -1,8 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 package mc.feature.aststring;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -12,13 +10,14 @@ import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import mc.feature.aststring.aststring.AststringMill;
 import mc.feature.aststring.aststring._ast.ASTTestSingleQuote;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 
 import mc.GeneratorIntegrationsTest;
 import mc.feature.aststring.aststring._ast.ASTStart;
 import mc.feature.aststring.aststring._parser.AststringParser;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ASTStringParserTest extends GeneratorIntegrationsTest {
   
@@ -36,34 +35,34 @@ public class ASTStringParserTest extends GeneratorIntegrationsTest {
     
     AststringParser p = new AststringParser();
     java.util.Optional<ASTStart> opt = p.parseStart(s);
-    Assertions.assertTrue(opt.isPresent());
+    assertTrue(opt.isPresent());
     ASTStart ast = opt.get();
     
-    Assertions.assertEquals(false, p.hasErrors());
+    assertFalse(p.hasErrors());
     
     // Test parsing
-    Assertions.assertEquals("ah", ast.getAList().get(0));
-    Assertions.assertEquals("be", ast.getAList().get(1));
-    Assertions.assertEquals("ce", ast.getAList().get(2));
-    Assertions.assertEquals("oh", ast.getBList().get(0));
-    Assertions.assertEquals("pe", ast.getBList().get(1));
-    Assertions.assertEquals("qu", ast.getBList().get(2));
-    Assertions.assertEquals("x", ast.getCList().get(0));
-    Assertions.assertEquals("y", ast.getCList().get(1));
-    Assertions.assertEquals("z", ast.getCList().get(2));
-    Assertions.assertEquals("de", ast.getDList().get(0));
-    Assertions.assertEquals("eh", ast.getDList().get(1));
+    assertEquals("ah", ast.getAList().get(0));
+    assertEquals("be", ast.getAList().get(1));
+    assertEquals("ce", ast.getAList().get(2));
+    assertEquals("oh", ast.getBList().get(0));
+    assertEquals("pe", ast.getBList().get(1));
+    assertEquals("qu", ast.getBList().get(2));
+    assertEquals("x", ast.getCList().get(0));
+    assertEquals("y", ast.getCList().get(1));
+    assertEquals("z", ast.getCList().get(2));
+    assertEquals("de", ast.getDList().get(0));
+    assertEquals("eh", ast.getDList().get(1));
     
     // Test toString method
-    Assertions.assertEquals("ef", ast.getDList().get(2).toString());
+    assertEquals("ef", ast.getDList().get(2).toString());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testSingleQuote() throws IOException {
     Optional<ASTTestSingleQuote> ast = AststringMill.parser().parse_StringTestSingleQuote("Alex's Parser probleme");
-    Assertions.assertTrue(ast.isPresent());
+    assertTrue(ast.isPresent());
   }
   
 }

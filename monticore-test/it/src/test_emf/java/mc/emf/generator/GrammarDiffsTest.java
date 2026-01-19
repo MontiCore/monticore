@@ -9,26 +9,24 @@ import mc.grammar.ittestgrammar._ast.ASTMCGrammar;
 import mc.grammar.ittestgrammar_withconcepts._parser.ItTestGrammar_WithConceptsParser;
 import org.antlr.v4.runtime.RecognitionException;
 import org.eclipse.emf.compare.diff.metamodel.DiffElement;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class GrammarDiffsTest {
-  @BeforeClass
+  @BeforeAll
   public static void setup() {
     LogStub.init();
     Log.enableFailQuick(false);
   }
 
-  @Ignore // TODO
+  @Disabled // TODO
   @Test
   public void testAstGrammarDiffs() throws IOException {
     try {
@@ -59,10 +57,7 @@ public class GrammarDiffsTest {
         fail("Parse errors");
       }
     }
-    catch (RecognitionException | IOException e) {
-      fail("Should not reach this, but: " + e);
-    }
-    catch (InterruptedException e) {
+    catch (RecognitionException | IOException | InterruptedException e) {
       fail("Should not reach this, but: " + e);
     }
   }

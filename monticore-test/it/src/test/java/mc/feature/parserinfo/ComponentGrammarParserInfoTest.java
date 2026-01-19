@@ -3,7 +3,7 @@ package mc.feature.parserinfo;
 
 import mc.feature.parserinfo.parserinfocomponentgrammartest._parser.ParserInfoComponentGrammarTestParserInfo;
 
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class ComponentGrammarParserInfoTest {
 

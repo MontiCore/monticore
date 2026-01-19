@@ -8,14 +8,14 @@ import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.umlmodifier._ast.ASTModifier;
 import de.se_rwth.commons.logging.Log;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ParserCDDecoratorTest extends DecoratorTestCase {
 
@@ -27,7 +27,7 @@ public class ParserCDDecoratorTest extends DecoratorTestCase {
 
   private ASTCDCompilationUnit parserCDComponent;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     decoratedASTCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "Automaton");
     originalASTCompilationUnit = decoratedASTCompilationUnit.deepClone();

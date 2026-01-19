@@ -2,20 +2,19 @@
 
 package mc.feature.classgenwithingrammar;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
 import java.io.StringReader;
 
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import mc.GeneratorIntegrationsTest;
 import mc.feature.classgenwithingrammar.type._parser.TypeParser;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ParserTest extends GeneratorIntegrationsTest {
   
@@ -30,7 +29,7 @@ public class ParserTest extends GeneratorIntegrationsTest {
   public void test() throws IOException {
         
     boolean hasError = parse("Hallo Hallo Hallo Welt ");
-    Assertions.assertTrue(hasError);
+    assertTrue(hasError);
   }
   
   // Test that the last Hallo is too much
@@ -38,7 +37,7 @@ public class ParserTest extends GeneratorIntegrationsTest {
   public void test2() throws IOException {
         
     boolean hasError = parse("Hallo Hallo Hallo Hallo ");
-    Assertions.assertTrue(hasError);
+    assertTrue(hasError);
   }
   
   // Tests that String is ok
@@ -47,9 +46,9 @@ public class ParserTest extends GeneratorIntegrationsTest {
         
     boolean hasError = parse("Hallo Hallo Hallo ");
     
-    Assertions.assertFalse(hasError);
+    assertFalse(hasError);
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   // Tests that one hallo is issing
@@ -58,7 +57,7 @@ public class ParserTest extends GeneratorIntegrationsTest {
 
     boolean hasError = parse("Hallo ");
 
-    Assertions.assertTrue(hasError);
+    assertTrue(hasError);
   }
 
   // Test that one Welt is too much
@@ -67,7 +66,7 @@ public class ParserTest extends GeneratorIntegrationsTest {
         
     boolean hasError = parse2("Hall Hall Hall \"Wel\" ");
     
-    Assertions.assertTrue(hasError);
+    assertTrue(hasError);
   }
   
   // Test that too many Hallo and Welt are detected in one go
@@ -76,7 +75,7 @@ public class ParserTest extends GeneratorIntegrationsTest {
         
     boolean hasError = parse2("Hall Hall Hall Hall \"Wel\" ");
     
-    Assertions.assertTrue(hasError);
+    assertTrue(hasError);
   }
   
   // Tests that String is ok
@@ -85,9 +84,9 @@ public class ParserTest extends GeneratorIntegrationsTest {
         
     boolean hasError = parse2("Hall Hall Hall ");
     
-    Assertions.assertFalse(hasError);
+    assertFalse(hasError);
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   private boolean parse( String input) throws IOException {
