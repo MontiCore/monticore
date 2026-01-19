@@ -8,15 +8,14 @@ import de.monticore.statements.testmcreturnstatements.TestMCReturnStatementsMill
 import de.monticore.statements.testmcreturnstatements._parser.TestMCReturnStatementsParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MCReturnStatementsPrettyPrinterTest  {
 
@@ -36,18 +35,18 @@ public class MCReturnStatementsPrettyPrinterTest  {
   @Test
   public void testReturnStatement() throws IOException {
     Optional<ASTReturnStatement> result = parser.parse_StringReturnStatement("return a ;");
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(result.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
     ASTReturnStatement ast = result.get();
 
     String output = prettyPrinter.prettyprint(ast);
 
     result = parser.parse_StringReturnStatement(output);
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(result.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
 
-    Assertions.assertTrue(ast.deepEquals(result.get()));
+    assertTrue(ast.deepEquals(result.get()));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

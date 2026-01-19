@@ -9,16 +9,14 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
 import de.se_rwth.commons.logging.Log;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ASTServiceTest extends DecoratorTestCase {
 
@@ -30,7 +28,7 @@ public class ASTServiceTest extends DecoratorTestCase {
 
   private ASTCDClass astAutomaton;
 
-  @Before
+  @BeforeEach
   public void setup() {
     astcdCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
     astAutomaton = astcdCompilationUnit.getCDDefinition().getCDClassesList().get(0);

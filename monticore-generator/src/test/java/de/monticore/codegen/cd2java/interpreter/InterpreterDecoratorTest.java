@@ -12,17 +12,16 @@ import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCMapType;
 import de.se_rwth.commons.logging.Log;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class InterpreterDecoratorTest extends DecoratorTestCase {
 
@@ -31,7 +30,7 @@ public class InterpreterDecoratorTest extends DecoratorTestCase {
 
   protected ASTCDClass decoratedClass;
 
-  @Before
+  @BeforeEach
   public void before() {
     originalCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
     VisitorService visitorService = new VisitorService(originalCompilationUnit);
@@ -98,7 +97,7 @@ public class InterpreterDecoratorTest extends DecoratorTestCase {
     assertEquals(
             "contextMap",
             attributes.get(2).getName());
-    assertTrue(attributes.get(2).getMCType() instanceof ASTMCMapType);
+    assertInstanceOf(ASTMCMapType.class, attributes.get(2).getMCType());
     assertEquals(
             InterpreterConstants.SYMBOL_FULLNAME,
             ((ASTMCMapType) attributes.get(2).getMCType()).getMCTypeArgument(0).printType());
@@ -189,7 +188,7 @@ public class InterpreterDecoratorTest extends DecoratorTestCase {
     ASTCDMethod getMapMethod = optGetMap.get();
 
     assertTrue(getMapMethod.getCDParameterList().isEmpty());
-    assertTrue(getMapMethod.getMCReturnType().getMCType() instanceof ASTMCMapType);
+    assertInstanceOf(ASTMCMapType.class, getMapMethod.getMCReturnType().getMCType());
     assertEquals(
             InterpreterConstants.SYMBOL_FULLNAME,
             ((ASTMCMapType) getMapMethod.getMCReturnType().getMCType()).getMCTypeArgument(0).printType());
@@ -199,7 +198,7 @@ public class InterpreterDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
-  @Ignore
+  @Disabled
   public void testInterpretMethods() {
     List<ASTCDMethod> interpretMethods = decoratedClass.getCDMethodList()
         .stream()
@@ -214,7 +213,7 @@ public class InterpreterDecoratorTest extends DecoratorTestCase {
     assertEquals(InterpreterConstants.VALUE_FULLNAME, method.getMCReturnType().printType());
   }
 
-  @After
+  @AfterEach
   public void after() {
     assertTrue(Log.getFindings().isEmpty());
     Log.getFindings().clear();

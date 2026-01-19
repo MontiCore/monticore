@@ -4,11 +4,13 @@ package de.monticore.symbols.compsymbols._symboltable;
 import de.monticore.symbols.compsymbols.CompSymbolsMill;
 import de.monticore.symboltable.modifiers.BasicAccessModifier;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
+
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Holds tests for {@link ComponentType2TypeSymbolAdapter}.
@@ -22,18 +24,18 @@ public class ComponentType2TypeSymbolAdapterTest {
     ComponentType2TypeSymbolAdapter adapter = new ComponentType2TypeSymbolAdapter(adaptee);
 
     // Then
-    Assertions.assertAll(
-        () -> Assertions.assertEquals(adaptee.getName(), adapter.getName(),
+    assertAll(
+        () -> assertEquals(adaptee.getName(), adapter.getName(),
             "The adapter's name should match the adaptee's name."),
-        () -> Assertions.assertEquals(adaptee.getFullName(), adapter.getFullName(),
+        () -> assertEquals(adaptee.getFullName(), adapter.getFullName(),
             "The adapter's full name should match the adaptee's full name."),
-        () -> Assertions.assertEquals(adaptee.getSpannedScope(), adapter.getSpannedScope(),
+        () -> assertEquals(adaptee.getSpannedScope(), adapter.getSpannedScope(),
             "The adapter's spanned scope should match the adaptee's enclosing scope."),
-        () -> Assertions.assertEquals(adaptee.getEnclosingScope(), adapter.getEnclosingScope(),
+        () -> assertEquals(adaptee.getEnclosingScope(), adapter.getEnclosingScope(),
             "The adapter's enclosing scope should match the adaptee's enclosing scope."),
-        () -> Assertions.assertEquals(adaptee.getSourcePosition(), adapter.getSourcePosition(),
+        () -> assertEquals(adaptee.getSourcePosition(), adapter.getSourcePosition(),
             "The adapter's source position should match the adaptee's source position."),
-        () -> Assertions.assertEquals(BasicAccessModifier.PUBLIC, adapter.getAccessModifier(),
+        () -> assertEquals(BasicAccessModifier.PUBLIC, adapter.getAccessModifier(),
             "The adapter should have a public access modifier as ports are the public interface of a component.")
     );
   }

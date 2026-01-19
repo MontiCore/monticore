@@ -2,14 +2,11 @@
 
 package mc.feature.sourcepositions;
 
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
 
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 
 import mc.GeneratorIntegrationsTest;
@@ -17,6 +14,9 @@ import mc.feature.expression.expression._ast.ASTExpr;
 import mc.feature.expression.expression._parser.ExpressionParser;
 import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests the source position's computing for the AST nodes
@@ -53,30 +53,33 @@ public class ExpressionSourcePositionsTest extends GeneratorIntegrationsTest {
       ASTExpr leftChild = null;
       if (node.isPresentLeft()) {
         leftChild = node.getLeft();
-        Assertions.assertTrue(node.get_SourcePositionStart().compareTo(leftChild.get_SourcePositionStart()) == 0);
+        assertEquals(0,
+            node.get_SourcePositionStart().compareTo(leftChild.get_SourcePositionStart()));
         
         if (node.isPresentRight()) {
           ASTExpr rightChild = node.getRight();
           
           // End position of expression node coincides with the end position of
           // the right child
-          Assertions.assertTrue(node.get_SourcePositionEnd().compareTo(rightChild.get_SourcePositionEnd()) == 0);
+          assertEquals(0,
+              node.get_SourcePositionEnd().compareTo(rightChild.get_SourcePositionEnd()));
           
           // Start position of the right child is the next to the end position of
           // the left child
-          Assertions.assertTrue(rightChild.get_SourcePositionStart().getColumn()
-              - leftChild.get_SourcePositionEnd().getColumn() == 1);
+          assertEquals(1,
+              rightChild.get_SourcePositionStart().getColumn() - leftChild.get_SourcePositionEnd()
+                  .getColumn());
         }
       }
       node = leftChild;
     }
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   private ASTExpr parse(String input) throws IOException {
     ExpressionParser parser = new ExpressionParser();
     Optional<ASTExpr> ast = parser.parseExpr(new StringReader(input));
-    Assertions.assertTrue(ast.isPresent());
+    assertTrue(ast.isPresent());
     return ast.get();
   }
   

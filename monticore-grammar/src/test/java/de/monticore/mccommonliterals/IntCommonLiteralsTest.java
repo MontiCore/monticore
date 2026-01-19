@@ -9,13 +9,14 @@ import de.monticore.literals.testmccommonliterals.TestMCCommonLiteralsMill;
 import de.monticore.literals.testmccommonliterals._parser.TestMCCommonLiteralsParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class IntCommonLiteralsTest {
 
@@ -30,35 +31,35 @@ public class IntCommonLiteralsTest {
   private void checkIntLiteral(int i, String s) throws IOException {
     TestMCCommonLiteralsParser parser = new TestMCCommonLiteralsParser();
     Optional<ASTLiteral> lit = parser.parseLiteral(new StringReader(s));
-    Assertions.assertTrue(lit.isPresent());
-    Assertions.assertTrue(lit.get() instanceof ASTNatLiteral);
-    Assertions.assertEquals(i, ((ASTNatLiteral) lit.get()).getValue());
+    assertTrue(lit.isPresent());
+    assertInstanceOf(ASTNatLiteral.class, lit.get());
+    assertEquals(i, ((ASTNatLiteral) lit.get()).getValue());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   private void checkSignedIntLiteral(int i, String s) throws IOException {
     TestMCCommonLiteralsParser parser = new TestMCCommonLiteralsParser();
     Optional<ASTSignedNatLiteral> lit = parser.parseSignedNatLiteral(new StringReader(s));
-    Assertions.assertTrue(lit.isPresent());
-    Assertions.assertTrue(lit.get() instanceof ASTSignedNatLiteral);
-    Assertions.assertEquals(i, ((ASTSignedNatLiteral) lit.get()).getValue());
+    assertTrue(lit.isPresent());
+    assertInstanceOf(ASTSignedNatLiteral.class, lit.get());
+    assertEquals(i, ((ASTSignedNatLiteral) lit.get()).getValue());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   private void checkFalse(String s) throws IOException {
     TestMCCommonLiteralsParser parser = new TestMCCommonLiteralsParser();
     Optional<ASTNatLiteral> lit = parser.parseNatLiteral(new StringReader(s));
-    Assertions.assertTrue(!lit.isPresent());
+    assertFalse(lit.isPresent());
   }
 
   private void checkSignedFalse(String s) throws IOException {
     TestMCCommonLiteralsParser parser = new TestMCCommonLiteralsParser();
     Optional<ASTSignedNatLiteral> lit = parser.parseSignedNatLiteral(new StringReader(s));
-    Assertions.assertTrue(!lit.isPresent());
+    assertFalse(lit.isPresent());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -78,7 +79,7 @@ public class IntCommonLiteralsTest {
       checkIntLiteral(17, "00017");
     }
     catch (IOException e) {
-      Assertions.fail(e.getMessage());
+      fail(e.getMessage());
     }
   }
 
@@ -96,7 +97,7 @@ public class IntCommonLiteralsTest {
       checkFalse("0x005f");
     }
     catch (IOException e) {
-      Assertions.fail(e.getMessage());
+      fail(e.getMessage());
     }
   }
 
@@ -117,7 +118,7 @@ public class IntCommonLiteralsTest {
       checkSignedIntLiteral(-17, "-00017");
     }
     catch (IOException e) {
-      Assertions.fail(e.getMessage());
+      fail(e.getMessage());
     }
   }
 
@@ -130,7 +131,7 @@ public class IntCommonLiteralsTest {
       checkFalse("- 02");
     }
     catch (IOException e) {
-      Assertions.fail(e.getMessage());
+      fail(e.getMessage());
     }
   }
 

@@ -11,11 +11,12 @@ import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCVoidType;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SynthesizeComponentFromMCBasicTypesTest extends AbstractMCTest {
 
@@ -61,9 +62,9 @@ public class SynthesizeComponentFromMCBasicTypesTest extends AbstractMCTest {
     synth.handle(ast);
 
     // Then
-    Assertions.assertTrue(result.getResult().isPresent());
-    Assertions.assertTrue(result.getResult().get().isComponentType());
-    Assertions.assertEquals(symbol, result.getResult().get().getTypeInfo());
+    assertTrue(result.getResult().isPresent());
+    assertTrue(result.getResult().get().isComponentType());
+    assertEquals(symbol, result.getResult().get().getTypeInfo());
   }
 
   @Test
@@ -94,9 +95,9 @@ public class SynthesizeComponentFromMCBasicTypesTest extends AbstractMCTest {
     synth.handle(ast);
 
     // Then
-    Assertions.assertTrue(result.getResult().isPresent());
-    Assertions.assertTrue(result.getResult().get().isComponentType());
-    Assertions.assertEquals(compSymbol1, result.getResult().get().getTypeInfo());
+    assertTrue(result.getResult().isPresent());
+    assertTrue(result.getResult().get().isComponentType());
+    assertEquals(compSymbol1, result.getResult().get().getTypeInfo());
     MCAssertions.assertHasFindingStartingWith("0xD0105");
   }
 
@@ -114,7 +115,7 @@ public class SynthesizeComponentFromMCBasicTypesTest extends AbstractMCTest {
     synth4normal.handle(astNormalComp);
 
     // Then
-    Assertions.assertFalse(result.getResult().isPresent());
+    assertFalse(result.getResult().isPresent());
   }
 
   @Test
@@ -134,6 +135,6 @@ public class SynthesizeComponentFromMCBasicTypesTest extends AbstractMCTest {
     synth.handle(voidType);
 
     // Then
-    Assertions.assertFalse(resultWrapper.getResult().isPresent());
+    assertFalse(resultWrapper.getResult().isPresent());
   }
 }

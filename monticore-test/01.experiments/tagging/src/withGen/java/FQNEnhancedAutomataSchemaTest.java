@@ -1,5 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
+import com.google.common.base.Preconditions;
 import de.monticore.fqn.fqnautomata._ast.ASTAutomaton;
 import de.monticore.fqn.fqnautomata._tagging.FQNAutomataTagConformsToSchemaCoCo;
 import de.monticore.fqn.fqnenhancedautomata.FQNEnhancedAutomataMill;
@@ -11,20 +12,21 @@ import de.monticore.tagging.tags._ast.ASTTagUnit;
 import de.monticore.tagging.tagschema._ast.ASTTagSchema;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 public class FQNEnhancedAutomataSchemaTest {
   protected static ASTAutomaton model;
 
-  @BeforeClass
+  @BeforeAll
   public static void prepare() throws Exception {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -50,7 +52,7 @@ public class FQNEnhancedAutomataSchemaTest {
     FQNEnhancedAutomataTagDefinitionMill.init();
   }
 
-  @Before
+  @BeforeEach
   public void beforeEach() {
     Log.clearFindings();
   }
@@ -58,49 +60,49 @@ public class FQNEnhancedAutomataSchemaTest {
   @Test
   public void testValidTags1() throws IOException {
     testCoCo("src/test/resources/models/Simple.tags");
-    Assert.assertEquals(0, Log.getErrorCount());
+    assertEquals(0, Log.getErrorCount());
   }
 
   @Test
   public void testSpotRootWithSimpleInsteadOfValued() throws IOException {
     testCoCo("src/test/resources/models/InvalidTags1.tags");
-    Assert.assertEquals(2, Log.getErrorCount());
+    assertEquals(2, Log.getErrorCount());
   }
 
   @Test
   public void testFQNWithInvalidSimpleTag() throws IOException {
     testCoCo("src/test/resources/models/InvalidTags2.tags");
-    Assert.assertEquals(2, Log.getErrorCount());
+    assertEquals(2, Log.getErrorCount());
   }
 
   @Test
   public void testFQNHWithInvalidSimpleTag() throws IOException {
     testCoCo("src/test/resources/models/InvalidTags3.tags");
-    Assert.assertEquals(2, Log.getErrorCount());
+    assertEquals(2, Log.getErrorCount());
   }
 
   @Test
   public void testFQNHWithInvalidValuedTag() throws IOException {
     testCoCo("src/test/resources/models/InvalidTags4.tags");
-    Assert.assertEquals(2, Log.getErrorCount());
+    assertEquals(2, Log.getErrorCount());
   }
 
   @Test
   public void testFQNWithinWithInvalidSimpleTag() throws IOException {
     testCoCo("src/test/resources/models/InvalidTags5.tags");
-    Assert.assertEquals(2, Log.getErrorCount());
+    assertEquals(2, Log.getErrorCount());
   }
 
   @Test
   public void testFQNWithinWithInvalidPrivateTag() throws IOException {
     testCoCo("src/test/resources/models/InvalidTagsPrivate.tags");
-    Assert.assertEquals(2, Log.getErrorCount());
+    assertEquals(2, Log.getErrorCount());
   }
 
   @Test
   public void testEnhancedFQNNonExtendedTag() throws IOException {
     testCoCo("src/test/resources/models/InvalidEnhancedTags1.tags");
-    Assert.assertEquals(2, Log.getErrorCount());
+    assertEquals(2, Log.getErrorCount());
   }
 
   protected void testCoCo(String file) throws IOException {

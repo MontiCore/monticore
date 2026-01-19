@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import static org.junit.jupiter.api.Assertions.fail;
+
 /**
  * MCAssertions is a collection of utility methods that support asserting
  * conditions in MontiCore tests.
@@ -226,7 +228,7 @@ public class MCAssertions {
               .collect(Collectors.joining(System.lineSeparator()))
       );
     }
-    return Assertions.fail(messageWithFindings.toString());
+    return fail(messageWithFindings.toString());
   }
 
 }

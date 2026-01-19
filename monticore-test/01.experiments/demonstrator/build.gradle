@@ -13,13 +13,14 @@ description = 'Experiments: automata'
 testing {
   suites {
     test {
-      useJUnitJupiter()
+      useJUnitJupiter(junit_version)
     }
 
     productTest(JvmTestSuite) {
       dependencies {
         implementation project()
         implementation testFixtures(project(":monticore-runtime"))
+        runtimeOnly "org.junit.platform:junit-platform-launcher:$junit_platform_version"
       }
       sources {
         java.srcDirs += ["$buildDir/statepattern" , "$projectDir/src/product/java"]

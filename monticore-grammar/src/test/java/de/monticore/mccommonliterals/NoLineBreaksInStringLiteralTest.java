@@ -9,7 +9,6 @@ import de.monticore.literals.testmccommonliterals.TestMCCommonLiteralsMill;
 import de.monticore.literals.testmccommonliterals._parser.TestMCCommonLiteralsParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -18,6 +17,7 @@ import java.io.StringReader;
 import java.util.Optional;
 
 import static de.monticore.literals.mccommonliterals.cocos.NoLineBreaksInStringLiteralCoCo.ERROR_CODE;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class NoLineBreaksInStringLiteralTest {
 
@@ -33,7 +33,7 @@ public class NoLineBreaksInStringLiteralTest {
     // Parsing
     TestMCCommonLiteralsParser parser = new TestMCCommonLiteralsParser();
     Optional<ASTLiteral> lit = parser.parseLiteral(new StringReader(s));
-    Assertions.assertTrue(lit.isPresent());
+    assertTrue(lit.isPresent());
 
     // check CoCo
     MCCommonLiteralsCoCoChecker checker = new MCCommonLiteralsCoCoChecker();
@@ -47,9 +47,9 @@ public class NoLineBreaksInStringLiteralTest {
       checkStringLiteral("\"okay\"");
     }
     catch (IOException e) {
-      Assertions.fail(e.getMessage());
+      fail(e.getMessage());
     }
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -59,10 +59,10 @@ public class NoLineBreaksInStringLiteralTest {
       checkStringLiteral("\"okay\r or not\"");
     }
     catch (IOException e) {
-      Assertions.fail(e.getMessage());
+      fail(e.getMessage());
     }
-    Assertions.assertEquals(2, Log.getFindings().size());
-    Assertions.assertTrue(Log.getFindings().get(0).getMsg().startsWith(ERROR_CODE));
-    Assertions.assertTrue(Log.getFindings().get(1).getMsg().startsWith(ERROR_CODE));
+    assertEquals(2, Log.getFindings().size());
+    assertTrue(Log.getFindings().get(0).getMsg().startsWith(ERROR_CODE));
+    assertTrue(Log.getFindings().get(1).getMsg().startsWith(ERROR_CODE));
   }
 }

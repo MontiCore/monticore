@@ -17,7 +17,6 @@ import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesTrav
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.io.IOException;
@@ -25,6 +24,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public abstract class DeriveSymTypeAbstractTest {
 
@@ -55,7 +56,7 @@ public abstract class DeriveSymTypeAbstractTest {
 
     protected ASTExpression parseExpression(String expression) throws IOException {
         Optional<ASTExpression> astExpression = parseStringExpression(expression);
-        Assertions.assertTrue(astExpression.isPresent());
+        assertTrue(astExpression.isPresent());
         return astExpression.get();
     }
 
@@ -77,7 +78,7 @@ public abstract class DeriveSymTypeAbstractTest {
         ASTExpression astex = parseExpression(expression);
         setFlatExpressionScope(astex);
 
-        Assertions.assertEquals(expectedType, tc.typeOf(astex).print(), "Wrong return type for expression " + expression);
+        assertEquals(expectedType, tc.typeOf(astex).print(), "Wrong return type for expression " + expression);
     }
 
     protected final void checkError(String expression, String expectedError) throws IOException {
@@ -88,10 +89,10 @@ public abstract class DeriveSymTypeAbstractTest {
         Log.getFindings().clear();
         try {
             SymTypeExpression result = tc.typeOf(astex);
-            Assertions.assertTrue(result.isObscureType());
-            Assertions.assertEquals(expectedError, getFirstErrorCode());
+            assertTrue(result.isObscureType());
+            assertEquals(expectedError, getFirstErrorCode());
         } catch (RuntimeException e) {
-            Assertions.assertEquals(expectedError, getFirstErrorCode());
+            assertEquals(expectedError, getFirstErrorCode());
         }
     }
 
@@ -104,10 +105,10 @@ public abstract class DeriveSymTypeAbstractTest {
         try {
             tc.typeOf(astex);
         } catch (RuntimeException e) {
-            Assertions.assertEquals(expectedErrors, getAllErrorCodes());
+            assertEquals(expectedErrors, getAllErrorCodes());
             return;
         }
-        Assertions.fail();
+        fail();
     }
 
     protected final void checkErrors(String expression, String... expectedErrors) throws IOException {
@@ -125,14 +126,14 @@ public abstract class DeriveSymTypeAbstractTest {
             TypeCheckResult result = tc.iDerive.deriveType(astex);
 
             if(expectedErrors.isEmpty()) {
-                Assertions.assertEquals(0, Log.getErrorCount(), "Found errors even though there should be none");
-                Assertions.assertTrue(result.isPresentResult(), "Missing type check result (in the form of a SymTypeExpression)");
+                assertEquals(0, Log.getErrorCount(), "Found errors even though there should be none");
+                assertTrue(result.isPresentResult(), "Missing type check result (in the form of a SymTypeExpression)");
             } else {
-                Assertions.assertEquals(expectedErrors, getAllErrorCodes());
+                assertEquals(expectedErrors, getAllErrorCodes());
             }
 
         } catch (Exception e) {
-            Assertions.fail("An unexpected Exception was thrown during running the typecheck on " + expression + ":\n"
+            fail("An unexpected Exception was thrown during running the typecheck on " + expression + ":\n"
               + e.getClass().getName() + e.getMessage());
         }
     }

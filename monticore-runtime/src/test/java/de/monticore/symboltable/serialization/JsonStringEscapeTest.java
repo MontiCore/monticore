@@ -1,11 +1,10 @@
 package de.monticore.symboltable.serialization;
 
 import de.monticore.symboltable.serialization.json.JsonElement;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class JsonStringEscapeTest {
 
@@ -15,7 +14,7 @@ public class JsonStringEscapeTest {
     printer.value("'");
 
     String content = printer.getContent();
-    Assertions.assertEquals("\"'\"", content);
+    assertEquals("\"'\"", content);
   }
 
   @Test
@@ -24,7 +23,7 @@ public class JsonStringEscapeTest {
     printer.value("✔");
 
     String content = printer.getContent();
-    Assertions.assertEquals("\"\\u2714\"", content);
+    assertEquals("\"\\u2714\"", content);
   }
 
   @Test
@@ -89,9 +88,9 @@ public class JsonStringEscapeTest {
 
     String content = printer.getContent();
     JsonElement e = JsonParser.parse(content);
-    Assertions.assertTrue(e.isJsonString());
+    assertTrue(e.isJsonString());
 
-    Assertions.assertEquals(input, e.getAsJsonString().getValue());
+    assertEquals(input, e.getAsJsonString().getValue());
   }
 
 }

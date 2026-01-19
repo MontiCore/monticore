@@ -17,8 +17,7 @@ import de.se_rwth.commons.logging.LogStub;
 import java.io.IOException;
 import java.util.Optional;
 
-import static junit.framework.TestCase.*;
-import static junit.framework.TestCase.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public abstract class AbstractInterpreterTest {
 
@@ -249,7 +248,7 @@ public abstract class AbstractInterpreterTest {
     }
     assertNotNull(interpretationResult);
     assertEquals(Log.getFindings().size(), 1);
-    assertTrue(interpretationResult instanceof NotAValue);
+    assertInstanceOf(NotAValue.class, interpretationResult);
   }
 
   protected Value parseExpressionAndInterpret(String expr) throws IOException {
