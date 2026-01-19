@@ -18,8 +18,6 @@ import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.se_rwth.commons.logging.Log;
-import org.junit.Before;
-import org.junit.Test;
 import java.util.Arrays;
 import java.util.HashMap;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,9 +32,6 @@ import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertInt;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertListOf;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertVoid;
-import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodsBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -47,8 +42,6 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
   private ASTCDInterface scopeInterface;
 
   private de.monticore.types.MCTypeFacade mcTypeFacade;
-
-  private ASTCDCompilationUnit decoratedSymbolCompilationUnit;
 
   private ASTCDCompilationUnit decoratedScopeCompilationUnit;
 
@@ -77,7 +70,7 @@ public class ScopeInterfaceDecoratorTest extends DecoratorTestCase {
   public void setUp() {
     this.mcTypeFacade = mcTypeFacade.getInstance();
     ASTCDCompilationUnit astcdCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "Automaton");
-    decoratedSymbolCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "AutomatonSymbolCD");
+    ASTCDCompilationUnit decoratedSymbolCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "AutomatonSymbolCD");
     decoratedScopeCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "AutomatonScopeCD");
     originalCompilationUnit = decoratedScopeCompilationUnit.deepClone();
     this.glex.setGlobalValue("service", new AbstractService(astcdCompilationUnit));
