@@ -16,8 +16,8 @@ import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.se_rwth.commons.logging.Log;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
@@ -26,7 +26,7 @@ import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.DecoratorAssert.*;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
 import static de.monticore.codegen.cd2java._ast.builder.BuilderConstants.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class BuilderDecoratorTest extends DecoratorTestCase {
 
@@ -34,7 +34,7 @@ public class BuilderDecoratorTest extends DecoratorTestCase {
 
   private ASTCDClass builderClass;
 
-  @Before
+  @BeforeEach
   public void setup() {
     ASTCDCompilationUnit ast = parse("de", "monticore", "codegen", "builder", "Builder");
     this.glex.setGlobalValue("service", new AbstractService(ast));

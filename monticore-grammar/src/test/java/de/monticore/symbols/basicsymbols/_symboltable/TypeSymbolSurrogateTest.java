@@ -15,7 +15,6 @@ import de.monticore.visitor.ITraverser;
 import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.LogStub;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -25,6 +24,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /** Tests {@link TypeSymbolSurrogate} */
 public class TypeSymbolSurrogateTest {
@@ -48,7 +49,7 @@ public class TypeSymbolSurrogateTest {
     surrogate.setSpannedScope(scopeToSet);
 
     // Then
-    Assertions.assertSame(scopeToSet, type.getSpannedScope());
+    assertSame(scopeToSet, type.getSpannedScope());
   }
 
   @Test
@@ -62,7 +63,7 @@ public class TypeSymbolSurrogateTest {
     IBasicSymbolsScope scope = surrogate.getSpannedScope();
 
     // Then
-    Assertions.assertSame(type.getSpannedScope(), scope);
+    assertSame(type.getSpannedScope(), scope);
   }
 
   @Test
@@ -80,7 +81,7 @@ public class TypeSymbolSurrogateTest {
     SymTypeExpression superClassCalculated = surrogate.getSuperClass();
 
     // Then
-    Assertions.assertSame(superClassExpr, superClassCalculated);
+    assertSame(superClassExpr, superClassCalculated);
   }
 
 
@@ -98,7 +99,7 @@ public class TypeSymbolSurrogateTest {
     surrogate.setSuperTypesList(Collections.singletonList(superClassExpr));
 
     // Then
-    Assertions.assertSame(superClassExpr, type.getSuperClass());
+    assertSame(superClassExpr, type.getSuperClass());
   }
 
   @Test
@@ -114,7 +115,7 @@ public class TypeSymbolSurrogateTest {
     List<TypeVarSymbol> typeParams = surrogate.getTypeParameterList();
 
     // Then
-    Assertions.assertArrayEquals(new TypeVarSymbol[]{typeParam}, typeParams.toArray());
+    assertArrayEquals(new TypeVarSymbol[]{typeParam}, typeParams.toArray());
   }
 
   @Test @SuppressWarnings({"EqualsWithItself", "ConstantConditions"})
@@ -129,7 +130,7 @@ public class TypeSymbolSurrogateTest {
     boolean result = surrogate.equals(surrogate);
 
     // Then
-    Assertions.assertTrue(result);
+    assertTrue(result);
   }
 
   @Test
@@ -149,7 +150,7 @@ public class TypeSymbolSurrogateTest {
     boolean result = surrogate1.equals(surrogate2);
 
     // Then
-    Assertions.assertFalse(result);
+    assertFalse(result);
   }
 
   @Test
@@ -185,7 +186,7 @@ public class TypeSymbolSurrogateTest {
     boolean result = surrogate1.equals(surrogate2);
 
     // Then
-    Assertions.assertFalse(result);
+    assertFalse(result);
   }
 
   @Test
@@ -209,7 +210,7 @@ public class TypeSymbolSurrogateTest {
     boolean result = surrogate.equals(symbol);
 
     // Then
-    Assertions.assertTrue(result);
+    assertTrue(result);
   }
 
   @Test
@@ -233,13 +234,13 @@ public class TypeSymbolSurrogateTest {
     boolean result = surrogate.equals(symbol);
 
     // Then
-    Assertions.assertFalse(result);
+    assertFalse(result);
 
     // When
     boolean resultSymmetric = symbol.equals(surrogate);
 
     // Then
-    Assertions.assertFalse(resultSymmetric);
+    assertFalse(resultSymmetric);
   }
 
   @Test
@@ -263,7 +264,7 @@ public class TypeSymbolSurrogateTest {
 
     var result = surrogate1.equals(surrogate2);
 
-    Assertions.assertFalse(result);
+    assertFalse(result);
   }
 
   @Test
@@ -286,7 +287,7 @@ public class TypeSymbolSurrogateTest {
 
     var result = surrogate1.equals(surrogate2);
 
-    Assertions.assertTrue(result);
+    assertTrue(result);
   }
 
   private static class SymbolMock implements ISymbol {

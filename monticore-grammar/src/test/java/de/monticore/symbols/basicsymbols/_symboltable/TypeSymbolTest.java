@@ -2,9 +2,11 @@ package de.monticore.symbols.basicsymbols._symboltable;
 
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TypeSymbolTest {
 
@@ -26,7 +28,7 @@ public class TypeSymbolTest {
     boolean result = symbol.equals(symbol);
 
     // Then
-    Assertions.assertTrue(result);
+    assertTrue(result);
   }
 
   @Test
@@ -46,7 +48,7 @@ public class TypeSymbolTest {
     boolean result = symbol1.equals(symbol2);
 
     // Then
-    Assertions.assertFalse(result);
+    assertFalse(result);
   }
 
   @Test
@@ -70,7 +72,7 @@ public class TypeSymbolTest {
     boolean result = symbol.equals(surrogate);
 
     // Then
-    Assertions.assertTrue(result);
+    assertTrue(result);
   }
 
   @Test
@@ -94,6 +96,6 @@ public class TypeSymbolTest {
     boolean result = symbol.equals(surrogate);
 
     // Then
-    Assertions.assertFalse(result);
+    assertFalse(result);
   }
 }

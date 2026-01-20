@@ -8,15 +8,14 @@ import de.monticore.grammar.grammar_withconcepts._symboltable.IGrammar_WithConce
 import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Paths;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MCGrammarLanguageFamilySymbolTableTest {
 
@@ -37,17 +36,17 @@ public class MCGrammarLanguageFamilySymbolTableTest {
 
     final Optional<MCGrammarSymbol> oldGrammar =
             globalScope.resolveMCGrammar("de.monticore.statechart.Statechart");
-    Assertions.assertTrue(oldGrammar.isPresent());
+    assertTrue(oldGrammar.isPresent());
 
 
     final Optional<MCGrammarSymbol> newGrammar =
             globalScope.resolveMCGrammar("de.monticore.statechart.Statechart");
-    Assertions.assertTrue(newGrammar.isPresent());
+    assertTrue(newGrammar.isPresent());
 
     // 2 = Statechart grammar symbol and TestLexicals grammar symbol (super grammar of Statechart)
-    Assertions.assertEquals(1, globalScope.getSubScopes().size());
+    assertEquals(1, globalScope.getSubScopes().size());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 

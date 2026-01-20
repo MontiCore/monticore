@@ -8,7 +8,6 @@ import de.monticore.literals.testmccommonliterals.TestMCCommonLiteralsMill;
 import de.monticore.literals.testmccommonliterals._ast.ASTA;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -30,7 +29,7 @@ public class StringLiteralsTest {
   
   private void checkStringLiteral(String expected, String actual) throws IOException {
     ASTLiteral lit = MCLiteralsTestHelper.getInstance().parseLiteral(actual);
-    assertTrue(lit instanceof ASTStringLiteral);
+    assertInstanceOf(ASTStringLiteral.class, lit);
     assertEquals(expected, ((ASTStringLiteral) lit).getValue());
   
     assertTrue(Log.getFindings().isEmpty());
@@ -62,7 +61,7 @@ public class StringLiteralsTest {
       checkStringLiteral("\u010000", "\"\\u010000\"");
     }
     catch (IOException e) {
-      Assertions.fail(e.getMessage());
+      fail(e.getMessage());
     }
   }
 }

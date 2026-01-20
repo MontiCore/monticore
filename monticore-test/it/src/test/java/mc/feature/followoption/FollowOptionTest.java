@@ -2,20 +2,18 @@
 
 package mc.feature.followoption;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
 import java.io.StringReader;
 
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 
 import mc.GeneratorIntegrationsTest;
 import mc.feature.followoption.followoption._parser.FollowOptionParser;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class FollowOptionTest extends GeneratorIntegrationsTest {
   
@@ -31,9 +29,9 @@ public class FollowOptionTest extends GeneratorIntegrationsTest {
     //-- extractfile gen/FollowOptionTest.x
     FollowOptionParser simpleAParser = new FollowOptionParser();
     simpleAParser.parseA(new StringReader("test ,"));
-    Assertions.assertEquals(false, simpleAParser.hasErrors());
+    assertFalse(simpleAParser.hasErrors());
     //-- endfile gen/FollowOptionTest.x
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
     
   @Test
@@ -42,7 +40,7 @@ public class FollowOptionTest extends GeneratorIntegrationsTest {
 
     FollowOptionParser simpleBParser = new FollowOptionParser();
     simpleBParser.parseB(new StringReader("test ,"));
-    Assertions.assertEquals(true, simpleBParser.hasErrors());
+    assertTrue(simpleBParser.hasErrors());
     //-- endfile gen/FollowOptionTest.x
   }
   
@@ -57,7 +55,7 @@ public class FollowOptionTest extends GeneratorIntegrationsTest {
     FollowOptionParser simpleParser = new FollowOptionParser();
     simpleParser.parseB(new StringReader(","));
     
-    Assertions.assertEquals(true, simpleParser.hasErrors());
+    assertTrue(simpleParser.hasErrors());
   }
 
   @Test
@@ -65,7 +63,7 @@ public class FollowOptionTest extends GeneratorIntegrationsTest {
     
     FollowOptionParser simpleAParser = new FollowOptionParser();
     simpleAParser.parseA(new StringReader("test ."));
-
-    Assertions.assertEquals(true, simpleAParser.hasErrors());
+    
+    assertTrue(simpleAParser.hasErrors());
   }
 }

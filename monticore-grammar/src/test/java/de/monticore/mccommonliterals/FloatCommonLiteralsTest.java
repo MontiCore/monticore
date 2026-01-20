@@ -8,13 +8,14 @@ import de.monticore.literals.testmccommonliterals.TestMCCommonLiteralsMill;
 import de.monticore.literals.testmccommonliterals._parser.TestMCCommonLiteralsParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class FloatCommonLiteralsTest {
 
@@ -29,18 +30,18 @@ public class FloatCommonLiteralsTest {
   private void checkFloatLiteral(float f, String s) throws IOException {
     TestMCCommonLiteralsParser parser = new TestMCCommonLiteralsParser();
     Optional<ASTLiteral> lit = parser.parseLiteral(new StringReader(s));
-    Assertions.assertTrue(lit.isPresent());
-    Assertions.assertTrue(lit.get() instanceof ASTBasicFloatLiteral);
-    Assertions.assertEquals(f, ((ASTBasicFloatLiteral) lit.get()).getValue(), 0);
-    Assertions.assertTrue(true);
+    assertTrue(lit.isPresent());
+    assertInstanceOf(ASTBasicFloatLiteral.class, lit.get());
+    assertEquals(f, ((ASTBasicFloatLiteral) lit.get()).getValue(), 0);
+    assertTrue(true);
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   private void checkFalse(String s) throws IOException {
     TestMCCommonLiteralsParser parser = new TestMCCommonLiteralsParser();
     Optional<ASTBasicFloatLiteral> lit = parser.parseBasicFloatLiteral(new StringReader(s));
-    Assertions.assertTrue(!lit.isPresent());
+    assertFalse(lit.isPresent());
    }
 
   @Test
@@ -51,7 +52,7 @@ public class FloatCommonLiteralsTest {
     }
     catch (IOException e)
     {
-      Assertions.fail(e.getMessage());
+      fail(e.getMessage());
     }
   }
 
@@ -103,7 +104,7 @@ public class FloatCommonLiteralsTest {
     }
     catch (IOException e)
     {
-      Assertions.fail(e.getMessage());
+      fail(e.getMessage());
     }
   }
 }

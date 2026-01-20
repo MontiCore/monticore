@@ -9,15 +9,14 @@ import de.monticore.types.mcfullgenerictypestest._parser.MCFullGenericTypesTestP
 import de.monticore.types.mcfullgenerictypes._prettyprint.MCFullGenericTypesFullPrettyPrinter;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MCFullGenericTypesPrettyPrinterTest {
 
@@ -33,51 +32,51 @@ public class MCFullGenericTypesPrettyPrinterTest {
   public void testMCWildcardTypeArgumentExtends() throws IOException {
     MCFullGenericTypesTestParser parser = new MCFullGenericTypesTestParser();
     Optional<ASTMCWildcardTypeArgument> ast = parser.parse_StringMCWildcardTypeArgument("? extends java.util.List");
-    Assertions.assertTrue(ast.isPresent());
-    Assertions.assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertFalse(parser.hasErrors());
     ASTMCWildcardTypeArgument wildcardType = ast.get();
     MCFullGenericTypesFullPrettyPrinter printer = new MCFullGenericTypesFullPrettyPrinter(new IndentPrinter());
     String output = printer.prettyprint(ast.get());
     ast = parser.parse_StringMCWildcardTypeArgument(output);
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(ast.isPresent());
-    Assertions.assertTrue(wildcardType.deepEquals(ast.get()));
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertTrue(wildcardType.deepEquals(ast.get()));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMCWildcardTypeArgumentSuper() throws IOException {
     MCFullGenericTypesTestParser parser = new MCFullGenericTypesTestParser();
     Optional<ASTMCWildcardTypeArgument> ast = parser.parse_StringMCWildcardTypeArgument("? super de.monticore.ASTNode");
-    Assertions.assertTrue(ast.isPresent());
-    Assertions.assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertFalse(parser.hasErrors());
     ASTMCWildcardTypeArgument wildcardType = ast.get();
     MCFullGenericTypesFullPrettyPrinter printer = new MCFullGenericTypesFullPrettyPrinter(new IndentPrinter());
     String output = printer.prettyprint(ast.get());
     ast = parser.parse_StringMCWildcardTypeArgument(output);
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(ast.isPresent());
-    Assertions.assertTrue(wildcardType.deepEquals(ast.get()));
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertTrue(wildcardType.deepEquals(ast.get()));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMCMultipleGenericType() throws IOException {
     MCFullGenericTypesTestParser parser = new MCFullGenericTypesTestParser();
     Optional<ASTMCMultipleGenericType> ast = parser.parse_StringMCMultipleGenericType("java.util.List<Integer>.some.util.Set<String>.Opt<List<String>>");
-    Assertions.assertTrue(ast.isPresent());
-    Assertions.assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertFalse(parser.hasErrors());
     ASTMCMultipleGenericType complexReferenceType = ast.get();
     MCFullGenericTypesFullPrettyPrinter printer = new MCFullGenericTypesFullPrettyPrinter(new IndentPrinter());
     String output = printer.prettyprint(ast.get());
     ast = parser.parse_StringMCMultipleGenericType(output);
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(ast.isPresent());
-    Assertions.assertTrue(complexReferenceType.deepEquals(ast.get()));
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertTrue(complexReferenceType.deepEquals(ast.get()));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

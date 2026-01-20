@@ -3,11 +3,10 @@ package de.monticore.javalight.cocos;
 
 import de.monticore.javalight._cocos.JavaLightCoCoChecker;
 import de.se_rwth.commons.logging.Log;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ConstructorNoDuplicateModifierTest extends JavaLightCocoTest{
   private final String fileName = "de.monticore.javalight.cocos.invalid.A0808.A0808";
@@ -28,6 +27,6 @@ public class ConstructorNoDuplicateModifierTest extends JavaLightCocoTest{
   public void testCorrect() {
     testValid("de.monticore.javalight.cocos.valid.A0808", "constructor", checker);
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 }
