@@ -28,7 +28,7 @@ public class SM2ToolTest {
   @Test
   public void test() {
     String[] args = {"-i","src/test/resources/example/PingPong.aut"};
-    new SM2Tool().run(args);
+    SM2Tool.main(args);
     MCAssertions.assertNoFindings();
   
     List<String> p = LogStub.getPrints();
