@@ -5,6 +5,7 @@ package de.monticore;
 import com.google.common.collect.Iterables;
 import de.monticore.cli.MontiCoreTool;
 import de.monticore.codegen.cd2java._tagging.TaggingConstants;
+import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.mcbasics.MCBasicsMill;
 import de.monticore.dstlgen.util.DSTLPathUtil;
 import de.monticore.symboltable.serialization.json.*;
@@ -435,7 +436,9 @@ public abstract class MCTask extends DefaultTask {
     String[] p = getParameters();
     try {
       // execute Monticore with the given parameters
+      Grammar_WithConceptsMill.init();
       new MontiCoreTool().run(p);
+      StatisticsHandlerFix.shutdown();
       MCBasicsMill.globalScope().getSymbolPath().close();
     } catch(MCTaskError e){
       // in case of failure print the error and fail
