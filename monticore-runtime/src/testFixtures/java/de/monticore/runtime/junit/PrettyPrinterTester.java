@@ -8,9 +8,8 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static de.monticore.runtime.junit.MCAssertions.assertNoFindings;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 /**
@@ -46,7 +45,7 @@ public abstract class PrettyPrinterTester {
       astOpt = parseFunc.apply(model);
     }
     catch (IOException e) {
-      Assertions.fail("Failed to parse input, exception occurred", e);
+      fail("Failed to parse input, exception occurred", e);
       return;
     }
     MCAssertions.assertNoFindings();
@@ -62,7 +61,7 @@ public abstract class PrettyPrinterTester {
       prettyPrintedAstOpt = parseFunc.apply(prettyPrinted);
     }
     catch (IOException e) {
-      Assertions.fail(
+      fail(
           "Failed to parse pretty printed model"
               + ", exception occurred", e
       );
