@@ -2,9 +2,13 @@
 package de.monticore.types3.generics.constraints;
 
 import com.google.common.base.Preconditions;
+import de.monticore.ast.ASTNode;
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Comparator;
+import java.util.Optional;
 
 import static de.monticore.types3.generics.bounds.BoundComparator.compareBounds;
 import static de.monticore.types3.util.SymTypeExpressionComparator.compareSymTypeExpressions;
@@ -101,22 +105,71 @@ public class ConstraintComparator implements Comparator<Constraint> {
       ExpressionCompatibilityConstraint c2
   ) {
     int res;
-    int startComp = c1.getExpr().get_SourcePositionStart().compareTo(
-        c2.getExpr().get_SourcePositionStart()
-    );
+    int exprComp = compareASTNodes(c1.getExpr(), c2.getExpr());
+    if (exprComp != 0) {
+      res = exprComp;
+    }
+    else {
+      res = compareSymTypeExpressions(c1.getTargetType(), c2.getTargetType());
+    }
+    return res;
+  }
+
+  protected int compareASTNodes(ASTNode n1, ASTNode n2) {
+    int res;
+    int startComp = compareSourcePositionInASTNode(n1, n2, true);
     if (startComp != 0) {
       res = startComp;
     }
     else {
-      int endComp = c1.getExpr().get_SourcePositionEnd().compareTo(
-          c2.getExpr().get_SourcePositionEnd()
-      );
+      int endComp = compareSourcePositionInASTNode(n1, n2, false);
       if (endComp != 0) {
         res = endComp;
       }
       else {
-        res = compareSymTypeExpressions(c1.getTargetType(), c2.getTargetType());
+        // highly inefficient, only used if required.
+        String printed1 = BasicSymbolsMill.prettyPrint(n1, true);
+        String printed2 = BasicSymbolsMill.prettyPrint(n2, true);
+        res = printed1.compareTo(printed2);
       }
+    }
+    return res;
+  }
+
+  /**
+   * compares either start or end source positions of the ASTNodes.
+   */
+  protected int compareSourcePositionInASTNode(ASTNode n1, ASTNode n2, boolean start) {
+    int res;
+    Optional<SourcePosition> pos1;
+    Optional<SourcePosition> pos2;
+    if (start) {
+      pos1 = n1.isPresent_SourcePositionStart()
+          ? Optional.of(n1.get_SourcePositionStart())
+          : Optional.empty();
+      pos2 = n2.isPresent_SourcePositionStart()
+          ? Optional.of(n2.get_SourcePositionStart())
+          : Optional.empty();
+    }
+    else {
+      pos1 = n1.isPresent_SourcePositionEnd()
+          ? Optional.of(n1.get_SourcePositionEnd())
+          : Optional.empty();
+      pos2 = n2.isPresent_SourcePositionEnd()
+          ? Optional.of(n2.get_SourcePositionEnd())
+          : Optional.empty();
+    }
+    if (pos1.isPresent() && pos2.isPresent()) {
+      res = pos1.get().compareTo(pos2.get());
+    }
+    else if (pos1.isPresent()) {
+      res = -1;
+    }
+    else if (pos2.isPresent()) {
+      res = 1;
+    }
+    else {
+      res = 0;
     }
     return res;
   }
