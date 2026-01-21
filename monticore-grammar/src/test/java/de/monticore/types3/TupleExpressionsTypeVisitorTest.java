@@ -1,10 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types3;
 
-import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
 
 public class TupleExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
 
