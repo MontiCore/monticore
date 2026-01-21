@@ -116,6 +116,9 @@ public class SymTypeExpressionComparator
     else if (type.isNumericWithSIUnitType()) {
       return 50;
     }
+    else if (type.isRegExType()) {
+      return 55;
+    }
     else if (type.isObjectType()) {
       return 60;
     }
