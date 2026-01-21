@@ -6,6 +6,9 @@ import de.monticore.types.check.*;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * A Helper to create (Tree)Maps.
@@ -28,238 +31,147 @@ public class SymTypeExpressionComparator
   public int compare(SymTypeExpression o1, SymTypeExpression o2) {
     Preconditions.checkNotNull(o1);
     Preconditions.checkNotNull(o2);
-    if (o1.deepEquals(o2)) {
+
+    int res;
+
+    int orderOfSubType1 = getOrderOfSubType(o1);
+    int orderOfSubType2 = getOrderOfSubType(o2);
+    int subTypeOrdering = Integer.compare(orderOfSubType1, orderOfSubType2);
+
+    if (subTypeOrdering != 0) {
+      res = subTypeOrdering;
+    }
+    else if (o1.deepEquals(o2)) {
+      res = 0;
+    }
+    else if (o1.isUnionType() && o2.isUnionType()) {
+      res = compareUnion(o1.asUnionType(), o2.asUnionType());
+    }
+    else if (o1.isIntersectionType() && o2.isIntersectionType()) {
+      res = compareIntersection(o1.asIntersectionType(), o2.asIntersectionType());
+    }
+    else if (o1.isTupleType() && o2.isTupleType()) {
+      res = compareTuple(o1.asTupleType(), o2.asTupleType());
+    }
+    else if (o1.isFunctionType() && o2.isFunctionType()) {
+      res = compareFunction(o1.asFunctionType(), o2.asFunctionType());
+    }
+    else if (o1.isArrayType() && o2.isArrayType()) {
+      res = compareArray(o1.asArrayType(), o2.asArrayType());
+    }
+    else if (o1.isPrimitive() && o2.isPrimitive()) {
+      res = comparePrimitive(o1.asPrimitive(), o2.asPrimitive());
+    }
+    else if (o1.isSIUnitType() && o2.isSIUnitType()) {
+      res = compareSIUnit(o1.asSIUnitType(), o2.asSIUnitType());
+    }
+    else if (o1.isNumericWithSIUnitType() && o2.isNumericWithSIUnitType()) {
+      res = compareNumericWithSIUnit(
+          o1.asNumericWithSIUnitType(),
+          o2.asNumericWithSIUnitType()
+      );
+    }
+    else if (o1.isRegExType() && o2.isRegExType()) {
+      res = compareRegEx(o1.asRegExType(), o2.asRegExType());
+    }
+    else if (o1.isObjectType() && o2.isObjectType()) {
+      res = compareObject(o1.asObjectType(), o2.asObjectType());
+    }
+    else if (o1.isGenericType() && o2.isGenericType()) {
+      res = compareGeneric(o1.asGenericType(), o2.asGenericType());
+    }
+    else if (o1.isWildcard() && o2.isWildcard()) {
+      res = compareWildcard(o1.asWildcard(), o2.asWildcard());
+    }
+    else if (o1.isTypeVariable() && o2.isTypeVariable()) {
+      res = compareTypeVar(o1.asTypeVariable(), o2.asTypeVariable());
+    }
+    else if (o1.isInferenceVariable() && o2.isInferenceVariable()) {
+      res = compareInfVar(o1.asInferenceVariable(), o2.asInferenceVariable());
+    }
+    // null, void, and obscure are handled by deepEquals
+    else {
+      throwUnimplemented();
+      res = -41;
+    }
+    return res;
+  }
+
+  protected int getOrderOfSubType(SymTypeExpression type) {
+    if (type.isObscureType()) {
       return 0;
     }
-    else if (o1.isUnionType()) {
-      if (!o2.isUnionType()) {
-        return -1;
-      }
-      else {
-        return compareUnion(o1.asUnionType(), o2.asUnionType());
-      }
+    else if (type.isVoidType()) {
+      return 10;
     }
-    else if (o2.isUnionType()) {
-      return 1;
+    else if (type.isNullType()) {
+      return 20;
     }
-    else if (o1.isIntersectionType()) {
-      if (!o2.isIntersectionType()) {
-        return -1;
-      }
-      else {
-        return compareIntersection(
-            o1.asIntersectionType(),
-            o2.asIntersectionType()
-        );
-      }
+    else if (type.isPrimitive()) {
+      return 30;
     }
-    else if (o2.isIntersectionType()) {
-      return 1;
+    else if (type.isSIUnitType()) {
+      return 40;
     }
-    else if (o1.isTupleType()) {
-      if (!o2.isTupleType()) {
-        return -1;
-      }
-      else {
-        return compareTuple(o1.asTupleType(), o2.asTupleType());
-      }
+    else if (type.isNumericWithSIUnitType()) {
+      return 50;
     }
-    else if (o2.isTupleType()) {
-      return 1;
+    else if (type.isObjectType()) {
+      return 60;
     }
-    else if (o1.isFunctionType()) {
-      if (!o2.isFunctionType()) {
-        return -1;
-      }
-      else {
-        return compareFunction(o1.asFunctionType(), o2.asFunctionType());
-      }
+    else if (type.isGenericType()) {
+      return 70;
     }
-    else if (o2.isFunctionType()) {
-      return 1;
+    else if (type.isArrayType()) {
+      return 80;
     }
-    else if (o1.isArrayType()) {
-      if (!o2.isArrayType()) {
-        return -1;
-      }
-      else {
-        return compareArray(o1.asArrayType(), o2.asArrayType());
-      }
+    else if (type.isFunctionType()) {
+      return 90;
     }
-    else if (o2.isArrayType()) {
-      return 1;
+    else if (type.isTupleType()) {
+      return 100;
     }
-    else if (o1.isPrimitive()) {
-      if (!o2.isPrimitive()) {
-        return -1;
-      }
-      else {
-        return comparePrimitive(o1.asPrimitive(), o2.asPrimitive());
-      }
+    else if (type.isUnionType()) {
+      return 110;
     }
-    else if (o2.isPrimitive()) {
-      return 1;
+    else if (type.isIntersectionType()) {
+      return 120;
     }
-    else if (o1.isSIUnitType()) {
-      if (!o2.isSIUnitType()) {
-        return -1;
-      }
-      else {
-        return compareSIUnit(o1.asSIUnitType(), o2.asSIUnitType());
-      }
+    else if (type.isTypeVariable()) {
+      return 130;
     }
-    else if (o2.isSIUnitType()) {
-      return 1;
+    else if (type.isInferenceVariable()) {
+      return 140;
     }
-    else if (o1.isNumericWithSIUnitType()) {
-      if (!o2.isNumericWithSIUnitType()) {
-        return -1;
-      }
-      else {
-        return compareNumericWithSIUnit(
-            o1.asNumericWithSIUnitType(),
-            o2.asNumericWithSIUnitType()
-        );
-      }
+    else if (type.isWildcard()) {
+      return 150;
     }
-    else if (o2.isNumericWithSIUnitType()) {
-      return 1;
+    else {
+      throwUnimplemented();
+      return -42;
     }
-    else if (o1.isRegExType()) {
-      if (!o2.isRegExType()) {
-        return -1;
-      }
-      else {
-        return compareRegEx(o1.asRegExType(), o2.asRegExType());
-      }
-    }
-    else if (o2.isRegExType()) {
-      return 1;
-    }
-    else if (o1.isObjectType()) {
-      if (!o2.isObjectType()) {
-        return -1;
-      }
-      else {
-        return compareObject(o1.asObjectType(), o2.asObjectType());
-      }
-    }
-    else if (o2.isObjectType()) {
-      return 1;
-    }
-    else if (o1.isGenericType()) {
-      if (!o2.isGenericType()) {
-        return -1;
-      }
-      else {
-        return compareGeneric(o1.asGenericType(), o2.asGenericType());
-      }
-    }
-    else if (o2.isGenericType()) {
-      return 1;
-    }
-    else if (o1.isWildcard()) {
-      if (!o2.isWildcard()) {
-        return -1;
-      }
-      else {
-        return compareWildcard(o1.asWildcard(), o2.asWildcard());
-      }
-    }
-    else if (o2.isWildcard()) {
-      return 1;
-    }
-    else if (o1.isTypeVariable()) {
-      if (!o2.isTypeVariable()) {
-        return -1;
-      }
-      else {
-        return compareTypeVar(o1.asTypeVariable(), o2.asTypeVariable());
-      }
-    }
-    else if (o2.isTypeVariable()) {
-      return 1;
-    }
-    else if (o1.isInferenceVariable()) {
-      if (!o2.isInferenceVariable()) {
-        return -1;
-      }
-      else {
-        return compareInfVar(o1.asInferenceVariable(), o2.asInferenceVariable());
-      }
-    }
-    else if (o2.isInferenceVariable()) {
-      return 1;
-    }
-    // the following do not have any further comparisons,
-    // as two of the same type cannot differ
-    else if (o1.isNullType()) {
-      return -1;
-    }
-    else if (o2.isNullType()) {
-      return 1;
-    }
-    else if (o1.isVoidType()) {
-      return -1;
-    }
-    else if (o2.isVoidType()) {
-      return 1;
-    }
-    else if (o1.isObscureType()) {
-      return -1;
-    }
-    return logUnimplemented();
   }
 
   protected int compareUnion(SymTypeOfUnion o1, SymTypeOfUnion o2) {
-    if (o1.sizeUnionizedTypes() < o2.sizeUnionizedTypes()) {
-      return -1;
-    }
-    else if (o1.sizeUnionizedTypes() > o2.sizeUnionizedTypes()) {
-      return 1;
-    }
-    else {
-      return o1.printFullName().compareTo(o2.printFullName());
-    }
+    return compareSets(o1.getUnionizedTypeSet(), o2.getUnionizedTypeSet());
   }
 
   protected int compareIntersection(SymTypeOfIntersection o1, SymTypeOfIntersection o2) {
-    if (o1.sizeIntersectedTypes() < o2.sizeIntersectedTypes()) {
-      return -1;
-    }
-    else if (o1.sizeIntersectedTypes() > o2.sizeIntersectedTypes()) {
-      return 1;
-    }
-    else {
-      return o1.printFullName().compareTo(o2.printFullName());
-    }
+    return compareSets(o1.getIntersectedTypeSet(), o2.getIntersectedTypeSet());
   }
 
   protected int compareTuple(SymTypeOfTuple o1, SymTypeOfTuple o2) {
-    if (o1.sizeTypes() < o2.sizeTypes()) {
-      return -1;
-    }
-    else if (o1.sizeTypes() > o2.sizeTypes()) {
-      return 1;
-    }
-    else {
-      int res;
-      for (int i = 0; i < o1.sizeTypes(); i++) {
-        res = compare(o1.getType(i), o2.getType(i));
-        if (res != 0) {
-          return res;
-        }
-      }
-    }
-    return logUnimplemented();
+    return compareLists(o1.getTypeList(), o2.getTypeList());
   }
 
   protected int compareFunction(SymTypeOfFunction o1, SymTypeOfFunction o2) {
-    if (o1.sizeArgumentTypes() < o2.sizeArgumentTypes()) {
-      return -1;
+    int retTypeComp = compareSymTypeExpressions(o1.getType(), o2.getType());
+    if (retTypeComp != 0) {
+      return retTypeComp;
     }
-    else if (o1.sizeArgumentTypes() > o2.sizeArgumentTypes()) {
-      return 1;
+    int argsComp = compareLists(o1.getArgumentTypeList(), o2.getArgumentTypeList());
+    if (argsComp != 0) {
+      return argsComp;
     }
     else if (o1.isElliptic() && !o2.isElliptic()) {
       return -1;
@@ -267,19 +179,8 @@ public class SymTypeExpressionComparator
     else if (!o1.isElliptic() && o2.isElliptic()) {
       return 1;
     }
-    else {
-      int res = compare(o1.getType(), o2.getType());
-      if (res != 0) {
-        return res;
-      }
-      for (int i = 0; i < o1.sizeArgumentTypes(); i++) {
-        res = compare(o1.getArgumentType(i), o2.getArgumentType(i));
-        if (res != 0) {
-          return res;
-        }
-      }
-    }
-    return logUnimplemented();
+    throwUnimplemented();
+    return -42;
   }
 
   protected int compareArray(SymTypeArray o1, SymTypeArray o2) {
@@ -300,7 +201,10 @@ public class SymTypeExpressionComparator
     return o1.printFullName().compareTo(o2.printFullName());
   }
 
-  protected int compareNumericWithSIUnit(SymTypeOfNumericWithSIUnit o1, SymTypeOfNumericWithSIUnit o2) {
+  protected int compareNumericWithSIUnit(
+      SymTypeOfNumericWithSIUnit o1,
+      SymTypeOfNumericWithSIUnit o2
+  ) {
     int res = compare(o1.getNumericType(), o2.getNumericType());
     if (res != 0) {
       return res;
@@ -317,20 +221,11 @@ public class SymTypeExpressionComparator
   }
 
   protected int compareGeneric(SymTypeOfGenerics o1, SymTypeOfGenerics o2) {
-    if (o1.sizeArguments() > o2.sizeArguments()) {
-      return -1;
+    int symComp = compareSymbol(o1.getTypeInfo(), o2.getTypeInfo());
+    if (symComp != 0) {
+      return symComp;
     }
-    else if (o1.sizeArguments() < o2.sizeArguments()) {
-      return 1;
-    }
-    int res;
-    for (int i = 0; i < o1.sizeArguments(); i++) {
-      res = compare(o1.getArgument(i), o2.getArgument(i));
-      if (res != 0) {
-        return res;
-      }
-    }
-    return compareSymbol(o1.getTypeInfo(), o2.getTypeInfo());
+    return compareLists(o1.getArgumentList(), o2.getArgumentList());
   }
 
   protected int compareWildcard(SymTypeOfWildcard o1, SymTypeOfWildcard o2) {
@@ -357,15 +252,20 @@ public class SymTypeExpressionComparator
       SymTypeInferenceVariable o1,
       SymTypeInferenceVariable o2
   ) {
-    int res = compare(o1.getUpperBound(), o2.getUpperBound());
-    if (res != 0) {
-      return res;
+    int idComp = Integer.compare(o1._internal_getID(), o2._internal_getID());
+    if (idComp != 0) {
+      return idComp;
     }
-    res = compare(o1.getLowerBound(), o2.getLowerBound());
-    if (res != 0) {
-      return res;
+    int upperComp = compare(o1.getUpperBound(), o2.getUpperBound());
+    if (upperComp != 0) {
+      return upperComp;
     }
-    return Integer.compare(o1._internal_getID(), o2._internal_getID());
+    int lowerComp = compare(o1.getLowerBound(), o2.getLowerBound());
+    if (lowerComp != 0) {
+      return lowerComp;
+    }
+    throwUnimplemented();
+    return -42;
   }
 
   protected int compareSymbol(ISymbol o1, ISymbol o2) {
@@ -411,13 +311,53 @@ public class SymTypeExpressionComparator
 
   // Helper
 
+  protected <T extends Comparable<T>> int compareLists(
+      List<? extends T> o1,
+      List<? extends T> o2
+  ) {
+    if (o1.size() < o2.size()) {
+      return -1;
+    }
+    else if (o1.size() > o2.size()) {
+      return 1;
+    }
+    else {
+      for (int i = 0; i < o1.size(); i++) {
+        T e1 = o1.get(i);
+        T e2 = o2.get(i);
+        int compI = e1.compareTo(e2);
+        if (compI != 0) {
+          return compI;
+        }
+      }
+      return 0;
+    }
+  }
+
+  protected <T extends Comparable<T>> int compareSets(
+      Set<? extends T> o1,
+      Set<? extends T> o2
+  ) {
+    if (o1.size() < o2.size()) {
+      return -1;
+    }
+    else if (o1.size() > o2.size()) {
+      return 1;
+    }
+    else {
+      List<T> sorted1 = o1.stream().sorted().collect(Collectors.toList());
+      List<T> sorted2 = o2.stream().sorted().collect(Collectors.toList());
+      return compareLists(sorted1, sorted2);
+    }
+  }
+
   /**
-   * Logs an error and returns default comparison value;
    * This is not expected to be ever called.
    */
-  protected int logUnimplemented() {
-    Log.error("0xFD445 internal error: unimplemented comparison.");
-    return 0;
+  protected void throwUnimplemented() throws UnsupportedOperationException {
+    throw new UnsupportedOperationException(
+        "0xFD445 unimplemented comparison."
+    );
   }
 
   // static delegate
