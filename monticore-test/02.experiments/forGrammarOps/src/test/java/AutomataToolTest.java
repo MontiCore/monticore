@@ -24,7 +24,7 @@ public class AutomataToolTest {
   
   @Test
   public void executeSimple12() {
-    AutomataTool.main(new String[] { "-i", "src/test/resources/example/Simple12.aut" });
+    new AutomataTool().run(new String[] { "-i", "src/test/resources/example/Simple12.aut" });
     Log.printFindings();
     assertEquals(0, Log.getFindings().size());
     // LogStub.printPrints();

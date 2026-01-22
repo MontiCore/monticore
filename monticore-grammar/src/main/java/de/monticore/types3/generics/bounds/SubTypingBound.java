@@ -42,6 +42,11 @@ public class SubTypingBound extends Bound {
   }
 
   @Override
+  public SubTypingBound asSubTypingBound() {
+    return this;
+  }
+
+  @Override
   public boolean deepEquals(Bound other) {
     if (this == other) {
       return true;

@@ -31,6 +31,11 @@ public class BoundWrapperConstraint extends Constraint {
   }
 
   @Override
+  public BoundWrapperConstraint asBoundWrapperConstraint() {
+    return this;
+  }
+
+  @Override
   public boolean deepEquals(Constraint other) {
     if (this == other) {
       return true;
