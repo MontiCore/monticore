@@ -2,10 +2,6 @@
 
 package mc.feature.ast;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -31,6 +27,8 @@ import mc.feature.featuredsl._ast.ASTSpices1;
 import mc.feature.featuredsl._ast.ASTSpices2;
 import mc.feature.featuredsl._parser.FeatureDSLParser;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class ParserTest extends GeneratorIntegrationsTest {
   
   @BeforeEach
@@ -46,27 +44,27 @@ public class ParserTest extends GeneratorIntegrationsTest {
     
     FeatureDSLParser p = new FeatureDSLParser();
     Optional<ASTAutomaton> opt = p.parseAutomaton(s);
-    Assertions.assertTrue(opt.isPresent());
+    assertTrue(opt.isPresent());
     ASTAutomaton ast = opt.get();
     
-    Assertions.assertEquals(false, p.hasErrors());
-    Assertions.assertEquals("a", ast.getName());
+    assertFalse(p.hasErrors());
+    assertEquals("a", ast.getName());
     
-    Assertions.assertEquals(true, ((ASTConstants) ast.getWiredList().get(0)).isPubblic());
-    Assertions.assertEquals(false, ((ASTConstants) ast.getWiredList().get(0)).isPrivate());
+    assertTrue(((ASTConstants) ast.getWiredList().get(0)).isPubblic());
+    assertFalse(((ASTConstants) ast.getWiredList().get(0)).isPrivate());
     
-    Assertions.assertEquals(true, ((ASTConstants) ast.getWiredList().get(1)).isPubblic());
-    Assertions.assertEquals(false, ((ASTConstants) ast.getWiredList().get(1)).isPrivate());
+    assertTrue(((ASTConstants) ast.getWiredList().get(1)).isPubblic());
+    assertFalse(((ASTConstants) ast.getWiredList().get(1)).isPrivate());
     
-    Assertions.assertEquals(false, ((ASTConstants) ast.getWiredList().get(2)).isPubblic());
-    Assertions.assertEquals(true, ((ASTConstants) ast.getWiredList().get(2)).isPrivate());
+    assertFalse(((ASTConstants) ast.getWiredList().get(2)).isPubblic());
+    assertTrue(((ASTConstants) ast.getWiredList().get(2)).isPrivate());
     
-    Assertions.assertEquals(true, ((ASTSpices1) ast.getWiredList().get(3)).isCarlique());
-    Assertions.assertEquals(true, ((ASTSpices1) ast.getWiredList().get(3)).isPepper());
+    assertTrue(((ASTSpices1) ast.getWiredList().get(3)).isCarlique());
+    assertTrue(((ASTSpices1) ast.getWiredList().get(3)).isPepper());
     
-    Assertions.assertEquals(ASTConstantsFeatureDSL.NONE, ((ASTSpices2) ((ASTAutomaton) ast).getWiredList().get(4)).getSpicelevel());
+    assertEquals(ASTConstantsFeatureDSL.NONE, ((ASTSpices2) ((ASTAutomaton) ast).getWiredList().get(4)).getSpicelevel());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -80,7 +78,7 @@ public class ParserTest extends GeneratorIntegrationsTest {
     FeatureDSLParser p = new FeatureDSLParser();
     p.parseAutomaton(s);
     
-    Assertions.assertEquals(true, p.hasErrors());
+    assertTrue(p.hasErrors());
   }
   
   /*  Grammar:  B: A:A (B:A)*; 
@@ -99,12 +97,12 @@ public class ParserTest extends GeneratorIntegrationsTest {
     FeatureDSLParser p = new FeatureDSLParser();
     Optional<ASTB> ast = p.parseB(s);
     
-    Assertions.assertEquals(false, p.hasErrors());
-    Assertions.assertTrue(ast.isPresent());
-    Assertions.assertEquals(true, ast.get().getA() instanceof ASTA);
-    Assertions.assertEquals(true, ast.get().getBList() instanceof List);
+    assertFalse(p.hasErrors());
+    assertTrue(ast.isPresent());
+    assertInstanceOf(ASTA.class, ast.get().getA());
+    assertInstanceOf(List.class, ast.get().getBList());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   /*  Grammar:  B: A:A (A:A)*; 
@@ -123,11 +121,11 @@ public class ParserTest extends GeneratorIntegrationsTest {
     FeatureDSLParser p = new FeatureDSLParser();
     Optional<ASTC> ast = p.parseC(s);
     
-    Assertions.assertTrue(ast.isPresent());
-    Assertions.assertEquals(false, p.hasErrors());
-    Assertions.assertEquals(true, ast.get().getAList() instanceof List);
+    assertTrue(ast.isPresent());
+    assertFalse(p.hasErrors());
+    assertInstanceOf(List.class, ast.get().getAList());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   /*  Grammar: 
@@ -146,7 +144,7 @@ public class ParserTest extends GeneratorIntegrationsTest {
     FeatureDSLParser p = new FeatureDSLParser();
     Optional<ASTComplexname> ast = p.parseComplexname(s);
     
-    Assertions.assertFalse(ast.isPresent());
+    assertFalse(ast.isPresent());
   }
   
 }

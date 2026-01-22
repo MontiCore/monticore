@@ -18,7 +18,6 @@ import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -29,8 +28,8 @@ import java.nio.file.Paths;
 import java.util.Optional;
 
 import static de.monticore.codegen.mc2cd.TestHelper.createGlobalScope;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Test for the MontiCore parser generator.
@@ -70,15 +69,15 @@ public class ParserGeneratorTest {
     Optional<ASTMCGrammar> ast = new MontiCoreScript()
         .parseGrammar(Paths.get(new File(
             "src/test/resources/de/monticore/AutomatonST.mc4").getAbsolutePath()));
-    Assertions.assertTrue(ast.isPresent());
+    assertTrue(ast.isPresent());
     ASTMCGrammar grammar = ast.get();
 
     createSymbolsFromAST(Grammar_WithConceptsMill.globalScope(), ast.get());
     ParserGenerator.generateParser(glex, grammar, Grammar_WithConceptsMill.globalScope(), new MCPath(), new MCPath(),
         new File("target/generated-test-sources/parsertest"));
-    Assertions.assertEquals(0, Log.getFindingsCount());
+    assertEquals(0, Log.getFindingsCount());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -86,15 +85,15 @@ public class ParserGeneratorTest {
     Grammar_WithConceptsParser parser = Grammar_WithConceptsMill.parser();
     Optional<ASTMCGrammar> ast = parser
         .parse("src/test/resources/de/monticore/expression/Expression.mc4");
-    Assertions.assertTrue(ast.isPresent());
+    assertTrue(ast.isPresent());
     ASTMCGrammar grammar = ast.get();
 
     createSymbolsFromAST(Grammar_WithConceptsMill.globalScope(), ast.get());
     ParserGenerator.generateParser(glex, grammar, Grammar_WithConceptsMill.globalScope(), new MCPath(), new MCPath(),
         new File("target/generated-test-sources/parsertest"));
-    Assertions.assertEquals(0, Log.getFindingsCount());
+    assertEquals(0, Log.getFindingsCount());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -102,15 +101,15 @@ public class ParserGeneratorTest {
     Optional<ASTMCGrammar> ast = new MontiCoreScript()
         .parseGrammar(Paths.get(new File(
             "src/test/resources/de/monticore/CdAttributes.mc4").getAbsolutePath()));
-    Assertions.assertTrue(ast.isPresent());
+    assertTrue(ast.isPresent());
     ASTMCGrammar grammar = ast.get();
 
     createSymbolsFromAST(Grammar_WithConceptsMill.globalScope(), ast.get());
     ParserGenerator.generateParser(glex, grammar, Grammar_WithConceptsMill.globalScope(), new MCPath(), new MCPath(),
         new File("target/generated-test-sources/parsertest"));
-    Assertions.assertEquals(0, Log.getFindingsCount());
+    assertEquals(0, Log.getFindingsCount());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -118,15 +117,15 @@ public class ParserGeneratorTest {
     Optional<ASTMCGrammar> ast = new MontiCoreScript()
         .parseGrammar(Paths.get(new File(
             "src/test/resources/de/monticore/inherited/subsub/Subsubgrammar.mc4").getAbsolutePath()));
-    Assertions.assertTrue(ast.isPresent());
+    assertTrue(ast.isPresent());
     ASTMCGrammar grammar = ast.get();
 
     createSymbolsFromAST(Grammar_WithConceptsMill.globalScope(), ast.get());
     ParserGenerator.generateParser(glex, grammar, Grammar_WithConceptsMill.globalScope(), new MCPath(), new MCPath(),
         new File("target/generated-test-sources/parsertest"));
-    Assertions.assertEquals(0, Log.getFindingsCount());
+    assertEquals(0, Log.getFindingsCount());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -134,15 +133,15 @@ public class ParserGeneratorTest {
     Optional<ASTMCGrammar> ast = new MontiCoreScript()
         .parseGrammar(Paths.get(new File(
             "src/test/resources/de/monticore/inherited/sub/Subgrammar.mc4").getAbsolutePath()));
-    Assertions.assertTrue(ast.isPresent());
+    assertTrue(ast.isPresent());
     ASTMCGrammar grammar = ast.get();
 
     createSymbolsFromAST(Grammar_WithConceptsMill.globalScope(), ast.get());
     ParserGenerator.generateParser(glex, grammar, Grammar_WithConceptsMill.globalScope(), new MCPath(), new MCPath(),
             new File("target/generated-test-sources/parsertest"));
-    Assertions.assertEquals(0, Log.getFindingsCount());
+    assertEquals(0, Log.getFindingsCount());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
    }
 
 
@@ -151,15 +150,15 @@ public class ParserGeneratorTest {
     Optional<ASTMCGrammar> ast = new MontiCoreScript()
         .parseGrammar(Paths.get(new File(
             "src/test/resources/de/monticore/Action.mc4").getAbsolutePath()));
-    Assertions.assertTrue(ast.isPresent());
+    assertTrue(ast.isPresent());
     ASTMCGrammar grammar = ast.get();
 
     createSymbolsFromAST(Grammar_WithConceptsMill.globalScope(), ast.get());
     ParserGenerator.generateParser(glex, grammar, Grammar_WithConceptsMill.globalScope(), new MCPath(), new MCPath(),
         new File("target/generated-test-sources/parsertest"));
-    Assertions.assertEquals(0, Log.getFindingsCount());
+    assertEquals(0, Log.getFindingsCount());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   private ASTMCGrammar createSymbolsFromAST(IGrammar_WithConceptsGlobalScope globalScope, ASTMCGrammar ast) {

@@ -13,14 +13,13 @@ import de.monticore.types3.TypeCheck3;
 import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserFactory;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class LiteralAssignmentMatchesRegExExpressionCoCoTest {
 
@@ -86,14 +85,14 @@ public class LiteralAssignmentMatchesRegExExpressionCoCoTest {
 
   protected void testValid(String type, String exprStr) throws IOException {
     check(type, exprStr);
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
     Log.clearFindings();
   }
 
   protected void testInvalid(String type, String exprStr) throws IOException {
     check(type, exprStr);
-    Assertions.assertEquals(1, Log.getFindings().size());
-    Assertions.assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xFD724"));
+    assertEquals(1, Log.getFindings().size());
+    assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xFD724"));
     Log.clearFindings();
   }
 
@@ -107,7 +106,7 @@ public class LiteralAssignmentMatchesRegExExpressionCoCoTest {
     Optional<ASTMCType> optType = CombineExpressionsWithLiteralsMill
         .parser()
         .parse_StringMCType(type);
-    Assertions.assertTrue(optType.isPresent());
+    assertTrue(optType.isPresent());
 
     SymTypeExpression typeExpression = TypeCheck3.symTypeFromAST(optType.get());
     assertFalse(typeExpression.isObscureType());
@@ -121,11 +120,11 @@ public class LiteralAssignmentMatchesRegExExpressionCoCoTest {
 
     Optional<ASTExpression> exprOpt = CombineExpressionsWithLiteralsMill
         .parser().parse_StringExpression(exprStr);
-    Assertions.assertTrue(exprOpt.isPresent());
+    assertTrue(exprOpt.isPresent());
 
     generateScopes(exprOpt.get());
 
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
     getChecker().checkAll(exprOpt.get());
   }
 

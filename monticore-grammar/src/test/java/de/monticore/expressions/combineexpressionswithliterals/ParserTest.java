@@ -5,14 +5,13 @@ import de.monticore.expressions.combineexpressionswithliterals._parser.CombineEx
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ParserTest {
 
@@ -35,7 +34,7 @@ class ParserTest {
         "|| !(x2 && x15)) ";
 
     Optional<ASTExpression> ast = CombineExpressionsWithLiteralsMill.parser().parse_StringExpression(expr);
-    Assertions.assertTrue(ast.isPresent());
+    assertTrue(ast.isPresent());
   }
   
   @Test
@@ -48,7 +47,7 @@ class ParserTest {
 
 
     Optional<ASTExpression> ast = CombineExpressionsWithLiteralsMill.parser().parse_StringExpression(expr);
-    Assertions.assertTrue(ast.isPresent());
+    assertTrue(ast.isPresent());
   }
 
   @Test

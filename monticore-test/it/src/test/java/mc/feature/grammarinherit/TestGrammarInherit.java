@@ -6,15 +6,13 @@ import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import mc.GeneratorIntegrationsTest;
 import mc.feature.grammarinherit.sub.subfeaturedslgrammarinherit._parser.SubFeatureDSLgrammarinheritParser;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.StringReader;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestGrammarInherit extends GeneratorIntegrationsTest {
   
@@ -32,9 +30,10 @@ public class TestGrammarInherit extends GeneratorIntegrationsTest {
     SubFeatureDSLgrammarinheritParser p = new SubFeatureDSLgrammarinheritParser();
     p.parseFile(s);
     
-    Assertions.assertEquals(false, p.hasErrors());
+    assertFalse(p.hasErrors());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    
+    assertTrue(Log.getFindings().isEmpty());
   }
   
 }

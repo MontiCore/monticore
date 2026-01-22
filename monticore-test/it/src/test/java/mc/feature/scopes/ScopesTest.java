@@ -19,8 +19,8 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Optional;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ScopesTest {
 
@@ -40,8 +40,8 @@ public class ScopesTest {
     SupAutomatonMill.init();
     SupAutomatonParser supAutomatonParser = new SupAutomatonParser();
     Optional<ASTSup> astSup = supAutomatonParser.parse("src/test/resources/mc/feature/scopes/SupAutomatonModel.aut");
-    Assertions.assertFalse(supAutomatonParser.hasErrors());
-    Assertions.assertTrue(astSup.isPresent());
+    assertFalse(supAutomatonParser.hasErrors());
+    assertTrue(astSup.isPresent());
 
     ISupAutomatonGlobalScope globalScope = SupAutomatonMill.globalScope();
     globalScope.setFileExt("aut");
@@ -71,13 +71,13 @@ public class ScopesTest {
     //findet also voll qualifiziert auch vom global aus
     Optional<StateSymbol> pingStateSymbolGlobal = globalScope.resolveState("TopPingPong.PingPong.Ping");
 
-    Assertions.assertTrue(pingPongAutomatonSymbolLokal.isPresent());
-    Assertions.assertTrue(pingPongAutomatonSymbolGlobal.isPresent());
-    Assertions.assertTrue(pingStateSymbol.isPresent());
-    Assertions.assertTrue(pongStateSymbol.isPresent());
-    Assertions.assertTrue(noGameStateSymbol.isPresent());
-    Assertions.assertTrue(pingStateSymbolGlobal.isPresent());
+    assertTrue(pingPongAutomatonSymbolLokal.isPresent());
+    assertTrue(pingPongAutomatonSymbolGlobal.isPresent());
+    assertTrue(pingStateSymbol.isPresent());
+    assertTrue(pongStateSymbol.isPresent());
+    assertTrue(noGameStateSymbol.isPresent());
+    assertTrue(pingStateSymbolGlobal.isPresent());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

@@ -22,7 +22,6 @@ import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
 import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.se_rwth.commons.logging.Log;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -30,8 +29,8 @@ import java.io.IOException;
 import java.util.Optional;
 
 import static de.monticore.types.check.DefsTypeBasic.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTest {
 
@@ -462,7 +461,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
 
     Log.getFindings().clear();
     getTypeCalculator().typeOf(astex);
-    Assertions.assertEquals("0xA0165", getFirstErrorCode());
+    assertEquals("0xA0165", getFirstErrorCode());
   }
 
   /**
@@ -1550,7 +1549,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     init_static_example();
 
     Optional<ASTExpression> sType = p.parse_StringExpression("C.D");
-    Assertions.assertTrue(sType.isPresent());
+    assertTrue(sType.isPresent());
     //TODO ND: complete when inner types are added
   }
 

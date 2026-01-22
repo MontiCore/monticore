@@ -4,12 +4,12 @@ package de.monticore.javalight.cocos;
 
 import de.monticore.javalight._cocos.JavaLightCoCoChecker;
 import de.monticore.types3.util.DefsTypesForTests;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static de.monticore.types3.util.DefsTypesForTests.oOtype;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import de.se_rwth.commons.logging.Log;
 
 import java.util.List;
@@ -37,7 +37,7 @@ public class MethodExceptionThrowsTest extends JavaLightCocoTest {
 
     testValid("de.monticore.javalight.cocos.valid.MethodDecl", "meth1", checker);
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

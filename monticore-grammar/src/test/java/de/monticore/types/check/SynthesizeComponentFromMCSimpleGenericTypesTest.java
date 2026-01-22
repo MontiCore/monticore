@@ -28,7 +28,6 @@ import de.monticore.types3.generics.context.InferenceContext4Ast;
 import de.monticore.types3.util.MapBasedTypeCheck3;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.api.Test;
@@ -38,6 +37,8 @@ import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SynthesizeComponentFromMCSimpleGenericTypesTest extends AbstractMCTest {
 
@@ -127,20 +128,20 @@ public class SynthesizeComponentFromMCSimpleGenericTypesTest extends AbstractMCT
     new SynthesizeCompKindFromMCSimpleGenericTypes(wrapper).handle(astComp);
 
     // Then
-    Assertions.assertTrue(wrapper.getResult().isPresent(), "Expected synthesis result to be present");
-    Assertions.assertInstanceOf(CompKindOfGenericComponentType.class, wrapper.getResult().get());
+    assertTrue(wrapper.getResult().isPresent(), "Expected synthesis result to be present");
+    assertInstanceOf(CompKindOfGenericComponentType.class, wrapper.getResult().get());
     CompKindOfGenericComponentType result = (CompKindOfGenericComponentType) wrapper.getResult().get();
 
-    Assertions.assertEquals(compSym, result.getTypeInfo());
-    Assertions.assertEquals(astComp, result.getSourceNode().orElseThrow());
+    assertEquals(compSym, result.getTypeInfo());
+    assertEquals(astComp, result.getSourceNode().orElseThrow());
 
-    Assertions.assertEquals(stringSym, result.getTypeBindingFor("K").orElseThrow().getTypeInfo());
+    assertEquals(stringSym, result.getTypeBindingFor("K").orElseThrow().getTypeInfo());
 
     SymTypeExpression v = result.getTypeBindingFor("V").orElseThrow();
-    Assertions.assertInstanceOf(SymTypeOfGenerics.class, v);
+    assertInstanceOf(SymTypeOfGenerics.class, v);
     SymTypeOfGenerics vGen = (SymTypeOfGenerics) v;
-    Assertions.assertEquals(listSym, vGen.getTypeInfo());
-    Assertions.assertEquals(stringSym, vGen.getArgument(0).getTypeInfo());
+    assertEquals(listSym, vGen.getTypeInfo());
+    assertEquals(stringSym, vGen.getArgument(0).getTypeInfo());
 
     MCAssertions.assertNoFindings();
   }
@@ -165,7 +166,7 @@ public class SynthesizeComponentFromMCSimpleGenericTypesTest extends AbstractMCT
     new SynthesizeCompKindFromMCSimpleGenericTypes(wrapper).handle(astComp);
 
     // Then
-    Assertions.assertTrue(wrapper.getResult().isEmpty());
+    assertTrue(wrapper.getResult().isEmpty());
   }
 
   @Test
@@ -198,9 +199,9 @@ public class SynthesizeComponentFromMCSimpleGenericTypesTest extends AbstractMCT
 
     // Then
     MCAssertions.assertHasFindingStartingWith("0xD0105");
-    Assertions.assertTrue(wrapper.getResult().isPresent());
-    Assertions.assertInstanceOf(CompKindOfGenericComponentType.class, wrapper.getResult().get());
-    Assertions.assertEquals(astComp, wrapper.getResult().get().getSourceNode().orElseThrow());
+    assertTrue(wrapper.getResult().isPresent());
+    assertInstanceOf(CompKindOfGenericComponentType.class, wrapper.getResult().get());
+    assertEquals(astComp, wrapper.getResult().get().getSourceNode().orElseThrow());
   }
 
   private static void addWithSpannedScope(IComponentSymbolsWithMCBasicTypesTestScope scope, ComponentTypeSymbol sym) {

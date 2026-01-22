@@ -6,19 +6,17 @@ import de.se_rwth.commons.logging.LogStub;
 import mc.testcases.automaton._ast.ASTAutomaton;
 import mc.testcases.automaton._ast.ASTState;
 import mc.testcases.automaton._parser.AutomatonParser;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class FoldStateRuleTest {
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -42,7 +40,7 @@ public class FoldStateRuleTest {
     assertFalse(state_1.isInitial());
     ASTState state_2 = rule.get_state_2();
     // compare by object identity
-    assertTrue(state_1 == state_2);
+    assertSame(state_1, state_2);
   
     assertTrue(Log.getFindings().isEmpty());
   }

@@ -6,19 +6,18 @@ import de.se_rwth.commons.logging.LogStub;
 import mc.testcases.automaton.tr.automatontr.AutomatonTRMill;
 import mc.testcases.automaton.tr.automatontr._ast.*;
 import mc.testcases.automaton.tr.automatontr._parser.AutomatonTRParser;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class AutomatonTransformationRuleParserTest  {
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -64,7 +63,8 @@ public class AutomatonTransformationRuleParserTest  {
     assertTrue(Log.getFindings().isEmpty());
   }
 
-  @Test @Ignore
+  @Test
+  @Disabled
   public void testIsIdentifierFix() throws IOException {
     String inputFile = "src/test/resources/IsIdentifierFix.mtr";
     AutomatonTRParser parser = new AutomatonTRParser();

@@ -28,6 +28,11 @@ public class UnsatisfiableBound extends Bound {
   }
 
   @Override
+  public UnsatisfiableBound asUnsatisfiableBound() {
+    return this;
+  }
+
+  @Override
   public boolean deepEquals(Bound other) {
     if (this == other) {
       return true;

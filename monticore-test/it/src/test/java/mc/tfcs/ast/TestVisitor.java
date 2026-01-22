@@ -4,12 +4,13 @@ package mc.tfcs.ast;
 
 import mc.feature.featuredsl._ast.ASTState;
 import mc.feature.featuredsl._visitor.FeatureDSLVisitor2;
-import org.junit.Assert;
+
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class TestVisitor implements FeatureDSLVisitor2 {
   
   public void visit(ASTState a) {
-    Assert.fail("Should be ignored by overriding the traverse method of automaton");
+    fail("Should be ignored by overriding the traverse method of automaton");
   }
   
 }

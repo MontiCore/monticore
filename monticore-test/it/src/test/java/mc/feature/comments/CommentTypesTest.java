@@ -2,20 +2,18 @@
 
 package mc.feature.comments;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
 import java.io.StringReader;
 
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import mc.GeneratorIntegrationsTest;
 import mc.feature.comments.commenttypestest._parser.CommentTypesTestParser;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class CommentTypesTest extends GeneratorIntegrationsTest {
   
@@ -37,8 +35,8 @@ public class CommentTypesTest extends GeneratorIntegrationsTest {
     CommentTypesTestParser p = new CommentTypesTestParser();    
     p.parseCStart(r);
     
-    Assertions.assertEquals(false, p.hasErrors());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertFalse(p.hasErrors());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   /**
@@ -52,8 +50,8 @@ public class CommentTypesTest extends GeneratorIntegrationsTest {
     CommentTypesTestParser p = new CommentTypesTestParser();    
     p.parseCStart(r);
     
-    Assertions.assertEquals(false, p.hasErrors());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertFalse(p.hasErrors());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   /**
@@ -67,8 +65,8 @@ public class CommentTypesTest extends GeneratorIntegrationsTest {
     CommentTypesTestParser p = new CommentTypesTestParser();    
     p.parseCStart(r);
     
-    Assertions.assertEquals(false, p.hasErrors());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertFalse(p.hasErrors());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   /**
@@ -82,8 +80,8 @@ public class CommentTypesTest extends GeneratorIntegrationsTest {
     CommentTypesTestParser p = new CommentTypesTestParser();    
     p.parseCStart(r);
     
-    Assertions.assertEquals(false, p.hasErrors());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertFalse(p.hasErrors());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   /**
@@ -97,8 +95,8 @@ public class CommentTypesTest extends GeneratorIntegrationsTest {
     CommentTypesTestParser p = new CommentTypesTestParser();    
     p.parseCStart(r);
     
-    Assertions.assertEquals(false, p.hasErrors());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertFalse(p.hasErrors());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
 }

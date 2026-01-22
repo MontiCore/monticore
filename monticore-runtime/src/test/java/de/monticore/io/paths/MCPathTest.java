@@ -3,7 +3,6 @@ package de.monticore.io.paths;
 
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -25,6 +24,8 @@ import java.util.jar.JarOutputStream;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MCPathTest {
 
   @BeforeEach
@@ -43,11 +44,11 @@ public class MCPathTest {
 
     mp.addEntry(Paths.get("src/test/resources/jar/Test.jar"));
     Optional<URL> fileInJar = mp.find("de/monticore/MCBasics.mc4");
-    Assertions.assertTrue(logback.isPresent());
-    Assertions.assertTrue(grammar.isPresent());
-    Assertions.assertTrue(fileInJar.isPresent());
-    Assertions.assertFalse(nonExistent.isPresent());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(logback.isPresent());
+    assertTrue(grammar.isPresent());
+    assertTrue(fileInJar.isPresent());
+    assertFalse(nonExistent.isPresent());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -61,22 +62,22 @@ public class MCPathTest {
     Optional<URL> grammar2 = mp.find("de.monticore.io.Model3", ".*4");
     Optional<URL> nonExistent2 = mp.find("Test", "m.4");
 
-    Assertions.assertTrue(logback.isPresent());
-    Assertions.assertTrue(grammar.isPresent());
-    Assertions.assertFalse(nonExistent.isPresent());
+    assertTrue(logback.isPresent());
+    assertTrue(grammar.isPresent());
+    assertFalse(nonExistent.isPresent());
 
-    Assertions.assertTrue(logback2.isPresent());
-    Assertions.assertTrue(grammar2.isPresent());
-    Assertions.assertFalse(nonExistent2.isPresent());
+    assertTrue(logback2.isPresent());
+    assertTrue(grammar2.isPresent());
+    assertFalse(nonExistent2.isPresent());
 
     mp.addEntry(Paths.get("src/test/resources/jar/Test.jar"));
     Optional<URL> fileInJar = mp.find("de.monticore.MCBasics", "mc4");
     Optional<URL> fileInJar2 = mp.find("de.monticore.MCBasics", "m.4");
     Optional<URL> fileNotInJar = mp.find("MCBasics", "m.4");
-    Assertions.assertTrue(fileInJar.isPresent());
-    Assertions.assertTrue(fileInJar2.isPresent());
-    Assertions.assertFalse(fileNotInJar.isPresent());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(fileInJar.isPresent());
+    assertTrue(fileInJar2.isPresent());
+    assertFalse(fileNotInJar.isPresent());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -85,10 +86,10 @@ public class MCPathTest {
     Path resources = Paths.get("src/test/resources");
     Path models = Paths.get("src/test/models");
     mp.addEntry(resources);
-    Assertions.assertEquals(1, mp.getEntries().size());
+    assertEquals(1, mp.getEntries().size());
     mp.addEntry(models);
-    Assertions.assertEquals(2, mp.getEntries().size());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertEquals(2, mp.getEntries().size());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -96,10 +97,10 @@ public class MCPathTest {
     MCPath mp = new MCPath();
     Path resources = Paths.get("src/test/resources");
     mp.addEntry(resources);
-    Assertions.assertEquals(1, mp.getEntries().size());
+    assertEquals(1, mp.getEntries().size());
     mp.removeEntry(resources);
-    Assertions.assertTrue(mp.isEmpty());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(mp.isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -112,23 +113,23 @@ public class MCPathTest {
     mp.addEntry(models);
     mp.addEntry(java);
     Collection<Path> paths = mp.getEntries();
-    Assertions.assertEquals(3, paths.size());
-    Assertions.assertTrue(paths.contains(resources.toAbsolutePath()));
-    Assertions.assertTrue(paths.contains(models.toAbsolutePath()));
-    Assertions.assertTrue(paths.contains(java.toAbsolutePath()));
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertEquals(3, paths.size());
+    assertTrue(paths.contains(resources.toAbsolutePath()));
+    assertTrue(paths.contains(models.toAbsolutePath()));
+    assertTrue(paths.contains(java.toAbsolutePath()));
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testIsEmpty(){
     MCPath mp = new MCPath();
-    Assertions.assertTrue(mp.isEmpty());
+    assertTrue(mp.isEmpty());
     Path resources = Paths.get("src/test/resources");
     mp.addEntry(resources);
-    Assertions.assertFalse(mp.isEmpty());
+    assertFalse(mp.isEmpty());
     mp.removeEntry(resources);
-    Assertions.assertTrue(mp.isEmpty());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(mp.isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -138,9 +139,9 @@ public class MCPathTest {
     Path models = Paths.get("src/test/models");
     mp.addEntry(resources);
     mp.addEntry(models);
-    Assertions.assertEquals("[" + resources.toUri().toURL().toString() + ", "
+    assertEquals("[" + resources.toUri().toURL().toString() + ", "
       + models.toUri().toURL().toString() + "]", mp.toString());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -148,18 +149,18 @@ public class MCPathTest {
     Path resources = Paths.get("src/test/resources");
     URL url = resources.toUri().toURL();
     Optional<Path> result = MCPath.toPath(url);
-    Assertions.assertTrue(result.isPresent());
-    Assertions.assertEquals(result.get(), resources.toAbsolutePath());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(result.isPresent());
+    assertEquals(result.get(), resources.toAbsolutePath());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testToURL() throws URISyntaxException {
     Path resources = Paths.get("src/test/resources");
     Optional<URL> result = MCPath.toURL(resources);
-    Assertions.assertTrue(result.isPresent());
-    Assertions.assertEquals(result.get().toURI(), resources.toUri());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(result.isPresent());
+    assertEquals(result.get().toURI(), resources.toUri());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -170,8 +171,8 @@ public class MCPathTest {
     urlList.add(resources);
     MCPath.reportAmbiguity(urlList, "src/test/resources");
     List<Finding> findings = Log.getFindings().stream().filter(f -> f.getMsg().startsWith("0xA1294")).collect(Collectors.toList());
-    Assertions.assertEquals(1, findings.size());
-    Assertions.assertEquals("0xA1294 The following entries for the file `" + "src/test/resources" + "` are ambiguous:"
+    assertEquals(1, findings.size());
+    assertEquals("0xA1294 The following entries for the file `" + "src/test/resources" + "` are ambiguous:"
       + "\n" + "{" + resources.toString() + ",\n" + resources.toString() + "}", findings.get(0).getMsg());
   }
   @Test
@@ -180,22 +181,22 @@ public class MCPathTest {
   public void testShouldFind(){
     String jdk = System.getenv("JAVA_HOME").replaceAll("\\\\", "/") + "/jre/lib/rt.jar";
     MCPath mp = new MCPath(jdk);
-    Assertions.assertTrue(mp.find("java/util/List.class").isPresent());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(mp.find("java/util/List.class").isPresent());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testShouldNotFind(){
     MCPath mp = new MCPath("");
-    Assertions.assertFalse(mp.find("java/util/List.class").isPresent());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertFalse(mp.find("java/util/List.class").isPresent());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testShouldNotFind2(){
     MCPath mp = new MCPath("this/is/a/test");
-    Assertions.assertFalse(mp.find("java/util/List.class").isPresent());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertFalse(mp.find("java/util/List.class").isPresent());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -204,13 +205,13 @@ public class MCPathTest {
     Log.clearFindings();
     MCPath path = new MCPath();
     path.addEntry(Paths.get("src/test/resources/paths/1/a"));
-    Assertions.assertTrue(path.find("AFile", "txt").isPresent());
-    Assertions.assertEquals(0, Log.getErrorCount());
+    assertTrue(path.find("AFile", "txt").isPresent());
+    assertEquals(0, Log.getErrorCount());
     path.addEntry(Paths.get("src/test/resources/paths/2/a"));
-    Assertions.assertTrue(path.find("AFile", "txt").isEmpty());
+    assertTrue(path.find("AFile", "txt").isEmpty());
     List<Finding> findings = Log.getFindings().stream().filter(f -> f.getMsg().startsWith("0xA1294")).collect(Collectors.toList());
-    Assertions.assertEquals(1, findings.size());
-    Assertions.assertEquals("0xA1294 The following entries for the file `" + "AFile\\.txt" + "` are ambiguous:"
+    assertEquals(1, findings.size());
+    assertEquals("0xA1294 The following entries for the file `" + "AFile\\.txt" + "` are ambiguous:"
         + "\n" + "{" + Paths.get("src/test/resources/paths/1/a/AFile.txt").toUri().toString().replaceAll("///","/") + ",\n"
         + Paths.get("src/test/resources/paths/2/a/AFile.txt").toUri().toString().replaceAll("///","/") + "}", findings.get(0).getMsg());
   }
@@ -235,10 +236,10 @@ public class MCPathTest {
     MCPath path = new MCPath();
     path.addEntry(jar.toPath());
 
-    Assertions.assertTrue(path.find("de.mc.A", ".*sym").isPresent(), "Finding a qualified file failed");
-    Assertions.assertTrue(path.find("B", ".*sym").isPresent(), "Finding an unqualified file failed");
+    assertTrue(path.find("de.mc.A", ".*sym").isPresent(), "Finding a qualified file failed");
+    assertTrue(path.find("B", ".*sym").isPresent(), "Finding an unqualified file failed");
     path.removeEntry(jar.toPath());
-    Assertions.assertFalse(path.find("de.mc.A", ".*sym").isPresent(), "removeEntry was not completed");
+    assertFalse(path.find("de.mc.A", ".*sym").isPresent(), "removeEntry was not completed");
   }
 
   

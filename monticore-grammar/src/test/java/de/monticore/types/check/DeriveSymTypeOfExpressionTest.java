@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.util.Optional;
 
 import static de.monticore.types.check.DefsTypeBasic.*;
-import static org.junit.Assert.assertEquals;
 
 public class DeriveSymTypeOfExpressionTest extends DeriveSymTypeAbstractTest {
   
