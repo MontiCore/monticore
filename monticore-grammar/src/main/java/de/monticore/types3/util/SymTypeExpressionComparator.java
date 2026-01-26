@@ -275,7 +275,10 @@ public class SymTypeExpressionComparator
   protected int compareSymbol(ISymbol o1, ISymbol o2) {
     int res;
     // note: this case is only to speed comparisons up
-    if (o1 == o2 || o1.equals(o2)) {
+    // note: this seems VERY unintuitive for a reason;
+    // symbol delegates introduce odd behavior/issues.
+    // consider this a hacky workaround rather than a proper solution
+    if (o1 == o2 || o1.equals(o2) || o2.equals(o1)) {
       res = 0;
     }
     else {
