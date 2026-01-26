@@ -4,9 +4,6 @@ ${tc.signature("grammarname")}
     try {
       ${grammarname}Tool tool = new  ${grammarname}Tool();
       tool.run(args);
-      // properly exit with a code
-      Log.ensureInitialization();
-      System.exit(Log.getErrorCount() == 0 ? 0 : 1);
     }
     catch (Exception exception) {
       // ensure a sane exit
@@ -17,5 +14,7 @@ ${tc.signature("grammarname")}
               + " and does not indicate an issue with any provided models.",
           exception
       );
-      System.exit(1);
     }
+    // properly exit with a code
+    Log.ensureInitialization();
+    System.exit(Log.getErrorCount() == 0 ? 0 : 1);
