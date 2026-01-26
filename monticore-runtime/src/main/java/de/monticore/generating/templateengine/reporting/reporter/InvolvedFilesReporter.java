@@ -35,7 +35,7 @@ public class InvolvedFilesReporter extends AReporter {
   
   protected Set<String> checkedFiles = Sets.newHashSet();
   
-  protected Map<Path, Path> modelToArtifactMap = new HashMap<>();
+  protected Map<Path, Path> modelToArtifactMap = new LinkedHashMap<>();
   
   protected String outputDirectory = "";
   

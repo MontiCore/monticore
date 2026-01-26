@@ -3,7 +3,7 @@ package de.monticore.tf.grammartransformation;
 
 import com.google.common.collect.Sets;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 
@@ -11,8 +11,8 @@ public class CollectCoCoInformationState {
 
     private int parentNest = 0;
     private boolean rhs = false;
-    private Set<String> varsOnLHS = new HashSet();
-    private Set<String> varsOnRHS = new HashSet();
+    private Set<String> varsOnLHS = new LinkedHashSet();
+    private Set<String> varsOnRHS = new LinkedHashSet();
     private int repElements = 0;
     private int negElements = 0;
 

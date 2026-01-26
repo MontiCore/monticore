@@ -9,15 +9,13 @@ import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._ast.ast_class.reference.ASTReferenceDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.se_rwth.commons.logging.Log;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ASTReferenceDecoratorTest extends DecoratorTestCase {
 
@@ -30,7 +28,7 @@ public class ASTReferenceDecoratorTest extends DecoratorTestCase {
 
   private ASTReferenceDecorator<ASTCDClass> referenceDecorator;
 
-  @Before
+  @BeforeEach
   public void setup() {
     ASTCDCompilationUnit ast = this.parse("de", "monticore", "codegen", "ast", "ReferencedSymbol");
     this.referenceDecorator = new ASTReferenceDecorator(this.glex, new SymbolTableService(ast));

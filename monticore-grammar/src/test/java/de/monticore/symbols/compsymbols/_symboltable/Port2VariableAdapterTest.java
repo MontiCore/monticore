@@ -7,10 +7,12 @@ import de.monticore.symbols.compsymbols.CompSymbolsMill;
 import de.monticore.symboltable.modifiers.BasicAccessModifier;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class Port2VariableAdapterTest {
 
@@ -46,20 +48,20 @@ public class Port2VariableAdapterTest {
     Port2VariableAdapter adapter = new Port2VariableAdapter(adaptee);
 
     // Then
-    Assertions.assertAll(
-        () -> Assertions.assertEquals(adaptee.getName(), adapter.getName(),
+    assertAll(
+        () -> assertEquals(adaptee.getName(), adapter.getName(),
             "The adapter's name should match the adaptee's name."),
-        () -> Assertions.assertEquals(adaptee.getFullName(), adapter.getFullName(),
+        () -> assertEquals(adaptee.getFullName(), adapter.getFullName(),
             "The adapter's full name should match the adaptee's full name."),
-        () -> Assertions.assertEquals(adaptee.getType(), adapter.getType(),
+        () -> assertEquals(adaptee.getType(), adapter.getType(),
             "The adapter's type should match the adaptee's type."),
-        () -> Assertions.assertEquals(adaptee.isIncoming(), adapter.isIsReadOnly(),
+        () -> assertEquals(adaptee.isIncoming(), adapter.isIsReadOnly(),
             "The adapter should be read only if the adaptee is an incoming port."),
-        () -> Assertions.assertEquals(adaptee.getEnclosingScope(), adapter.getEnclosingScope(),
+        () -> assertEquals(adaptee.getEnclosingScope(), adapter.getEnclosingScope(),
             "The adapter's enclosing scope should match the adaptee's enclosing scope."),
-        () -> Assertions.assertEquals(adaptee.getSourcePosition(), adapter.getSourcePosition(),
+        () -> assertEquals(adaptee.getSourcePosition(), adapter.getSourcePosition(),
             "The adapter's source position should match the adaptee's source position."),
-        () -> Assertions.assertEquals(BasicAccessModifier.PUBLIC, adapter.getAccessModifier(),
+        () -> assertEquals(BasicAccessModifier.PUBLIC, adapter.getAccessModifier(),
             "The adapter should have a public access modifier as ports are the public interface of a component.")
     );
   }
@@ -92,22 +94,22 @@ public class Port2VariableAdapterTest {
     Port2VariableAdapter clone = adapter.deepClone();
 
     // Then
-    Assertions.assertAll(
-        () -> Assertions.assertEquals(adapter.getAdaptee(), clone.getAdaptee(),
+    assertAll(
+        () -> assertEquals(adapter.getAdaptee(), clone.getAdaptee(),
             "The clone's adaptee should match the adapter's adaptee."),
-        () -> Assertions.assertEquals(adapter.getName(), clone.getName(),
+        () -> assertEquals(adapter.getName(), clone.getName(),
             "The clone's name should match the adapter's name."),
-        () -> Assertions.assertEquals(adapter.getFullName(), clone.getFullName(),
+        () -> assertEquals(adapter.getFullName(), clone.getFullName(),
             "The clone's full name should match the adapter's full name."),
-        () -> Assertions.assertEquals(adapter.getType(), clone.getType(),
+        () -> assertEquals(adapter.getType(), clone.getType(),
             "The clone's type should match the adapter's type."),
-        () -> Assertions.assertEquals(adapter.isIsReadOnly(), clone.isIsReadOnly(),
+        () -> assertEquals(adapter.isIsReadOnly(), clone.isIsReadOnly(),
             "The clone should be read only if the adapter is read only."),
-        () -> Assertions.assertEquals(adapter.getEnclosingScope(), clone.getEnclosingScope(),
+        () -> assertEquals(adapter.getEnclosingScope(), clone.getEnclosingScope(),
             "The clone's enclosing scope should match the adapter's enclosing scope."),
-        () -> Assertions.assertEquals(adapter.isPresentAstNode(), clone.isPresentAstNode(),
+        () -> assertEquals(adapter.isPresentAstNode(), clone.isPresentAstNode(),
             "The clone should have an ast node if the adapter has an ast node."),
-        () -> Assertions.assertEquals(adapter.getAccessModifier(), clone.getAccessModifier(),
+        () -> assertEquals(adapter.getAccessModifier(), clone.getAccessModifier(),
             "The clone's access modifier should match the adapter's access modifier.")
     );
   }

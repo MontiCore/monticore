@@ -346,7 +346,7 @@ public class ODRuleCodeGenerator {
    */
   protected static Map<String, Integer> getAllDependVars(List<ODSubConstraint> subConstraints) {
 
-    Map<String, Integer> allDependVars = new HashMap<>();
+    Map<String, Integer> allDependVars = new LinkedHashMap<>();
     for (ODSubConstraint subConstraint : subConstraints) {
       for (ASTMatchingObject object : subConstraint.dependVars) {
         String objectName = object.getObjectName();
@@ -519,7 +519,7 @@ public class ODRuleCodeGenerator {
   }
 
   protected List<ASTVariable> generateVariables(ASTODRule ast) {
-    Collection<String> collectedNames = new HashSet<>();
+    Collection<String> collectedNames = new LinkedHashSet<>();
 
     List<ASTVariable> variables = calculateVariablesFor(Util.getAllODObjects(ast.getLhs()), collectedNames);
     if (ast.isPresentRhs()) {
@@ -626,8 +626,8 @@ public class ODRuleCodeGenerator {
     return variable.build();
   }
 
-  protected HashMap<String, List<String>> generateFoldingHash(ASTODRule ast) {
-    HashMap<String, List<String>> result = new HashMap<String, List<String>>();
+  protected LinkedHashMap<String, List<String>> generateFoldingHash(ASTODRule ast) {
+    LinkedHashMap<String, List<String>> result = new LinkedHashMap<String, List<String>>();
     // create an (initially empty) sequence for all objects
     for (ASTODObject odObject : Util.getAllODObjects(ast.getLhs())) {
       result.put(odObject.getName(), new ArrayList<String>());
@@ -648,7 +648,7 @@ public class ODRuleCodeGenerator {
 
   protected ASTReplacement generateReplacement(List<ASTChangeOperation> changes) {
     ASTReplacementBuilder replacement = ODRuleGenerationMill.replacementBuilder();
-    Map<String, String> requirementNames = new HashMap<String, String>();
+    Map<String, String> requirementNames = new LinkedHashMap<String, String>();
     replacement.setRequirementsList(generateRequirements(changes, requirementNames));
     replacement.setChangesList(generateChanges(changes, requirementNames));
     replacement.setCreateObjectsList(generateCreateObjects(changes));

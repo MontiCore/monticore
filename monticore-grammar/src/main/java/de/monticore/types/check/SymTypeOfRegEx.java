@@ -1,6 +1,7 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.types.check;
 
+import com.google.common.base.Preconditions;
 import de.monticore.types3.ISymTypeVisitor;
 import de.se_rwth.commons.logging.Log;
 
@@ -9,7 +10,7 @@ public class SymTypeOfRegEx extends SymTypeExpression {
   protected String regex;
 
   public SymTypeOfRegEx(String regex) {
-    this.regex = Log.errorIfNull(regex);
+    this.regex = Preconditions.checkNotNull(regex);
   }
 
   public String getRegExString() {

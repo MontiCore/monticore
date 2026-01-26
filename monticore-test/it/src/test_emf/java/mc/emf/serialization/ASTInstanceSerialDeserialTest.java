@@ -1,12 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.emf.serialization;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -15,8 +9,6 @@ import org.antlr.v4.runtime.RecognitionException;
 import org.eclipse.emf.compare.diff.metamodel.DiffElement;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.junit.Ignore;
-import org.junit.Test;
 
 //import de.monticore.emf.fautomaton.automatonwithaction.actionautomaton._ast.ActionAutomatonPackage;
 import de.monticore.emf.util.AST2ModelFiles;
@@ -28,8 +20,12 @@ import mc.feature.fautomaton.automaton.flatautomaton._ast.ASTTransition;
 import mc.feature.fautomaton.automaton.flatautomaton.FlatAutomatonMill;
 import mc.feature.fautomaton.automaton.flatautomaton._ast.FlatAutomatonPackage;
 import mc.feature.fautomaton.automaton.flatautomaton._parser.FlatAutomatonParser;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-@Ignore
+import static org.junit.jupiter.api.Assertions.*;
+
+@Disabled
 public class ASTInstanceSerialDeserialTest extends GeneratorIntegrationsTest {
 
   @Test
@@ -49,7 +45,7 @@ public class ASTInstanceSerialDeserialTest extends GeneratorIntegrationsTest {
         EObject deserAstTransB = AST2ModelFiles.get().deserializeASTInstance("ASTAutomaton_B1",
             FlatAutomatonPackage.eINSTANCE);
         assertNotNull(deserAstTransB);
-        assertTrue(deserAstTransB instanceof ASTAutomaton);
+        assertInstanceOf(ASTAutomaton.class, deserAstTransB);
         assertTrue(transB.get().deepEquals(deserAstTransB));
         assertFalse(transC.get().deepEquals(deserAstTransB));
         assertEquals("Testautomat", ((ASTAutomaton) deserAstTransB).getName());
@@ -63,10 +59,7 @@ public class ASTInstanceSerialDeserialTest extends GeneratorIntegrationsTest {
       }
       
     }
-    catch (RecognitionException | IOException e) {
-      fail("Should not reach this, but: " + e);
-    }
-    catch (InterruptedException e) {
+    catch (RecognitionException | IOException | InterruptedException e) {
       fail("Should not reach this, but: " + e);
     }
   }
@@ -96,7 +89,7 @@ public class ASTInstanceSerialDeserialTest extends GeneratorIntegrationsTest {
       EObject deserObject = AST2ModelFiles.get().deserializeASTInstance("ASTAutomaton_Aut1",
           FlatAutomatonPackage.eINSTANCE);
       assertNotNull(deserObject);
-      assertTrue(deserObject instanceof ASTAutomaton);
+      assertInstanceOf(ASTAutomaton.class, deserObject);
       ASTAutomaton serializedAut = (ASTAutomaton) deserObject;
       
       assertTrue(EcoreUtil.equals(aut, serializedAut));

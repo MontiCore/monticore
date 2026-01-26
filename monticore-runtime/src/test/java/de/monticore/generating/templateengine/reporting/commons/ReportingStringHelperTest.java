@@ -3,11 +3,12 @@
 package de.monticore.generating.templateengine.reporting.commons;
 
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import de.se_rwth.commons.logging.Log;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ReportingStringHelperTest {
   
@@ -19,25 +20,25 @@ public class ReportingStringHelperTest {
   
   @Test
   public void testReportingStringHelper() {
-    Assertions.assertFalse(ReportingHelper
+    assertFalse(ReportingHelper
         .formatStringToReportingString(
             "{this.height                  \n\t= builder.getHeight();this.width = builder.getWidth();addAllPhotoMessages(builder.getPhotoMessages());addAllTags(builder.getTags());}",
             60).contains("\t"));
   
-    Assertions.assertEquals(60, ReportingHelper
+    assertEquals(60, ReportingHelper
         .formatStringToReportingString(
             "{this.height                  \n\t= builder.getHeight();this.width = builder.getWidth();addAllPhotoMessages(builder.getPhotoMessages());addAllTags(builder.getTags());}",
             60).length());
     
-    Assertions.assertEquals(6, ReportingHelper
+    assertEquals(6, ReportingHelper
         .formatStringToReportingString(
             "abcd",
             60).length());
     
-    Assertions.assertEquals(7, ReportingHelper
+    assertEquals(7, ReportingHelper
         .formatStringToReportingString(
             "{this.height                  \n\t= builder.getHeight();this.width = builder.getWidth();addAllPhotoMessages(builder.getPhotoMessages());addAllTags(builder.getTags());}",
             5).length());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

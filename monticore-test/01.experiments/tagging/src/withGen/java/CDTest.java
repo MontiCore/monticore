@@ -12,16 +12,19 @@ import de.monticore.tagtest.cdbasis4tags.CDBasis4TagsMill;
 import de.monticore.umlstereotype.UMLStereotypeMill;
 import de.monticore.umlstereotype._ast.ASTStereoValue;
 import de.monticore.umlstereotype._ast.ASTStereoValueBuilder;
-import org.junit.jupiter.api.Assertions;
-import org.junit.BeforeClass;
-import org.junit.Test;
 import de.monticore.tagging.TagRepository;
 import de.monticore.tagtest.cdbasis4tags._tagging.CDBasis4TagsTagger;
 
 import de.monticore.tagtest.cdbasis4tags._visitor.CDBasis4TagsVisitor2;
 import de.monticore.tagtest.cdbasis4tags._visitor.CDBasis4TagsTraverser;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
 import java.io.File;
 import java.util.*;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * This test aims to replicate parts of CD4A to test the tagging infrastucture
@@ -30,7 +33,7 @@ import java.util.*;
  * In addition, we demonstrate the interaction between tags and stereotypes
  */
 public class CDTest {
-  @BeforeClass
+  @BeforeAll
   public static void init() {
     CDBasis4TagsTagDefinitionMill.init();
   }
@@ -38,23 +41,23 @@ public class CDTest {
   @Test
   public void test() throws Exception{
      Optional<ASTCDCompilationUnit> ast = CDBasis4TagsMill.parser().parse(new File("src/test/resources/models/Door.cd").toString());
-    Assert.assertTrue(ast.isPresent());
+    assertTrue(ast.isPresent());
     CDBasis4TagsMill.scopesGenitorDelegator().createFromAST(ast.get());
 
 
     Optional<ASTTagUnit> doorsThatAreOpenableTags = TagRepository.loadTagModel(new File("src/test/resources/models/DoorsThatAreOpenable.tags"));
-    Assert.assertTrue(doorsThatAreOpenableTags.isPresent());
+    assertTrue(doorsThatAreOpenableTags.isPresent());
 
     Optional<de.monticore.tagtest.cdbasis4tags._symboltable.CDTypeSymbol> theDoorSymbol = ast.get().getEnclosingScope().resolveCDType("TheDoor");
     Optional<de.monticore.tagtest.cdbasis4tags._symboltable.CDTypeSymbol> aSingleDoorSymbol = ast.get().getEnclosingScope().resolveCDType("ASingleDoor");
-    Assert.assertTrue(theDoorSymbol.isPresent());
-    Assert.assertTrue(aSingleDoorSymbol.isPresent());
+    assertTrue(theDoorSymbol.isPresent());
+    assertTrue(aSingleDoorSymbol.isPresent());
 
     List<ASTTag> tagsForTheDoor = new ArrayList<>(CDBasis4TagsTagger.getInstance().getTags(theDoorSymbol.get()));
-    Assert.assertEquals(1, tagsForTheDoor.size());
+    assertEquals(1, tagsForTheDoor.size());
 
     List<ASTTag> tagsForASingleDoor = new ArrayList<>(CDBasis4TagsTagger.getInstance().getTags(aSingleDoorSymbol.get()));
-    Assert.assertEquals(1, tagsForASingleDoor.size());
+    assertEquals(1, tagsForASingleDoor.size());
 
 
     // Turn stereos into tags
@@ -62,7 +65,7 @@ public class CDTest {
     tagsFromStereo(ast.get(), tempTagUnit);
 
     tagsForASingleDoor.addAll(CDBasis4TagsTagger.getInstance().getTags(aSingleDoorSymbol.get()));
-    Assert.assertEquals(2, tagsForASingleDoor.size());
+    assertEquals(2, tagsForASingleDoor.size());
 
     stereoFromTags(ast.get(), Collections.singleton(doorsThatAreOpenableTags.get()));
 

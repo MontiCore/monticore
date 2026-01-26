@@ -1,17 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
-
 package de.monticore.codegen.cd2java._symboltable.scopesgenitor;
 
 import com.google.common.collect.Lists;
+import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDConstructor;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
-import de.monticore.cdbasis._ast.ASTCDAttribute;
-import de.monticore.cdbasis._ast.ASTCDClass;
-import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.cdbasis._ast.ASTCDType;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
+import de.monticore.cdbasis._ast.*;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java._symboltable.SymbolKindHierarchies;
@@ -26,16 +23,16 @@ import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedTypeTOP;
+import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardTypeArgument;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.monticore.umlmodifier._ast.ASTModifier;
 import de.se_rwth.commons.Names;
-
 import java.lang.reflect.Type;
 import java.util.*;
 import java.util.stream.Collectors;
-
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 import static de.monticore.cd.codegen.CD2JavaTemplates.VALUE;
 import static de.monticore.cd.facade.CDModifier.*;
@@ -112,6 +109,9 @@ public class ScopesGenitorDecorator extends AbstractCreator<ASTCDCompilationUnit
           .addAllCDMembers(createScopeClassMethods(onlyScopeProds, scopeInterface))
           .addCDMember(createAddToScopeStackMethod())
           .build();
+
+      // monticore-generator/src/main/java/de/monticore/codegen/cd2java/_symboltable/scopesgenitor/ScopesGenitorDecorator.java
+      CD4C.getInstance().addImport(scopesGenitor, "com.google.common.base.Preconditions");
       return Optional.ofNullable(scopesGenitor);
     }
     return Optional.empty();
@@ -176,7 +176,7 @@ public class ScopesGenitorDecorator extends AbstractCreator<ASTCDCompilationUnit
     ASTCDMethod createFromAST = getCDMethodFacade().createMethod(PUBLIC.build(),
         "setScopeStack", dequeParam);
     this.replaceTemplate(EMPTY_BODY, createFromAST, new StringHookPoint(
-        "this." + SCOPE_STACK_VAR + " = Log.errorIfNull(("
+        "this." + SCOPE_STACK_VAR + " = Preconditions.checkNotNull(("
       + CD4CodeMill.prettyPrint(dequeType, false) + ")" + SCOPE_STACK_VAR + ");"));
     return createFromAST;
   }

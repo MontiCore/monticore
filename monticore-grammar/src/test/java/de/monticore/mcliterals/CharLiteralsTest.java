@@ -13,6 +13,8 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class CharLiteralsTest {
   
   @BeforeEach
@@ -25,10 +27,10 @@ public class CharLiteralsTest {
   
   private void checkCharLiteral(char c, String s) throws IOException {
       ASTLiteral lit = MCLiteralsTestHelper.getInstance().parseLiteral(s);
-      Assertions.assertTrue(lit instanceof ASTCharLiteral);
-      Assertions.assertEquals(c, ((ASTCharLiteral) lit).getValue());
+    assertInstanceOf(ASTCharLiteral.class, lit);
+      assertEquals(c, ((ASTCharLiteral) lit).getValue());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -55,7 +57,7 @@ public class CharLiteralsTest {
       checkCharLiteral('\uffff', "'\\uffff'");
     }
     catch (IOException e) {
-      Assertions.fail(e.getMessage());
+      fail(e.getMessage());
     }
     
   }

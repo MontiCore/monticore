@@ -1,6 +1,7 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.symbols.oosymbols.types3;
 
+import com.google.common.base.Preconditions;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
@@ -244,7 +245,7 @@ public class OOSymbolsSymTypeRelations {
   }
 
   protected static void setDelegate(OOSymbolsSymTypeRelations newDelegate) {
-    OOSymbolsSymTypeRelations.delegate = Log.errorIfNull(newDelegate);
+    OOSymbolsSymTypeRelations.delegate = Preconditions.checkNotNull(newDelegate);
   }
 
   protected static OOSymbolsSymTypeRelations getDelegate() {

@@ -5,6 +5,7 @@ package de.monticore;
 import com.google.common.collect.Iterables;
 import de.monticore.cli.MontiCoreTool;
 import de.monticore.codegen.cd2java._tagging.TaggingConstants;
+import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.mcbasics.MCBasicsMill;
 import de.monticore.dstlgen.util.DSTLPathUtil;
 import de.monticore.symboltable.serialization.json.*;
@@ -78,6 +79,8 @@ public abstract class MCTask extends DefaultTask {
 
     // Only one task using MontiCore Mills at the same time
     usesService(project.getGradle().getSharedServices().getRegistrations().findByName(MCPlugin.MC_MILL_BUILD_SERVICE).getService());
+
+    getLogger().warn("The MCTask is deprecated - Please migrate following https://monticore.github.io/monticore/docs/Gradle/");
   }
   
   public final RegularFileProperty grammar = getProject().getObjects().fileProperty();
@@ -433,7 +436,9 @@ public abstract class MCTask extends DefaultTask {
     String[] p = getParameters();
     try {
       // execute Monticore with the given parameters
-      MontiCoreTool.main(p);
+      Grammar_WithConceptsMill.init();
+      new MontiCoreTool().run(p);
+      StatisticsHandlerFix.shutdown();
       MCBasicsMill.globalScope().getSymbolPath().close();
     } catch(MCTaskError e){
       // in case of failure print the error and fail
