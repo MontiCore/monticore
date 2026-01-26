@@ -8,13 +8,14 @@ import de.monticore.literals.testmccommonliterals.TestMCCommonLiteralsMill;
 import de.monticore.literals.testmccommonliterals._parser.TestMCCommonLiteralsParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class LongCommonLiteralsTest {
   
@@ -29,17 +30,17 @@ public class LongCommonLiteralsTest {
   private void checkLongLiteral(long l, String s) throws IOException {
     TestMCCommonLiteralsParser parser = new TestMCCommonLiteralsParser();
     Optional<ASTLiteral> lit = parser.parseLiteral(new StringReader(s));
-    Assertions.assertTrue(lit.isPresent());
-    Assertions.assertTrue(lit.get() instanceof ASTBasicLongLiteral);
-    Assertions.assertEquals(l, ((ASTBasicLongLiteral) lit.get()).getValue());
+    assertTrue(lit.isPresent());
+    assertInstanceOf(ASTBasicLongLiteral.class, lit.get());
+    assertEquals(l, ((ASTBasicLongLiteral) lit.get()).getValue());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   private void checkFalse(String s) throws IOException {
     TestMCCommonLiteralsParser parser = new TestMCCommonLiteralsParser();
     Optional<ASTBasicLongLiteral> lit = parser.parseBasicLongLiteral(new StringReader(s));
-    Assertions.assertTrue(!lit.isPresent());
+    assertFalse(lit.isPresent());
   }
 
   @Test
@@ -55,7 +56,7 @@ public class LongCommonLiteralsTest {
 
     }
     catch (IOException e) {
-      Assertions.fail(e.getMessage());
+      fail(e.getMessage());
     }
   }
 
@@ -74,7 +75,7 @@ public class LongCommonLiteralsTest {
       checkFalse("0 L");
     }
     catch (IOException e) {
-      Assertions.fail(e.getMessage());
+      fail(e.getMessage());
     }
   }
 }

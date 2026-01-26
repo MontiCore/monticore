@@ -8,16 +8,13 @@ import de.monticore.types.mcfunctiontypestest.MCFunctionTypesTestMill;
 import de.monticore.types.mcfunctiontypestest._parser.MCFunctionTypesTestParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MCFunctionTypesPrettyPrinterTest {
 
@@ -67,9 +64,9 @@ public class MCFunctionTypesPrettyPrinterTest {
   protected ASTMCFunctionType parse(String mcTypeStr) throws IOException {
     MCFunctionTypesTestParser parser = new MCFunctionTypesTestParser();
     Optional<ASTMCFunctionType> typeOpt = parser.parse_StringMCFunctionType(mcTypeStr);
-    Assertions.assertNotNull(typeOpt);
-    Assertions.assertTrue(typeOpt.isPresent());
-    Assertions.assertEquals(0, Log.getFindingsCount());
+    assertNotNull(typeOpt);
+    assertTrue(typeOpt.isPresent());
+    assertEquals(0, Log.getFindingsCount());
     return typeOpt.get();
   }
 
@@ -77,7 +74,7 @@ public class MCFunctionTypesPrettyPrinterTest {
     MCFunctionTypesFullPrettyPrinter printer = new MCFunctionTypesFullPrettyPrinter(
         new IndentPrinter());
     String typeStr = printer.prettyprint(type);
-    Assertions.assertEquals(0, Log.getFindingsCount());
+    assertEquals(0, Log.getFindingsCount());
     return typeStr;
   }
 
@@ -85,8 +82,8 @@ public class MCFunctionTypesPrettyPrinterTest {
     ASTMCFunctionType type = parse(typeStr);
     String printed = print(type);
     ASTMCFunctionType typeOfPrinted = parse(printed);
-    Assertions.assertTrue(typeOfPrinted.deepEquals(type));
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(typeOfPrinted.deepEquals(type));
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

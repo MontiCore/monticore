@@ -6,12 +6,13 @@ import de.monticore.types.mcbasictypestest.MCBasicTypesTestMill;
 import de.monticore.types.mcbasictypestest._parser.MCBasicTypesTestParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MCBasicTypesTest {
   
@@ -28,28 +29,28 @@ public class MCBasicTypesTest {
   public void testPrimitiveTypesAPI() throws IOException {
     MCBasicTypesTestParser mcBasicTypesParser = new MCBasicTypesTestParser();
     Optional<ASTMCPrimitiveType> boolOpt = mcBasicTypesParser.parse_StringMCPrimitiveType("boolean");
-    Assertions.assertTrue(boolOpt.isPresent());
+    assertTrue(boolOpt.isPresent());
 
     ASTMCPrimitiveType bool = boolOpt.get();
 
     boolean isBool = bool.isBoolean();
-    Assertions.assertTrue(isBool);
+    assertTrue(isBool);
     boolean isByte = bool.isByte();
-    Assertions.assertFalse(isByte);
+    assertFalse(isByte);
     boolean isChar = bool.isChar();
-    Assertions.assertFalse(isChar);
+    assertFalse(isChar);
     boolean isDouble = bool.isDouble();
-    Assertions.assertFalse(isDouble);
+    assertFalse(isDouble);
     boolean isFloat = bool.isFloat();
-    Assertions.assertFalse(isFloat);
+    assertFalse(isFloat);
     boolean isInt = bool.isInt();
-    Assertions.assertFalse(isInt);
+    assertFalse(isInt);
     boolean isShort = bool.isShort();
-    Assertions.assertFalse(isShort);
+    assertFalse(isShort);
 
-    Assertions.assertEquals(bool.toString(), "boolean");
+    assertEquals("boolean", bool.toString());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -67,15 +68,15 @@ public class MCBasicTypesTest {
 
         Optional<? extends ASTMCType> type = mcBasicTypesParser.parse_String(primitive);
 
-        Assertions.assertNotNull(type);
-        Assertions.assertTrue(type.isPresent());
-        Assertions.assertTrue(type.get() instanceof ASTMCPrimitiveType);
+        assertNotNull(type);
+        assertTrue(type.isPresent());
+        assertInstanceOf(ASTMCPrimitiveType.class, type.get());
       }
     } catch (IOException e) {
       e.printStackTrace();
     }
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -84,12 +85,12 @@ public class MCBasicTypesTest {
     for (String type : types) {
       MCBasicTypesTestParser mcBasicTypesParser = new MCBasicTypesTestParser();
       Optional<ASTMCType> astType = mcBasicTypesParser.parse_String(type);
-      Assertions.assertNotNull(astType);
-      Assertions.assertTrue(astType.isPresent());
-      Assertions.assertTrue(astType.get() instanceof ASTMCQualifiedType);
+      assertNotNull(astType);
+      assertTrue(astType.isPresent());
+      assertInstanceOf(ASTMCQualifiedType.class, astType.get());
     }
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -98,13 +99,13 @@ public class MCBasicTypesTest {
     for (String type : types) {
       MCBasicTypesTestParser mcBasicTypesParser = new MCBasicTypesTestParser();
       Optional<ASTMCQualifiedName> astType = mcBasicTypesParser.parse_StringMCQualifiedName(type);
-      Assertions.assertNotNull(astType);
-      Assertions.assertTrue(astType.isPresent());
+      assertNotNull(astType);
+      assertTrue(astType.isPresent());
       //test toString
-      Assertions.assertEquals(astType.get().toString(), type);
+      assertEquals(astType.get().toString(), type);
     }
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -113,11 +114,11 @@ public class MCBasicTypesTest {
     String type = "import socnet.Person.*;";
     MCBasicTypesTestParser mcBasicTypesParser = new MCBasicTypesTestParser();
     Optional<ASTMCImportStatement> astType = mcBasicTypesParser.parse_StringMCImportStatement(type);
-    Assertions.assertNotNull(astType);
-    Assertions.assertTrue(astType.isPresent());
+    assertNotNull(astType);
+    assertTrue(astType.isPresent());
     //test getQName method
-    Assertions.assertEquals(astType.get().getQName(), "socnet.Person");
+    assertEquals("socnet.Person", astType.get().getQName());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

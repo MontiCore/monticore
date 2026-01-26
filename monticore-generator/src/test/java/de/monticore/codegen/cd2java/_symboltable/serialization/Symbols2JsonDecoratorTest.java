@@ -25,8 +25,8 @@ import de.monticore.io.paths.MCPath;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.se_rwth.commons.logging.Log;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
@@ -34,10 +34,7 @@ import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodsBy;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class Symbols2JsonDecoratorTest extends DecoratorTestCase {
 
@@ -67,7 +64,7 @@ public class Symbols2JsonDecoratorTest extends DecoratorTestCase {
 
   private static final String FOO_SYMBOL = "de.monticore.codegen.symboltable.automaton._symboltable.FooSymbol";
 
-  @Before
+  @BeforeEach
   public void setUp(){
     ASTCDCompilationUnit astcdCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "Automaton");
     decoratedSymbolCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "AutomatonSymbolCD");
@@ -353,6 +350,7 @@ public class Symbols2JsonDecoratorTest extends DecoratorTestCase {
     for (String exp : expected) {
       if (actual.equals(exp)) {
         result = true;
+        break;
       }
     }
     if (!result) {
@@ -375,8 +373,8 @@ public class Symbols2JsonDecoratorTest extends DecoratorTestCase {
 
     // Then
     ParseResult<CompilationUnit> parseResult = new JavaParser(new ParserConfiguration()).parse(generate.toString());
-    assertTrue("Parsing of the generated code failed. The generated code is: \n"
-        + generate, parseResult.isSuccessful());
+    assertTrue(parseResult.isSuccessful(),
+        "Parsing of the generated code failed. The generated code is: \n" + generate);
 
     assertTrue(Log.getFindings().isEmpty());
   }

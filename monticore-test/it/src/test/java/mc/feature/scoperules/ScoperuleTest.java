@@ -9,16 +9,15 @@ import mc.feature.scoperules.scoperuletest.ScoperuleTestMill;
 import mc.feature.scoperules.scoperuletest._parser.ScoperuleTestParser;
 import mc.feature.scoperules.scoperuletest._symboltable.*;
 import mc.feature.scoperules.scoperuletest._ast.ASTFoo;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ScoperuleTest {
   
@@ -39,7 +38,7 @@ public class ScoperuleTest {
   public void testModel() throws IOException {
     ScoperuleTestParser parser = ScoperuleTestMill.parser();
     Optional<ASTFoo> optModel = parser.parse("src/test/resources/mc/feature/symbolrules/SymbolruleTest.rule");
-    Assertions.assertTrue(optModel.isPresent());
+    assertTrue(optModel.isPresent());
 
     ScoperuleTestScopesGenitorDelegator scopesGenitorDelegator = ScoperuleTestMill.scopesGenitorDelegator();
     IScoperuleTestArtifactScope scope = scopesGenitorDelegator.createFromAST(optModel.get());
@@ -52,26 +51,26 @@ public class ScoperuleTest {
     scope.accept(symbols2Json.getTraverser());
     String serialized = symbols2Json.getSerializedString();
     IScoperuleTestScope as = symbols2Json.deserialize(serialized);
-    Assertions.assertTrue(as.isBar());
-    Assertions.assertEquals(17, as.getNumber());
-    Assertions.assertEquals(3, as.getModifiedNameList().size());
-    Assertions.assertEquals("foo", as.getModifiedName(0));
-    Assertions.assertEquals("bar", as.getModifiedName(1));
-    Assertions.assertEquals("test", as.getModifiedName(2));
-    Assertions.assertTrue(SymTypeExpressionFactory.createPrimitive("int").deepEquals(as.getSymType()));
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(as.isBar());
+    assertEquals(17, as.getNumber());
+    assertEquals(3, as.getModifiedNameList().size());
+    assertEquals("foo", as.getModifiedName(0));
+    assertEquals("bar", as.getModifiedName(1));
+    assertEquals("test", as.getModifiedName(2));
+    assertTrue(SymTypeExpressionFactory.createPrimitive("int").deepEquals(as.getSymType()));
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testExtendsAndImplements(){
     IScoperuleTestScope scope = ScoperuleTestMill.scope();
-
-    Assertions.assertTrue(scope instanceof ScoperuleTestScope);
+    
+    assertInstanceOf(ScoperuleTestScope.class, scope);
     Dummy dummy = (ScoperuleTestScope) scope;
-
-    Assertions.assertTrue(scope instanceof IDummy);
+    
+    assertInstanceOf(IDummy.class, scope);
     IDummy dummyI = (IDummy) scope;
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

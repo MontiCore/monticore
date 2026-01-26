@@ -10,7 +10,6 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -19,6 +18,7 @@ import java.io.IOException;
 import static de.monticore.runtime.junit.MCAssertions.assertNoFindings;
 import static de.monticore.types3.util.DefsTypesForTests.inScope;
 import static de.monticore.types3.util.DefsTypesForTests.type;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MCCollectionTypesTypeVisitorTest
     extends AbstractTypeVisitorTest {
@@ -50,13 +50,13 @@ public class MCCollectionTypesTypeVisitorTest
 
     // Then
     assertNoFindings();
-    Assertions.assertEquals(s, result.printFullName());
-    Assertions.assertTrue(result instanceof SymTypeOfGenerics);
-    Assertions.assertFalse(result.getTypeInfo() instanceof TypeSymbolSurrogate);
-    Assertions.assertFalse(result.getTypeInfo() instanceof OOTypeSymbolSurrogate);
-    Assertions.assertFalse(((SymTypeOfGenerics) result).getArgument(0)
+    assertEquals(s, result.printFullName());
+    assertInstanceOf(SymTypeOfGenerics.class, result);
+    assertFalse(result.getTypeInfo() instanceof TypeSymbolSurrogate);
+    assertFalse(result.getTypeInfo() instanceof OOTypeSymbolSurrogate);
+    assertFalse(((SymTypeOfGenerics) result).getArgument(0)
         .getTypeInfo() instanceof TypeSymbolSurrogate);
-    Assertions.assertFalse(((SymTypeOfGenerics) result).getArgument(0)
+    assertFalse(((SymTypeOfGenerics) result).getArgument(0)
         .getTypeInfo() instanceof OOTypeSymbolSurrogate);
 
   }
@@ -73,13 +73,13 @@ public class MCCollectionTypesTypeVisitorTest
 
     // Then
     assertNoFindings();
-    Assertions.assertEquals(s, result.printFullName());
-    Assertions.assertTrue(result instanceof SymTypeOfGenerics);
-    Assertions.assertFalse(result.getTypeInfo() instanceof TypeSymbolSurrogate);
-    Assertions.assertFalse(result.getTypeInfo() instanceof OOTypeSymbolSurrogate);
-    Assertions.assertFalse(((SymTypeOfGenerics) result).getArgument(0)
+    assertEquals(s, result.printFullName());
+    assertInstanceOf(SymTypeOfGenerics.class, result);
+    assertFalse(result.getTypeInfo() instanceof TypeSymbolSurrogate);
+    assertFalse(result.getTypeInfo() instanceof OOTypeSymbolSurrogate);
+    assertFalse(((SymTypeOfGenerics) result).getArgument(0)
         .getTypeInfo() instanceof TypeSymbolSurrogate);
-    Assertions.assertFalse(((SymTypeOfGenerics) result).getArgument(0)
+    assertFalse(((SymTypeOfGenerics) result).getArgument(0)
         .getTypeInfo() instanceof OOTypeSymbolSurrogate);
   }
 
@@ -95,17 +95,17 @@ public class MCCollectionTypesTypeVisitorTest
 
     // Then
     assertNoFindings();
-    Assertions.assertEquals(s, result.printFullName());
-    Assertions.assertTrue(result instanceof SymTypeOfGenerics);
-    Assertions.assertFalse(result.getTypeInfo() instanceof TypeSymbolSurrogate);
-    Assertions.assertFalse(result.getTypeInfo() instanceof OOTypeSymbolSurrogate);
-    Assertions.assertFalse(((SymTypeOfGenerics) result).getArgument(0)
+    assertEquals(s, result.printFullName());
+    assertInstanceOf(SymTypeOfGenerics.class, result);
+    assertFalse(result.getTypeInfo() instanceof TypeSymbolSurrogate);
+    assertFalse(result.getTypeInfo() instanceof OOTypeSymbolSurrogate);
+    assertFalse(((SymTypeOfGenerics) result).getArgument(0)
         .getTypeInfo() instanceof TypeSymbolSurrogate);
-    Assertions.assertFalse(((SymTypeOfGenerics) result).getArgument(0)
+    assertFalse(((SymTypeOfGenerics) result).getArgument(0)
         .getTypeInfo() instanceof TypeSymbolSurrogate);
-    Assertions.assertFalse(((SymTypeOfGenerics) result).getArgument(1)
+    assertFalse(((SymTypeOfGenerics) result).getArgument(1)
         .getTypeInfo() instanceof OOTypeSymbolSurrogate);
-    Assertions.assertFalse(((SymTypeOfGenerics) result).getArgument(1)
+    assertFalse(((SymTypeOfGenerics) result).getArgument(1)
         .getTypeInfo() instanceof OOTypeSymbolSurrogate);
   }
 
@@ -121,13 +121,13 @@ public class MCCollectionTypesTypeVisitorTest
 
     // Then
     assertNoFindings();
-    Assertions.assertEquals(s, result.printFullName());
-    Assertions.assertTrue(result instanceof SymTypeOfGenerics);
-    Assertions.assertFalse(result.getTypeInfo() instanceof TypeSymbolSurrogate);
-    Assertions.assertFalse(result.getTypeInfo() instanceof OOTypeSymbolSurrogate);
-    Assertions.assertFalse(((SymTypeOfGenerics) result).getArgument(0)
+    assertEquals(s, result.printFullName());
+    assertInstanceOf(SymTypeOfGenerics.class, result);
+    assertFalse(result.getTypeInfo() instanceof TypeSymbolSurrogate);
+    assertFalse(result.getTypeInfo() instanceof OOTypeSymbolSurrogate);
+    assertFalse(((SymTypeOfGenerics) result).getArgument(0)
         .getTypeInfo() instanceof TypeSymbolSurrogate);
-    Assertions.assertFalse(((SymTypeOfGenerics) result).getArgument(0)
+    assertFalse(((SymTypeOfGenerics) result).getArgument(0)
         .getTypeInfo() instanceof OOTypeSymbolSurrogate);
   }
 
@@ -143,13 +143,13 @@ public class MCCollectionTypesTypeVisitorTest
 
     // Then
     assertNoFindings();
-    Assertions.assertEquals(s, result.printFullName());
-    Assertions.assertTrue(result instanceof SymTypeOfGenerics);
-    Assertions.assertFalse(result.getTypeInfo() instanceof TypeSymbolSurrogate);
-    Assertions.assertFalse(result.getTypeInfo() instanceof OOTypeSymbolSurrogate);
-    Assertions.assertFalse(((SymTypeOfGenerics) result).getArgument(0)
+    assertEquals(s, result.printFullName());
+    assertInstanceOf(SymTypeOfGenerics.class, result);
+    assertFalse(result.getTypeInfo() instanceof TypeSymbolSurrogate);
+    assertFalse(result.getTypeInfo() instanceof OOTypeSymbolSurrogate);
+    assertFalse(((SymTypeOfGenerics) result).getArgument(0)
         .getTypeInfo() instanceof TypeSymbolSurrogate);
-    Assertions.assertFalse(((SymTypeOfGenerics) result).getArgument(0)
+    assertFalse(((SymTypeOfGenerics) result).getArgument(0)
         .getTypeInfo() instanceof OOTypeSymbolSurrogate);
   }
 

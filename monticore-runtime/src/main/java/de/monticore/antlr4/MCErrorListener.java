@@ -58,8 +58,8 @@ public class MCErrorListener extends BaseErrorListener {
         // (*): The name might actually be a nokeyword production, i.e., with a semantic predicate
 
         // Check for the rules which the ATN would change into using epsilon transitions (to find nokeywor rules)
-        Set<Map.Entry<Integer, String>> epsilonRules = new HashSet<>();
-        getExpectedRulesWithTokens(recognizer.getATN(), recognizer.getState(), recognizer.getVocabulary(), new HashMap<>(), epsilonRules);
+        Set<Map.Entry<Integer, String>> epsilonRules = new LinkedHashSet<>();
+        getExpectedRulesWithTokens(recognizer.getATN(), recognizer.getState(), recognizer.getVocabulary(), new LinkedHashMap<>(), epsilonRules);
 
         List<String> noKeywordRules = extractNoKeywordTokens(recognizer, epsilonRules);
 
@@ -91,8 +91,8 @@ public class MCErrorListener extends BaseErrorListener {
         String expectedTokens = e.getExpectedTokens().toString(recognizer.getVocabulary());
 
         // Check for the rules which the ATN would change into using epsilon transitions
-        Set<Map.Entry<Integer, String>> epsilonRules = new HashSet<>();
-        getExpectedRulesWithTokens(recognizer.getATN(), e.getOffendingState(), recognizer.getVocabulary(), new HashMap<>(), epsilonRules);
+        Set<Map.Entry<Integer, String>> epsilonRules = new LinkedHashSet<>();
+        getExpectedRulesWithTokens(recognizer.getATN(), e.getOffendingState(), recognizer.getVocabulary(), new LinkedHashMap<>(), epsilonRules);
 
         List<String> noKeywordRules = extractNoKeywordTokens(recognizer, epsilonRules);
 

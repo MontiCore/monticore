@@ -7,13 +7,12 @@ import de.monticore.types.check.DefsTypeBasic;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CloneTest {
 
@@ -54,43 +53,43 @@ public class CloneTest {
   @Test
   public void testMethod(){
     List<MethodSymbol> methodsAllInclusion = symbolTable.resolveMethodMany("foo");
-    Assertions.assertEquals(1, methodsAllInclusion.size());
+    assertEquals(1, methodsAllInclusion.size());
 
     MethodSymbol methodSymbol = methodsAllInclusion.get(0);
     MethodSymbol cloneSymbol = methodSymbol.deepClone();
 
-    Assertions.assertEquals(methodSymbol.getName(), cloneSymbol.getName());
-    Assertions.assertEquals(methodSymbol.getParameterList().size(), cloneSymbol.getParameterList().size());
-    Assertions.assertEquals(methodSymbol.isIsMethod(), cloneSymbol.isIsMethod());
-    Assertions.assertEquals(methodSymbol.isIsPrivate(), cloneSymbol.isIsPrivate());
-    Assertions.assertEquals(methodSymbol.isIsPublic(), cloneSymbol.isIsPublic());
-    Assertions.assertEquals(methodSymbol.isIsProtected(), cloneSymbol.isIsProtected());
-    Assertions.assertEquals(methodSymbol.isIsAbstract(), cloneSymbol.isIsAbstract());
-    Assertions.assertEquals(methodSymbol.isIsStatic(), cloneSymbol.isIsStatic());
-    Assertions.assertEquals(methodSymbol.isIsFinal(), cloneSymbol.isIsFinal());
-    Assertions.assertEquals(methodSymbol.isIsElliptic(), cloneSymbol.isIsElliptic());
-    Assertions.assertEquals(methodSymbol.isIsConstructor(), cloneSymbol.isIsConstructor());
-    Assertions.assertEquals(methodSymbol.getType().asPrimitive().getPrimitiveName(), cloneSymbol.getType().asPrimitive().getPrimitiveName());
+    assertEquals(methodSymbol.getName(), cloneSymbol.getName());
+    assertEquals(methodSymbol.getParameterList().size(), cloneSymbol.getParameterList().size());
+    assertEquals(methodSymbol.isIsMethod(), cloneSymbol.isIsMethod());
+    assertEquals(methodSymbol.isIsPrivate(), cloneSymbol.isIsPrivate());
+    assertEquals(methodSymbol.isIsPublic(), cloneSymbol.isIsPublic());
+    assertEquals(methodSymbol.isIsProtected(), cloneSymbol.isIsProtected());
+    assertEquals(methodSymbol.isIsAbstract(), cloneSymbol.isIsAbstract());
+    assertEquals(methodSymbol.isIsStatic(), cloneSymbol.isIsStatic());
+    assertEquals(methodSymbol.isIsFinal(), cloneSymbol.isIsFinal());
+    assertEquals(methodSymbol.isIsElliptic(), cloneSymbol.isIsElliptic());
+    assertEquals(methodSymbol.isIsConstructor(), cloneSymbol.isIsConstructor());
+    assertEquals(methodSymbol.getType().asPrimitive().getPrimitiveName(), cloneSymbol.getType().asPrimitive().getPrimitiveName());
   }
 
   @Test
   public void testField(){
     List<FieldSymbol> fieldsAllInclusion = symbolTable.resolveFieldMany("bar");
-    Assertions.assertEquals(1, fieldsAllInclusion.size());
+    assertEquals(1, fieldsAllInclusion.size());
 
     FieldSymbol fieldSymbol = fieldsAllInclusion.get(0);
     FieldSymbol cloneSymbol = fieldSymbol.deepClone();
 
-    Assertions.assertEquals(fieldSymbol.getName(), cloneSymbol.getName());
-    Assertions.assertEquals(fieldSymbol.getType().asPrimitive().getPrimitiveName(), cloneSymbol.getType().asPrimitive().getPrimitiveName());
-    Assertions.assertEquals(fieldSymbol.isIsFinal(), cloneSymbol.isIsFinal());
-    Assertions.assertEquals(fieldSymbol.isIsPrivate(), cloneSymbol.isIsPrivate());
-    Assertions.assertEquals(fieldSymbol.isIsProtected(), cloneSymbol.isIsProtected());
-    Assertions.assertEquals(fieldSymbol.isIsPublic(), cloneSymbol.isIsPublic());
-    Assertions.assertEquals(fieldSymbol.isIsStatic(), cloneSymbol.isIsStatic());
-    Assertions.assertEquals(fieldSymbol.isIsEnumConstant(), cloneSymbol.isIsEnumConstant());
-    Assertions.assertEquals(fieldSymbol.isIsDerived(), cloneSymbol.isIsDerived());
-    Assertions.assertEquals(fieldSymbol.isIsReadOnly(), cloneSymbol.isIsReadOnly());
+    assertEquals(fieldSymbol.getName(), cloneSymbol.getName());
+    assertEquals(fieldSymbol.getType().asPrimitive().getPrimitiveName(), cloneSymbol.getType().asPrimitive().getPrimitiveName());
+    assertEquals(fieldSymbol.isIsFinal(), cloneSymbol.isIsFinal());
+    assertEquals(fieldSymbol.isIsPrivate(), cloneSymbol.isIsPrivate());
+    assertEquals(fieldSymbol.isIsProtected(), cloneSymbol.isIsProtected());
+    assertEquals(fieldSymbol.isIsPublic(), cloneSymbol.isIsPublic());
+    assertEquals(fieldSymbol.isIsStatic(), cloneSymbol.isIsStatic());
+    assertEquals(fieldSymbol.isIsEnumConstant(), cloneSymbol.isIsEnumConstant());
+    assertEquals(fieldSymbol.isIsDerived(), cloneSymbol.isIsDerived());
+    assertEquals(fieldSymbol.isIsReadOnly(), cloneSymbol.isIsReadOnly());
   }
 
 }

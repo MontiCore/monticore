@@ -76,13 +76,13 @@ public class TemplatesTool {
   protected GlobalExtensionManagement glex;
   
   // Two dimensional map: SourceState x Stimulus -> Transition
-  Map<ASTState, Map<String,ASTTransition>> deltaMap = new HashMap<>();
+  Map<ASTState, Map<String,ASTTransition>> deltaMap = new LinkedHashMap<>();
   
   // Map: Name -> State (== State-Symbols)
-  Map<String, ASTState> stateMap = new HashMap<>();
+  Map<String, ASTState> stateMap = new LinkedHashMap<>();
   
   // List of stimuli
-  Set<String> stimuli = new HashSet<>();
+  Set<String> stimuli = new LinkedHashSet<>();
   
   /**
    * Use three arguments to specify the automata model,
@@ -315,7 +315,7 @@ public class TemplatesTool {
     // initialize delta: transition map of maps, and state name2node
     for(ASTState s: ast.getStateList()) {
       stateMap.put(s.getName(),s);
-      deltaMap.put(s,new HashMap<>());
+      deltaMap.put(s,new LinkedHashMap<>());
     }
     
     // Add the transitions to the table

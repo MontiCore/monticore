@@ -19,7 +19,6 @@ import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -31,9 +30,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * This test checks for parser clashes of stream expressions with the expression universe. Additionally, it checks if
@@ -248,7 +245,7 @@ public class CombinedStreamsExpressionsParserTest {
   // Helpers, could in part be generalized?
 
   protected static void assertNoFindings() {
-    Assertions.assertTrue(Log.getFindings().isEmpty(), "Expected no Log findings, but got:"
+    assertTrue(Log.getFindings().isEmpty(), "Expected no Log findings, but got:"
         + System.lineSeparator() + getAllFindingsAsString());
   }
 

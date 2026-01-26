@@ -8,25 +8,24 @@ import mc.feature.fautomaton.automaton.flatautomaton.FlatAutomatonMill;
 import mc.feature.fautomaton.automaton.flatautomaton._ast.ASTAutomaton;
 import mc.feature.fautomaton.automaton.flatautomaton._ast.ASTState;
 import mc.feature.fautomaton.automaton.flatautomaton._ast.ASTTransition;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class CreateEObjectsTest extends GeneratorIntegrationsTest {
   @Test
   public void builderTest() {
     ASTENode ast = FlatAutomatonMill.automatonBuilder().setName(("A")).build();
     assertNotNull(ast);
-    assertTrue(ast instanceof ASTAutomaton);
+    assertInstanceOf(ASTAutomaton.class, ast);
    
     ast = FlatAutomatonMill.stateBuilder().setName("s").build();
     assertNotNull(ast);
-    assertTrue(ast instanceof ASTState);
+    assertInstanceOf(ASTState.class, ast);
     
     ast = FlatAutomatonMill.transitionBuilder().setActivate("t").setFrom("a").setTo("b").build();
     assertNotNull(ast);
-    assertTrue(ast instanceof ASTTransition);
+    assertInstanceOf(ASTTransition.class, ast);
   }
 
 }

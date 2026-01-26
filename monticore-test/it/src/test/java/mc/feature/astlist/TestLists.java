@@ -13,8 +13,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TestLists extends GeneratorIntegrationsTest {
   
@@ -45,10 +45,10 @@ public class TestLists extends GeneratorIntegrationsTest {
     list.add(f);
     list.add(g);
     
-    Assertions.assertEquals(6, list.indexOf(g));
+    assertEquals(6, list.indexOf(g));
     list.remove(g);
-    Assertions.assertEquals(-1, list.indexOf(g));
+    assertEquals(-1, list.indexOf(g));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

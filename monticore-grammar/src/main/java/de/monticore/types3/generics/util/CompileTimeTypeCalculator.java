@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types3.generics.util;
 
+import com.google.common.base.Preconditions;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
@@ -22,13 +23,12 @@ import de.monticore.types3.generics.context.InferenceContext4Ast;
 import de.monticore.types3.generics.context.InferenceResult;
 import de.monticore.types3.generics.context.InferenceVisitorMode;
 import de.monticore.types3.util.FunctionRelations;
-import de.monticore.types3.util.SymTypeExpressionComparator;
 import de.monticore.visitor.ITraverser;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -845,7 +845,7 @@ public class CompileTimeTypeCalculator {
       PartialFunctionInfo funcInfo
   ) {
     Map<SymTypeOfFunction, InferenceResult> func2InferenceResult =
-        new HashMap<>();
+        new LinkedHashMap<>();
     for (SymTypeOfFunction func : potentiallyApplicableFuncs) {
       InferenceResult result = new InferenceResult();
       result.setResolvedFunction(func);
@@ -1173,7 +1173,7 @@ public class CompileTimeTypeCalculator {
         ? " with the target type "
         + funcInfo.getReturnTargetType().printFullName()
         : "") + ".";
-    if (infResult.getInvocationType().isEmpty()) {
+    if (invocationType.isEmpty()) {
       Log.error("0xFD447 cannot resolve function invocation type"
           + logInfo + " Bounds:" + System.lineSeparator()
           + printBounds(infResult.getB4())
@@ -1469,7 +1469,7 @@ public class CompileTimeTypeCalculator {
         .map(SymTypeExpression::asTypeVariable)
         .collect(Collectors.toList());
     Map<SymTypeVariable, SymTypeInferenceVariable> typeParamReplaceMap =
-        new TreeMap<>(new SymTypeExpressionComparator());
+        new TreeMap<>();
     for (int i = 0; i < typeParams.size(); i++) {
       typeParamReplaceMap.put(typeParams.get(i), infVars.get(i));
     }
@@ -1487,12 +1487,14 @@ public class CompileTimeTypeCalculator {
 
   protected String printBounds(List<Bound> bounds) {
     return bounds.stream()
+        .sorted()
         .map(Bound::print)
         .collect(Collectors.joining(System.lineSeparator()));
   }
 
   protected String printConstraints(List<? extends Constraint> constraints) {
     return constraints.stream()
+        .sorted()
         .map(Constraint::print)
         .collect(Collectors.joining(System.lineSeparator()));
   }
@@ -1528,7 +1530,7 @@ public class CompileTimeTypeCalculator {
   }
 
   protected static void setDelegate(CompileTimeTypeCalculator newDelegate) {
-    CompileTimeTypeCalculator.delegate = Log.errorIfNull(newDelegate);
+    CompileTimeTypeCalculator.delegate = Preconditions.checkNotNull(newDelegate);
   }
 
   protected static CompileTimeTypeCalculator getDelegate() {
