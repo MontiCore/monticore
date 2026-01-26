@@ -3,10 +3,7 @@
 package de.monticore.generating.templateengine;
 
 import static de.monticore.generating.templateengine.TestConstants.TEMPLATE_PACKAGE;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
 
@@ -20,7 +17,6 @@ import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.freemarker.MontiCoreFreeMarkerException;
 import de.monticore.io.FileReaderWriterMock;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -67,8 +63,8 @@ public class TemplateControllerSignatureUsageTest {
   public void testSignatureWithOneParameter() {
     StringBuilder output = tc.includeArgs(TEMPLATE_PACKAGE + "SignatureWithOneParameter", Lists.<Object>newArrayList("Charly"));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
-    Assertions.assertEquals("Name is Charly", output.toString());
+    assertTrue(Log.getFindings().isEmpty());
+    assertEquals("Name is Charly", output.toString());
   }
 
   @Test
@@ -76,8 +72,8 @@ public class TemplateControllerSignatureUsageTest {
     StringBuilder output = tc.includeArgs(TEMPLATE_PACKAGE + "SignatureWithThreeParameters",
         Lists.<Object>newArrayList("Charly", "30", "Aachen"));
 
-    Assertions.assertEquals("Name is Charly, age is 30, city is Aachen", output.toString());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertEquals("Name is Charly, age is 30, city is Aachen", output.toString());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -85,8 +81,8 @@ public class TemplateControllerSignatureUsageTest {
     StringBuilder output = tc.includeArgs(TEMPLATE_PACKAGE + "SignatureWithManyParameters",
         Lists.<Object>newArrayList("Charly", "30", "Aachen", "52062", "Engineer", "No friends"));
 
-    Assertions.assertEquals("Name=Charly, age=30, city=Aachen, zip=52062, job=Engineer, friends=No friends", output.toString());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertEquals("Name=Charly, age=30, city=Aachen, zip=52062, job=Engineer, friends=No friends", output.toString());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -94,8 +90,8 @@ public class TemplateControllerSignatureUsageTest {
     StringBuilder output = tc.includeArgs(TEMPLATE_PACKAGE + "NestedSignatureCalls",
         Lists.<Object>newArrayList("T1"));
 
-    Assertions.assertEquals("T1 -> Name is T2", output.toString());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertEquals("T1 -> Name is T2", output.toString());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -104,11 +100,11 @@ public class TemplateControllerSignatureUsageTest {
     try {
       tc.includeArgs(TEMPLATE_PACKAGE + "SignatureWithOneParameter",
           Lists.<Object>newArrayList("Charly", "tooMuch"));
-      Assertions.fail("Argument list is too long.");
+      fail("Argument list is too long.");
     } catch (MontiCoreFreeMarkerException e) {
-      Assertions.assertTrue(e.getCause() instanceof IllegalArgumentException);
+      assertTrue(e.getCause() instanceof IllegalArgumentException);
     }
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Disabled
@@ -117,8 +113,8 @@ public class TemplateControllerSignatureUsageTest {
     StringBuilder templateOutput = tc.includeArgs(TEMPLATE_PACKAGE + "ArgumentsAreOnlyVisibleInIncludedTemplate",
         Lists.<Object>newArrayList("Charly"));
 
-    Assertions.assertEquals("Hello Charly\nSorry, what was your name?", templateOutput.toString());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertEquals("Hello Charly\nSorry, what was your name?", templateOutput.toString());
+    assertTrue(Log.getFindings().isEmpty());
   }
     
   @Test
@@ -126,9 +122,9 @@ public class TemplateControllerSignatureUsageTest {
   public void testParameterizedInclusionUsage() {
     StringBuilder templateOutput = tc.include(TEMPLATE_PACKAGE + "ParameterizedInclusionUsage");
     
-    Assertions.assertEquals("Name is Charly\n" +
+    assertEquals("Name is Charly\n" +
     "Name is Charly, age is 30, city is Aachen\n" +
     "Name=Charly, age=30, city=Aachen, zip=52062, job=Engineer, friends=No friends", templateOutput.toString());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

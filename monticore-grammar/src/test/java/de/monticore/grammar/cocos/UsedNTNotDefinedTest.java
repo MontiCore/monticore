@@ -5,9 +5,10 @@ package de.monticore.grammar.cocos;
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class UsedNTNotDefinedTest extends CocoTest {
 
@@ -24,13 +25,13 @@ public class UsedNTNotDefinedTest extends CocoTest {
   @Test
   public void testInvalid() {
     testInvalidGrammar(grammar, UsedNTNotDefined.ERROR_CODE, MESSAGE, checker);
-    Assertions.assertFalse(Log.getFindings().isEmpty());
-    Assertions.assertEquals(1, Log.getFindings().size());
+    assertFalse(Log.getFindings().isEmpty());
+    assertEquals(1, Log.getFindings().size());
     boolean found = false;
     for (Finding f : Log.getFindings()) {
       found |= f.getMsg().equals(UsedNTNotDefined.ERROR_CODE + MESSAGE);
     }
-    Assertions.assertTrue(found);
+    assertTrue(found);
   }
 
   @Test

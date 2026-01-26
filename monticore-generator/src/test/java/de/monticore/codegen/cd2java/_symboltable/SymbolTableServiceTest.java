@@ -14,16 +14,14 @@ import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.umlmodifier._ast.ASTModifier;
 import de.se_rwth.commons.logging.Log;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SymbolTableServiceTest extends DecoratorTestCase {
 
@@ -35,7 +33,7 @@ public class SymbolTableServiceTest extends DecoratorTestCase {
 
   private MCTypeFacade mcTypeFacade;
 
-  @Before
+  @BeforeEach
   public void setup() {
     this.mcTypeFacade = MCTypeFacade.getInstance();
 

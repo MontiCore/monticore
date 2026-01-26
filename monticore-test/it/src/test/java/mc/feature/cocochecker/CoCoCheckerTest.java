@@ -2,17 +2,12 @@
 
 package mc.feature.cocochecker;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
 
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -28,6 +23,8 @@ import mc.feature.cocochecker.b._cocos.BCoCoChecker;
 import mc.feature.cocochecker.c._cocos.CASTXCoCo;
 import mc.feature.cocochecker.c._cocos.CASTZCoCo;
 import mc.feature.cocochecker.c._cocos.CCoCoChecker;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests adding cocos of super languages to a checker of a sublanguage.<br/>
@@ -97,9 +94,9 @@ public class CoCoCheckerTest extends GeneratorIntegrationsTest {
     }
     catch (IOException e) {
       e.printStackTrace();
-      Assertions.fail("Parser Error.");
+      fail("Parser Error.");
     }
-    Assertions.assertTrue(astOpt.isPresent());
+    assertTrue(astOpt.isPresent());
     ast = astOpt.get();
     checked.setLength(0);
   }
@@ -114,8 +111,8 @@ public class CoCoCheckerTest extends GeneratorIntegrationsTest {
     checker.addCoCo(cocoZ);
     
     checker.checkAll(ast);
-    Assertions.assertEquals("BAYZ", checked.toString());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertEquals("BAYZ", checked.toString());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -137,8 +134,8 @@ public class CoCoCheckerTest extends GeneratorIntegrationsTest {
     checkerA.addChecker(checkerC);
     
     checkerA.checkAll(ast);
-    Assertions.assertEquals("BAYZ", checked.toString());
+    assertEquals("BAYZ", checked.toString());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

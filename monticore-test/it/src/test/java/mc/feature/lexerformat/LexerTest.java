@@ -2,16 +2,12 @@
 
 package mc.feature.lexerformat;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
 
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -19,6 +15,8 @@ import mc.GeneratorIntegrationsTest;
 import mc.feature.lexerformat.lexerformat._ast.ASTTest;
 import mc.feature.lexerformat.lexerformat._ast.ASTTest2;
 import mc.feature.lexerformat.lexerformat._parser.LexerFormatParser;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class LexerTest extends GeneratorIntegrationsTest {
   
@@ -33,11 +31,11 @@ public class LexerTest extends GeneratorIntegrationsTest {
     
     LexerFormatParser p = new LexerFormatParser();
     Optional<ASTTest> ast = p.parseTest(new StringReader("007"));
-    Assertions.assertTrue(ast.isPresent());
+    assertTrue(ast.isPresent());
     
     int r = ast.get().getA();
-    Assertions.assertEquals(7, r);
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertEquals(7, r);
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -45,55 +43,55 @@ public class LexerTest extends GeneratorIntegrationsTest {
     
     LexerFormatParser p = new LexerFormatParser();
     Optional<ASTTest> ast = p.parseTest(new StringReader("on"));
-    Assertions.assertTrue(ast.isPresent());
+    assertTrue(ast.isPresent());
 
     boolean r = ast.get().isB();
-    Assertions.assertEquals(true, r);
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(r);
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
   public void test1a() throws IOException { 
     LexerFormatParser p = new LexerFormatParser();
     Optional<ASTTest> ast = p.parseTest(new StringReader("start"));
-    Assertions.assertTrue(ast.isPresent());
+    assertTrue(ast.isPresent());
     
     boolean r = ast.get().isB();
-    Assertions.assertEquals(true, r);
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(r);
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
   public void test1b() throws IOException { 
     LexerFormatParser p = new LexerFormatParser();
     Optional<ASTTest> ast = p.parseTest(new StringReader("stop"));
-    Assertions.assertTrue(ast.isPresent());
+    assertTrue(ast.isPresent());
 
     boolean r = ast.get().isB();
-    Assertions.assertEquals(false, r);
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertFalse(r);
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
   public void test1c() throws IOException {   
     LexerFormatParser p = new LexerFormatParser();
     Optional<ASTTest> ast = p.parseTest(new StringReader("off"));
-    Assertions.assertTrue(ast.isPresent());
+    assertTrue(ast.isPresent());
 
     boolean r = ast.get().isB();
-    Assertions.assertEquals(false, r);
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertFalse(r);
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
   public void test2() throws IOException {
     LexerFormatParser p = new LexerFormatParser();
     Optional<ASTTest> ast = p.parseTest(new StringReader("a"));
-    Assertions.assertTrue(ast.isPresent());
+    assertTrue(ast.isPresent());
 
     char r = ast.get().getC();
-    Assertions.assertEquals('a', r);
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertEquals('a', r);
+    assertTrue(Log.getFindings().isEmpty());
   }
   
 
@@ -101,44 +99,44 @@ public class LexerTest extends GeneratorIntegrationsTest {
   public void test3() throws IOException {
     LexerFormatParser p = new LexerFormatParser();
     Optional<ASTTest> ast = p.parseTest(new StringReader("99.5"));
-    Assertions.assertTrue(ast.isPresent());
+    assertTrue(ast.isPresent());
 
     float r = ast.get().getD();
-    Assertions.assertEquals(99.5f, r, 0);
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertEquals(99.5f, r, 0);
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
   public void test4() throws IOException {    
     LexerFormatParser p = new LexerFormatParser();
     Optional<ASTTest> ast = p.parseTest(new StringReader("*"));
-    Assertions.assertTrue(ast.isPresent());
+    assertTrue(ast.isPresent());
 
     int r = ast.get().getE();
-    Assertions.assertEquals(-1, r);
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertEquals(-1, r);
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
   public void test5() throws IOException {    
     LexerFormatParser p = new LexerFormatParser();
     Optional<ASTTest2> ast = p.parseTest2(new StringReader("1;1"));
-    Assertions.assertTrue(ast.isPresent());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(ast.isPresent());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
   public void test6() throws IOException {    
     LexerFormatParser p = new LexerFormatParser();
     Optional<ASTTest> ast = p.parseTest(new StringReader("<<ddfdfd>>"));
-    Assertions.assertTrue(ast.isPresent());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(ast.isPresent());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
   public void test7() throws IOException {    
     LexerFormatParser p = new LexerFormatParser();
     Optional<ASTTest> ast = p.parseTest(new StringReader("<<ddfd>>fd>>"));
-    Assertions.assertTrue(p.hasErrors());
+    assertTrue(p.hasErrors());
   }
 }

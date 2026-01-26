@@ -9,9 +9,6 @@ import de.se_rwth.commons.logging.LogStub;
 import org.antlr.v4.runtime.RecognitionException;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
 
 import de.monticore.emf.util.AST2ModelFiles;
 import mc.GeneratorIntegrationsTest;
@@ -21,10 +18,12 @@ import mc.feature.fautomaton.automaton.flatautomaton._ast.ASTTransition;
 import mc.feature.fautomaton.automaton.flatautomaton.FlatAutomatonMill;
 import mc.feature.fautomaton.automaton.flatautomaton._ast.FlatAutomatonPackage;
 import mc.feature.fautomaton.automaton.flatautomaton._parser.FlatAutomatonParser;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-@Ignore
+@Disabled
 public class EcoreUtilTest extends GeneratorIntegrationsTest {
 
   @Test
@@ -48,14 +47,14 @@ public class EcoreUtilTest extends GeneratorIntegrationsTest {
         EObject deserAstTransC = AST2ModelFiles.get().deserializeASTInstance("ASTAutomaton_C",
             FlatAutomatonPackage.eINSTANCE);
         assertNotNull(deserAstTransC);
-        assertTrue(deserAstTransC instanceof ASTAutomaton);
+        assertInstanceOf(ASTAutomaton.class, deserAstTransC);
         
         
         
         EObject deserAstTransA = AST2ModelFiles.get().deserializeASTInstance("ASTAutomaton_A",
             FlatAutomatonPackage.eINSTANCE);
         assertNotNull(deserAstTransA);
-        assertTrue(deserAstTransA instanceof ASTAutomaton);
+        assertInstanceOf(ASTAutomaton.class, deserAstTransA);
         assertNotEquals(deserAstTransA.toString(),deserAstTransC.toString());
         
         assertFalse(EcoreUtil.equals(deserAstTransA, deserAstTransC));
@@ -94,12 +93,12 @@ public class EcoreUtilTest extends GeneratorIntegrationsTest {
         EObject deserAstTransC = AST2ModelFiles.get().deserializeASTInstance("ASTAutomaton_C2",
             FlatAutomatonPackage.eINSTANCE);
         assertNotNull(deserAstTransC);
-        assertTrue(deserAstTransC instanceof ASTAutomaton);
+        assertInstanceOf(ASTAutomaton.class, deserAstTransC);
         
         EObject deserAstTransB = AST2ModelFiles.get().deserializeASTInstance("ASTAutomaton_B2",
             FlatAutomatonPackage.eINSTANCE);
         assertNotNull(deserAstTransB);
-        assertTrue(deserAstTransB instanceof ASTAutomaton);
+        assertInstanceOf(ASTAutomaton.class, deserAstTransB);
         
         
         assertEquals(deserAstTransB.toString(),deserAstTransC.toString());

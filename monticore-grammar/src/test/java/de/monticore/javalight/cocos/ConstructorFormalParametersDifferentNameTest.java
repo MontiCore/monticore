@@ -2,12 +2,12 @@
 package de.monticore.javalight.cocos;
 
 import de.monticore.javalight._cocos.JavaLightCoCoChecker;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 
-import static org.junit.Assert.assertTrue;
 import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ConstructorFormalParametersDifferentNameTest extends JavaLightCocoTest{
   private final String fileName = "de.monticore.javalight.cocos.invalid.A0821.A0821";
@@ -33,7 +33,7 @@ public class ConstructorFormalParametersDifferentNameTest extends JavaLightCocoT
   public void testCorrect() {
     testValid("de.monticore.javalight.cocos.valid.A0821", "const1", checker);
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

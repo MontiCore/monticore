@@ -10,17 +10,17 @@ import mc.feature.fautomaton.automatonwithaction.actionautomaton._ast.ASTCounter
 import mc.feature.fautomaton.automatonwithaction.actionautomaton.ActionAutomatonMill;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EReference;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ExternalTest extends GeneratorIntegrationsTest {
   
   private ASTAutomaton aut;
   
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     aut = ActionAutomatonMill.automatonBuilder().uncheckedBuild();
   }

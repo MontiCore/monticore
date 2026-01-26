@@ -14,7 +14,6 @@ import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -22,8 +21,8 @@ import java.io.IOException;
 import java.util.Optional;
 
 import static de.monticore.types.check.DefsTypeBasic.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AbstractDeriveTest {
 
@@ -130,56 +129,56 @@ public class AbstractDeriveTest {
   @Test
   public void testFieldAccessInnerVariables() throws IOException {
     Optional<ASTExpression> expr = p.parse_StringExpression("person1.bar");
-    Assertions.assertTrue(expr.isPresent());
+    assertTrue(expr.isPresent());
     expr.get().accept(traverser);
 
-    Assertions.assertEquals("int", tc.typeOf(expr.get()).print());
+    assertEquals("int", tc.typeOf(expr.get()).print());
     
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testFieldAccessInnerTypes() throws IOException {
     Optional<ASTExpression> expr = p.parse_StringExpression("person1.Address");
-    Assertions.assertTrue(expr.isPresent());
+    assertTrue(expr.isPresent());
     expr.get().accept(traverser);
 
-    Assertions.assertEquals("Address", tc.typeOf(expr.get()).print());
+    assertEquals("Address", tc.typeOf(expr.get()).print());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testCallInnerMethods() throws IOException {
     Optional<ASTExpression> expr = p.parse_StringExpression("person1.foo()");
-    Assertions.assertTrue(expr.isPresent());
+    assertTrue(expr.isPresent());
     expr.get().accept(traverser);
 
-    Assertions.assertEquals("void", tc.typeOf(expr.get()).print());
+    assertEquals("void", tc.typeOf(expr.get()).print());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testInheritanceVariables() throws IOException {
     Optional<ASTExpression> expr = p.parse_StringExpression("firstsemester.bar");
-    Assertions.assertTrue(expr.isPresent());
+    assertTrue(expr.isPresent());
     expr.get().accept(traverser);
 
-    Assertions.assertEquals("int", tc.typeOf(expr.get()).print());
+    assertEquals("int", tc.typeOf(expr.get()).print());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testInheritanceMethods() throws IOException {
     Optional<ASTExpression> expr = p.parse_StringExpression("firstsemester.foo()");
-    Assertions.assertTrue(expr.isPresent());
+    assertTrue(expr.isPresent());
     expr.get().accept(traverser);
 
-    Assertions.assertEquals("void", tc.typeOf(expr.get()).print());
+    assertEquals("void", tc.typeOf(expr.get()).print());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 

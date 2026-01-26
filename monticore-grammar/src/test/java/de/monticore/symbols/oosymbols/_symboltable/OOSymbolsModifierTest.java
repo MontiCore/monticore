@@ -2,13 +2,11 @@
 package de.monticore.symbols.oosymbols._symboltable;
 
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class OOSymbolsModifierTest {
 
@@ -22,105 +20,105 @@ public class OOSymbolsModifierTest {
   public void testOOTypeSymbolModifier() {
     OOTypeSymbol symbol = OOSymbolsMill.oOTypeSymbolBuilder().setName("Foo").build();
 
-    Assertions.assertFalse(symbol.isIsPublic());
-    Assertions.assertFalse(symbol.isIsPrivate());
-    Assertions.assertFalse(symbol.isIsProtected());
+    assertFalse(symbol.isIsPublic());
+    assertFalse(symbol.isIsPrivate());
+    assertFalse(symbol.isIsProtected());
 
     symbol.setIsPublic(true);
 
-    Assertions.assertTrue(symbol.isIsPublic());
-    Assertions.assertFalse(symbol.isIsPrivate());
-    Assertions.assertFalse(symbol.isIsProtected());
+    assertTrue(symbol.isIsPublic());
+    assertFalse(symbol.isIsPrivate());
+    assertFalse(symbol.isIsProtected());
 
     symbol.setIsPrivate(true);
 
-    Assertions.assertFalse(symbol.isIsPublic());
-    Assertions.assertTrue(symbol.isIsPrivate());
-    Assertions.assertFalse(symbol.isIsProtected());
+    assertFalse(symbol.isIsPublic());
+    assertTrue(symbol.isIsPrivate());
+    assertFalse(symbol.isIsProtected());
 
     symbol.setIsProtected(true);
 
-    Assertions.assertFalse(symbol.isIsPublic());
-    Assertions.assertFalse(symbol.isIsPrivate());
-    Assertions.assertTrue(symbol.isIsProtected());
+    assertFalse(symbol.isIsPublic());
+    assertFalse(symbol.isIsPrivate());
+    assertTrue(symbol.isIsProtected());
 
     symbol.setIsProtected(false);
 
-    Assertions.assertFalse(symbol.isIsPublic());
-    Assertions.assertFalse(symbol.isIsPrivate());
-    Assertions.assertFalse(symbol.isIsProtected());
+    assertFalse(symbol.isIsPublic());
+    assertFalse(symbol.isIsPrivate());
+    assertFalse(symbol.isIsProtected());
   }
 
   @Test
   public void testFieldSymbolModifier() {
     FieldSymbol symbol = OOSymbolsMill.fieldSymbolBuilder().setName("Foo").build();
 
-    Assertions.assertFalse(symbol.isIsPublic());
-    Assertions.assertFalse(symbol.isIsPrivate());
-    Assertions.assertFalse(symbol.isIsProtected());
+    assertFalse(symbol.isIsPublic());
+    assertFalse(symbol.isIsPrivate());
+    assertFalse(symbol.isIsProtected());
 
     symbol.setIsPublic(true);
 
-    Assertions.assertTrue(symbol.isIsPublic());
-    Assertions.assertFalse(symbol.isIsPrivate());
-    Assertions.assertFalse(symbol.isIsProtected());
+    assertTrue(symbol.isIsPublic());
+    assertFalse(symbol.isIsPrivate());
+    assertFalse(symbol.isIsProtected());
 
     symbol.setIsPrivate(true);
 
-    Assertions.assertFalse(symbol.isIsPublic());
-    Assertions.assertTrue(symbol.isIsPrivate());
-    Assertions.assertFalse(symbol.isIsProtected());
+    assertFalse(symbol.isIsPublic());
+    assertTrue(symbol.isIsPrivate());
+    assertFalse(symbol.isIsProtected());
 
     symbol.setIsProtected(true);
 
-    Assertions.assertFalse(symbol.isIsPublic());
-    Assertions.assertFalse(symbol.isIsPrivate());
-    Assertions.assertTrue(symbol.isIsProtected());
+    assertFalse(symbol.isIsPublic());
+    assertFalse(symbol.isIsPrivate());
+    assertTrue(symbol.isIsProtected());
 
     symbol.setIsProtected(false);
 
-    Assertions.assertFalse(symbol.isIsPublic());
-    Assertions.assertFalse(symbol.isIsPrivate());
-    Assertions.assertFalse(symbol.isIsProtected());
+    assertFalse(symbol.isIsPublic());
+    assertFalse(symbol.isIsPrivate());
+    assertFalse(symbol.isIsProtected());
   }
 
   @Test
   public void testMethodSymbolModifier() {
     MethodSymbol symbol = OOSymbolsMill.methodSymbolBuilder().setName("Foo").build();
 
-    Assertions.assertFalse(symbol.isIsPublic());
-    Assertions.assertFalse(symbol.isIsPrivate());
-    Assertions.assertFalse(symbol.isIsProtected());
+    assertFalse(symbol.isIsPublic());
+    assertFalse(symbol.isIsPrivate());
+    assertFalse(symbol.isIsProtected());
 
     symbol.setIsPublic(true);
 
-    Assertions.assertTrue(symbol.isIsPublic());
-    Assertions.assertFalse(symbol.isIsPrivate());
-    Assertions.assertFalse(symbol.isIsProtected());
+    assertTrue(symbol.isIsPublic());
+    assertFalse(symbol.isIsPrivate());
+    assertFalse(symbol.isIsProtected());
 
     symbol.setIsPrivate(true);
 
-    Assertions.assertFalse(symbol.isIsPublic());
-    Assertions.assertTrue(symbol.isIsPrivate());
-    Assertions.assertFalse(symbol.isIsProtected());
+    assertFalse(symbol.isIsPublic());
+    assertTrue(symbol.isIsPrivate());
+    assertFalse(symbol.isIsProtected());
 
     symbol.setIsProtected(true);
 
-    Assertions.assertFalse(symbol.isIsPublic());
-    Assertions.assertFalse(symbol.isIsPrivate());
-    Assertions.assertTrue(symbol.isIsProtected());
+    assertFalse(symbol.isIsPublic());
+    assertFalse(symbol.isIsPrivate());
+    assertTrue(symbol.isIsProtected());
 
     symbol.setIsProtected(false);
 
-    Assertions.assertFalse(symbol.isIsPublic());
-    Assertions.assertFalse(symbol.isIsPrivate());
-    Assertions.assertFalse(symbol.isIsProtected());
+    assertFalse(symbol.isIsPublic());
+    assertFalse(symbol.isIsPrivate());
+    assertFalse(symbol.isIsProtected());
 
-    Assertions.assertFalse(symbol.isAbstract);
+    assertFalse(symbol.isAbstract);
 
     symbol.setIsAbstract(true);
 
-    Assertions.assertTrue(symbol.isAbstract);
+    assertTrue(symbol.isAbstract);
 
   }
 

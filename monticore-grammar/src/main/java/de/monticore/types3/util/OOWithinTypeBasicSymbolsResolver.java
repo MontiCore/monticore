@@ -83,12 +83,12 @@ public class OOWithinTypeBasicSymbolsResolver
     }
 
     // do not search super types for constructors
-    
+
     List<SymTypeOfFunction> symTypesFreeVarsReplaced = resolvedSymTypes.stream()
         .map(this::replaceFreeConstructorTypeVariables)
         .map(SymTypeExpression::asFunctionType)
         .collect(Collectors.toList());
-    
+
     return symTypesFreeVarsReplaced;
   }
 
@@ -140,7 +140,7 @@ public class OOWithinTypeBasicSymbolsResolver
 
     return typeVarsReplaced;
   }
-  
+
   protected boolean isConstructor(FunctionSymbol func) {
     if (OOSymbolsMill.typeDispatcher().isOOSymbolsMethod(func)) {
       MethodSymbol method = OOSymbolsMill.typeDispatcher().asOOSymbolsMethod(func);

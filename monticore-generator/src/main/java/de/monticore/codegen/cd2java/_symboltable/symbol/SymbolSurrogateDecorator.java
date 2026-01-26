@@ -126,6 +126,7 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
       .addAllCDMembers(nameMethods)
       .addAllCDMembers(delegateSymbolRuleAttributeMethods)
       .addAllCDMembers(delegateAccecptMethods)
+      .addCDMember(createEqualsMethod(this.symbolTableService.getSymbolSimpleName(symbolInput)))
       .addCDMember(createGetThis(this.symbolTableService.getSymbolSimpleName(symbolInput)))
       .addCDMember(createGetFullNameMethod())
       .addCDMember(createOverridenDeterminePackageName())
@@ -145,6 +146,14 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
     ASTCDParameter param = getCDParameterFacade().createParameter(enclosingScopeAttribute.getMCType(), "enclosingScope");
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), "setEnclosingScope", param);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "SetEnclosingScope4SymbolSurrogate", enclosingScopeAttribute, scopeName));
+    return method;
+  }
+
+  protected ASTCDMethod createEqualsMethod(String symbolClass) {
+    ASTCDParameter parameter = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType("Object"), "obj");
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), getMCTypeFacade().createBooleanType(), "equals", parameter);
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "Equals", symbolClass));
+    this.replaceTemplate(ANNOTATIONS, method, new StringHookPoint("@Override"));
     return method;
   }
 
