@@ -76,8 +76,6 @@ public class AutomataToolTest {
 
   @Test
   public void testPrintVersion() {
-
-
     new AutomataTool().run(new String[] {"-v"});
     MCAssertions.assertNoFindings();
   }
