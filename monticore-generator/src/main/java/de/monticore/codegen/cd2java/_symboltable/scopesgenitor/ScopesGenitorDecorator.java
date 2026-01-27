@@ -245,7 +245,7 @@ public class ScopesGenitorDecorator extends AbstractCreator<ASTCDCompilationUnit
     return visitMethod;
   }
 
-  private ResolveUpperArtifactAttributes resolveUpperArtifactAttributes(ASTCDType symbolClass) {
+  protected ResolveUpperArtifactAttributes resolveUpperArtifactAttributes(ASTCDType symbolClass) {
       boolean shadowing = false;
       boolean nonExporting = false;
       boolean ordered = false;
@@ -357,8 +357,7 @@ public class ScopesGenitorDecorator extends AbstractCreator<ASTCDCompilationUnit
     return methods;
   }
 
-
-  private class ResolveUpperArtifactAttributes {
+  protected static class ResolveUpperArtifactAttributes {
       boolean shadowing = false;
       boolean nonExporting = false;
       boolean ordered = false;
