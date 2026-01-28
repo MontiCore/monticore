@@ -11,6 +11,12 @@ options {
 
 ${tc.includeArgs("parser.LexerMember", [antlrGenerator, parserHelper.getGrammarSymbol().getName()])}
 
+// StartRule start tokens
+<#list genHelper.getRulesForStartRules() as startRuleSymbol>
+MC__INTERNAL_START_TOKEN_${antlrGenerator.getRuleNameForAntlr(startRuleSymbol.getName())?upper_case}:
+  'MC__INTERNAL_START_TOKEN_${antlrGenerator.getRuleNameForAntlr(startRuleSymbol.getName())}';
+</#list>
+
 // Implicit token
 <#list genHelper.getLexSymbolsWithInherited() as lexSymbol>
   ${genHelper.getOrComputeLexSymbolName(lexSymbol)} : '${genHelper.unescapeDoubleQuote(genHelper.escapeSingleQuote(lexSymbol))}';

@@ -151,6 +151,10 @@ public class Grammar2ParseVisitor implements GrammarVisitor2, GrammarHandler {
     // add visitTerminal
     visitorClass.addCDMember((m = cdMethodFacade.createMethod(CDModifier.PUBLIC.build(), astNodeType, "visitTerminal", cdParameterFacade.createParameter(TerminalNode.class, "node"))));
     glex.replaceTemplate(EMPTY_BODY, m, new TemplateHookPoint("_parser.visitor.NotImplemented"));
+    // add visitMc__internal_startrule
+    visitorClass.addCDMember((m = cdMethodFacade.createMethod(CDModifier.PUBLIC.build(), astNodeType, "visitMc__internal_startrule", cdParameterFacade.createParameter( node.getName() + "AntlrParser.Mc__internal_startruleContext", "ctx"))));
+    glex.replaceTemplate(EMPTY_BODY, m, new StringHookPoint("return (de.monticore.ast.ASTNode)ctx.getChild(1).accept(this); // 0: Terminal 1: actual production"));
+
 
     // noKeyword and splittoken introduces terminals, which require a visit method
     List<String> pseudoProductions = new ArrayList<>(grammarInfo.getSplitRules().values());

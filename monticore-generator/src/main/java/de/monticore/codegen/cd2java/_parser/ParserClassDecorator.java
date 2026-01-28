@@ -32,6 +32,7 @@ import java.util.Optional;
 import static de.monticore.cd.codegen.CD2JavaTemplates.*;
 import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
+import static de.monticore.codegen.parser.antlr.Grammar2Antlr.getRuleNameForAntlr;
 
 public class ParserClassDecorator extends AbstractDecorator {
 
@@ -77,14 +78,15 @@ public class ParserClassDecorator extends AbstractDecorator {
 
     ASTMCType returnType = getMCTypeFacade().createQualifiedType(service.getAntlrParserSimpleName());
     ASTCDParameter fileNameParameter = getCDParameterFacade().createParameter(String.class, "fileName");
-    ASTCDMethod create = getCDMethodFacade().createMethod(PROTECTED.build(), returnType, "create", fileNameParameter);
+    ASTCDParameter firstTokenParameter = getCDParameterFacade().createParameter(int.class, "firstToken");
+    ASTCDMethod create = getCDMethodFacade().createMethod(PROTECTED.build(), returnType, "create", fileNameParameter, firstTokenParameter);
     create.setCDThrowsDeclaration(CD4CodeBasisMill.cDThrowsDeclarationBuilder().addException(ioException).build());
     this.replaceTemplate(EMPTY_BODY, create, new TemplateHookPoint(TEMPLATE_PATH + "Create", grammarName));
     methods.add(create);
 
     ASTMCType readerType = getMCTypeFacade().createQualifiedType("java.io.Reader");
     ASTCDParameter readerParameter = getCDParameterFacade().createParameter(readerType, "reader");
-    ASTCDMethod createReader = getCDMethodFacade().createMethod(PROTECTED.build(), returnType, "create", readerParameter);
+    ASTCDMethod createReader = getCDMethodFacade().createMethod(PROTECTED.build(), returnType, "create", readerParameter, firstTokenParameter);
     createReader.setCDThrowsDeclaration(CD4CodeBasisMill.cDThrowsDeclarationBuilder().addException(ioException).build());
     this.replaceTemplate(EMPTY_BODY, createReader, new TemplateHookPoint(TEMPLATE_PATH + "CreateReader", grammarName));
     methods.add(createReader);
@@ -161,13 +163,14 @@ public class ParserClassDecorator extends AbstractDecorator {
       ASTCDParameter fileNameParameter = getCDParameterFacade().createParameter(String.class, "fileName");
       ASTCDMethod parse = getCDMethodFacade().createMethod(PUBLIC.build(), returnType, "parse" + parseMethodSuffix, fileNameParameter);
       parse.setCDThrowsDeclaration(CD4CodeBasisMill.cDThrowsDeclarationBuilder().addException(ioException).build());
-      this.replaceTemplate(EMPTY_BODY, parse, new TemplateHookPoint(TEMPLATE_PATH + "ParseRule", grammarName, qualifiedRuleName, service.getParseRuleNameJavaCompatible(prod)));
+      String startLexerName = "MC__INTERNAL_START_TOKEN_" + getRuleNameForAntlr(parseMethodSuffix).toUpperCase();
+      this.replaceTemplate(EMPTY_BODY, parse, new TemplateHookPoint(TEMPLATE_PATH + "ParseRule", grammarName, qualifiedRuleName, startLexerName));
       methods.add(parse);
       ASTMCType readerType = getMCTypeFacade().createQualifiedType("java.io.Reader");
       ASTCDParameter readerParameter = getCDParameterFacade().createParameter(readerType, "reader");
       ASTCDMethod parseReader = getCDMethodFacade().createMethod(PUBLIC.build(), returnType, "parse" + parseMethodSuffix, readerParameter);
       parseReader.setCDThrowsDeclaration(CD4CodeBasisMill.cDThrowsDeclarationBuilder().addException(ioException).build());
-      this.replaceTemplate(EMPTY_BODY, parseReader, new TemplateHookPoint(TEMPLATE_PATH + "ParseRuleReader", grammarName, qualifiedRuleName, service.getParseRuleNameJavaCompatible(prod)));
+      this.replaceTemplate(EMPTY_BODY, parseReader, new TemplateHookPoint(TEMPLATE_PATH + "ParseRuleReader", grammarName, qualifiedRuleName, startLexerName));
       methods.add(parseReader);
       ASTCDParameter strParameter = getCDParameterFacade().createParameter(String.class, "str");
       ASTCDMethod parseString = getCDMethodFacade().createMethod(PUBLIC.build(), returnType, "parse_String" + parseMethodSuffix, strParameter);

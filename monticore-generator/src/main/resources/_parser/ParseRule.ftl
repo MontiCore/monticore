@@ -1,8 +1,8 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("grammarName", "astClassName", "parseRuleNameJavaCompatible")}
-  ${grammarName}AntlrParser parser = create(fileName);
+${tc.signature("grammarName", "astClassName", "lexerStartRuleName")}
+  ${grammarName}AntlrParser parser = create(fileName, ${grammarName}AntlrLexer.${lexerStartRuleName});
   ${astClassName} astPV;
-  var prc = parser.${parseRuleNameJavaCompatible}();
+  var prc = parser.mc__internal_startrule();
   if (parser.hasErrors()) {
     setError(true);
     return Optional.empty();
