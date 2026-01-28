@@ -245,7 +245,7 @@ public class DetailedReporter extends AReporter {
         ReportingConstants.REPORTING_ROW_LENGTH);
   }
   
-  void reportTemplateAction(ASTNode astNode, String templatename,
+  protected void reportTemplateAction(ASTNode astNode, String templatename,
       String actionType) {
     String startString = actionType + getLineStart(astNode);
     String line = startString + Layouter.getSpaceString(

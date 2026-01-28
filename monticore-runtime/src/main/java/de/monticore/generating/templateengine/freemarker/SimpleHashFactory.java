@@ -22,7 +22,7 @@ public class SimpleHashFactory {
 
   private static SimpleHashFactory theInstance;
 
-  SimpleHashFactory() {
+  protected SimpleHashFactory() {
     theInstance = this;
     // use empty logger to suppress default free marker log behaviour
     System.setProperty(Logger.SYSTEM_PROPERTY_NAME_LOGGER_LIBRARY, Logger.LIBRARY_NAME_NONE);

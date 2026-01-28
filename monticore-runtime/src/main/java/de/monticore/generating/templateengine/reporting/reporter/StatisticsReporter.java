@@ -83,7 +83,7 @@ public class StatisticsReporter extends SummaryReporter {
     closeFile();
   }
 
-  void putVersion() {
+  protected void putVersion() {
     try {
       Properties properties = new Properties();
       properties.load(this.getClass().getResourceAsStream("/buildInfo.properties"));
