@@ -48,22 +48,18 @@ public abstract class MCGeneratorBasePlugin implements Plugin<Project> {
       mcBuildInfoTask.getVersion().set(project.provider(() -> project.getVersion().toString()));
     });
 
-    // writeMCBuildInfo should always be performed before processing resources
+    // writeMCBuildInfo should always be performed before processing resources...
     project.getTasks().withType(ProcessResources.class).configureEach(t -> {
       t.dependsOn(writeMCBuildInfo);
     });
 
-    // pass the ProgressLogger ServiceProvider to the task
+    // ... or before generating grammars
     project.getTasks().withType(MCGenTask.class).configureEach(t -> {
       t.dependsOn(writeMCBuildInfo);
-      try {
-        // "Build services cannot be serialized"
-        // This results in suboptimal Gradle-reporting of the ProgressLogger-Operations
-        // t.getProgressLoggerService().set(serviceProvider);
-      }catch (IllegalArgumentException ignored){
-        // Sometimes a "Cannot set the value of task" exception occurs
-        // due to progressLoggerService being isolated somehow
-      }
+      // we can no longer pass the ProgressLogger ServiceProvider to the task due to
+      // "Build services cannot be serialized"
+      // This results in suboptimal Gradle-reporting of the ProgressLogger-Operations
+      // t.getProgressLoggerService().set(serviceProvider);
     });
 
     // Also provide the legacy MCTask (for now)
