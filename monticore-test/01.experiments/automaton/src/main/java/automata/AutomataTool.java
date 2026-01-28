@@ -30,21 +30,6 @@ import java.util.Optional;
 public class AutomataTool extends AutomataToolTOP {
 
   /**
-   * Main method of the Tool
-   *
-   * Arguments expected:
-   * * input automaton file.
-   * * the path to store the symbol table
-   *
-   * @param args
-   */
-  public static void main(String[] args) {
-    // delegate main to instantiatable method for better integration,
-    // reuse, etc.
-    new AutomataTool().run(args);
-  }
-
-  /**
    * Run implements the main method of the Automata tool workflow:
    *
    * Arguments expected:
@@ -77,6 +62,10 @@ public class AutomataTool extends AutomataToolTOP {
         printVersion();
         //do not continue when help is printed
         return;
+      }
+      //throw: simulate an internal exception occurring for testing main
+      else if  (cmd.hasOption("throw")) {
+        throw new RuntimeException("This is a test exception thrown to test");
       }
 
       Log.info("Automata DSL Tool", "AutomataTool");
@@ -171,4 +160,11 @@ public class AutomataTool extends AutomataToolTOP {
     Log.println(pp.getResult());
   }
 
+  @Override
+  public Options addAdditionalOptions(Options options) {
+     options.addOption("throw",
+         "used for simulating an interal exception"
+     );
+     return options;
+  }
 }

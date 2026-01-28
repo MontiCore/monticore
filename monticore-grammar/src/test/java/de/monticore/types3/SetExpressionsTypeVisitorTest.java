@@ -339,6 +339,8 @@ public class SetExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
         arguments("{\"1\", varPerson}", "Set<(Person | R\"1\")>"),
         // complex
         arguments("{{1}}", "Set<Set<int>>")
+        // too hard to solve due to union
+        //arguments("{{1}, {1.0}}", "Set<Set<int> | Set<double>>")
     );
   }
 

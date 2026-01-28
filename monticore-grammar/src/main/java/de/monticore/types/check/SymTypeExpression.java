@@ -11,6 +11,7 @@ import de.monticore.symbols.oosymbols._symboltable.*;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.types3.ISymTypeVisitor;
 import de.monticore.types3.util.SymTypeDeepCloneVisitor;
+import de.monticore.types3.util.SymTypeExpressionComparator;
 import de.monticore.types3.util.SymTypePrintFullNameVisitor;
 import de.monticore.types3.util.SymTypePrintVisitor;
 import de.se_rwth.commons.logging.Log;
@@ -24,7 +25,8 @@ import java.util.stream.Collectors;
  * It shares common functionality
  * (such as comparison, printing)
  */
-public abstract class SymTypeExpression {
+public abstract class SymTypeExpression
+    implements Comparable<SymTypeExpression> {
 
   protected static final String LOG_NAME = "SymTypeExpression";
 
@@ -290,6 +292,11 @@ public abstract class SymTypeExpression {
   }
 
   public abstract boolean deepEquals(SymTypeExpression sym);
+
+  @Override
+  public int compareTo(SymTypeExpression o) {
+    return SymTypeExpressionComparator.compareSymTypeExpressions(this, o);
+  }
 
   @Deprecated(forRemoval = true)
   protected List<FunctionSymbol> functionList = new ArrayList<>();

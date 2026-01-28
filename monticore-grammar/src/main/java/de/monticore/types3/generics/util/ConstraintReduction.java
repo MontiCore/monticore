@@ -117,12 +117,14 @@ public class ConstraintReduction {
 
   protected String printConstraints(List<Constraint> constraints) {
     return constraints.stream()
+        .sorted()
         .map(Constraint::print)
         .collect(Collectors.joining(System.lineSeparator()));
   }
 
   protected String printBounds(List<Bound> constraints) {
     return constraints.stream()
+        .sorted()
         .map(Bound::print)
         .collect(Collectors.joining(System.lineSeparator()));
   }
