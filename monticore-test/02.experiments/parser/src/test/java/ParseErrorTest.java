@@ -158,7 +158,9 @@ public class ParseErrorTest {
     // Wrong separator used (dot instead of comma)
     parser.parse_StringTestSepList("seplist a.b");
     Assertions.assertTrue(parser.hasErrors());
-    Assertions.assertEquals("Expected EOF but found token [@2,9:9='.',<18>,1:9]", Log.getFindings().get(0).getMsg());
+    Assertions.assertEquals("mismatched input '.' expecting {<EOF>, ','} (found: POINT) in rule stack: [] \n" +
+            "seplist a.b\n" +
+            "         ^", Log.getFindings().get(0).getMsg());
   }
 
   @Test
@@ -166,7 +168,9 @@ public class ParseErrorTest {
     // No separator used
     parser.parse_StringTestSepList("seplist a b");
     Assertions.assertTrue(parser.hasErrors());
-    Assertions.assertEquals("Expected EOF but found token [@2,10:10='b',<29>,1:10]", Log.getFindings().get(0).getMsg());
+    Assertions.assertEquals("extraneous input 'b' expecting <EOF> in rule stack: [] \n" +
+            "seplist a b\n" +
+            "          ^", Log.getFindings().get(0).getMsg());
   }
 
 

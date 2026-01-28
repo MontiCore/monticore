@@ -418,6 +418,7 @@ public class ParserGeneratorHelper {
   public Collection<ProdSymbol> getRulesForStartRules() {
     return grammarSymbol.getProdsWithInherited().values().stream()
             .filter(i -> !i.isIsLexerProd()
+                    && !i.isIsExternal()
                     && !(i.isClass() && i.isIsIndirectLeftRecursive()))
             .collect(Collectors.toList());
   }

@@ -16,11 +16,11 @@ ${tc.includeArgs("parser.ParserHeader",suffix)}
 }
 
 // StartRule
-mc__internal_startrule :
+mc__internal_startrule : (
 <#list genHelper.getRulesForStartRules() as startRuleSymbol>
   ( MC__INTERNAL_START_TOKEN_${antlrGenerator.getRuleNameForAntlr(startRuleSymbol.getName())?upper_case} ${antlrGenerator.getRuleNameForAntlr(startRuleSymbol.getName())})
     <#sep> |
-</#list>
+</#list> )
  EOF;
 
 // ParserRulesToGenerate
