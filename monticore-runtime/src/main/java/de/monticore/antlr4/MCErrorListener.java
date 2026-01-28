@@ -105,11 +105,11 @@ public class MCErrorListener extends BaseErrorListener {
         }
         msg += ", expecting " + expectedTokens;
       }
-      // Determine rule stack without eof-rule
+      // Determine rule stack without eof-rule or internal start rule
       List<String> stack = ((Parser) recognizer).getRuleInvocationStack();
       List<String> rules = Lists.newArrayList();
       for (int i = stack.size() - 1; i >= 0; i--) {
-        if (!(i == stack.size() - 1 && stack.get(i).endsWith("_eof"))) {
+        if (!(i == stack.size() - 1 && stack.get(i).endsWith("_eof")) && !stack.get(i).equals("mc__internal_startrule")) {
           rules.add(StringTransformations.capitalize(stack.get(i)));
         }
       }
