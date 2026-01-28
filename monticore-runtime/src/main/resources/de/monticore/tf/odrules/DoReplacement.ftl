@@ -1,6 +1,7 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 
 public void doReplacement() {
+  isHostGraphDirty = true;
 
   for(Match m:allMatches){
 
