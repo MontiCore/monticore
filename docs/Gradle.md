@@ -316,7 +316,7 @@ Only applies if you see the following warning:
 
 Gradle separates the plugins of subprojects against the plugins of other subprojects.
 As MontiCore (and other generation plugins) schedules its work,
- this might separation leads to issues.
+ this separation may leads to issues.
 While the plugin tries to work around the separation,
  the performance decreases, the log prefixes might be missing,
  and the `reportCachedQueueService` task does not contain the tasknames.
