@@ -260,9 +260,11 @@ public class ParserClassDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(CDModifier.PROTECTED, createFileName.getModifier());
     assertEquals(1, createFileName.getCDThrowsDeclaration().getExceptionList().size());
     assertDeepEquals(ioException, createFileName.getCDThrowsDeclaration().getException(0));
-    assertEquals(1, createFileName.sizeCDParameters());
+    assertEquals(2, createFileName.sizeCDParameters());
     assertDeepEquals(String.class, createFileName.getCDParameter(0).getMCType());
     assertEquals("fileName", createFileName.getCDParameter(0).getName());
+    assertDeepEquals(int.class, createFileName.getCDParameter(1).getMCType());
+    assertEquals("firstToken", createFileName.getCDParameter(1).getName());
 
     //create with reader
     ASTCDMethod createReader = methods.get(1);
@@ -271,10 +273,12 @@ public class ParserClassDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(CDModifier.PROTECTED, createReader.getModifier());
     assertEquals(1, createReader.getCDThrowsDeclaration().getExceptionList().size());
     assertDeepEquals(ioException, createReader.getCDThrowsDeclaration().getException(0));
-    assertEquals(1, createReader.sizeCDParameters());
+    assertEquals(2, createReader.sizeCDParameters());
     assertDeepEquals("java.io.Reader", createReader.getCDParameter(0).getMCType());
     assertEquals("reader", createReader.getCDParameter(0).getName());
-  
+    assertDeepEquals(int.class, createFileName.getCDParameter(1).getMCType());
+    assertEquals("firstToken", createFileName.getCDParameter(1).getName());
+
     assertTrue(Log.getFindings().isEmpty());
   }
 
