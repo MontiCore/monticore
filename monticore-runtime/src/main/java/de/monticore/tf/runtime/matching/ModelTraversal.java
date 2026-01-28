@@ -13,7 +13,7 @@ public class ModelTraversal<E extends ITraverser> {
   protected Map<ASTNode, ASTNode> parents= new LinkedHashMap<>();
   protected Stack<ASTNode> currentparents = new Stack<>();
 
-  private final E traverser;
+  protected final E traverser;
 
   protected ModelTraversal(E traverser) {
     this.traverser = traverser;

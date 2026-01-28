@@ -128,7 +128,7 @@ public class MCErrorListener extends BaseErrorListener {
     parser.setErrors(true);
   }
 
-  private static List<String> extractNoKeywordTokens(Recognizer<?, ?> recognizer, Set<Map.Entry<Integer, String>> epsilonRules) {
+  protected static List<String> extractNoKeywordTokens(Recognizer<?, ?> recognizer, Set<Map.Entry<Integer, String>> epsilonRules) {
     Pattern nokeywordPattern = Pattern.compile("nokeyword_(.*)_[0-9]*");
     // Turn the next expected rules into a human readable format:
     List<String> noKeywordRules = epsilonRules.stream().map(r -> {

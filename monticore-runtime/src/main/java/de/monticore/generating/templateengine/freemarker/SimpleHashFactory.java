@@ -19,19 +19,18 @@ import java.util.Map;
  */
 // STATE SMELL PN
 public class SimpleHashFactory {
-  
+
   private static SimpleHashFactory theInstance;
-  
-  private SimpleHashFactory() {
+
+  protected SimpleHashFactory() {
+    theInstance = this;
     // use empty logger to suppress default free marker log behaviour
     System.setProperty(Logger.SYSTEM_PROPERTY_NAME_LOGGER_LIBRARY, Logger.LIBRARY_NAME_NONE);
   }
   
   public static SimpleHashFactory getInstance() {
     if (theInstance == null) {
-      synchronized (SimpleHashFactory.class) {
-        theInstance = new SimpleHashFactory();
-      }
+      new SimpleHashFactory();
     }
     return theInstance;
   }
