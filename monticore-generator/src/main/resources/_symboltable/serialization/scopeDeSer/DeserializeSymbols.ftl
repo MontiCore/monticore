@@ -26,7 +26,7 @@ ${tc.signature("symbolMap", "mill", "errorCode", "scopeDeserName", "scopeInterfa
     }
 <#assign count=0>
 <#list symbolMap?keys as kind>
-  else if ("${kind}".equals(kind)
+  else if ("${kind}".equals(kind.get())
         || "${kind}".equals(deSer.getSerializedKind())) {
       ${kind} s${count} = (${kind}) deSer.deserialize(scope, symbol);
       scope.add(s${count});
