@@ -6,3 +6,5 @@ public /* t2 */ void /* t4 */ doStuff() /* t6 */ {
   // Final doStuff
 }
 // After doStuff
+// After doStuff^2
+// After doStuff^2

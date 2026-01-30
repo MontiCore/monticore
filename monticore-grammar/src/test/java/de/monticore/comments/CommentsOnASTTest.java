@@ -47,8 +47,9 @@ public class CommentsOnASTTest {
 
     assertEquals(1, m.get_PreCommentList().size());
     assertEquals("// (c) https://github.com/MontiCore/monticore", m.get_PreComment(0).getText());
-    assertEquals(1, m.get_PreCommentList().size());
+    assertEquals(2, m.get_PostCommentList().size());
     assertEquals("// After doStuff", m.get_PostComment(0).getText());
+    assertEquals("// After doStuff^2", m.get_PostComment(1).getText());
 
     assertEquals(1, m.sizeMCModifiers());
     assertEquals(0, m.getMCModifier(0).get_PostCommentList().size());
