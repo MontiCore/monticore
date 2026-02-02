@@ -1198,6 +1198,12 @@ including the `Automata` tool class `AutomataTool`. For running the
 `Automata` DSL tool, execute the following command:
 
 === "CLI"
+    **With cmd on Windows**
+    ```batch
+    java -cp "src/;out/;hwc/;monticore-rt.jar" ^
+                        automata.AutomataTool -i example/PingPong.aut ^
+                        -s st/PingPong.autsym
+    ```    
     **With Powershell on Windows**
     ```powershell
     java -cp "src/;out/;hwc/;monticore-rt.jar" `
@@ -1208,12 +1214,6 @@ including the `Automata` tool class `AutomataTool`. For running the
     ```bash
     java -cp "src/:out/:hwc/:monticore-rt.jar" \
                         automata.AutomataTool -i example/PingPong.aut \
-                        -s st/PingPong.autsym
-    ```
-    **With cmd on Windows**
-    ```batch
-    java -cp "src/;out/;hwc/;monticore-rt.jar" ^
-                        automata.AutomataTool -i example/PingPong.aut ^
                         -s st/PingPong.autsym
     ```
 
@@ -1232,6 +1232,12 @@ including the `Automata` tool class `AutomataTool`. For running the
     **With JUnit**  
     Run the `AutoamtaToolTest` JUnit test.
 
+    **With cmd on Windows**
+    ```batch
+    java -jar target/libs/automaton-7.7.0-tool.jar ^
+                        -i src/test/resources/automata/parser/PingPong.aut ^
+                        -s st/PingPong.autsym
+    ```
     **With Powershell on Windows**
     ```powershell
     java -jar target/libs/automaton-7.7.0-tool.jar `
@@ -1242,12 +1248,6 @@ including the `Automata` tool class `AutomataTool`. For running the
     ```bash
     java -jar target/libs/automaton-7.7.0-tool.jar \
                         -i src/test/resources/automata/parser/PingPong.aut \
-                        -s st/PingPong.autsym
-    ```
-    **With cmd on Windows**
-    ```batch
-    java -jar target/libs/automaton-7.7.0-tool.jar ^
-                        -i src/test/resources/automata/parser/PingPong.aut ^
                         -s st/PingPong.autsym
     ```
 
