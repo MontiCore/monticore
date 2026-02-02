@@ -6,8 +6,7 @@ import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.stereotypes.IStereotypeReference;
 import de.se_rwth.commons.logging.Log;
 import de.monticore.ast.ASTNode;
-
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -22,7 +21,7 @@ public class SymbolWithScopeOfUnknownKindBuilder {
 
   protected AccessModifier accessModifier;
 
-  protected Map<IStereotypeReference, Optional<MIValue>> stereoinfo = new HashMap<>();
+  protected Map<IStereotypeReference, Optional<MIValue>> stereoinfo = new LinkedHashMap<>();
 
   protected IScope enclosingScope;
 

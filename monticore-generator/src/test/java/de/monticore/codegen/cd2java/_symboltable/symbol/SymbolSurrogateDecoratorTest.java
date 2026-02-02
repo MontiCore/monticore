@@ -21,8 +21,8 @@ import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.types.MCTypeFacade;
 import de.se_rwth.commons.logging.Log;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
@@ -34,9 +34,7 @@ import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodsBy;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SymbolSurrogateDecoratorTest extends DecoratorTestCase {
 
@@ -58,7 +56,7 @@ public class SymbolSurrogateDecoratorTest extends DecoratorTestCase {
 
   private static final String AUTOMATON_SYMBOL = "de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.AutomatonSymbol";
 
-  @Before
+  @BeforeEach
   public void setUp() {
     this.mcTypeFacade = MCTypeFacade.getInstance();
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "AutomatonSymbolCD");
@@ -141,7 +139,8 @@ public class SymbolSurrogateDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethods() {
-    assertEquals(13, symbolClassAutomaton.getCDMethodList().size());
+
+    assertEquals(17, symbolClassAutomaton.getCDMethodList().size());
   
     assertTrue(Log.getFindings().isEmpty());
   }
@@ -210,6 +209,32 @@ public class SymbolSurrogateDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
+  public void testGetSpannedScopeNameMethod() {
+    ASTCDMethod method = getMethodBy("getSpannedScope", symbolClassAutomaton);
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertDeepEquals(mcTypeFacade.createQualifiedType(I_AUTOMATON_SCOPE)
+        , method.getMCReturnType().getMCType());
+
+    assertTrue(method.isEmptyCDParameters());
+
+    assertTrue(Log.getFindings().isEmpty());
+  }
+
+  @Test
+  public void testSetSpannedScopeNameMethod() {
+    ASTCDMethod method = getMethodBy("setSpannedScope", symbolClassAutomaton);
+    assertDeepEquals(PUBLIC, method.getModifier());
+
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+
+    assertEquals(1, method.sizeCDParameters());
+    assertEquals("scope", method.getCDParameter(0).getName());
+    assertDeepEquals(I_AUTOMATON_SCOPE, method.getCDParameter(0).getMCType());
+
+    assertTrue(Log.getFindings().isEmpty());
+  }
+
+  @Test
   public void testGetFullNameMethod() {
     ASTCDMethod method = getMethodBy("getFullName", symbolClassAutomaton);
     assertDeepEquals(PUBLIC, method.getModifier());
@@ -269,12 +294,11 @@ public class SymbolSurrogateDecoratorTest extends DecoratorTestCase {
     // test parsing
     ParserConfiguration configuration = new ParserConfiguration();
     JavaParser parser = new JavaParser(configuration);
-    ParseResult parseResult = parser.parse(sb.toString());
+    ParseResult<?> parseResult = parser.parse(sb.toString());
     assertTrue(parseResult.isSuccessful());
   
     assertTrue(Log.getFindings().isEmpty());
   }
-
 
   @Test
   public void testGeneratedCodeFoo() {
@@ -286,7 +310,7 @@ public class SymbolSurrogateDecoratorTest extends DecoratorTestCase {
     // test parsing
     ParserConfiguration configuration = new ParserConfiguration();
     JavaParser parser = new JavaParser(configuration);
-    ParseResult parseResult = parser.parse(sb.toString());
+    ParseResult<?> parseResult = parser.parse(sb.toString());
     assertTrue(parseResult.isSuccessful());
   
     assertTrue(Log.getFindings().isEmpty());

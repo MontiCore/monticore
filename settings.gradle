@@ -6,13 +6,16 @@ pluginManagement {
       mavenLocal()
     }
     maven {
-      credentials.username mavenUser
-      credentials.password mavenPassword
-      url repo
+      credentials.username = mavenUser
+      credentials.password = mavenPassword
+      url = repo
     }
   
     gradlePluginPortal()
   }
+}
+plugins {
+  id 'org.gradle.toolchains.foojay-resolver-convention' version '0.9.0'
 }
 
 boolean isCi = System.getenv().containsKey("CI")
@@ -82,6 +85,7 @@ include(':monticore-test:01experiments:lexicalModes')
 include(':monticore-test:01experiments:patternAccess')
 include(':monticore-test:01experiments:prettyPrinters')
 include(':monticore-test:01experiments:questionnaire')
+include(':monticore-test:01experiments:runtimeOnly')
 include(':monticore-test:01experiments:S01_intro')
 include(':monticore-test:01experiments:scannerless')
 include(':monticore-test:01experiments:spaceOnOff-negative')
@@ -131,5 +135,20 @@ if ("true".equals(getProperty('genEMF'))) { // Only test EMF if the flag is set
   include(':monticore-test:01experiments:forEmfAst')
 }
 
-// include 'example'
-// project(':example').projectDir = file("monticore-test/example")
+if (!inComposite) {
+  // Gradle's project substitution due to composite builds would prevent us from using the previous grammar version
+  // We avoid this by using the result of the shadowed generator jar
+  gradle.beforeProject { p ->
+    p.configurations.configureEach {
+      if (it.name == "mcTool") {
+        p.dependencies {
+          mcTool("de.monticore:monticore-generator:$version") {
+            capabilities {
+              requireCapability("de.monticore:monticore-generator-shadow")
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,6 +1,7 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.types3.util;
 
+import com.google.common.base.Preconditions;
 import de.monticore.types.check.SIUnitBasic;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
@@ -12,7 +13,7 @@ import de.se_rwth.commons.logging.Log;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -38,14 +39,14 @@ public class SIUnitTypeRelations {
 
   /**
    * to convert to base units, e.g.,
-   * Hz -> s^-1
-   * J -> m^2*g*s^-2
+   * {@code Hz -> s^-1}
+   * {@code J -> m^2*g*s^-2}
    */
   protected static final Map<String, List<SIUnitBasic>> conversionTable;
 
   // initializes the conversion table
   static {
-    Map<String, List<SIUnitBasic>> conversionTableTmp = new HashMap<>();
+    Map<String, List<SIUnitBasic>> conversionTableTmp = new LinkedHashMap<>();
     // already base units:
     conversionTableTmp.put("m", List.of(createSIBaseUnit("m")));
     conversionTableTmp.put("g", List.of(createSIBaseUnit("g")));
@@ -195,10 +196,10 @@ public class SIUnitTypeRelations {
    * (s, m, kg, A, K, mol, cd)
    * any prefixes are removed (except "k" of kg)
    * Additionally, only one of each base unit exists in the SymType, e.g.,
-   * kg^2*m*kg -> kg^3*m
+   * {@code kg^2*m*kg -> kg^3*m}
    * and every exponent is positive, e.g.,
-   * kg^-2*m^0*s/K^-2 -> s*K^2/kg^2
-   * <p/>
+   * {@code kg^-2*m^0*s/K^-2 -> s*K^2/kg^2}
+   * <p>
    * this is implemented here (instead of the normalize visitor),
    * as it requires a lot of domain-specific knowledge / calculations.
    */
@@ -209,7 +210,7 @@ public class SIUnitTypeRelations {
   protected SymTypeOfSIUnit _normalize(SymTypeOfSIUnit siUnit) {
     SymTypeOfSIUnit siUnitWithBaseUnits = convertToSIBaseUnits(siUnit);
     // collect all exponents
-    Map<String, Integer> unit2Exp = new HashMap<>();
+    Map<String, Integer> unit2Exp = new LinkedHashMap<>();
     for (String dimension : baseUnitStrings) {
       unit2Exp.put(dimension, 0);
     }
@@ -397,7 +398,7 @@ public class SIUnitTypeRelations {
   }
 
   protected static void setDelegate(SIUnitTypeRelations newDelegate) {
-    SIUnitTypeRelations.delegate = Log.errorIfNull(newDelegate);
+    SIUnitTypeRelations.delegate = Preconditions.checkNotNull(newDelegate);
   }
 
   protected static SIUnitTypeRelations getDelegate() {

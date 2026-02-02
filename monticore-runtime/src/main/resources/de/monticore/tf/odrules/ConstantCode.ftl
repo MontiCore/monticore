@@ -4,10 +4,13 @@
 <#assign matchObjects = hierarchyHelper.getMandatoryMatchObjects(ast.getPattern().getMatchingObjectsList())>
 <#assign optionalMatchObjects = hierarchyHelper.getOptionalMatchObjects(ast.getPattern().getLHSObjectsList())>
 
+  public static boolean optimizeSP = true;
+
   private List<ASTNode> hostGraph;
   private GlobalExtensionManagement glex = new GlobalExtensionManagement();
   private List<Match> allMatches;
   private boolean doReplacementExecuted = false;
+  private boolean isHostGraphDirty = true;
   <#-- for each object creates a _candidates, _candidates_temp nodelist and an _cand object-->
 
   // Matches
@@ -19,7 +22,7 @@
   protected boolean ${variable.getName()}_is_fix = false;
   private ${variable.getType()} ${variable.getName()};
   </#list>
-  private ModelTraversal <?> t = ModelTraversalFactory.getInstance().create((java.util.function.Supplier)${grammarName}Mill::inheritanceTraverser);
+  private ModelTraversal <?> t = CommentBasedModelTraversalFactory.getInstance().create((java.util.function.Supplier)${grammarName}Mill::inheritanceTraverser);
   <#list ast.getPattern().getAssocList() as association>
   private mc.ast.MCAssociation ${association.getName()};
   </#list>
@@ -66,4 +69,23 @@
   public void doAll(){
     doPatternMatching();
     doReplacement();
+  }
+
+  protected void loadIntoModelTraverser() {
+    for (ASTNode astNode : Log.errorIfNull(hostGraph,
+            "0xE1200: Hostgraph is null, check constructor arguments!")) {
+      astNode.accept(t.getTraverser());
+    }
+
+    if (t instanceof CommentBasedModelTraversal) {
+      ((CommentBasedModelTraversal<?>) t).init();
+    }
+  }
+
+  /**
+  * Marks the original model as dirty, same as if {@link #doReplacement} was called.
+  * @see ${ast.getClassname()}#doReplacement()
+  */
+  public void markDirty() {
+    this.isHostGraphDirty = true;
   }

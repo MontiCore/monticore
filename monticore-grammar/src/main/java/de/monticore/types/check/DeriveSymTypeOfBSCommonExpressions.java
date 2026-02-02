@@ -30,7 +30,10 @@ import static de.monticore.types.check.TypeCheck.*;
  * For an OO language, use {@link de.monticore.types.check.DeriveSymTypeOfCommonExpressions} instead, which
  * extends the functionality of this class so that it may be used in an OO-context as well.
  * It can be combined with other expressions in your language by creating a DelegatorVisitor
+ * @deprecated part of typecheck1,
+ * use {@link de.monticore.types3.TypeCheck3} instead.
  */
+@Deprecated
 public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpression implements CommonExpressionsVisitor2, CommonExpressionsHandler {
 
   protected CommonExpressionsTraverser traverser;
@@ -1035,7 +1038,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
                                                            ASTCallExpression callExpr,
                                                            List<SymTypeExpression> argTypes) {
     List<SymTypeOfFunction> functions = new ArrayList<>();
-    Map<SymTypeOfFunction, FunctionSymbol> symTypeToSymbol = new HashMap<>();
+    Map<SymTypeOfFunction, FunctionSymbol> symTypeToSymbol = new LinkedHashMap<>();
     for(FunctionSymbol functionSymbol : candidates) {
       SymTypeOfFunction function = functionSymbol.getFunctionType();
       functions.add(function);
@@ -1121,7 +1124,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
       return candidates;
     }
     boolean ambiguous = false;
-    Map<SymTypeOfFunction, int[]> specificityMap = new HashMap<>();
+    Map<SymTypeOfFunction, int[]> specificityMap = new LinkedHashMap<>();
     List<SymTypeOfFunction> mostSpecific = Lists.newArrayList(candidates.get(0));
     for(SymTypeOfFunction function: candidates) {
       int[] specificity = new int[args.size()];
@@ -1176,7 +1179,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
   }
 
   /**
-   * helper method for <=, >=, <, > -> calculates the result of these expressions
+   * helper method for {@code <=, >=, <, > ->} calculates the result of these expressions
    */
   protected SymTypeExpression calculateTypeCompare(SymTypeExpression left, SymTypeExpression right, String op, SourcePosition pos) {
     // if the left and the right part of the expression are numerics,
@@ -1300,12 +1303,12 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
       //determine whether the result has to be a constant, generic or object
       if (arrayResult.getTypeInfo().getTypeParameterList().isEmpty()) {
         //if the return type is a primitive
-        if (SymTypePrimitive.boxMap.containsKey(arrayResult.getTypeInfo().getName())) {
+        if (arrayResult.isPrimitive()) {
           wholeResult = SymTypeExpressionFactory.createPrimitive(arrayResult.getTypeInfo().getName());
         }
         else {
           //if the return type is an object
-          wholeResult = SymTypeExpressionFactory.createTypeObject(arrayResult.getTypeInfo().getName(), getScope(scope));
+          wholeResult = SymTypeExpressionFactory.createTypeObjectViaSurrogate(arrayResult.getTypeInfo().getName(), getScope(scope));
         }
       }
       else {

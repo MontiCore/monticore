@@ -9,12 +9,10 @@ import mc.feature.fautomaton.automaton.flatautomaton._ast.ASTAutomaton;
 import mc.feature.fautomaton.automaton.flatautomaton._ast.FlatAutomatonPackage;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.*;
-import org.junit.Test;
-import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MetaObjectTest extends GeneratorIntegrationsTest {
 
@@ -22,7 +20,7 @@ public class MetaObjectTest extends GeneratorIntegrationsTest {
 
   }
   @Test
-  @Ignore
+  @Disabled
   public void testSuperTypes() {
     EClass compAssig = ExpressionPackage.eINSTANCE.getASTComplexAssigment();
     

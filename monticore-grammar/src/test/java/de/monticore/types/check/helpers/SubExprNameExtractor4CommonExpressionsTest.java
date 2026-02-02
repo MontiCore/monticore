@@ -8,12 +8,13 @@ import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SubExprNameExtractor4CommonExpressionsTest {
 
@@ -41,12 +42,12 @@ public class SubExprNameExtractor4CommonExpressionsTest {
     SubExprNameExtractionResult result = nameCalculator.calculateNameParts(methodNameExpr);
 
     // Then
-    Assertions.assertTrue(result.resultIsValidName());
-    Assertions.assertEquals(1, result.getNamePartsRaw().size());
-    Assertions.assertEquals("test", result.getLastName().get());
-    Assertions.assertEquals(methodNameExpr, result.getNamePartsIfValid().get().get(0).getExpression());
+    assertTrue(result.resultIsValidName());
+    assertEquals(1, result.getNamePartsRaw().size());
+    assertEquals("test", result.getLastName().get());
+    assertEquals(methodNameExpr, result.getNamePartsIfValid().get().get(0).getExpression());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   /**
@@ -63,15 +64,15 @@ public class SubExprNameExtractor4CommonExpressionsTest {
     SubExprNameExtractionResult result = nameCalculator.calculateNameParts(methodNameExpr);
 
     // Then
-    Assertions.assertTrue(result.resultIsValidName());
+    assertTrue(result.resultIsValidName());
     List<ExprToNamePair> nameParts = result.getNamePartsIfValid().get();
 
-    Assertions.assertEquals(3, result.getNamePartsRaw().size());
-    Assertions.assertEquals("test", result.getLastName().get());
-    Assertions.assertEquals(methodNameExpr, nameParts.get(nameParts.size() - 1).getExpression());
-    Assertions.assertEquals(((ASTFieldAccessExpression) methodNameExpr).getExpression(), nameParts.get(nameParts.size() - 2).getExpression());
+    assertEquals(3, result.getNamePartsRaw().size());
+    assertEquals("test", result.getLastName().get());
+    assertEquals(methodNameExpr, nameParts.get(nameParts.size() - 1).getExpression());
+    assertEquals(((ASTFieldAccessExpression) methodNameExpr).getExpression(), nameParts.get(nameParts.size() - 2).getExpression());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -85,17 +86,17 @@ public class SubExprNameExtractor4CommonExpressionsTest {
     SubExprNameExtractionResult result = nameCalculator.calculateNameParts(methodNameExpr);
 
     // Then
-    Assertions.assertFalse(result.resultIsValidName());
-    Assertions.assertTrue(result.getLastName().isPresent());
+    assertFalse(result.resultIsValidName());
+    assertTrue(result.getLastName().isPresent());
 
     List<ExprToOptNamePair> subExprs = result.getNamePartsRaw();
 
-    Assertions.assertEquals(3, result.getNamePartsRaw().size());  // tezt NameExpr, tezt() CallExpr, tezt().test fAccExpr
-    Assertions.assertEquals("test", result.getLastName().get());
-    Assertions.assertEquals(methodNameExpr, subExprs.get(subExprs.size() - 1).getExpression());
-    Assertions.assertEquals(((ASTFieldAccessExpression) methodNameExpr).getExpression(), subExprs.get(subExprs.size() - 2).getExpression());
+    assertEquals(3, result.getNamePartsRaw().size());  // tezt NameExpr, tezt() CallExpr, tezt().test fAccExpr
+    assertEquals("test", result.getLastName().get());
+    assertEquals(methodNameExpr, subExprs.get(subExprs.size() - 1).getExpression());
+    assertEquals(((ASTFieldAccessExpression) methodNameExpr).getExpression(), subExprs.get(subExprs.size() - 2).getExpression());
 
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

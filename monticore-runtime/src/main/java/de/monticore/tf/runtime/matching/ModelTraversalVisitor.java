@@ -9,7 +9,7 @@ import java.util.LinkedList;
 
 public class ModelTraversalVisitor implements IVisitor {
 
-  private final ModelTraversal<?> modelTraversal;
+  protected final ModelTraversal<?> modelTraversal;
 
   protected ModelTraversalVisitor(
           ModelTraversal<?> modelTraversal) {

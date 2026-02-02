@@ -11,6 +11,7 @@ theme:
     - toc.follow
     - content.tabs.link
     - content.code.copy
+    - navigation.instant # search index survives navigation
   icon:
     logo: 'fontawesome/solid/desktop'
 
@@ -24,12 +25,24 @@ extra_css:
 copyright: '(c) https://github.com/MontiCore/monticore'
 
 markdown_extensions:
+  - admonition
+  - attr_list
   - pymdownx.highlight
   - pymdownx.inlinehilite
+  - pymdownx.details
   - pymdownx.superfences
-  - pymdownx.snippets
+  #  pymdownx.snippets is added by the docsnippet hook!
   - pymdownx.tabbed:
       alternate_style: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+
+hooks:
+  - docs/overrides/extensions/docsnippet.py
+
+plugins:
+  - search
 
 nav:
   - Home: 'README.md'
@@ -47,3 +60,13 @@ nav:
   - Downloads: 'docs/Download.md'
   - Publications: 'docs/Publications.md'
   - License: '00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md'
+
+# run `docs/scripts/preprocessing.sh symlink` to create this directory locally
+docs_dir: docs_wd
+
+watch:
+  - 00.org
+  - docs
+  - monticore-grammar/src
+  - monticore-runtime/src
+  - README.md

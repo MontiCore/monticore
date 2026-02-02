@@ -403,7 +403,7 @@ public class Grammar2ParseVisitor implements GrammarVisitor2, GrammarHandler {
     }
   }
 
-  protected Set<String> convertMethods = new HashSet<>();
+  protected Set<String> convertMethods = new LinkedHashSet<>();
 
   @Override
   public void handle(ASTLexProd node) {
@@ -656,7 +656,7 @@ public class Grammar2ParseVisitor implements GrammarVisitor2, GrammarHandler {
       throw new IllegalStateException("Missing tmpname " + node.getEnclosingScope().getName());
     } else if (replacedKeywords.containsKey(node.getName())) {
       int nokeywordindex = 0;
-      Map<String, ParseVisitorEntry> entries = new HashMap<>();
+      Map<String, ParseVisitorEntry> entries = new LinkedHashMap<>();
 
       for (String ignored : replacedKeywords.get(node.getName())) {
         // Make a new alternative out of each possible keyword

@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface ASTMCType extends ASTMCTypeTOP {
 
   /**
-   * Conversion to a compact string, such as "int", "Person", "List< A >"
+   * Conversion to a compact string, such as {@code "int"}, {@code "Person"}, {@code "List< A >"}
    */
   default String printType() {
     return MCBasicTypesMill.prettyPrint(this, false);

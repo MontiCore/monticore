@@ -8,11 +8,12 @@ import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.literals.testmccommonliterals.TestMCCommonLiteralsMill;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class NullAndBooleanLiteralsTest {
   
@@ -28,13 +29,13 @@ public class NullAndBooleanLiteralsTest {
   public void testNullLiteral() {
     try {
       ASTLiteral lit = MCLiteralsTestHelper.getInstance().parseLiteral("null");
-      Assertions.assertTrue(lit instanceof ASTNullLiteral);
+      assertInstanceOf(ASTNullLiteral.class, lit);
     }
     catch (Exception e) {
-      Assertions.fail(e.getMessage());
+      fail(e.getMessage());
     }
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -42,18 +43,18 @@ public class NullAndBooleanLiteralsTest {
     try {
       // literal "true":
       ASTLiteral lit = MCLiteralsTestHelper.getInstance().parseLiteral("true");
-      Assertions.assertTrue(lit instanceof ASTBooleanLiteral);
-      Assertions.assertTrue(((ASTBooleanLiteral) lit).getValue());
+      assertInstanceOf(ASTBooleanLiteral.class, lit);
+      assertTrue(((ASTBooleanLiteral) lit).getValue());
       
       // literal "false":
       lit = MCLiteralsTestHelper.getInstance().parseLiteral("false");
-      Assertions.assertTrue(lit instanceof ASTBooleanLiteral);
-      Assertions.assertFalse(((ASTBooleanLiteral) lit).getValue());
+      assertInstanceOf(ASTBooleanLiteral.class, lit);
+      assertFalse(((ASTBooleanLiteral) lit).getValue());
     }
     catch (IOException e) {
-      Assertions.fail(e.getMessage());
+      fail(e.getMessage());
     }
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

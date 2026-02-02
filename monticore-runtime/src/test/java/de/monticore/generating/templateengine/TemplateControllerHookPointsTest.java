@@ -3,6 +3,7 @@
 package de.monticore.generating.templateengine;
 
 import static de.monticore.generating.templateengine.TestConstants.TEMPLATE_PACKAGE;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,7 +16,6 @@ import de.monticore.io.FileReaderWriter;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -58,8 +58,8 @@ public class TemplateControllerHookPointsTest {
   @Test
   public void testUndefinedHook() {
     tc.getGeneratorSetup().setTracing(true);
-    Assertions.assertEquals("/* Hookpoint: hp1 */", glex.defineHookPoint(tc, "hp1"));
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertEquals("/* Hookpoint: hp1 */", glex.defineHookPoint(tc, "hp1"));
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -67,11 +67,11 @@ public class TemplateControllerHookPointsTest {
     tc.getGeneratorSetup().setTracing(false);
     String hpValue;
     hpValue = glex.defineHookPointWithDefault(tc, "hp1", "default");
-    Assertions.assertEquals("default", hpValue);
+    assertEquals("default", hpValue);
     glex.bindHookPoint("hp1", new StringHookPoint("value of hp1"));
     hpValue = glex.defineHookPointWithDefault(tc, "hp1", "default");
-    Assertions.assertEquals("value of hp1", hpValue);
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertEquals("value of hp1", hpValue);
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -82,22 +82,22 @@ public class TemplateControllerHookPointsTest {
     // define new hook point hp1
     glex.bindHookPoint("hp1", new StringHookPoint("value of hp1"));
     hpValue = glex.defineHookPoint(tc, "hp1");
-    Assertions.assertNotNull(hpValue);
-    Assertions.assertEquals("value of hp1", hpValue);
+    assertNotNull(hpValue);
+    assertEquals("value of hp1", hpValue);
     
     // overwrite value of hook point hp1
     glex.bindHookPoint("hp1", new StringHookPoint("new value of hp1"));
     hpValue = glex.defineHookPoint(tc, "hp1");
-    Assertions.assertNotNull(hpValue);
-    Assertions.assertEquals("new value of hp1", hpValue);
+    assertNotNull(hpValue);
+    assertEquals("new value of hp1", hpValue);
     
     // define new hook point hp2
     glex.bindHookPoint("hp2", new StringHookPoint("value of hp2"));
     hpValue = glex.defineHookPoint(tc, "hp2");
-    Assertions.assertNotNull(hpValue);
-    Assertions.assertEquals("value of hp2", hpValue);
+    assertNotNull(hpValue);
+    assertEquals("value of hp2", hpValue);
     // hp1 still exists
-    Assertions.assertEquals("new value of hp1", glex.defineHookPoint(tc, "hp1"));
+    assertEquals("new value of hp1", glex.defineHookPoint(tc, "hp1"));
   }
   
   
@@ -108,22 +108,22 @@ public class TemplateControllerHookPointsTest {
     // define new hook point hp1
     glex.bindHookPoint("hp1", new TemplateHookPoint(TEMPLATE_PACKAGE + "HelloWorld"));
     hpValue = glex.defineHookPoint(tc, "hp1");
-    Assertions.assertNotNull(hpValue);
-    Assertions.assertEquals("Hello World!", hpValue);
+    assertNotNull(hpValue);
+    assertEquals("Hello World!", hpValue);
     
     // overwrite value of hook point hp1
     glex.bindHookPoint("hp1", new TemplateHookPoint(TEMPLATE_PACKAGE + "HowAreYou"));
     hpValue = glex.defineHookPoint(tc, "hp1");
-    Assertions.assertNotNull(hpValue);
-    Assertions.assertEquals("How Are You?", hpValue);
+    assertNotNull(hpValue);
+    assertEquals("How Are You?", hpValue);
     
     // define new hook point hp2
     glex.bindHookPoint("hp2", new TemplateHookPoint(TEMPLATE_PACKAGE + "HelloWorld"));
     hpValue = glex.defineHookPoint(tc, "hp2");
-    Assertions.assertNotNull(hpValue);
-    Assertions.assertEquals("Hello World!", hpValue);
+    assertNotNull(hpValue);
+    assertEquals("Hello World!", hpValue);
     // hp1 still exists
-    Assertions.assertEquals("How Are You?", glex.defineHookPoint(tc, "hp1"));
+    assertEquals("How Are You?", glex.defineHookPoint(tc, "hp1"));
   }
   
   @Test
@@ -134,24 +134,24 @@ public class TemplateControllerHookPointsTest {
     CodeHookPointMock command = new CodeHookPointMock("command1");
     glex.bindHookPoint("hp1", command);
     hpValue = glex.defineHookPoint(tc, "hp1");
-    Assertions.assertNotNull(hpValue);
-    Assertions.assertEquals("command1", hpValue);
+    assertNotNull(hpValue);
+    assertEquals("command1", hpValue);
     
     // overwrite value of hook point hp1
     command = new CodeHookPointMock("command2");
     glex.bindHookPoint("hp1", command);
     hpValue = glex.defineHookPoint(tc, "hp1");
-    Assertions.assertNotNull(hpValue);
-    Assertions.assertEquals("command2", hpValue);
+    assertNotNull(hpValue);
+    assertEquals("command2", hpValue);
     
     // overwrite value of hook point hp1
     command = new CodeHookPointMock("command3");
     glex.bindHookPoint("hp2", command);
     hpValue = glex.defineHookPoint(tc, "hp2");
-    Assertions.assertNotNull(hpValue);
-    Assertions.assertEquals("command3", hpValue);
+    assertNotNull(hpValue);
+    assertEquals("command3", hpValue);
     // hp1 still exists
-    Assertions.assertEquals("command2", glex.defineHookPoint(tc, "hp1"));
+    assertEquals("command2", glex.defineHookPoint(tc, "hp1"));
   }
   
   @Test
@@ -159,51 +159,51 @@ public class TemplateControllerHookPointsTest {
     final String hp = "hp";
     
     glex.bindHookPoint(hp, new StringHookPoint("StringHook"));
-    Assertions.assertEquals("StringHook", glex.defineHookPoint(tc, hp));
+    assertEquals("StringHook", glex.defineHookPoint(tc, hp));
     
     glex.bindHookPoint(hp, new TemplateHookPoint(TEMPLATE_PACKAGE + "A"));
-    Assertions.assertEquals("A", glex.defineHookPoint(tc, hp));
+    assertEquals("A", glex.defineHookPoint(tc, hp));
     
     CodeHookPointMock command = new CodeHookPointMock("command");
     glex.bindHookPoint(hp, command);
-    Assertions.assertEquals("command", glex.defineHookPoint(tc, hp));
+    assertEquals("command", glex.defineHookPoint(tc, hp));
     
     glex.bindHookPoint(hp, new TemplateHookPoint(TEMPLATE_PACKAGE + "A"));
-    Assertions.assertEquals("A", glex.defineHookPoint(tc, hp));
+    assertEquals("A", glex.defineHookPoint(tc, hp));
     
     glex.bindHookPoint(hp, new StringHookPoint("StringHook"));
-    Assertions.assertEquals("StringHook", glex.defineHookPoint(tc, hp));
+    assertEquals("StringHook", glex.defineHookPoint(tc, hp));
   }
   
   @Test
   public void testStringHookInSubtemplate() {
-    Assertions.assertEquals("TopStringHook Hello Brave New World!", tc.include(TEMPLATE_PACKAGE + "TopStringHook").toString());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertEquals("TopStringHook Hello Brave New World!", tc.include(TEMPLATE_PACKAGE + "TopStringHook").toString());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
   public void testTemplateHookInSubtemplate() {
-    Assertions.assertEquals("TopTemplateHook A", tc.include(TEMPLATE_PACKAGE + "TopTemplateHook").toString());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertEquals("TopTemplateHook A", tc.include(TEMPLATE_PACKAGE + "TopTemplateHook").toString());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
   public void testBeforeTemplates() {
-    Assertions.assertEquals("A", tc.include(TEMPLATE_PACKAGE + "A").toString());
+    assertEquals("A", tc.include(TEMPLATE_PACKAGE + "A").toString());
     
     glex.setBeforeTemplate(TEMPLATE_PACKAGE + "A", new TemplateHookPoint(TEMPLATE_PACKAGE + "B"));
-    Assertions.assertEquals("BA", tc.include(TEMPLATE_PACKAGE + "A").toString());
+    assertEquals("BA", tc.include(TEMPLATE_PACKAGE + "A").toString());
     
     // previously set template is overwritten
     glex.setBeforeTemplate(TEMPLATE_PACKAGE + "A", new TemplateHookPoint(TEMPLATE_PACKAGE + "C"));
-    Assertions.assertEquals("CA", tc.include(TEMPLATE_PACKAGE + "A").toString());
+    assertEquals("CA", tc.include(TEMPLATE_PACKAGE + "A").toString());
     
     // pass a list of templates
     glex.setBeforeTemplate(TEMPLATE_PACKAGE + "A", Arrays.asList(
         new TemplateHookPoint(TEMPLATE_PACKAGE + "B"), 
         new TemplateHookPoint(TEMPLATE_PACKAGE + "C")));
-    Assertions.assertEquals("BCA", tc.include(TEMPLATE_PACKAGE + "A").toString());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertEquals("BCA", tc.include(TEMPLATE_PACKAGE + "A").toString());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -211,21 +211,21 @@ public class TemplateControllerHookPointsTest {
     ASTNode ast1 = new ASTNodeMock();
     ASTNode ast2 = new ASTNodeMock();
 
-    Assertions.assertEquals("A", tc.include(TEMPLATE_PACKAGE + "A", ast1).toString());
+    assertEquals("A", tc.include(TEMPLATE_PACKAGE + "A", ast1).toString());
 
     glex.setBeforeTemplate(TEMPLATE_PACKAGE + "A", ast1, new TemplateHookPoint(TEMPLATE_PACKAGE + "B"));
-    Assertions.assertEquals("BA", tc.include(TEMPLATE_PACKAGE + "A", ast1).toString());
-    Assertions.assertEquals("A", tc.include(TEMPLATE_PACKAGE + "A", ast2).toString());
+    assertEquals("BA", tc.include(TEMPLATE_PACKAGE + "A", ast1).toString());
+    assertEquals("A", tc.include(TEMPLATE_PACKAGE + "A", ast2).toString());
 
     // previously set template is overwritten
     glex.setBeforeTemplate(TEMPLATE_PACKAGE + "A", ast1, new TemplateHookPoint(TEMPLATE_PACKAGE + "C"));
-    Assertions.assertEquals("CA", tc.include(TEMPLATE_PACKAGE + "A", ast1).toString());
-    Assertions.assertEquals("A", tc.include(TEMPLATE_PACKAGE + "A", ast2).toString());
+    assertEquals("CA", tc.include(TEMPLATE_PACKAGE + "A", ast1).toString());
+    assertEquals("A", tc.include(TEMPLATE_PACKAGE + "A", ast2).toString());
 
     // add a new template
     glex.addBeforeTemplate(TEMPLATE_PACKAGE + "A", ast1, new TemplateHookPoint(TEMPLATE_PACKAGE + "B"));
-    Assertions.assertEquals("CBA", tc.include(TEMPLATE_PACKAGE + "A", ast1).toString());
-    Assertions.assertEquals("A", tc.include(TEMPLATE_PACKAGE + "A", ast2).toString());
+    assertEquals("CBA", tc.include(TEMPLATE_PACKAGE + "A", ast1).toString());
+    assertEquals("A", tc.include(TEMPLATE_PACKAGE + "A", ast2).toString());
 
   }
 
@@ -236,7 +236,7 @@ public class TemplateControllerHookPointsTest {
     // Add specific template
     glex.addBeforeTemplate(TEMPLATE_PACKAGE + "A", ast1, new TemplateHookPoint(TEMPLATE_PACKAGE + "B"));
     glex.addBeforeTemplate(TEMPLATE_PACKAGE + "A", ast1, new TemplateHookPoint(TEMPLATE_PACKAGE + "C"));
-    Assertions.assertEquals("BCA", tc.include(TEMPLATE_PACKAGE + "A", ast1).toString());
+    assertEquals("BCA", tc.include(TEMPLATE_PACKAGE + "A", ast1).toString());
 
     // Reset
     glex.setBeforeTemplate(TEMPLATE_PACKAGE + "A", ast1, Lists.newArrayList());
@@ -245,7 +245,7 @@ public class TemplateControllerHookPointsTest {
     // set specific template
     glex.setBeforeTemplate(TEMPLATE_PACKAGE + "A", ast1, new TemplateHookPoint(TEMPLATE_PACKAGE + "B"));
     glex.setBeforeTemplate(TEMPLATE_PACKAGE + "A", ast1, new TemplateHookPoint(TEMPLATE_PACKAGE + "C"));
-    Assertions.assertEquals("CA", tc.include(TEMPLATE_PACKAGE + "A", ast1).toString());
+    assertEquals("CA", tc.include(TEMPLATE_PACKAGE + "A", ast1).toString());
 
     // Reset
     glex.setBeforeTemplate(TEMPLATE_PACKAGE + "A", ast1, Lists.newArrayList());
@@ -254,7 +254,7 @@ public class TemplateControllerHookPointsTest {
     // Add general template
     glex.addBeforeTemplate(TEMPLATE_PACKAGE + "A",  new TemplateHookPoint(TEMPLATE_PACKAGE + "B"));
     glex.addBeforeTemplate(TEMPLATE_PACKAGE + "A",  new TemplateHookPoint(TEMPLATE_PACKAGE + "C"));
-    Assertions.assertEquals("BCA", tc.include(TEMPLATE_PACKAGE + "A").toString());
+    assertEquals("BCA", tc.include(TEMPLATE_PACKAGE + "A").toString());
 
     // Reset
     glex.setBeforeTemplate(TEMPLATE_PACKAGE + "A", ast1, Lists.newArrayList());
@@ -263,7 +263,7 @@ public class TemplateControllerHookPointsTest {
     // set general template
     glex.setBeforeTemplate(TEMPLATE_PACKAGE + "A", new TemplateHookPoint(TEMPLATE_PACKAGE + "B"));
     glex.setBeforeTemplate(TEMPLATE_PACKAGE + "A", new TemplateHookPoint(TEMPLATE_PACKAGE + "C"));
-    Assertions.assertEquals("CA", tc.include(TEMPLATE_PACKAGE + "A").toString());
+    assertEquals("CA", tc.include(TEMPLATE_PACKAGE + "A").toString());
 
     // Reset
     glex.setBeforeTemplate(TEMPLATE_PACKAGE + "A", ast1, Lists.newArrayList());
@@ -272,7 +272,7 @@ public class TemplateControllerHookPointsTest {
     // Add and set specific template
     glex.addBeforeTemplate(TEMPLATE_PACKAGE + "A", ast1, new TemplateHookPoint(TEMPLATE_PACKAGE + "B"));
     glex.setBeforeTemplate(TEMPLATE_PACKAGE + "A", ast1, new TemplateHookPoint(TEMPLATE_PACKAGE + "C"));
-    Assertions.assertEquals("CA", tc.include(TEMPLATE_PACKAGE + "A", ast1).toString());
+    assertEquals("CA", tc.include(TEMPLATE_PACKAGE + "A", ast1).toString());
 
     // Reset
     glex.setBeforeTemplate(TEMPLATE_PACKAGE + "A", ast1, Lists.newArrayList());
@@ -281,7 +281,7 @@ public class TemplateControllerHookPointsTest {
     // Set and add  specific template
     glex.setBeforeTemplate(TEMPLATE_PACKAGE + "A", ast1, new TemplateHookPoint(TEMPLATE_PACKAGE + "B"));
     glex.addBeforeTemplate(TEMPLATE_PACKAGE + "A", ast1, new TemplateHookPoint(TEMPLATE_PACKAGE + "C"));
-    Assertions.assertEquals("BCA", tc.include(TEMPLATE_PACKAGE + "A", ast1).toString());
+    assertEquals("BCA", tc.include(TEMPLATE_PACKAGE + "A", ast1).toString());
 
     // Reset
     glex.setBeforeTemplate(TEMPLATE_PACKAGE + "A", ast1, Lists.newArrayList());
@@ -290,7 +290,7 @@ public class TemplateControllerHookPointsTest {
     // Add and set general template
     glex.addBeforeTemplate(TEMPLATE_PACKAGE + "A", new TemplateHookPoint(TEMPLATE_PACKAGE + "B"));
     glex.setBeforeTemplate(TEMPLATE_PACKAGE + "A", new TemplateHookPoint(TEMPLATE_PACKAGE + "C"));
-    Assertions.assertEquals("CA", tc.include(TEMPLATE_PACKAGE + "A").toString());
+    assertEquals("CA", tc.include(TEMPLATE_PACKAGE + "A").toString());
 
     // Reset
     glex.setBeforeTemplate(TEMPLATE_PACKAGE + "A", ast1, Lists.newArrayList());
@@ -299,7 +299,7 @@ public class TemplateControllerHookPointsTest {
     // Set and add general template
     glex.setBeforeTemplate(TEMPLATE_PACKAGE + "A", new TemplateHookPoint(TEMPLATE_PACKAGE + "B"));
     glex.addBeforeTemplate(TEMPLATE_PACKAGE + "A", new TemplateHookPoint(TEMPLATE_PACKAGE + "C"));
-    Assertions.assertEquals("BCA", tc.include(TEMPLATE_PACKAGE + "A").toString());
+    assertEquals("BCA", tc.include(TEMPLATE_PACKAGE + "A").toString());
 
     // Reset
     glex.setBeforeTemplate(TEMPLATE_PACKAGE + "A", ast1, Lists.newArrayList());
@@ -308,7 +308,7 @@ public class TemplateControllerHookPointsTest {
     // Add specific and general template
     glex.addBeforeTemplate(TEMPLATE_PACKAGE + "A", ast1, new TemplateHookPoint(TEMPLATE_PACKAGE + "B"));
     glex.addBeforeTemplate(TEMPLATE_PACKAGE + "A", new TemplateHookPoint(TEMPLATE_PACKAGE + "C"));
-    Assertions.assertEquals("BCA", tc.include(TEMPLATE_PACKAGE + "A", ast1).toString());
+    assertEquals("BCA", tc.include(TEMPLATE_PACKAGE + "A", ast1).toString());
 
     // Reset
     glex.setBeforeTemplate(TEMPLATE_PACKAGE + "A", ast1, Lists.newArrayList());
@@ -317,17 +317,17 @@ public class TemplateControllerHookPointsTest {
     // Add general and specific template
     glex.addBeforeTemplate(TEMPLATE_PACKAGE + "A", new TemplateHookPoint(TEMPLATE_PACKAGE + "B"));
     glex.addBeforeTemplate(TEMPLATE_PACKAGE + "A", ast1, new TemplateHookPoint(TEMPLATE_PACKAGE + "C"));
-    Assertions.assertEquals("CBA", tc.include(TEMPLATE_PACKAGE + "A", ast1).toString());
+    assertEquals("CBA", tc.include(TEMPLATE_PACKAGE + "A", ast1).toString());
 
     // Set specific and general template
     glex.setBeforeTemplate(TEMPLATE_PACKAGE + "A", ast1, new TemplateHookPoint(TEMPLATE_PACKAGE + "B"));
     glex.setBeforeTemplate(TEMPLATE_PACKAGE + "A", new TemplateHookPoint(TEMPLATE_PACKAGE + "C"));
-    Assertions.assertEquals("BCA", tc.include(TEMPLATE_PACKAGE + "A", ast1).toString());
+    assertEquals("BCA", tc.include(TEMPLATE_PACKAGE + "A", ast1).toString());
 
     // Set general and specific template
     glex.setBeforeTemplate(TEMPLATE_PACKAGE + "A", new TemplateHookPoint(TEMPLATE_PACKAGE + "B"));
     glex.setBeforeTemplate(TEMPLATE_PACKAGE + "A", ast1, new TemplateHookPoint(TEMPLATE_PACKAGE + "C"));
-    Assertions.assertEquals("CBA", tc.include(TEMPLATE_PACKAGE + "A", ast1).toString());
+    assertEquals("CBA", tc.include(TEMPLATE_PACKAGE + "A", ast1).toString());
   }
 
   @Test
@@ -337,7 +337,7 @@ public class TemplateControllerHookPointsTest {
     // Add specific template
     glex.addAfterTemplate(TEMPLATE_PACKAGE + "A", ast1, new TemplateHookPoint(TEMPLATE_PACKAGE + "B"));
     glex.addAfterTemplate(TEMPLATE_PACKAGE + "A", ast1, new TemplateHookPoint(TEMPLATE_PACKAGE + "C"));
-    Assertions.assertEquals("ABC", tc.include(TEMPLATE_PACKAGE + "A", ast1).toString());
+    assertEquals("ABC", tc.include(TEMPLATE_PACKAGE + "A", ast1).toString());
 
     // Reset
     glex.setAfterTemplate(TEMPLATE_PACKAGE + "A", ast1, Lists.newArrayList());
@@ -346,7 +346,7 @@ public class TemplateControllerHookPointsTest {
     // set specific template
     glex.setAfterTemplate(TEMPLATE_PACKAGE + "A", ast1, new TemplateHookPoint(TEMPLATE_PACKAGE + "B"));
     glex.setAfterTemplate(TEMPLATE_PACKAGE + "A", ast1, new TemplateHookPoint(TEMPLATE_PACKAGE + "C"));
-    Assertions.assertEquals("AC", tc.include(TEMPLATE_PACKAGE + "A", ast1).toString());
+    assertEquals("AC", tc.include(TEMPLATE_PACKAGE + "A", ast1).toString());
 
     // Reset
     glex.setAfterTemplate(TEMPLATE_PACKAGE + "A", ast1, Lists.newArrayList());
@@ -355,7 +355,7 @@ public class TemplateControllerHookPointsTest {
     // Add general template
     glex.addAfterTemplate(TEMPLATE_PACKAGE + "A",  new TemplateHookPoint(TEMPLATE_PACKAGE + "B"));
     glex.addAfterTemplate(TEMPLATE_PACKAGE + "A",  new TemplateHookPoint(TEMPLATE_PACKAGE + "C"));
-    Assertions.assertEquals("ABC", tc.include(TEMPLATE_PACKAGE + "A").toString());
+    assertEquals("ABC", tc.include(TEMPLATE_PACKAGE + "A").toString());
 
     // Reset
     glex.setAfterTemplate(TEMPLATE_PACKAGE + "A", ast1, Lists.newArrayList());
@@ -364,7 +364,7 @@ public class TemplateControllerHookPointsTest {
     // set general template
     glex.setAfterTemplate(TEMPLATE_PACKAGE + "A", new TemplateHookPoint(TEMPLATE_PACKAGE + "B"));
     glex.setAfterTemplate(TEMPLATE_PACKAGE + "A", new TemplateHookPoint(TEMPLATE_PACKAGE + "C"));
-    Assertions.assertEquals("AC", tc.include(TEMPLATE_PACKAGE + "A").toString());
+    assertEquals("AC", tc.include(TEMPLATE_PACKAGE + "A").toString());
 
     // Reset
     glex.setAfterTemplate(TEMPLATE_PACKAGE + "A", ast1, Lists.newArrayList());
@@ -373,7 +373,7 @@ public class TemplateControllerHookPointsTest {
     // Add and set specific template
     glex.addAfterTemplate(TEMPLATE_PACKAGE + "A", ast1, new TemplateHookPoint(TEMPLATE_PACKAGE + "B"));
     glex.setAfterTemplate(TEMPLATE_PACKAGE + "A", ast1, new TemplateHookPoint(TEMPLATE_PACKAGE + "C"));
-    Assertions.assertEquals("AC", tc.include(TEMPLATE_PACKAGE + "A", ast1).toString());
+    assertEquals("AC", tc.include(TEMPLATE_PACKAGE + "A", ast1).toString());
 
     // Reset
     glex.setAfterTemplate(TEMPLATE_PACKAGE + "A", ast1, Lists.newArrayList());
@@ -382,7 +382,7 @@ public class TemplateControllerHookPointsTest {
     // Set and add  specific template
     glex.setAfterTemplate(TEMPLATE_PACKAGE + "A", ast1, new TemplateHookPoint(TEMPLATE_PACKAGE + "B"));
     glex.addAfterTemplate(TEMPLATE_PACKAGE + "A", ast1, new TemplateHookPoint(TEMPLATE_PACKAGE + "C"));
-    Assertions.assertEquals("ABC", tc.include(TEMPLATE_PACKAGE + "A", ast1).toString());
+    assertEquals("ABC", tc.include(TEMPLATE_PACKAGE + "A", ast1).toString());
 
     // Reset
     glex.setAfterTemplate(TEMPLATE_PACKAGE + "A", ast1, Lists.newArrayList());
@@ -391,7 +391,7 @@ public class TemplateControllerHookPointsTest {
     // Add and set general template
     glex.addAfterTemplate(TEMPLATE_PACKAGE + "A", new TemplateHookPoint(TEMPLATE_PACKAGE + "B"));
     glex.setAfterTemplate(TEMPLATE_PACKAGE + "A", new TemplateHookPoint(TEMPLATE_PACKAGE + "C"));
-    Assertions.assertEquals("AC", tc.include(TEMPLATE_PACKAGE + "A").toString());
+    assertEquals("AC", tc.include(TEMPLATE_PACKAGE + "A").toString());
 
     // Reset
     glex.setAfterTemplate(TEMPLATE_PACKAGE + "A", ast1, Lists.newArrayList());
@@ -400,7 +400,7 @@ public class TemplateControllerHookPointsTest {
     // Set and add general template
     glex.setAfterTemplate(TEMPLATE_PACKAGE + "A", new TemplateHookPoint(TEMPLATE_PACKAGE + "B"));
     glex.addAfterTemplate(TEMPLATE_PACKAGE + "A", new TemplateHookPoint(TEMPLATE_PACKAGE + "C"));
-    Assertions.assertEquals("ABC", tc.include(TEMPLATE_PACKAGE + "A").toString());
+    assertEquals("ABC", tc.include(TEMPLATE_PACKAGE + "A").toString());
 
     // Reset
     glex.setAfterTemplate(TEMPLATE_PACKAGE + "A", ast1, Lists.newArrayList());
@@ -409,7 +409,7 @@ public class TemplateControllerHookPointsTest {
     // Add specific and general template
     glex.addAfterTemplate(TEMPLATE_PACKAGE + "A", ast1, new TemplateHookPoint(TEMPLATE_PACKAGE + "B"));
     glex.addAfterTemplate(TEMPLATE_PACKAGE + "A", new TemplateHookPoint(TEMPLATE_PACKAGE + "C"));
-    Assertions.assertEquals("ABC", tc.include(TEMPLATE_PACKAGE + "A", ast1).toString());
+    assertEquals("ABC", tc.include(TEMPLATE_PACKAGE + "A", ast1).toString());
 
     // Reset
     glex.setAfterTemplate(TEMPLATE_PACKAGE + "A", ast1, Lists.newArrayList());
@@ -418,131 +418,131 @@ public class TemplateControllerHookPointsTest {
     // Add general and specific template
     glex.addAfterTemplate(TEMPLATE_PACKAGE + "A", new TemplateHookPoint(TEMPLATE_PACKAGE + "B"));
     glex.addAfterTemplate(TEMPLATE_PACKAGE + "A", ast1, new TemplateHookPoint(TEMPLATE_PACKAGE + "C"));
-    Assertions.assertEquals("ACB", tc.include(TEMPLATE_PACKAGE + "A", ast1).toString());
+    assertEquals("ACB", tc.include(TEMPLATE_PACKAGE + "A", ast1).toString());
 
     // Set specific and general template
     glex.setAfterTemplate(TEMPLATE_PACKAGE + "A", ast1, new TemplateHookPoint(TEMPLATE_PACKAGE + "B"));
     glex.setAfterTemplate(TEMPLATE_PACKAGE + "A", new TemplateHookPoint(TEMPLATE_PACKAGE + "C"));
-    Assertions.assertEquals("ABC", tc.include(TEMPLATE_PACKAGE + "A", ast1).toString());
+    assertEquals("ABC", tc.include(TEMPLATE_PACKAGE + "A", ast1).toString());
 
     // Set general and specific template
     glex.setAfterTemplate(TEMPLATE_PACKAGE + "A", new TemplateHookPoint(TEMPLATE_PACKAGE + "B"));
     glex.setAfterTemplate(TEMPLATE_PACKAGE + "A", ast1, new TemplateHookPoint(TEMPLATE_PACKAGE + "C"));
-    Assertions.assertEquals("ACB", tc.include(TEMPLATE_PACKAGE + "A", ast1).toString());
+    assertEquals("ACB", tc.include(TEMPLATE_PACKAGE + "A", ast1).toString());
   }
 
   @Test
   public void testAfterTemplates() {
-    Assertions.assertEquals("A", tc.include(TEMPLATE_PACKAGE + "A").toString());
+    assertEquals("A", tc.include(TEMPLATE_PACKAGE + "A").toString());
     
     glex.setAfterTemplate(TEMPLATE_PACKAGE + "A", new TemplateHookPoint(TEMPLATE_PACKAGE + "B"));
-    Assertions.assertEquals("AB", tc.include(TEMPLATE_PACKAGE + "A").toString());
+    assertEquals("AB", tc.include(TEMPLATE_PACKAGE + "A").toString());
     
     // previously set template is overwritten
     glex.setAfterTemplate(TEMPLATE_PACKAGE + "A", new TemplateHookPoint(TEMPLATE_PACKAGE + "C"));
-    Assertions.assertEquals("AC", tc.include(TEMPLATE_PACKAGE + "A").toString());
+    assertEquals("AC", tc.include(TEMPLATE_PACKAGE + "A").toString());
     
     // pass a list of templates
     glex.setAfterTemplate(TEMPLATE_PACKAGE + "A", Arrays.asList(
         new TemplateHookPoint(TEMPLATE_PACKAGE + "B"), 
         new TemplateHookPoint(TEMPLATE_PACKAGE + "C")));
-    Assertions.assertEquals("ABC", tc.include(TEMPLATE_PACKAGE + "A").toString());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertEquals("ABC", tc.include(TEMPLATE_PACKAGE + "A").toString());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testAddAfterTemplates() {
-    Assertions.assertEquals("A", tc.include(TEMPLATE_PACKAGE + "A").toString());
+    assertEquals("A", tc.include(TEMPLATE_PACKAGE + "A").toString());
 
     glex.addAfterTemplate(TEMPLATE_PACKAGE + "A", new TemplateHookPoint(TEMPLATE_PACKAGE + "B"));
-    Assertions.assertEquals("AB", tc.include(TEMPLATE_PACKAGE + "A").toString());
+    assertEquals("AB", tc.include(TEMPLATE_PACKAGE + "A").toString());
 
     // previously set template is not overwritten
     glex.addAfterTemplate(TEMPLATE_PACKAGE + "A", new TemplateHookPoint(TEMPLATE_PACKAGE + "C"));
-    Assertions.assertEquals("ABC", tc.include(TEMPLATE_PACKAGE + "A").toString());
+    assertEquals("ABC", tc.include(TEMPLATE_PACKAGE + "A").toString());
   }
   
   @Test
   public void testReplaceTemplate() {
     StringBuilder r = tc.include(TEMPLATE_PACKAGE + "A");
-    Assertions.assertEquals("A", r.toString());
+    assertEquals("A", r.toString());
     
     // self-replacement
     glex.replaceTemplate(TEMPLATE_PACKAGE + "A", new TemplateHookPoint(TEMPLATE_PACKAGE + "A"));
     r = tc.include(TEMPLATE_PACKAGE + "A");
-    Assertions.assertEquals("A", r.toString());
+    assertEquals("A", r.toString());
     
     glex.replaceTemplate(TEMPLATE_PACKAGE + "A", new TemplateHookPoint(TEMPLATE_PACKAGE + "B"));
     r = tc.include(TEMPLATE_PACKAGE + "A");
-    Assertions.assertEquals("B", r.toString());
+    assertEquals("B", r.toString());
     
     // previously set template is overwritten
     glex.replaceTemplate(TEMPLATE_PACKAGE + "A", new TemplateHookPoint(TEMPLATE_PACKAGE + "C"));
     r = tc.include(TEMPLATE_PACKAGE + "A");
-    Assertions.assertEquals("C", r.toString());
+    assertEquals("C", r.toString());
     
     // pass a list of templates
     glex.replaceTemplate(TEMPLATE_PACKAGE + "A", Arrays.asList(
         new TemplateHookPoint(TEMPLATE_PACKAGE + "B"), 
         new TemplateHookPoint(TEMPLATE_PACKAGE + "C")));
     r = tc.include(TEMPLATE_PACKAGE + "A");
-    Assertions.assertEquals("BC", r.toString());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertEquals("BC", r.toString());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
   public void testBeforeReplaceAfterCombinations() {
-    Assertions.assertEquals("A", tc.include(TEMPLATE_PACKAGE + "A").toString());
+    assertEquals("A", tc.include(TEMPLATE_PACKAGE + "A").toString());
     
     glex.setBeforeTemplate(TEMPLATE_PACKAGE + "A", new TemplateHookPoint(TEMPLATE_PACKAGE + "B"));
-    Assertions.assertEquals("BA", tc.include(TEMPLATE_PACKAGE + "A").toString());
+    assertEquals("BA", tc.include(TEMPLATE_PACKAGE + "A").toString());
     
     glex.setAfterTemplate(TEMPLATE_PACKAGE + "A", new TemplateHookPoint(TEMPLATE_PACKAGE + "C"));
-    Assertions.assertEquals("BAC", tc.include(TEMPLATE_PACKAGE + "A").toString());
+    assertEquals("BAC", tc.include(TEMPLATE_PACKAGE + "A").toString());
     
     glex.replaceTemplate(TEMPLATE_PACKAGE + "A", new TemplateHookPoint(TEMPLATE_PACKAGE + "C"));
-    Assertions.assertEquals("BCC", tc.include(TEMPLATE_PACKAGE + "A").toString());
+    assertEquals("BCC", tc.include(TEMPLATE_PACKAGE + "A").toString());
     
     glex.replaceTemplate(TEMPLATE_PACKAGE + "A", new TemplateHookPoint(TEMPLATE_PACKAGE + "B"));
-    Assertions.assertEquals("BBC", tc.include(TEMPLATE_PACKAGE + "A").toString());
+    assertEquals("BBC", tc.include(TEMPLATE_PACKAGE + "A").toString());
     
     // replacing B has no effect on A
     glex.replaceTemplate(TEMPLATE_PACKAGE + "B", new TemplateHookPoint(TEMPLATE_PACKAGE + "C"));
-    Assertions.assertEquals("BBC", tc.include(TEMPLATE_PACKAGE + "A").toString());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertEquals("BBC", tc.include(TEMPLATE_PACKAGE + "A").toString());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   
   @Test
   public void testBeforeReplaceAfterInSubtemplates() {
-    Assertions.assertEquals("TopA A", tc.include(TEMPLATE_PACKAGE + "TopA").toString());
+    assertEquals("TopA A", tc.include(TEMPLATE_PACKAGE + "TopA").toString());
     
     glex.setBeforeTemplate(TEMPLATE_PACKAGE + "A", new TemplateHookPoint(TEMPLATE_PACKAGE + "B"));
-    Assertions.assertEquals("TopA BA", tc.include(TEMPLATE_PACKAGE + "TopA").toString());
+    assertEquals("TopA BA", tc.include(TEMPLATE_PACKAGE + "TopA").toString());
     
     glex.replaceTemplate(TEMPLATE_PACKAGE + "A", new TemplateHookPoint(TEMPLATE_PACKAGE + "C"));
-    Assertions.assertEquals("TopA BC", tc.include(TEMPLATE_PACKAGE + "TopA").toString());
+    assertEquals("TopA BC", tc.include(TEMPLATE_PACKAGE + "TopA").toString());
     
     glex.setAfterTemplate(TEMPLATE_PACKAGE + "A", new TemplateHookPoint(TEMPLATE_PACKAGE + "B"));
-    Assertions.assertEquals("TopA BCB", tc.include(TEMPLATE_PACKAGE + "TopA").toString());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertEquals("TopA BCB", tc.include(TEMPLATE_PACKAGE + "TopA").toString());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testSpecificBeforeReplaceAfterInSubtemplates() {
     ASTNode ast1 = new ASTNodeMock();
 
-    Assertions.assertEquals("TopA A", tc.include(TEMPLATE_PACKAGE + "TopA").toString());
+    assertEquals("TopA A", tc.include(TEMPLATE_PACKAGE + "TopA").toString());
 
     glex.setBeforeTemplate(TEMPLATE_PACKAGE + "A", ast1, new TemplateHookPoint(TEMPLATE_PACKAGE + "B"));
-    Assertions.assertEquals("TopA BA", tc.include(TEMPLATE_PACKAGE + "TopA", ast1).toString());
+    assertEquals("TopA BA", tc.include(TEMPLATE_PACKAGE + "TopA", ast1).toString());
 
     glex.replaceTemplate(TEMPLATE_PACKAGE + "A", ast1, new TemplateHookPoint(TEMPLATE_PACKAGE + "C"));
-    Assertions.assertEquals("TopA BC", tc.include(TEMPLATE_PACKAGE + "TopA", ast1).toString());
+    assertEquals("TopA BC", tc.include(TEMPLATE_PACKAGE + "TopA", ast1).toString());
 
     glex.setAfterTemplate(TEMPLATE_PACKAGE + "A", ast1, new TemplateHookPoint(TEMPLATE_PACKAGE + "B"));
-    Assertions.assertEquals("TopA BCB", tc.include(TEMPLATE_PACKAGE + "TopA", ast1).toString());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertEquals("TopA BCB", tc.include(TEMPLATE_PACKAGE + "TopA", ast1).toString());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -550,20 +550,20 @@ public class TemplateControllerHookPointsTest {
     // define new hook point hp1
     glex.bindHookPoint("hp1", new TemplateStringHookPoint("<#if true>true</#if>"));
     String hpValue = glex.defineHookPoint(tc, "hp1");
-    Assertions.assertNotNull(hpValue);
-    Assertions.assertEquals("true", hpValue);
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertNotNull(hpValue);
+    assertEquals("true", hpValue);
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testDefineHookPointWithArgs() {
     glex.bindHookPoint("hp1", new TemplateHookPoint(TEMPLATE_PACKAGE + "SignatureWithOneParameter"));
     String hpValue = glex.defineHookPoint(tc, "hp1", "A");
-    Assertions.assertEquals("Name is A", hpValue);
+    assertEquals("Name is A", hpValue);
 
     glex.bindHookPoint("hp1", new TemplateHookPoint(TEMPLATE_PACKAGE + "SignatureWithThreeParameters"));
     hpValue = glex.defineHookPoint(tc, "hp1", "B", 42, "LA");
-    Assertions.assertEquals("Name is B, age is 42, city is LA", hpValue);
+    assertEquals("Name is B, age is 42, city is LA", hpValue);
   }
 
   @Test
@@ -572,11 +572,11 @@ public class TemplateControllerHookPointsTest {
 
     // without binding
     glex.setBeforeTemplate( "hp", ast1, new StringHookPoint("Before Hookpoint"));
-    Assertions.assertEquals("Before Hookpoint", tc.include(TEMPLATE_PACKAGE + "HookCall", ast1).toString());
+    assertEquals("Before Hookpoint", tc.include(TEMPLATE_PACKAGE + "HookCall", ast1).toString());
 
     // with binding
     glex.bindHookPoint("hp", new StringHookPoint(":Bind Hookpoint"));
-    Assertions.assertEquals("Before Hookpoint:Bind Hookpoint", tc.include(TEMPLATE_PACKAGE + "HookCall", ast1).toString());
+    assertEquals("Before Hookpoint:Bind Hookpoint", tc.include(TEMPLATE_PACKAGE + "HookCall", ast1).toString());
 
   }
 
@@ -585,7 +585,7 @@ public class TemplateControllerHookPointsTest {
     ASTNode ast1 = new ASTNodeMock();
 
     glex.setAfterTemplate( "hp", ast1, new StringHookPoint("After Hookpoint"));
-    Assertions.assertEquals("After Hookpoint", tc.include(TEMPLATE_PACKAGE + "HookCall", ast1).toString());
+    assertEquals("After Hookpoint", tc.include(TEMPLATE_PACKAGE + "HookCall", ast1).toString());
 
   }
 }

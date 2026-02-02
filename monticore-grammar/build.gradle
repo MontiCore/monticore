@@ -7,10 +7,13 @@ buildscript {
 
 plugins {
   id "java-library"
-  id "com.github.johnrengelman.shadow" version "7.1.2"
+  id "com.github.johnrengelman.shadow" version "$shadow_plugin_version"
   // in case a "genTR" property is set to "true", transformation grammars are also created
   id "de.monticore.generator-withtr" version "$version"
   id "jacoco"
+  // this project provides test fixtures. Test fixtures are commonly used to setup the code under test,
+  // or provide utilities aimed at facilitating the tests of a component
+  id 'java-test-fixtures'
 }
 
 description = 'MontiCore: Grammar'
@@ -57,6 +60,12 @@ configurations {
       capability("de.monticore:monticore-grammar:$version") // default
     }
   }
+  // We have to give the trafo component a different capability
+  trafoGrammarSymbolOutElements {
+    outgoing {
+      capability("de.monticore:monticore-grammar-trafo:$version") // default
+    }
+  }
 }
 
 
@@ -70,12 +79,18 @@ dependencies {
   testImplementation "de.monticore:class2mc:$version"
   testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
   testImplementation "org.junit.jupiter:junit-jupiter-params:$junit_version"
-  testImplementation "org.junit.vintage:junit-vintage-engine:$junit_version"
-  testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
+  testImplementation "org.junit.jupiter:junit-jupiter-engine:$junit_version"
+  testRuntimeOnly "org.junit.platform:junit-platform-launcher:$junit_platform_version"
+  // grammar test fixtures includes runtime test dependencies
+  testFixturesApi testFixtures(project(":monticore-runtime"))
   if (("true").equals(getProperty('genTagging'))) {
     // use compileOnly as the tagging- and trafo-artifact are only an extension to the default artifact
     taggingCompileOnly project(path)
   }
+}
+
+test {
+  useJUnitPlatform()
 }
 
 
@@ -547,13 +562,14 @@ java {
   registerFeature('tests') {
     usingSourceSet(sourceSets.test)
   }
+  withJavadocJar()
 }
 
-shadowJar {
+tasks.named("shadowJar") {
   from sourceSets.main.grammars
 }
 
-generateTestMCGrammars {
+tasks.named("generateTestMCGrammars") {
 //   Temporary - for optimizations (due to feature)
   genINT = true
   dependsOn(tasks.grammarsForVariantJar)
@@ -571,7 +587,7 @@ if (findProperty('ci') == null) {
 }
 
 if (("true").equals(getProperty('genTR'))) {
-  generateTrafoMCGrammars {
+  tasks.named("generateTrafoMCGrammars") {
     // Temporary - for optimizations
     dependsOn(tasks.grammarsForVariantJar)
   }
@@ -645,9 +661,79 @@ if (("true").equals(getProperty('genTR'))) {
 
   publishing {
     publications {
-      "trafo" {
+      "trafo" (MavenPublication) {
         groupId = "de.monticore" // do not use the fake "de.mc" group, which was set during the plugin init phase
       }
     }
   }
 }
+
+// Workaround for https://github.com/gradle/gradle/issues/20539
+import org.gradle.api.plugins.internal.JvmPluginsHelper
+import org.gradle.api.internal.file.FileResolver
+import org.gradle.internal.component.external.model.ProjectDerivedCapability
+import org.gradle.internal.component.external.model.TestFixturesSupport
+
+if(GradleVersion.current() < GradleVersion.version("8.5")){
+  pluginManager.withPlugin("java-test-fixtures") {
+    def sourceSet = sourceSets["testFixtures"]
+    JvmPluginsHelper.configureDocumentationVariantWithArtifact(
+        sourceSet.sourcesElementsConfigurationName,
+        TestFixturesSupport.TEST_FIXTURE_SOURCESET_NAME,
+        DocsType.SOURCES,
+        [new ProjectDerivedCapability(project, "testFixtures")],
+        sourceSet.sourcesJarTaskName,
+        sourceSet.allSource,
+        components["java"] as AdhocComponentWithVariants,
+        configurations,
+        tasks,
+        objects,
+        project.services.get(FileResolver)
+    )
+    JvmPluginsHelper.configureDocumentationVariantWithArtifact(
+        sourceSet.javadocElementsConfigurationName,
+        TestFixturesSupport.TEST_FIXTURE_SOURCESET_NAME,
+        DocsType.JAVADOC,
+        [new ProjectDerivedCapability(project, "testFixtures")],
+        sourceSet.javadocJarTaskName,
+        tasks.named(sourceSet.javadocTaskName),
+        components["java"] as AdhocComponentWithVariants,
+        configurations,
+        tasks,
+        objects,
+        project.services.get(FileResolver)
+    )
+  }
+} else {
+  pluginManager.withPlugin("java-test-fixtures") {
+    def sourceSet = sourceSets["testFixtures"]
+    def caps = [new ProjectDerivedCapability(project, "testFixtures")];
+    if (GradleVersion.current() != GradleVersion.version("8.5"))
+      caps = caps.toSet()
+    JvmPluginsHelper.createDocumentationVariantWithArtifact(
+        sourceSet.sourcesElementsConfigurationName,
+        TestFixturesSupport.TEST_FIXTURE_SOURCESET_NAME,
+        DocsType.SOURCES,
+        caps,
+        sourceSet.sourcesJarTaskName,
+        sourceSet.allSource,
+        project
+    )
+    JvmPluginsHelper.createDocumentationVariantWithArtifact(
+        sourceSet.javadocElementsConfigurationName,
+        TestFixturesSupport.TEST_FIXTURE_SOURCESET_NAME,
+        DocsType.JAVADOC,
+        caps,
+        sourceSet.javadocJarTaskName,
+        tasks.named(sourceSet.javadocTaskName),
+        project
+    )
+  }
+}
+//End Workaround
+
+
+tasks.named("build") {
+  dependsOn javadoc, testFixturesJavadoc
+}
+

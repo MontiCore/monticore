@@ -8,13 +8,14 @@ import de.monticore.literals.testmccommonliterals.TestMCCommonLiteralsMill;
 import de.monticore.literals.testmccommonliterals._parser.TestMCCommonLiteralsParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DoubleCommonLiteralsTest {
 
@@ -29,15 +30,15 @@ public class DoubleCommonLiteralsTest {
   private void checkDoubleLiteral(double d, String s) throws IOException {
     TestMCCommonLiteralsParser parser = new TestMCCommonLiteralsParser();
     Optional<ASTLiteral> lit = parser.parseLiteral(new StringReader(s));
-    Assertions.assertTrue(lit.isPresent());
-    Assertions.assertTrue(lit.get() instanceof ASTBasicDoubleLiteral);
-    Assertions.assertEquals(d, ((ASTBasicDoubleLiteral) lit.get()).getValue(), 0);
+    assertTrue(lit.isPresent());
+    assertInstanceOf(ASTBasicDoubleLiteral.class, lit.get());
+    assertEquals(d, ((ASTBasicDoubleLiteral) lit.get()).getValue(), 0);
   }
 
   private void checkFalse(String s) throws IOException {
     TestMCCommonLiteralsParser parser = new TestMCCommonLiteralsParser();
     Optional<ASTBasicDoubleLiteral> lit = parser.parseBasicDoubleLiteral(new StringReader(s));
-    Assertions.assertTrue(!lit.isPresent());
+    assertFalse(lit.isPresent());
   }
 
   @Test
@@ -50,10 +51,10 @@ public class DoubleCommonLiteralsTest {
       checkDoubleLiteral(3.0, "3.0");
     }
     catch (IOException e) {
-      Assertions.fail(e.getMessage());
+      fail(e.getMessage());
     }
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -68,7 +69,7 @@ public class DoubleCommonLiteralsTest {
       checkFalse("0.0 d");
     }
     catch (IOException e) {
-      Assertions.fail(e.getMessage());
+      fail(e.getMessage());
     }
   }
 }

@@ -1,6 +1,7 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.types3.streams;
 
+import com.google.common.base.Preconditions;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfGenerics;
@@ -124,7 +125,7 @@ public class StreamSymTypeRelations {
   }
 
   protected static void setDelegate(StreamSymTypeRelations newDelegate) {
-    StreamSymTypeRelations.delegate = Log.errorIfNull(newDelegate);
+    StreamSymTypeRelations.delegate = Preconditions.checkNotNull(newDelegate);
   }
 
   protected static StreamSymTypeRelations getDelegate() {

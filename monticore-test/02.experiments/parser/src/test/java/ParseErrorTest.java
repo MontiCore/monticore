@@ -236,7 +236,7 @@ public class ParseErrorTest {
     // An incorrect input is used in an alt-context
     parser.parse_StringUnknownAlts("X");
     Assertions.assertTrue(parser.hasErrors());
-    Assertions.assertEquals("no viable alternative at input 'X', expecting 'UnknownAltsKey', 'UnknownAltsT' or Name (with additional constraints from unknownAlts) in rule stack: [UnknownAlts]\u00A0\n" +
+    Assertions.assertEquals("no viable alternative at input 'X', expecting 'UnknownAltsT', 'UnknownAltsKey' or Name (with additional constraints from unknownAlts) in rule stack: [UnknownAlts]\u00A0\n" +
             "X\n" +
             "^", Log.getFindings().get(0).getMsg());
   }
@@ -276,7 +276,7 @@ public class ParseErrorTest {
     // No input was provided
     parser.parse_StringCDLike("cd cl");
     Assertions.assertTrue(parser.hasErrors());
-    Assertions.assertEquals("no viable alternative at input 'cl', expecting 'private', 'class', 'composition', '<<', '+', 'public', 'package' or 'association' in rule stack: [CDLike]\u00A0\n" +
+    Assertions.assertEquals("no viable alternative at input 'cl', expecting '<<', 'public', '+', 'private', 'class', 'package', 'association' or 'composition' in rule stack: [CDLike]\u00A0\n" +
                                     "cd cl\n" +
                                     "   ^", Log.getFindings().get(0).getMsg());
   }
@@ -286,7 +286,7 @@ public class ParseErrorTest {
     // No input was provided
     parser.parse_StringCDLike("cd publ");
     Assertions.assertTrue(parser.hasErrors());
-    Assertions.assertEquals("no viable alternative at input 'publ', expecting 'private', 'class', 'composition', '<<', '+', 'public', 'package' or 'association' in rule stack: [CDLike]\u00A0\n" +
+    Assertions.assertEquals("no viable alternative at input 'publ', expecting '<<', 'public', '+', 'private', 'class', 'package', 'association' or 'composition' in rule stack: [CDLike]\u00A0\n" +
                                     "cd publ\n" +
                                     "   ^", Log.getFindings().get(0).getMsg());
   }
@@ -306,7 +306,7 @@ public class ParseErrorTest {
     // No input was provided
     parser.parse_StringCDLike("cd \n class C1{}\n xxx\n association A1;");
     Assertions.assertTrue(parser.hasErrors());
-    Assertions.assertEquals("no viable alternative at input 'xxx', expecting 'private', 'class', 'composition', '<<', '+', 'public', 'package' or 'association' in rule stack: [CDLike]\u00A0\n" +
+    Assertions.assertEquals("no viable alternative at input 'xxx', expecting '<<', 'public', '+', 'private', 'class', 'package', 'association' or 'composition' in rule stack: [CDLike]\u00A0\n" +
                                     " xxx\n" +
                                     " ^", Log.getFindings().get(0).getMsg());
   }

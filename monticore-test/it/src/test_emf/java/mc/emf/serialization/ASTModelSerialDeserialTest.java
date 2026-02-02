@@ -15,14 +15,18 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
+@Disabled
 public class ASTModelSerialDeserialTest extends GeneratorIntegrationsTest {
   
+  @Test
   public void testECoreFileOFSuperGrammar() {
     
     ASTAutomaton aut = FlatAutomatonMill.automatonBuilder().uncheckedBuild();
@@ -53,6 +57,7 @@ public class ASTModelSerialDeserialTest extends GeneratorIntegrationsTest {
     }
   }
   
+  @Test
   public void testECoreFileOFGrammar() {
     ResourceSet resourceSet = new ResourceSetImpl();
     resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(
@@ -76,6 +81,7 @@ public class ASTModelSerialDeserialTest extends GeneratorIntegrationsTest {
             serializedTransitionWithAction.getEAllStructuralFeatures().get(ActionAutomatonPackage.ASTCounter_Names).getName());
   }
   
+  @Test
   public void testECoreFileOFASTENode() {
     ResourceSet resourceSet = new ResourceSetImpl();
     resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(

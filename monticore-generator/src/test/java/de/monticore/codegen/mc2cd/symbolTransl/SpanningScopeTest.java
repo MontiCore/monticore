@@ -8,13 +8,13 @@ import de.monticore.codegen.mc2cd.TranslationTestCase;
 import de.monticore.umlstereotype._ast.ASTStereoValue;
 
 import de.se_rwth.commons.logging.Log;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Paths;
 
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SpanningScopeTest extends TranslationTestCase {
 
@@ -32,64 +32,64 @@ public class SpanningScopeTest extends TranslationTestCase {
 
   @Test
   public void testDefinitionName() {
-    Assertions.assertEquals("ScopeSpanningSymbols", compilationUnit.getCDDefinition().getName());
+    assertEquals("ScopeSpanningSymbols", compilationUnit.getCDDefinition().getName());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testPackage() {
-    Assertions.assertEquals(2, compilationUnit.getCDPackageList().size());
-    Assertions.assertEquals("mc2cdtransformation", compilationUnit.getMCPackageDeclaration().getMCQualifiedName().getParts(0));
-    Assertions.assertEquals("symbolTransl", compilationUnit.getMCPackageDeclaration().getMCQualifiedName().getParts(1));
+    assertEquals(2, compilationUnit.getCDPackageList().size());
+    assertEquals("mc2cdtransformation", compilationUnit.getMCPackageDeclaration().getMCQualifiedName().getParts(0));
+    assertEquals("symbolTransl", compilationUnit.getMCPackageDeclaration().getMCQualifiedName().getParts(1));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testClassCount() {
-    Assertions.assertEquals(2, compilationUnit.getCDDefinition().getCDClassesList().size());
+    assertEquals(2, compilationUnit.getCDDefinition().getCDClassesList().size());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testScopeSpanningSymbol() {
     ASTCDClass symbolClassSymbol = getClassBy("ScopeSpanning", compilationUnit);
-    Assertions.assertTrue(symbolClassSymbol.getInterfaceList().isEmpty());
-    Assertions.assertTrue(symbolClassSymbol.getCDMethodList().isEmpty());
-    Assertions.assertTrue(symbolClassSymbol.getCDConstructorList().isEmpty());
-    Assertions.assertFalse(symbolClassSymbol.isPresentCDExtendUsage());
-    Assertions.assertTrue(symbolClassSymbol.getCDAttributeList().isEmpty());
+    assertTrue(symbolClassSymbol.getInterfaceList().isEmpty());
+    assertTrue(symbolClassSymbol.getCDMethodList().isEmpty());
+    assertTrue(symbolClassSymbol.getCDConstructorList().isEmpty());
+    assertFalse(symbolClassSymbol.isPresentCDExtendUsage());
+    assertTrue(symbolClassSymbol.getCDAttributeList().isEmpty());
 
-    Assertions.assertTrue(symbolClassSymbol.getModifier().isPresentStereotype());
-    Assertions.assertFalse(symbolClassSymbol.getModifier().getStereotype().isEmptyValues());
-    Assertions.assertEquals(2, symbolClassSymbol.getModifier().getStereotype().sizeValues());
+    assertTrue(symbolClassSymbol.getModifier().isPresentStereotype());
+    assertFalse(symbolClassSymbol.getModifier().getStereotype().isEmptyValues());
+    assertEquals(2, symbolClassSymbol.getModifier().getStereotype().sizeValues());
     ASTStereoValue symbolStereotype = symbolClassSymbol.getModifier().getStereotype().getValues(0);
-    Assertions.assertEquals("symbol", symbolStereotype.getName());
+    assertEquals("symbol", symbolStereotype.getName());
     ASTStereoValue scopeStereotype = symbolClassSymbol.getModifier().getStereotype().getValues(1);
-    Assertions.assertEquals("scope", scopeStereotype.getName());
+    assertEquals("scope", scopeStereotype.getName());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testOnlySymbol() {
     ASTCDClass symbolClassSymbol = getClassBy("OnlySymbol", compilationUnit);
-    Assertions.assertTrue(symbolClassSymbol.getInterfaceList().isEmpty());
-    Assertions.assertTrue(symbolClassSymbol.getCDMethodList().isEmpty());
-    Assertions.assertTrue(symbolClassSymbol.getCDConstructorList().isEmpty());
-    Assertions.assertFalse(symbolClassSymbol.isPresentCDExtendUsage());
-    Assertions.assertTrue(symbolClassSymbol.getCDAttributeList().isEmpty());
+    assertTrue(symbolClassSymbol.getInterfaceList().isEmpty());
+    assertTrue(symbolClassSymbol.getCDMethodList().isEmpty());
+    assertTrue(symbolClassSymbol.getCDConstructorList().isEmpty());
+    assertFalse(symbolClassSymbol.isPresentCDExtendUsage());
+    assertTrue(symbolClassSymbol.getCDAttributeList().isEmpty());
 
-    Assertions.assertTrue(symbolClassSymbol.getModifier().isPresentStereotype());
-    Assertions.assertFalse(symbolClassSymbol.getModifier().getStereotype().isEmptyValues());
-    Assertions.assertEquals(2, symbolClassSymbol.getModifier().getStereotype().sizeValues());
+    assertTrue(symbolClassSymbol.getModifier().isPresentStereotype());
+    assertFalse(symbolClassSymbol.getModifier().getStereotype().isEmptyValues());
+    assertEquals(2, symbolClassSymbol.getModifier().getStereotype().sizeValues());
     ASTStereoValue symbolStereotype = symbolClassSymbol.getModifier().getStereotype().getValues(0);
-    Assertions.assertEquals("symbol", symbolStereotype.getName());
+    assertEquals("symbol", symbolStereotype.getName());
     ASTStereoValue startProdStereotype = symbolClassSymbol.getModifier().getStereotype().getValues(1);
-    Assertions.assertEquals("startProd", startProdStereotype.getName());
+    assertEquals("startProd", startProdStereotype.getName());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

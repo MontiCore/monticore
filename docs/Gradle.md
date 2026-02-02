@@ -51,11 +51,13 @@ java {
 }
 
 dependencies {
-  // Depend on the MontiCore language library (which in term depends on the runtime)
+  // Depend on the MontiCore language library (which in turn depends on the runtime)
   grammar "de.monticore:monticore-grammar:$mc_version"
   // and depend on the junit dependencies
   testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
   testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
+  // and add the test fixtures (used to set-up tests)
+  testImplementation testFixtures("de.monticore:monticore-grammar:$mc_version")
 }
 
 // Where can we find the dependencies?

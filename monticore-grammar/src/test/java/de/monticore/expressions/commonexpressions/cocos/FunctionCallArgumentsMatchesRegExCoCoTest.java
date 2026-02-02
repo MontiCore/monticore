@@ -7,6 +7,7 @@ import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICom
 import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
 import de.monticore.expressions.commonexpressions._cocos.CommonExpressionsCoCoChecker;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.types3.util.DefsTypesForTests;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.IDerive;
 import de.monticore.types.check.SymTypeExpression;
@@ -14,11 +15,9 @@ import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.types3wrapper.TypeCheck3AsIDerive;
 import de.monticore.types3.Type4Ast;
 import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserFactory;
-import de.monticore.types3.util.DefsTypesForTests;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -27,6 +26,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class FunctionCallArgumentsMatchesRegExCoCoTest {
 
@@ -141,7 +142,7 @@ public class FunctionCallArgumentsMatchesRegExCoCoTest {
 
   protected void testValid(String expression, List<List<String>> functions, boolean varArgs) throws IOException {
     check(expression, functions, varArgs);
-    Assertions.assertTrue(Log.getFindings().isEmpty(), Log.getFindings().stream()
+    assertTrue(Log.getFindings().isEmpty(), Log.getFindings().stream()
         .map(Finding::buildMsg)
         .collect(Collectors.joining(System.lineSeparator())));
     Log.clearFindings();
@@ -149,7 +150,7 @@ public class FunctionCallArgumentsMatchesRegExCoCoTest {
 
   protected void testInvalid(String expression, List<List<String>> functions, boolean varArgs) throws IOException {
     check(expression, functions, varArgs);
-    Assertions.assertTrue(Log.getFindings().stream().anyMatch(
+    assertTrue(Log.getFindings().stream().anyMatch(
         f -> f.getMsg().startsWith("0xFD725")
     ));
     Log.clearFindings();
@@ -179,11 +180,11 @@ public class FunctionCallArgumentsMatchesRegExCoCoTest {
 
     Optional<ASTExpression> optExpr = CombineExpressionsWithLiteralsMill
         .parser().parse_StringExpression(expression);
-    Assertions.assertTrue(optExpr.isPresent());
+    assertTrue(optExpr.isPresent());
 
     ASTExpression expr = optExpr.get();
     generateScopes(expr);
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
     getChecker(derive).checkAll(expr);
   }
 

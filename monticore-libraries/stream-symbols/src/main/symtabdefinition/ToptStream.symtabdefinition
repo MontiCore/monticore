@@ -7,7 +7,7 @@ symtabdefinition ToptStream {
 
   class ToptStream<T> implements Stream<T> {
     + Optional<T> first();
-    + Optional<T> nth(long n); // nicht konform mit TechReport, ist aber sinnvoller
+    + Optional<T> nth(long n);
 
     + static <S> ToptStream<S> toptRepeat(S elem, long n);
     + static <S> ToptStream<S> toptIterate(S -> S elem, S elem);
@@ -15,7 +15,7 @@ symtabdefinition ToptStream {
     + static <S, U> ToptStream<U> toptProjSnd(ToptStream<(S,U)> list);
 
     // ----------- Implementations
-    + Optional<ToptStream<T>> dropFirst();
+    + ToptStream<T> dropFirst();
     + ToptStream<T> take(long n);
     + ToptStream<T> dropMultiple(long n);
     + ToptStream<T> times(long n); // <2>.times(24)

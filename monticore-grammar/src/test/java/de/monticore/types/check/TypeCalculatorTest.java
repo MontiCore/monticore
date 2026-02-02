@@ -14,7 +14,6 @@ import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -26,8 +25,8 @@ import java.util.stream.Collectors;
 
 import static de.monticore.types.check.DefsTypeBasic.*;
 import static de.monticore.types.check.SymTypeExpressionFactory.createPrimitive;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Test Class for {@link TypeCalculator}
@@ -70,11 +69,11 @@ public class TypeCalculatorTest {
     OOTypeSymbol s = new OOTypeSymbol("Student");
     s.setEnclosingScope(scope);
     add2scope(scope,s);
-    s.setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Person", scope)));
+    s.setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObjectViaSurrogate("Person", scope)));
     OOTypeSymbol f = new OOTypeSymbol("FirstSemesterStudent");
     f.setEnclosingScope(scope);
     add2scope(scope,f);
-    f.setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student", scope)));
+    f.setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObjectViaSurrogate("Student", scope)));
     add2scope(scope, field("foo", _intSymType));
     add2scope(scope, field("bar2", _booleanSymType));
     add2scope(scope, field("vardouble", _doubleSymType));
@@ -82,12 +81,12 @@ public class TypeCalculatorTest {
     add2scope(scope, field("varfloat", _floatSymType));
     add2scope(scope, field("varlong", _longSymType));
     add2scope(scope, field("varint", _intSymType));
-    add2scope(scope, field("varString", SymTypeExpressionFactory.createTypeObject("String", scope)));
-    add2scope(scope, field("person1", SymTypeExpressionFactory.createTypeObject("Person", scope)));
-    add2scope(scope, field("person2", SymTypeExpressionFactory.createTypeObject("Person", scope)));
-    add2scope(scope, field("student1", SymTypeExpressionFactory.createTypeObject("Student", scope)));
-    add2scope(scope, field("student2", SymTypeExpressionFactory.createTypeObject("Student", scope)));
-    add2scope(scope, field("firstsemester", SymTypeExpressionFactory.createTypeObject("FirstSemesterStudent", scope)));
+    add2scope(scope, field("varString", SymTypeExpressionFactory.createTypeObjectViaSurrogate("String", scope)));
+    add2scope(scope, field("person1", SymTypeExpressionFactory.createTypeObjectViaSurrogate("Person", scope)));
+    add2scope(scope, field("person2", SymTypeExpressionFactory.createTypeObjectViaSurrogate("Person", scope)));
+    add2scope(scope, field("student1", SymTypeExpressionFactory.createTypeObjectViaSurrogate("Student", scope)));
+    add2scope(scope, field("student2", SymTypeExpressionFactory.createTypeObjectViaSurrogate("Student", scope)));
+    add2scope(scope, field("firstsemester", SymTypeExpressionFactory.createTypeObjectViaSurrogate("FirstSemesterStudent", scope)));
     flatExpressionScopeSetter = new FlatExpressionScopeSetter(scope);
     LogStub.init();
   }
@@ -111,16 +110,16 @@ public class TypeCalculatorTest {
     ASTExpression char1 = p.parse_StringExpression("\'a\'").get();
     char1.accept(traverser);
 
-    Assertions.assertTrue(tc.isOfTypeForAssign(tc.typeOf(bool1), bool2));
-    Assertions.assertTrue(tc.isOfTypeForAssign(tc.typeOf(double1), int1));
-    Assertions.assertFalse(tc.isOfTypeForAssign(tc.typeOf(bool1), int1));
-    Assertions.assertTrue(tc.isOfTypeForAssign(tc.typeOf(float1), int1));
-    Assertions.assertTrue(tc.isOfTypeForAssign(tc.typeOf(long1), int1));
-    Assertions.assertTrue(tc.isOfTypeForAssign(tc.typeOf(char1), char1));
-    Assertions.assertFalse(tc.isOfTypeForAssign(tc.typeOf(char1), int1));
-    Assertions.assertFalse(tc.isOfTypeForAssign(tc.typeOf(double1), bool1));
-    Assertions.assertFalse(tc.isOfTypeForAssign(tc.typeOf(long1), float1));
-    Assertions.assertTrue(tc.isOfTypeForAssign(tc.typeOf(float1), int1));
+    assertTrue(tc.isOfTypeForAssign(tc.typeOf(bool1), bool2));
+    assertTrue(tc.isOfTypeForAssign(tc.typeOf(double1), int1));
+    assertFalse(tc.isOfTypeForAssign(tc.typeOf(bool1), int1));
+    assertTrue(tc.isOfTypeForAssign(tc.typeOf(float1), int1));
+    assertTrue(tc.isOfTypeForAssign(tc.typeOf(long1), int1));
+    assertTrue(tc.isOfTypeForAssign(tc.typeOf(char1), char1));
+    assertFalse(tc.isOfTypeForAssign(tc.typeOf(char1), int1));
+    assertFalse(tc.isOfTypeForAssign(tc.typeOf(double1), bool1));
+    assertFalse(tc.isOfTypeForAssign(tc.typeOf(long1), float1));
+    assertTrue(tc.isOfTypeForAssign(tc.typeOf(float1), int1));
 
     //non-primitives
     ASTExpression pers = p.parse_StringExpression("Person").get();
@@ -130,15 +129,15 @@ public class TypeCalculatorTest {
     ASTExpression fstud = p.parse_StringExpression("FirstSemesterStudent").get();
     fstud.accept(traverser);
 
-    Assertions.assertTrue(tc.isOfTypeForAssign(tc.typeOf(pers), stud));
-    Assertions.assertTrue(tc.isOfTypeForAssign(tc.typeOf(pers), fstud));
-    Assertions.assertTrue(tc.isOfTypeForAssign(tc.typeOf(stud), fstud));
-    Assertions.assertFalse(tc.isOfTypeForAssign(tc.typeOf(stud), pers));
-    Assertions.assertFalse(tc.isOfTypeForAssign(tc.typeOf(fstud), pers));
-    Assertions.assertFalse(tc.isOfTypeForAssign(tc.typeOf(fstud), stud));
-    Assertions.assertTrue(tc.isOfTypeForAssign(tc.typeOf(pers), pers));
+    assertTrue(tc.isOfTypeForAssign(tc.typeOf(pers), stud));
+    assertTrue(tc.isOfTypeForAssign(tc.typeOf(pers), fstud));
+    assertTrue(tc.isOfTypeForAssign(tc.typeOf(stud), fstud));
+    assertFalse(tc.isOfTypeForAssign(tc.typeOf(stud), pers));
+    assertFalse(tc.isOfTypeForAssign(tc.typeOf(fstud), pers));
+    assertFalse(tc.isOfTypeForAssign(tc.typeOf(fstud), stud));
+    assertTrue(tc.isOfTypeForAssign(tc.typeOf(pers), pers));
 
-    Assertions.assertFalse(tc.isOfTypeForAssign(tc.typeOf(int1), pers));
+    assertFalse(tc.isOfTypeForAssign(tc.typeOf(int1), pers));
   }
 
   @Test
@@ -161,16 +160,16 @@ public class TypeCalculatorTest {
     char1.accept(traverser);
 
 
-    Assertions.assertTrue(tc.isSubtypeOf(tc.typeOf(bool1), tc.typeOf(bool2)));
-    Assertions.assertTrue(tc.isSubtypeOf(tc.typeOf(int1), tc.typeOf(double1)));
-    Assertions.assertFalse(tc.isSubtypeOf(tc.typeOf(int1), tc.typeOf(bool1)));
-    Assertions.assertTrue(tc.isSubtypeOf(tc.typeOf(int1), tc.typeOf(float1)));
-    Assertions.assertTrue(tc.isSubtypeOf(tc.typeOf(int1), tc.typeOf(long1)));
-    Assertions.assertTrue(tc.isSubtypeOf(tc.typeOf(char1), tc.typeOf(char1)));
-    Assertions.assertFalse(tc.isSubtypeOf(tc.typeOf(int1), tc.typeOf(char1)));
-    Assertions.assertFalse(tc.isSubtypeOf(tc.typeOf(bool1), tc.typeOf(double1)));
-    Assertions.assertFalse(tc.isSubtypeOf(tc.typeOf(float1), tc.typeOf(long1)));
-    Assertions.assertTrue(tc.isSubtypeOf(tc.typeOf(int1), tc.typeOf(float1)));
+    assertTrue(tc.isSubtypeOf(tc.typeOf(bool1), tc.typeOf(bool2)));
+    assertTrue(tc.isSubtypeOf(tc.typeOf(int1), tc.typeOf(double1)));
+    assertFalse(tc.isSubtypeOf(tc.typeOf(int1), tc.typeOf(bool1)));
+    assertTrue(tc.isSubtypeOf(tc.typeOf(int1), tc.typeOf(float1)));
+    assertTrue(tc.isSubtypeOf(tc.typeOf(int1), tc.typeOf(long1)));
+    assertTrue(tc.isSubtypeOf(tc.typeOf(char1), tc.typeOf(char1)));
+    assertFalse(tc.isSubtypeOf(tc.typeOf(int1), tc.typeOf(char1)));
+    assertFalse(tc.isSubtypeOf(tc.typeOf(bool1), tc.typeOf(double1)));
+    assertFalse(tc.isSubtypeOf(tc.typeOf(float1), tc.typeOf(long1)));
+    assertTrue(tc.isSubtypeOf(tc.typeOf(int1), tc.typeOf(float1)));
 
     //non-primitives
     ASTExpression pers = p.parse_StringExpression("Person").get();
@@ -180,15 +179,15 @@ public class TypeCalculatorTest {
     ASTExpression fstud = p.parse_StringExpression("FirstSemesterStudent").get();
     fstud.accept(traverser);
 
-    Assertions.assertTrue(tc.isSubtypeOf(tc.typeOf(stud), tc.typeOf(pers)));
-    Assertions.assertTrue(tc.isSubtypeOf(tc.typeOf(fstud), tc.typeOf(pers)));
-    Assertions.assertTrue(tc.isSubtypeOf(tc.typeOf(fstud), tc.typeOf(stud)));
-    Assertions.assertFalse(tc.isSubtypeOf(tc.typeOf(pers), tc.typeOf(stud)));
-    Assertions.assertFalse(tc.isSubtypeOf(tc.typeOf(pers), tc.typeOf(fstud)));
-    Assertions.assertFalse(tc.isSubtypeOf(tc.typeOf(stud), tc.typeOf(fstud)));
-    Assertions.assertTrue(tc.isSubtypeOf(tc.typeOf(pers), tc.typeOf(pers)));
+    assertTrue(tc.isSubtypeOf(tc.typeOf(stud), tc.typeOf(pers)));
+    assertTrue(tc.isSubtypeOf(tc.typeOf(fstud), tc.typeOf(pers)));
+    assertTrue(tc.isSubtypeOf(tc.typeOf(fstud), tc.typeOf(stud)));
+    assertFalse(tc.isSubtypeOf(tc.typeOf(pers), tc.typeOf(stud)));
+    assertFalse(tc.isSubtypeOf(tc.typeOf(pers), tc.typeOf(fstud)));
+    assertFalse(tc.isSubtypeOf(tc.typeOf(stud), tc.typeOf(fstud)));
+    assertTrue(tc.isSubtypeOf(tc.typeOf(pers), tc.typeOf(pers)));
 
-    Assertions.assertFalse(tc.isSubtypeOf(tc.typeOf(int1), tc.typeOf(pers)));
+    assertFalse(tc.isSubtypeOf(tc.typeOf(int1), tc.typeOf(pers)));
   }
 
   @Test
@@ -202,33 +201,33 @@ public class TypeCalculatorTest {
     SymTypeExpression floatT = createPrimitive(BasicSymbolsMill.FLOAT);
     SymTypeExpression doubleT = createPrimitive(BasicSymbolsMill.DOUBLE);
 
-    Assertions.assertTrue(tc.compatible(booleanT, booleanT));
-    Assertions.assertTrue(tc.compatible(byteT, byteT));
-    Assertions.assertTrue(tc.compatible(shortT, byteT));
-    Assertions.assertTrue(tc.compatible(shortT, shortT));
-    Assertions.assertTrue(tc.compatible(charT, charT));
-    Assertions.assertTrue(tc.compatible(intT, byteT));
-    Assertions.assertTrue(tc.compatible(intT, shortT));
-    Assertions.assertTrue(tc.compatible(intT, charT));
-    Assertions.assertTrue(tc.compatible(intT, intT));
-    Assertions.assertTrue(tc.compatible(longT, byteT));
-    Assertions.assertTrue(tc.compatible(longT, shortT));
-    Assertions.assertTrue(tc.compatible(longT, charT));
-    Assertions.assertTrue(tc.compatible(longT, intT));
-    Assertions.assertTrue(tc.compatible(longT, longT));
-    Assertions.assertTrue(tc.compatible(floatT, byteT));
-    Assertions.assertTrue(tc.compatible(floatT, shortT));
-    Assertions.assertTrue(tc.compatible(floatT, charT));
-    Assertions.assertTrue(tc.compatible(floatT, intT));
-    Assertions.assertTrue(tc.compatible(floatT, longT));
-    Assertions.assertTrue(tc.compatible(floatT, floatT));
-    Assertions.assertTrue(tc.compatible(doubleT, byteT));
-    Assertions.assertTrue(tc.compatible(doubleT, shortT));
-    Assertions.assertTrue(tc.compatible(doubleT, charT));
-    Assertions.assertTrue(tc.compatible(doubleT, intT));
-    Assertions.assertTrue(tc.compatible(doubleT, longT));
-    Assertions.assertTrue(tc.compatible(doubleT, floatT));
-    Assertions.assertTrue(tc.compatible(doubleT, doubleT));
+    assertTrue(tc.compatible(booleanT, booleanT));
+    assertTrue(tc.compatible(byteT, byteT));
+    assertTrue(tc.compatible(shortT, byteT));
+    assertTrue(tc.compatible(shortT, shortT));
+    assertTrue(tc.compatible(charT, charT));
+    assertTrue(tc.compatible(intT, byteT));
+    assertTrue(tc.compatible(intT, shortT));
+    assertTrue(tc.compatible(intT, charT));
+    assertTrue(tc.compatible(intT, intT));
+    assertTrue(tc.compatible(longT, byteT));
+    assertTrue(tc.compatible(longT, shortT));
+    assertTrue(tc.compatible(longT, charT));
+    assertTrue(tc.compatible(longT, intT));
+    assertTrue(tc.compatible(longT, longT));
+    assertTrue(tc.compatible(floatT, byteT));
+    assertTrue(tc.compatible(floatT, shortT));
+    assertTrue(tc.compatible(floatT, charT));
+    assertTrue(tc.compatible(floatT, intT));
+    assertTrue(tc.compatible(floatT, longT));
+    assertTrue(tc.compatible(floatT, floatT));
+    assertTrue(tc.compatible(doubleT, byteT));
+    assertTrue(tc.compatible(doubleT, shortT));
+    assertTrue(tc.compatible(doubleT, charT));
+    assertTrue(tc.compatible(doubleT, intT));
+    assertTrue(tc.compatible(doubleT, longT));
+    assertTrue(tc.compatible(doubleT, floatT));
+    assertTrue(tc.compatible(doubleT, doubleT));
   }
 
   @Test
@@ -242,43 +241,43 @@ public class TypeCalculatorTest {
     SymTypeExpression floatT = createPrimitive(BasicSymbolsMill.FLOAT);
     SymTypeExpression doubleT = createPrimitive(BasicSymbolsMill.DOUBLE);
 
-    Assertions.assertFalse(tc.compatible(booleanT, byteT));
-    Assertions.assertFalse(tc.compatible(booleanT, shortT));
-    Assertions.assertFalse(tc.compatible(booleanT, charT));
-    Assertions.assertFalse(tc.compatible(booleanT, intT));
-    Assertions.assertFalse(tc.compatible(booleanT, longT));
-    Assertions.assertFalse(tc.compatible(booleanT, floatT));
-    Assertions.assertFalse(tc.compatible(booleanT, doubleT));
-    Assertions.assertFalse(tc.compatible(byteT, booleanT));
-    Assertions.assertFalse(tc.compatible(byteT, shortT));
-    Assertions.assertFalse(tc.compatible(byteT, charT));
-    Assertions.assertFalse(tc.compatible(byteT, intT));
-    Assertions.assertFalse(tc.compatible(byteT, longT));
-    Assertions.assertFalse(tc.compatible(byteT, floatT));
-    Assertions.assertFalse(tc.compatible(byteT, doubleT));
-    Assertions.assertFalse(tc.compatible(shortT, booleanT));
-    Assertions.assertFalse(tc.compatible(shortT, charT));
-    Assertions.assertFalse(tc.compatible(shortT, intT));
-    Assertions.assertFalse(tc.compatible(shortT, longT));
-    Assertions.assertFalse(tc.compatible(shortT, floatT));
-    Assertions.assertFalse(tc.compatible(shortT, doubleT));
-    Assertions.assertFalse(tc.compatible(charT, booleanT));
-    Assertions.assertFalse(tc.compatible(charT, byteT));
-    Assertions.assertFalse(tc.compatible(charT, shortT));
-    Assertions.assertFalse(tc.compatible(charT, intT));
-    Assertions.assertFalse(tc.compatible(charT, longT));
-    Assertions.assertFalse(tc.compatible(charT, floatT));
-    Assertions.assertFalse(tc.compatible(charT, doubleT));
-    Assertions.assertFalse(tc.compatible(intT, booleanT));
-    Assertions.assertFalse(tc.compatible(intT, longT));
-    Assertions.assertFalse(tc.compatible(intT, floatT));
-    Assertions.assertFalse(tc.compatible(intT, doubleT));
-    Assertions.assertFalse(tc.compatible(longT, booleanT));
-    Assertions.assertFalse(tc.compatible(longT, floatT));
-    Assertions.assertFalse(tc.compatible(longT, doubleT));
-    Assertions.assertFalse(tc.compatible(floatT, booleanT));
-    Assertions.assertFalse(tc.compatible(floatT, doubleT));
-    Assertions.assertFalse(tc.compatible(doubleT, booleanT));
+    assertFalse(tc.compatible(booleanT, byteT));
+    assertFalse(tc.compatible(booleanT, shortT));
+    assertFalse(tc.compatible(booleanT, charT));
+    assertFalse(tc.compatible(booleanT, intT));
+    assertFalse(tc.compatible(booleanT, longT));
+    assertFalse(tc.compatible(booleanT, floatT));
+    assertFalse(tc.compatible(booleanT, doubleT));
+    assertFalse(tc.compatible(byteT, booleanT));
+    assertFalse(tc.compatible(byteT, shortT));
+    assertFalse(tc.compatible(byteT, charT));
+    assertFalse(tc.compatible(byteT, intT));
+    assertFalse(tc.compatible(byteT, longT));
+    assertFalse(tc.compatible(byteT, floatT));
+    assertFalse(tc.compatible(byteT, doubleT));
+    assertFalse(tc.compatible(shortT, booleanT));
+    assertFalse(tc.compatible(shortT, charT));
+    assertFalse(tc.compatible(shortT, intT));
+    assertFalse(tc.compatible(shortT, longT));
+    assertFalse(tc.compatible(shortT, floatT));
+    assertFalse(tc.compatible(shortT, doubleT));
+    assertFalse(tc.compatible(charT, booleanT));
+    assertFalse(tc.compatible(charT, byteT));
+    assertFalse(tc.compatible(charT, shortT));
+    assertFalse(tc.compatible(charT, intT));
+    assertFalse(tc.compatible(charT, longT));
+    assertFalse(tc.compatible(charT, floatT));
+    assertFalse(tc.compatible(charT, doubleT));
+    assertFalse(tc.compatible(intT, booleanT));
+    assertFalse(tc.compatible(intT, longT));
+    assertFalse(tc.compatible(intT, floatT));
+    assertFalse(tc.compatible(intT, doubleT));
+    assertFalse(tc.compatible(longT, booleanT));
+    assertFalse(tc.compatible(longT, floatT));
+    assertFalse(tc.compatible(longT, doubleT));
+    assertFalse(tc.compatible(floatT, booleanT));
+    assertFalse(tc.compatible(floatT, doubleT));
+    assertFalse(tc.compatible(doubleT, booleanT));
   }
 
   @Test
@@ -308,9 +307,9 @@ public class TypeCalculatorTest {
     SymTypeExpression linkedlistOfPersonExpr = SymTypeExpressionFactory.createGenerics(linkedListSym, personExpr);
 
     // When & Then
-    Assertions.assertTrue(tc.compatible(listOfPersonExpr, listOfPersonExpr));
-    Assertions.assertTrue(tc.compatible(listOfPersonExpr, personListExpr));
-    Assertions.assertTrue(tc.compatible(listOfPersonExpr, linkedlistOfPersonExpr));
+    assertTrue(tc.compatible(listOfPersonExpr, listOfPersonExpr));
+    assertTrue(tc.compatible(listOfPersonExpr, personListExpr));
+    assertTrue(tc.compatible(listOfPersonExpr, linkedlistOfPersonExpr));
   }
 
   @Test
@@ -333,13 +332,13 @@ public class TypeCalculatorTest {
     SymTypeExpression personListExpr = SymTypeExpressionFactory.createTypeObject(personListSym);
 
     // When & Then
-    Assertions.assertFalse(tc.compatible(listOfIntExpr, _intSymType));
-    Assertions.assertFalse(tc.compatible(listOfIntExpr, listOfBoolExpr));
-    Assertions.assertFalse(tc.compatible(listOfBoolExpr, listOfIntExpr));
-    Assertions.assertFalse(tc.compatible(listOfBoolExpr, listOfPersonExpr));
-    Assertions.assertFalse(tc.compatible(listOfPersonExpr, listOfBoolExpr));
-    Assertions.assertFalse(tc.compatible(listOfBoolExpr, personListExpr));
-    Assertions.assertFalse(tc.compatible(personListExpr, listOfBoolExpr));
+    assertFalse(tc.compatible(listOfIntExpr, _intSymType));
+    assertFalse(tc.compatible(listOfIntExpr, listOfBoolExpr));
+    assertFalse(tc.compatible(listOfBoolExpr, listOfIntExpr));
+    assertFalse(tc.compatible(listOfBoolExpr, listOfPersonExpr));
+    assertFalse(tc.compatible(listOfPersonExpr, listOfBoolExpr));
+    assertFalse(tc.compatible(listOfBoolExpr, personListExpr));
+    assertFalse(tc.compatible(personListExpr, listOfBoolExpr));
   }
 
   public CombineExpressionsWithLiteralsTraverser getTraverser(FlatExpressionScopeSetter flatExpressionScopeSetter){

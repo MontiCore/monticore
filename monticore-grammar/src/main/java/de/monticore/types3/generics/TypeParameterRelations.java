@@ -1,5 +1,6 @@
 package de.monticore.types3.generics;
 
+import com.google.common.base.Preconditions;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeInferenceVariable;
@@ -27,8 +28,8 @@ public abstract class TypeParameterRelations {
 
   /**
    * replaces bound TypeVariables using a given map
-   * e.g., T, {T->int,U->float} -> int
-   * e.g., List<T>, {T->int} -> List<int>
+   * e.g., {@code T, {T->int,U->float} -> int}
+   * e.g., {@code List<T>, {T->int} -> List<int>}
    */
   public static SymTypeExpression replaceTypeVariables(
       SymTypeExpression type,
@@ -44,8 +45,8 @@ public abstract class TypeParameterRelations {
 
   /**
    * replaces InferenceVariables using a given map
-   * e.g., a, {a->int,b->float} -> int
-   * e.g., List<a>, {a->int} -> List<int>
+   * e.g., {@code a, {a->int,b->float} -> int}
+   * e.g., {@code List<a>, {a->int} -> List<int>}
    */
   public static SymTypeExpression replaceInferenceVariables(
       SymTypeExpression type,
@@ -165,7 +166,7 @@ public abstract class TypeParameterRelations {
   }
 
   protected static void setDelegate(TypeParameterRelations newDelegate) {
-    TypeParameterRelations.delegate = Log.errorIfNull(newDelegate);
+    TypeParameterRelations.delegate = Preconditions.checkNotNull(newDelegate);
   }
 
   protected static TypeParameterRelations getDelegate() {

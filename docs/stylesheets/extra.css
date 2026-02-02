@@ -18,3 +18,8 @@
 .bibliography {
   empty-cells: hide;
 }
+
+/* Reduce icon intensity*/
+.nonhighlight {
+  color: color-mix(in srgb, currentColor 50%, transparent);
+}

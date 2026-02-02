@@ -1,9 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
 import java.util.Optional;
 
@@ -20,10 +16,10 @@ import mylang.MyLangMill;
 import mylang.FullSynthesizeFromMyLang;
 import mylang._ast.ASTMyVar;
 import mylang._parser.MyLangParser;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MyLangTest {
   
@@ -40,8 +36,8 @@ public class MyLangTest {
     MyLangParser parser = MyLangMill.parser();
   
     Optional<ASTMyVar> varOpt = parser.parse_String("boolean x = 3 > 4");
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(varOpt.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(varOpt.isPresent());
     
     MyLangMill.scopesGenitorDelegator().createFromAST(varOpt.get());
   
@@ -60,20 +56,20 @@ public class MyLangTest {
     SymTypeExpression symType2 = tc.typeOf(exp);
     
     // check whether the type is boolean
-    Assertions.assertEquals("boolean", symType1.getTypeInfo().getName());
-    Assertions.assertTrue(TypeCheck.isBoolean(symType1));
+    assertEquals("boolean", symType1.getTypeInfo().getName());
+    assertTrue(TypeCheck.isBoolean(symType1));
     
-    Assertions.assertEquals("boolean", symType2.getTypeInfo().getName());
+    assertEquals("boolean", symType2.getTypeInfo().getName());
   
-    Assertions.assertTrue(TypeCheck.isBoolean(symType2));
+    assertTrue(TypeCheck.isBoolean(symType2));
     
     // check whether both types are compatible
-    Assertions.assertTrue(TypeCheck.compatible(symType1,symType2));
+    assertTrue(TypeCheck.compatible(symType1,symType2));
   
     // check whether the expression is of assignable type 
-    Assertions.assertTrue(tc.isOfTypeForAssign(symType1,exp));
+    assertTrue(tc.isOfTypeForAssign(symType1,exp));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   

@@ -5,12 +5,14 @@ import de.monticore.testmccommon._parser.TestMCCommonParser;
 import de.monticore.umlstereotype._ast.ASTStereotype;
 import de.monticore.umlstereotype._cocos.UMLStereotypeCoCoChecker;
 import de.se_rwth.commons.logging.Log;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Holds tests for {@link  StereoValueIsStringLiteral}
@@ -29,19 +31,19 @@ public class StereoValueIsStringLiteralTest {
 
   public void checkValid(String expressionString) throws IOException {
     Optional<ASTStereotype> optAST = parser.parse_StringStereotype(expressionString);
-    Assertions.assertTrue(optAST.isPresent());
+    assertTrue(optAST.isPresent());
     Log.getFindings().clear();
     checker.checkAll(optAST.get());
-    Assertions.assertTrue(Log.getFindings().isEmpty(), Log.getFindings().toString());
+    assertTrue(Log.getFindings().isEmpty(), Log.getFindings().toString());
   }
 
   public void checkInvalid(String expressionString) throws IOException {
     Optional<ASTStereotype> optAST = parser.parse_StringStereotype(expressionString);
-    Assertions.assertTrue(optAST.isPresent());
+    assertTrue(optAST.isPresent());
     Log.getFindings().clear();
     Log.enableFailQuick(false);
     checker.checkAll(optAST.get());
-    Assertions.assertFalse(Log.getFindings().isEmpty());
+    assertFalse(Log.getFindings().isEmpty());
   }
 
   @Test

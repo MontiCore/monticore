@@ -5,7 +5,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
-import de.monticore.symbols.basicsymbols._symboltable.VariableSymbolTOP;
+import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.compsymbols._symboltable.ComponentTypeSymbol;
 import de.monticore.symbols.compsymbols._symboltable.PortSymbol;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -93,7 +93,23 @@ public class CompKindOfGenericComponentType extends CompKindExpression {
 
   @Override
   public List<CompKindExpression> getSuperComponents() {
-    return this.getTypeInfo().getSuperComponentsList();
+    ComponentTypeSymbol rawType = this.getTypeInfo();
+    if (rawType.isEmptySuperComponents()) {
+      return rawType.getSuperComponentsList();
+    }
+
+    return rawType.getSuperComponentsList().stream().map(unboundParentExpr -> {
+      if (unboundParentExpr.isComponentType()) {
+        return unboundParentExpr;
+      } else if (unboundParentExpr.isGenericComponentType()) {
+        return unboundParentExpr.asGenericComponentType().bindTypeParameter(this.getTypeVarBindings());
+      } else {
+        throw new UnsupportedOperationException("Encountered a type expression for components that is not known." +
+          String.format(" (We only know '%s' and '%s')",
+            CompKindOfComponentType.class.getName(), CompKindOfGenericComponentType.class.getName()
+          )
+        );
+      }}).collect(Collectors.toList());
   }
 
   @Override
@@ -122,10 +138,19 @@ public class CompKindOfGenericComponentType extends CompKindExpression {
 
     SymTypeExpression unboundParamType = this.getTypeInfo()
       .getParameter(parameterName)
-      .map(VariableSymbolTOP::getType)
+      .map(VariableSymbol::getType)
       .orElseThrow(NoSuchElementException::new);
 
     return this.createBoundTypeExpression(unboundParamType);
+  }
+
+  @Override
+  public List<Optional<SymTypeExpression>> getParameterTypes() {
+    List<SymTypeExpression> unbound = this.getTypeInfo().getParameterList()
+      .stream().map(VariableSymbol::getType)
+      .collect(Collectors.toList());
+
+    return this.createBoundTypeExpression(unbound);
   }
 
   public Optional<SymTypeExpression> getTypeBindingFor(@NonNull TypeVarSymbol typeVar) {
@@ -211,5 +236,10 @@ public class CompKindOfGenericComponentType extends CompKindExpression {
       boundSymType.replaceTypeVariables(this.getTypeVarBindings());
       return Optional.of(boundSymType);
     }
+  }
+
+  protected List<Optional<SymTypeExpression>> createBoundTypeExpression(@NonNull List<SymTypeExpression> typeExprS) {
+    Preconditions.checkNotNull(typeExprS);
+    return typeExprS.stream().map(this::createBoundTypeExpression).collect(Collectors.toList());
   }
 }

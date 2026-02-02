@@ -21,9 +21,10 @@ dependencies {
     implementation 'org.eclipse.emf:org.eclipse.emf.common:2.15.0'
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
     testImplementation "org.junit.jupiter:junit-jupiter-params:$junit_version"
-    testImplementation "org.junit.vintage:junit-vintage-engine:$junit_version"
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
+    testImplementation "org.junit.jupiter:junit-jupiter-engine:$junit_version"
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher:$junit_platform_version"
     testImplementation 'org.apache.groovy:groovy:4.0.2'
+    testImplementation testFixtures(project(':monticore-runtime'))
 }
 
 def srcDir = "$buildDir/main/java"
@@ -80,6 +81,7 @@ generateTestMCGrammars {
 }
 
 test {
+  useJUnitPlatform()
   exclude '**/CommentsOnASTTest.class'
   exclude '**/SwitchStatementValidTest.class'
   exclude '**/GrammarInheritanceCycleTest.class'
@@ -92,7 +94,7 @@ test {
   exclude '**/SynthesizeSymTypeFromMCFullGenericTypesTest.class'
   exclude '**/SynthesizeSymTypeFromMCArrayTypesTest.class'
   exclude '**/MCType2SymTypeExpressionTest.class'
-  exclude '**/ComponentSymbolDeSerTest.class'
+  exclude '**/ComponentTypeSymbolDeSerTest.class'
 }
 
 

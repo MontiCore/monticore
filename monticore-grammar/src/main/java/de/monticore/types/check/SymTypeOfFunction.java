@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import com.google.common.base.Preconditions;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
@@ -10,7 +11,6 @@ import de.monticore.types3.SymTypeRelations;
 import de.monticore.types3.generics.TypeParameterRelations;
 import de.monticore.types3.generics.bounds.Bound;
 import de.monticore.types3.generics.util.BoundResolution;
-import de.monticore.types3.util.SymTypeExpressionComparator;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -32,14 +32,14 @@ import java.util.stream.Stream;
 
 /**
  * SymTypeOfFunction stores any kind of Function,
- * such as List<Person>::get, obj::<Integer>getX, i -> i + 2
+ * such as  {@code List<Person>::get},  {@code obj::<Integer>getX}, {@code i -> i + 2}
  */
 public class SymTypeOfFunction extends SymTypeExpression {
 
   /**
    * @deprecated only required for the deprecated type symbol
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public static final String TYPESYMBOL_NAME = "function";
 
   /**
@@ -76,6 +76,8 @@ public class SymTypeOfFunction extends SymTypeExpression {
       SymTypeExpression returnType,
       List<? extends SymTypeExpression> argumentTypes,
       boolean elliptic) {
+    Preconditions.checkNotNull(returnType);
+    Preconditions.checkNotNull(argumentTypes);
     super.typeSymbol = new TypeSymbol(TYPESYMBOL_NAME);
     super.typeSymbol.setEnclosingScope(BasicSymbolsMill.scope());
     super.typeSymbol.setSpannedScope(BasicSymbolsMill.scope());
@@ -88,7 +90,7 @@ public class SymTypeOfFunction extends SymTypeExpression {
   /**
    * @deprecated the other constructor is to be used
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public SymTypeOfFunction(SymTypeExpression returnType, List<SymTypeExpression> argumentTypes,
       boolean elliptic) {
     this(null, returnType, argumentTypes, elliptic);
@@ -178,7 +180,7 @@ public class SymTypeOfFunction extends SymTypeExpression {
 
   /**
    * returns whether the specified amount of arguments can be accepted
-   * E.g., (P, int...) -> int can accept 1,2,3,... arguments, but not 0
+   * E.g., {@code (P, int...) -> int} can accept 1,2,3,... arguments, but not 0
    */
   public boolean canHaveArity(int arity) {
     return ((isElliptic() && sizeArgumentTypes() - 1 <= arity)
@@ -187,7 +189,7 @@ public class SymTypeOfFunction extends SymTypeExpression {
 
   /**
    * returns a clone, with the arity fixed to the specified number
-   * E.g., (P, int...) -> int with arity of 3 is (P, int, int) -> int
+   * E.g., {@code (P, int...) -> int} with arity of 3 is {@code (P, int, int) -> int}
    */
   public SymTypeOfFunction getWithFixedArity(int arity) {
     SymTypeOfFunction clone = (SymTypeOfFunction) deepClone();
@@ -220,24 +222,22 @@ public class SymTypeOfFunction extends SymTypeExpression {
 
   protected Map<SymTypeVariable, SymTypeExpression> getTypeVariableReplaceMap() {
 
-    Map<SymTypeVariable, SymTypeExpression> replaceMap =
-        new TreeMap<>(new SymTypeExpressionComparator());
+    Map<SymTypeVariable, SymTypeExpression> replaceMap = new TreeMap<>();
     if (hasSymbol()) {
       // skolem variables:
       List<SymTypeInferenceVariable> infVars =
           TypeParameterRelations.getIncludedInferenceVariables(this);
       Map<SymTypeInferenceVariable, SymTypeExpression> infVar2Skolem =
-          new TreeMap<>(new SymTypeExpressionComparator());
+          new TreeMap<>();
       for (SymTypeInferenceVariable infVar : infVars) {
         infVar2Skolem.put(infVar,
-            SymTypeExpressionFactory.createTypeObject(
+            SymTypeExpressionFactory.createTypeObjectViaSurrogate(
                 "Skolem#" + infVar.print(),
                 BasicSymbolsMill.scope()
             )
         );
       }
-      Map<SymTypeExpression, SymTypeInferenceVariable> skolem2infVar =
-          new TreeMap<>(new SymTypeExpressionComparator());
+      Map<SymTypeExpression, SymTypeInferenceVariable> skolem2infVar = new TreeMap<>();
       infVar2Skolem.forEach((k, v) -> skolem2infVar.put(v, k));
       SymTypeOfFunction thisWithSkolems = TypeParameterRelations
           .replaceInferenceVariables(this, infVar2Skolem)
@@ -250,8 +250,7 @@ public class SymTypeOfFunction extends SymTypeExpression {
           = TypeParameterRelations.getFreeVariableReplaceMap(
           declType, BasicSymbolsMill.scope()
       );
-      Map<SymTypeInferenceVariable, SymTypeVariable> freeVar2TypePar =
-          new TreeMap<>(new SymTypeExpressionComparator());
+      Map<SymTypeInferenceVariable, SymTypeVariable> freeVar2TypePar = new TreeMap<>();
       typePar2FreeVar.forEach((k, v) -> freeVar2TypePar.put(v, k));
       SymTypeOfFunction declTypeWithFreeVars = TypeParameterRelations
           .replaceTypeVariables(declType, typePar2FreeVar)
@@ -292,11 +291,11 @@ public class SymTypeOfFunction extends SymTypeExpression {
 
   /**
    * returns the type arguments for a generic function.
-   * E.g., given asList, which has the declared Type <T> (T...) -> List<T>
-   * and this is the instantiation (int, int) -> List<int>,
+   * E.g., given asList, which has the declared Type {@code <T> (T...) -> List<T>}
+   * and this is the instantiation {@code (int, int) -> List<int>},
    * This will return the argument list [int].
    * <p>
-   * Warning: if the instantiation is, e.g., (Person, Car) -> List<int>,
+   * Warning: if the instantiation is, e.g., {@code (Person, Car) -> List<int>},
    * no correct list of arguments can be calculated.
    * <p>
    * Not to be confused with getArgumentTypes,

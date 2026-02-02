@@ -10,7 +10,9 @@ import static de.monticore.types.check.SymTypePrimitive.unbox;
 
 /**
  * This Class provides the default implementation of {@link ITypeRelations}
+ * @deprecated use {@link de.monticore.types3.SymTypeRelations}
  */
+@Deprecated
 public class TypeRelations implements ITypeRelations {
 
   @Override
@@ -106,8 +108,8 @@ public class TypeRelations implements ITypeRelations {
         if (type.isGenericType() && superType.isGenericType()) {
           SymTypeOfGenerics typeGen = (SymTypeOfGenerics) type;
           SymTypeOfGenerics supTypeGen = (SymTypeOfGenerics) superType;
-          if (typeGen.printTypeWithoutTypeArgument()
-              .equals(supTypeGen.printTypeWithoutTypeArgument())
+          if (typeGen.getTypeConstructorFullName()
+              .equals(supTypeGen.getTypeConstructorFullName())
               && typeGen.sizeArguments() == supTypeGen.sizeArguments()) {
             boolean success = true;
             for (int i = 0; i < typeGen.sizeArguments(); i++) {

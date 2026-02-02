@@ -9,11 +9,10 @@ import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.codegen.mc2cd.TranslationTestCase;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.logging.Log;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class RemoveRedundantReferencesManipulationTest extends TranslationTestCase {
 
@@ -23,14 +22,14 @@ public class RemoveRedundantReferencesManipulationTest extends TranslationTestCa
         TransformationHelper.createType("ASTReference"), "name",
         TransformationHelper.createType("java.util.List", "ASTReference"));
     
-    Assertions.assertEquals(2, cdClass.getCDAttributeList().size());
+    assertEquals(2, cdClass.getCDAttributeList().size());
     
     cdClass.setCDAttributeList(new RemoveRedundantAttributesManipulation()
         .removeRedundantAttributes(cdClass.getCDAttributeList()));
     
-    Assertions.assertEquals(1, cdClass.getCDAttributeList().size());
+    assertEquals(1, cdClass.getCDAttributeList().size());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   private ASTCDClass setupCDClass(String firstReferenceName, ASTMCType firstReferenceType,
@@ -40,10 +39,12 @@ public class RemoveRedundantReferencesManipulationTest extends TranslationTestCa
     ASTCDAttribute singleAttribute = CD4AnalysisMill.cDAttributeBuilder().uncheckedBuild();
     singleAttribute.setName(firstReferenceName);
     singleAttribute.setMCType(firstReferenceType);
-    
+    singleAttribute.setModifier(CD4AnalysisMill.modifierBuilder().uncheckedBuild());
+
     ASTCDAttribute listAttribute = CD4AnalysisMill.cDAttributeBuilder().uncheckedBuild();
     listAttribute.setName(secondReferenceName);
     listAttribute.setMCType(secondReferenceType);
+    listAttribute.setModifier(CD4AnalysisMill.modifierBuilder().uncheckedBuild());
     
     cdClass.addCDMember(singleAttribute);
     cdClass.addCDMember(listAttribute);

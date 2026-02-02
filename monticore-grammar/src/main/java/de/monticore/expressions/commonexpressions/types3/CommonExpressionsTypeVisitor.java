@@ -33,7 +33,7 @@ import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -477,12 +477,12 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
         getType4Ast().getPartialTypeOfExpr(expr.getExpression())
     );
     if (calculatedInner.isIntersectionType()) {
-      inner = new HashSet<>(
+      inner = new LinkedHashSet<>(
           ((SymTypeOfIntersection) calculatedInner).getIntersectedTypeSet()
       );
     }
     else {
-      inner = new HashSet<>();
+      inner = new LinkedHashSet<>();
       inner.add(calculatedInner);
     }
     if (inner.stream().allMatch(SymTypeExpression::isObscureType)) {
@@ -812,8 +812,9 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
       type = Optional.empty();
     }
     else {
-      SymTypeExpression innerAsExprType =
-          getType4Ast().getPartialTypeOfExpr(expr.getExpression());
+      SymTypeExpression innerAsExprType = SymTypeRelations.normalize(
+          getType4Ast().getPartialTypeOfExpr(expr.getExpression())
+      );
       if (WithinTypeBasicSymbolsResolver.canResolveIn(innerAsExprType)) {
         AccessModifier modifier = innerAsExprType.hasTypeInfo() ?
             TypeContextCalculator.getAccessModifier(
@@ -1135,7 +1136,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
       Predicate<VariableSymbol> varPredicate,
       Predicate<FunctionSymbol> funcPredicate
   ) {
-    Set<SymTypeExpression> types = new HashSet<>();
+    Set<SymTypeExpression> types = new LinkedHashSet<>();
     Optional<SymTypeExpression> variable =
         WithinTypeBasicSymbolsResolver.resolveVariable(innerAsExprType,
             name,
@@ -1170,7 +1171,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
    * this analyses the expression and returns a qualified name if possible,
    * which _may_ be of a type / value
    * Note: Java (Spec v.20 chapter 19: Syntax) does not allow type arguments,
-   * e.g., class C<T>{T t;} C<Float>.t = 3.2;
+   * e.g., {@code class C<T>{T t;} C<Float>.t = 3.2;}
    */
   protected Optional<String> getExprAsQName(ASTExpression expr) {
     if (expr instanceof ASTNameExpression) {
