@@ -20,7 +20,6 @@ public class ForConditionHasBooleanType implements MCCommonStatementsASTCommonFo
     Preconditions.checkNotNull(node);
     if (!node.isPresentCondition()) return;
 
-
     SymTypeExpression result = TypeCheck3.typeOf(node.getCondition());
 
     if (!result.isObscureType() && !SymTypeRelations.isBoolean(result)) {
