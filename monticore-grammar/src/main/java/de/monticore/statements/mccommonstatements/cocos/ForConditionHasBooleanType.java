@@ -18,6 +18,8 @@ public class ForConditionHasBooleanType implements MCCommonStatementsASTCommonFo
   @Override
   public void check(ASTCommonForControl node) {
     Preconditions.checkNotNull(node);
+    if (!node.isPresentCondition()) return;
+
 
     SymTypeExpression result = TypeCheck3.typeOf(node.getCondition());
 
