@@ -19,7 +19,7 @@ public class ForEachIsValid implements MCCommonStatementsASTEnhancedForControlCo
   public static final String ERROR_CODE = "0xA0907";
 
   public static final String ERROR_MSG_FORMAT =
-      "For-each loop expression must be an array of subtype of list."
+      "For-each loop expression must be an array or a list."
           + " Instead, the type is ";
 
   /**
