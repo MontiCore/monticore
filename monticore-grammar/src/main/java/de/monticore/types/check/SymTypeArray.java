@@ -60,6 +60,10 @@ public class SymTypeArray extends SymTypeExpression {
     return dim;
   }
 
+  /**
+   * @deprecated use {@link #cloneWithLessDim(int)}
+   */
+  @Deprecated
   public void setDim(int dim) {
     this.dim = dim;
   }
