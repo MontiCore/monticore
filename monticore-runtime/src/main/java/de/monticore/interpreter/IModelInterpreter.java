@@ -16,4 +16,5 @@ public interface IModelInterpreter {
 
   void pushScope(IMIScope scope);
 
+  MIScope getCurrentScope();
 }

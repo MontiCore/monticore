@@ -2,18 +2,16 @@ package de.monticore.interpreter;
 
 import de.monticore.interpreter.values.ErrorMIValue;
 import de.monticore.interpreter.values.FunctionMIValue;
-import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
-import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
+import de.monticore.symboltable.ISymbol;
 import de.se_rwth.commons.logging.Log;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 public class MIScope implements IMIScope {
 
-  protected Map<FunctionSymbol, FunctionMIValue> functionMap = new HashMap<>();
-  protected Map<VariableSymbol, Optional<MIValue>> variableMap = new HashMap<>();
+  protected Map<ISymbol, MIValue> functionMap = new HashMap<>();
+  protected Map<ISymbol, Optional<MIValue>> variableMap = new HashMap<>();
 
   protected Optional<MIScope> parent;
 
@@ -33,14 +31,14 @@ public class MIScope implements IMIScope {
     return clone;
   }
 
-  public void declareFunction(FunctionSymbol symbol, FunctionMIValue value) {
+  public void declareFunction(ISymbol symbol, FunctionMIValue value) {
     if (functionMap.containsKey(symbol)) {
       Log.error("0x57068 Function was already declared");
     }
     this.functionMap.put(symbol, value);
   }
 
-  public MIValue loadFunction(FunctionSymbol symbol) {
+  public MIValue loadFunction(ISymbol symbol) {
     if (functionMap.containsKey(symbol)) {
       return functionMap.get(symbol);
     }
@@ -54,14 +52,14 @@ public class MIScope implements IMIScope {
     return new ErrorMIValue(errorMsg);
   }
 
-  public void declareVariable(VariableSymbol symbol, Optional<MIValue> value) {
+  public void declareVariable(ISymbol symbol, Optional<MIValue> value) {
     if (variableMap.containsKey(symbol)) {
       Log.error("0x57070 Variable was already declared");
     }
     this.variableMap.put(symbol, value);
   }
 
-  public MIValue loadVariable(VariableSymbol symbol) {
+  public MIValue loadVariable(ISymbol symbol) {
     Optional<MIValue> value = variableMap.get(symbol);
     if (value != null) {
       if (value.isPresent()) {
@@ -83,7 +81,7 @@ public class MIScope implements IMIScope {
     return new ErrorMIValue(errorMsg);
   }
 
-  public void storeVariable(VariableSymbol symbol, MIValue value) {
+  public void storeVariable(ISymbol symbol, MIValue value) {
     if (variableMap.containsKey(symbol)) {
       variableMap.put(symbol, Optional.of(value));
     }
