@@ -1,6 +1,6 @@
 package de.monticore.statements.combinestatementswithexpressions._visitor;
 
-import de.monticore.interpreter.ModelInterpreter;
+import de.monticore.interpreter.IModelInterpreter;
 
 public class CombineStatementsWithExpressionsInterpreter extends CombineStatementsWithExpressionsInterpreterTOP {
   
@@ -8,7 +8,7 @@ public class CombineStatementsWithExpressionsInterpreter extends CombineStatemen
     super();
   }
   
-  public CombineStatementsWithExpressionsInterpreter(ModelInterpreter realThis) {
+  public CombineStatementsWithExpressionsInterpreter(IModelInterpreter realThis) {
     super(realThis);
   }
   

@@ -66,7 +66,7 @@ public class InterpreterDecorator
 
   public List<ASTCDConstructor> getConstructors() {
     ASTCDParameter parameter = cdParameterFacade.createParameter(
-        MODELINTERPRETER_FULLNAME, "realThis");
+        IMODELINTERPRETER_FULLNAME, "realThis");
 
     String interpreterName = visitorService.getInterpreterSimpleName();
     ASTCDConstructor constructorNoParams = cdConstructorFacade
@@ -178,7 +178,7 @@ public class InterpreterDecorator
     this.replaceTemplate(EMPTY_BODY, getter, new StringHookPoint("return (" + INTERPRETER_SCOPE_FULLNAME + ") getRealThis().getCurrentScope();"));
     members.add(getter);
 
-    ASTCDParameter scopeParameter = cdParameterFacade.createParameter(SCOPE_FULLNAME, "scope");
+    ASTCDParameter scopeParameter = cdParameterFacade.createParameter(INTERPRETER_SCOPE_FULLNAME, "scope");
     ASTCDMethod pushScopeMethod = cdMethodFacade.createMethod(PUBLIC.build(), "pushScope", scopeParameter);
     this.replaceTemplate(EMPTY_BODY, pushScopeMethod, new StringHookPoint("getRealThis().pushScope(scope);"));
     members.add(pushScopeMethod);
@@ -201,7 +201,7 @@ public class InterpreterDecorator
     ASTCDAttribute realThisAttribute = cdAttributeFacade
         .createAttribute(
             PROTECTED.build(),
-            mcTypeFacade.createQualifiedType(MODELINTERPRETER_FULLNAME),
+            mcTypeFacade.createQualifiedType(IMODELINTERPRETER_FULLNAME),
             "realThis");
     components.add(realThisAttribute);
 

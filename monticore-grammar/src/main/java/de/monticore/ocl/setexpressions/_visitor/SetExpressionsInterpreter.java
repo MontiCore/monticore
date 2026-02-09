@@ -14,7 +14,7 @@ import java.util.*;
 
 public class SetExpressionsInterpreter extends SetExpressionsInterpreterTOP {
   
-  public SetExpressionsInterpreter(ModelInterpreter realThis) {
+  public SetExpressionsInterpreter(IModelInterpreter realThis) {
     super(realThis);
   }
   

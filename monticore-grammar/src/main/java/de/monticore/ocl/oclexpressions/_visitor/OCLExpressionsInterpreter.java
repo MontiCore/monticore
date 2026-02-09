@@ -1,7 +1,7 @@
 package de.monticore.ocl.oclexpressions._visitor;
 
+import de.monticore.interpreter.IModelInterpreter;
 import de.monticore.interpreter.MIValue;
-import de.monticore.interpreter.ModelInterpreter;
 import de.monticore.interpreter.values.ErrorMIValue;
 import de.monticore.ocl.oclexpressions._ast.ASTIfThenElseExpression;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
@@ -11,7 +11,7 @@ import de.se_rwth.commons.logging.Log;
 
 public class OCLExpressionsInterpreter extends OCLExpressionsInterpreterTOP {
   
-  public OCLExpressionsInterpreter(ModelInterpreter realThis) {
+  public OCLExpressionsInterpreter(IModelInterpreter realThis) {
     super(realThis);
   }
   

@@ -3,11 +3,10 @@ package de.monticore.expressions.lambdaexpressions._visitor;
 import de.monticore.expressions.lambdaexpressions._ast.ASTLambdaExpression;
 import de.monticore.expressions.lambdaexpressions._ast.ASTLambdaExpressionBody;
 import de.monticore.expressions.lambdaexpressions._ast.ASTLambdaParameter;
+import de.monticore.interpreter.IModelInterpreter;
 import de.monticore.interpreter.MIValue;
-import de.monticore.interpreter.ModelInterpreter;
 import de.monticore.interpreter.values.ModelFunctionMIValue;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +16,7 @@ public class LambdaExpressionsInterpreter extends LambdaExpressionsInterpreterTO
     super();
   }
 
-  public LambdaExpressionsInterpreter(ModelInterpreter realThis) {
+  public LambdaExpressionsInterpreter(IModelInterpreter realThis) {
     super(realThis);
   }
 

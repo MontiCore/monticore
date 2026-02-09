@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class MIScope implements IMIScope {
+public class MIScope {
 
   protected Map<ISymbol, MIValue> functionMap = new HashMap<>();
   protected Map<ISymbol, Optional<MIValue>> variableMap = new HashMap<>();

@@ -1,10 +1,10 @@
 package de.monticore.statements.mccommonstatements._visitor;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.interpreter.IModelInterpreter;
 import de.monticore.interpreter.MIScope;
 import de.monticore.interpreter.MIValue;
 import de.monticore.interpreter.MIValueFactory;
-import de.monticore.interpreter.ModelInterpreter;
 import de.monticore.interpreter.iterators.MICommonForIterator;
 import de.monticore.interpreter.iterators.MIForEachIterator;
 import de.monticore.interpreter.iterators.MIForIterator;
@@ -38,7 +38,7 @@ public class MCCommonStatementsInterpreter extends MCCommonStatementsInterpreter
     super();
   }
 
-  public MCCommonStatementsInterpreter(ModelInterpreter realThis) {
+  public MCCommonStatementsInterpreter(IModelInterpreter realThis) {
     super(realThis);
   }
 

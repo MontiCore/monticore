@@ -1,7 +1,6 @@
 package de.monticore.statements.mcreturnstatements._visitor;
-
+import de.monticore.interpreter.IModelInterpreter;
 import de.monticore.interpreter.MIValue;
-import de.monticore.interpreter.ModelInterpreter;
 import de.monticore.interpreter.values.MIReturnSignal;
 import de.monticore.statements.mcreturnstatements._ast.ASTReturnStatement;
 
@@ -9,7 +8,7 @@ public class MCReturnStatementsInterpreter extends MCReturnStatementsInterpreter
   
   public MCReturnStatementsInterpreter() {}
   
-  public MCReturnStatementsInterpreter(ModelInterpreter realThis) {
+  public MCReturnStatementsInterpreter(IModelInterpreter realThis) {
     super(realThis);
   }
   

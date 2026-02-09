@@ -3,7 +3,7 @@ package de.monticore.expressions.expressionsbasis._visitor;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
-import de.monticore.interpreter.ModelInterpreter;
+import de.monticore.interpreter.IModelInterpreter;
 import de.monticore.interpreter.MIValue;
 import de.monticore.interpreter.values.ErrorMIValue;
 import de.monticore.interpreter.values.VariableMIValue;
@@ -21,7 +21,7 @@ public class ExpressionsBasisInterpreter extends ExpressionsBasisInterpreterTOP 
     super();
   }
 
-  public ExpressionsBasisInterpreter(ModelInterpreter realThis) {
+  public ExpressionsBasisInterpreter(IModelInterpreter realThis) {
     super(realThis);
   }
 

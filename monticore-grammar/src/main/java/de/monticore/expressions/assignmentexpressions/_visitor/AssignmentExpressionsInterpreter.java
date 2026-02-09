@@ -3,27 +3,24 @@ package de.monticore.expressions.assignmentexpressions._visitor;
 
 import de.monticore.expressions.assignmentexpressions._ast.*;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.interpreter.IModelInterpreter;
 import de.monticore.interpreter.InterpreterUtils;
-import de.monticore.interpreter.ModelInterpreter;
 import de.monticore.interpreter.MIValue;
 import de.monticore.interpreter.values.ErrorMIValue;
 import de.monticore.interpreter.values.WriteableMIValue;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
-import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types3.SymTypeRelations;
 import de.monticore.types3.TypeCheck3;
 import de.monticore.types3.util.TypeVisitorOperatorCalculator;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.Optional;
-
 import static de.monticore.expressions.assignmentexpressions._ast.ASTConstantsAssignmentExpressions.*;
 import static de.monticore.interpreter.MIValueFactory.createValue;
 
 public class AssignmentExpressionsInterpreter extends AssignmentExpressionsInterpreterTOP {
 
-  public AssignmentExpressionsInterpreter(ModelInterpreter realThis) {
+  public AssignmentExpressionsInterpreter(IModelInterpreter realThis) {
     super(realThis);
   }
 

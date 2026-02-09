@@ -1,6 +1,6 @@
 package de.monticore.literals.mcjavaliterals._visitor;
 
-import de.monticore.interpreter.ModelInterpreter;
+import de.monticore.interpreter.IModelInterpreter;
 import de.monticore.interpreter.MIValue;
 import de.monticore.literals.mcjavaliterals._ast.*;
 
@@ -12,7 +12,7 @@ public class MCJavaLiteralsInterpreter extends MCJavaLiteralsInterpreterTOP {
     super();
   }
   
-  public MCJavaLiteralsInterpreter(ModelInterpreter realThis) {
+  public MCJavaLiteralsInterpreter(IModelInterpreter realThis) {
     super(realThis);
   }
   

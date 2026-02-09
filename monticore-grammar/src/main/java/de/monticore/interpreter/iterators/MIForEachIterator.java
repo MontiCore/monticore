@@ -1,9 +1,9 @@
 package de.monticore.interpreter.iterators;
 
+import de.monticore.interpreter.IModelInterpreter;
 import de.monticore.interpreter.InterpreterUtils;
 import de.monticore.interpreter.MIValue;
 import de.monticore.interpreter.MIValueFactory;
-import de.monticore.interpreter.ModelInterpreter;
 import de.monticore.interpreter.values.VoidMIValue;
 import de.monticore.statements.mcstatementsbasis._ast.ASTMCStatement;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
@@ -24,7 +24,7 @@ public class MIForEachIterator implements MIForIterator {
   }
 
   @Override
-  public MIValue execute(ModelInterpreter interpreter, ASTMCStatement body) {
+  public MIValue execute(IModelInterpreter interpreter, ASTMCStatement body) {
     if (!iterator.hasNext())
       return new VoidMIValue();
 

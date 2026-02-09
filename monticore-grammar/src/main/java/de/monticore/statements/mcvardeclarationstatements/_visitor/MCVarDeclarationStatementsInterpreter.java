@@ -1,7 +1,7 @@
 package de.monticore.statements.mcvardeclarationstatements._visitor;
 
+import de.monticore.interpreter.IModelInterpreter;
 import de.monticore.interpreter.MIValue;
-import de.monticore.interpreter.ModelInterpreter;
 import de.monticore.interpreter.values.VoidMIValue;
 import de.monticore.statements.mcvardeclarationstatements._ast.*;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
@@ -12,7 +12,7 @@ public class MCVarDeclarationStatementsInterpreter extends MCVarDeclarationState
   
   public MCVarDeclarationStatementsInterpreter() {}
   
-  public MCVarDeclarationStatementsInterpreter(ModelInterpreter realThis) {
+  public MCVarDeclarationStatementsInterpreter(IModelInterpreter realThis) {
     super(realThis);
   }
   

@@ -3,7 +3,7 @@ package de.monticore.expressions.uglyexpressions._visitor;
 import de.monticore.expressions.uglyexpressions._ast.ASTClassCreator;
 import de.monticore.expressions.uglyexpressions._ast.ASTCreatorExpression;
 import de.monticore.expressions.uglyexpressions._ast.ASTTypeCastExpression;
-import de.monticore.interpreter.ModelInterpreter;
+import de.monticore.interpreter.IModelInterpreter;
 import de.monticore.interpreter.MIValue;
 import de.monticore.interpreter.MIValueFactory;
 import de.monticore.interpreter.values.ErrorMIValue;
@@ -18,7 +18,7 @@ import java.util.Optional;
 
 public class UglyExpressionsInterpreter extends UglyExpressionsInterpreterTOP {
   
-  public UglyExpressionsInterpreter(ModelInterpreter realThis) {
+  public UglyExpressionsInterpreter(IModelInterpreter realThis) {
     super(realThis);
   }
   

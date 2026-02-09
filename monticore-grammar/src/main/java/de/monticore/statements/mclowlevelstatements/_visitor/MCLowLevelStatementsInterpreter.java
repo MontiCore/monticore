@@ -1,7 +1,7 @@
 package de.monticore.statements.mclowlevelstatements._visitor;
 
+import de.monticore.interpreter.IModelInterpreter;
 import de.monticore.interpreter.MIValue;
-import de.monticore.interpreter.ModelInterpreter;
 import de.monticore.interpreter.values.ErrorMIValue;
 import de.monticore.interpreter.values.MIContinueSignal;
 import de.monticore.statements.mclowlevelstatements._ast.ASTContinueStatement;
@@ -11,7 +11,7 @@ public class MCLowLevelStatementsInterpreter extends MCLowLevelStatementsInterpr
   
   public MCLowLevelStatementsInterpreter() {}
   
-  public MCLowLevelStatementsInterpreter(ModelInterpreter realThis) {
+  public MCLowLevelStatementsInterpreter(IModelInterpreter realThis) {
     super(realThis);
   }
   

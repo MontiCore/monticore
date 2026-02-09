@@ -1,9 +1,9 @@
 package de.monticore.interpreter.iterators;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.interpreter.IModelInterpreter;
 import de.monticore.interpreter.MIValue;
 import de.monticore.interpreter.MIValueFactory;
-import de.monticore.interpreter.ModelInterpreter;
 import de.monticore.interpreter.values.VoidMIValue;
 import de.monticore.statements.mccommonstatements._ast.ASTForInit;
 import de.monticore.statements.mcstatementsbasis._ast.ASTMCStatement;
@@ -26,7 +26,7 @@ public class MICommonForIterator implements MIForIterator {
   }
 
   @Override
-  public MIValue execute(ModelInterpreter interpreter, ASTMCStatement body) {
+  public MIValue execute(IModelInterpreter interpreter, ASTMCStatement body) {
     if (initNode.isPresent()) {
       MIValue result = initNode.get().evaluate(interpreter);
       if (result.isFlowControlSignal())
@@ -54,7 +54,7 @@ public class MICommonForIterator implements MIForIterator {
 
   // helper
 
-  protected MIValue checkCondition(ModelInterpreter interpreter) {
+  protected MIValue checkCondition(IModelInterpreter interpreter) {
     if (condition.isPresent()) {
       return condition.get().evaluate(interpreter);
     }
@@ -63,7 +63,7 @@ public class MICommonForIterator implements MIForIterator {
     }
   }
 
-  protected MIValue increment(ModelInterpreter interpreter) {
+  protected MIValue increment(IModelInterpreter interpreter) {
     for (ASTExpression expression : expressions) {
       MIValue result = expression.evaluate(interpreter);
       if (result.isError())

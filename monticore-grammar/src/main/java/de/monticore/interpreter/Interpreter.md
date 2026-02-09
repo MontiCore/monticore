@@ -15,9 +15,8 @@ In MontiCore an Interpreter can be used for, e.g.,
 
 * [IModelInterpreter](../../../../../../../monticore-runtime/src/main/java/de/monticore/interpreter/IModelInterpreter.java)
   (offers `interpret` to evaluate an `ASTNode` to a value)
-    * [ModelInterpreter](ModelInterpreter.java)
-      (default Implementation;
-      allows storing/loading of variables and functions)
+   default Implementation;
+   allows storing/loading of variables and functions)
 * [MIValue](../../../../../../../monticore-runtime/src/main/java/de/monticore/interpreter/MIValue.java)
   (represents values as a result of interpretation)
     * [MIValueFactory](MIValueFactory.java)
@@ -112,7 +111,7 @@ In MontiCore an Interpreter can be used for, e.g.,
 ## How to Interpret a Model
 
 The interpreter is a collection of visitors traversing the AST.
-The [ModelInterpreter](ModelInterpreter.java)
+The [IModelInterpreter](IModelInterpreter.java)
 can be used to evaluate an `ASTNode`;   
 The `ASTNode` has to have a corresponding symbol table,
 and has to be of a valid model (check using CoCos).

@@ -4,9 +4,9 @@ package de.monticore.expressions.commonexpressions._visitor;
 import de.monticore.expressions.commonexpressions._ast.*;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
+import de.monticore.interpreter.IModelInterpreter;
 import de.monticore.interpreter.InterpreterUtils;
 import de.monticore.interpreter.MIValue;
-import de.monticore.interpreter.ModelInterpreter;
 import de.monticore.interpreter.values.ErrorMIValue;
 import de.monticore.interpreter.values.JavaNonStaticMethodMIValue;
 import de.monticore.interpreter.values.JavaStaticMethodMIValue;
@@ -33,7 +33,7 @@ public class CommonExpressionsInterpreter extends CommonExpressionsInterpreterTO
     super();
   }
 
-  public CommonExpressionsInterpreter(ModelInterpreter realThis) {
+  public CommonExpressionsInterpreter(IModelInterpreter realThis) {
     super(realThis);
   }
 

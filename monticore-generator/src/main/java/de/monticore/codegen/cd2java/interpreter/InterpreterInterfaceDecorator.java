@@ -73,7 +73,7 @@ public class InterpreterInterfaceDecorator
         .map(service::getInterpreterInterfaceType)
         .collect(Collectors.toList());
 
-    types.add(mcTypeFacade.createQualifiedType(MODELINTERPRETER_FULLNAME));
+    types.add(mcTypeFacade.createQualifiedType(IMODELINTERPRETER_FULLNAME));
 
     return CDExtendUsageFacade.getInstance().createCDExtendUsage(types);
   }

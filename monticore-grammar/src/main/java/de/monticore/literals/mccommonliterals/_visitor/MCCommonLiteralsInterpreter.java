@@ -1,9 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.literals.mccommonliterals._visitor;
 
-import de.monticore.interpreter.ModelInterpreter;
+import de.monticore.interpreter.IModelInterpreter;
 import de.monticore.interpreter.MIValue;
-import de.monticore.interpreter.values.ErrorMIValue;
 import de.monticore.literals.mccommonliterals._ast.*;
 import de.se_rwth.commons.logging.Log;
 
@@ -15,7 +14,7 @@ public class MCCommonLiteralsInterpreter extends MCCommonLiteralsInterpreterTOP 
     super();
   }
 
-  public MCCommonLiteralsInterpreter(ModelInterpreter realThis) {
+  public MCCommonLiteralsInterpreter(IModelInterpreter realThis) {
     super(realThis);
   }
 

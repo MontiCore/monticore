@@ -15,7 +15,6 @@ import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types3.SymTypeRelations;
 import de.se_rwth.commons.logging.Log;
-
 import java.lang.reflect.Field;
 import java.util.Optional;
 import java.util.function.BiFunction;

@@ -1,0 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+component grammar Numerals extends de.monticore.MCBasics {
+
+  interface Number;
+
+  Integer implements Number = negative:["-"]? Digits;
+
+  Float implements Number = negative:["-"]? pre:Digits "." post:Digits;
+
+  token Digits = Digit+;
+
+  fragment token Digit = '0'..'9';
+
+}

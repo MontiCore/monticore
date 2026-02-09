@@ -2,7 +2,7 @@
 package de.monticore.expressions.combineexpressionswithliterals._visitor;
 
 import de.monticore.expressions.combineexpressionswithliterals._ast.ASTFoo;
-import de.monticore.interpreter.ModelInterpreter;
+import de.monticore.interpreter.IModelInterpreter;
 import de.monticore.interpreter.MIValue;
 
 public class CombineExpressionsWithLiteralsInterpreter extends CombineExpressionsWithLiteralsInterpreterTOP {
@@ -10,7 +10,7 @@ public class CombineExpressionsWithLiteralsInterpreter extends CombineExpression
     super();
   }
 
-  public  CombineExpressionsWithLiteralsInterpreter(ModelInterpreter realThis) {
+  public  CombineExpressionsWithLiteralsInterpreter(IModelInterpreter realThis) {
     super(realThis);
   }
 
