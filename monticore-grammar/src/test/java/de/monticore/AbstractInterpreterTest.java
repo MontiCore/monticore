@@ -2,8 +2,8 @@
 package de.monticore;
 
 import de.monticore.antlr4.MCConcreteParser;
+import de.monticore.interpreter.IModelInterpreter;
 import de.monticore.interpreter.MIValue;
-import de.monticore.interpreter.ModelInterpreter;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
@@ -41,7 +41,7 @@ public abstract class AbstractInterpreterTest {
   protected ITraverser symbolTableCompleter;
   
   protected MCConcreteParser parser;
-  protected ModelInterpreter interpreter;
+  protected IModelInterpreter interpreter;
 
   protected Supplier<MCConcreteParser> parserSupplier;
   protected Runnable resetMill;

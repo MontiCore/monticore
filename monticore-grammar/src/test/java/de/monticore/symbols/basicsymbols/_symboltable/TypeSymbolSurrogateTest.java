@@ -2,7 +2,7 @@
 package de.monticore.symbols.basicsymbols._symboltable;
 
 import de.monticore.ast.ASTNode;
-import de.monticore.interpreter.Value;
+import de.monticore.interpreter.MIValue;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symboltable.IScope;
 import de.monticore.symboltable.ISymbol;
@@ -330,7 +330,7 @@ public class TypeSymbolSurrogateTest {
     public void setAccessModifier(AccessModifier accessModifier) {
     }
     @Override
-    public Map<IStereotypeReference, Optional<Value>> getStereoinfo() {
+    public Map<IStereotypeReference, Optional<MIValue>> getStereoinfo() {
       return null;
     }
     @Override

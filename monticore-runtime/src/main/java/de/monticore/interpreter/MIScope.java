@@ -92,5 +92,4 @@ public class MIScope {
       Log.error("0x57072 Failed to store Value in Symbol. Could not find Symbol in the current or any parent scope");
     }
   }
-
 }

@@ -27,31 +27,12 @@ public interface IModelInterpreter {
     return getRealThis().getScopeCallstack().peek();
   }
 
-  /*
-  TODO Explicit cast is needed because:
-    Short version: Dependencies between symbols, scopes, functions & interpreter
-    Long version:
-    ModelFunctionMIValue has VariableSymbols as attributes
-      -> ModelFunctionMIValue must be in mc-grammar
-    MIScope uses Variable-/FunctionSymbol
-      -> must be in mc-grammar
-    ModelFunctionMIValue uses 'pushScope(MIScope)';
-    IModelInterpreter must in mc-rte and has 'MIValue interpret()'
-      -> MIValue must be in mc-rte;
-    MIValue has 'FunctionMIValue asFunction()'
-      -> FunctionMIValue must be in mc-rte
-    FunctionMIValue needs 'execute(IModelInterpreter)'
-      -> ModelFunctionMIValue must use IModelInterpreter
-      -> ModelInterpreter needs 'pushScope(MIScope)'
-    MIScope cant be accessed -> IMIScope
-    IMIscope cant access Variable-/FunctionSymbol -> explicit cast
-   */
   default void pushScope(MIScope scope) {
-    getRealThis().getScopeCallstack().push((MIScope) scope);
+    getRealThis().getScopeCallstack().push(scope);
   }
 
-  default void popScope() {
-    getRealThis().getScopeCallstack().pop();
+  default MIScope popScope() {
+    return getRealThis().getScopeCallstack().pop();
   }
 
   default void declareFunction(ISymbol symbol, FunctionMIValue value) {

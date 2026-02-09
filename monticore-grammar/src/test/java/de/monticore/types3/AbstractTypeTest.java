@@ -6,6 +6,7 @@ import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import java.util.stream.Collectors;
 
@@ -22,7 +23,7 @@ public class AbstractTypeTest  {
     Log.enableFailQuick(false);
   }
 
-  protected static void assertNoFindings() {
+  protected static void assertNoFindings1() {
     Assertions.assertTrue(Log.getFindings().isEmpty(), "Expected no Log findings, but got:"
             + System.lineSeparator() + getAllFindingsAsString());
   }

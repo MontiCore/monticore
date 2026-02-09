@@ -14,7 +14,6 @@ public final class InterpreterConstants {
   public static final String VALUE_FULLNAME = "de.monticore.interpreter.MIValue";
   public static final String FUNCTION_VALUE_FULLNAME = "de.monticore.interpreter.values.FunctionMIValue";
 
-
   public static final String NODE_TYPE = "de.monticore.ast.ASTNode";
 
   public static final String NODE_PARAMETER = "node";
