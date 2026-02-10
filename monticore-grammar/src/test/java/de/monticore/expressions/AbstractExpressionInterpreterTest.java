@@ -23,14 +23,10 @@ import de.monticore.types.check.types3wrapper.TypeCheck3AsISynthesize;
 import de.monticore.types3.Type4Ast;
 import de.monticore.types3.TypeCheck3;
 import de.monticore.visitor.ITraverser;
-import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-
 import java.io.IOException;
 import java.util.Optional;
-
 import static de.monticore.interpreter.MIValueFactory.createValue;
 import static de.monticore.types3.util.DefsTypesForTests.inScope;
 import static de.monticore.types3.util.DefsTypesForTests.variable;
@@ -149,13 +145,6 @@ public class AbstractExpressionInterpreterTest extends AbstractInterpreterTest {
     assertNotNull(interpretationResult);
     if (!Log.getFindings().isEmpty()) {
       Log.printFindings();
-      for(Finding s: Log.getFindings()) {
-        System.out.println(s.getMsg());
-      }
-      /*
-      #0 : 0x57037 Plus operation with result of type R"(a)(.*)" is not supported.
-      0x57037 Plus operation with result of type R"(a)(.*)" is not supported.
-       */
       fail();
     }
     assertValueEquals(expected, interpretationResult);
