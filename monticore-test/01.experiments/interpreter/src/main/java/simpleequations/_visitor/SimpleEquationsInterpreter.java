@@ -1,13 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package simpleequations._visitor;
 
-import de.monticore.interpreter.MIScope;
 import de.monticore.interpreter.MIValue;
 import de.monticore.interpreter.MIValueFactory;
 import de.monticore.interpreter.values.ErrorMIValue;
 import simpleequations._ast.*;
-
-import java.util.Optional;
 
 public class SimpleEquationsInterpreter extends SimpleEquationsInterpreterTOP {
 
@@ -28,8 +25,8 @@ public class SimpleEquationsInterpreter extends SimpleEquationsInterpreterTOP {
     MIValue right = node.getRight().evaluate(getRealThis());
 
     if (left.isInt() && right.isInt()) {
-        return MIValueFactory.createValue(left.asInt() + right.asInt());
-      }
+      return MIValueFactory.createValue(left.asInt() + right.asInt());
+    }
     return MIValueFactory.createValue(left.asFloat() + right.asFloat());
   }
 
@@ -65,7 +62,7 @@ public class SimpleEquationsInterpreter extends SimpleEquationsInterpreterTOP {
 
   public MIValue interpret(ASTVariableDefinition node) {
     MIValue value = node.getValue().evaluate(getRealThis());
-    getRealThis().storeVariable(node.getSymbol(), value);
+    getRealThis().declareVariable(node.getSymbol(), java.util.Optional.of(value));
     return new ErrorMIValue("Error ASTVariableDefinition node");
   }
 
@@ -91,8 +88,9 @@ public class SimpleEquationsInterpreter extends SimpleEquationsInterpreterTOP {
     var optSymbol = node.getEnclosingScope().resolveVariableDefinition(node.getName());
     if (optSymbol.isPresent()) {
       return getRealThis().loadVariable(optSymbol.get());
+    }else{
+      return new ErrorMIValue("Error ASTNameExpression node");
     }
-    return new ErrorMIValue("Error ASTNameExpression node");
   }
 
   public MIValue interpret(ASTNumberExpression node) {

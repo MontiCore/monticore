@@ -16,7 +16,7 @@ public class NumeralsInterpreter extends NumeralsInterpreterTOP {
   public MIValue interpret(ASTFloat node) {
     return MIValueFactory.createValue((float)
         (Integer.parseInt(node.getPre()) +
-        Integer.parseInt(node.getPost()) * Math.pow(10, -node.getPost().length()))
+            Integer.parseInt(node.getPost()) * Math.pow(10, -node.getPost().length()))
             * (node.isNegative() ? -1 : 1));
   }
 
