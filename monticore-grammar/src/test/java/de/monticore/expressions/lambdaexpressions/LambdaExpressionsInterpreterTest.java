@@ -10,7 +10,7 @@ public class LambdaExpressionsInterpreterTest extends AbstractExpressionInterpre
 
   @Test
   public void testSimpleLambda() {
-    testValidExpression("(() -> \"a\"+1)()", createValue(1));
+    testValidExpression("(() -> a+1)()", createValue(1));
     testValidExpression("(() -> 1)()", createValue(1));
     testValidExpression("(() -> () -> 2)()()", createValue(2));
     testValidExpression("((long a) -> a + 1)(41L)", createValue(42L));
