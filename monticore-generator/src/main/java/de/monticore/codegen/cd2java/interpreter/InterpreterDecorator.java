@@ -57,7 +57,7 @@ public class InterpreterDecorator
         .addAllCDMembers(getInterpreterAttributes())
         .addAllCDMembers(getConstructors())
         .addAllCDMembers(getRealThisComponents())
-        .addAllCDMembers(createMapMembers())
+        .addAllCDMembers(createScopeStackMembers())
         .addAllCDMembers(getInterpretMethods())
         .build();
   }
@@ -132,61 +132,14 @@ public class InterpreterDecorator
     return methods;
   }
 
-  public List<ASTCDMember> createMapMembers() {
+  public List<ASTCDMember> createScopeStackMembers() {
     List<ASTCDMember> members = new ArrayList<>();
-    
+
+    //add attribute
     ASTMCType scopeStackType = mcTypeFacade.createBasicGenericTypeOf("java.util.Stack", INTERPRETER_SCOPE_FULLNAME);
-    
     members.add(cdAttributeFacade.createAttribute(PROTECTED.build(), scopeStackType, "scopeCallstack"));
 
-//    ASTCDParameter symbolParameter = cdParameterFacade.createParameter(mcTypeFacade.createQualifiedType(SYMBOL_FULLNAME), "symbol");
-//    ASTCDParameter valueParameter = cdParameterFacade.createParameter(mcTypeFacade.createQualifiedType(VALUE_FULLNAME), "value");
-//    ASTCDParameter variableSymbolParameter = cdParameterFacade.createParameter(mcTypeFacade.createQualifiedType(SYMBOL_FULLNAME), "symbol");
-//    ASTCDParameter optionalValueParameter = cdParameterFacade.createParameter(mcTypeFacade.createOptionalTypeOf(VALUE_FULLNAME), "value");
-//    ASTCDParameter functionValueParameter = cdParameterFacade.createParameter(mcTypeFacade.createQualifiedType(FUNCTION_VALUE_FULLNAME), "value");
-//
-//    ASTCDMethod declareFuncMethod = cdMethodFacade.createMethod(
-//        PUBLIC.build(), "declareFunction", symbolParameter, functionValueParameter);
-//    this.replaceTemplate(EMPTY_BODY, declareFuncMethod, new StringHookPoint("getRealThis().getCurrentScope().declareFunction(symbol, value);"));
-//    members.add(declareFuncMethod);
-//
-//    ASTCDMethod loadFuncMethod = cdMethodFacade.createMethod(PUBLIC.build(), VALUE_FULLNAME, "loadFunction", symbolParameter);
-//    this.replaceTemplate(EMPTY_BODY, loadFuncMethod, new StringHookPoint("return (" + VALUE_FULLNAME + ") getRealThis().getCurrentScope().loadFunction(symbol);"));
-//    members.add(loadFuncMethod);
-//
-//    ASTCDMethod declareVarMethod = cdMethodFacade.createMethod(
-//        PUBLIC.build(), "declareVariable", variableSymbolParameter, optionalValueParameter);
-//    this.replaceTemplate(EMPTY_BODY, declareVarMethod, new StringHookPoint("getRealThis().getCurrentScope().declareVariable(symbol, value);"));
-//    members.add(declareVarMethod);
-//
-//    ASTCDMethod loadVarMethod = cdMethodFacade.createMethod(PUBLIC.build(), VALUE_FULLNAME,
-//        "loadVariable", variableSymbolParameter);
-//    this.replaceTemplate(EMPTY_BODY, loadVarMethod, new StringHookPoint("return (" + VALUE_FULLNAME + ") getRealThis().getCurrentScope().loadVariable(symbol);"));
-//    members.add(loadVarMethod);
-//
-//    ASTCDMethod storeVarMethod = cdMethodFacade.createMethod(
-//        PUBLIC.build(), "storeVariable", variableSymbolParameter, valueParameter);
-//    this.replaceTemplate(EMPTY_BODY, storeVarMethod, new StringHookPoint("getRealThis().getCurrentScope().storeVariable(symbol, value);"));
-//    members.add(storeVarMethod);
-//
-//    ASTCDMethod getter = cdMethodFacade.createMethod(
-//        PUBLIC.build(),
-//        mcTypeFacade.createQualifiedType(INTERPRETER_SCOPE_FULLNAME),
-//        "getCurrentScope");
-//    this.replaceTemplate(EMPTY_BODY, getter, new StringHookPoint("return (" + INTERPRETER_SCOPE_FULLNAME + ") getRealThis().getCurrentScope();"));
-//    members.add(getter);
-//
-//    ASTCDParameter scopeParameter = cdParameterFacade.createParameter(INTERPRETER_SCOPE_FULLNAME, "scope");
-//    ASTCDMethod pushScopeMethod = cdMethodFacade.createMethod(PUBLIC.build(), "pushScope", scopeParameter);
-//    this.replaceTemplate(EMPTY_BODY, pushScopeMethod, new StringHookPoint("getRealThis().pushScope(scope);"));
-//    members.add(pushScopeMethod);
-//
-//    ASTMCReturnType returnType = CD4CodeMill.mCReturnTypeBuilder()
-//        .setMCType(mcTypeFacade.createQualifiedType(INTERPRETER_SCOPE_FULLNAME)).build();
-//    ASTCDMethod popScopeMethod = cdMethodFacade.createMethod(PUBLIC.build(), returnType, "popScope");
-//    this.replaceTemplate(EMPTY_BODY, popScopeMethod, new StringHookPoint("return getRealThis().popScope();"));
-//    members.add(popScopeMethod);
-//
+    //add getScopeCallstack method
     ASTCDMethod getScopeCallstackMethod = cdMethodFacade.createMethod(PUBLIC.build(), scopeStackType,
             "getScopeCallstack");
     this.replaceTemplate(EMPTY_BODY, getScopeCallstackMethod, new StringHookPoint("return scopeCallstack;"));

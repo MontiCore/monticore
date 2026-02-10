@@ -50,12 +50,11 @@ public class InterpreterInterfaceDecoratorTest extends DecoratorTestCase {
             "de.monticore.codegen.ast.lexicals._visitor.ILexicalsInterpreter",
             ((ASTMCQualifiedType) interfaces.get(0)).getMCQualifiedName().getQName());
     assertEquals(
-            InterpreterConstants.MODELINTERPRETER_FULLNAME,
+            InterpreterConstants.IMODELINTERPRETER_FULLNAME,
             ((ASTMCQualifiedType) interfaces.get(1)).getMCQualifiedName().getQName());
   }
 
   @Test
-  @Disabled
   public void testInterpretMethods() {
     List<ASTCDMethod> interpretMethods = decoratedInterface.getCDMethodList()
         .stream()
@@ -63,13 +62,15 @@ public class InterpreterInterfaceDecoratorTest extends DecoratorTestCase {
         .collect(Collectors.toList());
 
     assertEquals(0, interpretMethods.size());
-    ASTCDMethod method = interpretMethods.get(0);
-
-    assertEquals(1, method.getCDParameterList().size());
-    assertEquals("node", method.getCDParameter(0).getName());
-    assertEquals(InterpreterConstants.VALUE_FULLNAME, method.getMCReturnType().printType());
-
-    assertTrue(method.getModifier().isAbstract());
+//    ASTCDMethod method = interpretMethods.get(0);
+//
+//    assertEquals(1, method.getCDParameterList().size());
+//    assertEquals("node", method.getCDParameter(0).getName());
+//    assertEquals(InterpreterConstants.VALUE_FULLNAME, method.getMCReturnType().printType());
+//
+//
+//
+//    assertTrue(method.getModifier().isAbstract());
   }
 
   @AfterEach
