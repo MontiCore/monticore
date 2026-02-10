@@ -85,18 +85,20 @@ public class BoundResolution {
       List<SymTypeInferenceVariable> toBeResolved
   ) {
     return recursiveResolve(
-        newBounds, oldBounds, toBeResolved, false
+        newBounds, oldBounds, toBeResolved, new TreeSet<>(), false
     );
   }
 
   /**
-   * @param createdNewInferenceVariablesLastIteration used to stop infinite recursion
+   * @param tmpInfVars                used to stop infinite recursion
+   * @param createdTempInfVarsLastTry used to stop infinite recursion
    */
   protected Optional<Map<SymTypeInferenceVariable, SymTypeExpression>> recursiveResolve(
       List<Bound> newBounds,
       List<Bound> oldBounds,
       List<SymTypeInferenceVariable> toBeResolved,
-      boolean createdNewInferenceVariablesLastIteration
+      Collection<SymTypeInferenceVariable> tmpInfVars,
+      boolean createdTempInfVarsLastTry
   ) {
     // shortcut reducing log
     if (newBounds.isEmpty() && oldBounds.isEmpty()) {
@@ -117,9 +119,16 @@ public class BoundResolution {
             toBeResolved.stream()
                 .map(SymTypeExpression::printFullName)
                 .collect(Collectors.joining(System.lineSeparator())))
-            + (createdNewInferenceVariablesLastIteration ?
-            System.lineSeparator() + " * temporary inference variables"
-                + " have been created last iteration"
+            + (createdTempInfVarsLastTry
+            ? System.lineSeparator() + " * temporary inference variables"
+            + " have been created since last instantiation"
+            + " of a non-temporary inference variable"
+            : "")
+            + (!tmpInfVars.isEmpty()
+            ? System.lineSeparator() + " * temporary inference variables:"
+            + System.lineSeparator() + tmpInfVars.stream()
+            .map(SymTypeExpression::printFullName)
+            .collect(Collectors.joining(System.lineSeparator()))
             : "")
         ,
         LOG_NAME
@@ -297,20 +306,20 @@ public class BoundResolution {
 
     // find a new instantiation
     if (!varsToResolveNext.isEmpty()) {
+
       // Simple method based on LuBs/GlBs
       if (varsToResolveNext.stream().noneMatch(var2CaptureBound::containsKey)) {
         List<TypeEqualityBound> newEqualityBounds = findInstantiationsSimple(
             new ArrayList<>(varsToResolveNext),
             var2LowerBounds, var2UpperBounds, var2SourceBounds, var2TargetBounds
         );
-        if (!newEqualityBounds.isEmpty()) {
-          // use the new-found instantiations to reiterate
-          result = recursiveResolve(
-              new ArrayList<>(newEqualityBounds), reducedBounds, toBeResolved,
-              false
-          );
-        }
-        else if (createdNewInferenceVariablesLastIteration) {
+        Set<SymTypeInferenceVariable> newlyInstantiated =
+            newEqualityBounds.stream()
+                .map(TypeEqualityBound::getFirstType)
+                .collect(Collectors.toSet());
+        boolean hasNotFoundRelevantInstantiation =
+            tmpInfVars.containsAll(newlyInstantiated);
+        if (createdTempInfVarsLastTry && hasNotFoundRelevantInstantiation) {
           // stop infinite recursion after an attempt of JLS 21 18.4, lower part.
           // s.a. org.eclipse.jdt.internal.compiler.lookup.InferenceContext18
           // ::resolve
@@ -320,13 +329,25 @@ public class BoundResolution {
               LOG_NAME);
           return Optional.empty();
         }
+        else if (!newEqualityBounds.isEmpty()) {
+          // use the new-found instantiations to reiterate
+          result = recursiveResolve(
+              new ArrayList<>(newEqualityBounds), reducedBounds, toBeResolved,
+              tmpInfVars,
+              // if we found an instantiation of an original (non-temp)
+              // variable, we allow creation of temp variables again
+              // (otherwise, we wound risk endless loops)
+              hasNotFoundRelevantInstantiation && createdTempInfVarsLastTry
+          );
+        }
         else {
           // continue with complex method
         }
       }
+
       // Complex method involving the creation of new inference variables
       // (s. JLS 21 18.4, lower part)
-      if (result.isEmpty()) {
+      if (result.isEmpty() && !createdTempInfVarsLastTry) {
         List<SymTypeInferenceVariable> newInfVars = new ArrayList<>();
         List<Bound> newInfVarsBounds = new ArrayList<>();
         Map<SymTypeInferenceVariable, SymTypeInferenceVariable> origVar2NewInfVar =
@@ -408,11 +429,16 @@ public class BoundResolution {
             }
           }
         }
+        Collection<SymTypeInferenceVariable> newAndOldTempInfVars =
+            new TreeSet<>();
+        newAndOldTempInfVars.addAll(tmpInfVars);
+        newAndOldTempInfVars.addAll(newInfVars);
         Optional<Map<SymTypeInferenceVariable, SymTypeExpression>> potentialResult =
             recursiveResolve(
                 new ArrayList<>(newInfVarsBounds),
                 reducedBoundsFiltered,
                 toBeResolved,
+                newAndOldTempInfVars,
                 true
             );
         // remove the temporary inference variables from the result
