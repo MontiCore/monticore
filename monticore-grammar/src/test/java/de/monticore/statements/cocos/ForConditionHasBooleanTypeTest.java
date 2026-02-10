@@ -41,7 +41,8 @@ class ForConditionHasBooleanTypeTest {
   @ValueSource(strings = {
     "for(5; true; 5+1){}",
     "for(5; 5<6; 5+1){}",
-    "for(5; !(false || true) && (6==7); 5+1){}"
+    "for(5; !(false || true) && (6==7); 5+1){}",
+    "for(;;){}"
   })
   void testValid(String expr) throws IOException {
     // Given
