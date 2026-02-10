@@ -108,7 +108,7 @@ public class InterpreterUtils {
   /**
    * Calculates the result of a binary operation with the given result type by
    * using the given lambdas for the calculation. Operation should support
-   * int, long, float & double.
+   * int, long, float &amp; double.
    *
    * @param v1         left operand
    * @param v2         right operand
@@ -137,7 +137,7 @@ public class InterpreterUtils {
 
   /**
    * Calculates the result of a bitwise binary operation with the given result type by using
-   * the given lambdas for the calculation. Operation should support int & long.
+   * the given lambdas for the calculation. Operation should support int &amp; long.
    *
    * @param v1         left operand
    * @param v2         right operand
@@ -164,7 +164,7 @@ public class InterpreterUtils {
   /**
    * Calculates the result of a bitwise or logical binary operation with the
    * given result type by using the given lambdas for the calculation.
-   * Operation should support boolean, int & long.
+   * Operation should support boolean, int &amp; long.
    *
    * @param v1         left operand
    * @param v2         right operand
