@@ -8,14 +8,13 @@ import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.se_rwth.commons.logging.*;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DeriveSymTypeOfMCCommonLiteralsTest {
   
@@ -47,25 +46,25 @@ public class DeriveSymTypeOfMCCommonLiteralsTest {
   @Test
   public void deriveTFromLiteral1Null() throws IOException {
     ASTLiteral lit = MCCommonLiteralsMill.nullLiteralBuilder().build();
-    Assertions.assertEquals("null", tc.typeOf(lit).print());
+    assertEquals("null", tc.typeOf(lit).print());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void deriveTFromLiteral1Boolean() throws IOException {
     ASTLiteral lit = MCCommonLiteralsMill.booleanLiteralBuilder().setSource(0).build();
-    Assertions.assertEquals("boolean", tc.typeOf(lit).print());
+    assertEquals("boolean", tc.typeOf(lit).print());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void deriveTFromLiteral1Char() throws IOException {
     ASTLiteral lit = MCCommonLiteralsMill.charLiteralBuilder().setSource("c").build();
-    Assertions.assertEquals("char", tc.typeOf(lit).print());
+    assertEquals("char", tc.typeOf(lit).print());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -79,43 +78,43 @@ public class DeriveSymTypeOfMCCommonLiteralsTest {
     gs.add(str);
     ASTLiteral lit = MCCommonLiteralsMill.stringLiteralBuilder().setSource("hjasdk").build();
     lit.setEnclosingScope(gs);
-    Assertions.assertEquals("String", tc.typeOf(lit).print());
+    assertEquals("String", tc.typeOf(lit).print());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void deriveTFromLiteral1Int() throws IOException {
     ASTLiteral lit = MCCommonLiteralsMill.natLiteralBuilder().setDigits("17").build();
-    Assertions.assertEquals("int", tc.typeOf(lit).print());
+    assertEquals("int", tc.typeOf(lit).print());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void deriveTFromLiteral1BasicLong() throws IOException {
     ASTLiteral lit = MCCommonLiteralsMill.basicLongLiteralBuilder().setDigits("17").build();
-    Assertions.assertEquals("long", tc.typeOf(lit).print());
+    assertEquals("long", tc.typeOf(lit).print());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
   @Test
   public void deriveTFromLiteral1BasicFloat() throws IOException {
     ASTLiteral lit = MCCommonLiteralsMill.basicFloatLiteralBuilder().setPre("10").setPost("03").build();
-    Assertions.assertEquals("float", tc.typeOf(lit).print());
+    assertEquals("float", tc.typeOf(lit).print());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
   @Test
   public void deriveTFromLiteral1BasicDouble() throws IOException {
     ASTLiteral lit = MCCommonLiteralsMill.basicDoubleLiteralBuilder().setPre("710").setPost("93").build();
-    Assertions.assertEquals("double", tc.typeOf(lit).print());
+    assertEquals("double", tc.typeOf(lit).print());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

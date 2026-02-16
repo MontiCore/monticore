@@ -1,4 +1,4 @@
-/* (c) https://github.com/MontiCore/monticore */
+/* (c) [https://github.com/MontiCore/monticore](https://github.com/MontiCore/monticore) */
 package de.monticore.statements.cocos;
 
 import de.monticore.statements.mccommonstatements.cocos.CatchIsValid;
@@ -7,52 +7,53 @@ import de.monticore.statements.testmccommonstatements.TestMCCommonStatementsMill
 import de.monticore.statements.testmccommonstatements._symboltable.ITestMCCommonStatementsScope;
 import de.monticore.statements.testmcexceptionstatements.TestMCExceptionStatementsMill;
 import de.monticore.statements.testmcexceptionstatements._cocos.TestMCExceptionStatementsCoCoChecker;
-import de.monticore.statements.testmcexceptionstatements._parser.TestMCExceptionStatementsParser;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
-import de.monticore.types.check.*;
+import de.monticore.types.check.SymTypeExpressionFactory;
+import de.monticore.types.check.SymTypeOfObject;
+import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserFactory;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.IOException;
-import java.util.Optional;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import static de.monticore.types.check.SymTypeExpressionFactory.createTypeObject;
-import static de.monticore.types3.util.DefsTypesForTests.inScope;
-import static de.monticore.types3.util.DefsTypesForTests.oOtype;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static de.monticore.statements.testmcexceptionstatements.TestMCExceptionStatementsMill.*;
+import static de.monticore.statements.testmcfulljavastatements.TestMCFullJavaStatementsMill.parser;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
-public class CatchIsValidTest {
-
-  protected TestMCExceptionStatementsCoCoChecker checker;
+class CatchIsValidTest {
 
   @BeforeEach
-  public void init() {
+  void init() {
     LogStub.init();
     Log.enableFailQuick(false);
 
     TestMCExceptionStatementsMill.reset();
     TestMCExceptionStatementsMill.init();
+    CombineExpressionsWithLiteralsTypeTraverserFactory.initTypeCheck3();
     BasicSymbolsMill.initializePrimitives();
 
-    checker = new TestMCExceptionStatementsCoCoChecker();
-    checker.setTraverser(TestMCExceptionStatementsMill.traverser());
-    checker.addCoCo(new CatchIsValid(new TypeCalculator(null, new FullDeriveFromCombineExpressionsWithLiterals())));
+    // Define Throwable hierarchy (java.lang.Throwable)
+    SymTypeOfObject throwableType = SymTypeExpressionFactory.createTypeObjectViaSurrogate("java.lang.Throwable", globalScope());
+    SymTypeOfObject aType = SymTypeExpressionFactory.createTypeObjectViaSurrogate("A", globalScope());
 
-    SymTypeOfObject sType = SymTypeExpressionFactory.createTypeObjectViaSurrogate("java.lang.Throwable", TestMCExceptionStatementsMill.globalScope());
-    SymTypeOfObject sTypeA = SymTypeExpressionFactory.createTypeObjectViaSurrogate("A", TestMCExceptionStatementsMill.globalScope());
+    globalScope().add(
+      oOTypeSymbolBuilder()
+        .setName("A")
+        .setSpannedScope(globalScope())
+        .addSuperTypes(throwableType)
+        .build()
+    );
 
-    TestMCExceptionStatementsMill.globalScope().add(
-        TestMCExceptionStatementsMill.
-            oOTypeSymbolBuilder()
-            .setName("A")
-            .setSpannedScope(TestMCExceptionStatementsMill.globalScope())
-            .addSuperTypes(sType)
-            .build());
-
+    // Setup java.lang structure
     ITestMCCommonStatementsScope javaScope = TestMCCommonStatementsMill.scope();
     javaScope.setName("java");
 
@@ -63,85 +64,94 @@ public class CatchIsValidTest {
     TestMCCommonStatementsMill.globalScope().addSubScope(javaScope);
 
     langScope.add(
-        TestMCExceptionStatementsMill
-            .oOTypeSymbolBuilder()
-            .setName("Throwable")
-            .setSpannedScope(TestMCExceptionStatementsMill.globalScope())
-            .build());
+      oOTypeSymbolBuilder()
+        .setName("Throwable")
+        .setSpannedScope(globalScope())
+        .build()
+    );
 
-    TestMCExceptionStatementsMill.globalScope().add(
-        TestMCExceptionStatementsMill
-            .fieldSymbolBuilder()
-            .setName("a")
-            .setType(sTypeA)
-            .build());
+    // Field of type A
+    globalScope().add(
+      fieldSymbolBuilder()
+        .setName("a")
+        .setType(aType)
+        .build()
+    );
 
-    SymTypeOfObject symType = SymTypeExpressionFactory.createTypeObjectViaSurrogate("java.lang.Object", TestMCExceptionStatementsMill.globalScope());
-    SymTypeOfObject symTypeB = SymTypeExpressionFactory.createTypeObjectViaSurrogate("B", TestMCExceptionStatementsMill.globalScope());
+    // Create Object hierarchy for invalid type
+    SymTypeOfObject objectType = SymTypeExpressionFactory.createTypeObjectViaSurrogate("java.lang.Object", globalScope());
+    SymTypeOfObject bType = SymTypeExpressionFactory.createTypeObjectViaSurrogate("B", globalScope());
 
-    TestMCExceptionStatementsMill.globalScope().add(
-        TestMCExceptionStatementsMill
-            .oOTypeSymbolBuilder()
-            .setName("B")
-            .setSpannedScope(TestMCExceptionStatementsMill.globalScope())
-            .addSuperTypes(symType)
-            .build());
+    globalScope().add(
+      oOTypeSymbolBuilder()
+        .setName("B")
+        .setSpannedScope(globalScope())
+        .addSuperTypes(objectType)
+        .build()
+    );
 
     langScope.add(
-        TestMCExceptionStatementsMill
-            .oOTypeSymbolBuilder()
-            .setName("Object")
-            .setSpannedScope(TestMCExceptionStatementsMill.globalScope())
-            .build());
+      oOTypeSymbolBuilder()
+        .setName("Object")
+        .setSpannedScope(globalScope())
+        .build()
+    );
 
-    TestMCExceptionStatementsMill.globalScope().add(
-        TestMCExceptionStatementsMill
-            .fieldSymbolBuilder()
-            .setName("b")
-            .setType(symTypeB)
-            .build());
+    globalScope().add(
+      fieldSymbolBuilder()
+        .setName("b")
+        .setType(bType)
+        .build()
+    );
   }
 
-  public void checkValid(String expressionString) throws IOException {
-    TestMCExceptionStatementsParser parser = TestMCExceptionStatementsMill.parser();
+  @ParameterizedTest
+  @ValueSource(strings = { "catch(A a) {}" })
+  void testValid(String expr) throws IOException {
+    // Given
+    TestMCExceptionStatementsCoCoChecker checker = new TestMCExceptionStatementsCoCoChecker();
+    checker.addCoCo(new CatchIsValid());
 
-    Optional<ASTCatchClause> optAST = parser.parse_StringCatchClause(expressionString);
-    Assertions.assertTrue(optAST.isPresent());
-    ASTCatchClause ast = optAST.get();
+    ASTCatchClause ast = parser().parse_StringCatchClause(expr).orElseThrow();
 
-    ast.setEnclosingScope(TestMCExceptionStatementsMill.globalScope());
-    ast.getCatchTypeList().setEnclosingScope(TestMCExceptionStatementsMill.globalScope());
-    ast.getCatchTypeList().forEachMCQualifiedNames(n -> n.setEnclosingScope(TestMCExceptionStatementsMill.globalScope()));
+    ast.setEnclosingScope(globalScope());
+    ast.getCatchTypeList().setEnclosingScope(globalScope());
+    ast.getCatchTypeList().forEachMCQualifiedNames(n -> n.setEnclosingScope(globalScope()));
 
-    Log.getFindings().clear();
-    checker.checkAll(optAST.get());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    // When
+    checker.checkAll(ast);
+
+    // Then
+    assertTrue(Log.getFindings().isEmpty(), () -> Log.getFindings().toString());
   }
 
-  public void checkInvalid(String expressionString) throws IOException {
-    TestMCExceptionStatementsParser parser = new TestMCExceptionStatementsParser();
+  @ParameterizedTest
+  @MethodSource("exprAndErrorProvider")
+  void testInvalid(String expr, String error) throws IOException {
+    // Given
+    TestMCExceptionStatementsCoCoChecker checker = new TestMCExceptionStatementsCoCoChecker();
+    checker.addCoCo(new CatchIsValid());
 
-    Optional<ASTCatchClause> optAST = parser.parse_StringCatchClause(expressionString);
-    Assertions.assertTrue(optAST.isPresent());
-    ASTCatchClause ast = optAST.get();
+    ASTCatchClause ast = parser().parse_StringCatchClause(expr).orElseThrow();
 
-    ast.setEnclosingScope(TestMCExceptionStatementsMill.globalScope());
-    ast.getCatchTypeList().setEnclosingScope(TestMCExceptionStatementsMill.globalScope());
-    ast.getCatchTypeList().forEachMCQualifiedNames(n -> n.setEnclosingScope(TestMCExceptionStatementsMill.globalScope()));
+    ast.setEnclosingScope(globalScope());
+    ast.getCatchTypeList().setEnclosingScope(globalScope());
+    ast.getCatchTypeList().forEachMCQualifiedNames(n -> n.setEnclosingScope(globalScope()));
 
-    Log.getFindings().clear();
-    checker.checkAll(optAST.get());
-    Assertions.assertFalse(Log.getFindings().isEmpty());
+    // When
+    checker.checkAll(ast);
+
+    // Then
+    assertEquals(List.of(error), Log.getFindings()
+      .stream()
+      .map(f -> f.getMsg().substring(0, 7))
+      .collect(Collectors.toList())
+    );
   }
 
-  @Test
-  public void testValid() throws IOException {
-    checkValid("catch(A a) {}");
+  static Stream<Arguments> exprAndErrorProvider() {
+    return Stream.of(
+      arguments("catch(B b) {}", CatchIsValid.ERROR_CODE)
+    );
   }
-
-  @Test
-  public void testInvalid() throws IOException {
-    checkInvalid("catch (B b) {}");
-  }
-
 }

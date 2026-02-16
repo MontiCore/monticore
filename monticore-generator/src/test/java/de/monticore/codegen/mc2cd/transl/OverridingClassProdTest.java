@@ -7,15 +7,14 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.codegen.mc2cd.TranslationTestCase;
 import de.se_rwth.commons.logging.Log;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Paths;
 
 import static de.monticore.codegen.mc2cd.TransformationHelper.typeToString;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class OverridingClassProdTest extends TranslationTestCase {
   
@@ -34,10 +33,10 @@ public class OverridingClassProdTest extends TranslationTestCase {
    */
   @Test
   public void testOverride() {
-    Assertions.assertTrue(astX.isPresentCDExtendUsage());
+    assertTrue(astX.isPresentCDExtendUsage());
     String name = typeToString(astX.getCDExtendUsage().getSuperclass(0));
-    Assertions.assertEquals("mc2cdtransformation.Supergrammar.ASTX", name);
+    assertEquals("mc2cdtransformation.Supergrammar.ASTX", name);
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

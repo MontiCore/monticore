@@ -17,9 +17,7 @@ import static de.monticore.types3.util.DefsTypesForTests._intSymType;
 import static de.monticore.types3.util.DefsTypesForTests._unboxedListSymType;
 import static de.monticore.types3.util.DefsTypesForTests._unboxedOptionalSymType;
 import static de.monticore.types3.util.DefsTypesForTests._unboxedSetSymType;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class StreamSymTypeFactoryTest extends AbstractMCTest {
 

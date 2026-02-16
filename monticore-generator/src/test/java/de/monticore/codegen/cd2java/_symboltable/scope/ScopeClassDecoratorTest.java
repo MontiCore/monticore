@@ -20,10 +20,10 @@ import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.se_rwth.commons.logging.Log;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -38,9 +38,7 @@ import static de.monticore.codegen.cd2java.DecoratorAssert.assertVoid;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodsBy;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ScopeClassDecoratorTest extends DecoratorTestCase {
 
@@ -82,7 +80,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
 
   private static final String I_LEXICAS_SCOPE = "de.monticore.codegen.ast.lexicals._symboltable.ILexicalsScope";
 
-  @Before
+  @BeforeEach
   public void setUp() {
     this.mcTypeFacade = mcTypeFacade.getInstance();
 
@@ -386,7 +384,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
   public void testRemoveSymbolMethod() {
     List<ASTCDMethod> methodList = getMethodsBy("remove", scopeClass);
 
-    Map<String, ASTCDMethod> methods = new HashMap<>();
+    Map<String, ASTCDMethod> methods = new LinkedHashMap<>();
     methodList.forEach(l -> methods.put(
             CD4CodeMill.prettyPrint(l.getCDParameter(0).getMCType(), false), l)
     );
@@ -429,7 +427,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
   @Test
   public void testAddSymbolMethod() {
     List<ASTCDMethod> methodList = getMethodsBy("add", scopeClass);
-    Map<String, ASTCDMethod> methods = new HashMap<>();
+    Map<String, ASTCDMethod> methods = new LinkedHashMap<>();
     methodList.forEach(l -> methods.put(
         CD4CodeMill.prettyPrint(l.getCDParameter(0).getMCType(), false), l)
     );
@@ -815,7 +813,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     // test parsing
     ParserConfiguration configuration = new ParserConfiguration();
     JavaParser parser = new JavaParser(configuration);
-    ParseResult parseResult = parser.parse(sb.toString());
+    ParseResult<?> parseResult = parser.parse(sb.toString());
     assertTrue(parseResult.isSuccessful());
   
     assertTrue(Log.getFindings().isEmpty());

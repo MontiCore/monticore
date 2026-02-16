@@ -2,9 +2,6 @@
 
 package mc.feature.embedding;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
@@ -12,7 +9,6 @@ import java.util.Optional;
 
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -21,6 +17,9 @@ import mc.feature.embedding.outer.featureembedded._ast.ASTExt;
 import mc.feature.embedding.outer.featureembedded._parser.FeatureembeddedParser;
 import mc.feature.embedding.outer.featureouterdsl._ast.ASTOuter;
 import mc.feature.embedding.outer.featureouterdsl._ast.ASTOuter3;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class EmbeddingTest extends GeneratorIntegrationsTest {
   
@@ -59,9 +58,9 @@ public class EmbeddingTest extends GeneratorIntegrationsTest {
     
     ASTOuter ast = createAST("hihi", s);
     
-    Assertions.assertEquals("test", ((ASTExt) ast.getInner()).getInner().getName());
+    assertEquals("test", ((ASTExt) ast.getInner()).getInner().getName());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -71,7 +70,7 @@ public class EmbeddingTest extends GeneratorIntegrationsTest {
     
     createAST3("Embedded - optional taken", s);
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -81,7 +80,7 @@ public class EmbeddingTest extends GeneratorIntegrationsTest {
     
     createAST3("Embedded - optional not taken", s);
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
 }

@@ -1,13 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import com.google.common.base.Preconditions;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.types3.ISymTypeVisitor;
 import de.monticore.types3.SymTypeRelations;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -18,7 +19,7 @@ public class SymTypeVariable extends SymTypeExpression {
   protected TypeVarSymbol typeVarSymbol;
 
   public SymTypeVariable(TypeVarSymbol typeSymbol) {
-    this.typeVarSymbol = Log.errorIfNull(typeSymbol);
+    this.typeVarSymbol = Preconditions.checkNotNull(typeSymbol);
   }
 
   @Deprecated(forRemoval = true)

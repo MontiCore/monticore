@@ -107,7 +107,7 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
     blockData.getAltDataList().sort(Collections.reverseOrder());
 
     // Prepare iterators (used instead of direct lists access)
-    Map<String, IteratorData> iterators = new HashMap<>();
+    Map<String, IteratorData> iterators = new LinkedHashMap<>();
     for (String refName : currentClassProdData.getNonTerminals().keySet()) {
       if (!currentClassProdData.isIteratorNeeded(refName)) continue;
       ASTRuleComponent itNode = currentClassProdData.getNonTerminalNodes().get(refName);
@@ -203,7 +203,7 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
     // For each alt
     for (var alt : blockData.getAltDataList()) {
       // collect all opts from the other alts
-      var optsFromOtherAlts = new HashSet<String>();
+      var optsFromOtherAlts = new LinkedHashSet<String>();
       for (var otherAlt : blockData.getAltDataList()) {
         if (otherAlt == alt) continue;
         optsFromOtherAlts.addAll(otherAlt.getOptionalSet());
@@ -557,7 +557,7 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
         this.failureMessage = "Unable to handle ConstantGroup with size of 1, but multiple elements named " + humanName + " present";
     }
 
-    Set<Map.Entry<String, String>> constants = new HashSet<>();
+    Set<Map.Entry<String, String>> constants = new LinkedHashSet<>();
     for (ASTConstant constant : node.getConstantList()) {
       constants.add(new AbstractMap.SimpleEntry<>(constant.getHumanName(), constant.getName()));
       if (!onlyOneConstant && LexNamer.createGoodName(constant.getHumanName()).isEmpty()) // The constant will be named CONSTANT{num} instead

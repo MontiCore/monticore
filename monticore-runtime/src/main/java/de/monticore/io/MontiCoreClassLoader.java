@@ -8,7 +8,7 @@ import java.util.Enumeration;
 
 public class MontiCoreClassLoader extends URLClassLoader {
 
-  private final ClassLoader parent;
+  protected final ClassLoader parent;
 
   public MontiCoreClassLoader(URL[] urls) {
     super(urls);

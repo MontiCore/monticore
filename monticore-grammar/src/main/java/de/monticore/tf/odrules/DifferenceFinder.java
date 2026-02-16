@@ -43,7 +43,7 @@ public class DifferenceFinder {
   private List<ASTODLink> unchangedLinks = new LinkedList<>();
   private ASTODDefinition lhs;
 
-  private HashMap<ASTODObject, List<ASTODLink>> toCreateObjectsAttr = new HashMap();
+  private LinkedHashMap<ASTODObject, List<ASTODLink>> toCreateObjectsAttr = new LinkedHashMap();
 
   private HierarchyHelper hierarchyHelper;
 

@@ -16,9 +16,11 @@ public class ForEachIsValid implements MCCommonStatementsASTEnhancedForControlCo
   @Deprecated
   TypeCalculator typeCheck;
 
-  public static final String ERROR_CODE = "0xA0907 ";
+  public static final String ERROR_CODE = "0xA0907";
 
-  public static final String ERROR_MSG_FORMAT = "For-each loop expression must be an array of subtype of list.";
+  public static final String ERROR_MSG_FORMAT =
+      "For-each loop expression must be an array or a list."
+          + " Instead, the type is ";
 
   /**
    * @deprecated use default constructor
@@ -28,28 +30,25 @@ public class ForEachIsValid implements MCCommonStatementsASTEnhancedForControlCo
     this.typeCheck = typeCheck;
   }
 
-  public ForEachIsValid() { }
+  public ForEachIsValid() {
+  }
 
   @Override
   public void check(ASTEnhancedForControl node) {
     Preconditions.checkNotNull(node);
 
-    SymTypeExpression expression;
-
-    if (typeCheck != null) {
-      // support deprecated behavior
-      expression = typeCheck.typeOf(node.getExpression());
-    } else {
-      expression = TypeCheck3.typeOf(node.getExpression());
-    }
+    SymTypeExpression expression = TypeCheck3.typeOf(node.getExpression());
 
     SymTypeExpression arrays = SymTypeExpressionFactory.createTypeObjectViaSurrogate("java.util.Arrays", node.getEnclosingScope());
     SymTypeExpression lists = SymTypeExpressionFactory.createTypeObjectViaSurrogate("java.lang.Iterable", node.getEnclosingScope());
 
-    if (!SymTypeRelations.isSubTypeOf(expression, arrays)) {
-      if (!SymTypeRelations.isSubTypeOf(expression, lists)) {
-        Log.error(ERROR_CODE + ERROR_MSG_FORMAT, node.get_SourcePositionStart());
-      }
+    if (!expression.isObscureType()
+      && !SymTypeRelations.isSubTypeOf(expression, arrays)
+      && !SymTypeRelations.isSubTypeOf(expression, lists)) {
+      Log.error(ERROR_CODE + " " + ERROR_MSG_FORMAT
+              + expression.printFullName(),
+          node.get_SourcePositionStart()
+      );
     }
   }
 }

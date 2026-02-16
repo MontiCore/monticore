@@ -8,14 +8,14 @@ import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.se_rwth.commons.logging.Log;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class VisitorServiceTest extends DecoratorTestCase {
 
@@ -29,7 +29,7 @@ public class VisitorServiceTest extends DecoratorTestCase {
 
   private MCTypeFacade mcTypeFacade;
 
-  @Before
+  @BeforeEach
   public void setup() {
     this.mcTypeFacade = MCTypeFacade.getInstance();
     astcdCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");

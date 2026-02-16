@@ -39,7 +39,7 @@ dependencies {
     implementation "de.monticore:monticore-grammar:$previous_mc_version"
     implementation "de.se_rwth.commons:se-commons-groovy:$se_commons_version"
     implementation "de.se_rwth.commons:se-commons-logging:$se_commons_version"
-    implementation "de.se_rwth.commons:se-commons-gradle:$se_commons_version"
+    implementation "de.se_rwth.commons:se-commons-gradle:$se_gradle_version"
 
     implementation "org.apache.commons:commons-lang3:$commons_lang3_version"
     implementation "org.freemarker:freemarker:$freemarker_version"
@@ -76,8 +76,8 @@ allprojects {
     }
     dependencies {
         testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
-        testImplementation "org.junit.vintage:junit-vintage-engine:$junit_version"
-        testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
+        testImplementation "org.junit.jupiter:junit-jupiter-engine:$junit_version"
+        testRuntimeOnly "org.junit.platform:junit-platform-launcher:$junit_platform_version"
     }
 
 
@@ -147,7 +147,17 @@ allprojects {
                 }
             }
         }
+
     }
+}
+publishing {
+  publications {
+    "maven"(MavenPublication) {
+      // the gradle plugin is published implicitly via the java-gradle-plugin plugin
+      // but the generator has to be published explicitly
+      from components.java
+    }
+  }
 }
 
 tasks.named("shadowJar") { // all in one jar
@@ -172,5 +182,11 @@ artifacts {
 configurations {
   shadow {
     outgoing.capability("de.monticore:monticore-generator-shadow:$version")
+  }
+}
+// Ensure the gradle plugin's subproject is also published
+['publish', 'publishToMavenLocal', 'assemble', 'check', 'test'].forEach {taskname ->
+  tasks.named(taskname).configure {
+    dependsOn subprojects*.tasks*.named(taskname)
   }
 }

@@ -11,6 +11,7 @@ import de.monticore.symbols.oosymbols._symboltable.*;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.types3.ISymTypeVisitor;
 import de.monticore.types3.util.SymTypeDeepCloneVisitor;
+import de.monticore.types3.util.SymTypeExpressionComparator;
 import de.monticore.types3.util.SymTypePrintFullNameVisitor;
 import de.monticore.types3.util.SymTypePrintVisitor;
 import de.se_rwth.commons.logging.Log;
@@ -24,7 +25,8 @@ import java.util.stream.Collectors;
  * It shares common functionality
  * (such as comparison, printing)
  */
-public abstract class SymTypeExpression {
+public abstract class SymTypeExpression
+    implements Comparable<SymTypeExpression> {
 
   protected static final String LOG_NAME = "SymTypeExpression";
 
@@ -291,6 +293,11 @@ public abstract class SymTypeExpression {
 
   public abstract boolean deepEquals(SymTypeExpression sym);
 
+  @Override
+  public int compareTo(SymTypeExpression o) {
+    return SymTypeExpressionComparator.compareSymTypeExpressions(this, o);
+  }
+
   @Deprecated(forRemoval = true)
   protected List<FunctionSymbol> functionList = new ArrayList<>();
 
@@ -415,7 +422,7 @@ public List<FunctionSymbol> getCorrectMethods(String methodName, boolean outerIs
         ((SymTypeOfGenerics)this.deepClone()).getArgumentList();
       List<TypeVarSymbol> typeVariableArguments = 
         getTypeInfo().getTypeParameterList();
-      Map<TypeVarSymbol,SymTypeExpression> map = new HashMap<>();
+      Map<TypeVarSymbol,SymTypeExpression> map = new LinkedHashMap<>();
       if(arguments.size()!=typeVariableArguments.size()){
         Log.error("0xA1300 Different number of type arguments in TypeSymbol and SymTypeExpression");
       }
@@ -624,7 +631,7 @@ public List<VariableSymbol> getCorrectFields(String fieldName, boolean outerIsTy
         ((SymTypeOfGenerics)this.deepClone()).getArgumentList();
       List<TypeVarSymbol> typeVariableArguments = 
         getTypeInfo().getTypeParameterList();
-      Map<TypeVarSymbol,SymTypeExpression> map = new HashMap<>();
+      Map<TypeVarSymbol,SymTypeExpression> map = new LinkedHashMap<>();
       if(arguments.size()!=typeVariableArguments.size()){
         Log.error("0xA1301 Different number of type arguments in TypeSymbol and SymTypeExpression");
       }

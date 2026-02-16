@@ -9,7 +9,6 @@ import de.monticore.grammar.grammar_withconcepts._symboltable.IGrammar_WithConce
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -17,6 +16,8 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SymbolImportTest {
 
@@ -68,24 +69,24 @@ public class SymbolImportTest {
 
   protected void test(String filename) throws IOException {
     Optional<ASTMCGrammar> grammarOpt = Grammar_WithConceptsMill.parser().parse(filename);
-    Assertions.assertTrue(grammarOpt.isPresent());
+    assertTrue(grammarOpt.isPresent());
     Grammar_WithConceptsMill.scopesGenitorDelegator().createFromAST(grammarOpt.get());
     MCGrammarSymbol symbol = grammarOpt.get().getSymbol();
 
     for (MCGrammarSymbolSurrogate surrogate : symbol.getSuperGrammars()) {
-      Assertions.assertTrue(surrogate.checkLazyLoadDelegate(), "Unable to lazy load delegate " + surrogate.getName() + " of " + surrogate.getEnclosingScope());
+      assertTrue(surrogate.checkLazyLoadDelegate(), "Unable to lazy load delegate " + surrogate.getName() + " of " + surrogate.getEnclosingScope());
     }
 
     String allSuperGrammars = symbol.getSuperGrammars().stream().map(MCGrammarSymbol::getFullName).collect(Collectors.joining(", "));
     String allSuperGrammarsLazy = symbol.getSuperGrammars().stream().map(MCGrammarSymbolSurrogate::lazyLoadDelegate).map(MCGrammarSymbol::getFullName).collect(Collectors.joining(", "));
 
     // check if the surrogate is returning the correct symbol
-    Assertions.assertTrue(symbol.getSuperGrammars().stream().anyMatch(x -> x.lazyLoadDelegate().getFullName().equals("de.monticore.grammar.SamePackage")), "SamePackage import failed: " + allSuperGrammars);
-    Assertions.assertTrue(symbol.getSuperGrammars().stream().anyMatch(x -> x.lazyLoadDelegate().getFullName().equals("de.monticore.grammar.pack.DifferentPackage")), "DifferentPackage import failed: " + allSuperGrammars);
+    assertTrue(symbol.getSuperGrammars().stream().anyMatch(x -> x.lazyLoadDelegate().getFullName().equals("de.monticore.grammar.SamePackage")), "SamePackage import failed: " + allSuperGrammars);
+    assertTrue(symbol.getSuperGrammars().stream().anyMatch(x -> x.lazyLoadDelegate().getFullName().equals("de.monticore.grammar.pack.DifferentPackage")), "DifferentPackage import failed: " + allSuperGrammars);
 
     // check if the surrogate is returning the correct fullname
-    Assertions.assertTrue(symbol.getSuperGrammars().stream().anyMatch(x -> x.getFullName().equals("de.monticore.grammar.SamePackage")), "SamePackage lazy import failed: " + allSuperGrammarsLazy);
-    Assertions.assertTrue(symbol.getSuperGrammars().stream().anyMatch(x -> x.getFullName().equals("de.monticore.grammar.pack.DifferentPackage")), "DifferentPackage lazy import failed: " + allSuperGrammarsLazy);
+    assertTrue(symbol.getSuperGrammars().stream().anyMatch(x -> x.getFullName().equals("de.monticore.grammar.SamePackage")), "SamePackage lazy import failed: " + allSuperGrammarsLazy);
+    assertTrue(symbol.getSuperGrammars().stream().anyMatch(x -> x.getFullName().equals("de.monticore.grammar.pack.DifferentPackage")), "DifferentPackage lazy import failed: " + allSuperGrammarsLazy);
 
   }
 }

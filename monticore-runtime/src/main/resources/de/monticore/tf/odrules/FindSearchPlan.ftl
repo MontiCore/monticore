@@ -77,7 +77,7 @@
       </#if>
     </#list>
 
-    Map<String, Integer> unsortedData = new HashMap<>();
+    Map<String, Integer> unsortedData = new LinkedHashMap<>();
     <#list ast.getPattern().getLHSObjectsList() as object>
     unsortedData.put("${object.getObjectName()}<#if object.isListObject()>_$List</#if>",
     count_${object.getObjectName()});

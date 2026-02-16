@@ -2,20 +2,18 @@
 
 package mc.feature.wiki;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
 import java.io.StringReader;
 
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 
 import mc.GeneratorIntegrationsTest;
 import mc.feature.wiki.wiki._parser.WikiParser;
 import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class WikiTest extends GeneratorIntegrationsTest {
   
@@ -31,9 +29,9 @@ public class WikiTest extends GeneratorIntegrationsTest {
     WikiParser p = new WikiParser();
     
     p.parseWikiArtikel(new StringReader("==Test==\n==Test== ==\n== test ==\n"));
-    Assertions.assertEquals(false, p.hasErrors());
+    assertFalse(p.hasErrors());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
 }

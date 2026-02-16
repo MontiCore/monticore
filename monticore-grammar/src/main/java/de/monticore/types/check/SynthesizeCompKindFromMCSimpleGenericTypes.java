@@ -57,9 +57,6 @@ public class SynthesizeCompKindFromMCSimpleGenericTypes implements MCSimpleGener
     List<ComponentTypeSymbol> compSym = enclScope.resolveComponentTypeMany(compName);
 
     if (compSym.isEmpty()) {
-      Log.error(String.format("0xD0104 Cannot resolve component '%s'", mcType.getNameList().stream().reduce("", String::concat)),
-          mcType.get_SourcePositionStart(), mcType.get_SourcePositionEnd()
-      );
       this.resultWrapper.setResultAbsent();
     } else {
       if (compSym.size() > 1) {

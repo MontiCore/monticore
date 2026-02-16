@@ -8,8 +8,8 @@ import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -28,21 +28,21 @@ public class UniqueProdNamesForComp implements GrammarASTMCGrammarCoCo {
   @Override
   public void check(ASTMCGrammar a) {
     MCGrammarSymbol grammarSymbol = a.getSymbol();
-    Map<String, Set<MCGrammarSymbol>> symbolsInGrammars = new HashMap<>();
+    Map<String, Set<MCGrammarSymbol>> symbolsInGrammars = new LinkedHashMap<>();
     // Collect all productions defined in super grammars
     for (MCGrammarSymbol superGrammar : grammarSymbol.getAllSuperGrammars()) {
       for (ProdSymbol ps : superGrammar.getProds()) {
-        symbolsInGrammars.computeIfAbsent(ps.getName(), s1 -> new HashSet<>()).add(superGrammar);
+        symbolsInGrammars.computeIfAbsent(ps.getName(), s1 -> new LinkedHashSet<>()).add(superGrammar);
       }
     }
     // and in the grammar itself
     for (ProdSymbol ps : grammarSymbol.getProds()) {
-      symbolsInGrammars.computeIfAbsent(ps.getName(), s1 -> new HashSet<>()).add(grammarSymbol);
+      symbolsInGrammars.computeIfAbsent(ps.getName(), s1 -> new LinkedHashSet<>()).add(grammarSymbol);
     }
 
     for (Map.Entry<String, Set<MCGrammarSymbol>> e : symbolsInGrammars.entrySet()) {
       // Remove overriden production false-positives
-      for (MCGrammarSymbol g : new HashSet<>(e.getValue())) {
+      for (MCGrammarSymbol g : new LinkedHashSet<>(e.getValue())) {
         e.getValue().removeAll(g.getAllSuperGrammars());
       }
     }

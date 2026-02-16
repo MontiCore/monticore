@@ -66,6 +66,11 @@ public class TypeCompatibilityBound extends Bound {
   }
 
   @Override
+  public TypeCompatibilityBound asTypeCompatibilityBound() {
+    return this;
+  }
+
+  @Override
   public boolean deepEquals(Bound other) {
     if (this == other) {
       return true;

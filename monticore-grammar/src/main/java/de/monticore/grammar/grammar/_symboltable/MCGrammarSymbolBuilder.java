@@ -1,17 +1,17 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.grammar.grammar._symboltable;
 
+import com.google.common.base.Preconditions;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import static de.se_rwth.commons.logging.Log.errorIfNull;
 
 public class MCGrammarSymbolBuilder extends MCGrammarSymbolBuilderTOP {
 
   protected final List<MCGrammarSymbolSurrogate> superGrammars = new ArrayList<>();
 
   public void addSuperGrammar(MCGrammarSymbolSurrogate superGrammarRef) {
-    this.superGrammars.add(errorIfNull(superGrammarRef));
+    this.superGrammars.add(Preconditions.checkNotNull(superGrammarRef));
   }
 
   public MCGrammarSymbol build(){

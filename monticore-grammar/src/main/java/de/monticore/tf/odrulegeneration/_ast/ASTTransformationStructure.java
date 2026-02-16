@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.tf.odrulegeneration._ast;
 
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class ASTTransformationStructure extends ASTTransformationStructureTOP {
 
@@ -70,5 +70,36 @@ public class ASTTransformationStructure extends ASTTransformationStructureTOP {
     public  void setFoldingHash (HashMap<String, List<String>> foldingHash)  {
        this.foldingHash = foldingHash;
     }
-
+    
+    public List<String> getCompositionDependencyNames(ASTMatchingObject object) {
+        return this.getPattern().getLinkConditionsList().stream().filter(
+                l -> l.getLinktype().equals("composition") && l.getDependency().getContent()
+                    .equals(object.getObjectName())).map(ASTCondition::getObjectName)
+            .collect(Collectors.toList());
+    }
+    
+    public Map<String, String> getReplacementChangeMapping() {
+        Map<String, String> replacementChangeMapping = new HashMap<>();
+        this.getReplacement().getChangesList().stream().filter(ASTChange::isPresentValue)
+            .filter(x -> x.getValue().charAt(0) == '_').forEach(change -> {
+                String truncValueName =
+                    change.getValue().substring(1, change.getValue().lastIndexOf("_"));
+                replacementChangeMapping.put(change.getObjectName(), truncValueName);
+            });
+        return replacementChangeMapping;
+    }
+    
+    public Set<String> getAllInnerNonOptionalNames(List<ASTMatchingObject> allObjects,
+        ASTMatchingObject matchObject) {
+        Set<String> result = new HashSet<>();
+        for (String innerLinkObjectName : matchObject.getInnerLinkObjectNamesList()) {
+            ASTMatchingObject innerLinkObject = this.getPattern().getMatchingObjectsList().stream()
+                .filter(f -> f.getObjectName().equals(innerLinkObjectName)).findFirst().get();
+            if (!innerLinkObject.isOptObject()) {
+                result.add(innerLinkObjectName);
+            }
+            result.addAll(getAllInnerNonOptionalNames(allObjects, innerLinkObject));
+        }
+        return result;
+    }
 }

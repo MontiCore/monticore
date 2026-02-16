@@ -1,6 +1,7 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.types3.generics.util;
 
+import com.google.common.base.Preconditions;
 import de.monticore.types3.SymTypeRelations;
 import de.monticore.types3.generics.bounds.Bound;
 import de.monticore.types3.generics.constraints.BoundWrapperConstraint;
@@ -116,12 +117,14 @@ public class ConstraintReduction {
 
   protected String printConstraints(List<Constraint> constraints) {
     return constraints.stream()
+        .sorted()
         .map(Constraint::print)
         .collect(Collectors.joining(System.lineSeparator()));
   }
 
   protected String printBounds(List<Bound> constraints) {
     return constraints.stream()
+        .sorted()
         .map(Bound::print)
         .collect(Collectors.joining(System.lineSeparator()));
   }
@@ -138,7 +141,7 @@ public class ConstraintReduction {
   }
 
   protected static void setDelegate(ConstraintReduction newDelegate) {
-    ConstraintReduction.delegate = Log.errorIfNull(newDelegate);
+    ConstraintReduction.delegate = Preconditions.checkNotNull(newDelegate);
   }
 
   protected static ConstraintReduction getDelegate() {

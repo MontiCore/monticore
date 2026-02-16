@@ -19,7 +19,7 @@ import de.se_rwth.commons.logging.Log;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -57,7 +57,7 @@ public class SymTypeNormalizeVisitor extends SymTypeDeepCloneVisitor {
 
   protected SymTypeExpression normalizeUnionWithNormalizedTypes(SymTypeOfUnion union) {
     // set of already normalized unionized types
-    Set<SymTypeExpression> types = new HashSet<>(union.getUnionizedTypeSet());
+    Set<SymTypeExpression> types = new LinkedHashSet<>(union.getUnionizedTypeSet());
     // remove all occurrences of obscure
     // (A|B|obscure) -> (A|B)
     types.removeIf(SymTypeExpression::isObscureType);
@@ -72,7 +72,7 @@ public class SymTypeNormalizeVisitor extends SymTypeDeepCloneVisitor {
     // (A|A|B) -> (A|B)
     // also no subtypes
     // (A|B|C) -> (B|C) if A extends B
-    Set<SymTypeExpression> uniqueTypes = new HashSet<>();
+    Set<SymTypeExpression> uniqueTypes = new LinkedHashSet<>();
     for (SymTypeExpression newType : splittedTypes) {
       boolean shouldAdd = true;
       // if A extends B, do not add A if B is in union
@@ -133,7 +133,7 @@ public class SymTypeNormalizeVisitor extends SymTypeDeepCloneVisitor {
       Set<SymTypeOfIntersection> intersectionsWithoutUnions
           = intersectionOfUnions2UnionOfIntersections(types);
       // normalize each intersection
-      Set<SymTypeExpression> normalizedUnionTypes = new HashSet<>();
+      Set<SymTypeExpression> normalizedUnionTypes = new LinkedHashSet<>();
       for (SymTypeOfIntersection intersectionWithoutUnion
           : intersectionsWithoutUnions) {
         normalizedUnionTypes.add(
@@ -162,7 +162,7 @@ public class SymTypeNormalizeVisitor extends SymTypeDeepCloneVisitor {
     }
     SymTypeExpression normalized;
 
-    Set<SymTypeExpression> types = new HashSet<>(intersection.getIntersectedTypeSet());
+    Set<SymTypeExpression> types = new LinkedHashSet<>(intersection.getIntersectedTypeSet());
     // no intersection of intersections
     // (A&(B&C)) -> (A&B&C)
     Set<SymTypeExpression> splittedTypes = splitIntersections(types);
@@ -175,7 +175,7 @@ public class SymTypeNormalizeVisitor extends SymTypeDeepCloneVisitor {
           .collect(Collectors.toSet())
           .size() > 1
       ) {
-        splittedTypes = new HashSet<>();
+        splittedTypes = new LinkedHashSet<>();
         splittedTypes.add(SymTypeExpressionFactory.createObscureType());
       }
     }
@@ -184,7 +184,7 @@ public class SymTypeNormalizeVisitor extends SymTypeDeepCloneVisitor {
     // (A&A&B) -> (A&B)
     // also no supertypes
     // (A&B&C) -> (A&C) if A extends B
-    Set<SymTypeExpression> uniqueTypes = new HashSet<>();
+    Set<SymTypeExpression> uniqueTypes = new LinkedHashSet<>();
     for (SymTypeExpression newType : splittedTypes) {
       boolean shouldAdd = true;
       // if A extends B, do not add B if A is in intersection
@@ -372,7 +372,7 @@ public class SymTypeNormalizeVisitor extends SymTypeDeepCloneVisitor {
         // as both free and bound variables describe sets of potential types,
         // they are handled the same for intersecting
         intersected = intersectedWithoutVars;
-        Set<SymTypeExpression> vars = new HashSet<>(uniqueBoundVars);
+        Set<SymTypeExpression> vars = new LinkedHashSet<>(uniqueBoundVars);
         vars.addAll(uniqueInfVars);
         for (SymTypeExpression var : vars) {
           if (SymTypeRelations.isSubTypeOf(var, intersected)) {
@@ -708,7 +708,7 @@ public class SymTypeNormalizeVisitor extends SymTypeDeepCloneVisitor {
    * used for normalization
    */
   protected Set<SymTypeExpression> splitUnions(Set<SymTypeExpression> types) {
-    Set<SymTypeExpression> result = new HashSet<>();
+    Set<SymTypeExpression> result = new LinkedHashSet<>();
     for (SymTypeExpression type : types) {
       if (type.isUnionType()) {
         SymTypeOfUnion union = (SymTypeOfUnion) type;
@@ -728,7 +728,7 @@ public class SymTypeNormalizeVisitor extends SymTypeDeepCloneVisitor {
    */
   protected Set<SymTypeExpression> splitIntersections(
       Set<SymTypeExpression> types) {
-    Set<SymTypeExpression> result = new HashSet<>();
+    Set<SymTypeExpression> result = new LinkedHashSet<>();
     for (SymTypeExpression type : types) {
       if (type.isIntersectionType()) {
         SymTypeOfIntersection intersection = (SymTypeOfIntersection) type;
@@ -753,11 +753,11 @@ public class SymTypeNormalizeVisitor extends SymTypeDeepCloneVisitor {
    */
   protected Set<SymTypeOfIntersection> intersectionOfUnions2UnionOfIntersections(
       Set<SymTypeExpression> intersectedTypes) {
-    Set<SymTypeOfIntersection> intersections = new HashSet<>();
+    Set<SymTypeOfIntersection> intersections = new LinkedHashSet<>();
     if (!intersectedTypes.isEmpty()) {
       //temporarily make every non-union type in the intersection a union type
       // (A|B)&C -> (A|B)&(C)
-      Set<SymTypeOfUnion> unions = new HashSet<>();
+      Set<SymTypeOfUnion> unions = new LinkedHashSet<>();
       for (SymTypeExpression type : intersectedTypes) {
         if (type.isUnionType()) {
           unions.add((SymTypeOfUnion) type);
@@ -778,7 +778,7 @@ public class SymTypeNormalizeVisitor extends SymTypeDeepCloneVisitor {
       //now combine the other unions with the already existing intersections
       for (SymTypeOfUnion union : unions) {
         Set<SymTypeOfIntersection> currentIntersectionSets = intersections;
-        intersections = new HashSet<>();
+        intersections = new LinkedHashSet<>();
         for (SymTypeExpression unionizedType : union.getUnionizedTypeSet()) {
           for (SymTypeOfIntersection oldIntersection : currentIntersectionSets) {
             SymTypeOfIntersection newIntersection =

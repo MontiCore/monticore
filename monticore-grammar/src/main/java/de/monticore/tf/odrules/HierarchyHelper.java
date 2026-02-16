@@ -20,9 +20,9 @@ public final class HierarchyHelper {
   private ASTODDefinition lhs;
   private Optional<ASTODDefinition> rhs = Optional.empty();
 
-  private Map<String, List<String>> listChildPairs = new HashMap<>();
-  private Map<String, List<String>> listChildPairsLhs = new HashMap<>();
-  private Map<String, List<String>> listChildPairsWithOptionals = new HashMap<>();
+  private Map<String, List<String>> listChildPairs = new LinkedHashMap<>();
+  private Map<String, List<String>> listChildPairsLhs = new LinkedHashMap<>();
+  private Map<String, List<String>> listChildPairsWithOptionals = new LinkedHashMap<>();
 
   private List<String> listChildNames = new ArrayList<>();
   private List<String> listChildNamesLhs = new ArrayList<>();
@@ -52,7 +52,7 @@ public final class HierarchyHelper {
 
     listChildPairsWithOptionals = getListChildPairsWithOptionals((List<ASTODObject>) lhs.getODObjectList());
     Map<String, List<String>> rhsListChildPairs = rhs.isPresent() ?
-            getListChildPairs((List<ASTODObject>) rhs.get().getODObjectList()) : new HashMap<>();
+            getListChildPairs((List<ASTODObject>) rhs.get().getODObjectList()) : new LinkedHashMap<>();
     for (String key : rhsListChildPairs.keySet()) {
       // Every list on the lhs is also on the rhs
       // If there are objects to create in a list put them to the Map
@@ -146,7 +146,7 @@ public final class HierarchyHelper {
    */
   private Map<String, List<String>> getListChildPairs(
           List<ASTODObject> objects) {
-    Map<String, List<String>> result = new HashMap<>();
+    Map<String, List<String>> result = new LinkedHashMap<>();
     List<String> childs;
     List<ASTODObject> innerObjects;
     // Search for every List in the given Objects
@@ -173,7 +173,7 @@ public final class HierarchyHelper {
 
   private Map<String, List<String>> getListChildPairsWithOptionals(
           List<ASTODObject> objects) {
-    Map<String, List<String>> result = new HashMap<>();
+    Map<String, List<String>> result = new LinkedHashMap<>();
     List<String> childs;
     List<ASTODObject> innerObjects;
     // Search for every List in the given Objects

@@ -18,17 +18,17 @@ import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.logging.Log;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CoCoDecoratorTest extends DecoratorTestCase {
 
   private ASTCDCompilationUnit decoratedAst;
 
-  @Before
+  @BeforeEach
   public void setup() {
     ASTCDCompilationUnit ast = this.parse("de", "monticore", "codegen", "cocos", "CoCos");
     decoratedAst = createEmptyCompilationUnit(ast);
@@ -64,7 +64,7 @@ public class CoCoDecoratorTest extends DecoratorTestCase {
       // test parsing
       ParserConfiguration configuration = new ParserConfiguration();
       JavaParser parser = new JavaParser(configuration);
-      ParseResult parseResult = parser.parse(sb.toString());
+      ParseResult<?> parseResult = parser.parse(sb.toString());
       assertTrue(parseResult.isSuccessful());
     }
     for (ASTCDInterface astcdInterface : decoratedAst.getCDDefinition().getCDInterfacesList()) {
@@ -72,7 +72,7 @@ public class CoCoDecoratorTest extends DecoratorTestCase {
       // test parsing
       ParserConfiguration configuration = new ParserConfiguration();
       JavaParser parser = new JavaParser(configuration);
-      ParseResult parseResult = parser.parse(sb.toString());
+      ParseResult<?> parseResult = parser.parse(sb.toString());
       assertTrue(parseResult.isSuccessful());
     }
     

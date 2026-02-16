@@ -1,6 +1,7 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.types3.util;
 
+import com.google.common.base.Preconditions;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
@@ -14,7 +15,6 @@ import de.monticore.symboltable.IScope;
 import de.monticore.symboltable.ISymbol;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.modifiers.BasicAccessModifier;
-import de.monticore.symboltable.resolving.ResolvedSeveralEntriesForSymbolException;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeInferenceVariable;
@@ -28,7 +28,8 @@ import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -69,6 +70,14 @@ public class WithinTypeBasicSymbolsResolver {
       String name,
       AccessModifier accessModifier,
       Predicate<VariableSymbol> predicate) {
+    return resolveVariableRecursive(thisType, name, accessModifier, predicate);
+  }
+
+  protected Optional<SymTypeExpression> resolveVariableRecursive(
+      SymTypeExpression thisType,
+      String name,
+      AccessModifier accessModifier,
+      Predicate<VariableSymbol> predicate) {
     Optional<SymTypeExpression> resolvedSymType;
     Optional<IBasicSymbolsScope> spannedScopeOpt = getSpannedScope(thisType);
     if (spannedScopeOpt.isEmpty()) {
@@ -102,11 +111,16 @@ public class WithinTypeBasicSymbolsResolver {
       resolvedSymType = Optional.empty();
       for (SymTypeExpression superType : superTypes) {
         Optional<SymTypeExpression> resolvedInSuper =
-            resolveVariable(superType, name, superModifier, predicate);
+            resolveVariableRecursive(superType, name, superModifier, predicate);
         if (resolvedSymType.isPresent() && resolvedInSuper.isPresent()) {
           Log.error("0xFD222 found variables with name \""
-              + name + "\" in multiple super types of \""
-              + thisType.printFullName() + "\"");
+                  + name + "\" in multiple super types of \""
+                  + thisType.printFullName() + "\"."
+                  + " Nominal super types:"
+                  + superTypes.stream().map(st ->
+                  System.lineSeparator() + st.printFullName()
+              )
+          );
         }
         else if (resolvedSymType.isEmpty() && resolvedInSuper.isPresent()) {
           resolvedSymType = resolvedInSuper;
@@ -146,7 +160,7 @@ public class WithinTypeBasicSymbolsResolver {
       AccessModifier accessModifier,
       Predicate<VariableSymbol> predicate
   ) {
-    Map<String, SymTypeExpression> allVariables = new HashMap<>();
+    Map<String, SymTypeExpression> allVariables = new LinkedHashMap<>();
     Collection<String> names = _internal_getMemberNames(thisType);
     for (String name : names) {
       Optional<SymTypeExpression> varOpt =
@@ -172,6 +186,15 @@ public class WithinTypeBasicSymbolsResolver {
   }
 
   protected List<SymTypeOfFunction> _resolveFunctions(
+      SymTypeExpression thisType,
+      String name,
+      AccessModifier accessModifier,
+      Predicate<FunctionSymbol> predicate
+  ) {
+    return resolveFunctionsRecursive(thisType, name, accessModifier, predicate);
+  }
+
+  protected List<SymTypeOfFunction> resolveFunctionsRecursive(
       SymTypeExpression thisType,
       String name,
       AccessModifier accessModifier,
@@ -223,7 +246,7 @@ public class WithinTypeBasicSymbolsResolver {
     // search in this scope
     else {
       //todo outer types (and vs. supertypes) not really?
-      List<FunctionSymbol> resolvedSymbols = resolveFunctionLocally(
+      List<FunctionSymbol> resolvedSymbols = resolveFunctionLocallyMany(
           thisType.getTypeInfo().getSpannedScope(),
           name,
           accessModifier,
@@ -253,7 +276,7 @@ public class WithinTypeBasicSymbolsResolver {
     List<SymTypeOfFunction> superFuncs = new ArrayList<>();
     for (SymTypeExpression superType : superTypes) {
       List<SymTypeOfFunction> resolvedInSuper =
-          resolveFunctions(superType, name, superModifier, predicate);
+          resolveFunctionsRecursive(superType, name, superModifier, predicate);
       superFuncs.addAll(resolvedInSuper);
     }
     // filter based on being inherited twice (diamond pattern)
@@ -290,7 +313,7 @@ public class WithinTypeBasicSymbolsResolver {
       AccessModifier accessModifier,
       Predicate<FunctionSymbol> predicate
   ) {
-    Map<String, List<SymTypeOfFunction>> allFunctions = new HashMap<>();
+    Map<String, List<SymTypeOfFunction>> allFunctions = new LinkedHashMap<>();
     Collection<String> names = _internal_getMemberNames(thisType);
     for (String name : names) {
       List<SymTypeOfFunction> functions =
@@ -316,6 +339,14 @@ public class WithinTypeBasicSymbolsResolver {
   }
 
   protected Optional<SymTypeExpression> _resolveType(
+      SymTypeExpression thisType,
+      String name,
+      AccessModifier accessModifier,
+      Predicate<TypeSymbol> predicate) {
+    return resolveTypeRecursive(thisType, name, accessModifier, predicate);
+  }
+
+  protected Optional<SymTypeExpression> resolveTypeRecursive(
       SymTypeExpression thisType,
       String name,
       AccessModifier accessModifier,
@@ -353,11 +384,16 @@ public class WithinTypeBasicSymbolsResolver {
       resolvedSymType = Optional.empty();
       for (SymTypeExpression superType : superTypes) {
         Optional<SymTypeExpression> resolvedInSuper =
-            resolveType(superType, name, superModifier, predicate);
+            resolveTypeRecursive(superType, name, superModifier, predicate);
         if (resolvedSymType.isPresent() && resolvedInSuper.isPresent()) {
           Log.error("0xFD224 found type with name \""
-              + name + "\" in multiple super types of \""
-              + thisType.printFullName() + "\"");
+                  + name + "\" in multiple super types of \""
+                  + thisType.printFullName() + "\"."
+                  + " Nominal super types:"
+                  + superTypes.stream().map(st ->
+                  System.lineSeparator() + st.printFullName()
+              )
+          );
         }
         resolvedSymType = resolvedInSuper;
       }
@@ -385,7 +421,7 @@ public class WithinTypeBasicSymbolsResolver {
       AccessModifier accessModifier,
       Predicate<TypeSymbol> predicate
   ) {
-    Map<String, SymTypeExpression> allTypes = new HashMap<>();
+    Map<String, SymTypeExpression> allTypes = new LinkedHashMap<>();
     Collection<String> names = _internal_getMemberNames(thisType);
     for (String name : names) {
       Optional<SymTypeExpression> typeOpt =
@@ -419,58 +455,59 @@ public class WithinTypeBasicSymbolsResolver {
     // array.size not supported yet
   }
 
-  // Helper
+  // Helper / Extension Points
 
   /**
-   * resolves locally, EXCLUDING supertypes
+   * Resolves locally, EXCLUDING supertypes.
+   * This can be used as an extension point.
+   * S.a. {@link WithinScopeBasicSymbolsResolver#resolveType(IBasicSymbolsScope, String, AccessModifier, Predicate)}
    */
   protected Optional<VariableSymbol> resolveVariableLocally(
       IBasicSymbolsScope scope,
       String name,
       AccessModifier accessModifier,
       Predicate<VariableSymbol> predicate) {
-    // may include symbols of supertypes, thus the predicate
-    Optional<VariableSymbol> resolved;
-    // work around for resolver throwing RuntimeExceptions
-    try {
-      resolved = scope.resolveVariable(
-          name,
-          accessModifier,
-          predicate.and(getIsLocalSymbolPredicate(scope))
-      );
-    }
-    catch (ResolvedSeveralEntriesForSymbolException e) {
-      // note: Exception is not supposed to happen,
-      // thus, never rely on this(!) Error being logged (here)
-      // some error should be logged, though.
-      Log.error("0xFD225 internal error: resolved " + e.getSymbols().size()
-              + "occurences of variable " + name
-              + ", but expected only one:" + System.lineSeparator()
-              + e.getSymbols().stream()
-              .map(ISymbol::getFullName)
-              .collect(Collectors.joining(System.lineSeparator())),
-          e
-      );
-      resolved = Optional.empty();
-    }
+    // todo replace with resolveVariableLocally, as soon as it supports
+    // Accessmodifier and Predicate.
+    List<VariableSymbol> resolved = scope.resolveVariableLocallyMany(
+        false,
+        name,
+        accessModifier,
+        // assure that no symbols of supertypes are added by the resolver
+        predicate.and(getIsLocalSymbolPredicate(scope))
+    );
     // todo remove given a fixed resolver
-    resolved = resolved.filter(predicate.and(getIsLocalSymbolPredicate(scope)));
-    return resolved;
+    resolved = resolved.stream()
+        .filter(predicate.and(getIsLocalSymbolPredicate(scope)))
+        .collect(Collectors.toList());
+    // todo remove as soon as resolveVariableLocally is used
+    if (resolved.size() > 1) {
+      Log.error("0xFD225 resolved " + resolved.size()
+          + "occurences of variable " + name
+          + ", but expected only one:" + System.lineSeparator()
+          + resolved.stream()
+          .map(ISymbol::getFullName)
+          .collect(Collectors.joining(System.lineSeparator()))
+      );
+      resolved = Collections.emptyList();
+    }
+    return resolved.stream().findAny();
   }
 
   /**
-   * resolves locally, EXCLUDING supertypes
+   * Resolves locally, EXCLUDING supertypes.
+   * This can be used as an extension point.
    */
-  protected List<FunctionSymbol> resolveFunctionLocally(
+  protected List<FunctionSymbol> resolveFunctionLocallyMany(
       IBasicSymbolsScope scope,
       String name,
       AccessModifier accessModifier,
       Predicate<FunctionSymbol> predicate) {
-    // may include symbols of supertypes, thus the predicate
     List<FunctionSymbol> resolved = scope.resolveFunctionLocallyMany(
         false,
         name,
         accessModifier,
+        // assure that no symbols of supertypes are added by the resolver
         predicate.and(getIsLocalSymbolPredicate(scope))
     );
     // todo remove given a fixed resolver
@@ -481,20 +518,39 @@ public class WithinTypeBasicSymbolsResolver {
   }
 
   /**
-   * resolves locally, EXCLUDING supertypes
+   * @deprecated renamend to
+   *     {@link #resolveFunctionLocallyMany(IBasicSymbolsScope, String, AccessModifier, Predicate)}
+   */
+  @Deprecated(forRemoval = true)
+  protected List<FunctionSymbol> resolveFunctionLocally(
+      IBasicSymbolsScope scope,
+      String name,
+      AccessModifier accessModifier,
+      Predicate<FunctionSymbol> predicate) {
+    return resolveFunctionLocallyMany(scope, name, accessModifier, predicate);
+  }
+
+  /**
+   * Resolves locally, EXCLUDING supertypes.
+   * This can be used as an extension point.
+   * S.a. {@link WithinScopeBasicSymbolsResolver#resolveType(IBasicSymbolsScope, String, AccessModifier, Predicate)}
    */
   protected Optional<TypeSymbol> resolveTypeLocally(
       IBasicSymbolsScope scope,
       String name,
       AccessModifier accessModifier,
       Predicate<TypeSymbol> predicate) {
-    // may include symbols of supertypes, thus the predicate
+    // todo replace with resolveTypeLocally, as soon as it supports
+    //  Accessmodifier and Predicate.
     List<TypeSymbol> resolved = scope.resolveTypeLocallyMany(
         false,
         name,
         accessModifier,
         predicate
+            // todo removed as soon as
+            //  TypeVarSymbol does not extend TypeSymbol anymore
             .and(getIsNotTypeVarSymbolPredicate())
+            // assure that no symbols of supertypes are added by the resolver
             .and(getIsLocalSymbolPredicate(scope))
     );
     // todo remove given a fixed resolver
@@ -504,6 +560,7 @@ public class WithinTypeBasicSymbolsResolver {
             .and(getIsLocalSymbolPredicate(scope))
         )
         .collect(Collectors.toList());
+    // todo remove as soon as resolveTypeLocally is used
     if (resolved.size() > 1) {
       Log.error("0xFD221 resolved multiple types \""
           + name + "\" (locally in the same scope)");
@@ -697,7 +754,7 @@ public class WithinTypeBasicSymbolsResolver {
     Map<SymTypeVariable, SymTypeInferenceVariable> allVarMap =
         TypeParameterRelations.getFreeVariableReplaceMap(type, BasicSymbolsMill.scope());
     // 2. get variables that actually need to be replaced (unbound)
-    Map<SymTypeVariable, SymTypeInferenceVariable> freeVarMap = new HashMap<>();
+    Map<SymTypeVariable, SymTypeInferenceVariable> freeVarMap = new LinkedHashMap<>();
     for (Map.Entry<SymTypeVariable, SymTypeInferenceVariable> e : allVarMap.entrySet()) {
       if (varsNotToReplace.stream().noneMatch(e.getKey()::deepEquals)) {
         freeVarMap.put(e.getKey(), e.getValue());
@@ -780,7 +837,7 @@ public class WithinTypeBasicSymbolsResolver {
   protected static void setDelegate(
       WithinTypeBasicSymbolsResolver newDelegate
   ) {
-    WithinTypeBasicSymbolsResolver.delegate = Log.errorIfNull(newDelegate);
+    WithinTypeBasicSymbolsResolver.delegate = Preconditions.checkNotNull(newDelegate);
   }
 
   protected static WithinTypeBasicSymbolsResolver getDelegate() {

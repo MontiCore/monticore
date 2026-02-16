@@ -57,6 +57,11 @@ compileJava {
   dependsOn "generateMTOD"
 }
 
+// As we add the MontiTrans output as a main java output, we have to add this crude dependsOn
+tasks.named("generateMCGrammars") {
+  dependsOn(tasks.withType(MontiTransExec))
+}
+
 sourceSets {
   main.java.srcDirs += [ _outputDir ]
 }

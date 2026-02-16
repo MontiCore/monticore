@@ -1435,6 +1435,7 @@ public class SymTypeCompatibilityCalculator {
 
   protected String printBounds(List<Bound> bounds) {
     return bounds.stream()
+        .sorted()
         .map(Bound::print)
         .collect(Collectors.joining(System.lineSeparator()));
   }

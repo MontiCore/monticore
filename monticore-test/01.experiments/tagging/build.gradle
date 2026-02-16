@@ -54,13 +54,18 @@ if (("true").equals(getProperty('genTagging'))) {
 
   dependencies {
     withGenImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
-    withGenImplementation "org.junit.vintage:junit-vintage-engine:$junit_version"
-    withGenRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
+    withGenImplementation "org.junit.jupiter:junit-jupiter-engine:$junit_version"
+    withGenRuntimeOnly "org.junit.platform:junit-platform-launcher:$junit_platform_version"
+
     // monticore-grammar-tagging
     withGenImplementation files(project(":monticore-grammar").sourceSets.tagging.output.classesDirs)
     withGenImplementation project(project.path)
     withGenGrammarSymbolDependencies files(project(":monticore-grammar").layout.buildDirectory.dir("generated-sources/monticore/sourcecode"))
     withGenGrammarSymbolDependencies files(project(":monticore-grammar").sourceSets.main.grammars.getSourceDirectories())
+  }
+
+  test {
+    useJUnitPlatform()
   }
 
   // Register a jUnit platform

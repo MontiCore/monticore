@@ -2,20 +2,18 @@
 
 package mc.feature.ast;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
 import java.io.StringReader;
 
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 
 import mc.GeneratorIntegrationsTest;
 import mc.feature.featuredsl._parser.FeatureDSLParser;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ParserForInterfaceTest extends GeneratorIntegrationsTest {
   
@@ -32,9 +30,9 @@ public class ParserForInterfaceTest extends GeneratorIntegrationsTest {
     FeatureDSLParser p = new FeatureDSLParser();
     p.parseExtraComponent(s);
     
-    Assertions.assertEquals(false, p.hasErrors());
+    assertFalse(p.hasErrors());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
 }
