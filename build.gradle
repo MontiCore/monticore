@@ -9,6 +9,7 @@ plugins {
   id "org.sonarqube" version "3.0"
   id "jacoco"
   id 'org.barfuin.gradle.jacocolog' version '3.1.0'
+  id 'de.monticore.generator' version "$version" apply false // see https://monticore.github.io/monticore/docs/Gradle/#root-warning
 }
 
 sonarqube {

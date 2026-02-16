@@ -44,6 +44,7 @@ public class MCToolDependenciesPlugin implements Plugin<Project> {
     toolConfig.setCanBeResolved(true);
     toolConfig.defaultDependencies(dependencies -> {
       dependencies.add(project.getDependencies().create("de.monticore:monticore-generator:" + version));
+      dependencies.add(project.getDependencies().create("de.monticore:gradle-plugin:" + version));
     });
     toolConfig.attributes(it -> {
       // Do not use the shadowed bundling variant (by default)
