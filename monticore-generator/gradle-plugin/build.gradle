@@ -18,7 +18,7 @@ configurations {
 
 dependencies {
   implementation gradleApi()
-  implementation "de.se_rwth.commons:se-commons-gradle:$se_commons_version"
+  implementation "de.se_rwth.commons:se-commons-gradle:$se_gradle_version" // use current version of the gradle-dependency
   implementation "de.monticore:monticore-runtime:$previous_mc_version" // Required due to json -> substitute this to remove the runtime from the gradle projects classpath
   mcTool project(":") // depend on the generator subproject
 

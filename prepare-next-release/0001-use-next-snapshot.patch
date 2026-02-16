@@ -44,6 +44,7 @@ index a4171758b..5249f4006 100644
  
 -se_commons_version =7.8.0
 +se_commons_version =7.9.0-SNAPSHOT
+ se_gradle_version =7.9.0-SNAPSHOT
  antlr_version =4.12.0
  junit_version = 5.14.1
  junit_platform_version = 1.14.1
