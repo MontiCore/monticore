@@ -1,0 +1,69 @@
+/* (c) https://github.com/MontiCore/monticore */
+plugins {
+  id 'java'
+  id 'java-test-fixtures'
+}
+
+// how many elements a tuple can have,
+// how many arguments a function can have
+// current amount is assumed to be _way_ sufficient enough.
+def runtimeSize = 12
+
+def generatedSourcesDir =
+    layout.buildDirectory.dir("generated/sources/java")
+
+sourceSets {
+  generator {
+    java.srcDirs = ['src/generator/java']
+    resources.srcDirs = ['src/generator/resources']
+    compileClasspath += sourceSets.main.compileClasspath
+  }
+  main {
+    java.srcDirs = ['src/main/java', generatedSourcesDir]
+    resources.srcDirs = ['src/main/resources']
+  }
+  test {
+    java.srcDirs = ['src/test']
+    resources.srcDirs = ['src/test/resources']
+    compileClasspath += sourceSets.main.output
+    runtimeClasspath += sourceSets.main.output
+  }
+}
+
+dependencies {
+  // using previous version to not have a circular dependency with cd4a
+  generatorImplementation("de.monticore:monticore-runtime:${previous_mc_version}")
+  generatorImplementation("de.monticore:monticore-generator:${previous_mc_version}")
+  generatorImplementation("de.monticore.lang:cd4analysis:${previous_mc_version}")
+  generatorImplementation("commons-cli:commons-cli:${commons_cli_version}")
+
+  // JUnit5 test dependencies
+  testImplementation("org.junit.jupiter:junit-jupiter-api:${junit_version}")
+  testImplementation("org.junit.jupiter:junit-jupiter-params:${junit_version}")
+  testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junit_version}")
+  testRuntimeOnly("org.junit.platform:junit-platform-launcher:${junit_platform_version}")
+}
+
+tasks.register('compileGenerator', JavaCompile) {
+  source = sourceSets.generator.java
+  classpath = sourceSets.generator.compileClasspath
+  destinationDir = file("${buildDir}/classes/generator")
+  options.encoding = 'UTF-8'
+}
+
+tasks.register('generateRuntimeCode', JavaExec) {
+  dependsOn 'compileGenerator'
+  classpath = sourceSets.generator.runtimeClasspath
+  mainClass.set("de.monticore.rte.generator.Generator")
+  args("--output", generatedSourcesDir.get().asFile.absolutePath, "--size", "${runtimeSize}")
+  outputs.dir(generatedSourcesDir)
+}
+
+tasks.named('compileJava') {
+  dependsOn 'generateRuntimeCode'
+}
+
+tasks.named('test') {
+  useJUnitPlatform()
+}
+
