@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.rte.streams;
 
 import de.monticore.rte.actions.Action1;
