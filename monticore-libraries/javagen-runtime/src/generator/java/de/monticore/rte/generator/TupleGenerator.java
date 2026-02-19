@@ -54,8 +54,9 @@ public class TupleGenerator extends RteGenerator {
   @Override
   protected List<ASTCDMethod> constructMethods(int n) {
     List<ASTCDMethod> methods = new ArrayList<>(n);
-    for (int i = 0; i < n; i++)
+    for (int i = 0; i < n; i++) {
       methods.add(completeMethod(buildMethod(getGetterName(i), CDModifier.PUBLIC.build(), getTypeName(i)), "de.monticore.rte.tuples.Getter", i));
+    }
     // To String
     ASTCDMethod toString = completeMethod(buildMethod("toString", CDModifier.PUBLIC.build(), "String"), "de.monticore.rte.tuples.ToString", n);
     setOverride(toString);

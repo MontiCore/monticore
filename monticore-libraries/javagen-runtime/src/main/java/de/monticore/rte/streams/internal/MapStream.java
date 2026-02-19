@@ -22,8 +22,9 @@ public class MapStream<U, T> extends UntimedStream<U> {
     Optional<T> optHead = headTail.get0();
     UntimedStream<T> tail = headTail.get1();
 
-    if (optHead.isEmpty())
+    if (optHead.isEmpty()) {
       return Tuple2.of(Optional.empty(), UntimedStream.empty());
+    }
 
     U res = mapper.apply(optHead.get());
     UntimedStream<U> mappedTail = new MapStream<>(tail, mapper);

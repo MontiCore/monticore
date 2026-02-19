@@ -16,8 +16,9 @@ public class FlattenStream<T> extends UntimedStream<T> {
 
   @Override
   public Tuple2<Optional<T>, UntimedStream<T>> _internal_next() {
-    if (this.backing.isEmpty())
+    if (this.backing.isEmpty()) {
       return Tuple2.of(Optional.empty(), UntimedStream.empty());
+    }
 
     UntimedStream<T> head = this.backing.head();
     Stream<UntimedStream<T>> tail = this.backing.dropFirst();
