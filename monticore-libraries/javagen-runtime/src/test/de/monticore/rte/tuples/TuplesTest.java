@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.rte.tuples;
 
 import org.junit.jupiter.api.Test;

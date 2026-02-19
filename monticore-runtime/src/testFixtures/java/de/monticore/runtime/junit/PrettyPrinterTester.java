@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.runtime.junit;
 
 import de.monticore.antlr4.MCConcreteParser;
