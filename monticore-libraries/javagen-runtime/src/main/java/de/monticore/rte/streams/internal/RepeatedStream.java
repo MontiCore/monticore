@@ -24,11 +24,13 @@ public class RepeatedStream<T> extends UntimedStream<T> {
 
   @Override
   public long len() {
-    if (n == Stream.INFINITY)
+    if (n == Stream.INFINITY) {
       return Stream.INFINITY;
+    }
 
-    if (fullStream.hasInfiniteLen())
+    if (fullStream.hasInfiniteLen()) {
       return Stream.INFINITY;
+    }
 
     return fullStream.len() * n + workingStream.len();
   }

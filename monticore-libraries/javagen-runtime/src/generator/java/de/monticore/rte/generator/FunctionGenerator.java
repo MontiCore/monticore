@@ -59,14 +59,18 @@ public class FunctionGenerator extends InterfaceRteGenerator {
   @Override
   public ASTCDExtendUsage constructExtendUsage(int n) {
     List<String> names = null;
-    if (n == 0)
+    if (n == 0) {
       names = List.of("java.util.concurrent.Callable", "Supplier");
-    if (n == 1)
+    }
+    else if (n == 1) {
       names = List.of("java.util.function.Function");
-    else if (n == 2)
+    }
+    else if (n == 2) {
       names = List.of("java.util.function.BiFunction");
-    if (names == null)
+    }
+    if (names == null) {
       return null;
+    }
 
     List<ASTMCBasicTypeArgument> args = IntStream.range(0, n + 1).mapToObj(i -> CD4CodeMill.mCBasicTypeArgumentBuilder().setMCQualifiedType(MCTypeFacade.getInstance().createQualifiedType(i >= n ? "R" : getTypeName(i))).build()).collect(Collectors.toList());
     List<ASTMCObjectType> superclasses = names.stream().map(e -> CD4CodeMill.mCBasicGenericTypeBuilder().addName(e).addAllMCTypeArguments(args).build()).collect(Collectors.toList());
