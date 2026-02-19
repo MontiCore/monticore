@@ -229,7 +229,8 @@ tasks.register("sonarMC", GradleBuild) {
 def projectsToConfigure = [
   project(':monticore-grammar'),
   project(':monticore-runtime'),
-  project(':monticore-libraries:stream-symbols')
+  project(':monticore-libraries:stream-symbols'),
+  project(':monticore-libraries:javagen-runtime'),
 ]
 if(("true").equals(getProperty('genEMF'))) {
     projectsToConfigure << project(':monticore-grammar-emf')
