@@ -63,6 +63,7 @@ subprojects {
 
   tasks.withType(Test) {
     useJUnitPlatform()
+    maxHeapSize = "1g"
     testLogging {
       // controls whether test output is shown
       showStandardStreams = ("false").equals(getProperty('showTestOutput'))? false : true
