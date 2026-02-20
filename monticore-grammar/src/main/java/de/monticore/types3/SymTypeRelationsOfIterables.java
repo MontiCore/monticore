@@ -33,7 +33,7 @@ public class SymTypeRelationsOfIterables {
    *
    * @see SymTypeExpression#isArrayType()
    */
-  protected static boolean isOfTypeIterable(SymTypeExpression type) {
+  public static boolean isOfTypeIterable(SymTypeExpression type) {
     return getDelegate()._isOfTypeIterable(type);
   }
 
