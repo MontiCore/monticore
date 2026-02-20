@@ -15,7 +15,7 @@ ${tc.signature("simpleName", "symbolFullName", "scopeInterface")}
 
   final String resolveCall = "resolveDownMany(\"" + name + "\", \"" + "${simpleName}Symbol"
     + "\") in scope \"" + (isPresentName() ? getName() : "") + "\"";
-  Log.trace("START " + resolveCall + ". Found #" + resolvedSymbols.size() + " (local)", "");
+  Log.trace("START " + resolveCall + ". Found #" + resolvedSymbols.size() + " (local)", "Resolving");
   // If no matching symbols have been found...
   if (resolvedSymbols.isEmpty()) {
     // (2) Continue search in sub scopes and ...
@@ -27,6 +27,6 @@ ${tc.signature("simpleName", "symbolFullName", "scopeInterface")}
       resolvedSymbols.addAll(resolvedFromSub);
     }
   }
-  Log.trace("END " + resolveCall + ". Found #" + resolvedSymbols.size(), "");
+  Log.trace("END " + resolveCall + ". Found #" + resolvedSymbols.size(), "Resolving");
   set${simpleName}SymbolsAlreadyResolved(false);
   return resolvedSymbols;

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions.uglyexpressions.types3;
 
 import de.monticore.expressions.uglyexpressions._ast.ASTArrayCreator;
