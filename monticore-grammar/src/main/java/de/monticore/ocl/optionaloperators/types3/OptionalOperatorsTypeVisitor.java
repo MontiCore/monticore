@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.ocl.optionaloperators.types3;
 
 import de.monticore.expressions.commonexpressions._ast.ASTInfixExpression;
