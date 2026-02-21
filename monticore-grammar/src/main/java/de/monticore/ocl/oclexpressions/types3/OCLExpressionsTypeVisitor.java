@@ -1,7 +1,4 @@
-/*
- *  (c) https://github.com/MontiCore/monticore
- */
-
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.ocl.oclexpressions.types3;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;

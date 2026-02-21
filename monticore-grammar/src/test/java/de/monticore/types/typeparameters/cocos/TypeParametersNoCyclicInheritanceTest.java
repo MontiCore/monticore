@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.typeparameters.cocos;
 
 import de.monticore.types.typeparameters.TypeParametersMill;

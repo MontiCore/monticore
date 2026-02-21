@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.siunit.siunits._prettyprint;
 
 import de.monticore.prettyprint.CommentPrettyPrinter;
