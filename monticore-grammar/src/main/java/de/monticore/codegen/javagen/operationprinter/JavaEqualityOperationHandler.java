@@ -51,7 +51,7 @@ public class JavaEqualityOperationHandler
           printer, leftType, rightType,
           leftExprPrintAction, rightExprPrintAction
       );
-      printer.print(NOT_EQUALS);
+      printer.print(")");
       return true;
     }
     else {
