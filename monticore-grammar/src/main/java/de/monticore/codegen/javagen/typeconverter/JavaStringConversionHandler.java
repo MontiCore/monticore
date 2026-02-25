@@ -12,11 +12,11 @@ public class JavaStringConversionHandler extends AbstractJavaTypeConverter {
   @Override
   public boolean tryPrintConverted(
       IndentPrinter printer,
-      SymTypeExpression targetType,
-      SymTypeExpression sourceType,
+      SymTypeExpression modelTargetType,
+      SymTypeExpression modelSourceType,
       CodeGenPrintAction sourceExprPrintAction
   ) {
-    if (isStringOrSubType(targetType) && isStringOrSubType(sourceType)) {
+    if (isStringOrSubType(modelTargetType) && isStringOrSubType(modelSourceType)) {
       sourceExprPrintAction.print(printer);
       return true;
     }

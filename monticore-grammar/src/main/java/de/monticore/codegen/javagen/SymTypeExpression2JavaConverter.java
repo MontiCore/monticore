@@ -26,19 +26,28 @@ public class SymTypeExpression2JavaConverter {
   // methods
 
   /**
-   * converts types of models into Java compatible types
+   * @deprecated use {@link #getAsJavaType(SymTypeExpression)} instead,
+   *     which has a more descriptive name.
    */
+  @Deprecated
   public static SymTypeExpression getJavaType(SymTypeExpression modelType) {
-    return getDelegate()._getJavaType(modelType);
+    return getAsJavaType(modelType);
   }
 
-  protected SymTypeExpression _getJavaType(SymTypeExpression modelType) {
+  /**
+   * converts types of models into Java compatible types
+   */
+  public static SymTypeExpression getAsJavaType(SymTypeExpression modelType) {
+    return getDelegate()._getAsJavaType(modelType);
+  }
+
+  protected SymTypeExpression _getAsJavaType(SymTypeExpression modelType) {
     return modelType2JavaTypeVisitor.calculate(modelType);
   }
 
   /**
    * Prints Java compatible types in a Java compatible way.
-   * It is recommended to use {@link #getJavaType(SymTypeExpression)}
+   * It is recommended to use {@link #getAsJavaType(SymTypeExpression)}
    * to get a Java compatible type.
    */
   public static String printJavaType(SymTypeExpression javaType) {
@@ -69,28 +78,31 @@ public class SymTypeExpression2JavaConverter {
   }
 
   // Convenience methods
-  public static String getAndPrintJavaType(SymTypeExpression e){
-    return getDelegate()._getAndPrintJavaType(e);
+
+  public static String printModelTypeAsJavaType(SymTypeExpression modelType) {
+    return getDelegate()._printModelTypeAsJavaType(modelType);
   }
 
-  public String _getAndPrintJavaType(SymTypeExpression e){
-    return getDelegate()._printJavaType(getDelegate()._getJavaType(e));
+  public String _printModelTypeAsJavaType(SymTypeExpression modelType) {
+    SymTypeExpression javaType = getAsJavaType(modelType);
+    String javaTypeStr = printJavaType(javaType);
+    return javaTypeStr;
   }
 
-  public static String getAndPrintJavaType(ASTMCType mcType) {
-    return getDelegate()._getAndPrintJavaType(mcType);
+  public static String printModelTypeAsJavaType(ASTMCType mcType) {
+    return getDelegate()._printModelTypeAsJavaType(mcType);
   }
 
-  public String _getAndPrintJavaType(ASTMCType mcType) {
-    return getDelegate()._getAndPrintJavaType(TypeCheck3.symTypeFromAST(mcType));
+  public String _printModelTypeAsJavaType(ASTMCType mcType) {
+    return printModelTypeAsJavaType(TypeCheck3.symTypeFromAST(mcType));
   }
 
-  public static String getAndPrintJavaType(ASTExpression expression) {
-    return getDelegate()._getAndPrintJavaType(expression);
+  public static String printModelTypeAsJavaType(ASTExpression expression) {
+    return getDelegate()._printModelTypeAsJavaType(expression);
   }
 
-  public String _getAndPrintJavaType(ASTExpression expression) {
-    return getDelegate()._getAndPrintJavaType(TypeCheck3.typeOf(expression));
+  public String _printModelTypeAsJavaType(ASTExpression expression) {
+    return printModelTypeAsJavaType(TypeCheck3.typeOf(expression));
   }
 
   // static delegate

@@ -33,26 +33,26 @@ public abstract class CodeGenSymTypeExpressionConverter {
    * that converts a given expression
    * to the provided type.
    *
-   * @param targetType target MontiCore expression type
-   * @param sourceType source MontiCore expression type
+   * @param modelTargetType target MontiCore expression type
+   * @param modelSourceType source MontiCore expression type
    */
   public static void printConverted(
       IndentPrinter printer,
-      SymTypeExpression targetType,
-      SymTypeExpression sourceType,
+      SymTypeExpression modelTargetType,
+      SymTypeExpression modelSourceType,
       CodeGenPrintAction sourceExprPrintAction
   ) {
-    getDelegate()._printConverted(printer, targetType, sourceType, sourceExprPrintAction);
+    getDelegate()._printConverted(printer, modelTargetType, modelSourceType, sourceExprPrintAction);
   }
 
   protected void _printConverted(
       IndentPrinter printer,
-      SymTypeExpression targetType,
-      SymTypeExpression sourceType,
+      SymTypeExpression modelTargetType,
+      SymTypeExpression modelSourceType,
       CodeGenPrintAction sourceExprPrintAction
   ) {
-    SymTypeExpression targetNormalized = normalize(targetType);
-    SymTypeExpression sourceNormalized = normalize(sourceType);
+    SymTypeExpression targetNormalized = normalize(modelTargetType);
+    SymTypeExpression sourceNormalized = normalize(modelSourceType);
     if (targetNormalized.deepEquals(sourceNormalized)) {
       sourceExprPrintAction.print(printer);
     }
@@ -64,16 +64,16 @@ public abstract class CodeGenSymTypeExpressionConverter {
         }
       }
       if (numTimesPrinted == 0) {
-        Log.warn("0xFD220 Could not convert " + sourceType.printFullName()
-            + " to " + targetType.printFullName()
+        Log.warn("0xFD220 Could not convert " + modelSourceType.printFullName()
+            + " to " + modelTargetType.printFullName()
         );
         sourceExprPrintAction.print(printer);
       }
       else if (numTimesPrinted > 1) {
         Log.error("0xFD222 internal error: "
             + "Found multiple conversions to convert "
-            + sourceType.printFullName() + " to "
-            + targetType.printFullName() + "."
+            + modelSourceType.printFullName() + " to "
+            + modelTargetType.printFullName() + "."
             + " This should never happen!"
         );
       }

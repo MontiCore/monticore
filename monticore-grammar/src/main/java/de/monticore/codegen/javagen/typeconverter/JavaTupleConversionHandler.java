@@ -8,7 +8,7 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfTuple;
 
 import static de.monticore.codegen.CodeGenSymTypeExpressionConverter.printConverted;
-import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getJavaType;
+import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getAsJavaType;
 import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.printJavaType;
 
 /**
@@ -21,13 +21,13 @@ public class JavaTupleConversionHandler extends AbstractJavaTypeConverter {
   @Override
   public boolean tryPrintConverted(
       IndentPrinter printer,
-      SymTypeExpression targetType,
-      SymTypeExpression sourceType,
+      SymTypeExpression modelTargetType,
+      SymTypeExpression modelSourceType,
       CodeGenPrintAction sourceExprPrintAction
   ) {
-    if (sourceType.isTupleType() && targetType.isTupleType()) {
-      SymTypeOfTuple sourceTuple = sourceType.asTupleType();
-      SymTypeOfTuple targetTuple = targetType.asTupleType();
+    if (modelSourceType.isTupleType() && modelTargetType.isTupleType()) {
+      SymTypeOfTuple sourceTuple = modelSourceType.asTupleType();
+      SymTypeOfTuple targetTuple = modelTargetType.asTupleType();
 
       String tmpTupleVarName = sourceTuple.getSourceInfo().getSourceNode()
           .map(Node2Name::getName)
@@ -35,20 +35,20 @@ public class JavaTupleConversionHandler extends AbstractJavaTypeConverter {
       tupleNestingLevel++;
 
       printer.print("((java.util.function.Supplier<");
-      printer.print(printJavaType(getJavaType(targetTuple)));
+      printer.print(printJavaType(getAsJavaType(targetTuple)));
       printer.print(">) () -> { ");
-      printer.print(printJavaType(getJavaType(sourceTuple)));
+      printer.print(printJavaType(getAsJavaType(sourceTuple)));
       printer.print(" ");
       printer.print(tmpTupleVarName);
       printer.print(" = ");
       sourceExprPrintAction.print(printer);
       printer.print("; return ");
-      printer.print(getJavaType(targetTuple).asGenericType().getTypeConstructorFullName());
+      printer.print(getAsJavaType(targetTuple).asGenericType().getTypeConstructorFullName());
       printer.print(".of(");
 
-      for (int i = 0; i < targetType.asTupleType().getTypeList().size(); i++) {
-        SymTypeExpression sourceArgType = sourceType.asTupleType().getTypeList().get(i);
-        SymTypeExpression targetArgType = targetType.asTupleType().getTypeList().get(i);
+      for (int i = 0; i < modelTargetType.asTupleType().getTypeList().size(); i++) {
+        SymTypeExpression sourceArgType = modelSourceType.asTupleType().getTypeList().get(i);
+        SymTypeExpression targetArgType = modelTargetType.asTupleType().getTypeList().get(i);
         int finalI = i;
         printConverted(printer, targetArgType, sourceArgType, p -> {
           p.print(tmpTupleVarName);
@@ -56,7 +56,7 @@ public class JavaTupleConversionHandler extends AbstractJavaTypeConverter {
           p.print(finalI);
           p.print("()");
         });
-        if (i < getJavaType(targetType).asGenericType().getArgumentList().size() - 1) {
+        if (i < getAsJavaType(modelTargetType).asGenericType().getArgumentList().size() - 1) {
           printer.print(", ");
         }
       }

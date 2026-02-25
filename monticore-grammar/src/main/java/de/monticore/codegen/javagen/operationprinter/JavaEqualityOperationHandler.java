@@ -9,7 +9,7 @@ import de.monticore.types.check.SymTypeExpression;
 import static de.monticore.codegen.CodeGenSymTypeExpressionConverter.printConverted;
 import static de.monticore.codegen.ICodeGenOperationHandler.BinaryOperator.EQUALS;
 import static de.monticore.codegen.ICodeGenOperationHandler.BinaryOperator.NOT_EQUALS;
-import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getJavaType;
+import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getAsJavaType;
 import static de.monticore.types3.SymTypeRelations.isBoolean;
 import static de.monticore.types3.SymTypeRelations.isByte;
 import static de.monticore.types3.SymTypeRelations.isChar;
@@ -66,8 +66,8 @@ public class JavaEqualityOperationHandler
       CodeGenPrintAction leftExprPrintAction,
       CodeGenPrintAction rightExprPrintAction
   ) {
-    SymTypeExpression leftJavaType = getJavaType(leftType);
-    SymTypeExpression rightJavaType = getJavaType(rightType);
+    SymTypeExpression leftJavaType = getAsJavaType(leftType);
+    SymTypeExpression rightJavaType = getAsJavaType(rightType);
 
     // note:
     // convert to same type beforehand to assure implicit conversion happens
@@ -120,7 +120,7 @@ public class JavaEqualityOperationHandler
       CodeGenPrintAction leftExprPrintAction
   ) {
     if (isSubTypeOf(leftType, rightType) && !isSubTypeOf(rightType, leftType)) {
-      printConverted(printer, getJavaType(rightType), getJavaType(leftType), leftExprPrintAction);
+      printConverted(printer, rightType, leftType, leftExprPrintAction);
     }
     else {
       leftExprPrintAction.print(printer);
@@ -134,7 +134,7 @@ public class JavaEqualityOperationHandler
       CodeGenPrintAction rightExprPrintAction
   ) {
     if (isSubTypeOf(rightType, leftType)) {
-      printConverted(printer, getJavaType(leftType), getJavaType(rightType), rightExprPrintAction);
+      printConverted(printer, leftType, rightType, rightExprPrintAction);
     }
     else {
       rightExprPrintAction.print(printer);

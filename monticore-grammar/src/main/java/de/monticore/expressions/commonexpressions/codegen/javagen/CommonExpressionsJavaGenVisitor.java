@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static de.monticore.codegen.CodeGenSymTypeExpressionConverter.printConverted;
-import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getJavaType;
+import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getAsJavaType;
 import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.printJavaType;
 import static de.monticore.types3.SymTypeRelations.normalize;
 import static de.monticore.types3.TypeCheck3.typeOf;
@@ -426,7 +426,7 @@ public class CommonExpressionsJavaGenVisitor extends AbstractJavaGenVisitor
       String funcName = funcType.getSymbol().getName();
 
       getPrinter().print("((");
-      getPrinter().print(printJavaType(getJavaType(outerType)));
+      getPrinter().print(printJavaType(getAsJavaType(outerType)));
       getPrinter().print(") ");
       if (funcType.getSymbol() instanceof MethodSymbol) {
         MethodSymbol methodSym = (MethodSymbol) funcType.getSymbol();
@@ -472,7 +472,7 @@ public class CommonExpressionsJavaGenVisitor extends AbstractJavaGenVisitor
     // static fields
     else if (type4Ast.hasPartialTypeOfTypeIdentifierForName(node.getExpression())) {
       SymTypeExpression innerType = type4Ast.getPartialTypeOfTypeIdForName(node.getExpression());
-      getPrinter().print(printJavaType(getJavaType(innerType)));
+      getPrinter().print(printJavaType(getAsJavaType(innerType)));
       getPrinter().print(".");
       getPrinter().print(node.getName());
     }

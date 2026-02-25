@@ -8,8 +8,8 @@ public interface ICodeGenSymTypeExpressionConversionHandler {
 
   boolean tryPrintConverted(
       IndentPrinter printer,
-      SymTypeExpression targetType,
-      SymTypeExpression sourceType,
+      SymTypeExpression modelTargetType,
+      SymTypeExpression modelSourceType,
       CodeGenPrintAction sourceExprPrintAction
   );
 
