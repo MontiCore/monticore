@@ -120,7 +120,7 @@ public class JavaEqualityOperationHandler
       CodeGenPrintAction leftExprPrintAction
   ) {
     if (isSubTypeOf(leftType, rightType) && !isSubTypeOf(rightType, leftType)) {
-      printConverted(printer, rightType, leftType, leftExprPrintAction);
+      printConverted(printer, getJavaType(rightType), getJavaType(leftType), leftExprPrintAction);
     }
     else {
       leftExprPrintAction.print(printer);
@@ -134,7 +134,7 @@ public class JavaEqualityOperationHandler
       CodeGenPrintAction rightExprPrintAction
   ) {
     if (isSubTypeOf(rightType, leftType)) {
-      printConverted(printer, leftType, rightType, rightExprPrintAction);
+      printConverted(printer, getJavaType(leftType), getJavaType(rightType), rightExprPrintAction);
     }
     else {
       rightExprPrintAction.print(printer);

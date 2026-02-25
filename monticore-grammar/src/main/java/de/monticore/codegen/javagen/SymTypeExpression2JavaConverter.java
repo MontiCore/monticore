@@ -2,9 +2,12 @@
 package de.monticore.codegen.javagen;
 
 import com.google.common.base.Preconditions;
+import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfGenerics;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types3.TypeCheck3;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -63,6 +66,31 @@ public class SymTypeExpression2JavaConverter {
       return SymTypeExpressionFactory.createGenerics(g.getTypeInfo(), wildcards);
     }
     return javaType;
+  }
+
+  // Convenience methods
+  public static String getAndPrintJavaType(SymTypeExpression e){
+    return getDelegate()._getAndPrintJavaType(e);
+  }
+
+  public String _getAndPrintJavaType(SymTypeExpression e){
+    return getDelegate()._printJavaType(getDelegate()._getJavaType(e));
+  }
+
+  public static String getAndPrintJavaType(ASTMCType mcType) {
+    return getDelegate()._getAndPrintJavaType(mcType);
+  }
+
+  public String _getAndPrintJavaType(ASTMCType mcType) {
+    return getDelegate()._getAndPrintJavaType(TypeCheck3.symTypeFromAST(mcType));
+  }
+
+  public static String getAndPrintJavaType(ASTExpression expression) {
+    return getDelegate()._getAndPrintJavaType(expression);
+  }
+
+  public String _getAndPrintJavaType(ASTExpression expression) {
+    return getDelegate()._getAndPrintJavaType(TypeCheck3.typeOf(expression));
   }
 
   // static delegate
