@@ -2,9 +2,12 @@
 package de.monticore.codegen.javagen;
 
 import com.google.common.base.Preconditions;
+import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfGenerics;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types3.TypeCheck3;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -23,19 +26,28 @@ public class SymTypeExpression2JavaConverter {
   // methods
 
   /**
-   * converts types of models into Java compatible types
+   * @deprecated use {@link #getAsJavaType(SymTypeExpression)} instead,
+   *     which has a more descriptive name.
    */
+  @Deprecated
   public static SymTypeExpression getJavaType(SymTypeExpression modelType) {
-    return getDelegate()._getJavaType(modelType);
+    return getAsJavaType(modelType);
   }
 
-  protected SymTypeExpression _getJavaType(SymTypeExpression modelType) {
+  /**
+   * converts types of models into Java compatible types
+   */
+  public static SymTypeExpression getAsJavaType(SymTypeExpression modelType) {
+    return getDelegate()._getAsJavaType(modelType);
+  }
+
+  protected SymTypeExpression _getAsJavaType(SymTypeExpression modelType) {
     return modelType2JavaTypeVisitor.calculate(modelType);
   }
 
   /**
    * Prints Java compatible types in a Java compatible way.
-   * It is recommended to use {@link #getJavaType(SymTypeExpression)}
+   * It is recommended to use {@link #getAsJavaType(SymTypeExpression)}
    * to get a Java compatible type.
    */
   public static String printJavaType(SymTypeExpression javaType) {
@@ -63,6 +75,34 @@ public class SymTypeExpression2JavaConverter {
       return SymTypeExpressionFactory.createGenerics(g.getTypeInfo(), wildcards);
     }
     return javaType;
+  }
+
+  // Convenience methods
+
+  public static String printModelTypeAsJavaType(SymTypeExpression modelType) {
+    return getDelegate()._printModelTypeAsJavaType(modelType);
+  }
+
+  public String _printModelTypeAsJavaType(SymTypeExpression modelType) {
+    SymTypeExpression javaType = getAsJavaType(modelType);
+    String javaTypeStr = printJavaType(javaType);
+    return javaTypeStr;
+  }
+
+  public static String printModelTypeAsJavaType(ASTMCType mcType) {
+    return getDelegate()._printModelTypeAsJavaType(mcType);
+  }
+
+  public String _printModelTypeAsJavaType(ASTMCType mcType) {
+    return printModelTypeAsJavaType(TypeCheck3.symTypeFromAST(mcType));
+  }
+
+  public static String printModelTypeAsJavaType(ASTExpression expression) {
+    return getDelegate()._printModelTypeAsJavaType(expression);
+  }
+
+  public String _printModelTypeAsJavaType(ASTExpression expression) {
+    return printModelTypeAsJavaType(TypeCheck3.typeOf(expression));
   }
 
   // static delegate

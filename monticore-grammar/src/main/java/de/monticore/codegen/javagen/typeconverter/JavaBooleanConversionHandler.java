@@ -5,6 +5,7 @@ import de.monticore.codegen.CodeGenPrintAction;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.check.SymTypeExpression;
 
+import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getAsJavaType;
 import static de.monticore.types3.SymTypeRelations.isBoolean;
 
 /**
@@ -16,12 +17,12 @@ public class JavaBooleanConversionHandler
   @Override
   public boolean tryPrintConverted(
       IndentPrinter printer,
-      SymTypeExpression targetType,
-      SymTypeExpression sourceType,
+      SymTypeExpression modelTargetType,
+      SymTypeExpression modelSourceType,
       CodeGenPrintAction sourceExrPrintAction
   ) {
-    if (isBoolean(targetType) && isBoolean(sourceType)) {
-      printJavaCasted(printer, targetType, sourceExrPrintAction);
+    if (isBoolean(modelTargetType) && isBoolean(modelSourceType)) {
+      printJavaCasted(printer, getAsJavaType(modelTargetType), sourceExrPrintAction);
       return true;
     }
     return false;

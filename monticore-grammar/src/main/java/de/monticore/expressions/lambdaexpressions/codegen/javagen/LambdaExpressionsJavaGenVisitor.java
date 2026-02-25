@@ -12,7 +12,7 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfFunction;
 import de.monticore.types.check.SymTypeOfGenerics;
 
-import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getJavaType;
+import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getAsJavaType;
 import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.printJavaType;
 import static de.monticore.types3.SymTypeRelations.normalize;
 import static de.monticore.types3.TypeCheck3.typeOf;
@@ -47,7 +47,7 @@ public class LambdaExpressionsJavaGenVisitor extends AbstractJavaGenVisitor
   @Override
   public void handle(ASTLambdaExpression node) {
     SymTypeOfFunction funcType = normalize(typeOf(node)).asFunctionType();
-    SymTypeOfGenerics javaFuncType = getJavaType(funcType).asGenericType();
+    SymTypeOfGenerics javaFuncType = getAsJavaType(funcType).asGenericType();
 
     startParentheses();
 
@@ -65,7 +65,7 @@ public class LambdaExpressionsJavaGenVisitor extends AbstractJavaGenVisitor
       if (i != 0) {
         getPrinter().print(", ");
       }
-      getPrinter().print(printJavaType(getJavaType(parType)));
+      getPrinter().print(printJavaType(getAsJavaType(parType)));
       getPrinter().print(" ");
       getPrinter().print(parName);
     }

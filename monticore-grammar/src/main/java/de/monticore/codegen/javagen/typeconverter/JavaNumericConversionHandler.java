@@ -5,6 +5,7 @@ import de.monticore.codegen.CodeGenPrintAction;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.check.SymTypeExpression;
 
+import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getAsJavaType;
 import static de.monticore.types3.SymTypeRelations.isNumericType;
 import static de.monticore.types3.SymTypeRelations.unbox;
 
@@ -17,22 +18,22 @@ public class JavaNumericConversionHandler
   @Override
   public boolean tryPrintConverted(
       IndentPrinter printer,
-      SymTypeExpression targetType,
-      SymTypeExpression sourceType,
+      SymTypeExpression modelTargetType,
+      SymTypeExpression modelSourceType,
       CodeGenPrintAction sourceExprPrintAction
   ) {
-    if (isNumericType(targetType) && isNumericType(sourceType)) {
+    if (isNumericType(modelTargetType) && isNumericType(modelSourceType)) {
       // unbox iff required
-      CodeGenPrintAction printUnboxedAction = sourceType.isPrimitive() ?
+      CodeGenPrintAction printUnboxedAction = modelSourceType.isPrimitive() ?
           sourceExprPrintAction :
-          p -> printJavaCasted(p, unbox(sourceType), sourceExprPrintAction);
+          p -> printJavaCasted(p, getAsJavaType(unbox(modelSourceType)), sourceExprPrintAction);
       // cast as primitive
       CodeGenPrintAction printCastedAction =
-          p -> printJavaCasted(p, unbox(targetType), printUnboxedAction);
+          p -> printJavaCasted(p, getAsJavaType(unbox(modelTargetType)), printUnboxedAction);
       // box iff required
-      CodeGenPrintAction printAsTargetTypeAction = targetType.isPrimitive() ?
+      CodeGenPrintAction printAsTargetTypeAction = modelTargetType.isPrimitive() ?
           printCastedAction :
-          p -> printJavaCasted(p, targetType, printCastedAction);
+          p -> printJavaCasted(p, getAsJavaType(modelTargetType), printCastedAction);
       // actually print
       printAsTargetTypeAction.print(printer);
       return true;

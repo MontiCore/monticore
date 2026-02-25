@@ -14,7 +14,7 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfFunction;
 import de.se_rwth.commons.logging.Log;
 
-import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getJavaType;
+import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getAsJavaType;
 import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.printJavaType;
 import static de.monticore.types3.SymTypeRelations.normalize;
 import static de.monticore.types3.TypeCheck3.typeOf;
@@ -59,7 +59,7 @@ public class ExpressionsBasisJavaGenVisitor extends AbstractJavaGenVisitor
       String funcName = funcType.getSymbol().getName();
 
       getPrinter().print("((");
-      getPrinter().print(printJavaType(getJavaType(exprType)));
+      getPrinter().print(printJavaType(getAsJavaType(exprType)));
       getPrinter().print(") ");
       if (funcType.getSymbol() instanceof MethodSymbol) {
         MethodSymbol methodSym = (MethodSymbol) funcType.getSymbol();

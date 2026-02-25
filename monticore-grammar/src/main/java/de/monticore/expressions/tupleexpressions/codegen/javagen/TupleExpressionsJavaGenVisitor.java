@@ -13,7 +13,7 @@ import de.monticore.types3.TypeCheck3;
 
 import java.util.Iterator;
 
-import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getJavaType;
+import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getAsJavaType;
 import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.printJavaType;
 
 public class TupleExpressionsJavaGenVisitor extends AbstractJavaGenVisitor
@@ -41,7 +41,7 @@ public class TupleExpressionsJavaGenVisitor extends AbstractJavaGenVisitor
   @Override
   public void handle(ASTTupleExpression node) {
     SymTypeExpression tupleType = TypeCheck3.typeOf(node);
-    SymTypeOfGenerics tupleJavaType = getJavaType(tupleType).asGenericType();
+    SymTypeOfGenerics tupleJavaType = getAsJavaType(tupleType).asGenericType();
     getPrinter().print(tupleJavaType.getTypeConstructorFullName());
 
     getPrinter().print(".<");

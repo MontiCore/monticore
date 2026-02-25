@@ -9,7 +9,7 @@ import de.monticore.types.check.SymTypeOfGenerics;
 import de.se_rwth.commons.logging.Log;
 
 import static de.monticore.codegen.CodeGenSymTypeExpressionConverter.printConverted;
-import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getJavaType;
+import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getAsJavaType;
 import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.printJavaType;
 import static de.monticore.types3.SymTypeRelations.box;
 
@@ -22,15 +22,15 @@ public class JavaFunctionConversionHandler
   @Override
   public boolean tryPrintConverted(
       IndentPrinter printer,
-      SymTypeExpression targetType,
-      SymTypeExpression sourceType,
+      SymTypeExpression modelTargetType,
+      SymTypeExpression modelSourceType,
       CodeGenPrintAction sourceExprPrintAction
   ) {
-    if (targetType.isFunctionType() && sourceType.isFunctionType()) {
+    if (modelTargetType.isFunctionType() && modelSourceType.isFunctionType()) {
       // example target: Student -> Vehicle
-      SymTypeOfFunction targetFunc = targetType.asFunctionType();
+      SymTypeOfFunction targetFunc = modelTargetType.asFunctionType();
       // example source: Person -> Car
-      SymTypeOfFunction sourceFunc = sourceType.asFunctionType();
+      SymTypeOfFunction sourceFunc = modelSourceType.asFunctionType();
       int numArgs = targetFunc.sizeArgumentTypes();
       if (targetFunc.isElliptic() || sourceFunc.isElliptic()) {
         // to be extended
@@ -40,7 +40,7 @@ public class JavaFunctionConversionHandler
 
       // cast to target function type
       // (Function1<Vehicle, Student>)
-      SymTypeOfGenerics javaTargetFuncType = getJavaType(targetFunc).asGenericType();
+      SymTypeOfGenerics javaTargetFuncType = getAsJavaType(targetFunc).asGenericType();
       printJavaCasted(printer, javaTargetFuncType, p -> {
         // lambda parameters and arrow
         // (Student arg0) ->
