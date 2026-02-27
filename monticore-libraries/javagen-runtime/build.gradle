@@ -63,6 +63,10 @@ tasks.named('compileJava') {
   dependsOn 'generateRuntimeCode'
 }
 
+tasks.named('sourcesJar') {
+  dependsOn 'generateRuntimeCode'
+}
+
 tasks.named('test') {
   useJUnitPlatform()
 }
