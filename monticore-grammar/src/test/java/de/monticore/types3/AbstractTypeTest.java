@@ -6,6 +6,7 @@ import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import java.util.stream.Collectors;
 
@@ -35,10 +36,6 @@ public class AbstractTypeTest  {
         .map(Finding::buildMsg)
         .collect(Collectors.joining(System.lineSeparator()))
         ;
-  }
-
-  protected static void assertNoFindings() {
-    MCAssertions.assertNoFindings();
   }
 
   @BeforeEach

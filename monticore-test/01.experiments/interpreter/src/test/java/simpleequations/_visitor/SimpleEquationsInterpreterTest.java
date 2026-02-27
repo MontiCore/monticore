@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package simpleequations._visitor;
 
-import de.monticore.interpreter.Value;
+import de.monticore.interpreter.MIValue;
 import org.junit.jupiter.api.Test;
 import simpleequations.SimpleEquationsMill;
 import simpleequations._ast.ASTProgram;
@@ -25,10 +25,10 @@ public class SimpleEquationsInterpreterTest {
     ASTProgram program = parser.parse_StringProgram("var a=3.5; var b=4; print(a); var c=a+b; c;").get();
 
     delegator.createFromAST(program);
-    Value result = interpreter.interpret(program);
+    MIValue result = interpreter.interpret(program);
 
     assertTrue(result.isFloat());
-    assertEquals(result.asFloat(), 7.5f, 0.0001f);
+    assertEquals(7.5f, result.asFloat(), 0.0001f);
 
     SimpleEquationsMill.reset();
     SimpleEquationsMill.init();

@@ -6,8 +6,8 @@ import de.monticore.expressions.combineexpressionswithliterals._ast.ASTFoo;
 import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.CombineExpressionsWithLiteralsScopesGenitorDelegator;
 import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsInterpreter;
-import de.monticore.interpreter.Value;
-import de.monticore.interpreter.values.NotAValue;
+import de.monticore.interpreter.MIValue;
+import de.monticore.interpreter.values.ErrorMIValue;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.types.check.SymTypeExpressionFactory;
@@ -200,9 +200,9 @@ public abstract class AbstractInterpreterTest {
     interpreter.interpret(ast);
   }
 
-  protected void testValidExpression(String expr, Value expected) {
+  protected void testValidExpression(String expr, MIValue expected) {
     Log.clearFindings();
-    Value interpretationResult = null;
+    MIValue interpretationResult = null;
     try {
       interpretationResult = parseExpressionAndInterpret(expr);
     } catch (IOException e) {
@@ -228,9 +228,6 @@ public abstract class AbstractInterpreterTest {
     } else if (expected.isChar()) {
       assertTrue(interpretationResult.isChar());
       assertEquals(interpretationResult.asChar(), expected.asChar());
-    } else if (expected.isString()) {
-      assertTrue(interpretationResult.isString());
-      assertEquals(interpretationResult.asString(), expected.asString());
     } else if (expected.isObject()) {
       assertTrue(interpretationResult.isObject());
       assertEquals(interpretationResult.asObject(), expected.asObject());
@@ -240,7 +237,7 @@ public abstract class AbstractInterpreterTest {
 
   protected void testInvalidExpression(String expr) {
     Log.clearFindings();
-    Value interpretationResult = null;
+    MIValue interpretationResult = null;
     try {
       interpretationResult = parseExpressionAndInterpret(expr);
     } catch (IOException e) {
@@ -248,10 +245,10 @@ public abstract class AbstractInterpreterTest {
     }
     assertNotNull(interpretationResult);
     assertEquals(Log.getFindings().size(), 1);
-    assertInstanceOf(NotAValue.class, interpretationResult);
+    assertInstanceOf(ErrorMIValue.class, interpretationResult);
   }
 
-  protected Value parseExpressionAndInterpret(String expr) throws IOException {
+  protected MIValue parseExpressionAndInterpret(String expr) throws IOException {
     final Optional<ASTFoo> optAST = parser.parse_String("bar " + expr);
     assertTrue(optAST.isPresent());
     final ASTFoo ast = optAST.get();
