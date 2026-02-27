@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.literals.mcjavaliterals._visitor;
 
 import de.monticore.interpreter.ModelInterpreter;
