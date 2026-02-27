@@ -6,6 +6,7 @@ import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.methods.ListMethodDecorator;
+import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
@@ -15,6 +16,7 @@ import de.se_rwth.commons.logging.Log;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 
@@ -52,25 +54,84 @@ public class ListMutatorDecorator extends ListMethodDecorator {
     return methods;
   }
 
-  protected ASTCDMethod createSetListMethod(ASTCDAttribute ast) {
-    if(getDecorationHelper().isAstNode(ast)){
+  protected ASTCDMethod createSetListMethod(ASTCDAttribute astcdAttribute) {
+    if(getDecorationHelper().isAstNode(astcdAttribute)){
 
-      CDTypeSymbol cdTypeSymbol =  service.resolveCDType(ast.getMCType().printType());
+      //we need to check here if the astcdAttribute is a generated type or not
+      //if it is a generated type, we need to use the generic version of the setList method, otherwise we can use the non-generic version
+      //important here is also that we need to look at all types from imported grammars
+      //the problem is that printType() cannot be resolved.
+
+      //System.out.println("ASTCDAttribute: " + astcdAttribute.getMCType().printType());
+      //service.getAllCDTypes().forEach(System.out::println);
+      //
+      //ASTCDAttribute: java.util.List<de.monticore.aggregation.blah._ast.ASTBlub>
+      //
+      //CDTypeSymbol{fullName='de.monticore.aggregation.Blah.ASTBlahModel', sourcePosition=<0,0>}
+      //CDTypeSymbol{fullName='de.monticore.aggregation.Blah.ASTBlub', sourcePosition=<0,0>}
+      //CDTypeSymbol{fullName='de.monticore.aggregation.Blah.ASTDummy', sourcePosition=<0,0>}
+      //CDTypeSymbol{fullName='de.monticore.aggregation.Blah.BlahLiterals', sourcePosition=<0,0>}
+      //CDTypeSymbol{fullName='de.monticore.aggregation.Blah.ASTBlahNode', sourcePosition=<0,0>}
+
+      //the attribute has the _ast package and only lowercase packages.
+      // while the types that can be resolved after are not lowercase restricted.
+
+      //CDTypeSymbol cdTypeSymbol =  service.resolveCDType(astcdAttribute.getMCType().printType());
+
+      //ast.getMCType().prettyPrint for example automata._ast.State
+
+      //service.resolveCDType() or service.resolveCD() only find Automata.State
+
+
+
+//      List<CDTypeSymbol> type = service.getAllCDTypes();
+//      for(CDTypeSymbol t: type){
+//        System.out.println(t.getFullName());
+//      }
+//      astService.resolveCDType(type.get(0).getFullName());
+//      service.isInheritedAttribute(ast);
+//
+//      //error not found
+//      //service.resolveCDType(getAttributeType(ast));
+//
+//      String s = getAttributeType(ast);
+//      s = s.replace("_ast.", "");
+//      String finalS = s;
+//      // does not work everytime and is obviously bad design
+//      List<CDTypeSymbol> type2 = type.stream().filter(typ -> typ.getFullName().equalsIgnoreCase(finalS)).collect(Collectors.toList());
+//      System.out.println(s);
+//
+//      if(type2.size()!=1){
+//        for(CDTypeSymbol t: type2){
+//          System.out.println(t.getFullName());
+//        }
+//        throw new IllegalStateException();
+//      }
+
+//      boolean extendsAClass = false;
+//      List<ASTMCObjectType> list34343 = type2.get(0).getAstNode().getSuperclassList();
+//      for(ASTMCObjectType o: list34343){
+//        System.out.println(o.printType());
+//        extendsAClass = true;
+//        List<ASTCDClass> list = CDSymbolTables.getTransitiveSuperClasses((ASTCDClass) type2.get(0).getAstNode());
+//        System.out.println(list.size());
+//      }
+
       //TODO magic here
 
-      if(!getDecorationHelper().isListType(ast.getMCType().printType()) && !(ast.getMCType().getClass() == ASTMCListType.class)
-      && ((ASTMCBasicGenericType) ast.getMCType()).getMCTypeArgumentList().isEmpty() && ((ASTMCBasicGenericType) ast.getMCType()).getMCTypeArgumentList().get(0).getMCTypeOpt().isEmpty()){
-        Log.error(ERROR_CODE + " The attribute " + ast.getName() + " is marked as AST node list but does not provide a generic type argument.");
+      if(!getDecorationHelper().isListType(astcdAttribute.getMCType().printType()) && !(astcdAttribute.getMCType().getClass() == ASTMCListType.class)
+      && ((ASTMCBasicGenericType) astcdAttribute.getMCType()).getMCTypeArgumentList().isEmpty() && ((ASTMCBasicGenericType) astcdAttribute.getMCType()).getMCTypeArgumentList().get(0).getMCTypeOpt().isEmpty()){
+        Log.error(ERROR_CODE + " The attribute " + astcdAttribute.getName() + " is marked as AST node list but does not provide a generic type argument.");
       }
-      ASTMCType mcType = ((ASTMCBasicGenericType)ast.getMCType()).getMCTypeArgumentList().get(0).getMCTypeOpt().get();
-      String signature = String.format(SET_LIST_GENERIC, capitalizedAttributeNameWithOutS, attributeType, ast.getName());
+      ASTMCType mcType = ((ASTMCBasicGenericType)astcdAttribute.getMCType()).getMCTypeArgumentList().get(0).getMCTypeOpt().get();
+      String signature = String.format(SET_LIST_GENERIC, capitalizedAttributeNameWithOutS, attributeType, astcdAttribute.getName());
       ASTCDMethod setListMethod = getCDMethodFacade().createMethodByDefinition(signature);
-      this.replaceTemplate(EMPTY_BODY, setListMethod, new TemplateHookPoint("mc.methods.ListSetGeneric", ast, mcType.printType(), ERROR_CODE));
+      this.replaceTemplate(EMPTY_BODY, setListMethod, new TemplateHookPoint("mc.methods.ListSetGeneric", astcdAttribute, mcType.printType(), ERROR_CODE));
       return setListMethod;
     }else{
-      String signature = String.format(SET_LIST, capitalizedAttributeNameWithOutS, attributeType, ast.getName());
+      String signature = String.format(SET_LIST, capitalizedAttributeNameWithOutS, attributeType, astcdAttribute.getName());
       ASTCDMethod setListMethod = getCDMethodFacade().createMethodByDefinition(signature);
-      this.replaceTemplate(EMPTY_BODY, setListMethod, new TemplateHookPoint("methods.Set", ast));
+      this.replaceTemplate(EMPTY_BODY, setListMethod, new TemplateHookPoint("methods.Set", astcdAttribute));
       return setListMethod;
     }
   }

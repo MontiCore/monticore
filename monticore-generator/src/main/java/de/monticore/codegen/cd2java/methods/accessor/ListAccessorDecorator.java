@@ -69,7 +69,7 @@ public class ListAccessorDecorator extends ListMethodDecorator {
   protected ASTCDMethod createGetListMethod(ASTCDAttribute ast) {
     if (getDecorationHelper().isAstNode(ast)) {
 
-      CDTypeSymbol cdTypeSymbol =  service.resolveCDType(ast.getMCType().printType());
+      //CDTypeSymbol cdTypeSymbol =  service.resolveCDType(ast.getMCType().printType());
       //TODO magic here
 
       if(!getDecorationHelper().isListType(ast.getMCType().printType()) && !(ast.getMCType().getClass() == ASTMCListType.class)
