@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.mcbasictypes.cocos;
 
 import de.monticore.types3.util.DefsTypesForTests;

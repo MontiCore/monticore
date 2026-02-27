@@ -94,7 +94,7 @@ public class StatisticData {
     // Report as CI when the CI" project property or "CI" environment variable are set
     result.putMember("IsCi", new JsonBoolean(gradle.getRootProject().getProperties().containsKey("ci")
             || "true".equalsIgnoreCase(System.getenv("CI"))));
-    result.putMember("MaxConcurrentMC", new JsonNumber("" + MCToolAction.getMaxConcurrentMC()));
+    // we no longer report MaxConcurrentMC
 
     result.putMember("Tags", new UserJsonString(getGradleProperty("de.monticore.gradle.tags", "")));
 

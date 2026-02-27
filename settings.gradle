@@ -59,6 +59,7 @@ if(("true").equals(getProperty('genEMF'))) {
 
 include('monticore-libraries:stream-symbols')
 include('monticore-libraries:stream-symbols-it')
+include('monticore-libraries:javagen-runtime')
 
 include(':monticore-test:monticore-grammar-it')
 

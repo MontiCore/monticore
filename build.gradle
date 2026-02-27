@@ -9,6 +9,7 @@ plugins {
   id "org.sonarqube" version "3.0"
   id "jacoco"
   id 'org.barfuin.gradle.jacocolog' version '3.1.0'
+  id 'de.monticore.generator' version "$version" apply false // see https://monticore.github.io/monticore/docs/Gradle/#root-warning
 }
 
 sonarqube {
@@ -62,6 +63,7 @@ subprojects {
 
   tasks.withType(Test) {
     useJUnitPlatform()
+    maxHeapSize = "1g"
     testLogging {
       // controls whether test output is shown
       showStandardStreams = ("false").equals(getProperty('showTestOutput'))? false : true
@@ -227,7 +229,8 @@ tasks.register("sonarMC", GradleBuild) {
 def projectsToConfigure = [
   project(':monticore-grammar'),
   project(':monticore-runtime'),
-  project(':monticore-libraries:stream-symbols')
+  project(':monticore-libraries:stream-symbols'),
+  project(':monticore-libraries:javagen-runtime'),
 ]
 if(("true").equals(getProperty('genEMF'))) {
     projectsToConfigure << project(':monticore-grammar-emf')
