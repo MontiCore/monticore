@@ -11,7 +11,7 @@ permissions:
   packages: write
 
 env:
-  GRADLE_VERSION: 7.6 # Gradle version used
+  GRADLE_VERSION: 8.5 # Gradle version used
   GRADLE_CLI_OPTS: "-Pci" # CLI option passed to Gradle
 
 jobs:
@@ -20,9 +20,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout project sources
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: 21
       - name: Gradle DeployMC
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: ${{env.GRADLE_VERSION}}
           # pass the tag as the version property (${{ github.ref_name }})

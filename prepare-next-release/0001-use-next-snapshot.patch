@@ -25,7 +25,7 @@ index 3bc21f46d..26a2df7a3 100644
  junit_platform_version = 1.14.1
 @@ -29,4 +29,4 @@ freemarker_version = 2.3.34
  guava_version =31.1-jre
- shadow_plugin_version=7.1.2
+ shadow_plugin_version=8.3.9
  
 -cd4a_version =7.8.0
 +cd4a_version =7.9.0-SNAPSHOT
