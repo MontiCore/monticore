@@ -1,19 +1,20 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-grammar SimpleEquations extends Numerals {
+grammar SimpleEquations extends Numerals, de.monticore.symbols.BasicSymbols {
 
   Program = (Statement ";")* (Expression ";")? ;
 
   interface Statement;
   interface Expression;
+  interface NewVariable extends Variable;
 
   PlusEquation implements Expression = left:Expression "+" right:Expression;
   MinusEquation implements Expression = left:Expression "-" right:Expression;
   MultiplyEquation implements Expression = left:Expression "*" right:Expression;
   DivideEquation implements Expression = left:Expression "/" right:Expression;
 
-  symbol VariableDefinition implements Statement = "var" Name "=" value:Expression;
-  VariableUsage implements Statement = Name "=" value:Expression;
+  symbol VariableDefinition implements Statement, NewVariable = "var" Name "=" value:Expression;
+  VariableUsage implements Statement, NewVariable = Name "=" value:Expression;
   PrintStatement implements Statement = "print" "(" Expression ")";
 
   NameExpression implements Expression = Name;

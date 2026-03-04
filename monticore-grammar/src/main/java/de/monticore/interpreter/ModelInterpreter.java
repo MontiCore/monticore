@@ -4,7 +4,6 @@ package de.monticore.interpreter;
 import de.monticore.interpreter.values.FunctionMIValue;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
-import de.monticore.symboltable.ISymbol;
 
 import java.util.Optional;
 import java.util.Stack;
@@ -48,23 +47,23 @@ public interface ModelInterpreter extends IModelInterpreter {
     getRealThis().getScopeCallstack().pop();
   }
 
-  default void declareFunction(ISymbol symbol, MIValue value) {
+  default void declareFunction(FunctionSymbol symbol, FunctionMIValue value) {
     getCurrentScope().declareFunction(symbol, value);
   }
 
-  default MIValue loadFunction(ISymbol symbol) {
+  default MIValue loadFunction(FunctionSymbol symbol) {
     return getCurrentScope().loadFunction(symbol);
   }
 
-  default void declareVariable(ISymbol symbol, Optional<MIValue> value) {
+  default void declareVariable(VariableSymbol symbol, Optional<MIValue> value) {
     getCurrentScope().declareVariable(symbol, value);
   }
 
-  default MIValue loadVariable(ISymbol symbol) {
+  default MIValue loadVariable(VariableSymbol symbol) {
     return getCurrentScope().loadVariable(symbol);
   }
 
-  default void storeVariable(ISymbol symbol, MIValue value) {
+  default void storeVariable(VariableSymbol symbol, MIValue value) {
     getCurrentScope().storeVariable(symbol, value);
   }
 
