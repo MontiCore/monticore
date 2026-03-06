@@ -181,7 +181,7 @@ public abstract class UntimedStream<T> implements Stream<T>, TimeableStream<T> {
     return new IterStream<>(fn, elem);
   }
 
-  static <T> UntimedStream<T> of(FList<T> flist) {
+  public static <T> UntimedStream<T> of(FList<T> flist) {
     return FiniteUntimedStream.of(flist);
   }
 
@@ -189,14 +189,14 @@ public abstract class UntimedStream<T> implements Stream<T>, TimeableStream<T> {
    * New Stream
    */
   @SafeVarargs
-  static <T> UntimedStream<T> of(T... ele) {
+  public static <T> UntimedStream<T> of(T... ele) {
     return FiniteUntimedStream.of(FList.of(ele));
   }
 
   /**
    * New stream by repeating elem n times
    */
-  static <S> UntimedStream<S> repeat(S elem, long n) {
+  public static <S> UntimedStream<S> repeat(S elem, long n) {
     return FiniteUntimedStream.of(elem).times(n);
   }
 

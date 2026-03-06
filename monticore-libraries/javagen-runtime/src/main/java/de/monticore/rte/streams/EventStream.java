@@ -17,16 +17,16 @@ public class EventStream<T> implements Stream<UntimedStream<T>>, TimeableStream<
 
   protected final SyncStream<UntimedStream<T>> backing;
 
-  EventStream(SyncStream<UntimedStream<T>> backing) {
+  protected EventStream(SyncStream<UntimedStream<T>> backing) {
     this.backing = backing;
   }
 
-  static <T> EventStream<T> of(FList<UntimedStream<T>> flist) {
+  public static <T> EventStream<T> of(FList<UntimedStream<T>> flist) {
     return new EventStream<>(SyncStream.of(flist));
   }
 
   @SafeVarargs
-  static <T> EventStream<T> of(UntimedStream<T>... ele) {
+  public static <T> EventStream<T> of(UntimedStream<T>... ele) {
     return new EventStream<>(SyncStream.of(FList.of(ele)));
   }
 

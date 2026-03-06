@@ -10,7 +10,7 @@ import java.util.Optional;
 public class FiniteUntimedStream<T> extends UntimedStream<T> {
   protected final FList<T> list;
 
-  static protected final FiniteUntimedStream<?> EMPTY =
+  public static final FiniteUntimedStream<?> EMPTY =
       FiniteUntimedStream.of(FList.of());
 
   public static <T> FiniteUntimedStream<T> empty() {

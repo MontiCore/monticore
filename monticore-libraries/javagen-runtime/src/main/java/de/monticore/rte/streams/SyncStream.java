@@ -19,7 +19,7 @@ public class SyncStream<T> implements Stream<T>, TimeableStream<T> {
 
   protected final UntimedStream<T> backing;
 
-  SyncStream(UntimedStream<T> backing) {
+  protected SyncStream(UntimedStream<T> backing) {
     this.backing = backing;
   }
 
@@ -199,7 +199,7 @@ public class SyncStream<T> implements Stream<T>, TimeableStream<T> {
     return this.backing.equals(((SyncStream<?>) obj).backing);
   }
 
-  UntimedStream<T> getBacking() {
+  protected UntimedStream<T> getBacking() {
     return this.backing;
   }
 }
