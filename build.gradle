@@ -177,6 +177,7 @@ tasks.register("deployMC") {
   dependsOn ":monticore-grammar:publish"
   dependsOn ":monticore-runtime:publish"
   dependsOn ":monticore-libraries:stream-symbols:publish"
+  dependsOn ":monticore-libraries:javagen-runtime:publish"
   if(("true").equals(getProperty('genEMF'))) {
     dependsOn ":monticore-runtime-emf:publish"
     dependsOn ":monticore-grammar-emf:publish"

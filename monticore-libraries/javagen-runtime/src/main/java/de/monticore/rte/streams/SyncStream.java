@@ -16,6 +16,7 @@ import java.util.Optional;
  * If you can't guarantee that, use ToptStream.
  */
 public class SyncStream<T> implements Stream<T>, TimeableStream<T> {
+
   protected final UntimedStream<T> backing;
 
   SyncStream(UntimedStream<T> backing) {
@@ -27,7 +28,7 @@ public class SyncStream<T> implements Stream<T>, TimeableStream<T> {
     return SyncStream.of(FList.of(elem));
   }
 
-  static <T> SyncStream<T> of(FList<T> flist) {
+  public static <T> SyncStream<T> of(FList<T> flist) {
     return new SyncStream<>(UntimedStream.of(flist));
   }
 
@@ -57,8 +58,8 @@ public class SyncStream<T> implements Stream<T>, TimeableStream<T> {
   //
 
   @Override
-  public T head() throws IndexOutOfBoundsException {
-    return this.backing.head();
+  public T first() throws IndexOutOfBoundsException {
+    return this.backing.first();
   }
 
   @Override

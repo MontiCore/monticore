@@ -9,6 +9,7 @@ package de.monticore.rte.streams;
  * convert into different items-types than they carry.
  */
 public interface TimeableStream<T> {
+
   /**
    * Loose all time information.
    */

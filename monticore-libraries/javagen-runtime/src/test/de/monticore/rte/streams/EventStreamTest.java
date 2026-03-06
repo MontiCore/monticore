@@ -16,9 +16,9 @@ public class EventStreamTest {
   void testOfSingleton() {
     UntimedStream<Integer> stream1 = UntimedStream.of(42);
     EventStream<Integer> stream = EventStream.of(stream1);
-    assertEquals(stream1, stream.head());
+    assertEquals(stream1, stream.first());
     assertEquals(1, stream.len());
-    assertThrows(IndexOutOfBoundsException.class, () -> stream.dropFirst().head());
+    assertThrows(IndexOutOfBoundsException.class, () -> stream.dropFirst().first());
     assertTrue(stream.dropFirst().isEmpty());
   }
 
@@ -28,8 +28,8 @@ public class EventStreamTest {
     UntimedStream<Integer> stream2 = UntimedStream.of(FList.of(4, 5, 6));
     EventStream<Integer> stream = EventStream.of(FList.of(stream1, stream2));
     assertEquals(2, stream.len());
-    assertEquals(stream1, stream.head());
-    assertEquals(stream2, stream.dropFirst().head());
+    assertEquals(stream1, stream.first());
+    assertEquals(stream2, stream.dropFirst().first());
     assertEquals(stream2, stream.nth(2));
     assertTrue(stream.dropMultiple(2).isEmpty());
   }
@@ -64,7 +64,7 @@ public class EventStreamTest {
     EventStream<Integer> taken = stream.takeWhile(s -> !s.values().contains(5));
 
     assertEquals(1, taken.len());
-    assertEquals(stream1, taken.head());
+    assertEquals(stream1, taken.first());
   }
 
   @Test
@@ -78,7 +78,7 @@ public class EventStreamTest {
     EventStream<Integer> taken = stream.take(2);
 
     assertEquals(2, taken.len());
-    assertEquals(stream1, taken.head());
+    assertEquals(stream1, taken.first());
     assertEquals(stream2, taken.nth(2));
   }
 
@@ -92,7 +92,7 @@ public class EventStreamTest {
     EventStream<Integer> dropped = stream.dropWhile(s -> !s.values().contains(5));
 
     assertEquals(1, dropped.len());
-    assertEquals(stream2, dropped.head());
+    assertEquals(stream2, dropped.first());
   }
 
   @Test
@@ -115,7 +115,7 @@ public class EventStreamTest {
     EventStream<Integer> stream = EventStream.of(FList.of(stream1, stream2));
 
     EventStream<Integer> scanned = stream.eScanl(
-        (a, b) -> UntimedStream.of(a.head() + b.head()),
+        (a, b) -> UntimedStream.of(a.first() + b.first()),
         UntimedStream.of(0)
     );
 

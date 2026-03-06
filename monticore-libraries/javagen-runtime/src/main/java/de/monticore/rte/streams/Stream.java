@@ -94,10 +94,10 @@ public interface Stream<T> {
    *
    * @throws IndexOutOfBoundsException if no further elements accessible. Guard with {@link Stream#isEmpty()}!
    */
-  T head() throws IndexOutOfBoundsException;
+  T first() throws IndexOutOfBoundsException;
 
   /**
-   * The stream without its first element ("head"). Also see {@link Stream#dropMultiple(long)}.
+   * The stream without its first element ("first"). Also see {@link Stream#dropMultiple(long)}.
    */
   Stream<T> dropFirst();
 
