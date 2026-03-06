@@ -49,7 +49,7 @@ public class FiniteUntimedStream<T> extends UntimedStream<T> {
   }
 
   @Override
-  public T head() throws IndexOutOfBoundsException {
+  public T first() throws IndexOutOfBoundsException {
     if (list.isEmpty())
       throw new IndexOutOfBoundsException();
     return this.list.get(0);

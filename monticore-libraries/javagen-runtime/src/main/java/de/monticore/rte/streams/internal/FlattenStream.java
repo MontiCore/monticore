@@ -20,7 +20,7 @@ public class FlattenStream<T> extends UntimedStream<T> {
       return Tuple2.of(Optional.empty(), UntimedStream.empty());
     }
 
-    UntimedStream<T> head = this.backing.head();
+    UntimedStream<T> head = this.backing.first();
     Stream<UntimedStream<T>> tail = this.backing.dropFirst();
 
     UntimedStream<T> flattenedTail = new FlattenStream<>(tail);
