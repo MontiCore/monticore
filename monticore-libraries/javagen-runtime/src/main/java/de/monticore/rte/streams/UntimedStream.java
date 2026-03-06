@@ -34,11 +34,11 @@ public abstract class UntimedStream<T> implements Stream<T>, TimeableStream<T> {
   }
 
   @Override
-  public T head() throws IndexOutOfBoundsException {
-    Optional<T> head = _internal_next().get0();
-    if (head.isEmpty())
+  public T first() throws IndexOutOfBoundsException {
+    Optional<T> first = _internal_next().get0();
+    if (first.isEmpty())
       throw new IndexOutOfBoundsException();
-    return head.get();
+    return first.get();
   }
 
   @Override
@@ -76,7 +76,7 @@ public abstract class UntimedStream<T> implements Stream<T>, TimeableStream<T> {
 
   @Override
   public T nth(long n) throws IndexOutOfBoundsException {
-    return dropMultiple(n - 1).head();
+    return dropMultiple(n - 1).first();
   }
 
   @Override
