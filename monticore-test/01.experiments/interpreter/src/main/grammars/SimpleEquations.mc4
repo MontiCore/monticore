@@ -2,11 +2,24 @@
 
 grammar SimpleEquations extends Numerals, de.monticore.symbols.BasicSymbols {
 
-  Program = (Statement ";")* (Expression ";")? ;
+  Program = (Statement ";" || FunctionCall ";")* (Expression ";")? ;
 
   interface Statement;
   interface Expression;
   interface NewVariable extends Variable;
+  interface NewFunction extends Functions;
+
+  FunctionCall implements Expression = Name "(" ArgList ")";
+
+    ArgList = (args:Expr ("," args:Expr)*)?;
+
+  FunctionDefinition implements NewFunction = "func" name:Name FormalParameters "{" Program "}";
+
+  FormalParameterListing
+      =   (VariableAsParameter || ",")+;
+
+  FormalParameters
+      =   "(" FormalParameterListing? ")";
 
   PlusEquation implements Expression = left:Expression "+" right:Expression;
   MinusEquation implements Expression = left:Expression "-" right:Expression;
@@ -15,6 +28,7 @@ grammar SimpleEquations extends Numerals, de.monticore.symbols.BasicSymbols {
 
   symbol VariableDefinition implements Statement, NewVariable = "var" Name "=" value:Expression;
   VariableUsage implements Statement, NewVariable = Name "=" value:Expression;
+  VariableAsParameter implements NewVariable = Name;
   PrintStatement implements Statement = "print" "(" Expression ")";
 
   NameExpression implements Expression = Name;
