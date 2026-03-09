@@ -27,7 +27,7 @@ public class SimpleEquationsInterpreter extends SimpleEquationsInterpreterTOP {
     super();
   }
 
-  public MIValue interpret(ASTProgram node) {
+  public MIValue interpret(ASTProgramBlock node) {
     MIValue result = new ErrorMIValue("Error ASTProgram node");
 
     for (ASTFunctionDefinition funcDef : node.getFunctionDefinitionList()) {
@@ -170,7 +170,7 @@ public class SimpleEquationsInterpreter extends SimpleEquationsInterpreterTOP {
     ModelFunctionMIValue functionValue = new ModelFunctionMIValue(
         getRealThis().getCurrentScope(),
         parameterSymbols,
-        node.getFunctionBlock()
+        node.getProgramBlock()
     );
 
     getRealThis().declareFunction(funcSym, functionValue);
@@ -212,27 +212,6 @@ public class SimpleEquationsInterpreter extends SimpleEquationsInterpreterTOP {
       return returnValue;
     }
     return new ErrorMIValue("IfStatement no branch executed");
-  }
-
-  public MIValue interpret(ASTFunctionBlock node) {
-    MIValue result = new ErrorMIValue("Error ASTFunctionBlock node");
-
-    for (ASTStatement s : node.getStatementList()) {
-      result = s.evaluate(getRealThis());
-
-      if (result.isError()) {
-        throw new RuntimeException("Execution failed inside block: " + result.toString());
-      }
-      if (result.isReturn()) {
-        return result;
-      }
-    }
-
-    if (node.isPresentExpression()) {
-      return node.getExpression().evaluate(getRealThis());
-    }
-
-    return result;
   }
 
   public MIValue interpret(ASTVariableAsParameter node) {

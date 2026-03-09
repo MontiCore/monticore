@@ -4,7 +4,7 @@ package simpleequations._visitor;
 import de.monticore.interpreter.MIValue;
 import org.junit.jupiter.api.Test;
 import simpleequations.SimpleEquationsMill;
-import simpleequations._ast.ASTProgram;
+import simpleequations._ast.ASTProgramBlock;
 import simpleequations._parser.SimpleEquationsParser;
 import simpleequations._symboltable.SimpleEquationsScopesGenitorDelegator;
 
@@ -22,7 +22,7 @@ public class SimpleEquationsInterpreterTest {
     SimpleEquationsInterpreter interpreter = new SimpleEquationsInterpreter();
     SimpleEquationsScopesGenitorDelegator delegator = SimpleEquationsMill.scopesGenitorDelegator();
 
-    ASTProgram function = parser.parse_StringProgram("" +
+    ASTProgramBlock program = parser.parse_StringProgramBlock("" +
         "int a = 3; " +
         "int b = 3; " +
         "int func func1(int a, int b){ " +
@@ -39,13 +39,32 @@ public class SimpleEquationsInterpreterTest {
         "}"+
         "int result = func1(a, b);" +
         "print(result);").get();
-    delegator.createFromAST(function);
-    MIValue functionResult = interpreter.interpret(function);
+    delegator.createFromAST(program);
+    MIValue functionResult = interpreter.interpret(program);
     assertTrue(functionResult.isInt());
-    assertEquals(functionResult.asInt(), 81);
+    assertEquals(81, functionResult.asInt());
+
+    //test recursive method definition
+    //program = parser.parse_StringProgramBlock("" +
+    //    "int a = 3;" +
+    //    "int b = 3;" +
+    //    "int func func1(int a, int  b){" +
+    //    " int func func1(int a, int b) {" +
+    //    "  return a + b;" +
+    //    " };" +
+    //    " a = a * a;" +
+    //    " b = b * b;" +
+    //    " return func1(a,b);" +
+    //    "};" +
+    //    "int result = func1(a,b); " +
+    //    "print(result);").get();
+    //delegator.createFromAST(program);
+    //MIValue recursiveResult = interpreter.interpret(program);
+    //assertTrue(recursiveResult.isInt());
+    //assertEquals(18, recursiveResult.asInt() );
 
 
-    ASTProgram program = parser.parse_StringProgram("var a=3.5; var b=4; print(a); var c=a+b; c;").get();
+    program = parser.parse_StringProgramBlock("var a=3.5; var b=4; print(a); var c=a+b; c;").get();
 
     delegator.createFromAST(program);
     MIValue result = interpreter.interpret(program);
@@ -56,7 +75,7 @@ public class SimpleEquationsInterpreterTest {
     SimpleEquationsMill.reset();
     SimpleEquationsMill.init();
     interpreter = new SimpleEquationsInterpreter();
-    program = parser.parse_StringProgram(
+    program = parser.parse_StringProgramBlock(
         "var a = 40; " +
         "a = 45;" +
             "a;").get();

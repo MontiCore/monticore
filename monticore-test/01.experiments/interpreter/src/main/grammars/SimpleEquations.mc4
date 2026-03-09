@@ -2,18 +2,16 @@
 
 grammar SimpleEquations extends Numerals, de.monticore.symbols.BasicSymbols {
 
-  Program = (Statement ";" | FunctionCall ";" | FunctionDefinition)* (Expression ";")? ;
-
-  scope FunctionBlock = (Statement ";")* (Expression ";")?;
+  scope ProgramBlock = (Statement ";" | FunctionCall ";" | FunctionDefinition)* (Expression ";")? ;
 
   interface Statement;
   interface Expression;
 
-  FunctionCall implements Expression, Statement = Name "(" ArgList ")";
+  scope FunctionCall implements Expression, Statement = Name "(" ArgList ")";
 
   ArgList = (args:Expression ("," args:Expression)*)?;
 
-  symbol scope FunctionDefinition implements Function, Statement = returnType:Name "func" name:Name FormalParameters "{" FunctionBlock "}";
+  symbol scope FunctionDefinition implements Function, Statement = returnType:Name "func" name:Name FormalParameters "{" ProgramBlock "}";
 
   FormalParameterListing = (VariableAsParameter | ",")+;
   FormalParameters = "(" FormalParameterListing? ")";
@@ -28,7 +26,7 @@ grammar SimpleEquations extends Numerals, de.monticore.symbols.BasicSymbols {
   VariableUsage implements Statement = Name "=" value:Expression;
   VariableAsParameter implements Variable = type:Name Name;
   PrintStatement implements Statement = "print" "(" Expression ")";
-  IfStatement implements Statement = "if" "(" condition:Expression ")" "{" thenBlock:FunctionBlock "}" ("else" "{" elseBlock:FunctionBlock "}")?;
+  IfStatement implements Statement = "if" "(" condition:Expression ")" "{" thenBlock:ProgramBlock "}" ("else" "{" elseBlock:ProgramBlock "}")?;
   ReturnStatement implements Statement = "return" Expression;
 
   NameExpression implements Expression = Name;
