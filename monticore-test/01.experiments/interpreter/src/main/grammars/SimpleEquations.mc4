@@ -3,7 +3,8 @@
 grammar SimpleEquations extends Numerals, de.monticore.symbols.BasicSymbols {
 
   Program = (Statement ";" | FunctionCall ";" | FunctionDefinition)* (Expression ";")? ;
-  FunctionBlock = (Statement ";")* (Expression ";")?;
+
+  scope FunctionBlock = (Statement ";")* (Expression ";")?;
 
   interface Statement;
   interface Expression;
@@ -12,13 +13,10 @@ grammar SimpleEquations extends Numerals, de.monticore.symbols.BasicSymbols {
 
   ArgList = (args:Expression ("," args:Expression)*)?;
 
-  symbol scope FunctionDefinition implements Function, Statement = returnType:Name "func" name:Name FormalParameters "{" Program "}";
+  symbol scope FunctionDefinition implements Function, Statement = returnType:Name "func" name:Name FormalParameters "{" FunctionBlock "}";
 
-  FormalParameterListing
-      =   (VariableAsParameter | ",")+;
-
-  FormalParameters
-      =   "(" FormalParameterListing? ")";
+  FormalParameterListing = (VariableAsParameter | ",")+;
+  FormalParameters = "(" FormalParameterListing? ")";
 
   PlusEquation implements Expression = left:Expression "+" right:Expression;
   MinusEquation implements Expression = left:Expression "-" right:Expression;

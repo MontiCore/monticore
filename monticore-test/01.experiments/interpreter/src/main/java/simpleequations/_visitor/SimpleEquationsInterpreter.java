@@ -9,6 +9,7 @@ import de.monticore.interpreter.values.MIReturnSignal;
 import de.monticore.interpreter.values.ModelFunctionMIValue;
 import de.monticore.interpreter.values.VoidMIValue;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import simpleequations._ast.*;
@@ -136,12 +137,12 @@ public class SimpleEquationsInterpreter extends SimpleEquationsInterpreterTOP {
   }
 
   public MIValue interpret(ASTNameExpression node) {
-    List<VariableSymbol> symbols = node.getEnclosingScope().resolveVariableMany(node.getName());
+    List<VariableSymbol> typeVars = node.getEnclosingScope().resolveVariableMany(node.getName());
 
-    if (!symbols.isEmpty()) {
-      return getRealThis().loadVariable(symbols.get(0));
+    if (!typeVars.isEmpty()) {
+      return getRealThis().loadVariable(typeVars.get(0));
     } else {
-      throw new RuntimeException("CRITICAL: Cannot evaluate '" + node.getName() + "', symbol is missing!");
+      throw new RuntimeException("0x57071: Variable '" + node.getName() + "' not found.");
     }
   }
 
@@ -169,7 +170,7 @@ public class SimpleEquationsInterpreter extends SimpleEquationsInterpreterTOP {
     ModelFunctionMIValue functionValue = new ModelFunctionMIValue(
         getRealThis().getCurrentScope(),
         parameterSymbols,
-        node.getProgram()
+        node.getFunctionBlock()
     );
 
     getRealThis().declareFunction(funcSym, functionValue);
