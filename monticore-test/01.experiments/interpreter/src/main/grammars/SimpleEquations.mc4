@@ -2,21 +2,20 @@
 
 grammar SimpleEquations extends Numerals, de.monticore.symbols.BasicSymbols {
 
-  Program = (Statement ";" || FunctionCall ";")* (Expression ";")? ;
+  Program = (Statement ";" | FunctionCall ";" | FunctionDefinition)* (Expression ";")? ;
+  FunctionBlock = (Statement ";")* (Expression ";")?;
 
   interface Statement;
   interface Expression;
-  interface NewVariable extends Variable;
-  interface NewFunction extends Functions;
 
-  FunctionCall implements Expression = Name "(" ArgList ")";
+  FunctionCall implements Expression, Statement = Name "(" ArgList ")";
 
-    ArgList = (args:Expr ("," args:Expr)*)?;
+  ArgList = (args:Expression ("," args:Expression)*)?;
 
-  FunctionDefinition implements NewFunction = "func" name:Name FormalParameters "{" Program "}";
+  FunctionDefinition implements Function, Statement = "func" name:Name FormalParameters "{" Program "}";
 
   FormalParameterListing
-      =   (VariableAsParameter || ",")+;
+      =   (VariableAsParameter | ",")+;
 
   FormalParameters
       =   "(" FormalParameterListing? ")";
@@ -25,11 +24,14 @@ grammar SimpleEquations extends Numerals, de.monticore.symbols.BasicSymbols {
   MinusEquation implements Expression = left:Expression "-" right:Expression;
   MultiplyEquation implements Expression = left:Expression "*" right:Expression;
   DivideEquation implements Expression = left:Expression "/" right:Expression;
+  GreaterThanExpression implements Expression = left:Expression ">" right:Expression;
 
-  symbol VariableDefinition implements Statement, NewVariable = "var" Name "=" value:Expression;
-  VariableUsage implements Statement, NewVariable = Name "=" value:Expression;
-  VariableAsParameter implements NewVariable = Name;
+  symbol VariableDefinition implements Statement, Variable = "var" Name "=" value:Expression;
+  VariableUsage implements Statement = Name "=" value:Expression;
+  VariableAsParameter implements Variable = Name;
   PrintStatement implements Statement = "print" "(" Expression ")";
+  IfStatement implements Statement = "if" "(" condition:Expression ")" "{" thenBlock:FunctionBlock "}" ("else" "{" elseBlock:FunctionBlock "}")?;
+  ReturnStatement implements Statement = "return" Expression;
 
   NameExpression implements Expression = Name;
   NumberExpression implements Expression = Number;
