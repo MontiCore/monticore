@@ -13,6 +13,7 @@ import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Stack;
 import java.util.stream.Collectors;
 
 public class SimpleEquationsInterpreter extends SimpleEquationsInterpreterTOP {
@@ -95,12 +96,22 @@ public class SimpleEquationsInterpreter extends SimpleEquationsInterpreterTOP {
 
   public MIValue interpret(ASTVariableUsage node) {
     MIValue value = node.getValue().evaluate(getRealThis());
-    var symbol = node.getEnclosingScope().resolveVariableDefinition(node.getName());
+    List<VariableSymbol> symbols = node.getEnclosingScope().resolveVariableMany(node.getName());
 
-    if (symbol.isPresent()) {
-      getRealThis().storeVariable(symbol.get(), value);
-    } else {
-      return new ErrorMIValue("Error ASTVariableUsage variable not found");
+    if (!symbols.isEmpty()) {
+      if (symbols.size() > 1) {
+        Stack<MIScope> scopeStack = getScopeCallstack();
+        System.out.println(scopeStack.size() + " scopes on stack:");
+        System.err.println("DEBUG: MontiCore found " + symbols.size() + " symbols for '" + node.getName() + "'!");
+        for (VariableSymbol sym : symbols) {
+          System.err.println(" -> Created by: " + (sym.isPresentAstNode() ? sym.getAstNode().getClass().getSimpleName() + "  " + sym.getFullName() : "Unknown"));
+        }
+      }
+
+      // needed as there exists b, func1.b func1.b .. for every interation. We need to grab the first
+      getRealThis().storeVariable(symbols.get(0), value);
+    }else {
+      throw new RuntimeException("CRITICAL: Variable '" + node.getName() + "' not found in scope!");
     }
 
     return value;
@@ -118,11 +129,12 @@ public class SimpleEquationsInterpreter extends SimpleEquationsInterpreterTOP {
   }
 
   public MIValue interpret(ASTNameExpression node) {
-    var optSymbol = node.getEnclosingScope().resolveVariableDefinition(node.getName());
-    if (optSymbol.isPresent()) {
-      return getRealThis().loadVariable(optSymbol.get());
-    }else{
-      return new ErrorMIValue("Error ASTNameExpression node");
+    List<VariableSymbol> symbols = node.getEnclosingScope().resolveVariableMany(node.getName());
+
+    if (!symbols.isEmpty()) {
+      return getRealThis().loadVariable(symbols.get(0));
+    } else {
+      throw new RuntimeException("CRITICAL: Cannot evaluate '" + node.getName() + "', symbol is missing!");
     }
   }
 
