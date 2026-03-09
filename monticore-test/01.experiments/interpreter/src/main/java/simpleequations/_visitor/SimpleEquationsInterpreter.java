@@ -27,12 +27,20 @@ public class SimpleEquationsInterpreter extends SimpleEquationsInterpreterTOP {
     super();
   }
 
-  public MIValue interpret(ASTProgramBlock node) {
-    MIValue result = new ErrorMIValue("Error ASTProgram node");
 
+  public MIValue interpret(ASTSimpleEquationCompilationUnit node) {
+    MIValue result = new ErrorMIValue("Error ASTSimpleEquationCompilationUnit node");
     for (ASTFunctionDefinition funcDef : node.getFunctionDefinitionList()) {
       funcDef.evaluate(getRealThis());
     }
+    for(ASTProgramBlock progBlock : node.getProgramBlockList()){
+      progBlock.evaluate(getRealThis());
+    }
+    return result;
+  }
+
+  public MIValue interpret(ASTProgramBlock node) {
+    MIValue result = new ErrorMIValue("Error ASTProgram node");
 
     for (ASTStatement s : node.getStatementList()) {
       result = s.evaluate(getRealThis());

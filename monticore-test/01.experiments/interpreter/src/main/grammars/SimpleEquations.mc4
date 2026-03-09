@@ -2,8 +2,8 @@
 
 grammar SimpleEquations extends Numerals, de.monticore.symbols.BasicSymbols {
 
-  symbol scope SimpleEquationCompilationUnit = Name "{" (ProgramBlock | FunctionDefinition )+ "}";
-  scope ProgramBlock = (Statement ";" | FunctionCall ";")* (Expression ";")? ;
+  symbol scope SimpleEquationCompilationUnit = Name "{" (ProgramBlock | FunctionDefinition)+ "}";
+  scope ProgramBlock = (Statement ";" | FunctionCall ";")+ (Expression ";")? ;
 
   interface Statement;
   interface Expression;
