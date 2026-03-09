@@ -7,6 +7,10 @@ import de.monticore.interpreter.MIValueFactory;
 import de.monticore.interpreter.values.ErrorMIValue;
 import de.monticore.interpreter.values.MIReturnSignal;
 import de.monticore.interpreter.values.ModelFunctionMIValue;
+import de.monticore.interpreter.values.VoidMIValue;
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
+import de.monticore.types.check.SymTypeExpressionFactory;
 import simpleequations._ast.*;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
@@ -24,12 +28,15 @@ public class SimpleEquationsInterpreter extends SimpleEquationsInterpreterTOP {
 
   public MIValue interpret(ASTProgram node) {
     MIValue result = new ErrorMIValue("Error ASTProgram node");
+
+    for (ASTFunctionDefinition funcDef : node.getFunctionDefinitionList()) {
+      funcDef.evaluate(getRealThis());
+    }
+
     for (ASTStatement s : node.getStatementList()) {
-      //we can skip this as we only need to interpret it when it is getting called
-      if (s instanceof ASTFunctionDefinition) continue;
       result = s.evaluate(getRealThis());
       if (result.isReturn()) {
-          return result;
+        return result;
       }
     }
     if (node.isPresentExpression()) {
@@ -110,7 +117,7 @@ public class SimpleEquationsInterpreter extends SimpleEquationsInterpreterTOP {
 
       // needed as there exists b, func1.b func1.b .. for every interation. We need to grab the first
       getRealThis().storeVariable(symbols.get(0), value);
-    }else {
+    } else {
       throw new RuntimeException("CRITICAL: Variable '" + node.getName() + "' not found in scope!");
     }
 
@@ -138,53 +145,72 @@ public class SimpleEquationsInterpreter extends SimpleEquationsInterpreterTOP {
     }
   }
 
+  public MIValue interpret(ASTFunctionDefinition node) {
+    //this must be init to create int types
+    BasicSymbolsMill.initializePrimitives();
+
+    FunctionSymbol funcSym = node.getSymbol();
+
+    //set return type of function like specified (only primitive allowed)
+    funcSym.setType(SymTypeExpressionFactory.createPrimitive(node.getReturnType()));
+
+    List<VariableSymbol> parameterSymbols = node.getFormalParameters()
+        .getFormalParameterListing()
+        .streamVariableAsParameters()
+        .map(ASTVariableAsParameter::getSymbol)
+        .collect(Collectors.toList());
+
+    //set types of the parameters
+    for (VariableSymbol param : parameterSymbols) {
+      String typeName = param.getType() != null ? param.getType().print() : "int";
+      param.setType(SymTypeExpressionFactory.createPrimitive(typeName));
+    }
+
+    ModelFunctionMIValue functionValue = new ModelFunctionMIValue(
+        getRealThis().getCurrentScope(),
+        parameterSymbols,
+        node.getProgram()
+    );
+
+    getRealThis().declareFunction(funcSym, functionValue);
+    return new VoidMIValue();
+  }
+
   public MIValue interpret(ASTFunctionCall node) {
     Optional<FunctionSymbol> functionSymbol = node.getEnclosingScope().resolveFunction(node.getName());
-    if(functionSymbol.isPresent()){
-      ASTFunctionDefinition functionDefinition = (ASTFunctionDefinition) functionSymbol.get().getAstNode();
-      List<MIValue> args = new ArrayList<>();
-      
-      for(ASTExpression expr : node.getArgList().getArgsList()){
-        args.add(expr.evaluate(getRealThis()));
-      }
 
-      MIScope newScope = new MIScope(getRealThis().getCurrentScope());
-      getRealThis().pushScope(newScope);
+    if (functionSymbol.isPresent()) {
+      MIValue funcValue = getRealThis().loadFunction(functionSymbol.get());
 
-      try {
-          List<ASTVariableAsParameter> parameters = functionDefinition.getFormalParameters().getFormalParameterListing().streamVariableAsParameters().collect(Collectors.toList());
-          for(int i = 0; i < parameters.size(); i++){
-            VariableSymbol param = parameters.get(i).getSymbol();
-            getRealThis().declareVariable(param, Optional.of(args.get(i)));
-          }
+      if (funcValue instanceof ModelFunctionMIValue) {
+        ModelFunctionMIValue modelFunc = (ModelFunctionMIValue) funcValue;
 
-          MIValue result = functionDefinition.getProgram().evaluate(getRealThis());
+        List<MIValue> args = new ArrayList<>();
+        for (ASTExpression expr : node.getArgList().getArgsList()) {
+          args.add(expr.evaluate(getRealThis()));
+        }
 
-          while (result.isReturn()){
-            result = result.asReturnValue();
-          }
+        MIValue result = modelFunc.execute(getRealThis(), args);
 
-          if (result.isError()) {
-             System.out.println("Error in function call");
-          }
-          return result;
-      } finally {
-          getRealThis().popScope();
+        while (result.isReturn()){
+          result = result.asReturnValue();
+        }
+        return result;
       }
     }
-    return new ErrorMIValue("Error ASTFunctionCall node");
+    return new ErrorMIValue("Function '" + node.getName() + "' not found.");
   }
-  
+
   public MIValue interpret(ASTIfStatement node) {
-      MIValue condition = node.getCondition().evaluate(getRealThis());
-      if (condition.asBoolean()) {
-          MIValue returnValue =  node.getThenBlock().evaluate(getRealThis());
-          return returnValue;
-      } else if (node.isPresentElseBlock()) {
-          MIValue returnValue = node.getElseBlock().evaluate(getRealThis());
-          return returnValue;
-      }
-      return new ErrorMIValue("IfStatement no branch executed");
+    MIValue condition = node.getCondition().evaluate(getRealThis());
+    if (condition.asBoolean()) {
+      MIValue returnValue =  node.getThenBlock().evaluate(getRealThis());
+      return returnValue;
+    } else if (node.isPresentElseBlock()) {
+      MIValue returnValue = node.getElseBlock().evaluate(getRealThis());
+      return returnValue;
+    }
+    return new ErrorMIValue("IfStatement no branch executed");
   }
 
   public MIValue interpret(ASTFunctionBlock node) {
@@ -193,27 +219,32 @@ public class SimpleEquationsInterpreter extends SimpleEquationsInterpreterTOP {
     for (ASTStatement s : node.getStatementList()) {
       result = s.evaluate(getRealThis());
 
+      if (result.isError()) {
+        throw new RuntimeException("Execution failed inside block: " + result.toString());
+      }
       if (result.isReturn()) {
         return result;
       }
     }
 
-    // Evaluate the optional trailing expression, if present
     if (node.isPresentExpression()) {
       return node.getExpression().evaluate(getRealThis());
     }
 
     return result;
   }
-  
-  public MIValue interpret(ASTReturnStatement node) {
-      MIValue value = node.getExpression().evaluate(getRealThis());
-      if(value.isError()){
-        return new ErrorMIValue("error in return statement");
-      }
-      return new MIReturnSignal(value);
+
+  public MIValue interpret(ASTVariableAsParameter node) {
+    return new ErrorMIValue("Error ASTVariableAsParameter node");
   }
 
+  public MIValue interpret(ASTReturnStatement node) {
+    MIValue value = node.getExpression().evaluate(getRealThis());
+    if(value.isError()){
+      return new ErrorMIValue("error in return statement");
+    }
+    return new MIReturnSignal(value);
+  }
 
   public MIValue interpret(ASTNumberExpression node) {
     return node.getNumber().evaluate(getRealThis());

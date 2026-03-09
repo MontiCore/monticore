@@ -12,7 +12,7 @@ grammar SimpleEquations extends Numerals, de.monticore.symbols.BasicSymbols {
 
   ArgList = (args:Expression ("," args:Expression)*)?;
 
-  FunctionDefinition implements Function, Statement = "func" name:Name FormalParameters "{" Program "}";
+  symbol scope FunctionDefinition implements Function, Statement = returnType:Name "func" name:Name FormalParameters "{" Program "}";
 
   FormalParameterListing
       =   (VariableAsParameter | ",")+;
@@ -26,9 +26,9 @@ grammar SimpleEquations extends Numerals, de.monticore.symbols.BasicSymbols {
   DivideEquation implements Expression = left:Expression "/" right:Expression;
   GreaterThanExpression implements Expression = left:Expression ">" right:Expression;
 
-  symbol VariableDefinition implements Statement, Variable = "var" Name "=" value:Expression;
+  symbol VariableDefinition implements Statement, Variable = type:Name Name "=" value:Expression;
   VariableUsage implements Statement = Name "=" value:Expression;
-  VariableAsParameter implements Variable = Name;
+  VariableAsParameter implements Variable = type:Name Name;
   PrintStatement implements Statement = "print" "(" Expression ")";
   IfStatement implements Statement = "if" "(" condition:Expression ")" "{" thenBlock:FunctionBlock "}" ("else" "{" elseBlock:FunctionBlock "}")?;
   ReturnStatement implements Statement = "return" Expression;
