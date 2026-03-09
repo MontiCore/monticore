@@ -2,19 +2,19 @@
 
 grammar SimpleEquations extends Numerals, de.monticore.symbols.BasicSymbols {
 
-  scope ProgramBlock = (Statement ";" | FunctionCall ";" | FunctionDefinition)* (Expression ";")? ;
+  symbol scope SimpleEquationCompilationUnit = Name "{" (ProgramBlock | FunctionDefinition )+ "}";
+  scope ProgramBlock = (Statement ";" | FunctionCall ";")* (Expression ";")? ;
 
   interface Statement;
   interface Expression;
 
-  scope FunctionCall implements Expression, Statement = Name "(" ArgList ")";
-
+  FunctionCall implements Expression, Statement = Name "(" ArgList ")";
   ArgList = (args:Expression ("," args:Expression)*)?;
 
   symbol scope FunctionDefinition implements Function, Statement = returnType:Name "func" name:Name FormalParameters "{" ProgramBlock "}";
-
-  FormalParameterListing = (VariableAsParameter | ",")+;
   FormalParameters = "(" FormalParameterListing? ")";
+  FormalParameterListing = (VariableAsParameter | ",")+;
+  VariableAsParameter implements Variable = type:Name Name;
 
   PlusEquation implements Expression = left:Expression "+" right:Expression;
   MinusEquation implements Expression = left:Expression "-" right:Expression;
@@ -22,9 +22,8 @@ grammar SimpleEquations extends Numerals, de.monticore.symbols.BasicSymbols {
   DivideEquation implements Expression = left:Expression "/" right:Expression;
   GreaterThanExpression implements Expression = left:Expression ">" right:Expression;
 
-  symbol VariableDefinition implements Statement, Variable = type:Name Name "=" value:Expression;
+  VariableDefinition implements Statement, Variable = type:Name Name "=" value:Expression;
   VariableUsage implements Statement = Name "=" value:Expression;
-  VariableAsParameter implements Variable = type:Name Name;
   PrintStatement implements Statement = "print" "(" Expression ")";
   IfStatement implements Statement = "if" "(" condition:Expression ")" "{" thenBlock:ProgramBlock "}" ("else" "{" elseBlock:ProgramBlock "}")?;
   ReturnStatement implements Statement = "return" Expression;
