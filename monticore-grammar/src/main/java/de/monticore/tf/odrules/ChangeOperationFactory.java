@@ -595,9 +595,13 @@ public class ChangeOperationFactory {
     builder.setList(isListObject);
     builder.setSimpleType(simpleType);
     builder.setGrammarType(simpleType.substring(3));
+    
+    String packagePrefix = rule.getGrammarPackageName();
+    if (!packagePrefix.isEmpty()) {
+      packagePrefix = packagePrefix + ".";
+    }
 
-    builder.setTypepackage(rule.getGrammarPackageName() +
-        "." + rule.getGrammarName().toLowerCase() + "._ast");
+    builder.setTypepackage(packagePrefix + rule.getGrammarName().toLowerCase() + "._ast");
 
     return builder.build();
   }
@@ -612,8 +616,12 @@ public class ChangeOperationFactory {
     builder.setType(typeName);
     builder.setSimpleType(simpleType);
 
-    builder.setFactoryName(rule.getGrammarPackageName()
-            + "." + rule.getGrammarName().toLowerCase()
+    String packagePrefix = rule.getGrammarPackageName();
+    if (!packagePrefix.isEmpty()) {
+      packagePrefix = packagePrefix + ".";
+    }
+    
+    builder.setFactoryName(packagePrefix + rule.getGrammarName().toLowerCase()
             + "." + rule.getGrammarName() + "Mill");
 
 
