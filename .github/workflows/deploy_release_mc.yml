@@ -12,6 +12,7 @@ permissions:
 
 env:
   GRADLE_VERSION: 8.5 # Gradle version used
+  JAVA_VERSION: 21 # Java version used
   GRADLE_CLI_OPTS: "-Pci" # CLI option passed to Gradle
 
 jobs:
@@ -25,7 +26,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: 21
+          java-version: ${{ env.JAVA_VERSION }}
       - name: Gradle DeployMC
         uses: gradle/actions/setup-gradle@v4
         with:
