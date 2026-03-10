@@ -8,9 +8,8 @@ import de.monticore.interpreter.values.ErrorMIValue;
 import de.monticore.interpreter.values.MIReturnSignal;
 import de.monticore.interpreter.values.ModelFunctionMIValue;
 import de.monticore.interpreter.values.VoidMIValue;
+import de.monticore.javalight._ast.ASTMethodDeclaration;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
-import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
-import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import simpleequations._ast.*;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
@@ -29,12 +28,14 @@ public class SimpleEquationsInterpreter extends SimpleEquationsInterpreterTOP {
 
 
   public MIValue interpret(ASTSimpleEquationCompilationUnit node) {
-    MIValue result = new ErrorMIValue("Error ASTSimpleEquationCompilationUnit node");
-    for (ASTFunctionDefinition funcDef : node.getFunctionDefinitionList()) {
-      funcDef.evaluate(getRealThis());
+    MIValue result;
+    for(ASTFunctionDefinition method : node.getFunctionDefinitionList()){
+      method.evaluate(getRealThis());
     }
-    for(ASTProgramBlock progBlock : node.getProgramBlockList()){
-      progBlock.evaluate(getRealThis());
+
+    result = node.getProgramBlock().evaluate(getRealThis());
+    if(result.isError()){
+      return new ErrorMIValue("Error ASTSimpleEquationCompilationUnit wrong return type from ASTProgramBlock");
     }
     return result;
   }
@@ -112,20 +113,10 @@ public class SimpleEquationsInterpreter extends SimpleEquationsInterpreterTOP {
 
   public MIValue interpret(ASTVariableUsage node) {
     MIValue value = node.getValue().evaluate(getRealThis());
-    List<VariableSymbol> symbols = node.getEnclosingScope().resolveVariableMany(node.getName());
+    Optional<VariableSymbol> symbols = node.getEnclosingScope().resolveVariable(node.getName());
 
-    if (!symbols.isEmpty()) {
-      if (symbols.size() > 1) {
-        Stack<MIScope> scopeStack = getScopeCallstack();
-        System.out.println(scopeStack.size() + " scopes on stack:");
-        System.err.println("DEBUG: MontiCore found " + symbols.size() + " symbols for '" + node.getName() + "'!");
-        for (VariableSymbol sym : symbols) {
-          System.err.println(" -> Created by: " + (sym.isPresentAstNode() ? sym.getAstNode().getClass().getSimpleName() + "  " + sym.getFullName() : "Unknown"));
-        }
-      }
-
-      // needed as there exists b, func1.b func1.b .. for every interation. We need to grab the first
-      getRealThis().storeVariable(symbols.get(0), value);
+    if (symbols.isPresent()) {
+      getRealThis().storeVariable(symbols.get(), value);
     } else {
       throw new RuntimeException("CRITICAL: Variable '" + node.getName() + "' not found in scope!");
     }
@@ -136,19 +127,20 @@ public class SimpleEquationsInterpreter extends SimpleEquationsInterpreterTOP {
   public MIValue interpret(ASTPrintStatement node) {
     MIValue output = node.getExpression().evaluate(getRealThis());
 
-    if (output.isInt()) {
-      System.out.println(output.asInt());
-    } else if (output.isFloat()) {
-      System.out.println(output.asFloat());
-    }
+    //if (output.isInt()) {
+    //  System.out.println(output.asInt());
+    //} else if (output.isFloat()) {
+    //  System.out.println(output.asFloat());
+    //}
+
     return output;
   }
 
   public MIValue interpret(ASTNameExpression node) {
-    List<VariableSymbol> typeVars = node.getEnclosingScope().resolveVariableMany(node.getName());
+    Optional<VariableSymbol> typeVars = node.getEnclosingScope().resolveVariable(node.getName());
 
     if (!typeVars.isEmpty()) {
-      return getRealThis().loadVariable(typeVars.get(0));
+      return getRealThis().loadVariable(typeVars.get());
     } else {
       throw new RuntimeException("0x57071: Variable '" + node.getName() + "' not found.");
     }
@@ -178,11 +170,25 @@ public class SimpleEquationsInterpreter extends SimpleEquationsInterpreterTOP {
     ModelFunctionMIValue functionValue = new ModelFunctionMIValue(
         getRealThis().getCurrentScope(),
         parameterSymbols,
-        node.getProgramBlock()
+        node.getFunctionBlock()
     );
 
     getRealThis().declareFunction(funcSym, functionValue);
     return new VoidMIValue();
+  }
+
+  public MIValue interpret(ASTFunctionBlock node){
+    MIValue result = new ErrorMIValue("Error ASTFunctionBlock node");
+    for (ASTStatement s : node.getStatementList()) {
+      result = s.evaluate(getRealThis());
+      if (result.isReturn()) {
+        return result;
+      }
+    }
+    if (node.isPresentExpression()) {
+      return node.getExpression().evaluate(getRealThis());
+    }
+    return result;
   }
 
   public MIValue interpret(ASTFunctionCall node) {

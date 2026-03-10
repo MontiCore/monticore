@@ -4,13 +4,10 @@ package simpleequations._visitor;
 import de.monticore.interpreter.MIValue;
 import org.junit.jupiter.api.Test;
 import simpleequations.SimpleEquationsMill;
-import simpleequations._ast.ASTProgramBlock;
 import simpleequations._ast.ASTSimpleEquationCompilationUnit;
 import simpleequations._parser.SimpleEquationsParser;
 import simpleequations._symboltable.SimpleEquationsScopesGenitorDelegator;
-
 import java.io.IOException;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -27,6 +24,8 @@ public class SimpleEquationsInterpreterTest {
         "Program {" +
         " int a = 3; " +
         " int b = 3; " +
+        " int result = func1(a, b);" +
+        " print(result);" +
         " int func func1(int a, int b){ " +
         "  int c = a; " +
         "  if( b > 0 ){ " +
@@ -39,8 +38,6 @@ public class SimpleEquationsInterpreterTest {
         "    return a;" +
         "  };" +
         " }"+
-        " int result = func1(a, b);" +
-        " print(result);" +
         "}").get();
     delegator.createFromAST(program);
     MIValue functionResult = interpreter.interpret(program);
