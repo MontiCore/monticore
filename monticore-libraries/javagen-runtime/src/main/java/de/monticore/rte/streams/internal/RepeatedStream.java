@@ -12,7 +12,7 @@ public class RepeatedStream<T> extends UntimedStream<T> {
   protected final UntimedStream<T> workingStream;
   protected final long n;
 
-  protected RepeatedStream(UntimedStream<T> fullStream, UntimedStream<T> workingStream, long n) {
+  public RepeatedStream(UntimedStream<T> fullStream, UntimedStream<T> workingStream, long n) {
     this.fullStream = fullStream;
     this.workingStream = workingStream;
     this.n = n;
