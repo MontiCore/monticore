@@ -624,12 +624,12 @@ if (("true").equals(getProperty('genTagging'))) {
   tasks.register('taggingJar', Jar) {
     from sourceSets.tagging.output
     group 'build'
-    dependsOn(tasks.generateTaggingMCGrammars)
+    dependsOn(tasks.generateTaggingMCGrammars, tasks.generateTagDefGrammars, tasks.generateTagSchemaGrammars)
   }
   tasks.register('taggingSourcesJar', Jar) {
     from sourceSets.tagging.java
     group 'build'
-    dependsOn(tasks.generateTaggingMCGrammars)
+    dependsOn(tasks.generateTaggingMCGrammars, tasks.generateTagDefGrammars, tasks.generateTagSchemaGrammars)
   }
   publishing {
     publications {
