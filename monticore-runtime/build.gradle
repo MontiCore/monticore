@@ -29,11 +29,12 @@ dependencies {
   api "commons-cli:commons-cli:$commons_cli_version"
   api "com.google.guava:guava:$guava_version"
 
+  implementation "com.github.spotbugs:spotbugs-annotations:$spotbugs_annotations_version"
+  implementation "org.checkerframework:checker-qual:$checkerframework_version"
+
   implementation "de.se_rwth.commons:se-commons-utilities:$se_commons_version"
   implementation "org.freemarker:freemarker:$freemarker_version"
   implementation "org.apache.commons:commons-text:$commons_text_version"
-
-  implementation "com.github.spotbugs:spotbugs-annotations:$spotbugs_annotations_version"
 
   testFixturesImplementation  "org.junit.jupiter:junit-jupiter-api:$junit_version"
 

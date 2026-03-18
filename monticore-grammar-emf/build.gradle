@@ -20,9 +20,6 @@ dependencies {
     implementation 'org.eclipse.emf:org.eclipse.emf.ecore.xmi:2.15.0'
     implementation 'org.eclipse.emf:org.eclipse.emf.common:2.15.0'
 
-    implementation "com.github.spotbugs:spotbugs-annotations:$spotbugs_annotations_version"
-    implementation "org.checkerframework:checker-qual:$checkerframework_version"
-
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
     testImplementation "org.junit.jupiter:junit-jupiter-params:$junit_version"
     testImplementation "org.junit.jupiter:junit-jupiter-engine:$junit_version"

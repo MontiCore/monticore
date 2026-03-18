@@ -10,8 +10,6 @@ dependencies {
   implementation "org.eclipse.emf:org.eclipse.emf.compare.match:$emf_compare_version"
   implementation "org.eclipse.emf:org.eclipse.emf.compare.diff:$emf_compare_version"
 
-  implementation "com.github.spotbugs:spotbugs-annotations:$spotbugs_annotations_version"
-
   testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
   testImplementation "org.junit.jupiter:junit-jupiter-engine:$junit_version"
   testRuntimeOnly "org.junit.platform:junit-platform-launcher:$junit_version"
