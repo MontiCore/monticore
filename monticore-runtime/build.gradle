@@ -24,12 +24,12 @@ configurations {
 }
 
 dependencies {
-  api 'de.se_rwth.commons:se-commons-logging:' + se_commons_version
+  api "de.se_rwth.commons:se-commons-logging:$se_commons_version"
   api "org.antlr:antlr4-runtime:$antlr_version"
   api "commons-cli:commons-cli:$commons_cli_version"
   api "com.google.guava:guava:$guava_version"
 
-  implementation 'de.se_rwth.commons:se-commons-utilities:' + se_commons_version
+  implementation "de.se_rwth.commons:se-commons-utilities:$se_commons_version"
   implementation "org.freemarker:freemarker:$freemarker_version"
   implementation "org.apache.commons:commons-text:$commons_text_version"
 
