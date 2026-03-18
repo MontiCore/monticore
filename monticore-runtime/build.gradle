@@ -29,8 +29,8 @@ dependencies {
   api "commons-cli:commons-cli:$commons_cli_version"
   api "com.google.guava:guava:$guava_version"
 
-  implementation "com.github.spotbugs:spotbugs-annotations:$spotbugs_annotations_version"
-  implementation "org.checkerframework:checker-qual:$checkerframework_version"
+  api "com.github.spotbugs:spotbugs-annotations:$spotbugs_annotations_version"
+  api "org.checkerframework:checker-qual:$checkerframework_version"
 
   implementation "de.se_rwth.commons:se-commons-utilities:$se_commons_version"
   implementation "org.freemarker:freemarker:$freemarker_version"
