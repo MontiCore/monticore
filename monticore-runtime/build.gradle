@@ -24,21 +24,24 @@ configurations {
 }
 
 dependencies {
-  api 'de.se_rwth.commons:se-commons-logging:' + se_commons_version
+  api "de.se_rwth.commons:se-commons-logging:$se_commons_version"
   api "org.antlr:antlr4-runtime:$antlr_version"
   api "commons-cli:commons-cli:$commons_cli_version"
   api "com.google.guava:guava:$guava_version"
 
-  implementation 'de.se_rwth.commons:se-commons-utilities:' + se_commons_version
+  api "com.github.spotbugs:spotbugs-annotations:$spotbugs_annotations_version"
+  api "org.checkerframework:checker-qual:$checkerframework_version"
+
+  implementation "de.se_rwth.commons:se-commons-utilities:$se_commons_version"
   implementation "org.freemarker:freemarker:$freemarker_version"
-  implementation group: 'org.apache.commons', name: 'commons-text', version: '1.10.0'
+  implementation "org.apache.commons:commons-text:$commons_text_version"
 
   testFixturesImplementation  "org.junit.jupiter:junit-jupiter-api:$junit_version"
 
   testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
   testImplementation "org.junit.jupiter:junit-jupiter-params:$junit_version"
   testImplementation "org.junit.jupiter:junit-jupiter-engine:$junit_version"
-  testRuntimeOnly "org.junit.platform:junit-platform-launcher:$junit_platform_version"
+  testRuntimeOnly "org.junit.platform:junit-platform-launcher:$junit_version"
 }
 
 test {
