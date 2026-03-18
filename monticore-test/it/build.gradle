@@ -37,8 +37,8 @@ if (!hasProperty('buildProfile')) ext.buildProfile = 'default'  // chooses the p
 apply from: "profile-${buildProfile}.gradle"  // includes the corresponding build file
 
 tasks.withType(JavaCompile) {
-  sourceCompatibility = JavaVersion.VERSION_11
-  targetCompatibility = JavaVersion.VERSION_11
+  sourceCompatibility = JavaVersion.VERSION_21
+  targetCompatibility = JavaVersion.VERSION_21
   options.warnings = false
   options.encoding = 'UTF-8'
 }
@@ -49,7 +49,7 @@ compileJava {
 
 java {
   toolchain {
-    languageVersion = JavaLanguageVersion.of(11)
+    languageVersion = JavaLanguageVersion.of(21)
   }
 }
 
