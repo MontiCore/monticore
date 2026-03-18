@@ -20,7 +20,7 @@ testing {
       dependencies {
         implementation project()
         implementation testFixtures(project(":monticore-runtime"))
-        runtimeOnly "org.junit.platform:junit-platform-launcher:$junit_platform_version"
+        runtimeOnly "org.junit.platform:junit-platform-launcher:$junit_version"
       }
       sources {
         java.srcDirs += ["$buildDir/statepattern" , "$projectDir/src/product/java"]
