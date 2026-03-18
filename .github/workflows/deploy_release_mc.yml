@@ -27,12 +27,13 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: ${{ env.JAVA_VERSION }}
-      - name: Gradle DeployMC
+      - name: Prepare Gradle for DeployMC
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: ${{env.GRADLE_VERSION}}
-          # pass the tag as the version property (${{ github.ref_name }})
-          arguments: deployMC ${{env.GRADLE_CLI_OPTS}} -PmavenPassword=${{secrets.SE_NEXUS_PASSWORD}} -PmavenUser=${{secrets.SE_NEXUS_USER}} -PgenEMF=true -PgenTR=true -PgenTagging=true -Pversion=${{ github.ref_name }}
+      - name: Gradle DeployMC
+        # pass the tag as the version property (${{ github.ref_name }})
+        run: gradle deployMC ${{env.GRADLE_CLI_OPTS}} -PmavenPassword=${{secrets.SE_NEXUS_PASSWORD}} -PmavenUser=${{secrets.SE_NEXUS_USER}} -PgenEMF=true -PgenTR=true -PgenTagging=true -Pversion=${{ github.ref_name }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # TODO: Create and publish the monticore.tar.gz
