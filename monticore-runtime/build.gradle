@@ -31,7 +31,7 @@ dependencies {
 
   implementation 'de.se_rwth.commons:se-commons-utilities:' + se_commons_version
   implementation "org.freemarker:freemarker:$freemarker_version"
-  implementation group: 'org.apache.commons', name: 'commons-text', version: '1.10.0'
+  implementation "org.apache.commons:commons-text:$commons_text_version"
 
   testFixturesImplementation  "org.junit.jupiter:junit-jupiter-api:$junit_version"
 
