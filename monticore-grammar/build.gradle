@@ -670,65 +670,50 @@ if (("true").equals(getProperty('genTR'))) {
 }
 
 // Workaround for https://github.com/gradle/gradle/issues/20539
+import org.gradle.api.plugins.internal.JavaConfigurationVariantMapping
 import org.gradle.api.plugins.internal.JvmPluginsHelper
-import org.gradle.api.internal.file.FileResolver
+import org.gradle.api.plugins.internal.JavaPluginHelper
 import org.gradle.internal.component.external.model.ProjectDerivedCapability
 import org.gradle.internal.component.external.model.TestFixturesSupport
+import org.gradle.jvm.component.internal.DefaultJvmSoftwareComponent
 
-if(GradleVersion.current() < GradleVersion.version("8.5")){
-  pluginManager.withPlugin("java-test-fixtures") {
-    def sourceSet = sourceSets["testFixtures"]
-    JvmPluginsHelper.configureDocumentationVariantWithArtifact(
-        sourceSet.sourcesElementsConfigurationName,
-        TestFixturesSupport.TEST_FIXTURE_SOURCESET_NAME,
-        DocsType.SOURCES,
-        [new ProjectDerivedCapability(project, "testFixtures")],
-        sourceSet.sourcesJarTaskName,
-        sourceSet.allSource,
-        components["java"] as AdhocComponentWithVariants,
-        configurations,
-        tasks,
-        objects,
-        project.services.get(FileResolver)
-    )
-    JvmPluginsHelper.configureDocumentationVariantWithArtifact(
-        sourceSet.javadocElementsConfigurationName,
-        TestFixturesSupport.TEST_FIXTURE_SOURCESET_NAME,
-        DocsType.JAVADOC,
-        [new ProjectDerivedCapability(project, "testFixtures")],
-        sourceSet.javadocJarTaskName,
-        tasks.named(sourceSet.javadocTaskName),
-        components["java"] as AdhocComponentWithVariants,
-        configurations,
-        tasks,
-        objects,
-        project.services.get(FileResolver)
-    )
-  }
-} else {
-  pluginManager.withPlugin("java-test-fixtures") {
-    def sourceSet = sourceSets["testFixtures"]
-    def caps = [new ProjectDerivedCapability(project, "testFixtures")];
-    if (GradleVersion.current() != GradleVersion.version("8.5"))
-      caps = caps.toSet()
-    JvmPluginsHelper.createDocumentationVariantWithArtifact(
-        sourceSet.sourcesElementsConfigurationName,
-        TestFixturesSupport.TEST_FIXTURE_SOURCESET_NAME,
-        DocsType.SOURCES,
-        caps,
-        sourceSet.sourcesJarTaskName,
-        sourceSet.allSource,
-        project
-    )
-    JvmPluginsHelper.createDocumentationVariantWithArtifact(
-        sourceSet.javadocElementsConfigurationName,
-        TestFixturesSupport.TEST_FIXTURE_SOURCESET_NAME,
-        DocsType.JAVADOC,
-        caps,
-        sourceSet.javadocJarTaskName,
-        tasks.named(sourceSet.javadocTaskName),
-        project
-    )
+pluginManager.withPlugin("java-test-fixtures") {
+  def sourceSet = sourceSets["testFixtures"]
+  def caps = [new ProjectDerivedCapability(project, "testFixtures")];
+  if (GradleVersion.current() != GradleVersion.version("8.5"))
+    caps = caps.toSet()
+  def testFixturesSources = JvmPluginsHelper.createDocumentationVariantWithArtifact(
+      sourceSet.sourcesElementsConfigurationName,
+      TestFixturesSupport.TEST_FIXTURE_SOURCESET_NAME,
+      DocsType.SOURCES,
+      caps,
+      sourceSet.sourcesJarTaskName,
+      sourceSet.allSource,
+      project
+  )
+  def testFixturesJavaDoc = JvmPluginsHelper.createDocumentationVariantWithArtifact(
+      sourceSet.javadocElementsConfigurationName,
+      TestFixturesSupport.TEST_FIXTURE_SOURCESET_NAME,
+      DocsType.JAVADOC,
+      caps,
+      sourceSet.javadocJarTaskName,
+      tasks.named(sourceSet.javadocTaskName),
+      project
+  )
+  def component = JavaPluginHelper.getJavaComponent(project) as DefaultJvmSoftwareComponent
+  component.addVariantsFromConfiguration(testFixturesSources, new JavaConfigurationVariantMapping("runtime", true))
+  component.addVariantsFromConfiguration(testFixturesJavaDoc, new JavaConfigurationVariantMapping("runtime", true))
+
+}
+publishing {
+  publications {
+    maven(MavenPublication) {
+      // ignore warning of test fixtures
+      suppressPomMetadataWarningsFor("testFixturesApiElements")
+      suppressPomMetadataWarningsFor("testFixturesJavadocElements")
+      suppressPomMetadataWarningsFor("testFixturesRuntimeElements")
+      suppressPomMetadataWarningsFor("testFixturesSourcesElements")
+    }
   }
 }
 //End Workaround
