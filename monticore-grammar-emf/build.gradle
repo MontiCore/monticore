@@ -2,7 +2,7 @@
 
 plugins {
   id "java-library"
-  id "de.monticore.generator" version "$version" // MontiCore Plugin
+  id "de.monticore.generator" // MontiCore Plugin
 }
 
 description = 'MontiCore: EMF Grammar'
