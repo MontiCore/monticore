@@ -1,58 +1,51 @@
-From 28259ce5949049ee78bb720c13636850ebca0f1c Mon Sep 17 00:00:00 2001
+From fe83438b68068d5446a87c85348d7c95cccf07b4 Mon Sep 17 00:00:00 2001
 From: Janik Rapp <rapp@se-rwth.de>
-Date: Fri, 2 Jan 2026 14:32:48 +0100
-Subject: [PATCH] [PATCH] use next snapshot
+Date: Wed, 18 Mar 2026 12:53:07 +0100
+Subject: [PATCH] use next snapshot
 
 
 diff --git a/gradle.properties b/gradle.properties
-index 3bc21f46d..26a2df7a3 100644
+index cb9de09ab..3fdc12ea2 100644
 --- a/gradle.properties
 +++ b/gradle.properties
-@@ -14,11 +14,11 @@ org.gradle.caching=true
+@@ -17,12 +17,12 @@ org.gradle.caching=true
  # org.gradle.caching.debug=true
  
  # versions used
 -version=7.9.0-SNAPSHOT
--previous_mc_version =7.8.0
+-previous_mc_version=7.8.0
 +version=7.10.0-SNAPSHOT
-+previous_mc_version =7.9.0-SNAPSHOT
++previous_mc_version=7.9.0-SNAPSHOT
  
- commons_cli_version = 1.4
--se_commons_version =7.8.0
-+se_commons_version =7.9.0-SNAPSHOT
- antlr_version =4.12.0
- junit_version = 5.14.1
- junit_platform_version = 1.14.1
-@@ -29,4 +29,4 @@ freemarker_version = 2.3.34
- guava_version =31.1-jre
- shadow_plugin_version=7.1.2
+-cd4a_version=7.8.0
+-mlc_version=7.8.0
+-se_commons_version=7.8.0
++cd4a_version=7.9.0-SNAPSHOT
++mlc_version=7.9.0-SNAPSHOT
++se_commons_version=7.9.0-SNAPSHOT
  
--cd4a_version =7.8.0
-+cd4a_version =7.9.0-SNAPSHOT
+ antlr_version=4.12.0
+ junit_version=6.0.3
 diff --git a/monticore-generator/gradle.properties b/monticore-generator/gradle.properties
-index a4171758b..5249f4006 100644
+index d54bbbd2c..557baba04 100644
 --- a/monticore-generator/gradle.properties
 +++ b/monticore-generator/gradle.properties
-@@ -9,14 +9,14 @@ useLocalRepo=false
+@@ -9,11 +9,11 @@ useLocalRepo=false
  showTestOutput=false
  
  # versions used
 -version=7.9.0-SNAPSHOT
--previous_mc_version =7.8.0
+-previous_mc_version=7.8.0
 +version=7.10.0-SNAPSHOT
-+previous_mc_version =7.9.0-SNAPSHOT
++previous_mc_version=7.9.0-SNAPSHOT
  
--se_commons_version =7.8.0
-+se_commons_version =7.9.0-SNAPSHOT
- se_gradle_version =7.9.0-SNAPSHOT
- antlr_version =4.12.0
- junit_version = 5.14.1
- junit_platform_version = 1.14.1
--cd4a_version =7.8.0
-+cd4a_version =7.9.0-SNAPSHOT
- commons_lang3_version = 3.8.1
- commons_cli_version = 1.4
- freemarker_version = 2.3.28
+-cd4a_version=7.8.0
+-se_commons_version=7.8.0
++cd4a_version=7.9.0-SNAPSHOT
++se_commons_version=7.9.0-SNAPSHOT
+ se_gradle_version=7.9.0-SNAPSHOT
+ 
+ antlr_version=4.12.0
 -- 
 2.47.1.windows.1
 

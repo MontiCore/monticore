@@ -34,11 +34,11 @@ public abstract class UntimedStream<T> implements Stream<T>, TimeableStream<T> {
   }
 
   @Override
-  public T head() throws IndexOutOfBoundsException {
-    Optional<T> head = _internal_next().get0();
-    if (head.isEmpty())
+  public T first() throws IndexOutOfBoundsException {
+    Optional<T> first = _internal_next().get0();
+    if (first.isEmpty())
       throw new IndexOutOfBoundsException();
-    return head.get();
+    return first.get();
   }
 
   @Override
@@ -76,7 +76,7 @@ public abstract class UntimedStream<T> implements Stream<T>, TimeableStream<T> {
 
   @Override
   public T nth(long n) throws IndexOutOfBoundsException {
-    return dropMultiple(n - 1).head();
+    return dropMultiple(n - 1).first();
   }
 
   @Override
@@ -181,7 +181,7 @@ public abstract class UntimedStream<T> implements Stream<T>, TimeableStream<T> {
     return new IterStream<>(fn, elem);
   }
 
-  static <T> UntimedStream<T> of(FList<T> flist) {
+  public static <T> UntimedStream<T> of(FList<T> flist) {
     return FiniteUntimedStream.of(flist);
   }
 
@@ -189,14 +189,14 @@ public abstract class UntimedStream<T> implements Stream<T>, TimeableStream<T> {
    * New Stream
    */
   @SafeVarargs
-  static <T> UntimedStream<T> of(T... ele) {
+  public static <T> UntimedStream<T> of(T... ele) {
     return FiniteUntimedStream.of(FList.of(ele));
   }
 
   /**
    * New stream by repeating elem n times
    */
-  static <S> UntimedStream<S> repeat(S elem, long n) {
+  public static <S> UntimedStream<S> repeat(S elem, long n) {
     return FiniteUntimedStream.of(elem).times(n);
   }
 

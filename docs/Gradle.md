@@ -43,10 +43,10 @@ plugins {
 }
 
 java {
-  // Configure the java toolchain to use Java 11 (overriding the locally installed JDK)
+  // Configure the java toolchain to use Java 21 (overriding the locally installed JDK)
   // https://docs.gradle.org/current/userguide/toolchains.html
   toolchain {
-    languageVersion = JavaLanguageVersion.of(11)
+    languageVersion = JavaLanguageVersion.of(21)
   }
 }
 

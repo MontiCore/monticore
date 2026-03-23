@@ -14,18 +14,19 @@ import de.monticore.rte.tuples.Tuple2;
  * Timed Event Stream
  */
 public class EventStream<T> implements Stream<UntimedStream<T>>, TimeableStream<T> {
+
   protected final SyncStream<UntimedStream<T>> backing;
 
-  EventStream(SyncStream<UntimedStream<T>> backing) {
+  protected EventStream(SyncStream<UntimedStream<T>> backing) {
     this.backing = backing;
   }
 
-  static <T> EventStream<T> of(FList<UntimedStream<T>> flist) {
+  public static <T> EventStream<T> of(FList<UntimedStream<T>> flist) {
     return new EventStream<>(SyncStream.of(flist));
   }
 
   @SafeVarargs
-  static <T> EventStream<T> of(UntimedStream<T>... ele) {
+  public static <T> EventStream<T> of(UntimedStream<T>... ele) {
     return new EventStream<>(SyncStream.of(FList.of(ele)));
   }
 
@@ -34,8 +35,8 @@ public class EventStream<T> implements Stream<UntimedStream<T>>, TimeableStream<
   //
 
   @Override
-  public UntimedStream<T> head() throws IndexOutOfBoundsException {
-    return this.backing.head();
+  public UntimedStream<T> first() throws IndexOutOfBoundsException {
+    return this.backing.first();
   }
 
   @Override
@@ -188,8 +189,8 @@ public class EventStream<T> implements Stream<UntimedStream<T>>, TimeableStream<
     if (this.isEmpty())
       return EventStream.of(UntimedStream.of(element));
 
-    UntimedStream<T> newHead = this.head().withPrepended(element);
-    return this.withPrepended(newHead);
+    UntimedStream<T> newFirst = this.first().withPrepended(element);
+    return this.withPrepended(newFirst);
   }
 
   /**
