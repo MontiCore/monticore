@@ -1484,7 +1484,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
       List<MCPath> mcPaths = new ArrayList<>();
       Optional<MontiCoreReports> reportsOpt = Optional.empty();
 
-      DelegatingClassLoader groovyClassLoader = new DelegatingClassLoader(this.getClass().getClassLoader());
       try {
         if(config.isPresent()) {
           MontiCoreConfiguration mcConfig = MontiCoreConfiguration.withConfiguration(config.get());
@@ -1532,9 +1531,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
           // the "force" parameter, which is always true
           builder.addVariable("force", true);
         }
-        // Use a delegating classloader for groovy to reduce
-        // the impact of JDK-8078641
-        builder.withClassLoader(groovyClassLoader);
 
         GroovyInterpreter g = builder.build();
         g.evaluate(script);
@@ -1547,11 +1543,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
         }
         // Notify the reporters about flushing & closing their file handles
         reportsOpt.ifPresent(MontiCoreReports::close);
-        // Clean up after groovy
-        try {
-          groovyClassLoader.close();
-        } catch (IOException ignored) {
-        }
       }
     }
   }

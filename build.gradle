@@ -60,6 +60,9 @@ subprojects {
   apply plugin: 'java-library'
   apply plugin: 'io.github.themrmilchmann.ecj'
 
+  ecj {
+    compilerVersion = "3.44.0"
+  }
 
   tasks.withType(Test) {
     useJUnitPlatform()
@@ -94,8 +97,8 @@ subprojects {
   }
 
   tasks.withType(JavaCompile).configureEach {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
     options.encoding = "UTF-8"
     options.deprecation = false
     options.warnings = false
@@ -104,7 +107,7 @@ subprojects {
   java {
     withSourcesJar()
     toolchain {
-      languageVersion = JavaLanguageVersion.of(11)
+      languageVersion = JavaLanguageVersion.of(21)
     }
   }
   
