@@ -10,7 +10,7 @@ import java.util.Optional;
 public class FiniteUntimedStream<T> extends UntimedStream<T> {
   protected final FList<T> list;
 
-  static protected final FiniteUntimedStream<?> EMPTY =
+  public static final FiniteUntimedStream<?> EMPTY =
       FiniteUntimedStream.of(FList.of());
 
   public static <T> FiniteUntimedStream<T> empty() {
@@ -49,7 +49,7 @@ public class FiniteUntimedStream<T> extends UntimedStream<T> {
   }
 
   @Override
-  public T head() throws IndexOutOfBoundsException {
+  public T first() throws IndexOutOfBoundsException {
     if (list.isEmpty())
       throw new IndexOutOfBoundsException();
     return this.list.get(0);
