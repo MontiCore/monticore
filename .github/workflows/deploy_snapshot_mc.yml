@@ -18,7 +18,7 @@ permissions:
   packages: write
 
 env:
-  GRADLE_VERSION: 8.5 # Gradle version used
+  GRADLE_VERSION: 8.14.4 # Gradle version used
   JAVA_VERSION: 21 # Java version used
   GRADLE_CLI_OPTS: "-Pci" # CLI option passed to Gradle
 
