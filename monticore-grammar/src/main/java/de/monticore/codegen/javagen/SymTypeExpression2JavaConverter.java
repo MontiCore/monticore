@@ -2,107 +2,64 @@
 package de.monticore.codegen.javagen;
 
 import com.google.common.base.Preconditions;
-import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.types.check.SymTypeExpression;
-import de.monticore.types.check.SymTypeExpressionFactory;
-import de.monticore.types.check.SymTypeOfGenerics;
-import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types3.TypeCheck3;
 import de.se_rwth.commons.logging.Log;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class SymTypeExpression2JavaConverter {
 
   protected static SymTypeExpression2JavaConverter delegate;
 
-  protected SymTypeExpression2JavaVisitor modelType2JavaTypeVisitor =
-      new SymTypeExpression2JavaVisitor();
+  protected SymTypeExpressionJavaPrinterVisitor javaTypePrinterVisitor =
+    new SymTypeExpressionJavaPrinterVisitor();
 
-  protected JavaSymTypeExpressionPrinterVisitor javaTypePrinterVisitor =
-      new JavaSymTypeExpressionPrinterVisitor();
+  protected SymTypeExpressionBoxedJavaPrinterVisitor javaBoxedTypePrinterVisitor =
+      new SymTypeExpressionBoxedJavaPrinterVisitor();
+
+  protected SymTypeExpressionTypeErasedJavaPrinterVisitor javaTypeErasedPrinterVisitor =
+    new SymTypeExpressionTypeErasedJavaPrinterVisitor();
 
   // methods
 
   /**
-   * @deprecated use {@link #getAsJavaType(SymTypeExpression)} instead,
-   *     which has a more descriptive name.
+   * Converts model types in a Java compatible way.
    */
-  @Deprecated
-  public static SymTypeExpression getJavaType(SymTypeExpression modelType) {
-    return getAsJavaType(modelType);
+  public static String convert2JavaType(SymTypeExpression modelType) {
+    return getDelegate()._convert2JavaType(modelType);
+  }
+
+  protected String _convert2JavaType(SymTypeExpression modelType) {
+    return javaTypePrinterVisitor.calculate(modelType);
   }
 
   /**
-   * converts types of models into Java compatible types
+   * Converts model types in a boxed Java compatible way.
    */
-  public static SymTypeExpression getAsJavaType(SymTypeExpression modelType) {
-    return getDelegate()._getAsJavaType(modelType);
+  public static String convert2BoxedJavaType(SymTypeExpression modelType) {
+    return getDelegate()._convert2BoxedJavaType(modelType);
   }
 
-  protected SymTypeExpression _getAsJavaType(SymTypeExpression modelType) {
-    return modelType2JavaTypeVisitor.calculate(modelType);
+  protected String _convert2BoxedJavaType(SymTypeExpression modelType) {
+    return javaBoxedTypePrinterVisitor.calculate(modelType);
   }
 
   /**
-   * Prints Java compatible types in a Java compatible way.
-   * It is recommended to use {@link #getAsJavaType(SymTypeExpression)}
-   * to get a Java compatible type.
+   * Converts model types in a Java compatible way with type erasure.
    */
-  public static String printJavaType(SymTypeExpression javaType) {
-    return getDelegate()._printJavaType(javaType);
+  public static String convert2TypeErasedJavaType(SymTypeExpression modelType) {
+    return getDelegate()._convert2TypeErasedJavaType(modelType);
   }
 
-  protected String _printJavaType(SymTypeExpression javaType) {
-    return javaTypePrinterVisitor.calculate(javaType);
-  }
-
-  /**
-   * applies type erasure to the given Java compatible type
-   */
-  public static SymTypeExpression applyTypeErasure(SymTypeExpression javaType) {
-    return getDelegate()._applyTypeErasure(javaType);
-  }
-
-  protected SymTypeExpression _applyTypeErasure(SymTypeExpression javaType) {
-    if (javaType.isGenericType()) {
-      SymTypeOfGenerics g = javaType.asGenericType();
-      List<SymTypeExpression> wildcards = new ArrayList<>();
-      for (int i = 0; i < g.sizeArguments(); i++) {
-        wildcards.add(SymTypeExpressionFactory.createWildcard());
-      }
-      return SymTypeExpressionFactory.createGenerics(g.getTypeInfo(), wildcards);
-    }
-    return javaType;
+  protected String _convert2TypeErasedJavaType(SymTypeExpression modelType) {
+    return javaTypeErasedPrinterVisitor.calculate(modelType);
   }
 
   // Convenience methods
 
-  public static String printModelTypeAsJavaType(SymTypeExpression modelType) {
-    return getDelegate()._printModelTypeAsJavaType(modelType);
-  }
-
-  public String _printModelTypeAsJavaType(SymTypeExpression modelType) {
-    SymTypeExpression javaType = getAsJavaType(modelType);
-    String javaTypeStr = printJavaType(javaType);
-    return javaTypeStr;
-  }
-
-  public static String printModelTypeAsJavaType(ASTMCType mcType) {
-    return getDelegate()._printModelTypeAsJavaType(mcType);
-  }
-
-  public String _printModelTypeAsJavaType(ASTMCType mcType) {
-    return printModelTypeAsJavaType(TypeCheck3.symTypeFromAST(mcType));
-  }
-
-  public static String printModelTypeAsJavaType(ASTExpression expression) {
-    return getDelegate()._printModelTypeAsJavaType(expression);
-  }
-
-  public String _printModelTypeAsJavaType(ASTExpression expression) {
-    return printModelTypeAsJavaType(TypeCheck3.typeOf(expression));
+  /**
+   * Converts model types in java compatible way and returns their type constructor
+   */
+  public static String getJavaTypeConstructor(SymTypeExpression modelType) {
+    return convert2JavaType(modelType).split("<")[0];
   }
 
   // static delegate

@@ -6,6 +6,7 @@ import de.monticore.codegen.javagen.typeconverter.JavaBooleanConversionHandler;
 import de.monticore.codegen.javagen.typeconverter.JavaFunctionConversionHandler;
 import de.monticore.codegen.javagen.typeconverter.JavaNumericConversionHandler;
 import de.monticore.codegen.javagen.typeconverter.JavaObjectConversionHandler;
+import de.monticore.codegen.javagen.typeconverter.JavaToStringConversionHandler;
 import de.monticore.codegen.javagen.typeconverter.JavaStringConversionHandler;
 import de.monticore.codegen.javagen.typeconverter.JavaTupleConversionHandler;
 import de.se_rwth.commons.logging.Log;
@@ -22,6 +23,7 @@ public class JavaGenSymTypeExpressionConverter
         new JavaNumericConversionHandler(),
         new JavaTupleConversionHandler(),
         new JavaStringConversionHandler(),
+        new JavaToStringConversionHandler(),
         new JavaObjectConversionHandler()
     ));
   }

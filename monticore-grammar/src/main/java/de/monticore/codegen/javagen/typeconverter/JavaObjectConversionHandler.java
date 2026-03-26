@@ -5,7 +5,8 @@ import de.monticore.codegen.CodeGenPrintAction;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.check.SymTypeExpression;
 
-import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getAsJavaType;
+import static de.monticore.types3.SymTypeRelations.isNumericType;
+import static de.monticore.types3.SymTypeRelations.isStringOrSubType;
 
 /**
  * Conversions between Objects (including generics)
@@ -22,10 +23,20 @@ public class JavaObjectConversionHandler
       SymTypeExpression modelSourceType,
       CodeGenPrintAction sourceExprPrintAction
   ) {
-    if ((modelTargetType.isObjectType() || modelTargetType.isGenericType()) &&
-        (modelSourceType.isObjectType() || modelSourceType.isGenericType())
+    if (// Is source and target an object type
+      ((modelTargetType.isObjectType() || modelTargetType.isGenericType()) && (modelSourceType.isObjectType() || modelSourceType.isGenericType()) ||
+        // Is source a string but target an object type
+        (modelTargetType.isObjectType() || modelTargetType.isGenericType()) && isStringOrSubType(modelSourceType) ||
+        // Is source numeric and target Object (but not numeric -> excluded with overlap numericConversionHandler). E.g. double -> Object
+        (modelTargetType.isObjectType() || modelTargetType.isGenericType()) && isNumericType(modelSourceType)) &&
+        // Avoid overlap ToStringConversionHandler
+        !(isStringOrSubType(modelTargetType) && (modelSourceType.isObjectType() || modelSourceType.isGenericType())) &&
+        // Avoid overlap StringConversionHandler
+        !(isStringOrSubType(modelTargetType) && isStringOrSubType(modelSourceType)) &&
+        // Avoid overlap NumericConversionHandler
+        !(isNumericType(modelTargetType) && isNumericType(modelSourceType))
     ) {
-      printJavaCasted(printer, getAsJavaType(modelTargetType), sourceExprPrintAction);
+      printJavaCasted(printer, modelTargetType, sourceExprPrintAction);
       return true;
     }
     return false;

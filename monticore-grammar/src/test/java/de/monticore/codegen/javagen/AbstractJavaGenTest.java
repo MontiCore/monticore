@@ -14,6 +14,7 @@ import de.monticore.ocl.setexpressions.symboltable.SetExpressionsSymbolTableComp
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.runtime.junit.AbstractMCTest;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
@@ -51,6 +52,9 @@ public abstract class AbstractJavaGenTest extends AbstractMCTest {
     CombineExpressionsWithLiteralsMill.init();
     BasicSymbolsMill.initializePrimitives();
     DefsTypesForTests.set_boxedPrimitives();
+    DefsTypesForTests.set_thePrimitives();
+
+    addMaxValueToInteger();
 
     SymTypeRelations.init();
     OOWithinScopeBasicSymbolsResolver.init();
@@ -58,6 +62,15 @@ public abstract class AbstractJavaGenTest extends AbstractMCTest {
     CombineExpressionsWithLiteralsTypeTraverserFactory.initTypeCheck3();
 
     jshell = JShell.create();
+  }
+
+  protected void addMaxValueToInteger() {
+    FieldSymbol maxValueField = DefsTypesForTests.field("MAX_VALUE", DefsTypesForTests._intSymType);
+    maxValueField.setIsStatic(true);
+    DefsTypesForTests.inScope(
+        CombineExpressionsWithLiteralsMill.globalScope().resolveType("java.lang.Integer").get().getSpannedScope(),
+        maxValueField
+    );
   }
 
   protected CodeGenerator createCodeGenerator() {

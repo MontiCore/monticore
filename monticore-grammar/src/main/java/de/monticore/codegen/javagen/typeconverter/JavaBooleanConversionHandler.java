@@ -5,7 +5,6 @@ import de.monticore.codegen.CodeGenPrintAction;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.check.SymTypeExpression;
 
-import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getAsJavaType;
 import static de.monticore.types3.SymTypeRelations.isBoolean;
 
 /**
@@ -22,7 +21,7 @@ public class JavaBooleanConversionHandler
       CodeGenPrintAction sourceExrPrintAction
   ) {
     if (isBoolean(modelTargetType) && isBoolean(modelSourceType)) {
-      printJavaCasted(printer, getAsJavaType(modelTargetType), sourceExrPrintAction);
+      printJavaCasted(printer, modelTargetType, sourceExrPrintAction);
       return true;
     }
     return false;

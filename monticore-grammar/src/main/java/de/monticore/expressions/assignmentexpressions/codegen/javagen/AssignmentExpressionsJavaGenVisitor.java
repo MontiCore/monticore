@@ -4,6 +4,8 @@ package de.monticore.expressions.assignmentexpressions.codegen.javagen;
 import de.monticore.codegen.CodeGenPrintAction;
 import de.monticore.codegen.javagen.AbstractJavaGenVisitor;
 import de.monticore.codegen.javagen.JavaOperationPrinter;
+import de.monticore.codegen.javagen.JavaSymTypeRelations;
+import de.monticore.codegen.javagen.SymTypeExpression2JavaConverter;
 import de.monticore.expressions.assignmentexpressions._ast.ASTAssignmentExpression;
 import de.monticore.expressions.assignmentexpressions._ast.ASTDecPrefixExpression;
 import de.monticore.expressions.assignmentexpressions._ast.ASTDecSuffixExpression;
@@ -13,6 +15,8 @@ import de.monticore.expressions.assignmentexpressions._visitor.AssignmentExpress
 import de.monticore.expressions.assignmentexpressions._visitor.AssignmentExpressionsTraverser;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.check.SymTypeExpressionFactory;
+import de.monticore.types3.TypeCheck3;
 import de.monticore.types3.util.TypeVisitorOperatorCalculator;
 import de.se_rwth.commons.logging.Log;
 
@@ -43,6 +47,10 @@ public class AssignmentExpressionsJavaGenVisitor
 
   protected AssignmentExpressionsTraverser traverser;
 
+  public AssignmentExpressionsJavaGenVisitor(IndentPrinter printer) {
+    super(printer);
+  }
+
   @Override
   public AssignmentExpressionsTraverser getTraverser() {
     return traverser;
@@ -53,30 +61,70 @@ public class AssignmentExpressionsJavaGenVisitor
     this.traverser = traverser;
   }
 
-  public AssignmentExpressionsJavaGenVisitor(IndentPrinter printer) {
-    super(printer);
-  }
-
   // CodoGen
 
   @Override
   public void handle(ASTIncSuffixExpression expr) {
-    _willBeRemoved_logUnimplemented(expr);
+    // NOTE: this is only a temporary implementation,
+    // as in the future, templates provided by the symbols
+    // are to be used instead.
+
+    if (JavaSymTypeRelations.isJavaNumeric(TypeCheck3.typeOf(expr.getExpression()))) {
+      expr.getExpression().accept(getTraverser());
+      getPrinter().print("++");
+    } else {
+      Log.error("0xFD249 Unhandled increment suffix operator "
+          + ". This is an alpha version and needs to be extended."
+      );
+    }
   }
 
   @Override
   public void handle(ASTDecSuffixExpression expr) {
-    _willBeRemoved_logUnimplemented(expr);
+    // NOTE: this is only a temporary implementation,
+    // as in the future, templates provided by the symbols
+    // are to be used instead.
+
+    if (JavaSymTypeRelations.isJavaNumeric(TypeCheck3.typeOf(expr.getExpression()))) {
+      expr.getExpression().accept(getTraverser());
+      getPrinter().print("--");
+    } else {
+      Log.error("0xFD249 Unhandled increment suffix operator "
+          + ". This is an alpha version and needs to be extended."
+      );
+    }
   }
 
   @Override
   public void handle(ASTIncPrefixExpression expr) {
-    _willBeRemoved_logUnimplemented(expr);
+    SymTypeExpression resultType = normalize(typeOf(expr));
+    SymTypeExpression innerType = normalize(typeOf(expr.getExpression()));
+
+    JavaOperationPrinter.printAssignment(
+        printer,
+        resultType,
+        innerType,
+        // left type due to conversion
+        innerType,
+        p -> expr.getExpression().accept(getTraverser()),
+        p2 -> printPlus(printer, resultType, innerType, SymTypeExpressionFactory.createPrimitive("int"), p -> expr.getExpression().accept(getTraverser()), (p) -> p.print("1"))
+    );
   }
 
   @Override
   public void handle(ASTDecPrefixExpression expr) {
-    _willBeRemoved_logUnimplemented(expr);
+    SymTypeExpression resultType = normalize(typeOf(expr));
+    SymTypeExpression innerType = normalize(typeOf(expr.getExpression()));
+
+    JavaOperationPrinter.printAssignment(
+        printer,
+        resultType,
+        innerType,
+        // left type due to conversion
+        innerType,
+        p -> expr.getExpression().accept(getTraverser()),
+        p2 -> printMinus(printer, resultType, innerType, SymTypeExpressionFactory.createPrimitive("int"), p -> expr.getExpression().accept(getTraverser()), (p) -> p.print("1"))
+    );
   }
 
   @Override
