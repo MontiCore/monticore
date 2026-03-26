@@ -8,8 +8,8 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfTuple;
 
 import static de.monticore.codegen.CodeGenSymTypeExpressionConverter.printConverted;
-import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getAsJavaType;
-import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.printJavaType;
+import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.convert2JavaType;
+import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getJavaTypeConstructor;
 
 /**
  * Converts between tuple types
@@ -35,15 +35,15 @@ public class JavaTupleConversionHandler extends AbstractJavaTypeConverter {
       tupleNestingLevel++;
 
       printer.print("((java.util.function.Supplier<");
-      printer.print(printJavaType(getAsJavaType(targetTuple)));
+      printer.print(convert2JavaType(targetTuple));
       printer.print(">) () -> { ");
-      printer.print(printJavaType(getAsJavaType(sourceTuple)));
+      printer.print(convert2JavaType(sourceTuple));
       printer.print(" ");
       printer.print(tmpTupleVarName);
       printer.print(" = ");
       sourceExprPrintAction.print(printer);
       printer.print("; return ");
-      printer.print(getAsJavaType(targetTuple).asGenericType().getTypeConstructorFullName());
+      printer.print(getJavaTypeConstructor(targetTuple));
       printer.print(".of(");
 
       for (int i = 0; i < modelTargetType.asTupleType().getTypeList().size(); i++) {
@@ -56,7 +56,7 @@ public class JavaTupleConversionHandler extends AbstractJavaTypeConverter {
           p.print(finalI);
           p.print("()");
         });
-        if (i < getAsJavaType(modelTargetType).asGenericType().getArgumentList().size() - 1) {
+        if (i < modelTargetType.asTupleType().getTypeList().size() - 1) {
           printer.print(", ");
         }
       }

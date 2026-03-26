@@ -10,10 +10,9 @@ import de.monticore.expressions.lambdaexpressions._visitor.LambdaExpressionsTrav
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfFunction;
-import de.monticore.types.check.SymTypeOfGenerics;
 
-import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getAsJavaType;
-import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.printJavaType;
+import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.convert2BoxedJavaType;
+import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.convert2JavaType;
 import static de.monticore.types3.SymTypeRelations.normalize;
 import static de.monticore.types3.TypeCheck3.typeOf;
 
@@ -47,13 +46,12 @@ public class LambdaExpressionsJavaGenVisitor extends AbstractJavaGenVisitor
   @Override
   public void handle(ASTLambdaExpression node) {
     SymTypeOfFunction funcType = normalize(typeOf(node)).asFunctionType();
-    SymTypeOfGenerics javaFuncType = getAsJavaType(funcType).asGenericType();
 
     startParentheses();
 
     // cast to Java function type
     getPrinter().print("(");
-    getPrinter().print(printJavaType(javaFuncType));
+    getPrinter().print(convert2JavaType(funcType));
     getPrinter().print(") ");
 
     // parameters
@@ -61,11 +59,11 @@ public class LambdaExpressionsJavaGenVisitor extends AbstractJavaGenVisitor
     for (int i = 0; i < node.getLambdaParameters().sizeLambdaParameters(); i++) {
       ASTLambdaParameter par = node.getLambdaParameters().getLambdaParameter(i);
       String parName = par.getName();
-      SymTypeExpression parType = javaFuncType.getArgument(i + 1);
+      SymTypeExpression parType = funcType.getArgumentType(i);
       if (i != 0) {
         getPrinter().print(", ");
       }
-      getPrinter().print(printJavaType(getAsJavaType(parType)));
+      getPrinter().print(convert2BoxedJavaType(parType));
       getPrinter().print(" ");
       getPrinter().print(parName);
     }
