@@ -8,14 +8,16 @@ import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisHandler;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisTraverser;
 import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
 import de.monticore.symboltable.IScopeSpanningSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfFunction;
+import de.monticore.types3.Type4Ast;
+import de.monticore.types3.util.MapBasedTypeCheck3;
 import de.se_rwth.commons.logging.Log;
 
-import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getAsJavaType;
-import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.printJavaType;
+import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.convert2JavaType;
 import static de.monticore.types3.SymTypeRelations.normalize;
 import static de.monticore.types3.TypeCheck3.typeOf;
 
@@ -53,13 +55,20 @@ public class ExpressionsBasisJavaGenVisitor extends AbstractJavaGenVisitor
 
     SymTypeExpression exprType = normalize(typeOf(node));
 
+    // static field
+    if (exprType.getSourceInfo().getSourceSymbol().isPresent()
+        && OOSymbolsMill.typeDispatcher().isOOSymbolsField(exprType.getSourceInfo().getSourceSymbol().get())
+        && OOSymbolsMill.typeDispatcher().asOOSymbolsField(exprType.getSourceInfo().getSourceSymbol().get()).isIsStatic()) {
+      getPrinter().print(OOSymbolsMill.typeDispatcher().asOOSymbolsField(exprType.getSourceInfo().getSourceSymbol().get()).getFullName());
+    }
+
     // function references
-    if (exprType.isFunctionType() && exprType.asFunctionType().hasSymbol()) {
+    else if (exprType.isFunctionType() && exprType.asFunctionType().hasSymbol()) {
       SymTypeOfFunction funcType = exprType.asFunctionType();
       String funcName = funcType.getSymbol().getName();
 
       getPrinter().print("((");
-      getPrinter().print(printJavaType(getAsJavaType(exprType)));
+      getPrinter().print(convert2JavaType(exprType));
       getPrinter().print(") ");
       if (funcType.getSymbol() instanceof MethodSymbol) {
         MethodSymbol methodSym = (MethodSymbol) funcType.getSymbol();
