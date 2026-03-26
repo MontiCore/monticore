@@ -69,7 +69,9 @@ include(':monticore-test:01experiments')
 project(':monticore-test:01experiments').projectDir = file("monticore-test/01.experiments")
 // Include all 01experiments
 file("monticore-test/01.experiments").eachDir { dir ->
-  include(':monticore-test:01experiments:' + dir.name)
+  if (!(dir.name in ['forEmfAst']) || "true" == getProperty('genEMF')) {// Only test EMF if the flag is set
+    include(':monticore-test:01experiments:' + dir.name)
+  }
 }
 
 include ':monticore-test:02experiments'
@@ -85,10 +87,6 @@ if ("true".equals(getProperty('genTR'))) { // Only test MontiTrans if the flag i
   include(':monticore-test:montitrans:test-dstl-gen')
   include(':monticore-test:montitrans:test-odrules')
   include(':monticore-test:montitrans:test-generated-dstls')
-}
-
-if ("true".equals(getProperty('genEMF'))) { // Only test EMF if the flag is set
-  include(':monticore-test:emf.experiments:forEmfAst')
 }
 
 if (!inComposite) {
