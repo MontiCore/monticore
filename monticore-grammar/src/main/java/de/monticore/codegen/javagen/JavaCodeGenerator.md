@@ -67,5 +67,5 @@ statements ought to be added later in development.
 
 As the Java standard library does offer all types/functionality
 required by the generated code, a 
-[runtime library](../../../../../../../../monticore-libraries/javagen-runtime/JavaGen-Library.md)
+[runtime library](https://github.com/MontiCore/monticore/blob/dev/monticore-libraries/javagen-runtime/)
 is provided.
