@@ -41,7 +41,7 @@ Java Development Kit (JDK) and validate that the installation was successful:
     any directory. Execute the command `javac -version`. If this command
     is recognized and the shell displays the version of the installed
     JDK (e.g., `javac 21.0.10`), then the setup was successful.
-- *(Optional)* Install [Gradle](https://gradle.org/install/) version 8.5. 
+- *(Optional)* Install [Gradle](https://gradle.org/install/) version 8.14.4. 
 
 Now we have the prerequisites to run MontiCore from the command line (CLI)
 or alternatively using Gradle.
