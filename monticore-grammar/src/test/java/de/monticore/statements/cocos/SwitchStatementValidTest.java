@@ -87,6 +87,23 @@ class SwitchStatementValidTest {
     );
   }
 
+  @Test
+  public void testInvalidMessageContainsActualType() throws IOException {
+    TestMCCommonStatementsParser parser = new TestMCCommonStatementsParser();
+    Optional<ASTMCBlockStatement> optAST = parser.parse_StringMCBlockStatement("switch(5L){}");
+    Assertions.assertTrue(optAST.isPresent());
+
+    Log.getFindings().clear();
+    checker.checkAll(optAST.get());
+
+    Assertions.assertEquals(1, Log.getFindings().size());
+    Assertions.assertEquals(
+        SwitchStatementValid.ERROR_CODE +
+            String.format(SwitchStatementValid.ERROR_MSG_FORMAT, "long"),
+        Log.getFindings().get(0).getMsg()
+    );
+  }
+
   @ParameterizedTest
   @ValueSource(strings = {"switch(c){}"})
   void testSwitchEnumConstantsValid(String expr) throws IOException {
