@@ -34,8 +34,8 @@ public class VarDeclarationInitializationHasCorrectType
    */
   public static final String TYPE_REF_ASSIGNMENT_ERROR_CODE = "0xA0922";
 
-  public static final String ERROR_MSG_FORMAT = "Incompatible type '%s' of the initialization expression for variable '%s' " +
-    "that is of type '%s'.";
+  public static final String ERROR_MSG_FORMAT = "Incompatible types: cannot initialize variable '%s' of type '%s' " +
+    "with expression of type '%s'.";
 
   public static final String TYPE_REF_ASSIGNMENT_ERROR_MSG_FORMAT = "The initialization expression for variable " +
     "'%s' represents the type '%s'. As types do not evaluate to values, they can not be used in assignments / " +
@@ -96,7 +96,7 @@ public class VarDeclarationInitializationHasCorrectType
 
       } else if (!SymTypeRelations.isCompatible(varType, initType)) {
         Log.error(ERROR_CODE + " " + String.format(ERROR_MSG_FORMAT,
-            initType.printFullName(), node.getDeclarator().getName(), varType.printFullName()));
+        node.getDeclarator().getName(), varType.printFullName(), initType.printFullName()));
       }
     }
   }
