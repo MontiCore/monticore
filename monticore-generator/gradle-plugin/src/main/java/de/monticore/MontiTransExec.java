@@ -25,11 +25,15 @@ import java.util.Map;
  * This task enables the calling of MontiTrans TFGenTools
  * in a subsequent matter, reducing the class loading by reusing a classloader,
  * while still enabling gradle to control individual files.
- *
+ * <p>
  * Current JVM implementations are slow at loading MontiCore Mill classes,
  * for example loading the CD4CodeTRMill requires ~30seconds on a decent computer.
- *
+ * <p>
  * It behaves similar to the JavaExec task, but does not fork the JVM.
+ * <p>
+ * Known issues:
+ *  - task is not cached
+ *  - stale outputs are not removed
  */
 public abstract class MontiTransExec extends DefaultTask {
 
