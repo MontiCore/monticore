@@ -16,7 +16,9 @@ import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -42,6 +44,12 @@ public abstract class MontiTransExec extends DefaultTask {
 
   @OutputDirectory
   public abstract DirectoryProperty getOutputDir();
+
+  @InputFiles
+  @Optional
+  @PathSensitive(PathSensitivity.RELATIVE)
+  @IgnoreEmptyDirectories
+  public abstract ConfigurableFileCollection getHandWrittenCodeDir();
 
   @Input@Optional
   public abstract Property<Boolean> getUseCache();
@@ -117,10 +125,19 @@ public abstract class MontiTransExec extends DefaultTask {
     }
 
     // Arguments for the TFGen CLI
-    String[] args = {"-i", getInput().get().toString(),
-            "-o", getOutputDir().getAsFile().get().toPath().toString()};
+    List<String> args = new ArrayList<>();
+    args.add("-i");
+    args.add(getInput().get().toString());
+    args.add("-o");
+    args.add(getOutputDir().getAsFile().get().toPath().toString());
 
-    Object[] arg = {args};
+    if (!getHandWrittenCodeDir().isEmpty()) {
+      args.add("-hwc");
+      getHandWrittenCodeDir().forEach(x -> args.add(x.toPath().toString()));
+    }
+
+
+    Object[] arg = {args.toArray(new String[0])};
     // Finally, invoke the static TFGen CLIs main method
     m.invoke(null, arg);
   }

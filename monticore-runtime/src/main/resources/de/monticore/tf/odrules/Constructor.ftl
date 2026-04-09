@@ -1,22 +1,22 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-public ${ast.getClassname()}(List<ASTNode> hostGraph) {
+public ${ast.getJavaClassName()}(List<ASTNode> hostGraph) {
   this.hostGraph = hostGraph;
 }
 
-public ${ast.getClassname()}(ASTNode... hostGraph){
+public ${ast.getJavaClassName()}(ASTNode... hostGraph){
   this.hostGraph = Lists.newArrayList(hostGraph);
 }
 
-public ${ast.getClassname()}(GlobalExtensionManagement glex, ASTNode... hostGraph){
+public ${ast.getJavaClassName()}(GlobalExtensionManagement glex, ASTNode... hostGraph){
   this.hostGraph = Lists.newArrayList(hostGraph);
   this.glex = glex;
 }
 
-public ${ast.getClassname()}(GlobalExtensionManagement glex,ASTNode astNode){
+public ${ast.getJavaClassName()}(GlobalExtensionManagement glex,ASTNode astNode){
   this(astNode,glex);
 }
 
-public ${ast.getClassname()}(ASTNode astNode) {
+public ${ast.getJavaClassName()}(ASTNode astNode) {
   hostGraph = new ArrayList<>();
   hostGraph.add(astNode);
   ReportManager.ReportManagerFactory factory = new ReportManager.ReportManagerFactory() {
@@ -34,7 +34,7 @@ public ${ast.getClassname()}(ASTNode astNode) {
   Reporting.on("${ast.getClassname()}");
 }
 
-public ${ast.getClassname()}(ASTNode astNode, GlobalExtensionManagement glex) {
+public ${ast.getJavaClassName()}(ASTNode astNode, GlobalExtensionManagement glex) {
   hostGraph = new ArrayList<>();
   hostGraph.add(astNode);
   this.glex = glex;
