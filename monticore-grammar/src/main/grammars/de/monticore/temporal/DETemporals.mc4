@@ -1,0 +1,51 @@
+package de.monticore.temporal;
+
+/* Alpha-version: This is intended to become a MontiCore stable grammar. */
+
+/**
+ * This grammar realizes the core interfaces defined in TemporalBasis with the DIN date/time standard.
+ *
+ * These date/time-formats are commonly used in German speaking regions.
+ */
+component grammar DETemporals extends de.monticore.temporal.TemporalBasis {
+
+  interface DEInstant extends Instant;
+
+  interface DEDate extends Date, DEInstant;
+
+  DENumericDate implements DEDate =
+    ((daySource:Digits ".")? monthSource:Digits ".")? yearSource:Digits;
+
+  DEAlphanumericDate implements DEDate, Literal =
+    (daySource:Digits ".")? monthSource:DEMonth yearSource:Digits;
+
+  DETime implements Time, DEInstant, Literal =
+    hourSource:Digits (":" minuteSource:Digits)? (":" secondSource:Digits)? "Uhr";
+
+  nokeyword "Uhr";
+
+  DEDateTime implements DateTime, DEInstant, Literal =
+    date:DEDate time:DETime;
+
+   /**
+     * Defines the German months in their full and abbreviated variant.
+     */
+  DEMonth =
+    month:[ january:"Januar" | january:"Jan."
+    | february:"Februar" | february:"Feb."
+    | march:"März" | march:"Mär."
+    | april:"April" | april:"Apr."
+    | may:"Mai" | may:"Mai."
+    | june:"Juni" | june:"Jun."
+    | july:"Juli" | july:"Jul."
+    | august:"August" | august:"Aug."
+    | september:"September" | september:"Sep."
+    | october:"Oktober" | october:"Okt."
+    | november:"November" | november:"Nov."
+    | december:"Dezember" | december:"Dez." ];
+
+  nokeyword "Januar", "Februar",
+      "April", "Mai", "Juni", "Juli",
+      "August", "September", "Oktober",
+      "November", "Dezember";
+}

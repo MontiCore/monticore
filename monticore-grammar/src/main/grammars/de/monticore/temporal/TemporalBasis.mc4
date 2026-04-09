@@ -1,0 +1,48 @@
+package de.monticore.temporal;
+
+/* Alpha-version: This is intended to become a MontiCore stable grammar. */
+
+/**
+ * This grammar defines the core interfaces for temporal values.
+ *
+ * These interfaces are realized by conservative extensions of this grammar, each covering
+ * a collection of date/time-formats. Currently these extensions are:
+ * - ISOTemporals - Covering the ISO-8601 standard, for international use
+ * - DETemporals - Covering the DIN date/time standard, used in Germany
+ *
+ * To enable the use of temporal values as literals there is also the EscapedTemporalLiterals
+ * extension.
+ */
+component grammar TemporalBasis extends de.monticore.literals.MCCommonLiterals {
+
+  /*========================================================================*/
+  /*=========================== Core Interfaces ============================*/
+  /*========================================================================*/
+
+  /**
+   * A point on the time scale. Sub-interfaces differ in their granularity, e.g. the unit of a Date
+   * is 1 day, while the unit of Time is 1 second.
+   */
+  interface Instant;
+
+  /**
+   * An Instant whose time components can range from centuries to days.
+   */
+  interface Date extends Instant;
+
+  /**
+   * An Instant whose time components can range from hours to fractions of a second.
+   */
+  interface Time extends Instant;
+
+  /**
+   * An Instant which can range over all time components.
+   */
+  interface DateTime extends Instant;
+
+  /**
+   * A length of time.
+   */
+  interface Period;
+
+}

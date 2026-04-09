@@ -1,0 +1,17 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.temporal.parsing;
+
+/**
+ * ATTENTION: This grammar relies on an unpublished version of MontiCore that
+ *            deactivates the NoTokenModeInComponentGrammar-CoCo.
+ */
+
+/**
+ * Test grammar to test the component grammar ISOTemporalExpressions.
+ */
+grammar ISOTemporals4ParsingTest extends
+        de.monticore.temporal.parsing.ISOTemporals4Parsing {
+
+  start ISOTemporal4P;
+
+}
