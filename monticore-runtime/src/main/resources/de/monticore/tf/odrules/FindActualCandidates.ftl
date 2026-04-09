@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-private void findActualCandidates(String peek) {
+protected void findActualCandidates(String peek) {
 <#-- for each object create a methodcall to updates candidates-->
   //update the candidates for the object with the name that is saved in peek
 <#list hierarchyHelper.getMandatoryMatchObjects(ast.getPattern().getLHSObjectsList()) as object><#if !object.isListObject()>
