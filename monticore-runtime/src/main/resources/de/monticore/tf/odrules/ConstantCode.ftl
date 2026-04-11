@@ -7,7 +7,7 @@
   public static boolean optimizeSP = true;
 
   protected List<ASTNode> hostGraph;
-  protected GlobalExtensionManagement glex = new GlobalExtensionManagement();
+  protected GlobalExtensionManagement glex;
   protected List<Match> allMatches;
   protected boolean doReplacementExecuted = false;
   protected boolean isHostGraphDirty = true;
