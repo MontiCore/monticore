@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 
-  private Stack<String> findSearchPlan() {
+  protected Stack<String> findSearchPlan() {
     Stack<String> searchPlan = new Stack<>();
     <#--creates a counter for each object-->
     <#list ast.getPattern().getLHSObjectsList() as object>

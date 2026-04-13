@@ -34,7 +34,7 @@
 <#list mandatoryObjects as object>
 <#--creates a match method for each object-->
   <#if !object.isListObject() >
-    private ${object.getType()} match_${object.getObjectName()}(){
+    protected ${object.getType()} match_${object.getObjectName()}(){
         //test if there are candidates for the object
         while(!${object.getObjectName()}_candidates_temp.isEmpty()){
           if(${object.getObjectName()}_candidates_temp.get(0) instanceof ${object.getType()}) {

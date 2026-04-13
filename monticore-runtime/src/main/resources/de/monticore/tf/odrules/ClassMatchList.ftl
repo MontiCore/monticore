@@ -4,7 +4,7 @@
   <#assign mandatoryObjects = hierarchyHelper.getListChilds(ast.getPattern().getLHSObjectsList(), list)>
   <#assign matchingObjects = hierarchyHelper.getListChilds(ast.getPattern().getMatchingObjectsList(), list)>
 public class Match${list.getObjectName()}{
-  private Match${list.getObjectName()}(
+  protected Match${list.getObjectName()}(
   <#list mandatoryObjects as object>
     <#if !object.isListObject()> ${object.getType()}
     <#else>${object.getListtype()}
@@ -20,19 +20,19 @@ public class Match${list.getObjectName()}{
   </#list>}
   <#list matchingObjects as object>
     <#assign isWithinOpt = hierarchyHelper.isWithinOptionalStructure(object.getObjectName())>
-      private <#if isWithinOpt>Optional<</#if>
+      protected <#if isWithinOpt>Optional<</#if>
     <#if !object.isListObject()> ${object.getType()}
     <#else>${object.getListtype()}>
     </#if>
     <#if isWithinOpt>></#if> ${object.getObjectName()};
-      private List<ASTNode> ${object.getObjectName()}_temp_candidates;
+      protected List<ASTNode> ${object.getObjectName()}_temp_candidates;
   </#list>
-    private Stack<String> backtracking;
+    protected Stack<String> backtracking;
 }
 
   <#list mandatoryObjects as listchild>
   // Method for checkConditions to get the Elements of the List to compare while Matching
-  private List<${listchild.getType()}> get_${listchild.getObjectName()}_temp_cands() {
+  protected List<${listchild.getType()}> get_${listchild.getObjectName()}_temp_cands() {
     List<${listchild.getType()}> ${listchild.getObjectName()} = new ArrayList<${listchild.getType()}>();
     ListIterator ${list.getObjectName()}It = ${list.getObjectName()}_candidates.listIterator();
     while(${list.getObjectName()}It.hasNext()) {
@@ -47,7 +47,7 @@ public class Match${list.getObjectName()}{
   </#list>
 
   //Method for checking if the given object is already matched by the list
-  private boolean isMatchedBy${list.getObjectName()} (ASTNode cand) {
+  protected boolean isMatchedBy${list.getObjectName()} (ASTNode cand) {
     return
   <#list mandatoryObjects as listchild>get_${listchild.getObjectName()}_temp_cands().contains(cand)
     <#if listchild_has_next> || </#if>

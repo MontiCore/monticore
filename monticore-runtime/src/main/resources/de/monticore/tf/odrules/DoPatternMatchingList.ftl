@@ -298,7 +298,7 @@ public boolean doPatternMatching_${structure.getObjectName()}(boolean isParentBa
     return true;
 }
 
-private void clear${structure.getObjectName()}NegativeObjects(){
+protected void clear${structure.getObjectName()}NegativeObjects(){
   <#list mandatoryObjects as object>
     <#if object.isNotObject() && hierarchyHelper.isWithinListStructure(object.getObjectName())>
       ${object.getObjectName()}_cand = null;
