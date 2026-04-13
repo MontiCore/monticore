@@ -21,6 +21,7 @@ fileTree(dir: "$projectDir/src/main/models/statechart/mtr", include: '**/**.mtr'
     TFGenTool = 'mc.testcases.statechart.tr.StatechartTFGenTool'
     input = file(g)
     outputDir = file(_outputDir)
+    getHandWrittenCodeDir().from(file("src/main/java"))
   }
   generateStatechartTRRules.dependsOn("$taskname")
 }
@@ -36,6 +37,7 @@ fileTree(dir: "$projectDir/src/main/models/social/mtr", include: '**/**.mtr').ea
     TFGenTool = 'mc.testcases.social.tr.SocialNetworkTFGenTool'
     input = file(g)
     outputDir = file(_outputDir)
+    getHandWrittenCodeDir().from(file("src/main/java"))
   }
   generateSocialNetworkTRRules.dependsOn("$taskname")
 }
@@ -51,6 +53,7 @@ fileTree(dir: "$projectDir/src/main/models/expressiondsl/mtr", include: '**/**.m
     TFGenTool = 'mc.testcases.tr.ExpressionDSLTFGenTool'
     input = file(g)
     outputDir = file(_outputDir)
+    getHandWrittenCodeDir().from(file("src/main/java"))
   }
   generateExpressionDSLTRRules.dependsOn("$taskname")
 }

@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 @SuppressWarnings("unused")
-public class ${ast.getClassname()} extends ODRule {
+public class ${ast.getJavaClassName()} extends ODRule {
 
   ${tc.include("de.monticore.tf.odrules.ClassMatch")}
 

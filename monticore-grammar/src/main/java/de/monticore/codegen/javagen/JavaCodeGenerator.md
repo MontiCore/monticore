@@ -34,7 +34,7 @@ statements ought to be added later in development.
      (CodeGenVisitor for MCCommonLiterals)
 * [JavaGenSymTypeExpressionConverter](JavaGenSymTypeExpressionConverter.java)
   (CodeGenSymTypeExpressionConverter for conversion of types in Java)
-    * [AbstractJavaTypeConverter](AbstractJavaTypeConverter.java)
+    * [AbstractJavaTypeConverter](typeconverter/AbstractJavaTypeConverter.java)
       (ICodeGenSymTypeExpressionConversionHandler with Java utility)
     * [JavaBooleanConversionHandler](typeconverter/JavaBooleanConversionHandler.java)
       (Conversion between boolean types (boxed and unboxed))
