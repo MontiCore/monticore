@@ -13,8 +13,8 @@ import de.monticore.temporal.parsing.isotemporals4parsing._visitor.ISOTemporals4
 public class ConvertToISOTemporals implements ISOTemporals4ParsingVisitor2,
     ISOTemporals4ParsingHandler {
   protected ASTNode result;
-  private ASTSign currentSign;
-  private ISOTemporals4ParsingTraverser traverser;
+  protected ASTSign currentSign;
+  protected ISOTemporals4ParsingTraverser traverser;
   
   @Override
   public ISOTemporals4ParsingTraverser getTraverser() {
