@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.temporal;
 
 import org.junit.jupiter.params.provider.Arguments;

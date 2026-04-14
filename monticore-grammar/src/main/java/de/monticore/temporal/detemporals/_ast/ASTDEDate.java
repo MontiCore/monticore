@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.temporal.detemporals._ast;
 
 import java.time.temporal.ChronoField;

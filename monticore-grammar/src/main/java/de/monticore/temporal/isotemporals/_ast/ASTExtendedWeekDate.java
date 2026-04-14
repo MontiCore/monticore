@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.temporal.isotemporals._ast;
 
 import static de.monticore.literals.MCLiteralsDecoder.decodeNat;
