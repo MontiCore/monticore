@@ -16,7 +16,6 @@ import java.util.stream.Stream;
 
 /**
  * Test cases taken from ISO 8601-1.
- * TODO MSm test against Java's date/ time instances
  */
 public class ISOTemporals4ParsingTest {
 
