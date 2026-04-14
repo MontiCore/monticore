@@ -20,7 +20,6 @@ public class ISOTemporals2ndParser implements ISOTemporalsVisitor2 {
   protected ISOTemporals4ParsingParser parser;
   
   public ISOTemporals2ndParser() {
-    ISOTemporals4ParsingMill.init();
     parser = ISOTemporals4ParsingMill.parser();
   }
   
