@@ -294,11 +294,26 @@ public class GrammarScopesGenitor extends GrammarScopesGenitorTOP {
     for (ASTGrammarReference ref : astGrammar.getSupergrammarList()) {
       final String superGrammarName = getQualifiedName(ref.getNameList());
 
-      final MCGrammarSymbolSurrogate superGrammar = new MCGrammarSymbolSurrogate(
-          superGrammarName);
-      superGrammar.setEnclosingScope(getCurrentScope().orElse(null));
+      IGrammarScope enclosingScope = getCurrentScope().orElse(null);
 
-      grammarSymbol.addSuperGrammar(superGrammar);
+      grammarSymbol.addSuperGrammarSupplier(() -> {
+        // TODO: This code is currently generated: TODO: generate a supplier?
+        Log.debug("Load full information of '" + superGrammarName + "' (Kind " + "de.monticore.grammar.grammar._symboltable.MCGrammarSymbol" + ").", MCGrammarSymbolSurrogate.class.getSimpleName());
+        if(!(enclosingScope instanceof de.monticore.grammar.grammar._symboltable.IGrammarScope)){
+          Log.error("0xA4070x84660 The enclosingScope needs to be a subtype of de.monticore.grammar.grammar._symboltable.IGrammarScope.");
+        }
+        Optional<de.monticore.grammar.grammar._symboltable.MCGrammarSymbol> resolvedSymbol = ((de.monticore.grammar.grammar._symboltable.IGrammarScope) enclosingScope).resolveMCGrammar(superGrammarName);
+
+        if (resolvedSymbol.isPresent()) {
+          Log.debug("Loaded full information of '" + superGrammarName + "' successfully.",
+                  MCGrammarSymbolSurrogate.class.getSimpleName());
+          return resolvedSymbol.get();
+        } else {
+          Log.error("0xA1038 " + MCGrammarSymbolSurrogate.class.getSimpleName() + " Could not load full information of '" +
+                  superGrammarName + "' (Kind " + "de.monticore.grammar.grammar._symboltable.MCGrammarSymbol" + ").");
+          return null;
+        }
+      });
     }
   }
 

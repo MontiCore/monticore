@@ -14,6 +14,8 @@ import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.se_rwth.commons.Names;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Supplier;
 
 import static com.google.common.collect.ImmutableList.copyOf;
 import static java.util.Optional.ofNullable;
@@ -23,7 +25,7 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
 
   public static final String DEFAULT_MODE = "DEFAULT_MODE";
 
-  protected final List<MCGrammarSymbolSurrogate> superGrammars = new ArrayList<>();
+  protected final List<Supplier<MCGrammarSymbol>> superGrammars = new ArrayList<>();
 
   protected Map<String, Collection<String>> tokenModes = Maps.newHashMap();
 
@@ -63,14 +65,17 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
     return ofNullable(startProd);
   }
 
-  public List<MCGrammarSymbolSurrogate> getSuperGrammars() {
-    return copyOf(superGrammars);
+  /**
+   * With the (planned) removal of SymbolSurrogates, real symbols are already returned
+   * @deprecated {@link #getSuperGrammarSymbols()}
+   */
+  @Deprecated
+  public List<MCGrammarSymbol> getSuperGrammars() {
+    return this.getSuperGrammarSymbols();
   }
 
   public List<MCGrammarSymbol> getSuperGrammarSymbols() {
-    return copyOf(superGrammars.stream()
-            .map(g -> g.lazyLoadDelegate())
-            .collect(toList()));
+    return superGrammars.stream().map(Supplier::get).collect(toList());
   }
 
   public List<MCGrammarSymbol> getAllSuperGrammars() {
@@ -83,8 +88,12 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
     return copyOf(supGrammars);
   }
 
-  public void addSuperGrammar(MCGrammarSymbolSurrogate superGrammarRef) {
+  public void addSuperGrammar(Supplier<MCGrammarSymbol> superGrammarRef) {
     this.superGrammars.add(Preconditions.checkNotNull(superGrammarRef));
+  }
+
+  public void addSuperGrammarSupplier(Supplier<MCGrammarSymbol> superGrammarRef) {
+    this.superGrammars.add(memoize(Preconditions.checkNotNull(superGrammarRef)));
   }
 
   public Collection<ProdSymbol> getProds() {
@@ -115,7 +124,7 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
     final Map<String, ProdSymbol> map = new LinkedHashMap<>();
 
     for (int i = superGrammars.size() - 1; i >= 0; i--) {
-      final MCGrammarSymbol superGrammar = superGrammars.get(i).lazyLoadDelegate();
+      final MCGrammarSymbol superGrammar = superGrammars.get(i).get();
       Optional<ProdSymbol> inheritedProd = superGrammar.getProdWithInherited(ruleName);
       if (inheritedProd.isPresent()) {
         return inheritedProd;
@@ -129,9 +138,9 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
     final Map<String, ProdSymbol> ret = new LinkedHashMap<>();
 
     for (int i = superGrammars.size() - 1; i >= 0; i--) {
-      final MCGrammarSymbolSurrogate superGrammarRef = superGrammars.get(i);
+      final MCGrammarSymbol superGrammar = superGrammars.get(i).get();
 
-      for (ProdSymbol prod:superGrammarRef.lazyLoadDelegate().getProdsWithInherited().values()) {
+      for (ProdSymbol prod:superGrammar.getProdsWithInherited().values()) {
         if (ret.containsKey(prod.getName())) {
           ProdSymbol superProd = ret.get(prod.getName());
           if (MCGrammarSymbolTableHelper.getAllSuperProds(prod).contains(superProd)) {
@@ -154,9 +163,9 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
     final Collection<String> ret = Sets.newHashSet();
 
     for (int i = superGrammars.size() - 1; i >= 0; i--) {
-      final MCGrammarSymbolSurrogate superGrammarRef = superGrammars.get(i);
+      final MCGrammarSymbol superGrammarRef = superGrammars.get(i).get();
 
-      ret.addAll(superGrammarRef.lazyLoadDelegate().getTokenRulesWithInherited());
+      ret.addAll(superGrammarRef.getTokenRulesWithInherited());
     }
     forEachSplitRules(t -> ret.add(t));
     return ret;
@@ -166,9 +175,9 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
     final Collection<String> ret = Sets.newHashSet();
 
     for (int i = superGrammars.size() - 1; i >= 0; i--) {
-      final MCGrammarSymbolSurrogate superGrammarRef = superGrammars.get(i);
+      final MCGrammarSymbol superGrammarRef = superGrammars.get(i).get();
 
-      ret.addAll(superGrammarRef.lazyLoadDelegate().getKeywordRulesWithInherited());
+      ret.addAll(superGrammarRef.getKeywordRulesWithInherited());
     }
     forEachNoKeywords(t -> ret.add(t));
     return ret;
@@ -320,5 +329,18 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
     } else {
       this.replacedKeywords.put(keyword, Sets.newHashSet(additionalKeywords));
     }
+  }
+
+  // TODO: Move me elsewhere
+  public static <T> Supplier<T> memoize(Supplier<T> delegate) {
+    AtomicReference<T> value = new AtomicReference<>();
+    return () -> {
+      T val = value.get();
+      if (val == null) {
+        val = value.updateAndGet(cur -> cur == null ?
+                Objects.requireNonNull(delegate.get()) : cur);
+      }
+      return val;
+    };
   }
 }

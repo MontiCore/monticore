@@ -5,12 +5,13 @@ import com.google.common.base.Preconditions;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class MCGrammarSymbolBuilder extends MCGrammarSymbolBuilderTOP {
 
-  protected final List<MCGrammarSymbolSurrogate> superGrammars = new ArrayList<>();
+  protected final List<Supplier<MCGrammarSymbol>> superGrammars = new ArrayList<>();
 
-  public void addSuperGrammar(MCGrammarSymbolSurrogate superGrammarRef) {
+  public void addSuperGrammarSupplier(Supplier<MCGrammarSymbol> superGrammarRef) {
     this.superGrammars.add(Preconditions.checkNotNull(superGrammarRef));
   }
 
