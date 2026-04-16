@@ -17,6 +17,7 @@ import de.monticore.temporal.timedactions.TimedActionsMill;
 import de.monticore.temporal.timedactions._ast.ASTActionSequence;
 import de.monticore.temporal.timedactions._ast.ASTTimedAction;
 import de.monticore.temporal.timedactions._parser.TimedActionsParser;
+import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -24,6 +25,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
@@ -354,7 +357,7 @@ public class TimedActionsTest {
   public void testGermanKeywords(String filePath) {
     List<String> undesiredKeywords = new ArrayList<>(List.of("Uhr", "Januar", "Februar",
         "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"));
-    
+    Log.warn("[PATHDEBUG] Test location: " + Paths.get("").toAbsolutePath());
     ASTActionSequence ast = Assertions.assertDoesNotThrow(() -> parser.parse(filePath).orElseThrow());
     ASTMCJavaBlock statementBlock = (ASTMCJavaBlock) ast.getTimedAction(0).getAction().getMCStatement();
     for (ASTMCBlockStatement statement : statementBlock.getMCBlockStatementList()) {
