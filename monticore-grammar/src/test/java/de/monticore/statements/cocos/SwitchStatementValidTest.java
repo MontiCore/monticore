@@ -92,7 +92,7 @@ class SwitchStatementValidTest {
   void testSwitchEnumConstantsValid(String expr) throws IOException {
     // Given
     IMCCommonStatementsArtifactScope imported =
-      new MCCommonStatementsSymbols2Json().load("src/test/resources/de/monticore/statements/Enum.sym");
+      new MCCommonStatementsSymbols2Json().load("target/resources/test/de/monticore/statements/Enum.sym");
     TestMCCommonStatementsMill.globalScope().addSubScope(imported);
 
     VariableSymbol variable = TestMCCommonStatementsMill.variableSymbolBuilder()
@@ -123,7 +123,7 @@ class SwitchStatementValidTest {
   void testSwitchEnumConstantsInvalid(String expr, String error) throws IOException {
     // Given
     IMCCommonStatementsArtifactScope imported =
-      new MCCommonStatementsSymbols2Json().load("src/test/resources/de/monticore/statements/Enum.sym");
+      new MCCommonStatementsSymbols2Json().load("target/resources/test/de/monticore/statements/Enum.sym");
     TestMCCommonStatementsMill.globalScope().addSubScope(imported);
 
     VariableSymbol variable = TestMCCommonStatementsMill.variableSymbolBuilder()
