@@ -25,11 +25,14 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @TestWithMCLanguage(TimedActionsMill.class)
 public class TimedActionsTest {
@@ -336,7 +339,7 @@ public class TimedActionsTest {
         .getExpression(0))
         .getRight())
         .getLiteral();
-    Assertions.assertEquals(1,
+    assertEquals(1,
         Stream.of(
             temporalSubExpression instanceof ASTEscapedTemporalLiteral,
             temporalSubExpression instanceof ASTInstant,
@@ -358,6 +361,8 @@ public class TimedActionsTest {
     List<String> undesiredKeywords = new ArrayList<>(List.of("Uhr", "Januar", "Februar",
         "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"));
     Log.warn("[PATHDEBUG] Test location: " + Paths.get("").toAbsolutePath());
+    Log.warn("[PATHDEBUG] Filepath: " + new File(filePath).getAbsolutePath());
+    assertEquals(0, Log.getFindingsCount());
     ASTActionSequence ast = Assertions.assertDoesNotThrow(() -> parser.parse(filePath).orElseThrow());
     ASTMCJavaBlock statementBlock = (ASTMCJavaBlock) ast.getTimedAction(0).getAction().getMCStatement();
     for (ASTMCBlockStatement statement : statementBlock.getMCBlockStatementList()) {
