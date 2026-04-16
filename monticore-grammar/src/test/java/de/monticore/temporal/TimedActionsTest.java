@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static de.monticore.runtime.junit.MCAssertions.assertNoFindings;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @TestWithMCLanguage(TimedActionsMill.class)
@@ -362,7 +363,7 @@ public class TimedActionsTest {
         "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"));
     Log.warn("[PATHDEBUG] Test location: " + Paths.get("").toAbsolutePath());
     Log.warn("[PATHDEBUG] Filepath: " + new File(filePath).getAbsolutePath());
-    assertEquals(0, Log.getFindingsCount());
+    assertNoFindings();
     ASTActionSequence ast = Assertions.assertDoesNotThrow(() -> parser.parse(filePath).orElseThrow());
     ASTMCJavaBlock statementBlock = (ASTMCJavaBlock) ast.getTimedAction(0).getAction().getMCStatement();
     for (ASTMCBlockStatement statement : statementBlock.getMCBlockStatementList()) {
