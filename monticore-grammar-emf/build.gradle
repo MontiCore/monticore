@@ -84,19 +84,6 @@ generateTestMCGrammars {
 
 test {
   useJUnitPlatform()
-  exclude '**/CommentsOnASTTest.class'
-  exclude '**/SwitchStatementValidTest.class'
-  exclude '**/GrammarInheritanceCycleTest.class'
-  exclude '**/GrammarNameEqualsFileNameTest.class'
-  exclude '**/MCGrammarParserTest.class'
-  exclude '**/MCGrammarPrettyPrinterTest.class'
-  exclude '**/SynthesizeSymTypeFromMCBasicTypesTest.class'
-  exclude '**/SynthesizeSymTypeFromMCCollectionTypesTest.class'
-  exclude '**/SynthesizeSymTypeFromMCSimpleGenericTypesTest.class'
-  exclude '**/SynthesizeSymTypeFromMCFullGenericTypesTest.class'
-  exclude '**/SynthesizeSymTypeFromMCArrayTypesTest.class'
-  exclude '**/MCType2SymTypeExpressionTest.class'
-  exclude '**/ComponentTypeSymbolDeSerTest.class'
 }
 
 
