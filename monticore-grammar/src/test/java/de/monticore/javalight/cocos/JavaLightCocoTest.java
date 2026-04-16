@@ -50,7 +50,7 @@ public abstract class JavaLightCocoTest {
 
     globalScope = TestJavaLightMill.globalScope();
     globalScope.getSymbolPath().addEntry(Paths.get("src/test/resources"));
-    globalScope.getSymbolPath().addEntry(Paths.get("target/test/resources"));
+    globalScope.getSymbolPath().addEntry(Paths.get("target/resources/test"));
   }
 
   protected void testValid(String fileName, String methodName, JavaLightCoCoChecker checker) {

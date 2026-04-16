@@ -18,7 +18,7 @@ public class GrammarGlobalScopeTestFactory {
     scope.clear();
     scope.setFileExt("mc4");
     scope.getSymbolPath().addEntry(Paths.get("src/test/resources"));
-    scope.getSymbolPath().addEntry(Paths.get("target/test/resources"));
+    scope.getSymbolPath().addEntry(Paths.get("target/resources/test"));
     return (Grammar_WithConceptsGlobalScope) scope;
   }
 

@@ -50,7 +50,7 @@ tasks.register('copyTest', Copy) {
 
 tasks.register('copyTestResources', Copy) {
   from "${project(':monticore-grammar').projectDir}/src/test/resources"
-  into layout.buildDirectory.dir("test/resources")
+  into layout.buildDirectory.dir("resources/test")
 }
 
 def grammarDir = "${project(':monticore-grammar').projectDir}/src/main/grammars"
