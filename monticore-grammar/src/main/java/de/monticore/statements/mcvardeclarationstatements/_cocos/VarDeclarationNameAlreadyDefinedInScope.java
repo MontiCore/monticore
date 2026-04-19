@@ -9,13 +9,13 @@ import java.util.List;
 
 /**
  * Checks whether the variable name has already been defined in the local scope.
- * Logs an error for _each_ variable declaration (with the same name).
+ * Logs an error only for declarations after the first declaration with the same name.
  */
 public class VarDeclarationNameAlreadyDefinedInScope implements MCVarDeclarationStatementsASTVariableDeclaratorCoCo {
 
   /**
    * Indicates that the name of the variable has already been used in the scope
-   * This will produce one error for _each_ variable declaration (with the same name)
+    * This will produce one error for each redeclaration after the first declaration.
    */
   public static final String ERROR_CODE = "0xA0923";
 
@@ -40,7 +40,12 @@ public class VarDeclarationNameAlreadyDefinedInScope implements MCVarDeclaration
         (v) -> v != node.getDeclarator().getSymbol()
     );
 
-    if (!localVarSymbols.isEmpty()) {
+    boolean hasPreviousDeclaration = localVarSymbols.stream().anyMatch(
+      v -> !v.isPresentAstNode()
+        || v.getAstNode().get_SourcePositionStart().compareTo(node.get_SourcePositionStart()) < 0
+    );
+
+    if (hasPreviousDeclaration) {
       Log.error(ERROR_CODE + " " + String.format(ERROR_MSG_FORMAT,
           node.getDeclarator().getName()),
           node.get_SourcePositionStart(), node.get_SourcePositionEnd());

@@ -73,7 +73,6 @@ public class VarDeclarationNameAlreadyDefinedInScopeTest {
 
     // Then
     MCAssertions.assertHasFindingStartingWith(VarDeclarationNameAlreadyDefinedInScope.ERROR_CODE);
-    MCAssertions.assertHasFindingStartingWith(VarDeclarationNameAlreadyDefinedInScope.ERROR_CODE);
     MCAssertions.assertNoFindings();
   }
 
@@ -86,7 +85,6 @@ public class VarDeclarationNameAlreadyDefinedInScopeTest {
     checker.checkAll(astDecl);
 
     // Then
-    MCAssertions.assertHasFindingStartingWith(VarDeclarationNameAlreadyDefinedInScope.ERROR_CODE);
     MCAssertions.assertHasFindingStartingWith(VarDeclarationNameAlreadyDefinedInScope.ERROR_CODE);
     MCAssertions.assertHasFindingStartingWith(VarDeclarationNameAlreadyDefinedInScope.ERROR_CODE);
     MCAssertions.assertNoFindings();
