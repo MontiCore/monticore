@@ -26,14 +26,14 @@ public class SwitchStatementValid implements MCCommonStatementsASTSwitchStatemen
   public static final String ERROR_CODE = "0xA0917";
 
   public static final String ERROR_MSG_FORMAT =
-    "Switch expression in the switch-statement must be " +
+    " Switch expression in the switch-statement must be " +
       "char, byte, short, int, Character, Byte, Short, " +
       "Integer, or an enum type.";
 
   public static final String CASE_ERROR_CODE = "0xA0925";
 
   public static final String CASE_ERROR_MSG_FORMAT =
-    "Switch case label '%s' is not compatible with the switch expression type '%s'.";
+    " Case value of type '%s' is not compatible with switch expression type '%s'.";
 
   protected final Deque<SymTypeExpression> switchExpressionTypes = new ArrayDeque<>();
 
@@ -68,7 +68,7 @@ public class SwitchStatementValid implements MCCommonStatementsASTSwitchStatemen
     SymTypeExpression result = calculateSwitchExpressionType(node);
 
     if (!isSwitchExpressionTypeValid(result)) {
-      Log.error(ERROR_CODE + ERROR_MSG_FORMAT, node.get_SourcePositionStart());
+      Log.error(ERROR_CODE + ERROR_MSG_FORMAT, node.get_SourcePositionStart(), node.get_SourcePositionEnd());
     }
 
   }
@@ -89,9 +89,8 @@ public class SwitchStatementValid implements MCCommonStatementsASTSwitchStatemen
       if (isEnumConstantOfSwitchType(enumConstant, switchType)) {
         return;
       }
-      logIncompatibleCaseLabel(
-        enumConstant,
-        switchType,
+      Log.error(
+        CASE_ERROR_CODE + " " + String.format(CASE_ERROR_MSG_FORMAT, enumConstant, switchType.printFullName()),
         node.getConstant().get_SourcePositionStart(),
         node.getConstant().get_SourcePositionEnd()
       );
@@ -104,9 +103,7 @@ public class SwitchStatementValid implements MCCommonStatementsASTSwitchStatemen
     }
 
     if (!SymTypeRelations.isCompatible(switchType, caseType)) {
-      logIncompatibleCaseLabel(
-        caseType.printFullName(),
-        switchType,
+      Log.error(CASE_ERROR_CODE + " " + String.format(CASE_ERROR_MSG_FORMAT, caseType.printFullName(), switchType.printFullName()),
         node.getConstant().get_SourcePositionStart(),
         node.getConstant().get_SourcePositionEnd()
       );
@@ -125,9 +122,8 @@ public class SwitchStatementValid implements MCCommonStatementsASTSwitchStatemen
     }
 
     if (!isEnumConstantOfSwitchType(node.getEnumConstant(), switchType)) {
-      logIncompatibleCaseLabel(
-        node.getEnumConstant(),
-        switchType,
+      Log.error(
+        CASE_ERROR_CODE + " " + String.format(CASE_ERROR_MSG_FORMAT, node.getEnumConstant(), switchType.printFullName()),
         node.get_SourcePositionStart(),
         node.get_SourcePositionEnd()
       );
@@ -170,23 +166,6 @@ public class SwitchStatementValid implements MCCommonStatementsASTSwitchStatemen
       .asOOSymbolsOOType(switchType.getTypeInfo());
     return enumType.getFieldList(enumConstant).stream()
       .anyMatch(field -> SymTypeRelations.isCompatible(switchType, field.getType()));
-  }
-
-  protected void logIncompatibleCaseLabel(
-      String caseLabel,
-      SymTypeExpression switchType,
-      de.se_rwth.commons.SourcePosition start,
-      de.se_rwth.commons.SourcePosition end
-  ) {
-    Log.error(
-      CASE_ERROR_CODE + " " + String.format(
-        CASE_ERROR_MSG_FORMAT,
-        caseLabel,
-        switchType.printFullName()
-      ),
-      start,
-      end
-    );
   }
 
   public boolean isEnumMember(SymTypeExpression ste) {
