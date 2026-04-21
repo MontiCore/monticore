@@ -149,4 +149,63 @@ public class SwitchStatementValidTest {
     Assertions.assertEquals(1, Log.getFindings().size());
     Assertions.assertTrue(Log.getFindings().get(0).getMsg().startsWith(SwitchStatementValid.ERROR_CODE));
   }
+
+  @Test
+  public void testSwitchByteAndShort() throws IOException {
+    VariableSymbol byteVar = TestMCCommonStatementsMill.variableSymbolBuilder()
+        .setName("b")
+        .setType(SymTypeExpressionFactory.createPrimitive("byte"))
+        .build();
+    TestMCCommonStatementsMill.globalScope().getVariableSymbols().put(byteVar.getName(), byteVar);
+
+    VariableSymbol shortVar = TestMCCommonStatementsMill.variableSymbolBuilder()
+        .setName("s")
+        .setType(SymTypeExpressionFactory.createPrimitive("short"))
+        .build();
+    TestMCCommonStatementsMill.globalScope().getVariableSymbols().put(shortVar.getName(), shortVar);
+
+    TestMCCommonStatementsParser parser = TestMCCommonStatementsMill.parser();
+    TestMCCommonStatementsTraverser traverser = TestMCCommonStatementsMill.traverser();
+    traverser.add4ExpressionsBasis(new FlatExpressionScopeSetter(TestMCCommonStatementsMill.globalScope()));
+
+    // Test byte switch
+    Optional<ASTMCBlockStatement> optASTByte = parser.parse_StringMCBlockStatement("switch(b){}");
+    Assertions.assertTrue(optASTByte.isPresent());
+    ASTMCBlockStatement astByte = optASTByte.get();
+    astByte.accept(traverser);
+
+    Log.getFindings().clear();
+    checker.checkAll(astByte);
+    Assertions.assertTrue(Log.getFindings().isEmpty());
+
+    // Test short switch
+    Optional<ASTMCBlockStatement> optASTShort = parser.parse_StringMCBlockStatement("switch(s){}");
+    Assertions.assertTrue(optASTShort.isPresent());
+    ASTMCBlockStatement astShort = optASTShort.get();
+    astShort.accept(traverser);
+
+    Log.getFindings().clear();
+    checker.checkAll(astShort);
+    Assertions.assertTrue(Log.getFindings().isEmpty());
+
+    // Test byte switch with case label
+    Optional<ASTMCBlockStatement> optASTByteCase = parser.parse_StringMCBlockStatement("switch(b){case 1:}");
+    Assertions.assertTrue(optASTByteCase.isPresent());
+    ASTMCBlockStatement astByteCase = optASTByteCase.get();
+    astByteCase.accept(traverser);
+
+    Log.getFindings().clear();
+    checker.checkAll(astByteCase);
+    Assertions.assertTrue(Log.getFindings().isEmpty());
+
+    // Test short switch with case label
+    Optional<ASTMCBlockStatement> optASTShortCase = parser.parse_StringMCBlockStatement("switch(s){case 100:}");
+    Assertions.assertTrue(optASTShortCase.isPresent());
+    ASTMCBlockStatement astShortCase = optASTShortCase.get();
+    astShortCase.accept(traverser);
+
+    Log.getFindings().clear();
+    checker.checkAll(astShortCase);
+    Assertions.assertTrue(Log.getFindings().isEmpty());
+  }
 }
