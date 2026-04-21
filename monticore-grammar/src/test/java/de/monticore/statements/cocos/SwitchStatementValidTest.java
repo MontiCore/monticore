@@ -61,6 +61,7 @@ public class SwitchStatementValidTest {
   public void testValid() throws IOException {
     checkValid("switch(5){}");
     checkValid("switch('c'){}");
+    checkValid("switch(5){case 1:}");
   }
   
   @Test
@@ -68,6 +69,18 @@ public class SwitchStatementValidTest {
     checkInvalid("switch(5.5){}");
     checkInvalid("switch(5.5F){}");
     checkInvalid("switch(false){}");
+    checkInvalid("switch(5){case false:}");
+  }
+
+  @Test
+  public void testInvalidSwitchCaseDoesNotSpamForInvalidSwitchType() throws IOException {
+    TestMCCommonStatementsParser parser = new TestMCCommonStatementsParser();
+    Optional<ASTMCBlockStatement> optAST = parser.parse_StringMCBlockStatement("switch(5.5){case 1:}");
+    Assertions.assertTrue(optAST.isPresent());
+    Log.getFindings().clear();
+    checker.checkAll(optAST.get());
+    Assertions.assertEquals(1, Log.getFindings().size());
+    Assertions.assertTrue(Log.getFindings().get(0).getMsg().startsWith(SwitchStatementValid.ERROR_CODE));
   }
 
   @Test
@@ -104,12 +117,34 @@ public class SwitchStatementValidTest {
     checker.checkAll(ast1);
     Assertions.assertTrue(Log.getFindings().isEmpty());
 
+    Optional<ASTMCBlockStatement> optAST1WithCase = parser.parse_StringMCBlockStatement("switch(c){case Foo:}");
+    Assertions.assertTrue(optAST1WithCase.isPresent());
+    ASTMCBlockStatement ast1WithCase = optAST1WithCase.get();
+
+    ast1WithCase.accept(traverser);
+
+    Log.getFindings().clear();
+    checker.checkAll(ast1WithCase);
+    Assertions.assertTrue(Log.getFindings().isEmpty());
+
+    Optional<ASTMCBlockStatement> optAST1InvalidCase = parser.parse_StringMCBlockStatement("switch(c){case Bar:}");
+    Assertions.assertTrue(optAST1InvalidCase.isPresent());
+    ASTMCBlockStatement ast1InvalidCase = optAST1InvalidCase.get();
+
+    ast1InvalidCase.accept(traverser);
+
+    Log.getFindings().clear();
+    checker.checkAll(ast1InvalidCase);
+    Assertions.assertEquals(1, Log.getFindings().size());
+    Assertions.assertTrue(Log.getFindings().get(0).getMsg().startsWith(SwitchStatementValid.CASE_ERROR_CODE));
+
     Optional<ASTMCBlockStatement> optAST2 = parser.parse_StringMCBlockStatement("switch(d){}");
     Assertions.assertTrue(optAST2.isPresent());
     ASTMCBlockStatement ast2 = optAST2.get();
 
     ast2.accept(traverser);
 
+    Log.getFindings().clear();
     checker.checkAll(ast2);
     Assertions.assertEquals(1, Log.getFindings().size());
     Assertions.assertTrue(Log.getFindings().get(0).getMsg().startsWith(SwitchStatementValid.ERROR_CODE));

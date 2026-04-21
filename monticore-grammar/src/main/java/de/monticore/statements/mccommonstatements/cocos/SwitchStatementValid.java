@@ -2,14 +2,21 @@
 package de.monticore.statements.mccommonstatements.cocos;
 
 import com.google.common.base.Preconditions;
+import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
+import de.monticore.statements.mccommonstatements._ast.ASTConstantExpressionSwitchLabel;
+import de.monticore.statements.mccommonstatements._ast.ASTEnumConstantSwitchLabel;
 import de.monticore.statements.mccommonstatements._ast.ASTSwitchStatement;
 import de.monticore.statements.mccommonstatements._cocos.MCCommonStatementsASTSwitchStatementCoCo;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
+import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.TypeCalculator;
 import de.monticore.types3.SymTypeRelations;
 import de.monticore.types3.TypeCheck3;
 import de.se_rwth.commons.logging.Log;
+
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 public class SwitchStatementValid implements MCCommonStatementsASTSwitchStatementCoCo {
 
@@ -23,6 +30,13 @@ public class SwitchStatementValid implements MCCommonStatementsASTSwitchStatemen
       "char, byte, short, int, Character, Byte, Short, " +
       "Integer, or an enum type.";
 
+  public static final String CASE_ERROR_CODE = "0xA0925";
+
+  public static final String CASE_ERROR_MSG_FORMAT =
+    "Switch case label '%s' is not compatible with the switch expression type '%s'.";
+
+  protected final Deque<SymTypeExpression> switchExpressionTypes = new ArrayDeque<>();
+
   /**
    * @deprecated use default constructor
    */
@@ -35,26 +49,144 @@ public class SwitchStatementValid implements MCCommonStatementsASTSwitchStatemen
     this(null);
   }
 
+  @Override
+  public void visit(ASTSwitchStatement node) {
+    check(node);
+    switchExpressionTypes.push(calculateSwitchExpressionType(node));
+  }
+
+  @Override
+  public void endVisit(ASTSwitchStatement node) {
+    switchExpressionTypes.pop();
+  }
+
   //JLS3 14.11
   @Override
   public void check(ASTSwitchStatement node) {
     Preconditions.checkNotNull(node);
 
-    SymTypeExpression result;
+    SymTypeExpression result = calculateSwitchExpressionType(node);
 
-    if (typeCheck != null) {
-      // support deprecated behavior
-      result = typeCheck.typeOf(node.getExpression());
-    } else {
-      result = TypeCheck3.typeOf(node.getExpression());
-    }
-
-    if (!(SymTypeRelations.isChar(result) || SymTypeRelations.isByte(result)
-      || SymTypeRelations.isShort(result) || SymTypeRelations.isInt(result)
-      || isEnumMember(result))) {
+    if (!isSwitchExpressionTypeValid(result)) {
       Log.error(ERROR_CODE + ERROR_MSG_FORMAT, node.get_SourcePositionStart());
     }
 
+  }
+
+  @Override
+  public void visit(ASTConstantExpressionSwitchLabel node) {
+    if (switchExpressionTypes.isEmpty()) {
+      return;
+    }
+
+    SymTypeExpression switchType = switchExpressionTypes.peek();
+    if (!isSwitchExpressionTypeValid(switchType)) {
+      return;
+    }
+
+    if (isEnumMember(switchType) && node.getConstant() instanceof ASTNameExpression) {
+      String enumConstant = ((ASTNameExpression) node.getConstant()).getName();
+      if (isEnumConstantOfSwitchType(enumConstant, switchType)) {
+        return;
+      }
+      logIncompatibleCaseLabel(
+        enumConstant,
+        switchType,
+        node.getConstant().get_SourcePositionStart(),
+        node.getConstant().get_SourcePositionEnd()
+      );
+      return;
+    }
+
+    SymTypeExpression caseType = calculateCaseLabelType(node, switchType);
+    if (caseType.isObscureType()) {
+      return;
+    }
+
+    if (!SymTypeRelations.isCompatible(switchType, caseType)) {
+      logIncompatibleCaseLabel(
+        caseType.printFullName(),
+        switchType,
+        node.getConstant().get_SourcePositionStart(),
+        node.getConstant().get_SourcePositionEnd()
+      );
+    }
+  }
+
+  @Override
+  public void visit(ASTEnumConstantSwitchLabel node) {
+    if (switchExpressionTypes.isEmpty()) {
+      return;
+    }
+
+    SymTypeExpression switchType = switchExpressionTypes.peek();
+    if (!isSwitchExpressionTypeValid(switchType)) {
+      return;
+    }
+
+    if (!isEnumConstantOfSwitchType(node.getEnumConstant(), switchType)) {
+      logIncompatibleCaseLabel(
+        node.getEnumConstant(),
+        switchType,
+        node.get_SourcePositionStart(),
+        node.get_SourcePositionEnd()
+      );
+    }
+  }
+
+  protected SymTypeExpression calculateSwitchExpressionType(ASTSwitchStatement node) {
+    if (typeCheck != null) {
+      // support deprecated behavior
+      return typeCheck.typeOf(node.getExpression());
+    }
+    return TypeCheck3.typeOf(node.getExpression());
+  }
+
+  protected SymTypeExpression calculateCaseLabelType(
+      ASTConstantExpressionSwitchLabel node,
+      SymTypeExpression switchType
+  ) {
+    if (typeCheck != null) {
+      // support deprecated behavior
+      return typeCheck.typeOf(node.getConstant());
+    }
+    return TypeCheck3.typeOf(node.getConstant(), switchType);
+  }
+
+  protected boolean isSwitchExpressionTypeValid(SymTypeExpression type) {
+    return SymTypeRelations.isChar(type)
+      || SymTypeRelations.isByte(type)
+      || SymTypeRelations.isShort(type)
+      || SymTypeRelations.isInt(type)
+      || isEnumMember(type);
+  }
+
+  protected boolean isEnumConstantOfSwitchType(String enumConstant, SymTypeExpression switchType) {
+    if (!isEnumMember(switchType)) {
+      return false;
+    }
+
+    OOTypeSymbol enumType = OOSymbolsMill.typeDispatcher()
+      .asOOSymbolsOOType(switchType.getTypeInfo());
+    return enumType.getFieldList(enumConstant).stream()
+      .anyMatch(field -> SymTypeRelations.isCompatible(switchType, field.getType()));
+  }
+
+  protected void logIncompatibleCaseLabel(
+      String caseLabel,
+      SymTypeExpression switchType,
+      de.se_rwth.commons.SourcePosition start,
+      de.se_rwth.commons.SourcePosition end
+  ) {
+    Log.error(
+      CASE_ERROR_CODE + " " + String.format(
+        CASE_ERROR_MSG_FORMAT,
+        caseLabel,
+        switchType.printFullName()
+      ),
+      start,
+      end
+    );
   }
 
   public boolean isEnumMember(SymTypeExpression ste) {
