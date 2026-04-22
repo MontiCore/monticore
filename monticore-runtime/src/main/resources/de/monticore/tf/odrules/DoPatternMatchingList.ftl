@@ -101,7 +101,7 @@ public boolean doPatternMatching_${structure.getObjectName()}(boolean isParentBa
           <#elseif object.isOptObject()>
             if(nextNode.equals("${object.getObjectName()}")) {
               // this is an optional object
-              if(doPatternMatching_${object.getObjectName()}(isBacktrackingNegative)) {
+              if(doPatternMatching_${object.getObjectName()}(isBacktracking, isBacktrackingNegative)) {
 
               if(isBacktrackingNegative){
                 isBacktracking = true;
@@ -131,6 +131,7 @@ public boolean doPatternMatching_${structure.getObjectName()}(boolean isParentBa
                 if (backtracking.isEmpty()) {
                   // no match of the pattern can be found
                   foundmatch = false;
+									// Note: We should/could also reset the optional candidates here?
                   break;
                 }
                 else {
@@ -140,6 +141,9 @@ public boolean doPatternMatching_${structure.getObjectName()}(boolean isParentBa
                   searchPlan.push(nextNode);
                   // put the first object of the backtracking stack
                   searchPlan.push(backtracking.pop());
+									// TODO: TEST ME
+									reset_${object.getObjectName()}();
+									this.opt_found_${object.getObjectName()} = false;
                 }
               }
 
