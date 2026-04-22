@@ -11,6 +11,10 @@
   protected List<Match> allMatches;
   protected boolean doReplacementExecuted = false;
   protected boolean isHostGraphDirty = true;
+
+  protected Stack<String> backtracking = new Stack<>();
+  protected Stack<String> backtrackingNegative = new Stack<>();
+
   <#-- for each object creates a _candidates, _candidates_temp nodelist and an _cand object-->
 
   // Matches
