@@ -55,11 +55,18 @@ public boolean doPatternMatching_${structure.getObjectName()}(boolean isParentBa
       }
     }
 
-		boolean hasFoundAtLeastOneMatch = false;
+    boolean hasFoundAtLeastOneMatch = false;
     while(foundmatch) {
       // If the parent was Backtracking don't load a new searchPlan
       if (!isBacktracking) {
         searchPlan = (Stack<String>) searchPlan_${structure.getObjectName()}.clone();
+        // also reset all optional "counter" of opts within this list
+				<#list allObjects as object>
+					<#if object.isOptObject()>
+					opt_found_${object.getObjectName()} = false;
+					</#if>
+				</#list>
+
       }
       while(!searchPlan.isEmpty()){
         nextNode = searchPlan.pop();
@@ -132,7 +139,7 @@ public boolean doPatternMatching_${structure.getObjectName()}(boolean isParentBa
                 if (backtracking.isEmpty()) {
                   // no match of the pattern can be found
                   foundmatch = false;
-									// Note: We should/could also reset the optional candidates here?
+                  // Note: We should/could also reset the optional candidates here?
                   break;
                 }
                 else {
@@ -142,9 +149,9 @@ public boolean doPatternMatching_${structure.getObjectName()}(boolean isParentBa
                   searchPlan.push(nextNode);
                   // put the first object of the backtracking stack
                   searchPlan.push(backtracking.pop());
-									// TODO: TEST ME
-									reset_${object.getObjectName()}();
-									this.opt_found_${object.getObjectName()} = false;
+                  // TODO: TEST ME
+                  reset_${object.getObjectName()}();
+                  this.opt_found_${object.getObjectName()} = false;
                 }
               }
 
@@ -284,7 +291,7 @@ public boolean doPatternMatching_${structure.getObjectName()}(boolean isParentBa
         </#list>
         ${structure.getObjectName()}_candidates.add(match);
         backtracking.clear();
-				hasFoundAtLeastOneMatch = true;
+        hasFoundAtLeastOneMatch = true;
       }
     }
 

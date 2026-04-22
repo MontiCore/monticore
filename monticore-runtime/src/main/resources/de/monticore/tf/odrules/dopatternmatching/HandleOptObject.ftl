@@ -42,9 +42,9 @@ if (nextNode.equals("${optObject.getObjectName()}")) {
       searchPlan.push(nextNode);
       // put the first object of the backtracking stack
       searchPlan.push(backtracking.pop());
-			// TODO: TEST ME
-			reset_${optObject.getObjectName()}();
-			this.opt_found_${optObject.getObjectName()} = false;
+      // TODO: TEST ME
+      reset_${optObject.getObjectName()}();
+      this.opt_found_${optObject.getObjectName()} = false;
     }
   }
 }

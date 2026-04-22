@@ -24,7 +24,7 @@ if (nextNode.equals("${listObject.getObjectName()}_$List")) {
           return false;
         }
       </#if>
-		  foundMatch = false;
+      foundMatch = false;
       break;
     } else {
       // start backtracking
