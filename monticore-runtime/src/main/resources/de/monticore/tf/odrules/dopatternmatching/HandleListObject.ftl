@@ -23,9 +23,8 @@ if (nextNode.equals("${listObject.getObjectName()}_$List")) {
           //Can not find a new Match, signal the parent to backtrack
           return false;
         }
-      <#else>
-        foundMatch = false;
       </#if>
+		  foundMatch = false;
       break;
     } else {
       // start backtracking
