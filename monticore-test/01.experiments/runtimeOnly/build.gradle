@@ -3,7 +3,6 @@ description = 'Experiments: runtimeOnly'
 
 dependencies {
   implementation project(path: ':monticore-runtime')
-  implementation project(path: ':monticore-grammar')
 }
 
 /*
