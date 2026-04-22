@@ -55,6 +55,7 @@ public boolean doPatternMatching_${structure.getObjectName()}(boolean isParentBa
       }
     }
 
+		boolean hasFoundAtLeastOneMatch = false;
     while(foundmatch) {
       // If the parent was Backtracking don't load a new searchPlan
       if (!isBacktracking) {
@@ -283,6 +284,7 @@ public boolean doPatternMatching_${structure.getObjectName()}(boolean isParentBa
         </#list>
         ${structure.getObjectName()}_candidates.add(match);
         backtracking.clear();
+				hasFoundAtLeastOneMatch = true;
       }
     }
 
@@ -295,7 +297,7 @@ public boolean doPatternMatching_${structure.getObjectName()}(boolean isParentBa
 
     // TODO: Do something similar for optionals (but somehow do not loose them?)
 
-    if(${structure.getObjectName()}_candidates.isEmpty()) {
+    if (!hasFoundAtLeastOneMatch) {
       return false;
     }
     ${structure.getObjectName()}_cand = ${structure.getObjectName()}_candidates;
