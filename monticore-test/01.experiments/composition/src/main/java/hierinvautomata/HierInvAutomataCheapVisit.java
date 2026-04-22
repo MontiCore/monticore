@@ -1,6 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
 package hierinvautomata;
-import automata3._ast.ASTInvariant;
 import automata3._visitor.Automata3Visitor2;
 import de.monticore.ast.ASTNode;
 import de.monticore.symboltable.IScope;
@@ -14,6 +13,7 @@ import expression._visitor.ExpressionVisitor2;
 import hierinvautomata._ast.ASTStateBody;
 import hierinvautomata._visitor.HierInvAutomataVisitor2;
 import invautomata._ast.ASTAutomaton;
+import invautomata._ast.ASTInvariant;
 import invautomata._ast.ASTTransition;
 import invautomata._visitor.InvAutomataVisitor2;
 
