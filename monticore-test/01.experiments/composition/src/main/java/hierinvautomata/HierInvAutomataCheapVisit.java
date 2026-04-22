@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package hierinvautomata;
-import automata3._ast.ASTInvariant;
+import automata3._ast.ASTLogicInv;
 import automata3._visitor.Automata3Visitor2;
 import de.monticore.ast.ASTNode;
 import de.monticore.symboltable.IScope;
@@ -42,7 +42,7 @@ public class HierInvAutomataCheapVisit
   // Typical visit/endvisit methods:
 
   @Override
-  public void visit(ASTInvariant node) {
+  public void visit(ASTLogicInv node) {
     if(verbose)
       Log.println(" HA-ASTInvariant ");
     else
@@ -50,7 +50,7 @@ public class HierInvAutomataCheapVisit
   }
   
   @Override
-  public void endVisit(ASTInvariant node) {
+  public void endVisit(ASTLogicInv node) {
     if(verbose)
       Log.println("   HA-/Invariant ");
     else 
