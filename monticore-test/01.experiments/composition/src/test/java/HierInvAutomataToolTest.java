@@ -32,7 +32,7 @@ public class HierInvAutomataToolTest {
     // System.out.printf("\n-- Full printed output::\n%s\n--\n", String.join("",p));  // compact alternative
   
     List<String> p = LogStub.getPrints();
-    assertEquals(59, p.size());   // many small prints ...
+    assertEquals(63, p.size());   // many small prints ...
   
     // Check some "[INFO]" outputs
     assertTrue(p.get(0).matches(".*.INFO.  HierIAT HierInvAutomata DSL Tool.*(\r)?\n"), p.get(0));
