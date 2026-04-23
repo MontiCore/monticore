@@ -1,6 +1,7 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.types.mccollectiontypes.types3;
 
+import com.google.common.base.Preconditions;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfGenerics;
@@ -139,7 +140,7 @@ public class MCCollectionSymTypeRelations {
   }
 
   protected static void setDelegate(MCCollectionSymTypeRelations newDelegate) {
-    MCCollectionSymTypeRelations.delegate = Log.errorIfNull(newDelegate);
+    MCCollectionSymTypeRelations.delegate = Preconditions.checkNotNull(newDelegate);
   }
 
   protected static MCCollectionSymTypeRelations getDelegate() {

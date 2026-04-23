@@ -1,3 +1,5 @@
 # All files (*) that git considers to be text (auto)
 # will have normalized (LF) line-endings in the repository.
-*  text=auto eol=lf
+*      text=auto eol=lf
+*.jar  -text
+*.png  -text

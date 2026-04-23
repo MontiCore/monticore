@@ -1,17 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import com.google.common.base.Preconditions;
 import de.monticore.types3.ISymTypeVisitor;
-import de.se_rwth.commons.logging.Log;
 
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.Spliterator;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class SymTypeOfIntersection extends SymTypeExpression {
@@ -22,8 +21,8 @@ public class SymTypeOfIntersection extends SymTypeExpression {
   protected Set<SymTypeExpression> intersectedTypes;
 
   public SymTypeOfIntersection(Collection<? extends SymTypeExpression> types) {
-    Log.errorIfNull(types);
-    this.intersectedTypes = new HashSet<>();
+    Preconditions.checkNotNull(types);
+    this.intersectedTypes = new LinkedHashSet<>();
     this.intersectedTypes.addAll(types);
   }
 

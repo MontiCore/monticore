@@ -11,7 +11,6 @@ import mc.feature.multipletopsymbols.statechart._symboltable.IStatechartArtifact
 import mc.feature.multipletopsymbols.statechart._symboltable.IStatechartGlobalScope;
 import mc.feature.multipletopsymbols.statechart._symboltable.StateSymbol;
 import mc.feature.multipletopsymbols.statechart._symboltable.StatechartSymbol;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -20,8 +19,8 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Optional;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class StatechartResolvingTest {
   
@@ -44,8 +43,8 @@ public class StatechartResolvingTest {
   public void testResolving() throws IOException {
     StatechartParser parser = StatechartMill.parser();
     Optional<ASTSCArtifact> artifact = parser.parse("src/test/resources/mc/feature/multipletopsymbols/MyStatechart.sc");
-    Assertions.assertTrue(artifact.isPresent());
-    Assertions.assertFalse(parser.hasErrors());
+    assertTrue(artifact.isPresent());
+    assertFalse(parser.hasErrors());
 
     IStatechartArtifactScope as = StatechartMill.scopesGenitorDelegator().createFromAST(artifact.get());
     String packageName = String.join(".", artifact.get().getPackageDeclaration().getQualifiedName().getPartList());
@@ -60,14 +59,14 @@ public class StatechartResolvingTest {
     Optional<StateSymbol> t = gs.resolveState("mc.feature.multipletopsymbols.MyStatechart.s.t");
     Optional<StateSymbol> s2 = gs.resolveState("mc.feature.multipletopsymbols.MyStatechart.MySC.s");
     Optional<StateSymbol> u = gs.resolveState("mc.feature.multipletopsymbols.MyStatechart.MySC.u");
-    Assertions.assertTrue(myStatechart.isPresent());
-    Assertions.assertTrue(mySC.isPresent());
-    Assertions.assertTrue(s.isPresent());
-    Assertions.assertTrue(t.isPresent());
-    Assertions.assertTrue(s2.isPresent());
-    Assertions.assertTrue(u.isPresent());
+    assertTrue(myStatechart.isPresent());
+    assertTrue(mySC.isPresent());
+    assertTrue(s.isPresent());
+    assertTrue(t.isPresent());
+    assertTrue(s2.isPresent());
+    assertTrue(u.isPresent());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 

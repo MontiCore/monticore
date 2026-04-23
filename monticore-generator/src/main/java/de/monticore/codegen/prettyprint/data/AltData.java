@@ -10,7 +10,7 @@ import de.monticore.literals.mccommonliterals._ast.ASTConstantsMCCommonLiterals;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -84,7 +84,7 @@ public class AltData implements Comparable<AltData> {
   }
 
   // To add negations
-  protected final Set<String> optionalSet = new HashSet<>(), requiredSet = new HashSet<>();
+  protected final Set<String> optionalSet = new LinkedHashSet<>(), requiredSet = new LinkedHashSet<>();
 
   /**
    * @return set of optionally used AST-elements

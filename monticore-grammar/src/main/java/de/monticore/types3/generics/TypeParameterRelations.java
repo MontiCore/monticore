@@ -1,5 +1,7 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types3.generics;
 
+import com.google.common.base.Preconditions;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeInferenceVariable;
@@ -165,7 +167,7 @@ public abstract class TypeParameterRelations {
   }
 
   protected static void setDelegate(TypeParameterRelations newDelegate) {
-    TypeParameterRelations.delegate = Log.errorIfNull(newDelegate);
+    TypeParameterRelations.delegate = Preconditions.checkNotNull(newDelegate);
   }
 
   protected static TypeParameterRelations getDelegate() {

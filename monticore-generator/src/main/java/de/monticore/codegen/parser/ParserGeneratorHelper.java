@@ -3,6 +3,7 @@
 package de.monticore.codegen.parser;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -69,7 +70,7 @@ public class ParserGeneratorHelper {
    * Constructor for de.monticore.codegen.parser.ParserGeneratorHelper
    */
   public ParserGeneratorHelper(ASTMCGrammar ast, MCGrammarInfo grammarInfo) {
-    Log.errorIfNull(ast);
+    Preconditions.checkNotNull(ast);
     this.astGrammar = ast;
     this.qualifiedGrammarName = astGrammar.getPackageList().isEmpty()
             ? astGrammar.getName()
@@ -83,7 +84,7 @@ public class ParserGeneratorHelper {
   }
 
   public ParserGeneratorHelper(ASTMCGrammar ast, MCGrammarInfo grammarInfo, boolean embeddedJavaCode, Languages lang) {
-    Log.errorIfNull(ast);
+    Preconditions.checkNotNull(ast);
     this.astGrammar = ast;
     this.qualifiedGrammarName = astGrammar.getPackageList().isEmpty()
             ? astGrammar.getName()
@@ -151,7 +152,7 @@ public class ParserGeneratorHelper {
    * @return the name for a lexsymbol that should be used in an Antlr-File
    */
   public String getOrComputeLexSymbolName(String constName) {
-    Log.errorIfNull(constName);
+    Preconditions.checkNotNull(constName);
     if (grammarInfo.getSplitRules().containsKey(constName)) {
       return grammarInfo.getSplitRules().get(constName);
     } else {
@@ -182,7 +183,7 @@ public class ParserGeneratorHelper {
    * @return the name for a lexsymbol that was used in an Antlr-File
    */
   public Optional<String> getCachedLexSymbolName(String constName) {
-    Log.errorIfNull(constName);
+    Preconditions.checkNotNull(constName);
     if (grammarInfo.getSplitRules().containsKey(constName)) {
       return Optional.of(grammarInfo.getSplitRules().get(constName));
     } else {
@@ -579,7 +580,7 @@ public class ParserGeneratorHelper {
    * @return
    */
   public static String getText(ASTNode node) {
-    Log.errorIfNull(node);
+    Preconditions.checkNotNull(node);
 
     if (node instanceof ASTAction) {
       StringBuilder buffer = new StringBuilder();

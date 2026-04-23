@@ -13,6 +13,8 @@ import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.codegen.parser.MCGrammarInfo;
 import de.monticore.codegen.parser.ParserGeneratorHelper;
+import de.monticore.expressions.commonexpressions.CommonExpressionsMill;
+import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.StringHookPoint;
@@ -39,8 +41,10 @@ import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.RuleNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
+import org.codehaus.groovy.tools.shell.IO;
 
 import javax.annotation.Nullable;
+import java.io.IOException;
 import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -137,6 +141,14 @@ public class Grammar2ParseVisitor implements GrammarVisitor2, GrammarHandler {
             CD4C.getInstance().addImport(visitorClass, String.join(".", superg.getFullName().toLowerCase(), "_ast.*")));
 
     visitorClass.addCDMember(cdAttributeFacade.createAttribute(CDModifier.PUBLIC.build(), mcTypeFacade.createIntType(), "depth"));
+
+    ASTExpression initalValue = null;
+    try{
+      initalValue = Grammar_WithConceptsMill.parser().parse_StringExpression("false").orElse(null);
+    } catch (IOException e){
+      Log.error("Error while parsing initial value for continueOnPartialTree", e);
+    }
+    visitorClass.addCDMember(cdAttributeFacade.createAttribute(CDModifier.PUBLIC.build(), mcTypeFacade.createBooleanType(), "continueOnPartialTree", initalValue));
 
     // add visit(ParseTree) -> tree.accept
     ASTCDMethod m;
@@ -403,7 +415,7 @@ public class Grammar2ParseVisitor implements GrammarVisitor2, GrammarHandler {
     }
   }
 
-  protected Set<String> convertMethods = new HashSet<>();
+  protected Set<String> convertMethods = new LinkedHashSet<>();
 
   @Override
   public void handle(ASTLexProd node) {
@@ -656,7 +668,7 @@ public class Grammar2ParseVisitor implements GrammarVisitor2, GrammarHandler {
       throw new IllegalStateException("Missing tmpname " + node.getEnclosingScope().getName());
     } else if (replacedKeywords.containsKey(node.getName())) {
       int nokeywordindex = 0;
-      Map<String, ParseVisitorEntry> entries = new HashMap<>();
+      Map<String, ParseVisitorEntry> entries = new LinkedHashMap<>();
 
       for (String ignored : replacedKeywords.get(node.getName())) {
         // Make a new alternative out of each possible keyword

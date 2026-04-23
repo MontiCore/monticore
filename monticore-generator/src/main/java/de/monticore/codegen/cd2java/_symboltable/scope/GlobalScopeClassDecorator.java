@@ -3,6 +3,7 @@ package de.monticore.codegen.cd2java._symboltable.scope;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDConstructor;
@@ -155,6 +156,9 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
 
     cdClass.addCDMember(createAcceptTraverserMethod(cdClass));
     cdClass.addAllCDMembers(createAcceptTraverserSuperMethods(cdClass));
+
+    // necessary import for Preconditions.checkNotNull in constructors
+    CD4C.getInstance().addImport(cdClass, "com.google.common.base.Preconditions");
 
     return cdClass;
   }

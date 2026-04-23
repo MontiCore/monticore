@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class ValueComparator implements Comparator<String> {
   
-  private Map<String, Integer> data = null;
+  protected Map<String, Integer> data = null;
   
   public ValueComparator(Map<String, Integer> data) {
     this.data = data;

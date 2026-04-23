@@ -1,6 +1,7 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.types3.generics.util;
 
+import com.google.common.base.Preconditions;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeInferenceVariable;
@@ -23,7 +24,6 @@ import de.monticore.types3.generics.constraints.SubTypingConstraint;
 import de.monticore.types3.generics.constraints.TypeCompatibilityConstraint;
 import de.monticore.types3.generics.constraints.TypeEqualityConstraint;
 import de.monticore.types3.util.SymTypeCollectionVisitor;
-import de.monticore.types3.util.SymTypeExpressionComparator;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -1031,7 +1031,7 @@ public class BoundIncorporation {
     List<Constraint> constraints = new ArrayList<>();
     // get all paths
     Map<SymTypeExpression, List<List<SymTypeExpression>>> startType2Paths =
-        new TreeMap<>(new SymTypeExpressionComparator());
+        new TreeMap<>();
     for (SymTypeExpression startType : startTypes) {
       startType2Paths.put(startType, getNominalSuperTypePaths(startType));
     }
@@ -1138,12 +1138,14 @@ public class BoundIncorporation {
 
   protected String printConstraints(List<Constraint> constraints) {
     return constraints.stream()
+        .sorted()
         .map(Constraint::print)
         .collect(Collectors.joining(System.lineSeparator()));
   }
 
   protected String printBounds(List<Bound> bounds) {
     return bounds.stream()
+        .sorted()
         .map(Bound::print)
         .collect(Collectors.joining(System.lineSeparator()));
   }
@@ -1160,7 +1162,7 @@ public class BoundIncorporation {
   }
 
   protected static void setDelegate(BoundIncorporation newDelegate) {
-    BoundIncorporation.delegate = Log.errorIfNull(newDelegate);
+    BoundIncorporation.delegate = Preconditions.checkNotNull(newDelegate);
   }
 
   protected static BoundIncorporation getDelegate() {

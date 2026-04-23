@@ -9,6 +9,8 @@ import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisito
 import de.monticore.mcbasics._symboltable.IMCBasicsScope;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsGlobalScope;
+import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.monticore.types.check.SymTypeExpression;
@@ -16,7 +18,6 @@ import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfFunction;
 import de.monticore.types.check.SymTypeOfIntersection;
 import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserFactory;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -30,13 +31,16 @@ import static de.monticore.types3.util.DefsTypesForTests._intSymType;
 import static de.monticore.types3.util.DefsTypesForTests.inScope;
 import static de.monticore.types3.util.DefsTypesForTests.method;
 import static de.monticore.types3.util.DefsTypesForTests.oOtype;
+import static de.monticore.types3.util.DefsTypesForTests.typeVariable;
+import static de.monticore.types3.util.DefsTypesForTests.variable;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * tests whether we can resolve correctly constructors
  * based solely on their Type identifiers,
  * e.g., Foo(1) -> based on Constructor Foo::Foo(int)
- * It mostly tests {@link de.monticore.expressions.expressionsbasis.types3.ExpressionBasisTypeIdAsConstructorTypeVisitor}
- * and {@link de.monticore.expressions.commonexpressions.types3.CommonExpressionsTypeIdAsConstructorTypeVisitor}
+ * It mostly tests {@link de.monticore.expressions.expressionsbasis.types3.ExpressionBasisTypeIdAsConstructorCTTIVisitor}
+ * and {@link de.monticore.expressions.commonexpressions.types3.CommonExpressionsTypeIdAsConstructorCTTIVisitor}
  */
 public class ResolveTypeIdAsConstructorTest extends AbstractTypeVisitorTest {
 
@@ -45,7 +49,7 @@ public class ResolveTypeIdAsConstructorTest extends AbstractTypeVisitorTest {
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
     // replace the typeMapTraverser with an OO-aware variant
-    new CombineExpressionsWithLiteralsTypeTraverserFactory()
+    CombineExpressionsWithLiteralsTypeTraverserFactory
         .initTypeCheck3ForOOWithConstructors();
   }
 
@@ -57,7 +61,7 @@ public class ResolveTypeIdAsConstructorTest extends AbstractTypeVisitorTest {
   // }
   // => test to resolve constructor here
   @Test
-  public void test1() throws IOException {
+  public void test1() {
     IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();
 
     OOTypeSymbol oOType = oOtype("t");
@@ -80,30 +84,30 @@ public class ResolveTypeIdAsConstructorTest extends AbstractTypeVisitorTest {
     // do not find the constructor if we find a function
     SymTypeExpression type =
         calculateTypeWithinScope("t", oOType.getSpannedScope());
-    Assertions.assertEquals("() -> int", type.printFullName());
-    Assertions.assertSame(method, ((SymTypeOfFunction) type).getSymbol());
+    assertEquals("() -> int", type.printFullName());
+    assertSame(method, ((SymTypeOfFunction) type).getSymbol());
 
     // do not find the constructor if we find a function
     type = calculateTypeWithinScope("t.t", gs);
-    Assertions.assertEquals("() -> int", type.printFullName());
-    Assertions.assertSame(method, ((SymTypeOfFunction) type).getSymbol());
+    assertEquals("() -> int", type.printFullName());
+    assertSame(method, ((SymTypeOfFunction) type).getSymbol());
 
     // find the constructor based on the type id
     type = calculateTypeWithinScope("t", gs);
-    Assertions.assertTrue(type.isIntersectionType());
+    assertTrue(type.isIntersectionType());
     Collection<SymTypeExpression> functions =
         ((SymTypeOfIntersection) type).getIntersectedTypeSet();
-    Assertions.assertTrue(functions.stream().allMatch(f -> f.isFunctionType()));
+    assertTrue(functions.stream().allMatch(f -> f.isFunctionType()));
     Collection<SymTypeOfFunction> constructors = functions.stream()
         .map(f -> (SymTypeOfFunction) f)
         .collect(Collectors.toSet());
-    Assertions.assertEquals(2, constructors.size());
-    Assertions.assertTrue(constructors.stream().anyMatch(c -> c.getSymbol() == constructor));
-    Assertions.assertTrue(constructors.stream().anyMatch(c -> c.getSymbol() == constructor2));
-    Assertions.assertTrue(constructors.stream()
+    assertEquals(2, constructors.size());
+    assertTrue(constructors.stream().anyMatch(c -> c.getSymbol() == constructor));
+    assertTrue(constructors.stream().anyMatch(c -> c.getSymbol() == constructor2));
+    assertTrue(constructors.stream()
         .map(SymTypeOfFunction::printFullName)
         .anyMatch(p -> p.equals("() -> t")));
-    Assertions.assertTrue(constructors.stream()
+    assertTrue(constructors.stream()
         .map(SymTypeOfFunction::printFullName)
         .anyMatch(p -> p.equals("t -> t")));
 
@@ -121,7 +125,7 @@ public class ResolveTypeIdAsConstructorTest extends AbstractTypeVisitorTest {
   // }
   // => test to resolve constructor here
   @Test
-  public void test2() throws IOException {
+  public void test2() {
     IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();
 
     OOTypeSymbol oOType = oOtype("t");
@@ -152,25 +156,55 @@ public class ResolveTypeIdAsConstructorTest extends AbstractTypeVisitorTest {
 
     // find the constructor based on the type id
     SymTypeExpression type = calculateTypeWithinScope("t", gs);
-    Assertions.assertTrue(type.isFunctionType());
-    Assertions.assertSame(constructor, ((SymTypeOfFunction) type).getSymbol());
+    assertTrue(type.isFunctionType());
+    assertSame(constructor, ((SymTypeOfFunction) type).getSymbol());
 
     // find the constructor of the inner type,
     // as the constructor of the outer type is filtered out
     type = calculateTypeWithinScope("t.t", gs);
-    Assertions.assertTrue(type.isFunctionType());
-    Assertions.assertSame(innerConstructor2, ((SymTypeOfFunction) type).getSymbol());
+    assertTrue(type.isFunctionType());
+    assertSame(innerConstructor2, ((SymTypeOfFunction) type).getSymbol());
 
     // find the constructor of the inner type,
     // as the constructor of the outer type is filtered out
     type = calculateTypeWithinScope("t", oOType.getSpannedScope());
-    Assertions.assertTrue(type.isFunctionType());
-    Assertions.assertSame(innerConstructor2, ((SymTypeOfFunction) type).getSymbol());
+    assertTrue(type.isFunctionType());
+    assertSame(innerConstructor2, ((SymTypeOfFunction) type).getSymbol());
 
     type = calculateTypeWithinScope("t", innerOOType.getSpannedScope());
-    Assertions.assertEquals("(float -> t.t) & (int -> t.t)", type.printFullName());
+    assertEquals("(float -> t.t) & (int -> t.t)", type.printFullName());
 
     assertNoFindings();
+  }
+
+  // class t<t> {
+  //   public t() {}
+  // }
+  // => test to resolve constructor here using
+  // t<int> a = t();
+  @Test
+  public void resolveTypeIDAsConstructorCTTI() {
+    IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();
+
+    TypeVarSymbol typeVar = typeVariable("t");
+
+    OOTypeSymbol oOType = oOtype("t");
+    inScope(oOType.getSpannedScope(), typeVar);
+    inScope(gs, oOType);
+
+    SymTypeExpression oOTypeSymType =
+        SymTypeExpressionFactory.createGenericsDeclaredType(oOType);
+
+    MethodSymbol constructor = method("t", oOTypeSymType);
+    constructor.setIsConstructor(true);
+    inScope(oOType.getSpannedScope(), constructor);
+
+    // since it is generic, cannot directly check, thus using assignment
+    VariableSymbol assignee = variable("a",
+        SymTypeExpressionFactory.createGenerics(oOType, _intSymType)
+    );
+    inScope(gs, assignee);
+    checkExpr("a = t()", "t<int>");
   }
 
   // Helper
@@ -182,7 +216,7 @@ public class ResolveTypeIdAsConstructorTest extends AbstractTypeVisitorTest {
   protected SymTypeExpression calculateTypeWithinScope(
       String exprStr,
       IMCBasicsScope scope
-  ) throws IOException {
+  ) {
     ASTExpression expr = parseExpr(exprStr);
     generateScopes(expr);
     expr.accept(getExpressionScopeSetter(scope));

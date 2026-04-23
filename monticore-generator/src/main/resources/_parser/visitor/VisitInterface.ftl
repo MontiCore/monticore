@@ -33,7 +33,12 @@ System.err.println(prefix+ctx.start.getInputStream().getText(new org.antlr.v4.ru
         <#sep>else
     </#items>
     else {
-      throw new IllegalStateException("Unable to parse interface. Please report this error."); // This should never happen
+      if(!continueOnPartialTree){
+        // This only happens if an incomplete model is parsed
+        throw new IllegalStateException("Unable to parse interface. Please report this error.");
+      } else {
+        return null;
+      }
     }
     <#else >
       depth--;

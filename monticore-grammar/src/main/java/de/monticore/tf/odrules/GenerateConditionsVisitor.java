@@ -38,14 +38,14 @@ public class GenerateConditionsVisitor implements
   private static final String GET = ".get()";
   private static final String GET_ATTRIBUTE = ".get%s()";
 
-  private List<ASTObjectCondition> objectConditions = new ArrayList<>();
+  protected List<ASTObjectCondition> objectConditions = new ArrayList<>();
 
-  private String objectName = "";
-  private String attrValue = "";
-  private boolean targetOptional = false;
+  protected String objectName = "";
+  protected String attrValue = "";
+  protected boolean targetOptional = false;
 
-  private ASTODObject object;
-  private List<ASTODObject> objectList;
+  protected ASTODObject object;
+  protected List<ASTODObject> objectList;
 
 
   public List<ASTObjectCondition> getObjectConditions() {
@@ -93,7 +93,7 @@ public class GenerateConditionsVisitor implements
       createConditionsForInt(node);
     } else if (node.isPresentList()) {
       createConditionsForListWithoutTarget(node);
-    } else if (!targetObject.isPresent() || !targetObject.get().getName().equals(objectName)) {
+    } else {
       createConditions(node, object, targetObject);
     }
   }
@@ -103,7 +103,7 @@ public class GenerateConditionsVisitor implements
     targetOptional = false;
   }
 
-  private void addConditions(ASTObjectCondition... objectCondition) {
+  protected void addConditions(ASTObjectCondition... objectCondition) {
     for (ASTObjectCondition o : objectCondition) {
       if (o.getObjectName() != null && !o.getObjectName().isEmpty()) {
         objectConditions.add(o);
@@ -111,14 +111,19 @@ public class GenerateConditionsVisitor implements
     }
   }
 
-  private void createConditions(ASTODAttribute node, ASTODObject object, Optional<ASTODObject> targetObject) {
+  protected void createConditions(ASTODAttribute node, ASTODObject object, Optional<ASTODObject> targetObject) {
     boolean isOptional = node.isOptional();
     boolean isIterated = node.isIterated();
+    boolean isSameObject = targetObject.isPresent() && targetObject.get().getName().equals(objectName);
 
     ASTObjectCondition objectCondition = ODRuleGenerationMill.objectConditionBuilder().uncheckedBuild();
     objectCondition.setObjectName(objectName);
     ASTObjectCondition secondObjectCondition = ODRuleGenerationMill.objectConditionBuilder().uncheckedBuild();
     String getter = createGetterStatement(node);
+    if (isSameObject) {
+      // replace <objectName>_cand.getAttr() with cand.getAttr()
+      getter = getter.replace(objectName + "_cand", "cand");
+    }
     String condition;
     if (isOptional) {
       condition = format("(!cand.isPresent%s() || ! cand.get%s().equals(%s", capitalize(node.getName()), capitalize(node.getName()), getter);
@@ -129,7 +134,7 @@ public class GenerateConditionsVisitor implements
     }
     objectCondition.setTargetOptional(targetOptional);
     objectCondition.setAttribute(node);
-    if (targetObject.isPresent())
+    if (targetObject.isPresent() && !isSameObject)
       objectCondition.setTarget(targetObject.get());
     else
       objectCondition.setTargetAbsent();
@@ -150,7 +155,7 @@ public class GenerateConditionsVisitor implements
       objectCondition.setConditionString(condition);
     }
     // only if value refers to a different object
-    if (targetObject.isPresent()) {
+    if (targetObject.isPresent() && !isSameObject) {
       if (!createObjectString(attrValue).isEmpty()) {
         ASTDependency dependency = ODRuleGenerationMill.dependencyBuilder().uncheckedBuild();
         dependency.setContent(createObjectString(attrValue));
@@ -178,7 +183,7 @@ public class GenerateConditionsVisitor implements
     addConditions(objectCondition, secondObjectCondition);
   }
 
-  private void createConditionsForListWithoutTarget(ASTODAttribute node) {
+  protected void createConditionsForListWithoutTarget(ASTODAttribute node) {
     ASTObjectCondition objectCondition = ODRuleGenerationMill.objectConditionBuilder().uncheckedBuild();
     objectCondition.setObjectName(objectName);
     StringBuilder conditionString = new StringBuilder(format("(cand.get%sList() == null ",  StringTransformations.capitalize(node.getName())));
@@ -218,7 +223,7 @@ public class GenerateConditionsVisitor implements
   }
 
 
-  private void createConditionsForBoolean(ASTODAttribute node, Optional<ASTODObject> targetObject) {
+  protected void createConditionsForBoolean(ASTODAttribute node, Optional<ASTODObject> targetObject) {
     ASTObjectCondition objectCondition = ODRuleGenerationMill.objectConditionBuilder().uncheckedBuild();
     objectCondition.setObjectName(objectName);
     ASTObjectCondition secondObjectCondition = ODRuleGenerationMill.objectConditionBuilder().uncheckedBuild();
@@ -246,7 +251,7 @@ public class GenerateConditionsVisitor implements
     addConditions(objectCondition, secondObjectCondition);
   }
 
-  private void createConditionsForInt(ASTODAttribute node) {
+  protected void createConditionsForInt(ASTODAttribute node) {
     ASTObjectCondition objectCondition = ODRuleGenerationMill.objectConditionBuilder().uncheckedBuild();
     objectCondition.setObjectName(objectName);
     objectCondition.setConditionString(format("cand.get%s() != %s", capitalize(node.getName()), attrValue));
@@ -362,7 +367,7 @@ public class GenerateConditionsVisitor implements
     }
   }
 
-  private String createSourceObjectCondition(ASTODLink node, String rightObjectName, boolean isIterated, boolean isOptional) {
+  protected String createSourceObjectCondition(ASTODLink node, String rightObjectName, boolean isIterated, boolean isOptional) {
     if (isIterated) {
       return format("!cand.get%sList().contains(%s_cand)",
           Util.makeSingular(node.getRightRole()),
@@ -380,7 +385,7 @@ public class GenerateConditionsVisitor implements
     }
   }
 
-  private String createTargetObjectCondition(ASTODLink node, String leftObjectName, boolean isIterated, boolean isOptional) {
+  protected String createTargetObjectCondition(ASTODLink node, String leftObjectName, boolean isIterated, boolean isOptional) {
     if (isIterated) {
       return format("!%s_cand.get%sList().contains(cand)",
           uncapitalize(leftObjectName),
@@ -397,7 +402,7 @@ public class GenerateConditionsVisitor implements
     }
   }
 
-  private String createGetterStatement(ASTODAttribute attrWithValue) {
+  protected String createGetterStatement(ASTODAttribute attrWithValue) {
     String value = Util.printExpression(attrWithValue.getSingleValue());
     String[] split = value.split(REGEX);
 
@@ -429,14 +434,14 @@ public class GenerateConditionsVisitor implements
     }
 
   }
-  private String createPresentCheckStatement(String getter) {
+  protected String createPresentCheckStatement(String getter) {
     List<String> splits = new ArrayList<>(Splitters.DOT.splitToList(getter));
     splits.set(splits.size() - 1, splits.get(splits.size() - 1).replace("get", "isPresent"));
 
     return Joiners.DOT.join(splits);
   }
 
-  private String createGetterStatementForCand(String statement) {
+  protected String createGetterStatementForCand(String statement) {
     String[] split = statement.split(REGEX);
     if (split.length == 1) {
       return CAND;
@@ -454,7 +459,7 @@ public class GenerateConditionsVisitor implements
     }
   }
 
-  private String createIsStatement(String attrValue, boolean forCand) {
+  protected String createIsStatement(String attrValue, boolean forCand) {
     String[] split = attrValue.split(REGEX);
     StringBuilder result;
     if (forCand) {
@@ -472,7 +477,7 @@ public class GenerateConditionsVisitor implements
     return result.toString();
   }
 
-  private String createObjectString(String statement) {
+  protected String createObjectString(String statement) {
     String[] split = statement.split(REGEX);
     if (split[0].startsWith("{")) {
       return split[0].substring(1);
@@ -480,7 +485,7 @@ public class GenerateConditionsVisitor implements
     return split[0];
   }
 
-  private Optional<ASTODObject> getODObject(String objName) {
+  protected Optional<ASTODObject> getODObject(String objName) {
     for (ASTODObject o : objectList) {
       if (objName.equals(o.getName())) {
         return Optional.of(o);
@@ -489,7 +494,7 @@ public class GenerateConditionsVisitor implements
     return Optional.empty();
   }
 
-  private boolean isObjectWithoutStereoType(ASTODObject object) {
+  protected boolean isObjectWithoutStereoType(ASTODObject object) {
     return !object.hasStereotype(ODRuleStereotypes.LIST)
         && !object.hasStereotype(ODRuleStereotypes.NOT)
         && !object.hasStereotype(ODRuleStereotypes.OPTIONAL);

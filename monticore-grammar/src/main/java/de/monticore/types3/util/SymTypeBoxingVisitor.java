@@ -10,7 +10,7 @@ import de.monticore.types.check.SymTypePrimitive;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -58,7 +58,7 @@ public class SymTypeBoxingVisitor extends SymTypeDeepCloneVisitor {
    * initializing the maps
    */
   static {
-    Map<String, String> primitiveBoxMap_temp = new HashMap<>();
+    Map<String, String> primitiveBoxMap_temp = new LinkedHashMap<>();
     primitiveBoxMap_temp.put("boolean", "java.lang.Boolean");
     primitiveBoxMap_temp.put("byte", "java.lang.Byte");
     primitiveBoxMap_temp.put("char", "java.lang.Character");
@@ -69,11 +69,11 @@ public class SymTypeBoxingVisitor extends SymTypeDeepCloneVisitor {
     primitiveBoxMap_temp.put("short", "java.lang.Short");
     primitiveBoxMap = Collections.unmodifiableMap(primitiveBoxMap_temp);
 
-    Map<String, String> objectBoxMap_temp = new HashMap<>();
+    Map<String, String> objectBoxMap_temp = new LinkedHashMap<>();
     objectBoxMap_temp.put("String", "java.lang.String");
     objectBoxMap = Collections.unmodifiableMap(objectBoxMap_temp);
 
-    Map<String, String> genericBoxMap_temp = new HashMap<>();
+    Map<String, String> genericBoxMap_temp = new LinkedHashMap<>();
     genericBoxMap_temp.put("Optional", "java.util.Optional");
     genericBoxMap_temp.put("Set", "java.util.Set");
     genericBoxMap_temp.put("List", "java.util.List");

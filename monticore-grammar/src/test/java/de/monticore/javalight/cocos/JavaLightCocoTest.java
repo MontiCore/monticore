@@ -28,6 +28,8 @@ import java.net.URL;
 import java.nio.file.Paths;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public abstract class JavaLightCocoTest {
 
   static protected ITestJavaLightGlobalScope globalScope;
@@ -57,13 +59,13 @@ public abstract class JavaLightCocoTest {
     final MethodSymbol methodSymbol = artifactScope
             .resolveMethod(methodName)
             .orElse(null);
-    Assertions.assertNotNull(methodSymbol);
-    Assertions.assertTrue(methodSymbol.isPresentAstNode());
+    assertNotNull(methodSymbol);
+    assertTrue(methodSymbol.isPresentAstNode());
 
     Log.getFindings().clear();
     checker.checkAll((ASTJavaLightNode) methodSymbol.getAstNode());
 
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   protected void testInvalid(String fileName, String methodName, String code, String message,
@@ -78,16 +80,16 @@ public abstract class JavaLightCocoTest {
     final MethodSymbol methodSymbol = artifactScope
             .resolveMethod(methodName)
             .orElse(null);
-    Assertions.assertNotNull(methodSymbol);
-    Assertions.assertTrue(methodSymbol.isPresentAstNode());
+    assertNotNull(methodSymbol);
+    assertTrue(methodSymbol.isPresentAstNode());
 
     Log.getFindings().clear();
     checker.checkAll((ASTJavaLightNode) methodSymbol.getAstNode());
 
-    Assertions.assertFalse(Log.getFindings().isEmpty());
-    Assertions.assertEquals(numberOfFindings, Log.getFindings().size());
+    assertFalse(Log.getFindings().isEmpty());
+    assertEquals(numberOfFindings, Log.getFindings().size());
     for (Finding f : Log.getFindings()) {
-      Assertions.assertEquals(code + message, f.getMsg());
+      assertEquals(code + message, f.getMsg());
     }
   }
 
@@ -105,7 +107,7 @@ public abstract class JavaLightCocoTest {
           globalScope.addSubScope(artifactScope);
         }
       } catch (IOException e) {
-        Assertions.fail();
+        fail();
       }
     }
   }

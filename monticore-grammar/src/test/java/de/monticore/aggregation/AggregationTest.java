@@ -18,14 +18,13 @@ import de.monticore.aggregation.foo._symboltable.IFooArtifactScope;
 import de.monticore.runtime.junit.AbstractMCTest;
 import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
 
-import static junit.framework.TestCase.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AggregationTest extends AbstractMCTest {
   
@@ -78,14 +77,14 @@ public class AggregationTest extends AbstractMCTest {
     // check dummy symbol is present in local scope
     Optional<DummySymbol> blubSymbol1 = blahSymbolTable.resolveDummy("blahmodel.blubScope1.blubSymbol1");
     
-    Assertions.assertTrue(blubSymbol1.isPresent());
+    assertTrue(blubSymbol1.isPresent());
 //
 //
     
     // check dummy symbol is present in global scope
     Optional<BarSymbol> barSymbol = globalScope.resolveBar("blahmodel.blubScope1.blubSymbol1");
     
-    Assertions.assertTrue(barSymbol.isPresent());
+    assertTrue(barSymbol.isPresent());
 
 
    /* ***************************************************************************************************************
@@ -99,7 +98,7 @@ public class AggregationTest extends AbstractMCTest {
     Optional<ASTBar> fooModel = fooParser.parse_String("bar { blubSymbol1() } name");
     
     // Check foo model is parsed
-    Assertions.assertTrue(fooModel.isPresent());
+    assertTrue(fooModel.isPresent());
     
     // create symbol table for "foo"
     FooScopesGenitorDelegator fooSymbolTableCreator = FooMill.scopesGenitorDelegator();
@@ -107,9 +106,9 @@ public class AggregationTest extends AbstractMCTest {
     
     // check symbol is resolvable
     Optional<BarSymbol> k = fooScope.resolveBar("name");
-    Assertions.assertTrue(k.isPresent());
+    assertTrue(k.isPresent());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @AfterEach

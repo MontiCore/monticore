@@ -8,11 +8,10 @@ import mc.feature.inheritence.inheritence.InheritenceMill;
 import mc.feature.inheritence.inheritence._ast.ASTSub;
 import mc.feature.inheritence.inheritence._ast.ASTSuper;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CloneInheritenceTest extends GeneratorIntegrationsTest {
   
@@ -41,7 +40,7 @@ public class CloneInheritenceTest extends GeneratorIntegrationsTest {
         .uncheckedBuild();
 
     t.deepClone();
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

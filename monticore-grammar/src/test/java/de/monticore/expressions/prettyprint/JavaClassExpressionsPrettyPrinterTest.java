@@ -14,12 +14,13 @@ import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class JavaClassExpressionsPrettyPrinterTest {
 
@@ -41,44 +42,44 @@ public class JavaClassExpressionsPrettyPrinterTest {
   @Test
   public void testPrimaryThisExpression() throws IOException {
     Optional<ASTPrimaryThisExpression> result = parser.parse_StringPrimaryThisExpression("this");
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(result.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
     ASTPrimaryThisExpression ast = result.get();
 
     String output = prettyPrinter.prettyprint(ast);
 
     result = parser.parse_StringPrimaryThisExpression(output);
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(result.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
 
-    Assertions.assertTrue(ast.deepEquals(result.get()));
+    assertTrue(ast.deepEquals(result.get()));
 
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testPrimarySuperExpression() throws IOException {
     Optional<ASTPrimarySuperExpression> result = parser.parse_StringPrimarySuperExpression("super");
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(result.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
     ASTPrimarySuperExpression ast = result.get();
 
     String output = prettyPrinter.prettyprint(ast);
 
     result = parser.parse_StringPrimarySuperExpression(output);
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(result.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
 
-    Assertions.assertTrue(ast.deepEquals(result.get()));
+    assertTrue(ast.deepEquals(result.get()));
 
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testTypeCaseExpression() throws IOException {
     Optional<ASTTypeCastExpression> result = parser.parse_StringTypeCastExpression("(Integer) a");
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(result.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
     ASTTypeCastExpression ast = result.get();
 
     String output = prettyPrinter.prettyprint(ast);
@@ -87,72 +88,72 @@ public class JavaClassExpressionsPrettyPrinterTest {
     // prettyprinter of langauge that fills the external
     String pattern = "^\\(.*\\)a$";
     boolean matches = output.matches(pattern);
-    Assertions.assertEquals(matches, true);
+    assertEquals(matches, true);
   }
 
   @Test
   public void testClassExpression() throws IOException {
     Optional<ASTClassExpression> result = parser.parse_StringClassExpression("Integer.class");
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(result.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
     ASTClassExpression ast = result.get();
 
     String output = prettyPrinter.prettyprint(ast);
 
-    Assertions.assertEquals("Integer.class", output);
+    assertEquals("Integer.class", output);
   }
 
   @Test
   public void testPrimaryGenericInvocationExpressionExpression() throws IOException {
     Optional<ASTPrimaryGenericInvocationExpression> result = parser.parse_StringPrimaryGenericInvocationExpression("<Integer> super(a)");
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(result.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
     ASTPrimaryGenericInvocationExpression ast = result.get();
 
     String output = prettyPrinter.prettyprint(ast);
 
-    Assertions.assertEquals("<Integer>super(a)", output);
+    assertEquals("<Integer>super(a)", output);
   }
 
   @Test
   public void testInstanceofExpression() throws IOException {
     Optional<ASTExpression> a = parser.parse_StringExpression("a");
     Optional<ASTMCType> type = parser.parse_StringMCType("Integer");
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(a.isPresent());
-    Assertions.assertTrue(type.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(a.isPresent());
+    assertTrue(type.isPresent());
     ASTInstanceofExpression result = JavaClassExpressionsMill.instanceofExpressionBuilder()
             .setExpression(a.get())
             .setMCType(type.get())
             .build();
     String output = prettyPrinter.prettyprint(result);
 
-    Assertions.assertEquals("a instanceof Integer", output);
+    assertEquals("a instanceof Integer", output);
   }
 
   @Test
   public void testThisExpression() throws IOException {
     Optional<ASTExpression> a = parser.parse_StringExpression("a");
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(a.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(a.isPresent());
     ASTThisExpression result = JavaClassExpressionsMill.thisExpressionBuilder()
             .setExpression(a.get())
             .build();
 
     String output = prettyPrinter.prettyprint(result);
 
-    Assertions.assertEquals("a.this", output);
+    assertEquals("a.this", output);
 
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testArrayExpression() throws IOException {
     Optional<ASTExpression> a = parser.parse_StringExpression("a");
     Optional<ASTExpression> b = parser.parse_StringExpression("b");
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(a.isPresent());
-    Assertions.assertTrue(b.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(a.isPresent());
+    assertTrue(b.isPresent());
     ASTArrayAccessExpression result = JavaClassExpressionsMill.arrayAccessExpressionBuilder()
             .setExpression(a.get())
             .setIndexExpression(b.get())
@@ -160,18 +161,18 @@ public class JavaClassExpressionsPrettyPrinterTest {
 
     String output = prettyPrinter.prettyprint(result);
 
-    Assertions.assertEquals("a[b]", output);
+    assertEquals("a[b]", output);
 
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testSuperExpression() throws IOException {
     Optional<ASTExpression> a = parser.parse_StringExpression("a");
     Optional<ASTSuperSuffix> b = parser.parse_StringSuperSuffix("(b)");
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(a.isPresent());
-    Assertions.assertTrue(b.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(a.isPresent());
+    assertTrue(b.isPresent());
     ASTSuperExpression result = JavaClassExpressionsMill.superExpressionBuilder()
             .setExpression(a.get())
             .setSuperSuffix(b.get())
@@ -179,17 +180,17 @@ public class JavaClassExpressionsPrettyPrinterTest {
 
     String output = prettyPrinter.prettyprint(result);
 
-    Assertions.assertEquals("a.super(b)", output);
+    assertEquals("a.super(b)", output);
 
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
   @Test
   public void testGenericInvocationExpressionExpression() throws IOException {
     Optional<ASTExpression> a = parser.parse_StringExpression("a");
     Optional<ASTPrimaryGenericInvocationExpression> b = parser.parse_StringPrimaryGenericInvocationExpression("<D> c(b)");
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(a.isPresent());
-    Assertions.assertTrue(b.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(a.isPresent());
+    assertTrue(b.isPresent());
     ASTGenericInvocationExpression result = JavaClassExpressionsMill.genericInvocationExpressionBuilder()
             .setExpression(a.get())
             .setPrimaryGenericInvocationExpression(b.get())
@@ -197,60 +198,60 @@ public class JavaClassExpressionsPrettyPrinterTest {
 
     String output = prettyPrinter.prettyprint(result);
 
-    Assertions.assertEquals("a.<D>c(b)", output);
+    assertEquals("a.<D>c(b)", output);
   }
 
   @Test
   public void testGenericInvocationSuffixThis() throws IOException {
     Optional<ASTGenericInvocationSuffix> result = parser.parse_StringGenericInvocationSuffix("this(a)");
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(result.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
     ASTGenericInvocationSuffix ast = result.get();
 
     String output = prettyPrinter.prettyprint(ast);
 
     result = parser.parse_StringGenericInvocationSuffix(output);
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(result.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
 
-    Assertions.assertTrue(ast.deepEquals(result.get()));
+    assertTrue(ast.deepEquals(result.get()));
 
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testGenericInvocationSuffixSuper() throws IOException {
     Optional<ASTGenericInvocationSuffix> result = parser.parse_StringGenericInvocationSuffix("super(b)");
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(result.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
     ASTGenericInvocationSuffix ast = result.get();
 
     String output = prettyPrinter.prettyprint(ast);
 
     result = parser.parse_StringGenericInvocationSuffix(output);
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(result.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
 
-    Assertions.assertTrue(ast.deepEquals(result.get()));
+    assertTrue(ast.deepEquals(result.get()));
 
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testGenericInvocationSuffixSimple() throws IOException {
     Optional<ASTGenericInvocationSuffix> result = parser.parse_StringGenericInvocationSuffix("a(b)");
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(result.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
     ASTGenericInvocationSuffix ast = result.get();
 
     String output = prettyPrinter.prettyprint(ast);
 
     result = parser.parse_StringGenericInvocationSuffix(output);
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(result.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
 
-    Assertions.assertTrue(ast.deepEquals(result.get()));
+    assertTrue(ast.deepEquals(result.get()));
 
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

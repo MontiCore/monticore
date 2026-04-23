@@ -69,15 +69,18 @@ public class CheckScannerlessTest {
 
 The `@TestWithMCLanguage` annotation sets-up the test for a language.
 Before each test,
- the logger is replaced with a side effect free stub that collects,
- the previous findings cleared,
- and the given mill initialized.
+
+ 1. the logger is replaced with a side effect free stub that collects,  
+ 2. the previous findings cleared, 
+ 3. and the given mill initialized.
+
 After each test, the log must not have any findings present.
-If no Mill setup is desired, the `AbstractMCTest` class provides the same functionality.
+If no Mill setup is desired, 
+the [`AbstractMCTest`](../monticore-runtime/src/testFixtures/java/de/monticore/runtime/junit/AbstractMCTest.java) class provides the same functionality.
 
 In addition to jUnits [`Assertions`](https://docs.junit.org/current/api/org.junit.jupiter.api/org/junit/jupiter/api/Assertions.html), 
 MontiCore provides a [`MCAssertions`](../monticore-runtime/src/testFixtures/java/de/monticore/runtime/junit/MCAssertions.java)
-class for e.g. Log assertions:
+class for e.g., Log assertions:
 
 The notable methods are:
 
@@ -101,6 +104,14 @@ When the generated pretty printer is customized via the TOP-mechanism,
 
 The test functionality of MontiCore is provided by the [test fixture](https://docs.gradle.org/current/userguide/java_testing.html#sec:java_test_fixtures) 
 `testImplementation testFixtures("de.monticore:monticore-grammar:$mc_version")` dependency.
+
+```groovy 
+// build.gradle
+dependencies {
+  testImplementation testFixtures("de.monticore:monticore-grammar:$mc_version")
+}
+```
+
 For smaller examples of parsing, pretty printing, etc., models can be written within the test class and
 external model files are not needed.
 
@@ -119,7 +130,8 @@ whereas the latter ensure that invalid models do violate the context condition
 (i.e. true negatives and no false positives). 
 Consequently, two different kinds of tests should exist for every context condition.
 
-Similar to parser tests, the `@TestWithMCLanguage` annotation or `AbstractMCTest` class can be used to set up tests.
+Similar to parser tests, the [`@TestWithMCLanguage`](../monticore-runtime/src/testFixtures/java/de/monticore/runtime/junit/TestWithMCLanguage.java) 
+annotation or [`AbstractMCTest`](../monticore-runtime/src/testFixtures/java/de/monticore/runtime/junit/AbstractMCTest.java) class can be used to set up tests.
 
 ### Testing a Context Condition on a Valid Model
 
