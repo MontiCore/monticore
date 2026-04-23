@@ -346,7 +346,7 @@ public class TimedActionsTest {
   
   protected static Stream<Arguments> keywordExamples() {
     return Stream.of(
-        Arguments.of("src/test/resources/de/monticore/temporal/timedactions/keywords.ta")
+        Arguments.of("target/resources/test/de/monticore/temporal/timedactions/keywords.ta")
     );
   }
   
