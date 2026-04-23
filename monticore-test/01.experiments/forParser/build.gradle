@@ -12,6 +12,10 @@ dependencies {
   implementation project(path: ':monticore-runtime')
 }
 
+test {
+  useJUnitPlatform()
+}
+
 sourceSets {
   main.java.srcDirs = [ "$projectDir/src/main/java" ]
 }

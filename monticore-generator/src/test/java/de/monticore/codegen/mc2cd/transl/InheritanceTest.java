@@ -8,7 +8,6 @@ import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.codegen.mc2cd.TranslationTestCase;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.se_rwth.commons.logging.Log;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -16,8 +15,8 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import static de.monticore.codegen.mc2cd.TransformationHelper.typeToString;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Test for the proper transformation of ASTClassProds to corresponding
@@ -58,11 +57,11 @@ public class InheritanceTest extends TranslationTestCase {
    */
   @Test
   public void testExtends() {
-    Assertions.assertTrue(astA.isPresentCDExtendUsage());
+    assertTrue(astA.isPresentCDExtendUsage());
     String name = typeToString(astA.getCDExtendUsage().getSuperclass(0));
-    Assertions.assertEquals("mc2cdtransformation.InheritanceGrammar.ASTextendedProd", name);
+    assertEquals("mc2cdtransformation.InheritanceGrammar.ASTextendedProd", name);
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   /**
@@ -72,11 +71,11 @@ public class InheritanceTest extends TranslationTestCase {
   @Test
   public void testImplements() {
     List<ASTMCObjectType> superInterfaces = astB.getInterfaceList();
-    Assertions.assertEquals(1, superInterfaces.size());
+    assertEquals(1, superInterfaces.size());
     String name = typeToString(superInterfaces.get(0));
-    Assertions.assertEquals("mc2cdtransformation.InheritanceGrammar.ASTimplementedProd", name);
+    assertEquals("mc2cdtransformation.InheritanceGrammar.ASTimplementedProd", name);
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   /**
@@ -85,11 +84,11 @@ public class InheritanceTest extends TranslationTestCase {
    */
   @Test
   public void testAstextends() {
-    Assertions.assertTrue(astC.isPresentCDExtendUsage());
+    assertTrue(astC.isPresentCDExtendUsage());
     String name = typeToString(astC.getCDExtendUsage().getSuperclass(0));
-    Assertions.assertEquals("AstExtendedType", name);
+    assertEquals("AstExtendedType", name);
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   /**
@@ -99,11 +98,11 @@ public class InheritanceTest extends TranslationTestCase {
   @Test
   public void testAstimplements() {
     List<ASTMCObjectType> superInterfaces = astD.getInterfaceList();
-    Assertions.assertEquals(1, superInterfaces.size());
+    assertEquals(1, superInterfaces.size());
     String name = typeToString(superInterfaces.get(0));
-    Assertions.assertEquals("AstImplementedType", name);
+    assertEquals("AstImplementedType", name);
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   /**
@@ -112,11 +111,11 @@ public class InheritanceTest extends TranslationTestCase {
    */
   @Test
   public void testAstextendsQualified() {
-    Assertions.assertTrue(astE.isPresentCDExtendUsage());
+    assertTrue(astE.isPresentCDExtendUsage());
     String name = typeToString(astE.getCDExtendUsage().getSuperclass(0));
-    Assertions.assertEquals("java.util.Observable", name);
+    assertEquals("java.util.Observable", name);
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   /**
@@ -126,10 +125,10 @@ public class InheritanceTest extends TranslationTestCase {
   @Test
   public void testAstimplementsQualified() {
     List<ASTMCObjectType> superInterfaces = astF.getInterfaceList();
-    Assertions.assertEquals(1, superInterfaces.size());
+    assertEquals(1, superInterfaces.size());
     String name = typeToString(superInterfaces.get(0));
-    Assertions.assertEquals("java.io.Serializable", name);
+    assertEquals("java.io.Serializable", name);
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

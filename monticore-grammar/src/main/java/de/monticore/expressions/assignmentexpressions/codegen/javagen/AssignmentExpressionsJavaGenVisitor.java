@@ -1,0 +1,170 @@
+// (c) https://github.com/MontiCore/monticore
+package de.monticore.expressions.assignmentexpressions.codegen.javagen;
+
+import de.monticore.codegen.CodeGenPrintAction;
+import de.monticore.codegen.javagen.AbstractJavaGenVisitor;
+import de.monticore.codegen.javagen.JavaOperationPrinter;
+import de.monticore.expressions.assignmentexpressions._ast.ASTAssignmentExpression;
+import de.monticore.expressions.assignmentexpressions._ast.ASTDecPrefixExpression;
+import de.monticore.expressions.assignmentexpressions._ast.ASTDecSuffixExpression;
+import de.monticore.expressions.assignmentexpressions._ast.ASTIncPrefixExpression;
+import de.monticore.expressions.assignmentexpressions._ast.ASTIncSuffixExpression;
+import de.monticore.expressions.assignmentexpressions._visitor.AssignmentExpressionsHandler;
+import de.monticore.expressions.assignmentexpressions._visitor.AssignmentExpressionsTraverser;
+import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types3.util.TypeVisitorOperatorCalculator;
+import de.se_rwth.commons.logging.Log;
+
+import static de.monticore.codegen.CodeGenOperationPrinter.printDivide;
+import static de.monticore.codegen.CodeGenOperationPrinter.printMinus;
+import static de.monticore.codegen.CodeGenOperationPrinter.printModulo;
+import static de.monticore.codegen.CodeGenOperationPrinter.printMultiply;
+import static de.monticore.codegen.CodeGenOperationPrinter.printPlus;
+import static de.monticore.codegen.CodeGenSymTypeExpressionConverter.printConverted;
+import static de.monticore.expressions.assignmentexpressions._ast.ASTConstantsAssignmentExpressions.EQUALS;
+import static de.monticore.expressions.assignmentexpressions._ast.ASTConstantsAssignmentExpressions.MINUSEQUALS;
+import static de.monticore.expressions.assignmentexpressions._ast.ASTConstantsAssignmentExpressions.PERCENTEQUALS;
+import static de.monticore.expressions.assignmentexpressions._ast.ASTConstantsAssignmentExpressions.PLUSEQUALS;
+import static de.monticore.expressions.assignmentexpressions._ast.ASTConstantsAssignmentExpressions.SLASHEQUALS;
+import static de.monticore.expressions.assignmentexpressions._ast.ASTConstantsAssignmentExpressions.STAREQUALS;
+import static de.monticore.types3.SymTypeRelations.normalize;
+import static de.monticore.types3.TypeCheck3.typeOf;
+
+/**
+ * prints, e.g., {@code x += 2}
+ * as {@code x = (typeOf(x)) (x + 2)}.
+ */
+public class AssignmentExpressionsJavaGenVisitor
+    extends AbstractJavaGenVisitor
+    implements AssignmentExpressionsHandler {
+
+  // Traverser
+
+  protected AssignmentExpressionsTraverser traverser;
+
+  @Override
+  public AssignmentExpressionsTraverser getTraverser() {
+    return traverser;
+  }
+
+  @Override
+  public void setTraverser(AssignmentExpressionsTraverser traverser) {
+    this.traverser = traverser;
+  }
+
+  public AssignmentExpressionsJavaGenVisitor(IndentPrinter printer) {
+    super(printer);
+  }
+
+  // CodoGen
+
+  @Override
+  public void handle(ASTIncSuffixExpression expr) {
+    _willBeRemoved_logUnimplemented(expr);
+  }
+
+  @Override
+  public void handle(ASTDecSuffixExpression expr) {
+    _willBeRemoved_logUnimplemented(expr);
+  }
+
+  @Override
+  public void handle(ASTIncPrefixExpression expr) {
+    _willBeRemoved_logUnimplemented(expr);
+  }
+
+  @Override
+  public void handle(ASTDecPrefixExpression expr) {
+    _willBeRemoved_logUnimplemented(expr);
+  }
+
+  @Override
+  public void handle(ASTAssignmentExpression assignment) {
+
+    // should be the same as target
+    SymTypeExpression resultType = normalize(typeOf(assignment));
+    SymTypeExpression leftType = normalize(typeOf(assignment.getLeft()));
+    SymTypeExpression rightType = normalize(typeOf(assignment.getRight()));
+    CodeGenPrintAction leftExprPrintAction = p ->
+        assignment.getLeft().accept(getTraverser());
+    CodeGenPrintAction rightExprPrintAction = p ->
+        assignment.getRight().accept(getTraverser());
+
+    // given expression a *= b, is typeof(a * b)
+    SymTypeExpression typeOfInnerOperation;
+    CodeGenPrintAction printInnerOperationAction;
+    switch (assignment.getOperator()) {
+      case EQUALS:
+        // no real inner operation -> basically id
+        typeOfInnerOperation = rightType;
+        printInnerOperationAction = rightExprPrintAction;
+        break;
+      case PLUSEQUALS:
+        typeOfInnerOperation = TypeVisitorOperatorCalculator.plus(leftType, rightType).get();
+        printInnerOperationAction = p -> printPlus(p, typeOfInnerOperation, leftType, rightType, leftExprPrintAction, rightExprPrintAction);
+        break;
+      case MINUSEQUALS:
+        typeOfInnerOperation = TypeVisitorOperatorCalculator.minus(leftType, rightType).get();
+        printInnerOperationAction = p -> printMinus(p, typeOfInnerOperation, leftType, rightType, leftExprPrintAction, rightExprPrintAction);
+        break;
+      case STAREQUALS:
+        typeOfInnerOperation = TypeVisitorOperatorCalculator.multiply(leftType, rightType).get();
+        printInnerOperationAction = p -> printMultiply(p, typeOfInnerOperation, leftType, rightType, leftExprPrintAction, rightExprPrintAction);
+        break;
+      case SLASHEQUALS:
+        typeOfInnerOperation = TypeVisitorOperatorCalculator.divide(leftType, rightType).get();
+        printInnerOperationAction = p -> printDivide(p, typeOfInnerOperation, leftType, rightType, leftExprPrintAction, rightExprPrintAction);
+        break;
+      case PERCENTEQUALS:
+        typeOfInnerOperation = TypeVisitorOperatorCalculator.modulo(leftType, rightType).get();
+        printInnerOperationAction = p -> printModulo(p, typeOfInnerOperation, leftType, rightType, leftExprPrintAction, rightExprPrintAction);
+        break;
+      // To be extended
+        /*
+      case LTLTEQUALS:
+        typeOfInnerOperation = TypeVisitorOperatorCalculator.leftShift(leftType, rightType).get();
+        printInnerOperationAction = p -> (p, typeOfInnerOperation, leftType, rightType, leftExprPrintAction, rightExprPrintAction);
+        break;
+      case GTGTEQUALS:
+        typeOfInnerOperation = TypeVisitorOperatorCalculator.shiftRight(leftType, rightType).get();
+        printInnerOperationAction = p -> printShiftRight(p, typeOfInnerOperation, leftType, rightType, leftExprPrintAction, rightExprPrintAction);
+        break;
+      case GTGTGTEQUALS:
+        typeOfInnerOperation = TypeVisitorOperatorCalculator.unsignedShiftRight(leftType, rightType).get();
+        printInnerOperationAction = p -> printUnsignedShiftRight(p, typeOfInnerOperation, leftType, rightType, leftExprPrintAction, rightExprPrintAction);
+        break;
+      case AND_EQUALS:
+        typeOfInnerOperation = TypeVisitorOperatorCalculator.and(leftType, rightType).get();
+        printInnerOperationAction = p -> printAnd(p, typeOfInnerOperation, leftType, rightType, leftExprPrintAction, rightExprPrintAction);
+        break;
+      case PIPEEQUALS:
+        typeOfInnerOperation = TypeVisitorOperatorCalculator.or(leftType, rightType).get();
+        printInnerOperationAction = p -> printOr(p, typeOfInnerOperation, leftType, rightType, leftExprPrintAction, rightExprPrintAction);
+        break;
+         */
+      default:
+        Log.error("0xFD249 Unhandled assignment operator: "
+            + assignment.getOperator()
+            + ". This is an alpha version and needs to be extended."
+        );
+        return;
+    }
+
+    JavaOperationPrinter.printAssignment(
+        printer,
+        resultType,
+        leftType,
+        // left type due to conversion
+        leftType,
+        p -> assignment.getLeft().accept(getTraverser()),
+        p2 -> printConverted(
+            p2,
+            leftType,
+            typeOfInnerOperation,
+            printInnerOperationAction
+        )
+    );
+  }
+
+}

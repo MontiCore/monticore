@@ -13,7 +13,6 @@ import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import freemarker.template.Template;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -26,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static de.monticore.generating.templateengine.TestConstants.TEMPLATE_PACKAGE;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests for {@link TemplateController}.
@@ -73,17 +73,17 @@ public class TemplateControllerTest {
   @Disabled
   @Test
   public void testImplicitAstPassing() {
-    Assertions.assertNull(tc.getAST());
+    assertNull(tc.getAST());
 
     tc.include(TEMPLATE_PACKAGE + "A");
-    Assertions.assertNull(tc.getAST());
+    assertNull(tc.getAST());
 
     // pass ast explicit
     tc.include(TEMPLATE_PACKAGE + "A", ASTNodeMock.INSTANCE);
 
-    Assertions.assertNotNull(tc.getAST());
-    Assertions.assertSame(ASTNodeMock.INSTANCE, tc.getAST());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertNotNull(tc.getAST());
+    assertSame(ASTNodeMock.INSTANCE, tc.getAST());
+    assertTrue(Log.getFindings().isEmpty());
 
   }
 
@@ -92,19 +92,19 @@ public class TemplateControllerTest {
     String TEMPLATE_NAME = "the.Template";
     tc.writeArgs(TEMPLATE_NAME, "path.to.file", ".ext", ASTNodeMock.INSTANCE, new ArrayList<>());
 
-    Assertions.assertEquals(1, freeMarkerTemplateEngine.getProcessedTemplates().size());
+    assertEquals(1, freeMarkerTemplateEngine.getProcessedTemplates().size());
     FreeMarkerTemplateMock template = freeMarkerTemplateEngine.getProcessedTemplates().iterator()
         .next();
-    Assertions.assertTrue(template.isProcessed());
-    Assertions.assertEquals(TEMPLATE_NAME, template.getName());
-    Assertions.assertNotNull(template.getData());
+    assertTrue(template.isProcessed());
+    assertEquals(TEMPLATE_NAME, template.getName());
+    assertNotNull(template.getData());
 
-    Assertions.assertEquals(1, fileHandler.getStoredFilesAndContents().size());
+    assertEquals(1, fileHandler.getStoredFilesAndContents().size());
 
     Path writtenFilePath = Paths.get(TARGET_DIR.getAbsolutePath(), "path/to/file.ext");
-    Assertions.assertTrue(fileHandler.getStoredFilesAndContents().containsKey(writtenFilePath));
-    Assertions.assertEquals("Content of template: " + TEMPLATE_NAME, fileHandler.getContentForFile(writtenFilePath.toString()).get());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(fileHandler.getStoredFilesAndContents().containsKey(writtenFilePath));
+    assertEquals("Content of template: " + TEMPLATE_NAME, fileHandler.getContentForFile(writtenFilePath.toString()).get());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -123,10 +123,10 @@ public class TemplateControllerTest {
     DefaultImpl def = new DefaultImpl();
     StringBuilder result = tc
         .includeArgs(TEMPLATE_PACKAGE + "DefaultMethodCall", Lists.newArrayList(def));
-    Assertions.assertNotNull(result);
-    Assertions.assertEquals("A", result.toString().trim());
+    assertNotNull(result);
+    assertEquals("A", result.toString().trim());
     FileReaderWriter.init();
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   /**
@@ -150,11 +150,11 @@ public class TemplateControllerTest {
     // configure Template Controller with black list
     tc.setTemplateBlackList(blackList);
 
-    Assertions.assertEquals(1, tc.getTemplateBlackList().size());
-    Assertions.assertFalse(tc.isTemplateNoteGenerated(templateI));
-    Assertions.assertTrue(tc.isTemplateNoteGenerated(templateII));
+    assertEquals(1, tc.getTemplateBlackList().size());
+    assertFalse(tc.isTemplateNoteGenerated(templateI));
+    assertTrue(tc.isTemplateNoteGenerated(templateII));
 
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   /**
@@ -176,10 +176,10 @@ public class TemplateControllerTest {
     Template templateII = new Template(templateNameII, "", null);
 
 
-    Assertions.assertEquals(1, tc.getTemplateBlackList().size());
-    Assertions.assertFalse(tc.isTemplateNoteGenerated(templateI));
-    Assertions.assertTrue(tc.isTemplateNoteGenerated(templateII));
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertEquals(1, tc.getTemplateBlackList().size());
+    assertFalse(tc.isTemplateNoteGenerated(templateI));
+    assertTrue(tc.isTemplateNoteGenerated(templateII));
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -189,7 +189,7 @@ public class TemplateControllerTest {
     String result = controller.includeArgs("de.monticore.generating.templateengine.IncludeArgsDoesntOverride1",
         "a", "b").toString();
 
-    Assertions.assertEquals("aba", result.strip()
+    assertEquals("aba", result.strip()
         .replaceAll("\n", "")
         .replaceAll(" ", "")
         .replaceAll("/\\*(.)*?\\*/", ""));
@@ -207,7 +207,7 @@ public class TemplateControllerTest {
               "OuterParametersNotVisible1",
           "A");
     } catch (MontiCoreFreeMarkerException e) {
-      Assertions.assertTrue(e.getMessage().contains(
+      assertTrue(e.getMessage().contains(
           "The following has evaluated to null or missing:\n==> A  [in " +
               "template \"de.monticore.generating.templateengine." +
               "OuterParametersNotVisible2\" at line 2, column 3]"));
@@ -228,7 +228,7 @@ public class TemplateControllerTest {
           "A");
 
     } catch (MontiCoreFreeMarkerException e) {
-      Assertions.assertTrue(e.getMessage().contains("The following has evaluated to " +
+      assertTrue(e.getMessage().contains("The following has evaluated to " +
           "null or missing:\n==> B  [in template \"de.monticore.generating." +
           "templateengine.InnerParametersNotVisible1\" at line 4, column 3]"));
     }

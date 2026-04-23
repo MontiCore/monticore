@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package automata3;
-import automata3._ast.ASTInvariant;
+import automata3._ast.ASTLogicInv;
 import automata3._visitor.Automata3Visitor2;
 import expression._ast.ASTAnd;
 import expression._ast.ASTNot;
@@ -24,12 +24,12 @@ public class Automata3Visit implements Automata3Visitor2 {
   // Typical visit/endvist methods:
 
   @Override
-  public void visit(ASTInvariant node) {
+  public void visit(ASTLogicInv node) {
     System.out.println(" X3-ASTInvariant "); 
   }
   
   @Override
-  public void endVisit(ASTInvariant node) {
+  public void endVisit(ASTLogicInv node) {
     System.out.println("   X3-/Invariant ");
   }
 

@@ -2,26 +2,21 @@
 package de.monticore.javalight.cocos;
 
 import de.monticore.javalight._cocos.JavaLightCoCoChecker;
-import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._ast.ASTBasicSymbolsNode;
 import de.monticore.symbols.oosymbols._ast.ASTMethod;
 import de.monticore.testjavalight.TestJavaLightMill;
 import de.monticore.testjavalight._parser.TestJavaLightParser;
 import de.monticore.testjavalight._visitor.TestJavaLightTraverser;
 import de.monticore.types.check.FlatExpressionScopeSetter;
-import de.monticore.types.check.FullDeriveFromCombineExpressionsWithLiterals;
-import de.monticore.types.check.FullSynthesizeFromCombineExpressionsWithLiterals;
-import de.monticore.types.check.TypeCalculator;
 import de.se_rwth.commons.logging.Log;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ReturnTypeAssignmentIsValidTest extends JavaLightCocoTest {
   
@@ -35,12 +30,12 @@ public class ReturnTypeAssignmentIsValidTest extends JavaLightCocoTest {
   
     TestJavaLightParser parser = new TestJavaLightParser();
     Optional<ASTMethod> optAST = parser.parse_StringMethod(expressionString);
-    Assertions.assertTrue(optAST.isPresent());
+    assertTrue(optAST.isPresent());
     Log.getFindings().clear();
     TestJavaLightTraverser traverser = getFlatExpressionScopeSetter();
     optAST.get().accept(traverser);
     checker.checkAll((ASTBasicSymbolsNode) optAST.get());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
     
   }
 
@@ -48,12 +43,12 @@ public class ReturnTypeAssignmentIsValidTest extends JavaLightCocoTest {
 
     TestJavaLightParser parser = new TestJavaLightParser();
     Optional<ASTMethod> optAST = parser.parse_StringMethod(expressionString);
-    Assertions.assertTrue(optAST.isPresent());
+    assertTrue(optAST.isPresent());
     Log.getFindings().clear();
     TestJavaLightTraverser traverser = getFlatExpressionScopeSetter();
     optAST.get().accept(traverser);
     checker.checkAll((ASTBasicSymbolsNode) optAST.get());
-    Assertions.assertFalse(Log.getFindings().isEmpty());
+    assertFalse(Log.getFindings().isEmpty());
 
   }
 

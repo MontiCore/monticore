@@ -5,12 +5,11 @@ package de.monticore.grammar.cocos;
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class NTUniqueIgnoreCaseTest extends CocoTest {
   
@@ -28,10 +27,10 @@ public class NTUniqueIgnoreCaseTest extends CocoTest {
   public void testInvalid() {
     Log.getFindings().clear();
     testInvalidGrammar(grammar, NTUniqueIgnoreCase.ERROR_CODE, MESSAGE, checker);
-    Assertions.assertFalse(Log.getFindings().isEmpty());
-    Assertions.assertEquals(1, Log.getFindings().size());
+    assertFalse(Log.getFindings().isEmpty());
+    assertEquals(1, Log.getFindings().size());
     for (Finding f : Log.getFindings()) {
-      Assertions.assertEquals(NTUniqueIgnoreCase.ERROR_CODE + MESSAGE, f.getMsg());
+      assertEquals(NTUniqueIgnoreCase.ERROR_CODE + MESSAGE, f.getMsg());
     }
   }
   

@@ -10,7 +10,6 @@ import de.monticore.statements.mccommonstatements._cocos.MCCommonStatementsASTSw
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.monticore.types.check.SymTypeExpression;
-import de.monticore.types.check.TypeCalculator;
 import de.monticore.types3.SymTypeRelations;
 import de.monticore.types3.TypeCheck3;
 import de.se_rwth.commons.logging.Log;
@@ -19,9 +18,6 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 
 public class SwitchStatementValid implements MCCommonStatementsASTSwitchStatementCoCo {
-
-  @Deprecated
-  TypeCalculator typeCheck;
 
   public static final String ERROR_CODE = "0xA0917";
 

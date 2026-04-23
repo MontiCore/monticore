@@ -1,6 +1,7 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.types3.util;
 
+import com.google.common.base.Preconditions;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
@@ -1044,7 +1045,7 @@ public class TypeVisitorOperatorCalculator {
   }
 
   protected static void setDelegate(TypeVisitorOperatorCalculator newDelegate) {
-    TypeVisitorOperatorCalculator.delegate = Log.errorIfNull(newDelegate);
+    TypeVisitorOperatorCalculator.delegate = Preconditions.checkNotNull(newDelegate);
   }
 
   protected static TypeVisitorOperatorCalculator getDelegate() {

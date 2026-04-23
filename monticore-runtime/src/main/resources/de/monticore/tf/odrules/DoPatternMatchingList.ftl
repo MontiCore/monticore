@@ -149,7 +149,7 @@ public boolean doPatternMatching_${structure.getObjectName()}(boolean isParentBa
               // reset candidates list
               if(!isBacktracking){
                 if (!isBacktrackingNegative) {
-                  ${object.getObjectName()}_candidates_temp = new ArrayList<>(${object.getObjectName()}_candidates);
+                  ((FastLookupList<?>)${object.getObjectName()}_candidates_temp).reset();
                 }
                 //try to find a match
                 ${object.getObjectName()}_cand = match_${object.getObjectName()}();
@@ -172,7 +172,7 @@ public boolean doPatternMatching_${structure.getObjectName()}(boolean isParentBa
                     //put the first object of the backtracking stack
                     searchPlan.push(backtrackingNegative.pop());
                     //reset candidates list
-                    ${object.getObjectName()}_candidates_temp = new ArrayList<>(${object.getObjectName()}_candidates);
+                    ((FastLookupList<?>)${object.getObjectName()}_candidates_temp).reset();
                   }
                 }else{
 
@@ -195,7 +195,7 @@ public boolean doPatternMatching_${structure.getObjectName()}(boolean isParentBa
                       searchPlan.push(backtracking.pop());
                     }
                     //reset candidates list
-                    ${object.getObjectName()}_candidates_temp = new ArrayList<>(${object.getObjectName()}_candidates);
+                    ((FastLookupList<?>)${object.getObjectName()}_candidates_temp).reset();
 
                   }
                 }
@@ -211,7 +211,7 @@ public boolean doPatternMatching_${structure.getObjectName()}(boolean isParentBa
                 clear${structure.getObjectName()}NegativeObjects();
               }
               if (!isBacktracking) {
-                ${object.getObjectName()}_candidates_temp = new ArrayList<>(${object.getObjectName()}_candidates);
+                ((FastLookupList<?>)${object.getObjectName()}_candidates_temp).reset();
               }
               //try to find a match
               ${object.getObjectName()}_cand = match_${object.getObjectName()}();
@@ -230,7 +230,7 @@ public boolean doPatternMatching_${structure.getObjectName()}(boolean isParentBa
                   //put the first object of the backtracking stack
                   searchPlan.push(backtracking.pop());
                   //reset candidates list
-                  ${object.getObjectName()}_candidates_temp = new ArrayList<>(${object.getObjectName()}_candidates);
+                  ((FastLookupList<?>)${object.getObjectName()}_candidates_temp).reset();
                 }
               }else{
                 // stop backtracking
@@ -274,13 +274,23 @@ public boolean doPatternMatching_${structure.getObjectName()}(boolean isParentBa
         Match${structure.getObjectName()} match = new Match${structure.getObjectName()}(<@commaSeperatedNames/>);
         match.backtracking = (Stack<String>) backtracking.clone();
         <#list mandatoryObjects as o>// save context of every object and then clear it
-          match.${o.getObjectName()}_temp_candidates = ${o.getObjectName()}_candidates_temp;
-          ${o.getObjectName()}_cand = null;
+        match.${o.getObjectName()}_temp_candidates = ((FastLookupList<ASTNode>)${o.getObjectName()}_candidates_temp).matchCopy();
+        ${o.getObjectName()}_cand = null;
         </#list>
         ${structure.getObjectName()}_candidates.add(match);
         backtracking.clear();
       }
     }
+
+    // Reset list candidates are match
+    <#list structure.getInnerLinkObjectNamesList() as innerLinkObjectName>
+    <#if hierarchyHelper.isNoOptionalName(ast.getPattern().getLHSObjectsList(), innerLinkObjectName)>
+    ${innerLinkObjectName}_cand = null;
+    </#if>
+    </#list>
+
+    // TODO: Do something similar for optionals (but somehow do not loose them?)
+
     if(${structure.getObjectName()}_candidates.isEmpty()) {
       return false;
     }
@@ -288,7 +298,7 @@ public boolean doPatternMatching_${structure.getObjectName()}(boolean isParentBa
     return true;
 }
 
-private void clear${structure.getObjectName()}NegativeObjects(){
+protected void clear${structure.getObjectName()}NegativeObjects(){
   <#list mandatoryObjects as object>
     <#if object.isNotObject() && hierarchyHelper.isWithinListStructure(object.getObjectName())>
       ${object.getObjectName()}_cand = null;

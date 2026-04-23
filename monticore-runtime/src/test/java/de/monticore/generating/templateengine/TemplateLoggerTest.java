@@ -3,6 +3,8 @@
 package de.monticore.generating.templateengine;
 
 import static de.monticore.generating.templateengine.TestConstants.TEMPLATE_PACKAGE;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.File;
 
@@ -10,7 +12,6 @@ import de.monticore.io.FileReaderWriter;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 
 import de.monticore.generating.GeneratorSetup;
@@ -70,8 +71,8 @@ public class TemplateLoggerTest {
   @Test
   public void demonstrateTemplateLogging() {
     StringBuilder result = tc.include(TEMPLATE_PACKAGE + "Log");
-    Assertions.assertNotNull(result);
-    Assertions.assertEquals("A", result.toString().trim());
+    assertNotNull(result);
+    assertEquals("A", result.toString().trim());
   }
 
 }

@@ -27,23 +27,23 @@ public class CollectGrammarInformationVisitor implements
   
   private final MCGrammarSymbol grammarSymbol;
   
-  private Map<String, List<ASTNonTerminal>> stringAttrs = new HashMap<>();
+  private Map<String, List<ASTNonTerminal>> stringAttrs = new LinkedHashMap<>();
   
-  private Map<String, List<ASTNonTerminal>> stringListAttrs = new HashMap<>();
+  private Map<String, List<ASTNonTerminal>> stringListAttrs = new LinkedHashMap<>();
   
-  private Map<String, List<ASTConstantGroup>> booleanAltAttrs = new HashMap<>();
+  private Map<String, List<ASTConstantGroup>> booleanAltAttrs = new LinkedHashMap<>();
 
-  private Map<String, List<ASTConstantGroup>> booleanAttrs = new HashMap<>();
+  private Map<String, List<ASTConstantGroup>> booleanAttrs = new LinkedHashMap<>();
   
-  private Map<String, List<ASTConstantGroup>> booleanListAttrs = new HashMap<>();
+  private Map<String, List<ASTConstantGroup>> booleanListAttrs = new LinkedHashMap<>();
 
-  private Map<String, List<String>> booleanAttrNames = new HashMap<>();
+  private Map<String, List<String>> booleanAttrNames = new LinkedHashMap<>();
   
-  private Map<String, List<String>> booleanListAttrNames = new HashMap<>();
+  private Map<String, List<String>> booleanListAttrNames = new LinkedHashMap<>();
   
-  private Map<String, List<ASTNonTerminal>> componentLists = new HashMap<>();
+  private Map<String, List<ASTNonTerminal>> componentLists = new LinkedHashMap<>();
   
-  private Map<String, List<ASTNonTerminal>> componentNodes = new HashMap<>();
+  private Map<String, List<ASTNonTerminal>> componentNodes = new LinkedHashMap<>();
   
   private List<RuleComponentSymbol> knownAttributes = Lists.newArrayList();
   
