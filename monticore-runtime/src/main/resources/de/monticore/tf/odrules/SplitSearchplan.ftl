@@ -1,7 +1,7 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 <#assign optListObjects = hierarchyHelper.getOptListObjects(ast.getPattern().getLHSObjectsList())>
 
-  private void splitSearchplan() {
+  protected void splitSearchplan() {
 <#list optListObjects as object>
     searchPlan_${object.getObjectName()} = new Stack<String>();
 </#list>

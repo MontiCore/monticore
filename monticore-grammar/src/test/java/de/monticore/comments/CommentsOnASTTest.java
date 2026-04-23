@@ -39,7 +39,7 @@ public class CommentsOnASTTest {
 
   @Test
   public void testComments() throws IOException {
-    Optional<ASTJavaMethod> ast = parser.parse("src/test/resources/de/monticore/comments/CommentsTest.jlight");
+    Optional<ASTJavaMethod> ast = parser.parse("target/resources/test/de/monticore/comments/CommentsTest.jlight");
     assertTrue(ast.isPresent());
     assertFalse(parser.hasErrors());
 

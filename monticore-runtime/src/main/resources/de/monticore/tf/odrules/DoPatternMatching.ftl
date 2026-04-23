@@ -97,7 +97,7 @@ public boolean doPatternMatching() {
   return foundMatch;
 }
 
-private void clearNegativeObjects() {
+protected void clearNegativeObjects() {
   <#list ast.getPattern().getLHSObjectsList() as object>
     <#if object.isNotObject() && !hierarchyHelper.isWithinListStructure(object.getObjectName())>
       ${object.getObjectName()}_cand = null;
