@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ComponentTypeSymbolDeSerTest {
 
-  protected static final String RELATIVE_DIR = "src/test/resources/de/monticore/symbols/compsymbols/_symboltable/";
+  protected static final String RELATIVE_DIR = "target/resources/test/de/monticore/symbols/compsymbols/_symboltable/";
 
   protected ComponentTypeSymbolDeSer deSer;
   protected CompSymbolsSymbols2Json comp2json;
