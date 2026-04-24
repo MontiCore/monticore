@@ -15,9 +15,8 @@ public class SwitchStatementValid implements MCCommonStatementsASTSwitchStatemen
   public static final String ERROR_CODE = "0xA0917";
 
   public static final String ERROR_MSG_FORMAT =
-    "Switch expression in the switch-statement must be " +
-      "char, byte, short, int, Character, Byte, Short, " +
-      "Integer, or an enum type.";
+    "Switch selector of type '%s' is not supported. " +
+      "Expected char, byte, short, int, Character, Byte, Short, Integer, or an enum type.";
 
   //JLS3 14.11
   @Override
@@ -30,7 +29,9 @@ public class SwitchStatementValid implements MCCommonStatementsASTSwitchStatemen
       && !(SymTypeRelations.isChar(result) || SymTypeRelations.isByte(result)
       || SymTypeRelations.isShort(result) || SymTypeRelations.isInt(result)
       || isEnumMember(result))) {
-      Log.error(ERROR_CODE + " " +ERROR_MSG_FORMAT, node.get_SourcePositionStart());
+      Log.error(String.format(ERROR_CODE + " " + ERROR_MSG_FORMAT, result.printFullName()),
+        node.get_SourcePositionStart(), node.get_SourcePositionEnd()
+      );
     }
   }
 
