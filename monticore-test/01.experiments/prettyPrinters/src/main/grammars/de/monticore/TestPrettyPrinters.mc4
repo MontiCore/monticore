@@ -330,4 +330,10 @@ grammar TestPrettyPrinters extends de.monticore.literals.MCCommonLiterals  {
       ("[[" (a:Name | b:TFSchema)? ":-" (newA:Name | newB:TFSchema)? "]]") |
       "Name" a:Name;
 
+		ExhaustedAlts1 = "a" A* | A*;
+		ExhaustedAlts2 = "a" A  | A*; // first or second alt -> non-trivial as long as no other guards exists
+		ExhaustedAlts3 = "a" A* | A ; // first or second alt -> non-trivial as long as no other guards exists
+		ExhaustedAlts4 = "a" A+ | ("hello" | A+) ;
+		ExhaustedAlts5 = "a" A+ | ("hello" | A ) ;  // first or second alt -> non-trivial as long as no other guards exists
+		ExhaustedAlts6 = ("a" A* | "b" A*)*; // indistinguishable alt (in repeated block)
 }

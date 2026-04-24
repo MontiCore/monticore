@@ -1,6 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore;
 
+import com.google.common.base.Preconditions;
+
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,7 +50,7 @@ public class DelegatingClassLoader extends ClassLoader implements Closeable {
 
   @Override
   public Class<?> loadClass(String name) throws ClassNotFoundException {
-    return Objects.requireNonNull(delegate.get()).loadClass(name);
+    return Preconditions.checkNotNull(delegate.get()).loadClass(name);
   }
 
   @Override
@@ -68,22 +70,22 @@ public class DelegatingClassLoader extends ClassLoader implements Closeable {
 
   @Override
   public URL getResource(String name) {
-    return Objects.requireNonNull(delegate.get()).getResource(name);
+    return Preconditions.checkNotNull(delegate.get()).getResource(name);
   }
 
   @Override
   public Enumeration<URL> getResources(String name) throws IOException {
-    return Objects.requireNonNull(delegate.get()).getResources(name);
+    return Preconditions.checkNotNull(delegate.get()).getResources(name);
   }
 
   @Override
   public Stream<URL> resources(String name) {
-    return Objects.requireNonNull(delegate.get()).resources(name);
+    return Preconditions.checkNotNull(delegate.get()).resources(name);
   }
 
   @Override
   public InputStream getResourceAsStream(String name) {
-    return Objects.requireNonNull(delegate.get()).getResourceAsStream(name);
+    return Preconditions.checkNotNull(delegate.get()).getResourceAsStream(name);
   }
 
   @Override

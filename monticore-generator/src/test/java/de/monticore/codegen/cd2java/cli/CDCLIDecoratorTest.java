@@ -15,13 +15,13 @@ import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.se_rwth.commons.logging.Log;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CDCLIDecoratorTest extends DecoratorTestCase {
 
@@ -32,7 +32,7 @@ public class CDCLIDecoratorTest extends DecoratorTestCase {
   private ASTCDCompilationUnit clonedCD;
   
  
-  @Before
+  @BeforeEach
   public void setup() {
     originalCD = parse("de", "monticore", "codegen", "ast", "Automaton");
     clonedCD = originalCD.deepClone();
@@ -104,7 +104,7 @@ public class CDCLIDecoratorTest extends DecoratorTestCase {
       // test parsing
       ParserConfiguration configuration = new ParserConfiguration();
       JavaParser parser = new JavaParser(configuration);
-      ParseResult parseResult = parser.parse(sb.toString());
+      ParseResult<?> parseResult = parser.parse(sb.toString());
       assertTrue(parseResult.isSuccessful());
     }
   

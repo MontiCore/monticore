@@ -12,12 +12,6 @@ protected boolean doPatternMatching_${structure.getObjectName()}(boolean isParen
   Stack<String> backtrackingNegative = new Stack<String>();
   Stack<String> searchPlan = (Stack<String>) searchPlan_${structure.getObjectName()}.clone();
 
- <#list structure.getInnerLinkObjectNamesList() as elem>
-   <#if hierarchyHelper.isNoOptionalName(ast.getPattern().getLHSObjectsList(), elem)>
-     ${elem}_cand = null;
-   </#if>
- </#list>
-
   String nextNode = null;
   while(!searchPlan.isEmpty()){
     nextNode = searchPlan.pop();
@@ -26,18 +20,17 @@ protected boolean doPatternMatching_${structure.getObjectName()}(boolean isParen
     <#-- <#list ast.getPattern().getLHSObjectsList() as object> -->
     <#list hierarchyHelper.getInnerLinkObjectsLHS(ast.getPattern().getLHSObjectsList(), structure) as object>
       <#if object.isListObject()>
-        ${tc.includeArgs("de.monticore.tf.odrules.dopatternmatching.HandleListObject", object, [true])}
+        ${tc.includeArgs("de.monticore.tf.odrules.dopatternmatching.HandleListObject", object, [true, structure])}
       <#elseif object.isOptObject()>
-        ${tc.includeArgs("de.monticore.tf.odrules.dopatternmatching.HandleOptObject", object, [true])}
+        ${tc.includeArgs("de.monticore.tf.odrules.dopatternmatching.HandleOptObject", object, [true, structure])}
       <#elseif object.isNotObject()>
-        ${tc.includeArgs("de.monticore.tf.odrules.dopatternmatching.HandleNotObject", object, [true])}
+        ${tc.includeArgs("de.monticore.tf.odrules.dopatternmatching.HandleNotObject", object, [true, structure])}
       <#else>
-        ${tc.includeArgs("de.monticore.tf.odrules.dopatternmatching.HandleNormalObject", object, [true])}
+        ${tc.includeArgs("de.monticore.tf.odrules.dopatternmatching.HandleNormalObject", object, [true, structure])}
       </#if>
       <#if object_has_next>else</#if>
     </#list>
   }
-
   return true;
 }
 </#list>

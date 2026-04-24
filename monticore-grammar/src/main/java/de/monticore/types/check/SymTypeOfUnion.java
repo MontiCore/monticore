@@ -1,13 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import com.google.common.base.Preconditions;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.types3.ISymTypeVisitor;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.Spliterator;
@@ -26,11 +27,11 @@ public class SymTypeOfUnion extends SymTypeExpression {
   protected Set<SymTypeExpression> unionizedTypes;
 
   public SymTypeOfUnion(Collection<? extends SymTypeExpression> types) {
-    Log.errorIfNull(types);
+    Preconditions.checkNotNull(types);
     super.typeSymbol = new TypeSymbol(DEFAULT_TYPESYMBOL_NAME);
     super.typeSymbol.setEnclosingScope(BasicSymbolsMill.globalScope());
     super.typeSymbol.setSpannedScope(BasicSymbolsMill.scope());
-    this.unionizedTypes = new HashSet<>();
+    this.unionizedTypes = new LinkedHashSet<>();
     this.unionizedTypes.addAll(types);
   }
 

@@ -2,20 +2,18 @@
 
 package mc.feature.listrule;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
 import java.io.StringReader;
 
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import mc.GeneratorIntegrationsTest;
 import mc.feature.listrule.listrule._parser.ListRuleParser;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ListRuleTest extends GeneratorIntegrationsTest {
   
@@ -31,14 +29,14 @@ public class ListRuleTest extends GeneratorIntegrationsTest {
         "P1 a, P1 b");
     ListRuleParser p = new ListRuleParser();
     p.parseParent(s);
-
-    Assertions.assertEquals(false, p.hasErrors());
+    
+    assertFalse(p.hasErrors());
 
     // Empty lists are NOT allowed
     s = new StringReader("");
     p.parse(s);
-
-    Assertions.assertEquals(true, p.hasErrors());
+    
+    assertTrue(p.hasErrors());
   }
 
   @Test
@@ -47,9 +45,9 @@ public class ListRuleTest extends GeneratorIntegrationsTest {
         "Parent2 P2 a, P2 b Parent2");
     ListRuleParser p = new ListRuleParser();
     p.parseParent2(s);
-
-    Assertions.assertEquals(false, p.hasErrors());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    
+    assertFalse(p.hasErrors());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -58,9 +56,9 @@ public class ListRuleTest extends GeneratorIntegrationsTest {
         "P3 a, P3 b");
     ListRuleParser p = new ListRuleParser();
     p.parseParent3(s);
-
-    Assertions.assertEquals(false, p.hasErrors());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    
+    assertFalse(p.hasErrors());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -69,15 +67,15 @@ public class ListRuleTest extends GeneratorIntegrationsTest {
         "P4 a, P4 b");
     ListRuleParser p = new ListRuleParser();
     p.parseParent4(s);
-
-    Assertions.assertEquals(false, p.hasErrors());
+    
+    assertFalse(p.hasErrors());
 
     // Empty lists are allowed
     s = new StringReader("");
     p.parseParent4(s);
-
-    Assertions.assertEquals(false, p.hasErrors());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    
+    assertFalse(p.hasErrors());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -87,7 +85,7 @@ public class ListRuleTest extends GeneratorIntegrationsTest {
         "a, P");
     ListRuleParser p = new ListRuleParser();
     p.parseParent6(s);
-
-    Assertions.assertEquals(false, p.hasErrors());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    
+    assertFalse(p.hasErrors());
+    assertTrue(Log.getFindings().isEmpty());
   }}

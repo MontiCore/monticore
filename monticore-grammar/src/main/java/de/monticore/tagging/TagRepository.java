@@ -8,17 +8,17 @@ import de.monticore.tagging.tags._ast.ASTTagUnit;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 
 public class TagRepository {
 
   // A cache for tag models loaded from files
-  protected static Map<File, ASTTagUnit> loadedFileTags = new HashMap<>();
+  protected static Map<File, ASTTagUnit> loadedFileTags = new LinkedHashMap<>();
 
   // And a cache for temporary tag models
-  protected static Map<String, ASTTagUnit> loadedTags = new HashMap<>();
+  protected static Map<String, ASTTagUnit> loadedTags = new LinkedHashMap<>();
 
   /**
    * Load a new tag model into this repository

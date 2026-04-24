@@ -2,6 +2,7 @@
 
 package de.monticore;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
@@ -94,6 +95,7 @@ import de.monticore.codegen.parser.Languages;
 import de.monticore.codegen.parser.ParserGenerator;
 import de.monticore.codegen.prettyprint.CDPrettyPrinterDecorator;
 import de.monticore.codegen.prettyprint.PrettyPrinterGenerator;
+import de.monticore.de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsPhasedSTCFix;
 import de.monticore.dstlgen.DSTLGenScript;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
@@ -320,7 +322,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   public void generateParser(GlobalExtensionManagement glex, ASTCDCompilationUnit astClassDiagram, ASTMCGrammar grammar,
                              IGrammar_WithConceptsGlobalScope symbolTable, MCPath handcodedPath, MCPath templatePath,
                              File outputDirectory) {
-    Log.errorIfNull(
+    Preconditions.checkNotNull(
             grammar,
             "0xA4107 Parser generation can't be processed: the reference to the grammar ast is null");
     ParserGenerator.generateFullParser(glex, astClassDiagram, grammar, symbolTable, handcodedPath, templatePath, outputDirectory);
@@ -336,7 +338,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   public void generateParser(GlobalExtensionManagement glex, ASTMCGrammar grammar, IGrammar_WithConceptsGlobalScope symbolTable,
                              MCPath handcodedPath, MCPath templatePath, File outputDirectory,
                              boolean embeddedJavaCode, Languages lang) {
-    Log.errorIfNull(
+    Preconditions.checkNotNull(
             grammar,
             "0xA4108 Parser generation can't be processed: the reference to the grammar ast is null");
     ParserGenerator.generateParser(glex, grammar, symbolTable, handcodedPath, templatePath, outputDirectory, embeddedJavaCode, lang);
@@ -352,7 +354,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @return a CD for the _prettyprint package
    */
   public ASTCDCompilationUnit generatePrettyPrinter(GlobalExtensionManagement glex, ASTMCGrammar grammar) {
-    Log.errorIfNull(
+    Preconditions.checkNotNull(
             grammar,
             "0xA4109 PrettyPrinter generation can't be processed: the reference to the grammar ast is null");
     return PrettyPrinterGenerator.generatePrettyPrinter(glex, grammar);
@@ -374,7 +376,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     if(grammarSymbol.isPresent()) {
       result = grammarSymbol.get().getAstNode();
     } else {
-      Grammar_WithConceptsPhasedSTC stCreator = new Grammar_WithConceptsPhasedSTC();
+      Grammar_WithConceptsPhasedSTC stCreator = new Grammar_WithConceptsPhasedSTCFix();
       stCreator.createFromAST(result);
     }
 
@@ -1482,7 +1484,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
       List<MCPath> mcPaths = new ArrayList<>();
       Optional<MontiCoreReports> reportsOpt = Optional.empty();
 
-      DelegatingClassLoader groovyClassLoader = new DelegatingClassLoader(this.getClass().getClassLoader());
       try {
         if(config.isPresent()) {
           MontiCoreConfiguration mcConfig = MontiCoreConfiguration.withConfiguration(config.get());
@@ -1530,9 +1531,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
           // the "force" parameter, which is always true
           builder.addVariable("force", true);
         }
-        // Use a delegating classloader for groovy to reduce
-        // the impact of JDK-8078641
-        builder.withClassLoader(groovyClassLoader);
 
         GroovyInterpreter g = builder.build();
         g.evaluate(script);
@@ -1545,11 +1543,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
         }
         // Notify the reporters about flushing & closing their file handles
         reportsOpt.ifPresent(MontiCoreReports::close);
-        // Clean up after groovy
-        try {
-          groovyClassLoader.close();
-        } catch (IOException ignored) {
-        }
       }
     }
   }

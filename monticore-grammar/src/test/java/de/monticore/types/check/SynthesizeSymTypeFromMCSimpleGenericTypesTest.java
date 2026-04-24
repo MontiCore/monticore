@@ -16,13 +16,12 @@ import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
   
@@ -53,19 +52,19 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
     gs.add(DefsTypeBasic.type("Void"));
 
     CombineExpressionsWithLiteralsSymbols2Json symbols2Json = new CombineExpressionsWithLiteralsSymbols2Json();
-    ICombineExpressionsWithLiteralsArtifactScope as = symbols2Json.load("src/test/resources/de/monticore/types/check/Persondex.cesym");
+    ICombineExpressionsWithLiteralsArtifactScope as = symbols2Json.load("target/resources/test/de/monticore/types/check/Persondex.cesym");
     as.setEnclosingScope(gs);
 
-    ICombineExpressionsWithLiteralsArtifactScope as2 = symbols2Json.load("src/test/resources/de/monticore/types/check/Personaz.cesym");
+    ICombineExpressionsWithLiteralsArtifactScope as2 = symbols2Json.load("target/resources/test/de/monticore/types/check/Personaz.cesym");
     as2.setEnclosingScope(gs);
 
-    ICombineExpressionsWithLiteralsArtifactScope as3 = symbols2Json.load("src/test/resources/de/monticore/types/check/Iterator.cesym");
+    ICombineExpressionsWithLiteralsArtifactScope as3 = symbols2Json.load("target/resources/test/de/monticore/types/check/Iterator.cesym");
     as3.setEnclosingScope(gs);
 
-    ICombineExpressionsWithLiteralsArtifactScope as4 = symbols2Json.load("src/test/resources/de/monticore/types/check/String.cesym");
+    ICombineExpressionsWithLiteralsArtifactScope as4 = symbols2Json.load("target/resources/test/de/monticore/types/check/String.cesym");
     as4.setEnclosingScope(gs);
 
-    ICombineExpressionsWithLiteralsArtifactScope as5 = symbols2Json.load("src/test/resources/de/monticore/types/check/Personjl.cesym");
+    ICombineExpressionsWithLiteralsArtifactScope as5 = symbols2Json.load("target/resources/test/de/monticore/types/check/Personjl.cesym");
     as5.setEnclosingScope(gs);
   }
   
@@ -102,7 +101,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
     parser = new CombineExpressionsWithLiteralsParser();
     ASTMCType asttype = parser.parse_StringMCType(s).get();
     asttype.accept(traverser);
-    Assertions.assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
+    assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
   }
   
   @Test
@@ -110,7 +109,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
     String s = "Person";
     ASTMCType asttype = parser.parse_StringMCType(s).get();
     asttype.accept(traverser);
-    Assertions.assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
+    assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
   }
   
   @Test
@@ -118,7 +117,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
     String s = "de.x.Person";
     ASTMCType asttype = parser.parse_StringMCType(s).get();
     asttype.accept(traverser);
-    Assertions.assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
+    assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
   }
   
   @Test
@@ -126,7 +125,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
     ASTMCVoidType v = MCBasicTypesMill.mCVoidTypeBuilder().build();
     ASTMCReturnType r = MCBasicTypesMill.mCReturnTypeBuilder()
                                   .setMCVoidType(v).build();
-    Assertions.assertEquals("void", tc.symTypeFromAST(r).printFullName());
+    assertEquals("void", tc.symTypeFromAST(r).printFullName());
   }
 
   @Test
@@ -135,7 +134,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
     String s = "Person";
     ASTMCReturnType r = parser.parse_StringMCReturnType(s).get();
     r.accept(traverser);
-    Assertions.assertEquals(s, tc.symTypeFromAST(r).printFullName());
+    assertEquals(s, tc.symTypeFromAST(r).printFullName());
   }
 
   // reuse some of the tests from MCCollectionType
@@ -145,7 +144,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
     String s = "List<a.z.Person>";
     ASTMCListType asttype = parser.parse_StringMCListType(s).get();
     asttype.accept(traverser);
-    Assertions.assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
+    assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
   }
   
   @Test
@@ -153,7 +152,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
     String s = "Set<Auto>";
     ASTMCType asttype = parser.parse_StringMCType(s).get();
     asttype.accept(traverser);
-    Assertions.assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
+    assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
   }
   
   @Test
@@ -161,7 +160,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
     String s = "Map<int,Auto>";
     ASTMCType asttype = parser.parse_StringMCType(s).get();
     asttype.accept(traverser);
-    Assertions.assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
+    assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
   }
   
   @Test
@@ -169,7 +168,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
     String s = "Set<int>";
     ASTMCType asttype = parser.parse_StringMCType(s).get();
     asttype.accept(traverser);
-    Assertions.assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
+    assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
   }
   
   //new tests coming from MCSimpleGenericTypes
@@ -179,7 +178,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
     String s = "Iterator<Person>";
     ASTMCType asttype = parser.parse_StringMCType(s).get();
     asttype.accept(traverser);
-    Assertions.assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
+    assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
   }
 
   @Test
@@ -187,7 +186,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
     String s = "java.util.Iterator<java.lang.String>";
     ASTMCBasicGenericType asttype = parser.parse_StringMCBasicGenericType(s).get();
     asttype.accept(traverser);
-    Assertions.assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
+    assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
   }
 
   @Test
@@ -195,7 +194,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
     String s = "Collection<int>";
     ASTMCType asttype = parser.parse_StringMCType(s).get();
     asttype.accept(traverser);
-    Assertions.assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
+    assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
   }
 
   @Test
@@ -203,7 +202,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
     String s = "java.util.Iterator<Void>";
     ASTMCBasicGenericType asttype = parser.parse_StringMCBasicGenericType(s).get();
     asttype.accept(traverser);
-    Assertions.assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
+    assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
   }
 
   @Test
@@ -211,7 +210,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
     String s = "java.util.Iterator<java.lang.String,java.lang.Person,java.lang.String,int>";
     ASTMCBasicGenericType asttype = parser.parse_StringMCBasicGenericType(s).get();
     asttype.accept(traverser);
-    Assertions.assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
+    assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
   }
 
   @Test
@@ -219,7 +218,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
     String s = "java.util.Iterator<java.util.Iterator<java.util.Iterator<int>>>";
     ASTMCBasicGenericType asttype = parser.parse_StringMCBasicGenericType(s).get();
     asttype.accept(traverser);
-    Assertions.assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
+    assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
   }
 
   @Test
@@ -227,7 +226,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypesTest {
     String s = "java.util.Iterator<List<java.util.Iterator<int>>>";
     ASTMCBasicGenericType asttype = parser.parse_StringMCBasicGenericType(s).get();
     asttype.accept(traverser);
-    Assertions.assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
+    assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
   }
 
 }

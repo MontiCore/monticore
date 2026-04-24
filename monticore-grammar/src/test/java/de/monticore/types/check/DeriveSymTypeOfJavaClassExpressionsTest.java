@@ -13,7 +13,6 @@ import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.*;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -21,6 +20,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 import static de.monticore.types.check.DefsTypeBasic.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class DeriveSymTypeOfJavaClassExpressionsTest extends DeriveSymTypeAbstractTest {
 
@@ -362,10 +362,10 @@ public class DeriveSymTypeOfJavaClassExpressionsTest extends DeriveSymTypeAbstra
     //test that types must have a name
     Optional<ASTExpression> class1 = p.parse_StringExpression("3.class");
 
-    Assertions.assertFalse(class1.isPresent());
+    assertFalse(class1.isPresent());
 
     Optional<ASTExpression> class2 = p.parse_StringExpression("\"Hallo\".class");
-    Assertions.assertFalse(class2.isPresent());
+    assertFalse(class2.isPresent());
   }
 
   @Test

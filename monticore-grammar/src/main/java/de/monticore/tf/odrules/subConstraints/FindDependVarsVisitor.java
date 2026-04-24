@@ -5,7 +5,7 @@ import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisitor2;
 import de.monticore.tf.odrulegeneration._ast.ASTMatchingObject;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -23,7 +23,7 @@ public class FindDependVarsVisitor implements
   public FindDependVarsVisitor(List<ASTMatchingObject> lhsObjects){
     super();
     this.lhsObjects = lhsObjects;
-    dependVars = new HashSet<>();
+    dependVars = new LinkedHashSet<>();
   }
 
   @Override

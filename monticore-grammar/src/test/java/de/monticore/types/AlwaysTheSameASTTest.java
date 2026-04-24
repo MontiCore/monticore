@@ -15,12 +15,13 @@ import de.monticore.types.mcsimplegenerictypestest.MCSimpleGenericTypesTestMill;
 import de.monticore.types.mcsimplegenerictypestest._parser.MCSimpleGenericTypesTestParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class AlwaysTheSameASTTest {
 
@@ -58,41 +59,41 @@ public class AlwaysTheSameASTTest {
     String list = "List<String>";
 
     Optional<ASTMCGenericType> basicGenericAst = mcCollectionTypesTestParser.parse_StringMCGenericType(list);
-    Assertions.assertFalse(mcCollectionTypesTestParser.hasErrors());
-    Assertions.assertTrue(basicGenericAst.isPresent());
-    Assertions.assertTrue(basicGenericAst.get() instanceof ASTMCListType);
+    assertFalse(mcCollectionTypesTestParser.hasErrors());
+    assertTrue(basicGenericAst.isPresent());
+    assertInstanceOf(ASTMCListType.class, basicGenericAst.get());
 
     Optional<ASTMCGenericType> customAst = customGenericTypesTestParser.parse_StringMCGenericType(list);
-    Assertions.assertFalse(mcCollectionTypesTestParser.hasErrors());
-    Assertions.assertTrue(customAst.isPresent());
-    Assertions.assertTrue(customAst.get() instanceof ASTMCListType);
+    assertFalse(mcCollectionTypesTestParser.hasErrors());
+    assertTrue(customAst.isPresent());
+    assertInstanceOf(ASTMCListType.class, customAst.get());
 
     Optional<ASTMCGenericType> genericAST = genericTypesTestParser.parse_StringMCGenericType(list);
-    Assertions.assertFalse(mcCollectionTypesTestParser.hasErrors());
-    Assertions.assertTrue(genericAST.isPresent());
-    Assertions.assertTrue(genericAST.get() instanceof ASTMCListType);
+    assertFalse(mcCollectionTypesTestParser.hasErrors());
+    assertTrue(genericAST.isPresent());
+    assertInstanceOf(ASTMCListType.class, genericAST.get());
 
     ASTMCListType basicGenericList = (ASTMCListType) basicGenericAst.get();
     ASTMCListType customList = (ASTMCListType) customAst.get();
     ASTMCListType genericList = (ASTMCListType) genericAST.get();
 
-    Assertions.assertTrue(basicGenericList.deepEquals(customList));
-    Assertions.assertTrue(basicGenericList.deepEquals(genericList));
-    Assertions.assertTrue(genericList.deepEquals(customList));
+    assertTrue(basicGenericList.deepEquals(customList));
+    assertTrue(basicGenericList.deepEquals(genericList));
+    assertTrue(genericList.deepEquals(customList));
 
-    Assertions.assertEquals(basicGenericAst.get().printType().split("\\.").length, 1);
+    assertEquals(1, basicGenericAst.get().printType().split("\\.").length);
 
-    Assertions.assertEquals(basicGenericAst.get().printWithoutTypeArguments().split("\\.")[0], "List");
+    assertEquals("List", basicGenericAst.get().printWithoutTypeArguments().split("\\.")[0]);
 
-    Assertions.assertEquals(basicGenericAst.get().getMCTypeArgumentList().size(), 1);
+    assertEquals(1, basicGenericAst.get().getMCTypeArgumentList().size());
 
     ASTMCTypeArgument argument = basicGenericAst.get().getMCTypeArgumentList().get(0);
     Optional<ASTMCTypeArgument> argument2 = mcCollectionTypesTestParser.parse_StringMCTypeArgument("String");
-    Assertions.assertFalse(mcCollectionTypesTestParser.hasErrors());
-    Assertions.assertTrue(argument2.isPresent());
-    Assertions.assertTrue(argument.deepEquals(argument2.get()));
+    assertFalse(mcCollectionTypesTestParser.hasErrors());
+    assertTrue(argument2.isPresent());
+    assertTrue(argument.deepEquals(argument2.get()));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -101,33 +102,33 @@ public class AlwaysTheSameASTTest {
     String list = "List<String>";
 
     Optional<ASTMCGenericType> basicGenericAst = mcCollectionTypesTestParser.parse_StringMCGenericType(list);
-    Assertions.assertFalse(mcCollectionTypesTestParser.hasErrors());
-    Assertions.assertTrue(basicGenericAst.isPresent());
-    Assertions.assertTrue(basicGenericAst.get() instanceof ASTMCListType);
+    assertFalse(mcCollectionTypesTestParser.hasErrors());
+    assertTrue(basicGenericAst.isPresent());
+    assertInstanceOf(ASTMCListType.class, basicGenericAst.get());
 
     Optional<ASTMCGenericType> customAst = customGenericTypesTestParser.parse_StringMCGenericType(list);
-    Assertions.assertFalse(mcCollectionTypesTestParser.hasErrors());
-    Assertions.assertTrue(customAst.isPresent());
-    Assertions.assertTrue(customAst.get() instanceof ASTMCListType);
+    assertFalse(mcCollectionTypesTestParser.hasErrors());
+    assertTrue(customAst.isPresent());
+    assertInstanceOf(ASTMCListType.class, customAst.get());
 
     Optional<ASTMCGenericType> genericAST = genericTypesTestParser.parse_StringMCGenericType(list);
-    Assertions.assertFalse(mcCollectionTypesTestParser.hasErrors());
-    Assertions.assertTrue(genericAST.isPresent());
-    Assertions.assertTrue(genericAST.get() instanceof ASTMCListType);
+    assertFalse(mcCollectionTypesTestParser.hasErrors());
+    assertTrue(genericAST.isPresent());
+    assertInstanceOf(ASTMCListType.class, genericAST.get());
 
     ASTMCListType basicGenericList = (ASTMCListType) basicGenericAst.get();
     ASTMCListType customList = (ASTMCListType) customAst.get();
     ASTMCListType genericList = (ASTMCListType) genericAST.get();
 
-    Assertions.assertTrue(basicGenericList.deepEquals(customList));
-    Assertions.assertTrue(basicGenericList.deepEquals(genericList));
-    Assertions.assertTrue(genericList.deepEquals(customList));
+    assertTrue(basicGenericList.deepEquals(customList));
+    assertTrue(basicGenericList.deepEquals(genericList));
+    assertTrue(genericList.deepEquals(customList));
 
-    Assertions.assertEquals(basicGenericAst.get().printType().split("\\.").length, 1);
+    assertEquals(1, basicGenericAst.get().printType().split("\\.").length);
 
-    Assertions.assertEquals(basicGenericAst.get().printWithoutTypeArguments().split("\\.")[0], "List");
+    assertEquals("List", basicGenericAst.get().printWithoutTypeArguments().split("\\.")[0]);
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -135,29 +136,29 @@ public class AlwaysTheSameASTTest {
     String list = "List<String>";
 
     Optional<ASTMCType> basicGenericAst = mcCollectionTypesTestParser.parse_StringMCType(list);
-    Assertions.assertFalse(mcCollectionTypesTestParser.hasErrors());
-    Assertions.assertTrue(basicGenericAst.isPresent());
-    Assertions.assertTrue(basicGenericAst.get() instanceof ASTMCListType);
+    assertFalse(mcCollectionTypesTestParser.hasErrors());
+    assertTrue(basicGenericAst.isPresent());
+    assertInstanceOf(ASTMCListType.class, basicGenericAst.get());
 
     Optional<ASTMCType> customAst = customGenericTypesTestParser.parse_StringMCType(list);
-    Assertions.assertFalse(mcCollectionTypesTestParser.hasErrors());
-    Assertions.assertTrue(customAst.isPresent());
-    Assertions.assertTrue(customAst.get() instanceof ASTMCListType);
+    assertFalse(mcCollectionTypesTestParser.hasErrors());
+    assertTrue(customAst.isPresent());
+    assertInstanceOf(ASTMCListType.class, customAst.get());
 
     Optional<ASTMCType> genericAST = genericTypesTestParser.parse_StringMCType(list);
-    Assertions.assertFalse(mcCollectionTypesTestParser.hasErrors());
-    Assertions.assertTrue(genericAST.isPresent());
-    Assertions.assertTrue(genericAST.get() instanceof ASTMCListType);
+    assertFalse(mcCollectionTypesTestParser.hasErrors());
+    assertTrue(genericAST.isPresent());
+    assertInstanceOf(ASTMCListType.class, genericAST.get());
 
     ASTMCListType basicGenericList = (ASTMCListType) basicGenericAst.get();
     ASTMCListType customList = (ASTMCListType) customAst.get();
     ASTMCListType genericList = (ASTMCListType) genericAST.get();
 
-    Assertions.assertTrue(basicGenericList.deepEquals(customList));
-    Assertions.assertTrue(basicGenericList.deepEquals(genericList));
-    Assertions.assertTrue(genericList.deepEquals(customList));
+    assertTrue(basicGenericList.deepEquals(customList));
+    assertTrue(basicGenericList.deepEquals(genericList));
+    assertTrue(genericList.deepEquals(customList));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -165,37 +166,37 @@ public class AlwaysTheSameASTTest {
     String map = "Map<Integer, String>";
 
     Optional<ASTMCGenericType> basicGenericAst = mcCollectionTypesTestParser.parse_StringMCGenericType(map);
-    Assertions.assertFalse(mcCollectionTypesTestParser.hasErrors());
-    Assertions.assertTrue(basicGenericAst.isPresent());
-    Assertions.assertTrue(basicGenericAst.get() instanceof ASTMCMapType);
+    assertFalse(mcCollectionTypesTestParser.hasErrors());
+    assertTrue(basicGenericAst.isPresent());
+    assertInstanceOf(ASTMCMapType.class, basicGenericAst.get());
 
     Optional<ASTMCGenericType> customAst = customGenericTypesTestParser.parse_StringMCGenericType(map);
-    Assertions.assertFalse(mcCollectionTypesTestParser.hasErrors());
-    Assertions.assertTrue(customAst.isPresent());
-    Assertions.assertTrue(customAst.get() instanceof ASTMCMapType);
+    assertFalse(mcCollectionTypesTestParser.hasErrors());
+    assertTrue(customAst.isPresent());
+    assertInstanceOf(ASTMCMapType.class, customAst.get());
 
     Optional<ASTMCGenericType> genericAST = genericTypesTestParser.parse_StringMCGenericType(map);
-    Assertions.assertFalse(mcCollectionTypesTestParser.hasErrors());
-    Assertions.assertTrue(genericAST.isPresent());
-    Assertions.assertTrue(genericAST.get() instanceof ASTMCMapType);
+    assertFalse(mcCollectionTypesTestParser.hasErrors());
+    assertTrue(genericAST.isPresent());
+    assertInstanceOf(ASTMCMapType.class, genericAST.get());
 
-    Assertions.assertTrue(basicGenericAst.get().deepEquals(customAst.get()));
-    Assertions.assertTrue(basicGenericAst.get().deepEquals(genericAST.get()));
-    Assertions.assertTrue(genericAST.get().deepEquals(customAst.get()));
+    assertTrue(basicGenericAst.get().deepEquals(customAst.get()));
+    assertTrue(basicGenericAst.get().deepEquals(genericAST.get()));
+    assertTrue(genericAST.get().deepEquals(customAst.get()));
 
-    Assertions.assertEquals(basicGenericAst.get().printType().split("\\.").length, 1);
+    assertEquals(1, basicGenericAst.get().printType().split("\\.").length);
 
-    Assertions.assertEquals(basicGenericAst.get().printWithoutTypeArguments().split("\\.")[0], "Map");
+    assertEquals("Map", basicGenericAst.get().printWithoutTypeArguments().split("\\.")[0]);
 
-    Assertions.assertEquals(basicGenericAst.get().getMCTypeArgumentList().size(), 2);
+    assertEquals(2, basicGenericAst.get().getMCTypeArgumentList().size());
 
     ASTMCTypeArgument argument = basicGenericAst.get().getMCTypeArgumentList().get(0);
     Optional<ASTMCTypeArgument> argument2 = mcCollectionTypesTestParser.parse_StringMCTypeArgument("Integer");
-    Assertions.assertFalse(mcCollectionTypesTestParser.hasErrors());
-    Assertions.assertTrue(argument2.isPresent());
-    Assertions.assertTrue(argument.deepEquals(argument2.get()));
+    assertFalse(mcCollectionTypesTestParser.hasErrors());
+    assertTrue(argument2.isPresent());
+    assertTrue(argument.deepEquals(argument2.get()));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -203,25 +204,25 @@ public class AlwaysTheSameASTTest {
     String map = "Map<Integer, String>";
 
     Optional<ASTMCType> basicGenericAst = mcCollectionTypesTestParser.parse_StringMCType(map);
-    Assertions.assertFalse(mcCollectionTypesTestParser.hasErrors());
-    Assertions.assertTrue(basicGenericAst.isPresent());
-    Assertions.assertTrue(basicGenericAst.get() instanceof ASTMCMapType);
+    assertFalse(mcCollectionTypesTestParser.hasErrors());
+    assertTrue(basicGenericAst.isPresent());
+    assertInstanceOf(ASTMCMapType.class, basicGenericAst.get());
 
     Optional<ASTMCType> customAst = customGenericTypesTestParser.parse_StringMCType(map);
-    Assertions.assertFalse(mcCollectionTypesTestParser.hasErrors());
-    Assertions.assertTrue(customAst.isPresent());
-    Assertions.assertTrue(customAst.get() instanceof ASTMCMapType);
+    assertFalse(mcCollectionTypesTestParser.hasErrors());
+    assertTrue(customAst.isPresent());
+    assertInstanceOf(ASTMCMapType.class, customAst.get());
 
     Optional<ASTMCType> genericAST = genericTypesTestParser.parse_StringMCType(map);
-    Assertions.assertFalse(mcCollectionTypesTestParser.hasErrors());
-    Assertions.assertTrue(genericAST.isPresent());
-    Assertions.assertTrue(genericAST.get() instanceof ASTMCMapType);
+    assertFalse(mcCollectionTypesTestParser.hasErrors());
+    assertTrue(genericAST.isPresent());
+    assertInstanceOf(ASTMCMapType.class, genericAST.get());
 
-    Assertions.assertTrue(basicGenericAst.get().deepEquals(customAst.get()));
-    Assertions.assertTrue(basicGenericAst.get().deepEquals(genericAST.get()));
-    Assertions.assertTrue(genericAST.get().deepEquals(customAst.get()));
+    assertTrue(basicGenericAst.get().deepEquals(customAst.get()));
+    assertTrue(basicGenericAst.get().deepEquals(genericAST.get()));
+    assertTrue(genericAST.get().deepEquals(customAst.get()));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -229,29 +230,29 @@ public class AlwaysTheSameASTTest {
     String map = "Map<Integer, String>";
 
     Optional<ASTMCGenericType> basicGenericAst = mcCollectionTypesTestParser.parse_StringMCGenericType(map);
-    Assertions.assertFalse(mcCollectionTypesTestParser.hasErrors());
-    Assertions.assertTrue(basicGenericAst.isPresent());
-    Assertions.assertTrue(basicGenericAst.get() instanceof ASTMCMapType);
+    assertFalse(mcCollectionTypesTestParser.hasErrors());
+    assertTrue(basicGenericAst.isPresent());
+    assertInstanceOf(ASTMCMapType.class, basicGenericAst.get());
 
     Optional<ASTMCGenericType> customAst = customGenericTypesTestParser.parse_StringMCGenericType(map);
-    Assertions.assertFalse(mcCollectionTypesTestParser.hasErrors());
-    Assertions.assertTrue(customAst.isPresent());
-    Assertions.assertTrue(customAst.get() instanceof ASTMCMapType);
+    assertFalse(mcCollectionTypesTestParser.hasErrors());
+    assertTrue(customAst.isPresent());
+    assertInstanceOf(ASTMCMapType.class, customAst.get());
 
     Optional<ASTMCGenericType> genericAST = genericTypesTestParser.parse_StringMCGenericType(map);
-    Assertions.assertFalse(mcCollectionTypesTestParser.hasErrors());
-    Assertions.assertTrue(genericAST.isPresent());
-    Assertions.assertTrue(genericAST.get() instanceof ASTMCMapType);
+    assertFalse(mcCollectionTypesTestParser.hasErrors());
+    assertTrue(genericAST.isPresent());
+    assertInstanceOf(ASTMCMapType.class, genericAST.get());
 
-    Assertions.assertTrue(basicGenericAst.get().deepEquals(customAst.get()));
-    Assertions.assertTrue(basicGenericAst.get().deepEquals(genericAST.get()));
-    Assertions.assertTrue(genericAST.get().deepEquals(customAst.get()));
+    assertTrue(basicGenericAst.get().deepEquals(customAst.get()));
+    assertTrue(basicGenericAst.get().deepEquals(genericAST.get()));
+    assertTrue(genericAST.get().deepEquals(customAst.get()));
 
-    Assertions.assertEquals(basicGenericAst.get().printType().split("\\.").length, 1);
+    assertEquals(1, basicGenericAst.get().printType().split("\\.").length);
 
-    Assertions.assertEquals(basicGenericAst.get().printWithoutTypeArguments().split("\\.")[0], "Map");
+    assertEquals("Map", basicGenericAst.get().printWithoutTypeArguments().split("\\.")[0]);
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -259,38 +260,38 @@ public class AlwaysTheSameASTTest {
     String optional = "Optional<String>";
 
     Optional<ASTMCGenericType> basicGenericAst = mcCollectionTypesTestParser.parse_StringMCGenericType(optional);
-    Assertions.assertFalse(mcCollectionTypesTestParser.hasErrors());
-    Assertions.assertTrue(basicGenericAst.isPresent());
-    Assertions.assertTrue(basicGenericAst.get() instanceof ASTMCOptionalType);
+    assertFalse(mcCollectionTypesTestParser.hasErrors());
+    assertTrue(basicGenericAst.isPresent());
+    assertInstanceOf(ASTMCOptionalType.class, basicGenericAst.get());
 
     Optional<ASTMCGenericType> customAst = customGenericTypesTestParser.parse_StringMCGenericType(optional);
-    Assertions.assertFalse(mcCollectionTypesTestParser.hasErrors());
-    Assertions.assertTrue(customAst.isPresent());
-    Assertions.assertTrue(customAst.get() instanceof ASTMCOptionalType);
+    assertFalse(mcCollectionTypesTestParser.hasErrors());
+    assertTrue(customAst.isPresent());
+    assertInstanceOf(ASTMCOptionalType.class, customAst.get());
 
     Optional<ASTMCGenericType> genericAST = genericTypesTestParser.parse_StringMCGenericType(optional);
-    Assertions.assertFalse(mcCollectionTypesTestParser.hasErrors());
-    Assertions.assertTrue(genericAST.isPresent());
-    Assertions.assertTrue(genericAST.get() instanceof ASTMCOptionalType);
+    assertFalse(mcCollectionTypesTestParser.hasErrors());
+    assertTrue(genericAST.isPresent());
+    assertInstanceOf(ASTMCOptionalType.class, genericAST.get());
 
 
-    Assertions.assertTrue(basicGenericAst.get().deepEquals(customAst.get()));
-    Assertions.assertTrue(basicGenericAst.get().deepEquals(genericAST.get()));
-    Assertions.assertTrue(genericAST.get().deepEquals(customAst.get()));
+    assertTrue(basicGenericAst.get().deepEquals(customAst.get()));
+    assertTrue(basicGenericAst.get().deepEquals(genericAST.get()));
+    assertTrue(genericAST.get().deepEquals(customAst.get()));
 
-    Assertions.assertEquals(basicGenericAst.get().printType().split("\\.").length, 1);
+    assertEquals(1, basicGenericAst.get().printType().split("\\.").length);
 
-    Assertions.assertEquals(basicGenericAst.get().printWithoutTypeArguments().split("\\.")[0], "Optional");
+    assertEquals("Optional", basicGenericAst.get().printWithoutTypeArguments().split("\\.")[0]);
 
-    Assertions.assertEquals(basicGenericAst.get().getMCTypeArgumentList().size(), 1);
+    assertEquals(1, basicGenericAst.get().getMCTypeArgumentList().size());
 
     ASTMCTypeArgument argument = basicGenericAst.get().getMCTypeArgumentList().get(0);
     Optional<ASTMCTypeArgument> argument2 = mcCollectionTypesTestParser.parse_StringMCTypeArgument("String");
-    Assertions.assertFalse(mcCollectionTypesTestParser.hasErrors());
-    Assertions.assertTrue(argument2.isPresent());
-    Assertions.assertTrue(argument.deepEquals(argument2.get()));
+    assertFalse(mcCollectionTypesTestParser.hasErrors());
+    assertTrue(argument2.isPresent());
+    assertTrue(argument.deepEquals(argument2.get()));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -298,26 +299,26 @@ public class AlwaysTheSameASTTest {
     String optional = "Optional<String>";
 
     Optional<ASTMCType> basicGenericAst = mcCollectionTypesTestParser.parse_StringMCType(optional);
-    Assertions.assertFalse(mcCollectionTypesTestParser.hasErrors());
-    Assertions.assertTrue(basicGenericAst.isPresent());
-    Assertions.assertTrue(basicGenericAst.get() instanceof ASTMCOptionalType);
+    assertFalse(mcCollectionTypesTestParser.hasErrors());
+    assertTrue(basicGenericAst.isPresent());
+    assertInstanceOf(ASTMCOptionalType.class, basicGenericAst.get());
 
     Optional<ASTMCType> customAst = customGenericTypesTestParser.parse_StringMCType(optional);
-    Assertions.assertFalse(mcCollectionTypesTestParser.hasErrors());
-    Assertions.assertTrue(customAst.isPresent());
-    Assertions.assertTrue(customAst.get() instanceof ASTMCOptionalType);
+    assertFalse(mcCollectionTypesTestParser.hasErrors());
+    assertTrue(customAst.isPresent());
+    assertInstanceOf(ASTMCOptionalType.class, customAst.get());
 
     Optional<ASTMCType> genericAST = genericTypesTestParser.parse_StringMCType(optional);
-    Assertions.assertFalse(mcCollectionTypesTestParser.hasErrors());
-    Assertions.assertTrue(genericAST.isPresent());
-    Assertions.assertTrue(genericAST.get() instanceof ASTMCOptionalType);
+    assertFalse(mcCollectionTypesTestParser.hasErrors());
+    assertTrue(genericAST.isPresent());
+    assertInstanceOf(ASTMCOptionalType.class, genericAST.get());
 
 
-    Assertions.assertTrue(basicGenericAst.get().deepEquals(customAst.get()));
-    Assertions.assertTrue(basicGenericAst.get().deepEquals(genericAST.get()));
-    Assertions.assertTrue(genericAST.get().deepEquals(customAst.get()));
+    assertTrue(basicGenericAst.get().deepEquals(customAst.get()));
+    assertTrue(basicGenericAst.get().deepEquals(genericAST.get()));
+    assertTrue(genericAST.get().deepEquals(customAst.get()));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -325,30 +326,30 @@ public class AlwaysTheSameASTTest {
     String optional = "Optional<String>";
 
     Optional<ASTMCGenericType> basicGenericAst = mcCollectionTypesTestParser.parse_StringMCGenericType(optional);
-    Assertions.assertFalse(mcCollectionTypesTestParser.hasErrors());
-    Assertions.assertTrue(basicGenericAst.isPresent());
-    Assertions.assertTrue(basicGenericAst.get() instanceof ASTMCOptionalType);
+    assertFalse(mcCollectionTypesTestParser.hasErrors());
+    assertTrue(basicGenericAst.isPresent());
+    assertInstanceOf(ASTMCOptionalType.class, basicGenericAst.get());
 
     Optional<ASTMCGenericType> customAst = customGenericTypesTestParser.parse_StringMCGenericType(optional);
-    Assertions.assertFalse(mcCollectionTypesTestParser.hasErrors());
-    Assertions.assertTrue(customAst.isPresent());
-    Assertions.assertTrue(customAst.get() instanceof ASTMCOptionalType);
+    assertFalse(mcCollectionTypesTestParser.hasErrors());
+    assertTrue(customAst.isPresent());
+    assertInstanceOf(ASTMCOptionalType.class, customAst.get());
 
     Optional<ASTMCGenericType> genericAST = genericTypesTestParser.parse_StringMCGenericType(optional);
-    Assertions.assertFalse(mcCollectionTypesTestParser.hasErrors());
-    Assertions.assertTrue(genericAST.isPresent());
-    Assertions.assertTrue(genericAST.get() instanceof ASTMCOptionalType);
+    assertFalse(mcCollectionTypesTestParser.hasErrors());
+    assertTrue(genericAST.isPresent());
+    assertInstanceOf(ASTMCOptionalType.class, genericAST.get());
 
 
-    Assertions.assertTrue(basicGenericAst.get().deepEquals(customAst.get()));
-    Assertions.assertTrue(basicGenericAst.get().deepEquals(genericAST.get()));
-    Assertions.assertTrue(genericAST.get().deepEquals(customAst.get()));
+    assertTrue(basicGenericAst.get().deepEquals(customAst.get()));
+    assertTrue(basicGenericAst.get().deepEquals(genericAST.get()));
+    assertTrue(genericAST.get().deepEquals(customAst.get()));
 
-    Assertions.assertEquals(basicGenericAst.get().printType().split("\\.").length, 1);
+    assertEquals(1, basicGenericAst.get().printType().split("\\.").length);
 
-    Assertions.assertEquals(basicGenericAst.get().printWithoutTypeArguments().split("\\.")[0], "Optional");
+    assertEquals("Optional", basicGenericAst.get().printWithoutTypeArguments().split("\\.")[0]);
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -356,38 +357,38 @@ public class AlwaysTheSameASTTest {
     String set = "Set<String>";
 
     Optional<ASTMCGenericType> basicGenericAst = mcCollectionTypesTestParser.parse_StringMCGenericType(set);
-    Assertions.assertFalse(mcCollectionTypesTestParser.hasErrors());
-    Assertions.assertTrue(basicGenericAst.isPresent());
-    Assertions.assertTrue(basicGenericAst.get() instanceof ASTMCSetType);
+    assertFalse(mcCollectionTypesTestParser.hasErrors());
+    assertTrue(basicGenericAst.isPresent());
+    assertInstanceOf(ASTMCSetType.class, basicGenericAst.get());
 
     Optional<ASTMCGenericType> customAst = customGenericTypesTestParser.parse_StringMCGenericType(set);
-    Assertions.assertFalse(mcCollectionTypesTestParser.hasErrors());
-    Assertions.assertTrue(customAst.isPresent());
-    Assertions.assertTrue(customAst.get() instanceof ASTMCSetType);
+    assertFalse(mcCollectionTypesTestParser.hasErrors());
+    assertTrue(customAst.isPresent());
+    assertInstanceOf(ASTMCSetType.class, customAst.get());
 
     Optional<ASTMCGenericType> genericAST = genericTypesTestParser.parse_StringMCGenericType(set);
-    Assertions.assertFalse(mcCollectionTypesTestParser.hasErrors());
-    Assertions.assertTrue(genericAST.isPresent());
-    Assertions.assertTrue(genericAST.get() instanceof ASTMCSetType);
+    assertFalse(mcCollectionTypesTestParser.hasErrors());
+    assertTrue(genericAST.isPresent());
+    assertInstanceOf(ASTMCSetType.class, genericAST.get());
 
 
-    Assertions.assertTrue(basicGenericAst.get().deepEquals(customAst.get()));
-    Assertions.assertTrue(basicGenericAst.get().deepEquals(genericAST.get()));
-    Assertions.assertTrue(genericAST.get().deepEquals(customAst.get()));
+    assertTrue(basicGenericAst.get().deepEquals(customAst.get()));
+    assertTrue(basicGenericAst.get().deepEquals(genericAST.get()));
+    assertTrue(genericAST.get().deepEquals(customAst.get()));
 
-    Assertions.assertEquals(basicGenericAst.get().printType().split("\\.").length, 1);
+    assertEquals(1, basicGenericAst.get().printType().split("\\.").length);
 
-    Assertions.assertEquals(basicGenericAst.get().printWithoutTypeArguments().split("\\.")[0], "Set");
+    assertEquals("Set", basicGenericAst.get().printWithoutTypeArguments().split("\\.")[0]);
 
-    Assertions.assertEquals(basicGenericAst.get().getMCTypeArgumentList().size(), 1);
+    assertEquals(1, basicGenericAst.get().getMCTypeArgumentList().size());
 
     ASTMCTypeArgument argument = basicGenericAst.get().getMCTypeArgumentList().get(0);
     Optional<ASTMCTypeArgument> argument2 = mcCollectionTypesTestParser.parse_StringMCTypeArgument("String");
-    Assertions.assertFalse(mcCollectionTypesTestParser.hasErrors());
-    Assertions.assertTrue(argument2.isPresent());
-    Assertions.assertTrue(argument.deepEquals(argument2.get()));
+    assertFalse(mcCollectionTypesTestParser.hasErrors());
+    assertTrue(argument2.isPresent());
+    assertTrue(argument.deepEquals(argument2.get()));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -395,26 +396,26 @@ public class AlwaysTheSameASTTest {
     String set = "Set<String>";
 
     Optional<ASTMCType> basicGenericAst = mcCollectionTypesTestParser.parse_StringMCType(set);
-    Assertions.assertFalse(mcCollectionTypesTestParser.hasErrors());
-    Assertions.assertTrue(basicGenericAst.isPresent());
-    Assertions.assertTrue(basicGenericAst.get() instanceof ASTMCSetType);
+    assertFalse(mcCollectionTypesTestParser.hasErrors());
+    assertTrue(basicGenericAst.isPresent());
+    assertInstanceOf(ASTMCSetType.class, basicGenericAst.get());
 
     Optional<ASTMCType> customAst = customGenericTypesTestParser.parse_StringMCType(set);
-    Assertions.assertFalse(mcCollectionTypesTestParser.hasErrors());
-    Assertions.assertTrue(customAst.isPresent());
-    Assertions.assertTrue(customAst.get() instanceof ASTMCSetType);
+    assertFalse(mcCollectionTypesTestParser.hasErrors());
+    assertTrue(customAst.isPresent());
+    assertInstanceOf(ASTMCSetType.class, customAst.get());
 
     Optional<ASTMCType> genericAST = genericTypesTestParser.parse_StringMCType(set);
-    Assertions.assertFalse(mcCollectionTypesTestParser.hasErrors());
-    Assertions.assertTrue(genericAST.isPresent());
-    Assertions.assertTrue(genericAST.get() instanceof ASTMCSetType);
+    assertFalse(mcCollectionTypesTestParser.hasErrors());
+    assertTrue(genericAST.isPresent());
+    assertInstanceOf(ASTMCSetType.class, genericAST.get());
 
 
-    Assertions.assertTrue(basicGenericAst.get().deepEquals(customAst.get()));
-    Assertions.assertTrue(basicGenericAst.get().deepEquals(genericAST.get()));
-    Assertions.assertTrue(genericAST.get().deepEquals(customAst.get()));
+    assertTrue(basicGenericAst.get().deepEquals(customAst.get()));
+    assertTrue(basicGenericAst.get().deepEquals(genericAST.get()));
+    assertTrue(genericAST.get().deepEquals(customAst.get()));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -422,30 +423,30 @@ public class AlwaysTheSameASTTest {
     String set = "Set<String>";
 
     Optional<ASTMCGenericType> basicGenericAst = mcCollectionTypesTestParser.parse_StringMCGenericType(set);
-    Assertions.assertFalse(mcCollectionTypesTestParser.hasErrors());
-    Assertions.assertTrue(basicGenericAst.isPresent());
-    Assertions.assertTrue(basicGenericAst.get() instanceof ASTMCSetType);
+    assertFalse(mcCollectionTypesTestParser.hasErrors());
+    assertTrue(basicGenericAst.isPresent());
+    assertInstanceOf(ASTMCSetType.class, basicGenericAst.get());
 
     Optional<ASTMCGenericType> customAst = customGenericTypesTestParser.parse_StringMCGenericType(set);
-    Assertions.assertFalse(mcCollectionTypesTestParser.hasErrors());
-    Assertions.assertTrue(customAst.isPresent());
-    Assertions.assertTrue(customAst.get() instanceof ASTMCSetType);
+    assertFalse(mcCollectionTypesTestParser.hasErrors());
+    assertTrue(customAst.isPresent());
+    assertInstanceOf(ASTMCSetType.class, customAst.get());
 
     Optional<ASTMCGenericType> genericAST = genericTypesTestParser.parse_StringMCGenericType(set);
-    Assertions.assertFalse(mcCollectionTypesTestParser.hasErrors());
-    Assertions.assertTrue(genericAST.isPresent());
-    Assertions.assertTrue(genericAST.get() instanceof ASTMCSetType);
+    assertFalse(mcCollectionTypesTestParser.hasErrors());
+    assertTrue(genericAST.isPresent());
+    assertInstanceOf(ASTMCSetType.class, genericAST.get());
 
 
-    Assertions.assertTrue(basicGenericAst.get().deepEquals(customAst.get()));
-    Assertions.assertTrue(basicGenericAst.get().deepEquals(genericAST.get()));
-    Assertions.assertTrue(genericAST.get().deepEquals(customAst.get()));
+    assertTrue(basicGenericAst.get().deepEquals(customAst.get()));
+    assertTrue(basicGenericAst.get().deepEquals(genericAST.get()));
+    assertTrue(genericAST.get().deepEquals(customAst.get()));
 
-    Assertions.assertEquals(basicGenericAst.get().printType().split("\\.").length, 1);
+    assertEquals(1, basicGenericAst.get().printType().split("\\.").length);
 
-    Assertions.assertEquals(basicGenericAst.get().printWithoutTypeArguments().split("\\.")[0], "Set");
+    assertEquals("Set", basicGenericAst.get().printWithoutTypeArguments().split("\\.")[0]);
     
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -453,25 +454,25 @@ public class AlwaysTheSameASTTest {
     String type = "de.monticore.ASTNode";
 
     Optional<ASTMCTypeArgument> basicGenericAst = mcCollectionTypesTestParser.parse_StringMCTypeArgument(type);
-    Assertions.assertFalse(mcCollectionTypesTestParser.hasErrors());
-    Assertions.assertTrue(basicGenericAst.isPresent());
-    Assertions.assertTrue(basicGenericAst.get() instanceof ASTMCBasicTypeArgument);
+    assertFalse(mcCollectionTypesTestParser.hasErrors());
+    assertTrue(basicGenericAst.isPresent());
+    assertInstanceOf(ASTMCBasicTypeArgument.class, basicGenericAst.get());
 
     Optional<ASTMCTypeArgument> customAst = customGenericTypesTestParser.parse_StringMCTypeArgument(type);
-    Assertions.assertFalse(mcCollectionTypesTestParser.hasErrors());
-    Assertions.assertTrue(customAst.isPresent());
-    Assertions.assertTrue(customAst.get() instanceof ASTMCBasicTypeArgument);
+    assertFalse(mcCollectionTypesTestParser.hasErrors());
+    assertTrue(customAst.isPresent());
+    assertInstanceOf(ASTMCBasicTypeArgument.class, customAst.get());
 
     Optional<ASTMCTypeArgument> genericAST = genericTypesTestParser.parse_StringMCTypeArgument(type);
-    Assertions.assertFalse(mcCollectionTypesTestParser.hasErrors());
-    Assertions.assertTrue(genericAST.isPresent());
-    Assertions.assertTrue(genericAST.get() instanceof ASTMCBasicTypeArgument);
+    assertFalse(mcCollectionTypesTestParser.hasErrors());
+    assertTrue(genericAST.isPresent());
+    assertInstanceOf(ASTMCBasicTypeArgument.class, genericAST.get());
 
-    Assertions.assertTrue(basicGenericAst.get().deepEquals(customAst.get()));
-    Assertions.assertTrue(basicGenericAst.get().deepEquals(genericAST.get()));
-    Assertions.assertTrue(genericAST.get().deepEquals(customAst.get()));
+    assertTrue(basicGenericAst.get().deepEquals(customAst.get()));
+    assertTrue(basicGenericAst.get().deepEquals(genericAST.get()));
+    assertTrue(genericAST.get().deepEquals(customAst.get()));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -479,18 +480,18 @@ public class AlwaysTheSameASTTest {
     String type = "List<a.b.C>";
 
     Optional<ASTMCTypeArgument> customAst = customGenericTypesTestParser.parse_StringMCTypeArgument(type);
-    Assertions.assertFalse(mcCollectionTypesTestParser.hasErrors());
-    Assertions.assertTrue(customAst.isPresent());
-    Assertions.assertTrue(customAst.get() instanceof ASTMCCustomTypeArgument);
+    assertFalse(mcCollectionTypesTestParser.hasErrors());
+    assertTrue(customAst.isPresent());
+    assertInstanceOf(ASTMCCustomTypeArgument.class, customAst.get());
 
     Optional<ASTMCTypeArgument> genericAST = genericTypesTestParser.parse_StringMCTypeArgument(type);
-    Assertions.assertFalse(mcCollectionTypesTestParser.hasErrors());
-    Assertions.assertTrue(genericAST.isPresent());
-    Assertions.assertTrue(genericAST.get() instanceof ASTMCCustomTypeArgument);
+    assertFalse(mcCollectionTypesTestParser.hasErrors());
+    assertTrue(genericAST.isPresent());
+    assertInstanceOf(ASTMCCustomTypeArgument.class, genericAST.get());
 
-    Assertions.assertTrue(genericAST.get().deepEquals(customAst.get()));
+    assertTrue(genericAST.get().deepEquals(customAst.get()));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -498,32 +499,32 @@ public class AlwaysTheSameASTTest {
     String type = "de.monticore.ASTNode";
 
     Optional<ASTMCType> basicAST = basicTypesTestParser.parse_StringMCType(type);
-    Assertions.assertFalse(mcCollectionTypesTestParser.hasErrors());
-    Assertions.assertTrue(basicAST.isPresent());
-    Assertions.assertTrue(basicAST.get() instanceof ASTMCQualifiedType);
+    assertFalse(mcCollectionTypesTestParser.hasErrors());
+    assertTrue(basicAST.isPresent());
+    assertInstanceOf(ASTMCQualifiedType.class, basicAST.get());
 
     Optional<ASTMCType> basicGenericAst = mcCollectionTypesTestParser.parse_StringMCType(type);
-    Assertions.assertFalse(mcCollectionTypesTestParser.hasErrors());
-    Assertions.assertTrue(basicGenericAst.isPresent());
-    Assertions.assertTrue(basicGenericAst.get() instanceof ASTMCQualifiedType);
+    assertFalse(mcCollectionTypesTestParser.hasErrors());
+    assertTrue(basicGenericAst.isPresent());
+    assertInstanceOf(ASTMCQualifiedType.class, basicGenericAst.get());
 
     Optional<ASTMCType> customAst = customGenericTypesTestParser.parse_StringMCType(type);
-    Assertions.assertFalse(mcCollectionTypesTestParser.hasErrors());
-    Assertions.assertTrue(customAst.isPresent());
-    Assertions.assertTrue(customAst.get() instanceof ASTMCQualifiedType);
+    assertFalse(mcCollectionTypesTestParser.hasErrors());
+    assertTrue(customAst.isPresent());
+    assertInstanceOf(ASTMCQualifiedType.class, customAst.get());
 
     Optional<ASTMCType> genericAST = genericTypesTestParser.parse_StringMCType(type);
-    Assertions.assertFalse(mcCollectionTypesTestParser.hasErrors());
-    Assertions.assertTrue(genericAST.isPresent());
-    Assertions.assertTrue(genericAST.get() instanceof ASTMCQualifiedType);
+    assertFalse(mcCollectionTypesTestParser.hasErrors());
+    assertTrue(genericAST.isPresent());
+    assertInstanceOf(ASTMCQualifiedType.class, genericAST.get());
 
-    Assertions.assertTrue(basicAST.get().deepEquals(customAst.get()));
-    Assertions.assertTrue(basicAST.get().deepEquals(basicGenericAst.get()));
-    Assertions.assertTrue(basicAST.get().deepEquals(genericAST.get()));
-    Assertions.assertTrue(basicGenericAst.get().deepEquals(customAst.get()));
-    Assertions.assertTrue(basicGenericAst.get().deepEquals(genericAST.get()));
-    Assertions.assertTrue(genericAST.get().deepEquals(customAst.get()));
+    assertTrue(basicAST.get().deepEquals(customAst.get()));
+    assertTrue(basicAST.get().deepEquals(basicGenericAst.get()));
+    assertTrue(basicAST.get().deepEquals(genericAST.get()));
+    assertTrue(basicGenericAst.get().deepEquals(customAst.get()));
+    assertTrue(basicGenericAst.get().deepEquals(genericAST.get()));
+    assertTrue(genericAST.get().deepEquals(customAst.get()));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

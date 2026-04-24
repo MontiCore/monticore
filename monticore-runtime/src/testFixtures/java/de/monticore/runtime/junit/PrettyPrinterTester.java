@@ -1,16 +1,17 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.runtime.junit;
 
 import de.monticore.antlr4.MCConcreteParser;
 import de.monticore.ast.ASTNode;
-import org.junit.jupiter.api.Assertions;
 
 import java.io.IOException;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static de.monticore.runtime.junit.MCAssertions.assertNoFindings;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Offers functions to test pretty printers
@@ -31,7 +32,6 @@ public abstract class PrettyPrinterTester {
    *                        {@code ast -> MyMill.prettyPrint(ast, true)}
    * @param additionalCheck additional check on the pretty printed String
    * @param <N>             the type of the ASTNode after parsing
-   * @throws IOException    thrown by the parser
    */
   public static <N extends ASTNode> void testPrettyPrinter(
       String model,
@@ -39,20 +39,37 @@ public abstract class PrettyPrinterTester {
       ParseFunction<N> parseFunc,
       Function<N, String> prettyPrintFunc,
       Predicate<String> additionalCheck
-  ) throws IOException {
+  ) {
     // parse the model
-    Optional<N> astOpt = parseFunc.apply(model);
+    Optional<N> astOpt;
+    try {
+      astOpt = parseFunc.apply(model);
+    }
+    catch (IOException e) {
+      fail("Failed to parse input, exception occurred", e);
+      return;
+    }
     MCAssertions.assertNoFindings();
     assertTrue(astOpt.isPresent(), "Failed to parse input");
-    Assertions.assertFalse(parser.hasErrors(), "Parser has Errors");
+    assertFalse(parser.hasErrors(), "Parser has Errors");
     N ast = astOpt.get();
     // pretty print the model
     String prettyPrinted = prettyPrintFunc.apply(ast);
     MCAssertions.assertNoFindings();
     // parse the pretty printed model
-    Optional<N> prettyPrintedAstOpt = parseFunc.apply(prettyPrinted);
+    Optional<N> prettyPrintedAstOpt;
+    try {
+      prettyPrintedAstOpt = parseFunc.apply(prettyPrinted);
+    }
+    catch (IOException e) {
+      fail(
+          "Failed to parse pretty printed model"
+              + ", exception occurred", e
+      );
+      return;
+    }
     MCAssertions.assertNoFindings();
-    Assertions.assertFalse(parser.hasErrors());
+    assertFalse(parser.hasErrors());
     assertTrue(prettyPrintedAstOpt.isPresent());
     // compare both ASTs
     assertTrue(ast.deepEquals(prettyPrintedAstOpt.get()),
@@ -60,7 +77,7 @@ public abstract class PrettyPrinterTester {
     );
     // run an additional check
     if (!additionalCheck.test(prettyPrinted)) {
-      Assertions.fail("Pretty Printer test: failed during additional check");
+      fail("Pretty Printer test: failed during additional check");
     }
   }
 
@@ -77,14 +94,13 @@ public abstract class PrettyPrinterTester {
    * @param prettyPrintFunc the actual pretty printing operation, e.g.,
    *                        {@code ast -> MyMill.prettyPrint(ast, true)}
    * @param <N>             the type of the ASTNode after parsing
-   * @throws IOException
    */
   public static <N extends ASTNode> void testPrettyPrinter(
       String model,
       MCConcreteParser parser,
       ParseFunction<N> parseFunc,
       Function<N, String> prettyPrintFunc
-  ) throws IOException {
+  ) {
     testPrettyPrinter(model, parser, parseFunc, prettyPrintFunc, m -> true);
   }
 

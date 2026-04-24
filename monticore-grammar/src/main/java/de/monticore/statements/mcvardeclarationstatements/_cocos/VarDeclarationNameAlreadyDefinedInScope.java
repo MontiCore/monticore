@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.statements.mcvardeclarationstatements._cocos;
 
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTVariableDeclarator;

@@ -7,11 +7,12 @@ import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.literals.testmcjavaliterals.TestMCJavaLiteralsMill;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DoubleJavaLiteralsTest {
 
@@ -25,10 +26,10 @@ public class DoubleJavaLiteralsTest {
 
   private void checkDoubleLiteral(double d, String s) throws IOException {
     ASTLiteral lit = MCJavaLiteralsTestHelper.getInstance().parseLiteral(s);
-    Assertions.assertTrue(lit instanceof ASTDoubleLiteral);
-    Assertions.assertEquals(d, ((ASTDoubleLiteral) lit).getValue(), 0);
+    assertInstanceOf(ASTDoubleLiteral.class, lit);
+    assertEquals(d, ((ASTDoubleLiteral) lit).getValue(), 0);
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -83,7 +84,7 @@ public class DoubleJavaLiteralsTest {
       checkDoubleLiteral(1e137, "1e137");
     }
     catch (IOException e) {
-      Assertions.fail(e.getMessage());
+      fail(e.getMessage());
     }
   }
 }

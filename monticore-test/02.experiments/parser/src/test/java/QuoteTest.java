@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;

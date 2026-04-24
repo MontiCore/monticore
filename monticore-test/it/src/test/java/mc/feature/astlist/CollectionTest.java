@@ -8,12 +8,11 @@ import de.se_rwth.commons.logging.LogStub;
 import mc.feature.list.lists.ListsMill;
 import mc.feature.list.lists._ast.ASTParent;
 import mc.feature.list.lists._ast.ASTSon;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CollectionTest {
   
@@ -38,16 +37,16 @@ public class CollectionTest {
     p2.getSonsList().add(s3);
     p2.getSonsList().add(s4);
     
-    Assertions.assertTrue(p1.deepEquals(p1, true));
-    Assertions.assertTrue(p2.deepEquals(p2, true));
-    Assertions.assertTrue(p1.deepEquals(p2, true));
-    Assertions.assertTrue(p2.deepEquals(p1, true));
+    assertTrue(p1.deepEquals(p1, true));
+    assertTrue(p2.deepEquals(p2, true));
+    assertTrue(p1.deepEquals(p2, true));
+    assertTrue(p2.deepEquals(p1, true));
     
     p1.getSonsList().remove(s1);
-    Assertions.assertFalse(p1.deepEquals(p2, true));
-    Assertions.assertFalse(p2.deepEquals(p1, true));
+    assertFalse(p1.deepEquals(p2, true));
+    assertFalse(p2.deepEquals(p1, true));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -69,14 +68,14 @@ public class CollectionTest {
     p2.getSonsList().add(s3);
     p2.getSonsList().add(s4);
     
-    Assertions.assertTrue(p1.deepEquals(p1));
-    Assertions.assertFalse(p1.deepEquals(p2));
-    Assertions.assertTrue(p1.deepEquals(p2, false));
-    Assertions.assertTrue(p2.deepEquals(p1, false));
-    Assertions.assertFalse(p1.deepEquals(p2, true));
-    Assertions.assertFalse(p2.deepEquals(p1, true));
+    assertTrue(p1.deepEquals(p1));
+    assertFalse(p1.deepEquals(p2));
+    assertTrue(p1.deepEquals(p2, false));
+    assertTrue(p2.deepEquals(p1, false));
+    assertFalse(p1.deepEquals(p2, true));
+    assertFalse(p2.deepEquals(p1, true));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -94,16 +93,16 @@ public class CollectionTest {
     p2.getSonsList().add(s3);
     p2.getSonsList().add(s4);
     
-    Assertions.assertTrue(p1.deepEqualsWithComments(p1));
-    Assertions.assertTrue(p2.deepEqualsWithComments(p2));
-    Assertions.assertTrue(p1.deepEqualsWithComments(p2));
-    Assertions.assertTrue(p2.deepEqualsWithComments(p1));
+    assertTrue(p1.deepEqualsWithComments(p1));
+    assertTrue(p2.deepEqualsWithComments(p2));
+    assertTrue(p1.deepEqualsWithComments(p2));
+    assertTrue(p2.deepEqualsWithComments(p1));
     
     p1.getSonsList().remove(s1);
-    Assertions.assertFalse(p1.deepEqualsWithComments(p2));
-    Assertions.assertFalse(p2.deepEqualsWithComments(p1));
+    assertFalse(p1.deepEqualsWithComments(p2));
+    assertFalse(p2.deepEqualsWithComments(p1));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -125,10 +124,10 @@ public class CollectionTest {
     p2.getSonsList().add(s3);
     p2.getSonsList().add(s4);
     
-    Assertions.assertFalse(p1.deepEqualsWithComments(p2));
-    Assertions.assertFalse(p2.deepEqualsWithComments(p1));
+    assertFalse(p1.deepEqualsWithComments(p2));
+    assertFalse(p2.deepEqualsWithComments(p1));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -152,15 +151,15 @@ public class CollectionTest {
     p2.getSonsList().add(s3);
     p2.getSonsList().add(s4);
     
-    Assertions.assertTrue(p1.deepEqualsWithComments(p2));
-    Assertions.assertTrue(p2.deepEqualsWithComments(p1));
+    assertTrue(p1.deepEqualsWithComments(p2));
+    assertTrue(p2.deepEqualsWithComments(p1));
     
     c1.setText("different comment");
     
-    Assertions.assertFalse(p1.deepEqualsWithComments(p2));
-    Assertions.assertFalse(p2.deepEqualsWithComments(p1));
+    assertFalse(p1.deepEqualsWithComments(p2));
+    assertFalse(p2.deepEqualsWithComments(p1));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -180,9 +179,9 @@ public class CollectionTest {
     
     ASTParent p2 = p1.deepClone();
     
-    Assertions.assertTrue(p1.deepEqualsWithComments(p2));
+    assertTrue(p1.deepEqualsWithComments(p2));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -203,9 +202,9 @@ public class CollectionTest {
     
     ASTParent p2 = p1.deepClone();
     
-    Assertions.assertTrue(p1.deepEquals(p2));
+    assertTrue(p1.deepEquals(p2));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
 }

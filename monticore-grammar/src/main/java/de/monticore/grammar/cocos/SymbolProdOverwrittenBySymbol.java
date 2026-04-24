@@ -39,7 +39,7 @@ public class SymbolProdOverwrittenBySymbol implements GrammarASTMCGrammarCoCo {
           if (superProd.isPresent() && superProd.get().isIsSymbolDefinition() && prod.isIsSymbolDefinition()) {
             // log error if both prod define a symbol themselves
               Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, superProd.get().getName(), superGrammar.getName(),
-                  prod.getName(), grammarSymbol.getName()));
+                  prod.getName(), grammarSymbol.getName()), prod.getSourcePosition());
           }
         }
       }

@@ -3,7 +3,7 @@ package de.monticore.tf.odrules.subConstraints;
 
 import de.monticore.tf.odrulegeneration._ast.ASTMatchingObject;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
@@ -50,6 +50,6 @@ public class ODSubConstraint {
     }
 
     public ODSubConstraint() {
-        dependVars = new HashSet<>();
+        dependVars = new LinkedHashSet<>();
     }
 }

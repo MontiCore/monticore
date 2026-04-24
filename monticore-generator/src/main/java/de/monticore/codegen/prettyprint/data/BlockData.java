@@ -5,7 +5,7 @@ import de.monticore.grammar.grammar._ast.ASTBlock;
 import de.monticore.grammar.grammar._ast.ASTConstantsGrammar;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -66,7 +66,7 @@ public class BlockData {
     return isListReady;
   }
 
-  protected final Set<String> optionalSet = new HashSet<>(), requiredSet = new HashSet<>();
+  protected final Set<String> optionalSet = new LinkedHashSet<>(), requiredSet = new LinkedHashSet<>();
 
   /**
    * @return set of optionally used AST-elements

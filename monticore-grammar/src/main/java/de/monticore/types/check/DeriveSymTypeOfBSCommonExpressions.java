@@ -1038,7 +1038,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
                                                            ASTCallExpression callExpr,
                                                            List<SymTypeExpression> argTypes) {
     List<SymTypeOfFunction> functions = new ArrayList<>();
-    Map<SymTypeOfFunction, FunctionSymbol> symTypeToSymbol = new HashMap<>();
+    Map<SymTypeOfFunction, FunctionSymbol> symTypeToSymbol = new LinkedHashMap<>();
     for(FunctionSymbol functionSymbol : candidates) {
       SymTypeOfFunction function = functionSymbol.getFunctionType();
       functions.add(function);
@@ -1124,7 +1124,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
       return candidates;
     }
     boolean ambiguous = false;
-    Map<SymTypeOfFunction, int[]> specificityMap = new HashMap<>();
+    Map<SymTypeOfFunction, int[]> specificityMap = new LinkedHashMap<>();
     List<SymTypeOfFunction> mostSpecific = Lists.newArrayList(candidates.get(0));
     for(SymTypeOfFunction function: candidates) {
       int[] specificity = new int[args.size()];

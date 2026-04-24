@@ -66,8 +66,8 @@ import de.monticore.generating.GeneratorSetup;
 import de.monticore.io.paths.MCPath;
 import de.monticore.umlmodifier._ast.ASTModifier;
 import de.se_rwth.commons.logging.Log;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.util.ArrayList;
@@ -82,8 +82,8 @@ import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PACKAGE;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SYMBOL_TABLE_PACKAGE;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISITOR_PACKAGE;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MillDecoratorTest extends DecoratorTestCase {
 
@@ -99,7 +99,7 @@ public class MillDecoratorTest extends DecoratorTestCase {
   private ASTCDCompilationUnit clonedCD;
 
 
-  @Before
+  @BeforeEach
   public void setUp() {
     originalCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "Automaton");
     originalScopeCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "AutomatonScopeCD");

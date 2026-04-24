@@ -447,7 +447,7 @@ public final class TransformationHelper {
   }
 
   public static String getJavaAndCdConformName(String name) {
-    Log.errorIfNull(name);
+    Preconditions.checkNotNull(name);
     return getCdLanguageConformName(getJavaConformName(name));
   }
 

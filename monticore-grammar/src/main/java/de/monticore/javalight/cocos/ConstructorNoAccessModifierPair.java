@@ -11,7 +11,7 @@ import de.monticore.statements.mcstatementsbasis._ast.ASTMCModifier;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;

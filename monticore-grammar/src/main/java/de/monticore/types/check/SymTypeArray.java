@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import com.google.common.base.Preconditions;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
 import de.monticore.types3.ISymTypeVisitor;
@@ -30,7 +31,7 @@ public class SymTypeArray extends SymTypeExpression {
    * @param argument Argument Type
    * @param typeSymbol loader for the Type-Symbol that defines this type
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public SymTypeArray(TypeSymbol typeSymbol, int dim, SymTypeExpression argument) {
     this.typeSymbol = typeSymbol;
     this.dim = dim;
@@ -39,7 +40,7 @@ public class SymTypeArray extends SymTypeExpression {
 
   public SymTypeArray(SymTypeExpression argument, int dim) {
     this.dim = dim;
-    this.argument = Log.errorIfNull(argument);
+    this.argument = Preconditions.checkNotNull(argument);
   }
 
   // ------------------------------------------------------------------ Functions
@@ -59,6 +60,10 @@ public class SymTypeArray extends SymTypeExpression {
     return dim;
   }
 
+  /**
+   * @deprecated use {@link #cloneWithLessDim(int)}
+   */
+  @Deprecated
   public void setDim(int dim) {
     this.dim = dim;
   }

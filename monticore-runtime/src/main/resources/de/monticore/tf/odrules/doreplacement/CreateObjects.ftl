@@ -28,7 +28,11 @@ if (!is_${create.getName()}_fix) {
               <#assign changeGetValue += ".get()">
             </#if>
           </#if>
+          <#if change.isCopy()>
+    builder.${change.getSetter()}(${changeGetValue}.deepClone());
+          <#else>
     builder.${change.getSetter()}(${changeGetValue});
+          </#if>
         <#else>
     builder.${change.getSetter()}();
         </#if>

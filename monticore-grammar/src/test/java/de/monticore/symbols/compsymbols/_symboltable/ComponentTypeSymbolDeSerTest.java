@@ -8,7 +8,6 @@ import de.monticore.symbols.compsymbols.CompSymbolsMill;
 import de.monticore.types.check.CompKindExpression;
 import de.monticore.types.check.CompKindOfComponentType;
 import de.monticore.types.check.SymTypeExpressionFactory;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -17,10 +16,11 @@ import java.nio.file.Path;
 import java.util.Collections;
 
 import static java.nio.file.Files.readString;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ComponentTypeSymbolDeSerTest {
 
-  protected static final String RELATIVE_DIR = "src/test/resources/de/monticore/symbols/compsymbols/_symboltable/";
+  protected static final String RELATIVE_DIR = "target/resources/test/de/monticore/symbols/compsymbols/_symboltable/";
 
   protected ComponentTypeSymbolDeSer deSer;
   protected CompSymbolsSymbols2Json comp2json;
@@ -65,7 +65,7 @@ public class ComponentTypeSymbolDeSerTest {
     String expected = readString(json).replaceAll("\\s+", "");
 
     // Then
-    Assertions.assertEquals(expected, actual);
+    assertEquals(expected, actual);
   }
 
   @Test
@@ -101,7 +101,7 @@ public class ComponentTypeSymbolDeSerTest {
     String expected = readString(json).replaceAll("\\s+", "");
 
     // Then
-    Assertions.assertEquals(expected, actual);
+    assertEquals(expected, actual);
   }
 
   @Test
@@ -117,7 +117,7 @@ public class ComponentTypeSymbolDeSerTest {
     String expected = readString(json).replaceAll("\\s+", "");
 
     // Then
-    Assertions.assertEquals(expected, createdJson);
+    assertEquals(expected, createdJson);
   }
 
   @Test
@@ -145,7 +145,7 @@ public class ComponentTypeSymbolDeSerTest {
     String expected = readString(json).replaceAll("\\s+", "");
 
     // Then
-    Assertions.assertEquals(expected, createdJson);
+    assertEquals(expected, createdJson);
   }
 
   @Test
@@ -174,7 +174,7 @@ public class ComponentTypeSymbolDeSerTest {
     String expected = readString(json).replaceAll("\\s+", "");
 
     // Then
-    Assertions.assertEquals(expected, createdJson);
+    assertEquals(expected, createdJson);
   }
 
   @Test
@@ -208,7 +208,7 @@ public class ComponentTypeSymbolDeSerTest {
     String expected = readString(json).replaceAll("\\s+", "");
 
     // Then
-    Assertions.assertEquals(expected, createdJson);
+    assertEquals(expected, createdJson);
   }
 
   @Test
@@ -219,7 +219,7 @@ public class ComponentTypeSymbolDeSerTest {
     ComponentTypeSymbol comp = deSer.deserialize(CompSymbolsMill.globalScope(), jsonString);
 
     // Then
-    Assertions.assertTrue(comp.isEmptySuperComponents(), "Parent is present");
+    assertTrue(comp.isEmptySuperComponents(), "Parent is present");
   }
 
   @Test
@@ -230,10 +230,10 @@ public class ComponentTypeSymbolDeSerTest {
     ComponentTypeSymbol comp = deSer.deserialize(CompSymbolsMill.globalScope(), jsonString);
 
     // Then
-    Assertions.assertEquals(2, comp.getTypeParameters().size());
-    Assertions.assertAll(
-        () -> Assertions.assertEquals("A", comp.getTypeParameters().get(0).getName()),
-        () -> Assertions.assertEquals("B", comp.getTypeParameters().get(1).getName())
+    assertEquals(2, comp.getTypeParameters().size());
+    assertAll(
+        () -> assertEquals("A", comp.getTypeParameters().get(0).getName()),
+        () -> assertEquals("B", comp.getTypeParameters().get(1).getName())
     );
   }
 
@@ -245,15 +245,15 @@ public class ComponentTypeSymbolDeSerTest {
     ComponentTypeSymbol comp = deSer.deserialize(CompSymbolsMill.globalScope(), jsonString);
 
     // Then
-    Assertions.assertEquals(2, comp.getParameterList().size());
-    Assertions.assertEquals(2, comp.getSpannedScope().getLocalVariableSymbols().size());
-    Assertions.assertAll(
-        () -> Assertions.assertEquals("a", comp.getParameterList().get(0).getName()),
-        () -> Assertions.assertEquals("b", comp.getParameterList().get(1).getName()),
-        () -> Assertions.assertTrue(comp.getSpannedScope().resolveVariable("a").isPresent()),
-        () -> Assertions.assertTrue(comp.getSpannedScope().resolveVariable("b").isPresent()),
-        () -> Assertions.assertEquals(comp.getSpannedScope().resolveVariable("a").get(), comp.getParameterList().get(0)),
-        () -> Assertions.assertEquals(comp.getSpannedScope().resolveVariable("b").get(), comp.getParameterList().get(1))
+    assertEquals(2, comp.getParameterList().size());
+    assertEquals(2, comp.getSpannedScope().getLocalVariableSymbols().size());
+    assertAll(
+        () -> assertEquals("a", comp.getParameterList().get(0).getName()),
+        () -> assertEquals("b", comp.getParameterList().get(1).getName()),
+        () -> assertTrue(comp.getSpannedScope().resolveVariable("a").isPresent()),
+        () -> assertTrue(comp.getSpannedScope().resolveVariable("b").isPresent()),
+        () -> assertEquals(comp.getSpannedScope().resolveVariable("a").get(), comp.getParameterList().get(0)),
+        () -> assertEquals(comp.getSpannedScope().resolveVariable("b").get(), comp.getParameterList().get(1))
     );
   }
 
@@ -265,15 +265,15 @@ public class ComponentTypeSymbolDeSerTest {
     ComponentTypeSymbol comp = deSer.deserialize(CompSymbolsMill.globalScope(), jsonString);
 
     // Then
-    Assertions.assertEquals(2, comp.getPorts().size());
-    Assertions.assertEquals(2, comp.getSpannedScope().getLocalPortSymbols().size());
-    Assertions.assertAll(
-        () -> Assertions.assertEquals("inc", comp.getPorts().get(0).getName()),
-        () -> Assertions.assertEquals("outg", comp.getPorts().get(1).getName()),
-        () -> Assertions.assertTrue(comp.getSpannedScope().resolvePort("inc").isPresent()),
-        () -> Assertions.assertTrue(comp.getSpannedScope().resolvePort("outg").isPresent()),
-        () -> Assertions.assertEquals(comp.getSpannedScope().resolvePort("inc").get(), comp.getPorts().get(0)),
-        () -> Assertions.assertEquals(comp.getSpannedScope().resolvePort("outg").get(), comp.getPorts().get(1))
+    assertEquals(2, comp.getPorts().size());
+    assertEquals(2, comp.getSpannedScope().getLocalPortSymbols().size());
+    assertAll(
+        () -> assertEquals("inc", comp.getPorts().get(0).getName()),
+        () -> assertEquals("outg", comp.getPorts().get(1).getName()),
+        () -> assertTrue(comp.getSpannedScope().resolvePort("inc").isPresent()),
+        () -> assertTrue(comp.getSpannedScope().resolvePort("outg").isPresent()),
+        () -> assertEquals(comp.getSpannedScope().resolvePort("inc").get(), comp.getPorts().get(0)),
+        () -> assertEquals(comp.getSpannedScope().resolvePort("outg").get(), comp.getPorts().get(1))
     );
   }
 
@@ -296,7 +296,7 @@ public class ComponentTypeSymbolDeSerTest {
     String expected = readString(json).replaceAll("\\s+", "");
 
     // Then
-    Assertions.assertEquals(expected, createdJson);
+    assertEquals(expected, createdJson);
   }
 
   @Test
@@ -307,12 +307,12 @@ public class ComponentTypeSymbolDeSerTest {
     ComponentTypeSymbol comp = deSer.deserialize(CompSymbolsMill.globalScope(), jsonString);
 
     // Then
-    Assertions.assertEquals(1, comp.getSubcomponents().size());
-    Assertions.assertEquals(1, comp.getSpannedScope().getLocalSubcomponentSymbols().size());
-    Assertions.assertAll(
-        () -> Assertions.assertEquals("inst", comp.getSubcomponents().get(0).getName()),
-        () -> Assertions.assertTrue(comp.getSpannedScope().resolveSubcomponent("inst").isPresent()),
-        () -> Assertions.assertEquals(comp.getSpannedScope().resolveSubcomponent("inst").get(), comp.getSubcomponents().get(0))
+    assertEquals(1, comp.getSubcomponents().size());
+    assertEquals(1, comp.getSpannedScope().getLocalSubcomponentSymbols().size());
+    assertAll(
+        () -> assertEquals("inst", comp.getSubcomponents().get(0).getName()),
+        () -> assertTrue(comp.getSpannedScope().resolveSubcomponent("inst").isPresent()),
+        () -> assertEquals(comp.getSpannedScope().resolveSubcomponent("inst").get(), comp.getSubcomponents().get(0))
     );
   }
 
@@ -339,7 +339,7 @@ public class ComponentTypeSymbolDeSerTest {
     String expected = readString(json).replaceAll("\\s+", "");
 
     // Then
-    Assertions.assertEquals(expected, createdJson);
+    assertEquals(expected, createdJson);
   }
 
   @Test
@@ -350,8 +350,8 @@ public class ComponentTypeSymbolDeSerTest {
     ComponentTypeSymbol comp = deSer.deserialize(CompSymbolsMill.globalScope(), jsonString);
 
     // Then
-    Assertions.assertFalse(comp.isEmptyRefinements(), "Refined component not present");
-    Assertions.assertEquals("RefinementCType", comp.getRefinements(0).printName());
+    assertFalse(comp.isEmptyRefinements(), "Refined component not present");
+    assertEquals("RefinementCType", comp.getRefinements(0).printName());
   }
 
 
@@ -374,7 +374,7 @@ public class ComponentTypeSymbolDeSerTest {
     String expected = readString(json).replaceAll("\\s+", "");
 
     // Then
-    Assertions.assertEquals(expected, createdJson);
+    assertEquals(expected, createdJson);
   }
 
   @Test
@@ -385,9 +385,9 @@ public class ComponentTypeSymbolDeSerTest {
     ComponentTypeSymbol comp = deSer.deserialize(CompSymbolsMill.globalScope(), jsonString);
 
     // Then
-    Assertions.assertEquals(1, comp.getSpannedScope().getLocalComponentTypeSymbols().size());
-    Assertions.assertAll(
-        () -> Assertions.assertEquals("inst", comp.getSpannedScope().getLocalComponentTypeSymbols().get(0).getName())
+    assertEquals(1, comp.getSpannedScope().getLocalComponentTypeSymbols().size());
+    assertAll(
+        () -> assertEquals("inst", comp.getSpannedScope().getLocalComponentTypeSymbols().get(0).getName())
     );
   }
 
@@ -410,7 +410,7 @@ public class ComponentTypeSymbolDeSerTest {
     String expected = readString(json).replaceAll("\\s+", "");
 
     // Then
-    Assertions.assertEquals(expected, createdJson);
+    assertEquals(expected, createdJson);
   }
 
   @Test
@@ -421,9 +421,9 @@ public class ComponentTypeSymbolDeSerTest {
     ComponentTypeSymbol comp = deSer.deserialize(CompSymbolsMill.globalScope(), jsonString);
 
     // Then
-    Assertions.assertEquals(1, comp.getFields().size());
-    Assertions.assertAll(
-        () -> Assertions.assertEquals("inst", comp.getFields().get(0).getName())
+    assertEquals(1, comp.getFields().size());
+    assertAll(
+        () -> assertEquals("inst", comp.getFields().get(0).getName())
     );
   }
 }
