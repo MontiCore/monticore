@@ -15,7 +15,9 @@ import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserFactory;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -89,13 +91,16 @@ class SwitchStatementValidTest {
 
   @Test
   public void testInvalidMessageContainsActualType() throws IOException {
-    TestMCCommonStatementsParser parser = new TestMCCommonStatementsParser();
-    Optional<ASTMCBlockStatement> optAST = parser.parse_StringMCBlockStatement("switch(5L){}");
-    Assertions.assertTrue(optAST.isPresent());
+    // Given
+    TestMCCommonStatementsCoCoChecker checker = new TestMCCommonStatementsCoCoChecker();
+    checker.addCoCo(new SwitchStatementValid());
 
-    Log.getFindings().clear();
-    checker.checkAll(optAST.get());
+    ASTMCBlockStatement ast = parser().parse_StringMCBlockStatement("switch(5L){}").orElseThrow();
 
+    // When
+    checker.checkAll(ast);
+
+    // Then
     Assertions.assertEquals(1, Log.getFindings().size());
     Assertions.assertEquals(
         SwitchStatementValid.ERROR_CODE +
