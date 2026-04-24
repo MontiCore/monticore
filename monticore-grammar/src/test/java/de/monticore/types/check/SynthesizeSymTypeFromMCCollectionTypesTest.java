@@ -78,10 +78,10 @@ public class SynthesizeSymTypeFromMCCollectionTypesTest {
     gs.add(buildGeneric("Optional", "T"));
 
     CombineExpressionsWithLiteralsSymbols2Json symbols2Json = new CombineExpressionsWithLiteralsSymbols2Json();
-    ICombineExpressionsWithLiteralsArtifactScope as = symbols2Json.load("src/test/resources/de/monticore/types/check/Persondex.cesym");
+    ICombineExpressionsWithLiteralsArtifactScope as = symbols2Json.load("target/resources/test/de/monticore/types/check/Persondex.cesym");
     as.setEnclosingScope(gs);
 
-    ICombineExpressionsWithLiteralsArtifactScope as2 = symbols2Json.load("src/test/resources/de/monticore/types/check/Personaz.cesym");
+    ICombineExpressionsWithLiteralsArtifactScope as2 = symbols2Json.load("target/resources/test/de/monticore/types/check/Personaz.cesym");
     as2.setEnclosingScope(gs);
   }
 

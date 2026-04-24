@@ -32,7 +32,7 @@ public class MCGrammarPrettyPrinterTest {
   @Test
   // Test simple grammar
   public void testStatechart() throws IOException {
-    String model = "src/test/resources/de/monticore/Statechart.mc4";
+    String model = "target/resources/test/de/monticore/Statechart.mc4";
     
     // Parsing input
     Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
@@ -58,7 +58,7 @@ public class MCGrammarPrettyPrinterTest {
   @Test
   // Test grammar with symbols and scopes
   public void testAutomaton() throws IOException {
-    String model = "src/test/resources/Automaton.mc4";
+    String model = "target/resources/test/Automaton.mc4";
     
     // Parsing input
     Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
@@ -84,7 +84,7 @@ public class MCGrammarPrettyPrinterTest {
   @Test
   // Test grammar with symbols and scopes
   public void testGrammar() throws IOException {
-    String model = "src/test/resources/de/monticore/TestGrammar.mc4";
+    String model = "target/resources/test/de/monticore/TestGrammar.mc4";
 
     // Parsing input
     Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
@@ -110,7 +110,7 @@ public class MCGrammarPrettyPrinterTest {
   @Test
   // test lexicals with lexer commands and end actions
   public void testLexicals() throws IOException {
-    String model = "src/test/resources/de/monticore/common/TestLexicals.mc4";
+    String model = "target/resources/test/de/monticore/common/TestLexicals.mc4";
 
     // Parsing input
     Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
@@ -136,7 +136,7 @@ public class MCGrammarPrettyPrinterTest {
   @Test
   // test annotations
   public void testAnnotations() throws IOException {
-    String model = "src/test/resources/de/monticore/Annotations.mc4";
+    String model = "target/resources/test/de/monticore/Annotations.mc4";
 
     // Parsing input
     Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();

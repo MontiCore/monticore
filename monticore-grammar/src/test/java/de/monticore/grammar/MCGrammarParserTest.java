@@ -29,7 +29,7 @@ public class MCGrammarParserTest {
 
   @Test
   public void testParse() throws IOException {
-    String model = "src/test/resources/de/monticore/Statechart.mc4";
+    String model = "target/resources/test/de/monticore/Statechart.mc4";
 
     Grammar_WithConceptsParser parser =
         Grammar_WithConceptsMill.parser();
@@ -79,7 +79,7 @@ public class MCGrammarParserTest {
 
   @Test
   public void testScript() throws IOException {
-    String model = "src/test/resources/de/monticore/script/ScriptExample.mc4";
+    String model = "target/resources/test/de/monticore/script/ScriptExample.mc4";
 
     Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
     Optional<ASTMCGrammar> result = parser.parse(model);
@@ -91,7 +91,7 @@ public class MCGrammarParserTest {
 
   @Test
   public void testAutomatonV1() throws IOException {
-    String model = "src/test/resources/de/monticore/script/AutomatonV1.mc4";
+    String model = "target/resources/test/de/monticore/script/AutomatonV1.mc4";
 
     Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
     Optional<ASTMCGrammar> result = parser.parse(model);
@@ -103,7 +103,7 @@ public class MCGrammarParserTest {
 
   @Test
   public void testAutomatonV2() throws IOException {
-    String model = "src/test/resources/de/monticore/script/AutomatonV2.mc4";
+    String model = "target/resources/test/de/monticore/script/AutomatonV2.mc4";
 
     Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
     Optional<ASTMCGrammar> result = parser.parse(model);
@@ -115,7 +115,7 @@ public class MCGrammarParserTest {
 
   @Test
   public void testAutomatonV3() throws IOException {
-    String model = "src/test/resources/de/monticore/script/AutomatonV3.mc4";
+    String model = "target/resources/test/de/monticore/script/AutomatonV3.mc4";
 
     Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
     Optional<ASTMCGrammar> result = parser.parse(model);
@@ -125,7 +125,7 @@ public class MCGrammarParserTest {
 
   @Test
   public void testHierarchicalAutomaton() throws IOException {
-    String model = "src/test/resources/de/monticore/script/HierarchicalAutomaton.mc4";
+    String model = "target/resources/test/de/monticore/script/HierarchicalAutomaton.mc4";
 
     Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
     Optional<ASTMCGrammar> result = parser.parse(model);
@@ -137,7 +137,7 @@ public class MCGrammarParserTest {
 
   @Test
   public void testAutomatonWithInvsComp() throws IOException {
-    String model = "src/test/resources/de/monticore/script/AutomatonWithInvsComp.mc4";
+    String model = "target/resources/test/de/monticore/script/AutomatonWithInvsComp.mc4";
 
     Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
     Optional<ASTMCGrammar> result = parser.parse(model);
@@ -153,7 +153,7 @@ public class MCGrammarParserTest {
 
   @Test
   public void testAutomatonWithInvs() throws IOException {
-    String model = "src/test/resources/de/monticore/script/AutomatonWithInvs.mc4";
+    String model = "target/resources/test/de/monticore/script/AutomatonWithInvs.mc4";
 
     Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
     Optional<ASTMCGrammar> result = parser.parse(model);
@@ -163,7 +163,7 @@ public class MCGrammarParserTest {
 
   @Test
   public void testAutomatonWithInvsAndStartRule() throws IOException {
-    String model = "src/test/resources/de/monticore/script/AutomatonWithInvsAndStartRule.mc4";
+    String model = "target/resources/test/de/monticore/script/AutomatonWithInvsAndStartRule.mc4";
 
     Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
     Optional<ASTMCGrammar> result = parser.parse(model);
@@ -173,7 +173,7 @@ public class MCGrammarParserTest {
 
   @Test
   public void testGrammarSymbolTableInfo() throws IOException {
-    String model = "src/test/resources/Automaton.mc4";
+    String model = "target/resources/test/Automaton.mc4";
 
     Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
     Optional<ASTMCGrammar> result = parser.parse(model);
@@ -197,7 +197,7 @@ public class MCGrammarParserTest {
 
   @Test
   public void testPackageNameWithPointsDefined() throws IOException {
-    String model = "src/test/resources/de/monticore/point.in.packagename/PackagePathTest.mc4";
+    String model = "target/resources/test/de/monticore/point.in.packagename/PackagePathTest.mc4";
 
     Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
     parser.parse(model);
@@ -210,7 +210,7 @@ public class MCGrammarParserTest {
 
   @Test
   public void testPackageWrongPackageDefined() throws IOException {
-    String model = "src/test/resources/de/monticore/WrongPackage.mc4";
+    String model = "target/resources/test/de/monticore/WrongPackage.mc4";
 
     Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
     parser.parse(model);
