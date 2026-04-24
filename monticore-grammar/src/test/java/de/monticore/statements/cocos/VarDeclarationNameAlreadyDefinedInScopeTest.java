@@ -68,7 +68,6 @@ class VarDeclarationNameAlreadyDefinedInScopeTest {
 
     List<String> expected = List.of(
       VarDeclarationNameAlreadyDefinedInScope.ERROR_CODE,
-      VarDeclarationNameAlreadyDefinedInScope.ERROR_CODE,
       VarDeclarationNameAlreadyDefinedInScope.ERROR_CODE
     );
 
