@@ -149,7 +149,7 @@ public boolean doPatternMatching_${structure.getObjectName()}(boolean isParentBa
                   searchPlan.push(nextNode);
                   // put the first object of the backtracking stack
                   searchPlan.push(backtracking.pop());
-                  // TODO: TEST ME
+                  // reset the optional candidate
                   reset_${object.getObjectName()}();
                   this.opt_found_${object.getObjectName()} = false;
                 }
