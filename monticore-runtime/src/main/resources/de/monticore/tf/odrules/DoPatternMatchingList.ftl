@@ -39,7 +39,7 @@ public boolean doPatternMatching_${structure.getObjectName()}(boolean isParentBa
       ${structure.getObjectName()}_candidates.remove(${structure.getObjectName()}_candidates.size()-1);
       // Load the Objects and Their temp_candidates
       <#list mandatoryObjects as object>
-        ${object.getObjectName()}_cand = match.${object.getObjectName()}<#if hierarchyHelper.isWithinOptionalStructure(object.getObjectName())>.get()</#if>;
+        ${object.getObjectName()}_cand = match.${object.getObjectName()}<#if hierarchyHelper.isWithinOptionalStructure(object.getObjectName())>.orElse(null)</#if>;
         ${object.getObjectName()}_candidates_temp = match.${object.getObjectName()}_temp_candidates;
       </#list>
       // Get the BacktrackingStack
