@@ -48,14 +48,14 @@ public class Match${list.getObjectName()}{
 	}
 		<#else>
 		// optimized case: Return a View to the individual candidates
-		return new MatchCandList${list.getObjectName()}(${list.getObjectName()}_candidates);
+		return new MatchCandList${listchild.getObjectName()}(${list.getObjectName()}_candidates);
 	}
 
-	static class MatchCandList${list.getObjectName()} extends java.util.AbstractList<${listchild.getType()}> {
+	static class MatchCandList${listchild.getObjectName()} extends java.util.AbstractList<${listchild.getType()}> {
 
 			protected final List<Match${list.getObjectName()}> matches;
 
-			public MatchCandList${list.getObjectName()}(List<Match${list.getObjectName()}> matches) {
+			public MatchCandList${listchild.getObjectName()}(List<Match${list.getObjectName()}> matches) {
 				this.matches = matches;
 			}
 
