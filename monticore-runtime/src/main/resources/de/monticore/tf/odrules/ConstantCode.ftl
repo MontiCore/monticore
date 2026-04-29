@@ -88,7 +88,7 @@
   }
 
   /**
-  * Marks the original model as dirty, same as if {@link #doReplacement} was called.
+  * Marks the original model as dirty, same as if {@link #doReplacement} was called and an element was added/removed.
   * @see ${ast.getClassname()}#doReplacement()
   */
   public void markDirty() {
