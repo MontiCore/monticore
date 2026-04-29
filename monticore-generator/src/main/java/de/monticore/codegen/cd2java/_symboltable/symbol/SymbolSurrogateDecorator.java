@@ -118,7 +118,7 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
 
     List<ASTCDMethod> delegateStereoinfoMethods = createOverriddenStereotypeMethods();
     
-    ASTCDClassBuilder builder = CD4AnalysisMill.cDClassBuilder()
+    ASTCDClass surrogateClass = CD4AnalysisMill.cDClassBuilder()
       .setName(symbolSurrogateSimpleName)
       .setModifier(modifier)
       .setCDExtendUsage(CD4CodeMill.cDExtendUsageBuilder().addSuperclass(getMCTypeFacade().createQualifiedType(symbolTableService.getSymbolFullName(symbolInput))).build())
@@ -133,13 +133,14 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
       .addCDMember(createOverridenDetermineFullName())
       .addAllCDMembers(delegateSymbolRuleMethods)
       .addAllCDMembers(delegateStereoinfoMethods)
-      .addAllCDMembers(spanningScopeMethods);
-    return builder
+      .addAllCDMembers(spanningScopeMethods)
       .addCDMember(delegateAttribute)
       .addAllCDMembers(enclosingScopeMethods)
       .addCDMember(createCheckLazyLoadDelegateMethod(symbolSurrogateSimpleName, symbolFullName, simpleName, scopeInterfaceType))
       .addCDMember(createLazyLoadDelegateMethod(symbolSurrogateSimpleName, symbolFullName, simpleName, scopeInterfaceType))
       .build();
+    this.replaceTemplate(ANNOTATIONS, surrogateClass, new StringHookPoint("@Deprecated(forRemoval = true)"));
+    return surrogateClass;
   }
 
   protected ASTCDMethod createSetEnclosingScopeMethod(ASTCDAttribute enclosingScopeAttribute, String scopeName) {

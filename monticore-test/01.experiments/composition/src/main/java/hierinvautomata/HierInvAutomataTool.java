@@ -70,7 +70,7 @@ public class HierInvAutomataTool extends HierInvAutomataToolTOP {
 
         // Example, how to use a monolithic visitor on the model
         Log.info("=== 2: HierInvAutomatonCheapVisit =============", "HierIAT");
-        HierInvAutomataTraverser traverser = HierInvAutomataMill.inheritanceTraverser();
+        HierInvAutomataTraverser traverser = HierInvAutomataMill.traverser();
         HierInvAutomataCheapVisit acv1 = new HierInvAutomataCheapVisit();
         traverser.add4HierInvAutomata(acv1);
         traverser.add4Automata3(acv1);
