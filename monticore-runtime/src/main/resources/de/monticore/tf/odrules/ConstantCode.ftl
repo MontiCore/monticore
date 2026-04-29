@@ -76,6 +76,7 @@
   }
 
   protected void loadIntoModelTraverser() {
+		t.reset(); // Invalidate previously loaded traverser state (as we are not incremental/collect too many candidates otherwise)
     for (ASTNode astNode : Log.errorIfNull(hostGraph,
             "0xE1200: Hostgraph is null, check constructor arguments!")) {
       astNode.accept(t.getTraverser());
