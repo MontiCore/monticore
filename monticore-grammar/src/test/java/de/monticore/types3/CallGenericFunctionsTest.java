@@ -182,6 +182,8 @@ public class CallGenericFunctionsTest
     checkExpr("getTarget", "() -> int", "() -> int");
     checkExpr("getTarget()", "int", "int");
     checkExpr("getTarget()", "List<int>", "List<int>");
+    // Variant: provide the target type in the model itself by cast-Expression
+    checkExpr("(int)getTarget()", "int");
     // note: this may seem unintuitive
     // (getting wildcards for getTarget but not for getTargetList)
     // but this aligns with the behavior of the Oracle JDK 11.0.12
