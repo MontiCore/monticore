@@ -319,9 +319,7 @@ public class Util {
   }
 
   public static String makePlural(String name) {
-    if(name.endsWith("s"))
-      name = name + "es";
-    else
+    if(!name.endsWith("s"))
       name = name + "s";
     return StringTransformations.capitalize(name);
   }
