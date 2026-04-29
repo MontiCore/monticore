@@ -47,7 +47,7 @@ public class GenerateLinkConditionsVisitor implements
 
         if (node.isAttributeIterated()) {
           // work on the real list to reduce memory footprint
-          secondLinkCondition.setConditionString("return (List<ASTNode>)" + leftObjectName + "_cand.get" + Util.makeSingular(node.getRightRole()) + "List();");
+          secondLinkCondition.setConditionString("return (List)" + leftObjectName + "_cand.get" + Util.makeSingular(node.getRightRole()) + "List();");
         } else if(node.isAttributeOptional()) {
           secondLinkCondition.setConditionString("ArrayList<ASTNode> list = new ArrayList<ASTNode>();\n" +
               "if (" + leftObjectName + "_cand.isPresent" + StringTransformations.capitalize(node.getRightRole()) + "()) {\n" +
