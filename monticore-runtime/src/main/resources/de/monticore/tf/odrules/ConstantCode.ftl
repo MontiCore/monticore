@@ -76,6 +76,7 @@
   }
 
   protected void loadIntoModelTraverser() {
+		t.reset(); // Invalidate previously loaded traverser state (as we are not incremental/collect too many candidates otherwise)
     for (ASTNode astNode : Log.errorIfNull(hostGraph,
             "0xE1200: Hostgraph is null, check constructor arguments!")) {
       astNode.accept(t.getTraverser());
@@ -87,7 +88,7 @@
   }
 
   /**
-  * Marks the original model as dirty, same as if {@link #doReplacement} was called.
+  * Marks the original model as dirty, same as if {@link #doReplacement} was called and an element was added/removed.
   * @see ${ast.getClassname()}#doReplacement()
   */
   public void markDirty() {
