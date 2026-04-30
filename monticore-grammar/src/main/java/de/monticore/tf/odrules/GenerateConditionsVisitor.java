@@ -328,9 +328,9 @@ public class GenerateConditionsVisitor implements
             // we either check parent.getChilds().contains(child)
             // or getParent(child) == parent, depending on if we have more than 10
             // In the best case/future work, we cache the size value in a boolean?
-            secondObjectCondition.setConditionString(format("(%s_cand.size%s() > 10 &&",
+            secondObjectCondition.setConditionString(format("(%s_cand.get%sList().size() > 10 &&",
                 uncapitalize(leftObjectName),
-                Util.makePlural(node.getRightRole())
+                Util.makeSingular(node.getRightRole())
                ) + secondObjectCondition.getConditionString() + ")");
           }
 
@@ -398,9 +398,9 @@ public class GenerateConditionsVisitor implements
 
   protected String createTargetObjectCondition(ASTODLink node, String leftObjectName, boolean isIterated, boolean isOptional) {
     if (isIterated) {
-      return format("(%s_cand.size%s() <= 10 && !%s_cand.get%sList().contains(cand))",
+      return format("(%s_cand.get%sList().size() <= 10 && !%s_cand.get%sList().contains(cand))",
           uncapitalize(leftObjectName),
-          Util.makePlural(node.getRightRole()),
+          Util.makeSingular(node.getRightRole()),
           uncapitalize(leftObjectName),
           Util.makeSingular(node.getRightRole()));
     } else if (isOptional) {

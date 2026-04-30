@@ -318,12 +318,6 @@ public class Util {
     return StringTransformations.capitalize(name);
   }
 
-  public static String makePlural(String name) {
-    if(!name.endsWith("s"))
-      name = name + "s";
-    return StringTransformations.capitalize(name);
-  }
-
   public static String printType(ASTMCType type) {
     return MCSimpleGenericTypesMill.prettyPrint(type, false).replace("<>", "");
   }
