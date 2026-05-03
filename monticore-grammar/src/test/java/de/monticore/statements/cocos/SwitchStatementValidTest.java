@@ -276,9 +276,7 @@ class SwitchStatementValidTest {
     checker.checkAll(ast);
 
     // Then
-    assertEquals(
-      List.of(SwitchStatementValid.CASE_ERROR_CODE),
-      Log.getFindings().stream().map(f -> f.getMsg().substring(0, 7)).collect(Collectors.toList())
-    );
+    assertEquals(1, Log.getFindings().size());
+    assertTrue(Log.getFindings().get(0).getMsg().startsWith(SwitchStatementValid.CASE_ERROR_CODE));
   }
 }
