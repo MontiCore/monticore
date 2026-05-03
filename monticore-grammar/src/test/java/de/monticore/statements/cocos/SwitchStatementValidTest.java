@@ -228,4 +228,57 @@ class SwitchStatementValidTest {
     assertEquals(1, Log.getFindings().size());
     assertTrue(Log.getFindings().get(0).getMsg().startsWith(SwitchStatementValid.ERROR_CODE));
   }
+
+  @ParameterizedTest
+  @ValueSource(strings = {
+    "switch(5){ case 1: switch('c'){} }",
+    "switch(5){ case 1: switch(2){ case 1: } }"
+  })
+  void testNestedSwitchStatementsValid(String expr) throws IOException {
+    // Given
+    TestMCCommonStatementsCoCoChecker checker = new TestMCCommonStatementsCoCoChecker();
+    checker.addCoCo(new SwitchStatementValid());
+
+    ASTMCBlockStatement ast = parser().parse_StringMCBlockStatement(expr).orElseThrow();
+
+    // When
+    checker.checkAll(ast);
+
+    // Then
+    assertTrue(Log.getFindings().isEmpty(), () -> Log.getFindings().toString());
+  }
+
+  @Test
+  void testNestedSwitchInvalidInner() throws IOException {
+    // Given
+    TestMCCommonStatementsCoCoChecker checker = new TestMCCommonStatementsCoCoChecker();
+    checker.addCoCo(new SwitchStatementValid());
+
+    ASTMCBlockStatement ast = parser().parse_StringMCBlockStatement("switch(5){ case 1: switch(5.5){} }").orElseThrow();
+
+    // When
+    checker.checkAll(ast);
+
+    // Then
+    assertEquals(1, Log.getFindings().size());
+    assertTrue(Log.getFindings().get(0).getMsg().startsWith(SwitchStatementValid.ERROR_CODE));
+  }
+
+  @Test
+  void testNestedSwitchInnerCaseLabelNotCheckedByOuter() throws IOException {
+    // Given
+    TestMCCommonStatementsCoCoChecker checker = new TestMCCommonStatementsCoCoChecker();
+    checker.addCoCo(new SwitchStatementValid());
+
+    ASTMCBlockStatement ast = parser().parse_StringMCBlockStatement("switch(5){ case 1: switch(2){ case false: } }").orElseThrow();
+
+    // When
+    checker.checkAll(ast);
+
+    // Then
+    assertEquals(
+      List.of(SwitchStatementValid.CASE_ERROR_CODE),
+      Log.getFindings().stream().map(f -> f.getMsg().substring(0, 7)).collect(Collectors.toList())
+    );
+  }
 }
