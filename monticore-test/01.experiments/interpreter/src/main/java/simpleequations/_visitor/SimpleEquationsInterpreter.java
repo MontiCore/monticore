@@ -29,9 +29,6 @@ public class SimpleEquationsInterpreter extends SimpleEquationsInterpreterTOP {
 
   public MIValue interpret(ASTSimpleEquationCompilationUnit node) {
     MIValue result;
-    for(ASTFunctionDefinition method : node.getFunctionDefinitionList()){
-      method.evaluate(getRealThis());
-    }
 
     result = node.getProgramBlock().evaluate(getRealThis());
     if(result.isError()){
@@ -43,14 +40,11 @@ public class SimpleEquationsInterpreter extends SimpleEquationsInterpreterTOP {
   public MIValue interpret(ASTProgramBlock node) {
     MIValue result = new ErrorMIValue("Error ASTProgram node");
 
-    for (ASTStatement s : node.getStatementList()) {
+    for(ASTExpression s: node.getExpressionList()){
       result = s.evaluate(getRealThis());
       if (result.isReturn()) {
         return result;
       }
-    }
-    if (node.isPresentExpression()) {
-      return node.getExpression().evaluate(getRealThis());
     }
     return result;
   }
@@ -105,6 +99,16 @@ public class SimpleEquationsInterpreter extends SimpleEquationsInterpreterTOP {
     return MIValueFactory.createValue(left.asFloat() > right.asFloat());
   }
 
+  public MIValue interpret(ASTLessThanExpression node) {
+    MIValue left = node.getLeft().evaluate(getRealThis());
+    MIValue right = node.getRight().evaluate(getRealThis());
+
+    if (left.isInt() && right.isInt()) {
+      return MIValueFactory.createValue(left.asInt() < right.asInt());
+    }
+    return MIValueFactory.createValue(left.asFloat() < right.asFloat());
+  }
+
   public MIValue interpret(ASTVariableDefinition node) {
     MIValue value = node.getValue().evaluate(getRealThis());
     getRealThis().declareVariable(node.getSymbol(), Optional.of(value));
@@ -147,8 +151,6 @@ public class SimpleEquationsInterpreter extends SimpleEquationsInterpreterTOP {
   }
 
   public MIValue interpret(ASTFunctionDefinition node) {
-    //this must be init to create int types
-    BasicSymbolsMill.initializePrimitives();
 
     FunctionSymbol funcSym = node.getSymbol();
 
@@ -170,25 +172,11 @@ public class SimpleEquationsInterpreter extends SimpleEquationsInterpreterTOP {
     ModelFunctionMIValue functionValue = new ModelFunctionMIValue(
         getRealThis().getCurrentScope(),
         parameterSymbols,
-        node.getFunctionBlock()
+        node.getProgramBlock()
     );
 
     getRealThis().declareFunction(funcSym, functionValue);
     return new VoidMIValue();
-  }
-
-  public MIValue interpret(ASTFunctionBlock node){
-    MIValue result = new ErrorMIValue("Error ASTFunctionBlock node");
-    for (ASTStatement s : node.getStatementList()) {
-      result = s.evaluate(getRealThis());
-      if (result.isReturn()) {
-        return result;
-      }
-    }
-    if (node.isPresentExpression()) {
-      return node.getExpression().evaluate(getRealThis());
-    }
-    return result;
   }
 
   public MIValue interpret(ASTFunctionCall node) {
