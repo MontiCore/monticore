@@ -2,7 +2,6 @@
 package de.monticore.statements.mccommonstatements.cocos;
 
 import com.google.common.base.Preconditions;
-import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.statements.mccommonstatements.MCCommonStatementsMill;
 import de.monticore.statements.mccommonstatements._ast.ASTConstantExpressionSwitchLabel;
 import de.monticore.statements.mccommonstatements._ast.ASTEnumConstantSwitchLabel;
@@ -52,19 +51,6 @@ public class SwitchCaseTypesValid implements MCCommonStatementsASTSwitchStatemen
 
     @Override
     public void visit(ASTConstantExpressionSwitchLabel node) {
-      if (isEnumMember(switchType) && node.getConstant() instanceof ASTNameExpression) {
-        String enumConstant = ((ASTNameExpression) node.getConstant()).getName();
-        if (isEnumConstantOfSwitchType(enumConstant, switchType)) {
-          return;
-        }
-        Log.error(
-          CASE_ERROR_CODE + " " + String.format(CASE_ERROR_MSG_FORMAT, enumConstant, switchType.printFullName()),
-          node.getConstant().get_SourcePositionStart(),
-          node.getConstant().get_SourcePositionEnd()
-        );
-        return;
-      }
-
       SymTypeExpression caseType = TypeCheck3.typeOf(node.getConstant(), switchType);
       if (caseType.isObscureType()) {
         return;
