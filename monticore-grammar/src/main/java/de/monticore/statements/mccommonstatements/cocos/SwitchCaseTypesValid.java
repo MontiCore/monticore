@@ -2,6 +2,7 @@
 package de.monticore.statements.mccommonstatements.cocos;
 
 import com.google.common.base.Preconditions;
+import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.statements.mccommonstatements.MCCommonStatementsMill;
 import de.monticore.statements.mccommonstatements._ast.ASTConstantExpressionSwitchLabel;
 import de.monticore.statements.mccommonstatements._ast.ASTEnumConstantSwitchLabel;

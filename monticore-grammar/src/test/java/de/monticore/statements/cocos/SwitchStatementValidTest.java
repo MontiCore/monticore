@@ -185,6 +185,4 @@ class SwitchStatementValidTest {
     assertEquals(1, Log.getFindings().size());
     assertTrue(Log.getFindings().get(0).getMsg().startsWith(SwitchStatementValid.ERROR_CODE));
   }
-
-  
 }
