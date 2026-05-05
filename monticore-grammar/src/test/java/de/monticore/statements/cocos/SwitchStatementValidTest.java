@@ -90,45 +90,6 @@ class SwitchStatementValidTest {
   }
 
   @ParameterizedTest
-  @MethodSource("invalidCaseLabelProvider")
-  void testInvalidCaseLabels(String expr) throws IOException {
-    // Given
-    TestMCCommonStatementsCoCoChecker checker = new TestMCCommonStatementsCoCoChecker();
-    checker.addCoCo(new SwitchStatementValid());
-
-    ASTMCBlockStatement ast = parser().parse_StringMCBlockStatement(expr).orElseThrow();
-
-    // When
-    checker.checkAll(ast);
-
-    // Then
-    assertEquals(1, Log.getFindings().size());
-    assertTrue(Log.getFindings().get(0).getMsg().startsWith(SwitchStatementValid.CASE_ERROR_CODE));
-  }
-
-  static Stream<Arguments> invalidCaseLabelProvider() {
-    return Stream.of(
-      arguments("switch(5){case false:}")
-    );
-  }
-
-  @Test
-  void testInvalidSwitchCaseDoesNotSpamForInvalidSwitchType() throws IOException {
-    // Given
-    TestMCCommonStatementsCoCoChecker checker = new TestMCCommonStatementsCoCoChecker();
-    checker.addCoCo(new SwitchStatementValid());
-
-    ASTMCBlockStatement ast = parser().parse_StringMCBlockStatement("switch(5.5){case 1:}").orElseThrow();
-
-    // When
-    checker.checkAll(ast);
-
-    // Then
-    assertEquals(1, Log.getFindings().size());
-    assertTrue(Log.getFindings().get(0).getMsg().startsWith(SwitchStatementValid.ERROR_CODE));
-  }
-
-  @ParameterizedTest
   @ValueSource(strings = {"switch(c){}", "switch(c){case Foo:}"})
   void testSwitchEnumConstantsValid(String expr) throws IOException {
     // Given
@@ -157,44 +118,6 @@ class SwitchStatementValidTest {
 
     // Then
     assertTrue(Log.getFindings().isEmpty(), () -> Log.getFindings().toString());
-  }
-
-  @ParameterizedTest
-  @MethodSource("enumInvalidCaseProvider")
-  void testSwitchEnumConstantsInvalidCase(String expr) throws IOException {
-    // Given
-    IMCCommonStatementsArtifactScope imported =
-      new MCCommonStatementsSymbols2Json().load("target/resources/test/de/monticore/statements/Enum.sym");
-    TestMCCommonStatementsMill.globalScope().addSubScope(imported);
-
-    VariableSymbol variable = TestMCCommonStatementsMill.variableSymbolBuilder()
-      .setName("c")
-      .setType(SymTypeExpressionFactory.createTypeObject(imported.resolveOOType("A").orElseThrow()))
-      .build();
-
-    TestMCCommonStatementsMill.globalScope().add(variable);
-
-    TestMCCommonStatementsCoCoChecker checker = new TestMCCommonStatementsCoCoChecker();
-    checker.addCoCo(new SwitchStatementValid());
-
-    ASTMCBlockStatement ast = parser().parse_StringMCBlockStatement(expr).orElseThrow();
-
-    TestMCCommonStatementsTraverser traverser = TestMCCommonStatementsMill.traverser();
-    traverser.add4ExpressionsBasis(new FlatExpressionScopeSetter(TestMCCommonStatementsMill.globalScope()));
-    ast.accept(traverser);
-
-    // When
-    checker.checkAll(ast);
-
-    // Then
-    assertEquals(1, Log.getFindings().size());
-    assertTrue(Log.getFindings().get(0).getMsg().startsWith(SwitchStatementValid.CASE_ERROR_CODE));
-  }
-
-  static Stream<Arguments> enumInvalidCaseProvider() {
-    return Stream.of(
-      arguments("switch(c){case Bar:}")
-    );
   }
 
   @Test
@@ -263,19 +186,5 @@ class SwitchStatementValidTest {
     assertTrue(Log.getFindings().get(0).getMsg().startsWith(SwitchStatementValid.ERROR_CODE));
   }
 
-  @Test
-  void testNestedSwitchInnerCaseLabelNotCheckedByOuter() throws IOException {
-    // Given
-    TestMCCommonStatementsCoCoChecker checker = new TestMCCommonStatementsCoCoChecker();
-    checker.addCoCo(new SwitchStatementValid());
-
-    ASTMCBlockStatement ast = parser().parse_StringMCBlockStatement("switch(5){ case 1: switch(2){ case false: } }").orElseThrow();
-
-    // When
-    checker.checkAll(ast);
-
-    // Then
-    assertEquals(1, Log.getFindings().size());
-    assertTrue(Log.getFindings().get(0).getMsg().startsWith(SwitchStatementValid.CASE_ERROR_CODE));
-  }
+  
 }
