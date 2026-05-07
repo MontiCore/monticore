@@ -20,10 +20,17 @@ import java.io.IOException;
 import java.util.stream.Stream;
 
 import static de.monticore.statements.testmccommonstatements.TestMCCommonStatementsMill.parser;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 class SwitchCaseTypesValidTest {
+
+  static Stream<Arguments> invalidCaseLabelProvider() {
+    return Stream.of(
+      arguments("switch(5){case false:}")
+    );
+  }
 
   @BeforeEach
   void init() {
@@ -72,12 +79,6 @@ class SwitchCaseTypesValidTest {
     assertTrue(Log.getFindings().get(0).getMsg().startsWith(SwitchCaseTypesValid.CASE_ERROR_CODE));
   }
 
-  static Stream<Arguments> invalidCaseLabelProvider() {
-    return Stream.of(
-      arguments("switch(5){case false:}")
-    );
-  }
-
   @Test
   void testInvalidSwitchCaseNotCheckedIfSwitchTypeIsObscure() throws IOException {
     // Given
@@ -96,7 +97,8 @@ class SwitchCaseTypesValidTest {
   @ParameterizedTest
   @ValueSource(strings = {
     "switch(5){ case 1: switch('c'){} }",
-    "switch(5){ case 1: switch(2){ case 1: } }"
+    "switch(5){ case 1: switch(2){ case 1: } }",
+    "switch(5){ case 1: switch(\"a\"){ case \"a\": } }"
   })
   void testNestedSwitchCasesValid(String expr) throws IOException {
     // Given
