@@ -101,7 +101,7 @@ public class SymbolBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDCla
     ASTMCType builderType = getMCTypeFacade().createQualifiedType(symbolBuilder.getName());
     symbolBuilder.addAllCDMembers(createStereoinfoConvenienceMethods(builderType));
 
-    Set<ASTCDAttribute> buildAttributes = Sets.newHashSet(decoratedSymbolClass.getCDAttributeList());
+    Set<ASTCDAttribute> buildAttributes = Sets.newLinkedHashSet(decoratedSymbolClass.getCDAttributeList());
 
     // builder has all attributes
     buildAttributes.addAll(defaultAttrs);
