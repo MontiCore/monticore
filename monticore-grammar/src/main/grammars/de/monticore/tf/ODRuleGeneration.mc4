@@ -7,6 +7,7 @@ component grammar ODRuleGeneration extends de.monticore.types.MCFullGenericTypes
    package:Name
    imports:Name*
    classname:Name
+   top:["top"]?
    Pattern
    Replacement
    constraintExpression:Name

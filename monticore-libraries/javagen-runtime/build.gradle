@@ -47,7 +47,7 @@ dependencies {
 tasks.register('compileGenerator', JavaCompile) {
   source = sourceSets.generator.java
   classpath = sourceSets.generator.compileClasspath
-  destinationDir = file("${buildDir}/classes/generator")
+  destinationDirectory = layout.buildDirectory.dir("classes/generator")
   options.encoding = 'UTF-8'
 }
 

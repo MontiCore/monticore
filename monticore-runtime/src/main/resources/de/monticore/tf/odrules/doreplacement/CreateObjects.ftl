@@ -51,6 +51,7 @@ if (!is_${create.getName()}_fix) {
   m.${create.getName()} = <#if isWithinOpt>Optional.of(</#if>(${create.getType()}) ${create.getName()}_candidates.get(0)<#if isWithinOpt>)</#if>;
 }
 Reporting.reportTransformationObjectCreation("${ast.getClassname()}",m.${create.getName()}<#if isWithinOpt>.get()</#if>);
+isHostGraphDirty = true;
 <#else>
 <#assign listParent = hierarchyHelper.getListParent(create.getName())>
 if (!is_${create.getName()}_fix) {
@@ -63,5 +64,6 @@ if (!is_${create.getName()}_fix) {
   }
 }
 //TODO find a way for list objects Reporting.reportTransformationObjectCreation("${ast.getClassname()}",get_${create.getName()}()<#if isWithinOpt>.get()</#if>);
+isHostGraphDirty = true;
 </#if>
 </#list>

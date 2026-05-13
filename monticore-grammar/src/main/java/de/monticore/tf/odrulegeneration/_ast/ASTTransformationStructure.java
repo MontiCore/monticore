@@ -102,4 +102,10 @@ public class ASTTransformationStructure extends ASTTransformationStructureTOP {
         }
         return result;
     }
+
+    public String getJavaClassName() {
+      if (this.isTop())
+        return this.getClassname() + "TOP";
+      return this.getClassname();
+    }
 }
