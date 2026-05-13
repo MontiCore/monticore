@@ -3,7 +3,7 @@
   <#if list.isListObject()>
   <#assign mandatoryObjects = hierarchyHelper.getListChilds(ast.getPattern().getLHSObjectsList(), list)>
   <#assign matchingObjects = hierarchyHelper.getListChilds(ast.getPattern().getMatchingObjectsList(), list)>
-public class Match${list.getObjectName()}{
+public static class Match${list.getObjectName()}{
   protected Match${list.getObjectName()}(
   <#list mandatoryObjects as object>
     <#if !object.isListObject()> ${object.getType()}
