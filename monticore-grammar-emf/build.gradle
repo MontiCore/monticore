@@ -29,28 +29,28 @@ dependencies {
     testImplementation testFixtures(project(':monticore-runtime'))
 }
 
-def srcDir = "$buildDir/main/java"
-def srcResourcesDir = "$buildDir/main/resources"
-def testDir = "$buildDir/test/java"
+def srcDir = layout.buildDirectory.dir("main/java")
+def srcResourcesDir = layout.buildDirectory.dir("main/resources")
+def testDir = layout.buildDirectory.dir("test/java")
 
-task copySrc(type: Copy) {
+tasks.register('copySrc', Copy) {
   from "${project(':monticore-grammar').projectDir}/src/main/java"
   into srcDir
 }
 
-task copySrcResources(type: Copy) {
-    from "${project(':monticore-grammar').projectDir}/src/main/resources"
-    into srcResourcesDir
+tasks.register('copySrcResources', Copy) {
+  from "${project(':monticore-grammar').projectDir}/src/main/resources"
+  into srcResourcesDir
 }
 
-task copyTest(type: Copy) {
+tasks.register('copyTest', Copy) {
   from "${project(':monticore-grammar').projectDir}/src/test/java"
   into testDir
 }
 
-task copyTestResources(type: Copy) {
-    from "${project(':monticore-grammar').projectDir}/src/test/resources"
-    into "$buildDir/test/resources"
+tasks.register('copyTestResources', Copy) {
+  from "${project(':monticore-grammar').projectDir}/src/test/resources"
+  into layout.buildDirectory.dir("resources/test")
 }
 
 def grammarDir = "${project(':monticore-grammar').projectDir}/src/main/grammars"
@@ -63,40 +63,27 @@ sourceSets {
                            "${project(':monticore-grammar').projectDir}/src/main/examples"]
 }
 
-task generate {}
+tasks.register('generate') {}
 
 tasks.named('generateMCGrammars') {
-  grammar.setFrom(file grammarDir)
+  grammar = file(grammarDir)
   script = "de/monticore/monticore_emf.groovy"
-  modelPath "${project(':monticore-grammar').projectDir}/src/main/grammars"
-  handcodedPath srcDir
+  modelPath = "${project(':monticore-grammar').projectDir}/src/main/grammars"
+  handWrittenCodeDir = files(srcDir)
   genINT = true
   dependsOn(copySrc, copyTest, copyTestResources)
 }
 
 generateTestMCGrammars {
   script = "de/monticore/monticore_emf.groovy"
-  modelPath("$grammarDir", "${project(':monticore-grammar').projectDir}/src/test/grammars", "${project(':monticore-grammar').projectDir}/src/main/examples")
-  handcodedPath(srcDir, testDir)
+  modelPath = files("$grammarDir", "${project(':monticore-grammar').projectDir}/src/test/grammars", "${project(':monticore-grammar').projectDir}/src/main/examples")
+  handWrittenCodeDir = files(srcDir, testDir)
   genINT = true
   dependsOn(copySrc, copyTest, copyTestResources)
 }
 
 test {
   useJUnitPlatform()
-  exclude '**/CommentsOnASTTest.class'
-  exclude '**/SwitchStatementValidTest.class'
-  exclude '**/GrammarInheritanceCycleTest.class'
-  exclude '**/GrammarNameEqualsFileNameTest.class'
-  exclude '**/MCGrammarParserTest.class'
-  exclude '**/MCGrammarPrettyPrinterTest.class'
-  exclude '**/SynthesizeSymTypeFromMCBasicTypesTest.class'
-  exclude '**/SynthesizeSymTypeFromMCCollectionTypesTest.class'
-  exclude '**/SynthesizeSymTypeFromMCSimpleGenericTypesTest.class'
-  exclude '**/SynthesizeSymTypeFromMCFullGenericTypesTest.class'
-  exclude '**/SynthesizeSymTypeFromMCArrayTypesTest.class'
-  exclude '**/MCType2SymTypeExpressionTest.class'
-  exclude '**/ComponentTypeSymbolDeSerTest.class'
 }
 
 

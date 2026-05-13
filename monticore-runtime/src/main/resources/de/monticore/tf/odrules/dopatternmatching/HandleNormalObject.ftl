@@ -24,9 +24,8 @@ if (nextNode.equals("${normalObject.getObjectName()}")) {
     // if no object ist found, test if backtracking stack is empty
     if(backtracking.isEmpty()) {
       // no match of the pattern can be found
-    <#if !isOptional>
       foundMatch = false;
-    <#elseif parentObject?has_content>
+    <#if isOptional && parentObject?has_content>
       reset_${parentObject.getObjectName()}();
     </#if>
     break;

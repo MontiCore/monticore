@@ -33,8 +33,6 @@ public boolean doPatternMatching() {
     splitSearchplan(); // for OptList structures
     isBacktracking = false;
   }
-  Stack<String> backtracking = new Stack<String>();
-  Stack<String> backtrackingNegative = new Stack<String>();
   String nextNode = null;
   while(!searchPlan.isEmpty()) {
     nextNode = searchPlan.pop();
@@ -93,11 +91,14 @@ public boolean doPatternMatching() {
       searchPlan.push(nextNode);
     }
     allMatches.add(match);
+    // And remove last backtracking
+    if (!backtracking.isEmpty())
+      backtracking.pop();
   }
   return foundMatch;
 }
 
-private void clearNegativeObjects() {
+protected void clearNegativeObjects() {
   <#list ast.getPattern().getLHSObjectsList() as object>
     <#if object.isNotObject() && !hierarchyHelper.isWithinListStructure(object.getObjectName())>
       ${object.getObjectName()}_cand = null;

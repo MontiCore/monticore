@@ -6,11 +6,15 @@
 
   public static boolean optimizeSP = true;
 
-  private List<ASTNode> hostGraph;
-  private GlobalExtensionManagement glex = new GlobalExtensionManagement();
-  private List<Match> allMatches;
-  private boolean doReplacementExecuted = false;
-  private boolean isHostGraphDirty = true;
+  protected List<ASTNode> hostGraph;
+  protected GlobalExtensionManagement glex;
+  protected List<Match> allMatches;
+  protected boolean doReplacementExecuted = false;
+  protected boolean isHostGraphDirty = true;
+
+  protected Stack<String> backtracking = new Stack<>();
+  protected Stack<String> backtrackingNegative = new Stack<>();
+
   <#-- for each object creates a _candidates, _candidates_temp nodelist and an _cand object-->
 
   // Matches
@@ -20,17 +24,17 @@
   <#list ast.getVariableList() as variable>
   // variables
   protected boolean ${variable.getName()}_is_fix = false;
-  private ${variable.getType()} ${variable.getName()};
+  protected ${variable.getType()} ${variable.getName()};
   </#list>
-  private ModelTraversal <?> t = CommentBasedModelTraversalFactory.getInstance().create((java.util.function.Supplier)${grammarName}Mill::inheritanceTraverser);
+  protected ModelTraversal <?> t = CommentBasedModelTraversalFactory.getInstance().create((java.util.function.Supplier)${grammarName}Mill::inheritanceTraverser);
   <#list ast.getPattern().getAssocList() as association>
-  private mc.ast.MCAssociation ${association.getName()};
+  protected mc.ast.MCAssociation ${association.getName()};
   </#list>
-  private Stack<String> searchPlan;
+  protected Stack<String> searchPlan;
   // searchplans for optional structures
   <#list ast.getPattern().getLHSObjectsList() as lhsObject>
     <#if lhsObject.isOptObject() || lhsObject.getType()?ends_with("IOptional") || lhsObject.isListObject()>
-  private Stack<String> searchPlan_${lhsObject.getObjectName()};
+  protected Stack<String> searchPlan_${lhsObject.getObjectName()};
     </#if>
   </#list>
 
@@ -72,6 +76,7 @@
   }
 
   protected void loadIntoModelTraverser() {
+		t.reset(); // Invalidate previously loaded traverser state (as we are not incremental/collect too many candidates otherwise)
     for (ASTNode astNode : Log.errorIfNull(hostGraph,
             "0xE1200: Hostgraph is null, check constructor arguments!")) {
       astNode.accept(t.getTraverser());
@@ -83,7 +88,7 @@
   }
 
   /**
-  * Marks the original model as dirty, same as if {@link #doReplacement} was called.
+  * Marks the original model as dirty, same as if {@link #doReplacement} was called and an element was added/removed.
   * @see ${ast.getClassname()}#doReplacement()
   */
   public void markDirty() {

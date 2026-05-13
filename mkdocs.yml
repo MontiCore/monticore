@@ -68,5 +68,6 @@ watch:
   - 00.org
   - docs
   - monticore-grammar/src
+  - monticore-libraries/javagen-runtime
   - monticore-runtime/src
   - README.md
