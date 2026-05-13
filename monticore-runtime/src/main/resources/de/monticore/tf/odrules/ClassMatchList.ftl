@@ -35,8 +35,8 @@ public static class Match${list.getObjectName()}{
     return
       <#list mandatoryObjects as listchild>
       <#assign isInOpt = hierarchyHelper.isWithinOptionalStructure(listchild.getObjectName())>
-      <#if isInOpt>${list.getObjectName()}_candidates.parallelStream().filter(x -> x.${listchild.getObjectName()}.isPresent()).map(x -> x.${listchild.getObjectName()}.get()).anyMatch(x -> x.equals(cand))
-      <#else>${list.getObjectName()}_candidates.parallelStream().anyMatch(x -> x.equals(cand))
+      <#if isInOpt>${list.getObjectName()}_candidates.parallelStream().filter(x -> x.${listchild.getObjectName()} != null && x.${listchild.getObjectName()}.isPresent()).map(x -> x.${listchild.getObjectName()}.get()).anyMatch(x -> x.equals(cand))
+      <#else>${list.getObjectName()}_candidates.parallelStream().anyMatch(x -> x.${listchild.getObjectName()} != null && x.${listchild.getObjectName()}.equals(cand))
       </#if><#if listchild_has_next> || </#if>
       </#list>;
   }
