@@ -20,9 +20,9 @@ public class GrammarSymbolSupplier implements Supplier<Optional<MCGrammarSymbol>
 
   @Override
   public Optional<MCGrammarSymbol> get() {
-    Log.debug("Load full information of '" + qualifiedName + "' (Kind " + "de.monticore.grammar.grammar._symboltable.MCGrammarSymbol" + ").", MCGrammarSymbolSurrogate.class.getSimpleName());
+    Log.debug("Load full information of '" + qualifiedName + "' (Kind " + "de.monticore.grammar.grammar._symboltable.MCGrammarSymbol" + ").", GrammarSymbolSupplier.class.getSimpleName());
     if(!(enclosingScope instanceof de.monticore.grammar.grammar._symboltable.IGrammarScope)){
-      Log.error("0xA4070x84660 The enclosingScope needs to be a subtype of de.monticore.grammar.grammar._symboltable.IGrammarScope.");
+      Log.error("0xA4073x84660 The enclosingScope needs to be a subtype of de.monticore.grammar.grammar._symboltable.IGrammarScope.");
       return Optional.empty();
     }
     Optional<MCGrammarSymbol> resolvedSymbol = ((de.monticore.grammar.grammar._symboltable.IGrammarScope) enclosingScope).resolveMCGrammar(qualifiedName);
@@ -32,13 +32,12 @@ public class GrammarSymbolSupplier implements Supplier<Optional<MCGrammarSymbol>
                 GrammarSymbolSupplier.class.getSimpleName());
       return resolvedSymbol;
     } else {
-      Log.error("0xA1038 " + GrammarSymbolSupplier.class.getSimpleName() + " Could not load full information of '" +
+      Log.error("0xA1037 " + GrammarSymbolSupplier.class.getSimpleName() + " Could not load full information of '" +
                         qualifiedName + "' (Kind " + "de.monticore.grammar.grammar._symboltable.MCGrammarSymbol" + ").");
       return resolvedSymbol;
     }
   }
 
-  // TODO: Move me elsewhere
   public static <T> Supplier<T> memoize(Supplier<T> delegate) {
     AtomicReference<T> value = new AtomicReference<>();
     return () -> {

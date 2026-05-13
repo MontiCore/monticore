@@ -12,15 +12,12 @@ import java.util.function.Supplier;
  * (which did not support composition, a TypeSurrogate
  * did not actually surrogate a CDTypeSurrogate, with CDTypeSym extends TypeSym.)
  * Errors during resolving are logged and an empty optional is returned.
+ * Use {@link #memoize(ISymbolSupplier)} to only resolve for a symbol once.
  *
  * @param <T> the symbol type
  */
-public interface ISymbolSupplier<T> extends Supplier<Optional<T>> {
+public interface ISymbolSupplier<T extends ISymbol> extends Supplier<Optional<T>> {
 
-
-  interface IMemoizedSymbolSupplier<T> extends ISymbolSupplier<T> {
-
-  }
 
   /**
    * Memoize a supplier: Only attempt to resolve once
@@ -29,12 +26,12 @@ public interface ISymbolSupplier<T> extends Supplier<Optional<T>> {
    * @param <T>      the symbol type
    * @return a memoized supplier (that only resolved once)
    */
-  @SuppressWarnings("all")
-  public static <T> IMemoizedSymbolSupplier<T> memoize(ISymbolSupplier<T> supplier) {
+  @SuppressWarnings({"OptionalAssignedToNull", "unused"})
+  static <T extends ISymbol> ISymbolSupplier<T> memoize(ISymbolSupplier<T> supplier) {
     AtomicReference<Optional<T>> value = new AtomicReference<>();
     return () -> {
       Optional<T> val = value.get();
-      if (val == null) {
+      if (val == null) { // we explicitly check against null (unset)
         val = value.updateAndGet(cur -> cur == null ?
                 Objects.requireNonNull(supplier.get()) : cur);
       }
