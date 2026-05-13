@@ -120,7 +120,7 @@ public class ScopeDeSerDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(21, scopeClass.getCDMethodList().size());
+    assertEquals(22, scopeClass.getCDMethodList().size());
   
     assertTrue(Log.getFindings().isEmpty());
   }

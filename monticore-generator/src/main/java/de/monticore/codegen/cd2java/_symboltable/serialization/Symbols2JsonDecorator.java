@@ -29,6 +29,7 @@ import de.se_rwth.commons.StringTransformations;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 import static de.monticore.cd.codegen.CD2JavaTemplates.VALUE;
@@ -112,6 +113,7 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
             .addAllCDMembers(createConstructors(millName, traverserFullName, symbols2JsonName, superGrammars))
             .addCDMember(createInitMethod(scopeInterfaceFullName, symbolDefiningProds))
             .addCDMember(createGetSerializedStringMethod())
+            .addCDMember(createWriteSymbolHierarchies())
             .addAllCDMembers(createLoadMethods(artifactScopeInterfaceFullName))
             .addCDMember(createStoreMethod(artifactScopeInterfaceFullName))
             .addAllCDMembers(createScopeVisitorMethods(scopeInterfaceFullName, symbols2JsonName))
@@ -215,6 +217,22 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
     return method;
   }
 
+  protected ASTCDMethod createWriteSymbolHierarchies() {
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), "writeSymbolHierarchies");
+    // Map SymbolClassName -> SuperSymbolClassName
+    Map<String, String> symbolToSuperSymbolsMap = symbolTableService.getInheritedSymbolPropertyTypes(
+                    symbolTableService.getSymbolDefiningSuperProds())
+            .entrySet().stream().collect(
+                    Collectors.toMap(
+                            e -> symbolTableService.getSymbolFullName(e.getKey()),
+                            Map.Entry::getValue));
+
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH
+            + "symbols2Json.WriteSymbolHierarchies",
+            symbolToSuperSymbolsMap));
+    return method;
+  }
+
   protected List<ASTCDMethod> createScopeVisitorMethods(String scopeInterfaceName, String symbols2Json) {
     List<ASTCDMethod> visitorMethods = new ArrayList<>();
 
@@ -225,7 +243,7 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
 
     ASTCDMethod endVisitMethod = visitorService.getVisitorMethod(END_VISIT, getMCTypeFacade().createQualifiedType(scopeInterfaceName));
     this.replaceTemplate(EMPTY_BODY, endVisitMethod, new TemplateHookPoint(TEMPLATE_PATH
-            + "symbols2Json.EndVisit4Scope", I_SCOPE, symbols2Json));
+            + "symbols2Json.EndVisit4Scope", I_SCOPE, symbols2Json, false));
     visitorMethods.add(endVisitMethod);
 
     return visitorMethods;
@@ -241,7 +259,7 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
     ASTCDMethod endVisitMethod = visitorService
             .getVisitorMethod(END_VISIT, getMCTypeFacade().createQualifiedType(artifactScopeInterfaceName));
     this.replaceTemplate(EMPTY_BODY, endVisitMethod, new TemplateHookPoint(TEMPLATE_PATH
-            + "symbols2Json.EndVisit4Scope", I_ARTIFACT_SCOPE_TYPE, symbols2Json));
+            + "symbols2Json.EndVisit4Scope", I_ARTIFACT_SCOPE_TYPE, symbols2Json, true));
     visitorMethods.add(endVisitMethod);
 
     return visitorMethods;
