@@ -113,7 +113,7 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
             .addAllCDMembers(createConstructors(millName, traverserFullName, symbols2JsonName, superGrammars))
             .addCDMember(createInitMethod(scopeInterfaceFullName, symbolDefiningProds))
             .addCDMember(createGetSerializedStringMethod())
-            .addCDMember(createWriteSymbolHierarchies())
+            .addCDMember(createWriteSymbolHierarchies(symbolDefiningProds))
             .addAllCDMembers(createLoadMethods(artifactScopeInterfaceFullName))
             .addCDMember(createStoreMethod(artifactScopeInterfaceFullName))
             .addAllCDMembers(createScopeVisitorMethods(scopeInterfaceFullName, symbols2JsonName))
@@ -217,11 +217,13 @@ public class Symbols2JsonDecorator extends AbstractDecorator {
     return method;
   }
 
-  protected ASTCDMethod createWriteSymbolHierarchies() {
+  protected ASTCDMethod createWriteSymbolHierarchies(List<ASTCDType> symbolDefiningProds) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), "writeSymbolHierarchies");
+    // Collect all symbols of both this grammar and all its super grammars
+    List<ASTCDType> allSymbolDefiningProdsTransitive = new ArrayList<>(symbolDefiningProds);
+    allSymbolDefiningProdsTransitive.addAll(symbolTableService.getSymbolDefiningSuperProds());
     // Map SymbolClassName -> SuperSymbolClassName
-    Map<String, String> symbolToSuperSymbolsMap = symbolTableService.getInheritedSymbolPropertyTypes(
-                    symbolTableService.getSymbolDefiningSuperProds())
+    Map<String, String> symbolToSuperSymbolsMap = symbolTableService.getInheritedSymbolPropertyTypes(allSymbolDefiningProdsTransitive)
             .entrySet().stream().collect(
                     Collectors.toMap(
                             e -> symbolTableService.getSymbolFullName(e.getKey()),

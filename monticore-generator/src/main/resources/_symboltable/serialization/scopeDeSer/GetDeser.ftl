@@ -3,17 +3,17 @@ ${tc.signature("mill", "debugCode", "scopeDeserName")}
 de.monticore.symboltable.serialization.ISymbolDeSer deSer = ${mill}.globalScope().getSymbolDeSer(kind);
 
 String previousKind;
-while (deSer == null && symbolHierarchiesObjectOpt.isPresent()) {
+while (deSer == null && this.symbolHierarchiesObjectOpt.isPresent()) {
   // Walk the symbol-hierarchy up until we can find a registered deSer
   previousKind = kind;
-  if (!symbolHierarchiesObjectOpt.get().hasStringMember(kind)) {
+  if (!this.symbolHierarchiesObjectOpt.get().hasStringMember(kind)) {
     Log.debug(
       "0xA1236x${debugCode} The artifact scope does not define a super symbol for symbol kind `" + kind + "`.",
       ${scopeDeserName}.class.getName()
     );
     break;
   }
-  kind = symbolHierarchiesObjectOpt.get().getStringMember(kind);
+  kind = this.symbolHierarchiesObjectOpt.get().getStringMember(kind);
   Log.debug(
     "0xA1235x${debugCode} No DeSer found to deserialize symbol of kind `" + previousKind
     + "`. Using the super symbol kind `" + kind + "` instead.",

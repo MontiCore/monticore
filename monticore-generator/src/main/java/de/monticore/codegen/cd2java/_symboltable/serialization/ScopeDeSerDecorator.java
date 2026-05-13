@@ -138,7 +138,9 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
         .addCDMember(
             createDeserializeSymbolsMethods(scopeVarParam, scopeJsonParam, symbolMap, millName, scopeDeSerName, scopeInterfaceName))
         .addCDMember(
-            createGetDeserMethods(millName, scopeDeSerName))
+            createGetDeserMethod(millName, scopeDeSerName))
+        .addCDMember(
+            getCDAttributeFacade().createAttribute(PROTECTED.build(), getMCTypeFacade().createOptionalTypeOf(JSON_OBJECT), "symbolHierarchiesObjectOpt"))
         .addAllCDMembers(createDeserializeAttrMethods(scopeRuleAttrList, enclosingScopeParam, scopeJsonParam))
         .addAllCDMembers(createDeserializeAddonsMethods(scopeVarParam, scopeJsonParam))
         .build();
@@ -243,16 +245,14 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
     return method;
   }
 
-  protected ASTCDMethod createGetDeserMethods(String millName,
-                                              String scopeDeSerName) {
+  protected ASTCDMethod createGetDeserMethod(String millName,
+                                             String scopeDeSerName) {
     // Method that tries to find a deSer (walks up the symbol hierarchy as a fallback)
     ASTCDParameter kindParam = getCDParameterFacade()
             .createParameter(getMCTypeFacade().createStringType(), "kind");
-    ASTCDParameter jsonParam = getCDParameterFacade()
-            .createParameter(getMCTypeFacade().createOptionalTypeOf(JSON_OBJECT), "symbolHierarchiesObjectOpt");
     ASTCDMethod method = getCDMethodFacade()
             .createMethod(PROTECTED.build(), getMCTypeFacade().createQualifiedType(ISymbolDeSer.class),
-                          "getDeser", kindParam, jsonParam);
+                          "getDeser", kindParam);
     String errorCode = symbolTableService.getGeneratedErrorCode("getDeser"+millName);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(
             GET_DESER, millName, errorCode, scopeDeSerName));

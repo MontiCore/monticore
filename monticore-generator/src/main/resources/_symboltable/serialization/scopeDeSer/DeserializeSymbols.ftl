@@ -10,8 +10,7 @@ ${tc.signature("symbolMap", "mill", "errorCode", "scopeDeserName", "scopeInterfa
       continue;
     }
 
-    de.monticore.symboltable.serialization.ISymbolDeSer deSer = getDeser(kind.get(),
-      scopeJson.getObjectMemberOpt(de.monticore.symboltable.serialization.JsonDeSers.SYMBOL_HIERARCHY));
+    de.monticore.symboltable.serialization.ISymbolDeSer deSer = this.getDeser(kind.get());
 
     if (null == deSer) {
       Log.debug(
