@@ -11,6 +11,10 @@
   protected List<Match> allMatches;
   protected boolean doReplacementExecuted = false;
   protected boolean isHostGraphDirty = true;
+
+  protected Stack<String> backtracking = new Stack<>();
+  protected Stack<String> backtrackingNegative = new Stack<>();
+
   <#-- for each object creates a _candidates, _candidates_temp nodelist and an _cand object-->
 
   // Matches
@@ -72,6 +76,7 @@
   }
 
   protected void loadIntoModelTraverser() {
+		t.reset(); // Invalidate previously loaded traverser state (as we are not incremental/collect too many candidates otherwise)
     for (ASTNode astNode : Log.errorIfNull(hostGraph,
             "0xE1200: Hostgraph is null, check constructor arguments!")) {
       astNode.accept(t.getTraverser());
@@ -83,7 +88,7 @@
   }
 
   /**
-  * Marks the original model as dirty, same as if {@link #doReplacement} was called.
+  * Marks the original model as dirty, same as if {@link #doReplacement} was called and an element was added/removed.
   * @see ${ast.getClassname()}#doReplacement()
   */
   public void markDirty() {

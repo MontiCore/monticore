@@ -16,6 +16,7 @@ import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserFacto
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -45,9 +46,10 @@ class SwitchStatementValidTest {
   @ParameterizedTest
   @ValueSource(strings = {
     "switch(5){}",
-    "switch('c'){}"
+    "switch('c'){}",
+    "switch(5){case 1:}"
   })
-  void testValid(String expr) throws IOException {
+  void testValidSwitchExpressions(String expr) throws IOException {
     // Given
     TestMCCommonStatementsCoCoChecker checker = new TestMCCommonStatementsCoCoChecker();
     checker.addCoCo(new SwitchStatementValid());
@@ -62,8 +64,8 @@ class SwitchStatementValidTest {
   }
 
   @ParameterizedTest
-  @MethodSource("exprAndErrorProvider")
-  void testInvalid(String expr, String error) throws IOException {
+  @MethodSource("invalidSwitchExpressionsProvider")
+  void testInvalidSwitchExpressions(String expr) throws IOException {
     // Given
     TestMCCommonStatementsCoCoChecker checker = new TestMCCommonStatementsCoCoChecker();
     checker.addCoCo(new SwitchStatementValid());
@@ -74,25 +76,25 @@ class SwitchStatementValidTest {
     checker.checkAll(ast);
 
     // Then
-    assertEquals(List.of(error), Log.getFindings()
+    assertEquals(List.of(SwitchStatementValid.ERROR_CODE), Log.getFindings()
       .stream().map(f -> f.getMsg().substring(0, 7)).collect(Collectors.toList())
     );
   }
 
-  static Stream<Arguments> exprAndErrorProvider() {
+  static Stream<Arguments> invalidSwitchExpressionsProvider() {
     return Stream.of(
-      arguments("switch(5.5){}", SwitchStatementValid.ERROR_CODE),
-      arguments("switch(5.5F){}", SwitchStatementValid.ERROR_CODE),
-      arguments("switch(false){}", SwitchStatementValid.ERROR_CODE)
+      arguments("switch(5.5){}"),
+      arguments("switch(5.5F){}"),
+      arguments("switch(false){}")
     );
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {"switch(c){}"})
+  @ValueSource(strings = {"switch(c){}", "switch(c){case Foo:}"})
   void testSwitchEnumConstantsValid(String expr) throws IOException {
     // Given
     IMCCommonStatementsArtifactScope imported =
-      new MCCommonStatementsSymbols2Json().load("src/test/resources/de/monticore/statements/Enum.sym");
+      new MCCommonStatementsSymbols2Json().load("target/resources/test/de/monticore/statements/Enum.sym");
     TestMCCommonStatementsMill.globalScope().addSubScope(imported);
 
     VariableSymbol variable = TestMCCommonStatementsMill.variableSymbolBuilder()
@@ -118,12 +120,11 @@ class SwitchStatementValidTest {
     assertTrue(Log.getFindings().isEmpty(), () -> Log.getFindings().toString());
   }
 
-  @ParameterizedTest
-  @MethodSource("enumExprAndErrorProvider")
-  void testSwitchEnumConstantsInvalid(String expr, String error) throws IOException {
+  @Test
+  void testSwitchEnumConstantsInvalidSwitchType() throws IOException {
     // Given
     IMCCommonStatementsArtifactScope imported =
-      new MCCommonStatementsSymbols2Json().load("src/test/resources/de/monticore/statements/Enum.sym");
+      new MCCommonStatementsSymbols2Json().load("target/resources/test/de/monticore/statements/Enum.sym");
     TestMCCommonStatementsMill.globalScope().addSubScope(imported);
 
     VariableSymbol variable = TestMCCommonStatementsMill.variableSymbolBuilder()
@@ -136,7 +137,7 @@ class SwitchStatementValidTest {
     TestMCCommonStatementsCoCoChecker checker = new TestMCCommonStatementsCoCoChecker();
     checker.addCoCo(new SwitchStatementValid());
 
-    ASTMCBlockStatement ast = parser().parse_StringMCBlockStatement(expr).orElseThrow();
+    ASTMCBlockStatement ast = parser().parse_StringMCBlockStatement("switch(d){}").orElseThrow();
 
     TestMCCommonStatementsTraverser traverser = TestMCCommonStatementsMill.traverser();
     traverser.add4ExpressionsBasis(new FlatExpressionScopeSetter(TestMCCommonStatementsMill.globalScope()));
@@ -146,15 +147,42 @@ class SwitchStatementValidTest {
     checker.checkAll(ast);
 
     // Then
-    assertEquals(List.of(error), Log.getFindings()
-      .stream().map(f -> f.getMsg().substring(0, 7)).collect(Collectors.toList())
-    );
+    assertEquals(1, Log.getFindings().size());
+    assertTrue(Log.getFindings().get(0).getMsg().startsWith(SwitchStatementValid.ERROR_CODE));
   }
 
-  static Stream<Arguments> enumExprAndErrorProvider() {
-    return Stream.of(
-      arguments("switch(d){}", SwitchStatementValid.ERROR_CODE),
-      arguments("switch(true + 1){}", "0xB0163")
-    );
+  @ParameterizedTest
+  @ValueSource(strings = {
+    "switch(5){ case 1: switch('c'){} }",
+    "switch(5){ case 1: switch(2){ case 1: } }"
+  })
+  void testNestedSwitchStatementsValid(String expr) throws IOException {
+    // Given
+    TestMCCommonStatementsCoCoChecker checker = new TestMCCommonStatementsCoCoChecker();
+    checker.addCoCo(new SwitchStatementValid());
+
+    ASTMCBlockStatement ast = parser().parse_StringMCBlockStatement(expr).orElseThrow();
+
+    // When
+    checker.checkAll(ast);
+
+    // Then
+    assertTrue(Log.getFindings().isEmpty(), () -> Log.getFindings().toString());
+  }
+
+  @Test
+  void testNestedSwitchInvalidInner() throws IOException {
+    // Given
+    TestMCCommonStatementsCoCoChecker checker = new TestMCCommonStatementsCoCoChecker();
+    checker.addCoCo(new SwitchStatementValid());
+
+    ASTMCBlockStatement ast = parser().parse_StringMCBlockStatement("switch(5){ case 1: switch(5.5){} }").orElseThrow();
+
+    // When
+    checker.checkAll(ast);
+
+    // Then
+    assertEquals(1, Log.getFindings().size());
+    assertTrue(Log.getFindings().get(0).getMsg().startsWith(SwitchStatementValid.ERROR_CODE));
   }
 }

@@ -30,7 +30,7 @@ public class GrammarInheritanceCycleTest extends CocoTest {
   @Test
   public void testInvalid() throws IOException {
     Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
-    Optional<ASTMCGrammar> grammar = parser.parse("src/test/resources/de/monticore/grammar/cocos/invalid/A4023/A4023.mc4");
+    Optional<ASTMCGrammar> grammar = parser.parse("target/resources/test/de/monticore/grammar/cocos/invalid/A4023/A4023.mc4");
 
     getFindings().clear();
     checker.checkAll(grammar.get());

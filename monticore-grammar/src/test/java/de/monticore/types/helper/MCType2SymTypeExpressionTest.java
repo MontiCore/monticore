@@ -53,28 +53,28 @@ public class MCType2SymTypeExpressionTest {
     gs.add(DefsTypeBasic.type("PersonValue"));
 
     CombineExpressionsWithLiteralsSymbols2Json symbols2Json = new CombineExpressionsWithLiteralsSymbols2Json();
-    ICombineExpressionsWithLiteralsArtifactScope as = symbols2Json.load("src/test/resources/de/monticore/types/check/PairA.cesym");
+    ICombineExpressionsWithLiteralsArtifactScope as = symbols2Json.load("target/resources/test/de/monticore/types/check/PairA.cesym");
     as.setEnclosingScope(gs);
 
-    ICombineExpressionsWithLiteralsArtifactScope as2 = symbols2Json.load("src/test/resources/de/monticore/types/check/PairB.cesym");
+    ICombineExpressionsWithLiteralsArtifactScope as2 = symbols2Json.load("target/resources/test/de/monticore/types/check/PairB.cesym");
     as2.setEnclosingScope(gs);
 
-    ICombineExpressionsWithLiteralsArtifactScope as3 = symbols2Json.load("src/test/resources/de/monticore/types/check/PairC.cesym");
+    ICombineExpressionsWithLiteralsArtifactScope as3 = symbols2Json.load("target/resources/test/de/monticore/types/check/PairC.cesym");
     as3.setEnclosingScope(gs);
 
-    ICombineExpressionsWithLiteralsArtifactScope as4 = symbols2Json.load("src/test/resources/de/monticore/types/check/Persondemc.cesym");
+    ICombineExpressionsWithLiteralsArtifactScope as4 = symbols2Json.load("target/resources/test/de/monticore/types/check/Persondemc.cesym");
     as4.setEnclosingScope(gs);
 
-    ICombineExpressionsWithLiteralsArtifactScope as5 = symbols2Json.load("src/test/resources/de/monticore/types/check/PersonKey.cesym");
+    ICombineExpressionsWithLiteralsArtifactScope as5 = symbols2Json.load("target/resources/test/de/monticore/types/check/PersonKey.cesym");
     as5.setEnclosingScope(gs);
 
-    ICombineExpressionsWithLiteralsArtifactScope as6 = symbols2Json.load("src/test/resources/de/monticore/types/check/PersonValue.cesym");
+    ICombineExpressionsWithLiteralsArtifactScope as6 = symbols2Json.load("target/resources/test/de/monticore/types/check/PersonValue.cesym");
     as6.setEnclosingScope(gs);
 
-    ICombineExpressionsWithLiteralsArtifactScope as7 = symbols2Json.load("src/test/resources/de/monticore/types/check/Pair.cesym");
+    ICombineExpressionsWithLiteralsArtifactScope as7 = symbols2Json.load("target/resources/test/de/monticore/types/check/Pair.cesym");
     as7.setEnclosingScope(gs);
 
-    ICombineExpressionsWithLiteralsArtifactScope as8 = symbols2Json.load("src/test/resources/de/monticore/types/check/Pair2.cesym");
+    ICombineExpressionsWithLiteralsArtifactScope as8 = symbols2Json.load("target/resources/test/de/monticore/types/check/Pair2.cesym");
     as8.setEnclosingScope(gs);
   }
 

@@ -26,15 +26,20 @@ public class SwitchStatementValid implements MCCommonStatementsASTSwitchStatemen
 
     SymTypeExpression result = TypeCheck3.typeOf(node.getExpression());
 
-    if (!result.isObscureType()
-      && !(SymTypeRelations.isChar(result) || SymTypeRelations.isByte(result)
-      || SymTypeRelations.isShort(result) || SymTypeRelations.isInt(result)
-      || isEnumMember(result))) {
-      Log.error(ERROR_CODE + " " +ERROR_MSG_FORMAT, node.get_SourcePositionStart());
+    if (!result.isObscureType() && !isSwitchExpressionTypeValid(result)) {
+      Log.error(ERROR_CODE + " " + ERROR_MSG_FORMAT, node.get_SourcePositionStart(), node.get_SourcePositionEnd());
     }
   }
 
-  public boolean isEnumMember(SymTypeExpression ste) {
+  protected boolean isSwitchExpressionTypeValid(SymTypeExpression type) {
+    return SymTypeRelations.isChar(type)
+      || SymTypeRelations.isByte(type)
+      || SymTypeRelations.isShort(type)
+      || SymTypeRelations.isInt(type)
+      || isEnumMember(type);
+  }
+
+  protected boolean isEnumMember(SymTypeExpression ste) {
     if (ste.hasTypeInfo()) {
       if (OOSymbolsMill.typeDispatcher().isOOSymbolsOOType(ste.getTypeInfo())) {
         return OOSymbolsMill.typeDispatcher().asOOSymbolsOOType(ste.getTypeInfo()).isIsEnum();

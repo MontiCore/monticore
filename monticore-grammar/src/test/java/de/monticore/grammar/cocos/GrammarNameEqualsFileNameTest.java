@@ -23,7 +23,7 @@ public class GrammarNameEqualsFileNameTest extends CocoTest {
   @Test
   public void testInvalidFilename() throws IOException {
     Log.getFindings().clear();
-    parser.parse("src/test/resources/de/monticore/grammar/cocos/invalid/A4003/A4003.mc4");
+    parser.parse("target/resources/test/de/monticore/grammar/cocos/invalid/A4003/A4003.mc4");
 
     assertFalse(Log.getFindings().isEmpty());
     for(Finding f : Log.getFindings()){
@@ -35,7 +35,7 @@ public class GrammarNameEqualsFileNameTest extends CocoTest {
   @Test
   public void testInvalidPackage() throws IOException {
     Log.getFindings().clear();
-    parser.parse("src/test/resources/de/monticore/grammar/cocos/invalid/A4004/A4004.mc4");
+    parser.parse("target/resources/test/de/monticore/grammar/cocos/invalid/A4004/A4004.mc4");
 
     assertFalse(Log.getFindings().isEmpty());
     for(Finding f : Log.getFindings()){
