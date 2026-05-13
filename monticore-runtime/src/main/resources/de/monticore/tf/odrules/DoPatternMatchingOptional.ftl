@@ -14,9 +14,10 @@ protected boolean doPatternMatching_${structure.getObjectName()}(boolean isParen
 
   String nextNode = null;
 	boolean foundMatch = true;
-  while(!searchPlan.isEmpty()){
+  mainLoop: while(!searchPlan.isEmpty()){
     nextNode = searchPlan.pop();
-    <#--creates an if statement for each object for matching the object-->
+    switch(nextNode) {
+    <#--creates a switch case for each object for matching the object-->
 
     <#-- <#list ast.getPattern().getLHSObjectsList() as object> -->
     <#list hierarchyHelper.getInnerLinkObjectsLHS(ast.getPattern().getLHSObjectsList(), structure) as object>
@@ -29,8 +30,8 @@ protected boolean doPatternMatching_${structure.getObjectName()}(boolean isParen
       <#else>
         ${tc.includeArgs("de.monticore.tf.odrules.dopatternmatching.HandleNormalObject", object, [true, structure])}
       </#if>
-      <#if object_has_next>else</#if>
     </#list>
+    }
   }
   // Now we wish to ensure, that we always find something with an optional at least once
   if (!foundMatch) {
