@@ -30,8 +30,10 @@ public abstract class AbstractMCTest {
     Log.enableFailQuick(false); // do not fail quick/exit on the first error
     if (MCAssertions.notifierAndCondition == null) {
       MCAssertions.notifierAndCondition = f -> {
-        // if already reported -> next
-        return checkedFindings.stream().noneMatch(finding -> finding == f);
+        // if already reported -> next via return false
+        boolean notAlreadyPresent = checkedFindings.stream().noneMatch(finding -> finding == f);
+        checkedFindings.add(f);
+        return notAlreadyPresent;
       };
     }
   }
