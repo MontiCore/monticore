@@ -57,12 +57,12 @@ public class CheckScannerlessTest {
     parser.parse_StringExpression("List<Set<Theo>>> >wert" );
     assertTrue(parser.hasErrors()); // check that the parser has errors
     
-    // assert a findings is present & remove it from the log
+    // assert a findings is present
     // We ignore the content of the finding, as it is a parser error 
     MCAssertions.assertHasFinding(); 
   }
   // The @TestWithMCLanguage ensures, that after each test:
-  //  - no more findings are present
+  //  - all reported findings were asserted for
   //  - the mill is torn down
 }
 ```
@@ -85,19 +85,20 @@ class for e.g., Log assertions:
 The notable methods are:
 
 * [`MCAssertions#assertNoFindings()`](../monticore-runtime/src/testFixtures/java/de/monticore/runtime/junit/MCAssertions.java#assertHasFinding()) -
-  Ensure no findings are present (always called after each test)
+  Ensure no findings are present.
 * [`MCAssertions#assertHasFindingStartingWith(String expectedPrefix, String message)`](../monticore-runtime/src/testFixtures/java/de/monticore/runtime/junit/MCAssertions.java#assertHasFindingStartingWith(java.lang.String,java.lang.String)) -
-  Ensures that at least one finding starts with the prefix and removes & returns
+  Ensures that at least one finding starts with the prefix and returns
   that one finding
 * [`MCAssertions#assertHasFindingsStartingWith(String expectedPrefix, String message)`](../monticore-runtime/src/testFixtures/java/de/monticore/runtime/junit/MCAssertions.java#assertHasFindingsStartingWith(java.lang.String,java.lang.String)) -
-  Ensures that at least one finding starts with the prefix and removes & returns
+  Ensures that at least one finding starts with the prefix and returns
   all matching findings
 * [`MCAssertions#assertHasFinding(Predicate<Finding> predicate, String message)`](../monticore-runtime/src/testFixtures/java/de/monticore/runtime/junit/MCAssertions.java#assertHasFinding(java.util.function.Predicate,java.lang.String)) -
-  Ensures that at least one finding matches the predicate and removes & returns
+  Ensures that at least one finding matches the predicate and returns
   that one finding
 * [`MCAssertions#assertHasFindings(Predicate<Finding> predicate, String message)`](../monticore-runtime/src/testFixtures/java/de/monticore/runtime/junit/MCAssertions.java#assertHasFindings(java.util.function.Predicate,java.lang.String)) -
-  Ensures that at least one finding matches the predicate and removes & returns
+  Ensures that at least one finding matches the predicate and returns
   all matching findings
+
 
 When the generated pretty printer is customized via the TOP-mechanism,
  the `PrettyPrinterTester` class provides functionality for quickly writing a bunch of tests for the pretty printer.

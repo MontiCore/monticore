@@ -6,9 +6,11 @@ import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.Assertions;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -25,7 +27,6 @@ public class MCAssertions {
 
   /**
    * Asserts that at least one Finding starts with the expected prefix
-   * and removes that Finding from the Log
    *
    * @param expectedPrefix the expected prefix
    * @param message        the message to fail with iff no finding was found
@@ -38,7 +39,6 @@ public class MCAssertions {
 
   /**
    * Asserts that at least one Finding starts with the expected prefix
-   * and removes that Finding from the Log
    *
    * @param expectedPrefix the expected prefix
    * @return returns the found Finding
@@ -53,7 +53,6 @@ public class MCAssertions {
 
   /**
    * Asserts that at least one Finding starts with the expected prefix
-   * and removes all matching Findings from the Log
    *
    * @param expectedPrefix the expected prefix
    * @param message        the message to fail with iff no findings were found
@@ -66,7 +65,6 @@ public class MCAssertions {
 
   /**
    * Asserts that at least one Finding starts with the expected prefix
-   * and removes all matching Findings from the Log
    *
    * @param expectedPrefix the expected prefix
    * @return returns the list of found Findings
@@ -81,29 +79,26 @@ public class MCAssertions {
 
   /**
    * Asserts that at least one Finding matches the predicate
-   * and removes that Finding from the Log.
-   * If multiple Findings match, only the first of them will be removed.
+   * If multiple Findings match, only the first of them will be marked as checked.
    *
    * @param predicate the predicate
    * @param message   the message to fail with iff no finding was found
    * @return returns the found Finding
    */
   public static Finding assertHasFinding(Predicate<Finding> predicate, String message) {
-    var it = Log.getFindings().iterator();
-    while (it.hasNext()) {
-      var f = it.next();
+    for (Finding f : Log.getFindings()) {
       if (predicate.test(f)) {
-        it.remove();
-        return f;
+        if (__internalReportNotifyCheck(f)) {
+          return f;
+        }
       }
     }
     return failAndPrintFindings(message);
   }
 
   /**
-   * Asserts that at least one Finding matches the predicate
-   * and removes that Finding from the Log.
-   * If multiple Findings match, only the first of them will be removed.
+   * Asserts that at least one Finding matches the predicate.
+   * If multiple Findings match, only the first of them will be marked as checked.
    *
    * @param predicate the predicate
    * @return returns the found Finding
@@ -116,9 +111,8 @@ public class MCAssertions {
   }
 
   /**
-   * Asserts that at least one Finding is present
-   * and removes that Finding from the Log.
-   * If multiple Findings match, only the first of them will be removed.
+   * Asserts that at least one Finding is present.
+   * If multiple Findings match, only the first of them will be marked as checked.
    * This method should NOT be used in conjunction with CoCo-Tests.
    *
    * @return returns the found Finding
@@ -131,8 +125,7 @@ public class MCAssertions {
   }
 
   /**
-   * Asserts that at least one Finding matches the predicate
-   * and removes all matching Findings from the Log
+   * Asserts that at least one Finding matches the predicate.
    *
    * @param predicate the predicate
    * @param message   the message to fail with iff no findings were found
@@ -141,11 +134,11 @@ public class MCAssertions {
   public static Collection<Finding> assertHasFindings(Predicate<Finding> predicate, String message) {
     var it = Log.getFindings().iterator();
     List<Finding> matchingFindings = new ArrayList<>();
-    while (it.hasNext()) {
-      var f = it.next();
+    for (Finding f : Log.getFindings()) {
       if (predicate.test(f)) {
-        it.remove();
-        matchingFindings.add(f);
+        if (__internalReportNotifyCheck(f)) {
+          matchingFindings.add(f);
+        }
       }
     }
     if (matchingFindings.isEmpty())
@@ -154,8 +147,7 @@ public class MCAssertions {
   }
 
   /**
-   * Asserts that at least one Finding matches the predicate
-   * and removes all matching Findings from the Log
+   * Asserts that at least one Finding matches the predicate.
    *
    * @param predicate the predicate
    * @return returns the list of found Findings
@@ -208,6 +200,20 @@ public class MCAssertions {
      * @return nothing
      */
   public static <V> V failAndPrintFindings(String message) {
+    return failAndPrintFindings(message, Log.getFindings());
+  }
+
+  /**
+   * Fails a test with the given failure message.
+   * Additionally, Lists the state of Log-Findings.
+   * See Javadoc for {@link Assertions#fail(String, Throwable)}
+   * for an explanation of this method's generic return type V.
+   *
+   * @param message message to print
+   * @param findings findings to check
+   * @return nothing
+   */
+  public static <V> V failAndPrintFindings(String message, Collection<Finding> findings) {
     StringBuilder messageWithFindings = new StringBuilder();
     if (!message.isBlank()) {
       messageWithFindings.append(message);
@@ -216,19 +222,38 @@ public class MCAssertions {
       messageWithFindings.append("Failed (no reason stated)");
     }
     messageWithFindings.append(System.lineSeparator());
-    if (Log.getFindings().isEmpty()) {
+    if (findings.isEmpty()) {
       messageWithFindings.append("Got no Log-Findings.");
     }
     else {
       messageWithFindings.append("Got Log-Findings:");
       messageWithFindings.append(System.lineSeparator());
       messageWithFindings.append(Streams.mapWithIndex(
-                      Log.getFindings().stream().map(Finding::buildMsg),
-                      (str, index) -> "[" + index + "]" + str)
-              .collect(Collectors.joining(System.lineSeparator()))
-      );
+                                                 findings.stream().map(Finding::buildMsg),
+                                                 (str, index) -> "[" + index + "]" + str)
+                                         .collect(Collectors.joining(System.lineSeparator()))
+                                );
     }
     return fail(messageWithFindings.toString());
+  }
+
+  /**
+   * Notifies about a Finding being checked and offers the possibility
+   * to return false to skip this finding.
+   */
+  @Nullable
+  static Function<Finding, Boolean> notifierAndCondition;
+
+  /**
+   * (Internal)
+   * @param finding the finding that was checked
+   * @return false to skip this finding
+   */
+  public static boolean __internalReportNotifyCheck(Finding finding) {
+    if (notifierAndCondition != null) {
+      return notifierAndCondition.apply(finding);
+    }
+    return true;
   }
 
 }
