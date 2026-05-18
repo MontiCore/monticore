@@ -70,10 +70,11 @@ public boolean doPatternMatching_${structure.getObjectName()}(boolean isParentBa
       }
       while(!searchPlan.isEmpty()){
         nextNode = searchPlan.pop();
-    <#--creates an if statement for each object for matching the object-->
+        switch(nextNode) {
+    <#--creates an switch case for each object for matching the object-->
         <#list allObjects as object>
           <#if object.isListObject()>
-            if(nextNode.equals("${object.getObjectName()}_$List")){
+            case "${object.getObjectName()}_$List" -> {
               // this is a list object
               if(isBacktrackingNegative){
                 isBacktracking = true;
@@ -107,7 +108,7 @@ public boolean doPatternMatching_${structure.getObjectName()}(boolean isParentBa
               }
 
           <#elseif object.isOptObject()>
-            if(nextNode.equals("${object.getObjectName()}")) {
+            case "${object.getObjectName()}" -> {
               // this is an optional object
               if(doPatternMatching_${object.getObjectName()}(isBacktracking, isBacktrackingNegative)) {
 
@@ -156,7 +157,7 @@ public boolean doPatternMatching_${structure.getObjectName()}(boolean isParentBa
               }
 
           <#elseif object.isNotObject()>
-            if(nextNode.equals("${object.getObjectName()}")){
+            case "${object.getObjectName()}" -> {
               // this is a negative object
               // reset candidates list
               if(!isBacktracking){
@@ -216,7 +217,7 @@ public boolean doPatternMatching_${structure.getObjectName()}(boolean isParentBa
                 searchPlan.push(backtracking.pop());
               }
           <#else><#-- normal object -->
-            if(nextNode.equals("${object.getObjectName()}")){
+            case "${object.getObjectName()}" -> {
               if(isBacktrackingNegative){
                 isBacktracking = true;
                 isBacktrackingNegative = false;
@@ -255,8 +256,9 @@ public boolean doPatternMatching_${structure.getObjectName()}(boolean isParentBa
                 }
               }
           </#if>
-            }<#if object_has_next>else</#if>
+            }
         </#list>
+        }
 
         if(!isBacktrackingNegative){
           if(searchPlan.isEmpty()){
