@@ -823,7 +823,7 @@ adding the CoCos, and calling the `checkAll` method.
 
 #### Mill as Factory for Builders
 
-The for the `Automata` language is generated into the directory
+The mill for the `Automata` language is generated into the directory
 `out/automata/`. Details about the generated mill and the mill pattern
 in general are described in Section 11.5. The generated mill class `AutomataMill` is
 responsible for providing ready to use and correct parser, scope
@@ -897,6 +897,11 @@ from a MontiCore grammar. For these Java classes, generated for the
 `Automata` DSL, execute the following command in the mc-workspace:
 
 === "CLI"
+    **With cmd on Windows**
+    ```batch
+    javac -cp monticore-rt.jar -sourcepath "src/;out/;hwc/" ^
+                                      src/automata/AutomataTool.java
+    ```
     **With Powershell on Windows**
     ```powershell
     javac -cp monticore-rt.jar -sourcepath "src/;out/;hwc/" `
@@ -905,11 +910,6 @@ from a MontiCore grammar. For these Java classes, generated for the
     **With Bash on Unix**
     ```bash
     javac -cp monticore-rt.jar -sourcepath "src/:out/:hwc/" \
-                                      src/automata/AutomataTool.java
-    ```
-    **With cmd on Windows**
-    ```batch
-    javac -cp monticore-rt.jar -sourcepath "src/;out/;hwc/" ^
                                       src/automata/AutomataTool.java
     ```
     
@@ -1198,6 +1198,12 @@ including the `Automata` tool class `AutomataTool`. For running the
 `Automata` DSL tool, execute the following command:
 
 === "CLI"
+    **With cmd on Windows**
+    ```batch
+    java -cp "src/;out/;hwc/;monticore-rt.jar" ^
+                        automata.AutomataTool -i example/PingPong.aut ^
+                        -s st/PingPong.autsym
+    ```    
     **With Powershell on Windows**
     ```powershell
     java -cp "src/;out/;hwc/;monticore-rt.jar" `
@@ -1208,12 +1214,6 @@ including the `Automata` tool class `AutomataTool`. For running the
     ```bash
     java -cp "src/:out/:hwc/:monticore-rt.jar" \
                         automata.AutomataTool -i example/PingPong.aut \
-                        -s st/PingPong.autsym
-    ```
-    **With cmd on Windows**
-    ```batch
-    java -cp "src/;out/;hwc/;monticore-rt.jar" ^
-                        automata.AutomataTool -i example/PingPong.aut ^
                         -s st/PingPong.autsym
     ```
 
@@ -1232,6 +1232,12 @@ including the `Automata` tool class `AutomataTool`. For running the
     **With JUnit**  
     Run the `AutoamtaToolTest` JUnit test.
 
+    **With cmd on Windows**
+    ```batch
+    java -jar target/libs/automaton-7.7.0-tool.jar ^
+                        -i src/test/resources/automata/parser/PingPong.aut ^
+                        -s st/PingPong.autsym
+    ```
     **With Powershell on Windows**
     ```powershell
     java -jar target/libs/automaton-7.7.0-tool.jar `
@@ -1242,12 +1248,6 @@ including the `Automata` tool class `AutomataTool`. For running the
     ```bash
     java -jar target/libs/automaton-7.7.0-tool.jar \
                         -i src/test/resources/automata/parser/PingPong.aut \
-                        -s st/PingPong.autsym
-    ```
-    **With cmd on Windows**
-    ```batch
-    java -jar target/libs/automaton-7.7.0-tool.jar ^
-                        -i src/test/resources/automata/parser/PingPong.aut ^
                         -s st/PingPong.autsym
     ```
 
@@ -1265,7 +1265,7 @@ example `Automata` model.
 
 The last argument `st/PingPong.autsym` is also passed to the main
 method. It makes the tool store the serialized symbol table of the input
-model into the file `example/PingPong.aut`.
+model into the file `st/PingPong.autsym`.
 
 The shipped example `Automata` DSL (all sources contained in
 `mc-workspace/src` and `mc-workspace/hwc`) can be used as a starting
@@ -1364,7 +1364,7 @@ http://www.monticore.de/download/Automaton.zip
 ```
 2.  In the IDE select: File \> Open.
 3.  Select the directory containing the build.gradle (if you are
-    required to choose a Gradle version, then choose version 6.7.1).
+    required to choose a Gradle version, then choose version 7.6.4).
 
 ### Running MontiCore
 
@@ -1383,39 +1383,6 @@ MontiCore in IntelliJ IDEA, your workspace should look similar to Figure 2.29.
 ![](https://github.com/MontiCore/monticore/raw/dev/docs/img/IntelliJ-IDEA.png)
 <figcaption>Figure 2.29: IntelliJ IDEA after importing
 the example project and executing MontiCore</figcaption>
-
-## Using MontiCore with GitPod
-
-Installing all the prerequisites and an IDE can take some time.
-Alternatively to this, you can use [Gitpod](https://www.gitpod.io), an open-source
-Kubernetes application for ready-to-code developer environments. It already
-has all the prerequisites and an operational Web IDE similar to Microsoft's
-Visual Studio Code installed. You need to login with an existing GitHub account
-to use it. 
-
-[This link](https://gitpod.io/#https://github.com/MontiCore/automaton) can be used
-to access the Gitpod project for the `Automata` language.
-First, an environment for the project with the proper Java and Gradle version
-will be prepared and initialized automatically.
-After that, you will be directed to the Web IDE. The project will be built
-with Gradle first, and after that it is ready-to-use. The Web IDE also has a 
-built-in terminal which can be used to build the project via `gradle build` 
-or execute other tasks. 
-
-The Web IDE can be used to change existing project files, such as the `Automata`
-grammar or the handwritten classes for the language. Simply navigate to the grammars
-or classes in the file explorer on the left-hand side of the IDE and edit the files. 
-This makes experimenting with MontiCore possible. The changes will be compiled by the
-IDE immediately and compilation errors will be marked with red color. To run the project,
-execute the command `gradle build` in the terminal.
-
-You will notice that the link to the Gitpod project is generated and always
-has the same pattern.
-An example for a link is https://indigo-ostrich-8psdfoer.ws-eu18.gitpod.io.
-After 30 minutes of non-use, Gitpod will "freeze" the environment.
-It can be reactivated by using the same link to access it. The environment is
-reactivated, and you do not even need to rebuild the project with Gradle to use
-the project again.
  	
 ## Further Information
 
