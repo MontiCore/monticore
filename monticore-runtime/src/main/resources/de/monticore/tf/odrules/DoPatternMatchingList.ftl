@@ -307,6 +307,8 @@ public boolean doPatternMatching_${structure.getObjectName()}(boolean isParentBa
     // TODO: Do something similar for optionals (but somehow do not loose them?)
 
     if (!hasFoundAtLeastOneMatch) {
+      // TODO: Does this reset create any sideeffects?
+      ${structure.getObjectName()}_candidates = null;
       return false;
     }
     ${structure.getObjectName()}_cand = ${structure.getObjectName()}_candidates;
