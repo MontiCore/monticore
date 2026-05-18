@@ -217,4 +217,8 @@ public class MapBasedTypeCheck3 extends TypeCheck3 {
     return getType4Ast().getPartialTypeOfExpr(lit);
   }
 
+  @Deprecated(forRemoval = true)
+  public static Type4Ast internal_hacky_do_not_use_getType4Ast(){
+    return ((MapBasedTypeCheck3)getDelegate()).getType4Ast();
+  }
 }
