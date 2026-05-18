@@ -68,7 +68,7 @@ public boolean doPatternMatching_${structure.getObjectName()}(boolean isParentBa
 				</#list>
 
       }
-      while(!searchPlan.isEmpty()){
+      mainLoop: while(!searchPlan.isEmpty()){
         nextNode = searchPlan.pop();
         switch(nextNode) {
     <#--creates an switch case for each object for matching the object-->
@@ -87,7 +87,7 @@ public boolean doPatternMatching_${structure.getObjectName()}(boolean isParentBa
                 if(backtracking.isEmpty()){
                   //no match of the pattern can be found
                   foundmatch = false;
-                  break;
+                  break mainLoop;
                 }else{
                   // start backtracking
                   isBacktracking = true;
@@ -141,7 +141,7 @@ public boolean doPatternMatching_${structure.getObjectName()}(boolean isParentBa
                   // no match of the pattern can be found
                   foundmatch = false;
                   // Note: We should/could also reset the optional candidates here?
-                  break;
+                  break mainLoop;
                 }
                 else {
                   // start backtracking
@@ -234,7 +234,7 @@ public boolean doPatternMatching_${structure.getObjectName()}(boolean isParentBa
                 if(backtracking.isEmpty()){
                   //no match of the pattern can be found
                   foundmatch = false;
-                  break;
+                  break mainLoop;
                 }else{
                   // start backtracking
                   isBacktracking = true;
