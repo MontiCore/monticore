@@ -38,6 +38,13 @@ public class ModelTraversal<E extends ITraverser> {
     return parents.get(node);
   }
 
+  public void reset() {
+    this.cName2instances.clear();
+    this.all.clear();
+    this.parents.clear();
+    this.currentparents.clear();
+    this.getTraverser().clearTraversedElements();
+  }
 
   public Map<ASTNode, ASTNode> getParents(){
     return parents;

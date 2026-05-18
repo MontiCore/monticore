@@ -8,6 +8,8 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.reporting.Reporting;
+import de.monticore.io.paths.MCPath;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.statements.mcarraystatements._ast.ASTArrayInit;
@@ -29,6 +31,7 @@ import de.monticore.tf.odrules.util.Util;
 import de.monticore.tf.rule2od.Variable2AttributeMap;
 
 import java.io.File;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -55,6 +58,14 @@ public class ODRuleCodeGenerator {
     generate(parsedModel, targetDir, packageName);
   }
 
+  public static void generate(ASTODRule parsedModel, GeneratorSetup setup) {
+    String packageName = "de.monticore.tf";
+    if (!parsedModel.getPackageList().isEmpty()) {
+      packageName = Names.constructQualifiedName(parsedModel.getPackageList());
+    }
+    generate(parsedModel, new GlobalExtensionManagement(), setup, parsedModel.getName(), packageName);
+  }
+
   public static void generate(ASTODRule parsedModel, File targetDir, String packageName) {
     generate(parsedModel, new GlobalExtensionManagement(), targetDir, parsedModel.getName(), packageName);
   }
@@ -64,6 +75,12 @@ public class ODRuleCodeGenerator {
   }
 
   public static void generate(ASTODRule parsedModel, GlobalExtensionManagement glex, File targetDir, String fileName, String packageName) {
+    final GeneratorSetup setup = new GeneratorSetup();
+    setup.setOutputDirectory(targetDir);
+    generate(parsedModel, glex, setup, fileName, packageName);
+  }
+
+  public static void generate(ASTODRule parsedModel, GlobalExtensionManagement glex, GeneratorSetup setup, String fileName, String packageName) {
     List<ODSubConstraint> subConstraints = new ArrayList<>();
     ODRuleCodeGenerator odRuleCodeGenerator = initOdRuleCodeGenerator(parsedModel, fileName);
 
@@ -91,15 +108,36 @@ public class ODRuleCodeGenerator {
     glex.setGlobalValue("grammarName", parsedModel.getGrammarName());
 
 
-    final GeneratorSetup setup = new GeneratorSetup();
-    setup.setOutputDirectory(targetDir);
     setup.setGlex(glex);
 
     final GeneratorEngine generator = new GeneratorEngine(setup);
     ASTTransformationStructure tfStructure = odRuleCodeGenerator.generateASTTransformationStructure(parsedModel);
 
-    final Path filePath = Paths.get(Names.getPathFromPackage(packageName), fileName + ".java");
+    String outFile = fileName + ".java";
+
+    // The TFGen does not decorate a CD - thus we emulate the TOPDecorator
+    if (!setup.getHandcodedPath().isEmpty()
+            && existsHandwrittenClass(setup.getHandcodedPath(), packageName + "." + fileName)) {
+      tfStructure.setTop(true);
+      outFile = fileName + "TOP.java";
+    }
+
+    final Path filePath = Paths.get(Names.getPathFromPackage(packageName), outFile);
     generator.generate("de.monticore.tf.odrules.TransformationUnit", filePath, tfStructure);
+  }
+
+  // Code snippet from the CD-TOPDecorator
+  static boolean existsHandwrittenClass(MCPath targetPath, String qualifiedName) {
+    String hwFile = Names.getPathFromPackage(qualifiedName) + ".java";
+    Optional<URL> hwFilePath = targetPath.find(hwFile);
+    boolean result = hwFilePath.isPresent();
+    if (result) {
+      Optional<Path> hwPath = MCPath.toPath((URL)hwFilePath.get());
+      hwPath.ifPresent((path) -> Reporting.reportUseHandwrittenCodeFile(path, Paths.get(hwFile)));
+    }
+
+    Reporting.reportHWCExistenceCheck(targetPath, Paths.get(hwFile), hwFilePath);
+    return result;
   }
 
   protected static ODRuleCodeGenerator initOdRuleCodeGenerator(ASTODRule parsedModel, String filename) {

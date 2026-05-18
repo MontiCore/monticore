@@ -31,7 +31,7 @@ class StreamTest {
   @Test
   void testOfSingleton() {
     UntimedStream<Integer> stream = UntimedStream.of(42);
-    assertEquals(42, stream.head());
+    assertEquals(42, stream.first());
     assertEquals(1, stream.len());
   }
 
@@ -40,7 +40,7 @@ class StreamTest {
     FList<Integer> flist = FList.of(1, 2, 3);
     UntimedStream<Integer> stream = UntimedStream.of(flist);
 
-    assertEquals(1, stream.head());
+    assertEquals(1, stream.first());
     assertEquals(3, stream.len());
   }
 
@@ -49,7 +49,7 @@ class StreamTest {
     UntimedStream<Integer> stream = UntimedStream.of(FList.of(10, 20, 30));
     UntimedStream<Integer> dropped = stream.dropFirst();
 
-    assertEquals(20, dropped.head());
+    assertEquals(20, dropped.first());
     assertEquals(2, dropped.len());
   }
 
@@ -58,7 +58,7 @@ class StreamTest {
     UntimedStream<Integer> stream = UntimedStream.of(FList.of(10, 20, 30, 40));
     UntimedStream<Integer> dropped = stream.dropMultiple(2);
 
-    assertEquals(30, dropped.head());
+    assertEquals(30, dropped.first());
     assertEquals(2, dropped.len());
   }
 
@@ -166,7 +166,7 @@ class StreamTest {
   @Test
   void testEmptyStream() {
     FiniteUntimedStream<Integer> empty = FiniteUntimedStream.empty();
-    assertThrows(IndexOutOfBoundsException.class, () -> empty.head());
+    assertThrows(IndexOutOfBoundsException.class, () -> empty.first());
     assertEquals(0, empty.len());
     assertTrue(empty._internal_next().get0().isEmpty());
   }

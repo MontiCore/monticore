@@ -2,6 +2,7 @@
 package de.monticore.codegen.cd2java._symboltable.symbol;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
@@ -21,6 +22,7 @@ import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -99,7 +101,7 @@ public class SymbolBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDCla
     ASTMCType builderType = getMCTypeFacade().createQualifiedType(symbolBuilder.getName());
     symbolBuilder.addAllCDMembers(createStereoinfoConvenienceMethods(builderType));
 
-    List<ASTCDAttribute> buildAttributes = Lists.newArrayList(decoratedSymbolClass.getCDAttributeList());
+    Set<ASTCDAttribute> buildAttributes = Sets.newLinkedHashSet(decoratedSymbolClass.getCDAttributeList());
 
     // builder has all attributes
     buildAttributes.addAll(defaultAttrs);

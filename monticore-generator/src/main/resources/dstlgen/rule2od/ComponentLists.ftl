@@ -4,7 +4,11 @@
  <#assign Type = attributeHelper.getType(ast)>
  <#assign typePackage = attributeHelper.getTypePackage(ast)>
  <#assign isAttributeOptional = attributeHelper.isAttributeOptional(ast)>
- <#assign fullType = typePackage?remove_ending(".tr") + "." + attributeHelper.getTypeGrammarName(ast) + "._ast.AST" + Type >
+ <#if typePackage == "tr">
+     <#assign fullType = attributeHelper.getTypeGrammarName(ast) + "._ast.AST" + Type >
+ <#else>
+     <#assign fullType = typePackage?remove_ending(".tr") + "." + attributeHelper.getTypeGrammarName(ast) + "._ast.AST" + Type >
+ </#if>
  <#if attributeHelper.isAttributeExternal(ast)>
     <#assign fullType = fullType + "Ext" >
  </#if>

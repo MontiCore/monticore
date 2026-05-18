@@ -31,15 +31,20 @@ public class CommentBasedModelTraversal<E extends ITraverser> extends ModelTrave
     for (Map.Entry<ASTNode, ASTNode> node : this.getParents().entrySet()) {
       if (node.getKey().get_PostCommentList().isEmpty()) {
         node.getKey().get_PostCommentList().add(new WComment("", node.getValue()));
-      }
-      else {
-        node.getKey().get_PostCommentList()
-            .set(0, new WComment(node.getKey().get_PostCommentList().get(0), node.getValue()));
+      } else {
+        if (node.getKey().get_PostComment(0) instanceof WComment) {
+          // if already set by a previous run: overwrite parent
+          ((WComment) node.getKey().get_PostComment(0)).parent = node.getValue();
+        } else {
+          // keep the comment
+          node.getKey().get_PostCommentList()
+                  .set(0, new WComment(node.getKey().get_PostCommentList().get(0), node.getValue()));
+        }
       }
     }
   }
   
-  static class WComment extends Comment {
+  public static class WComment extends Comment {
     
     protected ASTNode parent;
     

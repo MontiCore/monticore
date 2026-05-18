@@ -85,23 +85,18 @@ public class MCGenPluginTest {
   }
 
   @Test
-  public void testCanApplyPlugin_v7_4_2() throws IOException {
-    this.testCanApplyPlugin("7.4.2");
+  public void testCanApplyPlugin_v8_5() throws IOException {
+    this.testCanApplyPlugin("8.5");
   }
-
-  @Test
-  public void testCanApplyPlugin_v7_6_4() throws IOException {
-    this.testCanApplyPlugin("7.6.4");
-  }
-
-  @Test
-  public void testCanApplyPlugin_v8_0_1() throws IOException {
-    this.testCanApplyPlugin("8.0.1");
-  }
-
+  
   @Test
   public void testCanApplyPlugin_v8_7() throws IOException {
     this.testCanApplyPlugin("8.7");
+  }
+  
+  @Test
+  public void testCanApplyPlugin_v8_14_4() throws IOException {
+    this.testCanApplyPlugin("8.14.4");
   }
 
 
@@ -127,24 +122,20 @@ public class MCGenPluginTest {
 
 
   //////////////////////
+  
   @Test
-  public void testGenerateGrammar_v7_4_2() throws IOException {
-    this.testGenerateGrammar("7.4.2");
+  public void testGenerateGrammar_v8_5() throws IOException {
+    this.testGenerateGrammar("8.5");
   }
-
-  @Test
-  public void testGenerateGrammar_v7_6_4() throws IOException {
-    this.testGenerateGrammar("7.6.4");
-  }
-
-  @Test
-  public void testGenerateGrammar_v8_0_1() throws IOException {
-    this.testGenerateGrammar("8.0.1");
-  }
-
+  
   @Test
   public void testGenerateGrammar_v8_7() throws IOException {
     this.testGenerateGrammar("8.7");
+  }
+  
+  @Test
+  public void testGenerateGrammar_v8_14_4() throws IOException {
+    this.testGenerateGrammar("8.14.4");
   }
 
   // Test if the generate task succeeds
@@ -260,24 +251,20 @@ public class MCGenPluginTest {
   }
 
   //////////////////////
+ 
   @Test
-  public void testMultiProject_v7_4_2() throws IOException {
-    this.testMultiProject("7.4.2");
+  public void testMultiProject_v8_5() throws IOException {
+    this.testMultiProject("8.5");
   }
-
-  @Test
-  public void testMultiProject_v7_6_4() throws IOException {
-    this.testMultiProject("7.6.4");
-  }
-
-  @Test
-  public void testMultiProject_v8_0_1() throws IOException {
-    this.testMultiProject("8.0.1");
-  }
-
+  
   @Test
   public void testMultiProject_v8_7() throws IOException {
     this.testMultiProject("8.7");
+  }
+  
+  @Test
+  public void testMultiProject_v8_14_4() throws IOException {
+    this.testMultiProject("8.14.4");
   }
 
   // Test if the generate task succeeds within a multi-project build
