@@ -86,10 +86,8 @@ public class AssignmentExpressionsJavaGenVisitor
     SymTypeExpression resultType = normalize(typeOf(assignment));
     SymTypeExpression leftType = normalize(typeOf(assignment.getLeft()));
     SymTypeExpression rightType = normalize(typeOf(assignment.getRight()));
-    CodeGenPrintAction leftExprPrintAction = p ->
-        assignment.getLeft().accept(getTraverser());
-    CodeGenPrintAction rightExprPrintAction = p ->
-        assignment.getRight().accept(getTraverser());
+    CodeGenPrintAction leftExprPrintAction = p -> generateCode(assignment.getLeft());
+    CodeGenPrintAction rightExprPrintAction = p -> generateCode(assignment.getRight());
 
     // given expression a *= b, is typeof(a * b)
     SymTypeExpression typeOfInnerOperation;
@@ -157,7 +155,7 @@ public class AssignmentExpressionsJavaGenVisitor
         leftType,
         // left type due to conversion
         leftType,
-        p -> assignment.getLeft().accept(getTraverser()),
+        p -> p.print(generateCode(assignment.getLeft())),
         p2 -> printConverted(
             p2,
             leftType,
