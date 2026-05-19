@@ -333,13 +333,6 @@ public class Grammar2ParseVisitor implements GrammarVisitor2, GrammarHandler {
     int lastLeftRec = grammarTransformationMethods.countLastLeftRecursive(alts, symbol);
     int splitCount = grammarTransformationMethods.splitCountHeuristic(lastLeftRec, alts.size());
     int nThSplit = 0;
-    // Keep rule-splitting disabled for now - see Grammar2Antlr
-    /*
-    if (((double) lastLeftRec) / alts.size() > 0.1) {
-      splitCount = Math.max(lastLeftRec, (int) (alts.size() * 0.1));
-    }
-    */
-
 
     if (altEntries.isEmpty()) {
       ASTCDMethod method = cdMethodFacade.createMethod(CDModifier.PUBLIC.build(),
