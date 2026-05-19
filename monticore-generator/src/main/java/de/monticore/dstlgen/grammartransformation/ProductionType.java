@@ -4,19 +4,29 @@ package de.monticore.dstlgen.grammartransformation;
 /**
  * Enum representing the different types of
  * operation resulting in production rules.
- *
+ * Each mapped to a range of priority-modifiers
  */
 public enum ProductionType {
 
-    PATTERN("Pat"), LIST("List"), REPLACEMENT("Rep"), NEGATION("Neg"), OPTIONAL("Opt");
+  PATTERN("Pat", 50000),
+  LIST("List", 40000),
+  REPLACEMENT("Rep", 30000),
+  NEGATION("Neg", 20000),
+  OPTIONAL("Opt", 10000);
 
-    private final String nameString;
+  private final String nameString;
+  private final int prioMod;
 
-    ProductionType(String name) {
-      this.nameString = name;
-    }
+  ProductionType(String nameString, int prioMod) {
+    this.nameString = nameString;
+    this.prioMod = prioMod;
+  }
 
-    protected String getNameString() {
-      return this.nameString;
-    }
+  public String getNameString() {
+    return nameString;
+  }
+
+  public int getPrioMod() {
+    return prioMod;
+  }
 }
