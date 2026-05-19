@@ -483,7 +483,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   public String getSymbolSimpleName(ASTCDType clazz) {
     // if in grammar other symbol Name is defined e.g. 'symbol (MCType) MCQualifiedType implements MCObjectType = MCQualifiedName;'
     // this will evaluate to MCTypeSymbol
-    if (!hasSymbolStereotype(clazz.getModifier())) {
+    if (hasSymbolStereotype(clazz.getModifier()) || hasInheritedSymbolStereotype(clazz.getModifier())) {
       Optional<String> symbolTypeValue = getSymbolTypeValue(clazz.getModifier());
       if (symbolTypeValue.isPresent()) {
         return getSimpleName(symbolTypeValue.get());
@@ -499,7 +499,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
 
   public String getSymbolFullName(ASTCDType clazz, DiagramSymbol cdDefinitionSymbol) {
     //if in grammar other symbol Name is defined e.g. 'symbol (MCType) MCQualifiedType implements MCObjectType = MCQualifiedName;'
-    if (!hasSymbolStereotype(clazz.getModifier())) {
+    if (hasSymbolStereotype(clazz.getModifier()) || hasInheritedSymbolStereotype(clazz.getModifier())) {
       Optional<String> symbolTypeValue = getSymbolTypeValue(clazz.getModifier());
       if (symbolTypeValue.isPresent()) {
         return symbolTypeValue.get();

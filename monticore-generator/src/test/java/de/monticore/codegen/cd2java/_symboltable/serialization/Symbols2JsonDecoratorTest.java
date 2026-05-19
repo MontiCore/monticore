@@ -157,7 +157,7 @@ public class Symbols2JsonDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount(){
-    assertEquals(22, symbolTablePrinterClass.getCDMethodList().size());
+    assertEquals(23, symbolTablePrinterClass.getCDMethodList().size());
 
     assertTrue(Log.getFindings().isEmpty());
   }
