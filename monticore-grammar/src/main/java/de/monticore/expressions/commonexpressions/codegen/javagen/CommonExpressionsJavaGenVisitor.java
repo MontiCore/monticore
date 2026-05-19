@@ -12,21 +12,26 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
+import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
+import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.monticore.symboltable.IScopeSpanningSymbol;
+import de.monticore.symboltable.ISymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfFunction;
 import de.monticore.types3.SymTypeRelations;
-import de.monticore.types3.Type4Ast;
 import de.monticore.types3.TypeCheck3;
-import de.monticore.types3.util.MapBasedTypeCheck3;
+import de.monticore.types3.util.TypeContextCalculator;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static de.monticore.codegen.CodeGenSymTypeExpressionConverter.printConverted;
-import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.convert2JavaType;
+import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getJavaTypeConstructor;
+import static de.monticore.symbols.oosymbols.types3.OOSymbolsSymTypeRelations.isConstructor;
+import static de.monticore.symbols.oosymbols.types3.OOSymbolsSymTypeRelations.isMethod;
+import static de.monticore.types.check.SymTypeExpressionFactory.createDeclaredType;
 import static de.monticore.types3.SymTypeRelations.normalize;
 import static de.monticore.types3.TypeCheck3.typeOf;
 
@@ -415,97 +420,64 @@ public class CommonExpressionsJavaGenVisitor extends AbstractJavaGenVisitor
 
     // NOTE: can be (should be) extended to provide type parameters
 
+    SymTypeExpression exprType = normalize(typeOf(node));
+    Preconditions.checkState(exprType.getSourceInfo().getSourceSymbol().isPresent());
+    ISymbol exprSourceSym = exprType.getSourceInfo().getSourceSymbol().get();
 
-    @SuppressWarnings("removal") // Remove once trafo is implemented
-    Type4Ast type4Ast = MapBasedTypeCheck3.internal_hacky_do_not_use_getType4Ast();
+    boolean isOOElement;
+    boolean isRelativToObject;
+    if (exprSourceSym instanceof FieldSymbol) {
+      isOOElement = true;
+      isRelativToObject = !((FieldSymbol) exprSourceSym).isIsStatic();
+    }
+    else if (exprSourceSym instanceof MethodSymbol) {
+      isOOElement = true;
+      isRelativToObject = !((MethodSymbol) exprSourceSym).isIsStatic();
+    }
+    else {
+      isOOElement = false;
+      isRelativToObject = false;
+    }
 
-    // static fields
-    if (type4Ast.hasPartialTypeOfTypeIdentifierForName(node.getExpression())) {
-      SymTypeExpression innerType = type4Ast.getPartialTypeOfTypeIdForName(node.getExpression());
-      getPrinter().print(convert2JavaType(innerType));
+    // non-static field/method -> print object
+    if (isRelativToObject) {
+      startParentheses();
+      node.getExpression().accept(getTraverser());
+      endParentheses();
+    }
+    // static field/method -> print Type
+    else if (isOOElement) {
+      OOTypeSymbol owningSymbol = (OOTypeSymbol) TypeContextCalculator
+          .getEnclosingType(exprSourceSym.getEnclosingScope()).get();
+      SymTypeExpression declaredType = createDeclaredType(owningSymbol);
+      getPrinter().print(getJavaTypeConstructor(declaredType));
+    }
+    // pack.age....
+    else {
+      String fullName = exprSourceSym.getFullName();
+      String packageName = fullName.substring(0, fullName.lastIndexOf('.'));
+      getPrinter().print(packageName);
+    }
+
+    if (exprSourceSym instanceof VariableSymbol) {
       getPrinter().print(".");
       getPrinter().print(node.getName());
     }
+    else if (isConstructor(exprType)) {
+      getPrinter().print("::new");
+    }
+    else if (isMethod(exprType)) {
+      getPrinter().print("::");
+      getPrinter().print(node.getName());
+    }
+    // unknown case
     else {
-      // Only call typeOf if the expression is not a Type
-      SymTypeExpression outerType = normalize(typeOf(node.getExpression()));
-
-      // function references
-      if (outerType.isFunctionType() && outerType.asFunctionType().hasSymbol()) {
-        SymTypeOfFunction funcType = outerType.asFunctionType();
-        String funcName = funcType.getSymbol().getName();
-
-        getPrinter().print("((");
-        getPrinter().print(convert2JavaType(outerType));
-        getPrinter().print(") ");
-        if (funcType.getSymbol() instanceof MethodSymbol) {
-          MethodSymbol methodSym = (MethodSymbol) funcType.getSymbol();
-          if (!methodSym.getSpannedScope().isPresentSpanningSymbol()) {
-            Log.error("0xFD227 internal error: "
-                    + "method symbol has no enclosing (OO)type: "
-                    + methodSym.getFullName(),
-                methodSym.getSourcePosition()
-            );
-            return;
-          }
-          IScopeSpanningSymbol owner =
-              methodSym.getEnclosingScope().getSpanningSymbol();
-          if (methodSym.isIsConstructor()) {
-            getPrinter().print(owner.getFullName());
-            getPrinter().print("::new");
-          }
-          else if (methodSym.isIsStatic()) {
-            getPrinter().print(owner.getFullName());
-            getPrinter().print("::");
-            getPrinter().print(funcName);
-          }
-          else {
-            startParentheses();
-            node.getExpression().accept(getTraverser());
-            endParentheses();
-            getPrinter().print("::");
-            getPrinter().print(funcName);
-          }
-
-        }
-        else {
-          String funcFullName = funcType.getSymbol().getFullName();
-          // assumed to always have a "."
-          String javaFuncName =
-              funcName.substring(0, funcFullName.lastIndexOf("."))
-                  + "::"
-                  + funcName.substring(funcFullName.lastIndexOf(".") + 1);
-          getPrinter().print(javaFuncName);
-        }
-        getPrinter().print(")");
-      }
-      // non-static fields/variables
-      else if (
-          outerType.getSourceInfo().getSourceSymbol()
-              .filter(s -> s instanceof VariableSymbol)
-              .isPresent()
-      ) {
-        startParentheses();
-        node.getExpression().accept(getTraverser());
-        endParentheses();
-        getPrinter().print(".");
-        getPrinter().print(node.getName());
-      }
-      // pack.age.variable
-      else if (!type4Ast.hasPartialTypeOfExpression(node.getExpression())
-          && outerType.getSourceInfo().getSourceSymbol().isPresent()
-      ) {
-        getPrinter().print(outerType.getSourceInfo().getSourceSymbol().get().getFullName());
-      }
-      // unknown case
-      else {
-        Log.error("0xFD228 internal error: "
-                + "unimplemented case for field access expression. Type of expression: "
-                + outerType.printFullName(),
-            node.get_SourcePositionStart(),
-            node.get_SourcePositionEnd()
-        );
-      }
+      Log.error("0xFD228 internal error: "
+              + "unimplemented case for field access expression. Type of expression: "
+              + exprSourceSym.getFullName(),
+          node.get_SourcePositionStart(),
+          node.get_SourcePositionEnd()
+      );
     }
   }
 }

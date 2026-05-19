@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.javagen;
 
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.SymTypeOfSIUnit;
 import de.monticore.types.check.SymTypePrimitive;
 
@@ -18,14 +19,14 @@ public class SymTypeExpressionBoxedJavaPrinterVisitor
 
   public SymTypeExpressionBoxedJavaPrinterVisitor() {
     Map<String, String> boxMap_temp = new HashMap<>();
-    boxMap_temp.put("boolean", "java.lang.Boolean");
-    boxMap_temp.put("byte", "java.lang.Byte");
-    boxMap_temp.put("char", "java.lang.Character");
-    boxMap_temp.put("double", "java.lang.Double");
-    boxMap_temp.put("float", "java.lang.Float");
-    boxMap_temp.put("int", "java.lang.Integer");
-    boxMap_temp.put("long", "java.lang.Long");
-    boxMap_temp.put("short", "java.lang.Short");
+    boxMap_temp.put(BasicSymbolsMill.BOOLEAN, "java.lang.Boolean");
+    boxMap_temp.put(BasicSymbolsMill.BYTE, "java.lang.Byte");
+    boxMap_temp.put(BasicSymbolsMill.CHAR, "java.lang.Character");
+    boxMap_temp.put(BasicSymbolsMill.DOUBLE, "java.lang.Double");
+    boxMap_temp.put(BasicSymbolsMill.FLOAT, "java.lang.Float");
+    boxMap_temp.put(BasicSymbolsMill.INT, "java.lang.Integer");
+    boxMap_temp.put(BasicSymbolsMill.LONG, "java.lang.Long");
+    boxMap_temp.put(BasicSymbolsMill.SHORT, "java.lang.Short");
     boxMap = Collections.unmodifiableMap(boxMap_temp);
   }
 
@@ -36,7 +37,7 @@ public class SymTypeExpressionBoxedJavaPrinterVisitor
 
   @Override
   public void visit(SymTypeOfSIUnit siUnit) {
-    getPrint().append(box("double"));
+    getPrint().append(box(BasicSymbolsMill.DOUBLE));
   }
 
   protected String box(String unboxedName) {

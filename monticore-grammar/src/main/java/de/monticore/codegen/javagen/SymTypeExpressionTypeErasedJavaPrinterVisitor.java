@@ -14,15 +14,14 @@ import java.util.List;
  * Prints SymTypeExpressions in a Java compatible way,
  */
 public class SymTypeExpressionTypeErasedJavaPrinterVisitor
-  extends SymTypeExpressionJavaPrinterVisitor {
-
+    extends SymTypeExpressionJavaPrinterVisitor {
 
   @Override
   public void visit(SymTypeOfFunction func) {
     // precondition; support could be extended if required
     if (func.isElliptic()) {
       Log.error("0xFD324 internal error:" +
-        "No support for elliptic Functions exists yet.");
+          "No support for elliptic Functions exists yet.");
       return;
     }
 
@@ -30,11 +29,11 @@ public class SymTypeExpressionTypeErasedJavaPrinterVisitor
     boolean isFunc = !func.getType().isVoidType();
     if (isFunc) {
       getPrint().append(RTE_PACKAGE).append(".functions.Function");
-    } else {
+    }
+    else {
       getPrint().append(RTE_PACKAGE).append(".actions.Action");
     }
     getPrint().append(func.sizeArgumentTypes());
-
 
     List<SymTypeExpression> resArgs = new ArrayList<>();
     if (isFunc) {
@@ -70,7 +69,7 @@ public class SymTypeExpressionTypeErasedJavaPrinterVisitor
   @Override
   public void visit(SymTypeOfTuple tuple) {
     String className = RTE_PACKAGE + ".tuples.Tuple"
-      + tuple.sizeTypes();
+        + tuple.sizeTypes();
     getPrint().append(className);
     getPrint().append('<');
     for (int i = 0; i < tuple.sizeTypes(); i++) {
