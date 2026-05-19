@@ -355,7 +355,7 @@ public class Grammar2ParseVisitor implements GrammarVisitor2, GrammarHandler {
       int endIndex = startIndex + splitCount;
       List<AltEntry> thisEntries = altEntries.subList(startIndex, Math.min(endIndex, altEntries.size()));
 
-      boolean hasNext = endIndex < altEntries.size(); // TODO
+      boolean hasNext = endIndex < altEntries.size(); // does a split rule follow?
 
       String splitRuleName = nThSplit == 0 ? rulenameCap : (rulenameCap + "__nthsplit_" + nThSplit);
 
@@ -366,8 +366,6 @@ public class Grammar2ParseVisitor implements GrammarVisitor2, GrammarHandler {
       glex.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_parser.visitor.VisitInterface", name, millName, thisEntries,
               hasNext ? (rulenameCap + "__nthsplit_" + (nThSplit + 1)) : ""));
       visitorClass.addCDMember(method);
-
-      System.err.println("  " + splitRuleName);
 
       nThSplit++;
     }
