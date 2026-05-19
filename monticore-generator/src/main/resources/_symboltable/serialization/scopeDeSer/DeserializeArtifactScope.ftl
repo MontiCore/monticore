@@ -21,10 +21,10 @@ ${tc.signature("symTabMill", "artifactScope", "scopeRuleAttrList")}
   </#if>
 </#list>
 
-  this.symbolHierarchiesObjectOpt = scopeJson.getObjectMemberOpt(de.monticore.symboltable.serialization.JsonDeSers.SYMBOL_HIERARCHY);
+  this.symbolHierarchiesJsonObjectOpt = scopeJson.getObjectMemberOpt(de.monticore.symboltable.serialization.JsonDeSers.SYMBOL_HIERARCHY);
 
   deserializeAddons(scope,scopeJson);
   deserializeSymbols(scope, scopeJson);
 
-  this.symbolHierarchiesObjectOpt = Optional.empty();
+  this.symbolHierarchiesJsonObjectOpt = Optional.empty();
   return scope;

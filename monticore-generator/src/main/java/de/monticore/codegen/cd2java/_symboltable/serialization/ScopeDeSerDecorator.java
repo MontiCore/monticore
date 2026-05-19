@@ -140,7 +140,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
         .addCDMember(
             createGetDeserMethod(millName, scopeDeSerName))
         .addCDMember(
-            getCDAttributeFacade().createAttribute(PROTECTED.build(), getMCTypeFacade().createOptionalTypeOf(JSON_OBJECT), "symbolHierarchiesObjectOpt"))
+            getCDAttributeFacade().createAttribute(PROTECTED.build(), getMCTypeFacade().createOptionalTypeOf(JSON_OBJECT), "symbolHierarchiesJsonObjectOpt"))
         .addAllCDMembers(createDeserializeAttrMethods(scopeRuleAttrList, enclosingScopeParam, scopeJsonParam))
         .addAllCDMembers(createDeserializeAddonsMethods(scopeVarParam, scopeJsonParam))
         .build();
