@@ -15,7 +15,6 @@ public class JavaSymTypeRelations {
   protected Set<String> javaPrimitiveTypes;
   protected Set<String> javaNumericTypes;
 
-
   public JavaSymTypeRelations() {
     Set<String> javaPrimitiveTypes_temp = new HashSet<>();
     javaPrimitiveTypes_temp.add("boolean");

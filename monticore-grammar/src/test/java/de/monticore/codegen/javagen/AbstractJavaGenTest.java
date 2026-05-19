@@ -1,6 +1,7 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.codegen.javagen;
 
+import de.monticore.class2mc.OOClass2MCResolver;
 import de.monticore.codegen.CodeGenerator;
 import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
 import de.monticore.expressions.combineexpressionswithliterals._ast.ASTFoo;
@@ -14,7 +15,9 @@ import de.monticore.ocl.setexpressions.symboltable.SetExpressionsSymbolTableComp
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.runtime.junit.AbstractMCTest;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
+import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsGlobalScope;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
@@ -51,26 +54,19 @@ public abstract class AbstractJavaGenTest extends AbstractMCTest {
     CombineExpressionsWithLiteralsMill.reset();
     CombineExpressionsWithLiteralsMill.init();
     BasicSymbolsMill.initializePrimitives();
-    DefsTypesForTests.set_boxedPrimitives();
     DefsTypesForTests.set_thePrimitives();
-
-    addMaxValueToInteger();
 
     SymTypeRelations.init();
     OOWithinScopeBasicSymbolsResolver.init();
     OOWithinTypeBasicSymbolsResolver.init();
     CombineExpressionsWithLiteralsTypeTraverserFactory.initTypeCheck3();
+    // Class2MC
+    IOOSymbolsGlobalScope globalScope = OOSymbolsMill.globalScope();
+    OOClass2MCResolver resolver = new OOClass2MCResolver();
+    globalScope.addAdaptedOOTypeSymbolResolver(resolver);
+    globalScope.addAdaptedTypeSymbolResolver(resolver);
 
     jshell = JShell.create();
-  }
-
-  protected void addMaxValueToInteger() {
-    FieldSymbol maxValueField = DefsTypesForTests.field("MAX_VALUE", DefsTypesForTests._intSymType);
-    maxValueField.setIsStatic(true);
-    DefsTypesForTests.inScope(
-        CombineExpressionsWithLiteralsMill.globalScope().resolveType("java.lang.Integer").get().getSpannedScope(),
-        maxValueField
-    );
   }
 
   protected CodeGenerator createCodeGenerator() {

@@ -29,6 +29,7 @@ public class JavaGenTest extends AbstractJavaGenTest {
         Arguments.of("\"a\" + 2", "\"a2\""),
         Arguments.of("true ? 5 + 2 : -1", "7"),
         Arguments.of("java.lang.Integer.MAX_VALUE", String.valueOf(Integer.MAX_VALUE)),
+        Arguments.of("java.lang.Math.abs(-2)", "2"),
         Arguments.of("\"myString\" + 5", "\"myString5\""),
         // Tuple
         Arguments.of("(0, 3)", "(0, 3)"),
