@@ -1,11 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.interpreter.values;
 
-public class IntMIValue implements MIValue {
+public class MIValueInt implements MIValue {
 
   protected int value;
 
-  public IntMIValue(int value) {
+  public MIValueInt(int value) {
     this.value = value;
   }
 

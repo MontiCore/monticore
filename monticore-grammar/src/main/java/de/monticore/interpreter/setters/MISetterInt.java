@@ -4,6 +4,9 @@ package de.monticore.interpreter.setters;
 import de.monticore.interpreter.frames.MIFrame;
 import de.monticore.interpreter.values.MIValue;
 
+/**
+ * Optimized {@link MISetter} that sets ints without boxing.
+ */
 @FunctionalInterface
 public interface MISetterInt extends MISetter {
 

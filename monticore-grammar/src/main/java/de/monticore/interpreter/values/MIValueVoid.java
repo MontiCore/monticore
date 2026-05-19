@@ -10,11 +10,11 @@ package de.monticore.interpreter.values;
  * <p>
  * This _could_ be removed, but is most likely not worth the effort.
  */
-public class VoidMIValue implements MIValue {
+public class MIValueVoid implements MIValue {
 
-  public static VoidMIValue INSTANCE = new VoidMIValue();
+  public static MIValueVoid INSTANCE = new MIValueVoid();
 
-  protected VoidMIValue() {
+  protected MIValueVoid() {
   }
 
   @Override

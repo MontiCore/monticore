@@ -44,6 +44,9 @@ import static de.monticore.interpreter.util.NativeStorageSelector.isStoredAsBool
 import static de.monticore.interpreter.util.NativeStorageSelector.isStoredAsDouble;
 import static de.monticore.interpreter.util.NativeStorageSelector.isStoredAsInt;
 
+/**
+ * Interpreter Visitor for SetExpressions
+ */
 public class SetExpressionsInterpreter
     extends SetExpressionsInheritanceHandler {
 

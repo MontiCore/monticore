@@ -4,6 +4,9 @@ package de.monticore.interpreter.setters;
 import de.monticore.interpreter.frames.MIFrame;
 import de.monticore.interpreter.values.MIValue;
 
+/**
+ * Represents a function that is used to set a value to an LValue.
+ */
 public interface MISetter {
 
   default boolean isSetterBoolean() {

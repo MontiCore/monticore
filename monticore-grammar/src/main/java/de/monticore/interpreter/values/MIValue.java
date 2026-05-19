@@ -1,6 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.interpreter.values;
 
+/**
+ * Represents a value, e.g., of an expression.
+ */
 public interface MIValue {
 
   default boolean isPrimitive() {
@@ -40,10 +43,6 @@ public interface MIValue {
   }
 
   default boolean isObject() {
-    return false;
-  }
-
-  default boolean isObjectOfSymbol() {
     return false;
   }
 
@@ -122,7 +121,7 @@ public interface MIValue {
     throw new IllegalStateException();
   }
 
-  default FunctionMIValue asFunction() {
+  default MIValueFunction asFunction() {
     throw new IllegalStateException();
   }
 

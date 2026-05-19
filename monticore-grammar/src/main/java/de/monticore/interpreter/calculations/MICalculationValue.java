@@ -4,6 +4,9 @@ package de.monticore.interpreter.calculations;
 import de.monticore.interpreter.frames.MIFrame;
 import de.monticore.interpreter.values.MIValue;
 
+/**
+ * Generic {@link MICalculation} that returns values.
+ */
 @FunctionalInterface
 public interface MICalculationValue extends MICalculation {
 

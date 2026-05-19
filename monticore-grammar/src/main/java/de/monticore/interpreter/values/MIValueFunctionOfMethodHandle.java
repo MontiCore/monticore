@@ -16,18 +16,18 @@ import java.util.Map;
 import static de.monticore.interpreter.util.TypeSymbolNativityChecker.isNativeJavaFunction;
 import static de.monticore.types3.util.TypeContextCalculator.getEnclosingType;
 
-public class MethodHandleFunction implements FunctionMIValue {
+public class MIValueFunctionOfMethodHandle implements MIValueFunction {
 
   // non-wrapped method
   protected final MethodHandle methodHandle;
   // wrapped method that has specific arity
   protected final Map<Integer, MethodHandle> spreaderByArity;
 
-  public MethodHandleFunction(MethodSymbol methodSym) {
+  public MIValueFunctionOfMethodHandle(MethodSymbol methodSym) {
     this(getHandleOfSymbol(methodSym));
   }
 
-  public MethodHandleFunction(MethodHandle methodHandle) {
+  public MIValueFunctionOfMethodHandle(MethodHandle methodHandle) {
     this.methodHandle = methodHandle;
     if (!methodHandle.isVarargsCollector()) {
       int arity = methodHandle.type().parameterCount();
@@ -39,8 +39,8 @@ public class MethodHandleFunction implements FunctionMIValue {
     }
   }
 
-  public MethodHandleFunction bindThisPtr(Object thisPtr) {
-    return new MethodHandleFunction(methodHandle.bindTo(thisPtr));
+  public MIValueFunctionOfMethodHandle bindThisPtr(Object thisPtr) {
+    return new MIValueFunctionOfMethodHandle(methodHandle.bindTo(thisPtr));
   }
 
   @Override
@@ -66,7 +66,7 @@ public class MethodHandleFunction implements FunctionMIValue {
       throw new IllegalStateException(t);
     }
     if (methodHandle.type().returnType().equals(void.class)) {
-      return new VoidMIValue();
+      return new MIValueVoid();
     }
     return MIValueFactory.createMIValueOfNativeObject(result);
   }

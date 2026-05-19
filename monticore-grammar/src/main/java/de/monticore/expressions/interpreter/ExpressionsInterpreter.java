@@ -11,11 +11,11 @@ import de.monticore.interpreter.frames.MIFrame;
 import de.monticore.interpreter.frames.MIFrameLayout;
 import de.monticore.interpreter.util.InterpreterData;
 import de.monticore.interpreter.util.TraverserAndIData;
-import de.monticore.interpreter.values.ErrorMIValue;
-import de.monticore.interpreter.values.FunctionMIValue;
-import de.monticore.interpreter.values.MIFlowControlSignal;
+import de.monticore.interpreter.values.MIValueError;
+import de.monticore.interpreter.values.MIValueFunction;
+import de.monticore.interpreter.values.MISignalFlowControl;
 import de.monticore.interpreter.values.MIValue;
-import de.monticore.interpreter.values.VoidMIValue;
+import de.monticore.interpreter.values.MIValueVoid;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
@@ -143,7 +143,7 @@ public class ExpressionsInterpreter {
    */
   public void addFunction(
       FunctionSymbol functionSym,
-      FunctionMIValue impl
+      MIValueFunction impl
   ) {
     Preconditions.checkNotNull(functionSym);
     Preconditions.checkNotNull(impl);
@@ -222,7 +222,7 @@ public class ExpressionsInterpreter {
    *
    * @param calculation    to be executed. May or may not return a value.
    * @param enclosingFrame the enclosing frame.
-   * @return The value of the calculation or {@link VoidMIValue}.
+   * @return The value of the calculation or {@link MIValueVoid}.
    */
   protected MIValue calculate(
       MICalculation calculation,
@@ -232,7 +232,7 @@ public class ExpressionsInterpreter {
     if (calculation.isCalculationVoid()) {
       valueCalc = frame -> {
         calculation.asCalculationVoid().calculate(frame);
-        return VoidMIValue.INSTANCE;
+        return MIValueVoid.INSTANCE;
       };
     }
     else {
@@ -249,13 +249,13 @@ public class ExpressionsInterpreter {
     try {
       value = calculate(calculation, enclosingFrame);
     }
-    catch (MIFlowControlSignal signal) {
+    catch (MISignalFlowControl signal) {
       value = signal;
     }
     // catch everything for now,
     // there may be exceptions to this rule
     catch (Throwable e) {
-      value = new ErrorMIValue(e);
+      value = new MIValueError(e);
     }
     return value;
   }

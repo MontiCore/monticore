@@ -14,7 +14,7 @@ import de.monticore.interpreter.setters.MISetterDouble;
 import de.monticore.interpreter.setters.MISetterInt;
 import de.monticore.interpreter.setters.MISetterValue;
 import de.monticore.interpreter.util.NativeStorageSelector;
-import de.monticore.interpreter.values.FunctionMIValue;
+import de.monticore.interpreter.values.MIValueFunction;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.types.check.SymTypeExpression;
@@ -33,6 +33,11 @@ import static de.monticore.types3.SymTypeRelations.normalize;
  * describes the layout of an {@link MIFrame},
  * each layout can be used to create multiple frames,
  * e.g., calls of a recursive function.
+ * <p>
+ * Note that a frame may encompass the variables of multiple scopes;
+ * As long as the variable _symbol_ is unique,
+ * one does not need to create a new frame.
+ * One does need to create a new frame for, e.g., function calls.
  */
 public class MIFrameLayout {
 
@@ -45,7 +50,7 @@ public class MIFrameLayout {
   List<VariableSymbol> objects = new ArrayList<>();
 
   // shared with other frames (that share a topmost frame)
-  Map<FunctionSymbol, FunctionMIValue> functions;
+  Map<FunctionSymbol, MIValueFunction> functions;
 
   /**
    * the "default" constructor
@@ -120,7 +125,7 @@ public class MIFrameLayout {
     objects.add(varSym);
   }
 
-  public void defineFunction(FunctionSymbol funcSym, FunctionMIValue value) {
+  public void defineFunction(FunctionSymbol funcSym, MIValueFunction value) {
     Preconditions.checkNotNull(funcSym);
     Preconditions.checkNotNull(value);
     Preconditions.checkState(!functions.containsKey(funcSym),
@@ -168,7 +173,7 @@ public class MIFrameLayout {
    *
    * @return the map of defined functions.
    */
-  public Map<FunctionSymbol, FunctionMIValue> getFunctions() {
+  public Map<FunctionSymbol, MIValueFunction> getFunctions() {
     // making it unmodifiable here would create a lot of new objects,
     // thus, it is avoided and simply assumed that no-one modifies it.
     return functions;

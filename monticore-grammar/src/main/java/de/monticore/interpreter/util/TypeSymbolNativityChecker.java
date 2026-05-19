@@ -34,7 +34,7 @@ public class TypeSymbolNativityChecker {
     if (isClass2MCTypeAdapter(typeSymbol)) {
       isNative = true;
     }
-    // This should catch everything
+    // This should catch everything, but may be too much
     else {
       isNative = getNativeJavaClassIfExists(typeSymbol).isPresent();
     }

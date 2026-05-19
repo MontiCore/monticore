@@ -6,7 +6,7 @@ import java.util.List;
  * A value that is an executable function.
  */
 @FunctionalInterface
-public interface FunctionMIValue extends MIValue {
+public interface MIValueFunction extends MIValue {
 
   MIValue execute(MIValue[] arguments);
 
@@ -20,12 +20,12 @@ public interface FunctionMIValue extends MIValue {
   }
 
   @Override
-  default FunctionMIValue asFunction() {
+  default MIValueFunction asFunction() {
     return this;
   }
 
   @Override
-  default FunctionMIValue asNativeObject() {
+  default MIValueFunction asNativeObject() {
     return this;
   }
 

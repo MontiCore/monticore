@@ -2,8 +2,11 @@
 package de.monticore.interpreter.calculations;
 
 import de.monticore.interpreter.frames.MIFrame;
-import de.monticore.interpreter.values.DoubleMIValue;
+import de.monticore.interpreter.values.MIValueDouble;
 
+/**
+ * Optimized {@link MICalculation} that returns doubles without boxing.
+ */
 @FunctionalInterface
 public interface MICalculationDouble extends MICalculation {
 
@@ -27,7 +30,7 @@ public interface MICalculationDouble extends MICalculation {
 
   @Override
   default MICalculationValue asCalculationValue() {
-    return frame -> new DoubleMIValue(this.calculate(frame));
+    return frame -> new MIValueDouble(this.calculate(frame));
   }
 
   @Override

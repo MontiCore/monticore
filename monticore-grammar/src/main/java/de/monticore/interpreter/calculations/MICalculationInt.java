@@ -2,8 +2,11 @@
 package de.monticore.interpreter.calculations;
 
 import de.monticore.interpreter.frames.MIFrame;
-import de.monticore.interpreter.values.IntMIValue;
+import de.monticore.interpreter.values.MIValueInt;
 
+/**
+ * Optimized {@link MICalculation} that returns ints without boxing.
+ */
 @FunctionalInterface
 public interface MICalculationInt extends MICalculation {
 
@@ -26,7 +29,7 @@ public interface MICalculationInt extends MICalculation {
 
   @Override
   default MICalculationValue asCalculationValue() {
-    return frame -> new IntMIValue(calculate(frame));
+    return frame -> new MIValueInt(calculate(frame));
   }
 
   @Override

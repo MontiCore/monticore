@@ -16,14 +16,14 @@ import java.util.List;
  * Used to represent a function declared inside a model,
  * e.g., a lamda.
  */
-public class ModelFunctionMIValue implements FunctionMIValue {
+public class MIValueFunctionOfModel implements MIValueFunction {
 
   protected MIFrame parentFrame;
   protected final MIFrameLayout frameLayout;
   protected final MISetter[] parameterSetters;
   protected final MICalculationValue calculation;
 
-  public ModelFunctionMIValue(
+  public MIValueFunctionOfModel(
       MIFrame parentFrame,
       MIFrameLayout frameLayout,
       List<? extends VariableSymbol> paramSymbols,

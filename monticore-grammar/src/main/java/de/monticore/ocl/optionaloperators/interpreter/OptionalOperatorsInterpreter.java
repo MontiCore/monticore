@@ -33,6 +33,9 @@ import static de.monticore.types3.SymTypeRelations.isBoolean;
 import static de.monticore.types3.SymTypeRelations.normalize;
 import static de.monticore.types3.TypeCheck3.typeOf;
 
+/**
+ * Interpreter Visitor for OptionalOperators
+ */
 public class OptionalOperatorsInterpreter
     extends OptionalOperatorsInheritanceHandler {
 

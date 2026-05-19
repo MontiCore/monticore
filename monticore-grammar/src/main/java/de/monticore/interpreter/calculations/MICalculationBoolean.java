@@ -1,8 +1,11 @@
 package de.monticore.interpreter.calculations;
 
 import de.monticore.interpreter.frames.MIFrame;
-import de.monticore.interpreter.values.BooleanMIValue;
+import de.monticore.interpreter.values.MIValueBoolean;
 
+/**
+ * Optimized {@link MICalculation} that returns booleans without boxing.
+ */
 @FunctionalInterface
 public interface MICalculationBoolean extends MICalculation {
 
@@ -20,7 +23,7 @@ public interface MICalculationBoolean extends MICalculation {
 
   @Override
   default MICalculationValue asCalculationValue() {
-    return frame -> new BooleanMIValue(this.calculate(frame));
+    return frame -> new MIValueBoolean(this.calculate(frame));
   }
 
   @Override

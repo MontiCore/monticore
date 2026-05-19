@@ -5,8 +5,8 @@ import com.google.common.base.Preconditions;
 import de.monticore.interpreter.calculations.MICalculationBoolean;
 import de.monticore.interpreter.calculations.MICalculationVoid;
 import de.monticore.interpreter.util.InterpreterData;
-import de.monticore.interpreter.values.MIBreakSignal;
-import de.monticore.interpreter.values.MIContinueSignal;
+import de.monticore.interpreter.values.MISignalBreak;
+import de.monticore.interpreter.values.MISignalContinue;
 import de.monticore.statements.mccommonstatements._ast.ASTBreakStatement;
 import de.monticore.statements.mccommonstatements._ast.ASTDoWhileStatement;
 import de.monticore.statements.mccommonstatements._ast.ASTEmptyStatement;
@@ -16,6 +16,9 @@ import de.monticore.statements.mccommonstatements._ast.ASTMCJavaBlock;
 import de.monticore.statements.mccommonstatements._ast.ASTWhileStatement;
 import de.monticore.statements.mccommonstatements._visitor.MCCommonStatementsInheritanceHandler;
 
+/**
+ * Interpreter Visitor for MCCommonStatements
+ */
 public class MCCommonStatementsInterpreter
     extends MCCommonStatementsInheritanceHandler {
 
@@ -23,10 +26,6 @@ public class MCCommonStatementsInterpreter
 
   public MCCommonStatementsInterpreter(InterpreterData iData) {
     this.iData = Preconditions.checkNotNull(iData);
-  }
-
-  public InterpreterData getInterpreterData() {
-    return iData;
   }
 
   @Override
@@ -86,10 +85,10 @@ public class MCCommonStatementsInterpreter
         try {
           bodyCalc.calculate(frame);
         }
-        catch (MIBreakSignal ignored) {
+        catch (MISignalBreak ignored) {
           break;
         }
-        catch (MIContinueSignal ignored) {
+        catch (MISignalContinue ignored) {
           // no-op
         }
       }
@@ -110,10 +109,10 @@ public class MCCommonStatementsInterpreter
         try {
           bodyCalc.calculate(frame);
         }
-        catch (MIBreakSignal ignored) {
+        catch (MISignalBreak ignored) {
           break;
         }
-        catch (MIContinueSignal ignored) {
+        catch (MISignalContinue ignored) {
           // no-op
         }
       }
@@ -135,7 +134,7 @@ public class MCCommonStatementsInterpreter
 
   @Override
   public void traverse(ASTBreakStatement node) {
-    MICalculationVoid breakCalc = frame -> MIBreakSignal.signal();
+    MICalculationVoid breakCalc = frame -> MISignalBreak.signal();
     iData.putCalculation(breakCalc);
   }
 

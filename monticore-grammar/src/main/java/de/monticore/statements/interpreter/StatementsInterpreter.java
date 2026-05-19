@@ -6,6 +6,9 @@ import de.monticore.interpreter.util.TraverserAndIData;
 import de.monticore.interpreter.values.MIValue;
 import de.monticore.statements.mcstatementsbasis._ast.ASTMCStatement;
 
+/**
+ * Interpreter for languages that have statements
+ */
 public class StatementsInterpreter extends ExpressionsInterpreter {
 
   public StatementsInterpreter(TraverserAndIData interpreterTraverser) {

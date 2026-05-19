@@ -1,14 +1,14 @@
 package de.monticore.interpreter.values;
 
-public class ErrorMIValue implements MIValue {
+public class MIValueError implements MIValue {
 
   Throwable throwable;
 
-  public ErrorMIValue(String message) {
+  public MIValueError(String message) {
     this(new RuntimeException(message));
   }
 
-  public ErrorMIValue(Throwable throwable) {
+  public MIValueError(Throwable throwable) {
     this.throwable = throwable;
   }
 

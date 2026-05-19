@@ -22,6 +22,9 @@ import de.monticore.literals.mccommonliterals._ast.ASTStringLiteral;
 import de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsInheritanceHandler;
 import de.se_rwth.commons.logging.Log;
 
+/**
+ * Interpreter Visitor for MCCommonLiterals
+ */
 public class MCCommonLiteralsInterpreter
     extends MCCommonLiteralsInheritanceHandler {
 

@@ -15,7 +15,7 @@ import de.monticore.interpreter.setters.MISetterDouble;
 import de.monticore.interpreter.setters.MISetterInt;
 import de.monticore.interpreter.util.TypeDispatcherHotfix;
 import de.monticore.interpreter.values.MIValueFactory;
-import de.monticore.interpreter.values.MethodHandleFunction;
+import de.monticore.interpreter.values.MIValueFunctionOfMethodHandle;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
@@ -77,8 +77,8 @@ public class SymbolAccessHandler {
       if (isNativeJavaFunction(funcSym)) {
         if (TypeDispatcherHotfix.isMethodSymbol(funcSym)) {
           MethodSymbol methodSym = (MethodSymbol) funcSym;
-          final MethodHandleFunction staticMethodHandle =
-              new MethodHandleFunction(methodSym);
+          final MIValueFunctionOfMethodHandle staticMethodHandle =
+              new MIValueFunctionOfMethodHandle(methodSym);
           getter = (MICalculationValue) frame -> staticMethodHandle;
         }
         else {
@@ -113,8 +113,8 @@ public class SymbolAccessHandler {
         }
         else if (TypeDispatcherHotfix.isMethodSymbol(exprSourceSym)) {
           MethodSymbol methodSym = (MethodSymbol) exprSourceSym;
-          final MethodHandleFunction unboundMethod =
-              new MethodHandleFunction(methodSym);
+          final MIValueFunctionOfMethodHandle unboundMethod =
+              new MIValueFunctionOfMethodHandle(methodSym);
           getter = (MICalculationValue) frame -> {
             final Object thisPtr = objCalc.calculate(frame).asNativeObject();
             return unboundMethod.bindThisPtr(thisPtr);

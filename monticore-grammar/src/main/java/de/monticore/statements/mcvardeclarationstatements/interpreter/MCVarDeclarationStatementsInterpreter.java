@@ -10,6 +10,9 @@ import de.monticore.statements.mcvardeclarationstatements._ast.ASTVariableDeclar
 import de.monticore.statements.mcvardeclarationstatements._visitor.MCVarDeclarationStatementsInheritanceHandler;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 
+/**
+ * Interpreter Visitor for MCVarDeclarationStatements
+ */
 public class MCVarDeclarationStatementsInterpreter
     extends MCVarDeclarationStatementsInheritanceHandler {
 

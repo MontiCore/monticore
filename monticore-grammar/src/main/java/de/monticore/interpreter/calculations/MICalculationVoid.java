@@ -2,6 +2,10 @@ package de.monticore.interpreter.calculations;
 
 import de.monticore.interpreter.frames.MIFrame;
 
+/**
+ * {@link MICalculation} that does not return a value.
+ * This is usually used to represent side effects (e.g., statements).
+ */
 @FunctionalInterface
 public interface MICalculationVoid extends MICalculation {
 

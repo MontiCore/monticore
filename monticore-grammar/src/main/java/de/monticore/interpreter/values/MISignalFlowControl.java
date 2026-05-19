@@ -8,7 +8,7 @@ package de.monticore.interpreter.values;
  * The Throwable should be unchecked
  * and Error seemed even less applicable (s.a.JLS 21 11.1.1.).
  */
-public abstract class MIFlowControlSignal
+public abstract class MISignalFlowControl
     extends RuntimeException
     implements MIValue {
 

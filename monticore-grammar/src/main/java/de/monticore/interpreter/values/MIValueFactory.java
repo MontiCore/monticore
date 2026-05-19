@@ -11,11 +11,11 @@ public class MIValueFactory {
   public static MIValue createMIValueOfNativeObject(Object value) {
     return switch (value) {
       case MIValue miValue -> miValue;
-      case Boolean b -> new BooleanMIValue(b);
-      case Byte b -> new IntMIValue(b);
-      case Character c -> new IntMIValue(c);
-      case Short s -> new IntMIValue(s);
-      case Integer i -> new IntMIValue(i);
+      case Boolean b -> new MIValueBoolean(b);
+      case Byte b -> new MIValueInt(b);
+      case Character c -> new MIValueInt(c);
+      case Short s -> new MIValueInt(s);
+      case Integer i -> new MIValueInt(i);
       // this is as questionable as it seems;
       // currently, the default is set to int for integral types,
       // and usage of long is not advised
@@ -24,9 +24,9 @@ public class MIValueFactory {
       // As of writing, this is not done, as some Java/JVM-functionality
       // is defined on ints, and as such,
       // we would like to avoid the additional complexity.
-      case Long l -> new IntMIValue((int) (long) l);
-      case Float f -> new DoubleMIValue(f);
-      case Double d -> new DoubleMIValue(d);
+      case Long l -> new MIValueInt((int) (long) l);
+      case Float f -> new MIValueDouble(f);
+      case Double d -> new MIValueDouble(d);
       default -> new MIValueObject(value);
     };
   }

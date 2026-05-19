@@ -4,6 +4,9 @@ package de.monticore.interpreter.setters;
 import de.monticore.interpreter.frames.MIFrame;
 import de.monticore.interpreter.values.MIValue;
 
+/**
+ * Optimized {@link MISetter} that sets doubles without boxing.
+ */
 @FunctionalInterface
 public interface MISetterDouble extends MISetter {
 

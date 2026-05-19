@@ -9,6 +9,9 @@ import de.monticore.interpreter.util.InterpreterData;
 import de.monticore.statements.mcassertstatements._ast.ASTAssertStatement;
 import de.monticore.statements.mcassertstatements._visitor.MCAssertStatementsInheritanceHandler;
 
+/**
+ * Interpreter Visitor for MCAssertStatements
+ */
 public class MCAssertStatementsInterpreter
     extends MCAssertStatementsInheritanceHandler {
 
@@ -16,10 +19,6 @@ public class MCAssertStatementsInterpreter
 
   public MCAssertStatementsInterpreter(InterpreterData iData) {
     this.iData = Preconditions.checkNotNull(iData);
-  }
-
-  public InterpreterData getInterpreterData() {
-    return iData;
   }
 
   @Override

@@ -2,25 +2,25 @@ package de.monticore.interpreter.values;
 
 import java.util.Optional;
 
-public class MIReturnSignal extends MIFlowControlSignal {
+public class MISignalReturn extends MISignalFlowControl {
 
   // Null-able for efficiency
   protected final MIValue value;
 
-  public MIReturnSignal(MIValue value) {
+  public MISignalReturn(MIValue value) {
     this.value = value;
   }
 
-  public MIReturnSignal() {
+  public MISignalReturn() {
     this.value = null;
   }
 
   public static void signal(MIValue value) {
-    throw new MIReturnSignal(value);
+    throw new MISignalReturn(value);
   }
 
   public static void signal() {
-    throw new MIReturnSignal();
+    throw new MISignalReturn();
   }
 
   @Override

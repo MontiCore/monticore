@@ -9,11 +9,14 @@ import de.monticore.interpreter.calculations.MICalculation;
 import de.monticore.interpreter.calculations.MICalculationValue;
 import de.monticore.interpreter.frames.MIFrameLayout;
 import de.monticore.interpreter.util.InterpreterData;
-import de.monticore.interpreter.values.ModelFunctionMIValue;
+import de.monticore.interpreter.values.MIValueFunctionOfModel;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 
 import java.util.List;
 
+/**
+ * Interpreter Visitor for LambdaExpressions
+ */
 public class LambdaExpressionsInterpreter
     extends LambdaExpressionsInheritanceHandler {
 
@@ -47,7 +50,7 @@ public class LambdaExpressionsInterpreter
 
     // lambda
     MICalculationValue calc = currentFrame ->
-        new ModelFunctionMIValue(
+        new MIValueFunctionOfModel(
             currentFrame, lambdaScopeLayout, pars, bodyCalc
         );
     iData.putCalculation(calc);

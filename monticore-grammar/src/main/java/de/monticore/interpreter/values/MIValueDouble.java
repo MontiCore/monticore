@@ -1,11 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.interpreter.values;
 
-public class DoubleMIValue implements MIValue {
+public class MIValueDouble implements MIValue {
 
   protected double value;
 
-  public DoubleMIValue(double value) {
+  public MIValueDouble(double value) {
     this.value = value;
   }
 

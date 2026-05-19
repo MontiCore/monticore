@@ -18,10 +18,10 @@ import de.monticore.interpreter.setters.MISetter;
 import de.monticore.interpreter.util.InterpreterData;
 import de.monticore.interpreter.util.InterpreterVisitorOperatorCalculator;
 import de.monticore.interpreter.util.TypeDispatcherHotfix;
-import de.monticore.interpreter.values.FunctionMIValue;
-import de.monticore.interpreter.values.MIReturnSignal;
+import de.monticore.interpreter.values.MIValueFunction;
+import de.monticore.interpreter.values.MISignalReturn;
 import de.monticore.interpreter.values.MIValue;
-import de.monticore.interpreter.values.VoidMIValue;
+import de.monticore.interpreter.values.MIValueVoid;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
 import de.monticore.symboltable.ISymbol;
@@ -38,6 +38,9 @@ import static de.monticore.interpreter.util.NativeStorageSelector.switchByFormat
 import static de.monticore.types3.SymTypeRelations.normalize;
 import static de.monticore.types3.TypeCheck3.typeOf;
 
+/**
+ * Interpreter Visitor for CommonExpressions
+ */
 public class CommonExpressionsInterpreter
     extends CommonExpressionsInheritanceHandler {
 
@@ -221,7 +224,7 @@ public class CommonExpressionsInterpreter
 
     SymTypeExpression returnType = normalize(typeOf(node));
     MICalculationValue callCalcValue = frame -> {
-      final FunctionMIValue functionValue =
+      final MIValueFunction functionValue =
           functionCalc.calculate(frame).asFunction();
       final MIValue[] argumentValues =
           new MIValue[argumentCalcs.size()];
@@ -232,9 +235,9 @@ public class CommonExpressionsInterpreter
       try {
         return functionValue.asFunction().execute(argumentValues);
       }
-      catch (MIReturnSignal returnSignal) {
+      catch (MISignalReturn returnSignal) {
         // could be split
-        return returnSignal.getValue().orElseGet(() -> VoidMIValue.INSTANCE);
+        return returnSignal.getValue().orElseGet(() -> MIValueVoid.INSTANCE);
       }
     };
     // make the calculation not break due to recursion

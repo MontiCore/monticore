@@ -34,6 +34,9 @@ import static de.monticore.interpreter.util.NativeStorageSelector.isStoredAsInt;
 import static de.monticore.types3.SymTypeRelations.normalize;
 import static de.monticore.types3.TypeCheck3.typeOf;
 
+/**
+ * Interpreter Visitor for AssigmentExpressions
+ */
 public class AssignmentExpressionsInterpreter
     extends AssignmentExpressionsInheritanceHandler {
 
@@ -41,10 +44,6 @@ public class AssignmentExpressionsInterpreter
 
   protected InterpreterVisitorOperatorCalculator opCalculator =
       new InterpreterVisitorOperatorCalculator();
-
-  // Kept for consistency with other expression interpreters.
-  protected InterpreterOperatorTraverser opTraverser =
-      new InterpreterOperatorTraverser();
 
   public AssignmentExpressionsInterpreter(InterpreterData iData) {
     this.iData = Preconditions.checkNotNull(iData);

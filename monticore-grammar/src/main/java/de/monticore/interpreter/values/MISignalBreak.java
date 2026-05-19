@@ -1,22 +1,22 @@
 package de.monticore.interpreter.values;
 
-public class MIContinueSignal extends MIFlowControlSignal {
+public class MISignalBreak extends MISignalFlowControl {
 
   /**
    * signals the current thread.
    */
   public static void signal() {
-    throw new MIContinueSignal();
+    throw new MISignalBreak();
   }
 
   @Override
-  public boolean isContinue() {
+  public boolean isBreak() {
     return true;
   }
 
   @Override
   public String printType() {
-    return "Continue";
+    return "Break-Signal";
   }
 
   @Override

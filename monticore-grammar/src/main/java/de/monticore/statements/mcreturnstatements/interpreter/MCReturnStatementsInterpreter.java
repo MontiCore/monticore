@@ -5,10 +5,13 @@ import com.google.common.base.Preconditions;
 import de.monticore.interpreter.calculations.MICalculationValue;
 import de.monticore.interpreter.calculations.MICalculationVoid;
 import de.monticore.interpreter.util.InterpreterData;
-import de.monticore.interpreter.values.MIReturnSignal;
+import de.monticore.interpreter.values.MISignalReturn;
 import de.monticore.statements.mcreturnstatements._ast.ASTReturnStatement;
 import de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsInheritanceHandler;
 
+/**
+ * Interpreter Visitor for MCReturnStatements
+ */
 public class MCReturnStatementsInterpreter
     extends MCReturnStatementsInheritanceHandler {
 
@@ -26,10 +29,10 @@ public class MCReturnStatementsInterpreter
       MICalculationValue exprCalc =
           iData.popCalculation().asCalculationValue();
       returnSignalCalc = frame ->
-          MIReturnSignal.signal(exprCalc.calculate(frame));
+          MISignalReturn.signal(exprCalc.calculate(frame));
     }
     else {
-      returnSignalCalc = frame -> MIReturnSignal.signal();
+      returnSignalCalc = frame -> MISignalReturn.signal();
     }
     iData.putCalculation(returnSignalCalc);
   }

@@ -13,6 +13,9 @@ import de.monticore.expressions.interpreter.util.InterpreterOperatorTraverser;
 import de.monticore.interpreter.util.InterpreterData;
 import de.monticore.interpreter.util.InterpreterVisitorOperatorCalculator;
 
+/**
+ * Interpreter Visitor for BitExpressions
+ */
 public class BitExpressionsInterpreter
     extends BitExpressionsInheritanceHandler {
 

@@ -4,6 +4,9 @@ package de.monticore.interpreter.setters;
 import de.monticore.interpreter.frames.MIFrame;
 import de.monticore.interpreter.values.MIValue;
 
+/**
+ * General {@link MISetter} to set any values.
+ */
 @FunctionalInterface
 public interface MISetterValue extends MISetter {
 

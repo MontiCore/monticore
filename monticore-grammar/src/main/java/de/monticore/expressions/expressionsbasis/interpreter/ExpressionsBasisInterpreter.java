@@ -11,6 +11,9 @@ import de.monticore.types3.TypeCheck3;
 
 import java.util.Optional;
 
+/**
+ * Interpreter Visitor for ExpressionsBasis
+ */
 public class ExpressionsBasisInterpreter
     extends ExpressionsBasisInheritanceHandler {
 

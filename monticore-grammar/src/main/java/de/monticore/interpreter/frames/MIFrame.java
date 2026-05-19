@@ -2,14 +2,23 @@
 package de.monticore.interpreter.frames;
 
 import com.google.common.base.Preconditions;
-import de.monticore.interpreter.values.FunctionMIValue;
+import de.monticore.interpreter.values.MIValueFunction;
 import de.monticore.interpreter.values.MIValue;
+import de.monticore.interpreter.values.MIValueFunctionOfModel;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * A calculation frame: It contains local variables
+ * (or global ones for the topmost frame).
+ * <p>
+ * E.g., a new frame is opened
+ * for the execution of a function defined in a model,
+ * s. a. {@link MIValueFunctionOfModel}
+ */
 public class MIFrame {
 
   // one could try out different memory layouts;
@@ -43,7 +52,7 @@ public class MIFrame {
   // simply to provide fast non-static access.
   // layout could be an array or at least an ArrayList,
   // but for now it is a map for simplicity,
-  protected final Map<FunctionSymbol, FunctionMIValue> functions;
+  protected final Map<FunctionSymbol, MIValueFunction> functions;
 
   public MIFrame(
       MIFrameLayout frameLayout,
@@ -114,8 +123,8 @@ public class MIFrame {
     objects[idx] = value;
   }
 
-  public FunctionMIValue getFunction(FunctionSymbol symbol) {
-    FunctionMIValue function = functions.get(symbol);
+  public MIValueFunction getFunction(FunctionSymbol symbol) {
+    MIValueFunction function = functions.get(symbol);
     if (function != null) {
       return function;
     }

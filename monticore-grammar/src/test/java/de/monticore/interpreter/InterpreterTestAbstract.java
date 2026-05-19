@@ -25,6 +25,7 @@ import de.monticore.ocl.optionaloperators.interpreter.OptionalOperatorsInterpret
 import de.monticore.ocl.setexpressions.cocos.SetComprehensionHasGenerator;
 import de.monticore.ocl.setexpressions.interpreter.SetExpressionsInterpreter;
 import de.monticore.ocl.setexpressions.symboltable.SetExpressionsSymbolTableCompleter;
+import de.monticore.runtime.junit.AbstractMCTest;
 import de.monticore.statements.mcassertstatements.interpreter.MCAssertStatementsInterpreter;
 import de.monticore.statements.mccommonstatements._symboltable.MCCommonStatementsSymTabCompletion;
 import de.monticore.statements.mccommonstatements.cocos.AssertIsValid;
@@ -52,8 +53,6 @@ import de.monticore.tests.interpretertestlang._visitor.InterpreterTestLangTraver
 import de.monticore.tests.interpretertestlang.interpreter.InterpreterTestLangInterpreter;
 import de.monticore.tests.interpretertestlang.types3.InterpreterTestLangTypeCheck3;
 import de.monticore.types.mcbasictypes.cocos.QualifiedTypeHasNoTypeParameters;
-import de.se_rwth.commons.logging.Finding;
-import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -64,14 +63,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.CodeSource;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
+import static de.monticore.runtime.junit.MCAssertions.assertNoFindings;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public abstract class InterpreterTestAbstract {
+public abstract class InterpreterTestAbstract extends AbstractMCTest {
 
   protected InterpreterAccess4Tests interpreter;
 
@@ -282,14 +281,6 @@ public abstract class InterpreterTestAbstract {
     @SuppressWarnings("unchecked")
     T casted = (T) valueObj;
     return casted;
-  }
-
-  protected static void assertNoFindings() {
-    assertTrue(Log.getFindings().isEmpty(),
-        Log.getFindings().stream()
-            .map(Finding::buildMsg)
-            .collect(Collectors.joining(System.lineSeparator()))
-    );
   }
 
 }
