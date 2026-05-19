@@ -241,6 +241,13 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   }
 
   /**
+   * symbol supplier class name, e.g. AutomatonSymbolSupplier
+   */
+  public String getSymbolSupplierSimpleName(ASTCDType astcdType) {
+    return getSymbolSimpleName(astcdType) + SUPPLIER_SUFFIX;
+  }
+
+  /**
    * resolving delegate symbol interface e.g. IAutomatonSymbolResolver
    */
 
