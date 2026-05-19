@@ -8,14 +8,14 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-public class JavaSymTypeRelations {
+public class JavaGenSymTypeRelations {
 
-  protected static JavaSymTypeRelations delegate;
+  protected static JavaGenSymTypeRelations delegate;
 
   protected Set<String> javaPrimitiveTypes;
   protected Set<String> javaNumericTypes;
 
-  public JavaSymTypeRelations() {
+  public JavaGenSymTypeRelations() {
     Set<String> javaPrimitiveTypes_temp = new HashSet<>();
     javaPrimitiveTypes_temp.add("boolean");
     javaPrimitiveTypes_temp.add("byte");
@@ -45,6 +45,9 @@ public class JavaSymTypeRelations {
     javaNumericTypes = Collections.unmodifiableSet(javaNumericTypes_temp);
   }
 
+  /**
+   * Returns true iff the provided type generates to a java primitive
+   */
   public static boolean isJavaPrimitive(SymTypeExpression type) {
     return getDelegate()._isJavaPrimitive(type);
   }
@@ -53,6 +56,9 @@ public class JavaSymTypeRelations {
     return javaPrimitiveTypes.contains(SymTypeExpression2JavaConverter.convert2JavaType(type));
   }
 
+  /**
+   * Returns true iff the provided type generates to a java numeric type (boxed or unboxed)
+   */
   public static boolean isJavaNumeric(SymTypeExpression type) {
     return getDelegate()._isJavaNumeric(type);
   }
@@ -64,23 +70,23 @@ public class JavaSymTypeRelations {
   // static delegate
 
   public static void init() {
-    Log.trace("init default JavaSymTypeRelations", "CodeGen setup");
-    setDelegate(new JavaSymTypeRelations());
+    Log.trace("init default JavaGenSymTypeRelations", "CodeGen setup");
+    setDelegate(new JavaGenSymTypeRelations());
   }
 
   public static void reset() {
-    JavaSymTypeRelations.delegate = null;
+    JavaGenSymTypeRelations.delegate = null;
   }
 
-  protected static void setDelegate(JavaSymTypeRelations newDelegate) {
-    JavaSymTypeRelations.delegate =
+  protected static void setDelegate(JavaGenSymTypeRelations newDelegate) {
+    JavaGenSymTypeRelations.delegate =
       Preconditions.checkNotNull(newDelegate);
   }
 
-  protected static JavaSymTypeRelations getDelegate() {
-    if (JavaSymTypeRelations.delegate == null) {
+  protected static JavaGenSymTypeRelations getDelegate() {
+    if (JavaGenSymTypeRelations.delegate == null) {
       init();
     }
-    return JavaSymTypeRelations.delegate;
+    return JavaGenSymTypeRelations.delegate;
   }
 }
