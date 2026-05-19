@@ -58,7 +58,7 @@ public class SymTypeExpression2JavaConverter {
   /**
    * Converts model types in java compatible way and returns their type constructor
    */
-  public static String getJavaTypeConstructor(SymTypeExpression modelType) {
+  public static String convert2JavaTypeConstructor(SymTypeExpression modelType) {
     return convert2JavaType(modelType).split("<")[0];
   }
 
