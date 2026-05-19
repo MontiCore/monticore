@@ -7,12 +7,12 @@ grammar Expression5 extends mc.feature.expression.Expression3 {
 
   start Expr;
   
-  // Overriding priority  	
-  MultExpr implements Expr <8> = 
+  // Overriding priority
+  MultExpr implements Expr <8> =  // 10 -> 8
   	left:Expr star:["*"] right:Expr
   	| left:Expr div:["/"] right:Expr;
   	
-  AddExpr implements Expr <9> =
+  AddExpr implements Expr <9> = 	// 8 -> 9
   	left:Expr plus:["+"] right:Expr
   	| left:Expr minus:["-"] right:Expr;
 

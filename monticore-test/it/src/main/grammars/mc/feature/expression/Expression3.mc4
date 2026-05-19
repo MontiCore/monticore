@@ -10,7 +10,7 @@ grammar Expression3 extends mc.common.Basics {
   // Exression with interfaces and two alternatives for implementing rules (MultExpr and AddExpr)
   interface Expr; 
   	
-  MultExpr implements Expr <9> = 
+  MultExpr implements Expr <10> =
   	left:Expr star:["*"] right:Expr
   	| left:Expr div:["/"] right:Expr;
   	
@@ -18,7 +18,7 @@ grammar Expression3 extends mc.common.Basics {
   	left:Expr plus:["+"] right:Expr
   	| left:Expr minus:["-"] right:Expr;
   
-  PowerExpr implements Expr <10> = 
+  PowerExpr implements Expr <20> =
   	<rightassoc> left:Expr op:["^"] right:Expr;
   
   BracketExpr implements Expr <7> =

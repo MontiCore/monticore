@@ -703,8 +703,9 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
       parserHelper.setCurInterfaceInliningAlt(entry);
       addToCodeSection(del);
       String prio = entry.getPredicatePair().getRuleReference().isPresentPrio()
-              ?entry.getPredicatePair().getRuleReference().getPrio() : "<a>";
-      addToCodeSection("/* from rule " + entry.getOriginalName() + " " + prio + "*/ ");
+              ?entry.getPredicatePair().getRuleReference().getPrio() : "a";
+      prio += "(max=" +  implementing.get(entry.getPredicatePair()) + ")";
+      addToCodeSection("/* from rule " + entry.getOriginalName() + " <" + prio + ">*/ ");
 
       // Append semantic predicates for rules
       if (entry.getPredicatePair().getRuleReference().isPresentSemanticpredicateOrAction()) {
