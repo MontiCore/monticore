@@ -52,6 +52,8 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
 
   protected Map<ASTProd, ProdInfo> prodInfoMap = new LinkedHashMap<>();
 
+  protected GrammarTransformationMethods grammarTransformationMethods = new GrammarTransformationMethods();
+
   public Grammar2Antlr(
       ParserGeneratorHelper parserGeneratorHelper,
       MCGrammarInfo grammarInfo) {
@@ -655,19 +657,54 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
     addToCodeSection("\n// ASTInterface ", interfaceRule.getName(), "\n");
     addToCodeSection(getRuleNameForAntlr(interfacename), ":", "\n");
 
-    List<InterfaceInliningAlt> alts = new ArrayList<>();
     String del = "";
-    // Get all implementing/extending interfaces
-    boolean left = addAlternatives(interfaceRule, alts);
+    // Get all implementing/extending interfaces (ensure each rule is unique)
+    Map<PredicatePair, Integer> implementing = new LinkedHashMap<>();
+    grammarTransformationMethods.addImplementers(interfaceRule, implementing, grammarInfo);
 
-    // Append sorted alternatives
-    Collections.sort(alts, (p2, p1) ->
-        Integer.valueOf(p1.getPredicatePair().getRuleReference().isPresentPrio() ? p1.getPredicatePair().getRuleReference().getPrio() : "0").compareTo(
-            Integer.valueOf(p2.getPredicatePair().getRuleReference().isPresentPrio() ? p2.getPredicatePair().getRuleReference().getPrio() : "0")));
+    // sort the implementing rules by their priority
+    List<PredicatePair> sortedImplementers = implementing.entrySet().stream()
+            .sorted((o1, o2) -> o2.getValue().compareTo(o1.getValue()))
+            .map(Map.Entry::getKey).toList();
 
+    // Finally, expand left-recursive rules by inlining their ASTAlts
+    List<InterfaceInliningAlt> alts = new ArrayList<>();
+    boolean left = grammarTransformationMethods.expandAlternatives(sortedImplementers, alts, grammarInfo);
+
+
+    // By first collecting and sorting, then expanding, we are able to avoid duplicates due to multiple inheritance:
+    // Reduce P implements A, InterfaceRule<100>; interface A extends InterfaceRule<999>
+    // to P implements InterfaceRule<100> (priorities are apparently not transitive)
+
+
+    int lastLeftRec = grammarTransformationMethods.countLastLeftRecursive(alts, interfaceRule);
+    // Setup for rule splitting
+    int nThSplit = 1;
+    int splitCount = grammarTransformationMethods.splitCountHeuristic(lastLeftRec, alts.size());
+    int splitCounter = splitCount;
+
+    // Append all alts to the rule
     for (InterfaceInliningAlt entry : alts) {
+
+      if (splitCounter-- == 0) {
+        // A split occurs (and no left-rec is following):
+        // (we use splits to reduce the size of a method)
+        String name = getRuleNameForAntlr(interfacename) + "__nthsplit_" + nThSplit++;
+        // add an alt to the split-rule
+        addToCodeSection(" | mc_internal_split_next=" + name + ";\n");
+        addToCodeSection("\n// ");
+        // and define new rule
+        addToCodeSection("\n// split of ASTInterface ", interfaceRule.getName(),  "(Due to a large count of implementing productions/alts. lastLeftRec=", Integer.toString(lastLeftRec),") \n");
+        addToCodeSection(name, ":", "\n");
+        del = "";
+        splitCounter = splitCount - 1;
+      }
+
       parserHelper.setCurInterfaceInliningAlt(entry);
       addToCodeSection(del);
+      String prio = entry.getPredicatePair().getRuleReference().isPresentPrio()
+              ?entry.getPredicatePair().getRuleReference().getPrio() : "<a>";
+      addToCodeSection("/* from rule " + entry.getOriginalName() + " " + prio + "*/ ");
 
       // Append semantic predicates for rules
       if (entry.getPredicatePair().getRuleReference().isPresentSemanticpredicateOrAction()) {
@@ -710,39 +747,6 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
     return getAntlrCode();
   }
 
-  /**
-   * @param prodSymbol
-   * @param alts
-   */
-  protected boolean addAlternatives(ProdSymbol prodSymbol, List<InterfaceInliningAlt> alts) {
-    boolean isLeft = false;
-    List<PredicatePair> interfaces = grammarInfo.getSubRulesForParsing(prodSymbol.getName());
-    for (PredicatePair interf : interfaces) {
-      Optional<ProdSymbol> symbol = grammarEntry.getSpannedScope().resolveProd(interf.getClassname());
-      if (!symbol.isPresent()) {
-        continue;
-      }
-      ProdSymbol superSymbol = symbol.get();
-      if (!prodSymbol.isPresentAstNode()) {
-        continue;
-      }
-      ASTProd astNode = superSymbol.getAstNode();
-      if (superSymbol.isIsIndirectLeftRecursive()) {
-        isLeft = true;
-        if (superSymbol.isClass()) {
-          List<ASTAlt> localAlts = ((ASTClassProd) astNode).getAltList();
-          for (ASTAlt alt : localAlts) {
-            alts.add(new InterfaceInliningAlt(alt, interf, superSymbol));
-          }
-        } else if (prodSymbol.isIsInterface()) {
-          addAlternatives(superSymbol, alts);
-        }
-      } else {
-        alts.add(new InterfaceInliningAlt(astNode, interf, superSymbol));
-      }
-    }
-    return isLeft;
-  }
 
   public List<String> getHWParserJavaCode() {
     return grammarInfo.getAdditionalParserJavaCode();

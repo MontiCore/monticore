@@ -13,7 +13,6 @@ import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.codegen.parser.MCGrammarInfo;
 import de.monticore.codegen.parser.ParserGeneratorHelper;
-import de.monticore.expressions.commonexpressions.CommonExpressionsMill;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
@@ -41,7 +40,6 @@ import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.RuleNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
-import org.codehaus.groovy.tools.shell.IO;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
@@ -87,12 +85,16 @@ public class Grammar2ParseVisitor implements GrammarVisitor2, GrammarHandler {
 
   protected Stack<Boolean> ruleIteratedStack = new Stack<>();
 
+  protected final GrammarTransformationMethods grammarTransformationMethods;
+
   public Grammar2ParseVisitor(GlobalExtensionManagement glex, ParserGeneratorHelper parserGeneratorHelper, MCGrammarInfo grammarInfo, Map<ASTProd, Map<ASTNode, String>> tmpNameDict) {
     this.glex = glex;
     this.parserGeneratorHelper = parserGeneratorHelper;
     this.grammarInfo = grammarInfo;
 
     this.tmpNameDict = tmpNameDict;
+
+    this.grammarTransformationMethods = new GrammarTransformationMethods();
   }
 
   public ASTCDClass getVisitorClass() {
@@ -286,112 +288,117 @@ public class Grammar2ParseVisitor implements GrammarVisitor2, GrammarHandler {
 
     tmpNames = tmpNameDict.get(ast);
 
-    List<AltEntry> alts = new ArrayList<>();
-    boolean isLeft = collectAlts(symbol, alts);
-    alts.sort(AltEntry::compareTo);
+    // Get all implementing/extending interfaces (ensure each rule is unique)
+    Map<PredicatePair, Integer> implementing = new LinkedHashMap<>();
+    grammarTransformationMethods.addImplementers(symbol, implementing, grammarInfo);
 
-    for (AltEntry alt : alts) {
+    // sort the implementing alts
+    List<PredicatePair> sortedImplementers = implementing.entrySet().stream().sorted((o1, o2) -> o2.getValue().compareTo(o1.getValue()))
+            .map(Map.Entry::getKey).toList();
+
+    // Finally, expand left-recursive rules
+    List<InterfaceInliningAlt> alts = new ArrayList<>();
+    boolean isLeft = grammarTransformationMethods.expandAlternatives(sortedImplementers, alts, grammarInfo);
+
+    List<AltEntry> altEntries = new ArrayList<>();
+    for (InterfaceInliningAlt alt : alts) {
 
       ParseVisitorEntry e = new ParseVisitorEntry();
-      if (alt.getRuleNode() instanceof ASTAlt) {
+      if (alt.getAlternative() instanceof ASTAlt) {
         // Left recursive rule
         stack.push(e);
-        alt.getRuleNode().accept(getTraverser());
+        alt.getAlternative().accept(getTraverser());
         stack.pop();
-        alt.setParseVisitorEntry(e.getAlternatives().get(0));
-      } else if (isLeft && alt.getRuleNode() instanceof ASTClassProd && ((ASTClassProd) alt.getRuleNode()).getAltList().size() == 1) {
+        altEntries.add(new AltEntry(alt, e.getAlternatives().getFirst(), false));
+      } else if (isLeft && alt.getAlternative() instanceof ASTClassProd && ((ASTClassProd) alt.getAlternative()).getAltList().size() == 1) {
         stack.push(e);
-        ((ASTClassProd) alt.getRuleNode()).getAlt(0).accept(getTraverser());
+        ((ASTClassProd) alt.getAlternative()).getAlt(0).accept(getTraverser());
         stack.pop();
         if (e.getAlternatives().size() != 1) {
-          Log.error("0xA0393 Unspected count of alternatives. Expected 1, butfound " + e.getAlternatives().size(),
-                  alt.getRuleNode().get_SourcePositionStart());
+          Log.error("0xA0393 Unexpected count of alternatives. Expected 1, but found " + e.getAlternatives().size(),
+                  alt.getAlternative().get_SourcePositionStart());
           return;
         }
-        alt.setParseVisitorEntry(e.getAlternatives().get(0));
+        altEntries.add(new AltEntry(alt, e.getAlternatives().getFirst(), false));
       } else {
         // normal rule - like a NonTerminal
-        String tmpVar = tmpNames.get(alt.getRuleNode());
+        String tmpVar = tmpNames.get(alt.getAlternative());
 
-        alt.setParseVisitorEntry(e);
         e.tmpName = tmpVar;
         e.condition = "ctx." + tmpVar + " != null";
-        alt.setSimpleReference(true);
+        altEntries.add(new AltEntry(alt, e, true));
       }
     }
 
-
-    ASTCDMethod method = cdMethodFacade.createMethod(CDModifier.PUBLIC.build(),
-            astNodeType,
-            "visit" + rulenameCap,
-            cdParameterFacade.createParameter(antlrParserName + "." + rulenameCap + "Context", "ctx"));
-    glex.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_parser.visitor.VisitInterface", name, millName, alts));
-
-    visitorClass.addCDMember(method);
-  }
-
-  protected boolean collectAlts(ProdSymbol prodSymbol, List<AltEntry> alts) {
-    boolean isLeft = false;
-    List<PredicatePair> interfaces = grammarInfo.getSubRulesForParsing(prodSymbol.getName());
-    for (PredicatePair interf : interfaces) {
-      Optional<ProdSymbol> symbol = parserGeneratorHelper.getGrammarSymbol().getSpannedScope().resolveProd(interf.getClassname());
-      if (symbol.isEmpty()) {
-        continue;
-      }
-      ProdSymbol superSymbol = symbol.get();
-      if (!prodSymbol.isPresentAstNode()) {
-        continue;
-      }
-      if (superSymbol.isIsIndirectLeftRecursive()) {
-        isLeft = true;
-        if (superSymbol.isClass()) {
-          List<ASTAlt> localAlts = ((ASTClassProd) superSymbol.getAstNode()).getAltList();
-          for (ASTAlt alt : localAlts) {
-            alts.add(new AltEntry(alt, (ASTParserProd) superSymbol.getAstNode(), interf));
-          }
-        } else if (prodSymbol.isIsInterface()) {
-          collectAlts(superSymbol, alts);
-        }
-      } else {
-        alts.add(new AltEntry(superSymbol.getAstNode(), superSymbol.getAstNode(), interf));
-      }
+    int lastLeftRec = grammarTransformationMethods.countLastLeftRecursive(alts, symbol);
+    int splitCount = grammarTransformationMethods.splitCountHeuristic(lastLeftRec, alts.size());
+    int nThSplit = 0;
+    // Keep rule-splitting disabled for now - see Grammar2Antlr
+    /*
+    if (((double) lastLeftRec) / alts.size() > 0.1) {
+      splitCount = Math.max(lastLeftRec, (int) (alts.size() * 0.1));
     }
-    return isLeft;
+    */
+
+
+    if (altEntries.isEmpty()) {
+      ASTCDMethod method = cdMethodFacade.createMethod(CDModifier.PUBLIC.build(),
+              astNodeType,
+              "visit" + rulenameCap,
+              cdParameterFacade.createParameter(antlrParserName + "." + rulenameCap + "Context", "ctx"));
+      glex.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_parser.visitor.VisitInterface", name, millName, Collections.emptyList(), ""));
+      visitorClass.addCDMember(method);
+      return;
+    }
+
+    for (int startIndex = 0; startIndex < altEntries.size(); startIndex += splitCount) {
+      int endIndex = startIndex + splitCount;
+      List<AltEntry> thisEntries = altEntries.subList(startIndex, Math.min(endIndex, altEntries.size()));
+
+      boolean hasNext = endIndex < altEntries.size(); // TODO
+
+      String splitRuleName = nThSplit == 0 ? rulenameCap : (rulenameCap + "__nthsplit_" + nThSplit);
+
+      ASTCDMethod method = cdMethodFacade.createMethod(CDModifier.PUBLIC.build(),
+              astNodeType,
+              "visit" + splitRuleName,
+              cdParameterFacade.createParameter(antlrParserName + "." + splitRuleName + "Context", "ctx"));
+      glex.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_parser.visitor.VisitInterface", name, millName, thisEntries,
+              hasNext ? (rulenameCap + "__nthsplit_" + (nThSplit + 1)) : ""));
+      visitorClass.addCDMember(method);
+
+      System.err.println("  " + splitRuleName);
+
+      nThSplit++;
+    }
+
   }
 
-  public static class AltEntry implements Comparable<AltEntry> {
-    protected final ASTNode ruleNode;
-    protected final ASTProd builderNode;
-    protected final PredicatePair pair;
+  public static class AltEntry {
+    protected final InterfaceInliningAlt interfaceInliningAlt;
 
     protected ParseVisitorEntry parseVisitorEntry;
 
-    protected final int prio;
 
     protected boolean simpleReference;
 
-    public AltEntry(ASTNode ruleNode, ASTProd builderNode, PredicatePair pair) {
-      this.ruleNode = ruleNode;
-      this.builderNode = builderNode;
-      this.pair = pair;
-      this.prio = pair.getRuleReference().isPresentPrio() ? Integer.parseInt(pair.getRuleReference().getPrio()) : 0;
+    public AltEntry(InterfaceInliningAlt alt, ParseVisitorEntry parseVisitorEntry, boolean simpleReference) {
+      this.interfaceInliningAlt = alt;
+      this.parseVisitorEntry = parseVisitorEntry;
+      this.simpleReference = simpleReference;
     }
 
-    @Override
-    public int compareTo(AltEntry o) {
-      return Integer.compare(o.prio, this.prio); // Highest priority first
-    }
 
     public ASTNode getRuleNode() {
-      return ruleNode;
+      return interfaceInliningAlt.getAlternative();
     }
 
     public ASTProd getBuilderNode() {
-      return builderNode;
+      return interfaceInliningAlt.getBuilderNode();
     }
 
     public PredicatePair getPair() {
-      return pair;
+      return interfaceInliningAlt.getPredicatePair();
     }
 
     public ParseVisitorEntry getParseVisitorEntry() {

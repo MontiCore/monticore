@@ -11,8 +11,10 @@ import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.grammar.grammar._visitor.GrammarVisitor2;
 import de.se_rwth.commons.Splitters;
+import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 import static de.monticore.dstlgen.grammartransformation.ProductionType.*;
@@ -207,6 +209,12 @@ public class DSL2TransformationLanguageVisitor implements
     tfLang.addAbstractProd(productionFactory.createAbstractProd(srcNode));
   }
 
+  @Nullable protected ProdSymbol overriddenProd = null;
+
+  @Override
+  public void endVisit(ASTClassProd srcNode) {
+    this.overriddenProd = null;
+  }
 
   @Override
   public void visit(ASTClassProd srcNode) {
@@ -231,6 +239,7 @@ public class DSL2TransformationLanguageVisitor implements
           superExternal = true;
         } else {
           overridden = true;
+          this.overriddenProd = typeSymbol;
         }
       } else {
         tfLang.getInterfaceProdList().add(productionFactory.createInterfaceProd(srcNode, grammar_depth, isLeftRecursive));
@@ -284,7 +293,13 @@ public class DSL2TransformationLanguageVisitor implements
     // only create productions if they doesn't already exist
     if (!productions.contains(name)) {
       productions.add(name);
-      tfLang.getInterfaceProdList().add(productionFactory.createInterfaceProd(srcNode, grammarSymbol));
+      ASTInterfaceProd constantInterface  = productionFactory.createInterfaceProd(srcNode, grammarSymbol);
+      tfLang.getInterfaceProdList().add(constantInterface);
+      if (overriddenProd != null && !overriddenProd.getSpannedScope().resolveRuleComponentMany(StringTransformations.uncapitalize(name)).isEmpty()) {
+        // in case we override an existing constant, we have to extend that constant
+        String superName = "ITF" + overriddenProd.getEnclosingScope().getName() + "_" + DSTLUtil.getNameForConstant(srcNode) + "_Constant";
+        constantInterface.addSuperInterfaceRule(GrammarMill.ruleReferenceBuilder().setName(superName).build());
+      }
       targetClassProdList.add(productionFactory.createPatternProd(srcNode, grammarSymbol, name));
       targetClassProdList.add(productionFactory.createReplacementProdForConstant(grammarSymbol, name));
       targetClassProdList.add(productionFactory.createNegationProdForConstant(grammarSymbol, name));
@@ -360,16 +375,16 @@ public class DSL2TransformationLanguageVisitor implements
       if (isEmpty) {
         return false;
       }
-      productionFactory.addInterfaces(srcNode.getSuperRuleList(), prod);
-      productionFactory.addInterfaces(srcNode.getSuperInterfaceRuleList(), prod);
+      productionFactory.addInterfaces(srcNode.getSuperRuleList(), prod, productionType.getPrioMod());
+      productionFactory.addInterfaces(srcNode.getSuperInterfaceRuleList(), prod, productionType.getPrioMod());
     }
     else if (productionType == OPTIONAL || productionType == NEGATION
         || productionType == REPLACEMENT) {
       if (isLeftRecursive || isEmpty) {
         return false;
       }
-      productionFactory.addInterfaces(srcNode.getSuperRuleList(), prod);
-      productionFactory.addInterfaces(srcNode.getSuperInterfaceRuleList(), prod);
+      productionFactory.addInterfaces(srcNode.getSuperRuleList(), prod, productionType.getPrioMod());
+      productionFactory.addInterfaces(srcNode.getSuperInterfaceRuleList(), prod, productionType.getPrioMod());
     }
     return true;
   }
