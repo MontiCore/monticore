@@ -3,22 +3,13 @@ package de.monticore.codegen.javagen.operationprinter;
 
 import de.monticore.codegen.CodeGenPrintAction;
 import de.monticore.codegen.ICodeGenOperationHandler;
-import de.monticore.codegen.javagen.JavaSymTypeRelations;
-import de.monticore.codegen.javagen.SymTypeExpression2JavaConverter;
+import de.monticore.codegen.javagen.JavaGenSymTypeRelations;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.check.SymTypeExpression;
 
 import static de.monticore.codegen.CodeGenSymTypeExpressionConverter.printConverted;
 import static de.monticore.codegen.ICodeGenOperationHandler.BinaryOperator.EQUALS;
 import static de.monticore.codegen.ICodeGenOperationHandler.BinaryOperator.NOT_EQUALS;
-import static de.monticore.types3.SymTypeRelations.isBoolean;
-import static de.monticore.types3.SymTypeRelations.isByte;
-import static de.monticore.types3.SymTypeRelations.isChar;
-import static de.monticore.types3.SymTypeRelations.isDouble;
-import static de.monticore.types3.SymTypeRelations.isFloat;
-import static de.monticore.types3.SymTypeRelations.isInt;
-import static de.monticore.types3.SymTypeRelations.isLong;
-import static de.monticore.types3.SymTypeRelations.isShort;
 import static de.monticore.types3.SymTypeRelations.isSubTypeOf;
 
 // may need to be split in the future
@@ -72,7 +63,7 @@ public class JavaEqualityOperationHandler
     // (e.g., SI Units)
 
     // slight optimization for numbers:
-    if (JavaSymTypeRelations.isJavaPrimitive(leftType) && JavaSymTypeRelations.isJavaPrimitive(rightType)) {
+    if (JavaGenSymTypeRelations.isJavaPrimitive(leftType) && JavaGenSymTypeRelations.isJavaPrimitive(rightType)) {
       printWithEqualsOperator(
           printer, leftType, rightType,
           leftExprPrintAction, rightExprPrintAction

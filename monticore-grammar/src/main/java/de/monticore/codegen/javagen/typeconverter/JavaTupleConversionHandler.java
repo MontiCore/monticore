@@ -9,7 +9,7 @@ import de.monticore.types.check.SymTypeOfTuple;
 
 import static de.monticore.codegen.CodeGenSymTypeExpressionConverter.printConverted;
 import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.convert2JavaType;
-import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getJavaTypeConstructor;
+import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.convert2JavaTypeConstructor;
 
 /**
  * Converts between tuple types
@@ -43,7 +43,7 @@ public class JavaTupleConversionHandler extends AbstractJavaTypeConverter {
       printer.print(" = ");
       sourceExprPrintAction.print(printer);
       printer.print("; return ");
-      printer.print(getJavaTypeConstructor(targetTuple));
+      printer.print(convert2JavaTypeConstructor(targetTuple));
       printer.print(".of(");
 
       for (int i = 0; i < modelTargetType.asTupleType().getTypeList().size(); i++) {

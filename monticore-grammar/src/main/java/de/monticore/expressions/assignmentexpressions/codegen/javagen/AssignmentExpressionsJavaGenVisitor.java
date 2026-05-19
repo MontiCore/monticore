@@ -3,9 +3,8 @@ package de.monticore.expressions.assignmentexpressions.codegen.javagen;
 
 import de.monticore.codegen.CodeGenPrintAction;
 import de.monticore.codegen.javagen.AbstractJavaGenVisitor;
+import de.monticore.codegen.javagen.JavaGenSymTypeRelations;
 import de.monticore.codegen.javagen.JavaOperationPrinter;
-import de.monticore.codegen.javagen.JavaSymTypeRelations;
-import de.monticore.codegen.javagen.SymTypeExpression2JavaConverter;
 import de.monticore.expressions.assignmentexpressions._ast.ASTAssignmentExpression;
 import de.monticore.expressions.assignmentexpressions._ast.ASTDecPrefixExpression;
 import de.monticore.expressions.assignmentexpressions._ast.ASTDecSuffixExpression;
@@ -69,11 +68,11 @@ public class AssignmentExpressionsJavaGenVisitor
     // as in the future, templates provided by the symbols
     // are to be used instead.
 
-    if (JavaSymTypeRelations.isJavaNumeric(TypeCheck3.typeOf(expr.getExpression()))) {
+    if (JavaGenSymTypeRelations.isJavaNumeric(TypeCheck3.typeOf(expr.getExpression()))) {
       expr.getExpression().accept(getTraverser());
       getPrinter().print("++");
     } else {
-      Log.error("0xFD249 Unhandled increment suffix operator "
+      Log.error("0xFD250 Unhandled increment suffix operator "
           + ". This is an alpha version and needs to be extended."
       );
     }
@@ -85,11 +84,11 @@ public class AssignmentExpressionsJavaGenVisitor
     // as in the future, templates provided by the symbols
     // are to be used instead.
 
-    if (JavaSymTypeRelations.isJavaNumeric(TypeCheck3.typeOf(expr.getExpression()))) {
+    if (JavaGenSymTypeRelations.isJavaNumeric(TypeCheck3.typeOf(expr.getExpression()))) {
       expr.getExpression().accept(getTraverser());
       getPrinter().print("--");
     } else {
-      Log.error("0xFD249 Unhandled increment suffix operator "
+      Log.error("0xFD251 Unhandled increment suffix operator "
           + ". This is an alpha version and needs to be extended."
       );
     }
