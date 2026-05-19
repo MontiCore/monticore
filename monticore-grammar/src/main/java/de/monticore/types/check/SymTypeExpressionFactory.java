@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
@@ -359,6 +360,19 @@ public class SymTypeExpressionFactory {
             .map(tp -> createTypeVariable(tp))
             .collect(Collectors.toList());
     return createGenerics(typeSymbol, parameters);
+  }
+
+  public static SymTypeExpression createDeclaredType(TypeSymbol typeSymbol) {
+    // check against legacy inheritance
+    Preconditions.checkArgument(!(typeSymbol instanceof TypeVarSymbol));
+    SymTypeExpression declared;
+    if (typeSymbol.getSpannedScope().getTypeVarSymbolsWithSubKinds().isEmpty()) {
+      declared = createTypeObject(typeSymbol);
+    }
+    else {
+      declared = createGenericsDeclaredType(typeSymbol);
+    }
+    return declared;
   }
 
   /**
