@@ -418,7 +418,8 @@ public class CommonExpressionsJavaGenVisitor extends AbstractJavaGenVisitor
 
     SymTypeExpression outerType = normalize(typeOf(node.getExpression()));
 
-    Type4Ast type4Ast = _internal_hacky_trafo_workaround_dont_use_overwise();
+    @SuppressWarnings("removal") // Remove once trafo is implemented
+    Type4Ast type4Ast = MapBasedTypeCheck3.internal_hacky_do_not_use_getType4Ast();
 
     // function references
     if (outerType.isFunctionType() && outerType.asFunctionType().hasSymbol()) {
@@ -504,23 +505,4 @@ public class CommonExpressionsJavaGenVisitor extends AbstractJavaGenVisitor
       );
     }
   }
-
-  // hack
-
-  /**
-   * todo, temporary, replace as soon as Trafo exists
-   */
-  static Type4Ast _internal_hacky_trafo_workaround_dont_use_overwise() {
-    class _internal_Hack extends MapBasedTypeCheck3 {
-      private _internal_Hack() {
-        super(null, null);
-      }
-
-      public Type4Ast getType4Ast() {
-        return super.type4Ast;
-      }
-    }
-    return new _internal_Hack().getType4Ast();
-  }
-
 }

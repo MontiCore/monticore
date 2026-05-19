@@ -36,7 +36,7 @@ public class SymbolAndScopeTranslationTest extends TranslationTestCase {
     // only 2 because other one is the start prod stereotype
     assertEquals(2, astType.getModifier().getStereotype().getValuesList().size());
     assertEquals("symbol", astType.getModifier().getStereotype().getValues(0).getName());
-    assertTrue(astType.getModifier().getStereotype().getValues(0).getValue().isEmpty());
+    assertEquals("mc2cdtransformation.symbolandscopetranslation._symboltable.TypeSymbol", astType.getModifier().getStereotype().getValues(0).getValue());
     assertEquals("startProd", astType.getModifier().getStereotype().getValues(1).getName());
     assertTrue(astType.getModifier().getStereotype().getValues(1).getValue().isEmpty());
   
@@ -75,8 +75,8 @@ public class SymbolAndScopeTranslationTest extends TranslationTestCase {
     assertTrue(astType.getModifier().isPresentStereotype());
     assertEquals(1, astType.getModifier().getStereotype().getValuesList().size());
     assertEquals("symbol", astType.getModifier().getStereotype().getValues(0).getName());
-    assertTrue(astType.getModifier().getStereotype().getValues(0).getValue().isEmpty());
-  
+    assertEquals("mc2cdtransformation.symbolandscopetranslation._symboltable.SimpleSymbolClassSymbol", astType.getModifier().getStereotype().getValues(0).getValue());
+
     assertTrue(Log.getFindings().isEmpty());
   }
 
