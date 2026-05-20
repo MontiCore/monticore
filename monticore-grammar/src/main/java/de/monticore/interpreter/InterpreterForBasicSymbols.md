@@ -28,13 +28,13 @@ about the concrete interpreter implementations in monticore-grammar.
       (Example Interpreter API for Expressions)
     * [StatementsInterpreter](../statements/interpreter/StatementsInterpreter.java)
       (Example Interpreter API for Statements)
-* [MISignalFlowControl](signals/MISignalFlowControl.java)
+* [MCSignalFlowControl](signals/MCSignalFlowControl.java)
   (signal that unwinds the stack)
-    * [MISignalBreak](signals/MISignalBreak.java)
+    * [MCSignalBreak](signals/MCSignalBreak.java)
       (represents `break`)
-    * [MISignalContinue](signals/MISignalContinue.java)
+    * [MCSignalContinue](signals/MCSignalContinue.java)
       (represents `continue`)
-    * [MISignalReturn](signals/MISignalReturn.java)
+    * [MCSignalReturn](signals/MCSignalReturn.java)
       (represents `return`, may contain a return value)
 * Traversers
     * Expressions
