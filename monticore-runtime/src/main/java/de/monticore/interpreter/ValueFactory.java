@@ -3,6 +3,7 @@ package de.monticore.interpreter;
 
 import de.monticore.interpreter.values.*;
 
+@Deprecated(forRemoval = true)
 public class ValueFactory {
 
   public static Value createValue(int Value) {
