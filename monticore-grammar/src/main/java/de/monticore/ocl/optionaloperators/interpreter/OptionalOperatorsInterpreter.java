@@ -8,7 +8,7 @@ import de.monticore.interpreter.calculations.MICalculationBoolean;
 import de.monticore.interpreter.calculations.MICalculationDouble;
 import de.monticore.interpreter.calculations.MICalculationInt;
 import de.monticore.interpreter.calculations.MICalculationValue;
-import de.monticore.interpreter.util.InterpreterData;
+import de.monticore.interpreter.util.InterpreterDataForBasicSymbols;
 import de.monticore.interpreter.util.InterpreterVisitorOperatorCalculator;
 import de.monticore.values.MCValue;
 import de.monticore.values.MCValueFactory;
@@ -39,14 +39,14 @@ import static de.monticore.types3.TypeCheck3.typeOf;
 public class OptionalOperatorsInterpreter
     extends OptionalOperatorsInheritanceHandler {
 
-  protected InterpreterData iData;
+  protected InterpreterDataForBasicSymbols iData;
 
   protected InterpreterVisitorOperatorCalculator opCalculator
       = new InterpreterVisitorOperatorCalculator();
   protected InterpreterOperatorTraverser opTraverser =
       new InterpreterOperatorTraverser();
 
-  public OptionalOperatorsInterpreter(InterpreterData iData) {
+  public OptionalOperatorsInterpreter(InterpreterDataForBasicSymbols iData) {
     this.iData = Preconditions.checkNotNull(iData);
   }
 

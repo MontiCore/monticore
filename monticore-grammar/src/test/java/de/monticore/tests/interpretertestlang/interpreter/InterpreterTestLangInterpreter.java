@@ -4,7 +4,7 @@ package de.monticore.tests.interpretertestlang.interpreter;
 import com.google.common.base.Preconditions;
 import de.monticore.interpreter.calculations.MICalculation;
 import de.monticore.interpreter.calculations.MICalculationVoid;
-import de.monticore.interpreter.util.InterpreterData;
+import de.monticore.interpreter.util.InterpreterDataForBasicSymbols;
 import de.monticore.tests.interpretertestlang._ast.ASTInterpreterInput;
 import de.monticore.tests.interpretertestlang._ast.ASTStatement;
 import de.monticore.tests.interpretertestlang._visitor.InterpreterTestLangInheritanceHandler;
@@ -13,9 +13,9 @@ import de.monticore.types3.TypeCheck3;
 public class InterpreterTestLangInterpreter
     extends InterpreterTestLangInheritanceHandler {
 
-  protected InterpreterData iData;
+  protected InterpreterDataForBasicSymbols iData;
 
-  public InterpreterTestLangInterpreter(InterpreterData iData) {
+  public InterpreterTestLangInterpreter(InterpreterDataForBasicSymbols iData) {
     this.iData = Preconditions.checkNotNull(iData);
   }
 

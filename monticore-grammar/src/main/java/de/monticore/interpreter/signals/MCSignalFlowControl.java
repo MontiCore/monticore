@@ -1,6 +1,4 @@
-package de.monticore.interpreter.values;
-
-import de.monticore.values.MCSignalFlowControl;
+package de.monticore.interpreter.signals;
 
 /**
  * These values control the flow of the interpreter thread.
@@ -10,8 +8,6 @@ import de.monticore.values.MCSignalFlowControl;
  * The Throwable should be unchecked
  * and Error seemed even less applicable (s.a.JLS 21 11.1.1.).
  */
-public abstract class AbstractMCSignalFlowControlForInterpreter
-    extends RuntimeException
-    implements MCSignalFlowControl {
-
+public abstract class MCSignalFlowControl
+    extends RuntimeException {
 }

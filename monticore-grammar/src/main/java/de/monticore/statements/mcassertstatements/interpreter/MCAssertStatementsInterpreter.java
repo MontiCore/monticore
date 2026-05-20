@@ -5,7 +5,7 @@ import com.google.common.base.Preconditions;
 import de.monticore.interpreter.calculations.MICalculationBoolean;
 import de.monticore.interpreter.calculations.MICalculationValue;
 import de.monticore.interpreter.calculations.MICalculationVoid;
-import de.monticore.interpreter.util.InterpreterData;
+import de.monticore.interpreter.util.InterpreterDataForBasicSymbols;
 import de.monticore.statements.mcassertstatements._ast.ASTAssertStatement;
 import de.monticore.statements.mcassertstatements._visitor.MCAssertStatementsInheritanceHandler;
 
@@ -15,9 +15,9 @@ import de.monticore.statements.mcassertstatements._visitor.MCAssertStatementsInh
 public class MCAssertStatementsInterpreter
     extends MCAssertStatementsInheritanceHandler {
 
-  protected InterpreterData iData;
+  protected InterpreterDataForBasicSymbols iData;
 
-  public MCAssertStatementsInterpreter(InterpreterData iData) {
+  public MCAssertStatementsInterpreter(InterpreterDataForBasicSymbols iData) {
     this.iData = Preconditions.checkNotNull(iData);
   }
 

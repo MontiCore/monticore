@@ -10,7 +10,7 @@ import de.monticore.interpreter.calculations.MICalculationDouble;
 import de.monticore.interpreter.calculations.MICalculationInt;
 import de.monticore.interpreter.calculations.MICalculationValue;
 import de.monticore.symbols.basicsymbols.interpreter.frames.MIFrameLayoutForBasicSymbols;
-import de.monticore.interpreter.util.InterpreterData;
+import de.monticore.interpreter.util.InterpreterDataForBasicSymbols;
 import de.monticore.values.MCValue;
 import de.monticore.types.check.SymTypeExpression;
 import de.se_rwth.commons.logging.Log;
@@ -24,9 +24,9 @@ import static de.monticore.types3.TypeCheck3.typeOf;
 public class ExpressionCalculationLogVisitor
     implements ExpressionsBasisVisitor2 {
 
-  protected InterpreterData iData;
+  protected InterpreterDataForBasicSymbols iData;
 
-  public ExpressionCalculationLogVisitor(InterpreterData iData) {
+  public ExpressionCalculationLogVisitor(InterpreterDataForBasicSymbols iData) {
     this.iData = Preconditions.checkNotNull(iData);
   }
 

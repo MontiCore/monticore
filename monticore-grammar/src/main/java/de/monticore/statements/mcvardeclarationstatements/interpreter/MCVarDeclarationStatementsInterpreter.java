@@ -4,7 +4,7 @@ package de.monticore.statements.mcvardeclarationstatements.interpreter;
 import com.google.common.base.Preconditions;
 import de.monticore.interpreter.calculations.MICalculation;
 import de.monticore.interpreter.calculations.MICalculationVoid;
-import de.monticore.interpreter.util.InterpreterData;
+import de.monticore.interpreter.util.InterpreterDataForBasicSymbols;
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTLocalVariableDeclaration;
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTVariableDeclarator;
 import de.monticore.statements.mcvardeclarationstatements._visitor.MCVarDeclarationStatementsInheritanceHandler;
@@ -16,9 +16,9 @@ import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 public class MCVarDeclarationStatementsInterpreter
     extends MCVarDeclarationStatementsInheritanceHandler {
 
-  protected InterpreterData iData;
+  protected InterpreterDataForBasicSymbols iData;
 
-  public MCVarDeclarationStatementsInterpreter(InterpreterData iData) {
+  public MCVarDeclarationStatementsInterpreter(InterpreterDataForBasicSymbols iData) {
     this.iData = Preconditions.checkNotNull(iData);
   }
 

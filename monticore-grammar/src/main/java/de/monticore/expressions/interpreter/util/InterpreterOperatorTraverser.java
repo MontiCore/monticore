@@ -3,7 +3,7 @@ package de.monticore.expressions.interpreter.util;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.interpreter.calculations.MICalculation;
-import de.monticore.interpreter.util.InterpreterData;
+import de.monticore.interpreter.util.InterpreterDataForBasicSymbols;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.visitor.ITraverser;
 
@@ -18,7 +18,7 @@ public class InterpreterOperatorTraverser {
 
   public void traverseUnaryOperator(
       ITraverser traverser,
-      InterpreterData iData,
+      InterpreterDataForBasicSymbols iData,
       ASTExpression expr,
       ASTExpression innerExpr,
       UnaryOperationHandler handler
@@ -33,7 +33,7 @@ public class InterpreterOperatorTraverser {
 
   public void traverseBinaryOperator(
       ITraverser traverser,
-      InterpreterData iData,
+      InterpreterDataForBasicSymbols iData,
       ASTExpression expr,
       ASTExpression leftExpr,
       ASTExpression rightExpr,

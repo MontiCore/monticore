@@ -10,7 +10,7 @@ import de.monticore.expressions.bitexpressions._ast.ASTLogicalRightShiftExpressi
 import de.monticore.expressions.bitexpressions._ast.ASTRightShiftExpression;
 import de.monticore.expressions.bitexpressions._visitor.BitExpressionsInheritanceHandler;
 import de.monticore.expressions.interpreter.util.InterpreterOperatorTraverser;
-import de.monticore.interpreter.util.InterpreterData;
+import de.monticore.interpreter.util.InterpreterDataForBasicSymbols;
 import de.monticore.interpreter.util.InterpreterVisitorOperatorCalculator;
 
 /**
@@ -19,14 +19,14 @@ import de.monticore.interpreter.util.InterpreterVisitorOperatorCalculator;
 public class BitExpressionsInterpreter
     extends BitExpressionsInheritanceHandler {
 
-  protected InterpreterData iData;
+  protected InterpreterDataForBasicSymbols iData;
 
   protected InterpreterVisitorOperatorCalculator opCalculator =
       new InterpreterVisitorOperatorCalculator();
   protected InterpreterOperatorTraverser opTraverser =
       new InterpreterOperatorTraverser();
 
-  public BitExpressionsInterpreter(InterpreterData iData) {
+  public BitExpressionsInterpreter(InterpreterDataForBasicSymbols iData) {
     this.iData = Preconditions.checkNotNull(iData);
   }
 

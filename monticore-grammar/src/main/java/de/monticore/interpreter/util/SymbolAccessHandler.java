@@ -8,21 +8,21 @@ import de.monticore.interpreter.calculations.MICalculationDouble;
 import de.monticore.interpreter.calculations.MICalculationInt;
 import de.monticore.interpreter.calculations.MICalculationValue;
 import de.monticore.interpreter.frames.MIFrame;
-import de.monticore.symbols.basicsymbols.interpreter.frames.MIFrameLayoutForBasicSymbols;
 import de.monticore.interpreter.setters.MISetter;
 import de.monticore.interpreter.setters.MISetterBoolean;
 import de.monticore.interpreter.setters.MISetterDouble;
 import de.monticore.interpreter.setters.MISetterInt;
-import de.monticore.values.MCValueFactory;
-import de.monticore.values.MCValueFunction;
-import de.monticore.values.MCValueFunctionOfMethodHandle;
+import de.monticore.interpreter.values.MCValueFunctionOfMethodHandle;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
+import de.monticore.symbols.basicsymbols.interpreter.frames.MIFrameLayoutForBasicSymbols;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
 import de.monticore.symboltable.ISymbol;
 import de.monticore.types.check.SymTypeExpression;
+import de.monticore.values.MCValueFactory;
+import de.monticore.values.MCValueFunction;
 import org.apache.commons.lang3.NotImplementedException;
 
 import java.lang.invoke.MethodHandle;
@@ -59,7 +59,7 @@ public class SymbolAccessHandler {
   public SymbolAccess getSymbolAccess(
       ISymbol exprSourceSym,
       MIFrameLayoutForBasicSymbols frameLayout,
-      InterpreterData iData
+      InterpreterDataForBasicSymbols iData
   ) {
     MICalculation getter;
     Optional<MISetter> setter = Optional.empty();

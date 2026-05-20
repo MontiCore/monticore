@@ -4,7 +4,7 @@ package de.monticore.expressions.expressionsbasis.interpreter;
 import com.google.common.base.Preconditions;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisInheritanceHandler;
-import de.monticore.interpreter.util.InterpreterData;
+import de.monticore.interpreter.util.InterpreterDataForBasicSymbols;
 import de.monticore.interpreter.util.SymbolAccessHandler;
 import de.monticore.symboltable.ISymbol;
 import de.monticore.types.check.SymTypeExpression;
@@ -18,12 +18,12 @@ import java.util.Optional;
 public class ExpressionsBasisInterpreter
     extends ExpressionsBasisInheritanceHandler {
 
-  protected InterpreterData iData;
+  protected InterpreterDataForBasicSymbols iData;
 
   protected SymbolAccessHandler symbolAccessHandler =
       new SymbolAccessHandler();
 
-  public ExpressionsBasisInterpreter(InterpreterData iData) {
+  public ExpressionsBasisInterpreter(InterpreterDataForBasicSymbols iData) {
     this.iData = Preconditions.checkNotNull(iData);
   }
 

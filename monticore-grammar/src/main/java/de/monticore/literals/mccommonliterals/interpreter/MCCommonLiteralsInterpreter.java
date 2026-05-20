@@ -6,7 +6,7 @@ import de.monticore.interpreter.calculations.MICalculationBoolean;
 import de.monticore.interpreter.calculations.MICalculationDouble;
 import de.monticore.interpreter.calculations.MICalculationInt;
 import de.monticore.interpreter.calculations.MICalculationValue;
-import de.monticore.interpreter.util.InterpreterData;
+import de.monticore.interpreter.util.InterpreterDataForBasicSymbols;
 import de.monticore.values.MCValueObject;
 import de.monticore.literals.mccommonliterals._ast.ASTBasicDoubleLiteral;
 import de.monticore.literals.mccommonliterals._ast.ASTBasicFloatLiteral;
@@ -28,9 +28,9 @@ import de.se_rwth.commons.logging.Log;
 public class MCCommonLiteralsInterpreter
     extends MCCommonLiteralsInheritanceHandler {
 
-  protected InterpreterData iData;
+  protected InterpreterDataForBasicSymbols iData;
 
-  public MCCommonLiteralsInterpreter(InterpreterData iData) {
+  public MCCommonLiteralsInterpreter(InterpreterDataForBasicSymbols iData) {
     this.iData = Preconditions.checkNotNull(iData);
   }
 

@@ -11,7 +11,7 @@ import de.monticore.interpreter.calculations.MICalculationVoid;
 import de.monticore.interpreter.frames.MIFrame;
 import de.monticore.symbols.basicsymbols.interpreter.frames.MIFrameLayoutForBasicSymbols;
 import de.monticore.interpreter.setters.MISetter;
-import de.monticore.interpreter.util.InterpreterData;
+import de.monticore.interpreter.util.InterpreterDataForBasicSymbols;
 import de.monticore.values.MCValue;
 import de.monticore.values.MCValueFactory;
 import de.monticore.values.MCValueObject;
@@ -50,9 +50,9 @@ import static de.monticore.interpreter.util.NativeStorageSelector.isStoredAsInt;
 public class SetExpressionsInterpreter
     extends SetExpressionsInheritanceHandler {
 
-  protected InterpreterData iData;
+  protected InterpreterDataForBasicSymbols iData;
 
-  public SetExpressionsInterpreter(InterpreterData iData) {
+  public SetExpressionsInterpreter(InterpreterDataForBasicSymbols iData) {
     this.iData = Preconditions.checkNotNull(iData);
   }
 

@@ -69,23 +69,7 @@ public interface MCValue {
     return false;
   }
 
-  default boolean isFlowControlSignal() {
-    return false;
-  }
-
   default boolean isError() {
-    return false;
-  }
-
-  default boolean isBreak() {
-    return false;
-  }
-
-  default boolean isContinue() {
-    return false;
-  }
-
-  default boolean isReturn() {
     return false;
   }
 
@@ -139,10 +123,6 @@ public interface MCValue {
   }
 
   default String asError() {
-    throw new IllegalStateException();
-  }
-
-  default MCValue asReturnValue() {
     throw new IllegalStateException();
   }
 

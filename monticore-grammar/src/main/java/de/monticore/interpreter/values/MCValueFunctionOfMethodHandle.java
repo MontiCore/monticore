@@ -1,7 +1,11 @@
 // (c) https://github.com/MontiCore/monticore
-package de.monticore.values;
+package de.monticore.interpreter.values;
 
 import com.google.common.base.Preconditions;
+import de.monticore.values.MCValue;
+import de.monticore.values.MCValueFactory;
+import de.monticore.values.MCValueFunction;
+import de.monticore.values.MCValueVoid;
 
 import java.lang.invoke.MethodHandle;
 import java.util.Collections;
@@ -62,7 +66,7 @@ public class MCValueFunctionOfMethodHandle implements MCValueFunction {
       throw new IllegalStateException(t);
     }
     if (methodHandle.type().returnType().equals(void.class)) {
-      return new MCValueVoid();
+      return MCValueVoid.INSTANCE;
     }
     return MCValueFactory.createMIValueOfNativeObject(result);
   }

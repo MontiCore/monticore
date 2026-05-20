@@ -13,11 +13,11 @@ import de.monticore.interpreter.calculations.MICalculationInt;
 import de.monticore.interpreter.calculations.MICalculationValue;
 import de.monticore.interpreter.calculations.MICalculationVoid;
 import de.monticore.interpreter.setters.MISetter;
-import de.monticore.interpreter.util.InterpreterData;
+import de.monticore.interpreter.util.InterpreterDataForBasicSymbols;
 import de.monticore.interpreter.util.InterpreterVisitorOperatorCalculator;
 import de.monticore.interpreter.util.SymbolAccessHandler;
 import de.monticore.interpreter.util.TypeDispatcherHotfix;
-import de.monticore.interpreter.values.MCSignalReturnForInterpreter;
+import de.monticore.interpreter.signals.MCSignalReturn;
 import de.monticore.symbols.basicsymbols.interpreter.frames.MIFrameLayoutForBasicSymbols;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
@@ -44,7 +44,7 @@ import static de.monticore.types3.TypeCheck3.typeOf;
 public class CommonExpressionsInterpreter
     extends CommonExpressionsInheritanceHandler {
 
-  protected InterpreterData iData;
+  protected InterpreterDataForBasicSymbols iData;
 
   protected InterpreterVisitorOperatorCalculator opCalculator =
       new InterpreterVisitorOperatorCalculator();
@@ -53,7 +53,7 @@ public class CommonExpressionsInterpreter
   protected SymbolAccessHandler symbolAccessHandler =
       new SymbolAccessHandler();
 
-  public CommonExpressionsInterpreter(InterpreterData iData) {
+  public CommonExpressionsInterpreter(InterpreterDataForBasicSymbols iData) {
     this.iData = Preconditions.checkNotNull(iData);
   }
 
@@ -235,7 +235,7 @@ public class CommonExpressionsInterpreter
       try {
         return functionValue.asFunction().execute(argumentValues);
       }
-      catch (MCSignalReturnForInterpreter returnSignal) {
+      catch (MCSignalReturn returnSignal) {
         // could be split
         return returnSignal.getValue().orElseGet(() -> MCValueVoid.INSTANCE);
       }

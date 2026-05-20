@@ -15,9 +15,7 @@ import de.monticore.expressions.lambdaexpressions.interpreter.LambdaExpressionsI
 import de.monticore.interpreter.calculations.MICalculation;
 import de.monticore.interpreter.util.AClass;
 import de.monticore.interpreter.util.InterpreterAccess4Tests;
-import de.monticore.interpreter.util.InterpreterData;
-import de.monticore.interpreter.util.TraverserAndIData;
-import de.monticore.values.MCValue;
+import de.monticore.interpreter.util.InterpreterDataForBasicSymbols;
 import de.monticore.literals.mccommonliterals.interpreter.MCCommonLiteralsInterpreter;
 import de.monticore.ocl.oclexpressions.cocos.IterateExpressionVariableUsageIsCorrect;
 import de.monticore.ocl.oclexpressions.symboltable.OCLExpressionsSymbolTableCompleter;
@@ -53,6 +51,7 @@ import de.monticore.tests.interpretertestlang._visitor.InterpreterTestLangTraver
 import de.monticore.tests.interpretertestlang.interpreter.InterpreterTestLangInterpreter;
 import de.monticore.tests.interpretertestlang.types3.InterpreterTestLangTypeCheck3;
 import de.monticore.types.mcbasictypes.cocos.QualifiedTypeHasNoTypeParameters;
+import de.monticore.values.MCValue;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -118,7 +117,7 @@ public abstract class InterpreterTestAbstract extends AbstractMCTest {
   }
 
   protected InterpreterAccess4Tests initializeInterpreter() {
-    InterpreterData iData = new InterpreterData();
+    InterpreterDataForBasicSymbols iData = new InterpreterDataForBasicSymbols();
     InterpreterTestLangTraverser traverser = InterpreterTestLangMill.inheritanceTraverser();
     traverser.setExpressionsBasisHandler(new ExpressionsBasisInterpreter(iData));
     traverser.setCommonExpressionsHandler(new CommonExpressionsInterpreter(iData));
@@ -132,9 +131,8 @@ public abstract class InterpreterTestAbstract extends AbstractMCTest {
     traverser.setMCCommonStatementsHandler(new MCCommonStatementsInterpreter(iData));
     traverser.setMCVarDeclarationStatementsHandler(new MCVarDeclarationStatementsInterpreter(iData));
     traverser.setInterpreterTestLangHandler(new InterpreterTestLangInterpreter(iData));
-    InterpreterAccess4Tests access = new InterpreterAccess4Tests(
-        new TraverserAndIData(traverser, iData)
-    );
+    InterpreterAccess4Tests access =
+        new InterpreterAccess4Tests(traverser, iData);
     return access;
   }
 
@@ -259,7 +257,7 @@ public abstract class InterpreterTestAbstract extends AbstractMCTest {
     MICalculation calculation = interpreter.getCalculation(ast);
     assertNoFindings();
     assertNotNull(calculation);
-    InterpreterData iData = interpreter.getInterpreterData();
+    InterpreterDataForBasicSymbols iData = interpreter.getInterpreterData();
     assertEquals(0, iData.getFrameLayoutStack().size());
     assertTrue(!iData.isPresentCalculation());
     return calculation;

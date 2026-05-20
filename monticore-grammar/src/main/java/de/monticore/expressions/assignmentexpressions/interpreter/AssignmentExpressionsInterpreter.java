@@ -20,7 +20,7 @@ import de.monticore.interpreter.setters.MISetterBoolean;
 import de.monticore.interpreter.setters.MISetterDouble;
 import de.monticore.interpreter.setters.MISetterInt;
 import de.monticore.interpreter.setters.MISetterValue;
-import de.monticore.interpreter.util.InterpreterData;
+import de.monticore.interpreter.util.InterpreterDataForBasicSymbols;
 import de.monticore.interpreter.util.InterpreterVisitorOperatorCalculator;
 import de.monticore.interpreter.util.NativeStorageSelector;
 import de.monticore.values.MCValue;
@@ -39,12 +39,12 @@ import static de.monticore.types3.TypeCheck3.typeOf;
 public class AssignmentExpressionsInterpreter
     extends AssignmentExpressionsInheritanceHandler {
 
-  protected InterpreterData iData;
+  protected InterpreterDataForBasicSymbols iData;
 
   protected InterpreterVisitorOperatorCalculator opCalculator =
       new InterpreterVisitorOperatorCalculator();
 
-  public AssignmentExpressionsInterpreter(InterpreterData iData) {
+  public AssignmentExpressionsInterpreter(InterpreterDataForBasicSymbols iData) {
     this.iData = Preconditions.checkNotNull(iData);
   }
 

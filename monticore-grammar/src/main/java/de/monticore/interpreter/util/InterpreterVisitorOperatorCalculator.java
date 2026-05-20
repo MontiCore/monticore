@@ -6,9 +6,9 @@ import de.monticore.interpreter.calculations.MICalculationBoolean;
 import de.monticore.interpreter.calculations.MICalculationDouble;
 import de.monticore.interpreter.calculations.MICalculationInt;
 import de.monticore.interpreter.calculations.MICalculationValue;
+import de.monticore.types.check.SymTypeExpression;
 import de.monticore.values.MCValue;
 import de.monticore.values.MCValueObject;
-import de.monticore.types.check.SymTypeExpression;
 
 import java.util.function.BiPredicate;
 import java.util.function.DoubleBinaryOperator;
