@@ -9,7 +9,7 @@ import de.monticore.interpreter.calculations.MICalculationBoolean;
 import de.monticore.interpreter.calculations.MICalculationDouble;
 import de.monticore.interpreter.calculations.MICalculationInt;
 import de.monticore.interpreter.calculations.MICalculationValue;
-import de.monticore.interpreter.frames.MIFrameLayout;
+import de.monticore.interpreter.frames.MIFrameLayoutForBasicSymbols;
 import de.monticore.interpreter.util.InterpreterData;
 import de.monticore.interpreter.values.MIValue;
 import de.monticore.types.check.SymTypeExpression;
@@ -30,7 +30,7 @@ public class ExpressionCalculationLogVisitor
     this.iData = Preconditions.checkNotNull(iData);
   }
 
-  protected Stack<MIFrameLayout> getScopeLayoutStack() {
+  protected Stack<MIFrameLayoutForBasicSymbols> getScopeLayoutStack() {
     return iData.getFrameLayoutStack();
   }
 

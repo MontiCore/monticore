@@ -7,7 +7,8 @@ import de.monticore.expressions.lambdaexpressions._ast.ASTLambdaParameter;
 import de.monticore.expressions.lambdaexpressions._visitor.LambdaExpressionsInheritanceHandler;
 import de.monticore.interpreter.calculations.MICalculation;
 import de.monticore.interpreter.calculations.MICalculationValue;
-import de.monticore.interpreter.frames.MIFrameLayout;
+import de.monticore.interpreter.frames.MIFrameLayoutForBasicSymbols;
+import de.monticore.interpreter.setters.MISetter;
 import de.monticore.interpreter.util.InterpreterData;
 import de.monticore.interpreter.values.MIValueFunctionOfModel;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
@@ -31,16 +32,20 @@ public class LambdaExpressionsInterpreter
   @Override
   public void traverse(ASTLambdaExpression lambda) {
     // parameters
-    MIFrameLayout lambdaScopeLayout = new MIFrameLayout(
-        iData.getFrameLayoutStack().peek()
-    );
-    List<VariableSymbol> pars = lambda.getLambdaParameters()
+    MIFrameLayoutForBasicSymbols lambdaScopeLayout =
+        new MIFrameLayoutForBasicSymbols(
+            iData.getFrameLayoutStack().peek()
+        );
+    List<VariableSymbol> paramSyms = lambda.getLambdaParameters()
         .streamLambdaParameters()
         .map(ASTLambdaParameter::getSymbol)
         .toList();
-    for (VariableSymbol par : pars) {
+    for (VariableSymbol par : paramSyms) {
       lambdaScopeLayout.declareVariable(par);
     }
+    List<MISetter> paramSetters = paramSyms.stream()
+        .map(lambdaScopeLayout::getVariableSetter)
+        .toList();
 
     // body
     iData.getFrameLayoutStack().push(lambdaScopeLayout);
@@ -51,7 +56,7 @@ public class LambdaExpressionsInterpreter
     // lambda
     MICalculationValue calc = currentFrame ->
         new MIValueFunctionOfModel(
-            currentFrame, lambdaScopeLayout, pars, bodyCalc
+            currentFrame, lambdaScopeLayout, paramSetters, bodyCalc
         );
     iData.putCalculation(calc);
   }

@@ -9,7 +9,7 @@ import de.monticore.interpreter.calculations.MICalculationInt;
 import de.monticore.interpreter.calculations.MICalculationValue;
 import de.monticore.interpreter.calculations.MICalculationVoid;
 import de.monticore.interpreter.frames.MIFrame;
-import de.monticore.interpreter.frames.MIFrameLayout;
+import de.monticore.interpreter.frames.MIFrameLayoutForBasicSymbols;
 import de.monticore.interpreter.setters.MISetter;
 import de.monticore.interpreter.util.InterpreterData;
 import de.monticore.interpreter.values.MIValue;
@@ -56,7 +56,7 @@ public class SetExpressionsInterpreter
     this.iData = Preconditions.checkNotNull(iData);
   }
 
-  protected Stack<MIFrameLayout> getScopeLayoutStack() {
+  protected Stack<MIFrameLayoutForBasicSymbols> getScopeLayoutStack() {
     return iData.getFrameLayoutStack();
   }
 
@@ -215,11 +215,11 @@ public class SetExpressionsInterpreter
   public void traverse(ASTSetComprehension node) {
     // create a new scope layout
     // this has to be done prior to creating the MICalculations
-    final MIFrameLayout frameLayout =
+    final MIFrameLayoutForBasicSymbols frameLayout =
         getScopeLayoutStack().push(
             getScopeLayoutStack().isEmpty() ?
-                new MIFrameLayout() :
-                new MIFrameLayout(getScopeLayoutStack().peek())
+                new MIFrameLayoutForBasicSymbols() :
+                new MIFrameLayoutForBasicSymbols(getScopeLayoutStack().peek())
         );
     for (ASTSetComprehensionItem item : node.getSetComprehensionItemList()) {
       VariableSymbol varSym = null;
@@ -281,7 +281,7 @@ public class SetExpressionsInterpreter
 
   protected SetComprehensionItemCalculation getCalculationOfGenerator(
       ASTGeneratorDeclaration generator,
-      MIFrameLayout frameLayout
+      MIFrameLayoutForBasicSymbols frameLayout
   ) {
     Preconditions.checkNotNull(generator);
     Preconditions.checkNotNull(generator.getSymbol());
@@ -304,7 +304,7 @@ public class SetExpressionsInterpreter
 
   protected SetComprehensionItemCalculation getCalculationOfFilter(
       ASTExpression expr,
-      MIFrameLayout frameLayout
+      MIFrameLayoutForBasicSymbols frameLayout
   ) {
     Preconditions.checkNotNull(expr);
     expr.accept(getTraverser());
@@ -319,7 +319,7 @@ public class SetExpressionsInterpreter
 
   protected SetComprehensionItemCalculation getCalculationOfVariableDeclaration(
       ASTSetVariableDeclaration varDecl,
-      MIFrameLayout frameLayout
+      MIFrameLayoutForBasicSymbols frameLayout
   ) {
     Preconditions.checkNotNull(varDecl);
     Preconditions.checkNotNull(varDecl.getSymbol());

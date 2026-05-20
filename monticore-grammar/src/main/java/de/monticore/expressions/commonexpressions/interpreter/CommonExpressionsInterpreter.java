@@ -5,7 +5,6 @@ import com.google.common.base.Preconditions;
 import de.monticore.expressions.commonexpressions._ast.*;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsInheritanceHandler;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.expressions.expressionsbasis.interpreter.SymbolAccessHandler;
 import de.monticore.expressions.interpreter.util.InterpreterOperatorTraverser;
 import de.monticore.interpreter.calculations.MICalculation;
 import de.monticore.interpreter.calculations.MICalculationBoolean;
@@ -13,14 +12,15 @@ import de.monticore.interpreter.calculations.MICalculationDouble;
 import de.monticore.interpreter.calculations.MICalculationInt;
 import de.monticore.interpreter.calculations.MICalculationValue;
 import de.monticore.interpreter.calculations.MICalculationVoid;
-import de.monticore.interpreter.frames.MIFrameLayout;
+import de.monticore.interpreter.frames.MIFrameLayoutForBasicSymbols;
 import de.monticore.interpreter.setters.MISetter;
 import de.monticore.interpreter.util.InterpreterData;
 import de.monticore.interpreter.util.InterpreterVisitorOperatorCalculator;
+import de.monticore.interpreter.util.SymbolAccessHandler;
 import de.monticore.interpreter.util.TypeDispatcherHotfix;
-import de.monticore.interpreter.values.MIValueFunction;
 import de.monticore.interpreter.values.MISignalReturn;
 import de.monticore.interpreter.values.MIValue;
+import de.monticore.interpreter.values.MIValueFunction;
 import de.monticore.interpreter.values.MIValueVoid;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
@@ -262,7 +262,7 @@ public class CommonExpressionsInterpreter
     SymTypeExpression exprType = normalize(typeOf(node));
     Preconditions.checkState(exprType.getSourceInfo().getSourceSymbol().isPresent());
     ISymbol exprSourceSym = exprType.getSourceInfo().getSourceSymbol().get();
-    MIFrameLayout frameLayout = iData.getFrameLayoutStack().peek();
+    MIFrameLayoutForBasicSymbols frameLayout = iData.getFrameLayoutStack().peek();
 
     // aka not static, but BasicSymbols count as non-relative,
     // even though they are technically not marked as static
@@ -289,8 +289,8 @@ public class CommonExpressionsInterpreter
       resSetterOpt = symbolAccess.setter();
     }
     else {
-      SymbolAccessHandler.SymbolAccess symbolAccess =
-          symbolAccessHandler.getSymbolAccess(exprSourceSym, frameLayout);
+      SymbolAccessHandler.SymbolAccess symbolAccess = symbolAccessHandler
+          .getSymbolAccess(exprSourceSym, frameLayout, iData);
       resGetter = symbolAccess.getter();
       resSetterOpt = symbolAccess.setter();
     }

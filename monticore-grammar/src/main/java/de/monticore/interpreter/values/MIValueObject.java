@@ -9,10 +9,6 @@ import com.google.common.base.Preconditions;
  * Note: we deliberately do not interpret Objects based on Symbols alone;
  * We assume that all (Object-)Types are already available as Java classes,
  * as the use-cases for runtime-definition of types are rather rare.
- * <p>
- * For interacting with these within the interpreter,
- * also refer to
- * {@link de.monticore.expressions.expressionsbasis.interpreter.SymbolAccessHandler}.
  */
 public class MIValueObject implements MIValue {
 

@@ -1,5 +1,5 @@
 // (c) https://github.com/MontiCore/monticore
-package de.monticore.expressions.expressionsbasis.interpreter;
+package de.monticore.interpreter.util;
 
 import com.google.common.base.Preconditions;
 import de.monticore.interpreter.calculations.MICalculation;
@@ -8,13 +8,13 @@ import de.monticore.interpreter.calculations.MICalculationDouble;
 import de.monticore.interpreter.calculations.MICalculationInt;
 import de.monticore.interpreter.calculations.MICalculationValue;
 import de.monticore.interpreter.frames.MIFrame;
-import de.monticore.interpreter.frames.MIFrameLayout;
+import de.monticore.interpreter.frames.MIFrameLayoutForBasicSymbols;
 import de.monticore.interpreter.setters.MISetter;
 import de.monticore.interpreter.setters.MISetterBoolean;
 import de.monticore.interpreter.setters.MISetterDouble;
 import de.monticore.interpreter.setters.MISetterInt;
-import de.monticore.interpreter.util.TypeDispatcherHotfix;
 import de.monticore.interpreter.values.MIValueFactory;
+import de.monticore.interpreter.values.MIValueFunction;
 import de.monticore.interpreter.values.MIValueFunctionOfMethodHandle;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
@@ -27,10 +27,12 @@ import org.apache.commons.lang3.NotImplementedException;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.lang.reflect.Field;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static de.monticore.interpreter.util.NativeStorageSelector.switchByFormat;
 import static de.monticore.interpreter.util.TypeSymbolNativityChecker.getNativeJavaClass;
@@ -56,7 +58,8 @@ public class SymbolAccessHandler {
 
   public SymbolAccess getSymbolAccess(
       ISymbol exprSourceSym,
-      MIFrameLayout frameLayout
+      MIFrameLayoutForBasicSymbols frameLayout,
+      InterpreterData iData
   ) {
     MICalculation getter;
     Optional<MISetter> setter = Optional.empty();
@@ -77,8 +80,9 @@ public class SymbolAccessHandler {
       if (isNativeJavaFunction(funcSym)) {
         if (TypeDispatcherHotfix.isMethodSymbol(funcSym)) {
           MethodSymbol methodSym = (MethodSymbol) funcSym;
+          final MethodHandle methodHandle = getHandleOfSymbol(methodSym);
           final MIValueFunctionOfMethodHandle staticMethodHandle =
-              new MIValueFunctionOfMethodHandle(methodSym);
+              new MIValueFunctionOfMethodHandle(methodHandle);
           getter = (MICalculationValue) frame -> staticMethodHandle;
         }
         else {
@@ -87,7 +91,9 @@ public class SymbolAccessHandler {
         }
       }
       else {
-        getter = (MICalculationValue) frame -> frame.getFunction(funcSym);
+        final Supplier<MIValueFunction> functionSupplier =
+            iData.getFunctionSupplier(funcSym);
+        getter = (MICalculationValue) frame -> functionSupplier.get();
       }
     }
     else {
@@ -98,7 +104,7 @@ public class SymbolAccessHandler {
 
   public SymbolAccess getSymbolAccess(
       ISymbol exprSourceSym,
-      MIFrameLayout frameLayout,
+      MIFrameLayoutForBasicSymbols frameLayout,
       SymTypeExpression objType,
       MICalculationValue objCalc
   ) {
@@ -113,11 +119,12 @@ public class SymbolAccessHandler {
         }
         else if (TypeDispatcherHotfix.isMethodSymbol(exprSourceSym)) {
           MethodSymbol methodSym = (MethodSymbol) exprSourceSym;
+          MethodHandle methodHandle = getHandleOfSymbol(methodSym);
           final MIValueFunctionOfMethodHandle unboundMethod =
-              new MIValueFunctionOfMethodHandle(methodSym);
+              new MIValueFunctionOfMethodHandle(methodHandle);
           getter = (MICalculationValue) frame -> {
             final Object thisPtr = objCalc.calculate(frame).asNativeObject();
-            return unboundMethod.bindThisPtr(thisPtr);
+            return unboundMethod.withBoundThisPtr(thisPtr);
           };
         }
         else {
@@ -149,7 +156,7 @@ public class SymbolAccessHandler {
     return new SymbolAccess(getter, setter);
   }
 
-  // Fields
+  // helper
 
   /**
    * creates a getter for a field
@@ -332,6 +339,51 @@ public class SymbolAccessHandler {
     catch (NoSuchFieldException | SecurityException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  /**
+   * Provides a {@link MethodHandle} provided a native Java method.
+   *
+   * @param methodSym the symbol of the native Java method
+   * @return the corresponding {@link MethodHandle}
+   */
+  protected MethodHandle getHandleOfSymbol(MethodSymbol methodSym) {
+    Preconditions.checkNotNull(methodSym);
+    Preconditions.checkState(isNativeJavaFunction(methodSym));
+    TypeSymbol surroundingType =
+        getEnclosingType(methodSym.getEnclosingScope()).get();
+    SymTypeExpression2JavaClassVisitor type2JavaVisitor =
+        new SymTypeExpression2JavaClassVisitor();
+    Class<?> clazz = type2JavaVisitor.calculate(surroundingType).get();
+
+    MethodHandles.Lookup lookup = MethodHandles.publicLookup();
+    MethodType methodType = type2JavaVisitor.calculate(
+        methodSym.getFunctionType().getType(),
+        methodSym.getFunctionType().getArgumentTypeList()
+    );
+    if (methodSym.isIsConstructor()) {
+      // Constructors "return void" for some reason
+      methodType = methodType.changeReturnType(void.class);
+    }
+
+    MethodHandle methodHandle;
+    try {
+      if (methodSym.isIsConstructor()) {
+        methodHandle = lookup.findConstructor(clazz, methodType);
+      }
+      else if (methodSym.isIsStatic()) {
+        methodHandle =
+            lookup.findStatic(clazz, methodSym.getName(), methodType);
+      }
+      else {
+        methodHandle =
+            lookup.findVirtual(clazz, methodSym.getName(), methodType);
+      }
+    }
+    catch (NoSuchMethodException | IllegalAccessException e) {
+      throw new IllegalArgumentException(e);
+    }
+    return methodHandle;
   }
 
 }

@@ -5,7 +5,6 @@ import de.monticore.interpreter.calculations.MICalculationValue;
 import de.monticore.interpreter.frames.MIFrame;
 import de.monticore.interpreter.frames.MIFrameLayout;
 import de.monticore.interpreter.setters.MISetter;
-import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 
 import java.util.List;
 
@@ -26,16 +25,27 @@ public class MIValueFunctionOfModel implements MIValueFunction {
   public MIValueFunctionOfModel(
       MIFrame parentFrame,
       MIFrameLayout frameLayout,
-      List<? extends VariableSymbol> paramSymbols,
+      List<MISetter> parameterSetters,
+      MICalculation calculation
+  ) {
+    this(
+        parentFrame,
+        frameLayout,
+        parameterSetters.toArray(new MISetter[0]),
+        calculation
+    );
+  }
+
+  public MIValueFunctionOfModel(
+      MIFrame parentFrame,
+      MIFrameLayout frameLayout,
+      MISetter[] parameterSetters,
       MICalculation calculation
   ) {
     this.parentFrame = parentFrame;
     this.frameLayout = frameLayout;
+    this.parameterSetters = parameterSetters;
     this.calculation = calculation.asCalculationValue();
-    this.parameterSetters =
-        paramSymbols.stream()
-            .map(frameLayout::getVariableSetter)
-            .toArray(MISetter[]::new);
   }
 
   /**

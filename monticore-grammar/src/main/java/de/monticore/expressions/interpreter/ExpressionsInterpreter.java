@@ -8,13 +8,14 @@ import de.monticore.interpreter.calculations.MICalculation;
 import de.monticore.interpreter.calculations.MICalculationValue;
 import de.monticore.interpreter.calculations.MICalculationVoid;
 import de.monticore.interpreter.frames.MIFrame;
-import de.monticore.interpreter.frames.MIFrameLayout;
+import de.monticore.interpreter.frames.MIFrameForBasicSymbols;
+import de.monticore.interpreter.frames.MIFrameLayoutForBasicSymbols;
 import de.monticore.interpreter.util.InterpreterData;
 import de.monticore.interpreter.util.TraverserAndIData;
-import de.monticore.interpreter.values.MIValueError;
-import de.monticore.interpreter.values.MIValueFunction;
 import de.monticore.interpreter.values.MISignalFlowControl;
 import de.monticore.interpreter.values.MIValue;
+import de.monticore.interpreter.values.MIValueError;
+import de.monticore.interpreter.values.MIValueFunction;
 import de.monticore.interpreter.values.MIValueVoid;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
@@ -32,7 +33,8 @@ import java.util.WeakHashMap;
 public class ExpressionsInterpreter {
 
   protected TraverserAndIData<InterpreterData> interpreterTraverser;
-  protected MIFrame topMostFrame = new MIFrame(new MIFrameLayout());
+  protected MIFrameForBasicSymbols topMostFrame =
+      new MIFrameForBasicSymbols(new MIFrameLayoutForBasicSymbols());
   protected Map<ASTNode, MICalculation> calculationCache = new WeakHashMap<>();
 
   public ExpressionsInterpreter(
@@ -51,7 +53,7 @@ public class ExpressionsInterpreter {
     this(new TraverserAndIData<>(traverser, iData));
   }
 
-  public MIFrame getTopMostFrame() {
+  public MIFrameForBasicSymbols getTopMostFrame() {
     return topMostFrame;
   }
 
@@ -106,7 +108,7 @@ public class ExpressionsInterpreter {
    */
   public void addVariable(VariableSymbol varSym) {
     Preconditions.checkNotNull(varSym);
-    MIFrameLayout newLayout = topMostFrame.getFrameLayout().clone();
+    MIFrameLayoutForBasicSymbols newLayout = topMostFrame.getFrameLayout().clone();
     newLayout.declareVariable(varSym);
     topMostFrame = topMostFrame.createExpandedCopy(newLayout);
   }
@@ -147,7 +149,7 @@ public class ExpressionsInterpreter {
   ) {
     Preconditions.checkNotNull(functionSym);
     Preconditions.checkNotNull(impl);
-    topMostFrame.getFrameLayout().defineFunction(functionSym, impl);
+    interpreterTraverser.data().defineFunction(functionSym, impl);
   }
 
   /**
@@ -170,7 +172,7 @@ public class ExpressionsInterpreter {
    * that can be executed with a given frame.
    * <p>
    * IMPORTANT: Any used variable must be declared
-   * in their respective {@link MIFrameLayout}
+   * in their respective {@link MIFrameLayoutForBasicSymbols}
    * _before_ calling this method.
    *
    * @param node the node describing the behavior

@@ -5,6 +5,7 @@ import com.google.common.base.Preconditions;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisInheritanceHandler;
 import de.monticore.interpreter.util.InterpreterData;
+import de.monticore.interpreter.util.SymbolAccessHandler;
 import de.monticore.symboltable.ISymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types3.TypeCheck3;
@@ -34,7 +35,7 @@ public class ExpressionsBasisInterpreter
     Preconditions.checkState(sourceSymOpt.isPresent());
     ISymbol sourceSym = sourceSymOpt.get();
     SymbolAccessHandler.SymbolAccess symbolAccess = symbolAccessHandler
-        .getSymbolAccess(sourceSym, iData.getFrameLayoutStack().peek());
+        .getSymbolAccess(sourceSym, iData.getFrameLayoutStack().peek(), iData);
     iData.putCalculation(symbolAccess.getter());
     if (symbolAccess.setter().isPresent()) {
       iData.putSetter(symbolAccess.setter().get());

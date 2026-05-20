@@ -2,19 +2,11 @@
 package de.monticore.interpreter.values;
 
 import com.google.common.base.Preconditions;
-import de.monticore.interpreter.util.SymTypeExpression2JavaClassVisitor;
-import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
-import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
 
 import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-
-import static de.monticore.interpreter.util.TypeSymbolNativityChecker.isNativeJavaFunction;
-import static de.monticore.types3.util.TypeContextCalculator.getEnclosingType;
 
 public class MIValueFunctionOfMethodHandle implements MIValueFunction {
 
@@ -22,10 +14,6 @@ public class MIValueFunctionOfMethodHandle implements MIValueFunction {
   protected final MethodHandle methodHandle;
   // wrapped method that has specific arity
   protected final Map<Integer, MethodHandle> spreaderByArity;
-
-  public MIValueFunctionOfMethodHandle(MethodSymbol methodSym) {
-    this(getHandleOfSymbol(methodSym));
-  }
 
   public MIValueFunctionOfMethodHandle(MethodHandle methodHandle) {
     this.methodHandle = methodHandle;
@@ -39,7 +27,15 @@ public class MIValueFunctionOfMethodHandle implements MIValueFunction {
     }
   }
 
-  public MIValueFunctionOfMethodHandle bindThisPtr(Object thisPtr) {
+  /**
+   * binds a {@code this} object to the MethodHandle
+   * to create a function that already contains the reference to the object.
+   * Only applicable to non-static methods.
+   *
+   * @param thisPtr the {@code this} object to be bound
+   * @return a new function bound to the {@code this} object
+   */
+  public MIValueFunctionOfMethodHandle withBoundThisPtr(Object thisPtr) {
     return new MIValueFunctionOfMethodHandle(methodHandle.bindTo(thisPtr));
   }
 
@@ -69,24 +65,6 @@ public class MIValueFunctionOfMethodHandle implements MIValueFunction {
       return new MIValueVoid();
     }
     return MIValueFactory.createMIValueOfNativeObject(result);
-  }
-
-  protected MethodHandle getSpreader(int arity) {
-    MethodHandle cached = spreaderByArity.get(arity);
-    if (cached != null) {
-      return cached;
-    }
-
-    Preconditions.checkState(methodHandle.isVarargsCollector());
-    int minVarArgCallArity = methodHandle.type().parameterCount() - 1;
-    Preconditions.checkState(arity >= minVarArgCallArity);
-    int collectedVarArgCount = arity - minVarArgCallArity;
-    Class<?> varArgArrayType = methodHandle.type().lastParameterType();
-    MethodHandle fixedArity = methodHandle.asFixedArity()
-        .asCollector(varArgArrayType, collectedVarArgCount);
-    MethodHandle spreader = fixedArity.asSpreader(Object[].class, arity);
-    spreaderByArity.put(arity, spreader);
-    return spreader;
   }
 
   @Override
@@ -139,44 +117,22 @@ public class MIValueFunctionOfMethodHandle implements MIValueFunction {
     return targetType.cast(value);
   }
 
-  // only for constructor
-  protected static MethodHandle getHandleOfSymbol(MethodSymbol methodSym) {
-    Preconditions.checkNotNull(methodSym);
-    Preconditions.checkState(isNativeJavaFunction(methodSym));
-    TypeSymbol surroundingType =
-        getEnclosingType(methodSym.getEnclosingScope()).get();
-    SymTypeExpression2JavaClassVisitor type2JavaVisitor =
-        new SymTypeExpression2JavaClassVisitor();
-    Class<?> clazz = type2JavaVisitor.calculate(surroundingType).get();
-
-    MethodHandles.Lookup lookup = MethodHandles.publicLookup();
-    MethodType methodType = type2JavaVisitor.calculate(
-        methodSym.getFunctionType().getType(),
-        methodSym.getFunctionType().getArgumentTypeList()
-    );
-    if (methodSym.isIsConstructor()) {
-      // Constructors "return void" for some reason
-      methodType = methodType.changeReturnType(void.class);
+  protected MethodHandle getSpreader(int arity) {
+    MethodHandle cached = spreaderByArity.get(arity);
+    if (cached != null) {
+      return cached;
     }
 
-    MethodHandle methodHandle;
-    try {
-      if (methodSym.isIsConstructor()) {
-        methodHandle = lookup.findConstructor(clazz, methodType);
-      }
-      else if (methodSym.isIsStatic()) {
-        methodHandle =
-            lookup.findStatic(clazz, methodSym.getName(), methodType);
-      }
-      else {
-        methodHandle =
-            lookup.findVirtual(clazz, methodSym.getName(), methodType);
-      }
-    }
-    catch (NoSuchMethodException | IllegalAccessException e) {
-      throw new IllegalArgumentException(e);
-    }
-    return methodHandle;
+    Preconditions.checkState(methodHandle.isVarargsCollector());
+    int minVarArgCallArity = methodHandle.type().parameterCount() - 1;
+    Preconditions.checkState(arity >= minVarArgCallArity);
+    int collectedVarArgCount = arity - minVarArgCallArity;
+    Class<?> varArgArrayType = methodHandle.type().lastParameterType();
+    MethodHandle fixedArity = methodHandle.asFixedArity()
+        .asCollector(varArgArrayType, collectedVarArgCount);
+    MethodHandle spreader = fixedArity.asSpreader(Object[].class, arity);
+    spreaderByArity.put(arity, spreader);
+    return spreader;
   }
 
 }
