@@ -45,7 +45,11 @@ public class InterpreterStatementsTest extends InterpreterTestAbstract {
         Arguments.of("int x; if (true) {x = 2;} else {x = 3;}; x", 2),
         Arguments.of("int x; if (false) {x = 2;} else {x = 3;}; x", 3),
         Arguments.of("int x = 1; if (true) {x = 2;} x", 2),
-        Arguments.of("int x = 1; if (false) {x = 2;} x", 1)
+        Arguments.of("int x = 1; if (false) {x = 2;} x", 1),
+        Arguments.of("int x = 1; while (x < 0) {x++;} x", 10),
+        Arguments.of("int x = 1; while (false) {x++;} x", 1),
+        Arguments.of("int x = 1; do {x++;} while (x < 10) x", 10),
+        Arguments.of("int x = 1; do {x++;} while (false) x", 2)
     );
   }
 
