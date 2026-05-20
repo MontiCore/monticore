@@ -1,7 +1,7 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.interpreter;
 
-import de.monticore.interpreter.values.MIValue;
+import de.monticore.values.MCValue;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -18,17 +18,17 @@ public class InterpreterStatementsTest extends InterpreterTestAbstract {
 
   @Test
   void testAssertStatementFailure() {
-    MIValue miValue = interpret("assert false;");
-    assertTrue(miValue.isError());
-    assertInstanceOf(AssertionError.class, miValue.asNativeObject());
+    MCValue MCValue = interpret("assert false;");
+    assertTrue(MCValue.isError());
+    assertInstanceOf(AssertionError.class, MCValue.asNativeObject());
   }
 
   @Test
   void testAssertStatementFailureWithMessage() {
-    MIValue miValue = interpret("assert false : \"message\";");
-    assertTrue(miValue.isError());
-    assertInstanceOf(AssertionError.class, miValue.asNativeObject());
-    AssertionError error = (AssertionError) miValue.asNativeObject();
+    MCValue MCValue = interpret("assert false : \"message\";");
+    assertTrue(MCValue.isError());
+    assertInstanceOf(AssertionError.class, MCValue.asNativeObject());
+    AssertionError error = (AssertionError) MCValue.asNativeObject();
     assertEquals("message", error.getMessage());
   }
 

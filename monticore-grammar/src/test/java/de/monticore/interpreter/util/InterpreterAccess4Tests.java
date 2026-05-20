@@ -3,7 +3,7 @@ package de.monticore.interpreter.util;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.interpreter.calculations.MICalculation;
-import de.monticore.interpreter.values.MIValue;
+import de.monticore.values.MCValue;
 import de.monticore.statements.interpreter.StatementsInterpreter;
 import de.monticore.visitor.ITraverser;
 
@@ -30,7 +30,7 @@ public class InterpreterAccess4Tests extends StatementsInterpreter {
   }
 
   @Override
-  public MIValue interpretNode(ASTNode node) {
+  public MCValue interpretNode(ASTNode node) {
     return super.interpretNode(node);
   }
 

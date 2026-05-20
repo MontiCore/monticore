@@ -12,20 +12,20 @@ import de.monticore.interpreter.calculations.MICalculationDouble;
 import de.monticore.interpreter.calculations.MICalculationInt;
 import de.monticore.interpreter.calculations.MICalculationValue;
 import de.monticore.interpreter.calculations.MICalculationVoid;
-import de.monticore.interpreter.frames.MIFrameLayoutForBasicSymbols;
 import de.monticore.interpreter.setters.MISetter;
 import de.monticore.interpreter.util.InterpreterData;
 import de.monticore.interpreter.util.InterpreterVisitorOperatorCalculator;
 import de.monticore.interpreter.util.SymbolAccessHandler;
 import de.monticore.interpreter.util.TypeDispatcherHotfix;
-import de.monticore.interpreter.values.MISignalReturn;
-import de.monticore.interpreter.values.MIValue;
-import de.monticore.interpreter.values.MIValueFunction;
-import de.monticore.interpreter.values.MIValueVoid;
+import de.monticore.interpreter.values.MCSignalReturnForInterpreter;
+import de.monticore.symbols.basicsymbols.interpreter.frames.MIFrameLayoutForBasicSymbols;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
 import de.monticore.symboltable.ISymbol;
 import de.monticore.types.check.SymTypeExpression;
+import de.monticore.values.MCValue;
+import de.monticore.values.MCValueFunction;
+import de.monticore.values.MCValueVoid;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -224,10 +224,10 @@ public class CommonExpressionsInterpreter
 
     SymTypeExpression returnType = normalize(typeOf(node));
     MICalculationValue callCalcValue = frame -> {
-      final MIValueFunction functionValue =
+      final MCValueFunction functionValue =
           functionCalc.calculate(frame).asFunction();
-      final MIValue[] argumentValues =
-          new MIValue[argumentCalcs.size()];
+      final MCValue[] argumentValues =
+          new MCValue[argumentCalcs.size()];
       for (int i = 0; i < argumentCalcs.size(); i++) {
         argumentValues[i] = argumentCalcs.get(i)
             .asCalculationValue().calculate(frame);
@@ -235,9 +235,9 @@ public class CommonExpressionsInterpreter
       try {
         return functionValue.asFunction().execute(argumentValues);
       }
-      catch (MISignalReturn returnSignal) {
+      catch (MCSignalReturnForInterpreter returnSignal) {
         // could be split
-        return returnSignal.getValue().orElseGet(() -> MIValueVoid.INSTANCE);
+        return returnSignal.getValue().orElseGet(() -> MCValueVoid.INSTANCE);
       }
     };
     // make the calculation not break due to recursion
@@ -363,7 +363,7 @@ public class CommonExpressionsInterpreter
     // this may need to be even more conservative for extreme cases
     final int stackSizePerCustomThread = mb / 100 * callDepthPerCustomThread;
     return currentFrame -> {
-      final MIValue result;
+      final MCValue result;
       final int currentCallDepth = callDepth.get();
       if (
           (
@@ -376,7 +376,7 @@ public class CommonExpressionsInterpreter
         callDepth.set(callDepth.get() - 1);
       }
       else {
-        final MIValue[] resultStorage = new MIValue[1];
+        final MCValue[] resultStorage = new MCValue[1];
         final Runnable recursiveRunnable = () -> {
           isOnCustomStack.set(true);
           resultStorage[0] = recursiveCalc.calculate(currentFrame);

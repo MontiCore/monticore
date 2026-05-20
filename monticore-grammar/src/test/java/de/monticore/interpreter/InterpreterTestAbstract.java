@@ -17,7 +17,7 @@ import de.monticore.interpreter.util.AClass;
 import de.monticore.interpreter.util.InterpreterAccess4Tests;
 import de.monticore.interpreter.util.InterpreterData;
 import de.monticore.interpreter.util.TraverserAndIData;
-import de.monticore.interpreter.values.MIValue;
+import de.monticore.values.MCValue;
 import de.monticore.literals.mccommonliterals.interpreter.MCCommonLiteralsInterpreter;
 import de.monticore.ocl.oclexpressions.cocos.IterateExpressionVariableUsageIsCorrect;
 import de.monticore.ocl.oclexpressions.symboltable.OCLExpressionsSymbolTableCompleter;
@@ -265,18 +265,18 @@ public abstract class InterpreterTestAbstract extends AbstractMCTest {
     return calculation;
   }
 
-  protected MIValue interpret(String modelStr) {
+  protected MCValue interpret(String modelStr) {
     ASTInterpreterInput ast = getPreparedAST(modelStr);
     // explicitly get the calculation to check if there are errors
     getCalculation(ast);
-    MIValue value = interpreter.interpretNode(ast);
+    MCValue value = interpreter.interpretNode(ast);
     assertNoFindings();
     assertNotNull(value);
     return value;
   }
 
   protected <T> T interpretAndCast(String modelStr) {
-    MIValue value = interpret(modelStr);
+    MCValue value = interpret(modelStr);
     Object valueObj = value.asNativeObject();
     @SuppressWarnings("unchecked")
     T casted = (T) valueObj;

@@ -7,10 +7,10 @@ import de.monticore.expressions.lambdaexpressions._ast.ASTLambdaParameter;
 import de.monticore.expressions.lambdaexpressions._visitor.LambdaExpressionsInheritanceHandler;
 import de.monticore.interpreter.calculations.MICalculation;
 import de.monticore.interpreter.calculations.MICalculationValue;
-import de.monticore.interpreter.frames.MIFrameLayoutForBasicSymbols;
+import de.monticore.symbols.basicsymbols.interpreter.frames.MIFrameLayoutForBasicSymbols;
 import de.monticore.interpreter.setters.MISetter;
 import de.monticore.interpreter.util.InterpreterData;
-import de.monticore.interpreter.values.MIValueFunctionOfModel;
+import de.monticore.interpreter.values.MCValueFunctionOfModel;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 
 import java.util.List;
@@ -55,7 +55,7 @@ public class LambdaExpressionsInterpreter
 
     // lambda
     MICalculationValue calc = currentFrame ->
-        new MIValueFunctionOfModel(
+        new MCValueFunctionOfModel(
             currentFrame, lambdaScopeLayout, paramSetters, bodyCalc
         );
     iData.putCalculation(calc);

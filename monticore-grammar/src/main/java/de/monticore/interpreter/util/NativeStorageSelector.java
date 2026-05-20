@@ -5,6 +5,7 @@ import com.google.common.base.Preconditions;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types3.SymTypeRelations;
+import de.monticore.values.MCValue;
 
 import static de.monticore.types3.SymTypeRelations.isBoolean;
 import static de.monticore.types3.SymTypeRelations.isIntegralType;
@@ -21,7 +22,7 @@ import static de.monticore.types3.SymTypeRelations.isNumericType;
  * There are four native storage options,
  * {@code boolean}, {@code int}, {@code double}, {@code Object},
  * there the {@code Object} is always an
- * {@link de.monticore.interpreter.values.MIValue}.
+ * {@link MCValue}.
  * <p>
  * The corresponding methods are
  * {@link #isStoredAsBoolean(SymTypeExpression)},

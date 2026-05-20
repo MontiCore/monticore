@@ -8,18 +8,18 @@ import de.monticore.interpreter.calculations.MICalculation;
 import de.monticore.interpreter.calculations.MICalculationValue;
 import de.monticore.interpreter.calculations.MICalculationVoid;
 import de.monticore.interpreter.frames.MIFrame;
-import de.monticore.interpreter.frames.MIFrameForBasicSymbols;
-import de.monticore.interpreter.frames.MIFrameLayoutForBasicSymbols;
 import de.monticore.interpreter.util.InterpreterData;
 import de.monticore.interpreter.util.TraverserAndIData;
-import de.monticore.interpreter.values.MISignalFlowControl;
-import de.monticore.interpreter.values.MIValue;
-import de.monticore.interpreter.values.MIValueError;
-import de.monticore.interpreter.values.MIValueFunction;
-import de.monticore.interpreter.values.MIValueVoid;
+import de.monticore.interpreter.values.AbstractMCSignalFlowControlForInterpreter;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
+import de.monticore.symbols.basicsymbols.interpreter.frames.MIFrameForBasicSymbols;
+import de.monticore.symbols.basicsymbols.interpreter.frames.MIFrameLayoutForBasicSymbols;
+import de.monticore.values.MCValue;
+import de.monticore.values.MCValueError;
+import de.monticore.values.MCValueFunction;
+import de.monticore.values.MCValueVoid;
 import de.monticore.visitor.ITraverser;
 
 import java.util.Map;
@@ -59,17 +59,17 @@ public class ExpressionsInterpreter {
 
   // interpretation
 
-  public MIValue interpret(ASTExpression expression) {
+  public MCValue interpret(ASTExpression expression) {
     return interpretNode(expression);
   }
 
-  public MIValue interpret(ASTLiteral literal) {
+  public MCValue interpret(ASTLiteral literal) {
     return interpretNode(literal);
   }
 
-  protected MIValue interpretNode(ASTNode node) {
+  protected MCValue interpretNode(ASTNode node) {
     MICalculation calculation = getCalculation(node);
-    MIValue value = calculateWithCatch(calculation, topMostFrame);
+    MCValue value = calculateWithCatch(calculation, topMostFrame);
     return value;
   }
 
@@ -91,9 +91,9 @@ public class ExpressionsInterpreter {
 
   /**
    * {@link #addVariable(VariableSymbol)} and then
-   * {@link #setVariable(VariableSymbol, MIValue)}.
+   * {@link #setVariable(VariableSymbol, MCValue)}.
    */
-  public void addVariable(VariableSymbol varSym, MIValue value) {
+  public void addVariable(VariableSymbol varSym, MCValue value) {
     addVariable(varSym);
     setVariable(varSym, value);
   }
@@ -122,7 +122,7 @@ public class ExpressionsInterpreter {
    * @param varSym the variable that has been declared
    * @param value  the value of the variable
    */
-  public void setVariable(VariableSymbol varSym, MIValue value) {
+  public void setVariable(VariableSymbol varSym, MCValue value) {
     Preconditions.checkNotNull(varSym);
     Preconditions.checkNotNull(value);
     // This may seem very roundabout;
@@ -145,7 +145,7 @@ public class ExpressionsInterpreter {
    */
   public void addFunction(
       FunctionSymbol functionSym,
-      MIValueFunction impl
+      MCValueFunction impl
   ) {
     Preconditions.checkNotNull(functionSym);
     Preconditions.checkNotNull(impl);
@@ -158,7 +158,7 @@ public class ExpressionsInterpreter {
    * @param varSym the variable to load
    * @return the value of the variable
    */
-  public MIValue getVariable(VariableSymbol varSym) {
+  public MCValue getVariable(VariableSymbol varSym) {
     return getTopMostFrame().getFrameLayout()
         .getVariableGetter(varSym)
         .asCalculationValue()
@@ -224,9 +224,9 @@ public class ExpressionsInterpreter {
    *
    * @param calculation    to be executed. May or may not return a value.
    * @param enclosingFrame the enclosing frame.
-   * @return The value of the calculation or {@link MIValueVoid}.
+   * @return The value of the calculation or {@link MCValueVoid}.
    */
-  protected MIValue calculate(
+  protected MCValue calculate(
       MICalculation calculation,
       MIFrame enclosingFrame
   ) {
@@ -234,7 +234,7 @@ public class ExpressionsInterpreter {
     if (calculation.isCalculationVoid()) {
       valueCalc = frame -> {
         calculation.asCalculationVoid().calculate(frame);
-        return MIValueVoid.INSTANCE;
+        return MCValueVoid.INSTANCE;
       };
     }
     else {
@@ -243,21 +243,21 @@ public class ExpressionsInterpreter {
     return valueCalc.calculate(enclosingFrame);
   }
 
-  protected MIValue calculateWithCatch(
+  protected MCValue calculateWithCatch(
       MICalculation calculation,
       MIFrame enclosingFrame
   ) {
-    MIValue value;
+    MCValue value;
     try {
       value = calculate(calculation, enclosingFrame);
     }
-    catch (MISignalFlowControl signal) {
+    catch (AbstractMCSignalFlowControlForInterpreter signal) {
       value = signal;
     }
     // catch everything for now,
     // there may be exceptions to this rule
     catch (Throwable e) {
-      value = new MIValueError(e);
+      value = new MCValueError(e);
     }
     return value;
   }

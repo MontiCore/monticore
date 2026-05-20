@@ -9,12 +9,12 @@ import de.monticore.interpreter.calculations.MICalculationInt;
 import de.monticore.interpreter.calculations.MICalculationValue;
 import de.monticore.interpreter.calculations.MICalculationVoid;
 import de.monticore.interpreter.frames.MIFrame;
-import de.monticore.interpreter.frames.MIFrameLayoutForBasicSymbols;
+import de.monticore.symbols.basicsymbols.interpreter.frames.MIFrameLayoutForBasicSymbols;
 import de.monticore.interpreter.setters.MISetter;
 import de.monticore.interpreter.util.InterpreterData;
-import de.monticore.interpreter.values.MIValue;
-import de.monticore.interpreter.values.MIValueFactory;
-import de.monticore.interpreter.values.MIValueObject;
+import de.monticore.values.MCValue;
+import de.monticore.values.MCValueFactory;
+import de.monticore.values.MCValueObject;
 import de.monticore.ocl.setexpressions._ast.ASTGeneratorDeclaration;
 import de.monticore.ocl.setexpressions._ast.ASTSetCollectionItem;
 import de.monticore.ocl.setexpressions._ast.ASTSetComprehension;
@@ -97,7 +97,7 @@ public class SetExpressionsInterpreter
       // Using PrimitiveIterator.ofInt to avoid (un)boxing (in some cases)
       // int[] may be an alternative
       final PrimitiveIterator.OfInt values = IntStream.rangeClosed(lowerValue, upperValue).iterator();
-      return new MIValueObject(values);
+      return new MCValueObject(values);
     });
   }
 
@@ -123,7 +123,7 @@ public class SetExpressionsInterpreter
         for (MICalculationBoolean calc : booleanCalcs) {
           result.add(calc.calculate(frame));
         }
-        return new MIValueObject(result);
+        return new MCValueObject(result);
       });
     }
     else if (isStoredAsInt(elemType)) {
@@ -136,7 +136,7 @@ public class SetExpressionsInterpreter
             result.add(calc.asCalculationInt().calculate(frame));
           }
           else {
-            final MIValue value = calc.asCalculationValue().calculate(frame);
+            final MCValue value = calc.asCalculationValue().calculate(frame);
             if (value.asNativeObject() instanceof PrimitiveIterator.OfInt iteratorOfInt) {
               while (iteratorOfInt.hasNext()) {
                 // this boxes anyway,
@@ -156,7 +156,7 @@ public class SetExpressionsInterpreter
             }
           }
         }
-        return new MIValueObject(result);
+        return new MCValueObject(result);
       });
     }
     else if (isStoredAsDouble(elemType)) {
@@ -169,7 +169,7 @@ public class SetExpressionsInterpreter
             result.add(calc.asCalculationDouble().calculate(frame));
           }
           else {
-            final MIValue value = calc.asCalculationValue().calculate(frame);
+            final MCValue value = calc.asCalculationValue().calculate(frame);
             if (value instanceof PrimitiveIterator.OfInt iteratorOfInt) {
               while (iteratorOfInt.hasNext()) {
                 // using PrimitiveIterator to avoid unboxing of Integer
@@ -186,7 +186,7 @@ public class SetExpressionsInterpreter
             }
           }
         }
-        return new MIValueObject(result);
+        return new MCValueObject(result);
       });
     }
     else {
@@ -200,7 +200,7 @@ public class SetExpressionsInterpreter
         for (MICalculationValue calc : valueCalcs) {
           result.add(calc.calculate(frame).asNativeObject());
         }
-        return new MIValueObject(result);
+        return new MCValueObject(result);
       });
     }
   }
@@ -266,7 +266,7 @@ public class SetExpressionsInterpreter
         comprehensionEvaluator = frame -> item.calculate(frame, tmpCalc);
       }
       comprehensionEvaluator.calculate(comprehensionFrame);
-      return new MIValueObject(collection);
+      return new MCValueObject(collection);
     });
     getScopeLayoutStack().pop();
   }
@@ -292,10 +292,10 @@ public class SetExpressionsInterpreter
         iData.popCalculation().asCalculationValue();
 
     return (frame, innerCalc) -> {
-      final MIValueObject collectionValue = (MIValueObject) genExprCalc.calculate(frame);
+      final MCValueObject collectionValue = (MCValueObject) genExprCalc.calculate(frame);
       final Collection<Object> collection = collectionValue.unsafeCast();
       for (Object elem : collection) {
-        final MIValue elemValue = MIValueFactory.createMIValueOfNativeObject(elem);
+        final MCValue elemValue = MCValueFactory.createMIValueOfNativeObject(elem);
         relativeSetter.set(frame, elemValue);
         innerCalc.calculate(frame);
       }

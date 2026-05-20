@@ -10,7 +10,6 @@ import de.monticore.expressions.assignmentexpressions._ast.ASTIncPrefixExpressio
 import de.monticore.expressions.assignmentexpressions._ast.ASTIncSuffixExpression;
 import de.monticore.expressions.assignmentexpressions._visitor.AssignmentExpressionsInheritanceHandler;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.expressions.interpreter.util.InterpreterOperatorTraverser;
 import de.monticore.interpreter.calculations.MICalculation;
 import de.monticore.interpreter.calculations.MICalculationBoolean;
 import de.monticore.interpreter.calculations.MICalculationDouble;
@@ -24,7 +23,7 @@ import de.monticore.interpreter.setters.MISetterValue;
 import de.monticore.interpreter.util.InterpreterData;
 import de.monticore.interpreter.util.InterpreterVisitorOperatorCalculator;
 import de.monticore.interpreter.util.NativeStorageSelector;
-import de.monticore.interpreter.values.MIValue;
+import de.monticore.values.MCValue;
 import de.monticore.types.check.SymTypeExpression;
 import org.apache.commons.lang3.NotImplementedException;
 
@@ -126,7 +125,7 @@ public class AssignmentExpressionsInterpreter
           MICalculationValue opCalcValue = opCalc.asCalculationValue();
           MISetterValue setterValue = setter.asSetterValue();
           return (MICalculationValue) frame -> {
-            MIValue value = opCalcValue.calculate(frame);
+            MCValue value = opCalcValue.calculate(frame);
             setterValue.set(frame, value);
             return value;
           };

@@ -10,8 +10,8 @@ import de.monticore.interpreter.calculations.MICalculationInt;
 import de.monticore.interpreter.calculations.MICalculationValue;
 import de.monticore.interpreter.util.InterpreterData;
 import de.monticore.interpreter.util.InterpreterVisitorOperatorCalculator;
-import de.monticore.interpreter.values.MIValue;
-import de.monticore.interpreter.values.MIValueFactory;
+import de.monticore.values.MCValue;
+import de.monticore.values.MCValueFactory;
 import de.monticore.ocl.optionaloperators._ast.ASTOptionalEqualsExpression;
 import de.monticore.ocl.optionaloperators._ast.ASTOptionalExpressionPrefix;
 import de.monticore.ocl.optionaloperators._ast.ASTOptionalGreaterEqualExpression;
@@ -71,7 +71,7 @@ public class OptionalOperatorsInterpreter
         // alternative would be to insert them as MIValue only,
         // but it is somewhat odd to wrap them only for Collection types
         // This may need to be extended for SIUnits.
-        return MIValueFactory.createMIValueOfNativeObject(opt.get());
+        return MCValueFactory.createMIValueOfNativeObject(opt.get());
       }
       else {
         return rightCalc.calculate(frame);
@@ -217,7 +217,7 @@ public class OptionalOperatorsInterpreter
       final boolean[] booleanStorage = new boolean[1];
       final int[] intStorage = new int[1];
       final double[] doubleStorage = new double[1];
-      final MIValue[] miValueStorage = new MIValue[1];
+      final MCValue[] MCValueStorage = new MCValue[1];
 
       MICalculationValue leftOptCalc = leftCalc.asCalculationValue();
       // Calculation that returns if the Optional is present.
@@ -246,7 +246,7 @@ public class OptionalOperatorsInterpreter
                 @SuppressWarnings("unchecked") final Optional<?> optValue =
                     (Optional<?>) leftOptCalc.calculate(frame).asNativeObject();
                 optValue.ifPresent(v ->
-                    miValueStorage[0] = MIValueFactory.createMIValueOfNativeObject(v)
+                    MCValueStorage[0] = MCValueFactory.createMIValueOfNativeObject(v)
                 );
                 return optValue.isPresent();
               }
@@ -256,7 +256,7 @@ public class OptionalOperatorsInterpreter
           (MICalculationBoolean) frame -> booleanStorage[0],
           (MICalculationInt) frame -> intStorage[0],
           (MICalculationDouble) frame -> doubleStorage[0],
-          (MICalculationValue) frame -> miValueStorage[0]
+          (MICalculationValue) frame -> MCValueStorage[0]
       );
 
       // handles the actual operation if left is not empty

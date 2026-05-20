@@ -8,14 +8,14 @@ import de.monticore.interpreter.calculations.MICalculationDouble;
 import de.monticore.interpreter.calculations.MICalculationInt;
 import de.monticore.interpreter.calculations.MICalculationValue;
 import de.monticore.interpreter.frames.MIFrame;
-import de.monticore.interpreter.frames.MIFrameLayoutForBasicSymbols;
+import de.monticore.symbols.basicsymbols.interpreter.frames.MIFrameLayoutForBasicSymbols;
 import de.monticore.interpreter.setters.MISetter;
 import de.monticore.interpreter.setters.MISetterBoolean;
 import de.monticore.interpreter.setters.MISetterDouble;
 import de.monticore.interpreter.setters.MISetterInt;
-import de.monticore.interpreter.values.MIValueFactory;
-import de.monticore.interpreter.values.MIValueFunction;
-import de.monticore.interpreter.values.MIValueFunctionOfMethodHandle;
+import de.monticore.values.MCValueFactory;
+import de.monticore.values.MCValueFunction;
+import de.monticore.values.MCValueFunctionOfMethodHandle;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
@@ -81,8 +81,8 @@ public class SymbolAccessHandler {
         if (TypeDispatcherHotfix.isMethodSymbol(funcSym)) {
           MethodSymbol methodSym = (MethodSymbol) funcSym;
           final MethodHandle methodHandle = getHandleOfSymbol(methodSym);
-          final MIValueFunctionOfMethodHandle staticMethodHandle =
-              new MIValueFunctionOfMethodHandle(methodHandle);
+          final MCValueFunctionOfMethodHandle staticMethodHandle =
+              new MCValueFunctionOfMethodHandle(methodHandle);
           getter = (MICalculationValue) frame -> staticMethodHandle;
         }
         else {
@@ -91,7 +91,7 @@ public class SymbolAccessHandler {
         }
       }
       else {
-        final Supplier<MIValueFunction> functionSupplier =
+        final Supplier<MCValueFunction> functionSupplier =
             iData.getFunctionSupplier(funcSym);
         getter = (MICalculationValue) frame -> functionSupplier.get();
       }
@@ -120,8 +120,8 @@ public class SymbolAccessHandler {
         else if (TypeDispatcherHotfix.isMethodSymbol(exprSourceSym)) {
           MethodSymbol methodSym = (MethodSymbol) exprSourceSym;
           MethodHandle methodHandle = getHandleOfSymbol(methodSym);
-          final MIValueFunctionOfMethodHandle unboundMethod =
-              new MIValueFunctionOfMethodHandle(methodHandle);
+          final MCValueFunctionOfMethodHandle unboundMethod =
+              new MCValueFunctionOfMethodHandle(methodHandle);
           getter = (MICalculationValue) frame -> {
             final Object thisPtr = objCalc.calculate(frame).asNativeObject();
             return unboundMethod.withBoundThisPtr(thisPtr);
@@ -224,7 +224,7 @@ public class SymbolAccessHandler {
           ((Number) genericLoader.apply(frame)).doubleValue();
     }
     MICalculationValue valueCalc = frame ->
-        MIValueFactory.createMIValueOfNativeObject(genericLoader.apply(frame));
+        MCValueFactory.createMIValueOfNativeObject(genericLoader.apply(frame));
 
     return switchByFormat(fieldSymbol,
         booleanCalc,

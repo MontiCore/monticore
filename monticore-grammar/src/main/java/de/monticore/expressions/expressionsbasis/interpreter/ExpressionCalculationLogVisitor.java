@@ -9,9 +9,9 @@ import de.monticore.interpreter.calculations.MICalculationBoolean;
 import de.monticore.interpreter.calculations.MICalculationDouble;
 import de.monticore.interpreter.calculations.MICalculationInt;
 import de.monticore.interpreter.calculations.MICalculationValue;
-import de.monticore.interpreter.frames.MIFrameLayoutForBasicSymbols;
+import de.monticore.symbols.basicsymbols.interpreter.frames.MIFrameLayoutForBasicSymbols;
 import de.monticore.interpreter.util.InterpreterData;
-import de.monticore.interpreter.values.MIValue;
+import de.monticore.values.MCValue;
 import de.monticore.types.check.SymTypeExpression;
 import de.se_rwth.commons.logging.Log;
 
@@ -70,7 +70,7 @@ public class ExpressionCalculationLogVisitor
     return value;
   }
 
-  static MIValue printInfo(String info, MIValue value) {
+  static MCValue printInfo(String info, MCValue value) {
     Log.info(info + ": " + value.printValue(), "Interpreter");
     return value;
   }

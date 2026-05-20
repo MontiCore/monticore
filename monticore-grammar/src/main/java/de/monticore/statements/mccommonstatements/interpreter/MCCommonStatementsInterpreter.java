@@ -5,8 +5,8 @@ import com.google.common.base.Preconditions;
 import de.monticore.interpreter.calculations.MICalculationBoolean;
 import de.monticore.interpreter.calculations.MICalculationVoid;
 import de.monticore.interpreter.util.InterpreterData;
-import de.monticore.interpreter.values.MISignalBreak;
-import de.monticore.interpreter.values.MISignalContinue;
+import de.monticore.interpreter.values.MCSignalBreakForInterpreter;
+import de.monticore.interpreter.values.MCSignalContinueForInterpreter;
 import de.monticore.statements.mccommonstatements._ast.ASTBreakStatement;
 import de.monticore.statements.mccommonstatements._ast.ASTDoWhileStatement;
 import de.monticore.statements.mccommonstatements._ast.ASTEmptyStatement;
@@ -85,10 +85,10 @@ public class MCCommonStatementsInterpreter
         try {
           bodyCalc.calculate(frame);
         }
-        catch (MISignalBreak ignored) {
+        catch (MCSignalBreakForInterpreter ignored) {
           break;
         }
-        catch (MISignalContinue ignored) {
+        catch (MCSignalContinueForInterpreter ignored) {
           // no-op
         }
       }
@@ -109,10 +109,10 @@ public class MCCommonStatementsInterpreter
         try {
           bodyCalc.calculate(frame);
         }
-        catch (MISignalBreak ignored) {
+        catch (MCSignalBreakForInterpreter ignored) {
           break;
         }
-        catch (MISignalContinue ignored) {
+        catch (MCSignalContinueForInterpreter ignored) {
           // no-op
         }
       }
@@ -134,7 +134,8 @@ public class MCCommonStatementsInterpreter
 
   @Override
   public void traverse(ASTBreakStatement node) {
-    MICalculationVoid breakCalc = frame -> MISignalBreak.signal();
+    MICalculationVoid breakCalc = frame ->
+        MCSignalBreakForInterpreter.signal();
     iData.putCalculation(breakCalc);
   }
 

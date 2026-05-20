@@ -3,7 +3,7 @@ package de.monticore.statements.interpreter;
 
 import de.monticore.expressions.interpreter.ExpressionsInterpreter;
 import de.monticore.interpreter.util.TraverserAndIData;
-import de.monticore.interpreter.values.MIValue;
+import de.monticore.values.MCValue;
 import de.monticore.statements.mcstatementsbasis._ast.ASTMCStatement;
 
 /**
@@ -15,7 +15,7 @@ public class StatementsInterpreter extends ExpressionsInterpreter {
     super(interpreterTraverser);
   }
 
-  public MIValue interpret(ASTMCStatement statement) {
+  public MCValue interpret(ASTMCStatement statement) {
     return interpretNode(statement);
   }
 

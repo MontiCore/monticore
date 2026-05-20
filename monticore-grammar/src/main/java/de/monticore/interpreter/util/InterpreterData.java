@@ -3,9 +3,9 @@ package de.monticore.interpreter.util;
 
 import com.google.common.base.Preconditions;
 import de.monticore.interpreter.calculations.MICalculation;
-import de.monticore.interpreter.frames.MIFrameLayoutForBasicSymbols;
+import de.monticore.symbols.basicsymbols.interpreter.frames.MIFrameLayoutForBasicSymbols;
 import de.monticore.interpreter.setters.MISetter;
-import de.monticore.interpreter.values.MIValueFunction;
+import de.monticore.values.MCValueFunction;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 
 import java.util.HashMap;
@@ -33,7 +33,7 @@ public class InterpreterData {
   // simply to provide fast non-static access.
   // layout could be an array or at least an ArrayList,
   // but for now it is a map for simplicity,
-  Map<FunctionSymbol, MIValueFunction> functions = new HashMap<>();
+  Map<FunctionSymbol, MCValueFunction> functions = new HashMap<>();
 
   public boolean isPresentCalculation() {
     return calculation != null;
@@ -106,13 +106,13 @@ public class InterpreterData {
    *
    * @return the map of defined functions.
    */
-  public Map<FunctionSymbol, MIValueFunction> getFunctions() {
+  public Map<FunctionSymbol, MCValueFunction> getFunctions() {
     // making it unmodifiable here would create a lot of new objects,
     // thus, it is avoided and simply assumed that no-one modifies it.
     return functions;
   }
 
-  public void defineFunction(FunctionSymbol funcSym, MIValueFunction value) {
+  public void defineFunction(FunctionSymbol funcSym, MCValueFunction value) {
     Preconditions.checkNotNull(funcSym);
     Preconditions.checkNotNull(value);
     Preconditions.checkState(!functions.containsKey(funcSym),
@@ -121,9 +121,9 @@ public class InterpreterData {
     functions.put(funcSym, value);
   }
 
-  public Supplier<MIValueFunction> getFunctionSupplier(FunctionSymbol funcSym) {
+  public Supplier<MCValueFunction> getFunctionSupplier(FunctionSymbol funcSym) {
     return () -> {
-      MIValueFunction function = functions.get(funcSym);
+      MCValueFunction function = functions.get(funcSym);
       if (function != null) {
         return function;
       }

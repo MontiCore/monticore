@@ -6,8 +6,8 @@ import de.monticore.interpreter.calculations.MICalculationBoolean;
 import de.monticore.interpreter.calculations.MICalculationDouble;
 import de.monticore.interpreter.calculations.MICalculationInt;
 import de.monticore.interpreter.calculations.MICalculationValue;
-import de.monticore.interpreter.values.MIValue;
-import de.monticore.interpreter.values.MIValueObject;
+import de.monticore.values.MCValue;
+import de.monticore.values.MCValueObject;
 import de.monticore.types.check.SymTypeExpression;
 
 import java.util.function.BiPredicate;
@@ -162,7 +162,7 @@ public class InterpreterVisitorOperatorCalculator {
         (l, r) -> l == r,
         (l, r) -> l == r,
         (l, r) -> l == r,
-        MIValue::checkEqualityOperator
+        MCValue::checkEqualityOperator
     );
   }
 
@@ -464,7 +464,7 @@ public class InterpreterVisitorOperatorCalculator {
   ) {
     MICalculationValue leftCalcValue = leftCalc.asCalculationValue();
     MICalculationValue rightCalcValue = rightCalc.asCalculationValue();
-    return frame -> new MIValueObject(
+    return frame -> new MCValueObject(
         leftCalcValue.calculate(frame).asString() +
             rightCalcValue.calculate(frame).asString()
     );
@@ -517,7 +517,7 @@ public class InterpreterVisitorOperatorCalculator {
       BooleanBiPredicate opBoolean,
       IntBiPredicate opInt,
       DoubleBiPredicate opDouble,
-      BiPredicate<MIValue, MIValue> opObject
+      BiPredicate<MCValue, MCValue> opObject
   ) {
     MICalculationBoolean res;
     if (isBoolean(leftType) && isBoolean(rightType)) {

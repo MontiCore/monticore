@@ -7,7 +7,7 @@ import de.monticore.interpreter.calculations.MICalculationDouble;
 import de.monticore.interpreter.calculations.MICalculationInt;
 import de.monticore.interpreter.calculations.MICalculationValue;
 import de.monticore.interpreter.util.InterpreterData;
-import de.monticore.interpreter.values.MIValueObject;
+import de.monticore.values.MCValueObject;
 import de.monticore.literals.mccommonliterals._ast.ASTBasicDoubleLiteral;
 import de.monticore.literals.mccommonliterals._ast.ASTBasicFloatLiteral;
 import de.monticore.literals.mccommonliterals._ast.ASTBasicLongLiteral;
@@ -50,7 +50,7 @@ public class MCCommonLiteralsInterpreter
   public void traverse(ASTStringLiteral node) {
     final String value = node.getValue();
     // reuse value, as Strings are final
-    final MIValueObject miValue = new MIValueObject(value);
+    final MCValueObject miValue = new MCValueObject(value);
     iData.putCalculation((MICalculationValue) frame -> miValue);
   }
 
