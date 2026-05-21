@@ -107,7 +107,6 @@ public class IndentPrinter {
 
   /**
    * Set the current indentation of the printer
-   * @return
    */
   public void setIndentation(int indent) {
     this.indent = indent;

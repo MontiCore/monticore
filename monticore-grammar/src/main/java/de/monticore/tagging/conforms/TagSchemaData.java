@@ -9,13 +9,13 @@ import de.monticore.tagging.tagschema._visitor.TagSchemaVisitor2;
 import java.util.*;
 
 /**
- * Stores data of TagTypeSymbols in a [NonTerminal => [TagTypeSymbols]] form
+ * Stores data of TagTypeSymbols in a [NonTerminal =&gt; [TagTypeSymbols]] form
  */
 public class TagSchemaData {
-  protected Map<String, List<SimpleTagTypeSymbol>> simpleTagTypes = new HashMap<>();
-  protected Map<String, List<ValuedTagTypeSymbol>> valuedTagTypes = new HashMap<>();
-  protected Map<String, List<EnumeratedTagTypeSymbol>> enumeratedTagTypes = new HashMap<>();
-  protected Map<String, List<ComplexTagTypeSymbol>> complexTagTypes = new HashMap<>();
+  protected Map<String, List<SimpleTagTypeSymbol>> simpleTagTypes = new LinkedHashMap<>();
+  protected Map<String, List<ValuedTagTypeSymbol>> valuedTagTypes = new LinkedHashMap<>();
+  protected Map<String, List<EnumeratedTagTypeSymbol>> enumeratedTagTypes = new LinkedHashMap<>();
+  protected Map<String, List<ComplexTagTypeSymbol>> complexTagTypes = new LinkedHashMap<>();
 
   public final static String WILDCARD = "___WILDCARD_TAG_TYPE_%";
 

@@ -197,14 +197,13 @@ allowing to use the type `List<int>`.
 
 ## Symbols: List of Grammars in package `de.monticore.symbols`
 
-These two grammars do not provide syntax themselves, but 
-characterize important forms of symbols, that will be used
-in the type and the expression grammars to define shared 
-kinds of symbols. 
+These grammars do not provide syntax themselves, but characterize important
+forms of symbols. Especially _BasicSymbols_ and _OOSymbols_ will be used in the
+type and the expression grammars to define shared kinds of symbols. 
 
 ### [BasicSymbols.mc4](symbols/BasicSymbols.mc4) (stable)
 * This grammar defines symbols for *Types* (of all kinds), *Functions*, 
-  *Variables* and *TypeVariables*.
+  *Variables*, *TypeVariables*, and *Stereotypes*.
 * The defined symbols are of general form and can be used in functional, OO
   and other contexts. They do not preculde a concrete syntax and do not yet 
   embody OO specifics.
@@ -221,8 +220,6 @@ kinds of symbols.
 * Remark: This grammar is not intended to define concrete or 
   abstract syntax, but the
   infrastructure for symbols in objectoriented context. 
-
-
 
 ## Expressions: List of Grammars in package `de.monticore.expressions`
 
@@ -553,8 +550,8 @@ grammars:
 
 * [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
 * [MontiCore documentation](https://www.monticore.de/)
-* [**List of languages**](https://github.com/MontiCore/monticore/blob/opendev/docs/Languages.md)
-* [**MontiCore Core Grammar Library**](https://github.com/MontiCore/monticore/blob/opendev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
-* [Best Practices](https://github.com/MontiCore/monticore/blob/opendev/docs/BestPractices.md)
+* [**List of languages**](../../../../../../docs/Languages.md)
+* [**MontiCore Core Grammar Library**](Grammars.md)
+* [Best Practices](../../../../../../docs/BestPractices.md)
 * [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
 * [Licence definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)

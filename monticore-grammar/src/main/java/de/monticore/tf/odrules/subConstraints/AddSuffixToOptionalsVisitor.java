@@ -13,7 +13,7 @@ import de.monticore.tf.odrulegeneration._ast.ASTMatchingObject;
 import de.monticore.tf.odrules.HierarchyHelper;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -34,7 +34,7 @@ public class AddSuffixToOptionalsVisitor implements
         super();
         this.hierarchyHelper = hierarchyHelper;
         this.lhsObjects = lhsObjects;
-        handledNodes = new HashSet<>();
+        handledNodes = new LinkedHashSet<>();
     }
 
     @Override

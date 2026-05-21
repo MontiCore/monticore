@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types3.generics.context;
 
 import de.monticore.types.check.SymTypeExpression;
@@ -78,8 +79,8 @@ public class InferenceResult {
 
   /**
    * A function, either required by an invocation, or by assignment, e.g.,
-   * (a?b:c)(1) // here, b and c are required to be functions
-   * (int) -> void f = a; // here, a is required to be a function
+   * {@code (a?b:c)(1)} // here, b and c are required to be functions
+   * {@code (int) -> void f = a;} // here, a is required to be a function
    * Only call if {@link #hasResolvedFunction()} returns true.
    */
   public SymTypeOfFunction getResolvedFunction() {

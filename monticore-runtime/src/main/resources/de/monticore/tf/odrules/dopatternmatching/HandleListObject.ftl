@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${signature("isOptional")}
+${signature("isOptional", "parentObject")}
 
 <#assign listObject = ast>
 if (nextNode.equals("${listObject.getObjectName()}_$List")) {
@@ -16,13 +16,15 @@ if (nextNode.equals("${listObject.getObjectName()}_$List")) {
     if (backtracking.isEmpty()) {
       // no match of the pattern can be found
       <#if isOptional>
+        <#if parentObject?has_content>
+        reset_${parentObject.getObjectName()}();
+        </#if>
         if (isParentBacktrackingNegative) {
           //Can not find a new Match, signal the parent to backtrack
           return false;
         }
-      <#else>
-        foundMatch = false;
       </#if>
+      foundMatch = false;
       break;
     } else {
       // start backtracking

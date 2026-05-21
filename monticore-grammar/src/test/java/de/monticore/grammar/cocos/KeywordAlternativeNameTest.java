@@ -7,12 +7,11 @@ import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCo
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class KeywordAlternativeNameTest extends CocoTest {
   private final String MESSAGE = " The name of the constant group could't be ascertained";
@@ -33,10 +32,10 @@ public class KeywordAlternativeNameTest extends CocoTest {
     // test grammar symbol
     globalScope.resolveMCGrammar(grammar).orElse(null);
     
-    Assertions.assertFalse(Log.getFindings().isEmpty());
-    Assertions.assertEquals(1, Log.getFindings().size());
+    assertFalse(Log.getFindings().isEmpty());
+    assertEquals(1, Log.getFindings().size());
     for (Finding f : Log.getFindings()) {
-      Assertions.assertEquals("0xA2345" + MESSAGE, f.getMsg());
+      assertEquals("0xA2345" + MESSAGE, f.getMsg());
     }
   }
   

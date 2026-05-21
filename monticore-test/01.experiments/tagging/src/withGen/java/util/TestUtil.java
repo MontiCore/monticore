@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package util;
 
 import de.monticore.fqn.fqnautomata.FQNAutomataMill;

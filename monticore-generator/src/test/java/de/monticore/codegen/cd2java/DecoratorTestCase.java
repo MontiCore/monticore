@@ -20,13 +20,13 @@ import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public abstract class DecoratorTestCase {
 
@@ -35,13 +35,13 @@ public abstract class DecoratorTestCase {
 
   protected GlobalExtensionManagement glex;
 
-  @Before
+  @BeforeEach
   public void initLog() {
     LogStub.init();
     Log.enableFailQuick(false);
   }
   
-  @Before
+  @BeforeEach
   public void setUpDecoratorTestCase() {
     CD4CodeMill.reset();
     CD4CodeMill.init();

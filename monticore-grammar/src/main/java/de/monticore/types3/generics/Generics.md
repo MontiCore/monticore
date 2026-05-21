@@ -114,6 +114,9 @@ To this end, MontiCore provides a type inference algorithm.
     * [SetExpressionsCTTIVisitor](../../ocl/setexpressions/types3/SetExpressionsCTTIVisitor.java)
       (calculates the SymTypeExpressions for the expressions
       in the grammar SetExpressions)
+    * [TupleExpressionsCTTIVisitor](../../expressions/tupleexpressions/types3/TupleExpressionsCTTIVisitor.java)
+      (calculates the SymTypeExpressions for the expressions
+      in the grammar TupleExpressions)
     * [UglyExpressionsCTTIVisitor](../../expressions/uglyexpressions/types3/UglyExpressionsCTTIVisitor.java)
       (calculates the SymTypeExpressions for the expressions
       in the grammar UglyExpressions)
@@ -156,6 +159,7 @@ The return type of `f` in the statement `f();` has no bounds,
 it can be any type. As such, `#TOP` is used to represent this.
 More often than not, a type of `#TOP` suggests that a type/function
 has not been used "to their full potential":
+
 * some information goes unused (for `f` it is the return value), or
 * e.g., in the comparison of an empty List and Set `[] == {}`
   the potential to store values in the collections goes unused.
@@ -235,6 +239,7 @@ This data is stored, as there are circumstances there the target type
 information is not available (e.g., inside some CoCos).
 
 It holds that
+
 * Each ASTExpression has exactly one target type
 * Each ASTExpression has exactly one type.
   In the case of a language with variability, special care has to be taken to

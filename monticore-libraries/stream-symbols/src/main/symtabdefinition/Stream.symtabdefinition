@@ -3,13 +3,14 @@ symtabdefinition Stream {
   interface Stream<T> {
     + long len();
     + boolean hasInfiniteLen();
+    + boolean isEmpty();
 
     + static <S> Stream<S> repeat(S elem, long n);
     + static <S> Stream<S> iterate(S -> S elem, S elem);
     + static <S, U> Stream<S> projFst(Stream<(S,U)> list); // kann man static umgehen?
     + static <S, U> Stream<U> projSnd(Stream<(S,U)> list);
 
-    + Optional<Stream<T>> dropFirst();
+    + Stream<T> dropFirst();
     + Stream<T> take(long n);
     + Stream<T> dropMultiple(long n);
 

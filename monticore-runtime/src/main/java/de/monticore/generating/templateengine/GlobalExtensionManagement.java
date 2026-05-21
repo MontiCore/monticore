@@ -2,6 +2,7 @@
 
 package de.monticore.generating.templateengine;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.*;
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.freemarker.SimpleHashFactory;
@@ -72,7 +73,7 @@ public class GlobalExtensionManagement {
    * @param data list of global data
    */
   public void setGlobalData(SimpleHash data) {
-    Log.errorIfNull(data);
+    Preconditions.checkNotNull(data);
     this.globalData = data;
   }
 
@@ -108,7 +109,7 @@ public class GlobalExtensionManagement {
    * @param value the actual content
    */
   public void setGlobalValue(String name, Object value) {
-    Log.errorIfNull(name);
+    Preconditions.checkNotNull(name);
 
     Reporting.reportSetValue(name, value);
     globalData.put(name, value);

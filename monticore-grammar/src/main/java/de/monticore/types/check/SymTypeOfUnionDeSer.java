@@ -8,7 +8,7 @@ import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 public class SymTypeOfUnionDeSer {
@@ -49,7 +49,7 @@ public class SymTypeOfUnionDeSer {
       List<SymTypeExpression> unionizedTypesList =
           SymTypeExpressionDeSer.deserializeListMember(
               SERIALIZED_TYPES, serialized, enclosingScope);
-      return SymTypeExpressionFactory.createUnion(new HashSet<>(unionizedTypesList));
+      return SymTypeExpressionFactory.createUnion(new LinkedHashSet<>(unionizedTypesList));
     }
     Log.error(
         "0x9E2F7 Internal error: Loading ill-structured SymTab: missing "

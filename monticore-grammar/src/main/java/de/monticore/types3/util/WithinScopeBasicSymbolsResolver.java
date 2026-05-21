@@ -1,6 +1,7 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.types3.util;
 
+import com.google.common.base.Preconditions;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
@@ -12,13 +13,15 @@ import de.monticore.symboltable.resolving.ResolvedSeveralEntriesForSymbolExcepti
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfFunction;
+import de.monticore.types.check.SymTypeSourceInfo;
 import de.monticore.types3.generics.TypeParameterRelations;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -65,10 +68,10 @@ public class WithinScopeBasicSymbolsResolver {
   protected Optional<SymTypeExpression> _resolveNameAsExpr(
       IBasicSymbolsScope enclosingScope,
       String name) {
-    Log.errorIfNull(enclosingScope);
-    Log.errorIfNull(name);
+    Preconditions.checkNotNull(enclosingScope);
+    Preconditions.checkNotNull(name);
     // collect all (potential) types
-    Set<SymTypeExpression> types = new HashSet<>();
+    Set<SymTypeExpression> types = new LinkedHashSet<>();
 
     // to circumvent current shortcomings in our resolver,
     // we resolve with the resolver AND resolve with the within type resolver
@@ -96,15 +99,26 @@ public class WithinScopeBasicSymbolsResolver {
     }
     // get the correct variable
     if (varInType.isPresent() && optVar.isPresent()) {
-      if (varInType.get().getTypeInfo() == optVar.get().getTypeInfo()) {
-        types.add(varInType.get());
-      }
-      else if (optVar.get().getTypeInfo().getEnclosingScope()
-          .isProperSubScopeOf(varInType.get().getTypeInfo().getEnclosingScope())) {
-        types.add(optVar.get());
+      SymTypeSourceInfo varInTypeInfo = varInType.get().getSourceInfo();
+      SymTypeSourceInfo optVarInfo = optVar.get().getSourceInfo();
+      if (varInTypeInfo.getSourceSymbol().isPresent() &&
+          optVarInfo.getSourceSymbol().isPresent()
+      ) {
+        ISymbol varInTypeVarSymbol = varInTypeInfo.getSourceSymbol().get();
+        ISymbol optVarVarSymbol = optVarInfo.getSourceSymbol().get();
+        if (optVarVarSymbol.getEnclosingScope()
+            .isProperSubScopeOf(varInTypeVarSymbol.getEnclosingScope())
+        ) {
+          types.add(optVar.get());
+        }
+        else {
+          types.add(varInType.get());
+        }
       }
       else {
-        types.add(varInType.get());
+        Log.error("0xFDA25 internal error: " +
+            "expected variable symbol for resolved variable " + name
+        );
       }
     }
     else if (varInType.isPresent()) {
@@ -158,13 +172,15 @@ public class WithinScopeBasicSymbolsResolver {
       IBasicSymbolsScope enclosingScope,
       String name
   ) {
-    Log.errorIfNull(enclosingScope);
-    Log.errorIfNull(name);
+    Preconditions.checkNotNull(enclosingScope);
+    Preconditions.checkNotNull(name);
     Optional<SymTypeExpression> result;
-    Optional<VariableSymbol> optVarSym = resolverHotfix(
-        () -> enclosingScope.resolveVariable(
-            name, AccessModifier.ALL_INCLUSION, getVariablePredicate()
-        ));
+    Optional<VariableSymbol> optVarSym = resolveVariable(
+        enclosingScope,
+        name,
+        AccessModifier.ALL_INCLUSION,
+        getVariablePredicate()
+    );
     if (optVarSym.isEmpty()) {
       result = Optional.empty();
     }
@@ -194,15 +210,14 @@ public class WithinScopeBasicSymbolsResolver {
       IBasicSymbolsScope enclosingScope,
       String name
   ) {
-    Log.errorIfNull(enclosingScope);
-    Log.errorIfNull(name);
-    List<FunctionSymbol> funcSyms = enclosingScope
-        .resolveFunctionMany(name, getFunctionPredicate()).stream()
-        // todo remove creation of a set
-        // after resolver is fixed to not return duplicates
-        .collect(Collectors.toSet())
-        .stream()
-        .collect(Collectors.toList());
+    Preconditions.checkNotNull(enclosingScope);
+    Preconditions.checkNotNull(name);
+    List<FunctionSymbol> funcSyms = resolveFunctionMany(
+        enclosingScope,
+        name,
+        AccessModifier.ALL_INCLUSION,
+        getFunctionPredicate()
+    );
     List<SymTypeOfFunction> funcs = new ArrayList<>(funcSyms.size());
     for (FunctionSymbol funcSym : funcSyms) {
       SymTypeOfFunction funcType = funcSym.getFunctionType();
@@ -224,11 +239,47 @@ public class WithinScopeBasicSymbolsResolver {
   }
 
   /**
+   * Does nothing but call {@link IBasicSymbolsScope#resolveFunctionMany(String, AccessModifier, Predicate)}.
+   * This is an extension point.
+   * S. a. {@link #resolveType(IBasicSymbolsScope, String, AccessModifier, Predicate)}
+   */
+  protected List<FunctionSymbol> resolveFunctionMany(
+      IBasicSymbolsScope enclosingScope,
+      String name,
+      AccessModifier accessModifier,
+      Predicate<FunctionSymbol> predicate
+  ) {
+    List<FunctionSymbol> functions = enclosingScope
+        .resolveFunctionMany(name, accessModifier, predicate);
+    // todo remove creation of a set
+    // after resolver is fixed to not return duplicates
+    Set<FunctionSymbol> set = new LinkedHashSet<>(functions);
+    List<FunctionSymbol> filtered = new ArrayList<>(set);
+    return filtered;
+  }
+
+  /**
    * used to filter variable symbols
    * this is an extension point
    */
   protected Predicate<VariableSymbol> getVariablePredicate() {
     return v -> true;
+  }
+
+  /**
+   * Does nothing but call {@link IBasicSymbolsScope#resolveVariable(String, AccessModifier, Predicate)}.
+   * This is an extension point.
+   * S. a. {@link #resolveType(IBasicSymbolsScope, String, AccessModifier, Predicate)}
+   */
+  protected Optional<VariableSymbol> resolveVariable(
+      IBasicSymbolsScope enclosingScope,
+      String name,
+      AccessModifier accessModifier,
+      Predicate<VariableSymbol> predicate
+  ) {
+    return resolverHotfix(() ->
+        enclosingScope.resolveVariable(name, accessModifier, predicate)
+    );
   }
 
   public static Optional<SymTypeExpression> resolveType(
@@ -241,8 +292,8 @@ public class WithinScopeBasicSymbolsResolver {
       IBasicSymbolsScope enclosingScope,
       String name
   ) {
-    Log.errorIfNull(enclosingScope);
-    Log.errorIfNull(name);
+    Preconditions.checkNotNull(enclosingScope);
+    Preconditions.checkNotNull(name);
     Optional<SymTypeExpression> result;
     // variable
     Optional<TypeVarSymbol> optTypeVar;
@@ -253,15 +304,21 @@ public class WithinScopeBasicSymbolsResolver {
       optTypeVar = Optional.empty();
     }
     else {
-      optTypeVar = resolverHotfix(() ->
-          enclosingScope.resolveTypeVar(
-              name, AccessModifier.ALL_INCLUSION, getTypeVarPredicate())
+      optTypeVar = resolveTypeVar(
+          enclosingScope,
+          name,
+          AccessModifier.ALL_INCLUSION,
+          getTypeVarPredicate()
       );
     }
     // object
-    Optional<TypeSymbol> optObj = resolverHotfix(() ->
-        enclosingScope.resolveType(name, AccessModifier.ALL_INCLUSION,
-            getTypePredicate().and((t -> optTypeVar.map(tv -> tv != t).orElse(true))))
+    Optional<TypeSymbol> optObj = resolveType(
+        enclosingScope,
+        name,
+        AccessModifier.ALL_INCLUSION,
+        getTypePredicate().and(t ->
+            optTypeVar.map(tv -> tv != t).orElse(true)
+        )
     );
     // in Java the type variable is preferred
     // e.g. class C<U>{class U{} U v;} //new C<Float>().v has type Float
@@ -314,11 +371,63 @@ public class WithinScopeBasicSymbolsResolver {
   }
 
   /**
+   * Does nothing but call {@link IBasicSymbolsScope#resolveType(String, AccessModifier, Predicate)}.
+   * This is an extension point.
+   * <p>
+   * A use case is to, instead of logging an error
+   * on finding multiple symbols with the same name,
+   * select one deterministically and continue with it.
+   * Advantages:
+   * * One can find more errors in the same run of the tool.
+   * * One does not get multiple instances of the error
+   * that multiple symbols exist with the same name
+   * Disadvantages:
+   * * One has to rely on the generation of the symboltable
+   * to already have logged the error of multiple instances of symbols
+   * with the same name.
+   * * Error messages are harder to understand,
+   * as the modeler might not notice this selection,
+   * does not know about the second Symbol definition,
+   * and tries to fix an issue that lies elsewhere.
+   * (Especially, if they don't start at the first reported model error)
+   * <p>
+   * Due to the low quality of our tooling in several of our languages,
+   * this is not enabled by default, but must be implemented
+   * in the specific languages.
+   */
+  protected Optional<TypeSymbol> resolveType(
+      IBasicSymbolsScope enclosingScope,
+      String name,
+      AccessModifier accessModifier,
+      Predicate<TypeSymbol> typeSymbolPredicate
+  ) {
+    return resolverHotfix(() ->
+        enclosingScope.resolveType(name, accessModifier, typeSymbolPredicate)
+    );
+  }
+
+  /**
    * used to filter type variable symbols
    * this is an extension point
    */
   protected Predicate<TypeVarSymbol> getTypeVarPredicate() {
     return tv -> true;
+  }
+
+  /**
+   * Does nothing but call {@link IBasicSymbolsScope#resolveTypeVar(String, AccessModifier, Predicate)}.
+   * This is an extension point.
+   * S. a. {@link #resolveType(IBasicSymbolsScope, String, AccessModifier, Predicate)}
+   */
+  protected Optional<TypeVarSymbol> resolveTypeVar(
+      IBasicSymbolsScope enclosingScope,
+      String name,
+      AccessModifier accessModifier,
+      Predicate<TypeVarSymbol> predicate
+  ) {
+    return resolverHotfix(() ->
+        enclosingScope.resolveTypeVar(name, accessModifier, predicate)
+    );
   }
 
   // Helper
@@ -332,6 +441,7 @@ public class WithinScopeBasicSymbolsResolver {
 
   /**
    * workaround for Resolver throwing Exceptions...
+   * <p>
    * note: Exception is not supposed to happen,
    * thus, never rely on this(!) Error being logged (here)
    * some error should be logged, though.
@@ -372,7 +482,7 @@ public class WithinScopeBasicSymbolsResolver {
   protected static void setDelegate(
       WithinScopeBasicSymbolsResolver newDelegate
   ) {
-    WithinScopeBasicSymbolsResolver.delegate = Log.errorIfNull(newDelegate);
+    WithinScopeBasicSymbolsResolver.delegate = Preconditions.checkNotNull(newDelegate);
   }
 
   protected static WithinScopeBasicSymbolsResolver getDelegate() {

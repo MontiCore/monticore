@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.ocl.setexpressions.types3;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
@@ -498,21 +499,7 @@ public class SetExpressionsTypeVisitor extends AbstractTypeVisitor
 
   @Override
   public void endVisit(ASTSetValueRange expr) {
-    SymTypeExpression leftResult = getType4Ast().getPartialTypeOfExpr(expr.getLowerBound());
-    SymTypeExpression rightResult = getType4Ast().getPartialTypeOfExpr(expr.getUpperBound());
-    if (!leftResult.isObscureType() && !rightResult.isObscureType()) {
-      if (!isIntegralType(normalize(leftResult))
-          || !isIntegralType(normalize(rightResult))) {
-        Log.error(
-            "0xFD217 bounds in SetValueRange "
-                + "are not integral types, but have to be, got "
-                + leftResult.printFullName()
-                + " and "
-                + rightResult.printFullName(),
-            expr.get_SourcePositionStart(),
-            expr.get_SourcePositionEnd());
-      }
-    }
+    assertRangeContainsIntegrals(expr);
   }
 
   // hook points
@@ -530,7 +517,7 @@ public class SetExpressionsTypeVisitor extends AbstractTypeVisitor
 
   /**
    * Get all expressions within the set enumeration.
-   * E.g.: "{1, 2..4}" -> "1","2","4"
+   * E.g.: {@code "{1, 2..4}" -> "1","2","4"}
    * Returns empty on error (will have been logged)
    */
   protected Optional<List<ASTExpression>> getContainedExpressions(ASTSetEnumeration expr) {
@@ -562,7 +549,7 @@ public class SetExpressionsTypeVisitor extends AbstractTypeVisitor
   /**
    * Get all expressions' types within the set enumeration.
    * They need to be stored in Type4Ast before calling this.
-   * E.g.: "{1, 2..4}" -> int, int, int
+   * E.g.: {@code "{1, 2..4}" -> int, int, int}
    * May contain Obscure (error will have been logged).
    */
   protected List<SymTypeExpression> getContainedExpressionTypes(ASTSetEnumeration expr) {

@@ -13,7 +13,7 @@ ${tc.includeArgs("parser.LexerMember", [antlrGenerator, parserHelper.getGrammarS
 
 // Implicit token
 <#list genHelper.getLexSymbolsWithInherited() as lexSymbol>
-  ${genHelper.getOrComputeLexSymbolName(lexSymbol)} : '${genHelper.escapeSingleQuote(lexSymbol)}';
+  ${genHelper.getOrComputeLexSymbolName(lexSymbol)} : '${genHelper.unescapeDoubleQuote(genHelper.escapeSingleQuote(lexSymbol))}';
 </#list>
 
 // Explicit token

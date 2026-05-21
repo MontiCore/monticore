@@ -1,6 +1,7 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.types3.generics.bounds;
 
+import com.google.common.base.Preconditions;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeInferenceVariable;
@@ -8,7 +9,6 @@ import de.monticore.types.check.SymTypeOfFunction;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.SymTypeVariable;
 import de.monticore.types3.generics.TypeParameterRelations;
-import de.monticore.types3.util.SymTypeExpressionComparator;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ public class CaptureBound extends Bound {
   public CaptureBound(
       SymTypeExpression toBeCaptured
   ) {
-    Log.errorIfNull(toBeCaptured);
+    Preconditions.checkNotNull(toBeCaptured);
     if (!toBeCaptured.isGenericType() && !toBeCaptured.isFunctionType()) {
       Log.error("0xFD229 internal error: " +
           "tried to create CaptureBound with unsupported type "
@@ -54,6 +54,11 @@ public class CaptureBound extends Bound {
   @Override
   public boolean isCaptureBound() {
     return true;
+  }
+
+  @Override
+  public CaptureBound asCaptureBound() {
+    return this;
   }
 
   @Override
@@ -82,7 +87,7 @@ public class CaptureBound extends Bound {
 
   /**
    * returns the inference variables created for this bound,
-   * e.g., for bound G<a1,a2> = capture(G<A1,A2>), this will return [a1,a2].
+   * e.g., for bound {@code G<a1,a2> = capture(G<A1,A2>)}, this will return [a1,a2].
    * s. Java Spec 21 5.1.10.
    * They include the implied bounds according to Java Spec 21 18.1.3.
    */
@@ -95,7 +100,7 @@ public class CaptureBound extends Bound {
 
   /**
    * returns the type arguments to be captured for this bound,
-   * e.g., for bound G<a1,a2> = capture(G<A1,A2>), this will return [A1,A2].
+   * e.g., for bound {@code G<a1,a2> = capture(G<A1,A2>)}, this will return {@code [A1,A2]}.
    */
   public List<SymTypeExpression> getTypeArguments() {
     return getTypeArguments(toBeCaptured);
@@ -103,7 +108,7 @@ public class CaptureBound extends Bound {
 
   /**
    * returns the type parameters of the declared type
-   * e.g., for bound G<a1,a2> = capture(G<A1,A2>) with G declared with
+   * e.g., for bound {@code G<a1,a2> = capture(G<A1,A2>)} with G declared with
    * type parameters [P1,P2], this will return [P1,P2].
    */
   public List<SymTypeVariable> getTypeParameters() {
@@ -117,7 +122,7 @@ public class CaptureBound extends Bound {
   /**
    * returns the declared bounds with the type parameters
    * replaced by the inference variables,
-   * e.g., for bound G<a1,a2> = capture(G<A1,A2>) with G declared with
+   * e.g., for bound {@code G<a1,a2> = capture(G<A1,A2>)} with G declared with
    * type parameters [P1,P2] and corresponding (upper) bounds [B1,B2],
    * this will return [B1,B2][P1:=a1,P2:=a2].
    * S. Java Spec 21 18.3.2
@@ -137,7 +142,7 @@ public class CaptureBound extends Bound {
 
   /**
    * returns the mapping from type parameters to inference variables
-   * e.g., for bound G<a1,a2> = capture(G<A1,A2>) with G declared with
+   * e.g., for bound {@code G<a1,a2> = capture(G<A1,A2>)} with G declared with
    * type parameters [P1,P2], this will return [P1:=a1,P2:=a2].
    * S. Java Spec 21 18.3.2
    */
@@ -149,8 +154,7 @@ public class CaptureBound extends Bound {
     List<SymTypeVariable> typeParams = getTypeArguments(declType).stream()
         .map(SymTypeExpression::asTypeVariable)
         .collect(Collectors.toList());
-    Map<SymTypeVariable, SymTypeInferenceVariable> param2InfVar =
-        new TreeMap<>(new SymTypeExpressionComparator());
+    Map<SymTypeVariable, SymTypeInferenceVariable> param2InfVar = new TreeMap<>();
     for (int i = 0; i < typeParams.size(); i++) {
       param2InfVar.put(typeParams.get(i), infVars.get(i));
     }
@@ -197,7 +201,7 @@ public class CaptureBound extends Bound {
           .stream().map(SymTypeExpression::asTypeVariable)
           .collect(Collectors.toList());
       Map<SymTypeVariable, SymTypeInferenceVariable> infVarReplaceMap =
-          new TreeMap<>(new SymTypeExpressionComparator());
+          new TreeMap<>();
       for (SymTypeVariable typeParam : typeParams) {
         infVarReplaceMap.put(typeParam,
             SymTypeExpressionFactory.createInferenceVariable(

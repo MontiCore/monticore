@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 import static de.monticore.cd.codegen.CD2JavaTemplates.VALUE;
+import static de.monticore.cd.codegen.CD2JavaTemplates.ANNOTATIONS;
 import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.ACCEPT_METHOD;
@@ -123,6 +124,8 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
               .flatMap(List::stream)
               .collect(Collectors.toList());
     }
+    symbolMethods.add(createEqualsMethod(symbolName));
+    symbolMethods.add(createGetThis(symbolName));
 
     ASTCDParameter constructorParam = getCDParameterFacade().createParameter(getMCTypeFacade().createStringType(), NAME_VAR);
     ASTCDConstructor constructor = getCDConstructorFacade().createConstructor(PUBLIC.build(), symbolName, constructorParam);
@@ -181,6 +184,20 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
     return symbolClass;
   }
 
+  protected ASTCDMethod createEqualsMethod(String symbolClass) {
+    ASTCDParameter parameter = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType("Object"), "obj");
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), getMCTypeFacade().createBooleanType(), "equals", parameter);
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "Equals", symbolClass));
+    this.replaceTemplate(ANNOTATIONS, method, new StringHookPoint("@Override"));
+    return method;
+  }
+
+  protected ASTCDMethod createGetThis(String symbolClass) {
+    ASTCDMethod method = getCDMethodFacade().createMethod(PROTECTED.build(), symbolClass, "getThis");
+    this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return (" + symbolClass + ") this;"));
+    return method;
+  }
+
   protected List<ASTCDMethod> createOverridingSymbolMethods(String astClassName, String scopeInterface) {
     List<ASTCDMethod> methods = Lists.newArrayList();
     // getEnclosingScope
@@ -218,7 +235,14 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
     ASTCDAttribute accessModifier = this.getCDAttributeFacade().createAttribute(PROTECTED.build(), ACCESS_MODIFIER, "accessModifier");
     this.replaceTemplate(VALUE, accessModifier, new StringHookPoint("= " + ACCESS_MODIFIER_ALL_INCLUSION));
 
-    return new ArrayList<>(Arrays.asList(name, enclosingScope, node, accessModifier));
+    ASTMCType symbolicStereotype = getMCTypeFacade().createQualifiedType(I_STEREOTYPE_REFERENCE);
+    ASTMCType valueOptional = getMCTypeFacade().createOptionalTypeOf(INTERPRETER_VALUE);
+    ASTMCType stereotypeMap = getMCTypeFacade().createMapTypeOf(symbolicStereotype, valueOptional);
+    ASTCDAttribute stereotypes =
+      this.getCDAttributeFacade().createAttribute(PROTECTED.build(), stereotypeMap, STEREOINFO_VAR);
+    this.replaceTemplate(VALUE, stereotypes, new StringHookPoint("= new java.util.HashMap<>()"));
+
+    return new ArrayList<>(Arrays.asList(name, enclosingScope, node, accessModifier, stereotypes));
   }
 
   protected List<ASTCDAttribute> createSymbolNameAttributes() {

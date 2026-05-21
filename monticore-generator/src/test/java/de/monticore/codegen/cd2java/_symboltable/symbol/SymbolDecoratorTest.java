@@ -22,8 +22,8 @@ import de.monticore.generating.GeneratorSetup;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.logging.Log;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.util.List;
@@ -39,9 +39,7 @@ import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodsBy;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SymbolDecoratorTest extends DecoratorTestCase {
 
@@ -65,11 +63,15 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
 
   private static final String ACCESS_MODIFIER_TYPE = "de.monticore.symboltable.modifiers.AccessModifier";
 
+  private static final String I_STEREOTYPE_REF = "de.monticore.symboltable.stereotypes.IStereotypeReference";
+
+  private static final String VALUE = "de.monticore.interpreter.Value";
+
   private static final String I_AUTOMATON_SCOPE = "de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.IAutomatonSymbolCDScope";
 
   private static final String AUTOMATON_TRAVERSER = "de.monticore.codegen.symboltable.automatonsymbolcd._visitor.AutomatonSymbolCDTraverser";
 
-  @Before
+  @BeforeEach
   public void setUp() {
     this.mcTypeFacade = MCTypeFacade.getInstance();
 
@@ -158,7 +160,7 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeCount() {
-    assertEquals(7, symbolClassAutomaton.getCDAttributeList().size());
+    assertEquals(8, symbolClassAutomaton.getCDAttributeList().size());
   
     assertTrue(Log.getFindings().isEmpty());
   }
@@ -226,6 +228,21 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
+  public void testStereoinfoAttribute() {
+    ASTCDAttribute astcdAttribute = getAttributeBy("stereoinfo", symbolClassAutomaton);
+    assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
+    assertDeepEquals(
+      mcTypeFacade.createMapTypeOf(
+        mcTypeFacade.createQualifiedType(I_STEREOTYPE_REF),
+        mcTypeFacade.createOptionalTypeOf(VALUE)
+      ),
+      astcdAttribute.getMCType()
+    );
+
+    assertTrue(Log.getFindings().isEmpty());
+  }
+
+  @Test
   public void testSymbolRuleAttributes() {
     ASTCDAttribute fooAttribute = getAttributeBy("foo", symbolClassFoo);
     assertDeepEquals(PROTECTED, fooAttribute.getModifier());
@@ -244,7 +261,7 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethods() {
-    assertEquals(21, symbolClassAutomaton.getCDMethodList().size());
+    assertEquals(25, symbolClassAutomaton.getCDMethodList().size());
   }
 
   @Test
@@ -505,6 +522,45 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
+  public void testGetStereoinfoMethod() {
+    ASTCDMethod method = getMethodBy("getStereoinfo", symbolClassAutomaton);
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertDeepEquals(
+      mcTypeFacade.createMapTypeOf(
+        mcTypeFacade.createQualifiedType(I_STEREOTYPE_REF),
+        mcTypeFacade.createOptionalTypeOf(VALUE)
+      ),
+      method.getMCReturnType().getMCType()
+    );
+
+    assertEquals(0, method.sizeCDParameters());
+
+    assertTrue(Log.getFindings().isEmpty());
+  }
+
+  @Test
+  public void testSetStereoinfoMethod() {
+    ASTCDMethod method = getMethodBy("setStereoinfo", symbolClassAutomaton);
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCVoidType());
+
+    assertEquals(1, method.sizeCDParameters());
+    assertDeepEquals(
+      mcTypeFacade.createMapTypeOf(
+        mcTypeFacade.createQualifiedType(I_STEREOTYPE_REF),
+        mcTypeFacade.createOptionalTypeOf(VALUE)
+      ),
+      method.getCDParameter(0).getMCType()
+    );
+    assertEquals("stereoinfo", method.getCDParameter(0).getName());
+
+    assertTrue(Log.getFindings().isEmpty());
+  }
+
+  @Test
   public void testGeneratedCodeAutomaton() {
     GeneratorSetup generatorSetup = new GeneratorSetup();
     generatorSetup.setGlex(glex);
@@ -514,7 +570,7 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     // test parsing
     ParserConfiguration configuration = new ParserConfiguration();
     JavaParser parser = new JavaParser(configuration);
-    ParseResult parseResult = parser.parse(sb.toString());
+    ParseResult<?> parseResult = parser.parse(sb.toString());
     assertTrue(parseResult.isSuccessful());
   
     assertTrue(Log.getFindings().isEmpty());
@@ -545,35 +601,35 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeCountStateSymbol() {
-    assertEquals(6, symbolClassState.getCDAttributeList().size());
+    assertEquals(7, symbolClassState.getCDAttributeList().size());
   
     assertTrue(Log.getFindings().isEmpty());
   }
 
-  @Test(expected = AssertionError.class)
+  @Test
   public void testSpannedScopeAttributeStateSymbol() {
-    getAttributeBy("spannedScope", symbolClassState);
+    assertThrows(AssertionError.class, () -> getAttributeBy("spannedScope", symbolClassState));
   
     assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMethodsStateSymbol() {
-    assertEquals(19, symbolClassState.getCDMethodList().size());
+    assertEquals(23, symbolClassState.getCDMethodList().size());
   
     assertTrue(Log.getFindings().isEmpty());
   }
 
-  @Test(expected = AssertionError.class)
+  @Test
   public void testGetSpannedScopeMethodStateSymbol() {
-    getMethodBy("getSpannedScope", symbolClassState);
+    assertThrows(AssertionError.class, () -> getMethodBy("getSpannedScope", symbolClassState));
   
     assertTrue(Log.getFindings().isEmpty());
   }
 
-  @Test(expected = AssertionError.class)
+  @Test
   public void testSetSpannedScopeMethodStateSymbol() {
-    getMethodBy("setSpannedScope", symbolClassState);
+    assertThrows(AssertionError.class, () -> getMethodBy("setSpannedScope", symbolClassState));
   
     assertTrue(Log.getFindings().isEmpty());
   }
@@ -669,7 +725,7 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     // test parsing
     ParserConfiguration configuration = new ParserConfiguration();
     JavaParser parser = new JavaParser(configuration);
-    ParseResult parseResult = parser.parse(sb.toString());
+    ParseResult<?> parseResult = parser.parse(sb.toString());
     assertTrue(parseResult.isSuccessful());
   
     assertTrue(Log.getFindings().isEmpty());

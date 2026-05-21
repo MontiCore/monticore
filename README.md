@@ -1,23 +1,16 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
+<!-- NOTE: This readme will NOT be used when generating the monticore websites!-->
+<!-- Instead, the index in the docs folder will be used! -->
 <center>
-  <div style="text-align:center" ><img src="mc-logo.png" /></div>
+  <div style="text-align:center" ><img src="docs/img/mc-logo.png" alt="MontiCore logo" /></div>
 </center>
 
 # MontiCore - Language Workbench and Development Tool Framework 
 
 ---
+<!-- DO NOT MOVE THIS LINE - docs/README.md references it by line number!!! -->
 
-**NEWS**:
-<div align="center">
-  <a href="https://monticore.github.io/monticore/docs/MontiCoreSymposium/" target="_blank">
-  <img src="https://github.com/MontiCore/monticore/raw/dev/docs/docs/MC_Symp_Banner.png">
-  </a>  
-</div>  
-  
-* ISW Stuttgart and RWTH Aachen organize the third **[MontiCore Symposium 2025](docs/MontiCoreSymposium.md)** March 23 - March 26 in Gemünd, Germany
-  * Deadline for submission of papers or abstracts: January, 10th.
 
----
 
 [MontiCore](https://www.monticore.de) is a language workbench for the efficient 
 development of domain-specific languages (DSLs). It processes an extended 
@@ -49,24 +42,26 @@ grammar languages are comfortable to use.
 To show a little of MontiCore's capabilities, the following (incomplete) 
 grammar might help:
 
-    grammar MyStatemachine extends Automata,                  // MontiCore grammar 
-                                   MCBasicTypes, SetExpressions, MCCommonLiterals {     
-      start Automaton;
-    
-      // overriding a nonterminal (to add optional conditions):
-      Transition = from:Name@State ":" Expression? "->" to:Name@State;
+```monticore title="MyStatemachine.mc4"
+grammar MyStatemachine extends Automata,                  // MontiCore grammar 
+                               MCBasicTypes, SetExpressions, MCCommonLiterals {     
+  start Automaton;
 
-      // add new variants of expressions
-      LogicalNotExpr implements Expression = "!" Expression;
+  // overriding a nonterminal (to add optional conditions):
+  Transition = from:Name@State ":" Expression? "->" to:Name@State;
 
-      XorExpr        implements Expression =
-            left:Expression "xor" right:Expression;
+  // add new variants of expressions
+  LogicalNotExpr implements Expression = "!" Expression;
 
-      scope LetExpr  implements Expression =
-            "let" (VarDeclaration || ",")+ "in" Expression;
+  XorExpr        implements Expression =
+        left:Expression "xor" right:Expression;
 
-      symbol VarDeclaration = MCType? Name "=" Expression ;
-    }
+  scope LetExpr  implements Expression =
+        "let" (VarDeclaration || ",")+ "in" Expression;
+
+  symbol VarDeclaration = MCType? Name "=" Expression ;
+}
+```
 
 The grammar language has a variety of mechanisms to define
 new nonterminals using constants `"!"`, 
@@ -92,10 +87,12 @@ frontend and a larger part of the backend of
 a statemachine processor.
 We now can write statemachines like:
 
-    statemachine PingPong {                                         // MyStatemachine
-      state Ping, Pong;
-      Ping : (speed > 14km/h && !missedBall) -> Pong
-    }
+```statemachine title="PingPong.sm"
+statemachine PingPong {                                         // MyStatemachine
+  state Ping, Pong;
+  Ping : (speed > 14km/h && !missedBall) -> Pong
+}
+```
 
 MontiCore provides versions of expressions that use SI
 Units like `240km/h` or `14.2 m/s^2`, but also Java 
@@ -116,16 +113,8 @@ Please also note that `PlusExpr` is mutually left-recursive.
 
 ## Quick Start
 
-```
-$ cd /usr/local
-$ wget www.monticore.de/download/aut.tar.gz
-$ tar -xf aut.tar.gz
-$ cd mc-workspace
-$ wget www.monticore.de/download/monticore-cli.jar
-$ java -jar monticore-cli.jar -g Automata.mc4 -hcp hwc/ -mp monticore-cli.jar
-$ javac -cp monticore-cli.jar -sourcepath "src/;out/;hwc/" src/automata/AutomataTool.java
-$ java -cp "src/;out/;hwc/;monticore-cli.jar" automata.AutomataTool example/PingPong.aut PingPong.autsym
-```
+You can follow the [Getting Started](https://monticore.github.io/monticore/docs/GettingStarted/)
+or follow a more [in-depth tutorial](https://github.com/MontiCore/tutorial/).
 
 ## MontiCore has a Relaxed 3-Level License  
 
@@ -189,15 +178,16 @@ For details see [Licenses](00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md).
 ## Further Information
 
 * see also [**MontiCore handbook**](https://www.monticore.de/handbook.pdf)
-* [MontiCore Reference Languages](https://monticore.github.io/monticore/docs/DevelopedLanguages/) - Languages Built Using MontiCore
-* [Build MontiCore](https://monticore.github.io/monticore/docs/BuildMontiCore/) - How to Build MontiCore
-* [Getting Started](https://monticore.github.io/monticore/docs/GettingStarted/) - How to start using MontiCore
+* [MontiCore Reference Languages](docs/DevelopedLanguages.md) - Languages Built Using MontiCore
+* [Build MontiCore](docs/BuildMontiCore.md) - How to Build MontiCore
+* [Getting Started](docs/GettingStarted.md) - How to Start Using MontiCore
 * [Changelog](00.org/Explanations/CHANGELOG.md) - Release Notes
-* [FAQ](00.org/Explanations/FAQ.md) - FAQ 
+* [JavaDocs](docs/JavaDocs.md) - JavaDocs
+* [FAQ](00.org/Explanations/FAQ.md) - FAQ
 * [Licenses](00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md) - MontiCore 3-Level License
 * [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
-* [**List of languages**](https://monticore.github.io/monticore/docs/Languages/)
-* [**MontiCore Core Grammar Library**](https://github.com/MontiCore/monticore/blob/opendev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
-* [Best Practices](https://monticore.github.io/monticore/docs/BestPractices/)
+* [**List of languages**](docs/Languages.md)
+* [**MontiCore Core Grammar Library**](monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
+* [Best Practices](docs/BestPractices.md)
 * [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
 

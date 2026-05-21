@@ -1,53 +1,59 @@
 /* (c) https://github.com/MontiCore/monticore */
 description = 'MontiTrans Test: Generated DSTL Test'
 
-def _outputDir = "$buildDir/generated-sources"
+def _outputDir = "$buildDir/generated-sources/trafogen"
 
 dependencies {
-  implementation project(':monticore-test:montitrans:test-dstl-gen')
+  grammar project(':monticore-test:montitrans:test-dstl-gen')
+  implementation project(path:':monticore-test:montitrans:test-dstl-gen', configuration: 'trafoOut')
 }
 
-task generateStatechartTRRules {
+import de.monticore.MontiTransExec
+
+tasks.register('generateStatechartTRRules') {
   group = "montitrans"
 }
 fileTree(dir: "$projectDir/src/main/models/statechart/mtr", include: '**/**.mtr').each {
   def g = it
   def taskname = "generateStatechartTRRules${it.getName().substring(0, it.getName().lastIndexOf('.'))}"
-  task "$taskname"(type: MontiTransExec) {
-    getClassPath().setFrom(project(':monticore-test:montitrans:test-dstl-gen').sourceSets.main.runtimeClasspath)
+  tasks.register(taskname, MontiTransExec) {
+    getClassPath().setFrom(project(':monticore-test:montitrans:test-dstl-gen').sourceSets.trafo.runtimeClasspath)
     TFGenTool = 'mc.testcases.statechart.tr.StatechartTFGenTool'
     input = file(g)
-    outputDir = file("$buildDir/generated-sources")
+    outputDir = file(_outputDir)
+    getHandWrittenCodeDir().from(file("src/main/java"))
   }
   generateStatechartTRRules.dependsOn("$taskname")
 }
 
-task generateSocialNetworkTRRules {
+tasks.register('generateSocialNetworkTRRules') {
   group = "montitrans"
 }
 fileTree(dir: "$projectDir/src/main/models/social/mtr", include: '**/**.mtr').each {
   def g = it
   def taskname = "generateSocialNetworkTRRules${it.getName().substring(0, it.getName().lastIndexOf('.'))}"
-  task "$taskname"(type: MontiTransExec) {
-    getClassPath().setFrom(project(':monticore-test:montitrans:test-dstl-gen').sourceSets.main.runtimeClasspath)
+  tasks.register(taskname, MontiTransExec) {
+    getClassPath().setFrom(project(':monticore-test:montitrans:test-dstl-gen').sourceSets.trafo.runtimeClasspath)
     TFGenTool = 'mc.testcases.social.tr.SocialNetworkTFGenTool'
     input = file(g)
-    outputDir = file("$buildDir/generated-sources")
+    outputDir = file(_outputDir)
+    getHandWrittenCodeDir().from(file("src/main/java"))
   }
   generateSocialNetworkTRRules.dependsOn("$taskname")
 }
 
-task generateExpressionDSLTRRules {
+tasks.register('generateExpressionDSLTRRules') {
   group = "montitrans"
 }
 fileTree(dir: "$projectDir/src/main/models/expressiondsl/mtr", include: '**/**.mtr').each {
   def g = it
   def taskname = "generateExpressionDSLTRRules${it.getName().substring(0, it.getName().lastIndexOf('.'))}"
-  task "$taskname"(type: MontiTransExec) {
-    getClassPath().setFrom(project(':monticore-test:montitrans:test-dstl-gen').sourceSets.main.runtimeClasspath)
+  tasks.register(taskname, MontiTransExec) {
+    getClassPath().setFrom(project(':monticore-test:montitrans:test-dstl-gen').sourceSets.trafo.runtimeClasspath)
     TFGenTool = 'mc.testcases.tr.ExpressionDSLTFGenTool'
     input = file(g)
-    outputDir = file("$buildDir/generated-sources")
+    outputDir = file(_outputDir)
+    getHandWrittenCodeDir().from(file("src/main/java"))
   }
   generateExpressionDSLTRRules.dependsOn("$taskname")
 }
@@ -59,4 +65,23 @@ compileJava {
 
 sourceSets {
   main.java.srcDirs += [ _outputDir ]
+}
+// As we add the MontiTrans output as a main java output, we have to add this crude dependsOn
+tasks.named("generateMCGrammars") {
+    dependsOn(tasks.withType(MontiTransExec))
+}
+
+// Make the trafo sourceset available to tests
+sourceSets {
+  test {
+    compileClasspath += sourceSets.trafo.output
+    runtimeClasspath += sourceSets.trafo.output
+  }
+}
+configurations {
+  testImplementation.extendsFrom(trafoImplementation)
+}
+
+tasks.named('testClasses') {
+  dependsOn tasks.named('trafoClasses')
 }

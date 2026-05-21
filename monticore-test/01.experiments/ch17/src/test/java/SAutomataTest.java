@@ -1,39 +1,32 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import de.se_rwth.commons.logging.*;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import org.antlr.v4.runtime.RecognitionException;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import sautomata.SAutomataMill;
 import sautomata._ast.ASTAutomaton;
-import sautomata._parser.SAutomataParser;
 
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static de.monticore.runtime.junit.MCAssertions.assertNoFindings;
 
+@TestWithMCLanguage(SAutomataMill.class)
 public class SAutomataTest {
-
-  @Before
-  public void setup() {
-    LogStub.init();         // replace log by a sideffect free variant
-        // LogStub.initPlusLog();  // for manual testing purpose only
-    Log.enableFailQuick(false);
-  }
 
   @Test
   public void testPingPong() throws IOException {
-    Optional<ASTAutomaton> a = new SAutomataParser().parse("src/main/resources/PingPong.aut");
+    Optional<ASTAutomaton> a = SAutomataMill.parser().parse("src/main/resources/PingPong.aut");
     assertTrue(a.isPresent());
-    assertTrue(Log.getFindings().isEmpty());
+    assertNoFindings();
   }
 
   @Test
   public void testSimple12() throws RecognitionException, IOException {
-    Optional<ASTAutomaton> a = new SAutomataParser().parse("src/main/resources/Simple12.aut");
+    Optional<ASTAutomaton> a = SAutomataMill.parser().parse("src/main/resources/Simple12.aut");
     assertTrue(a.isPresent());
-    assertTrue(Log.getFindings().isEmpty());
+    assertNoFindings();
   }
 
 }

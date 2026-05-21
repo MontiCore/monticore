@@ -1,10 +1,10 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${signature("isOptional")}
+${signature("isOptional", "parentObject")}
 
 <#assign optObject = ast>
 if (nextNode.equals("${optObject.getObjectName()}")) {
   // this is an optional object
-  if (doPatternMatching_${optObject.getObjectName()}(isBacktrackingNegative)) {
+  if (doPatternMatching_${optObject.getObjectName()}(isBacktracking, isBacktrackingNegative)) {
     // Experimental
     if (isBacktrackingNegative) {
       isBacktracking = true;
@@ -30,8 +30,9 @@ if (nextNode.equals("${optObject.getObjectName()}")) {
     // if no object is found, test if backtracking stack is empty
     if (backtracking.isEmpty()) {
       // no match of the pattern can be found
-      <#if !isOptional>
       foundMatch = false;
+      <#if isOptional && parentObject?has_content>
+      reset_${parentObject.getObjectName()}();
       </#if>
       break;
     } else {
@@ -41,6 +42,9 @@ if (nextNode.equals("${optObject.getObjectName()}")) {
       searchPlan.push(nextNode);
       // put the first object of the backtracking stack
       searchPlan.push(backtracking.pop());
+      // reset the optional candidate
+      reset_${optObject.getObjectName()}();
+      this.opt_found_${optObject.getObjectName()} = false;
     }
   }
 }

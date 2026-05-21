@@ -19,8 +19,8 @@ import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.types.MCTypeFacade;
 import de.se_rwth.commons.logging.Log;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
@@ -28,9 +28,7 @@ import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SymbolSurrogateBuilderDecoratorTest extends DecoratorTestCase {
 
@@ -44,7 +42,11 @@ public class SymbolSurrogateBuilderDecoratorTest extends DecoratorTestCase {
 
   private static final String I_AUTOMATON_SCOPE = "de.monticore.codegen.ast.automaton._symboltable.IAutomatonScope";
 
-  @Before
+  private static final String I_STEREOTYPE_REF = "de.monticore.symboltable.stereotypes.IStereotypeReference";
+
+  private static final String VALUE = "de.monticore.interpreter.Value";
+
+  @BeforeEach
   public void setUp() {
     this.mcTypeFacade = MCTypeFacade.getInstance();
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
@@ -116,7 +118,7 @@ public class SymbolSurrogateBuilderDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeCount() {
-    assertEquals(5, builderClass.getCDAttributeList().size());
+    assertEquals(6, builderClass.getCDAttributeList().size());
   
     assertTrue(Log.getFindings().isEmpty());
   }
@@ -145,6 +147,21 @@ public class SymbolSurrogateBuilderDecoratorTest extends DecoratorTestCase {
     assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
     assertDeepEquals("AutomatonSymbolSurrogateBuilder", astcdAttribute.getMCType());
   
+    assertTrue(Log.getFindings().isEmpty());
+  }
+
+  @Test
+  public void testStereoinfoAttribute() {
+    ASTCDAttribute astcdAttribute = getAttributeBy("stereoinfo", builderClass);
+    assertDeepEquals(PROTECTED, astcdAttribute.getModifier());
+    assertDeepEquals(
+      mcTypeFacade.createMapTypeOf(
+        mcTypeFacade.createQualifiedType(I_STEREOTYPE_REF),
+        mcTypeFacade.createOptionalTypeOf(VALUE)
+      ),
+      astcdAttribute.getMCType()
+    );
+
     assertTrue(Log.getFindings().isEmpty());
   }
 
@@ -197,6 +214,53 @@ public class SymbolSurrogateBuilderDecoratorTest extends DecoratorTestCase {
   }
 
   @Test
+  public void testAddStereoinfoWithoutValueMethod() {
+    ASTCDMethod method = getMethodBy("addStereoinfo", 1, builderClass);
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertDeepEquals(
+      mcTypeFacade.createQualifiedType("AutomatonSymbolSurrogateBuilder"),
+      method.getMCReturnType().getMCType()
+    );
+
+    assertEquals("stereotype", method.getCDParameter(0).getName());
+    assertDeepEquals(
+      mcTypeFacade.createQualifiedType(I_STEREOTYPE_REF),
+      method.getCDParameter(0).getMCType()
+    );
+
+    assertTrue(Log.getFindings().isEmpty());
+  }
+
+  @Test
+  public void testAddStereoinfoWithValueMethod() {
+    ASTCDMethod method = getMethodBy("addStereoinfo", 2, builderClass);
+
+    assertDeepEquals(PUBLIC, method.getModifier());
+    assertTrue(method.getMCReturnType().isPresentMCType());
+    assertDeepEquals(
+      mcTypeFacade.createQualifiedType("AutomatonSymbolSurrogateBuilder"),
+      method.getMCReturnType().getMCType()
+    );
+
+    assertEquals(2, method.sizeCDParameters());
+    assertEquals("stereotype", method.getCDParameter(0).getName());
+    assertEquals("value", method.getCDParameter(1).getName());
+    System.out.println(method.getCDParameter(0).getMCType().printType());
+    assertDeepEquals(
+      mcTypeFacade.createQualifiedType(I_STEREOTYPE_REF),
+      method.getCDParameter(0).getMCType()
+    );
+    assertDeepEquals(
+      mcTypeFacade.createQualifiedType(VALUE),
+      method.getCDParameter(1).getMCType()
+    );
+
+    assertTrue(Log.getFindings().isEmpty());
+  }
+
+  @Test
   public void testGeneratedCode() {
     GeneratorSetup generatorSetup = new GeneratorSetup();
     generatorSetup.setGlex(glex);
@@ -206,7 +270,7 @@ public class SymbolSurrogateBuilderDecoratorTest extends DecoratorTestCase {
     // test parsing
     ParserConfiguration configuration = new ParserConfiguration();
     JavaParser parser = new JavaParser(configuration);
-    ParseResult parseResult = parser.parse(sb.toString());
+    ParseResult<?> parseResult = parser.parse(sb.toString());
     assertTrue(parseResult.isSuccessful());
   
     assertTrue(Log.getFindings().isEmpty());

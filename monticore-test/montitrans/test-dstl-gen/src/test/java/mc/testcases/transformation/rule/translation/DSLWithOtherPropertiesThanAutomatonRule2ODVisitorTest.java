@@ -20,14 +20,13 @@ import de.monticore.tf.odrules._ast.ASTODObject;
 import de.monticore.tf.odrules._ast.ASTODRule;
 import de.monticore.tf.rule2od.Variable2AttributeMap;
 import de.monticore.tf.ruletranslation.Rule2ODState;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DSLWithOtherPropertiesThanAutomatonRule2ODVisitorTest {
   private static void createSymboltable(ASTODRule od) {
@@ -35,13 +34,13 @@ public class DSLWithOtherPropertiesThanAutomatonRule2ODVisitorTest {
     symbolTable.createFromAST(od);
   }
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
   }
   
-  @BeforeClass
+  @BeforeAll
   public static void disableFailQuick() {
     DSLWithOtherPropertiesThanAutomatonTRMill.init();
   }

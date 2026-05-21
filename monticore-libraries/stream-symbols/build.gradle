@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 plugins {
-  id "de.rwth.se.symtabdefinition" version "$version"
+  id "de.rwth.se.symtabdefinition" version "$previous_mc_version"
+  // use previous_mc_version to avoid bootstrapping issue
 }
 
 description = 'MontiCore: Stream Symbols'
@@ -13,4 +14,9 @@ jar {
 sourcesJar {
   // exclude generated files
   exclude("*.symtabdefinitionsym")
+}
+
+dependencies {
+  stdefTool("de.monticore.lang:cd4analysis:$previous_mc_version") // TODO: backport this fix into the CD4A plugin
+  stdefTool("de.monticore.lang.cd4analysis:stdefgradle:$previous_mc_version") // TODO: backport this fix into the CD4A plugin
 }

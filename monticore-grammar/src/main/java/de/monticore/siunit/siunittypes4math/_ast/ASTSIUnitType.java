@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.siunit.siunittypes4math._ast;
 
 import de.monticore.symboltable.ISymbol;

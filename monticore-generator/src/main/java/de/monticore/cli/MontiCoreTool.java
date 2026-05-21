@@ -13,6 +13,11 @@ import de.monticore.StatisticsHandlerFix;
 import de.monticore.cli.updateChecker.UpdateCheckerRunnable;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
+import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsTraverser;
+import de.monticore.literals.mccommonliterals.types3.MCCommonLiteralsTypeVisitor;
+import de.monticore.types.mcbasictypes.types3.MCBasicTypesTypeVisitor;
+import de.monticore.types3.Type4Ast;
+import de.monticore.types3.util.MapBasedTypeCheck3;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.Slf4jLog;
 import org.apache.commons.cli.*;
@@ -91,7 +96,6 @@ public class MontiCoreTool {
    * @param args The input parameters for configuring the MontiCore tool.
    */
   public void run(String[] args) {
-
     runUpdateCheck();
   
     Options options = initOptions();
@@ -124,6 +128,8 @@ public class MontiCoreTool {
       
       // load custom or default script
       String script = loadScript(cmd);
+
+      initializeTypeCheck3();
       
       // execute MontiCore with loaded script and configuration
       new MontiCoreScript().run(script, configuration);
@@ -274,6 +280,26 @@ public class MontiCoreTool {
       Log.error("0xA1057 Failed to load Groovy script.", e);
     }
     return script;
+  }
+
+  /**
+   * Initialize the TypeSystem(3)
+   */
+  public void initializeTypeCheck3() {
+    Grammar_WithConceptsTraverser traverser = Grammar_WithConceptsMill.traverser();
+
+    // map to store the results
+    Type4Ast type4Ast = new Type4Ast();
+
+    MCCommonLiteralsTypeVisitor visMCCommonLiterals = new MCCommonLiteralsTypeVisitor();
+    visMCCommonLiterals.setType4Ast(type4Ast);
+    traverser.add4MCCommonLiterals(visMCCommonLiterals);
+
+    MCBasicTypesTypeVisitor visMCBasicTypes = new MCBasicTypesTypeVisitor();
+    visMCBasicTypes.setType4Ast(type4Ast);
+    traverser.add4MCBasicTypes(visMCBasicTypes);
+
+    new MapBasedTypeCheck3(traverser, type4Ast).setThisAsDelegate();
   }
 
   /*=================================================================*/

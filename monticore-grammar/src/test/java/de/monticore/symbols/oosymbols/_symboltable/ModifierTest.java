@@ -10,11 +10,12 @@ import de.monticore.types.check.DefsTypeBasic;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ModifierTest {
 
@@ -98,67 +99,67 @@ public class ModifierTest {
   @Test
   public void testType(){
     List<OOTypeSymbol> typesAllInclusion = symbolTable.resolveOOTypeMany("Test");
-    Assertions.assertEquals(6, typesAllInclusion.size());
+    assertEquals(6, typesAllInclusion.size());
 
     List<OOTypeSymbol> typesPublic = symbolTable.resolveOOTypeMany("Test", BasicAccessModifier.PUBLIC);
-    Assertions.assertEquals(1, typesPublic.size());
+    assertEquals(1, typesPublic.size());
 
     List<OOTypeSymbol> typesProtected = symbolTable.resolveOOTypeMany("Test", BasicAccessModifier.PROTECTED);
-    Assertions.assertEquals(2, typesProtected.size());
+    assertEquals(2, typesProtected.size());
 
     List<OOTypeSymbol> typesPrivate = symbolTable.resolveOOTypeMany("Test", BasicAccessModifier.PRIVATE);
-    Assertions.assertEquals(6, typesPrivate.size());
+    assertEquals(6, typesPrivate.size());
 
     List<OOTypeSymbol> typesStatic = symbolTable.resolveOOTypeMany("Test", StaticAccessModifier.STATIC);
-    Assertions.assertEquals(2, typesStatic.size());
+    assertEquals(2, typesStatic.size());
 
     List<OOTypeSymbol> typesPrivateStatic = symbolTable
       .resolveOOTypeMany("Test", new CompoundAccessModifier(List.of(BasicAccessModifier.PRIVATE, StaticAccessModifier.STATIC)));
-    Assertions.assertEquals(2, typesPrivateStatic.size());
+    assertEquals(2, typesPrivateStatic.size());
   }
 
   @Test
   public void testMethod(){
     List<MethodSymbol> methodsAllInclusion = symbolTable.resolveMethodMany("foo");
-    Assertions.assertEquals(6, methodsAllInclusion.size());
+    assertEquals(6, methodsAllInclusion.size());
 
     List<MethodSymbol> methodsPublic = symbolTable.resolveMethodMany("foo", BasicAccessModifier.PUBLIC);
-    Assertions.assertEquals(1, methodsPublic.size());
+    assertEquals(1, methodsPublic.size());
 
     List<MethodSymbol> methodsProtected = symbolTable.resolveMethodMany("foo", BasicAccessModifier.PROTECTED);
-    Assertions.assertEquals(3, methodsProtected.size());
+    assertEquals(3, methodsProtected.size());
 
     List<MethodSymbol> methodsPrivate = symbolTable.resolveMethodMany("foo", BasicAccessModifier.PRIVATE);
-    Assertions.assertEquals(6, methodsPrivate.size());
+    assertEquals(6, methodsPrivate.size());
 
     List<MethodSymbol> methodsStatic = symbolTable.resolveMethodMany("foo", StaticAccessModifier.STATIC);
-    Assertions.assertEquals(2, methodsStatic.size());
+    assertEquals(2, methodsStatic.size());
 
     List<MethodSymbol> methodsProtectedStatic = symbolTable
       .resolveMethodMany("foo", new CompoundAccessModifier(List.of(BasicAccessModifier.PROTECTED, StaticAccessModifier.STATIC)));
-    Assertions.assertEquals(1, methodsProtectedStatic.size());
+    assertEquals(1, methodsProtectedStatic.size());
   }
 
   @Test
   public void testField(){
     List<FieldSymbol> fieldsAllInclusion = symbolTable.resolveFieldMany("bar");
-    Assertions.assertEquals(6, fieldsAllInclusion.size());
+    assertEquals(6, fieldsAllInclusion.size());
 
     List<FieldSymbol> fieldsPublic = symbolTable.resolveFieldMany("bar", BasicAccessModifier.PUBLIC);
-    Assertions.assertEquals(2, fieldsPublic.size());
+    assertEquals(2, fieldsPublic.size());
 
     List<FieldSymbol> fieldsProtected = symbolTable.resolveFieldMany("bar", BasicAccessModifier.PROTECTED);
-    Assertions.assertEquals(3, fieldsProtected.size());
+    assertEquals(3, fieldsProtected.size());
 
     List<FieldSymbol> fieldsPrivate = symbolTable.resolveFieldMany("bar", BasicAccessModifier.PRIVATE);
-    Assertions.assertEquals(6, fieldsPrivate.size());
+    assertEquals(6, fieldsPrivate.size());
 
     List<FieldSymbol> fieldsStatic = symbolTable.resolveFieldMany("bar", StaticAccessModifier.STATIC);
-    Assertions.assertEquals(2, fieldsStatic.size());
+    assertEquals(2, fieldsStatic.size());
 
     List<FieldSymbol> fieldsPublicStatic = symbolTable
       .resolveFieldMany("bar", new CompoundAccessModifier(BasicAccessModifier.PUBLIC, StaticAccessModifier.STATIC));
-    Assertions.assertEquals(1, fieldsPublicStatic.size());
+    assertEquals(1, fieldsPublicStatic.size());
   }
 
 }

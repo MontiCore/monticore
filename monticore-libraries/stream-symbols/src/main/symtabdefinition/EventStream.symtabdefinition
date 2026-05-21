@@ -15,7 +15,7 @@ symtabdefinition EventStream {
     + static <S, U> EventStream<U> eProjSnd(UntimedStream<(S,U)> list);
 
     // ----------- Implementations
-    + Optional<EventStream<T>> dropFirst();
+    + EventStream<T> dropFirst();
     + EventStream<T> take(long n);
     + EventStream<T> dropMultiple(long n);
     + EventStream<T> times(long n); // <2>.times(24)

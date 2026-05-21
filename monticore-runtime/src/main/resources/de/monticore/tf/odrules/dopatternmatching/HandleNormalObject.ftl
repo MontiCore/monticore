@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${signature("isOptional")}
+${signature("isOptional", "parentObject")}
 
 <#assign normalObject = ast>
 if (nextNode.equals("${normalObject.getObjectName()}")) {
@@ -9,7 +9,7 @@ if (nextNode.equals("${normalObject.getObjectName()}")) {
     clearNegativeObjects();
   }
   if (!isBacktracking) {
-    ${normalObject.getObjectName()}_candidates_temp = new ArrayList<>(${normalObject.getObjectName()}_candidates);
+    ((FastLookupList<?>)${normalObject.getObjectName()}_candidates_temp).reset();
   }
   <#if isOptional>
   // exit condition for optional structures
@@ -24,8 +24,9 @@ if (nextNode.equals("${normalObject.getObjectName()}")) {
     // if no object ist found, test if backtracking stack is empty
     if(backtracking.isEmpty()) {
       // no match of the pattern can be found
-    <#if !isOptional>
       foundMatch = false;
+    <#if isOptional && parentObject?has_content>
+      reset_${parentObject.getObjectName()}();
     </#if>
     break;
     } else {
@@ -36,7 +37,7 @@ if (nextNode.equals("${normalObject.getObjectName()}")) {
       // put the first object of the backtracking stack
       searchPlan.push(backtracking.pop());
       // reset candidates list
-      ${normalObject.getObjectName()}_candidates_temp = new ArrayList<>(${normalObject.getObjectName()}_candidates);
+      ((FastLookupList<?>)${normalObject.getObjectName()}_candidates_temp).reset();
     }
   } else {
     // stop backtracking

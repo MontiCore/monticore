@@ -1,15 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import de.se_rwth.commons.logging.*;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class GenerateAutomataParserTest {
   
-  @Before
+  @BeforeEach
   public void setup() {
     LogStub.init();         // replace log by a sideffect free variant
         // LogStub.initPlusLog();  // for manual testing purpose only
@@ -19,7 +19,7 @@ public class GenerateAutomataParserTest {
   // Für die Ausführung dieses Tests muss in der Pom u.U. die Versionsnummer
   // für monticore-grammar und monticore-grammar-grammars auf ${last.mc.release}
   // gesetzt werden
-  @Ignore
+  @Disabled
   @Test
   public void test() {
     String[] args = {"src/test/resources/Automata.mc4", "target/gen"};

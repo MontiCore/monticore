@@ -44,6 +44,8 @@ public class SymbolTableConstants {
 
   public static final String SURROGATE_SUFFIX = "Surrogate";
 
+  public static final String SUPPLIER_SUFFIX = "Supplier";
+
   public static final String DE_SER_SUFFIX = "DeSer";
 
   public static final String SYMBOLS_2_JSON_SUFFIX = "Symbols2Json";
@@ -86,6 +88,10 @@ public class SymbolTableConstants {
 
   public static final String I_SYMBOL_DE_SER = "de.monticore.symboltable.serialization.ISymbolDeSer";
 
+  public static final String I_STEREOTYPE_REFERENCE = "de.monticore.symboltable.stereotypes.IStereotypeReference";
+
+  public static final String INTERPRETER_VALUE = "de.monticore.interpreter.Value";
+
   /**
    * attribute names
    */
@@ -119,6 +125,8 @@ public class SymbolTableConstants {
   public static final String SCOPE_VAR = "scope";
 
   public static final String MODIFIER_VAR = "modifier";
+
+  public static final String STEREOINFO_VAR = "stereoinfo";
 
   public static final String SCOPE_STACK_VAR = "scopeStack";
 
