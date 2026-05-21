@@ -41,15 +41,30 @@ public class InterpreterStatementsTest extends InterpreterTestAbstract {
 
   static Stream<Arguments> statementCases() {
     return Stream.of(
-        Arguments.of("int x = 7; assert x == 7; x", 7),
+        Arguments.of("int x = 1, y = 2; x + y", 3),
+        Arguments.of("int a, b = 4; a = 2; a + b", 6),
         Arguments.of("int x; if (true) {x = 2;} else {x = 3;}; x", 2),
         Arguments.of("int x; if (false) {x = 2;} else {x = 3;}; x", 3),
         Arguments.of("int x = 1; if (true) {x = 2;} x", 2),
         Arguments.of("int x = 1; if (false) {x = 2;} x", 1),
         Arguments.of("int x = 1; while (x < 0) {x++;} x", 10),
         Arguments.of("int x = 1; while (false) {x++;} x", 1),
+        Arguments.of("int x = 0; while (true) {x++; break; x++;} x", 1),
         Arguments.of("int x = 1; do {x++;} while (x < 10) x", 10),
-        Arguments.of("int x = 1; do {x++;} while (false) x", 2)
+        Arguments.of("int x = 1; do {x++;} while (false) x", 2),
+        Arguments.of("int x = 0; do {x++; break; x++;} while (true); x", 1),
+        Arguments.of("int x = 0; for (int i = 1; i <= 4; i++) x++; sum", 5),
+        Arguments.of("int x = 0; for (;x < 4;) x++; x", 4),
+        Arguments.of("int x = 1; for (int i = 0; i < 0; i++) x++; x", 1),
+        Arguments.of("""
+            int x = 0;
+            for (int i = 0; i < 2; i++)
+              for (int j = 0; j < 3; j++)
+                x++;
+            x
+            """, 6),
+        Arguments.of("int x = 7; assert x == 7; x", 7),
+        Arguments.of("int x = 1; ; ; ; x", 1)
     );
   }
 

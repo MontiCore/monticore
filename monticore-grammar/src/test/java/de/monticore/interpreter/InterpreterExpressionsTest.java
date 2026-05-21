@@ -6,6 +6,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -108,9 +109,18 @@ public class InterpreterExpressionsTest extends InterpreterTestAbstract {
         Arguments.of("6 & 3", 2),
         Arguments.of("6 ^ 3", 5),
         Arguments.of("6 | 3", 7),
+        Arguments.of("Optional.of(2) ?: 9", 2),
+        Arguments.of("((Optional<int>)Optional.empty()) ?: 9", 9),
+        Arguments.of("Optional.of(2) ?< 3", true),
+        Arguments.of("((Optional<int>)Optional.empty()) ?< 1", false),
+        Arguments.of("Optional.of(2) ?> 3", false),
         Arguments.of("Optional.of(2) ?<= 3", true),
         Arguments.of("Optional.of(2) ?<= 1", false),
-        Arguments.of("((Optional<int>)Optional.empty()) ?<= 1", false),
+        Arguments.of("Optional.of(2) ?>= 2", true),
+        Arguments.of("Optional.of(2) ?== 2", true),
+        Arguments.of("Optional.of(2) ?!= 2", false),
+        Arguments.of("Optional.of(2) ?~~ Optional.of(2)", true),
+        Arguments.of("Optional.of(2) ?!~ Optional.of(3)", true),
         Arguments.of("(String)\"Hello\"", "Hello"),
         Arguments.of("(() -> 1)()", 1),
         Arguments.of("(() -> () -> 2)()()", 2),
@@ -128,7 +138,10 @@ public class InterpreterExpressionsTest extends InterpreterTestAbstract {
         Arguments.of(
             "[z + x | int x in [y + y | y in [1,2,3]], "
                 + "int z in [1 + x, 2 + x]]",
-            List.of(5, 6, 9, 10, 13, 14))
+            List.of(5, 6, 9, 10, 13, 14)),
+        Arguments.of("{1, 4..6, 4}", Set.of(1, 4, 5, 6)),
+        Arguments.of("{x * x | x in {1, 2, 3}}", Set.of(1, 4, 9)),
+        Arguments.of("{x | x in {1, 2, 3, 4}, x % 2 == 0}", Set.of(2, 4))
     );
   }
 
