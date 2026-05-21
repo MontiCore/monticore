@@ -174,6 +174,7 @@ public class SymbolBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDCla
     builder.getCDAttributeList().stream()
       .filter(a -> "accessModifier".equals(a.getName()))
       .forEach(a -> this.replaceTemplate(VALUE, a, defaultVal));
+  }
 
   protected void addStereoinfoDefaultValue(ASTCDClass builder) {
     HookPoint defaultVal = new StringHookPoint("= new java.util.HashMap<>()");
