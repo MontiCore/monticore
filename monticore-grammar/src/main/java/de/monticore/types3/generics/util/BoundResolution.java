@@ -317,6 +317,10 @@ public class BoundResolution {
             newEqualityBounds.stream()
                 .map(TypeEqualityBound::getFirstType)
                 .collect(Collectors.toSet());
+        // note: for efficiency reason, one could consider
+        // replacing the variables here already
+        // and removing some(/all?) old bounds that had been replaced.
+        // cf. expression [[1],[2.f]] without target type
         boolean hasNotFoundRelevantInstantiation =
             tmpInfVars.containsAll(newlyInstantiated);
         if (createdTempInfVarsLastTry && hasNotFoundRelevantInstantiation) {
