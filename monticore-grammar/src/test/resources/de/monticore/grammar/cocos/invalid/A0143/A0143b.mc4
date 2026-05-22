@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.monticore.grammar.cocos.invalid.A0143;
+
+grammar A0143b extends A0143 {
+
+	@Override
+  Plus implements Expr = Expr "-" Expr; // no priority used
+
+}

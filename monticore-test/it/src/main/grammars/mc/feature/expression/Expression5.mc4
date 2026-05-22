@@ -8,11 +8,13 @@ grammar Expression5 extends mc.feature.expression.Expression3 {
   start Expr;
   
   // Overriding priority
-  MultExpr implements Expr <8> =  // 10 -> 8
+  // Due to 0xA0143 (and a bunch of other reasons) we are unable to reduce the priorities
+  // We thus increase both (but still switch their order)
+  MultExpr implements Expr <18> =  // 10 -> 18
   	left:Expr star:["*"] right:Expr
   	| left:Expr div:["/"] right:Expr;
   	
-  AddExpr implements Expr <9> = 	// 8 -> 9
+  AddExpr implements Expr <19> = 	// 8 -> 19
   	left:Expr plus:["+"] right:Expr
   	| left:Expr minus:["-"] right:Expr;
 
