@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.interpreter.calculations;
 
 import de.monticore.interpreter.frames.MIFrame;
