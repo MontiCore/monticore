@@ -10,7 +10,7 @@ public class ReportingNameHelper {
   /**
    * Constructor for de.monticore.generating.templateengine.reporting.artifacts.ReportingNameHelper.
    */
-  private ReportingNameHelper() {
+  protected ReportingNameHelper() {
   }
 
   public static Path getPath(String outputDir, String qualifiedFilename, String fileextension) {

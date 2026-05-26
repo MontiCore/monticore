@@ -1,12 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types3;
 
+import de.monticore.types3.util.DefsVariablesForTests;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsGlobalScope;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.mccollectiontypes.types3.MCCollectionSymTypeRelations;
 import de.monticore.types.mccollectiontypes.types3.util.MCCollectionSymTypeFactory;
-import de.monticore.types3.util.DefsVariablesForTests;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -339,6 +339,8 @@ public class SetExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
         arguments("{\"1\", varPerson}", "Set<(Person | R\"1\")>"),
         // complex
         arguments("{{1}}", "Set<Set<int>>")
+        // too hard to solve due to union
+        //arguments("{{1}, {1.0}}", "Set<Set<int> | Set<double>>")
     );
   }
 

@@ -2,7 +2,7 @@
 package de.monticore.symboltable.serialization.json;
 
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -20,7 +20,7 @@ public class TraceableJsonObject extends JsonObject {
    * Constructor for de.monticore.symboltable.serialization.json.TraceableJsonObject
    */
   public TraceableJsonObject() {
-    visitedMembers = new HashSet<>();
+    visitedMembers = new LinkedHashSet<>();
   }
   
   /**
@@ -28,7 +28,7 @@ public class TraceableJsonObject extends JsonObject {
    */
   @Override
   public void setMembers(Map<String, JsonElement> members) {
-    visitedMembers = new HashSet<>();
+    visitedMembers = new LinkedHashSet<>();
     super.setMembers(members);
   }
   
@@ -51,7 +51,7 @@ public class TraceableJsonObject extends JsonObject {
    */
   public Collection<String> getUnvisitedMembers() {
     //first create a copy of the set of member names
-    Set<String> keySet = new HashSet<>(this.getMemberNames());
+    Set<String> keySet = new LinkedHashSet<>(this.getMemberNames());
     //and then remove all members that have been visited
     keySet.removeAll(visitedMembers);
     return keySet;

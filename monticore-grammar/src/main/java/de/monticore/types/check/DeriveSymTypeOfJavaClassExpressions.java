@@ -27,7 +27,10 @@ import static de.monticore.types.check.TypeCheck.compatible;
 /**
  * This Visitor can calculate a SymTypeExpression (type) for the expressions in JavaClassExpressions
  * It can be combined with other expressions in your language by creating a DelegatorVisitor
+ * @deprecated part of typecheck1,
+ * use {@link de.monticore.types3.TypeCheck3} instead.
  */
+@Deprecated
 public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpression implements JavaClassExpressionsVisitor2, JavaClassExpressionsHandler {
 
   protected JavaClassExpressionsTraverser traverser;

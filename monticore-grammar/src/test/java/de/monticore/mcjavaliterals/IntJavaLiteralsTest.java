@@ -13,6 +13,8 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class IntJavaLiteralsTest {
   
   @BeforeEach
@@ -25,10 +27,10 @@ public class IntJavaLiteralsTest {
   
   private void checkIntLiteral(int i, String s) throws IOException {
     ASTLiteral lit = MCJavaLiteralsTestHelper.getInstance().parseLiteral(s);
-    Assertions.assertTrue(lit instanceof ASTIntLiteral);
-    Assertions.assertEquals(i, ((ASTIntLiteral) lit).getValue());
+    assertInstanceOf(ASTIntLiteral.class, lit);
+    assertEquals(i, ((ASTIntLiteral) lit).getValue());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -58,7 +60,7 @@ public class IntJavaLiteralsTest {
       checkIntLiteral(00017, "00017");
     }
     catch (IOException e) {
-      Assertions.fail(e.getMessage());
+      fail(e.getMessage());
     }
   }
 }

@@ -9,7 +9,7 @@ import de.monticore.types.check.SymTypeOfUnion;
 import de.monticore.types3.SymTypeRelations;
 
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -44,7 +44,7 @@ public class SymTypeLubCalculator {
 
     // unpack unions
     Set<SymTypeExpression> typesSet_tmp = typeSet;
-    typeSet = new HashSet<>();
+    typeSet = new LinkedHashSet<>();
     for (SymTypeExpression type : typesSet_tmp) {
       if (type.isUnionType()) {
         typeSet.addAll(((SymTypeOfUnion) type).getUnionizedTypeSet());
@@ -59,7 +59,7 @@ public class SymTypeLubCalculator {
     // without removing the top level intersections yet
     // we can do this as we do not plan to support constraint solving
     typesSet_tmp = typeSet;
-    typeSet = new HashSet<>();
+    typeSet = new LinkedHashSet<>();
     for (SymTypeExpression type : typesSet_tmp) {
       if (type.isIntersectionType()) {
         SymTypeOfIntersection inter = (SymTypeOfIntersection) type;
@@ -125,13 +125,13 @@ public class SymTypeLubCalculator {
     else {
       // lub may be an intersection, e.g. two interfaces,
       // start with intersection of current types
-      Set<SymTypeExpression> acceptedLubs = new HashSet<>();
+      Set<SymTypeExpression> acceptedLubs = new LinkedHashSet<>();
       Set<SymTypeExpression> currentPotentialLubs;
-      Set<SymTypeExpression> nextPotentialLubs = new HashSet<>();
+      Set<SymTypeExpression> nextPotentialLubs = new LinkedHashSet<>();
 
       // unpack intersections
       typesSet_tmp = typeSet;
-      typeSet = new HashSet<>();
+      typeSet = new LinkedHashSet<>();
       for (SymTypeExpression type : typesSet_tmp) {
         if (type.isUnionType()) {
           typeSet.addAll(((SymTypeOfUnion) type).getUnionizedTypeSet());
@@ -142,10 +142,10 @@ public class SymTypeLubCalculator {
       }
 
       // extract "arrayness"
-      Set<Integer> arrayDims = new HashSet<>();
+      Set<Integer> arrayDims = new LinkedHashSet<>();
       if (typeSet.stream().allMatch(SymTypeExpression::isArrayType)) {
         typesSet_tmp = typeSet;
-        typeSet = new HashSet<>();
+        typeSet = new LinkedHashSet<>();
         for (SymTypeExpression type : typesSet_tmp) {
           SymTypeArray array = (SymTypeArray) type;
           arrayDims.add(array.getDim());
@@ -153,17 +153,17 @@ public class SymTypeLubCalculator {
         }
         // can only have lub if arrays have the same dimension
         if (arrayDims.size() == 1) {
-          currentPotentialLubs = new HashSet<>(typeSet);
+          currentPotentialLubs = new LinkedHashSet<>(typeSet);
         }
         else {
-          currentPotentialLubs = new HashSet<>();
+          currentPotentialLubs = new LinkedHashSet<>();
         }
       }
       else if (typeSet.stream().noneMatch(SymTypeExpression::isArrayType)) {
-        currentPotentialLubs = new HashSet<>(typeSet);
+        currentPotentialLubs = new LinkedHashSet<>(typeSet);
       }
       else {
-        currentPotentialLubs = new HashSet<>();
+        currentPotentialLubs = new LinkedHashSet<>();
       }
 
       // we have no unions, intersections or arrays on the top level
@@ -185,7 +185,7 @@ public class SymTypeLubCalculator {
         }
         acceptedLubs.addAll(currentPotentialLubs);
         currentPotentialLubs = nextPotentialLubs;
-        nextPotentialLubs = new HashSet<>();
+        nextPotentialLubs = new LinkedHashSet<>();
       }
 
       // re-add "arrayness"

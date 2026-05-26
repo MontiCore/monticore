@@ -19,7 +19,6 @@ import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.monticore.types.mccollectiontypes._ast.ASTMCListType;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -28,6 +27,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SynthesizeSymTypeFromMCCollectionTypesTest {
   
@@ -77,10 +78,10 @@ public class SynthesizeSymTypeFromMCCollectionTypesTest {
     gs.add(buildGeneric("Optional", "T"));
 
     CombineExpressionsWithLiteralsSymbols2Json symbols2Json = new CombineExpressionsWithLiteralsSymbols2Json();
-    ICombineExpressionsWithLiteralsArtifactScope as = symbols2Json.load("src/test/resources/de/monticore/types/check/Persondex.cesym");
+    ICombineExpressionsWithLiteralsArtifactScope as = symbols2Json.load("target/resources/test/de/monticore/types/check/Persondex.cesym");
     as.setEnclosingScope(gs);
 
-    ICombineExpressionsWithLiteralsArtifactScope as2 = symbols2Json.load("src/test/resources/de/monticore/types/check/Personaz.cesym");
+    ICombineExpressionsWithLiteralsArtifactScope as2 = symbols2Json.load("target/resources/test/de/monticore/types/check/Personaz.cesym");
     as2.setEnclosingScope(gs);
   }
 
@@ -101,7 +102,7 @@ public class SynthesizeSymTypeFromMCCollectionTypesTest {
     String s = "double";
     ASTMCType asttype = parser.parse_StringMCType(s).get();
     asttype.accept(traverser);
-    Assertions.assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
+    assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
   }
   
   @Test
@@ -109,7 +110,7 @@ public class SynthesizeSymTypeFromMCCollectionTypesTest {
     String s = "Person";
     ASTMCType asttype = parser.parse_StringMCType(s).get();
     asttype.accept(traverser);
-    Assertions.assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
+    assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
   }
   
   @Test
@@ -117,7 +118,7 @@ public class SynthesizeSymTypeFromMCCollectionTypesTest {
     String s = "de.x.Person";
     ASTMCType asttype = parser.parse_StringMCType(s).get();
     asttype.accept(traverser);
-    Assertions.assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
+    assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
   }
   
   @Test
@@ -125,7 +126,7 @@ public class SynthesizeSymTypeFromMCCollectionTypesTest {
     ASTMCVoidType v = MCBasicTypesMill.mCVoidTypeBuilder().build();
     ASTMCReturnType r = MCBasicTypesMill.mCReturnTypeBuilder()
                                   .setMCVoidType(v).build();
-    Assertions.assertEquals("void", tc.symTypeFromAST(r).printFullName());
+    assertEquals("void", tc.symTypeFromAST(r).printFullName());
   }
 
   @Test
@@ -134,7 +135,7 @@ public class SynthesizeSymTypeFromMCCollectionTypesTest {
     String s = "Person";
     ASTMCReturnType r = parser.parse_StringMCReturnType(s).get();
     r.accept(traverser);
-    Assertions.assertEquals(s, tc.symTypeFromAST(r).printFullName());
+    assertEquals(s, tc.symTypeFromAST(r).printFullName());
   }
 
   // new forms of Types coming from MCCollectionType
@@ -150,12 +151,12 @@ public class SynthesizeSymTypeFromMCCollectionTypesTest {
     SymTypeExpression result = tc.symTypeFromAST(asttype);
 
     // Then
-    Assertions.assertEquals(s, result.printFullName());
-    Assertions.assertTrue(result instanceof SymTypeOfGenerics);
-    Assertions.assertFalse(result.getTypeInfo() instanceof TypeSymbolSurrogate);
-    Assertions.assertFalse(result.getTypeInfo() instanceof OOTypeSymbolSurrogate);
-    Assertions.assertFalse(((SymTypeOfGenerics) result).getArgument(0).getTypeInfo() instanceof TypeSymbolSurrogate);
-    Assertions.assertFalse(((SymTypeOfGenerics) result).getArgument(0).getTypeInfo() instanceof OOTypeSymbolSurrogate);
+    assertEquals(s, result.printFullName());
+    assertInstanceOf(SymTypeOfGenerics.class, result);
+    assertFalse(result.getTypeInfo() instanceof TypeSymbolSurrogate);
+    assertFalse(result.getTypeInfo() instanceof OOTypeSymbolSurrogate);
+    assertFalse(((SymTypeOfGenerics) result).getArgument(0).getTypeInfo() instanceof TypeSymbolSurrogate);
+    assertFalse(((SymTypeOfGenerics) result).getArgument(0).getTypeInfo() instanceof OOTypeSymbolSurrogate);
 
   }
   
@@ -170,12 +171,12 @@ public class SynthesizeSymTypeFromMCCollectionTypesTest {
     SymTypeExpression result = tc.symTypeFromAST(asttype);
 
     // Then
-    Assertions.assertEquals(s, result.printFullName());
-    Assertions.assertTrue(result instanceof SymTypeOfGenerics);
-    Assertions.assertFalse(result.getTypeInfo() instanceof TypeSymbolSurrogate);
-    Assertions.assertFalse(result.getTypeInfo() instanceof OOTypeSymbolSurrogate);
-    Assertions.assertFalse(((SymTypeOfGenerics) result).getArgument(0).getTypeInfo() instanceof TypeSymbolSurrogate);
-    Assertions.assertFalse(((SymTypeOfGenerics) result).getArgument(0).getTypeInfo() instanceof OOTypeSymbolSurrogate);
+    assertEquals(s, result.printFullName());
+    assertInstanceOf(SymTypeOfGenerics.class, result);
+    assertFalse(result.getTypeInfo() instanceof TypeSymbolSurrogate);
+    assertFalse(result.getTypeInfo() instanceof OOTypeSymbolSurrogate);
+    assertFalse(((SymTypeOfGenerics) result).getArgument(0).getTypeInfo() instanceof TypeSymbolSurrogate);
+    assertFalse(((SymTypeOfGenerics) result).getArgument(0).getTypeInfo() instanceof OOTypeSymbolSurrogate);
   }
   
   @Test
@@ -189,14 +190,14 @@ public class SynthesizeSymTypeFromMCCollectionTypesTest {
     SymTypeExpression result = tc.symTypeFromAST(asttype);
 
     // Then
-    Assertions.assertEquals(s, result.printFullName());
-    Assertions.assertTrue(result instanceof SymTypeOfGenerics);
-    Assertions.assertFalse(result.getTypeInfo() instanceof TypeSymbolSurrogate);
-    Assertions.assertFalse(result.getTypeInfo() instanceof OOTypeSymbolSurrogate);
-    Assertions.assertFalse(((SymTypeOfGenerics) result).getArgument(0).getTypeInfo() instanceof TypeSymbolSurrogate);
-    Assertions.assertFalse(((SymTypeOfGenerics) result).getArgument(0).getTypeInfo() instanceof TypeSymbolSurrogate);
-    Assertions.assertFalse(((SymTypeOfGenerics) result).getArgument(1).getTypeInfo() instanceof OOTypeSymbolSurrogate);
-    Assertions.assertFalse(((SymTypeOfGenerics) result).getArgument(1).getTypeInfo() instanceof OOTypeSymbolSurrogate);
+    assertEquals(s, result.printFullName());
+    assertInstanceOf(SymTypeOfGenerics.class, result);
+    assertFalse(result.getTypeInfo() instanceof TypeSymbolSurrogate);
+    assertFalse(result.getTypeInfo() instanceof OOTypeSymbolSurrogate);
+    assertFalse(((SymTypeOfGenerics) result).getArgument(0).getTypeInfo() instanceof TypeSymbolSurrogate);
+    assertFalse(((SymTypeOfGenerics) result).getArgument(0).getTypeInfo() instanceof TypeSymbolSurrogate);
+    assertFalse(((SymTypeOfGenerics) result).getArgument(1).getTypeInfo() instanceof OOTypeSymbolSurrogate);
+    assertFalse(((SymTypeOfGenerics) result).getArgument(1).getTypeInfo() instanceof OOTypeSymbolSurrogate);
   }
   
   @Test
@@ -210,12 +211,12 @@ public class SynthesizeSymTypeFromMCCollectionTypesTest {
     SymTypeExpression result = tc.symTypeFromAST(asttype);
 
     // Then
-    Assertions.assertEquals(s, result.printFullName());
-    Assertions.assertTrue(result instanceof SymTypeOfGenerics);
-    Assertions.assertFalse(result.getTypeInfo() instanceof TypeSymbolSurrogate);
-    Assertions.assertFalse(result.getTypeInfo() instanceof OOTypeSymbolSurrogate);
-    Assertions.assertFalse(((SymTypeOfGenerics) result).getArgument(0).getTypeInfo() instanceof TypeSymbolSurrogate);
-    Assertions.assertFalse(((SymTypeOfGenerics) result).getArgument(0).getTypeInfo() instanceof OOTypeSymbolSurrogate);
+    assertEquals(s, result.printFullName());
+    assertInstanceOf(SymTypeOfGenerics.class, result);
+    assertFalse(result.getTypeInfo() instanceof TypeSymbolSurrogate);
+    assertFalse(result.getTypeInfo() instanceof OOTypeSymbolSurrogate);
+    assertFalse(((SymTypeOfGenerics) result).getArgument(0).getTypeInfo() instanceof TypeSymbolSurrogate);
+    assertFalse(((SymTypeOfGenerics) result).getArgument(0).getTypeInfo() instanceof OOTypeSymbolSurrogate);
   }
 
   @Test
@@ -229,12 +230,12 @@ public class SynthesizeSymTypeFromMCCollectionTypesTest {
     SymTypeExpression result = tc.symTypeFromAST(asttype);
 
     // Then
-    Assertions.assertEquals(s, result.printFullName());
-    Assertions.assertTrue(result instanceof SymTypeOfGenerics);
-    Assertions.assertFalse(result.getTypeInfo() instanceof TypeSymbolSurrogate);
-    Assertions.assertFalse(result.getTypeInfo() instanceof OOTypeSymbolSurrogate);
-    Assertions.assertFalse(((SymTypeOfGenerics) result).getArgument(0).getTypeInfo() instanceof TypeSymbolSurrogate);
-    Assertions.assertFalse(((SymTypeOfGenerics) result).getArgument(0).getTypeInfo() instanceof OOTypeSymbolSurrogate);
+    assertEquals(s, result.printFullName());
+    assertInstanceOf(SymTypeOfGenerics.class, result);
+    assertFalse(result.getTypeInfo() instanceof TypeSymbolSurrogate);
+    assertFalse(result.getTypeInfo() instanceof OOTypeSymbolSurrogate);
+    assertFalse(((SymTypeOfGenerics) result).getArgument(0).getTypeInfo() instanceof TypeSymbolSurrogate);
+    assertFalse(((SymTypeOfGenerics) result).getArgument(0).getTypeInfo() instanceof OOTypeSymbolSurrogate);
   }
   
 }

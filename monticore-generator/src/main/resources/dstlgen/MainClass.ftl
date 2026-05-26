@@ -19,6 +19,7 @@ import de.monticore.tf.rule2od.Variable2AttributeMap;
 import de.monticore.tf.ruletranslation.Rule2ODState;
 import de.monticore.tf.runtime.matching.ModelTraversal;
 import de.monticore.tf.runtime.matching.ModelTraversalFactory;
+import de.monticore.generating.GeneratorSetup;
 
 import ${package}.${dstlName?lower_case}.${dstlName}Mill;
 import ${package}.${dstlName?lower_case}._ast.AST${grammarName}TFRule;
@@ -60,9 +61,10 @@ public class ${className} {
         // do not continue, when this error is logged
         return;
       }
-  
+
+      ${dstlName}Mill.reset();
       ${dstlName}Mill.init();
-  
+
       Log.debug("----- Starting Transformation Generation -----", LOG_ID);
       Log.debug("Input file   : " + cmd.getOptionValue("i"), LOG_ID);
       Log.debug("Output dir    : " + cmd.getOptionValue("o", "out"), LOG_ID);
@@ -79,16 +81,24 @@ public class ${className} {
   
       //create od rule
       odrule = createODRule(rule);
+      // setup generator
+      final GeneratorSetup setup = new GeneratorSetup();
+      setup.setOutputDirectory(Paths.get(cmd.getOptionValue("o", "out")).toFile());
+      if (cmd.hasOption("hwc")) {
+        setup.setHandcodedPath(new MCPath(Paths.get(cmd.getOptionValue("hwc"))));
+      }
       // generate
-      generate(odrule, Paths.get(cmd.getOptionValue("o", "out")).toFile());
+      generate(odrule, setup);
     } catch ( ParseException e) {
         // an unexpected error from the Apache CLI parser:
         Log.error("0xA6153${service.getGeneratedErrorCode(classname)} Could not process CLI parameters: " + e.getMessage());
-      }
+    } finally {
+      ${dstlName}Mill.reset();
+      ODRulesMill.reset();
+    }
   }
   
   public Optional<AST${grammarName}TFRule> parseRule(Path model) {
-    ${dstlName}Mill.init();
     Log.debug("Start parsing of the model " + model, LOG_ID);
     try {
       ${dstlName}Parser parser = new ${dstlName}Parser();
@@ -119,16 +129,18 @@ public class ${className} {
     Log.debug("Starting odrule generation ", LOG_ID);
     ModelTraversal<${dstlName}Traverser> mt = ModelTraversalFactory.getInstance().create((java.util.function.Supplier)${dstlName}Mill::inheritanceTraverser);
     ast.accept(mt.getTraverser());
+
+    Log.debug("Switching to OD ", LOG_ID);
+    // Switch language to OD
+    ODRulesMill.reset();
+    ODRulesMill.init();
+
     Log.debug("Starting rule2odstate ", LOG_ID);
     Rule2ODState state = new Rule2ODState(new Variable2AttributeMap(), mt.getParents());
     state.getGenRule().setGrammarPackageList(Arrays.asList("${grammarPackage}".split("\\.")));
     state.getGenRule().setGrammarName("${grammarName}");
     ${grammarName}RuleCollectVariables variables = new ${grammarName}RuleCollectVariables(state);
     ${grammarName}Rule2OD rule2OD = new ${grammarName}Rule2OD(state);
-    
-    Log.debug("Switching to OD ", LOG_ID);
-    // Switch language to OD
-    ODRulesMill.init();
     
     ast.accept(variables.getTraverser());
     
@@ -152,10 +164,16 @@ public class ${className} {
     
     return astod;
   }
-  
+
+  @Deprecated
   public void generate(ASTODRule ast, File outputDirectory) {
     Log.debug("Generate Transformation for " + ast.getName(), LOG_ID);
     ODRuleCodeGenerator.generate(ast, outputDirectory);
+  }
+
+  public void generate(ASTODRule ast, GeneratorSetup setup) {
+    Log.debug("Generate Transformation for " + ast.getName(), LOG_ID);
+    ODRuleCodeGenerator.generate(ast, setup);
   }
   
     /**
@@ -181,7 +199,15 @@ public class ${className} {
           .hasArg()
           .desc("Output directory for all generated artifacts.")
           .build());
-  
+
+      // hwc
+      options.addOption(Option.builder("hwc")
+          .longOpt("handwrittencode")
+          .argName("hwcpath")
+          .hasArgs()
+          .desc("Where handwritten classes are located.")
+          .build());
+
       // help dialog
       options.addOption(Option.builder("h")
           .longOpt("help")

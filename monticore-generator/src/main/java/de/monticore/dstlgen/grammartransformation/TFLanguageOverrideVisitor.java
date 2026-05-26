@@ -5,7 +5,7 @@ import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._visitor.GrammarVisitor2;
 import de.se_rwth.commons.Joiners;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public class TFLanguageOverrideVisitor implements
         GrammarVisitor2 {
@@ -13,13 +13,13 @@ public class TFLanguageOverrideVisitor implements
 
     private final ASTMCGrammar overideGrammar;
     private final ASTMCGrammar tFGrammar;
-    private HashMap<String, ASTClassProd> tFClassProds = new HashMap<>();
-    private HashMap<String, ASTEnumProd> tFEnumProds = new HashMap<>();
-    private HashMap<String, ASTInterfaceProd> tFInterfaceProds = new HashMap<>();
-    private HashMap<String, ASTAbstractProd> tFAbstractProds = new HashMap<>();
-    private HashMap<String, ASTExternalProd> tFExternalProds = new HashMap<>();
-    private HashMap<String, ASTLexProd> tFLexProds = new HashMap<>();
-    private HashMap<String, ASTASTRule> tFASTRules = new HashMap<>();
+    private LinkedHashMap<String, ASTClassProd> tFClassProds = new LinkedHashMap<>();
+    private LinkedHashMap<String, ASTEnumProd> tFEnumProds = new LinkedHashMap<>();
+    private LinkedHashMap<String, ASTInterfaceProd> tFInterfaceProds = new LinkedHashMap<>();
+    private LinkedHashMap<String, ASTAbstractProd> tFAbstractProds = new LinkedHashMap<>();
+    private LinkedHashMap<String, ASTExternalProd> tFExternalProds = new LinkedHashMap<>();
+    private LinkedHashMap<String, ASTLexProd> tFLexProds = new LinkedHashMap<>();
+    private LinkedHashMap<String, ASTASTRule> tFASTRules = new LinkedHashMap<>();
 
 
     public TFLanguageOverrideVisitor(ASTMCGrammar tFGrammar, ASTMCGrammar overrideGrammar) {

@@ -8,6 +8,7 @@ import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfFunction;
+import de.monticore.types3.SymTypeRelations;
 import de.monticore.types3.generics.TypeParameterRelations;
 import de.monticore.types3.generics.context.InferenceContext;
 import de.monticore.types3.generics.context.InferenceVisitorMode;
@@ -73,7 +74,10 @@ public class CommonExpressionsCTTIVisitor
     CompileTimeTypeCalculator.handleCall(expr, expr.getExpression(),
         expr.getArguments().getExpressionList(),
         getTraverser(), getType4Ast(), getInferenceContext4Ast());
-    if (getType4Ast().hasPartialTypeOfExpression(expr)) {
+    if (getType4Ast().hasPartialTypeOfExpression(expr) &&
+        !SymTypeRelations.normalize(getType4Ast().getPartialTypeOfExpr(expr))
+            .isObscureType()
+    ) {
       endVisit(expr);
     }
   }

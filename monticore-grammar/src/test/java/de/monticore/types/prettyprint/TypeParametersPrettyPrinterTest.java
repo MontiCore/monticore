@@ -1,21 +1,20 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.prettyprint;
 
-import de.monticore.antlr4.MCConcreteParser;
 import de.monticore.ast.ASTNode;
+import de.monticore.runtime.junit.AbstractMCTest;
 import de.monticore.types.typeparameterstest.TypeParametersTestMill;
 import de.monticore.types.typeparameterstest._parser.TypeParametersTestParser;
-import de.monticore.types3.AbstractTypeTest;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.IOException;
 import java.util.Optional;
-import java.util.function.Function;
 
-public class TypeParametersPrettyPrinterTest extends AbstractTypeTest {
+import static de.monticore.runtime.junit.PrettyPrinterTester.testPrettyPrinter;
+
+public class TypeParametersPrettyPrinterTest extends AbstractMCTest {
 
   @BeforeEach
   public void init() {
@@ -55,28 +54,6 @@ public class TypeParametersPrettyPrinterTest extends AbstractTypeTest {
         model, parser, parser::parse_StringTypeParameter,
         ast -> TypeParametersTestMill.prettyPrint(ast, true)
     );
-  }
-
-  // this function could be used for all pretty printer tests if required,
-  // however, the parameters are not great.
-  protected <N extends ASTNode> void testPrettyPrinter(
-      String model,
-      MCConcreteParser parser,
-      ParseFunction<N> parseFunc,
-      Function<N, String> prettyPrintFunc
-  ) throws IOException {
-    Optional<N> astOpt = parseFunc.apply(model);
-    assertNoFindings();
-    Assertions.assertTrue(astOpt.isPresent());
-    Assertions.assertFalse(parser.hasErrors());
-    N ast = astOpt.get();
-    String output = prettyPrintFunc.apply(ast);
-    assertNoFindings();
-    astOpt = parseFunc.apply(output);
-    assertNoFindings();
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(astOpt.isPresent());
-    Assertions.assertTrue(ast.deepEquals(astOpt.get()));
   }
 
   @FunctionalInterface

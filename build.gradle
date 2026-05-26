@@ -8,7 +8,8 @@ plugins {
   id "io.github.themrmilchmann.ecj" version "0.2.0" apply false
   id "org.sonarqube" version "3.0"
   id "jacoco"
-  id 'org.barfuin.gradle.jacocolog' version '1.2.3'
+  id 'org.barfuin.gradle.jacocolog' version '3.1.0'
+  id 'de.monticore.generator' version "$version" apply false // see https://monticore.github.io/monticore/docs/Gradle/#root-warning
 }
 
 sonarqube {
@@ -32,9 +33,9 @@ allprojects {
       mavenLocal()
     }
     maven {
-      credentials.username mavenUser
-      credentials.password mavenPassword
-      url repo
+      credentials.username = mavenUser
+      credentials.password = mavenPassword
+      url = repo
     }
     mavenCentral()
   }
@@ -59,16 +60,20 @@ subprojects {
   apply plugin: 'java-library'
   apply plugin: 'io.github.themrmilchmann.ecj'
 
+  ecj {
+    compilerVersion = "3.44.0"
+  }
 
   tasks.withType(Test) {
     useJUnitPlatform()
+    maxHeapSize = "1g"
     testLogging {
       // controls whether test output is shown
-      showStandardStreams= ("false").equals(getProperty('showTestOutput'))? false : true
-      showExceptions true
-      showCauses true
-      showStackTraces true
-      exceptionFormat TestExceptionFormat.FULL
+      showStandardStreams = ("false").equals(getProperty('showTestOutput'))? false : true
+      showExceptions = true
+      showCauses = true
+      showStackTraces = true
+      exceptionFormat = TestExceptionFormat.FULL
       info {
         events TestLogEvent.FAILED,
                 TestLogEvent.PASSED,
@@ -91,18 +96,18 @@ subprojects {
     }
   }
 
-  tasks.withType(JavaCompile) {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+  tasks.withType(JavaCompile).configureEach {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
     options.encoding = "UTF-8"
-    options.deprecation false
+    options.deprecation = false
     options.warnings = false
     options.forkOptions.jvmArgs += ["-Xmx4G"]
   }
   java {
     withSourcesJar()
     toolchain {
-      languageVersion = JavaLanguageVersion.of(11)
+      languageVersion = JavaLanguageVersion.of(21)
     }
   }
   
@@ -113,9 +118,9 @@ subprojects {
  *  Builds the core projects, i.e. the generator, runtime and grammar library.
  *  Executes JUnit tests and assembles the jars.
  */
-task buildMC {
-  group("build")
-  description('Builds the core projects, i.e. the generator, runtime and grammar library.')
+tasks.register("buildMC") {
+  group = "build"
+  description ='Builds the core projects, i.e. the generator, runtime and grammar library.'
   dependsOn ":monticore-grammar:build"
   dependsOn ":monticore-runtime:build"
   if(("true").equals(getProperty('genEMF'))) {
@@ -130,9 +135,9 @@ buildMC.dependsOn(gradle.includedBuilds*.task(':build'))
  *  Assembles the core projects, i.e. the generator, runtime and grammar library.
  *  Assembles the jars but does not execute JUnit tests.
  */
-task assembleMC {
-  group("build")
-  description('Assembles the core projects, i.e. the generator, runtime and grammar library.')
+tasks.register("assembleMC") {
+  group = "build"
+  description ='Assembles the core projects, i.e. the generator, runtime and grammar library.'
   dependsOn ":monticore-grammar:assemble"
   dependsOn ":monticore-runtime:assemble"
   if(("true").equals(getProperty('genEMF'))) {
@@ -146,9 +151,9 @@ assembleMC.dependsOn(gradle.includedBuilds*.task(':assemble'))
 /**
  *  Executes JUnit tests of the core projects, i.e. the generator, runtime and grammar library.
  */
-task testMC {
-  group("build")
-  description('Tests the core projects, i.e. the generator, runtime and grammar library.')
+tasks.register("testMC") {
+  group = "build"
+  description ='Tests the core projects, i.e. the generator, runtime and grammar library.'
 
   dependsOn ":monticore-grammar:test"
   dependsOn ":monticore-runtime:test"
@@ -165,12 +170,14 @@ testMC.dependsOn(gradle.includedBuilds*.task(':test'))
  *  to the nexus repository.
  *  Assembles the jars and publishes them, but does not execute JUnit tests.
  */
-task deployMC {
-  group("build")
-  description('Publishes the core projects, i.e. the generator, runtime and grammar library.')
+tasks.register("deployMC") {
+  group = "build"
+  description = 'Publishes the core projects, i.e. the generator, runtime and grammar library.'
 
   dependsOn ":monticore-grammar:publish"
   dependsOn ":monticore-runtime:publish"
+  dependsOn ":monticore-libraries:stream-symbols:publish"
+  dependsOn ":monticore-libraries:javagen-runtime:publish"
   if(("true").equals(getProperty('genEMF'))) {
     dependsOn ":monticore-runtime-emf:publish"
     dependsOn ":monticore-grammar-emf:publish"
@@ -185,12 +192,13 @@ deployMC.dependsOn(gradle.includedBuilds*.task(':publish'))
  *  to the local m2 repository. Typically this should not be needed.
  *  Assembles the jars and publishes them, but does not execute JUnit tests.
  */
-task publishMCToMavenLocal {
-  group("build")
-  description('Publishes the core projects, i.e. the generator, runtime and grammar library' +
-          'to the local maven repository.')
+tasks.register("publishMCToMavenLocal") {
+  group = "build"
+  description = 'Publishes the core projects, i.e. the generator, runtime and grammar library' +
+          'to the local maven repository.'
   dependsOn ":monticore-grammar:publishToMavenLocal"
   dependsOn ":monticore-runtime:publishToMavenLocal"
+  dependsOn ":monticore-libraries:stream-symbols:publishToMavenLocal"
   if(("true").equals(getProperty('genEMF'))) {
     dependsOn ":monticore-runtime-emf:publishToMavenLocal"
     dependsOn   ":monticore-grammar-emf:publishToMavenLocal"
@@ -203,9 +211,9 @@ publishMCToMavenLocal.dependsOn(gradle.includedBuilds*.task(':publishToMavenLoca
  *  Build the test projects, i.e. integration tests and experiments.
  *  This includes code generation for these projects and JUnit tests.
  */
-task testIT {
-  group("build")
-  description('Build the test projects, i.e. integration tests and experiments.')
+tasks.register("testIT") {
+  group = "build"
+  description = 'Build the test projects, i.e. integration tests and experiments.'
 
   dependsOn(
           project(":monticore-test").subprojects.collect {
@@ -214,30 +222,8 @@ task testIT {
   )
 }
 
-  
-  
-task buildAll(type: GradleBuild) {
-  dependsOn(subprojects.collect { getTasksByName("build", false) })
-}
-
-task cleanMC {
-  dependsOn ":monticore-grammar:clean"
-  dependsOn ":monticore-runtime:clean"
-  if(("true").equals(getProperty('genEMF'))) {
-    dependsOn ":monticore-runtime-emf:clean"
-    dependsOn   ":monticore-grammar-emf:clean"
-  }
-}
-
-cleanMC.dependsOn(
-        project(":monticore-test").subprojects.collect {
-          it.tasks.getByName "clean"
-        }
-)
-
-
-task sonarMC (type: GradleBuild) {
-  description('Generates code coverage')
+tasks.register("sonarMC", GradleBuild) {
+  description = 'Generates code coverage'
   dependsOn(
           ":testMC"
   )
@@ -247,7 +233,8 @@ task sonarMC (type: GradleBuild) {
 def projectsToConfigure = [
   project(':monticore-grammar'),
   project(':monticore-runtime'),
-  project(':monticore-libraries:stream-symbols')
+  project(':monticore-libraries:stream-symbols'),
+  project(':monticore-libraries:javagen-runtime'),
 ]
 if(("true").equals(getProperty('genEMF'))) {
     projectsToConfigure << project(':monticore-grammar-emf')
@@ -266,8 +253,8 @@ configure(projectsToConfigure){
     repositories {
       maven {
         name = "SE-Nexus"
-        credentials.username mavenUser
-        credentials.password mavenPassword
+        credentials.username = mavenUser
+        credentials.password = mavenPassword
         def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-releases/"
         def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-snapshots/"
         url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl

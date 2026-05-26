@@ -5,27 +5,26 @@ import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import mc.testcases.petrinet._ast.ASTPetrinet;
 import mc.testcases.petrinet._parser.PetrinetParser;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ChangeMarkerTest {
 
   ChangeMarker cm;
   ASTPetrinet petri;
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
   }
   
-  @Before
+  @BeforeEach
   public void doBefore() throws IOException {
     String inputFile = "src/main/models/petrinet/TestPetriNet.pn";
     PetrinetParser parser = new PetrinetParser();

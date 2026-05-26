@@ -9,7 +9,6 @@ import de.monticore.literals.mcjavaliterals.cocos.IntLiteralRangeCoCo;
 import de.monticore.literals.mcjavaliterals.cocos.LongLiteralRangeCoCo;
 import de.monticore.literals.testmcjavaliterals.TestMCJavaLiteralsMill;
 import de.se_rwth.commons.logging.Log;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -18,7 +17,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class RangeCoCosTest {
 
@@ -34,109 +33,109 @@ public class RangeCoCosTest {
   protected final void checkIntLiteral(String expression, BigInteger min, BigInteger max) throws IOException {
     Log.clearFindings();
     Optional<ASTIntLiteral> astex = TestMCJavaLiteralsMill.parser().parse_StringIntLiteral(expression);
-    Assertions.assertTrue(astex.isPresent());
+    assertTrue(astex.isPresent());
 
     MCJavaLiteralsCoCoChecker checker = new MCJavaLiteralsCoCoChecker();
     checker.addCoCo(new IntLiteralRangeCoCo(min, max));
 
     checker.checkAll((ASTMCJavaLiteralsNode) astex.get());
 
-    Assertions.assertFalse(Log.getErrorCount() > 0);
+    assertFalse(Log.getErrorCount() > 0);
   }
 
   protected final void checkLongLiteral(String expression, BigInteger min, BigInteger max) throws IOException {
     Log.clearFindings();
     Optional<ASTLongLiteral> astex = TestMCJavaLiteralsMill.parser().parse_StringLongLiteral(expression);
-    Assertions.assertTrue(astex.isPresent());
+    assertTrue(astex.isPresent());
 
     MCJavaLiteralsCoCoChecker checker = new MCJavaLiteralsCoCoChecker();
     checker.addCoCo(new LongLiteralRangeCoCo(min, max));
 
     checker.checkAll((ASTMCJavaLiteralsNode) astex.get());
 
-    Assertions.assertFalse(Log.getErrorCount() > 0);
+    assertFalse(Log.getErrorCount() > 0);
   }
 
   protected final void checkDoubleLiteral(String expression, BigDecimal min, BigDecimal max) throws IOException {
     Log.clearFindings();
     Optional<ASTDoubleLiteral> astex = TestMCJavaLiteralsMill.parser().parse_StringDoubleLiteral(expression);
-    Assertions.assertTrue(astex.isPresent());
+    assertTrue(astex.isPresent());
 
     MCJavaLiteralsCoCoChecker checker = new MCJavaLiteralsCoCoChecker();
     checker.addCoCo(new DoubleLiteralRangeCoCo(min, max));
 
     checker.checkAll((ASTMCJavaLiteralsNode) astex.get());
 
-    Assertions.assertFalse(Log.getErrorCount() > 0);
+    assertFalse(Log.getErrorCount() > 0);
   }
 
   protected final void checkFloatLiteral(String expression, BigDecimal min, BigDecimal max) throws IOException {
     Log.clearFindings();
     Optional<ASTFloatLiteral> astex = TestMCJavaLiteralsMill.parser().parse_StringFloatLiteral(expression);
-    Assertions.assertTrue(astex.isPresent());
+    assertTrue(astex.isPresent());
 
     MCJavaLiteralsCoCoChecker checker = new MCJavaLiteralsCoCoChecker();
     checker.addCoCo(new FloatLiteralRangeCoCo(min, max));
 
     checker.checkAll((ASTMCJavaLiteralsNode) astex.get());
 
-    Assertions.assertFalse(Log.getErrorCount() > 0);
+    assertFalse(Log.getErrorCount() > 0);
   }
 
   protected final void checkErrorIntLiteral(String expression, BigInteger min, BigInteger max, String expectedError) throws IOException {
     Log.clearFindings();
     Optional<ASTIntLiteral> astex = TestMCJavaLiteralsMill.parser().parse_StringIntLiteral(expression);
-    Assertions.assertTrue(astex.isPresent());
+    assertTrue(astex.isPresent());
 
     MCJavaLiteralsCoCoChecker checker = new MCJavaLiteralsCoCoChecker();
     checker.addCoCo(new IntLiteralRangeCoCo(min, max));
 
     checker.checkAll((ASTMCJavaLiteralsNode) astex.get());
 
-    Assertions.assertEquals(1, Log.getErrorCount());
-    Assertions.assertTrue(Log.getFindings().get(0).getMsg().startsWith(expectedError));
+    assertEquals(1, Log.getErrorCount());
+    assertTrue(Log.getFindings().get(0).getMsg().startsWith(expectedError));
   }
 
   protected final void checkErrorLongLiteral(String expression, BigInteger min, BigInteger max, String expectedError) throws IOException {
     Log.clearFindings();
     Optional<ASTLongLiteral> astex = TestMCJavaLiteralsMill.parser().parse_StringLongLiteral(expression);
-    Assertions.assertTrue(astex.isPresent());
+    assertTrue(astex.isPresent());
 
     MCJavaLiteralsCoCoChecker checker = new MCJavaLiteralsCoCoChecker();
     checker.addCoCo(new LongLiteralRangeCoCo(min, max));
 
     checker.checkAll((ASTMCJavaLiteralsNode) astex.get());
 
-    Assertions.assertEquals(1, Log.getErrorCount());
-    Assertions.assertTrue(Log.getFindings().get(0).getMsg().startsWith(expectedError));
+    assertEquals(1, Log.getErrorCount());
+    assertTrue(Log.getFindings().get(0).getMsg().startsWith(expectedError));
   }
 
   protected final void checkErrorDoubleLiteral(String expression, BigDecimal min, BigDecimal max, String expectedError) throws IOException {
     Log.clearFindings();
     Optional<ASTDoubleLiteral> astex = TestMCJavaLiteralsMill.parser().parse_StringDoubleLiteral(expression);
-    Assertions.assertTrue(astex.isPresent());
+    assertTrue(astex.isPresent());
 
     MCJavaLiteralsCoCoChecker checker = new MCJavaLiteralsCoCoChecker();
     checker.addCoCo(new DoubleLiteralRangeCoCo(min, max));
 
     checker.checkAll((ASTMCJavaLiteralsNode) astex.get());
 
-    Assertions.assertEquals(1, Log.getErrorCount());
-    Assertions.assertTrue(Log.getFindings().get(0).getMsg().startsWith(expectedError));
+    assertEquals(1, Log.getErrorCount());
+    assertTrue(Log.getFindings().get(0).getMsg().startsWith(expectedError));
   }
 
   protected final void checkErrorFloatLiteral(String expression, BigDecimal min, BigDecimal max, String expectedError) throws IOException {
     Log.clearFindings();
     Optional<ASTFloatLiteral> astex = TestMCJavaLiteralsMill.parser().parse_StringFloatLiteral(expression);
-    Assertions.assertTrue(astex.isPresent());
+    assertTrue(astex.isPresent());
 
     MCJavaLiteralsCoCoChecker checker = new MCJavaLiteralsCoCoChecker();
     checker.addCoCo(new FloatLiteralRangeCoCo(min, max));
 
     checker.checkAll((ASTMCJavaLiteralsNode) astex.get());
 
-    Assertions.assertEquals(1, Log.getErrorCount());
-    Assertions.assertTrue(Log.getFindings().get(0).getMsg().startsWith(expectedError));
+    assertEquals(1, Log.getErrorCount());
+    assertTrue(Log.getFindings().get(0).getMsg().startsWith(expectedError));
   }
   
   @Test

@@ -6,13 +6,16 @@ pluginManagement {
       mavenLocal()
     }
     maven {
-      credentials.username mavenUser
-      credentials.password mavenPassword
-      url repo
+      credentials.username = mavenUser
+      credentials.password = mavenPassword
+      url = repo
     }
   
     gradlePluginPortal()
   }
+}
+plugins {
+  id 'org.gradle.toolchains.foojay-resolver-convention' version '0.9.0'
 }
 
 boolean isCi = System.getenv().containsKey("CI")
@@ -56,6 +59,7 @@ if(("true").equals(getProperty('genEMF'))) {
 
 include('monticore-libraries:stream-symbols')
 include('monticore-libraries:stream-symbols-it')
+include('monticore-libraries:javagen-runtime')
 
 include(':monticore-test:monticore-grammar-it')
 
@@ -63,62 +67,19 @@ include(':monticore-test:it')
 
 include(':monticore-test:01experiments')
 project(':monticore-test:01experiments').projectDir = file("monticore-test/01.experiments")
-include(':monticore-test:01experiments:automaton')
-include(':monticore-test:01experiments:makeuse')
-include(':monticore-test:01experiments:builderAtm')
-include(':monticore-test:01experiments:ch17')
-include(':monticore-test:01experiments:codeChecks')
-include(':monticore-test:01experiments:composition')
-include(':monticore-test:01experiments:extensionvariants')
-include(':monticore-test:01experiments:forAst')
-include(':monticore-test:01experiments:forConcSt')
-include(':monticore-test:01experiments:forMill')
-include(':monticore-test:01experiments:interpreter')
-include(':monticore-test:01experiments:forParser')
-include(':monticore-test:01experiments:forVisitors')
-include(':monticore-test:01experiments:generator')
-include(':monticore-test:01experiments:glex')
-include(':monticore-test:01experiments:lexicalModes')
-include(':monticore-test:01experiments:patternAccess')
-include(':monticore-test:01experiments:prettyPrinters')
-include(':monticore-test:01experiments:questionnaire')
-include(':monticore-test:01experiments:runtimeOnly')
-include(':monticore-test:01experiments:S01_intro')
-include(':monticore-test:01experiments:scannerless')
-include(':monticore-test:01experiments:spaceOnOff-negative')
-include(':monticore-test:01experiments:spacesOffWithPositionCheck')
-include(':monticore-test:01experiments:stcomposition01')
-include(':monticore-test:01experiments:stcomposition02')
-include(':monticore-test:01experiments:stcomposition03')
-include(':monticore-test:01experiments:strules')
-include(':monticore-test:01experiments:tagging')
-include(':monticore-test:01experiments:visit_L_inherit')
-project(':monticore-test:01experiments:S01_intro').projectDir = file('monticore-test/01.experiments/S01.intro')
-project(':monticore-test:01experiments:visit_L_inherit').projectDir = file('monticore-test/01.experiments/visit.L.inherit')
-include ':monticore-test:01experiments:templates'
-include ':monticore-test:01experiments:hooks'
-include ':monticore-test:01experiments:textoutput'
-include ':monticore-test:01experiments:hwDeSers'
-include ':monticore-test:01experiments:skeleton'
-include ':monticore-test:01experiments:demonstrator'
+// Include all 01experiments
+file("monticore-test/01.experiments").eachDir { dir ->
+  if (!(dir.name in ['forEmfAst']) || "true" == getProperty('genEMF')) {// Only test EMF if the flag is set
+    include(':monticore-test:01experiments:' + dir.name)
+  }
+}
 
 include ':monticore-test:02experiments'
 project(':monticore-test:02experiments').projectDir = file("monticore-test/02.experiments")
-
-include(':monticore-test:02experiments:scopes')
-include(':monticore-test:02experiments:unknownScopes')
-include(':monticore-test:02experiments:symbols')
-include(':monticore-test:02experiments:mcgrammarlang')
-include(':monticore-test:02experiments:forGrammarOps')
-include(':monticore-test:02experiments:parser')
-include(':monticore-test:02experiments:traverser')
-include(':monticore-test:02experiments:typecheck')
-include(':monticore-test:02experiments:forGradle')
-include(':monticore-test:02experiments:configTemplate')
-include(':monticore-test:02experiments:groovyHooks')
-include(':monticore-test:02experiments:imports')
-include(':monticore-test:02experiments:dispatcher')
-include(':monticore-test:02experiments:resolving')
+// Include all 02experiments
+file("monticore-test/02.experiments").eachDir { dir ->
+  include(':monticore-test:02experiments:' + dir.name)
+}
 
 if ("true".equals(getProperty('genTR'))) { // Only test MontiTrans if the flag is set
   include ':monticore-test:montitrans'
@@ -128,9 +89,20 @@ if ("true".equals(getProperty('genTR'))) { // Only test MontiTrans if the flag i
   include(':monticore-test:montitrans:test-generated-dstls')
 }
 
-if ("true".equals(getProperty('genEMF'))) { // Only test EMF if the flag is set
-  include(':monticore-test:01experiments:forEmfAst')
+if (!inComposite) {
+  // Gradle's project substitution due to composite builds would prevent us from using the previous grammar version
+  // We avoid this by using the result of the shadowed generator jar
+  gradle.beforeProject { p ->
+    p.configurations.configureEach {
+      if (it.name == "mcTool") {
+        p.dependencies {
+          mcTool("de.monticore:monticore-generator:$version") {
+            capabilities {
+              requireCapability("de.monticore:monticore-generator-shadow")
+            }
+          }
+        }
+      }
+    }
+  }
 }
-
-// include 'example'
-// project(':example').projectDir = file("monticore-test/example")

@@ -4,7 +4,6 @@ package de.monticore.types3.generics.util;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeInferenceVariable;
 import de.monticore.types3.util.SymTypeDeepCloneVisitor;
-import de.monticore.types3.util.SymTypeExpressionComparator;
 
 import java.util.Collections;
 import java.util.Map;
@@ -12,8 +11,8 @@ import java.util.TreeMap;
 
 /**
  * replaces InferenceVariables using a given map
- * e.g., a, {a->int,b->float} -> int
- * e.g., List<a>, {a->int} -> List<int>
+ * e.g., {@code a, @code {a->int,b->float} -> int}
+ * e.g., {@code List<a>, {a->int} -> List<int>}
  * Usage:
  * calculate(symType, replaceMap)
  */
@@ -56,8 +55,7 @@ public class SymTypeInferenceVariableReplaceVisitor extends SymTypeDeepCloneVisi
   ) {
     Map<SymTypeInferenceVariable, SymTypeExpression> oldMap = this.replaceMap;
     // assure that the map used does not rely on hashes
-    Map<SymTypeInferenceVariable, SymTypeExpression> newMap =
-        new TreeMap<>(new SymTypeExpressionComparator());
+    Map<SymTypeInferenceVariable, SymTypeExpression> newMap = new TreeMap<>();
     newMap.putAll(replaceMap);
     setReplaceMap(newMap);
     SymTypeExpression result = calculate(symType);

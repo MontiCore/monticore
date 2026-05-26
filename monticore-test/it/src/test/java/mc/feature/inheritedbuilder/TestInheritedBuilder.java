@@ -5,11 +5,11 @@ import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import mc.feature.inheritedbuilder.buildertest.BuilderTestMill;
 import mc.feature.inheritedbuilder.buildertest._ast.ASTSubBuilder;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TestInheritedBuilder {
   
@@ -22,8 +22,8 @@ public class TestInheritedBuilder {
   @Test
   public void test(){
     //test if the return type of the builder for the inherited attribute name of Sub is correct
-    Assertions.assertTrue(BuilderTestMill.subBuilder().setName("Foo") instanceof ASTSubBuilder);
+    assertInstanceOf(ASTSubBuilder.class, BuilderTestMill.subBuilder().setName("Foo"));
     
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

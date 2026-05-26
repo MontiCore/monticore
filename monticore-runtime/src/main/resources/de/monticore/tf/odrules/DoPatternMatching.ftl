@@ -13,32 +13,43 @@ public boolean doPatternMatching() {
   // (this will skip all attempts to match negative nodes)
   boolean isBacktracking = true;
   boolean isBacktrackingNegative = false;
-  for(ASTNode a: hostGraph){
-    a.accept(t.getTraverser());
+
+<#list hierarchyHelper.getOptionalMatchObjects(ast.getPattern().getLHSObjectsList()) as optional>
+  reset_${optional.getObjectName()}();
+</#list>
+
+  if (isHostGraphDirty || searchPlan == null) {
+    this.loadIntoModelTraverser();
+    isHostGraphDirty= false;
   }
+
   if (searchPlan == null) {
     searchPlan = findSearchPlan();
+
+    if(optimizeSP) {
+      optimizeSearchplan();
+    }
+    initializeFastLookupList();
     splitSearchplan(); // for OptList structures
     isBacktracking = false;
   }
-  Stack<String> backtracking = new Stack<String>();
-  Stack<String> backtrackingNegative = new Stack<String>();
   String nextNode = null;
-  while(!searchPlan.isEmpty()) {
+  mainLoop: while(!searchPlan.isEmpty()) {
     nextNode = searchPlan.pop();
-    <#--creates an if statement for each object for matching the object-->
+    switch(nextNode) {
+    <#--creates a switch case for each object for matching the object-->
 <#list hierarchyHelper.getMandatoryObjectsWithoutListChilds(ast.getPattern().getLHSObjectsList()) as object>
   <#if object.isListObject()>
-    ${tc.includeArgs("de.monticore.tf.odrules.dopatternmatching.HandleListObject", object, [false])}
+    ${tc.includeArgs("de.monticore.tf.odrules.dopatternmatching.HandleListObject", object, [false, ""])}
   <#elseif object.isOptObject()>
-    ${tc.includeArgs("de.monticore.tf.odrules.dopatternmatching.HandleOptObject", object, [false])}
+    ${tc.includeArgs("de.monticore.tf.odrules.dopatternmatching.HandleOptObject", object, [false, ""])}
   <#elseif object.isNotObject()>
-    ${tc.includeArgs("de.monticore.tf.odrules.dopatternmatching.HandleNotObject", object, [false])}
+    ${tc.includeArgs("de.monticore.tf.odrules.dopatternmatching.HandleNotObject", object, [false, ""])}
   <#else>
-    ${tc.includeArgs("de.monticore.tf.odrules.dopatternmatching.HandleNormalObject", object, [false])}
+    ${tc.includeArgs("de.monticore.tf.odrules.dopatternmatching.HandleNormalObject", object, [false, ""])}
   </#if>
-  <#if object_has_next>else</#if>
 </#list>
+    }
     if (!isBacktrackingNegative) {
       if (searchPlan.isEmpty()) {
         if (!checkConstraints()) {
@@ -81,11 +92,14 @@ public boolean doPatternMatching() {
       searchPlan.push(nextNode);
     }
     allMatches.add(match);
+    // And remove last backtracking
+    if (!backtracking.isEmpty())
+      backtracking.pop();
   }
   return foundMatch;
 }
 
-private void clearNegativeObjects() {
+protected void clearNegativeObjects() {
   <#list ast.getPattern().getLHSObjectsList() as object>
     <#if object.isNotObject() && !hierarchyHelper.isWithinListStructure(object.getObjectName())>
       ${object.getObjectName()}_cand = null;

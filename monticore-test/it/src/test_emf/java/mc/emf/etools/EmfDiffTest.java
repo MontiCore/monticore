@@ -7,19 +7,19 @@ import mc.feature.fautomaton.automaton.flatautomaton._ast.ASTAutomaton;
 import mc.feature.fautomaton.automaton.flatautomaton._parser.FlatAutomatonParser;
 import org.antlr.v4.runtime.RecognitionException;
 import org.eclipse.emf.compare.diff.metamodel.DiffElement;
-import org.junit.Test;
-import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class EmfDiffTest extends GeneratorIntegrationsTest {
 
-  @Ignore
+  @Disabled
   @Test
   public void testDiffAutomaton() {
     try {
@@ -63,10 +63,7 @@ public class EmfDiffTest extends GeneratorIntegrationsTest {
         fail("Parse errors");
       }
     }
-    catch (RecognitionException | IOException e) {
-      fail("Should not reach this, but: " + e);
-    }
-    catch (InterruptedException e) {
+    catch (RecognitionException | IOException | InterruptedException e) {
       fail("Should not reach this, but: " + e);
     }
   }

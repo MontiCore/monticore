@@ -148,8 +148,6 @@ public class ArtifactReporter extends AReporter {
   }
   
   /**
-   * @see mc.codegen.logging.GenLoggerDefaultClient#logInstantiateStart(java.lang.String,
-   * java.util.List)
    */
   @Override
   public void reportInstantiate(String className, List<Object> params) {
@@ -209,7 +207,7 @@ public class ArtifactReporter extends AReporter {
   }
 
   /**
-   * @see mc.codegen.reporting.commons.AReporter#writeHeader()
+   * @see AReporter#writeHeader()
    */
   @Override
   protected void writeHeader() {

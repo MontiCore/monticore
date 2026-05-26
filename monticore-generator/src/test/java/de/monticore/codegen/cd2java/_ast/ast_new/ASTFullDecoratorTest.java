@@ -17,14 +17,11 @@ import de.monticore.codegen.cd2java.data.DataDecorator;
 import de.monticore.codegen.cd2java.data.DataDecoratorUtil;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.se_rwth.commons.logging.Log;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ASTFullDecoratorTest extends DecoratorTestCase {
 
@@ -35,7 +32,7 @@ public class ASTFullDecoratorTest extends DecoratorTestCase {
   private ASTCDCompilationUnit originalCompilationUnit;
 
 
-  @Before
+  @BeforeEach
   public void setup() {
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "AST");
     originalCompilationUnit = decoratedCompilationUnit.deepClone();

@@ -8,12 +8,13 @@ import de.monticore.types.mcbasictypestest.MCBasicTypesTestMill;
 import de.monticore.types.mcbasictypestest._parser.MCBasicTypesTestParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MCBasicTypesPrettyPrinterTest {
 
@@ -31,136 +32,136 @@ public class MCBasicTypesPrettyPrinterTest {
   public void testMCQualifiedName() throws IOException {
     MCBasicTypesTestParser parser = new MCBasicTypesTestParser();
     Optional<ASTMCQualifiedName> ast = parser.parse_StringMCQualifiedName("Name1.Name2.Name3");
-    Assertions.assertTrue(ast.isPresent());
-    Assertions.assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertFalse(parser.hasErrors());
     ASTMCQualifiedName qualifiedName = ast.get();
     MCBasicTypesFullPrettyPrinter printer = new MCBasicTypesFullPrettyPrinter(new IndentPrinter());
     String output = printer.prettyprint(ast.get());
     ast = parser.parse_StringMCQualifiedName(output);
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(ast.isPresent());
-    Assertions.assertTrue(qualifiedName.deepEquals(ast.get()));
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertTrue(qualifiedName.deepEquals(ast.get()));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMcImportStatement() throws IOException {
     MCBasicTypesTestParser parser = new MCBasicTypesTestParser();
     Optional<ASTMCImportStatement> ast = parser.parse_StringMCImportStatement("import de.monticore.types.*;");
-    Assertions.assertTrue(ast.isPresent());
-    Assertions.assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertFalse(parser.hasErrors());
     ASTMCImportStatement importStatement = ast.get();
     MCBasicTypesFullPrettyPrinter printer = new MCBasicTypesFullPrettyPrinter(new IndentPrinter());
     String output = printer.prettyprint(ast.get());
     ast = parser.parse_StringMCImportStatement(output);
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(ast.isPresent());
-    Assertions.assertTrue(importStatement.deepEquals(ast.get()));
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertTrue(importStatement.deepEquals(ast.get()));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMcPrimitiveType() throws IOException {
     MCBasicTypesTestParser parser = new MCBasicTypesTestParser();
     Optional<ASTMCPrimitiveType> ast = parser.parse_StringMCPrimitiveType("long");
-    Assertions.assertTrue(ast.isPresent());
-    Assertions.assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertFalse(parser.hasErrors());
     ASTMCPrimitiveType primitiveType = ast.get();
     MCBasicTypesFullPrettyPrinter printer = new MCBasicTypesFullPrettyPrinter(new IndentPrinter());
     String output = printer.prettyprint(ast.get());
     ast = parser.parse_StringMCPrimitiveType(output);
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(ast.isPresent());
-    Assertions.assertTrue(primitiveType.deepEquals(ast.get()));
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertTrue(primitiveType.deepEquals(ast.get()));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMCVoidType() throws IOException {
     MCBasicTypesTestParser parser = new MCBasicTypesTestParser();
     Optional<ASTMCVoidType> ast = parser.parse_StringMCVoidType("void");
-    Assertions.assertTrue(ast.isPresent());
-    Assertions.assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertFalse(parser.hasErrors());
     ASTMCVoidType voidType = ast.get();
     MCBasicTypesFullPrettyPrinter printer = new MCBasicTypesFullPrettyPrinter(new IndentPrinter());
     String output = printer.prettyprint(ast.get());
     ast = parser.parse_StringMCVoidType(output);
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(ast.isPresent());
-    Assertions.assertTrue(voidType.deepEquals(ast.get()));
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertTrue(voidType.deepEquals(ast.get()));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMCReturnTypeVoid() throws IOException {
     MCBasicTypesTestParser parser = new MCBasicTypesTestParser();
     Optional<ASTMCReturnType> ast = parser.parse_StringMCReturnType("void");
-    Assertions.assertTrue(ast.isPresent());
-    Assertions.assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertFalse(parser.hasErrors());
     ASTMCReturnType voidType = ast.get();
     MCBasicTypesFullPrettyPrinter printer = new MCBasicTypesFullPrettyPrinter(new IndentPrinter());
     String output = printer.prettyprint(ast.get());
     ast = parser.parse_StringMCReturnType(output);
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(ast.isPresent());
-    Assertions.assertTrue(voidType.deepEquals(ast.get()));
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertTrue(voidType.deepEquals(ast.get()));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMCReturnType() throws IOException {
     MCBasicTypesTestParser parser = new MCBasicTypesTestParser();
     Optional<ASTMCReturnType> ast = parser.parse_StringMCReturnType("boolean");
-    Assertions.assertTrue(ast.isPresent());
-    Assertions.assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertFalse(parser.hasErrors());
     ASTMCReturnType voidType = ast.get();
     MCBasicTypesFullPrettyPrinter printer = new MCBasicTypesFullPrettyPrinter(new IndentPrinter());
     String output = printer.prettyprint(ast.get());
     ast = parser.parse_StringMCReturnType(output);
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(ast.isPresent());
-    Assertions.assertTrue(voidType.deepEquals(ast.get()));
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertTrue(voidType.deepEquals(ast.get()));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMCQualifiedType() throws IOException {
     MCBasicTypesTestParser parser = new MCBasicTypesTestParser();
     Optional<ASTMCQualifiedType> ast = parser.parse_StringMCQualifiedType("a.b.c.d");
-    Assertions.assertTrue(ast.isPresent());
-    Assertions.assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertFalse(parser.hasErrors());
     ASTMCQualifiedType qualifiedReferenceType = ast.get();
     MCBasicTypesFullPrettyPrinter printer = new MCBasicTypesFullPrettyPrinter(new IndentPrinter());
     String output = printer.prettyprint(ast.get());
     ast = parser.parse_StringMCQualifiedType(output);
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(ast.isPresent());
-    Assertions.assertTrue(qualifiedReferenceType.deepEquals(ast.get()));
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertTrue(qualifiedReferenceType.deepEquals(ast.get()));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
   public void testMCPackageDeclaration() throws IOException {
     MCBasicTypesTestParser parser = MCBasicTypesTestMill.parser();
     Optional<ASTMCPackageDeclaration> ast = parser.parse_StringMCPackageDeclaration("package a.b.c.d;");
-    Assertions.assertTrue(ast.isPresent());
-    Assertions.assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertFalse(parser.hasErrors());
     ASTMCPackageDeclaration packageDeclaration = ast.get();
     MCBasicTypesFullPrettyPrinter printer = new MCBasicTypesFullPrettyPrinter(new IndentPrinter());
     String output = printer.prettyprint(ast.get());
     ast = parser.parse_StringMCPackageDeclaration(output);
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(ast.isPresent());
-    Assertions.assertTrue(packageDeclaration.deepEquals(ast.get()));
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertTrue(packageDeclaration.deepEquals(ast.get()));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -177,15 +178,15 @@ public class MCBasicTypesPrettyPrinterTest {
         // .parseType(primitive);
 
         Optional<? extends ASTMCType> type = mcBasicTypesParser.parse_StringMCPrimitiveType(primitive);
-        Assertions.assertTrue(type.isPresent());
-        Assertions.assertEquals(primitive, prettyprinter.prettyprint(type.get()));
-        Assertions.assertTrue(type.get() instanceof ASTMCPrimitiveType);
+        assertTrue(type.isPresent());
+        assertEquals(primitive, prettyprinter.prettyprint(type.get()));
+        assertInstanceOf(ASTMCPrimitiveType.class, type.get());
       }
     } catch (IOException e) {
       e.printStackTrace();
     }
     
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -195,13 +196,13 @@ public class MCBasicTypesPrettyPrinterTest {
     try{
       MCBasicTypesTestParser mcBasicTypesParser= new MCBasicTypesTestParser();
       Optional<? extends ASTMCType> type = mcBasicTypesParser.parse_StringMCQualifiedType(simpleReference);
-      Assertions.assertTrue(type.isPresent());
-      Assertions.assertEquals(simpleReference, prettyprinter.prettyprint(type.get()));
-      Assertions.assertTrue(type.get() instanceof ASTMCQualifiedType);
+      assertTrue(type.isPresent());
+      assertEquals(simpleReference, prettyprinter.prettyprint(type.get()));
+      assertInstanceOf(ASTMCQualifiedType.class, type.get());
     }catch(IOException e){
       e.printStackTrace();
     }
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

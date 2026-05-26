@@ -39,7 +39,7 @@ public class OverridingInterfaceNTs implements GrammarASTMCGrammarCoCo {
       for (MCGrammarSymbol s : grammarSymbols) {
         Optional<ProdSymbol> typeSymbol = s.getProd(p.getName());
         if (typeSymbol.isPresent() && typeSymbol.get().isIsInterface()) {
-          Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, typeSymbol.get().getName()));
+          Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, typeSymbol.get().getName()), p.get_SourcePositionStart());
         }
       }
     }

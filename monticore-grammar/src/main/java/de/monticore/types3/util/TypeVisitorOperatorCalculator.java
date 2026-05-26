@@ -1,6 +1,7 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.types3.util;
 
+import com.google.common.base.Preconditions;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
@@ -208,7 +209,7 @@ public class TypeVisitorOperatorCalculator {
    * if the need for more restrictive types is required.
    * <p>
    * Interestingly, this COULD (but should not!) be generalized;
-   * A function (STE target, STE source) -> STE converted,
+   * A function (STE target, STE source) -&gt; STE converted,
    * where source is compatible to target,
    * and converted is the result of the conversion to the target type,
    * which is a subType of the target type.
@@ -224,7 +225,7 @@ public class TypeVisitorOperatorCalculator {
    * (1, 2, 3) + (4, (5, 6)) == (5, 7, 9),
    * but this gets wierd with
    * ((1, 2), 3) + (4, (5, 6))
-   * -> need to find (int, int, int) first, as it is not on either side.
+   * -&gt; need to find (int, int, int) first, as it is not on either side.
    * Other example: int and tuples can be converted to String,
    * in this case, the following could be allowed:
    * 1 + (2, 3) // "1(2, 3)"
@@ -606,7 +607,7 @@ public class TypeVisitorOperatorCalculator {
   }
 
   /**
-   * calculates <, <=, >, =>
+   * calculates {@code <, <=, >, =>}
    */
   protected SymTypeExpression calculateNumericComparison(
       SymTypeExpression left,
@@ -683,7 +684,7 @@ public class TypeVisitorOperatorCalculator {
   }
 
   /**
-   * calculates &&, ||
+   * calculates {@code &&, ||}
    */
   protected SymTypeExpression calculateConditionalBooleanOp(
       SymTypeExpression left,
@@ -771,7 +772,7 @@ public class TypeVisitorOperatorCalculator {
   }
 
   /**
-   * calculates &, |, ^
+   * calculates {@code &, |, ^}
    */
   protected SymTypeExpression calculateBinaryInfixOp(
       SymTypeExpression left,
@@ -1044,7 +1045,7 @@ public class TypeVisitorOperatorCalculator {
   }
 
   protected static void setDelegate(TypeVisitorOperatorCalculator newDelegate) {
-    TypeVisitorOperatorCalculator.delegate = Log.errorIfNull(newDelegate);
+    TypeVisitorOperatorCalculator.delegate = Preconditions.checkNotNull(newDelegate);
   }
 
   protected static TypeVisitorOperatorCalculator getDelegate() {

@@ -2,6 +2,7 @@
 
 package de.monticore.generating.templateengine;
 
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import de.monticore.ast.ASTNode;
@@ -158,15 +159,14 @@ public class TemplateController {
   }
 
   /**
-   * Defines the signature of a template. <br />
-   * <br />
+   * Defines the signature of a template.
    * Note that, due to technical constraints, at first, the current template is
    * included and the arguments are passed. Second, the signature is defined.
    *
    * @param parameterNames the list of the parameter names (=signature)
    */
   public void signature(List<String> parameterNames) {
-    Log.errorIfNull(parameterNames);
+    Preconditions.checkNotNull(parameterNames);
 
     checkArgument(parameterNames.size() == arguments.size(),
         "0xA5298 Template '" + templatename + "': Signature size (#" + parameterNames.size() +
@@ -348,7 +348,6 @@ public class TemplateController {
    *
    * @param templateName full qualified filename
    * @param ast where we execute the template on
-   * @return none (= empty string within Freemarker)
    */
   public void write(String templateName, String qualifiedFileName, ASTNode ast) {
     writeArgs(templateName, qualifiedFileName, config.getDefaultFileExtension(), ast,
@@ -374,7 +373,6 @@ public class TemplateController {
    *
    * @param templateName full qualified filename
    * @param ast where we execute the template on
-   * @return none (= empty string within Freemarker)
    */
   public void writeArgs(final String templateName, final String qualifiedFileName,
                         final String fileExtension, final ASTNode ast, final List<Object> templateArguments) {
@@ -602,7 +600,7 @@ public class TemplateController {
    * package (of the template it operates on)
    */
   protected String completeQualifiedName(String name) {
-    Log.errorIfNull(!isNullOrEmpty(name));
+    Preconditions.checkNotNull(name);
 
     if (name.contains(".")) {
       return name;

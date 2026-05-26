@@ -13,6 +13,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Optional;
 
+import com.google.common.base.Preconditions;
 import de.monticore.ast.ASTCNode;
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.TemplateController;
@@ -39,7 +40,7 @@ public class GeneratorEngine {
   protected GeneratorSetup setup;
 
   public GeneratorEngine(GeneratorSetup gs) {
-    Log.errorIfNull(gs);
+    Preconditions.checkNotNull(gs);
     this.setup = gs;
   }
 
@@ -56,9 +57,9 @@ public class GeneratorEngine {
    */
   public void generate(String templateName, Path filePath,
                        ASTNode node, Object... templateArguments) {
-    Log.errorIfNull(node);
+    Preconditions.checkNotNull(node);
     checkArgument(!isNullOrEmpty(templateName));
-    Log.errorIfNull(filePath);
+    Preconditions.checkNotNull(filePath);
 
     TemplateController tc = setup.getNewTemplateController(templateName);
     tc.writeArgs(templateName, filePath, node, Arrays.asList(templateArguments));
@@ -76,7 +77,7 @@ public class GeneratorEngine {
    */
   public void generateNoA(String templateName, Path filePath, Object... templateArguments) {
     checkArgument(!isNullOrEmpty(templateName));
-    Log.errorIfNull(filePath);
+    Preconditions.checkNotNull(filePath);
 
     TemplateController tc = setup.getNewTemplateController(templateName);
     ASTCNode dummyAST = new ASTCNode(){
@@ -106,9 +107,9 @@ public class GeneratorEngine {
    */
   public void generate(String templateName, Writer writer,
                 ASTNode node, Object... templateArguments) {
-    Log.errorIfNull(node);
+    Preconditions.checkNotNull(node);
     checkArgument(!isNullOrEmpty(templateName));
-    Log.errorIfNull(writer);
+    Preconditions.checkNotNull(writer);
 
     TemplateController tc = setup.getNewTemplateController(templateName);
     StringBuilder sb = tc.includeArgs(templateName, node, Arrays.asList(templateArguments));
@@ -132,7 +133,7 @@ public class GeneratorEngine {
    */
   public void generateNoA(String templateName, Writer writer, Object... templateArguments) {
     checkArgument(!isNullOrEmpty(templateName));
-    Log.errorIfNull(writer);
+    Preconditions.checkNotNull(writer);
 
     TemplateController tc = setup.getNewTemplateController(templateName);
     StringBuilder sb = tc.includeArgs(templateName, Arrays.asList(templateArguments));
