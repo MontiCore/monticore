@@ -24,7 +24,7 @@ public class JavaLightPrettyPrinterTest {
 
   @BeforeEach
   public void init() {
-    LogStub.init();
+    LogStub.initPlusLog();
     Log.enableFailQuick(false);
     TestJavaLightMill.reset();
     TestJavaLightMill.init();
@@ -46,6 +46,24 @@ public class JavaLightPrettyPrinterTest {
 
     assertTrue(ast.deepEquals(result.get()));
   
+    assertTrue(Log.getFindings().isEmpty());
+  }
+
+  @Test
+  public void testCollectionTypesSpace() throws IOException {
+    Optional<ASTMethodDeclaration> result = parser.parse_StringMethodDeclaration("public List<List<String>> myMethod(Map<List<String>, Integer> a) {}");
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
+    ASTMethodDeclaration ast = result.get();
+
+    String output = prettyPrinter.prettyprint(ast);
+
+    result = parser.parse_StringMethodDeclaration(output);
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
+
+    assertTrue(ast.deepEquals(result.get()));
+
     assertTrue(Log.getFindings().isEmpty());
   }
 
