@@ -158,7 +158,7 @@ public class CommonExpressionsPrettyPrinterTest {
 
     String output = prettyPrinter.prettyprint(result);
 
-    assertEquals("a(b,c)", output);
+    assertEquals("a(b, c)", output);
   
     assertTrue(Log.getFindings().isEmpty());
   }
