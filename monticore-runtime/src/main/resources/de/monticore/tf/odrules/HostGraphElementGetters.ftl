@@ -30,16 +30,14 @@
           for (Match${level} ${level}: ${currentlevel}.${level}.get()) {
         <#assign currentlevel = level>
       </#list>
-            if(${currentlevel}.${list.getObjectName()}.isPresent()) {
-      ${list.getObjectName()}.add(${currentlevel}.${list.getObjectName()}.get());
-            }
+            ${currentlevel}.${list.getObjectName()}.ifPresent(${list.getObjectName()}::add)
       <#list ListTree as level>
           }
         }
       </#list>
       if (!${list.getObjectName()}.isEmpty()) {
         return Optional.ofNullable(${list.getObjectName()});
-      } else { return Optional.ofNullable(null); }
+      } else { return Optional.empty(); }
     </#if>
     }
     <#assign listchilds = hierarchyHelper.getListChilds(ast.getPattern().getMatchingObjectsList(), list)>

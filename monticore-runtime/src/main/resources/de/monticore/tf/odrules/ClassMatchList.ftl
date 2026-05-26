@@ -3,7 +3,7 @@
   <#if list.isListObject()>
   <#assign mandatoryObjects = hierarchyHelper.getListChilds(ast.getPattern().getLHSObjectsList(), list)>
   <#assign matchingObjects = hierarchyHelper.getListChilds(ast.getPattern().getMatchingObjectsList(), list)>
-public class Match${list.getObjectName()}{
+public static class Match${list.getObjectName()}{
   protected Match${list.getObjectName()}(
   <#list mandatoryObjects as object>
     <#if !object.isListObject()> ${object.getType()}
@@ -30,54 +30,15 @@ public class Match${list.getObjectName()}{
     protected Stack<String> backtracking;
 }
 
-  <#list mandatoryObjects as listchild>
-	<#assign isInOpt = hierarchyHelper.isWithinOptionalStructure(listchild.getObjectName())>
-  // Method for checkConditions to get the Elements of the List to compare while Matching
-  protected List<${listchild.getType()}> get_${listchild.getObjectName()}_temp_cands() {
-		<#if isInOpt>
-		// due to optionals, we have to filter absent elements
-    List<${listchild.getType()}> ${listchild.getObjectName()} = new ArrayList<${listchild.getType()}>();
-    ListIterator ${list.getObjectName()}It = ${list.getObjectName()}_candidates.listIterator();
-    while(${list.getObjectName()}It.hasNext()) {
-      Match${list.getObjectName()} ${list.getObjectName()} = (Match${list.getObjectName()})${list.getObjectName()}It.next();
-    	if(${list.getObjectName()}.${listchild.getObjectName()}.isPresent()) {
-    ${listchild.getObjectName()}.add(${list.getObjectName()}.${listchild.getObjectName()}.get());
-			}
-    }
-    return ${listchild.getObjectName()};
-	}
-		<#else>
-		// optimized case: Return a View to the individual candidates
-		return new MatchCandList${listchild.getObjectName()}(${list.getObjectName()}_candidates);
-	}
-
-	static class MatchCandList${listchild.getObjectName()} extends java.util.AbstractList<${listchild.getType()}> {
-
-			protected final List<Match${list.getObjectName()}> matches;
-
-			public MatchCandList${listchild.getObjectName()}(List<Match${list.getObjectName()}> matches) {
-				this.matches = matches;
-			}
-
-			@Override
-			public ${listchild.getType()} get(int index) {
-				return matches.get(index).${listchild.getObjectName()};
-			}
-
-			@Override
-			public int size() {
-				return matches.size();
-			}
-	}
-		</#if>
-  </#list>
-
   //Method for checking if the given object is already matched by the list
   protected boolean isMatchedBy${list.getObjectName()} (ASTNode cand) {
     return
-  <#list mandatoryObjects as listchild>get_${listchild.getObjectName()}_temp_cands().contains(cand)
-    <#if listchild_has_next> || </#if>
-  </#list>;
+      <#list mandatoryObjects as listchild>
+      <#assign isInOpt = hierarchyHelper.isWithinOptionalStructure(listchild.getObjectName())>
+      <#if isInOpt>${list.getObjectName()}_candidates.stream().filter(x -> x.${listchild.getObjectName()} != null && x.${listchild.getObjectName()}.isPresent()).map(x -> x.${listchild.getObjectName()}.get()).anyMatch(x -> x.equals(cand))
+      <#else>${list.getObjectName()}_candidates.stream().anyMatch(x -> x.${listchild.getObjectName()} != null && x.${listchild.getObjectName()}.equals(cand))
+      </#if><#if listchild_has_next> || </#if>
+      </#list>;
   }
 </#if>
 </#list>
