@@ -35,19 +35,19 @@ public class Match {
       <#if !change.isObjectWithinList()>
         protected ${change.getType()} ${change.getObjectName()}_${change.getAttributeName()}_before;
       <#else>
-        protected Map<${change.getObjectType()}, ${change.getType()?cap_first}>  ${change.getObjectName()}_${change.getAttributeName()}_before = new LinkedHashMap();
+        protected Map<${change.getObjectType()}, ${change.getType()?cap_first}>  ${change.getObjectName()}_${change.getAttributeName()}_before = new LinkedHashMap<>();
       </#if>
   <#elseif change.isObjectWithinList() >
       <#if change.isAttributeIterated()>
         protected int ${change.getObjectName()}_${valueName}_before_pos;
-        protected Map<${change.getGenericType()}, Integer> ${change.getObjectName()}_${valueName}_before = new LinkedHashMap();
+        protected Map<${change.getGenericType()}, Integer> ${change.getObjectName()}_${valueName}_before = new LinkedHashMap<>();
       <#else>
-        protected Map<${change.getObjectType()}, ${change.getGenericType()}> ${change.getObjectName()}_${valueName}_before = new LinkedHashMap();
+        protected Map<${change.getObjectType()}, ${change.getGenericType()}> ${change.getObjectName()}_${valueName}_before = new LinkedHashMap<>();
       </#if>
   <#else>
       <#if change.isAttributeIterated()>
         protected int ${change.getObjectName()}_${valueName}_before_pos;
-        protected Map<${change.getGenericType()}, Integer> ${change.getObjectName()}_${valueName}_before = new LinkedHashMap();
+        protected Map<${change.getGenericType()}, Integer> ${change.getObjectName()}_${valueName}_before = new LinkedHashMap<>();
       <#else>
         protected ${change.getGenericType()} ${change.getObjectName()}_${valueName}_before;
       </#if>

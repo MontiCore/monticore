@@ -2,7 +2,7 @@
 ${signature("isOptional", "parentObject")}
 
 <#assign notObject = ast>
-if (nextNode.equals("${notObject.getObjectName()}")) {
+case "${notObject.getObjectName()}" -> {
   // this is a negative object, reset candidates list
   if (!isBacktracking) {
     if (!isBacktrackingNegative) {

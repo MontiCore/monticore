@@ -2,7 +2,7 @@
 ${signature("isOptional", "parentObject")}
 
 <#assign optObject = ast>
-if (nextNode.equals("${optObject.getObjectName()}")) {
+case "${optObject.getObjectName()}" -> {
   // this is an optional object
   if (doPatternMatching_${optObject.getObjectName()}(isBacktracking, isBacktrackingNegative)) {
     // Experimental
@@ -34,7 +34,7 @@ if (nextNode.equals("${optObject.getObjectName()}")) {
       <#if isOptional && parentObject?has_content>
       reset_${parentObject.getObjectName()}();
       </#if>
-      break;
+      break mainLoop;
     } else {
       // start backtracking
       isBacktracking = true;
