@@ -12,7 +12,6 @@ import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -20,6 +19,7 @@ import java.io.File;
 import java.nio.file.Paths;
 
 import static de.monticore.generating.GeneratorEngine.existsHandwrittenClass;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests for {@link de.monticore.generating.GeneratorEngine}.
@@ -48,15 +48,15 @@ public class GeneratorEngineTest {
 
     generatorEngine.generate("the.Template", Paths.get("a/GenerateInFile.test"), node);
 
-    Assertions.assertEquals(1, freeMarkerTemplateEngine.getProcessedTemplates().size());
+    assertEquals(1, freeMarkerTemplateEngine.getProcessedTemplates().size());
     FreeMarkerTemplateMock template = freeMarkerTemplateEngine.getProcessedTemplates().iterator().next();
-    Assertions.assertTrue(template.isProcessed());
-    Assertions.assertEquals("the.Template", template.getName());
+    assertTrue(template.isProcessed());
+    assertEquals("the.Template", template.getName());
 
-    Assertions.assertEquals(1, fileHandler.getStoredFilesAndContents().size());
-    Assertions.assertTrue(fileHandler.getStoredFilesAndContents().containsKey(Paths.get
+    assertEquals(1, fileHandler.getStoredFilesAndContents().size());
+    assertTrue(fileHandler.getStoredFilesAndContents().containsKey(Paths.get
         (new File("target1/a/GenerateInFile.test").getAbsolutePath())));
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @AfterAll
@@ -75,15 +75,15 @@ public class GeneratorEngineTest {
     GeneratorEngineMock generatorEngine = new GeneratorEngineMock(setup);
 
     StringBuilder sb = generatorEngine.generateNoA("the.Template");
-    Assertions.assertTrue(sb.length()>0);
+    assertTrue(sb.length()>0);
 
-    Assertions.assertEquals(1, freeMarkerTemplateEngine.getProcessedTemplates().size());
+    assertEquals(1, freeMarkerTemplateEngine.getProcessedTemplates().size());
     FreeMarkerTemplateMock template = freeMarkerTemplateEngine.getProcessedTemplates().iterator().next();
-    Assertions.assertTrue(template.isProcessed());
-    Assertions.assertEquals("the.Template", template.getName());
+    assertTrue(template.isProcessed());
+    assertEquals("the.Template", template.getName());
 
-    Assertions.assertEquals(0, fileHandler.getStoredFilesAndContents().size());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertEquals(0, fileHandler.getStoredFilesAndContents().size());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -94,8 +94,8 @@ public class GeneratorEngineTest {
     setup.setAdditionalTemplatePaths(Lists.newArrayList(file));
     setup.setFileHandler(fileHandler);
     FreeMarkerTemplateEngineMock freeMarkerTemplateEngine = new FreeMarkerTemplateEngineMock(setup.getConfig());
-    Assertions.assertEquals(1, Log.getFindingsCount());
-    Assertions.assertEquals("0xA1020 Unable to load templates from non-existent path doesnotexist", Log.getFindings().get(0).getMsg());
+    assertEquals(1, Log.getFindingsCount());
+    assertEquals("0xA1020 Unable to load templates from non-existent path doesnotexist", Log.getFindings().get(0).getMsg());
   }
 
   @Test
@@ -103,8 +103,8 @@ public class GeneratorEngineTest {
     String classname = "test.A";
     String notExistName = "test.B";
 
-    Assertions.assertTrue(existsHandwrittenClass(new MCPath("src/test/resources/hwc"), classname));
-    Assertions.assertFalse(existsHandwrittenClass(new MCPath("src/test/resources/hwc"), notExistName));
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(existsHandwrittenClass(new MCPath("src/test/resources/hwc"), classname));
+    assertFalse(existsHandwrittenClass(new MCPath("src/test/resources/hwc"), notExistName));
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

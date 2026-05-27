@@ -2,17 +2,11 @@
 
 package mc.feature.visitor;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
 
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 
 import de.se_rwth.commons.logging.Log;
@@ -24,6 +18,8 @@ import mc.feature.visitor.sub._visitor.SubTraverser;
 import mc.feature.visitor.sup._ast.ASTA;
 import mc.feature.visitor.sup._visitor.SupVisitor2;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class VisitorTest extends GeneratorIntegrationsTest {
   
@@ -38,8 +34,8 @@ public class VisitorTest extends GeneratorIntegrationsTest {
     // Create AST
     SubParser p = new SubParser();
     Optional<ASTA> node = p.parseA(new StringReader("test1 test2"));
-    Assertions.assertFalse(p.hasErrors());
-    Assertions.assertTrue(node.isPresent());
+    assertFalse(p.hasErrors());
+    assertTrue(node.isPresent());
     
     // Running Visitor
     SubTraverser t1 = SubMill.traverser();
@@ -47,7 +43,7 @@ public class VisitorTest extends GeneratorIntegrationsTest {
     t1.add4Sub(v);
     
     t1.handle(node.get());
-    Assertions.assertTrue(v.hasVisited());
+    assertTrue(v.hasVisited());
 
     SubTraverser t2 = SubMill.traverser();
     SupVisitor2 vSup = new SupVisitor2() {};
@@ -55,8 +51,8 @@ public class VisitorTest extends GeneratorIntegrationsTest {
     long errorCount = Log.getErrorCount();
     // no expected error, as super visitor should run on sub language
     t2.handle(node.get());
-    Assertions.assertEquals(errorCount, Log.getErrorCount());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertEquals(errorCount, Log.getErrorCount());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   
@@ -64,8 +60,8 @@ public class VisitorTest extends GeneratorIntegrationsTest {
   public void testInheritanceTraversal() throws IOException {
     SubParser p = new SubParser();
     Optional<ASTE> node = p.parse_String("test2 NodeOverride");
-    Assertions.assertFalse(p.hasErrors());
-    Assertions.assertTrue(node.isPresent());
+    assertFalse(p.hasErrors());
+    assertTrue(node.isPresent());
     
     // init with plain traverser
     SubTraverser t1 = SubMill.traverser();
@@ -74,7 +70,7 @@ public class VisitorTest extends GeneratorIntegrationsTest {
     
     // plain traverser should not reach the interface implementation
     node.get().accept(t1);
-    Assertions.assertEquals(0, c1.getNum());
+    assertEquals(0, c1.getNum());
     
     
     // init with inheritance traverser
@@ -84,7 +80,7 @@ public class VisitorTest extends GeneratorIntegrationsTest {
     
     // inheritance traverser should reach the interface implementation precisely once
     node.get().accept(t2);
-    Assertions.assertEquals(1, c2.getNum());
+    assertEquals(1, c2.getNum());
     
   }
   

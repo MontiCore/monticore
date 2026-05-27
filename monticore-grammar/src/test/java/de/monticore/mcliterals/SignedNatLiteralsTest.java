@@ -7,12 +7,13 @@ import de.monticore.literals.testmccommonliterals.TestMCCommonLiteralsMill;
 import de.monticore.literals.testmccommonliterals._parser.TestMCCommonLiteralsParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SignedNatLiteralsTest {
   
@@ -27,16 +28,16 @@ public class SignedNatLiteralsTest {
   private void checkNatLiteral(int i, String s) throws IOException {
     TestMCCommonLiteralsParser parser = new TestMCCommonLiteralsParser();
     Optional<ASTSignedNatLiteral> ast = parser.parse_StringSignedNatLiteral(s);
-    Assertions.assertTrue(!parser.hasErrors());
-    Assertions.assertEquals(i, ast.get().getValue());
+    assertFalse(parser.hasErrors());
+    assertEquals(i, ast.get().getValue());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   private void checkFailingNatLiteral(String s) throws IOException {
     TestMCCommonLiteralsParser parser = new TestMCCommonLiteralsParser();
     parser.parse_StringSignedNatLiteral(s);
-    Assertions.assertTrue(parser.hasErrors());
+    assertTrue(parser.hasErrors());
   }
 
   @Test
@@ -56,7 +57,7 @@ public class SignedNatLiteralsTest {
 
     }
     catch (IOException e) {
-      Assertions.fail(e.getMessage());
+      fail(e.getMessage());
     }
   }
   
@@ -67,7 +68,7 @@ public class SignedNatLiteralsTest {
 //      checkFailingNatLiteral("-5");
     }
     catch (IOException e) {
-      Assertions.fail(e.getMessage());
+      fail(e.getMessage());
     }
   }
 }

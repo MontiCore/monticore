@@ -20,13 +20,12 @@ import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.se_rwth.commons.logging.Log;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.Predicate;
+
 
 import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
@@ -38,9 +37,7 @@ import static de.monticore.codegen.cd2java.DecoratorAssert.assertVoid;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodsBy;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ScopeClassDecoratorTest extends DecoratorTestCase {
 
@@ -62,6 +59,8 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
 
   private static final String QUALIFIED_NAME_SYMBOL_MAP = "com.google.common.collect.LinkedListMultimap<String,de.monticore.codegen.ast.lexicals._symboltable.QualifiedNameSymbol>";
 
+  private static final String UNKNOWN_SYMBOL_MAP = "com.google.common.collect.LinkedListMultimap<String,de.monticore.symboltable.SymbolWithScopeOfUnknownKind>";
+
   private static final String FOO_SYMBOL_MAP = "com.google.common.collect.LinkedListMultimap<String,de.monticore.codegen.symboltable.automaton._symboltable.FooSymbol>";
 
   private static final String AUTOMATON_SYMBOL = "de.monticore.codegen.symboltable.automaton._symboltable.AutomatonSymbol";
@@ -82,10 +81,9 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
 
   private static final String I_LEXICAS_SCOPE = "de.monticore.codegen.ast.lexicals._symboltable.ILexicalsScope";
 
-  @Before
+  @BeforeEach
   public void setUp() {
     this.mcTypeFacade = mcTypeFacade.getInstance();
-
     ASTCDCompilationUnit astcdCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "Automaton");
     decoratedSymbolCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "AutomatonSymbolCD");
     decoratedScopeCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "AutomatonScopeCD");
@@ -377,7 +375,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethodCount() {
-    assertEquals(99, scopeClass.getCDMethodList().size());
+    assertEquals(104, scopeClass.getCDMethodList().size());
   
     assertTrue(Log.getFindings().isEmpty());
   }
@@ -386,7 +384,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
   public void testRemoveSymbolMethod() {
     List<ASTCDMethod> methodList = getMethodsBy("remove", scopeClass);
 
-    Map<String, ASTCDMethod> methods = new HashMap<>();
+    Map<String, ASTCDMethod> methods = new LinkedHashMap<>();
     methodList.forEach(l -> methods.put(
             CD4CodeMill.prettyPrint(l.getCDParameter(0).getMCType(), false), l)
     );
@@ -429,7 +427,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
   @Test
   public void testAddSymbolMethod() {
     List<ASTCDMethod> methodList = getMethodsBy("add", scopeClass);
-    Map<String, ASTCDMethod> methods = new HashMap<>();
+    Map<String, ASTCDMethod> methods = new LinkedHashMap<>();
     methodList.forEach(l -> methods.put(
         CD4CodeMill.prettyPrint(l.getCDParameter(0).getMCType(), false), l)
     );
@@ -469,8 +467,6 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertTrue(Log.getFindings().isEmpty());
   }
 
-
-
   @Test
   public void testGetAutomatonSymbolsMethod() {
     ASTCDMethod method = getMethodBy("getAutomatonSymbols", scopeClass);
@@ -483,6 +479,46 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertTrue(Log.getFindings().isEmpty());
   }
 
+  @Test
+  public void testGetSymbolWithSubKindsMethod() {
+    List<Predicate<ASTCDMethod>> predicates = Arrays.asList(
+            m -> m.getName().endsWith("WithSubKinds")
+    );
+    List<ASTCDMethod> methodList = getMethodsBy(scopeClass.getCDMethodList(), predicates);
+    Map<String, ASTCDMethod> methods = new HashMap<>();
+    methodList.forEach(l -> methods.put(
+            CD4CodeMill.prettyPrint(l.getMCReturnType().getMCType(), false), l)
+    );
+
+    assertEquals(5, methodList.size());
+
+    ASTCDMethod automatonAdd = methods.get(AUTOMATON_SYMBOL_MAP);
+    assertDeepEquals(PUBLIC, automatonAdd.getModifier());
+    assertTrue(automatonAdd.isEmptyCDParameters());
+    assertEquals("getAutomatonSymbolsWithSubKinds", automatonAdd.getName());
+
+    ASTCDMethod stateAdd = methods.get(STATE_SYMBOL_MAP);
+    assertDeepEquals(PUBLIC, stateAdd.getModifier());
+    assertTrue(stateAdd.isEmptyCDParameters());
+    assertEquals("getStateSymbolsWithSubKinds", stateAdd.getName());
+
+    ASTCDMethod qualifiedNameAdd = methods.get(QUALIFIED_NAME_SYMBOL_MAP);
+    assertDeepEquals(PUBLIC, qualifiedNameAdd.getModifier());
+    assertTrue(qualifiedNameAdd.isEmptyCDParameters());
+    assertEquals("getQualifiedNameSymbolsWithSubKinds", qualifiedNameAdd.getName());
+
+    ASTCDMethod unknownAdd = methods.get(UNKNOWN_SYMBOL_MAP);
+    assertDeepEquals(PUBLIC, unknownAdd.getModifier());
+    assertTrue(unknownAdd.isEmptyCDParameters());
+    assertEquals("getUnknownSymbolsWithSubKinds", unknownAdd.getName());
+
+    ASTCDMethod fooAdd = methods.get(FOO_SYMBOL_MAP);
+    assertDeepEquals(PUBLIC, fooAdd.getModifier());
+    assertTrue(fooAdd.isEmptyCDParameters());
+    assertEquals("getFooSymbolsWithSubKinds", fooAdd.getName());
+
+    assertTrue(Log.getFindings().isEmpty());
+  }
 
   @Test
   public void testGetStateSymbolsMethod() {
@@ -815,7 +851,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     // test parsing
     ParserConfiguration configuration = new ParserConfiguration();
     JavaParser parser = new JavaParser(configuration);
-    ParseResult parseResult = parser.parse(sb.toString());
+    ParseResult<?> parseResult = parser.parse(sb.toString());
     assertTrue(parseResult.isSuccessful());
   
     assertTrue(Log.getFindings().isEmpty());

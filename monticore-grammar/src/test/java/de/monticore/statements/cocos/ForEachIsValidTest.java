@@ -1,149 +1,280 @@
-/* (c) https://github.com/MontiCore/monticore */
+/* (c) [https://github.com/MontiCore/monticore](https://github.com/MontiCore/monticore) */
 package de.monticore.statements.cocos;
 
 import de.monticore.statements.mccommonstatements._ast.ASTEnhancedForControl;
 import de.monticore.statements.mccommonstatements.cocos.ForEachIsValid;
 import de.monticore.statements.testmccommonstatements.TestMCCommonStatementsMill;
 import de.monticore.statements.testmccommonstatements._cocos.TestMCCommonStatementsCoCoChecker;
-import de.monticore.statements.testmccommonstatements._parser.TestMCCommonStatementsParser;
 import de.monticore.statements.testmccommonstatements._symboltable.ITestMCCommonStatementsScope;
 import de.monticore.statements.testmccommonstatements._visitor.TestMCCommonStatementsTraverser;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
-import de.monticore.types.check.*;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
+import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
+import de.monticore.types.check.FlatExpressionScopeSetter;
+import de.monticore.types.check.SymTypeOfGenerics;
+import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserFactory;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.IOException;
-import java.util.Optional;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static de.monticore.statements.mccommonstatements.cocos.ForEachIsValid.FOR_EACH_EXPR_NOT_ITERABLE_ERROR_CODE;
+import static de.monticore.statements.mccommonstatements.cocos.ForEachIsValid.FOR_EACH_TYPE_MISMATCH_ERROR_CODE;
+import static de.monticore.statements.testmccommonstatements.TestMCCommonStatementsMill.fieldSymbolBuilder;
+import static de.monticore.statements.testmccommonstatements.TestMCCommonStatementsMill.globalScope;
+import static de.monticore.statements.testmccommonstatements.TestMCCommonStatementsMill.oOTypeSymbolBuilder;
+import static de.monticore.statements.testmccommonstatements.TestMCCommonStatementsMill.scope;
+import static de.monticore.statements.testmccommonstatements.TestMCCommonStatementsMill.typeVarSymbolBuilder;
+import static de.monticore.symbols.basicsymbols.BasicSymbolsMill.BOOLEAN;
+import static de.monticore.symbols.basicsymbols.BasicSymbolsMill.INT;
+import static de.monticore.types.check.SymTypeExpressionFactory.createGenerics;
+import static de.monticore.types.check.SymTypeExpressionFactory.createPrimitive;
+import static de.monticore.types.check.SymTypeExpressionFactory.createTypeArray;
+import static de.monticore.types.check.SymTypeExpressionFactory.createTypeObject;
+import static de.monticore.types.check.SymTypeExpressionFactory.createTypeVariable;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
-public class ForEachIsValidTest {
-
-  protected TestMCCommonStatementsCoCoChecker checker;
+/**
+ * The class under test is {@link ForEachIsValid}.
+ */
+class ForEachIsValidTest {
 
   @BeforeEach
-  public void init() {
+  void init() {
     LogStub.init();
     Log.enableFailQuick(false);
 
     TestMCCommonStatementsMill.reset();
     TestMCCommonStatementsMill.init();
+    CombineExpressionsWithLiteralsTypeTraverserFactory.initTypeCheck3();
     BasicSymbolsMill.initializePrimitives();
 
-    checker = new TestMCCommonStatementsCoCoChecker();
-    checker.addCoCo(new ForEachIsValid(new TypeCalculator(new FullSynthesizeFromCombineExpressionsWithLiterals(), new FullDeriveFromCombineExpressionsWithLiterals())));
+    // ===== Types ===== //
 
-    SymTypeOfObject iterableType = SymTypeExpressionFactory.createTypeObject("java.lang.Iterable", TestMCCommonStatementsMill.globalScope());
-    SymTypeOfObject aObjectType = SymTypeExpressionFactory.createTypeObject("A", TestMCCommonStatementsMill.globalScope());
+    // type var T
+    TypeVarSymbol T = typeVarSymbolBuilder().setName("T").build();
 
-    TestMCCommonStatementsMill.globalScope().add(TestMCCommonStatementsMill
-        .oOTypeSymbolBuilder()
-        .setName("A")
-        .addSuperTypes(iterableType)
-        .build());
+    // type java.lang.Iterable<T>
+    TypeSymbol Iterable = oOTypeSymbolBuilder()
+      .setName("Iterable")
+      .setPackageName("java.lang")
+      .setEnclosingScope(globalScope())
+      .setSpannedScope(scope())
+      .build();
+    Iterable.getEnclosingScope().add(Iterable);
+    Iterable.getEnclosingScope().addSubScope(Iterable.getSpannedScope());
+    Iterable.getSpannedScope().add(T);
 
-    ITestMCCommonStatementsScope javaScope = TestMCCommonStatementsMill.scope();
-    javaScope.setName("java");
+    // type A1 implements java.lang.Iterable<boolean>
+    TypeSymbol A1 = oOTypeSymbolBuilder()
+      .setName("A1")
+      .setEnclosingScope(globalScope())
+      .setSpannedScope(scope())
+      .setSuperTypesList(List.of(createGenerics(Iterable, createPrimitive(BOOLEAN))))
+      .build();
+    A1.getEnclosingScope().add(A1);
+    A1.getEnclosingScope().addSubScope(A1.getSpannedScope());
 
-    ITestMCCommonStatementsScope langScope = TestMCCommonStatementsMill.scope();
-    langScope.setName("lang");
+    // type A2 implements A1
+    TypeSymbol A2 = oOTypeSymbolBuilder()
+      .setName("A2")
+      .setEnclosingScope(globalScope())
+      .setSpannedScope(scope())
+      .setSuperTypesList(List.of(createTypeObject(A1)))
+      .build();
+    A2.getEnclosingScope().add(A2);
+    A2.getEnclosingScope().addSubScope(A2.getSpannedScope());
 
-    TestMCCommonStatementsMill.globalScope().addSubScope(javaScope);
-    javaScope.addSubScope(langScope);
+    // type var TB
+    TypeVarSymbol TB = typeVarSymbolBuilder().setName("TB").build();
 
-    langScope.add(TestMCCommonStatementsMill
-        .oOTypeSymbolBuilder()
-        .setName("Iterable")
-        .build());
+    SymTypeOfGenerics superIterableOfA = createGenerics(Iterable, createTypeVariable(TB));
 
-    ITestMCCommonStatementsScope utilScope = TestMCCommonStatementsMill.scope();
-    utilScope.setName("util");
+    // type B<TB> implements java.lang.Iterable<TB>
+    TypeSymbol B = oOTypeSymbolBuilder()
+      .setName("B")
+      .setEnclosingScope(globalScope())
+      .setSpannedScope(scope())
+      .setSuperTypesList(List.of(superIterableOfA))
+      .build();
+    B.getEnclosingScope().add(B);
+    B.getEnclosingScope().addSubScope(B.getSpannedScope());
+    B.getSpannedScope().add(TB);
 
-    javaScope.addSubScope(utilScope);
+    // type var TC
+    TypeVarSymbol TC = typeVarSymbolBuilder().setName("TC").build();
 
-    utilScope.add(TestMCCommonStatementsMill
-        .oOTypeSymbolBuilder().setName("Arrays")
-        .build());
+    SymTypeOfGenerics superAOfB = createGenerics(B, createTypeVariable(TC));
 
-    TestMCCommonStatementsMill.globalScope().add(TestMCCommonStatementsMill
-        .fieldSymbolBuilder()
-        .setName("a")
-        .setType(aObjectType)
-        .build());
+    // type C<TC> implements B<TC>
+    TypeSymbol C = oOTypeSymbolBuilder()
+      .setName("C")
+      .setEnclosingScope(globalScope())
+      .setSpannedScope(scope())
+      .setSuperTypesList(List.of(superAOfB))
+      .build();
+    C.getEnclosingScope().add(C);
+    C.getEnclosingScope().addSubScope(C.getSpannedScope());
+    C.getSpannedScope().add(TC);
 
-    SymTypeOfObject objectType = SymTypeExpressionFactory.createTypeObject("Object", TestMCCommonStatementsMill.globalScope());
-    TestMCCommonStatementsMill.globalScope().add(TestMCCommonStatementsMill
-        .oOTypeSymbolBuilder()
-        .setName("Object")
-        .build());
+    // type D implements C<int>
+    TypeSymbol D = oOTypeSymbolBuilder()
+      .setName("D")
+      .setEnclosingScope(globalScope())
+      .setSpannedScope(scope())
+      .setSuperTypesList(List.of(createGenerics(C, createPrimitive(INT))))
+      .build();
+    D.getEnclosingScope().add(D);
+    D.getEnclosingScope().addSubScope(D.getSpannedScope());
 
-    TestMCCommonStatementsMill.globalScope().add(TestMCCommonStatementsMill
-        .fieldSymbolBuilder()
-        .setName("o")
-        .setType(objectType)
-        .build());
+    // ===== Fields ====== //
+    FieldSymbol bool = fieldSymbolBuilder()
+      .setName("bool")
+      .setType(createPrimitive(BOOLEAN))
+      .setEnclosingScope(globalScope())
+      .build();
+    bool.getEnclosingScope().add(bool);
+
+    FieldSymbol a1Booleans = fieldSymbolBuilder()
+      .setName("a1Booleans")
+      .setType(createTypeObject(A1))
+      .setEnclosingScope(globalScope())
+      .build();
+    a1Booleans.getEnclosingScope().add(a1Booleans);
+
+    FieldSymbol a2Booleans = fieldSymbolBuilder()
+      .setName("a2Booleans")
+      .setType(createTypeObject(A1))
+      .setEnclosingScope(globalScope())
+      .build();
+    a2Booleans.getEnclosingScope().add(a2Booleans);
+
+    FieldSymbol integers = fieldSymbolBuilder()
+      .setName("integers")
+      .setType(createTypeObject(D))
+      .setEnclosingScope(globalScope())
+      .build();
+    integers.getEnclosingScope().add(integers);
+
+    FieldSymbol a1ArrayBooleans1 = fieldSymbolBuilder()
+      .setName("a1ArrayBooleans1")
+      .setType(createTypeArray(createTypeObject(A1), 1))
+      .setEnclosingScope(globalScope())
+      .build();
+    a1ArrayBooleans1.getEnclosingScope().add(a1ArrayBooleans1);
+
+    FieldSymbol a1ArrayBooleans2 = fieldSymbolBuilder()
+      .setName("a1ArrayBooleans2")
+      .setType(createTypeArray(createTypeObject(A1), 2))
+      .setEnclosingScope(globalScope())
+      .build();
+    a1ArrayBooleans2.getEnclosingScope().add(a1ArrayBooleans2);
+
+    FieldSymbol a2ArrayBooleans1 = fieldSymbolBuilder()
+      .setName("a2ArrayBooleans1")
+      .setType(createTypeArray(createTypeObject(A2), 1))
+      .setEnclosingScope(globalScope())
+      .build();
+    a2ArrayBooleans1.getEnclosingScope().add(a2ArrayBooleans1);
+
+    FieldSymbol a2ArrayBooleans2 = fieldSymbolBuilder()
+      .setName("a2ArrayBooleans2")
+      .setType(createTypeArray(createTypeObject(A2), 2))
+      .setEnclosingScope(globalScope())
+      .build();
+    a2ArrayBooleans2.getEnclosingScope().add(a2ArrayBooleans2);
   }
 
   private void addToTraverser(TestMCCommonStatementsTraverser traverser, ITestMCCommonStatementsScope enclosingScope) {
-    FlatExpressionScopeSetter flatExpressionScopeSetter = new FlatExpressionScopeSetter(enclosingScope);
-    traverser.add4ExpressionsBasis(flatExpressionScopeSetter);
-    traverser.add4CommonExpressions(flatExpressionScopeSetter);
-    traverser.add4MCBasicTypes(flatExpressionScopeSetter);
-    traverser.add4MCCollectionTypes(flatExpressionScopeSetter);
-    traverser.add4MCArrayTypes(flatExpressionScopeSetter);
-    traverser.add4MCCommonLiterals(flatExpressionScopeSetter);
+    FlatExpressionScopeSetter scopeSetter = new FlatExpressionScopeSetter(enclosingScope);
+    traverser.add4ExpressionsBasis(scopeSetter);
+    traverser.add4CommonExpressions(scopeSetter);
+    traverser.add4MCBasicTypes(scopeSetter);
+    traverser.add4MCCollectionTypes(scopeSetter);
+    traverser.add4MCArrayTypes(scopeSetter);
+    traverser.add4MCCommonLiterals(scopeSetter);
   }
 
-  public void checkValid(String expressionString) throws IOException {
-    TestMCCommonStatementsParser parser = TestMCCommonStatementsMill.parser();
-    Optional<ASTEnhancedForControl> optAST = parser.parse_StringEnhancedForControl(expressionString);
-    Assertions.assertTrue(optAST.isPresent());
-    ASTEnhancedForControl ast = optAST.get();
+  @ParameterizedTest
+  @ValueSource(strings = {
+    "boolean b : a1Booleans",
+    "boolean b : a2Booleans",
+    "int i : integers",
+    "A1 a : a1ArrayBooleans1",
+    "A1[] a : a1ArrayBooleans2",
+    "A1 a : a2ArrayBooleans1",
+    "A1[] a : a2ArrayBooleans2",
+    "A2 a : a2ArrayBooleans1",
+    "A2[] a : a2ArrayBooleans2"
+  })
+  void testValid(String expr) throws IOException {
+    // Given
+    TestMCCommonStatementsCoCoChecker checker = new TestMCCommonStatementsCoCoChecker();
+    checker.addCoCo(new ForEachIsValid());
+
+    ASTEnhancedForControl ast = TestMCCommonStatementsMill.parser()
+      .parse_StringEnhancedForControl(expr)
+      .orElseThrow();
 
     TestMCCommonStatementsTraverser traverser = TestMCCommonStatementsMill.traverser();
-    addToTraverser(traverser, TestMCCommonStatementsMill.globalScope());
+    addToTraverser(traverser, globalScope());
     ast.accept(traverser);
-    ast.setEnclosingScope(TestMCCommonStatementsMill.globalScope());
+    ast.setEnclosingScope(globalScope());
 
-    Log.getFindings().clear();
-    checker.checkAll(optAST.get());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    // When
+    checker.checkAll(ast);
+
+    // Then
+
+    assertTrue(Log.getFindings().isEmpty(), () -> Log.getFindings().toString());
   }
 
-  public void checkInvalid(String expressionString) throws IOException {
-    TestMCCommonStatementsParser parser = TestMCCommonStatementsMill.parser();
-    Optional<ASTEnhancedForControl> optAST = parser.parse_StringEnhancedForControl(expressionString);
-    Assertions.assertTrue(optAST.isPresent());
-    ASTEnhancedForControl ast = optAST.get();
+  @ParameterizedTest
+  @MethodSource("exprAndErrorProvider")
+  void testInvalid(String expr, String[] error) throws IOException {
+    // Given
+    TestMCCommonStatementsCoCoChecker checker = new TestMCCommonStatementsCoCoChecker();
+    checker.addCoCo(new ForEachIsValid());
+
+    ASTEnhancedForControl ast = TestMCCommonStatementsMill.parser()
+      .parse_StringEnhancedForControl(expr)
+      .orElseThrow();
 
     TestMCCommonStatementsTraverser traverser = TestMCCommonStatementsMill.traverser();
-    addToTraverser(traverser, TestMCCommonStatementsMill.globalScope());
+    addToTraverser(traverser, globalScope());
     ast.accept(traverser);
+    ast.setEnclosingScope(globalScope());
 
-    ast.setEnclosingScope(TestMCCommonStatementsMill.globalScope());
-    Log.getFindings().clear();
-    checker.checkAll(optAST.get());
-    Assertions.assertFalse(Log.getFindings().isEmpty());
+    // When
+    checker.checkAll(ast);
+
+    // Then
+    assertEquals(Arrays.asList(error), Log.getFindings()
+      .stream().map(f -> f.getMsg().substring(0, 7)).collect(Collectors.toList())
+    );
   }
 
-  @Test
-  public void testValid() throws IOException {
-    checkValid("Object o : a");
+  static Stream<Arguments> exprAndErrorProvider() {
+    return Stream.of(
+      arguments("boolean b : bool", new String[]{FOR_EACH_EXPR_NOT_ITERABLE_ERROR_CODE}),
+      arguments("int i : a1Booleans", new String[]{FOR_EACH_TYPE_MISMATCH_ERROR_CODE}),
+      arguments("A2 a : a1ArrayBooleans1", new String[]{FOR_EACH_TYPE_MISMATCH_ERROR_CODE}),
+      arguments("A2[] a : a1ArrayBooleans2", new String[]{FOR_EACH_TYPE_MISMATCH_ERROR_CODE}),
+      arguments("boolean b : missing", new String[]{"0xFD118"}),
+      arguments("Missing m : a1Booleans", new String[]{"0xA0324"}),
+      arguments("Missing m : missing", new String[]{"0xA0324", "0xFD118"})
+    );
   }
-
-  @Test
-  public void testInvalid() throws IOException {
-    checkInvalid("Object o : 3");
-  }
-
-  @Test
-  public void testInvalid2() throws IOException {
-    checkInvalid("Object o : o");
-  }
-
 }

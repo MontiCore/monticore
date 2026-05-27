@@ -27,16 +27,16 @@ solutions in the context of DSLs and model-based development.
 
 ### Location
 
-The MontiCore symposium will be located in Köln_Riehl, Germany. 
+The MontiCore symposium will be located in Köln-Riehl, Germany. 
 
 ### Participation
 
 Participation is based on acceptance of an abstract or a full paper and 
 requires registration until **12th of September**. 
 
-Registration costs are tbd and include accommodation, 
+Registration costs are 660€ and include accommodation, 
 conference fees, and meals during the symposium.  
-Registration will be open soon.
+~~Register now~~ (registration is closed)
 
 ### Submission
 
@@ -46,7 +46,7 @@ be found [here](https://www.acm.org/publications/proceedings-template). We ask f
  [1] Research papers: 8 pages,
  [2] Vision abstracts: 1 page.
  
-Submissions must be uploaded via (link coming soon). 
+Submissions must be uploaded via EasyChair (submissions are closed). 
 
 It is planned to produce post-proceedings with extended and improved 
 versions of the papers as result of the symposium. 

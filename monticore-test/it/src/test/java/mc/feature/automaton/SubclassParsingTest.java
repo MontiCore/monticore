@@ -2,15 +2,12 @@
 
 package mc.feature.automaton;
 
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
 
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 
 import mc.GeneratorIntegrationsTest;
@@ -18,6 +15,9 @@ import mc.feature.automaton.automaton._parser.AutomatonParser;
 import mc.feature.automaton.automaton._ast.ASTSubTransition;
 import mc.feature.automaton.automaton._ast.ASTTransition;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SubclassParsingTest extends GeneratorIntegrationsTest {
   
@@ -33,9 +33,9 @@ public class SubclassParsingTest extends GeneratorIntegrationsTest {
     AutomatonParser parser = new AutomatonParser();
     
     Optional<ASTTransition> ast = parser.parseTransition(new StringReader("sub a -x> b;"));
-    Assertions.assertTrue(ast.isPresent());
-    Assertions.assertTrue(ast.get() instanceof ASTSubTransition);
+    assertTrue(ast.isPresent());
+    assertInstanceOf(ASTSubTransition.class, ast.get());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

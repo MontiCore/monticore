@@ -1,57 +1,51 @@
 /* (c) https://github.com/MontiCore/monticore */
 plugins {
-  id "monticore" 
   id "jacoco"
+  id "de.monticore.generator-withtr" apply false
 }
 
 description = 'MontiCore-MontiTrans Integration Test'
 
-ext.grammarDir = 'src/main/grammars'
 ext.junit_version = '5.10.3'
 
-configurations {grammar}
 
 sonarqube {
   skipProject = true
 }
 
 subprojects {
-  apply plugin: 'monticore'
+  apply plugin: 'de.monticore.generator-withtr'
   apply plugin: 'jacoco'
 
+
+  configurations.trafoGrammarSymbolDependencies.extendsFrom(configurations.grammarSymbolDependencies)
+
   dependencies {
-    // Note: the dependencies are required, because this test does not yet use the transitive grammar dependencies
-    implementation project(':monticore-runtime')
-    implementation project(':monticore-grammar')
-    implementation project(path: ':monticore-grammar', configuration: 'trafoCompileClasspathForLegacyCompat')
-    implementation "de.se_rwth.commons:se-commons-utilities:$se_commons_version"
+    // project-dependencies using trafos are not properly working
+    grammarSymbolDependencies (project(path: ":monticore-grammar", configuration: "grammarSymbolOutElements"))
+    implementation (project(path: ":monticore-grammar"))
+
+    trafoGrammarSymbolDependencies(project(path: ":monticore-grammar", configuration: "trafoGrammarSymbolOutElements"))
+    trafoImplementation(project(path: ":monticore-grammar", configuration: "trafoCompileClasspathForLegacyCompat"))
+    trafoImplementation files(project(":monticore-grammar").sourceSets.trafo.output.classesDirs)
+
+
+
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
-    testImplementation "org.junit.vintage:junit-vintage-engine:$junit_version"
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
-    grammar (project(path: ':monticore-grammar')){
-      capabilities {
-        requireCapability("de.monticore:monticore-grammar-grammars")
-      }
-    }
-    grammar (project(path: ':monticore-grammar', configuration: 'trafoGrammarSymbolOutElements')) {
-      // Due to using the old MCGradle plugin here, no attributes filter the trafo artifacts
-      // and gradle is unsure whether to select runtimeElements or grammarSymbolOutElements
-      transitive(false)
-    }
+    testImplementation "org.junit.jupiter:junit-jupiter-engine:$junit_version"
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher:$junit_version"
   }
 
   java {
     toolchain {
-      languageVersion = JavaLanguageVersion.of(11)
+      languageVersion = JavaLanguageVersion.of(21)
     }
   }
+
+  test {
+    useJUnitPlatform()
+  }
 }
-
-
-
-clean.dependsOn(subprojects.collect{it.getTasksByName("clean", false)})
-
-build.dependsOn(subprojects.collect{it.getTasksByName("build", false)})
 
 jar.enabled = false
 sourcesJar.enabled = false

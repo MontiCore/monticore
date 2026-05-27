@@ -20,7 +20,7 @@ public class ${ast.getName()}ParserInfo {
   <#if states?size == 0>
   = Collections.emptySet();
   <#else>
-  = new HashSet<>(Arrays.asList(
+  = new LinkedHashSet<>(Arrays.asList(
     <#list states as state>
     ${state?c}<#if state?has_next>,</#if>
     </#list>
@@ -36,7 +36,7 @@ public class ${ast.getName()}ParserInfo {
   <#if states?size == 0>
     = Collections.emptySet();
   <#else>
-    = new HashSet<>(Arrays.asList(
+    = new LinkedHashSet<>(Arrays.asList(
     <#list states as state>
       ${state?c}<#if state?has_next>,</#if>
     </#list>
@@ -51,7 +51,7 @@ public class ${ast.getName()}ParserInfo {
   <#if nameDefiningStates?size == 0>
     = Collections.emptySet();
   <#else>
-    = new HashSet<>(Arrays.asList(
+    = new LinkedHashSet<>(Arrays.asList(
     <#list nameDefiningStates as state>
       ${state?c}<#if state?has_next>,</#if>
     </#list>

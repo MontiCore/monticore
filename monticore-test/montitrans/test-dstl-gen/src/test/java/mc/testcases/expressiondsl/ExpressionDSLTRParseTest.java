@@ -7,23 +7,24 @@ import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.literals.mccommonliterals._ast.ASTStringLiteral;
 import de.monticore.tf.tfcommons._ast.ASTAssign;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import mc.testcases.tr.expressiondsltr.ExpressionDSLTRMill;
 import mc.testcases.tr.expressiondsltr._parser.ExpressionDSLTRParser;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test for literal support in left recursive grammars (aka expressions)
  */
 public class ExpressionDSLTRParseTest {
-  @Before
+  @BeforeEach
   public void beforeEach() {
-    Log.init();
+    LogStub.init();
     Log.enableFailQuick(false);
     ExpressionDSLTRMill.init();
     Log.clearFindings();
@@ -57,16 +58,16 @@ public class ExpressionDSLTRParseTest {
   @Test
   public void testAssigns() throws IOException {
     ASTAssign ast = test("$exp1 = $exp2 ;", ExpressionDSLTRParser::parse_StringAssign);
-    Assert.assertEquals(ASTNameExpression.class.getName(), ast.getValue().getClass().getName());
+    assertEquals(ASTNameExpression.class.getName(), ast.getValue().getClass().getName());
     ast = test("$exp1 = \"string\" ;", ExpressionDSLTRParser::parse_StringAssign);
-    Assert.assertEquals(ASTLiteralExpression.class.getName(), ast.getValue().getClass().getName());
-    Assert.assertEquals(ASTStringLiteral.class.getName(), ((ASTLiteralExpression)ast.getValue()).getLiteral().getClass().getName());
-    Assert.assertEquals("string", ((ASTStringLiteral)((ASTLiteralExpression)ast.getValue()).getLiteral()).getValue());
+    assertEquals(ASTLiteralExpression.class.getName(), ast.getValue().getClass().getName());
+    assertEquals(ASTStringLiteral.class.getName(), ((ASTLiteralExpression)ast.getValue()).getLiteral().getClass().getName());
+    assertEquals("string", ((ASTStringLiteral)((ASTLiteralExpression)ast.getValue()).getLiteral()).getValue());
     ast = test("$exp1 = $exp1 + \"string\" ;", ExpressionDSLTRParser::parse_StringAssign);
-    Assert.assertEquals(ASTPlusExpression.class.getName(), ast.getValue().getClass().getName());
-    Assert.assertEquals(ASTNameExpression.class.getName(), ((ASTPlusExpression)ast.getValue()).getLeft().getClass().getName());
-    Assert.assertEquals(ASTLiteralExpression.class.getName(), ((ASTPlusExpression)ast.getValue()).getRight().getClass().getName());
-    Assert.assertEquals("string", ((ASTStringLiteral)((ASTLiteralExpression)((ASTPlusExpression)ast.getValue()).getRight()).getLiteral()).getValue());
+    assertEquals(ASTPlusExpression.class.getName(), ast.getValue().getClass().getName());
+    assertEquals(ASTNameExpression.class.getName(), ((ASTPlusExpression)ast.getValue()).getLeft().getClass().getName());
+    assertEquals(ASTLiteralExpression.class.getName(), ((ASTPlusExpression)ast.getValue()).getRight().getClass().getName());
+    assertEquals("string", ((ASTStringLiteral)((ASTLiteralExpression)((ASTPlusExpression)ast.getValue()).getRight()).getLiteral()).getValue());
   }
 
   @Test
@@ -81,8 +82,8 @@ public class ExpressionDSLTRParseTest {
   protected <A>  A test(String exp, ParserFunction<A> parserFunction) throws IOException {
     ExpressionDSLTRParser parser = ExpressionDSLTRMill.parser();
     Optional<A> typeOptional = parserFunction.parse(parser, exp);
-    Assert.assertFalse("Parser error while parsing: " + exp, parser.hasErrors());
-    Assert.assertTrue("Failed to parse: " + exp, typeOptional.isPresent());
+    assertFalse(parser.hasErrors(), "Parser error while parsing: " + exp);
+    assertTrue(typeOptional.isPresent(), "Failed to parse: " + exp);
     return typeOptional.get();
   }
 

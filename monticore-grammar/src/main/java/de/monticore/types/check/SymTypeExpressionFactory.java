@@ -37,9 +37,10 @@ public class SymTypeExpressionFactory {
 
   /**
    * createTypeVariable vor Variables
-   * @deprecated -> create a symbol and use it to create a SymTypeVariable
+   * @deprecated create a symbol and use it to create a SymTypeVariable
+   *   {@link #createTypeVariable(TypeVarSymbol)}
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public static SymTypeVariable createTypeVariable(String name, IBasicSymbolsScope scope) {
     TypeVarSymbol typeSymbol = new TypeVarSymbol(name);
     typeSymbol.setEnclosingScope(scope);
@@ -50,7 +51,10 @@ public class SymTypeExpressionFactory {
     return new SymTypeVariable(typeVarSymbol);
   }
 
-  @Deprecated
+  /**
+   * @deprecated ALWAYS use TypeVarSymbols to create TypeVariables
+   */
+  @Deprecated(forRemoval = true)
   public static SymTypeVariable createTypeVariable(TypeSymbol typeSymbol) {
     return new SymTypeVariable(typeSymbol);
   }
@@ -131,9 +135,27 @@ public class SymTypeExpressionFactory {
   }
 
   /**
-   * for ObjectTypes, as e.g. "Person"
+   * @deprecated did hide the usage of surrogate, and leads to questionable code
+   * consider using
+   * {@link de.monticore.types3.util.WithinScopeBasicSymbolsResolver#resolveType(IBasicSymbolsScope, String)},
+   * of creating a Surrogate explicitly (only if required)
    */
+  @Deprecated(forRemoval = true)
   public static SymTypeOfObject createTypeObject(String name, IBasicSymbolsScope enclosingScope) {
+    return createTypeObjectViaSurrogate(name, enclosingScope);
+  }
+
+  /**
+   * Warn: most of the time, you don't want this, as Surrogates should be avoided
+   * creates a TypeSymbolSurrogate
+   * and a SymTypeOfObject based on the surrogate
+   * @deprecated most current usages are wrong and have to be changed in the future!
+   * Currently considered to be removed,
+   * unless this functionality is required often enough
+   * (alternative: explicitly create a Surrogate and call {@link #createTypeObject(TypeSymbol)})
+   */
+  @Deprecated
+  public static SymTypeOfObject createTypeObjectViaSurrogate(String name, IBasicSymbolsScope enclosingScope) {
     TypeSymbol typeSymbol = new TypeSymbolSurrogate(name);
     typeSymbol.setEnclosingScope(enclosingScope);
     return new SymTypeOfObject(typeSymbol);
@@ -168,14 +190,14 @@ public class SymTypeExpressionFactory {
 
   /**
    * creates an array-Type Expression
-   * @deprecated arrays do not have an type symbol
    * @param typeSymbol
    * @param dim        the dimension of the array
    * @param argument   the argument type (of the elements)
    * @return
    * @deprecated arrays do not have a type symbol
+   * use {@link #createTypeArray(SymTypeExpression, int)}
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public static SymTypeArray createTypeArray(TypeSymbol typeSymbol, int dim,
                                              SymTypeExpression argument) {
     return new SymTypeArray(typeSymbol, dim, argument);
@@ -183,8 +205,9 @@ public class SymTypeExpressionFactory {
 
   /**
    * @deprecated arrays do not have a name
+   * use {@link #createTypeArray(SymTypeExpression, int)}
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public static SymTypeArray createTypeArray(String name, IBasicSymbolsScope typeSymbolsScope,
                                              int dim, SymTypeExpression argument) {
     TypeSymbol typeSymbol = new TypeSymbolSurrogate(name);
@@ -196,6 +219,15 @@ public class SymTypeExpressionFactory {
     return new SymTypeArray(argument, dim);
   }
 
+  /**
+   * @deprecated misused all the time, bad name;
+   * More often than not, one does not create a SymTypeExpression
+   * based solely on a symbol, consider either using
+   * {@link de.monticore.types3.TypeCheck3#symTypeFromAST(de.monticore.types.mcbasictypes._ast.ASTMCType)},
+   * {@link de.monticore.types3.util.WithinScopeBasicSymbolsResolver#resolveType(IBasicSymbolsScope, String)},
+   * or any other method in this class.
+   */
+  @Deprecated(forRemoval = true)
   public static SymTypeExpression createTypeExpression(TypeSymbol typeSymbol) {
     SymTypeExpression o;
     if(PRIMITIVE_LIST.contains(typeSymbol.getName())){
@@ -207,7 +239,7 @@ public class SymTypeExpressionFactory {
     } else if (typeSymbol.getTypeParameterList().isEmpty()) {
       o = createTypeObject(typeSymbol);
     } else {
-      o = createGenerics(typeSymbol);
+      o = createGenericsDeclaredType(typeSymbol);
     }
     return o;
   }
@@ -222,7 +254,7 @@ public class SymTypeExpressionFactory {
    * @deprecated use TypeCheck to get SymTypeExpressions from MCTypes,
    *     this method is rather incorrect/incomplete
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public static SymTypeExpression createTypeExpression(String name, IBasicSymbolsScope scope) {
     SymTypeExpression o;
     if ("void".equals(name)) {
@@ -238,11 +270,12 @@ public class SymTypeExpressionFactory {
     } else if (scope!=null && scope.resolveTypeVar(name).isPresent()){
       o = createTypeVariable(name, scope);
     }else {
-      o = createTypeObject(name, scope);
+      o = createTypeObjectViaSurrogate(name, scope);
     }
     return o;
   }
 
+  @Deprecated(forRemoval = true)
   protected static SymTypeExpression createArrayFromString(String type, IBasicSymbolsScope scope){
     //berechne Typen vom Array per createTypeExpression, berechne Dimension von Array durch Anzahl der Klammerpaare am Ende
     int countDim = 0;
@@ -262,6 +295,7 @@ public class SymTypeExpressionFactory {
     return createTypeArray(typeWithoutGenericsAndBraces, scope, countDim, createTypeExpression(typeWithoutBraces, scope));
   }
 
+  @Deprecated(forRemoval = true)
   protected static SymTypeExpression createGenericsFromString(String type, IBasicSymbolsScope scope) {
     int start = type.indexOf("<");
     if (start == -1) {
@@ -278,6 +312,7 @@ public class SymTypeExpressionFactory {
    * If that method for example received {@code Map<String, List<String>>} this Method should get {@code [String, List<String>]} as parameter
    * @param inBrackets list of generics nested one level
    */
+  @Deprecated(forRemoval = true)
   protected static List<SymTypeExpression> getSubGenerics(List<String> inBrackets, IBasicSymbolsScope scope){
     return inBrackets.stream()
         .map(String::trim)
@@ -287,10 +322,11 @@ public class SymTypeExpressionFactory {
 
   /**
    * splits the type-string along commas, but only on such that are on the first depth of generics
-   * @param type type-string, like {@code Map<Double, HashMap<String, Integer>>}
+   * @param type type-string, like {@code Map<Double, LinkedHashMap<String, Integer>>}
    * @param start first occurrence of an opening generic
-   * @return all first sub-generics as a list, like {@code [Double; HashMap<String, Integer>]}
+   * @return all first sub-generics as a list, like {@code [Double; LinkedHashMap<String, Integer>]}
    */
+  @Deprecated(forRemoval = true)
   protected static List<String> iterateBrackets(String type, int start){
     List<String> list = new ArrayList<>();
     int depth = 0;
@@ -310,19 +346,28 @@ public class SymTypeExpressionFactory {
     return list;
   }
 
-
-
   /**
-   * createGenerics: for a generic Type
+   * Hint: this is usually(!) not what you want,
+   * s.a. {@link #createGenerics(TypeSymbol, List)}
    *
-   * @return
+   * @return the declared type, e.g., {@code Map<K,V>},
+   * with K and V being (bound) TypeVariables
    */
-  public static SymTypeOfGenerics createGenerics(TypeSymbol typeSymbol) {
+  public static SymTypeOfGenerics createGenericsDeclaredType(TypeSymbol typeSymbol) {
     List<SymTypeExpression> parameters =
         typeSymbol.getTypeParameterList().stream()
-            .map(tp -> createFromSymbol(tp))
+            .map(tp -> createTypeVariable(tp))
             .collect(Collectors.toList());
     return createGenerics(typeSymbol, parameters);
+  }
+
+  /**
+   * @deprecated bad name, tends to be misused,
+   * s.a. {@link #createGenericsDeclaredType(TypeSymbol)}
+   */
+  @Deprecated(forRemoval = true)
+  public static SymTypeOfGenerics createGenerics(TypeSymbol typeSymbol) {
+    return createGenericsDeclaredType(typeSymbol);
   }
 
   public static SymTypeOfGenerics createGenerics(TypeSymbol typeSymbol,
@@ -337,11 +382,17 @@ public class SymTypeExpressionFactory {
 
   /**
    * createGenerics: is created using the enclosing Scope to ask for the appropriate symbol.
+   * @deprecated hides surrogate usage, see other `createGenerics`-methods
    */
+  @Deprecated(forRemoval = true)
   public static SymTypeOfGenerics createGenerics(String name, IBasicSymbolsScope enclosingScope) {
     return createGenerics(name, enclosingScope, Lists.newArrayList());
   }
 
+  /**
+   * @deprecated hides surrogate usage, see other `createGenerics`-methods
+   */
+  @Deprecated(forRemoval = true)
   public static SymTypeOfGenerics createGenerics(String name, IBasicSymbolsScope enclosingScope,
                                                  List<SymTypeExpression> arguments) {
     TypeSymbol typeSymbol = new TypeSymbolSurrogate(name);
@@ -349,22 +400,33 @@ public class SymTypeExpressionFactory {
     return createGenerics(typeSymbol, arguments);
   }
 
+  /**
+   * @deprecated hides surrogate usage, see other `createGenerics`-methods
+   */
+  @Deprecated(forRemoval = true)
   public static SymTypeOfGenerics createGenerics(String name, IBasicSymbolsScope enclosingScope,
                                                  SymTypeExpression... arguments) {
     return createGenerics(name, enclosingScope, Arrays.asList(arguments));
   }
 
+  /**
+   * Warning: usually not what you want, except when resolving,
+   * consider using
+   * {@link de.monticore.types3.util.WithinScopeBasicSymbolsResolver#resolveType(IBasicSymbolsScope, String)},
+   * {@link de.monticore.types3.util.WithinTypeBasicSymbolsResolver#resolveType(SymTypeExpression, String, de.monticore.symboltable.modifiers.AccessModifier, java.util.function.Predicate)},
+   * or other methods of this class
+   * whenever appropriate
+   */
   public static SymTypeExpression createFromSymbol(TypeSymbol typeSymbol) {
-    IBasicSymbolsTypeDispatcher typeDispatcher =
-        BasicSymbolsMill.typeDispatcher();
-    if(typeDispatcher.isBasicSymbolsTypeVar(typeSymbol)) {
+    // TODO: use TypeDispatcher as soon as it is fixed
+    if(typeSymbol instanceof TypeVarSymbol) {
       return createTypeVariable((TypeVarSymbol) typeSymbol);
     }
     if(typeSymbol.getSpannedScope().getLocalTypeVarSymbols().isEmpty()) {
       return createTypeObject(typeSymbol);
     }
     else {
-      return createGenerics(typeSymbol);
+      return createGenericsDeclaredType(typeSymbol);
     }
   }
 

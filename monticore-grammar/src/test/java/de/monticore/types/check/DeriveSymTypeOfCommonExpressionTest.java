@@ -22,7 +22,6 @@ import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
 import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.se_rwth.commons.logging.Log;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -30,8 +29,8 @@ import java.io.IOException;
 import java.util.Optional;
 
 import static de.monticore.types.check.DefsTypeBasic.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTest {
 
@@ -251,14 +250,14 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     OOTypeSymbol student = OOSymbolsMill.oOTypeSymbolBuilder()
         .setName("Student")
         .setSpannedScope(OOSymbolsMill.scope())
-        .setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Person",scope)))
+        .setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObjectViaSurrogate("Person",scope)))
         .setEnclosingScope(scope)
         .build();
     add2scope(scope, student);
     OOTypeSymbol firstsemesterstudent = OOSymbolsMill.oOTypeSymbolBuilder()
         .setName("FirstSemesterStudent")
         .setSpannedScope(OOSymbolsMill.scope())
-        .setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student",scope)))
+        .setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObjectViaSurrogate("Student",scope)))
         .setEnclosingScope(scope)
         .build();
     add2scope(scope, firstsemesterstudent);
@@ -268,12 +267,12 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     add2scope(scope, field("byteF", _byteSymType));
     add2scope(scope, field("shortF", _shortSymType));
     add2scope(scope, field("longF", _longSymType));
-    add2scope(scope, field("person1", SymTypeExpressionFactory.createTypeObject("Person", scope)));
-    add2scope(scope, field("person2", SymTypeExpressionFactory.createTypeObject("Person", scope)));
-    add2scope(scope, field("student1", SymTypeExpressionFactory.createTypeObject("Student", scope)));
-    add2scope(scope, field("student2", SymTypeExpressionFactory.createTypeObject("Student", scope)));
+    add2scope(scope, field("person1", SymTypeExpressionFactory.createTypeObjectViaSurrogate("Person", scope)));
+    add2scope(scope, field("person2", SymTypeExpressionFactory.createTypeObjectViaSurrogate("Person", scope)));
+    add2scope(scope, field("student1", SymTypeExpressionFactory.createTypeObjectViaSurrogate("Student", scope)));
+    add2scope(scope, field("student2", SymTypeExpressionFactory.createTypeObjectViaSurrogate("Student", scope)));
     add2scope(scope, field("firstsemester", SymTypeExpressionFactory.
-        createTypeObject("FirstSemesterStudent", scope)));
+        createTypeObjectViaSurrogate("FirstSemesterStudent", scope)));
     add2scope(scope, method("isInt", _booleanSymType));
     add2scope(scope, add(method("isInt", _booleanSymType), field("maxLength", _intSymType)));
 
@@ -462,7 +461,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
 
     Log.getFindings().clear();
     getTypeCalculator().typeOf(astex);
-    Assertions.assertEquals("0xA0165", getFirstErrorCode());
+    assertEquals("0xA0165", getFirstErrorCode());
   }
 
   /**
@@ -539,19 +538,19 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     OOTypeSymbol student = OOSymbolsMill.oOTypeSymbolBuilder()
         .setName("Student")
         .setSpannedScope(OOSymbolsMill.scope())
-        .setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Person",scope)))
+        .setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObjectViaSurrogate("Person",scope)))
         .setEnclosingScope(scope)
         .build();
     OOTypeSymbol firstsemesterstudent = OOSymbolsMill.oOTypeSymbolBuilder()
         .setName("FirstSemesterStudent")
         .setSpannedScope(OOSymbolsMill.scope())
-        .setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student",scope)))
+        .setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObjectViaSurrogate("Student",scope)))
         .setEnclosingScope(scope)
         .build();
     OOTypeSymbol selfReflectiveStudent = OOSymbolsMill.oOTypeSymbolBuilder()
       .setName("SelfReflectiveStudent")
       .setSpannedScope(OOSymbolsMill.scope())
-      .setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student",scope)))
+      .setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObjectViaSurrogate("Student",scope)))
       .setEnclosingScope(scope)
       .build();
     add2scope(artifactScope2, person);
@@ -583,15 +582,15 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
 
     add2scope(scope, field("foo", _intSymType));
     add2scope(scope, field("bar2", _booleanSymType));
-    add2scope(scope, field("person1", SymTypeExpressionFactory.createTypeObject("Person", scope)));
-    add2scope(scope, field("person2", SymTypeExpressionFactory.createTypeObject("Person", scope)));
-    add2scope(scope, field("student1", SymTypeExpressionFactory.createTypeObject("Student", scope)));
-    add2scope(scope, field("student2", SymTypeExpressionFactory.createTypeObject("Student", scope)));
+    add2scope(scope, field("person1", SymTypeExpressionFactory.createTypeObjectViaSurrogate("Person", scope)));
+    add2scope(scope, field("person2", SymTypeExpressionFactory.createTypeObjectViaSurrogate("Person", scope)));
+    add2scope(scope, field("student1", SymTypeExpressionFactory.createTypeObjectViaSurrogate("Student", scope)));
+    add2scope(scope, field("student2", SymTypeExpressionFactory.createTypeObjectViaSurrogate("Student", scope)));
     add2scope(scope, field("firstsemester",
-        SymTypeExpressionFactory.createTypeObject("FirstSemesterStudent", scope))
+        SymTypeExpressionFactory.createTypeObjectViaSurrogate("FirstSemesterStudent", scope))
     );
     add2scope(scope, field("selfReflectiveStudent",
-      SymTypeExpressionFactory.createTypeObject("SelfReflectiveStudent", scope))
+      SymTypeExpressionFactory.createTypeObjectViaSurrogate("SelfReflectiveStudent", scope))
     );
     MethodSymbol ms2 = method("isInt", _booleanSymType);
     add2scope(scope, ms2);
@@ -819,7 +818,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     superclass.addMethodSymbol(add);
     superclass.addFieldSymbol(field);
     add2scope(scope, superclass);
-    SymTypeExpression supclass = SymTypeExpressionFactory.createTypeObject("AList", scope);
+    SymTypeExpression supclass = SymTypeExpressionFactory.createTypeObjectViaSurrogate("AList", scope);
 
     //sub
     OOTypeSymbol subclass = OOSymbolsMill.oOTypeSymbolBuilder()
@@ -830,7 +829,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
         .build();
     add2scope(scope, subclass);
 
-    SymTypeExpression sub = SymTypeExpressionFactory.createTypeObject("MyList", scope);
+    SymTypeExpression sub = SymTypeExpressionFactory.createTypeObjectViaSurrogate("MyList", scope);
     FieldSymbol myList = field("myList", sub);
     add2scope(scope, myList);
 
@@ -842,7 +841,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
         .setEnclosingScope(scope)
         .build();
     add2scope(scope, subsubclass);
-    SymTypeExpression subsub = SymTypeExpressionFactory.createTypeObject("MySubList", scope);
+    SymTypeExpression subsub = SymTypeExpressionFactory.createTypeObjectViaSurrogate("MySubList", scope);
     FieldSymbol mySubList = field("mySubList", subsub);
     add2scope(scope, mySubList);
 
@@ -1183,7 +1182,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
         .setEnclosingScope(scope)
         .build();
     add2scope(scope, notgeneric);
-    SymTypeExpression notgenericType = SymTypeExpressionFactory.createTypeObject("NotGen", scope);
+    SymTypeExpression notgenericType = SymTypeExpressionFactory.createTypeObjectViaSurrogate("NotGen", scope);
     FieldSymbol ng = field("notGen", notgenericType);
     add2scope(scope, ng);
 
@@ -1349,7 +1348,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     superclass.addMethodSymbol(add);
     superclass.addFieldSymbol(field);
     add2scope(scope, superclass);
-    SymTypeExpression supclass = SymTypeExpressionFactory.createTypeObject("AList", scope);
+    SymTypeExpression supclass = SymTypeExpressionFactory.createTypeObjectViaSurrogate("AList", scope);
 
     //sub
     OOTypeSymbol subclass = OOSymbolsMill.oOTypeSymbolBuilder()
@@ -1360,7 +1359,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
         .build();
     add2scope(scope, subclass);
 
-    SymTypeExpression sub = SymTypeExpressionFactory.createTypeObject("MyList", scope);
+    SymTypeExpression sub = SymTypeExpressionFactory.createTypeObjectViaSurrogate("MyList", scope);
     FieldSymbol myList = field("myList", sub);
     add2scope(scope, myList);
 
@@ -1383,7 +1382,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     subsubclass.getSpannedScope().setEnclosingScope(scope);
     myAdd.getSpannedScope().setEnclosingScope(subsubclass.getSpannedScope());
     add2scope(scope, subsubclass);
-    SymTypeExpression subsub = SymTypeExpressionFactory.createTypeObject("MySubList", scope);
+    SymTypeExpression subsub = SymTypeExpressionFactory.createTypeObjectViaSurrogate("MySubList", scope);
     FieldSymbol mySubList = field("mySubList", subsub);
     add2scope(scope, mySubList);
 
@@ -1449,7 +1448,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     //A has static method test, static field field, static type D
     //B has normal method test, normal field field, normal type D
     //type C extends A and has no method, field or type
-    SymTypeExpression aSymType = SymTypeExpressionFactory.createTypeObject("A",scope);
+    SymTypeExpression aSymType = SymTypeExpressionFactory.createTypeObjectViaSurrogate("A",scope);
     OOTypeSymbol c = OOSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(OOSymbolsMill.scope())
         .setName("C")
@@ -1550,7 +1549,7 @@ public class DeriveSymTypeOfCommonExpressionTest extends DeriveSymTypeAbstractTe
     init_static_example();
 
     Optional<ASTExpression> sType = p.parse_StringExpression("C.D");
-    Assertions.assertTrue(sType.isPresent());
+    assertTrue(sType.isPresent());
     //TODO ND: complete when inner types are added
   }
 

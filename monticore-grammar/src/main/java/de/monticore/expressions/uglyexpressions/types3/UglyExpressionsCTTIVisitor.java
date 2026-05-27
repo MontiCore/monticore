@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions.uglyexpressions.types3;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
@@ -43,6 +44,7 @@ public class UglyExpressionsCTTIVisitor
       getType4Ast().setTypeOfExpression(expr, createObscureType());
     }
     else {
+      getInferenceContext4Ast().setTargetTypeOfExpression(expr.getExpression(), typeResult);
       visit(expr);
       traverse(expr);
       endVisit(expr);

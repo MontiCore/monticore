@@ -12,28 +12,25 @@ import mc.grammar.ittestgrammar_withconcepts._parser.ItTestGrammar_WithConceptsP
 import org.antlr.v4.runtime.RecognitionException;
 import org.eclipse.emf.compare.diff.metamodel.DiffElement;
 import org.eclipse.emf.ecore.EObject;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class GrammarSerDeserTest {
 
-  @BeforeClass
+  @BeforeAll
   public static void setup() {
     LogStub.init();
     Log.enableFailQuick(false);
   }
 
-  @Ignore // TODO
+  @Disabled // TODO
   @Test
   public void testSerializeDesirializeASTMCGrammarInstance() {
     try {
@@ -47,7 +44,7 @@ public class GrammarSerDeserTest {
       EObject deserAutomatonGrammar = AST2ModelFiles.get().deserializeASTInstance("ASTMCGrammar_Automaton",
           ItTestGrammarPackage.eINSTANCE);
       assertNotNull(deserAutomatonGrammar);
-      assertTrue(deserAutomatonGrammar instanceof ASTMCGrammar);
+      assertInstanceOf(ASTMCGrammar.class, deserAutomatonGrammar);
 
       assertTrue(automatonGrammar.get().deepEquals(deserAutomatonGrammar));
       assertEquals("Automaton", ((ASTMCGrammar) deserAutomatonGrammar).getName());
@@ -56,10 +53,7 @@ public class GrammarSerDeserTest {
           (ASTMCGrammar) deserAutomatonGrammar);
       assertTrue(diffs.isEmpty());
     }
-    catch (RecognitionException | IOException e) {
-      fail("Should not reach this, but: " + e);
-    }
-    catch (InterruptedException e) {
+    catch (RecognitionException | IOException | InterruptedException e) {
       fail("Should not reach this, but: " + e);
     }
   }

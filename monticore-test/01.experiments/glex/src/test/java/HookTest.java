@@ -4,21 +4,23 @@ import de.monticore.ast.ASTNode;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.*;
+import de.monticore.runtime.junit.MCAssertions;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
+import hierautomata.HierAutomataMill;
 import hierautomata._ast.ASTStateMachine;
 import hierautomata._parser.HierAutomataParser;
 import org.antlr.v4.runtime.RecognitionException;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class HookTest {
   
@@ -31,8 +33,9 @@ public class HookTest {
 
   private static final String REPLACE = " ";
   
-  @BeforeClass
-  public static void init() throws IOException{
+  @BeforeAll
+  public static void init() throws IOException {
+    HierAutomataMill.init();
     // LogStub.initPlusLog();  // for manual testing purpose only
     HierAutomataParser parser = new HierAutomataParser() ;
     String model = "src/test/resources/example/HierarchyPingPong.aut";
@@ -44,15 +47,16 @@ public class HookTest {
     ast = optStateMachine.get();
   }
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
   }
   
-  @Before
+  @BeforeEach
   public void setUp() throws RecognitionException {
     Log.getFindings().clear();
+    HierAutomataMill.init();
     GeneratorSetup s = new GeneratorSetup();
     s.setTracing(false);
     glex = s.getGlex();
@@ -71,7 +75,7 @@ public class HookTest {
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
     assertEquals("TA ", res.toString().replaceAll(REGEXP, REPLACE));
-    assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
 
 
@@ -86,8 +90,8 @@ public class HookTest {
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
     assertEquals(" A B ", res.toString().replaceAll(REGEXP, REPLACE));
-    assertTrue(Log.getFindings().isEmpty());
-    assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
+    MCAssertions.assertNoFindings();
   }
 
 
@@ -103,7 +107,7 @@ public class HookTest {
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
     assertEquals(" A St B ", res.toString().replaceAll(REGEXP, REPLACE));
-    assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
 
 
@@ -120,7 +124,7 @@ public class HookTest {
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
     assertEquals(" A StA StB B ", res.toString().replaceAll(REGEXP, REPLACE));
-    assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
 
 
@@ -136,7 +140,7 @@ public class HookTest {
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
     assertEquals(" A St B ", res.toString().replaceAll(REGEXP, REPLACE));
-    assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
 
 
@@ -152,7 +156,7 @@ public class HookTest {
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
     assertEquals(" A 38 B ", res.toString().replaceAll(REGEXP, REPLACE));
-    assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
 
 
@@ -168,7 +172,7 @@ public class HookTest {
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
     assertEquals(" A PingPong B ", res.toString().replaceAll(REGEXP, REPLACE));
-    assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
 
 
@@ -184,7 +188,7 @@ public class HookTest {
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
     assertEquals(" A R PingPong T B ", res.toString().replaceAll(REGEXP, REPLACE));
-    assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
 
 
@@ -201,7 +205,7 @@ public class HookTest {
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
     assertEquals(" A R PingPong tpl4/Hook1.ftl T B ", res.toString().replaceAll(REGEXP, REPLACE));
-    assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
 
 
@@ -229,7 +233,7 @@ public class HookTest {
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
     assertEquals(" A C1 C2 B ", res.toString().replaceAll(REGEXP, REPLACE));
-    assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
 
 
@@ -257,7 +261,7 @@ public class HookTest {
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
     assertEquals(" A PingPong1 PingPong2 B ", res.toString().replaceAll(REGEXP, REPLACE));
-    assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
 
 
@@ -293,7 +297,7 @@ public class HookTest {
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
     assertEquals(" PingPong:3318 PingPong:3323 ", res.toString().replaceAll(REGEXP, REPLACE));
-    assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
   
   // --------------------------------------------------------------------
@@ -310,7 +314,7 @@ public class HookTest {
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
     assertEquals(" PingPong:18 ", res.toString().replaceAll(REGEXP, REPLACE));
-    assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
 
   // --------------------------------------------------------------------
@@ -324,7 +328,7 @@ public class HookTest {
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
     assertEquals("A1 B1 C1 D1 ", res.toString().replaceAll(REGEXP, REPLACE));
-    assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
 
 
@@ -340,7 +344,7 @@ public class HookTest {
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
     assertEquals("A1 F1 B1 C1 D1 ", res.toString().replaceAll(REGEXP, REPLACE));
-    assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
 
     // Only three variants of template names work
@@ -360,7 +364,7 @@ public class HookTest {
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
     assertEquals("A1 F1 B1 C1 D1 ", res.toString().replaceAll(REGEXP, REPLACE));
-    assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
 
 
@@ -376,7 +380,7 @@ public class HookTest {
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
     assertEquals("A1 F1 B1 C1 D1 ", res.toString().replaceAll(REGEXP, REPLACE));
-    assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
 
 
@@ -392,7 +396,7 @@ public class HookTest {
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
     assertEquals("A1 E1 ", res.toString().replaceAll(REGEXP, REPLACE));
-    assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
 
   // --------------------------------------------------------------------
@@ -408,7 +412,7 @@ public class HookTest {
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
     assertEquals("A1 F1 ", res.toString().replaceAll(REGEXP, REPLACE));
-    assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
 
   // --------------------------------------------------------------------
@@ -428,7 +432,7 @@ public class HookTest {
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
     assertEquals("A1 G1 F1 G1 ", res.toString().replaceAll(REGEXP, REPLACE));
-    assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
 
   // --------------------------------------------------------------------
@@ -447,7 +451,7 @@ public class HookTest {
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
     assertEquals("A1 E1 F1 E1 ", res.toString().replaceAll(REGEXP, REPLACE));
-    assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
 
   // --------------------------------------------------------------------
@@ -466,7 +470,7 @@ public class HookTest {
     // Stringvergleich: --------------------
     assertEquals("[]", Log.getFindings().toString());
     assertEquals(" FH1:FH2:18:FH2 ", res.toString().replaceAll(REGEXP, REPLACE));
-    assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
   
   // --------------------------------------------------------------------
@@ -485,7 +489,7 @@ public class HookTest {
     // System.out.println(res.toString());
     assertEquals("[]", Log.getFindings().toString());
     assertEquals(" HookPoint filled " + "Hook empty ", res.toString().replaceAll(REGEXP, REPLACE));
-    assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
 
   // --------------------------------------------------------------------
@@ -502,7 +506,7 @@ public class HookTest {
     assertEquals(" // Content of (c) template"
     		 + " // Content of (c) template"
 		 + " // Developed by SE RWTH ", res.toString().replaceAll(REGEXP, REPLACE));
-    assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
 
 
@@ -516,7 +520,7 @@ public class HookTest {
     } catch (Exception e) {
       assertNotNull(e);
     }
-    assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
 
   // --------------------------------------------------------------------
@@ -536,7 +540,7 @@ public class HookTest {
     assertTrue(res.contains("HookPoint1 filled"));
     assertTrue(res.contains("HookPoint2 filled:p2a, p2a"));
     assertTrue(res.contains("HookPoint3 filled:p3"));
-    assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
 
 }

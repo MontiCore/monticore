@@ -6,21 +6,18 @@ import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import mc.testcases.tr.genericdsltr._ast.ASTNewClassProd;
 import mc.testcases.tr.genericdsltr._parser.GenericDSLTRParser;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TFLanguageOverrideTest {
 
-    @Before
+    @BeforeEach
     public void disableFailQuick() {
         LogStub.init();
         Log.enableFailQuick(false);

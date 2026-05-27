@@ -4,21 +4,22 @@ plugins {
 }
 
 dependencies {
-  implementation 'de.se_rwth.commons:se-commons-utilities:' + se_commons_version
+  implementation "de.se_rwth.commons:se-commons-utilities:$se_commons_version"
   implementation project(':monticore-runtime')
-  implementation 'org.eclipse.emf:org.eclipse.emf.ecore.xmi:' + ecore_version
-  implementation 'org.eclipse.emf:org.eclipse.emf.compare.match:' + emf_compare_version
-  implementation 'org.eclipse.emf:org.eclipse.emf.compare.diff:' + emf_compare_version
+  implementation "org.eclipse.emf:org.eclipse.emf.ecore.xmi:$ecore_version"
+  implementation "org.eclipse.emf:org.eclipse.emf.compare.match:$emf_compare_version"
+  implementation "org.eclipse.emf:org.eclipse.emf.compare.diff:$emf_compare_version"
+
   testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
-  testImplementation "org.junit.vintage:junit-vintage-engine:$junit_version"
-  testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
-  testImplementation 'org.apache.groovy:groovy:4.0.2'
+  testImplementation "org.junit.jupiter:junit-jupiter-engine:$junit_version"
+  testRuntimeOnly "org.junit.platform:junit-platform-launcher:$junit_version"
+  testImplementation "org.apache.groovy:groovy:4.0.2"
 }
 
 description = 'MontiCore: EMF Runtime Environment'
 
 task testsJar(type: Jar) {
-  classifier = 'tests'
+  archiveClassifier = 'tests'
   from(sourceSets.test.output)
 }
 

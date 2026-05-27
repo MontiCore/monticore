@@ -314,4 +314,26 @@ grammar TestPrettyPrinters extends de.monticore.literals.MCCommonLiterals  {
                    "}" | ";")
                 ) ;
 
+    // Test a mixture of alt ordering and optional&required
+    OptOrdering0 = A | ( (A | B)    ) ;
+    OptOrdering1 = A | ( (A | B   )?) ;
+    OptOrdering2 = A | ( (A | B)  C?) ;
+    OptOrdering3 = A | ( (A | B)? C?) ;
+    OptOrdering4 = A | (( A?| B?) C?) ;
+    OptOrdering5 =(A | ( (A | B)  C?));
+    OptOrdering6 =(A | ( (A | B)? C?));
+
+    TFSchema = {noSpace(2)}? "$" Name;
+
+    // real use case of OptOrdering0
+    NestedFromTfIdentifier = a:Name |
+      ("[[" (a:Name | b:TFSchema)? ":-" (newA:Name | newB:TFSchema)? "]]") |
+      "Name" a:Name;
+
+		ExhaustedAlts1 = "a" A* | A*;
+		ExhaustedAlts2 = "a" A  | A*; // first or second alt -> non-trivial as long as no other guards exists
+		ExhaustedAlts3 = "a" A* | A ; // first or second alt -> non-trivial as long as no other guards exists
+		ExhaustedAlts4 = "a" A+ | ("hello" | A+) ;
+		ExhaustedAlts5 = "a" A+ | ("hello" | A ) ;  // first or second alt -> non-trivial as long as no other guards exists
+		ExhaustedAlts6 = ("a" A* | "b" A*)*; // indistinguishable alt (in repeated block)
 }

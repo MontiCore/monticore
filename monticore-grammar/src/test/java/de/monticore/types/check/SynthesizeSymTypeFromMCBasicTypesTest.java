@@ -12,13 +12,12 @@ import de.monticore.types.mcbasictypes._ast.ASTMCVoidType;
 import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SynthesizeSymTypeFromMCBasicTypesTest {
   
@@ -45,7 +44,7 @@ public class SynthesizeSymTypeFromMCBasicTypesTest {
     gs.add(DefsTypeBasic.type("Person"));
 
     CombineExpressionsWithLiteralsSymbols2Json symbols2Json = new CombineExpressionsWithLiteralsSymbols2Json();
-    ICombineExpressionsWithLiteralsArtifactScope as = symbols2Json.load("src/test/resources/de/monticore/types/check/Persondex.cesym");
+    ICombineExpressionsWithLiteralsArtifactScope as = symbols2Json.load("target/resources/test/de/monticore/types/check/Persondex.cesym");
     as.setEnclosingScope(gs);
   }
   
@@ -71,7 +70,7 @@ public class SynthesizeSymTypeFromMCBasicTypesTest {
     String s = "double";
     ASTMCType asttype = parser.parse_StringMCType(s).get();
     asttype.accept(traverser);
-    Assertions.assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
+    assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
   }
   
   @Test
@@ -79,7 +78,7 @@ public class SynthesizeSymTypeFromMCBasicTypesTest {
     String s = "int";
     ASTMCType asttype = parser.parse_StringMCType(s).get();
     asttype.accept(traverser);
-    Assertions.assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
+    assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
   }
   
   @Test
@@ -87,7 +86,7 @@ public class SynthesizeSymTypeFromMCBasicTypesTest {
     String s = "A";
     ASTMCType asttype = parser.parse_StringMCType(s).get();
     asttype.accept(traverser);
-    Assertions.assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
+    assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
   }
   
   @Test
@@ -95,7 +94,7 @@ public class SynthesizeSymTypeFromMCBasicTypesTest {
     String s = "Person";
     ASTMCType asttype = parser.parse_StringMCType(s).get();
     asttype.accept(traverser);
-    Assertions.assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
+    assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
   }
   
   @Test
@@ -103,27 +102,27 @@ public class SynthesizeSymTypeFromMCBasicTypesTest {
     String s = "de.x.Person";
     ASTMCType asttype = parser.parse_StringMCType(s).get();
     asttype.accept(traverser);
-    Assertions.assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
+    assertEquals(s, tc.symTypeFromAST(asttype).printFullName());
   }
   
   @Test
   public void symTypeFromAST_VoidTest() throws IOException {
     ASTMCVoidType v = MCBasicTypesMill.mCVoidTypeBuilder().build();
-    Assertions.assertEquals("void", tc.symTypeFromAST(v).printFullName());
+    assertEquals("void", tc.symTypeFromAST(v).printFullName());
   }
   
   @Test
   public void symTypeFromAST_ReturnTest() throws IOException {
     ASTMCVoidType v = MCBasicTypesMill.mCVoidTypeBuilder().build();
     ASTMCReturnType r = MCBasicTypesMill.mCReturnTypeBuilder().setMCVoidType(v).build();
-    Assertions.assertEquals("void", tc.symTypeFromAST(r).printFullName());
+    assertEquals("void", tc.symTypeFromAST(r).printFullName());
   }
 
   @Test
   public void symTypeFromAST_ReturnTest2() throws IOException {
     // im Prinzip dassselbe via Parser:
     ASTMCReturnType r = parser.parse_StringMCReturnType("void").get();
-    Assertions.assertEquals("void", tc.symTypeFromAST(r).printFullName());
+    assertEquals("void", tc.symTypeFromAST(r).printFullName());
   }
   
   @Test
@@ -132,7 +131,7 @@ public class SynthesizeSymTypeFromMCBasicTypesTest {
     String s = "Person";
     ASTMCReturnType r = parser.parse_StringMCReturnType(s).get();
     r.accept(traverser);
-    Assertions.assertEquals(s, tc.symTypeFromAST(r).printFullName());
+    assertEquals(s, tc.symTypeFromAST(r).printFullName());
   }
   
 }

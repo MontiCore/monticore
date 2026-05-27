@@ -10,7 +10,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Checks if a MC production is a left directly left recursive: e.g. of the form A -> A.*
+ * Checks if a MC production is a left directly left recursive: e.g. of the form {@code A -> A.*}
  *
  */
 public class DirectLeftRecursionDetector {

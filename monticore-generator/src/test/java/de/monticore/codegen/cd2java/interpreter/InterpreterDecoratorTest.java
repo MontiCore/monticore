@@ -12,18 +12,16 @@ import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCMapType;
 import de.se_rwth.commons.logging.Log;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static groovy.test.GroovyTestCase.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class InterpreterDecoratorTest extends DecoratorTestCase {
 
@@ -32,7 +30,7 @@ public class InterpreterDecoratorTest extends DecoratorTestCase {
 
   protected ASTCDClass decoratedClass;
 
-  @Before
+  @BeforeEach
   public void before() {
     originalCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
     VisitorService visitorService = new VisitorService(originalCompilationUnit);
@@ -55,14 +53,14 @@ public class InterpreterDecoratorTest extends DecoratorTestCase {
     assertTrue(constructors.get(0).getCDParameterList().isEmpty());
 
     assertEquals(
-        constructors.get(1).getCDParameterList().size(),
-        1);
+            1,
+            constructors.get(1).getCDParameterList().size());
     assertEquals(
-        constructors.get(1).getCDParameter(0).getName(),
-        "realThis");
+            "realThis",
+            constructors.get(1).getCDParameter(0).getName());
     assertEquals(
-        constructors.get(1).getCDParameter(0).getMCType().printType(),
-        InterpreterConstants.MODELINTERPRETER_FULLNAME);
+            InterpreterConstants.MODELINTERPRETER_FULLNAME,
+            constructors.get(1).getCDParameter(0).getMCType().printType());
   }
 
   @Test
@@ -72,40 +70,40 @@ public class InterpreterDecoratorTest extends DecoratorTestCase {
     assertEquals(1, interfaces.size());
 
     assertEquals(
-        ((ASTMCQualifiedType) interfaces.get(0)).getMCQualifiedName().getQName(),
-        "IAutomatonInterpreter");
+            "IAutomatonInterpreter",
+            ((ASTMCQualifiedType) interfaces.get(0)).getMCQualifiedName().getQName());
   }
 
   @Test
   public void testClassAttributes() {
     List<ASTCDAttribute> attributes = decoratedClass.getCDAttributeList();
 
-    assertEquals(attributes.size(), 3);
+    assertEquals(3, attributes.size());
 
     assertEquals(
-        attributes.get(0).getName(),
-        "lexicalsInterpreter");
+            "lexicalsInterpreter",
+            attributes.get(0).getName());
     assertEquals(
-        attributes.get(0).getMCType().printType(),
-        "de.monticore.codegen.ast.lexicals._visitor.ILexicalsInterpreter");
+            "de.monticore.codegen.ast.lexicals._visitor.ILexicalsInterpreter",
+            attributes.get(0).getMCType().printType());
 
     assertEquals(
-        attributes.get(1).getName(),
-        "realThis");
+            "realThis",
+            attributes.get(1).getName());
     assertEquals(
-        attributes.get(1).getMCType().printType(),
-        InterpreterConstants.MODELINTERPRETER_FULLNAME);
+            InterpreterConstants.MODELINTERPRETER_FULLNAME,
+            attributes.get(1).getMCType().printType());
 
     assertEquals(
-        attributes.get(2).getName(),
-        "contextMap");
-    assertTrue(attributes.get(2).getMCType() instanceof ASTMCMapType);
+            "contextMap",
+            attributes.get(2).getName());
+    assertInstanceOf(ASTMCMapType.class, attributes.get(2).getMCType());
     assertEquals(
-        ((ASTMCMapType) attributes.get(2).getMCType()).getMCTypeArgument(0).printType(),
-        InterpreterConstants.SYMBOL_FULLNAME);
+            InterpreterConstants.SYMBOL_FULLNAME,
+            ((ASTMCMapType) attributes.get(2).getMCType()).getMCTypeArgument(0).printType());
     assertEquals(
-        ((ASTMCMapType) attributes.get(2).getMCType()).getMCTypeArgument(1).printType(),
-        InterpreterConstants.VALUE_FULLNAME);
+            InterpreterConstants.VALUE_FULLNAME,
+            ((ASTMCMapType) attributes.get(2).getMCType()).getMCTypeArgument(1).printType());
   }
 
   @Test
@@ -120,8 +118,8 @@ public class InterpreterDecoratorTest extends DecoratorTestCase {
 
     assertTrue(getMethod.getCDParameterList().isEmpty());
     assertEquals(
-        getMethod.getMCReturnType().printType(),
-        InterpreterConstants.MODELINTERPRETER_FULLNAME);
+            InterpreterConstants.MODELINTERPRETER_FULLNAME,
+            getMethod.getMCReturnType().printType());
 
     Optional<ASTCDMethod> optSetMethod = decoratedClass.getCDMethodList()
         .stream()
@@ -131,13 +129,13 @@ public class InterpreterDecoratorTest extends DecoratorTestCase {
     assertTrue(optSetMethod.isPresent());
     ASTCDMethod setMethod = optSetMethod.get();
 
-    assertEquals(setMethod.getCDParameterList().size(), 1);
+    assertEquals(1, setMethod.getCDParameterList().size());
     assertEquals(
-        setMethod.getCDParameter(0).getMCType().printType(),
-        InterpreterConstants.MODELINTERPRETER_FULLNAME);
+            InterpreterConstants.MODELINTERPRETER_FULLNAME,
+            setMethod.getCDParameter(0).getMCType().printType());
     assertEquals(
-        setMethod.getCDParameter(0).getName(),
-        "realThis");
+            "realThis",
+            setMethod.getCDParameter(0).getName());
     assertTrue(setMethod.getMCReturnType().isPresentMCVoidType());
   }
 
@@ -153,14 +151,14 @@ public class InterpreterDecoratorTest extends DecoratorTestCase {
 
     assertTrue(storeMethod.getMCReturnType().isPresentMCVoidType());
     assertEquals(2, storeMethod.getCDParameterList().size());
-    assertEquals(storeMethod.getCDParameter(0).getName(), "symbol");
+    assertEquals("symbol", storeMethod.getCDParameter(0).getName());
     assertEquals(
-        storeMethod.getCDParameter(0).getMCType().printType(),
-        InterpreterConstants.SYMBOL_FULLNAME);
-    assertEquals(storeMethod.getCDParameter(1).getName(), "value");
+            InterpreterConstants.SYMBOL_FULLNAME,
+            storeMethod.getCDParameter(0).getMCType().printType());
+    assertEquals("value", storeMethod.getCDParameter(1).getName());
     assertEquals(
-        storeMethod.getCDParameter(1).getMCType().printType(),
-        InterpreterConstants.VALUE_FULLNAME);
+            InterpreterConstants.VALUE_FULLNAME,
+            storeMethod.getCDParameter(1).getMCType().printType());
 
     Optional<ASTCDMethod> optLoadMethod = decoratedClass.getCDMethodList()
         .stream()
@@ -171,15 +169,15 @@ public class InterpreterDecoratorTest extends DecoratorTestCase {
     ASTCDMethod loadMethod = optLoadMethod.get();
 
     assertEquals(
-        loadMethod.getMCReturnType().printType(),
-        InterpreterConstants.VALUE_FULLNAME);
+            InterpreterConstants.VALUE_FULLNAME,
+            loadMethod.getMCReturnType().printType());
     assertEquals(1, loadMethod.getCDParameterList().size());
     assertEquals(
-        loadMethod.getCDParameter(0).getMCType().printType(),
-        InterpreterConstants.SYMBOL_FULLNAME);
+            InterpreterConstants.SYMBOL_FULLNAME,
+            loadMethod.getCDParameter(0).getMCType().printType());
     assertEquals(
-        loadMethod.getCDParameter(0).getName(),
-        "symbol");
+            "symbol",
+            loadMethod.getCDParameter(0).getName());
 
     Optional<ASTCDMethod> optGetMap = decoratedClass.getCDMethodList()
         .stream()
@@ -190,17 +188,17 @@ public class InterpreterDecoratorTest extends DecoratorTestCase {
     ASTCDMethod getMapMethod = optGetMap.get();
 
     assertTrue(getMapMethod.getCDParameterList().isEmpty());
-    assertTrue(getMapMethod.getMCReturnType().getMCType() instanceof ASTMCMapType);
+    assertInstanceOf(ASTMCMapType.class, getMapMethod.getMCReturnType().getMCType());
     assertEquals(
-        ((ASTMCMapType) getMapMethod.getMCReturnType().getMCType()).getMCTypeArgument(0).printType(),
-        InterpreterConstants.SYMBOL_FULLNAME);
+            InterpreterConstants.SYMBOL_FULLNAME,
+            ((ASTMCMapType) getMapMethod.getMCReturnType().getMCType()).getMCTypeArgument(0).printType());
     assertEquals(
-        ((ASTMCMapType) getMapMethod.getMCReturnType().getMCType()).getMCTypeArgument(1).printType(),
-        InterpreterConstants.VALUE_FULLNAME);
+            InterpreterConstants.VALUE_FULLNAME,
+            ((ASTMCMapType) getMapMethod.getMCReturnType().getMCType()).getMCTypeArgument(1).printType());
   }
 
   @Test
-  @Ignore
+  @Disabled
   public void testInterpretMethods() {
     List<ASTCDMethod> interpretMethods = decoratedClass.getCDMethodList()
         .stream()
@@ -215,7 +213,7 @@ public class InterpreterDecoratorTest extends DecoratorTestCase {
     assertEquals(InterpreterConstants.VALUE_FULLNAME, method.getMCReturnType().printType());
   }
 
-  @After
+  @AfterEach
   public void after() {
     assertTrue(Log.getFindings().isEmpty());
     Log.getFindings().clear();

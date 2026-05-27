@@ -15,8 +15,11 @@ ${tc.include("de.monticore.tf.odrules.doreplacement.CreateObjects")}
     // update attributes
 ${tc.include("de.monticore.tf.odrules.doreplacement.ChangeAttributeValues")}
 
+<#if ast.getDoStatement()?has_content>
     // execute do statements
 ${ast.getDoStatement()}
+	isHostGraphDirty = true;
+</#if>
 
     Reporting.flush(hostGraph.get(0));
 

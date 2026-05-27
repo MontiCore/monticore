@@ -25,13 +25,13 @@ public class Automata3Handle implements Automata3Handler {
   // ----------------------------------------------------------
   // Typical handle/traverse methods:
   
-  public void handle(automata3._ast.ASTInvariant node) {
+  public void handle(automata3._ast.ASTLogicInv node) {
     getTraverser().visit(node);
     getTraverser().traverse(node);
     getTraverser().endVisit(node);
   }
   
-  public void traverse(automata3._ast.ASTInvariant node) {
+  public void traverse(automata3._ast.ASTLogicInv node) {
     if (null != node.getLogicExpr()) {
       node.getLogicExpr().accept(getTraverser());
     }

@@ -10,7 +10,9 @@ import de.monticore.literals.mccommonliterals._ast.ASTConstantsMCCommonLiterals;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 public class AltData implements Comparable<AltData> {
 
@@ -81,6 +83,22 @@ public class AltData implements Comparable<AltData> {
     this.optional = optional;
   }
 
+  // To add negations
+  protected final Set<String> optionalSet = new LinkedHashSet<>(), requiredSet = new LinkedHashSet<>();
+
+  /**
+   * @return set of optionally used AST-elements
+   */
+  public Set<String> getOptionalSet() {
+    return optionalSet;
+  }
+
+  /**
+   * @return set of required AST-elements to print this alt
+   */
+  public Set<String> getRequiredSet() {
+    return requiredSet;
+  }
 
   /**
    * Returns the expressions for this Alt in conjunction

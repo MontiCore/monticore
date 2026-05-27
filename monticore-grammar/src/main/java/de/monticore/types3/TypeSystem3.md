@@ -69,6 +69,8 @@ and combining their information to the SymTypeExpression currently calculated.
 * Functionality to work with SymTypeExpressions, Expressions
     * [SymTypeRelations](SymTypeRelations.java)
       (relations over SymTypeExpressions, e.g., `isSubTypeOf`, `isCompatible`)
+    * [OOSymbolsSymTypeRelations](../symbols/oosymbols/types3/OOSymbolsSymTypeRelations.java)
+      (relations wrt. OOSymbols, e.g., `isInterface`, `isEnum`)
     * [MCCollectionSymTypeRelations](../types/mccollectiontypes/types3/MCCollectionSymTypeRelations.java)
       (relations over MCCollection SymTypeExpressions, e.g., `isList`)
     * [FunctionRelations](util/FunctionRelations.java)
@@ -195,6 +197,7 @@ while the SymTypeExpressions represent a type usage
 There is only one type definition,
 but there can be many type usages.   
 The SymTypeExpression knows its corresponding Symbol (if applicable):
+
 * SymTypeOfGenerics, SymTypeOfObject, SymTypePrimitive, and SymTypeVariable
   know their corresponding TypeSymbol
 * SymTypeOfFunction _may_ have a corresponding FunctionSymbol
@@ -215,6 +218,7 @@ Thus, multiple identical SymTypeExpressions can be used at the same time.
 
 In MontiCore, the type system implementations have multiple usages.
 For example:
+
 * writing context conditions;
   The CoCos reduce a set of models to those,
   that adhere to the typing rules of the language.   
@@ -315,6 +319,7 @@ s.a. [Given Infrastructure](#given-infrastructure-in-monticore);
 The following are further classes,
 that are unlikely to be required to be modified for a given language.
 They still use the same static delegate pattern.
+
 * [FunctionRelations](util/FunctionRelations.java),
 * [SIUnitTypeRelations](util/SIUnitTypeRelations.java),
 * [TypeContextCalculator](util/TypeContextCalculator.java),
@@ -383,6 +388,7 @@ To check relations of SymTypeExpressions,
 the SymTypeExpressions are passed to the corresponding method
 of SymTypeRelations or one of its subclasses.
 A non-exhaustive List of relation methods:
+
 * `boolean isCompatible(SymTypeExpression assignee, SymTypeExpression assigner)`
   (whether an assignment is allowed in the type system)
 * `boolean isSubTypeOf(SymTypeExpression subType, SymTypeExpression)`
@@ -426,8 +432,8 @@ This is done to allow reuse of CoCos between languages.
 * [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
 * [MontiCore documentation](https://www.monticore.de/)
 * [TypeCheck1 Readme](../types/check/TypeCheck.md)
-* [**List of languages**](https://github.com/MontiCore/monticore/blob/opendev/docs/Languages.md)
-* [**MontiCore Core Grammar Library**](https://github.com/MontiCore/monticore/blob/opendev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
-* [Best Practices](https://github.com/MontiCore/monticore/blob/opendev/docs/BestPractices.md)
+* [**List of languages**](../../../../../../../docs/Languages.md)
+* [**MontiCore Core Grammar Library**](../../../../grammars/de/monticore/Grammars.md)
+* [Best Practices](../../../../../../../docs/BestPractices.md)
 * [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
 * [Licence definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)

@@ -10,15 +10,14 @@ import de.monticore.literals.testmcjavaliterals.TestMCJavaLiteralsMill;
 import de.monticore.literals.testmcjavaliterals._parser.TestMCJavaLiteralsParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MCJavaLiteralsPrettyPrinterTest {
 
@@ -37,75 +36,75 @@ public class MCJavaLiteralsPrettyPrinterTest {
   @Test
   public void testIntLiteral() throws IOException {
     Optional<ASTIntLiteral> result = parser.parse_StringIntLiteral("1110");
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(result.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
     ASTIntLiteral ast = result.get();
 
     String output = prettyPrinter.prettyprint(ast);
 
     result = parser.parse_StringIntLiteral(output);
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(result.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
 
-    Assertions.assertTrue(ast.deepEquals(result.get()));
+    assertTrue(ast.deepEquals(result.get()));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
   @Test
   public void testLongLiteral() throws IOException {
     Optional<ASTLongLiteral> result = parser.parse_StringLongLiteral("109584763l");
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(result.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
     ASTLongLiteral ast = result.get();
 
     String output = prettyPrinter.prettyprint(ast);
 
     result = parser.parse_StringLongLiteral(output);
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(result.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
 
-    Assertions.assertTrue(ast.deepEquals(result.get()));
+    assertTrue(ast.deepEquals(result.get()));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
   @Test
   public void testFloatLiteral() throws IOException {
     Optional<ASTFloatLiteral> result = parser.parse_StringFloatLiteral("93475.2434356677f");
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(result.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
     ASTFloatLiteral ast = result.get();
 
     String output = prettyPrinter.prettyprint(ast);
 
     result = parser.parse_StringFloatLiteral(output);
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(result.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
 
-    Assertions.assertTrue(ast.deepEquals(result.get()));
+    assertTrue(ast.deepEquals(result.get()));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
   @Test
   public void testDoubleLiteral() throws IOException {
     Optional<ASTDoubleLiteral> result = parser.parse_StringDoubleLiteral("1110.45600233");
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(result.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
     ASTDoubleLiteral ast = result.get();
 
     String output = prettyPrinter.prettyprint(ast);
 
     result = parser.parse_StringDoubleLiteral(output);
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(result.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
 
-    Assertions.assertTrue(ast.deepEquals(result.get()));
+    assertTrue(ast.deepEquals(result.get()));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

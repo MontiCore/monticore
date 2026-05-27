@@ -36,5 +36,7 @@ In addition, the tutorial tar.gz is packaged and added as an artifact (TODO).
 | GITLAB_TOKEN             | Checks out the monticore-pygments-highlighting project from GitLab                                                                                                                                                                     | prepare_pages                         |
 | MONTIVERSE_TRIGGER_TOKEN | Triggers the MontiVerse IT-Pipeline on GitLab [more](https://github.com/digital-blueprint/gitlab-pipeline-trigger-action)                                                                                                              | gradle_mc                             |
 | MONTIVERSE_ACCESS_TOKEN  | Reads the MontiVerse IT-Pipeline status from GitLab [more](https://github.com/digital-blueprint/gitlab-pipeline-trigger-action), must have access to [montiverseciprojects](https://git.rwth-aachen.de/monticore/montiverseciprojects) | gradle_mc                             |
+| EMA_GITLAB_TOKEN   | Grants access to the internal GitLab EMA project structure                                                                                                                                                                                   | 
+EMA only                              |
 
 

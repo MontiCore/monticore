@@ -4,7 +4,6 @@ package de.monticore.types3.generics.util;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeVariable;
 import de.monticore.types3.util.SymTypeDeepCloneVisitor;
-import de.monticore.types3.util.SymTypeExpressionComparator;
 
 import java.util.Collections;
 import java.util.Map;
@@ -12,8 +11,8 @@ import java.util.TreeMap;
 
 /**
  * replaces TypeVariables using a given map
- * e.g., T, {T->int,U->float} -> int
- * e.g., List<T>, {T->int} -> List<int>
+ * e.g., T, {@code {T->int,U->float} -> int}
+ * e.g., {@code List<T>, {T->int} -> List<int>}
  * Usage:
  * calculate(symType, replaceMap)
  */
@@ -38,7 +37,7 @@ public class SymTypeVariableReplaceVisitor extends SymTypeDeepCloneVisitor {
     // as containsKey uses equals, we need to go other it ourselves
     boolean inMap = false;
     for (SymTypeVariable keyTypeVar : getReplaceMap().keySet()) {
-      if (typVar.denotesSameVar(keyTypeVar) & !inMap) {
+      if (typVar.deepEquals(keyTypeVar) & !inMap) {
         pushTransformedSymType(getReplaceMap().get(keyTypeVar));
         inMap = true;
       }
@@ -56,8 +55,7 @@ public class SymTypeVariableReplaceVisitor extends SymTypeDeepCloneVisitor {
   ) {
     Map<SymTypeVariable, SymTypeExpression> oldMap = this.replaceMap;
     // assure that the map used does not rely on hashes
-    Map<SymTypeVariable, SymTypeExpression> newMap =
-        new TreeMap<>(new SymTypeExpressionComparator());
+    Map<SymTypeVariable, SymTypeExpression> newMap = new TreeMap<>();
     newMap.putAll(replaceMap);
     setReplaceMap(newMap);
     SymTypeExpression result = calculate(symType);

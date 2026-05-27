@@ -3,7 +3,6 @@ package de.monticore.types3;
 
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -11,9 +10,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import static de.monticore.runtime.junit.MCAssertions.assertNoFindings;
 import static de.monticore.types3.util.SIUnitIteratorForTests.get2UnitsGroup;
 import static de.monticore.types3.util.SIUnitIteratorForTests.getPrefixedUnits;
 import static de.monticore.types3.util.SIUnitIteratorForTests.getUnits;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SIUnitTypes4MathTypeVisitorTest
     extends AbstractTypeVisitorTest {
@@ -64,7 +65,7 @@ public class SIUnitTypes4MathTypeVisitorTest
     // But, if the amount decreases, issues have been fixed
     // and this number can be decreased.
     // This number should never increase, as it would indicate a new bug.
-    Assertions.assertEquals(609, ambiguous.size());
+    assertEquals(609, ambiguous.size());
   }
 
 }
