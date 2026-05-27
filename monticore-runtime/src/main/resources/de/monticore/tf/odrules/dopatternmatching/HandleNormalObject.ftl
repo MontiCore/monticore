@@ -2,7 +2,7 @@
 ${signature("isOptional", "parentObject")}
 
 <#assign normalObject = ast>
-if (nextNode.equals("${normalObject.getObjectName()}")) {
+case "${normalObject.getObjectName()}" -> {
   if(isBacktrackingNegative) {
     isBacktracking = true;
     isBacktrackingNegative = false;
@@ -28,7 +28,7 @@ if (nextNode.equals("${normalObject.getObjectName()}")) {
     <#if isOptional && parentObject?has_content>
       reset_${parentObject.getObjectName()}();
     </#if>
-    break;
+    break mainLoop;
     } else {
       // start backtracking
       isBacktracking = true;
