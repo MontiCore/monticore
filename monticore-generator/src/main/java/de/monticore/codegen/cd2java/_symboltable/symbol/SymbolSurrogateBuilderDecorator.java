@@ -193,6 +193,7 @@ public class SymbolSurrogateBuilderDecorator extends AbstractCreator<ASTCDType, 
 
   protected ASTCDMethod createBuildMethod(String symbolSurrogate, List<ASTCDAttribute> attributeList) {
     ASTCDMethod buildMethod = getCDMethodFacade().createMethod(PUBLIC.build(), getMCTypeFacade().createQualifiedType(symbolSurrogate), "build");
+    this.replaceTemplate(ANNOTATIONS, buildMethod, new StringHookPoint("@SuppressWarnings(\"removal\")"));
     this.replaceTemplate(EMPTY_BODY, buildMethod, new TemplateHookPoint(TEMPLATE_PATH + "BuildSymbolSurrogate", symbolSurrogate, attributeList));
     return buildMethod;
   }
