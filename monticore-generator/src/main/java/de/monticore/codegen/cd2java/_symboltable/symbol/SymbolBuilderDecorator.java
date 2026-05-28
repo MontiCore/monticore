@@ -79,6 +79,7 @@ public class SymbolBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDCla
     ASTCDClass symbolBuilder = builderDecorator.decorate(decoratedSymbolClass);
     builderDecorator.setPrintBuildMethodTemplate(true);
 
+    addAccessModifierDefaultValue(symbolBuilder);
     addStereoinfoDefaultValue(symbolBuilder);
 
     if (hasInheritedSymbol) {
@@ -152,7 +153,6 @@ public class SymbolBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDCla
     attrs.add(this.getCDAttributeFacade().createAttribute(PROTECTED.build(), optionalTypeOfASTNode, AST_NODE_VAR));
 
     ASTCDAttribute accessModifier = this.getCDAttributeFacade().createAttribute(PROTECTED.build(), ACCESS_MODIFIER, "accessModifier");
-    this.replaceTemplate(VALUE, accessModifier, new StringHookPoint("= " + ACCESS_MODIFIER_ALL_INCLUSION));
     attrs.add(accessModifier);
 
     ASTMCType symbolicStereotype = getMCTypeFacade().createQualifiedType(I_STEREOTYPE_REFERENCE);
@@ -166,6 +166,14 @@ public class SymbolBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDCla
             symbolTableService.getScopeInterfaceFullName(), ENCLOSING_SCOPE_VAR));
 
     return attrs;
+  }
+
+  protected void addAccessModifierDefaultValue(ASTCDClass builder) {
+    HookPoint defaultVal = new StringHookPoint("= " + ACCESS_MODIFIER_ALL_INCLUSION);
+
+    builder.getCDAttributeList().stream()
+      .filter(a -> "accessModifier".equals(a.getName()))
+      .forEach(a -> this.replaceTemplate(VALUE, a, defaultVal));
   }
 
   protected void addStereoinfoDefaultValue(ASTCDClass builder) {
