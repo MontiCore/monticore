@@ -87,7 +87,7 @@ public class MCGenPluginTest {
   }
   
   // Test if the plugin can be applied
-  @ParameterizedTest(name = "testCanApplyPlugin_v{0}")
+  @ParameterizedTest
   @ValueSource(strings = {"8.5", "8.7", "8.14.4", "9.5.1"})
   public void testCanApplyPlugin(String version) throws IOException {
     writeFile(settingsFile, "rootProject.name = 'hello-world'");
@@ -115,7 +115,7 @@ public class MCGenPluginTest {
   // and is cacheable
   // and up-to-date-checks work on modified files
   // and up-to-date-checks work on modified super files
-  @ParameterizedTest(name = "testGenerateGrammar_v{0}")
+  @ParameterizedTest
   @ValueSource(strings = {"8.5", "8.7", "8.14.4", "9.5.1"})
   public void testGenerateGrammar(String version) throws IOException {
     writeFile(settingsFile, "rootProject.name = 'hello-world'");
@@ -231,7 +231,7 @@ public class MCGenPluginTest {
   // and is cacheable
   // and up-to-date-checks work on modified files
   // and up-to-date-checks work on modified super files
-  @ParameterizedTest(name = "testMultiProject_v{0}")
+  @ParameterizedTest
   @ValueSource(strings = {"8.5", "8.7", "8.14.4", "9.5.1"})
   public void testMultiProject(String version) throws IOException {
     writeFile(settingsFile, "rootProject.name = 'hello-world'\ninclude('A')\ninclude('B')");
