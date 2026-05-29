@@ -12,6 +12,8 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.NotThreadSafe;
@@ -83,25 +85,11 @@ public class MCGenPluginTest {
   File createDirectory(Path path) throws IOException{
     return Files.createDirectory(path).toFile();
   }
-
-  @Test
-  public void testCanApplyPlugin_v8_5() throws IOException {
-    this.testCanApplyPlugin("8.5");
-  }
   
-  @Test
-  public void testCanApplyPlugin_v8_7() throws IOException {
-    this.testCanApplyPlugin("8.7");
-  }
-  
-  @Test
-  public void testCanApplyPlugin_v8_14_4() throws IOException {
-    this.testCanApplyPlugin("8.14.4");
-  }
-
-
   // Test if the plugin can be applied
-  void testCanApplyPlugin(String version) throws IOException {
+  @ParameterizedTest(name = "testCanApplyPlugin_v{0}")
+  @ValueSource(strings = {"8.5", "8.7", "8.14.4", "9.5.1"})
+  public void testCanApplyPlugin(String version) throws IOException {
     writeFile(settingsFile, "rootProject.name = 'hello-world'");
     String buildFileContent = "plugins {" +
             "    id 'de.monticore.generator' " +
@@ -123,26 +111,13 @@ public class MCGenPluginTest {
 
   //////////////////////
   
-  @Test
-  public void testGenerateGrammar_v8_5() throws IOException {
-    this.testGenerateGrammar("8.5");
-  }
-  
-  @Test
-  public void testGenerateGrammar_v8_7() throws IOException {
-    this.testGenerateGrammar("8.7");
-  }
-  
-  @Test
-  public void testGenerateGrammar_v8_14_4() throws IOException {
-    this.testGenerateGrammar("8.14.4");
-  }
-
   // Test if the generate task succeeds
   // and is cacheable
   // and up-to-date-checks work on modified files
   // and up-to-date-checks work on modified super files
-  void testGenerateGrammar(String version) throws IOException {
+  @ParameterizedTest(name = "testGenerateGrammar_v{0}")
+  @ValueSource(strings = {"8.5", "8.7", "8.14.4", "9.5.1"})
+  public void testGenerateGrammar(String version) throws IOException {
     writeFile(settingsFile, "rootProject.name = 'hello-world'");
     writeFile(propertiesFile, "de.monticore.gradle.show_performance_statistic=true\norg.gradle.jvmargs=-XX:MaxMetaspaceSize=1g\n");
     String buildFileContent = "plugins {\n" +
@@ -251,27 +226,14 @@ public class MCGenPluginTest {
   }
 
   //////////////////////
- 
-  @Test
-  public void testMultiProject_v8_5() throws IOException {
-    this.testMultiProject("8.5");
-  }
   
-  @Test
-  public void testMultiProject_v8_7() throws IOException {
-    this.testMultiProject("8.7");
-  }
-  
-  @Test
-  public void testMultiProject_v8_14_4() throws IOException {
-    this.testMultiProject("8.14.4");
-  }
-
   // Test if the generate task succeeds within a multi-project build
   // and is cacheable
   // and up-to-date-checks work on modified files
   // and up-to-date-checks work on modified super files
-  void testMultiProject(String version) throws IOException {
+  @ParameterizedTest(name = "testMultiProject_v{0}")
+  @ValueSource(strings = {"8.5", "8.7", "8.14.4", "9.5.1"})
+  public void testMultiProject(String version) throws IOException {
     writeFile(settingsFile, "rootProject.name = 'hello-world'\ninclude('A')\ninclude('B')");
     writeFile(propertiesFile, "de.monticore.gradle.show_performance_statistic=true\norg.gradle.jvmargs=-XX:MaxMetaspaceSize=1g\n");
     String buildFileContentA = "plugins {" +
