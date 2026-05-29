@@ -34,6 +34,10 @@ public boolean doPatternMatching_${structure.getObjectName()}(boolean isParentBa
 
     // SetUp Last Matching Process if ParentIsBacktracking
     if(isParentBacktracking) {
+      if (${structure.getObjectName()}_candidates == null) {
+         // the candidates were reset previously (list in opt?) -> we can't backtrace
+         return false;
+      }
       // Get Last List Object
       Match${structure.getObjectName()} match = ${structure.getObjectName()}_candidates.get(${structure.getObjectName()}_candidates.size()-1);
       ${structure.getObjectName()}_candidates.remove(${structure.getObjectName()}_candidates.size()-1);
