@@ -10,7 +10,7 @@ public enum ProductionType {
 
   PATTERN("Pat", 50000),
   LIST("List", 40000),
-  REPLACEMENT("Rep", 30000),
+  REPLACEMENT("Rep", 60000), // TODO: see MCQualifiedType / MCQualifiedType & document
   NEGATION("Neg", 20000),
   OPTIONAL("Opt", 10000);
 
