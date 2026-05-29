@@ -9,6 +9,7 @@ import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.*;
+import org.gradle.work.DisableCachingByDefault;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,6 +36,7 @@ import java.util.Map;
  *  - task is not cached
  *  - stale outputs are not removed
  */
+@DisableCachingByDefault
 public abstract class MontiTransExec extends DefaultTask {
 
   @Input
@@ -44,6 +46,7 @@ public abstract class MontiTransExec extends DefaultTask {
   public abstract ConfigurableFileCollection getClassPath();
 
   @InputFile
+  @PathSensitive(PathSensitivity.RELATIVE)
   public abstract RegularFileProperty getInput();
 
   @OutputDirectory
@@ -55,7 +58,8 @@ public abstract class MontiTransExec extends DefaultTask {
   @IgnoreEmptyDirectories
   public abstract ConfigurableFileCollection getHandWrittenCodeDir();
 
-  @Input@Optional
+  @Optional
+  @Input
   public abstract Property<Boolean> getUseCache();
 
   // We use static by design here to cache the TFGenTools main method
