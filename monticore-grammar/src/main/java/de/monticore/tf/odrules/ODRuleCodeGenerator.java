@@ -387,11 +387,10 @@ public class ODRuleCodeGenerator {
 
 
     // we have a _list variable, which receives the mapped list-child
-    result.add(exp.getLhs() + "_list = ");
-
-    result.add(specialCaseForAssignmentsInLists(name, expression, parents, inOpt, isList));
-    result.add("/* assignment in list! */");
-    result.add(";");
+    result.add(exp.getLhs() +
+                       "_list = " +
+                       specialCaseForAssignmentsInLists(name, expression, parents, inOpt, isList) +
+                       "/* assignment in list! */;");
   }
 
 
