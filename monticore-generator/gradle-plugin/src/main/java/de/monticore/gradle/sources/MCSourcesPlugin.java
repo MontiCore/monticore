@@ -7,11 +7,13 @@ import org.gradle.api.file.Directory;
 import org.gradle.api.file.FileCollection;
 import org.gradle.api.file.SourceDirectorySet;
 import org.gradle.api.internal.lambdas.SerializableLambdas;
+import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.plugins.JavaPluginExtension;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.SourceSet;
 
 import javax.annotation.Nonnull;
+import javax.inject.Inject;
 
 /**
  * Set up the grammars-source-directory per source-set
@@ -26,6 +28,14 @@ import javax.annotation.Nonnull;
  * ```
  */
 public class MCSourcesPlugin implements Plugin<Project> {
+  
+  private final ObjectFactory objectFactory;
+  
+  @Inject
+  public MCSourcesPlugin(ObjectFactory objectFactory) {
+    this.objectFactory = objectFactory;
+  }
+  
   @Override
   public void apply(@Nonnull Project target) {
     target.getPluginManager().apply("java-base");
@@ -39,13 +49,11 @@ public class MCSourcesPlugin implements Plugin<Project> {
    */
   protected void addSourceSetExtension(SourceSet sourceSet, Project project) {
     SourceDirectorySet grammarsSrcSet = project.getObjects().sourceDirectorySet("grammars", sourceSet.getName() + " MontiCore grammars source");
-
-    MCGrammarsSourceDirectorySet mcSrcSet = sourceSet.getExtensions().create(
-            MCGrammarsSourceDirectorySet.class,
-            MCGrammarsSourceDirectorySet.GRAMMARS,
-            MCGrammarsSourceDirectorySet.DefaultMCGrammarsSourceDirectorySet.class,
-            grammarsSrcSet);
-
+    
+    MCGrammarsSourceDirectorySet mcSrcSet = objectFactory.newInstance(
+        MCGrammarsSourceDirectorySet.DefaultMCGrammarsSourceDirectorySet.class, grammarsSrcSet);
+    
+    sourceSet.getExtensions().add(MCGrammarsSourceDirectorySet.class, MCGrammarsSourceDirectorySet.GRAMMARS, mcSrcSet);
 
     // By default, output into a generated/test-${NonMainName}sources/monticore/sourcecode directory
     String buildDir = "generated-" + (SourceSet.isMain(sourceSet) ? "" : sourceSet.getName()) + "sources/monticore/sourcecode";
