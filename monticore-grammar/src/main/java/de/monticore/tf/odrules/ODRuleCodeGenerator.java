@@ -236,51 +236,37 @@ public class ODRuleCodeGenerator {
           Map<String, String> parents,
           Collection<String> inOpt,
           Collection<String> isList) {
-
     String parent = parents.get(name);
 
-    // No list in the path
+    // object is not in list
     if (parent == null || !isList.contains(parent)) {
       String access = parent + "." + name + "." + expr;
-
       if (inOpt.contains(name)) {
         return access + ".isPresent()?" + access + ".get() : \"undef\"";
       }
       return access;
     }
 
-    // name is inside a list
-    String listName = parent;
-    String root = parents.get(listName);
+    // name is inside a list => name of the list == parent
+    String root = parents.get(parent);
 
     String elementExpr;
     if (inOpt.contains(name)) {
-      elementExpr =
-              "(l." + name + ".isPresent())?l."
-                      + name + ".get()."
-                      + expr
-                      + ":\"undef\"";
+      // we could/should think about a better fallback than "undef"?
+      elementExpr = "(l." + name + ".isPresent())?l." + name + ".get()." + expr + ":\"undef\"";
     } else {
       elementExpr = "l." + name + "." + expr;
     }
 
-    String streamExpr =
-            root + "." + listName
-                    + ".stream().map(l-> "
-                    + elementExpr
-                    + ").toList()";
-
-    // Optional list
-    if (inOpt.contains(listName)) {
-      return root + "." + listName
-              + ".isPresent() ? "
-              + root + "." + listName
-              + ".get().stream().map(l-> "
-              + elementExpr
-              + " ).toList() : new ArrayList<>()";
+    // Map lists via ListMatchMapping
+    // (as of now, not bidirectional/setters are not yet supported)
+    String getter = root + "." + parent;
+    if (inOpt.contains(parent)) {
+      // optional -> fall back to empty list if absent
+      getter += ".orElse(Collections.emptyList())";
     }
-
-    return streamExpr;
+    return "new de.monticore.tf.runtime.ListMatchMapping<>(" + getter + "," +
+            " l-> " + elementExpr + ")";
   }
 
 
