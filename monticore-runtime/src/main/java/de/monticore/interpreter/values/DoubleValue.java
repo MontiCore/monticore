@@ -4,6 +4,7 @@ package de.monticore.interpreter.values;
 import de.monticore.interpreter.Value;
 import de.se_rwth.commons.logging.Log;
 
+@Deprecated(forRemoval = true)
 public class DoubleValue implements Value {
 
   protected double value;

@@ -3,6 +3,7 @@ package de.monticore.interpreter.values;
 
 import de.monticore.interpreter.Value;
 
+@Deprecated(forRemoval = true)
 public class ObjectValue implements Value {
 
   protected Object value;
