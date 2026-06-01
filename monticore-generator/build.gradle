@@ -105,7 +105,7 @@ allprojects {
         }
         addTestListener(new TestListener() {
             void afterTest(TestDescriptor testDescriptor, TestResult result) {
-                logger.lifecycle "${testDescriptor.getClassName()} > ${testDescriptor.parent ? testDescriptor.parent.getName() + " " + testDescriptor.getDisplayName() : testDescriptor.getName()} ${result.resultType}"
+                logger.lifecycle "${testDescriptor.getClassName()} > ${testDescriptor.parent && testDescriptor.parent.getName() != testDescriptor.getClassName() ? testDescriptor.parent.getName() + " " + testDescriptor.getDisplayName() : testDescriptor.getName()} ${result.resultType}"
             }
 
             void afterSuite(TestDescriptor suite, TestResult result) {
