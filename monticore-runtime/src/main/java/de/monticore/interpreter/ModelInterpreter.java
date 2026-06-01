@@ -8,6 +8,7 @@ import de.monticore.symboltable.ISymbol;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+@Deprecated(forRemoval = true)
 public interface ModelInterpreter {
 
   default Value interpret(ASTNode n) {

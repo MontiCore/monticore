@@ -3,6 +3,7 @@ package de.monticore.interpreter.values;
 
 import de.monticore.interpreter.Value;
 
+@Deprecated(forRemoval = true)
 public class LongValue implements Value {
 
   protected long value;

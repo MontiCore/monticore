@@ -3,6 +3,7 @@ package de.monticore.interpreter;
 
 import de.se_rwth.commons.logging.Log;
 
+@Deprecated(forRemoval = true)
 public interface Value {
 
   default boolean isBoolean() {
