@@ -31,7 +31,7 @@ component grammar ODRuleGeneration extends de.monticore.types.MCFullGenericTypes
    createObjects:CreateOperation*
    deleteObjects:DeleteOperation*;
 
- Variable = Name type:Name;
+ Variable = Name type:Name ["inList"]?;
 
  MatchingObject =
    objectName:Name

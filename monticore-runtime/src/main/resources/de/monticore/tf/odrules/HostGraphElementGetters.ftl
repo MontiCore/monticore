@@ -59,7 +59,7 @@
       </#list>
       if(!${listchild.getObjectName()}.isEmpty()) {
         return Optional.ofNullable(${listchild.getObjectName()});
-      } else { return Optional.ofNullable(null); }
+      } else { return Optional.empty(); }
     }
     </#list>
   <#else>
