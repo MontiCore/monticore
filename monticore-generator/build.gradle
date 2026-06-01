@@ -115,6 +115,13 @@ allprojects {
                     logger.lifecycle startItem + output + endItem
                 }
             }
+
+            // Required for Gradle version < 9.x
+            void beforeSuite(TestDescriptor suite) {
+            }
+
+            void beforeTest(TestDescriptor testDescriptor) {
+            }
         })
 
         reports {
