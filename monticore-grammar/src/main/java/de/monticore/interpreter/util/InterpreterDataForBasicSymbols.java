@@ -11,6 +11,11 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.function.Supplier;
 
+/**
+ * The InterpreterData for most cases;
+ * It maps BasicSymbols to values, i.e.,
+ * variables to values and functions to behavior.
+ */
 public class InterpreterDataForBasicSymbols extends InterpreterData {
 
   protected Stack<MIFrameLayoutForBasicSymbols> frameLayoutStack = new Stack<>();
@@ -22,10 +27,6 @@ public class InterpreterDataForBasicSymbols extends InterpreterData {
   // layout could be an array or at least an ArrayList,
   // but for now it is a map for simplicity,
   Map<FunctionSymbol, MCValueFunction> functions = new HashMap<>();
-
-  public boolean isPresentCalculation() {
-    return calculation != null;
-  }
 
   /**
    * The current {@link MIFrameLayoutForBasicSymbols}s.
@@ -47,6 +48,12 @@ public class InterpreterDataForBasicSymbols extends InterpreterData {
     return functions;
   }
 
+  /**
+   * Links a behavior to a function symbol
+   *
+   * @param funcSym the function symbol to link behavior to
+   * @param value   the behavior
+   */
   public void defineFunction(FunctionSymbol funcSym, MCValueFunction value) {
     Preconditions.checkNotNull(funcSym);
     Preconditions.checkNotNull(value);
@@ -56,6 +63,12 @@ public class InterpreterDataForBasicSymbols extends InterpreterData {
     functions.put(funcSym, value);
   }
 
+  /**
+   * Returns the function behavior as a Supplier (to break recursion)
+   *
+   * @param funcSym the function symbol to get the behavior for
+   * @return The Behavior linked to the function symbol
+   */
   public Supplier<MCValueFunction> getFunctionSupplier(FunctionSymbol funcSym) {
     return () -> {
       MCValueFunction function = functions.get(funcSym);

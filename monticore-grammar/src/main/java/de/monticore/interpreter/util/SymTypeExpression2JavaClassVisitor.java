@@ -24,6 +24,11 @@ import java.lang.reflect.Array;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Provides {@code Class<?>} objects corresponding to
+ * {@link SymTypeExpression}s, e.g.,
+ * {@link SymTypePrimitive} "double" returns {@code double.class}.
+ */
 public class SymTypeExpression2JavaClassVisitor implements ISymTypeVisitor {
 
   protected Optional<Class<?>> clazz;

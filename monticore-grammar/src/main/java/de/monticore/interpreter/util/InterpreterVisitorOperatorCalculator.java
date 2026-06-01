@@ -19,6 +19,10 @@ import static de.monticore.types3.SymTypeRelations.isIntegralType;
 import static de.monticore.types3.SymTypeRelations.isNumericType;
 import static de.monticore.types3.SymTypeRelations.isStringOrSubType;
 
+/**
+ * Reusable implementation for the visitor for common operators, e.g., '+'.
+ * The implementations are abstracted from the ast.
+ */
 public class InterpreterVisitorOperatorCalculator {
 
   public MICalculation handlePlus(
