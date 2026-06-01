@@ -45,6 +45,7 @@ public interface MISetter {
    * This is the less efficient version of the specific setters,
    * but sometimes, we only have access to an MIValue anyway.
    *
+   * @param frame The current frame. Always provide for consistency.
    * @param value The value to be set. It must have the correct type.
    */
   void set(MIFrame frame, MCValue value);

@@ -26,6 +26,12 @@ public class ExpressionValid implements ExpressionsBasisASTExpressionCoCo {
 
   protected TypeCalculator typeCheck;
 
+  /**
+   * The old constructor
+   *
+   * @param typeCheck don't use this.
+   * @deprecated TypeCalculator is deprecated, use the other constructor
+   */
   @Deprecated
   public ExpressionValid(TypeCalculator typeCheck) {
     this.typeCheck = typeCheck;
@@ -48,7 +54,8 @@ public class ExpressionValid implements ExpressionsBasisASTExpressionCoCo {
       // TypeCheck
       if (typeCheck != null) {
         typeCheck.typeOf(expr);
-      } else {
+      }
+      else {
         TypeCheck3.typeOf(expr);
       }
       checkingNode = Optional.of(expr);

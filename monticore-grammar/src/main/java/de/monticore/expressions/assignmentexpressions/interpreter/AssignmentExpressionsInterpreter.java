@@ -23,8 +23,8 @@ import de.monticore.interpreter.setters.MISetterValue;
 import de.monticore.interpreter.util.InterpreterDataForBasicSymbols;
 import de.monticore.interpreter.util.InterpreterVisitorOperatorCalculator;
 import de.monticore.interpreter.util.NativeStorageSelector;
-import de.monticore.values.MCValue;
 import de.monticore.types.check.SymTypeExpression;
+import de.monticore.values.MCValue;
 import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.function.Supplier;
@@ -50,6 +50,7 @@ public class AssignmentExpressionsInterpreter
 
   @Override
   public void traverse(ASTAssignmentExpression node) {
+    // collect all data that is required
     node.getLeft().accept(getTraverser());
     MICalculation leftCalc = iData.popCalculation();
     MISetter setter = iData.popSetter();
@@ -61,6 +62,7 @@ public class AssignmentExpressionsInterpreter
     SymTypeExpression rightType = normalize(typeOf(node.getRight()));
     SymTypeExpression exprType = normalize(typeOf(node));
 
+    // Select the calculation of the operator, e.g., `+` from `+=`
     int operator = node.getOperator();
     MICalculation opCalc = switch (operator) {
       case ASTConstantsAssignmentExpressions.EQUALS -> rightCalc;
@@ -92,13 +94,15 @@ public class AssignmentExpressionsInterpreter
       );
     };
 
+    // create the calculation of the operator and the assignment together,
+    // i.e., from the calculation of `+` create the calculation of `+=`.
     MICalculation result = NativeStorageSelector.
         <Supplier<MICalculation>> switchByFormat(exprType,
         () -> {
           MICalculationBoolean opCalcBoolean = opCalc.asCalculationBoolean();
           MISetterBoolean setterBoolean = setter.asSetterBoolean();
           return (MICalculationBoolean) frame -> {
-            boolean value = opCalcBoolean.calculate(frame);
+            final boolean value = opCalcBoolean.calculate(frame);
             setterBoolean.set(frame, value);
             return value;
           };
@@ -107,7 +111,7 @@ public class AssignmentExpressionsInterpreter
           MICalculationInt opCalcInt = opCalc.asCalculationInt();
           MISetterInt setterInt = setter.asSetterInt();
           return (MICalculationInt) frame -> {
-            int value = opCalcInt.calculate(frame);
+            final int value = opCalcInt.calculate(frame);
             setterInt.set(frame, value);
             return value;
           };
@@ -116,7 +120,7 @@ public class AssignmentExpressionsInterpreter
           MICalculationDouble opCalcDouble = opCalc.asCalculationDouble();
           MISetterDouble setterDouble = setter.asSetterDouble();
           return (MICalculationDouble) frame -> {
-            double value = opCalcDouble.calculate(frame);
+            final double value = opCalcDouble.calculate(frame);
             setterDouble.set(frame, value);
             return value;
           };
@@ -125,7 +129,7 @@ public class AssignmentExpressionsInterpreter
           MICalculationValue opCalcValue = opCalc.asCalculationValue();
           MISetterValue setterValue = setter.asSetterValue();
           return (MICalculationValue) frame -> {
-            MCValue value = opCalcValue.calculate(frame);
+            final MCValue value = opCalcValue.calculate(frame);
             setterValue.set(frame, value);
             return value;
           };
@@ -154,6 +158,13 @@ public class AssignmentExpressionsInterpreter
     traverseIncDecSuffix(node, node.getExpression(), -1);
   }
 
+  /**
+   * Handles {@code ++x} and {@code --x}
+   *
+   * @param expr           the full expression, e.g., {@code ++x}
+   * @param innerExpr      the inner expression, e.g., {@code x}
+   * @param valueToBeAdded 1 to increment, -1 to decrement
+   */
   protected void traverseIncDecPrefix(
       ASTExpression expr,
       ASTExpression innerExpr,
@@ -168,7 +179,7 @@ public class AssignmentExpressionsInterpreter
       MICalculationInt innerCalcInt = innerCalc.asCalculationInt();
       MISetterInt setterInt = setter.asSetterInt();
       result = (MICalculationInt) frame -> {
-        int value = innerCalcInt.calculate(frame) + valueToBeAdded;
+        final int value = innerCalcInt.calculate(frame) + valueToBeAdded;
         setterInt.set(frame, value);
         return value;
       };
@@ -177,7 +188,7 @@ public class AssignmentExpressionsInterpreter
       MICalculationDouble innerCalcDouble = innerCalc.asCalculationDouble();
       MISetterDouble setterDouble = setter.asSetterDouble();
       result = (MICalculationDouble) frame -> {
-        double value = innerCalcDouble.calculate(frame) + valueToBeAdded;
+        final double value = innerCalcDouble.calculate(frame) + valueToBeAdded;
         setterDouble.set(frame, value);
         return value;
       };
@@ -185,6 +196,13 @@ public class AssignmentExpressionsInterpreter
     iData.putCalculation(result);
   }
 
+  /**
+   * Handles {@code x++} and {@code x--}
+   *
+   * @param expr           the full expression, e.g., {@code x++}
+   * @param innerExpr      the inner expression, e.g., {@code x}
+   * @param valueToBeAdded 1 to increment, -1 to decrement
+   */
   protected void traverseIncDecSuffix(
       ASTExpression expr,
       ASTExpression innerExpr,
@@ -199,7 +217,7 @@ public class AssignmentExpressionsInterpreter
       MICalculationInt innerCalcInt = innerCalc.asCalculationInt();
       MISetterInt setterInt = setter.asSetterInt();
       result = (MICalculationInt) frame -> {
-        int value = innerCalcInt.calculate(frame);
+        final int value = innerCalcInt.calculate(frame);
         setterInt.set(frame, value + valueToBeAdded);
         return value;
       };
@@ -208,7 +226,7 @@ public class AssignmentExpressionsInterpreter
       MICalculationDouble innerCalcDouble = innerCalc.asCalculationDouble();
       MISetterDouble setterDouble = setter.asSetterDouble();
       result = (MICalculationDouble) frame -> {
-        double value = innerCalcDouble.calculate(frame);
+        final double value = innerCalcDouble.calculate(frame);
         setterDouble.set(frame, value + valueToBeAdded);
         return value;
       };
@@ -217,12 +235,3 @@ public class AssignmentExpressionsInterpreter
   }
 
 }
-
-
-
-
-
-
-
-
-

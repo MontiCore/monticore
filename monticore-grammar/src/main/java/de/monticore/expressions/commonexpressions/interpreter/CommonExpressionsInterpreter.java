@@ -13,11 +13,11 @@ import de.monticore.interpreter.calculations.MICalculationInt;
 import de.monticore.interpreter.calculations.MICalculationValue;
 import de.monticore.interpreter.calculations.MICalculationVoid;
 import de.monticore.interpreter.setters.MISetter;
+import de.monticore.interpreter.signals.MCSignalReturn;
 import de.monticore.interpreter.util.InterpreterDataForBasicSymbols;
 import de.monticore.interpreter.util.InterpreterVisitorOperatorCalculator;
 import de.monticore.interpreter.util.SymbolAccessHandler;
 import de.monticore.interpreter.util.TypeDispatcherHotfix;
-import de.monticore.interpreter.signals.MCSignalReturn;
 import de.monticore.symbols.basicsymbols.interpreter.frames.MIFrameLayoutForBasicSymbols;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
@@ -46,6 +46,7 @@ public class CommonExpressionsInterpreter
 
   protected InterpreterDataForBasicSymbols iData;
 
+  // Most of this class simply delegates to the common implementations:
   protected InterpreterVisitorOperatorCalculator opCalculator =
       new InterpreterVisitorOperatorCalculator();
   protected InterpreterOperatorTraverser opTraverser =

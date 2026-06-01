@@ -5,6 +5,10 @@ import de.monticore.values.MCValue;
 
 import java.util.Optional;
 
+/**
+ * Represents that a {@code return} statement has been executed.
+ * It contains a value for non-void functions.
+ */
 public class MCSignalReturn
     extends MCSignalFlowControl {
 

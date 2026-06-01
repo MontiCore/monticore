@@ -67,6 +67,9 @@ public class MIFrame {
   // JLS 21 10.4: One might assume that a char index would be more efficient,
   // as they are non-negative.
   // However, it will be converted to int anyway
+  // Note: it might be made faster if required by inlining this access,
+  // i.e., making the arrays public to reduce our inline budged.
+  // This is currently considered not necessary.
 
   public boolean getBoolean(int idx) {
     return booleans[idx];

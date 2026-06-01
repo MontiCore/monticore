@@ -16,6 +16,17 @@ import static de.monticore.types3.TypeCheck3.typeOf;
  */
 public class InterpreterOperatorTraverser {
 
+  /**
+   * Reusable default handling of unary expressions,
+   * e.g., {@code i++}.
+   *
+   * @param traverser The traverser calling this
+   * @param iData     the corresponding interpreter data of the traverser
+   * @param expr      the expression to handle, e.g., {@code i++}
+   * @param innerExpr the inner expression, e.g., {@code i}
+   * @param handler   creates the actual calculation
+   *                  after all information have been collected
+   */
   public void traverseUnaryOperator(
       ITraverser traverser,
       InterpreterDataForBasicSymbols iData,
@@ -31,6 +42,18 @@ public class InterpreterOperatorTraverser {
     iData.putCalculation(calc);
   }
 
+  /**
+   * Reusable default handling of binary expressions,
+   * e.g., {@code a + b}.
+   *
+   * @param traverser The traverser calling this
+   * @param iData     the corresponding interpreter data of the traverser
+   * @param expr      the expression to handle, e.g., {@code a + b}
+   * @param leftExpr  the left expression, e.g., {@code a}
+   * @param rightExpr the right expression, e.g., {@code b}
+   * @param handler   creates the actual calculation
+   *                  after all information have been collected
+   */
   public void traverseBinaryOperator(
       ITraverser traverser,
       InterpreterDataForBasicSymbols iData,
@@ -87,4 +110,5 @@ public class InterpreterOperatorTraverser {
         SymTypeExpression exprType
     );
   }
+
 }
