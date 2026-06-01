@@ -213,7 +213,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: ${{env.GRADLE_VERSION}}
-      - name: Test monticore-grammar-it
+      - name: Test monticore-test/montitrans
         run: gradle build test -p monticore-test/montitrans ${{env.GRADLE_CLI_OPTS}} -PgenTR=true
       - name: Publish Test Report
         uses: mikepenz/action-junit-report@a451de5ac1ff45e46508b6150cb4f51a287d0309
@@ -221,33 +221,7 @@ jobs:
         with:
           report_paths: '**/target/test-results/test/TEST-*.xml'
 
-  # Look ahead in time to check if this would break the next MC release
-  test-for-breaking-changes:
-    if: (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name ) && github.ref_name != github.event.repository.default_branch # do not run duplicate jobs on PRs or on dev branch
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout project sources
-        uses: actions/checkout@v4
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: ${{ env.JAVA_VERSION }}
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-version: ${{env.GRADLE_VERSION}}
-      - name: Setup git
-        run: git config --global user.email "ci@monticore.de" && git config --global user.name "ci"
-      - name: Apply patches to look into the future
-        run: sh ./prepare-next-release/applyPatches.sh
-      - name: Build a subset of the monticore project
-        run: gradle monticore-generator:build monticore-grammar:build monticore-test:check  ${{env.GRADLE_CLI_OPTS}}
-      - name: Publish Test Report
-        uses: mikepenz/action-junit-report@a451de5ac1ff45e46508b6150cb4f51a287d0309
-        if: always() # always run even if the previous step fails
-        with:
-          report_paths: '**/target/test-results/test/TEST-*.xml'
+  # Look ahead in time to check if this would break the next MC release (is now done via the MontiVerseCI)
 
   # Run the MontiVerse pipeline (tests this change on a suite of projects)
   trigger-montiverse:

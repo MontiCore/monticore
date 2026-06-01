@@ -14,6 +14,7 @@ import de.monticore.tf.runtime.matching.CommentBasedModelTraversalFactory;
 import com.google.common.collect.Lists;
 import static com.google.common.collect.Lists.*;
 import static de.se_rwth.commons.StringTransformations.*;
+import java.util.stream.Collectors;
 import com.google.common.base.*;
 import de.se_rwth.commons.logging.Log;
 import de.monticore.generating.templateengine.reporting.Reporting;

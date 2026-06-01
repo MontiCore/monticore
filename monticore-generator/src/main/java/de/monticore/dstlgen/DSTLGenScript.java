@@ -18,6 +18,7 @@ import de.monticore.expressions.uglyexpressions._prettyprint.UglyExpressionsPret
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.grammar.concepts.antlr.antlr._prettyprint.AntlrPrettyPrinter;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTProd;
@@ -229,7 +230,9 @@ public class DSTLGenScript {
 
     try {
       Files.createDirectories(Paths.get(directories));
-      Files.write(Paths.get(directories + "/" + tfLanguage.getName() + ".mc4"), output.getBytes());
+      Path dstlGrammarPath = Paths.get(directories + "/" + tfLanguage.getName() + ".mc4");
+      Files.write(dstlGrammarPath, output.getBytes());
+      Reporting.reportFileCreation(dstlGrammarPath.toString());
     } catch (IOException e) {
       throw new RuntimeException(
               "0xF2000 Cannot write grammar to " + directories + "/" + tfLanguage.getName() + ".mc4");
