@@ -248,7 +248,7 @@ tasks.register('showArtifacts') { group = 'mlc'}
 tasks.register('checkArtifacts') { group = 'mlc'}
 configurations { MLC }
 dependencies {
-  MLC(group: 'de.monticore.lang', name: 'mlc-gradle', version: "$mlc_version")
+  MLC("de.monticore.lang:mlc-gradle:$mlc_version")
   MLC(project(':monticore-runtime')) // Ensure the proper runtime is used for MLC
 }
 def mlcModelPath = []
