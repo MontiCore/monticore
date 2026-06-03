@@ -2,6 +2,7 @@
 package de.monticore.gradle.dependencies;
 
 import de.monticore.gradle.MCGeneratorExtension;
+import de.monticore.gradle.common.APublishingPlugin;
 import de.monticore.gradle.sources.MCGrammarsSourceDirectorySet;
 import org.gradle.api.GradleException;
 import org.gradle.api.Plugin;
@@ -16,11 +17,7 @@ import org.gradle.api.attributes.Usage;
 import org.gradle.api.component.AdhocComponentWithVariants;
 import org.gradle.api.component.ConfigurationVariantDetails;
 import org.gradle.api.component.SoftwareComponentFactory;
-import org.gradle.api.internal.artifacts.dsl.LazyPublishArtifact;
-import org.gradle.api.internal.file.FileResolver;
-import org.gradle.api.internal.project.ProjectInternal;
 import org.gradle.api.internal.tasks.TaskDependencyFactory;
-import org.gradle.api.plugins.BasePlugin;
 import org.gradle.api.plugins.JavaPluginExtension;
 import org.gradle.api.plugins.internal.JavaConfigurationVariantMapping;
 import org.gradle.api.publish.PublishingExtension;
@@ -35,14 +32,13 @@ import javax.annotation.Nullable;
 import javax.inject.Inject;
 import java.util.Objects;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 
 /**
  * Publishes the main sourceset and exposes the {@link MCGeneratorExtension},
  * allowing the publishing of further source sets.
  */
-public class MCPublishingPlugin implements Plugin<Project> {
+public class MCPublishingPlugin extends APublishingPlugin implements Plugin<Project>  {
 
   public static final String GRAMMARS_BASE_CLASSIFIER = "grammars";
 
@@ -52,12 +48,12 @@ public class MCPublishingPlugin implements Plugin<Project> {
   protected static final Attribute<String> GRAMMAR_SOURCE_SET_ATTRIBUTE = Attribute.of("monticore.generator.sourceset", String.class);
 
   final SoftwareComponentFactory softwareComponentFactory;
-  final TaskDependencyFactory taskDependencyFactory;
 
   @Inject
-  public MCPublishingPlugin(SoftwareComponentFactory softwareComponentFactory, TaskDependencyFactory taskDependencyFactory) {
+  public MCPublishingPlugin(SoftwareComponentFactory softwareComponentFactory,
+                            TaskDependencyFactory taskDependencyFactory) {
+    super(softwareComponentFactory, taskDependencyFactory);
     this.softwareComponentFactory = softwareComponentFactory;
-    this.taskDependencyFactory = taskDependencyFactory;
   }
 
   @Override
@@ -81,34 +77,31 @@ public class MCPublishingPlugin implements Plugin<Project> {
 
       // In case only alias publications are set-up, Gradle fails with a cryptic:
       // Failed to query the value of property 'dependencies'. java.util.NoSuchElementException (no error message)
-      project.afterEvaluate(evaluatedProject -> {
-        // Thus, we throw a human comprehensible error that a default (non-alias) publication should be configured
-        if (!ext.getPublishedSourceSets().isEmpty()) { // but only if MC source sets should be published
-          @Nullable PublishingExtension publExt = project.getExtensions().findByType(PublishingExtension.class);
-          if (publExt == null) {
-            doError(evaluatedProject, "Publishing of grammars from source sets requires the maven-publish plugin to be applied first!");
-            return;
-          }
+      project.getPluginManager().withPlugin("maven-publish", _p -> {
+        project.afterEvaluate(evaluatedProject -> {
+          // Thus, we throw a human comprehensible error that a default (non-alias) publication should be configured
+          if (!ext.getPublishedSourceSets().isEmpty()) { // but only if MC source sets should be published
+            @Nullable PublishingExtension publExt = project.getExtensions().findByType(PublishingExtension.class);
+            if (publExt == null) {
+              doError(evaluatedProject, "Publishing of grammars from source sets requires the maven-publish plugin to be applied first!");
+              return;
+            }
 
-          if (publExt.getPublications()
-                  .matching(publ -> (publ instanceof DefaultMavenPublication && !((DefaultMavenPublication) publ).isAlias()))
-                  .isEmpty()) {
-            doError(evaluatedProject, "Unable to publish from MC source sets "
-                    + ext.getPublishedSourceSets().stream().map(SourceSet::getName).collect(Collectors.toList())
-                    + " without a default publication (using the maven-publish plugin) being configured");
+            if (publExt.getPublications()
+                    .matching(publ -> (publ instanceof DefaultMavenPublication && !((DefaultMavenPublication) publ).isAlias()))
+                    .isEmpty()) {
+              doError(evaluatedProject, "Unable to publish from MC source sets "
+                      + ext.getPublishedSourceSets().stream().map(SourceSet::getName).toList()
+                      + " without a default publication (using the maven-publish plugin) being configured");
+            }
           }
-        }
+        });
       });
 
       // Set-up publishing of additional source sets
       ext.getPublishedSourceSets().all(sourceSet -> {
         if (SourceSet.isMain(sourceSet)) {
           doError(project, "SourceSet (" + project.getName() + ") " + sourceSet.getName() + " is the main source set - Use traditional maven-publish instead!");
-          return;
-        }
-        // Require the maven-publish plugin to be applied
-        if (!project.getPluginManager().hasPlugin("maven-publish")) {
-          doError(project, "Publishing of MontiCore source sets requires the maven-publish plugin to be applied first");
           return;
         }
         setupGrammarsPublication(sourceSet, project);
@@ -122,7 +115,7 @@ public class MCPublishingPlugin implements Plugin<Project> {
     });
   }
 
-  /**
+  /*
    * Set-up the publication of the grammars jar of a source set
    */
   public void setupGrammarsPublication(SourceSet sourceSet, Project project) {
@@ -135,7 +128,7 @@ public class MCPublishingPlugin implements Plugin<Project> {
     // The artifact created from the grammars task
     PublishArtifact grammarsJarArtifact = createPublishedArtifact(grammarsJarTask, project);
 
-    setUpPublicationOf(grammarsJarTask, grammarsJarArtifact, outgoingGrammarsConfig, project, sourceSet);
+    preparePublicationOf(grammarsJarTask, grammarsJarArtifact, outgoingGrammarsConfig, project, sourceSet);
 
     // let the outgoing, published configuration extend from the declaring configuration (e.g., grammar)
     linkDeclaredDependenciesToOutgoingConfiguration(sourceSet, project);
@@ -151,7 +144,7 @@ public class MCPublishingPlugin implements Plugin<Project> {
   }
 
 
-  protected void setUpPublicationOf(TaskProvider<?> grammarsJarTask, PublishArtifact grammarsJarArtifact, Configuration outgoingGrammarsConfig, Project project, SourceSet sourceSet) {
+  protected void preparePublicationOf(TaskProvider<?> grammarsJarTask, PublishArtifact grammarsJarArtifact, Configuration outgoingGrammarsConfig, Project project, SourceSet sourceSet) {
     // Add the grammars artifact to the published-by-default artifact set
     project.getTasks().named("assemble").configure(et -> et.dependsOn(grammarsJarTask));
 
@@ -176,15 +169,15 @@ public class MCPublishingPlugin implements Plugin<Project> {
 
     // The main source set (and its main component) do not require further work, as the java-library plugin does the work for us
     if (!SourceSet.isMain(sourceSet)) {
-      setupNonMainPublish(grammarsJarArtifact, project, sourceSet, component);
+      prepareNonMainPublish(grammarsJarArtifact, project, sourceSet, component);
     }
   }
 
-  /**
+  /*
    * Create the Jar tasks for non-main source sets and configure them for publication
    */
-  protected void setupNonMainPublish(PublishArtifact grammarsJarArtifact, Project project, SourceSet sourceSet, AdhocComponentWithVariants component) {
-    // Similar to the java feature, we a source set specific Jar and sourcesJar task
+  protected void prepareNonMainPublish(PublishArtifact grammarsJarArtifact, Project project, SourceSet sourceSet, AdhocComponentWithVariants component) {
+    // Similar to the java feature, we add a source set specific Jar and sourcesJar task
     TaskProvider<Jar> jarTask = createJarTask(sourceSet, project);
     TaskProvider<Jar> sourcesJarTask = createSourcesJarTask(sourceSet, project);
 
@@ -194,20 +187,37 @@ public class MCPublishingPlugin implements Plugin<Project> {
 
     // Next, we add a runtime variant from the runtime classpath configuration (and add the jar Artifact)
     Configuration runtimeClasspathConfig = project.getConfigurations().getByName(sourceSet.getRuntimeClasspathConfigurationName());
-    component.addVariantsFromConfiguration(runtimeClasspathConfig, new JavaConfigurationVariantMapping("runtime", false));
+    // component.addVariantsFromConfiguration is done via setupNonMainPublish
     runtimeClasspathConfig.getOutgoing().getArtifacts().add(jarArtifact);
 
     // Next, we add a separate documentation/sources variant
     Configuration sourcesElementsConfig = createDocumentationConfig(project, sourceSet, DocsType.SOURCES);
     // and add the sources artifact to this config
     sourcesElementsConfig.getOutgoing().getArtifacts().add(sourcesJarArtifact);
-    // Then, add a variant to the component, as otherwise no variant is published
-    component.addVariantsFromConfiguration(sourcesElementsConfig, new JavaConfigurationVariantMapping("compile", true));
+    // component.addVariantsFromConfiguration is done via setupNonMainPublish
 
     // Next, we add also a compile variant from the compile classpath configuration (and add both outgoing jar artifacts)
     Configuration compileClasspathConfig = project.getConfigurations().getByName(sourceSet.getCompileClasspathConfigurationName());
-    component.addVariantsFromConfiguration(compileClasspathConfig, new JavaConfigurationVariantMapping("compile", false));
+    // component.addVariantsFromConfiguration is done via setupNonMainPublish
     compileClasspathConfig.getOutgoing().getArtifacts().add(jarArtifact);
+
+    // Add the jar to the ${SourceSetName}RuntimeElements configuration
+    project.getConfigurations().maybeCreate(sourceSet.getRuntimeElementsConfigurationName())
+            .getArtifacts().add(jarArtifact);
+    // This allows consumption from another project
+    // See https://docs.gradle.org/current/userguide/how_to_share_outputs_between_projects.html
+
+    project.getPluginManager().withPlugin("maven-publish", p -> {
+      setupNonMainPublish(grammarsJarArtifact, project, sourceSet, component, jarArtifact, sourcesJarArtifact);
+    });
+  }
+
+  /*
+   * Actually do publish the artifacts
+   */
+  protected void setupNonMainPublish(PublishArtifact grammarsJarArtifact, Project project,
+                                     SourceSet sourceSet, AdhocComponentWithVariants component,
+                                     PublishArtifact jarArtifact, PublishArtifact sourcesJarArtifact) {
 
     // We have to use afterEvaluate due to accessing the Project#getGroup() value
     project.afterEvaluate(evalProj -> {
@@ -231,6 +241,20 @@ public class MCPublishingPlugin implements Plugin<Project> {
         });
       });
     });
+
+    // Next, we add a runtime variant from the runtime classpath configuration (and add the jar Artifact)
+    Configuration runtimeClasspathConfig = project.getConfigurations().getByName(sourceSet.getRuntimeClasspathConfigurationName());
+    component.addVariantsFromConfiguration(runtimeClasspathConfig, new JavaConfigurationVariantMapping("runtime", false));
+
+    // Next, we add a separate documentation/sources variant
+    Configuration sourcesElementsConfig = project.getConfigurations().getByName(sourceSet.getSourcesElementsConfigurationName());
+    // Then, add a variant to the component, as otherwise no variant is published
+    component.addVariantsFromConfiguration(sourcesElementsConfig, new JavaConfigurationVariantMapping("compile", true));
+
+    // Next, we add also a compile variant from the compile classpath configuration (and add both outgoing jar artifacts)
+    Configuration compileClasspathConfig = project.getConfigurations().getByName(sourceSet.getCompileClasspathConfigurationName());
+    component.addVariantsFromConfiguration(compileClasspathConfig, new JavaConfigurationVariantMapping("compile", false));
+
   }
 
   protected void configureNonMainPublication(PublishArtifact grammarsJarArtifact, SourceSet sourceSet, AdhocComponentWithVariants component, Project evalProj, MavenPublication mavenPublication, PublishArtifact jarArtifact, PublishArtifact sourcesJarArtifact) {
@@ -257,35 +281,6 @@ public class MCPublishingPlugin implements Plugin<Project> {
     ((DefaultMavenPublication) mavenPublication).setAlias(true);
   }
 
-  /**
-   * Create a lazy {@link org.gradle.api.internal.artifacts.publish.ArchivePublishArtifact} from a given
-   * {@link Jar} task.
-   * Provides compatibility between gradle 7 and 8
-   * --
-   * This is important for Gradle's dependency substitution to work,
-   * otherwise relocations have to be defined by hand.
-   */
-  // TODO: After 7.8.0 release: Remove this method & extends APublishingPlugin
-  protected PublishArtifact createPublishedArtifact(TaskProvider<Jar> jarTaskProvider, Project project) {
-    // The LazyPublishArtifact is a part of Gradle's internals,
-    // but only accessible via the buildScript/groovy/kotlin API
-    try {
-      // Attempt to use the Gradle 7.4.2 constructor via reflection
-      return LazyPublishArtifact.class
-              .getConstructor(org.gradle.api.provider.Provider.class, String.class, FileResolver.class)
-              .newInstance(jarTaskProvider, null, ((ProjectInternal) project).getFileResolver());
-    } catch (ReflectiveOperationException e7) {
-      // If the 7.4.2 constructor is not found, try the Gradle 8 constructor
-      try {
-        // Gradle 8 - the TaskDependencyFactory parameter was added
-        return LazyPublishArtifact.class.getConstructor(org.gradle.api.provider.Provider.class, String.class, FileResolver.class, TaskDependencyFactory.class)
-                .newInstance(jarTaskProvider, null, ((ProjectInternal) project).getFileResolver(), taskDependencyFactory);
-      } catch (ReflectiveOperationException e8) {
-        throw new IllegalStateException("Incompatible LazyPublishArtifact constructor in gradle " + project.getGradle().getGradleVersion(), e8);
-      }
-    }
-  }
-
 
   protected Configuration addSymbolDependenciesConfig(SourceSet sourceSet, Project project) {
     Configuration config = project.getConfigurations().maybeCreate(MCSourceSets.getOutgoingSymbolConfigName(sourceSet));
@@ -305,7 +300,7 @@ public class MCPublishingPlugin implements Plugin<Project> {
     return config;
   }
 
-  /**
+  /*
    * Creates a jar task that should package the symbols produced by compiling the models of the source set into a jar.
    * However, the jar task is not configured to contain anything. This is ought to be done by a later plugin.
    */
@@ -333,31 +328,19 @@ public class MCPublishingPlugin implements Plugin<Project> {
             });
   }
 
-  /**
+  /*
    * Create a new Jar task on a given source set,
    * set its archive appendix (if non-main),
    * and add it to the assemble task dependencies.
    * Further configurations MUST be done using the consumer
    */
   protected TaskProvider<Jar> createJarTaskPartial(SourceSet sourceSet, Project project, String target, Consumer<Jar> c) {
-    TaskProvider<Jar> jarTask = project.getTasks().register(sourceSet.getTaskName(null, target), Jar.class,
-            jar -> {
-              jar.setGroup("build");
-              // https://docs.gradle.org/current/userguide/working_with_files.html#sec:reproducible_archives
-              jar.setPreserveFileTimestamps(false);
-              jar.setReproducibleFileOrder(true);
-              // And for non main source sets, also the archive appendix
-              if (!SourceSet.isMain(sourceSet))
-                jar.getArchiveAppendix().set(sourceSet.getName());
-              // further configure it via the consumer
-              c.accept(jar);
-            });
-    project.getTasks().named(BasePlugin.ASSEMBLE_TASK_NAME).configure(it -> it.dependsOn(jarTask));
-
+    TaskProvider<Jar> jarTask = super.createJarTaskPartial(sourceSet, project, target, c);
+    jarTask.configure(jar -> jar.setGroup("build"));
     return jarTask;
   }
 
-  /**
+  /*
    * Creates an outgoing configuration containing the sources of a SourceSet (if it does not already exist)
    */
   protected Configuration createDocumentationConfig(Project project, SourceSet sourceSet, String docsType) {
@@ -383,6 +366,7 @@ public class MCPublishingPlugin implements Plugin<Project> {
    *
    * @param sourceSet the [SourceSet] whose symbols/grammars should be published and for which this method will
    *                  add the transitive dependencies.
+   * @param project the project
    */
   protected void linkDeclaredDependenciesToOutgoingConfiguration(SourceSet sourceSet, Project project) {
     Configuration declaringDependencyConfig = project.getConfigurations().getByName(MCSourceSets.getDependencyDeclarationConfigName(sourceSet));
@@ -391,7 +375,7 @@ public class MCPublishingPlugin implements Plugin<Project> {
     outgoingConfiguration.extendsFrom(declaringDependencyConfig);
   }
 
-  /**
+  /*
    * Log an error and abort the gradle build process (by throwing a GradleException)
    */
   protected void doError(Project project, String msg) {

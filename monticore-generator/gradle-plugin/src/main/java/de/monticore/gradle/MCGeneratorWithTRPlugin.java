@@ -65,27 +65,14 @@ public class MCGeneratorWithTRPlugin implements Plugin<Project> {
       it.getGenDST().set(true);
     });
 
-    // Register a trafoJar task
-    TaskProvider<Jar> trafoJarProvider = project.getTasks().register("trafoJar", Jar.class, trafoJar -> {
-      trafoJar.getArchiveAppendix().set("trafo");
-      trafoJar.from(trafoSourceSet.getOutput());
-    });
-
-    // Register a consumable configuration to share the trafoJar with other projects
-    // https://docs.gradle.org/current/userguide/how_to_share_outputs_between_projects.html
-    project.getConfigurations().consumable("trafoOutElements");
-    project.getArtifacts().add("trafoOutElements", trafoJarProvider);
-
     // And mark the "trafo" source set for publishing
     // This bundles and publishes the generated TR artifacts separately as $projectname-trafo
-    project.getPluginManager().withPlugin("maven-publish", appliedPlugin -> {
       project.getExtensions().getByType(MCGeneratorExtension.class)
               .publishSourceSet(trafoSourceSet);
 
       // Add a dependency to the main project itself to the outgoing trafo config
       Dependency mainDependency = project.getDependencies().project(Map.of("path", project.getPath()));
       project.getDependencies().add(MCSourceSets.getOutgoingSymbolConfigName(trafoSourceSet), mainDependency);
-    });
   }
 
   protected TaskProvider<Sync> extractTRTask(Project project, Provider<Directory> trafoGrammarDir) {
