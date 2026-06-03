@@ -52,7 +52,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
 
   protected Map<ASTProd, ProdInfo> prodInfoMap = new LinkedHashMap<>();
 
-  protected GrammarTransformationMethods grammarTransformationMethods = new GrammarTransformationMethods();
+  protected Grammar2AntlrTransformationHelper grammarTransformationMethods = new Grammar2AntlrTransformationHelper();
 
   public Grammar2Antlr(
       ParserGeneratorHelper parserGeneratorHelper,

@@ -13,7 +13,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class GrammarTransformationMethods {
+/**
+ * Shared methods for Grammar to ANTLR related generation.
+ * Used by the Grammar2Antlr, Grammar2ParseVisitor, etc.
+ */
+public class Grammar2AntlrTransformationHelper {
 
   /**
    * Collects all productions implementing the prodSymbol and maps them to their
@@ -86,9 +90,9 @@ public class GrammarTransformationMethods {
     if (alts.size() > 200) {
       Log.debug("Optimizing large interface " + prod.getName() + " with " + alts.size() + " inlined alts.", "ParserGrammarTransformer");
       for (int i=0,l=alts.size();i<l;i++) {
-        var a = alts.get(i);
-        if (a.prodSymbol.isIsIndirectLeftRecursive()
-                || a.prodSymbol.isIsDirectLeftRecursive()) {
+        InterfaceInliningAlt alt = alts.get(i);
+        if (alt.prodSymbol.isIsIndirectLeftRecursive()
+                || alt.prodSymbol.isIsDirectLeftRecursive()) {
           lastLeftRec = i;
         }
       }
@@ -104,7 +108,7 @@ public class GrammarTransformationMethods {
    * @return an index where to split
    */
   public int splitCountHeuristic(int lastLeftRec, int altSize) {
-    // TODO: Keep rule splitting disabled for now: https://git.rwth-aachen.de/monticore/monticore/-/issues/5055
+//    TODO: Keep rule splitting disabled for now: https://git.rwth-aachen.de/monticore/monticore/-/issues/5055
 //    if (((double) lastLeftRec) / altSize > 0.1) {
 //      return Math.max(lastLeftRec, (int) (altSize * 0.1));
 //    }

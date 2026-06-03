@@ -39,7 +39,7 @@ public class LeftRecursivePriorityReduction implements GrammarASTClassProdCoCo {
     if (prod.getSymbol().isIsIndirectLeftRecursive() || prod.getSymbol().isIsDirectLeftRecursive()) {
       Optional<ProdSymbol> typeSymbol = grammarSymbol.getInheritedProd(prod.getName());
       if (typeSymbol.isPresent() && typeSymbol.get().isPresentAstNode() && typeSymbol.get()
-              .getAstNode() instanceof ASTClassProd) {
+              .getAstNode() instanceof ASTClassProd inheritedProd) {
         Map<String, Integer> priorityMap = new HashMap<>();
         for (ASTRuleReference rule : prod.getSuperInterfaceRuleList()) {
           if (rule.isPresentPrio()) {
@@ -48,8 +48,7 @@ public class LeftRecursivePriorityReduction implements GrammarASTClassProdCoCo {
             priorityMap.put(rule.getName(), 0);
           }
         }
-        for (ASTRuleReference ruleInOverridden : ((ASTClassProd) typeSymbol.get()
-                .getAstNode()).getSuperInterfaceRuleList()) {
+        for (ASTRuleReference ruleInOverridden : inheritedProd.getSuperInterfaceRuleList()) {
           if (ruleInOverridden.isPresentPrio() && priorityMap.containsKey(ruleInOverridden.getName())) {
             if (priorityMap.get(ruleInOverridden.getName()) < Integer.parseInt(ruleInOverridden.getPrio())) {
               Log.error(ERROR_CODE + ERROR_MSG_FORMAT.formatted(ruleInOverridden.getName()),

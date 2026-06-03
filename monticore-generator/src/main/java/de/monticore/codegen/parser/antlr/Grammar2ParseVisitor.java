@@ -85,7 +85,7 @@ public class Grammar2ParseVisitor implements GrammarVisitor2, GrammarHandler {
 
   protected Stack<Boolean> ruleIteratedStack = new Stack<>();
 
-  protected final GrammarTransformationMethods grammarTransformationMethods;
+  protected final Grammar2AntlrTransformationHelper grammarTransformationMethods;
 
   public Grammar2ParseVisitor(GlobalExtensionManagement glex, ParserGeneratorHelper parserGeneratorHelper, MCGrammarInfo grammarInfo, Map<ASTProd, Map<ASTNode, String>> tmpNameDict) {
     this.glex = glex;
@@ -94,7 +94,7 @@ public class Grammar2ParseVisitor implements GrammarVisitor2, GrammarHandler {
 
     this.tmpNameDict = tmpNameDict;
 
-    this.grammarTransformationMethods = new GrammarTransformationMethods();
+    this.grammarTransformationMethods = new Grammar2AntlrTransformationHelper();
   }
 
   public ASTCDClass getVisitorClass() {
