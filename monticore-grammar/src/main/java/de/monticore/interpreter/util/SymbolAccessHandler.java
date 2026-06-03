@@ -328,7 +328,13 @@ public class SymbolAccessHandler {
     return createJavaFieldSetter(fieldSymbol, f -> null);
   }
 
-  protected Field getJavaField(FieldSymbol fieldSymbol) {
+  /**
+   * Provides a {@link Field} provided a native Java field.
+   *
+   * @param fieldSymbol the symbol of the native Java field
+   * @return the corresponding {@link Field}
+   */
+  public Field getJavaField(FieldSymbol fieldSymbol) {
     Preconditions.checkState(isNativeJavaVariable(fieldSymbol));
     TypeSymbol surroundingType =
         getEnclosingType(fieldSymbol.getEnclosingScope()).get();
@@ -347,7 +353,7 @@ public class SymbolAccessHandler {
    * @param methodSym the symbol of the native Java method
    * @return the corresponding {@link MethodHandle}
    */
-  protected MethodHandle getHandleOfSymbol(MethodSymbol methodSym) {
+  public MethodHandle getHandleOfSymbol(MethodSymbol methodSym) {
     Preconditions.checkNotNull(methodSym);
     Preconditions.checkState(isNativeJavaFunction(methodSym));
     TypeSymbol surroundingType =
