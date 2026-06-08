@@ -2,9 +2,9 @@
 package de.monticore.symboltable.stereotypes;
 
 import de.monticore.ast.ASTNode;
-import de.monticore.interpreter.Value;
 import de.monticore.symboltable.IScope;
 import de.monticore.symboltable.modifiers.AccessModifier;
+import de.monticore.values.MCValue;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -71,7 +71,7 @@ class StereoinfoDeSerTest {
     public void setAccessModifier(AccessModifier accessModifier) { }
 
     @Override
-    public Map<IStereotypeReference, Optional<Value>> getStereoinfo() {
+    public Map<IStereotypeReference, Optional<MCValue>> getStereoinfo() {
       return Map.of();
     }
 
