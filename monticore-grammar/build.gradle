@@ -100,7 +100,6 @@ test {
 tasks.named('generateMCGrammars') {
   outputDir = file grammarOutDir
   debug = false
-  genINT = true
   if (findProperty("ci") != null) {
     script = "de/monticore/monticore_noreports.groovy"
   }
@@ -574,7 +573,6 @@ tasks.named("shadowJar") {
 
 tasks.named("generateTestMCGrammars") {
 //   Temporary - for optimizations (due to feature)
-  genINT = true
   dependsOn(tasks.grammarsForVariantJar)
 }
 
