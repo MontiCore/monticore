@@ -65,10 +65,6 @@ public abstract class MCGenTask extends MCSingleFileTask implements ICachedQueue
   
   @Input
   @Optional
-  public abstract Property<Boolean> getGenINT();
-
-  @Input
-  @Optional
   public abstract Property<String> getCustomLog();
 
   /**
@@ -106,11 +102,6 @@ public abstract class MCGenTask extends MCSingleFileTask implements ICachedQueue
     args.add("-" + MontiCoreConfiguration.GENTAG_LONG);
     args.add(Boolean.toString(getGenTag().getOrElse(false)));
     
-    // genINT
-    if (this.getGenINT().isPresent() && this.getGenINT().get() == true) {
-      args.add("-" + MontiCoreConfiguration.GENINT);
-    }
-
     if (getCustomLog().isPresent()) {
       args.add("-" + MontiCoreConfiguration.CUSTOMLOG);
       args.add(this.getCustomLog().get());

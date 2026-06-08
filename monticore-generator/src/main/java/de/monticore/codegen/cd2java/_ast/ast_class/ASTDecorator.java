@@ -13,7 +13,6 @@ import de.monticore.codegen.cd2java.JavaDoc;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorConstants;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
-import de.monticore.codegen.cd2java.interpreter.InterpreterConstants;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
