@@ -90,7 +90,7 @@ public class SymbolTableConstants {
 
   public static final String I_STEREOTYPE_REFERENCE = "de.monticore.symboltable.stereotypes.IStereotypeReference";
 
-  public static final String INTERPRETER_VALUE = "de.monticore.interpreter.Value";
+  public static final String INTERPRETER_VALUE = "de.monticore.values.MCValue";
 
   /**
    * attribute names
