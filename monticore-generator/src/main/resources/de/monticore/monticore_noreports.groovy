@@ -88,10 +88,6 @@ while (grammarIterator.hasNext()) {
       decoratedCD = decorateTagCD(glex, cdScope, cd, handcodedPath, decoratedCD, astGrammar)
     }
 
-    if (genINT) {
-      decorateWithInterpreter(cd, decoratedCD, glex)
-    }
-
     reportDecoratedCD(decoratedCD, report)
 
     // groovy script hook point
