@@ -103,15 +103,18 @@ public class Grammar2AntlrTransformationHelper {
 
   /**
    * Heuristic for determining where to split large rules
+   *
    * @param lastLeftRec the last left-recursive alt position
-   * @param altSize the count of total alts
+   * @param altSize     the count of total alts
    * @return an index where to split
    */
   public int splitCountHeuristic(int lastLeftRec, int altSize) {
-//    TODO: Keep rule splitting disabled for now: https://git.rwth-aachen.de/monticore/monticore/-/issues/5055
-//    if (((double) lastLeftRec) / altSize > 0.1) {
-//      return Math.max(lastLeftRec, (int) (altSize * 0.1));
-//    }
+    // TODO: Keep rule splitting disabled for now: https://git.rwth-aachen.de/monticore/monticore/-/issues/5055
+    if (false) {
+      if (((double) lastLeftRec) / altSize > 0.1) {
+        return Math.max(lastLeftRec, (int) (altSize * 0.1));
+      }
+    }
     return altSize;
   }
 }
