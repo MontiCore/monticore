@@ -2,6 +2,8 @@
 
 package de.monticore.grammar.cocos.invalid.A0143;
 
+import de.monticore.grammar.cocos.valid.A0143;
+
 grammar A0143a extends A0143 {
 
 	@Override
