@@ -1036,7 +1036,8 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
       boolean resultsAreOptional
   ) {
     // case qualifier "." name as an expression
-    Optional<SymTypeExpression> type = calculateExprQName(expr);
+    Optional<SymTypeExpression> type =
+        calculateExprQName(expr, resultsAreOptional);
     if (type.isEmpty() && !resultsAreOptional) {
       if (isSeriesOfNames(expr)) {
         Log.error("0xF735F unable to interpret qualified name \""
