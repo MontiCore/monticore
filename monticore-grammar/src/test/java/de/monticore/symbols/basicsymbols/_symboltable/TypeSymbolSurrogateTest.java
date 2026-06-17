@@ -2,7 +2,6 @@
 package de.monticore.symbols.basicsymbols._symboltable;
 
 import de.monticore.ast.ASTNode;
-import de.monticore.interpreter.Value;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symboltable.IScope;
 import de.monticore.symboltable.ISymbol;
@@ -11,6 +10,7 @@ import de.monticore.symboltable.modifiers.BasicAccessModifier;
 import de.monticore.symboltable.stereotypes.IStereotypeReference;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
+import de.monticore.values.MCValue;
 import de.monticore.visitor.ITraverser;
 import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.LogStub;
@@ -330,7 +330,7 @@ public class TypeSymbolSurrogateTest {
     public void setAccessModifier(AccessModifier accessModifier) {
     }
     @Override
-    public Map<IStereotypeReference, Optional<Value>> getStereoinfo() {
+    public Map<IStereotypeReference, Optional<MCValue>> getStereoinfo() {
       return null;
     }
     @Override

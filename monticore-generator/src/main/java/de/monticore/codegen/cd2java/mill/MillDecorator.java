@@ -316,12 +316,18 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
       ASTCDMethod builderMethod = this.getCDMethodFacade().createMethod(modifier, builderType, methodName);
       builderMethodsList.add(builderMethod);
       this.replaceTemplate(EMPTY_BODY, builderMethod, new TemplateHookPoint("mill.BuilderMethod", methodName));
+      if (methodName.endsWith("SymbolSurrogateBuilder")) {
+        this.replaceTemplate(ANNOTATIONS, builderMethod, new StringHookPoint("@SuppressWarnings(\"removal\")"));
+      }
 
       // add protected Method for Builder
       ASTModifier protectedModifier = PROTECTED.build();
       ASTCDMethod protectedMethod = this.getCDMethodFacade().createMethod(protectedModifier, builderType, "_" + methodName);
       builderMethodsList.add(protectedMethod);
       this.replaceTemplate(EMPTY_BODY, protectedMethod, new TemplateHookPoint("mill.ProtectedBuilderMethod", builderType.printType()));
+      if (methodName.endsWith("SymbolSurrogateBuilder")) {
+        this.replaceTemplate(ANNOTATIONS, protectedMethod, new StringHookPoint("@SuppressWarnings(\"removal\")"));
+      }
     }
 
     return builderMethodsList;
@@ -543,6 +549,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
     ASTCDMethod builderLoaderMethod = getCDMethodFacade().createMethod(PUBLIC_STATIC.build(),
         getMCTypeFacade().createQualifiedType(symbolSurrogateBuilderFullName), symbolSurrogateBuilderSimpleName);
 
+    this.replaceTemplate(ANNOTATIONS, builderLoaderMethod, new StringHookPoint("@SuppressWarnings(\"removal\")"));
     this.replaceTemplate(EMPTY_BODY, builderLoaderMethod, new StringHookPoint("return " + millFullName + "." + symbolSurrogateBuilderSimpleName + "();"));
     superMethods.add(builderLoaderMethod);
     return superMethods;

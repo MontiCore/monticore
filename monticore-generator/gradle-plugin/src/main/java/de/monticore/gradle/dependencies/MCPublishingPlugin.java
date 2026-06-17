@@ -18,7 +18,6 @@ import org.gradle.api.component.ConfigurationVariantDetails;
 import org.gradle.api.component.SoftwareComponentFactory;
 import org.gradle.api.internal.artifacts.dsl.LazyPublishArtifact;
 import org.gradle.api.internal.file.FileResolver;
-import org.gradle.api.internal.plugins.DefaultArtifactPublicationSet;
 import org.gradle.api.internal.project.ProjectInternal;
 import org.gradle.api.internal.tasks.TaskDependencyFactory;
 import org.gradle.api.plugins.BasePlugin;
@@ -136,7 +135,7 @@ public class MCPublishingPlugin implements Plugin<Project> {
     // The artifact created from the grammars task
     PublishArtifact grammarsJarArtifact = createPublishedArtifact(grammarsJarTask, project);
 
-    setUpPublicationOf(grammarsJarArtifact, outgoingGrammarsConfig, project, sourceSet);
+    setUpPublicationOf(grammarsJarTask, grammarsJarArtifact, outgoingGrammarsConfig, project, sourceSet);
 
     // let the outgoing, published configuration extend from the declaring configuration (e.g., grammar)
     linkDeclaredDependenciesToOutgoingConfiguration(sourceSet, project);
@@ -152,10 +151,9 @@ public class MCPublishingPlugin implements Plugin<Project> {
   }
 
 
-  protected void setUpPublicationOf(PublishArtifact grammarsJarArtifact, Configuration outgoingGrammarsConfig, Project project, SourceSet sourceSet) {
+  protected void setUpPublicationOf(TaskProvider<?> grammarsJarTask, PublishArtifact grammarsJarArtifact, Configuration outgoingGrammarsConfig, Project project, SourceSet sourceSet) {
     // Add the grammars artifact to the published-by-default artifact set
-    project.getExtensions().getByType(DefaultArtifactPublicationSet.class)
-            .addCandidate(grammarsJarArtifact);
+    project.getTasks().named("assemble").configure(et -> et.dependsOn(grammarsJarTask));
 
     AdhocComponentWithVariants component;
 

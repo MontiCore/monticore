@@ -18,11 +18,6 @@ subprojects {
     testRuntimeOnly "org.junit.platform:junit-platform-launcher:$junit_version"
   }
 
-  tasks.named('generateMCGrammars') {
-    genINT = true
-    // created by the de.monticore.generator plugin
-  }
-
 }
 
 configure(subprojects.findAll {it.name != 'forParser' && it.name != 'runtimeOnly' })  {

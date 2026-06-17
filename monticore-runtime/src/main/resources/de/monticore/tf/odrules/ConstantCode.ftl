@@ -25,6 +25,9 @@
   // variables
   protected boolean ${variable.getName()}_is_fix = false;
   protected ${variable.getType()} ${variable.getName()};
+  <#if variable.isInList()>
+    protected List<${variable.getType()}> ${variable.getName()}_list; // used within list
+  </#if>
   </#list>
   protected ModelTraversal <?> t = CommentBasedModelTraversalFactory.getInstance().create((java.util.function.Supplier)${grammarName}Mill::inheritanceTraverser);
   <#list ast.getPattern().getAssocList() as association>

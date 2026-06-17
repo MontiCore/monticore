@@ -4,6 +4,7 @@ package de.monticore.expressions.cocos;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._cocos.ExpressionsBasisASTExpressionCoCo;
 import de.monticore.types.check.TypeCalculator;
+import de.monticore.types3.TypeCheck3;
 
 import java.util.Optional;
 
@@ -25,8 +26,19 @@ public class ExpressionValid implements ExpressionsBasisASTExpressionCoCo {
 
   protected TypeCalculator typeCheck;
 
+  /**
+   * The old constructor
+   *
+   * @param typeCheck don't use this.
+   * @deprecated TypeCalculator is deprecated, use the other constructor
+   */
+  @Deprecated
   public ExpressionValid(TypeCalculator typeCheck) {
     this.typeCheck = typeCheck;
+  }
+
+  public ExpressionValid() {
+    this.typeCheck = null;
   }
 
   @Override
@@ -40,7 +52,12 @@ public class ExpressionValid implements ExpressionsBasisASTExpressionCoCo {
   public void check(ASTExpression expr) {
     if (!checkingNode.isPresent()) {
       // TypeCheck
-      typeCheck.typeOf(expr);
+      if (typeCheck != null) {
+        typeCheck.typeOf(expr);
+      }
+      else {
+        TypeCheck3.typeOf(expr);
+      }
       checkingNode = Optional.of(expr);
     }
   }
