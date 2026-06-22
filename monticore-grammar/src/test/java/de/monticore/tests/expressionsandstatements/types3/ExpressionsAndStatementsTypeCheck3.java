@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.tests.interpretertestlang.types3;
+package de.monticore.tests.expressionsandstatements.types3;
 
 import de.monticore.expressions.assignmentexpressions.types3.AssignmentExpressionsCTTIVisitor;
 import de.monticore.expressions.bitexpressions.types3.BitExpressionsTypeVisitor;
@@ -18,8 +18,8 @@ import de.monticore.ocl.setexpressions.types3.SetExpressionsCTTIVisitor;
 import de.monticore.siunit.siunitliterals.types3.SIUnitLiteralsTypeVisitor;
 import de.monticore.siunit.siunittypes4computing.types3.SIUnitTypes4ComputingTypeVisitor;
 import de.monticore.siunit.siunittypes4math.types3.SIUnitTypes4MathTypeVisitor;
-import de.monticore.tests.interpretertestlang.InterpreterTestLangMill;
-import de.monticore.tests.interpretertestlang._visitor.InterpreterTestLangTraverser;
+import de.monticore.tests.expressionsandstatements.ExpressionsAndStatementsMill;
+import de.monticore.tests.expressionsandstatements._visitor.ExpressionsAndStatementsTraverser;
 import de.monticore.types.mcbasictypes.types3.MCBasicTypesTypeVisitor;
 import de.monticore.types.mccollectiontypes.types3.MCCollectionSymTypeRelations;
 import de.monticore.types.mccollectiontypes.types3.MCCollectionTypesTypeVisitor;
@@ -39,11 +39,11 @@ import de.monticore.types3.util.TypeVisitorOperatorCalculator;
 import de.monticore.visitor.ITraverser;
 import de.se_rwth.commons.logging.Log;
 
-public class InterpreterTestLangTypeCheck3 extends MapBasedTypeCheck3 {
+public class ExpressionsAndStatementsTypeCheck3 extends MapBasedTypeCheck3 {
 
   public static void init() {
     Log.trace(
-        "init " + InterpreterTestLangTypeCheck3.class.getSimpleName(),
+        "init " + ExpressionsAndStatementsTypeCheck3.class.getSimpleName(),
         "TypeCheck setup"
     );
 
@@ -56,8 +56,8 @@ public class InterpreterTestLangTypeCheck3 extends MapBasedTypeCheck3 {
     CommonExpressionsLValueRelations.init();
     TypeParameterRelations.init();
 
-    InterpreterTestLangTraverser traverser =
-        InterpreterTestLangMill.inheritanceTraverser();
+    ExpressionsAndStatementsTraverser traverser =
+        ExpressionsAndStatementsMill.inheritanceTraverser();
     Type4Ast type4Ast = new Type4Ast();
     InferenceContext4Ast ctx4Ast = new InferenceContext4Ast();
 
@@ -158,7 +158,7 @@ public class InterpreterTestLangTypeCheck3 extends MapBasedTypeCheck3 {
     traverser.add4SIUnitTypes4Math(visSIUnitTypes4Math);
 
     // create delegate
-    InterpreterTestLangTypeCheck3 oclTC3 = new InterpreterTestLangTypeCheck3(traverser, type4Ast, ctx4Ast);
+    ExpressionsAndStatementsTypeCheck3 oclTC3 = new ExpressionsAndStatementsTypeCheck3(traverser, type4Ast, ctx4Ast);
     oclTC3.setThisAsDelegate();
   }
 
@@ -174,7 +174,7 @@ public class InterpreterTestLangTypeCheck3 extends MapBasedTypeCheck3 {
     TypeParameterRelations.reset();
   }
 
-  protected InterpreterTestLangTypeCheck3(
+  protected ExpressionsAndStatementsTypeCheck3(
       ITraverser typeTraverser, Type4Ast type4Ast, InferenceContext4Ast ctx4Ast) {
     super(typeTraverser, type4Ast, ctx4Ast);
   }
