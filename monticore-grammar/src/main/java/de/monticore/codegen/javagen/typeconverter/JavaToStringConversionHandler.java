@@ -10,7 +10,7 @@ import static de.monticore.types3.SymTypeRelations.isStringOrSubType;
 /**
  * Conversions of Objects (including generics) to string
  */
-public class JavaToStringConversionHandler<T>
+public class JavaToStringConversionHandler
     extends AbstractJavaTypeConverter {
 
   @Override
