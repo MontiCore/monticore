@@ -1,29 +1,29 @@
 // (c) https://github.com/MontiCore/monticore
-package de.monticore.tests.interpretertestlang.interpreter;
+package de.monticore.tests.expressionsandstatements.interpreter;
 
 import com.google.common.base.Preconditions;
 import de.monticore.interpreter.calculations.MICalculation;
 import de.monticore.interpreter.calculations.MICalculationVoid;
 import de.monticore.interpreter.util.InterpreterDataForBasicSymbols;
-import de.monticore.tests.interpretertestlang._ast.ASTInterpreterInput;
-import de.monticore.tests.interpretertestlang._ast.ASTStatement;
-import de.monticore.tests.interpretertestlang._visitor.InterpreterTestLangInheritanceHandler;
+import de.monticore.statements.mcstatementsbasis._ast.ASTMCBlockStatement;
+import de.monticore.tests.expressionsandstatements._ast.ASTBehaviorInput;
+import de.monticore.tests.expressionsandstatements._visitor.ExpressionsAndStatementsInheritanceHandler;
 import de.monticore.types3.TypeCheck3;
 
-public class InterpreterTestLangInterpreter
-    extends InterpreterTestLangInheritanceHandler {
+public class ExpressionsAndStatementsInterpreter
+    extends ExpressionsAndStatementsInheritanceHandler {
 
   protected InterpreterDataForBasicSymbols iData;
 
-  public InterpreterTestLangInterpreter(InterpreterDataForBasicSymbols iData) {
+  public ExpressionsAndStatementsInterpreter(InterpreterDataForBasicSymbols iData) {
     this.iData = Preconditions.checkNotNull(iData);
   }
 
   @Override
-  public void traverse(ASTInterpreterInput node) {
+  public void traverse(ASTBehaviorInput node) {
     MICalculation fullCalc;
     MICalculationVoid stmtChainCalc = MICalculationVoid.NOOP_CALC;
-    for (ASTStatement stmt : node.getStatementList()) {
+    for (ASTMCBlockStatement stmt : node.getMCBlockStatementList()) {
       stmt.accept(getTraverser());
       MICalculationVoid stmtCalc =
           iData.popCalculation().asCalculationVoid();
