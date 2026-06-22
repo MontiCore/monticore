@@ -23,6 +23,7 @@ import de.monticore.symboltable.ISymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.values.MCValueFactory;
 import de.monticore.values.MCValueFunction;
+import de.se_rwth.commons.logging.Log;
 import org.apache.commons.lang3.NotImplementedException;
 
 import java.lang.invoke.MethodHandle;
@@ -50,6 +51,9 @@ import static de.monticore.types3.util.TypeContextCalculator.getEnclosingType;
  */
 public class SymbolAccessHandler {
 
+  static protected final String LOG_NAME =
+      SymbolAccessHandler.class.getSimpleName();
+
   public record SymbolAccess(
       MICalculation getter,
       Optional<MISetter> setter
@@ -68,7 +72,7 @@ public class SymbolAccessHandler {
       if (isNativeJavaVariable(varSym)) {
         FieldSymbol fieldSym = (FieldSymbol) exprSourceSym;
         getter = createJavaFieldGetterOfStatic(fieldSym);
-        setter = Optional.of(createJavaFieldSetterOfStatic(fieldSym));
+        setter = createJavaFieldSetterOfStatic(fieldSym);
       }
       else {
         getter = frameLayout.getVariableGetter(varSym);
@@ -115,7 +119,7 @@ public class SymbolAccessHandler {
         if (TypeDispatcherHotfix.isFieldSymbol(exprSourceSym)) {
           FieldSymbol fieldSym = (FieldSymbol) exprSourceSym;
           getter = createJavaFieldGetter(fieldSym, objCalc);
-          setter = Optional.of(createJavaFieldSetter(fieldSym, objCalc));
+          setter = createJavaFieldSetter(fieldSym, objCalc);
         }
         else if (TypeDispatcherHotfix.isMethodSymbol(exprSourceSym)) {
           MethodSymbol methodSym = (MethodSymbol) exprSourceSym;
@@ -248,7 +252,7 @@ public class SymbolAccessHandler {
    * @return a function that, given a calculation that returns a Java object,
    *     returns a setter that sets the field-value of that object.
    */
-  protected MISetter createJavaFieldSetter(
+  protected Optional<MISetter> createJavaFieldSetter(
       FieldSymbol fieldSymbol,
       MICalculationValue objCalc
   ) {
@@ -258,7 +262,14 @@ public class SymbolAccessHandler {
       handle = MethodHandles.lookup().unreflectSetter(field);
     }
     catch (IllegalAccessException e) {
-      throw new RuntimeException(e);
+      // usually a final field
+      Log.debug("Not creating setter for field "
+              + fieldSymbol.getFullName()
+              + ", because:" + System.lineSeparator()
+              + e.getMessage(),
+          LOG_NAME
+      );
+      return Optional.empty();
     }
 
     final BiConsumer<MIFrame, Object> genericSetter;
@@ -321,10 +332,12 @@ public class SymbolAccessHandler {
       setter = (frame, value) ->
           genericSetter.accept(frame, value.asNativeObject());
     }
-    return setter;
+    return Optional.of(setter);
   }
 
-  protected MISetter createJavaFieldSetterOfStatic(FieldSymbol fieldSymbol) {
+  protected Optional<MISetter> createJavaFieldSetterOfStatic(
+      FieldSymbol fieldSymbol
+  ) {
     return createJavaFieldSetter(fieldSymbol, f -> null);
   }
 
