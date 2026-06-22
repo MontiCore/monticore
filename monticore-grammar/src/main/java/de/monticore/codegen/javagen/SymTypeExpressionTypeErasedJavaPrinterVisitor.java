@@ -1,14 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.javagen;
 
-import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfFunction;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.SymTypeOfTuple;
 import de.se_rwth.commons.logging.Log;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Prints SymTypeExpressions in a Java compatible way,
@@ -35,35 +31,15 @@ public class SymTypeExpressionTypeErasedJavaPrinterVisitor
     }
     getPrint().append(func.sizeArgumentTypes());
 
-    List<SymTypeExpression> resArgs = new ArrayList<>();
-    if (isFunc) {
-      resArgs.add(func.getType());
-    }
-    resArgs.addAll(func.getArgumentTypeList());
-
-    if (!resArgs.isEmpty()) {
-      getPrint().append('<');
-      for (int i = 0; i < resArgs.size(); i++) {
-        getPrint().append("?");
-        if (i < resArgs.size() - 1) {
-          getPrint().append(',');
-        }
-      }
-      getPrint().append('>');
-    }
+    int numArgs = func.sizeArgumentTypes();
+    numArgs += isFunc ? 1 : 0;
+    printWildcardListInBrackets(numArgs);
   }
 
   @Override
   public void visit(SymTypeOfGenerics generic) {
     getPrint().append(printTypeSymbol(generic.getTypeInfo()));
-    getPrint().append('<');
-    for (int i = 0; i < generic.sizeArguments(); i++) {
-      getPrint().append("?");
-      if (i < generic.sizeArguments() - 1) {
-        getPrint().append(',');
-      }
-    }
-    getPrint().append('>');
+    printWildcardListInBrackets(generic.sizeArguments());
   }
 
   @Override
@@ -71,13 +47,29 @@ public class SymTypeExpressionTypeErasedJavaPrinterVisitor
     String className = RTE_PACKAGE + ".tuples.Tuple"
         + tuple.sizeTypes();
     getPrint().append(className);
+    printWildcardListInBrackets(tuple.sizeTypes());
+  }
+
+  // helper
+
+  /**
+   * prints {@code <?,?,?...>}
+   *
+   * @param amount how many wildcards to print
+   *               0 will print nothing
+   */
+  protected void printWildcardListInBrackets(int amount) {
+    if (amount == 0) {
+      return;
+    }
     getPrint().append('<');
-    for (int i = 0; i < tuple.sizeTypes(); i++) {
+    for (int i = 0; i < amount; i++) {
       getPrint().append("?");
-      if (i < tuple.sizeTypes() - 1) {
+      if (i < amount - 1) {
         getPrint().append(',');
       }
     }
     getPrint().append('>');
   }
+
 }

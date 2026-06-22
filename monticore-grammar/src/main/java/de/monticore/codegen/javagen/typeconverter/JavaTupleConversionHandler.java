@@ -36,13 +36,15 @@ public class JavaTupleConversionHandler extends AbstractJavaTypeConverter {
 
       printer.print("((java.util.function.Supplier<");
       printer.print(convert2JavaType(targetTuple));
-      printer.print(">) () -> { ");
+      printer.println(">) () -> {");
+      printer.indent();
       printer.print(convert2JavaType(sourceTuple));
       printer.print(" ");
       printer.print(tmpTupleVarName);
       printer.print(" = ");
       sourceExprPrintAction.print(printer);
-      printer.print("; return ");
+      printer.println(";");
+      printer.print("return ");
       printer.print(convert2JavaTypeConstructor(targetTuple));
       printer.print(".of(");
 
@@ -60,7 +62,9 @@ public class JavaTupleConversionHandler extends AbstractJavaTypeConverter {
           printer.print(", ");
         }
       }
-      printer.print("); }).get()");
+      printer.println(");");
+      printer.unindent();
+      printer.print("}).get()");
 
       tupleNestingLevel--;
       return true;

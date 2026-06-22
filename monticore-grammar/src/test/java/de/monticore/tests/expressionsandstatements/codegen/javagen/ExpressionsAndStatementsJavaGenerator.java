@@ -1,8 +1,9 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.tests.expressionsandstatements.codegen.javagen;
 
-import de.monticore.codegen.javagen.AbstractJavaGenVisitor;
+import de.monticore.codegen.TraverserBasedCodeGenerator;
 import de.monticore.codegen.javagen.JavaGenSymTypeExpressionConverter;
+import de.monticore.codegen.javagen.JavaGenVisitorState;
 import de.monticore.codegen.javagen.JavaOperationPrinter;
 import de.monticore.codegen.javagen.SymTypeExpression2JavaConverter;
 import de.monticore.expressions.assignmentexpressions.codegen.javagen.AssignmentExpressionsJavaGenVisitor;
@@ -23,12 +24,13 @@ import de.monticore.tests.expressionsandstatements._visitor.ExpressionsAndStatem
 import de.monticore.visitor.ITraverser;
 
 public class ExpressionsAndStatementsJavaGenerator
-    extends AbstractJavaGenVisitor {
+    implements TraverserBasedCodeGenerator {
 
-  ExpressionsAndStatementsTraverser traverser;
+  protected ExpressionsAndStatementsTraverser traverser;
 
-  public ExpressionsAndStatementsJavaGenerator(IndentPrinter printer) {
-    super(printer);
+  protected JavaGenVisitorState state;
+
+  public ExpressionsAndStatementsJavaGenerator() {
     init();
   }
 
@@ -37,70 +39,80 @@ public class ExpressionsAndStatementsJavaGenerator
     JavaOperationPrinter.init();
     SymTypeExpression2JavaConverter.init();
 
+    this.state = new JavaGenVisitorState(new IndentPrinter());
     this.traverser = ExpressionsAndStatementsMill.inheritanceTraverser();
 
     ExpressionsAndStatementsJavaGenVisitor visExpressionsAndStatements =
-        new ExpressionsAndStatementsJavaGenVisitor(getPrinter());
+        new ExpressionsAndStatementsJavaGenVisitor(state);
     traverser.setExpressionsAndStatementsHandler(visExpressionsAndStatements);
 
     // Literals
 
     MCCommonLiteralsJavaGenVisitor visMCCommonLiterals =
-        new MCCommonLiteralsJavaGenVisitor(getPrinter());
+        new MCCommonLiteralsJavaGenVisitor(state);
     traverser.setMCCommonLiteralsHandler(visMCCommonLiterals);
 
     // Expressions
 
     AssignmentExpressionsJavaGenVisitor visAssignmentExpressions =
-        new AssignmentExpressionsJavaGenVisitor(getPrinter());
+        new AssignmentExpressionsJavaGenVisitor(state);
     traverser.setAssignmentExpressionsHandler(visAssignmentExpressions);
 
     BitExpressionsJavaGenVisitor visBitExpressions =
-        new BitExpressionsJavaGenVisitor(getPrinter());
+        new BitExpressionsJavaGenVisitor(state);
     traverser.setBitExpressionsHandler(visBitExpressions);
 
     CommonExpressionsJavaGenVisitor visCommonExpressions =
-        new CommonExpressionsJavaGenVisitor(getPrinter());
+        new CommonExpressionsJavaGenVisitor(state);
     traverser.setCommonExpressionsHandler(visCommonExpressions);
 
     ExpressionsBasisJavaGenVisitor visExpressionBasis =
-        new ExpressionsBasisJavaGenVisitor(getPrinter());
+        new ExpressionsBasisJavaGenVisitor(state);
     traverser.setExpressionsBasisHandler(visExpressionBasis);
 
     LambdaExpressionsJavaGenVisitor visLambdaExpressions =
-        new LambdaExpressionsJavaGenVisitor(getPrinter());
+        new LambdaExpressionsJavaGenVisitor(state);
     traverser.setLambdaExpressionsHandler(visLambdaExpressions);
 
     TupleExpressionsJavaGenVisitor visTupleExpressions =
-        new TupleExpressionsJavaGenVisitor(getPrinter());
+        new TupleExpressionsJavaGenVisitor(state);
     traverser.setTupleExpressionsHandler(visTupleExpressions);
 
     OCLExpressionsJavaGenVisitor visOCLExpressions =
-        new OCLExpressionsJavaGenVisitor(getPrinter());
+        new OCLExpressionsJavaGenVisitor(state);
     traverser.setOCLExpressionsHandler(visOCLExpressions);
 
     OptionalOperatorsJavaGenVisitor visOptionalOperators =
-        new OptionalOperatorsJavaGenVisitor(getPrinter());
+        new OptionalOperatorsJavaGenVisitor(state);
     traverser.setOptionalOperatorsHandler(visOptionalOperators);
 
     SetExpressionsJavaGenVisitor visSetExpressions =
-        new SetExpressionsJavaGenVisitor(getPrinter());
+        new SetExpressionsJavaGenVisitor(state);
     traverser.setSetExpressionsHandler(visSetExpressions);
 
     UglyExpressionsJavaGenVisitor visUglyExpressions =
-        new UglyExpressionsJavaGenVisitor(getPrinter());
+        new UglyExpressionsJavaGenVisitor(state);
     traverser.setUglyExpressionsHandler(visUglyExpressions);
 
     // Statements
 
     MCVarDeclarationStatementsJavaGenVisitor visMCVarDeclarationStatements =
-        new MCVarDeclarationStatementsJavaGenVisitor(getPrinter());
+        new MCVarDeclarationStatementsJavaGenVisitor(state);
     traverser.setMCVarDeclarationStatementsHandler(visMCVarDeclarationStatements);
   }
 
   @Override
   public ITraverser getTraverser() {
     return traverser;
+  }
+
+  @Override
+  public IndentPrinter getPrinter() {
+    return state.getPrinter();
+  }
+
+  public JavaGenVisitorState getSharedState() {
+    return state;
   }
 
 }
