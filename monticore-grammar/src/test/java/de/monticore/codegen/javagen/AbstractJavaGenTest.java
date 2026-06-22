@@ -33,7 +33,7 @@ public abstract class AbstractJavaGenTest extends AbstractMCTest {
 
   // enable for experimenting:
   // it will print the generated code before evaluation
-  protected static final boolean printGeneratedCode = true;
+  protected static final boolean printGeneratedCode = false;
 
   protected JShell jshell;
 
