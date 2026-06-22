@@ -1,48 +1,42 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.expressions.uglyexpressions.codegen.javagen;
 
-import de.monticore.codegen.javagen.AbstractJavaGenVisitor;
+import com.google.common.base.Preconditions;
+import de.monticore.codegen.javagen.JavaGenVisitorState;
+import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.uglyexpressions._ast.ASTArrayCreator;
 import de.monticore.expressions.uglyexpressions._ast.ASTArrayDimensionByExpression;
 import de.monticore.expressions.uglyexpressions._ast.ASTClassCreator;
 import de.monticore.expressions.uglyexpressions._ast.ASTCreatorExpression;
 import de.monticore.expressions.uglyexpressions._ast.ASTInstanceofExpression;
 import de.monticore.expressions.uglyexpressions._ast.ASTTypeCastExpression;
-import de.monticore.expressions.uglyexpressions._visitor.UglyExpressionsHandler;
-import de.monticore.expressions.uglyexpressions._visitor.UglyExpressionsTraverser;
+import de.monticore.expressions.uglyexpressions._visitor.UglyExpressionsInheritanceHandler;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.check.SymTypeExpression;
 
 import static de.monticore.codegen.CodeGenSymTypeExpressionConverter.printConverted;
+import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.convert2JavaType;
 import static de.monticore.types3.SymTypeRelations.normalize;
 import static de.monticore.types3.TypeCheck3.symTypeFromAST;
 import static de.monticore.types3.TypeCheck3.typeOf;
 
-public class UglyExpressionsJavaGenVisitor extends AbstractJavaGenVisitor
-    implements UglyExpressionsHandler {
+public class UglyExpressionsJavaGenVisitor
+    extends UglyExpressionsInheritanceHandler {
 
-  // Traverser
+  protected JavaGenVisitorState state;
 
-  protected UglyExpressionsTraverser traverser;
-
-  @Override
-  public UglyExpressionsTraverser getTraverser() {
-    return traverser;
+  public UglyExpressionsJavaGenVisitor(JavaGenVisitorState state) {
+    this.state = Preconditions.checkNotNull(state);
   }
 
-  @Override
-  public void setTraverser(UglyExpressionsTraverser traverser) {
-    this.traverser = traverser;
-  }
-
-  public UglyExpressionsJavaGenVisitor(IndentPrinter printer) {
-    super(printer);
+  protected IndentPrinter getPrinter() {
+    return state.getPrinter();
   }
 
   // CodeGen
 
   @Override
-  public void handle(ASTTypeCastExpression node) {
+  public void traverse(ASTTypeCastExpression node) {
     SymTypeExpression targetType = normalize(symTypeFromAST(node.getMCType()));
     SymTypeExpression sourceType = normalize(typeOf(node.getExpression()));
     printConverted(getPrinter(),
@@ -53,28 +47,45 @@ public class UglyExpressionsJavaGenVisitor extends AbstractJavaGenVisitor
   }
 
   @Override
-  public void handle(ASTInstanceofExpression node) {
-    _willBeRemoved_logUnimplemented(node);
+  public void traverse(ASTInstanceofExpression node) {
+    SymTypeExpression targetType = normalize(symTypeFromAST(node.getMCType()));
+    state.startParentheses();
+    node.getExpression().accept(getTraverser());
+    getPrinter().print(" instanceof ");
+    getPrinter().print(convert2JavaType(targetType));
+    state.endParentheses();
   }
 
   @Override
-  public void handle(ASTCreatorExpression node) {
-    _willBeRemoved_logUnimplemented(node);
+  public void traverse(ASTCreatorExpression node) {
+    state.startParentheses();
+    getPrinter().print("new ");
+    node.getCreator().accept(getTraverser());
+    state.endParentheses();
   }
 
   @Override
-  public void handle(ASTClassCreator node) {
-    _willBeRemoved_logUnimplemented(node);
+  public void traverse(ASTClassCreator node) {
+    node.getMCType().accept(getTraverser());
+    node.getArguments().accept(getTraverser());
   }
 
   @Override
-  public void handle(ASTArrayCreator node) {
-    _willBeRemoved_logUnimplemented(node);
+  public void traverse(ASTArrayCreator node) {
+    node.getMCType().accept(getTraverser());
+    node.getArrayDimensionSpecifier().accept(getTraverser());
   }
 
   @Override
-  public void handle(ASTArrayDimensionByExpression node) {
-    _willBeRemoved_logUnimplemented(node);
+  public void traverse(ASTArrayDimensionByExpression node) {
+    for (ASTExpression expr : node.getExpressionList()) {
+      getPrinter().print("[");
+      expr.accept(getTraverser());
+      getPrinter().print("]");
+    }
+    for (int i = 0; i < node.getDimList().size(); i++) {
+      getPrinter().print("[]");
+    }
   }
 
 }

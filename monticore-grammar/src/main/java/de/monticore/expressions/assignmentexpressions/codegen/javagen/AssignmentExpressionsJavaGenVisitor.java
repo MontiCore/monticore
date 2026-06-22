@@ -1,18 +1,19 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.expressions.assignmentexpressions.codegen.javagen;
 
+import com.google.common.base.Preconditions;
 import de.monticore.codegen.CodeGenPrintAction;
-import de.monticore.codegen.javagen.AbstractJavaGenVisitor;
 import de.monticore.codegen.javagen.JavaGenSymTypeRelations;
+import de.monticore.codegen.javagen.JavaGenVisitorState;
 import de.monticore.codegen.javagen.JavaOperationPrinter;
 import de.monticore.expressions.assignmentexpressions._ast.ASTAssignmentExpression;
 import de.monticore.expressions.assignmentexpressions._ast.ASTDecPrefixExpression;
 import de.monticore.expressions.assignmentexpressions._ast.ASTDecSuffixExpression;
 import de.monticore.expressions.assignmentexpressions._ast.ASTIncPrefixExpression;
 import de.monticore.expressions.assignmentexpressions._ast.ASTIncSuffixExpression;
-import de.monticore.expressions.assignmentexpressions._visitor.AssignmentExpressionsHandler;
-import de.monticore.expressions.assignmentexpressions._visitor.AssignmentExpressionsTraverser;
+import de.monticore.expressions.assignmentexpressions._visitor.AssignmentExpressionsInheritanceHandler;
 import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types3.TypeCheck3;
@@ -39,39 +40,31 @@ import static de.monticore.types3.TypeCheck3.typeOf;
  * as {@code x = (typeOf(x)) (x + 2)}.
  */
 public class AssignmentExpressionsJavaGenVisitor
-    extends AbstractJavaGenVisitor
-    implements AssignmentExpressionsHandler {
+    extends AssignmentExpressionsInheritanceHandler {
 
-  // Traverser
+  protected JavaGenVisitorState state;
 
-  protected AssignmentExpressionsTraverser traverser;
-
-  public AssignmentExpressionsJavaGenVisitor(IndentPrinter printer) {
-    super(printer);
+  public AssignmentExpressionsJavaGenVisitor(JavaGenVisitorState state) {
+    this.state = Preconditions.checkNotNull(state);
   }
 
-  @Override
-  public AssignmentExpressionsTraverser getTraverser() {
-    return traverser;
-  }
-
-  @Override
-  public void setTraverser(AssignmentExpressionsTraverser traverser) {
-    this.traverser = traverser;
+  public IndentPrinter getPrinter() {
+    return state.getPrinter();
   }
 
   // CodoGen
 
   @Override
-  public void handle(ASTIncSuffixExpression expr) {
+  public void traverse(ASTIncSuffixExpression expr) {
     // NOTE: this is only a temporary implementation,
     // as in the future, templates provided by the symbols
     // are to be used instead.
 
-    if (JavaGenSymTypeRelations.isJavaNumeric(TypeCheck3.typeOf(expr.getExpression()))) {
+    if (JavaGenSymTypeRelations.generatesToJavaNumeric(TypeCheck3.typeOf(expr.getExpression()))) {
       expr.getExpression().accept(getTraverser());
       getPrinter().print("++");
-    } else {
+    }
+    else {
       Log.error("0xFD250 Unhandled increment suffix operator "
           + ". This is an alpha version and needs to be extended."
       );
@@ -79,15 +72,16 @@ public class AssignmentExpressionsJavaGenVisitor
   }
 
   @Override
-  public void handle(ASTDecSuffixExpression expr) {
+  public void traverse(ASTDecSuffixExpression expr) {
     // NOTE: this is only a temporary implementation,
     // as in the future, templates provided by the symbols
     // are to be used instead.
 
-    if (JavaGenSymTypeRelations.isJavaNumeric(TypeCheck3.typeOf(expr.getExpression()))) {
+    if (JavaGenSymTypeRelations.generatesToJavaNumeric(TypeCheck3.typeOf(expr.getExpression()))) {
       expr.getExpression().accept(getTraverser());
       getPrinter().print("--");
-    } else {
+    }
+    else {
       Log.error("0xFD251 Unhandled increment suffix operator "
           + ". This is an alpha version and needs to be extended."
       );
@@ -95,39 +89,52 @@ public class AssignmentExpressionsJavaGenVisitor
   }
 
   @Override
-  public void handle(ASTIncPrefixExpression expr) {
+  public void traverse(ASTIncPrefixExpression expr) {
     SymTypeExpression resultType = normalize(typeOf(expr));
     SymTypeExpression innerType = normalize(typeOf(expr.getExpression()));
 
     JavaOperationPrinter.printAssignment(
-        printer,
+        getPrinter(),
         resultType,
         innerType,
         // left type due to conversion
         innerType,
         p -> expr.getExpression().accept(getTraverser()),
-        p2 -> printPlus(printer, resultType, innerType, SymTypeExpressionFactory.createPrimitive("int"), p -> expr.getExpression().accept(getTraverser()), (p) -> p.print("1"))
+        p2 -> printPlus(getPrinter(),
+            resultType,
+            innerType,
+            SymTypeExpressionFactory.createPrimitive("int"),
+            p -> expr.getExpression().accept(getTraverser()),
+            (p) -> p.print("1")
+        )
     );
   }
 
   @Override
-  public void handle(ASTDecPrefixExpression expr) {
+  public void traverse(ASTDecPrefixExpression expr) {
     SymTypeExpression resultType = normalize(typeOf(expr));
     SymTypeExpression innerType = normalize(typeOf(expr.getExpression()));
 
     JavaOperationPrinter.printAssignment(
-        printer,
+        getPrinter(),
         resultType,
         innerType,
         // left type due to conversion
         innerType,
         p -> expr.getExpression().accept(getTraverser()),
-        p2 -> printMinus(printer, resultType, innerType, SymTypeExpressionFactory.createPrimitive("int"), p -> expr.getExpression().accept(getTraverser()), (p) -> p.print("1"))
+        p2 -> printMinus(
+            getPrinter(),
+            resultType,
+            innerType,
+            SymTypeExpressionFactory.createPrimitive(BasicSymbolsMill.INT),
+            p -> expr.getExpression().accept(getTraverser()),
+            (p) -> p.print("1")
+        )
     );
   }
 
   @Override
-  public void handle(ASTAssignmentExpression assignment) {
+  public void traverse(ASTAssignmentExpression assignment) {
 
     // should be the same as target
     SymTypeExpression resultType = normalize(typeOf(assignment));
@@ -199,7 +206,7 @@ public class AssignmentExpressionsJavaGenVisitor
     }
 
     JavaOperationPrinter.printAssignment(
-        printer,
+        getPrinter(),
         resultType,
         leftType,
         // left type due to conversion
