@@ -30,6 +30,7 @@ import de.se_rwth.commons.logging.Log;
 import java.util.Optional;
 
 import static de.monticore.codegen.CodeGenSymTypeExpressionConverter.printConverted;
+import static de.monticore.codegen.javagen.JavaGenSymTypeRelations.generatesToJavaPrimitive;
 import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.convert2JavaType;
 import static de.monticore.types3.SymTypeRelations.normalize;
 import static de.monticore.types3.TypeCheck3.typeOf;
@@ -242,7 +243,7 @@ public class OCLExpressionsJavaGenVisitor
     ASTExpression left = node.getLeft();
     ASTExpression right = node.getRight();
     SymTypeExpression leftType = normalize(TypeCheck3.typeOf(left));
-    if (leftType.isPrimitive()) {
+    if (generatesToJavaPrimitive(leftType)) {
       getPrinter().print("java.util.Objects.equals(");
       left.accept(getTraverser());
       getPrinter().print(", ");
