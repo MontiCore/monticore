@@ -11,7 +11,7 @@ import de.monticore.types.*;
 
 /* Test Grammar: This is not intended to become a MontiCore stable grammar. */
 
-grammar InterpreterTestLang
+grammar ExpressionsAndStatements
     extends
             // Literals
             MCCommonLiterals,
@@ -40,14 +40,10 @@ grammar InterpreterTestLang
             // Symbols
             OOSymbols {
 
-  InterpreterInput =
+  BehaviorInput =
     MCImportStatement*
-    Statement*
+    MCBlockStatement*
     Expression?
-  ;
-
-  Statement =
-    MCBlockStatement
   ;
 
   // Unused

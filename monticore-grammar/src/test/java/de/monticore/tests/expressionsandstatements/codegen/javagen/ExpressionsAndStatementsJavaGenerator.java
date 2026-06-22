@@ -1,36 +1,47 @@
 // (c) https://github.com/MontiCore/monticore
-package de.monticore.codegen.javagen;
+package de.monticore.tests.expressionsandstatements.codegen.javagen;
 
-import de.monticore.codegen.AbstractCodeGenVisitor;
+import de.monticore.codegen.javagen.AbstractJavaGenVisitor;
+import de.monticore.codegen.javagen.JavaGenSymTypeExpressionConverter;
+import de.monticore.codegen.javagen.JavaOperationPrinter;
+import de.monticore.codegen.javagen.SymTypeExpression2JavaConverter;
 import de.monticore.expressions.assignmentexpressions.codegen.javagen.AssignmentExpressionsJavaGenVisitor;
 import de.monticore.expressions.bitexpressions.codegen.javagen.BitExpressionsJavaGenVisitor;
-import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
-import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
 import de.monticore.expressions.commonexpressions.codegen.javagen.CommonExpressionsJavaGenVisitor;
 import de.monticore.expressions.expressionsbasis.codegen.javagen.ExpressionsBasisJavaGenVisitor;
 import de.monticore.expressions.lambdaexpressions.codegen.javagen.LambdaExpressionsJavaGenVisitor;
 import de.monticore.expressions.tupleexpressions.codegen.javagen.TupleExpressionsJavaGenVisitor;
 import de.monticore.expressions.uglyexpressions.codegen.javagen.UglyExpressionsJavaGenVisitor;
 import de.monticore.literals.mccommonliterals.codegen.javagen.MCCommonLiteralsJavaGenVisitor;
+import de.monticore.ocl.oclexpressions.codegen.javagen.OCLExpressionsJavaGenVisitor;
+import de.monticore.ocl.optionaloperators.codegen.javagen.OptionalOperatorsJavaGenVisitor;
+import de.monticore.ocl.setexpressions.codegen.javagen.SetExpressionsJavaGenVisitor;
 import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.statements.mcvardeclarationstatements.codegen.javagen.MCVarDeclarationStatementsJavaGenVisitor;
+import de.monticore.tests.expressionsandstatements.ExpressionsAndStatementsMill;
+import de.monticore.tests.expressionsandstatements._visitor.ExpressionsAndStatementsTraverser;
 import de.monticore.visitor.ITraverser;
 
-public class CombineExpressionWithLiteralsCodeGenerator
-    extends AbstractCodeGenVisitor {
+public class ExpressionsAndStatementsJavaGenerator
+    extends AbstractJavaGenVisitor {
 
-  CombineExpressionsWithLiteralsTraverser traverser;
+  ExpressionsAndStatementsTraverser traverser;
 
-  public CombineExpressionWithLiteralsCodeGenerator(IndentPrinter printer) {
+  public ExpressionsAndStatementsJavaGenerator(IndentPrinter printer) {
     super(printer);
     init();
   }
 
-  public void init() {
-    this.traverser = CombineExpressionsWithLiteralsMill.traverser();
-
+  protected void init() {
     JavaGenSymTypeExpressionConverter.init();
     JavaOperationPrinter.init();
     SymTypeExpression2JavaConverter.init();
+
+    this.traverser = ExpressionsAndStatementsMill.inheritanceTraverser();
+
+    ExpressionsAndStatementsJavaGenVisitor visExpressionsAndStatements =
+        new ExpressionsAndStatementsJavaGenVisitor(getPrinter());
+    traverser.setExpressionsAndStatementsHandler(visExpressionsAndStatements);
 
     // Literals
 
@@ -64,10 +75,27 @@ public class CombineExpressionWithLiteralsCodeGenerator
         new TupleExpressionsJavaGenVisitor(getPrinter());
     traverser.setTupleExpressionsHandler(visTupleExpressions);
 
+    OCLExpressionsJavaGenVisitor visOCLExpressions =
+        new OCLExpressionsJavaGenVisitor(getPrinter());
+    traverser.setOCLExpressionsHandler(visOCLExpressions);
+
+    OptionalOperatorsJavaGenVisitor visOptionalOperators =
+        new OptionalOperatorsJavaGenVisitor(getPrinter());
+    traverser.setOptionalOperatorsHandler(visOptionalOperators);
+
+    SetExpressionsJavaGenVisitor visSetExpressions =
+        new SetExpressionsJavaGenVisitor(getPrinter());
+    traverser.setSetExpressionsHandler(visSetExpressions);
+
     UglyExpressionsJavaGenVisitor visUglyExpressions =
         new UglyExpressionsJavaGenVisitor(getPrinter());
     traverser.setUglyExpressionsHandler(visUglyExpressions);
 
+    // Statements
+
+    MCVarDeclarationStatementsJavaGenVisitor visMCVarDeclarationStatements =
+        new MCVarDeclarationStatementsJavaGenVisitor(getPrinter());
+    traverser.setMCVarDeclarationStatementsHandler(visMCVarDeclarationStatements);
   }
 
   @Override
