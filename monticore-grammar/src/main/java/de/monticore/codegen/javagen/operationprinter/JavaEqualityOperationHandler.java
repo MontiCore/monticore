@@ -63,7 +63,7 @@ public class JavaEqualityOperationHandler
     // (e.g., SI Units)
 
     // slight optimization for numbers:
-    if (JavaGenSymTypeRelations.isJavaPrimitive(leftType) && JavaGenSymTypeRelations.isJavaPrimitive(rightType)) {
+    if (JavaGenSymTypeRelations.generatesToJavaPrimitive(leftType) && JavaGenSymTypeRelations.generatesToJavaPrimitive(rightType)) {
       printWithEqualsOperator(
           printer, leftType, rightType,
           leftExprPrintAction, rightExprPrintAction

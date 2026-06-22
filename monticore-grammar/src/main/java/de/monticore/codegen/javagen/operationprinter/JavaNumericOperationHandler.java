@@ -128,7 +128,7 @@ public class JavaNumericOperationHandler implements ICodeGenOperationHandler {
     // specifically check the Java types,
     // in case that further primitives have been added.
     return isNumericType(modelType)
-        && JavaGenSymTypeRelations.isJavaNumeric(modelType);
+        && JavaGenSymTypeRelations.generatesToJavaNumeric(modelType);
   }
 
   protected String getJavaOperator(BinaryOperator operator) {

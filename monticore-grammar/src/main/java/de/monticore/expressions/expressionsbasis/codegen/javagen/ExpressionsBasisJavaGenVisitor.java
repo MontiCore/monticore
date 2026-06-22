@@ -1,50 +1,41 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions.expressionsbasis.codegen.javagen;
 
-import de.monticore.codegen.javagen.AbstractJavaGenVisitor;
+import com.google.common.base.Preconditions;
+import de.monticore.codegen.javagen.JavaGenVisitorState;
 import de.monticore.expressions.expressionsbasis._ast.ASTArguments;
 import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
-import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisHandler;
-import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisTraverser;
+import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisInheritanceHandler;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
 import de.monticore.symboltable.IScopeSpanningSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfFunction;
-import de.monticore.types3.Type4Ast;
-import de.monticore.types3.util.MapBasedTypeCheck3;
 import de.se_rwth.commons.logging.Log;
 
 import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.convert2JavaType;
 import static de.monticore.types3.SymTypeRelations.normalize;
 import static de.monticore.types3.TypeCheck3.typeOf;
 
-public class ExpressionsBasisJavaGenVisitor extends AbstractJavaGenVisitor
-    implements ExpressionsBasisHandler {
+public class ExpressionsBasisJavaGenVisitor
+    extends ExpressionsBasisInheritanceHandler {
 
-  // Traverser
-  protected ExpressionsBasisTraverser traverser;
+  protected JavaGenVisitorState state;
 
-  @Override
-  public ExpressionsBasisTraverser getTraverser() {
-    return traverser;
+  public ExpressionsBasisJavaGenVisitor(JavaGenVisitorState state) {
+    this.state = Preconditions.checkNotNull(state);
   }
 
-  @Override
-  public void setTraverser(ExpressionsBasisTraverser traverser) {
-    this.traverser = traverser;
-  }
-
-  public ExpressionsBasisJavaGenVisitor(IndentPrinter printer) {
-    super(printer);
+  protected IndentPrinter getPrinter() {
+    return state.getPrinter();
   }
 
   // CodeGen
 
   @Override
-  public void handle(ASTNameExpression node) {
+  public void traverse(ASTNameExpression node) {
     // NOTE: this is only a temporary implementation,
     // as in the future, templates provided by the functions symbols
     // are to be used instead.
@@ -116,7 +107,7 @@ public class ExpressionsBasisJavaGenVisitor extends AbstractJavaGenVisitor
   }
 
   @Override
-  public void handle(ASTArguments node) {
+  public void traverse(ASTArguments node) {
     // arguments are context dependent,
     // thus, they cannot be printed in a general way.
     // This has to be done by the expression that has the arguments.
@@ -128,8 +119,9 @@ public class ExpressionsBasisJavaGenVisitor extends AbstractJavaGenVisitor
   }
 
   @Override
-  public void handle(ASTLiteralExpression node) {
+  public void traverse(ASTLiteralExpression node) {
     // explicitly pass through
     node.getLiteral().accept(getTraverser());
   }
+
 }

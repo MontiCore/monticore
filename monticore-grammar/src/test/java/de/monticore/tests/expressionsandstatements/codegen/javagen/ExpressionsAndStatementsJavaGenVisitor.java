@@ -2,7 +2,7 @@
 package de.monticore.tests.expressionsandstatements.codegen.javagen;
 
 import com.google.common.base.Preconditions;
-import de.monticore.codegen.javagen.JavaGenVisitor;
+import de.monticore.codegen.javagen.JavaGenVisitorState;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.statements.mcstatementsbasis._ast.ASTMCBlockStatement;
 import de.monticore.tests.expressionsandstatements._ast.ASTBehaviorInput;
@@ -12,18 +12,16 @@ import de.monticore.tests.expressionsandstatements._visitor.ExpressionsAndStatem
  * prints a list of Java statements for tests
  */
 public class ExpressionsAndStatementsJavaGenVisitor
-    extends ExpressionsAndStatementsInheritanceHandler
-    implements JavaGenVisitor {
+    extends ExpressionsAndStatementsInheritanceHandler {
 
-  protected IndentPrinter printer;
+  protected JavaGenVisitorState state;
 
-  public ExpressionsAndStatementsJavaGenVisitor(IndentPrinter printer) {
-    this.printer = Preconditions.checkNotNull(printer);
+  public ExpressionsAndStatementsJavaGenVisitor(JavaGenVisitorState state) {
+    this.state = Preconditions.checkNotNull(state);
   }
 
-  @Override
-  public IndentPrinter getPrinter() {
-    return printer;
+  protected IndentPrinter getPrinter() {
+    return state.getPrinter();
   }
 
   // CodeGen
@@ -36,7 +34,7 @@ public class ExpressionsAndStatementsJavaGenVisitor
     if (node.isPresentExpression()) {
       getPrinter().print("return ");
       node.getExpression().accept(getTraverser());
-      endStatement();
+      state.endStatement();
     }
   }
 

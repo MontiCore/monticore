@@ -1,11 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions.tupleexpressions.codegen.javagen;
 
-import de.monticore.codegen.javagen.AbstractJavaGenVisitor;
+import com.google.common.base.Preconditions;
+import de.monticore.codegen.javagen.JavaGenVisitorState;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.tupleexpressions._ast.ASTTupleExpression;
-import de.monticore.expressions.tupleexpressions._visitor.TupleExpressionsHandler;
-import de.monticore.expressions.tupleexpressions._visitor.TupleExpressionsTraverser;
+import de.monticore.expressions.tupleexpressions._visitor.TupleExpressionsInheritanceHandler;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.check.SymTypeOfTuple;
 import de.monticore.types3.TypeCheck3;
@@ -15,30 +15,23 @@ import java.util.Iterator;
 import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.convert2BoxedJavaType;
 import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.convert2JavaTypeConstructor;
 
-public class TupleExpressionsJavaGenVisitor extends AbstractJavaGenVisitor
-    implements TupleExpressionsHandler {
+public class TupleExpressionsJavaGenVisitor
+    extends TupleExpressionsInheritanceHandler {
 
-  // Traverser
-  protected TupleExpressionsTraverser traverser;
+  protected JavaGenVisitorState state;
 
-  public TupleExpressionsJavaGenVisitor(IndentPrinter printer) {
-    super(printer);
+  public TupleExpressionsJavaGenVisitor(JavaGenVisitorState state) {
+    this.state = Preconditions.checkNotNull(state);
   }
 
-  @Override
-  public TupleExpressionsTraverser getTraverser() {
-    return traverser;
-  }
-
-  @Override
-  public void setTraverser(TupleExpressionsTraverser traverser) {
-    this.traverser = traverser;
+  protected IndentPrinter getPrinter() {
+    return state.getPrinter();
   }
 
   // CodeGen
 
   @Override
-  public void handle(ASTTupleExpression node) {
+  public void traverse(ASTTupleExpression node) {
     SymTypeOfTuple tupleType = TypeCheck3.typeOf(node).asTupleType();
     getPrinter().print(convert2JavaTypeConstructor(tupleType));
 
@@ -51,7 +44,7 @@ public class TupleExpressionsJavaGenVisitor extends AbstractJavaGenVisitor
     }
     getPrinter().print(">of");
 
-    startParentheses();
+    state.startParentheses();
     Iterator<ASTExpression> expressionIterator = node.getExpressionList().iterator();
     while (expressionIterator.hasNext()) {
       ASTExpression expression = expressionIterator.next();
@@ -60,7 +53,7 @@ public class TupleExpressionsJavaGenVisitor extends AbstractJavaGenVisitor
         getPrinter().print(", ");
       }
     }
-    endParentheses();
+    state.endParentheses();
   }
 
 }

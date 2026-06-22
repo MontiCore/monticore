@@ -1,6 +1,7 @@
 package de.monticore.codegen.javagen;
 
 import com.google.common.base.Preconditions;
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.SymTypeExpression;
 import de.se_rwth.commons.logging.Log;
 
@@ -16,31 +17,28 @@ public class JavaGenSymTypeRelations {
   protected Set<String> javaNumericTypes;
 
   public JavaGenSymTypeRelations() {
+    Set<String> javaPrimitiveNumericTypes = new HashSet<>();
+    javaPrimitiveNumericTypes.add(BasicSymbolsMill.BYTE);
+    javaPrimitiveNumericTypes.add(BasicSymbolsMill.CHAR);
+    javaPrimitiveNumericTypes.add(BasicSymbolsMill.DOUBLE);
+    javaPrimitiveNumericTypes.add(BasicSymbolsMill.FLOAT);
+    javaPrimitiveNumericTypes.add(BasicSymbolsMill.INT);
+    javaPrimitiveNumericTypes.add(BasicSymbolsMill.LONG);
+    javaPrimitiveNumericTypes.add(BasicSymbolsMill.SHORT);
+
     Set<String> javaPrimitiveTypes_temp = new HashSet<>();
-    javaPrimitiveTypes_temp.add("boolean");
-    javaPrimitiveTypes_temp.add("byte");
-    javaPrimitiveTypes_temp.add("char");
-    javaPrimitiveTypes_temp.add("double");
-    javaPrimitiveTypes_temp.add("float");
-    javaPrimitiveTypes_temp.add("int");
-    javaPrimitiveTypes_temp.add("long");
-    javaPrimitiveTypes_temp.add("short");
+    javaPrimitiveTypes_temp.addAll(javaPrimitiveNumericTypes);
+    javaPrimitiveTypes_temp.add(BasicSymbolsMill.BOOLEAN);
     javaPrimitiveTypes = Collections.unmodifiableSet(javaPrimitiveTypes_temp);
 
     Set<String> javaNumericTypes_temp = new HashSet<>();
-    javaNumericTypes_temp.add("byte");
+    javaNumericTypes_temp.addAll(javaPrimitiveNumericTypes);
     javaNumericTypes_temp.add("java.lang.Byte");
-    javaNumericTypes_temp.add("char");
     javaNumericTypes_temp.add("java.lang.Character");
-    javaNumericTypes_temp.add("double");
     javaNumericTypes_temp.add("java.lang.Double");
-    javaNumericTypes_temp.add("float");
     javaNumericTypes_temp.add("java.lang.Float");
-    javaNumericTypes_temp.add("int");
     javaNumericTypes_temp.add("java.lang.Integer");
-    javaNumericTypes_temp.add("long");
     javaNumericTypes_temp.add("java.lang.Long");
-    javaNumericTypes_temp.add("short");
     javaNumericTypes_temp.add("java.lang.Short");
     javaNumericTypes = Collections.unmodifiableSet(javaNumericTypes_temp);
   }
@@ -48,22 +46,22 @@ public class JavaGenSymTypeRelations {
   /**
    * Returns true iff the provided type generates to a java primitive
    */
-  public static boolean isJavaPrimitive(SymTypeExpression type) {
-    return getDelegate()._isJavaPrimitive(type);
+  public static boolean generatesToJavaPrimitive(SymTypeExpression type) {
+    return getDelegate()._generatesToJavaPrimitive(type);
   }
 
-  public boolean _isJavaPrimitive(SymTypeExpression type) {
+  protected boolean _generatesToJavaPrimitive(SymTypeExpression type) {
     return javaPrimitiveTypes.contains(SymTypeExpression2JavaConverter.convert2JavaType(type));
   }
 
   /**
    * Returns true iff the provided type generates to a java numeric type (boxed or unboxed)
    */
-  public static boolean isJavaNumeric(SymTypeExpression type) {
-    return getDelegate()._isJavaNumeric(type);
+  public static boolean generatesToJavaNumeric(SymTypeExpression type) {
+    return getDelegate()._generatesToJavaNumeric(type);
   }
 
-  public boolean _isJavaNumeric(SymTypeExpression type) {
+  protected boolean _generatesToJavaNumeric(SymTypeExpression type) {
     return javaNumericTypes.contains(SymTypeExpression2JavaConverter.convert2JavaType(type));
   }
 
@@ -80,7 +78,7 @@ public class JavaGenSymTypeRelations {
 
   protected static void setDelegate(JavaGenSymTypeRelations newDelegate) {
     JavaGenSymTypeRelations.delegate =
-      Preconditions.checkNotNull(newDelegate);
+        Preconditions.checkNotNull(newDelegate);
   }
 
   protected static JavaGenSymTypeRelations getDelegate() {
