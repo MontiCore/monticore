@@ -150,8 +150,12 @@ public class OCLExpressionsJavaGenVisitor
     }
 
     getPrinter().print(getVarName(node));
-    getPrinter().print(" &= ");
+    getPrinter().print(" = ");
+    getPrinter().print(getVarName(node));
+    getPrinter().print(" && ");
+    state.startParentheses();
     node.getExpression().accept(getTraverser());
+    state.endParentheses();
     state.endStatement();
 
     for (int i = node.getInDeclarationList().size() - 1; i >= 0; i--) {
@@ -178,8 +182,12 @@ public class OCLExpressionsJavaGenVisitor
     }
 
     getPrinter().print(getVarName(node));
-    getPrinter().print(" |= ");
+    getPrinter().print(" = ");
+    getPrinter().print(getVarName(node));
+    getPrinter().print(" || ");
+    state.startParentheses();
     node.getExpression().accept(getTraverser());
+    state.endParentheses();
     state.endStatement();
 
     for (int i = node.getInDeclarationList().size() - 1; i >= 0; i--) {
