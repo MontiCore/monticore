@@ -138,10 +138,11 @@ public class SetExpressionsJavaGenVisitor
   @Override
   public void traverse(ASTSetUnionExpression node) {
     state.printExpressionBeginLambda(TypeCheck3.typeOf(node));
+    String setVarName = getVarName(node.getSet()) + "_toIter";
 
     printDerivedType(node.getSet());
     getPrinter().print(" ");
-    getPrinter().print(getVarName(node.getSet()));
+    getPrinter().print(setVarName);
     getPrinter().print(" = ");
     node.getSet().accept(getTraverser());
     state.endStatement();
@@ -157,7 +158,7 @@ public class SetExpressionsJavaGenVisitor
     getPrinter().print(" ");
     getPrinter().print(getVarName(node.getSet()));
     getPrinter().print("_item : ");
-    getPrinter().print(getVarName(node.getSet()));
+    getPrinter().print(setVarName);
     getPrinter().println(") {");
     getPrinter().indent();
 
@@ -180,10 +181,11 @@ public class SetExpressionsJavaGenVisitor
   @Override
   public void traverse(ASTSetIntersectionExpression node) {
     state.printExpressionBeginLambda(TypeCheck3.typeOf(node));
+    String setVarName = getVarName(node.getSet()) + "_toIter";
 
     printDerivedType(node.getSet());
     getPrinter().print(" ");
-    getPrinter().print(getVarName(node.getSet()));
+    getPrinter().print(setVarName);
     getPrinter().print(" = ");
     node.getSet().accept(getTraverser());
     state.endStatement();
@@ -193,7 +195,7 @@ public class SetExpressionsJavaGenVisitor
     getPrinter().print("> ");
     getPrinter().print(getVarName(node));
     getPrinter().print(" = ");
-    getPrinter().print(getVarName(node.getSet()));
+    getPrinter().print(setVarName);
     getPrinter().println(".stream().findAny().orElse(new java.util.HashSet<>());");
 
     getPrinter().print("for (");
@@ -201,7 +203,7 @@ public class SetExpressionsJavaGenVisitor
     getPrinter().print(" ");
     getPrinter().print(getVarName(node.getSet()));
     getPrinter().print("_item : ");
-    getPrinter().print(getVarName(node.getSet()));
+    getPrinter().print(setVarName);
     getPrinter().println(") {");
     getPrinter().indent();
 
@@ -568,4 +570,3 @@ public class SetExpressionsJavaGenVisitor
   }
 
 }
-

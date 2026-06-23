@@ -171,6 +171,8 @@ public class ExpressionsTestModels {
         Arguments.of("2 notin [1, 2, 3]", false),
         Arguments.of("setand [true, true, false]", false),
         Arguments.of("setor [false, false, true]", true),
+        Arguments.of("1 isin union {{1}, {2}, {3}}", true),
+        Arguments.of("1 isin intersect {{1, 2}, {1, 3}}", true),
         Arguments.of("(any [1, 2]) isin [1, 2]", true),
         Arguments.of("(any [1, 2]) isin [2, 1]", true),
         Arguments.of("(any [1]) isin [2]", false)
