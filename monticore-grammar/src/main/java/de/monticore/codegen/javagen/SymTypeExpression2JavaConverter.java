@@ -5,23 +5,31 @@ import com.google.common.base.Preconditions;
 import de.monticore.types.check.SymTypeExpression;
 import de.se_rwth.commons.logging.Log;
 
+/**
+ * Converts model {@link SymTypeExpression}s to Java equivalents
+ * for code generation.
+ * <p>
+ * Note: This _ought_ to create new SymTypeExpressions,
+ * but due to technical limitations regarding global scopes,
+ * creates Strings instead.
+ */
 public class SymTypeExpression2JavaConverter {
 
   protected static SymTypeExpression2JavaConverter delegate;
 
   protected SymTypeExpressionJavaPrinterVisitor javaTypePrinterVisitor =
-    new SymTypeExpressionJavaPrinterVisitor();
+      new SymTypeExpressionJavaPrinterVisitor();
 
   protected SymTypeExpressionBoxedJavaPrinterVisitor javaBoxedTypePrinterVisitor =
       new SymTypeExpressionBoxedJavaPrinterVisitor();
 
   protected SymTypeExpressionTypeErasedJavaPrinterVisitor javaTypeErasedPrinterVisitor =
-    new SymTypeExpressionTypeErasedJavaPrinterVisitor();
+      new SymTypeExpressionTypeErasedJavaPrinterVisitor();
 
   // methods
 
   /**
-   * Converts model types in a Java compatible way.
+   * Converts a model type into a Java type.
    */
   public static String convert2JavaType(SymTypeExpression modelType) {
     return getDelegate()._convert2JavaType(modelType);
@@ -32,7 +40,8 @@ public class SymTypeExpression2JavaConverter {
   }
 
   /**
-   * Converts model types in a boxed Java compatible way.
+   * Converts a model type into a (boxed) Java type.
+   * To be used, e.g., for type parameters of generics.
    */
   public static String convert2BoxedJavaType(SymTypeExpression modelType) {
     return getDelegate()._convert2BoxedJavaType(modelType);
@@ -43,7 +52,9 @@ public class SymTypeExpression2JavaConverter {
   }
 
   /**
-   * Converts model types in a Java compatible way with type erasure.
+   * Converts a model type into a Java type after type erasure, e.g.,
+   * {@code List<String>} becomes {@code java.util.List<?>}
+   * for, e.g., {@code instanceof}.
    */
   public static String convert2TypeErasedJavaType(SymTypeExpression modelType) {
     return getDelegate()._convert2TypeErasedJavaType(modelType);
@@ -56,9 +67,11 @@ public class SymTypeExpression2JavaConverter {
   // Convenience methods
 
   /**
-   * Converts model types in java compatible way and returns their type constructor
+   * Provides the (qualified) name of the Java type
+   * corresponding to the model type.
+   * This can be used, e.g., as constructor.
    */
-  public static String convert2JavaTypeConstructor(SymTypeExpression modelType) {
+  public static String convert2JavaQName(SymTypeExpression modelType) {
     return convert2JavaType(modelType).split("<")[0];
   }
 
@@ -84,4 +97,5 @@ public class SymTypeExpression2JavaConverter {
     }
     return SymTypeExpression2JavaConverter.delegate;
   }
+
 }

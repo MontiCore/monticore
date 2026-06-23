@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 
 import static de.monticore.codegen.CodeGenSymTypeExpressionConverter.printConverted;
 import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.convert2BoxedJavaType;
-import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.convert2JavaTypeConstructor;
+import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.convert2JavaQName;
 import static de.monticore.symbols.oosymbols.types3.OOSymbolsSymTypeRelations.isConstructor;
 import static de.monticore.symbols.oosymbols.types3.OOSymbolsSymTypeRelations.isMethod;
 import static de.monticore.types.check.SymTypeExpressionFactory.createDeclaredType;
@@ -462,7 +462,7 @@ public class CommonExpressionsJavaGenVisitor
       OOTypeSymbol owningSymbol = (OOTypeSymbol) TypeContextCalculator
           .getEnclosingType(exprSourceSym.getEnclosingScope()).get();
       SymTypeExpression declaredType = createDeclaredType(owningSymbol);
-      getPrinter().print(convert2JavaTypeConstructor(declaredType));
+      getPrinter().print(convert2JavaQName(declaredType));
     }
     // pack.age....
     else {
