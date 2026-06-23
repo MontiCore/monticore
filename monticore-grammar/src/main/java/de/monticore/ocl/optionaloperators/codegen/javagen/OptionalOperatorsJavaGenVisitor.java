@@ -124,42 +124,49 @@ public class OptionalOperatorsJavaGenVisitor
 
   @Override
   public void traverse(ASTOptionalSimilarExpression node) {
-    handleIsSimilarOpt(
-        node.getLeft(), node.getRight(),
-        typeOf(node.getLeft()), typeOf(node.getRight()), typeOf(node)
-    );
-  }
-
-  @Override
-  public void traverse(ASTOptionalNotSimilarExpression node) {
-    getPrinter().print("!");
-    state.startParentheses();
-    handleIsSimilarOpt(
-        node.getLeft(), node.getRight(),
-        typeOf(node.getLeft()), typeOf(node.getRight()), typeOf(node)
-    );
-    state.endParentheses();
-  }
-
-  protected void handleIsSimilarOpt(
-      ASTExpression leftExpr,
-      ASTExpression rightExpr,
-      SymTypeExpression leftType,
-      SymTypeExpression rightType,
-      SymTypeExpression exprType
-  ) {
-    Preconditions.checkState(isBoolean(exprType));
+    ASTExpression leftExpr = node.getLeft();
+    ASTExpression rightExpr = node.getRight();
+    SymTypeExpression leftType = typeOf(node.getLeft());
+    typeOf(node.getRight());
+    Preconditions.checkState(isBoolean(typeOf(node)));
     Preconditions.checkState(isOptional(leftType));
-    Preconditions.checkState(isOptional(rightType));
     state.startParentheses();
     leftExpr.accept(getTraverser());
     state.endParentheses();
-    // is equals enough?
+    getPrinter().print(".isPresent() && ");
+
+    state.startParentheses();
+    leftExpr.accept(getTraverser());
+    state.endParentheses();
+    getPrinter().print(".get()");
     getPrinter().print(".equals(");
     rightExpr.accept(getTraverser());
     getPrinter().print(")");
   }
 
+  @Override
+  public void traverse(ASTOptionalNotSimilarExpression node) {
+    state.startParentheses();
+    ASTExpression leftExpr = node.getLeft();
+    ASTExpression rightExpr = node.getRight();
+    SymTypeExpression leftType = typeOf(node.getLeft());
+    typeOf(node.getRight());
+    Preconditions.checkState(isBoolean(typeOf(node)));
+    Preconditions.checkState(isOptional(leftType));
+    state.startParentheses();
+    leftExpr.accept(getTraverser());
+    state.endParentheses();
+    getPrinter().print(".isPresent() && !");
+
+    state.startParentheses();
+    leftExpr.accept(getTraverser());
+    state.endParentheses();
+    getPrinter().print(".get()");
+
+    // is equals enough?
+    getPrinter().print(".equals(");
+    rightExpr.accept(getTraverser());
+    getPrinter().print(")");
+    state.endParentheses();
+  }
 }
-
-

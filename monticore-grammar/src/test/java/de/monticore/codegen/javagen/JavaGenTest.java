@@ -37,6 +37,12 @@ public class JavaGenTest extends AbstractJavaGenTest {
     checkValue(modelStr, expectedValue);
   }
 
+  @ParameterizedTest(name = "[{index}] {0}")
+  @MethodSource("de.monticore.tests.expressionsandstatements.ExpressionsTestModels#getOptionalSimilarOperatorCases")
+  public void testJavaGenOptionalSimilarExprVals(String modelStr, Object expectedValue) {
+    checkValue(modelStr, expectedValue);
+  }
+
   @ParameterizedTest
   @MethodSource("de.monticore.tests.expressionsandstatements.Class2MCTestModels#getNativeJavaCases")
   void testNativeJava(String modelStr, Object expectedValue) {
