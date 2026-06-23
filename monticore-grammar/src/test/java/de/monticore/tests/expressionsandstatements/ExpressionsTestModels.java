@@ -203,6 +203,8 @@ public class ExpressionsTestModels {
             "[z + x | int x in [y + y | y in [1,2,3]], "
                 + "int z in [1 + x, 2 + x]]",
             List.of(5, 6, 9, 10, 13, 14)),
+        Arguments.of("[x in [1,3] | true]", List.of(1, 3)),
+        Arguments.of("[x in [1,2,3] | x % 2 == 1]", List.of(1, 3)),
         Arguments.of("{1, 4..6, 4}", Set.of(1, 4, 5, 6)),
         Arguments.of("{x * x | x in {1, 2, 3}}", Set.of(1, 4, 9)),
         Arguments.of("{x | x in {1, 2, 3, 4}, x % 2 == 0}", Set.of(2, 4))
