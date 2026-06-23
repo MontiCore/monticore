@@ -22,6 +22,7 @@ public class ExpressionsTestModels {
         getLogicalCases(),
         getBitExpressionsCases(),
         getOptionalOperatorCases(),
+        getOptionalSimilarOperatorCases(),
         getTupleCases(),
         getOCLExpressionsCases(),
         getSetExpressionsCases(),
@@ -148,9 +149,20 @@ public class ExpressionsTestModels {
         Arguments.of("Optional.of(2) ?<= 1", false),
         Arguments.of("Optional.of(2) ?>= 2", true),
         Arguments.of("Optional.of(2) ?== 2", true),
-        Arguments.of("Optional.of(2) ?!= 2", false),
-        Arguments.of("Optional.of(2) ?~~ Optional.of(2)", true),
-        Arguments.of("Optional.of(2) ?!~ Optional.of(3)", true)
+        Arguments.of("Optional.of(2) ?!= 2", false)
+    );
+  }
+
+  static public Stream<Arguments> getOptionalSimilarOperatorCases() {
+    return Stream.of(
+        Arguments.of("Optional.of(2) ?~~ 2", true),
+        Arguments.of("Optional.of(2) ?~~ 3", false),
+        Arguments.of("Optional.of(2) ?~~ \"2\"", false),
+        Arguments.of("((Optional<int>)Optional.empty()) ?~~ 2", false),
+        Arguments.of("Optional.of(2) ?!~ 2", false),
+        Arguments.of("Optional.of(2) ?!~ 3", true),
+        Arguments.of("Optional.of(2) ?!~ \"2\"", true),
+        Arguments.of("((Optional<int>)Optional.empty()) ?!~ 2", false)
     );
   }
 
