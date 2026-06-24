@@ -65,7 +65,7 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
 
   private static final String I_STEREOTYPE_REF = "de.monticore.symboltable.stereotypes.IStereotypeReference";
 
-  private static final String VALUE = "de.monticore.interpreter.Value";
+  private static final String VALUE = "de.monticore.values.MCValue";
 
   private static final String I_AUTOMATON_SCOPE = "de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.IAutomatonSymbolCDScope";
 

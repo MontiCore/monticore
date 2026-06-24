@@ -332,6 +332,24 @@ public class DSL2TransformationLanguageVisitor implements
     map(srcNode, targetNode);
   }
 
+  @Override
+  public void visit(ASTSplitRule srcNode) {
+    Log.debug("Visiting " + srcNode.toString(), LOG);
+    tfLang.addSplitRule(srcNode.deepClone());
+  }
+
+  @Override
+  public void visit(ASTKeywordRule srcNode) {
+    Log.debug("Visiting " + srcNode.toString(), LOG);
+    tfLang.addKeywordRule(srcNode.deepClone());
+  }
+
+  @Override
+  public void visit(ASTReplaceRule srcNode) {
+    Log.debug("Visiting " + srcNode.toString(), LOG);
+    tfLang.addReplaceRule(srcNode.deepClone());
+  }
+
   public ASTMCGrammar getTfLang() {
     return tfLang;
   }

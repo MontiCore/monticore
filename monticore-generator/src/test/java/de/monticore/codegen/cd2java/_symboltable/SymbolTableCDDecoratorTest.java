@@ -19,12 +19,7 @@ import de.monticore.codegen.cd2java._symboltable.scopesgenitor.ScopesGenitorDele
 import de.monticore.codegen.cd2java._symboltable.serialization.ScopeDeSerDecorator;
 import de.monticore.codegen.cd2java._symboltable.serialization.SymbolDeSerDecorator;
 import de.monticore.codegen.cd2java._symboltable.serialization.Symbols2JsonDecorator;
-import de.monticore.codegen.cd2java._symboltable.symbol.CommonSymbolInterfaceDecorator;
-import de.monticore.codegen.cd2java._symboltable.symbol.SymbolBuilderDecorator;
-import de.monticore.codegen.cd2java._symboltable.symbol.SymbolDecorator;
-import de.monticore.codegen.cd2java._symboltable.symbol.SymbolResolverInterfaceDecorator;
-import de.monticore.codegen.cd2java._symboltable.symbol.SymbolSurrogateBuilderDecorator;
-import de.monticore.codegen.cd2java._symboltable.symbol.SymbolSurrogateDecorator;
+import de.monticore.codegen.cd2java._symboltable.symbol.*;
 import de.monticore.codegen.cd2java._symboltable.symbol.symbolsurrogatemutator.MandatoryMutatorSymbolSurrogateDecorator;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
@@ -96,6 +91,7 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
     ArtifactScopeClassDecorator artifactScopeDecorator = new ArtifactScopeClassDecorator(glex, symbolTableService, visitorService, methodDecorator);
     SymbolSurrogateDecorator symbolReferenceDecorator = new SymbolSurrogateDecorator(glex, symbolTableService, visitorService, methodDecorator, new MandatoryMutatorSymbolSurrogateDecorator(glex));
     SymbolSurrogateBuilderDecorator symbolReferenceBuilderDecorator = new SymbolSurrogateBuilderDecorator(glex, symbolTableService, accessorDecorator);
+    SymbolSupplierDecorator symbolSupplierDecorator = new SymbolSupplierDecorator(glex, symbolTableService);
     CommonSymbolInterfaceDecorator commonSymbolInterfaceDecorator = new CommonSymbolInterfaceDecorator(glex, symbolTableService, visitorService, methodDecorator);
     SymbolResolverInterfaceDecorator symbolResolverInterfaceDecorator = new SymbolResolverInterfaceDecorator(glex, symbolTableService);
     SymbolDeSerDecorator symbolDeSerDecorator = new SymbolDeSerDecorator(glex, symbolTableService, new MCPath());
@@ -106,6 +102,7 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
 
     SymbolTableCDDecorator symbolTableCDDecorator = new SymbolTableCDDecorator(glex, targetPath, symbolTableService, symbolDecorator,
         symbolBuilderDecorator, symbolReferenceDecorator, symbolReferenceBuilderDecorator,
+        symbolSupplierDecorator,
         scopeInterfaceDecorator, scopeClassDecorator,
         globalScopeInterfaceDecorator, globalScopeClassDecorator,
         artifactScopeInterfaceDecorator, artifactScopeDecorator,
@@ -122,6 +119,7 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
     SymbolTableService mockService = Mockito.spy(new SymbolTableService(originalASTCompilationUnit));
     SymbolTableCDDecorator mockDecorator = new SymbolTableCDDecorator(glex, targetPath, mockService, symbolDecorator,
         symbolBuilderDecorator, symbolReferenceDecorator, symbolReferenceBuilderDecorator,
+        symbolSupplierDecorator,
         scopeInterfaceDecorator, scopeClassDecorator,
         globalScopeInterfaceDecorator, globalScopeClassDecorator,
         artifactScopeInterfaceDecorator, artifactScopeDecorator,
@@ -152,7 +150,7 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testClassCount() {
-    assertEquals(27, symTabCD.getCDDefinition().getCDClassesList().size());
+    assertEquals(31, symTabCD.getCDDefinition().getCDClassesList().size());
   
     assertTrue(Log.getFindings().isEmpty());
   }
@@ -235,30 +233,33 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testClassCountWithHC() {
-    assertEquals(27, symTabCDWithHC.getCDDefinition().getCDClassesList().size());
+    assertEquals(31, symTabCDWithHC.getCDDefinition().getCDClassesList().size());
   
     assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testClassNamesWithHC() {
-    ASTCDClass automatonSymbol = getClassBy("AutomatonSymbol", symTabCDWithHC);
-    ASTCDClass stateSymbol = getClassBy("StateSymbol", symTabCDWithHC);
-    ASTCDClass fooSymbol = getClassBy("FooSymbol", symTabCDWithHC);
-    ASTCDClass automatonSymbolBuilder = getClassBy("AutomatonSymbolBuilder", symTabCDWithHC);
-    ASTCDClass stateSymbolBuilder = getClassBy("StateSymbolBuilder", symTabCDWithHC);
-    ASTCDClass fooSymbolBuilder = getClassBy("FooSymbolBuilder", symTabCDWithHC);
-    ASTCDClass automatonScope = getClassBy("AutomatonScope", symTabCDWithHC);
-    ASTCDClass automatonSymbolSurrogate = getClassBy("AutomatonSymbolSurrogate", symTabCDWithHC);
-    ASTCDClass stateSymbolSurrogate = getClassBy("StateSymbolSurrogate", symTabCDWithHC);
-    ASTCDClass fooSymbolSurrogate = getClassBy("FooSymbolSurrogate", symTabCDWithHC);
-    ASTCDClass automatonSymbolSurrogateBuilder = getClassBy("AutomatonSymbolSurrogateBuilder", symTabCDWithHC);
-    ASTCDClass stateSymbolSurrogateBuilder = getClassBy("StateSymbolSurrogateBuilder", symTabCDWithHC);
-    ASTCDClass fooSymbolSurrogateBuilder = getClassBy("FooSymbolSurrogateBuilder", symTabCDWithHC);
-    ASTCDClass automatonGlobalScope = getClassBy("AutomatonGlobalScope", symTabCDWithHC);
-    ASTCDClass automatonArtifactScope = getClassBy("AutomatonArtifactScope", symTabCDWithHC);
-    ASTCDClass automatonScopesGenitor = getClassBy("AutomatonScopesGenitor", symTabCDWithHC);
-    ASTCDClass automatonScopesGenitorDelegator = getClassBy("AutomatonScopesGenitorDelegator", symTabCDWithHC);
+    getClassBy("AutomatonSymbol", symTabCDWithHC);
+    getClassBy("StateSymbol", symTabCDWithHC);
+    getClassBy("FooSymbol", symTabCDWithHC);
+    getClassBy("AutomatonSymbolBuilder", symTabCDWithHC);
+    getClassBy("StateSymbolBuilder", symTabCDWithHC);
+    getClassBy("FooSymbolBuilder", symTabCDWithHC);
+    getClassBy("AutomatonScope", symTabCDWithHC);
+    getClassBy("AutomatonSymbolSurrogate", symTabCDWithHC);
+    getClassBy("AutomatonSymbolSupplier", symTabCDWithHC);
+    getClassBy("StateSymbolSurrogate", symTabCDWithHC);
+    getClassBy("StateSymbolSupplier", symTabCDWithHC);
+    getClassBy("FooSymbolSurrogate", symTabCDWithHC);
+    getClassBy("FooSymbolSupplier", symTabCDWithHC);
+    getClassBy("AutomatonSymbolSurrogateBuilder", symTabCDWithHC);
+    getClassBy("StateSymbolSurrogateBuilder", symTabCDWithHC);
+    getClassBy("FooSymbolSurrogateBuilder", symTabCDWithHC);
+    getClassBy("AutomatonGlobalScope", symTabCDWithHC);
+    getClassBy("AutomatonArtifactScope", symTabCDWithHC);
+    getClassBy("AutomatonScopesGenitor", symTabCDWithHC);
+    getClassBy("AutomatonScopesGenitorDelegator", symTabCDWithHC);
   
     assertTrue(Log.getFindings().isEmpty());
   }
@@ -299,7 +300,7 @@ public class SymbolTableCDDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testClassCountComponent() {
-    assertEquals(27, symTabCDComponent.getCDDefinition().getCDClassesList().size());
+    assertEquals(31, symTabCDComponent.getCDDefinition().getCDClassesList().size());
   
     assertTrue(Log.getFindings().isEmpty());
   }

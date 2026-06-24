@@ -44,7 +44,7 @@ public class SymbolSurrogateBuilderDecoratorTest extends DecoratorTestCase {
 
   private static final String I_STEREOTYPE_REF = "de.monticore.symboltable.stereotypes.IStereotypeReference";
 
-  private static final String VALUE = "de.monticore.interpreter.Value";
+  private static final String VALUE = "de.monticore.values.MCValue";
 
   @BeforeEach
   public void setUp() {

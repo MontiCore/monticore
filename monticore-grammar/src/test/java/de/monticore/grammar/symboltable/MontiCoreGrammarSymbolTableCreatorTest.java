@@ -211,10 +211,10 @@ public class MontiCoreGrammarSymbolTableCreatorTest {
     assertTrue(grammar.getStartProd().isPresent());
     
     assertEquals(1, grammar.getSuperGrammars().size());
-    MCGrammarSymbolSurrogate superGrammarRef = grammar.getSuperGrammars().get(0);
+    MCGrammarSymbol superGrammarRef = grammar.getSuperGrammars().get(0);
     assertEquals("Statechart", superGrammarRef.getName());
     assertEquals("de.monticore.Statechart", superGrammarRef.getFullName());
-    testGrammarSymbolOfStatechart(superGrammarRef.lazyLoadDelegate());
+    testGrammarSymbolOfStatechart(superGrammarRef);
     
     ProdSymbol firstProd = grammar.getProd("First").orElse(null);
     assertNotNull(firstProd);
@@ -259,8 +259,8 @@ public class MontiCoreGrammarSymbolTableCreatorTest {
     assertEquals(5, countInterfaceAndAbstractProds(grammar));
     
     assertEquals(1, grammar.getSuperGrammars().size());
-    final MCGrammarSymbolSurrogate superGrammarRef = grammar.getSuperGrammars().get(0);
-    final String superGrammarFullName = superGrammarRef.lazyLoadDelegate().getFullName();
+    final MCGrammarSymbol superGrammarRef = grammar.getSuperGrammars().get(0);
+    final String superGrammarFullName = superGrammarRef.getFullName();
     assertEquals("de.monticore.common.TestLiterals", superGrammarFullName);
     
     ProdSymbol prod = grammar.getProdWithInherited("StringLiteral").orElse(null);

@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.symbols.basicsymbols._symboltable;
 
-import de.monticore.interpreter.Value;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonElementFactory;
@@ -9,6 +8,7 @@ import de.monticore.symboltable.serialization.json.JsonObject;
 import de.monticore.symboltable.stereotypes.IStereotypeReference;
 import de.monticore.symboltable.stereotypes.StereoinfoDeSer;
 import de.monticore.symboltable.stereotypes.SymbolBackedStereotypeReference;
+import de.monticore.values.MCValue;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -88,7 +88,7 @@ class BasicSymbolsStereoinfoDeSerTest {
     BasicSymbolsMill.globalScope().addSubScope(artifactScope);
 
     // When
-    Map.Entry<IStereotypeReference, Optional<Value>> deserialized =
+    Map.Entry<IStereotypeReference, Optional<MCValue>> deserialized =
       StereoinfoDeSer.deserialize(jsonStereoInfo, BasicSymbolsMill.globalScope());
 
     // Then
@@ -119,7 +119,7 @@ class BasicSymbolsStereoinfoDeSerTest {
     commonScope.add(stereoSym);
 
     // When
-    Map.Entry<IStereotypeReference, Optional<Value>> deserialized =
+    Map.Entry<IStereotypeReference, Optional<MCValue>> deserialized =
       StereoinfoDeSer.deserialize(jsonStereoInfo, commonScope);
 
     // Then

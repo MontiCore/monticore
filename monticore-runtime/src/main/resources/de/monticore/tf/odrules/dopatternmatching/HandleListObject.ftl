@@ -2,7 +2,7 @@
 ${signature("isOptional", "parentObject")}
 
 <#assign listObject = ast>
-if (nextNode.equals("${listObject.getObjectName()}_$List")) {
+case "${listObject.getObjectName()}_$List" -> {
   // this is a list object
   if (isBacktrackingNegative) {
     isBacktracking = true;
@@ -25,7 +25,7 @@ if (nextNode.equals("${listObject.getObjectName()}_$List")) {
         }
       </#if>
       foundMatch = false;
-      break;
+      break mainLoop;
     } else {
       // start backtracking
       isBacktracking = true;

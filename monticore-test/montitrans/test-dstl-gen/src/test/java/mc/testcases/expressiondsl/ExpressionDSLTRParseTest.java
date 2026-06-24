@@ -70,6 +70,15 @@ public class ExpressionDSLTRParseTest {
     assertEquals("string", ((ASTStringLiteral)((ASTLiteralExpression)((ASTPlusExpression)ast.getValue()).getRight()).getLiteral()).getValue());
   }
 
+  @Test
+  public void testNoKeyword() throws IOException {
+    // Test if (no)keywords rules apply
+    test("MyFancyKeyword", ExpressionDSLTRParser::parse_StringITFMyFancyKeywordP);
+    test("MyFancyKeyword", ExpressionDSLTRParser::parse_StringITFNameExpression);
+    test("42<=42", ExpressionDSLTRParser::parse_StringITFExpression);
+    test("42 <42", ExpressionDSLTRParser::parse_StringITFExpression);
+  }
+
   protected <A>  A test(String exp, ParserFunction<A> parserFunction) throws IOException {
     ExpressionDSLTRParser parser = ExpressionDSLTRMill.parser();
     Optional<A> typeOptional = parserFunction.parse(parser, exp);
