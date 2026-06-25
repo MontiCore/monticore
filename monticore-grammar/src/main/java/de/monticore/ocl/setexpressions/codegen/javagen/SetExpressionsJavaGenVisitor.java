@@ -17,8 +17,8 @@ import de.se_rwth.commons.logging.Log;
 
 import java.util.Optional;
 
-import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.convert2BoxedJavaType;
-import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.convert2JavaType;
+import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getBoxedJavaTypePrint;
+import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getJavaTypePrint;
 import static de.monticore.types3.SymTypeRelations.normalize;
 
 /**
@@ -450,7 +450,7 @@ public class SetExpressionsJavaGenVisitor
   @Override
   public void traverse(ASTSetValueRange node) {
     SymTypeExpression boundType = normalize(TypeCheck3.typeOf(node.getLowerBound()));
-    String boundTypeStr = convert2BoxedJavaType(boundType);
+    String boundTypeStr = getBoxedJavaTypePrint(boundType);
 
     getPrinter().print("((java.util.function.Supplier<");
     getPrinter().print("java.util.List<");
@@ -546,14 +546,14 @@ public class SetExpressionsJavaGenVisitor
   protected void printDerivedType(SymTypeExpression type) {
     SymTypeExpression normalized = normalize(type);
     Preconditions.checkState(!normalized.isObscureType());
-    getPrinter().print(convert2JavaType(normalized));
+    getPrinter().print(getJavaTypePrint(normalized));
   }
 
   protected void printDerivedInnerType(ASTExpression node) {
     Optional<SymTypeExpression> innerType = getInnerType(node);
     Preconditions.checkState(innerType.isPresent());
     Preconditions.checkState(!innerType.get().isObscureType());
-    getPrinter().print(convert2BoxedJavaType(innerType.get()));
+    getPrinter().print(getBoxedJavaTypePrint(innerType.get()));
   }
 
   protected Optional<SymTypeExpression> getInnerType(ASTExpression node) {

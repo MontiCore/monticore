@@ -28,8 +28,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static de.monticore.codegen.CodeGenSymTypeExpressionConverter.printConverted;
-import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.convert2BoxedJavaType;
-import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.convert2JavaQName;
+import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getBoxedJavaTypePrint;
+import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getJavaTypeQName;
 import static de.monticore.symbols.oosymbols.types3.OOSymbolsSymTypeRelations.isConstructor;
 import static de.monticore.symbols.oosymbols.types3.OOSymbolsSymTypeRelations.isMethod;
 import static de.monticore.types.check.SymTypeExpressionFactory.createDeclaredType;
@@ -418,7 +418,7 @@ public class CommonExpressionsJavaGenVisitor
     if (!typeArgs.isEmpty()) {
       getPrinter().print("<");
       for (SymTypeExpression typeArg : typeArgs) {
-        getPrinter().print(convert2BoxedJavaType(typeArg));
+        getPrinter().print(getBoxedJavaTypePrint(typeArg));
       }
       getPrinter().print(">");
     }
@@ -462,7 +462,7 @@ public class CommonExpressionsJavaGenVisitor
       OOTypeSymbol owningSymbol = (OOTypeSymbol) TypeContextCalculator
           .getEnclosingType(exprSourceSym.getEnclosingScope()).get();
       SymTypeExpression declaredType = createDeclaredType(owningSymbol);
-      getPrinter().print(convert2JavaQName(declaredType));
+      getPrinter().print(getJavaTypeQName(declaredType));
     }
     // pack.age....
     else {

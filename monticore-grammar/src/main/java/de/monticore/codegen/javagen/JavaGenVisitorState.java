@@ -7,7 +7,7 @@ import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.check.SymTypeExpression;
 import de.se_rwth.commons.logging.Log;
 
-import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.convert2BoxedJavaType;
+import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getBoxedJavaTypePrint;
 import static de.monticore.types3.SymTypeRelations.normalize;
 
 /**
@@ -31,7 +31,7 @@ public class JavaGenVisitorState
    */
   public void printExpressionBeginLambda(SymTypeExpression modelType) {
     this.getPrinter().print("((java.util.function.Supplier<");
-    this.getPrinter().print(convert2BoxedJavaType(normalize(modelType)));
+    this.getPrinter().print(getBoxedJavaTypePrint(normalize(modelType)));
     this.getPrinter().println(">) () -> {");
     this.getPrinter().indent();
   }

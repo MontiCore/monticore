@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.convert2BoxedJavaType;
+import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getBoxedJavaTypePrint;
 
 /**
  * Prints SymTypeExpressions in a Java compatible way.
@@ -131,7 +131,7 @@ public class SymTypeExpressionJavaPrinterVisitor
       else {
         getPrint().append(" super ");
       }
-      getPrint().append(convert2BoxedJavaType(wildcard.getBound()));
+      getPrint().append(getBoxedJavaTypePrint(wildcard.getBound()));
     }
   }
 
@@ -169,7 +169,7 @@ public class SymTypeExpressionJavaPrinterVisitor
     for (int i = 0; i < typeArgs.size(); i++) {
       SymTypeExpression innerType = typeArgs.get(i);
       printOpeningBracketForInner(innerType);
-      getPrint().append(convert2BoxedJavaType(innerType));
+      getPrint().append(getBoxedJavaTypePrint(innerType));
       printClosingBracketForInner(innerType);
       if (i < typeArgs.size() - 1) {
         getPrint().append(", ");

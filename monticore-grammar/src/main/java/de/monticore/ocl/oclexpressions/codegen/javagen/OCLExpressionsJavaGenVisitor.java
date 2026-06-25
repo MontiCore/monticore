@@ -31,8 +31,8 @@ import java.util.Optional;
 import static de.monticore.codegen.CodeGenSymTypeExpressionConverter.printConverted;
 import static de.monticore.codegen.javagen.JavaGenSymTypeRelations.generatesToJavaPrimitive;
 import static de.monticore.codegen.javagen.JavaGenSymTypeRelations.generatesToJavaRuntimeIdentifiableType;
-import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.convert2JavaType;
-import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.convert2TypeErasedJavaType;
+import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getJavaTypePrint;
+import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getTypeErasedJavaTypePrint;
 import static de.monticore.types3.SymTypeRelations.normalize;
 import static de.monticore.types3.TypeCheck3.symTypeFromAST;
 import static de.monticore.types3.TypeCheck3.typeOf;
@@ -76,7 +76,7 @@ public class OCLExpressionsJavaGenVisitor
     state.printExpressionBeginLambda(exprType);
 
     // returnType newName;
-    getPrinter().print(convert2JavaType(exprType));
+    getPrinter().print(getJavaTypePrint(exprType));
     getPrinter().print(" ");
     getPrinter().print(resultVarName);
     state.endStatement();
@@ -85,13 +85,13 @@ public class OCLExpressionsJavaGenVisitor
     getPrinter().print("if (");
     getPrinter().print(node.getName());
     getPrinter().print(" instanceof ");
-    getPrinter().print(convert2TypeErasedJavaType(targetType));
+    getPrinter().print(getTypeErasedJavaTypePrint(targetType));
     getPrinter().println(") {");
     getPrinter().indent();
 
     // make name known as type in the thenExpression only(!)
     // type tmpName = (type)name;
-    getPrinter().print(convert2JavaType(targetType));
+    getPrinter().print(getJavaTypePrint(targetType));
     getPrinter().print(" ");
     getPrinter().print(shadowingVarName);
     getPrinter().print(" = ");
@@ -108,7 +108,7 @@ public class OCLExpressionsJavaGenVisitor
     getPrinter().print(shadowingScopeName);
     getPrinter().println(" {");
     getPrinter().indent();
-    getPrinter().print(convert2JavaType(exprType));
+    getPrinter().print(getJavaTypePrint(exprType));
     getPrinter().print(" ");
     getPrinter().print("calculate");
     getPrinter().print("()");
@@ -116,7 +116,7 @@ public class OCLExpressionsJavaGenVisitor
     getPrinter().indent();
 
     // type name = tmpName; // shadows
-    getPrinter().print(convert2JavaType(targetType));
+    getPrinter().print(getJavaTypePrint(targetType));
     getPrinter().print(" ");
     getPrinter().print(node.getName());
     getPrinter().print(" = ");
@@ -338,7 +338,7 @@ public class OCLExpressionsJavaGenVisitor
       return;
     }
 
-    String innerTypeStr = convert2JavaType(innerTypeOpt.get());
+    String innerTypeStr = getJavaTypePrint(innerTypeOpt.get());
     for (ASTInDeclarationVariable var : node.getInDeclarationVariableList()) {
       getPrinter().print("for (");
       getPrinter().print(innerTypeStr);
@@ -354,12 +354,12 @@ public class OCLExpressionsJavaGenVisitor
   @Override
   public void traverse(ASTOCLVariableDeclaration node) {
     if (node.isPresentMCType()) {
-      getPrinter().print(convert2JavaType(
+      getPrinter().print(getJavaTypePrint(
           normalize(symTypeFromAST(node.getMCType()))
       ));
     }
     else if (node.isPresentExpression()) {
-      getPrinter().print(convert2JavaType(
+      getPrinter().print(getJavaTypePrint(
           normalize(typeOf(node.getExpression()))
       ));
     }

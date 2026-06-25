@@ -8,8 +8,8 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfTuple;
 
 import static de.monticore.codegen.CodeGenSymTypeExpressionConverter.printConverted;
-import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.convert2JavaType;
-import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.convert2JavaQName;
+import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getJavaTypePrint;
+import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getJavaTypeQName;
 
 /**
  * Converts between tuple types
@@ -35,17 +35,17 @@ public class JavaTupleConversionHandler extends AbstractJavaTypeConverter {
       tupleNestingLevel++;
 
       printer.print("((java.util.function.Supplier<");
-      printer.print(convert2JavaType(targetTuple));
+      printer.print(getJavaTypePrint(targetTuple));
       printer.println(">) () -> {");
       printer.indent();
-      printer.print(convert2JavaType(sourceTuple));
+      printer.print(getJavaTypePrint(sourceTuple));
       printer.print(" ");
       printer.print(tmpTupleVarName);
       printer.print(" = ");
       sourceExprPrintAction.print(printer);
       printer.println(";");
       printer.print("return ");
-      printer.print(convert2JavaQName(targetTuple));
+      printer.print(getJavaTypeQName(targetTuple));
       printer.print(".of(");
 
       for (int i = 0; i < modelTargetType.asTupleType().getTypeList().size(); i++) {

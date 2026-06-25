@@ -11,8 +11,8 @@ import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfFunction;
 
-import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.convert2BoxedJavaType;
-import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.convert2JavaType;
+import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getBoxedJavaTypePrint;
+import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getJavaTypePrint;
 import static de.monticore.types3.SymTypeRelations.normalize;
 import static de.monticore.types3.TypeCheck3.typeOf;
 
@@ -44,7 +44,7 @@ public class LambdaExpressionsJavaGenVisitor
 
     // cast to Java function type
     getPrinter().print("(");
-    getPrinter().print(convert2JavaType(funcType));
+    getPrinter().print(getJavaTypePrint(funcType));
     getPrinter().print(") ");
 
     // parameters
@@ -56,7 +56,7 @@ public class LambdaExpressionsJavaGenVisitor
       if (i != 0) {
         getPrinter().print(", ");
       }
-      getPrinter().print(convert2BoxedJavaType(parType));
+      getPrinter().print(getBoxedJavaTypePrint(parType));
       getPrinter().print(" ");
       getPrinter().print(parName);
     }

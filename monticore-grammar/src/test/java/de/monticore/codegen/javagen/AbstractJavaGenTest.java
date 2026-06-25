@@ -19,7 +19,7 @@ import java.io.File;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.convert2JavaType;
+import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getJavaTypePrint;
 import static de.monticore.runtime.junit.MCAssertions.assertNoFindings;
 import static de.monticore.types3.SymTypeRelations.normalize;
 import static de.monticore.types3.TypeCheck3.typeOf;
@@ -64,7 +64,7 @@ public abstract class AbstractJavaGenTest extends AbstractMCTest {
     ASTBehaviorInput ast = ExpressionsAndStatementsUtil
         .getPreparedAST(behaviorModelStr);
     String javaReturnType = ast.isPresentExpression() ?
-        convert2JavaType(normalize(typeOf(ast.getExpression()))) :
+        getJavaTypePrint(normalize(typeOf(ast.getExpression()))) :
         "void";
     assertNoFindings();
     String javaStatementsStr = generateCode(ast);

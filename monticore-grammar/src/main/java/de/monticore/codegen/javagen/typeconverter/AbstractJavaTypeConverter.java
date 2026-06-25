@@ -6,7 +6,7 @@ import de.monticore.codegen.ICodeGenSymTypeExpressionConversionHandler;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.check.SymTypeExpression;
 
-import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.convert2JavaType;
+import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getJavaTypePrint;
 
 public abstract class AbstractJavaTypeConverter
     implements ICodeGenSymTypeExpressionConversionHandler {
@@ -16,7 +16,7 @@ public abstract class AbstractJavaTypeConverter
       SymTypeExpression targetType,
       CodeGenPrintAction exprPrintAction) {
     printer.print("((");
-    printer.print(convert2JavaType(targetType));
+    printer.print(getJavaTypePrint(targetType));
     printer.print(") ");
     exprPrintAction.print(printer);
     printer.print(")");
