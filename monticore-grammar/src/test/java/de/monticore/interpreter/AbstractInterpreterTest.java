@@ -17,7 +17,7 @@ import de.monticore.runtime.junit.AbstractMCTest;
 import de.monticore.statements.mcassertstatements.interpreter.MCAssertStatementsInterpreter;
 import de.monticore.statements.mccommonstatements.interpreter.MCCommonStatementsInterpreter;
 import de.monticore.statements.mcvardeclarationstatements.interpreter.MCVarDeclarationStatementsInterpreter;
-import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+import de.monticore.symbols.util.Class2MCTestUtil;
 import de.monticore.tests.expressionsandstatements.ExpressionsAndStatementsMill;
 import de.monticore.tests.expressionsandstatements.ExpressionsAndStatementsUtil;
 import de.monticore.tests.expressionsandstatements._ast.ASTBehaviorInput;
@@ -26,11 +26,6 @@ import de.monticore.tests.expressionsandstatements.interpreter.ExpressionsAndSta
 import de.monticore.values.MCValue;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.BeforeEach;
-
-import java.net.URISyntaxException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.security.CodeSource;
 
 import static de.monticore.runtime.junit.MCAssertions.assertNoFindings;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -45,23 +40,8 @@ public abstract class AbstractInterpreterTest extends AbstractMCTest {
   public void setup() {
     LogStub.initPlusLog();
     ExpressionsAndStatementsUtil.init();
+    Class2MCTestUtil.initializeClass2MC4OOSymbols();
     interpreter = initializeInterpreter();
-  }
-
-  protected void addClassPathEntry(Class<?> clazz) {
-    try {
-      CodeSource codeSource = clazz
-          .getProtectionDomain()
-          .getCodeSource();
-      if (codeSource == null) {
-        return;
-      }
-      Path classPath = Paths.get(codeSource.getLocation().toURI());
-      BasicSymbolsMill.globalScope().getSymbolPath().addEntry(classPath);
-    }
-    catch (URISyntaxException e) {
-      throw new RuntimeException(e);
-    }
   }
 
   protected InterpreterAccess4Tests initializeInterpreter() {
