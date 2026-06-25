@@ -4,7 +4,7 @@ package de.monticore.codegen.javagen;
 import de.monticore.ast.ASTNode;
 import de.monticore.codegen.CodeGenerator;
 import de.monticore.runtime.junit.AbstractMCTest;
-import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+import de.monticore.symbols.util.Class2MCTestUtil;
 import de.monticore.tests.expressionsandstatements.ExpressionsAndStatementsUtil;
 import de.monticore.tests.expressionsandstatements._ast.ASTBehaviorInput;
 import de.monticore.tests.expressionsandstatements.codegen.javagen.ExpressionsAndStatementsJavaGenerator;
@@ -16,10 +16,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.io.File;
-import java.net.URISyntaxException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.security.CodeSource;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,7 +29,7 @@ public abstract class AbstractJavaGenTest extends AbstractMCTest {
 
   // enable for experimenting:
   // it will print the generated code before evaluation
-  protected static final boolean printGeneratedCode = false;
+  protected static final boolean printGeneratedCode = true;
 
   protected JShell jshell;
 
@@ -43,6 +39,7 @@ public abstract class AbstractJavaGenTest extends AbstractMCTest {
   void beforeEach() {
     LogStub.initPlusLog();
     ExpressionsAndStatementsUtil.init();
+    Class2MCTestUtil.initializeClass2MC4OOSymbols();
     generator = new ExpressionsAndStatementsJavaGenerator();
     jshell = JShell.create();
     String[] classpaths = System.getProperty("java.class.path")
@@ -56,22 +53,6 @@ public abstract class AbstractJavaGenTest extends AbstractMCTest {
   void cleanUp() {
     jshell.close();
     jshell = null;
-  }
-
-  protected void addClassPathEntry(Class<?> clazz) {
-    try {
-      CodeSource codeSource = clazz
-          .getProtectionDomain()
-          .getCodeSource();
-      if (codeSource == null) {
-        return;
-      }
-      Path classPath = Paths.get(codeSource.getLocation().toURI());
-      BasicSymbolsMill.globalScope().getSymbolPath().addEntry(classPath);
-    }
-    catch (URISyntaxException e) {
-      throw new RuntimeException(e);
-    }
   }
 
   protected JShell getJShell() {
