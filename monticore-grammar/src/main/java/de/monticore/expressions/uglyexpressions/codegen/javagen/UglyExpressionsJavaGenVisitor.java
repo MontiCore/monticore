@@ -49,10 +49,22 @@ public class UglyExpressionsJavaGenVisitor
   @Override
   public void traverse(ASTInstanceofExpression node) {
     SymTypeExpression targetType = normalize(symTypeFromAST(node.getMCType()));
+    if (!generatesToJavaRuntimeIdentifiableType(targetType)) {
+      Log.error(
+          "0xFD713 " + targetType.printFullName()
+              + " is not compatible with instanceof for Java generation"
+              + " due to type erasure.",
+          node.get_SourcePositionStart(),
+          node.get_SourcePositionEnd()
+      );
+    }
     state.startParentheses();
     node.getExpression().accept(getTraverser());
     getPrinter().print(" instanceof ");
-    getPrinter().print(convert2JavaType(targetType));
+    // print it with type erasure anyway,
+    // the behavior is simply not always correct
+    // and the did log an error already
+    getPrinter().print(convert2TypeErasedJavaType(targetType));
     state.endParentheses();
   }
 
