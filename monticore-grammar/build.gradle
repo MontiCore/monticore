@@ -86,6 +86,7 @@ dependencies {
   testImplementation "de.monticore:class2mc:$previous_mc_version"
   // grammar test fixtures includes runtime test dependencies
   testFixturesApi testFixtures(project(":monticore-runtime"))
+  testFixturesImplementation "de.monticore:class2mc:$previous_mc_version"
   if (("true").equals(getProperty('genTagging'))) {
     // use compileOnly as the tagging- and trafo-artifact are only an extension to the default artifact
     taggingCompileOnly project(path)
