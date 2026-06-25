@@ -29,8 +29,6 @@ public class JavaObjectConversionHandler
         (modelTargetType.isObjectType() || modelTargetType.isGenericType()) && isStringOrSubType(modelSourceType) ||
         // Is source numeric and target Object (but not numeric -> excluded with overlap numericConversionHandler). E.g. double -> Object
         (modelTargetType.isObjectType() || modelTargetType.isGenericType()) && isNumericType(modelSourceType)) &&
-        // Avoid overlap ToStringConversionHandler
-        !(isStringOrSubType(modelTargetType) && (modelSourceType.isObjectType() || modelSourceType.isGenericType())) &&
         // Avoid overlap StringConversionHandler
         !(isStringOrSubType(modelTargetType) && isStringOrSubType(modelSourceType)) &&
         // Avoid overlap NumericConversionHandler
