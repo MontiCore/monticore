@@ -31,7 +31,15 @@ public class InterpreterData {
    * @return The current calculation.
    */
   public MICalculation popCalculation() {
-    Preconditions.checkNotNull(calculation);
+    Preconditions.checkNotNull(calculation,
+        "This Exception implies that a case in the interpreter" +
+            " has not been implemented"
+            + " (or the corresponding visitor is not being used)."
+            + System.lineSeparator()
+            + "A calculation is being expected but was not set."
+            + System.lineSeparator()
+            + "Please check the interpreter's setup/documentation."
+    );
     MICalculation calculation = this.calculation;
     this.calculation = null;
     return calculation;
