@@ -9,6 +9,17 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.convert2TypeErasedJavaType;
+
+/**
+ * SymTypeRelations, specifically for Java code generation.
+ * <p>
+ * Note: This file mostly would not need to exist,
+ * but as we have to (currently (7.9.0)) generate to Strings directly,
+ * we provide some checks on the model types
+ * that will be generated Java types from,
+ * instead of using Java-SymTypeExpressions.
+ */
 public class JavaGenSymTypeRelations {
 
   protected static JavaGenSymTypeRelations delegate;
@@ -16,7 +27,7 @@ public class JavaGenSymTypeRelations {
   protected Set<String> javaPrimitiveTypes;
   protected Set<String> javaNumericTypes;
 
-  public JavaGenSymTypeRelations() {
+  protected JavaGenSymTypeRelations() {
     Set<String> javaPrimitiveNumericTypes = new HashSet<>();
     javaPrimitiveNumericTypes.add(BasicSymbolsMill.BYTE);
     javaPrimitiveNumericTypes.add(BasicSymbolsMill.CHAR);
@@ -63,6 +74,29 @@ public class JavaGenSymTypeRelations {
 
   protected boolean _generatesToJavaNumeric(SymTypeExpression type) {
     return javaNumericTypes.contains(SymTypeExpression2JavaConverter.convert2JavaType(type));
+  }
+
+  /**
+   * checks if {@code instanceof} can be used with the type
+   * in such a way that the instance is guaranteed to be of the type.
+   * This is not always the case due to type erasure.
+   * Example: {code f instanceof int -> void} would generate
+   * {@code Action1<Integer>} for the function.
+   * Due to type erasure, this is effectively {@code Action1<?>} at runtime,
+   * which cannot be distinguished from, e.g., {@code boolean -> void}.
+   * <p>
+   * We do not allow for non-identifiable types for {@code instanceof}
+   * and simmilar expressions.
+   *
+   * @param type the type to check for runtime instanceof checks.
+   * @return iff the type can be used for runtime instanceof checks.
+   */
+  public static boolean generatesToJavaRuntimeIdentifiableType(SymTypeExpression type) {
+    return getDelegate()._generatesToJavaRuntimeIdentifiableType(type);
+  }
+
+  protected boolean _generatesToJavaRuntimeIdentifiableType(SymTypeExpression type) {
+    return !convert2TypeErasedJavaType(type).contains("?");
   }
 
   // static delegate
