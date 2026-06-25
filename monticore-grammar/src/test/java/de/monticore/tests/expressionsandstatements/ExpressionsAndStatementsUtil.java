@@ -1,7 +1,6 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.tests.expressionsandstatements;
 
-import de.monticore.class2mc.OOClass2MCResolver;
 import de.monticore.expressions.assignmentexpressions._cocos.AssignmentExpressionsASTAssignmentExpressionCoCo;
 import de.monticore.expressions.assignmentexpressions.cocos.AssignmentExpressionsOnlyAssignToLValuesCoCo;
 import de.monticore.expressions.cocos.ExpressionValid;
@@ -23,8 +22,6 @@ import de.monticore.statements.mcvardeclarationstatements._cocos.VarDeclarationI
 import de.monticore.statements.mcvardeclarationstatements._cocos.VarDeclarationNameAlreadyDefinedInScope;
 import de.monticore.statements.mcvardeclarationstatements._symboltable.MCVarDeclarationStatementsSymTabCompletion;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
-import de.monticore.symbols.oosymbols.OOSymbolsMill;
-import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsGlobalScope;
 import de.monticore.symboltable.ImportStatement;
 import de.monticore.tests.expressionsandstatements._ast.ASTBehaviorInput;
 import de.monticore.tests.expressionsandstatements._cocos.ExpressionsAndStatementsCoCoChecker;
@@ -57,11 +54,6 @@ public class ExpressionsAndStatementsUtil {
 
     // Symbols
     BasicSymbolsMill.initializePrimitives();
-    // Class2MC
-    IOOSymbolsGlobalScope globalScope = OOSymbolsMill.globalScope();
-    OOClass2MCResolver resolver = new OOClass2MCResolver();
-    globalScope.addAdaptedOOTypeSymbolResolver(resolver);
-    globalScope.addAdaptedTypeSymbolResolver(resolver);
   }
 
   /**
