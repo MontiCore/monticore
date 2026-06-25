@@ -21,11 +21,25 @@ public interface TraverserBasedCodeGenerator
    */
   @Override
   default String generateCode(ASTNode node) {
+    // check that this is not used _within_ the code generator itself
+    class I {
+      public static final ThreadLocal<Boolean> isGenerating =
+          ThreadLocal.withInitial(() -> false);
+    }
+    if (I.isGenerating.get()) {
+      throw new IllegalCallerException("generateCode was called recursively");
+    }
+    I.isGenerating.set(true);
+
+    String code;
     getPrinter().clearBuffer();
     getTraverser().clearTraversedElements();
     node.accept(getTraverser());
     getPrinter().stripTrailing();
-    return getPrinter().getContent();
+    code = getPrinter().getContent();
+
+    I.isGenerating.set(false);
+    return code;
   }
 
   /**
