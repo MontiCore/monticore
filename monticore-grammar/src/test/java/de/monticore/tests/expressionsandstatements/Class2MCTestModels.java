@@ -30,10 +30,13 @@ public class Class2MCTestModels {
    *
    * @return the prefix
    */
-  static public String getAClassPrefix() {
-    return "import " + AClass.class.getCanonicalName() + ";"
+  static public String getModelPrefix() {
+    return "import " + AClass.class.getPackageName() + ".*;"
         + System.lineSeparator()
-        + "AClass aClass = AClass();" + System.lineSeparator();
+        + "AClass aClass = AClass();" + System.lineSeparator()
+        + "Person person = Person(\"Sage\", 23);" + System.lineSeparator()
+        + "Student student = Student(\"Quinn\", 19, 8243721);"
+        + System.lineSeparator();
   }
 
   static public Stream<Arguments> getAClassCases() {
@@ -139,6 +142,25 @@ public class Class2MCTestModels {
         Arguments.of("AClass.set_var_s_Long(22L); AClass.var_s_Long", 22),
         Arguments.of("AClass.set_var_s_Float(23.0f); AClass.var_s_Float", 23.0),
         Arguments.of("AClass.set_var_s_Double(24.0); AClass.var_s_Double", 24.0)
+    );
+  }
+
+  static public Stream<Arguments> getInstanceOfCases() {
+    return Stream.of(
+        Arguments.of("person instanceof Student", false),
+        Arguments.of(
+            "Person s = student; s instanceof Student",
+            true
+        ),
+        Arguments.of(
+            " typeif person instanceof Student then true else false",
+            false
+        ),
+        Arguments.of(
+            "Person s = student;"
+                + " typeif s instanceof Student then s.getStudentID() else -1",
+            8243721
+        )
     );
   }
 
