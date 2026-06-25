@@ -1,6 +1,7 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.codegen.javagen;
 
+import de.monticore.symbols.util.Class2MCTestUtil;
 import de.monticore.tests.expressionsandstatements.Class2MCTestModels;
 import de.monticore.tests.expressionsandstatements.rte.AClass;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,7 +19,7 @@ public class JavaGenTest extends AbstractJavaGenTest {
 
   @BeforeEach
   public void setupAClass() {
-    addClassPathEntry(AClass.class);
+    Class2MCTestUtil.addClassPathEntry(AClass.class);
   }
 
   @ParameterizedTest
@@ -60,7 +61,14 @@ public class JavaGenTest extends AbstractJavaGenTest {
     // not supported yet, implementation missing
     assumeFalse(tail.contains(".set_"));
 
-    String modelStr = Class2MCTestModels.getAClassPrefix() + tail;
+    String modelStr = Class2MCTestModels.getModelPrefix() + tail;
+    checkValue(modelStr, expectedValue);
+  }
+
+  @ParameterizedTest(name = "[{index}] {0}")
+  @MethodSource("de.monticore.tests.expressionsandstatements.Class2MCTestModels#getInstanceOfCases")
+  void testInstanceOfCases(String tail, Object expectedValue) {
+    String modelStr = Class2MCTestModels.getModelPrefix() + tail;
     checkValue(modelStr, expectedValue);
   }
 

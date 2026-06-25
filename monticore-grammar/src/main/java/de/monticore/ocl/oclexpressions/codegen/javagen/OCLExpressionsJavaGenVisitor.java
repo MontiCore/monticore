@@ -24,7 +24,6 @@ import de.monticore.ocl.oclexpressions._visitor.OCLExpressionsInheritanceHandler
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.mccollectiontypes.types3.MCCollectionSymTypeRelations;
-import de.monticore.types3.TypeCheck3;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Optional;
@@ -202,7 +201,7 @@ public class OCLExpressionsJavaGenVisitor
 
   @Override
   public void traverse(ASTForallExpression node) {
-    state.printExpressionBeginLambda(TypeCheck3.typeOf(node));
+    state.printExpressionBeginLambda(typeOf(node));
 
     getPrinter().print("Boolean ");
     getPrinter().print(getVarName(node));
@@ -234,7 +233,7 @@ public class OCLExpressionsJavaGenVisitor
 
   @Override
   public void traverse(ASTExistsExpression node) {
-    state.printExpressionBeginLambda(TypeCheck3.typeOf(node));
+    state.printExpressionBeginLambda(typeOf(node));
 
     getPrinter().print("Boolean ");
     getPrinter().print(getVarName(node));
@@ -266,7 +265,7 @@ public class OCLExpressionsJavaGenVisitor
 
   @Override
   public void traverse(ASTLetinExpression node) {
-    state.printExpressionBeginLambda(TypeCheck3.typeOf(node));
+    state.printExpressionBeginLambda(typeOf(node));
 
     for (ASTOCLVariableDeclaration dec : node.getOCLVariableDeclarationList()) {
       dec.accept(getTraverser());
@@ -281,7 +280,7 @@ public class OCLExpressionsJavaGenVisitor
 
   @Override
   public void traverse(ASTIterateExpression node) {
-    state.printExpressionBeginLambda(TypeCheck3.typeOf(node.getInit().getExpression()));
+    state.printExpressionBeginLambda(typeOf(node.getInit().getExpression()));
 
     node.getInit().accept(getTraverser());
 
@@ -304,7 +303,7 @@ public class OCLExpressionsJavaGenVisitor
   public void traverse(ASTEquivalentExpression node) {
     ASTExpression left = node.getLeft();
     ASTExpression right = node.getRight();
-    SymTypeExpression leftType = normalize(TypeCheck3.typeOf(left));
+    SymTypeExpression leftType = normalize(typeOf(left));
     if (generatesToJavaPrimitive(leftType)) {
       getPrinter().print("java.util.Objects.equals(");
       left.accept(getTraverser());
@@ -356,12 +355,12 @@ public class OCLExpressionsJavaGenVisitor
   public void traverse(ASTOCLVariableDeclaration node) {
     if (node.isPresentMCType()) {
       getPrinter().print(convert2JavaType(
-          normalize(TypeCheck3.symTypeFromAST(node.getMCType()))
+          normalize(symTypeFromAST(node.getMCType()))
       ));
     }
     else if (node.isPresentExpression()) {
       getPrinter().print(convert2JavaType(
-          normalize(TypeCheck3.typeOf(node.getExpression()))
+          normalize(typeOf(node.getExpression()))
       ));
     }
     else {
@@ -400,7 +399,7 @@ public class OCLExpressionsJavaGenVisitor
 
   protected Optional<SymTypeExpression> getInnerType(ASTInDeclaration node) {
     if (node.isPresentMCType()) {
-      SymTypeExpression type = normalize(TypeCheck3.symTypeFromAST(node.getMCType()));
+      SymTypeExpression type = normalize(symTypeFromAST(node.getMCType()));
       if (type.isObscureType()) {
         return Optional.empty();
       }
@@ -409,7 +408,7 @@ public class OCLExpressionsJavaGenVisitor
     if (!node.isPresentExpression()) {
       return Optional.empty();
     }
-    SymTypeExpression exprType = normalize(TypeCheck3.typeOf(node.getExpression()));
+    SymTypeExpression exprType = normalize(typeOf(node.getExpression()));
     if (!exprType.isGenericType()) {
       return Optional.empty();
     }

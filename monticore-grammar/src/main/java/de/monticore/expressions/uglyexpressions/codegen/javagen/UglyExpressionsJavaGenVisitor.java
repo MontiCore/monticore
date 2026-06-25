@@ -13,9 +13,12 @@ import de.monticore.expressions.uglyexpressions._ast.ASTTypeCastExpression;
 import de.monticore.expressions.uglyexpressions._visitor.UglyExpressionsInheritanceHandler;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.check.SymTypeExpression;
+import de.se_rwth.commons.logging.Log;
 
 import static de.monticore.codegen.CodeGenSymTypeExpressionConverter.printConverted;
-import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.convert2JavaType;
+import static de.monticore.codegen.javagen.JavaGenSymTypeRelations.generatesToJavaRuntimeIdentifiableType;
+import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.convert2JavaQName;
+import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.convert2TypeErasedJavaType;
 import static de.monticore.types3.SymTypeRelations.normalize;
 import static de.monticore.types3.TypeCheck3.symTypeFromAST;
 import static de.monticore.types3.TypeCheck3.typeOf;
@@ -78,13 +81,15 @@ public class UglyExpressionsJavaGenVisitor
 
   @Override
   public void traverse(ASTClassCreator node) {
-    node.getMCType().accept(getTraverser());
+    SymTypeExpression type = normalize(symTypeFromAST(node.getMCType()));
+    getPrinter().print(convert2JavaQName(type));
     node.getArguments().accept(getTraverser());
   }
 
   @Override
   public void traverse(ASTArrayCreator node) {
-    node.getMCType().accept(getTraverser());
+    SymTypeExpression type = normalize(symTypeFromAST(node.getMCType()));
+    getPrinter().print(convert2JavaQName(type));
     node.getArrayDimensionSpecifier().accept(getTraverser());
   }
 
