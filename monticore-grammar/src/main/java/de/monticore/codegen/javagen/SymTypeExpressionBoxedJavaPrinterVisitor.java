@@ -10,7 +10,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Prints SymTypeExpressions in a Java compatible way,
+ * Prints SymTypeExpressions to Java compatible Strings.
+ * All primitives are replaced by their boxed counterparts.
  */
 public class SymTypeExpressionBoxedJavaPrinterVisitor
     extends SymTypeExpressionJavaPrinterVisitor {
