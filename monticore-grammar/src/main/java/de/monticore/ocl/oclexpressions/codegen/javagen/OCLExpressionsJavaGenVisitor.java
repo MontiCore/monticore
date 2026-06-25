@@ -31,8 +31,11 @@ import java.util.Optional;
 
 import static de.monticore.codegen.CodeGenSymTypeExpressionConverter.printConverted;
 import static de.monticore.codegen.javagen.JavaGenSymTypeRelations.generatesToJavaPrimitive;
+import static de.monticore.codegen.javagen.JavaGenSymTypeRelations.generatesToJavaRuntimeIdentifiableType;
 import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.convert2JavaType;
+import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.convert2TypeErasedJavaType;
 import static de.monticore.types3.SymTypeRelations.normalize;
+import static de.monticore.types3.TypeCheck3.symTypeFromAST;
 import static de.monticore.types3.TypeCheck3.typeOf;
 
 /**
@@ -53,37 +56,96 @@ public class OCLExpressionsJavaGenVisitor
 
   @Override
   public void traverse(ASTTypeIfExpression node) {
-    SymTypeExpression exprType = normalize(TypeCheck3.typeOf(node));
-    SymTypeExpression castedType = normalize(TypeCheck3.symTypeFromAST(node.getMCType()));
+    Preconditions.checkNotNull(node.getNameSymbol().getType());
+    SymTypeExpression exprType = normalize(typeOf(node));
+    SymTypeExpression varType = normalize(node.getNameSymbol().getType());
+    SymTypeExpression targetType = normalize(symTypeFromAST(node.getMCType()));
+    String resultVarName = getVarName(node);
+    String shadowingVarName = Node2Name.getName(node) + "_ShadowingVar";
+    String shadowingScopeName = Node2Name.getName(node) + "_ShadowedCalculation";
+
+    if (!generatesToJavaRuntimeIdentifiableType(targetType)) {
+      Log.error(
+          "0xFD713 " + targetType.printFullName()
+              + " is not compatible with instanceof for Java generation"
+              + " due to type erasure.",
+          node.get_SourcePositionStart(),
+          node.get_SourcePositionEnd()
+      );
+    }
 
     state.printExpressionBeginLambda(exprType);
 
+    // returnType newName;
     getPrinter().print(convert2JavaType(exprType));
     getPrinter().print(" ");
-    getPrinter().print(getVarName(node));
+    getPrinter().print(resultVarName);
     state.endStatement();
 
+    // if (name instanceof type) {
     getPrinter().print("if (");
     getPrinter().print(node.getName());
     getPrinter().print(" instanceof ");
-    getPrinter().print(convert2JavaType(castedType));
+    getPrinter().print(convert2TypeErasedJavaType(targetType));
     getPrinter().println(") {");
     getPrinter().indent();
 
-    getPrinter().print(convert2JavaType(castedType));
+    // make name known as type in the thenExpression only(!)
+    // type tmpName = (type)name;
+    getPrinter().print(convert2JavaType(targetType));
     getPrinter().print(" ");
-    getPrinter().print(node.getName());
-    getPrinter().print(" = (");
-    getPrinter().print(convert2JavaType(castedType));
-    getPrinter().print(") ");
-    getPrinter().print(node.getName());
+    getPrinter().print(shadowingVarName);
+    getPrinter().print(" = ");
+    printConverted(
+        getPrinter(),
+        targetType,
+        varType,
+        p -> p.print(node.getName())
+    );
     state.endStatement();
 
-    getPrinter().print(getVarName(node));
+    // open shadowing scope
+    getPrinter().print("class ");
+    getPrinter().print(shadowingScopeName);
+    getPrinter().println(" {");
+    getPrinter().indent();
+    getPrinter().print(convert2JavaType(exprType));
+    getPrinter().print(" ");
+    getPrinter().print("calculate");
+    getPrinter().print("()");
+    getPrinter().println(" {");
+    getPrinter().indent();
+
+    // type name = tmpName; // shadows
+    getPrinter().print(convert2JavaType(targetType));
+    getPrinter().print(" ");
+    getPrinter().print(node.getName());
     getPrinter().print(" = ");
+    getPrinter().print(shadowingVarName);
+    state.endStatement();
+
+    // return thenExpression; // from scope
+    getPrinter().print("return ");
     node.getThenExpression().accept(getTraverser());
     state.endStatement();
 
+    // close shadowing scope
+    getPrinter().unindent();
+    getPrinter().println("}");
+    getPrinter().unindent();
+    getPrinter().println("}");
+
+    // set newName to scoped calculation result
+    getPrinter().print(resultVarName);
+    getPrinter().print(" = new ");
+    getPrinter().print(shadowingScopeName);
+    getPrinter().print("()");
+    getPrinter().print(".");
+    getPrinter().print("calculate");
+    getPrinter().print("()");
+    state.endStatement();
+
+    // } else {
     getPrinter().unindent();
     getPrinter().println("} else {");
     getPrinter().indent();
@@ -92,7 +154,7 @@ public class OCLExpressionsJavaGenVisitor
     getPrinter().print(" = ");
     printConverted(getPrinter(),
         exprType,
-        normalize(TypeCheck3.typeOf(node.getElseExpression())),
+        normalize(typeOf(node.getElseExpression())),
         p -> node.getElseExpression().accept(getTraverser())
     );
     state.endStatement();
