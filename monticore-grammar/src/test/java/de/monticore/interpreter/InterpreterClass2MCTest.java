@@ -1,6 +1,7 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.interpreter;
 
+import de.monticore.symbols.util.Class2MCTestUtil;
 import de.monticore.tests.expressionsandstatements.Class2MCTestModels;
 import de.monticore.tests.expressionsandstatements.rte.AClass;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,7 +14,7 @@ public class InterpreterClass2MCTest extends AbstractInterpreterTest {
 
   @BeforeEach
   public void setupAClass() {
-    addClassPathEntry(AClass.class);
+    Class2MCTestUtil.addClassPathEntry(AClass.class);
   }
 
   @ParameterizedTest
@@ -25,7 +26,7 @@ public class InterpreterClass2MCTest extends AbstractInterpreterTest {
   @ParameterizedTest(name = "[{index}] {0}")
   @MethodSource("de.monticore.tests.expressionsandstatements.Class2MCTestModels#getAClassCases")
   void testNativeJavaAClass(String tail, Object expectedValue) {
-    String modelStr = Class2MCTestModels.getAClassPrefix() + tail;
+    String modelStr = Class2MCTestModels.getModelPrefix() + tail;
     assertEquals(expectedValue, interpretAndCast(modelStr));
   }
 

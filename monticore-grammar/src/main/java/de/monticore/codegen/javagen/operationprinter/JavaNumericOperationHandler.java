@@ -3,7 +3,6 @@ package de.monticore.codegen.javagen.operationprinter;
 
 import de.monticore.codegen.CodeGenPrintAction;
 import de.monticore.codegen.ICodeGenOperationHandler;
-import de.monticore.codegen.javagen.JavaGenSymTypeRelations;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.check.SymTypeExpression;
 
@@ -13,6 +12,7 @@ import java.util.Map;
 
 import static de.monticore.codegen.CodeGenSymTypeExpressionConverter.printConverted;
 import static de.monticore.codegen.ICodeGenOperationHandler.BinaryOperator.*;
+import static de.monticore.codegen.javagen.JavaGenSymTypeRelations.generatesToJavaNumeric;
 import static de.monticore.types3.SymTypeRelations.isNumericType;
 
 /**
@@ -127,8 +127,7 @@ public class JavaNumericOperationHandler implements ICodeGenOperationHandler {
   protected boolean isSupported(SymTypeExpression modelType) {
     // specifically check the Java types,
     // in case that further primitives have been added.
-    return isNumericType(modelType)
-        && JavaGenSymTypeRelations.generatesToJavaNumeric(modelType);
+    return isNumericType(modelType) && generatesToJavaNumeric(modelType);
   }
 
   protected String getJavaOperator(BinaryOperator operator) {
