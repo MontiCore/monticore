@@ -8,7 +8,7 @@ import de.monticore.types.check.SymTypeOfFunction;
 import de.se_rwth.commons.logging.Log;
 
 import static de.monticore.codegen.CodeGenSymTypeExpressionConverter.printConverted;
-import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.convert2BoxedJavaType;
+import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getBoxedJavaTypePrint;
 import static de.monticore.types3.SymTypeRelations.box;
 
 /**
@@ -47,7 +47,7 @@ public class JavaFunctionConversionHandler
             p.print(", ");
           }
           SymTypeExpression paramType = targetFunc.getArgumentType(i);
-          String javaParamTypeStr = convert2BoxedJavaType(paramType);
+          String javaParamTypeStr = getBoxedJavaTypePrint(paramType);
           p.print(javaParamTypeStr);
           p.print(" ");
           p.print("arg" + i);

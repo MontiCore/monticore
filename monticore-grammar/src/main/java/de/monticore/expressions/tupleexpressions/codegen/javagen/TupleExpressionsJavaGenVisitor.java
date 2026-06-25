@@ -12,8 +12,8 @@ import de.monticore.types3.TypeCheck3;
 
 import java.util.Iterator;
 
-import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.convert2BoxedJavaType;
-import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.convert2JavaQName;
+import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getBoxedJavaTypePrint;
+import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getJavaTypeQName;
 
 public class TupleExpressionsJavaGenVisitor
     extends TupleExpressionsInheritanceHandler {
@@ -33,14 +33,14 @@ public class TupleExpressionsJavaGenVisitor
   @Override
   public void traverse(ASTTupleExpression node) {
     SymTypeOfTuple tupleType = TypeCheck3.typeOf(node).asTupleType();
-    getPrinter().print(convert2JavaQName(tupleType));
+    getPrinter().print(getJavaTypeQName(tupleType));
 
     getPrinter().print(".<");
     for (int i = 0; i < tupleType.sizeTypes(); i++) {
       if (i != 0) {
         getPrinter().print(", ");
       }
-      getPrinter().print(convert2BoxedJavaType(tupleType.getType(i)));
+      getPrinter().print(getBoxedJavaTypePrint(tupleType.getType(i)));
     }
     getPrinter().print(">of");
 

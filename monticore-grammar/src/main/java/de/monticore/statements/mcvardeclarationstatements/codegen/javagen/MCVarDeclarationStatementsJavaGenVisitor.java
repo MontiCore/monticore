@@ -52,7 +52,7 @@ public class MCVarDeclarationStatementsJavaGenVisitor
     ASTLocalVariableDeclaration varDeclaration =
         node.getLocalVariableDeclaration();
     SymTypeExpression varType = symTypeFromAST(varDeclaration.getMCType());
-    String javaVarType = SymTypeExpression2JavaConverter.convert2JavaType(varType);
+    String javaVarType = SymTypeExpression2JavaConverter.getJavaTypePrint(varType);
 
     // for `int x = 2, y = 3` we will print
     // `int x = 2; int y = 3;`,

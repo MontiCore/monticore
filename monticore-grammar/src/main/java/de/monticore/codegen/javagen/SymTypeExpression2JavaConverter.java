@@ -31,11 +31,11 @@ public class SymTypeExpression2JavaConverter {
   /**
    * Converts a model type into a Java type.
    */
-  public static String convert2JavaType(SymTypeExpression modelType) {
-    return getDelegate()._convert2JavaType(modelType);
+  public static String getJavaTypePrint(SymTypeExpression modelType) {
+    return getDelegate()._getJavaTypePrint(modelType);
   }
 
-  protected String _convert2JavaType(SymTypeExpression modelType) {
+  protected String _getJavaTypePrint(SymTypeExpression modelType) {
     return javaTypePrinterVisitor.calculate(modelType);
   }
 
@@ -43,11 +43,11 @@ public class SymTypeExpression2JavaConverter {
    * Converts a model type into a (boxed) Java type.
    * To be used, e.g., for type parameters of generics.
    */
-  public static String convert2BoxedJavaType(SymTypeExpression modelType) {
-    return getDelegate()._convert2BoxedJavaType(modelType);
+  public static String getBoxedJavaTypePrint(SymTypeExpression modelType) {
+    return getDelegate()._getBoxedJavaTypePrint(modelType);
   }
 
-  protected String _convert2BoxedJavaType(SymTypeExpression modelType) {
+  protected String _getBoxedJavaTypePrint(SymTypeExpression modelType) {
     return javaBoxedTypePrinterVisitor.calculate(modelType);
   }
 
@@ -56,11 +56,11 @@ public class SymTypeExpression2JavaConverter {
    * {@code List<String>} becomes {@code java.util.List<?>}
    * for, e.g., {@code instanceof}.
    */
-  public static String convert2TypeErasedJavaType(SymTypeExpression modelType) {
-    return getDelegate()._convert2TypeErasedJavaType(modelType);
+  public static String getTypeErasedJavaTypePrint(SymTypeExpression modelType) {
+    return getDelegate()._getTypeErasedJavaTypePrint(modelType);
   }
 
-  protected String _convert2TypeErasedJavaType(SymTypeExpression modelType) {
+  protected String _getTypeErasedJavaTypePrint(SymTypeExpression modelType) {
     return javaTypeErasedPrinterVisitor.calculate(modelType);
   }
 
@@ -71,8 +71,12 @@ public class SymTypeExpression2JavaConverter {
    * corresponding to the model type.
    * This can be used, e.g., as constructor.
    */
-  public static String convert2JavaQName(SymTypeExpression modelType) {
-    return convert2JavaType(modelType).split("<")[0];
+  public static String getJavaTypeQName(SymTypeExpression modelType) {
+    return getDelegate()._getJavaTypeQName(modelType);
+  }
+
+  protected String _getJavaTypeQName(SymTypeExpression modelType) {
+    return getJavaTypePrint(modelType).split("<")[0];
   }
 
   // static delegate

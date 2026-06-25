@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.convert2TypeErasedJavaType;
+import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getTypeErasedJavaTypePrint;
 
 /**
  * SymTypeRelations, specifically for Java code generation.
@@ -62,7 +62,7 @@ public class JavaGenSymTypeRelations {
   }
 
   protected boolean _generatesToJavaPrimitive(SymTypeExpression type) {
-    return javaPrimitiveTypes.contains(SymTypeExpression2JavaConverter.convert2JavaType(type));
+    return javaPrimitiveTypes.contains(SymTypeExpression2JavaConverter.getJavaTypePrint(type));
   }
 
   /**
@@ -73,7 +73,7 @@ public class JavaGenSymTypeRelations {
   }
 
   protected boolean _generatesToJavaNumeric(SymTypeExpression type) {
-    return javaNumericTypes.contains(SymTypeExpression2JavaConverter.convert2JavaType(type));
+    return javaNumericTypes.contains(SymTypeExpression2JavaConverter.getJavaTypePrint(type));
   }
 
   /**
@@ -96,7 +96,7 @@ public class JavaGenSymTypeRelations {
   }
 
   protected boolean _generatesToJavaRuntimeIdentifiableType(SymTypeExpression type) {
-    return !convert2TypeErasedJavaType(type).contains("?");
+    return !getTypeErasedJavaTypePrint(type).contains("?");
   }
 
   // static delegate

@@ -17,8 +17,8 @@ import de.se_rwth.commons.logging.Log;
 
 import static de.monticore.codegen.CodeGenSymTypeExpressionConverter.printConverted;
 import static de.monticore.codegen.javagen.JavaGenSymTypeRelations.generatesToJavaRuntimeIdentifiableType;
-import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.convert2JavaQName;
-import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.convert2TypeErasedJavaType;
+import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getJavaTypeQName;
+import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getTypeErasedJavaTypePrint;
 import static de.monticore.types3.SymTypeRelations.normalize;
 import static de.monticore.types3.TypeCheck3.symTypeFromAST;
 import static de.monticore.types3.TypeCheck3.typeOf;
@@ -67,7 +67,7 @@ public class UglyExpressionsJavaGenVisitor
     // print it with type erasure anyway,
     // the behavior is simply not always correct
     // and the did log an error already
-    getPrinter().print(convert2TypeErasedJavaType(targetType));
+    getPrinter().print(getTypeErasedJavaTypePrint(targetType));
     state.endParentheses();
   }
 
@@ -82,14 +82,14 @@ public class UglyExpressionsJavaGenVisitor
   @Override
   public void traverse(ASTClassCreator node) {
     SymTypeExpression type = normalize(symTypeFromAST(node.getMCType()));
-    getPrinter().print(convert2JavaQName(type));
+    getPrinter().print(getJavaTypeQName(type));
     node.getArguments().accept(getTraverser());
   }
 
   @Override
   public void traverse(ASTArrayCreator node) {
     SymTypeExpression type = normalize(symTypeFromAST(node.getMCType()));
-    getPrinter().print(convert2JavaQName(type));
+    getPrinter().print(getJavaTypeQName(type));
     node.getArrayDimensionSpecifier().accept(getTraverser());
   }
 
