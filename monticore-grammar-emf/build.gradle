@@ -28,6 +28,7 @@ dependencies {
     testImplementation project(":monticore-libraries:javagen-runtime")
     testImplementation 'org.apache.groovy:groovy:4.0.2'
     testImplementation testFixtures(project(':monticore-runtime'))
+    testImplementation testFixtures(project(':monticore-grammar'))
 }
 
 def srcDir = layout.buildDirectory.dir("main/java")
