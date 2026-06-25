@@ -3,7 +3,6 @@ package de.monticore.expressions.assignmentexpressions.codegen.javagen;
 
 import com.google.common.base.Preconditions;
 import de.monticore.codegen.CodeGenPrintAction;
-import de.monticore.codegen.javagen.JavaGenSymTypeRelations;
 import de.monticore.codegen.javagen.JavaGenVisitorState;
 import de.monticore.codegen.javagen.JavaOperationPrinter;
 import de.monticore.expressions.assignmentexpressions._ast.ASTAssignmentExpression;
@@ -26,6 +25,7 @@ import static de.monticore.codegen.CodeGenOperationPrinter.printModulo;
 import static de.monticore.codegen.CodeGenOperationPrinter.printMultiply;
 import static de.monticore.codegen.CodeGenOperationPrinter.printPlus;
 import static de.monticore.codegen.CodeGenSymTypeExpressionConverter.printConverted;
+import static de.monticore.codegen.javagen.JavaGenSymTypeRelations.generatesToJavaNumeric;
 import static de.monticore.expressions.assignmentexpressions._ast.ASTConstantsAssignmentExpressions.EQUALS;
 import static de.monticore.expressions.assignmentexpressions._ast.ASTConstantsAssignmentExpressions.MINUSEQUALS;
 import static de.monticore.expressions.assignmentexpressions._ast.ASTConstantsAssignmentExpressions.PERCENTEQUALS;
@@ -60,13 +60,15 @@ public class AssignmentExpressionsJavaGenVisitor
     // as in the future, templates provided by the symbols
     // are to be used instead.
 
-    if (JavaGenSymTypeRelations.generatesToJavaNumeric(TypeCheck3.typeOf(expr.getExpression()))) {
+    if (generatesToJavaNumeric(TypeCheck3.typeOf(expr.getExpression()))) {
       expr.getExpression().accept(getTraverser());
       getPrinter().print("++");
     }
     else {
-      Log.error("0xFD250 Unhandled increment suffix operator "
-          + ". This is an alpha version and needs to be extended."
+      Log.error("0xFD350 Unhandled increment suffix operator "
+              + ". This is an alpha version and needs to be extended.",
+          expr.get_SourcePositionStart(),
+          expr.get_SourcePositionEnd()
       );
     }
   }
@@ -77,13 +79,15 @@ public class AssignmentExpressionsJavaGenVisitor
     // as in the future, templates provided by the symbols
     // are to be used instead.
 
-    if (JavaGenSymTypeRelations.generatesToJavaNumeric(TypeCheck3.typeOf(expr.getExpression()))) {
+    if (generatesToJavaNumeric(TypeCheck3.typeOf(expr.getExpression()))) {
       expr.getExpression().accept(getTraverser());
       getPrinter().print("--");
     }
     else {
-      Log.error("0xFD251 Unhandled increment suffix operator "
-          + ". This is an alpha version and needs to be extended."
+      Log.error("0xFD351 Unhandled increment suffix operator "
+              + ". This is an alpha version and needs to be extended.",
+          expr.get_SourcePositionStart(),
+          expr.get_SourcePositionEnd()
       );
     }
   }
