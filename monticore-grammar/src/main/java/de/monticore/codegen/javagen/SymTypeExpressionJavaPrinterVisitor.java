@@ -23,8 +23,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.convert2BoxedJavaType;
+
 /**
- * Prints SymTypeExpressions in a Java compatible way,
+ * Prints SymTypeExpressions in a Java compatible way.
  */
 public class SymTypeExpressionJavaPrinterVisitor
     extends SymTypePrintFullNameVisitor {
@@ -60,43 +62,24 @@ public class SymTypeExpressionJavaPrinterVisitor
     boolean isFunc = !func.getType().isVoidType();
     if (isFunc) {
       getPrint().append(RTE_PACKAGE).append(".functions.Function");
-    } else {
+    }
+    else {
       getPrint().append(RTE_PACKAGE).append(".actions.Action");
     }
     getPrint().append(func.sizeArgumentTypes());
-
 
     List<SymTypeExpression> resArgs = new ArrayList<>();
     if (isFunc) {
       resArgs.add(func.getType());
     }
     resArgs.addAll(func.getArgumentTypeList());
-
-    if (!resArgs.isEmpty()) {
-      getPrint().append('<');
-      for (int i = 0; i < resArgs.size(); i++) {
-        SymTypeExpression innerType = resArgs.get(i);
-        getPrint().append(SymTypeExpression2JavaConverter.convert2BoxedJavaType(innerType));
-        if (i < resArgs.size() - 1) {
-          getPrint().append(',');
-        }
-      }
-      getPrint().append('>');
-    }
+    printTypeArguments(resArgs);
   }
 
   @Override
   public void visit(SymTypeOfGenerics generic) {
     getPrint().append(printTypeSymbol(generic.getTypeInfo()));
-    getPrint().append('<');
-    for (int i = 0; i < generic.sizeArguments(); i++) {
-      SymTypeExpression innerType = generic.getArgument(i);
-      getPrint().append(SymTypeExpression2JavaConverter.convert2BoxedJavaType(innerType));
-      if (i < generic.sizeArguments() - 1) {
-        getPrint().append(',');
-      }
-    }
-    getPrint().append('>');
+    printTypeArguments(generic.getArgumentList());
   }
 
   @Override
@@ -120,17 +103,7 @@ public class SymTypeExpressionJavaPrinterVisitor
     String className = RTE_PACKAGE + ".tuples.Tuple"
         + tuple.sizeTypes();
     getPrint().append(className);
-    getPrint().append('<');
-    for (int i = 0; i < tuple.sizeTypes(); i++) {
-      SymTypeExpression innerType = tuple.getType(i);
-      printOpeningBracketForInner(innerType);
-      getPrint().append(SymTypeExpression2JavaConverter.convert2BoxedJavaType(innerType));
-      printClosingBracketForInner(innerType);
-      if (i < tuple.sizeTypes() - 1) {
-        getPrint().append(',');
-      }
-    }
-    getPrint().append('>');
+    printTypeArguments(tuple.getTypeList());
   }
 
   @Override
@@ -154,10 +127,11 @@ public class SymTypeExpressionJavaPrinterVisitor
     if (wildcard.hasBound()) {
       if (wildcard.isUpper()) {
         getPrint().append(" extends ");
-      } else {
+      }
+      else {
         getPrint().append(" super ");
       }
-      getPrint().append(SymTypeExpression2JavaConverter.convert2BoxedJavaType(wildcard.getBound()));
+      getPrint().append(convert2BoxedJavaType(wildcard.getBound()));
     }
   }
 
@@ -186,4 +160,22 @@ public class SymTypeExpressionJavaPrinterVisitor
   protected void printClosingBracketForInner(SymTypeExpression symType) {
     // no-op, as Java does not support bracket-types
   }
+
+  protected void printTypeArguments(List<SymTypeExpression> typeArgs) {
+    if (typeArgs.isEmpty()) {
+      return;
+    }
+    getPrint().append('<');
+    for (int i = 0; i < typeArgs.size(); i++) {
+      SymTypeExpression innerType = typeArgs.get(i);
+      printOpeningBracketForInner(innerType);
+      getPrint().append(convert2BoxedJavaType(innerType));
+      printClosingBracketForInner(innerType);
+      if (i < typeArgs.size() - 1) {
+        getPrint().append(", ");
+      }
+    }
+    getPrint().append('>');
+  }
+
 }
