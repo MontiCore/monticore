@@ -53,6 +53,7 @@ public abstract class CodeGenSymTypeExpressionConverter {
   ) {
     SymTypeExpression targetNormalized = normalize(modelTargetType);
     SymTypeExpression sourceNormalized = normalize(modelSourceType);
+    // temporary workaround due to odd SymbolSurrogate behavior
     if (targetNormalized.deepEquals(sourceNormalized) || sourceNormalized.deepEquals(targetNormalized)) {
       sourceExprPrintAction.print(printer);
     }
