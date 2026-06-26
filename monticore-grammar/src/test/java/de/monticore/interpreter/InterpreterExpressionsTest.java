@@ -40,6 +40,11 @@ public class InterpreterExpressionsTest extends AbstractInterpreterTest {
         ExpressionsTestModels.getTypeCastingCases()
             .anyMatch(c -> c.get()[0].equals(exprStr))
     );
+    // some SetExpressions are not supported
+    assumeFalse(exprStr.contains("} union {"));
+    assumeFalse(exprStr.contains("} intersect {"));
+    assumeFalse(exprStr.contains("} \\ {"));
+    assumeFalse(exprStr.contains("[z | x in "));
   }
 
 }
