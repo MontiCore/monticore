@@ -105,11 +105,18 @@ public abstract class AbstractJavaGenTest extends AbstractMCTest {
     );
     String value = event.value();
 
+    String expectedValueStr;
     // edge case to support Strings
     if (expectedValue instanceof String expectedStr) {
-      expectedValue = "\"" + expectedStr + "\"";
+      expectedValueStr = "\"" + expectedStr + "\"";
     }
-    assertEquals(expectedValue.toString(), value,
+    else if (expectedValue == null) {
+      expectedValueStr = "null";
+    }
+    else {
+      expectedValueStr = expectedValue.toString();
+    }
+    assertEquals(expectedValueStr, value,
         "The evaluated Java code does not match the expected output."
             + " Model:" + System.lineSeparator() + javaMethodStr
     );
