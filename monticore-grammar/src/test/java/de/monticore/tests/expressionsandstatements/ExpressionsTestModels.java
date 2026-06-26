@@ -177,8 +177,19 @@ public class ExpressionsTestModels {
     return Stream.of(
         Arguments.of("if true then 5 else 2", 5),
         Arguments.of("true implies false", false),
+        Arguments.of("true <=> false", false),
+        Arguments.of("true <=> true", true),
+        Arguments.of("false <=> true", false),
+        Arguments.of("forall int x in [1, 2, 3] : x > 0", true),
+        Arguments.of("forall int x in [1, 2, 3] : x < 0", false),
+        Arguments.of("exists int x in [1, 2, 3] : x == 2", true),
+        Arguments.of("exists int x in [1, 2, 3] : x == 4", false),
         Arguments.of("let int x = 5 in x + 2", 7),
         Arguments.of("let int x = 5; int y = 2 + x in x + y", 12),
+        Arguments.of(
+            "iterate { int x in [1, 2, 3]; int sum = 0 : sum = sum + x }",
+            6
+        ),
         Arguments.of("2 isin [1, 2, 3]", true),
         Arguments.of("2 notin [1, 2, 3]", false),
         Arguments.of("setand [true, true, false]", false),
