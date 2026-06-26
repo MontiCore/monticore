@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.monticore.grammar.cocos.valid;
+
+grammar A0143c extends A0143 {
+
+	@Override
+  Plus implements Expr<9> = Expr "-" Expr; // 9 is greater than 5
+
+}
