@@ -164,4 +164,13 @@ public class Class2MCTestModels {
     );
   }
 
+  static public Stream<Arguments> getCreatorExpressionCases() {
+    return Stream.of(
+        // only simple tests for now, until we can compare objects properly
+        Arguments.of("(new Person(\"Rowan\", 33)).getAge()", 33),
+        Arguments.of("(new Person[1])[0]", null),
+        Arguments.of("(new Person[1][2][][])[0][0]", null)
+    );
+  }
+
 }
