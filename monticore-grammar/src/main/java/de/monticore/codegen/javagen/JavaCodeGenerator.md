@@ -71,8 +71,12 @@ statements ought to be added later in development.
       (support for String concatenation)
 * [SymTypeExpression2JavaConverter](SymTypeExpression2JavaConverter.java)
   (Converts SymTypeExpression to Java types with or without type erasure)
-    * [SymTypeExpression2JavaVisitor](SymTypeExpression2JavaVisitor.java)
-      (used in SymTypeExpression2JavaConverter)
+    * [SymTypeExpressionJavaPrinterVisitor](SymTypeExpressionJavaPrinterVisitor.java)
+      (prints SymTypeExpression as Java types)
+    * [SymTypeExpressionBoxedJavaPrinterVisitor](SymTypeExpressionBoxedJavaPrinterVisitor.java)
+      (prints SymTypeExpression as boxed Java types)
+    * [SymTypeExpressionTypeErasedJavaPrinterVisitor](SymTypeExpressionTypeErasedJavaPrinterVisitor.java)
+      (prints SymTypeExpression as Java types with type erasure)
 
 ## Java Runtime
 
