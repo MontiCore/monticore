@@ -72,4 +72,11 @@ public class JavaGenTest extends AbstractJavaGenTest {
     checkValue(modelStr, expectedValue);
   }
 
+  @ParameterizedTest(name = "[{index}] {0}")
+  @MethodSource("de.monticore.tests.expressionsandstatements.Class2MCTestModels#getCreatorExpressionCases")
+  void testCreatorExpressionCases(String tail, Object expectedValue) {
+    String modelStr = Class2MCTestModels.getModelPrefix() + tail;
+    checkValue(modelStr, expectedValue);
+  }
+
 }

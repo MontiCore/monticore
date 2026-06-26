@@ -83,7 +83,14 @@ public class UglyExpressionsJavaGenVisitor
   public void traverse(ASTClassCreator node) {
     SymTypeExpression type = normalize(symTypeFromAST(node.getMCType()));
     getPrinter().print(getJavaTypeQName(type));
-    node.getArguments().accept(getTraverser());
+    state.startParentheses();
+    for (int i = 0; i < node.getArguments().sizeExpressions(); i++) {
+      if (i != 0) {
+        getPrinter().print(", ");
+      }
+      node.getArguments().getExpression(i).accept(getTraverser());
+    }
+    state.endParentheses();
   }
 
   @Override
