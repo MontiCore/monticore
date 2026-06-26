@@ -111,7 +111,7 @@ public class ExpressionsBasisJavaGenVisitor
     // arguments are context dependent,
     // thus, they cannot be printed in a general way.
     // This has to be done by the expression that has the arguments.
-    Log.error("0xFD229 internal error: "
+    Log.error("0xFD239 internal error: "
             + " CodeGenPrinter misconfigured/not fully implemented",
         node.get_SourcePositionStart(),
         node.get_SourcePositionEnd()
