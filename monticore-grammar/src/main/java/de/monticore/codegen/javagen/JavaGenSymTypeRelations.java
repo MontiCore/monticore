@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.javagen;
 
 import com.google.common.base.Preconditions;
