@@ -56,8 +56,6 @@ public class JavaGenTest extends AbstractJavaGenTest {
   @ParameterizedTest(name = "[{index}] {0}")
   @MethodSource("de.monticore.tests.expressionsandstatements.Class2MCTestModels#getAClassCases")
   void testNativeJavaAClass(String tail, Object expectedValue) {
-    // prints differently in relation to interpreter, not supported yet
-    assumeFalse(tail.contains("char") || tail.contains("Character"));
     // not supported yet, implementation missing
     assumeFalse(tail.contains(".set_"));
 

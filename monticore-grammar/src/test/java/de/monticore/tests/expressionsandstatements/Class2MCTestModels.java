@@ -2,6 +2,8 @@
 package de.monticore.tests.expressionsandstatements;
 
 import de.monticore.tests.expressionsandstatements.rte.AClass;
+import de.monticore.tests.expressionsandstatements.rte.Person;
+import de.monticore.tests.expressionsandstatements.rte.Student;
 import org.junit.jupiter.params.provider.Arguments;
 
 import java.util.ArrayList;
@@ -166,8 +168,15 @@ public class Class2MCTestModels {
 
   static public Stream<Arguments> getCreatorExpressionCases() {
     return Stream.of(
-        // only simple tests for now, until we can compare objects properly
-        Arguments.of("(new Person(\"Rowan\", 33)).getAge()", 33),
+        Arguments.of("new Person(\"Rowan\", 33).getAge()", 33),
+        Arguments.of(
+            "new Person(\"Rowan\", 33)",
+            new Person("Rowan", 33)
+        ),
+        Arguments.of(
+            "new Student(\"Quinn\", 21, 42)",
+            new Student("Quinn", 21, 42)
+        ),
         Arguments.of("(new Person[1])[0]", null),
         Arguments.of("(new Person[1][2][][])[0][0]", null)
     );
