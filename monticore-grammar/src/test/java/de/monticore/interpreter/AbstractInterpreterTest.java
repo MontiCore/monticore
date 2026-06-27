@@ -74,6 +74,41 @@ public abstract class AbstractInterpreterTest extends AbstractMCTest {
     return access;
   }
 
+  /**
+   * Executes the model and compares the result with the expected value.
+   *
+   * @param modelStr      the model to execute
+   * @param expectedValue the expected value
+   */
+  protected void checkValue(String modelStr, Object expectedValue) {
+    MCValue value = interpret(modelStr);
+    // handle numbers, as they are represented differently in the interpreter
+    if (expectedValue instanceof Byte) {
+      assertEquals(expectedValue, value.asByte());
+    }
+    else if (expectedValue instanceof Short) {
+      assertEquals(expectedValue, value.asShort());
+    }
+    else if (expectedValue instanceof Character) {
+      assertEquals(expectedValue, value.asChar());
+    }
+    else if (expectedValue instanceof Integer) {
+      assertEquals(expectedValue, value.asInt());
+    }
+    else if (expectedValue instanceof Long) {
+      assertEquals(expectedValue, value.asLong());
+    }
+    else if (expectedValue instanceof Float) {
+      assertEquals(expectedValue, value.asFloat());
+    }
+    else if (expectedValue instanceof Double) {
+      assertEquals(expectedValue, value.asDouble());
+    }
+    else {
+      assertEquals(expectedValue, value.asNativeObject());
+    }
+  }
+
   // helper
 
   MICalculation getCalculation(

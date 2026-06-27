@@ -19,7 +19,7 @@ public class InterpreterStatementsTest extends AbstractInterpreterTest {
     // for-loops are not supported yet
     assumeFalse(modelStr.contains("for "));
 
-    assertEquals(expectedValue, interpretAndCast(modelStr));
+    checkValue(modelStr, expectedValue);
   }
 
   @Test
