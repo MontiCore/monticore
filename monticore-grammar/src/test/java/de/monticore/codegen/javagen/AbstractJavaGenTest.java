@@ -35,6 +35,7 @@ import java.util.stream.Collectors;
 import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getJavaTypePrint;
 import static de.monticore.runtime.junit.MCAssertions.assertNoFindings;
 import static de.monticore.types3.SymTypeRelations.normalize;
+import static de.monticore.types3.TypeCheck3.typeOf;
 import static java.lang.System.lineSeparator;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
