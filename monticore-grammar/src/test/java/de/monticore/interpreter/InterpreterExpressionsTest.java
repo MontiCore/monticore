@@ -12,18 +12,19 @@ public class InterpreterExpressionsTest extends AbstractInterpreterTest {
 
   @ParameterizedTest
   @MethodSource("de.monticore.tests.expressionsandstatements.ExpressionsTestModels#getExpressionsCases")
-  void testExpressions(String exprStr, Object expectedValue) {
-    assumeSupported(exprStr, expectedValue);
-    assertEquals(expectedValue, interpretAndCast(exprStr));
+  void testExpressions(String modelStr, Object expectedValue) {
+    assumeSupported(modelStr, expectedValue);
+    checkValue(modelStr, expectedValue);
   }
 
   // checks if the interpreter also works while logging
   @ParameterizedTest
   @MethodSource("de.monticore.tests.expressionsandstatements.ExpressionsTestModels#getExpressionsCases")
-  void testExpressionsWithLog(String exprStr, Object expectedValue) {
-    assumeSupported(exprStr, expectedValue);
+  void testExpressionsWithLog(String modelStr, Object expectedValue) {
+    assumeSupported(modelStr, expectedValue);
     interpreter = initializeInterpreterWithLog();
-    assertEquals(expectedValue, interpretAndCast(exprStr));
+    checkValue(modelStr, expectedValue);
+    assertEquals(expectedValue, interpretAndCast(modelStr));
   }
 
   protected void assumeSupported(String exprStr, Object expectedValue) {

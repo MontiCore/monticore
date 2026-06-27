@@ -8,8 +8,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 public class InterpreterClass2MCTest extends AbstractInterpreterTest {
 
   @BeforeEach
@@ -20,14 +18,14 @@ public class InterpreterClass2MCTest extends AbstractInterpreterTest {
   @ParameterizedTest
   @MethodSource("de.monticore.tests.expressionsandstatements.Class2MCTestModels#getNativeJavaCases")
   void testNativeJava(String modelStr, Object expectedValue) {
-    assertEquals(expectedValue, interpretAndCast(modelStr));
+    checkValue(modelStr, expectedValue);
   }
 
   @ParameterizedTest(name = "[{index}] {0}")
   @MethodSource("de.monticore.tests.expressionsandstatements.Class2MCTestModels#getAClassCases")
   void testNativeJavaAClass(String tail, Object expectedValue) {
     String modelStr = Class2MCTestModels.getModelPrefix() + tail;
-    assertEquals(expectedValue, interpretAndCast(modelStr));
+    checkValue(modelStr, expectedValue);
   }
 
 }
