@@ -20,6 +20,36 @@ public class MCValueDouble implements MCValue {
   }
 
   @Override
+  public byte asByte() {
+    return (byte) value;
+  }
+
+  @Override
+  public short asShort() {
+    return (short) value;
+  }
+
+  @Override
+  public char asChar() {
+    return (char) value;
+  }
+
+  @Override
+  public int asInt() {
+    return (int) value;
+  }
+
+  @Override
+  public long asLong() {
+    return (long) value;
+  }
+
+  @Override
+  public float asFloat() {
+    return (float) value;
+  }
+
+  @Override
   public double asDouble() {
     return value;
   }
