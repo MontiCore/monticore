@@ -417,8 +417,12 @@ public class CommonExpressionsJavaGenVisitor
   protected void printTypeArguments(List<? extends SymTypeExpression> typeArgs) {
     if (!typeArgs.isEmpty()) {
       getPrinter().print("<");
-      for (SymTypeExpression typeArg : typeArgs) {
-        getPrinter().print(getBoxedJavaTypePrint(typeArg));
+      for (int i = 0; i < typeArgs.size(); i++) {
+        SymTypeExpression innerType = typeArgs.get(i);
+        getPrinter().print(getBoxedJavaTypePrint(innerType));
+        if (i < typeArgs.size() - 1) {
+          getPrinter().print(",");
+        }
       }
       getPrinter().print(">");
     }
