@@ -480,12 +480,19 @@ public class CompileTimeTypeCalculator {
     );
     List<SymTypeExpression> targetFuncArgTypes = new ArrayList<>();
     for (int i = 0; i < arguments.size(); i++) {
-      int argIdx = Math.min(i, targetFunctions.get(0).sizeArgumentTypes());
+      List<SymTypeExpression> targetFunctionCurrentArgTypes =
+          new ArrayList<>(targetFunctions.size());
+      for (SymTypeOfFunction targetFunction : targetFunctions) {
+        // very conservative;
+        // we have not filtered out non-callable functions
+        int argIdx = Math.min(i, targetFunction.sizeArgumentTypes() - 1);
+        targetFunctionCurrentArgTypes.add(
+            targetFunction.getArgumentType(argIdx
+            ));
+      }
       targetFuncArgTypes.add(createIntersectionOrDefault(
               createObscureType(),
-              targetFunctions.stream()
-                  .map(f -> f.getArgumentType(argIdx))
-                  .collect(Collectors.toList())
+              targetFunctionCurrentArgTypes
           )
       );
     }
