@@ -264,8 +264,7 @@ public abstract class AbstractJavaGenTest extends AbstractMCTest {
       return Files.readString(file.toPath(), StandardCharsets.UTF_8);
     }
     catch (IOException e) {
-      fail(e);
-      return "does not occur";
+      return fail(e);
     }
   }
 }
