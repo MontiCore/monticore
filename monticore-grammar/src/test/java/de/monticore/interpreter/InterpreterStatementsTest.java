@@ -9,16 +9,12 @@ import org.junit.jupiter.params.provider.MethodSource;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 public class InterpreterStatementsTest extends AbstractInterpreterTest {
 
   @ParameterizedTest(name = "[{index}] {0}")
-  @MethodSource("de.monticore.tests.expressionsandstatements.StatementsTestModels#getStatementCases")
+  @MethodSource("de.monticore.tests.expressionsandstatements.StatementsTestModels#getInterpreterStatementCases")
   void testStatements(String modelStr, Object expectedValue) {
-    // for-loops are not supported yet
-    assumeFalse(modelStr.contains("for "));
-
     checkValue(modelStr, expectedValue);
   }
 
