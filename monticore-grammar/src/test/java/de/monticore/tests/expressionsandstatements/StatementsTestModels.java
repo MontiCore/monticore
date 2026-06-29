@@ -21,6 +21,22 @@ public class StatementsTestModels {
     ).flatMap(Function.identity());
   }
 
+  /**
+   * Like {@link #getStatementCases()} but without constructs not supported by the interpreter.
+   * The interpreter test suite uses this to keep statement test models parser-compatible.
+   */
+  static public Stream<Arguments> getInterpreterStatementCases() {
+    return Stream.of(
+        getCommonStatementCases().filter(c -> {
+          final String modelStr = (String) c.get()[0];
+          // The test language does not support local array variable declarations like "int[] a".
+          return !modelStr.contains("int[] ");
+        }),
+        getAssignmentCases(),
+        getValidAssertStatementsCases()
+    ).flatMap(Function.identity());
+  }
+
   static protected Stream<Arguments> getCommonStatementCases() {
     return Stream.of(
         Arguments.of("int x; if (true) {x = 2;} else {x = 3;}; x", 2),
@@ -33,9 +49,17 @@ public class StatementsTestModels {
         Arguments.of("int x = 1; do {x++;} while (x < 10); x", 10),
         Arguments.of("int x = 1; do {x++;} while (false); x", 2),
         Arguments.of("int x = 0; do {x++; break; x++;} while (true); x", 1),
-        Arguments.of("int x = 0; for (int i = 1; i <= 4; i++) x++; x", 5),
+        Arguments.of("int x = 0; for (int i = 0; i < 4; i++) x++; x", 4),
+        Arguments.of("int x = 0, i = 0; for (x++, i = 0; i < 4; i++); x", 1),
+        Arguments.of("int x = 0; for (int i = 0; i < 4; i++, x++); x", 4),
         Arguments.of("int x = 0; for (;x < 4;) x++; x", 4),
+        Arguments.of("int x = 0; for (; ++x < 4;); x", 4),
+        Arguments.of("int x = 0; for (; x++ < 4;); x", 5),
         Arguments.of("int x = 1; for (int i = 0; i < 0; i++) x++; x", 1),
+        Arguments.of("int[] a = {1,2,3}; int x = 0; for (int e : a) x += e; x", 6),
+        Arguments.of("int[] a = new int[0]; int x = 0; for(int e : a) x+= e; x", 0),
+        Arguments.of("int x = 0; for(int e : [1,2,3]) x+= e; x", 6),
+        Arguments.of("int x = 0; for(int e : (List<int>)[]) x+= e; x", 0),
         Arguments.of("""
             int x = 0;
             for (int i = 0; i < 2; i++)
