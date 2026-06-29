@@ -252,10 +252,33 @@ public class CompileTimeTypeCalculator {
         type4Ast.setTypeOfExpression(callExpr, createObscureType());
         return;
       }
-
-      // store each function as an inference result.
       List<SymTypeOfFunction> functions =
           getFunctionsOfResolvedType(funcExprTypeNotNormalized);
+
+      // check the amount of arguments,
+      // as some visitors may not check the inference context
+      // for the amount of expected arguments and fails fast accordingly
+      {
+        boolean failed = false;
+        for (SymTypeOfFunction function : functions) {
+          if (!function.canHaveArity(arguments.size())) {
+            Log.error("0xFDAB5 encountered a function call with "
+                    + arguments.size() + " arguments"
+                    + ", but got a function type with a different arity: "
+                    + System.lineSeparator() + function.printFullName(),
+                callExpr.get_SourcePositionStart(),
+                callExpr.get_SourcePositionEnd()
+            );
+            failed = true;
+          }
+        }
+        if (failed) {
+          type4Ast.setTypeOfExpression(callExpr, createObscureType());
+          return;
+        }
+      }
+
+      // store each function as an inference result.
       inferenceResults = new ArrayList<>(functions.size());
       for (SymTypeOfFunction function : functions) {
         InferenceResult funcTypeAsInfRes = new InferenceResult();
