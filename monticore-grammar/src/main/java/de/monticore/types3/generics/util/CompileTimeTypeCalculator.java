@@ -33,7 +33,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static de.monticore.types.check.SymTypeExpressionFactory.createFunction;
@@ -429,13 +428,13 @@ public class CompileTimeTypeCalculator {
     }
     else {
       Log.error("0xFD114 internal error: unexpected inference results",
-        callExpr.get_SourcePositionStart(),
-        callExpr.get_SourcePositionEnd());
+          callExpr.get_SourcePositionStart(),
+          callExpr.get_SourcePositionEnd());
     }
   }
 
   /**
-   * Checks the arguments of the found compile-time function type,
+   * Checks the arguments of the found compile-time function types,
    * given an expression that calls said function.
    * Sets the type in type4Ast for the callExpr.
    * S.a. {@link #passInferenceInformationUpwardsForFunctionCall(ASTExpression, List, InferenceContext4Ast)}
@@ -454,7 +453,7 @@ public class CompileTimeTypeCalculator {
       Type4Ast type4Ast,
       InferenceContext4Ast infCtx4Ast
   ) {
-    assert !targetFunctions.isEmpty();
+    Preconditions.checkArgument(!targetFunctions.isEmpty());
 
     // Given multiple functions, at this point
     // all functions are valid compile-time types.
@@ -1201,7 +1200,7 @@ public class CompileTimeTypeCalculator {
         + printFunctionForLog(infResult.getResolvedFunction())
         + (funcInfo.hasReturnTargetType()
         ? " with the target type "
-        + funcInfo.getReturnTargetType().printFullName()
+          + funcInfo.getReturnTargetType().printFullName()
         : "") + ".";
     if (invocationType.isEmpty()) {
       Log.error("0xFD447 cannot resolve function invocation type"
