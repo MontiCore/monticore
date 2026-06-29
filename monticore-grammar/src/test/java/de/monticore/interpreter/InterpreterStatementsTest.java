@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class InterpreterStatementsTest extends AbstractInterpreterTest {
 
   @ParameterizedTest(name = "[{index}] {0}")
-  @MethodSource("de.monticore.tests.expressionsandstatements.StatementsTestModels#getInterpreterStatementCases")
+  @MethodSource("de.monticore.tests.expressionsandstatements.StatementsTestModels#getStatementCases")
   void testStatements(String modelStr, Object expectedValue) {
     checkValue(modelStr, expectedValue);
   }
