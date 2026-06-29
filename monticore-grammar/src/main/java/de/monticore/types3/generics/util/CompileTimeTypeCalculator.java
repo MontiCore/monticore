@@ -1439,20 +1439,23 @@ public class CompileTimeTypeCalculator {
     Optional<SymTypeExpression> nonFunctionType;
     List<SymTypeExpression> resolvedTypesNonNormalized =
         splitResolvedType(resolvedType);
-    List<SymTypeExpression> resolvedTypes =
+    List<SymTypeExpression> resolvedTypesNormalized =
         resolvedTypesNonNormalized.stream()
             .map(SymTypeRelations::normalize)
             .collect(Collectors.toList());
-    List<SymTypeExpression> nonFuncs = resolvedTypes.stream()
-        .filter(Predicate.not(SymTypeExpression::isFunctionType))
-        .collect(Collectors.toList());
     // more than 1 non-function type is in most languages not expected
     // if there are no non-functions, return the function(s),
     // this gets filtered outside of inference
-    if (nonFuncs.size() >= 1) {
+    List<SymTypeExpression> nonFuncsNonNormalized = new ArrayList<>();
+    for (int i = 0; i < resolvedTypesNormalized.size(); i++) {
+      if (!resolvedTypesNormalized.get(i).isFunctionType()) {
+        nonFuncsNonNormalized.add(resolvedTypesNonNormalized.get(i));
+      }
+    }
+    if (nonFuncsNonNormalized.size() >= 1) {
       nonFunctionType = Optional.of(SymTypeExpressionFactory
           .createIntersectionOrDefault(
-              resolvedType, nonFuncs
+              resolvedType, nonFuncsNonNormalized
           )
       );
     }
