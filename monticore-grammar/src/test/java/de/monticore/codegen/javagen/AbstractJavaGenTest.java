@@ -108,7 +108,7 @@ public abstract class AbstractJavaGenTest extends AbstractMCTest {
     // compare
     assertEquals(expectedValue, result,
         "The resulting value is not the same as the expected value."
-            + lineSeparator() + " Model: " + javaArtifact.toAbsolutePath()
+            + lineSeparator() + " File: " + javaArtifact.toAbsolutePath()
             + lineSeparator() + "********** Generated **********"
             + lineSeparator() + readFile(javaArtifact.toFile())
     );
