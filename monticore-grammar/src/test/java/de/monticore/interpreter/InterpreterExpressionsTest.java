@@ -31,6 +31,7 @@ public class InterpreterExpressionsTest extends AbstractInterpreterTest {
     // Tuples not supported yet
     assumeFalse(exprStr.contains("(0, 3)"));
     assumeFalse(exprStr.contains("((0, 0), 3)"));
+    assumeFalse(exprStr.contains("(0, t)"));
     // OCLExpressions are not supported yet
     assumeFalse(
         ExpressionsTestModels.getOCLExpressionsCases()
