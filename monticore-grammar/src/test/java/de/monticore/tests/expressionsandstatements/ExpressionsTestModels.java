@@ -169,7 +169,13 @@ public class ExpressionsTestModels {
   static protected Stream<Arguments> getTupleCases() {
     return Stream.of(
         Arguments.of("(0, 3)", Tuple2.of(0, 3)),
-        Arguments.of("(0, 3)[1]", 3)
+        Arguments.of("(0, 3)[1]", 3),
+        // specifically this case broke once,
+        // due to a combination of CallExpression CTTI and Tuples
+        Arguments.of(
+            "(((byte, int) t) -> (0, t)) (((byte)1, 2))",
+            Tuple2.of(0, Tuple2.of((byte) 1, 2))
+        )
     );
   }
 
