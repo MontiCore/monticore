@@ -18,6 +18,16 @@ public interface ASTWeekDate extends ASTWeekDateTOP {
   
   int getDayOfWeek();
   
+  /**
+   * Checks whether the specified temporal field is supported by this week date.
+   * <p>
+   * {@link ChronoField#YEAR} and {@link #WEEK_OF_YEAR} are always supported.
+   * {@link ChronoField#DAY_OF_WEEK} is supported only if a day of the week is
+   * present.
+   *
+   * @param field the temporal field to check
+   * @return {@code true} if the field is supported, otherwise {@code false}
+   */
   @Override
   default boolean isSupported(TemporalField field) {
     if (field instanceof ChronoField) {
@@ -32,6 +42,14 @@ public interface ASTWeekDate extends ASTWeekDateTOP {
     return field == WEEK_OF_YEAR;
   }
   
+  /**
+   * Returns the value of the specified temporal field.
+   *
+   * @param field the temporal field to query
+   * @return the value of the requested field
+   * @throws UnsupportedTemporalTypeException if the field is not supported by
+   * this week date
+   */
   @Override
   default long getLong(TemporalField field) {
     if (field instanceof ChronoField) {
@@ -50,8 +68,8 @@ public interface ASTWeekDate extends ASTWeekDateTOP {
   }
 
   // Normally, the default implementation takes care of converting the result of getLong to int, but
-  // fetching the WEEK_OF_YEAR would then cause an error. This implementation is still sound, as each
-  // supported field has a range which fits in an int, anyway.
+  // fetching the WEEK_OF_YEAR would then cause an error. This implementation is still sound, as
+  // each supported field has a range which fits in an int, anyway.
   @Override
   default int get(TemporalField field) {
     return (int) getLong(field);

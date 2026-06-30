@@ -12,7 +12,20 @@ import static java.time.temporal.ChronoField.*;
 
 @SuppressWarnings("unused") // This interface is part of the public-facing API
 public interface ASTDate extends ASTDateTOP {
-
+  
+  /**
+   * Converts this AST date to the corresponding {@link Temporal}.
+   *
+   * <p>The result depends on the available fields:
+   * <ul>
+   *   <li>{@link LocalDate} if a full calendar date is present</li>
+   *   <li>{@link YearMonth} if only year-month precision is available</li>
+   *   <li>{@link Year} if only year precision is available</li>
+   * </ul>
+   *
+   * @return the corresponding temporal representation
+   * @throws UnsupportedTemporalTypeException if no valid conversion is possible
+   */
   @Override
   default Temporal toTemporal() {
     if (isLocalDate()) {
@@ -24,7 +37,19 @@ public interface ASTDate extends ASTDateTOP {
     }
     throw new UnsupportedTemporalTypeException("Conversion of ASTDate only supported into LocalDate, YearMonth, or Year");
   }
-
+  
+  /**
+   * Checks whether this date represents a full {@link LocalDate}.
+   * <p>
+   * A local date may be represented in one of the following forms:
+   * <ul>
+   *   <li>yyyy-MM-dd</li>
+   *   <li>yyyy-DDD (day-of-year)</li>
+   *   <li>ISO week date (yyyy-ww-d)</li>
+   * </ul>
+   *
+   * @return {@code true} if this can be represented as a {@link LocalDate}
+   */
   default boolean isLocalDate() {
     // Check whether it has form yyyy-mm-dd
     if (isSupported(YEAR) && isSupported(MONTH_OF_YEAR) && isSupported(DAY_OF_MONTH)) {
@@ -40,6 +65,20 @@ public interface ASTDate extends ASTDateTOP {
     return isSupported(YEAR) && isSupported(WeekFields.ISO.weekOfYear()) && isSupported(DAY_OF_WEEK);
   }
   
+  /**
+   * Converts this AST date to a {@link LocalDate}.
+   * <p>
+   * The conversion depends on the available temporal fields and supports:
+   * <ul>
+   *   <li>Year-month-day representation</li>
+   *   <li>Year-day-of-year representation</li>
+   *   <li>ISO week date representation</li>
+   * </ul>
+   *
+   * @return the corresponding {@link LocalDate}
+   * @throws UnsupportedTemporalTypeException if required fields are missing
+   * or the date cannot be converted
+   */
   default LocalDate toLocalDate() {
     // In case it has
     if (isSupported(YEAR) && isSupported(MONTH_OF_YEAR) && isSupported(DAY_OF_MONTH)) {

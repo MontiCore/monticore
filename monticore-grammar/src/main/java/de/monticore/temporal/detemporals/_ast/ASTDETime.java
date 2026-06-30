@@ -29,6 +29,19 @@ public class ASTDETime extends ASTDETimeTOP {
     return decodeNat(getSecondSource());
   }
   
+  /**
+   * Checks whether the specified temporal field is supported by this time.
+   * <p>
+   * Supported fields are:
+   * <ul>
+   *   <li>{@link ChronoField#HOUR_OF_DAY} (always supported)</li>
+   *   <li>{@link ChronoField#MINUTE_OF_HOUR} (if a minute is present)</li>
+   *   <li>{@link ChronoField#SECOND_OF_MINUTE} (if a second is present)</li>
+   * </ul>
+   *
+   * @param field the temporal field to check
+   * @return {@code true} if the field is supported, otherwise {@code false}
+   */
   @Override
   public boolean isSupported(TemporalField field) {
     if (field instanceof ChronoField) {
@@ -45,6 +58,19 @@ public class ASTDETime extends ASTDETimeTOP {
     return false;
   }
   
+  /**
+   * Checks whether the specified temporal field is supported by this time.
+   * <p>
+   * Supported fields are:
+   * <ul>
+   *   <li>{@link ChronoField#HOUR_OF_DAY} (always supported)</li>
+   *   <li>{@link ChronoField#MINUTE_OF_HOUR} (if a minute is present)</li>
+   *   <li>{@link ChronoField#SECOND_OF_MINUTE} (if a second is present)</li>
+   * </ul>
+   *
+   * @param field the temporal field to check
+   * @return {@code true} if the field is supported, otherwise {@code false}
+   */
   @Override
   public long getLong(TemporalField field) {
     if (field instanceof ChronoField) {

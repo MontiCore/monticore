@@ -24,6 +24,14 @@ public class ASTOrdinalDate extends ASTOrdinalDateTOP {
     return result.toString();
   }
   
+  /**
+   * Checks whether the specified temporal field is supported.
+   * <p>
+   * Only {@link ChronoField#YEAR} and {@link ChronoField#DAY_OF_YEAR} are supported.
+   *
+   * @param field the temporal field to check
+   * @return {@code true} if the field is supported, otherwise {@code false}
+   */
   @Override
   public boolean isSupported(TemporalField field) {
     if (field instanceof ChronoField) {
@@ -37,6 +45,13 @@ public class ASTOrdinalDate extends ASTOrdinalDateTOP {
     return false;
   }
   
+  /**
+   * Returns the value of the specified temporal field.
+   *
+   * @param field the temporal field to query
+   * @return the value of the requested field
+   * @throws UnsupportedTemporalTypeException if the field is not supported
+   */
   @Override
   public long getLong(TemporalField field) {
     if (field instanceof ChronoField) {

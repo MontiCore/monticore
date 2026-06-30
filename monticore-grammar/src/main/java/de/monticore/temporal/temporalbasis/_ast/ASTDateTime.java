@@ -13,7 +13,14 @@ public interface ASTDateTime extends ASTDateTimeTOP {
   ASTDate getDate();
   
   ASTTime getTime();
-
+  
+  /**
+   * Converts this AST node to the corresponding {@link Temporal}.
+   *
+   * @return the corresponding {@link LocalDateTime} or {@link OffsetDateTime}
+   * @throws UnsupportedTemporalTypeException if this date-time cannot be
+   * represented as either type
+   */
   @Override
   default Temporal toTemporal() {
     if (isExactlyLocalDateTime()) {
@@ -29,6 +36,17 @@ public interface ASTDateTime extends ASTDateTimeTOP {
     return getDate().isSupported(field) || getTime().isSupported(field);
   }
   
+  /**
+   * Returns the value of the specified temporal field.
+   * <p>
+   * The value is delegated to either the date or time component, depending on
+   * which part supports the requested field.
+   *
+   * @param field the temporal field to query
+   * @return the value of the requested field
+   * @throws UnsupportedTemporalTypeException if the field is not supported by
+   * either the date or time part
+   */
   @Override
   default  long getLong(TemporalField field) {
     if (getDate().isSupported(field)) {

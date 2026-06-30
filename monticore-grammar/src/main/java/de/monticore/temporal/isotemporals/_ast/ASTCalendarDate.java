@@ -12,7 +12,8 @@ public class ASTCalendarDate extends ASTCalendarDateTOP {
     if (isPresentSign()) {
       if (getSign() == ASTSign.PLUS) {
         result.append("+");
-      } else {
+      }
+      else {
         result.append("-");
       }
     }
@@ -28,6 +29,16 @@ public class ASTCalendarDate extends ASTCalendarDateTOP {
     return result.toString();
   }
   
+  /**
+   * Checks whether the specified temporal field is supported by this calendar date.
+   * <p>
+   * Only the standard calendar fields {@link ChronoField#YEAR},
+   * {@link ChronoField#MONTH_OF_YEAR}, and {@link ChronoField#DAY_OF_MONTH}
+   * are supported, and only if the corresponding value is present.
+   *
+   * @param field the temporal field to check
+   * @return {@code true} if the field is supported, otherwise {@code false}
+   */
   @Override
   public boolean isSupported(TemporalField field) {
     if (field instanceof ChronoField) {
@@ -41,10 +52,17 @@ public class ASTCalendarDate extends ASTCalendarDateTOP {
           return isPresentDay();
       }
     }
-    // TODO Handle custom temporal fields CENTURY and DECADE
     return false;
   }
   
+  /**
+   * Returns the value of the specified temporal field.
+   *
+   * @param field the temporal field to query
+   * @return the value of the requested field
+   * @throws UnsupportedTemporalTypeException if the field is not supported
+   * by this calendar date
+   */
   @Override
   public long getLong(TemporalField field) {
     if (field instanceof ChronoField) {
@@ -58,7 +76,6 @@ public class ASTCalendarDate extends ASTCalendarDateTOP {
           return getDay();
       }
     }
-    // TODO Handle custom temporal fields CENTURY and DECADE
     throw new UnsupportedTemporalTypeException(field.toString());
   }
 }

@@ -11,7 +11,14 @@ import static java.time.temporal.ChronoField.*;
 
 @SuppressWarnings("unused") // This interface is part of the public-facing API
 public interface ASTTime extends ASTTimeTOP {
-
+  
+  /**
+   * Converts this AST node to the corresponding {@link Temporal}.
+   *
+   * @return the corresponding {@link LocalTime} or {@link OffsetTime}
+   * @throws UnsupportedTemporalTypeException if this time cannot be represented
+   * as either type
+   */
   @Override
   default Temporal toTemporal() {
     if (isExactlyLocalTime()) {
@@ -30,6 +37,11 @@ public interface ASTTime extends ASTTimeTOP {
     return isLocalTime() && !isSupported(OFFSET_SECONDS);
   }
   
+  /**
+   * Converts this AST node to the corresponding {@link Temporal}.
+   *
+   * @return the corresponding {@link LocalTime} or {@link OffsetTime}
+   */
   default LocalTime toLocalTime() {
     int hour;
     if (isSupported(HOUR_OF_DAY)) {
