@@ -10,18 +10,14 @@ public class ASTWeekPeriodBuilder extends ASTWeekPeriodBuilderTOP {
   @Override
   public ASTWeekPeriod build() {
     ASTWeekPeriod result = super.build();
-    ISOTemporals4ParsingMill.init();
     ISOTemporals2ndParser.doParse(result);
-    ISOTemporalsMill.init();
     return result;
   }
   
   @Override
   public ASTWeekPeriod uncheckedBuild() {
     ASTWeekPeriod result = super.uncheckedBuild();
-    ISOTemporals4ParsingMill.init();
     ISOTemporals2ndParser.doParse(result);
-    ISOTemporalsMill.init();
     return result;
   }
 }
