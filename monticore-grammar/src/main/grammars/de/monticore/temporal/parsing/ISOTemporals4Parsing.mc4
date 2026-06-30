@@ -193,8 +193,6 @@ grammar ISOTemporals4Parsing {
 
   Digit2 implements Digits = Digit Digit;
 
-  Digit12 implements Digits = Digit Digit?;
-
   Digit3 implements Digits = Digit Digit Digit;
 
   Digit4 implements Digits = Digit Digit Digit Digit;
