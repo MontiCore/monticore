@@ -11,6 +11,15 @@ import de.monticore.interpreter.setters.MISetter;
  */
 public class InterpreterData {
 
+  static protected final String NOT_FULLY_IMPLEMENTED_MESSAGE =
+      "This Exception implies that a case in the interpreter" +
+          " has not been implemented"
+          + " (or the corresponding visitor is not being used)."
+          + System.lineSeparator()
+          + "A calculation is being expected but was not set."
+          + System.lineSeparator()
+          + "Please check the interpreter's setup/documentation.";
+
   // null if not present
   protected MICalculation calculation;
 
@@ -31,14 +40,17 @@ public class InterpreterData {
    * @return The current calculation.
    */
   public MICalculation popCalculation() {
-    Preconditions.checkNotNull(calculation);
+    Preconditions.checkNotNull(calculation, NOT_FULLY_IMPLEMENTED_MESSAGE);
     MICalculation calculation = this.calculation;
     this.calculation = null;
     return calculation;
   }
 
   public void putCalculation(MICalculation calculation) {
-    Preconditions.checkState(this.calculation == null);
+    Preconditions.checkState(
+        this.calculation == null,
+        NOT_FULLY_IMPLEMENTED_MESSAGE
+    );
     this.calculation = Preconditions.checkNotNull(calculation);
   }
 

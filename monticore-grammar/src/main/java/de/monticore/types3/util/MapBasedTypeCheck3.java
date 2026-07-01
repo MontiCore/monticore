@@ -221,4 +221,11 @@ public class MapBasedTypeCheck3 extends TypeCheck3 {
   public static Type4Ast internal_hacky_do_not_use_getType4Ast(){
     return ((MapBasedTypeCheck3)getDelegate()).getType4Ast();
   }
+
+  @Deprecated(forRemoval = true)
+  public static InferenceContext4Ast internal_hacky_do_not_use_getCtx4Ast() {
+    // consideration: could be made an actual supported interface.
+    // unsure currently if static access is a good idea.
+    return ((MapBasedTypeCheck3) getDelegate()).getCtx4Ast();
+  }
 }

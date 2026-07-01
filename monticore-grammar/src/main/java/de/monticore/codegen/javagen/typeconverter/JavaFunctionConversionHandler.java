@@ -5,12 +5,10 @@ import de.monticore.codegen.CodeGenPrintAction;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfFunction;
-import de.monticore.types.check.SymTypeOfGenerics;
 import de.se_rwth.commons.logging.Log;
 
 import static de.monticore.codegen.CodeGenSymTypeExpressionConverter.printConverted;
-import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getAsJavaType;
-import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.printJavaType;
+import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getBoxedJavaTypePrint;
 import static de.monticore.types3.SymTypeRelations.box;
 
 /**
@@ -40,8 +38,7 @@ public class JavaFunctionConversionHandler
 
       // cast to target function type
       // (Function1<Vehicle, Student>)
-      SymTypeOfGenerics javaTargetFuncType = getAsJavaType(targetFunc).asGenericType();
-      printJavaCasted(printer, javaTargetFuncType, p -> {
+      printJavaCasted(printer, targetFunc, p -> {
         // lambda parameters and arrow
         // (Student arg0) ->
         p.print("(");
@@ -50,8 +47,7 @@ public class JavaFunctionConversionHandler
             p.print(", ");
           }
           SymTypeExpression paramType = targetFunc.getArgumentType(i);
-          SymTypeExpression javaParamType = javaTargetFuncType.getArgument(i + 1); //getJavaType(paramType);
-          String javaParamTypeStr = printJavaType(javaParamType);
+          String javaParamTypeStr = getBoxedJavaTypePrint(paramType);
           p.print(javaParamTypeStr);
           p.print(" ");
           p.print("arg" + i);

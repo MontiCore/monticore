@@ -3,6 +3,7 @@ package de.monticore.codegen.parser.antlr;
 
 import de.monticore.grammar.PredicatePair;
 import de.monticore.grammar.grammar._ast.ASTGrammarNode;
+import de.monticore.grammar.grammar._ast.ASTProd;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 
 /**
@@ -11,17 +12,23 @@ import de.monticore.grammar.grammar._symboltable.ProdSymbol;
  */
 public class InterfaceInliningAlt {
   ASTGrammarNode alternative;
+  ASTProd builderNode;
   PredicatePair pp;
   ProdSymbol prodSymbol;
 
-  public InterfaceInliningAlt(ASTGrammarNode alternative, PredicatePair pp, ProdSymbol prodSymbol) {
+  public InterfaceInliningAlt(ASTGrammarNode alternative, ASTProd builderNode, PredicatePair pp, ProdSymbol prodSymbol) {
     this.alternative = alternative;
+    this.builderNode = builderNode;
     this.pp = pp;
     this.prodSymbol = prodSymbol;
   }
 
   public ASTGrammarNode getAlternative() {
     return this.alternative;
+  }
+
+  public ASTProd getBuilderNode() {
+    return this.builderNode;
   }
 
   public PredicatePair getPredicatePair() {

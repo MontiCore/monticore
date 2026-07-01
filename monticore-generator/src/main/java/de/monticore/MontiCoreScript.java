@@ -103,7 +103,7 @@ import de.monticore.generating.templateengine.freemarker.FreeMarkerTemplateEngin
 import de.monticore.generating.templateengine.freemarker.MontiCoreTemplateLoader;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.grammar.MCGrammarSymbolTableHelper;
-import de.monticore.grammar.cocos.GrammarCoCos;
+import de.monticore.grammar.cocos.GrammarCoCosFix;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
@@ -425,7 +425,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   public void runGrammarCoCos(ASTMCGrammar ast, IGrammar_WithConceptsGlobalScope scope) {
     // Run context conditions
     Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
-    checker.addChecker((new GrammarCoCos()).getCoCoChecker());
+    checker.addChecker((new GrammarCoCosFix()).getCoCoChecker());
     checker.checkAll(ast);
     return;
   }

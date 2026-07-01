@@ -67,6 +67,7 @@ public class GrammarCoCos {
     checker.addCoCo(new SplitRuleInvalid());
     checker.addCoCo(new KeyConstantInvalid());
     checker.addCoCo(new KeywordRuleInvalid());
+    checker.addCoCo(new LeftRecursivePriorityReduction());
     checker.addCoCo(new TerminalCritical());
     checker.addCoCo(new PackageNameLowerCase());
     checker.addCoCo(new NoOverridingNTHasAnnotation());

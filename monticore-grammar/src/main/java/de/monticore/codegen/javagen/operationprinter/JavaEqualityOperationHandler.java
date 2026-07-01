@@ -9,15 +9,7 @@ import de.monticore.types.check.SymTypeExpression;
 import static de.monticore.codegen.CodeGenSymTypeExpressionConverter.printConverted;
 import static de.monticore.codegen.ICodeGenOperationHandler.BinaryOperator.EQUALS;
 import static de.monticore.codegen.ICodeGenOperationHandler.BinaryOperator.NOT_EQUALS;
-import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getAsJavaType;
-import static de.monticore.types3.SymTypeRelations.isBoolean;
-import static de.monticore.types3.SymTypeRelations.isByte;
-import static de.monticore.types3.SymTypeRelations.isChar;
-import static de.monticore.types3.SymTypeRelations.isDouble;
-import static de.monticore.types3.SymTypeRelations.isFloat;
-import static de.monticore.types3.SymTypeRelations.isInt;
-import static de.monticore.types3.SymTypeRelations.isLong;
-import static de.monticore.types3.SymTypeRelations.isShort;
+import static de.monticore.codegen.javagen.JavaGenSymTypeRelations.generatesToJavaPrimitive;
 import static de.monticore.types3.SymTypeRelations.isSubTypeOf;
 
 // may need to be split in the future
@@ -66,15 +58,12 @@ public class JavaEqualityOperationHandler
       CodeGenPrintAction leftExprPrintAction,
       CodeGenPrintAction rightExprPrintAction
   ) {
-    SymTypeExpression leftJavaType = getAsJavaType(leftType);
-    SymTypeExpression rightJavaType = getAsJavaType(rightType);
-
     // note:
     // convert to same type beforehand to assure implicit conversion happens
     // (e.g., SI Units)
 
     // slight optimization for numbers:
-    if (isJavaPrimitive(leftJavaType) && isJavaPrimitive(rightJavaType)) {
+    if (generatesToJavaPrimitive(leftType) && generatesToJavaPrimitive(rightType)) {
       printWithEqualsOperator(
           printer, leftType, rightType,
           leftExprPrintAction, rightExprPrintAction
@@ -140,20 +129,4 @@ public class JavaEqualityOperationHandler
       rightExprPrintAction.print(printer);
     }
   }
-
-  // helper
-
-  protected boolean isJavaPrimitive(SymTypeExpression javaType) {
-    return javaType.isPrimitive() && (
-        isBoolean(javaType)
-            || isByte(javaType)
-            || isShort(javaType)
-            || isChar(javaType)
-            || isInt(javaType)
-            || isLong(javaType)
-            || isFloat(javaType)
-            || isDouble(javaType)
-    );
-  }
-
 }

@@ -10,8 +10,6 @@ import de.monticore.interpreter.calculations.MICalculationInt;
 import de.monticore.interpreter.calculations.MICalculationValue;
 import de.monticore.interpreter.util.InterpreterDataForBasicSymbols;
 import de.monticore.interpreter.util.InterpreterVisitorOperatorCalculator;
-import de.monticore.values.MCValue;
-import de.monticore.values.MCValueFactory;
 import de.monticore.ocl.optionaloperators._ast.ASTOptionalEqualsExpression;
 import de.monticore.ocl.optionaloperators._ast.ASTOptionalExpressionPrefix;
 import de.monticore.ocl.optionaloperators._ast.ASTOptionalGreaterEqualExpression;
@@ -24,6 +22,8 @@ import de.monticore.ocl.optionaloperators._ast.ASTOptionalSimilarExpression;
 import de.monticore.ocl.optionaloperators._visitor.OptionalOperatorsInheritanceHandler;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.mccollectiontypes.types3.MCCollectionSymTypeRelations;
+import de.monticore.values.MCValue;
+import de.monticore.values.MCValueFactory;
 
 import java.util.Optional;
 
@@ -150,19 +150,6 @@ public class OptionalOperatorsInterpreter
     );
   }
 
-  @Override
-  public void traverse(ASTOptionalNotSimilarExpression node) {
-    opTraverser.traverseBinaryOperator(
-        getTraverser(), iData,
-        node, node.getLeft(), node.getRight(),
-        (lC, rC, lT, rT, eT) -> {
-          MICalculationBoolean similarCalc =
-              handleIsSimilarOpt(lC, rC, lT, rT, eT);
-          return (MICalculationBoolean) frame -> !similarCalc.calculate(frame);
-        }
-    );
-  }
-
   protected MICalculationBoolean handleIsSimilarOpt(
       MICalculation leftCalc,
       MICalculation rightCalc,
@@ -172,16 +159,44 @@ public class OptionalOperatorsInterpreter
   ) {
     Preconditions.checkState(isBoolean(exprType));
     Preconditions.checkState(isOptional(leftType));
-    Preconditions.checkState(isOptional(rightType));
     MICalculationValue leftCalcValue = leftCalc.asCalculationValue();
     MICalculationValue rightCalcValue = rightCalc.asCalculationValue();
     MICalculationBoolean calc = frame -> {
       final Optional<?> leftOpt =
           (Optional<?>) leftCalcValue.calculate(frame).asNativeObject();
-      final Optional<?> rightOpt =
-          (Optional<?>) rightCalcValue.calculate(frame).asNativeObject();
+      final Object rightVal = rightCalcValue.calculate(frame).asNativeObject();
       // is equals enough?
-      return leftOpt.equals(rightOpt);
+      return leftOpt.map(l -> l.equals(rightVal)).orElse(false);
+    };
+    return calc;
+  }
+
+  @Override
+  public void traverse(ASTOptionalNotSimilarExpression node) {
+    opTraverser.traverseBinaryOperator(
+        getTraverser(), iData,
+        node, node.getLeft(), node.getRight(),
+        this::handleIsNotSimilarOpt
+    );
+  }
+
+  protected MICalculationBoolean handleIsNotSimilarOpt(
+      MICalculation leftCalc,
+      MICalculation rightCalc,
+      SymTypeExpression leftType,
+      SymTypeExpression rightType,
+      SymTypeExpression exprType
+  ) {
+    Preconditions.checkState(isBoolean(exprType));
+    Preconditions.checkState(isOptional(leftType));
+    MICalculationValue leftCalcValue = leftCalc.asCalculationValue();
+    MICalculationValue rightCalcValue = rightCalc.asCalculationValue();
+    MICalculationBoolean calc = frame -> {
+      final Optional<?> leftOpt =
+          (Optional<?>) leftCalcValue.calculate(frame).asNativeObject();
+      final Object rightVal = rightCalcValue.calculate(frame).asNativeObject();
+      // is equals enough?
+      return leftOpt.map(l -> !l.equals(rightVal)).orElse(false);
     };
     return calc;
   }

@@ -1,5 +1,5 @@
 // (c) https://github.com/MontiCore/monticore
-package de.monticore.interpreter.util;
+package de.monticore.tests.expressionsandstatements.rte;
 
 /**
  * simply a class to test fields and methods in the interpreter
