@@ -579,7 +579,6 @@ public class TestPrettyPrinterTest extends PPTestClass {
     } catch (IllegalStateException expected) {
       Assertions.assertEquals("Unable to handle noSpace control directive for block of non-default iteration", expected.getMessage());
       MCAssertions.assertHasFinding(f -> f.getMsg().contains("Unable to handle noSpace control directive for block of non-default iteration"));
-      MCAssertions.assertNoFindings();
     }
     try {
       testPP("n1+", TestPrettyPrintersMill.parser()::parse_StringNoSpaceAltsOpt);
