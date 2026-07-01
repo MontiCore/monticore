@@ -72,9 +72,6 @@ import de.monticore.codegen.cd2java.data.DataDecorator;
 import de.monticore.codegen.cd2java.data.DataDecoratorUtil;
 import de.monticore.codegen.cd2java.data.InterfaceDecorator;
 import de.monticore.codegen.cd2java.data.ListSuffixDecorator;
-import de.monticore.codegen.cd2java.interpreter.ASTEvaluateDecorator;
-import de.monticore.codegen.cd2java.interpreter.InterpreterDecorator;
-import de.monticore.codegen.cd2java.interpreter.InterpreterInterfaceDecorator;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.codegen.cd2java.methods.accessor.MandatoryAccessorDecorator;
@@ -739,6 +736,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     ArtifactScopeClassDecorator artifactScopeDecorator = new ArtifactScopeClassDecorator(glex, symbolTableService, visitorService, methodDecorator);
     SymbolSurrogateDecorator symbolReferenceDecorator = new SymbolSurrogateDecorator(glex, symbolTableService, visitorService, methodDecorator, new MandatoryMutatorSymbolSurrogateDecorator(glex));
     SymbolSurrogateBuilderDecorator symbolReferenceBuilderDecorator = new SymbolSurrogateBuilderDecorator(glex, symbolTableService, accessorDecorator);
+    SymbolSupplierDecorator symbolSupplierDecorator = new SymbolSupplierDecorator(glex, symbolTableService);
     CommonSymbolInterfaceDecorator commonSymbolInterfaceDecorator = new CommonSymbolInterfaceDecorator(glex, symbolTableService, visitorService, methodDecorator);
     SymbolResolverInterfaceDecorator symbolResolverInterfaceDecorator = new SymbolResolverInterfaceDecorator(glex, symbolTableService);
     SymbolDeSerDecorator symbolDeSerDecorator = new SymbolDeSerDecorator(glex, symbolTableService, handCodedPath);
@@ -749,6 +747,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
     SymbolTableCDDecorator symbolTableCDDecorator = new SymbolTableCDDecorator(glex, handCodedPath, symbolTableService, symbolDecorator,
             symbolBuilderDecorator, symbolReferenceDecorator, symbolReferenceBuilderDecorator,
+            symbolSupplierDecorator,
             scopeInterfaceDecorator, scopeClassDecorator,
             globalScopeInterfaceDecorator, globalScopeClassDecorator,
             artifactScopeInterfaceDecorator, artifactScopeDecorator,
@@ -801,21 +800,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     CDTraverserDecorator decorator = new CDTraverserDecorator(glex, handCodedPath, visitorService, iTraverserDecorator, traverserDecorator, visitor2Decorator, handlerDecorator, inheritanceHandlerDecorator);
     decorator.decorate(cd, decoratedCD);
 
-  }
-
-  public void decorateWithInterpreter(List<ASTCDCompilationUnit> cds,
-                                      ASTCDCompilationUnit decoratedCD,
-                                      GlobalExtensionManagement glex) {
-    VisitorService visitorService = new VisitorService(cds.get(0));
-
-    InterpreterInterfaceDecorator interpreterInterfaceDecorator = new InterpreterInterfaceDecorator(glex, visitorService);
-    interpreterInterfaceDecorator.decorate(cds.get(0), decoratedCD);
-
-    InterpreterDecorator interpreterDecorator = new InterpreterDecorator(glex, visitorService);
-    interpreterDecorator.decorate(cds.get(0), decoratedCD);
-
-    ASTEvaluateDecorator evaluateDecorator = new ASTEvaluateDecorator(glex, visitorService);
-    evaluateDecorator.decorate(cds.get(0), decoratedCD);
   }
 
   public void decorateForCoCoPackage(GlobalExtensionManagement glex,
@@ -1518,7 +1502,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
           builder.addVariable(TEMPLATEPATH_LONG, templatePath);
           builder.addVariable(GROOVYHOOK1, mcConfig.getGroovyHook1());
           builder.addVariable(GROOVYHOOK2, mcConfig.getGroovyHook2());
-          builder.addVariable(GENINT, mcConfig.getGenINT().orElse(false));
           builder.addVariable("LOG_ID", LOG_ID);
           builder.addVariable("grammarIterator", grammarsPath.getEntries().iterator());
           reportsOpt = Optional.of(new MontiCoreReports(mcConfig.getOut().getAbsolutePath(),

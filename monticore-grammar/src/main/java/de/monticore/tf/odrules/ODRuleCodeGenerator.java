@@ -4,7 +4,10 @@ package de.monticore.tf.odrules;
 import com.google.common.collect.Lists;
 import de.monticore.expressions.commonexpressions._ast.ASTBooleanAndOpExpression;
 import de.monticore.expressions.commonexpressions._ast.ASTBracketExpression;
+import de.monticore.expressions.commonexpressions._ast.ASTCallExpression;
+import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -15,6 +18,7 @@ import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.statements.mcarraystatements._ast.ASTArrayInit;
 import de.monticore.statements.mccommonstatements._ast.ASTMCJavaBlock;
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTVariableInit;
+import de.monticore.tf.ruletranslation.Rule2ODVisitor;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.Joiners;
@@ -179,7 +183,7 @@ public class ODRuleCodeGenerator {
     tsBuilder.setConstraintExpression(generateConstraintExpression(ast));
     tsBuilder.setDoStatement(generateDoStatement(ast));
     tsBuilder.setUndoStatement(generateUndoStatement(ast));
-    tsBuilder.setAssignmentsList(generateAssignments());
+    tsBuilder.setAssignmentsList(generateAssignments(vars));
 
     tsBuilder.setVariablesList(vars);
     tsBuilder.setReplacement(generateReplacement(new DifferenceFinder(hierarchyHelper).getDifference(ast)));
@@ -216,9 +220,71 @@ public class ODRuleCodeGenerator {
     }
   }
 
-  protected List<String> generateAssignments() {
+
+  /**
+   * Special case for assignments of variables within list elements
+   * @param name the name of the object
+   * @param expr the expression
+   * @param parents map of parents
+   * @param inOpt optChilds
+   * @param isList list elems
+   * @return the assignment string
+   */
+  protected String specialCaseForAssignmentsInLists(
+          String name,
+          String expr,
+          Map<String, String> parents,
+          Collection<String> inOpt,
+          Collection<String> isList) {
+    String parent = parents.get(name);
+
+    // object is not in list
+    if (parent == null || !isList.contains(parent)) {
+      String access = parent + "." + name + "." + expr;
+      if (inOpt.contains(name)) {
+        return access + ".isPresent()?" + access + ".get() : \"undef\"";
+      }
+      return access;
+    }
+
+    // name is inside a list => name of the list == parent
+    String root = parents.get(parent);
+
+    String elementExpr;
+    if (inOpt.contains(name)) {
+      // we could/should think about a better fallback than "undef"?
+      elementExpr = "(l." + name + ".isPresent())?l." + name + ".get()." + expr + ":\"undef\"";
+    } else {
+      elementExpr = "l." + name + "." + expr;
+    }
+
+    // Map lists via ListMatchMapping
+    // (as of now, not bidirectional/setters are not yet supported)
+    String getter = root + "." + parent;
+    if (inOpt.contains(parent)) {
+      // optional -> fall back to empty list if absent
+      getter += ".orElse(Collections.emptyList())";
+    }
+    return "new de.monticore.tf.runtime.ListMatchMapping<>(" + getter + "," +
+            " l-> " + elementExpr + ")";
+  }
+
+
+  protected List<String> generateAssignments(List<ASTVariable> vars) {
 
     List<String> result = new ArrayList<>();
+
+    List<String> isList = new ArrayList<>();
+    List<String> inOpt = new ArrayList<>();
+
+    for (ASTODObject obj : Util.getAllODObjects(rhs)) {
+      if (obj.hasStereotype(ODRuleStereotypes.LIST))
+        isList.add(obj.getName());
+      if (hierarchyHelper.isWithinOptionalStructure(obj.getName()) || hierarchyHelper.isWithinNegativeStructure(obj.getName())) {
+        inOpt.add(obj.getName());
+      }
+    }
+
 
     for (ASTAssignment exp : modifiedAssignments) {
       ODRulesTraverser traverser = ODRulesMill.inheritanceTraverser();
@@ -228,6 +294,18 @@ public class ODRuleCodeGenerator {
 
       exp.getRhs().accept(traverser);
 
+      // Special case of a rhs-variable (to be assigned) in a (opt) list
+      // as we can't extract a singular value, we instead map the values to a new _list variable
+      if (exp.get_PostCommentList().contains(Rule2ODVisitor.LISTCHILD_COMMENT) &&
+              exp.getRhs() instanceof ASTCallExpression callExpression &&
+              callExpression.getExpression() instanceof ASTFieldAccessExpression fieldAccessExpression &&
+              fieldAccessExpression.getExpression() instanceof ASTNameExpression) {
+
+        specialAssignListCase(exp, result, inOpt, isList);
+        // Also set the flag, that a _list variable must be generated
+        vars.stream().filter(v -> v.getName().equals(exp.getLhs())).forEach(v -> v.setInList(true));
+        continue;
+      }
       traverser = ODRulesMill.inheritanceTraverser();
       AddAffixesToAssignmentsVisitor addAffixVisitor = new AddAffixesToAssignmentsVisitor(lhsObjects, hierarchyHelper, exp.getRhs());
       traverser.add4ExpressionsBasis(addAffixVisitor);
@@ -244,7 +322,7 @@ public class ODRuleCodeGenerator {
       iPrinter.flushBuffer();
 
 
-      /**
+      /*
        * This code inserts isPresent()-checks into assignments that contain optional variables.
        *
        * Let $O be an optional variable in this assignment:  $name = $O.getName().
@@ -267,11 +345,40 @@ public class ODRuleCodeGenerator {
         }
       }
 
-      result.add(exp.getLhs() + " =" + stringbuilder.toString() + ";");
+      result.add(exp.getLhs() + " =" + stringbuilder + ";");
     }
     return result;
 
   }
+
+  protected void specialAssignListCase(ASTAssignment exp, List<String> result, List<String> inOpt, List<String> isList) {
+    ASTFieldAccessExpression fieldAccessExpression = ((ASTFieldAccessExpression) ((ASTCallExpression) exp.getRhs()).getExpression());
+
+    // For this one specific case we can cast
+    String name = ((ASTNameExpression) (fieldAccessExpression.getExpression())).getName();
+    String expression = fieldAccessExpression.getName() + "()";
+    // construct parent map
+    Map<String, String> parents = new HashMap<>();
+    String peekingName = name;
+    while (peekingName != null) {
+      String listParent = hierarchyHelper.getListParent(peekingName);
+      if (listParent != null) {
+        parents.put(peekingName, listParent);
+        peekingName = listParent;
+      } else {
+        parents.put(peekingName, "m"); // root element is using the m. match object
+        break;
+      }
+    }
+
+
+    // we have a _list variable, which receives the mapped list-child
+    result.add(exp.getLhs() +
+                       "_list = " +
+                       specialCaseForAssignmentsInLists(name, expression, parents, inOpt, isList) +
+                       "/* assignment in list! */;");
+  }
+
 
   /**
    * Iterates over all conjugated boolean expressions and calculates ODSbuConstraints for each.

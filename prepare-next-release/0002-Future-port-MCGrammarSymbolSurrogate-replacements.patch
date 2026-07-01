@@ -1,0 +1,143 @@
+From 8bc0dbeb6484b2d5bd74c23a081c575358cddaf2 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Alex=20L=C3=BCpges?= <luepges@se-rwth.de>
+Date: Fri, 22 May 2026 10:04:52 +0200
+Subject: [PATCH] Future-port MCGrammarSymbolSurrogate replacements
+
+
+diff --git a/monticore-generator/src/main/java/de/monticore/codegen/cd2java/_tagging/TaggerDecorator.java b/monticore-generator/src/main/java/de/monticore/codegen/cd2java/_tagging/TaggerDecorator.java
+index fef943882..d99b5fa3a 100644
+--- a/monticore-generator/src/main/java/de/monticore/codegen/cd2java/_tagging/TaggerDecorator.java
++++ b/monticore-generator/src/main/java/de/monticore/codegen/cd2java/_tagging/TaggerDecorator.java
+@@ -16,7 +16,6 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
+ import de.monticore.generating.templateengine.TemplateHookPoint;
+ import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+ import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
+-import de.monticore.grammar.grammar._symboltable.MCGrammarSymbolSurrogate;
+ import de.monticore.grammar.grammar._symboltable.ProdSymbol;
+ import de.monticore.grammar.grammar._symboltable.ProdSymbolSurrogate;
+ import de.monticore.symboltable.IScope;
+@@ -66,14 +65,14 @@ public class TaggerDecorator extends AbstractDecorator {
+     elements.add(taggerInterface);
+     // Add I${super}Tagger interfaces
+     List<ASTMCObjectType> superInterfaces = new ArrayList<>();
+-    for (MCGrammarSymbolSurrogate superGrammar : originalGrammar.getSymbol().getSuperGrammars()) {
+-      String packageName = superGrammar.lazyLoadDelegate().getPackageName();
++    for (MCGrammarSymbol superGrammar : originalGrammar.getSymbol().getSuperGrammarSymbols()) {
++      String packageName = superGrammar.getPackageName();
+       List<String> pck = new ArrayList<>();
+       if (!packageName.isEmpty())
+         pck.add(packageName);
+-      pck.add(superGrammar.lazyLoadDelegate().getName().toLowerCase());
++      pck.add(superGrammar.getName().toLowerCase());
+       pck.add(TaggingConstants.TAGGING_PACKAGE);
+-      pck.add("I" + superGrammar.lazyLoadDelegate().getName() + "Tagger");
++      pck.add("I" + superGrammar.getName() + "Tagger");
+       superInterfaces.add(mcTypeFacade.createQualifiedType(Joiners.DOT.join(pck)));
+     }
+     if (!superInterfaces.isEmpty()) {
+diff --git a/monticore-generator/src/main/java/de/monticore/codegen/parser/MCGrammarInfo.java b/monticore-generator/src/main/java/de/monticore/codegen/parser/MCGrammarInfo.java
+index 3e946d4b1..7d840fb21 100644
+--- a/monticore-generator/src/main/java/de/monticore/codegen/parser/MCGrammarInfo.java
++++ b/monticore-generator/src/main/java/de/monticore/codegen/parser/MCGrammarInfo.java
+@@ -10,7 +10,6 @@ import de.monticore.grammar.concepts.antlr.antlr._ast.ASTConceptAntlr;
+ import de.monticore.grammar.concepts.antlr.antlr._ast.ASTJavaCodeExt;
+ import de.monticore.grammar.grammar._ast.*;
+ import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
+-import de.monticore.grammar.grammar._symboltable.MCGrammarSymbolSurrogate;
+ import de.monticore.grammar.grammar._symboltable.ProdSymbol;
+ import de.monticore.grammar.grammar._visitor.GrammarTraverser;
+ import de.monticore.grammar.grammar._visitor.GrammarVisitor2;
+@@ -265,8 +264,8 @@ public class MCGrammarInfo {
+           ASTClassProd astProd = (ASTClassProd) ruleSymbol.getAstNode();
+           if (astProd.getAltList().isEmpty()) {
+             // if a rule has been overwritten and is empty, consider the superclass
+-            for (MCGrammarSymbolSurrogate g : grammarSymbol.getSuperGrammars()) {
+-              final Optional<ProdSymbol> ruleByName = g.lazyLoadDelegate().getProdWithInherited(astProd.getName());
++            for (MCGrammarSymbol g : grammarSymbol.getSuperGrammarSymbols()) {
++              final Optional<ProdSymbol> ruleByName = g.getProdWithInherited(astProd.getName());
+               if (ruleByName.isPresent() && ruleByName.get().isClass()) {
+                 if (ruleByName.get().isPresentAstNode() && ruleByName.get().getAstNode() instanceof ASTClassProd) {
+                   astProd = (ASTClassProd) ruleByName.get().getAstNode();
+diff --git a/monticore-generator/src/main/java/de/monticore/codegen/parser/ParserGeneratorHelper.java b/monticore-generator/src/main/java/de/monticore/codegen/parser/ParserGeneratorHelper.java
+index 022693168..f7778dce6 100644
+--- a/monticore-generator/src/main/java/de/monticore/codegen/parser/ParserGeneratorHelper.java
++++ b/monticore-generator/src/main/java/de/monticore/codegen/parser/ParserGeneratorHelper.java
+@@ -14,7 +14,6 @@ import de.monticore.grammar.MCGrammarSymbolTableHelper;
+ import de.monticore.grammar.PredicatePair;
+ import de.monticore.grammar.grammar._ast.*;
+ import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
+-import de.monticore.grammar.grammar._symboltable.MCGrammarSymbolSurrogate;
+ import de.monticore.grammar.grammar._symboltable.ProdSymbol;
+ import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
+ import de.monticore.grammar.grammar_withconcepts._ast.ASTAction;
+@@ -555,8 +554,8 @@ public class ParserGeneratorHelper {
+     if (!ast.getAltList().isEmpty()) {
+       return ast.getAltList();
+     }
+-    for (MCGrammarSymbolSurrogate g : grammarSymbol.getSuperGrammars()) {
+-      final Optional<ProdSymbol> ruleByName = g.lazyLoadDelegate().getProdWithInherited(ast.getName());
++    for (MCGrammarSymbol g : grammarSymbol.getSuperGrammarSymbols()) {
++      final Optional<ProdSymbol> ruleByName = g.getProdWithInherited(ast.getName());
+       if (ruleByName.isPresent() && ruleByName.get().isClass()) {
+         if (ruleByName.get().isPresentAstNode() && ruleByName.get().getAstNode() instanceof ASTClassProd) {
+           return ((ASTClassProd)ruleByName.get().getAstNode()).getAltList();
+diff --git a/monticore-generator/src/main/java/de/monticore/tagging/TagDefinitionDerivVisitor.java b/monticore-generator/src/main/java/de/monticore/tagging/TagDefinitionDerivVisitor.java
+index d4f7f4dcb..7c09456f1 100644
+--- a/monticore-generator/src/main/java/de/monticore/tagging/TagDefinitionDerivVisitor.java
++++ b/monticore-generator/src/main/java/de/monticore/tagging/TagDefinitionDerivVisitor.java
+@@ -6,7 +6,7 @@ import de.monticore.cd4code.CD4CodeMill;
+ import de.monticore.codegen.cd2java._tagging.TaggingConstants;
+ import de.monticore.grammar.grammar.GrammarMill;
+ import de.monticore.grammar.grammar._ast.*;
+-import de.monticore.grammar.grammar._symboltable.MCGrammarSymbolSurrogate;
++import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
+ import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
+ import de.monticore.grammar.grammar._visitor.GrammarVisitor2;
+ import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
+@@ -14,7 +14,6 @@ import de.monticore.grammar.grammar_withconcepts._ast.ASTAction;
+ import de.monticore.statements.mcreturnstatements.MCReturnStatementsMill;
+ import de.monticore.types.MCTypeFacade;
+ import de.se_rwth.commons.Splitters;
+-import de.se_rwth.commons.logging.Log;
+ 
+ import java.util.ArrayList;
+ import java.util.Arrays;
+@@ -43,8 +42,8 @@ public class TagDefinitionDerivVisitor implements GrammarVisitor2 {
+ 
+     builder.setComponent(node.isComponent());
+ 
+-    for (MCGrammarSymbolSurrogate superSurrogate : node.getSymbol().getSuperGrammars()) {
+-      List<String> namesList = new ArrayList<>(Splitters.DOT.splitToList(superSurrogate.lazyLoadDelegate().getFullName()));
++    for (MCGrammarSymbol superSymbol : node.getSymbol().getSuperGrammarSymbols()) {
++      List<String> namesList = new ArrayList<>(Splitters.DOT.splitToList(superSymbol.getFullName()));
+       namesList.set(namesList.size() - 1, namesList.get(namesList.size() - 1) + TaggingConstants.TAGDEFINITION_SUFFIX);
+ 
+       builder.addSupergrammar(GrammarMill.grammarReferenceBuilder().setNamesList(namesList).build());
+diff --git a/monticore-generator/src/main/java/de/monticore/tagging/TagSchemaDerivVisitor.java b/monticore-generator/src/main/java/de/monticore/tagging/TagSchemaDerivVisitor.java
+index 04f1f4141..b4cd1418a 100644
+--- a/monticore-generator/src/main/java/de/monticore/tagging/TagSchemaDerivVisitor.java
++++ b/monticore-generator/src/main/java/de/monticore/tagging/TagSchemaDerivVisitor.java
+@@ -7,7 +7,7 @@ import de.monticore.grammar.grammar._ast.ASTClassProd;
+ import de.monticore.grammar.grammar._ast.ASTMCGrammar;
+ import de.monticore.grammar.grammar._ast.ASTMCGrammarBuilder;
+ import de.monticore.grammar.grammar._ast.ASTTerminal;
+-import de.monticore.grammar.grammar._symboltable.MCGrammarSymbolSurrogate;
++import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
+ import de.monticore.grammar.grammar._visitor.GrammarVisitor2;
+ import de.se_rwth.commons.Splitters;
+ 
+@@ -30,9 +30,9 @@ public class TagSchemaDerivVisitor implements GrammarVisitor2 {
+     builder.getSupergrammarList().add(GrammarMill.grammarReferenceBuilder().setNamesList(Arrays.asList("de", "monticore", "tagging", TaggingConstants.TAGSCHEMA_SUFFIX)).build());
+ 
+     // extend the TagSchemas of all super languages
+-    for (MCGrammarSymbolSurrogate superSurrogate : node.getSymbol().getSuperGrammars()) {
++    for (MCGrammarSymbol superSymbol : node.getSymbol().getSuperGrammarSymbols()) {
+       // We currently have to load the delegates, as the package name of a delegate might not be correct
+-      List<String> namesList = new ArrayList<>(Splitters.DOT.splitToList(superSurrogate.lazyLoadDelegate().getFullName()));
++      List<String> namesList = new ArrayList<>(Splitters.DOT.splitToList(superSymbol.getFullName()));
+       namesList.set(namesList.size() - 1, namesList.get(namesList.size() - 1) + TaggingConstants.TAGSCHEMA_SUFFIX);
+ 
+       builder.addSupergrammar(GrammarMill.grammarReferenceBuilder().setNamesList(namesList).build());
+-- 
+2.45.1.windows.1
+

@@ -63,8 +63,7 @@ public interface IGrammarScope extends IGrammarScopeTOP {
     Optional<MCGrammarSymbol> spanningSymbol = MCGrammarSymbolTableHelper.getMCGrammarSymbol(this);
     if (spanningSymbol.isPresent()) {
       MCGrammarSymbol grammarSymbol = spanningSymbol.get();
-      for (MCGrammarSymbolSurrogate superGrammarRef : grammarSymbol.getSuperGrammars()) {
-        final MCGrammarSymbol superGrammar = superGrammarRef.lazyLoadDelegate();
+      for (MCGrammarSymbol superGrammar : grammarSymbol.getSuperGrammarSymbols()) {
         resolvedSymbol = resolveInSuperGrammar(name, superGrammar);
         // Stop as soon as symbol is found in a super grammar.
         if (resolvedSymbol.isPresent()) {
