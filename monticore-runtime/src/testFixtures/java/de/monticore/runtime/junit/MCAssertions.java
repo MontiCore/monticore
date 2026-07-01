@@ -240,6 +240,7 @@ public class MCAssertions {
   /**
    * Notifies about a Finding being checked and offers the possibility
    * to return false to skip this finding.
+   * Package-private on purpose.
    */
   @Nullable
   static Function<Finding, Boolean> notifierAndCondition;

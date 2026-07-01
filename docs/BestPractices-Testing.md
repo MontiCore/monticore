@@ -46,7 +46,7 @@ public class CheckScannerlessTest {
     assertEquals("List", ast.getName());
     ASTTypeArguments ta = ast.getTypeArguments();
     assertEquals("Theo", ta.getType(0).getName());
-    // MCAssertions.assertNoFindings(); is implicitly called due to @TestWithMCLanguage
+    // due to @TestWithMCLanguage, we check after each test that no (unchecked) findings are present
   }
 
   @Test
@@ -70,11 +70,11 @@ public class CheckScannerlessTest {
 The `@TestWithMCLanguage` annotation sets-up the test for a language.
 Before each test,
 
- 1. the logger is replaced with a side effect free stub that collects,  
- 2. the previous findings cleared, 
- 3. and the given mill initialized.
+ 1. the logger is replaced with a side effect free stub that collects findings,  
+ 2. the previous findings are cleared, 
+ 3. and the given mill is initialized.
 
-After each test, the log must not have any findings present.
+After each test, the log must not have any non-asserted findings present.
 If no Mill setup is desired, 
 the [`AbstractMCTest`](../monticore-runtime/src/testFixtures/java/de/monticore/runtime/junit/AbstractMCTest.java) class provides the same functionality.
 

@@ -45,11 +45,12 @@ public abstract class AbstractMCTest {
 
   /**
    * The list of checked findings.
-   * Used to check that all findings were actually checked and not forgotten
+   * Used to check that all findings were actually checked and not forgotten.
+   * Package-private on purpose.
    */
   static List<Finding> checkedFindings = new ArrayList<>();
 
-  static void defaultCheckLogAfterTest() {
+  protected static void defaultCheckLogAfterTest() {
     try {
       // Ensure, no Findings are present
       // the various Finding-methods of MCAssertions check for
