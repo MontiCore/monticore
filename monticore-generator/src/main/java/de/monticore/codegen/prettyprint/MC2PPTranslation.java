@@ -1,6 +1,7 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.codegen.prettyprint;
 
+import de.monticore.ast.ASTCNode;
 import de.monticore.cd.facade.CDModifier;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDConstructor;
@@ -59,11 +60,19 @@ public class MC2PPTranslation extends AbstractCreator<ASTMCGrammar, ASTCDCompila
 
     ASTCDCompilationUnit cdCompilationUnit = cdCompilationUnitBuilder.build();
 
-    // The PrettyPrinter class
+    // The PrettyPrinter classes
     ASTCDClass prettyPrinterCDClass = CDBasisMill.cDClassBuilder().setName(grammar.getName() + "PrettyPrinter")
             .setModifier(CDModifier.PUBLIC.build())
             .build();
     astcdDefinition.addCDElement(prettyPrinterCDClass);
+
+    // The FormattingPrettyPrinter class
+    ASTCDClass formattingPrettyPrinterCDClass = CDBasisMill.cDClassBuilder().setName(grammar.getName() + "FormattingPrettyPrinter")
+            .setModifier(CDModifier.PUBLIC.build())
+            .build();
+    formattingPrettyPrinterCDClass.setCDExtendUsage(
+        CD4CodeMill.cDExtendUsageBuilder().addSuperclass(this.getMCTypeFacade().createQualifiedType(prettyPrinterCDClass.getName())).build());
+    astcdDefinition.addCDElement(formattingPrettyPrinterCDClass);
 
     // The FullPrettyPrinter class
     ASTCDClass fullPrettyPrinterCDClass = CDBasisMill.cDClassBuilder()
@@ -91,7 +100,14 @@ public class MC2PPTranslation extends AbstractCreator<ASTMCGrammar, ASTCDCompila
     traverser = Grammar_WithConceptsMill.traverser();
     traverser.setGrammarHandler(new PrettyPrinterReducedTraverseHandler());
     traverser.add4Grammar(transformer);
+    grammar.accept(traverser);
 
+    FormattingPrettyPrinterGenerationVisitor formattingPrettyPrinterGenerationVisitor = new FormattingPrettyPrinterGenerationVisitor(glex,
+        formattingPrettyPrinterCDClass,
+        nonTermAccessorCollector.getClassProds());
+    traverser = Grammar_WithConceptsMill.traverser();
+    traverser.setGrammarHandler(new PrettyPrinterReducedTraverseHandler());
+    traverser.add4Grammar(formattingPrettyPrinterGenerationVisitor);
     grammar.accept(traverser);
 
     // FQN for imports
@@ -114,6 +130,16 @@ public class MC2PPTranslation extends AbstractCreator<ASTMCGrammar, ASTCDCompila
             getCDParameterFacade().createParameters(ppPrinterAttribute, ppPrintCommentsAttribute));
     prettyPrinterCDClass.addCDMember(constructor);
     this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("this.printer=printer; this.printComments=printComments;"));
+
+    // FormattingPrettyPrinter class attributes
+    ASTCDAttribute fmtPrinterAttribute = addAttribute(formattingPrettyPrinterCDClass, true, false, "de.monticore.prettyprint.FormattingPrinter", "printer");
+    ASTCDAttribute fmtPrintCommentsAttribute = addAttribute(formattingPrettyPrinterCDClass, true, true, getMCTypeFacade().createBooleanType(), "printComments");
+    addAttribute(formattingPrettyPrinterCDClass, true, true, Joiners.DOT.join(packageName) + "._visitor." + grammar.getName() + VisitorConstants.TRAVERSER_SUFFIX, "traverser");
+
+    constructor = this.getCDConstructorFacade().createConstructor(CDModifier.PUBLIC.build(), formattingPrettyPrinterCDClass.getName(),
+            getCDParameterFacade().createParameters(fmtPrinterAttribute, fmtPrintCommentsAttribute));
+    formattingPrettyPrinterCDClass.addCDMember(constructor);
+    this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("super(printer, printComments); \n this.printer=printer; this.printComments=printComments;"));
 
     // And generate the FullPrettyPrinter
     ASTCDAttribute fPPPrinter = addAttribute(fullPrettyPrinterCDClass, true, false, "de.monticore.prettyprint.IndentPrinter", "printer");
