@@ -7,6 +7,7 @@ import de.monticore.tests.expressionsandstatements.rte.Student;
 import org.junit.jupiter.params.provider.Arguments;
 
 import java.util.ArrayList;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 /**
@@ -15,16 +16,6 @@ import java.util.stream.Stream;
  * For, e.g., interpreter/code generator
  */
 public class Class2MCTestModels {
-
-  static public Stream<Arguments> getNativeJavaCases() {
-    return Stream.of(
-        Arguments.of("java.lang.Integer.MAX_VALUE", Integer.MAX_VALUE),
-        Arguments.of("java.lang.Math.abs(-2)", 2),
-        Arguments.of("((java.lang.Integer) 5) + 2.0", 7.0),
-        Arguments.of("((java.lang.Integer) 5) + (java.lang.Double) 2", 7.0),
-        Arguments.of("ArrayList()", new ArrayList<>())
-    );
-  }
 
   /**
    * To be added to each model.
@@ -41,7 +32,17 @@ public class Class2MCTestModels {
         + System.lineSeparator();
   }
 
-  static public Stream<Arguments> getAClassCases() {
+  static public Stream<Arguments> getClass2MCCases() {
+    return Stream.of(
+        getAClassCases(),
+        getNativeJavaCases(),
+        getInstanceOfCases(),
+        getCreatorExpressionCases(),
+        getTypeCastingCases()
+    ).flatMap(Function.identity());
+  }
+
+  static protected Stream<Arguments> getAClassCases() {
     return Stream.of(
         Arguments.of("aClass.var_boolean", false),
         Arguments.of("aClass.var_byte", (byte) 0),
@@ -147,6 +148,16 @@ public class Class2MCTestModels {
     );
   }
 
+  static protected Stream<Arguments> getNativeJavaCases() {
+    return Stream.of(
+        Arguments.of("java.lang.Integer.MAX_VALUE", Integer.MAX_VALUE),
+        Arguments.of("java.lang.Math.abs(-2)", 2),
+        Arguments.of("((java.lang.Integer) 5) + 2.0", 7.0),
+        Arguments.of("((java.lang.Integer) 5) + (java.lang.Double) 2", 7.0),
+        Arguments.of("ArrayList()", new ArrayList<>())
+    );
+  }
+
   static public Stream<Arguments> getInstanceOfCases() {
     return Stream.of(
         Arguments.of("person instanceof Student", false),
@@ -179,6 +190,18 @@ public class Class2MCTestModels {
         ),
         Arguments.of("(new Person[1])[0]", null),
         Arguments.of("(new Person[1][2][][])[0][0]", null)
+    );
+  }
+
+  static protected Stream<Arguments> getTypeCastingCases() {
+    return Stream.of(
+        // first and foremost for MontiArc doing odd stuff
+        Arguments.of("(Object)(Boolean)true", true),
+        Arguments.of("(Object)(Float)4", (float) 4),
+        Arguments.of("(boolean)(Boolean)(Object)(Boolean)true", true),
+        Arguments.of("(float)(Float)(Object)(Float)4", (float) 4),
+        Arguments.of("(Comparable<Boolean>)(Boolean)true", true),
+        Arguments.of("(Comparable<Integer>)(Integer)4", 4)
     );
   }
 
