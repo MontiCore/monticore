@@ -10,20 +10,15 @@ import de.monticore.interpreter.setters.MISetter;
 import de.monticore.interpreter.signals.MCSignalBreak;
 import de.monticore.interpreter.signals.MCSignalContinue;
 import de.monticore.interpreter.util.InterpreterDataForBasicSymbols;
-import de.monticore.statements.mccommonstatements._ast.ASTBreakStatement;
-import de.monticore.statements.mccommonstatements._ast.ASTCommonForControl;
-import de.monticore.statements.mccommonstatements._ast.ASTDoWhileStatement;
-import de.monticore.statements.mccommonstatements._ast.ASTEmptyStatement;
-import de.monticore.statements.mccommonstatements._ast.ASTEnhancedForControl;
-import de.monticore.statements.mccommonstatements._ast.ASTExpressionStatement;
-import de.monticore.statements.mccommonstatements._ast.ASTForInitByExpressions;
-import de.monticore.statements.mccommonstatements._ast.ASTForStatement;
-import de.monticore.statements.mccommonstatements._ast.ASTIfStatement;
-import de.monticore.statements.mccommonstatements._ast.ASTMCJavaBlock;
-import de.monticore.statements.mccommonstatements._ast.ASTWhileStatement;
+import de.monticore.interpreter.util.SymbolAccessHandler;
+import de.monticore.statements.mccommonstatements.MCCommonStatementsMill;
+import de.monticore.statements.mccommonstatements._ast.*;
 import de.monticore.statements.mccommonstatements._visitor.MCCommonStatementsInheritanceHandler;
+import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
+import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types3.util.OOWithinTypeBasicSymbolsResolver;
 import de.monticore.values.MCValue;
 import de.monticore.values.MCValueFactory;
 import de.monticore.values.MCValueObject;
@@ -33,7 +28,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.BooleanSupplier;
+import java.util.function.Predicate;
 
+import static de.monticore.symbols.oosymbols.types3.OOSymbolsSymTypeRelations.isEnum;
+import static de.monticore.symbols.oosymbols.types3.OOSymbolsSymTypeRelations.sourceIsEnumConstant;
 import static de.monticore.types3.SymTypeRelations.normalize;
 import static de.monticore.types3.TypeCheck3.symTypeFromAST;
 import static de.monticore.types3.TypeCheck3.typeOf;
@@ -45,6 +43,8 @@ public class MCCommonStatementsInterpreter
     extends MCCommonStatementsInheritanceHandler {
 
   protected InterpreterDataForBasicSymbols iData;
+  protected SymbolAccessHandler symbolAccessHandler =
+      new SymbolAccessHandler();
 
   public MCCommonStatementsInterpreter(InterpreterDataForBasicSymbols iData) {
     this.iData = Preconditions.checkNotNull(iData);
@@ -256,6 +256,179 @@ public class MCCommonStatementsInterpreter
       while (conditionCalc.calculate(frame));
     };
     iData.putCalculation(doWhileCalc);
+  }
+
+  // relies on ASTSwitchLabel calculating to a Predicate<MCValue>,
+  // which states weather the value matches the label
+  @Override
+  public void traverse(ASTSwitchStatement node) {
+    SymTypeExpression switchType = normalize(typeOf(node.getExpression()));
+    node.getExpression().accept(getTraverser());
+    MICalculationValue switchExprCalc =
+        iData.popCalculation().asCalculationValue();
+
+    // collect all the groups first
+    record SwitchGroup(
+        MICalculationValue predicateCalc,
+        MICalculationVoid statementCalc
+    ) {
+    }
+    final List<SwitchGroup> switchGroups =
+        new ArrayList<>(node.sizeSwitchBlockStatementGroups() + 1);
+    for (ASTSwitchBlockStatementGroup group : node.getSwitchBlockStatementGroupList()) {
+      switchGroups.add(new SwitchGroup(
+          getPredicateCalc(group.getSwitchLabelList(), switchType),
+          chainBehavior(group.getMCBlockStatementList())
+      ));
+    }
+    // Add the empty labels as its own group.
+    // This, in most cases should not change anything.
+    switchGroups.add(new SwitchGroup(
+        getPredicateCalc(node.getSwitchLabelList(), switchType),
+        MICalculationVoid.NOOP_CALC
+    ));
+
+    MICalculationVoid switchCalc = frame -> {
+      final MCValue switchExprValue = switchExprCalc.calculate(frame);
+      try {
+        boolean shouldExecute = false;
+        for (SwitchGroup group : switchGroups) {
+          // this could be optimized by creating the predicates only once
+          // (since all cases are constants).
+          // As of writing, not considered important
+          final Predicate<MCValue> predicate =
+              group.predicateCalc().calculate(frame).asObject().unsafeCast();
+          shouldExecute = shouldExecute || predicate.test(switchExprValue);
+          if (shouldExecute) {
+            group.statementCalc().calculate(frame);
+          }
+        }
+      }
+      catch (MCSignalBreak ignored) {
+        // no-op
+      }
+    };
+    iData.putCalculation(switchCalc);
+  }
+
+  protected MICalculationValue getPredicateCalc(
+      List<ASTSwitchLabel> labels,
+      SymTypeExpression switchType
+  ) {
+    final List<MICalculationValue> predicateCalcs = labels.stream()
+        .map(l -> getPredicateCalc(l, switchType))
+        .toList();
+    MICalculationValue predicateCalc = frame -> {
+      @SuppressWarnings("unchecked") final Predicate<MCValue>[] predicates =
+          predicateCalcs.stream()
+              .<Predicate<MCValue>> map(
+                  c -> c.calculate(frame).asObject().unsafeCast()
+              )
+              .toArray(Predicate[]::new);
+      final Predicate<MCValue> compoundPredicate = value -> {
+        for (Predicate<MCValue> predicate : predicates) {
+          if (predicate.test(value)) {
+            return true;
+          }
+        }
+        return false;
+      };
+      return new MCValueObject(compoundPredicate);
+    };
+    return predicateCalc;
+  }
+
+  protected MICalculationValue getPredicateCalc(
+      ASTSwitchLabel label,
+      SymTypeExpression switchType
+  ) {
+    if (
+        MCCommonStatementsMill.typeDispatcher()
+            .isMCCommonStatementsASTEnumConstantSwitchLabel(label)
+    ) {
+      ASTEnumConstantSwitchLabel enumConstantSwitchLabel =
+          MCCommonStatementsMill.typeDispatcher()
+              .asMCCommonStatementsASTEnumConstantSwitchLabel(label);
+      return getEnumConstantPredicateCalc(enumConstantSwitchLabel, switchType);
+    }
+    else {
+      label.accept(getTraverser());
+      return iData.popCalculation().asCalculationValue();
+    }
+  }
+
+  protected MICalculationValue getEnumConstantPredicateCalc(
+      ASTEnumConstantSwitchLabel node,
+      SymTypeExpression switchType
+  ) {
+    // todo check if modifications are needed after
+    //  https://git.rwth-aachen.de/monticore/monticore/-/work_items/4997
+    Preconditions.checkArgument(isEnum(switchType));
+    // assumed to exist at this point:
+    SymTypeExpression enumConstantType = normalize(
+        OOWithinTypeBasicSymbolsResolver.resolveVariable(
+            switchType, node.getEnumConstant(),
+            AccessModifier.ALL_INCLUSION, f -> true
+        ).get()
+    );
+    Preconditions.checkState(sourceIsEnumConstant(enumConstantType));
+    VariableSymbol enumConstantSym = (VariableSymbol)
+        enumConstantType.getSourceInfo().getSourceSymbol().get();
+    MICalculationValue enumConstantCalc = symbolAccessHandler.getSymbolAccess(
+            enumConstantSym, iData.getFrameLayoutStack().peek(), iData
+        ).getter()
+        .asCalculationValue();
+
+    MICalculationValue predicateCalc = frame -> {
+      final Object enumConstant = enumConstantCalc.calculate(frame);
+      final Predicate<MCValue> predicate = enumConstant::equals;
+      return new MCValueObject(predicate);
+    };
+    return predicateCalc;
+  }
+
+  /**
+   * Instead of this,
+   * {@link #getEnumConstantPredicateCalc(ASTEnumConstantSwitchLabel, SymTypeExpression)}
+   * should be called.
+   *
+   * @param node that is traversed
+   */
+  @Override
+  public void traverse(ASTEnumConstantSwitchLabel node) {
+    throw new IllegalCallerException(
+        "0xFD924 this is not expected to be called."
+    );
+  }
+
+  @Override
+  public void traverse(ASTConstantExpressionSwitchLabel node) {
+    // the expression is expected to be a constant.
+    // Thus, we rely on this and only calculate the values once.
+    // Unlike Java, though, we cannot rely on String interning (JLS 21 12.29),
+    // wherefore, we use `equals` in this case.
+    SymTypeExpression constantType = normalize(typeOf(node.getConstant()));
+    node.getConstant().accept(getTraverser());
+    MICalculationValue constantCalc =
+        iData.popCalculation().asCalculationValue();
+    MICalculationValue predicateCalc;
+    predicateCalc = frame -> {
+      final MCValue constant = constantCalc.calculate(frame);
+      // should be == rather than .equals,
+      // but works out regardless (necessary due to lack of String interning)
+      final Predicate<MCValue> predicate = constant::equals;
+      return new MCValueObject(predicate);
+    };
+
+    iData.putCalculation(predicateCalc);
+  }
+
+  @Override
+  public void traverse(ASTDefaultSwitchLabel node) {
+    Predicate<MCValue> predicate = value -> true;
+    MICalculationValue predicateCalc =
+        frame -> new MCValueObject(predicate);
+    iData.putCalculation(predicateCalc);
   }
 
   @Override
