@@ -251,6 +251,7 @@ public class ExpressionsTestModels {
         Arguments.of("((int -> double) ((int x) -> x + 1))(2)", 3.0),
         Arguments.of("(((int, int) -> double) ((int x, int y) -> x + y))(2, 3)", 5.0),
         Arguments.of("(((boolean, int, int) -> double) ((boolean b, int x, int y) -> b ? x : y))(true, 1, 2)", 1.0),
+        Arguments.of("((Object -> double) ((Object x) -> 1))(true && false)", 1.0),
         // Tuple + Union
         Arguments.of("(((double | int), double)) (0, 3)", Tuple2.of(0.0, 3.0)),
         // Union + Lambda
