@@ -6,6 +6,7 @@ import com.google.common.base.Preconditions;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A value that is a Java Object.
@@ -93,6 +94,22 @@ public class MCValueObject implements MCValue {
   @Override
   public boolean checkEqualityOperator(MCValue other) {
     return other.isObject() && value == other.asObject().value;
+  }
+
+  @Override
+  public boolean equals(Object otherObj) {
+    if (this == otherObj) {
+      return true;
+    }
+    if (!(otherObj instanceof MCValueObject other)) {
+      return false;
+    }
+    return Objects.equals(value, other.value);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(value);
   }
 
   @Override
