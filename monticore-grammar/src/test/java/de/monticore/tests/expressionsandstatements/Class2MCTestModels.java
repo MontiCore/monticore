@@ -7,6 +7,7 @@ import de.monticore.tests.expressionsandstatements.rte.Student;
 import org.junit.jupiter.params.provider.Arguments;
 
 import java.util.ArrayList;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 /**
@@ -15,16 +16,6 @@ import java.util.stream.Stream;
  * For, e.g., interpreter/code generator
  */
 public class Class2MCTestModels {
-
-  static public Stream<Arguments> getNativeJavaCases() {
-    return Stream.of(
-        Arguments.of("java.lang.Integer.MAX_VALUE", Integer.MAX_VALUE),
-        Arguments.of("java.lang.Math.abs(-2)", 2),
-        Arguments.of("((java.lang.Integer) 5) + 2.0", 7.0),
-        Arguments.of("((java.lang.Integer) 5) + (java.lang.Double) 2", 7.0),
-        Arguments.of("ArrayList()", new ArrayList<>())
-    );
-  }
 
   /**
    * To be added to each model.
@@ -39,6 +30,26 @@ public class Class2MCTestModels {
         + "Person person = Person(\"Sage\", 23);" + System.lineSeparator()
         + "Student student = Student(\"Quinn\", 19, 8243721);"
         + System.lineSeparator();
+  }
+
+  static public Stream<Arguments> getClass2MCCases() {
+    return Stream.of(
+        getNativeJavaCases(),
+        getAClassCases(),
+        getInstanceOfCases(),
+        getCreatorExpressionCases(),
+        getEnumCases()
+    ).flatMap(Function.identity());
+  }
+
+  static public Stream<Arguments> getNativeJavaCases() {
+    return Stream.of(
+        Arguments.of("java.lang.Integer.MAX_VALUE", Integer.MAX_VALUE),
+        Arguments.of("java.lang.Math.abs(-2)", 2),
+        Arguments.of("((java.lang.Integer) 5) + 2.0", 7.0),
+        Arguments.of("((java.lang.Integer) 5) + (java.lang.Double) 2", 7.0),
+        Arguments.of("ArrayList()", new ArrayList<>())
+    );
   }
 
   static public Stream<Arguments> getAClassCases() {
@@ -179,6 +190,17 @@ public class Class2MCTestModels {
         ),
         Arguments.of("(new Person[1])[0]", null),
         Arguments.of("(new Person[1][2][][])[0][0]", null)
+    );
+  }
+
+  static public Stream<Arguments> getEnumCases() {
+    return Stream.of(
+        // todo enable after
+        //  https://git.rwth-aachen.de/monticore/monticore/-/work_items/4997
+        //Arguments.of("int x = 0; switch(State.ON) {case ON: x = 1;} x", 1),
+        //Arguments.of("int x = 0; switch(State.ON) {case OFF: x = 1;} x", 0),
+        Arguments.of("int x = 0; switch(State.ON) {case State.ON: x = 1;} x", 1),
+        Arguments.of("int x = 0; switch(State.ON) {case State.OFF: x = 1;} x", 0)
     );
   }
 
