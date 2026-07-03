@@ -71,6 +71,25 @@ public class MCValueDouble implements MCValue {
   }
 
   @Override
+  public boolean equals(Object otherObj) {
+    if (this == otherObj) {
+      return true;
+    }
+    if (otherObj instanceof MCValue otherVal) {
+      if (otherVal.isDouble() || otherVal.isInt()) {
+        // this also checks NAN and -0 vs +0
+        return Double.valueOf(value).equals(otherVal.asDouble());
+      }
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Double.hashCode(value);
+  }
+
+  @Override
   public String printType() {
     return "Double";
   }
