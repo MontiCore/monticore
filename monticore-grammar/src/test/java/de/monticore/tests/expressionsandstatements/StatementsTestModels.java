@@ -17,6 +17,7 @@ public class StatementsTestModels {
     return Stream.of(
         getCommonStatementCases(),
         getMCLowLevelStatementsCases(),
+        getSwitchCases(),
         getAssignmentCases(),
         getValidAssertStatementsCases()
     ).flatMap(Function.identity());
@@ -105,6 +106,83 @@ public class StatementsTestModels {
         // but, as it is currently allowed,
         // we test it here
         Arguments.of("int x = 0; l: x++; x", 1)
+    );
+  }
+
+  static protected Stream<Arguments> getSwitchCases() {
+    return Stream.of(
+        Arguments.of("int x = 0; switch(x) {default: x = 5;} x", 5),
+        Arguments.of("int x = 0; switch(x) {case 0: x = 5;} x", 5),
+        Arguments.of("int x = 0; switch(x) {case 1: x = 5;} x", 0),
+        Arguments.of("int x = 0; switch(x) {case 0: x = 5; break;} x", 5),
+        Arguments.of("int x = 0; switch(x) {case 1: x = 5; break;} x", 0),
+        Arguments.of("int x = 0; switch(x) {case 1: x = 1; case 0: x = 2;} x", 2),
+        Arguments.of("int x = 0; switch(x) {case 0: x = 1; case 1: x = 2;} x", 2),
+        Arguments.of("int x = 0; switch(x) {case 0: x = 1; break; case 1: x = 2;} x", 1),
+        Arguments.of("int x = 0; switch(x) {case 0: x = 5; break; default: x = 9;} x", 5),
+        Arguments.of("int x = 0; switch(x) {case 1: x = 5; break; default: x = 9;} x", 9),
+        Arguments.of("int x = 0; switch(x) {case 0: case 1: x = 5; break; default: x = 9;} x", 5),
+        Arguments.of("int x = 0; switch(x) {case 1: case 0: x = 5; break; default: x = 9;} x", 5),
+        Arguments.of("int x = 0; switch(x) {case 1: x = 5; break; case 0: default: x = 9;} x", 9),
+
+        Arguments.of("int x = 0; switch('b') {case 'a': x = 1; break; case 'b': x = 2; break; default: x = 3;} x", 2),
+        // todo enable after https://git.rwth-aachen.de/monticore/monticore/-/work_items/3423
+        // Arguments.of("int x = 0; switch(\"b\") {case \"a\": x = 1; break; case \"b\": x = 2; break; default: x = 3;} x", 2),
+
+        Arguments.of(
+            """
+                int x = 0, y = 1;
+                switch(x) {
+                  case 0: switch(y) {
+                    case 1: x = 5; break;
+                    default: x = 7; break;
+                  }
+                  break;
+                  default: x = 9;
+                }
+                x
+                """,
+            5
+        ),
+        // labels
+        Arguments.of("int x = 0; l: switch(x) {case 0: x = 1; break l; case 1: x = 2;} x", 1),
+        Arguments.of("int x = 0; l: switch(x) {case 0: x = 1; break; case 1: x = 2;} x", 1),
+        Arguments.of("""
+                int x = 0;
+                l: while (true) {
+                  switch(x) {
+                    case 0: x = 1; break l;
+                  }
+                  x = 5;
+                }
+                x
+                """,
+            1
+        ),
+        Arguments.of("""
+                int x = 0, y = 0;
+                l: switch(x) {
+                  case 0: switch(y) {
+                    case 0: x = 1; break l;
+                  }
+                  x = 5;
+                }
+                x
+                """,
+            1
+        ),
+        Arguments.of("""
+                int x = 0, y = 0;
+                while (++x < 4) {
+                  switch(x) {
+                    case 2: continue;
+                  }
+                  y = y + x;
+                }
+                y
+                """,
+            4
+        )
     );
   }
 
