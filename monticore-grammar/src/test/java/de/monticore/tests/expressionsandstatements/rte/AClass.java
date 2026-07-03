@@ -45,6 +45,26 @@ public class AClass {
   public static Float var_s_Float = 0f;
   public static Double var_s_Double = 0d;
 
+  public static void resetStaticVariables() {
+    var_s_boolean = false;
+    var_s_byte = 0;
+    var_s_short = 0;
+    var_s_char = 0;
+    var_s_int = 0;
+    var_s_long = 0;
+    var_s_float = 0;
+    var_s_double = 0;
+
+    var_s_Boolean = false;
+    var_s_Byte = 0;
+    var_s_Short = 0;
+    var_s_Character = 0;
+    var_s_Integer = 0;
+    var_s_Long = 0L;
+    var_s_Float = 0f;
+    var_s_Double = 0d;
+  }
+
   public boolean get_var_boolean() {
     return var_boolean;
   }
