@@ -11,8 +11,9 @@ import de.monticore.*;
  *      Types (of all kinds), 
  *      Functions, 
  *      Variables,
- *      TypeVariables, and
- *      Stereotypes
+ *      TypeVariables,
+ *      Stereotypes, and
+ *      Namespaces.
  *
  * The symbols are of general nature and do not precluse (and thus also
  * not assist) static, private or other specialities.
