@@ -112,59 +112,7 @@ public class FormattingPrettyPrinterGenerationVisitor implements GrammarVisitor2
     blockData.getAltDataList().sort(Collections.reverseOrder());
     String ruleName = node.getName();
 
-    // Prepare iterators (used instead of direct lists access)
-    Map<String, IteratorData> iterators = new LinkedHashMap<>();
-    for (String refName : currentClassProdData.getNonTerminals().keySet()) {
-      if (!currentClassProdData.isIteratorNeeded(refName)) continue;
-      ASTRuleComponent itNode = currentClassProdData.getNonTerminalNodes().get(refName);
-
-      Multiplicity multiplicity = currentClassProdData.getMultiplicity(StringTransformations.uncapitalize(refName));
-
-      String getter = getPlainGetterSymbol(refName, multiplicity);
-      String type;
-      boolean isNode = false;
-
-      if (itNode.getSymbol().isIsTerminal()) {
-        type = "String";
-      } else {
-        // Resolve the production to derive the concrete type
-        Optional<ProdSymbol> refProd = node.getSymbol().getEnclosingScope().resolveProd(itNode.getSymbol().getReferencedType());
-        ruleName = Grammar2Antlr.getRuleNameForAntlr(refProd.get().getFullName());
-
-        if (refProd.isEmpty()) {
-          Log.error("Unable to resolve referenced production during PPGen");
-          return;
-        }
-
-        if (refProd.get().isIsLexerProd()) {
-          // Lexer types will be represented by Strings
-          type = "String";
-        } else {
-          // Apply TypeCD2JavaVisitor-equivalent by introducing the _ast package
-          List<String> sTypes = new ArrayList<>();
-          if (!refProd.get().getPackageName().isEmpty())
-            sTypes.add(refProd.get().getPackageName());
-
-          sTypes.add(refProd.get().getEnclosingScope().getName().toLowerCase());
-          sTypes.add(ASTConstants.AST_PACKAGE);
-
-          String refProdName = StringTransformations.capitalize(refProd.get().getName());
-          if (refProd.get().isIsExternal()) {
-            refProdName += "Ext";
-          }
-          sTypes.add(ASTConstants.AST_PREFIX + refProdName);
-
-          type = Joiners.DOT.join(sTypes);
-          isNode = true;
-        }
-      }
-
-      // Derive a safe variable name for the enhanced for-loop
-      String elementName = StringTransformations.uncapitalize(refName);
-
-      // Initialize IteratorData with the new structure
-      iterators.put(refName, new IteratorData(type, getter, elementName, isNode));
-    }
+    Map<String, IteratorData> iterators = new HashMap<>();
 
     this.addNegatedOptsFromOtherAlts(blockData);
 

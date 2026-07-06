@@ -14,9 +14,6 @@ getPrinter().startProduction("${astName}");
 <#assign emitPos = helper.next()>
 getPrinter().emit("${astName?uncap_first}", "${ruleName}", "${emitPos}");
 
-<#if blockData.getAltDataList()?size == 1 && !blockData.getAltDataList()?first.getExpressionList()?has_content>
-    ${includeArgs("FormattingAlt", ast, blockData.getAltDataList()?first, grammarName, astPackage, helper)}
-<#else>
-    ${includeArgs("FormattingBlock", ast, blockData, grammarName, astPackage, helper)}
-</#if>
+${includeArgs("FormattingBlock", ast, blockData, grammarName, astPackage, helper)}
+
 getPrinter().endProduction();
