@@ -101,4 +101,13 @@ component grammar BasicSymbols extends de.monticore.MCBasics {
   symbolrule MCStereotype
     implements de.monticore.symboltable.stereotypes.IStereotypeSymbol;
 
+   /*=================================================================*/
+
+    /**
+     * A Namespace (Java Package, etc.) consists of its name and possible inner symbols.
+     *
+     * EXPERIMENTAL: This symbol is not yet stable and is subject to changes. (Added during 7.9.0 dev/2026.07.06)
+     */
+    interface symbol scope Namespace = Name;
+
 }
