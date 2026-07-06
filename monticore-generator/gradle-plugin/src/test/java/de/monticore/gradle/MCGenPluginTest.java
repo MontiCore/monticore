@@ -88,7 +88,7 @@ public class MCGenPluginTest {
   
   // Test if the plugin can be applied
   @ParameterizedTest
-  @ValueSource(strings = {"8.5", "8.7", "8.14.4", "9.5.1"})
+  @ValueSource(strings = {"8.5", "8.7", "8.14.4", "9.5.1", "9.6.1"})
   public void testCanApplyPlugin(String version) throws IOException {
     writeFile(settingsFile, "rootProject.name = 'hello-world'");
     String buildFileContent = "plugins {" +
@@ -116,7 +116,7 @@ public class MCGenPluginTest {
   // and up-to-date-checks work on modified files
   // and up-to-date-checks work on modified super files
   @ParameterizedTest
-  @ValueSource(strings = {"8.5", "8.7", "8.14.4", "9.5.1"})
+  @ValueSource(strings = {"8.5", "8.7", "8.14.4", "9.5.1", "9.6.1"})
   public void testGenerateGrammar(String version) throws IOException {
     writeFile(settingsFile, "rootProject.name = 'hello-world'");
     writeFile(propertiesFile, "de.monticore.gradle.show_performance_statistic=true\norg.gradle.jvmargs=-XX:MaxMetaspaceSize=1g\n");
@@ -232,7 +232,7 @@ public class MCGenPluginTest {
   // and up-to-date-checks work on modified files
   // and up-to-date-checks work on modified super files
   @ParameterizedTest
-  @ValueSource(strings = {"8.5", "8.7", "8.14.4", "9.5.1"})
+  @ValueSource(strings = {"8.5", "8.7", "8.14.4", "9.5.1", "9.6.1"})
   public void testMultiProject(String version) throws IOException {
     writeFile(settingsFile, "rootProject.name = 'hello-world'\ninclude('A')\ninclude('B')");
     writeFile(propertiesFile, "de.monticore.gradle.show_performance_statistic=true\norg.gradle.jvmargs=-XX:MaxMetaspaceSize=1g\n");
