@@ -32,12 +32,11 @@ public interface TraverserBasedCodeGenerator
     I.isGenerating.set(true);
 
     try {
-      String code;
       getPrinter().clearBuffer();
       getTraverser().clearTraversedElements();
       node.accept(getTraverser());
       getPrinter().stripTrailing();
-      code = getPrinter().getContent();
+      String code = getPrinter().getContent();
       return code;
     }
     finally {
