@@ -7,13 +7,16 @@ import de.monticore.gradle.common.AToolAction;
 import de.monticore.gradle.common.MCSingleFileTask;
 import de.monticore.gradle.queue.ICachedQueueTask;
 import org.gradle.api.file.ConfigurableFileCollection;
+import org.gradle.api.file.FileCollection;
 import org.gradle.api.file.FileTree;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.*;
+import org.gradle.work.Incremental;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -93,6 +96,12 @@ public abstract class MCGenTask extends MCSingleFileTask implements ICachedQueue
   @Override
   protected List<String> createArgList(Path filePath, Function<Path, String> handlePath) {
     List<String> args = super.createArgList(filePath, handlePath);
+
+    // hcg / handcodedModelPath
+    if(!getHandWrittenGrammarDir().isEmpty()) {
+      args.add("-" + MontiCoreConfiguration.HANDCODEDMODELPATH);
+      getHandWrittenGrammarDir().forEach(x -> args.add(handlePath.apply(x.toPath())));
+    }
 
     // genDST
     args.add("-" + MontiCoreConfiguration.GENDST_LONG);
@@ -280,6 +289,43 @@ public abstract class MCGenTask extends MCSingleFileTask implements ICachedQueue
   public void setTemplatePath(String path) {
     this.getTmplDir().set(getProject().file(path));
   }
+
+  @InputFiles
+  @Optional
+  @PathSensitive(PathSensitivity.RELATIVE)
+  @Incremental
+  // No full rebuild, when only HWG-Directory is changed. Requires logic in Task Execution!
+  @IgnoreEmptyDirectories
+  public abstract ConfigurableFileCollection getHandWrittenGrammarDir();
+
+
+  @Deprecated
+  public void setHwgDir(File f){
+    this.getHandWrittenGrammarDir().setFrom(f);
+  }
+
+  @Deprecated
+  public void setHwgDir(Iterable<File> f){
+    this.getHandWrittenGrammarDir().setFrom(f);
+  }
+
+  @Deprecated
+  @Internal
+  public ConfigurableFileCollection getHwgDir(){
+    return this.getHandWrittenGrammarDir();
+  }
+
+  @Input
+  @Optional
+  public abstract Property<String> getScript();
+
+  @Internal
+  public Set<FileCollection> getOtherInputFileCollections() {
+    HashSet<FileCollection> set = new HashSet<>(super.getOtherInputFileCollections());
+    set.add(getHandWrittenGrammarDir());
+    return set;
+  }
+
 
   @Override
   protected void prepareWorkQueue() {

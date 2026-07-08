@@ -44,35 +44,14 @@ public class JavaGenTest extends AbstractJavaGenTest {
     checkValue(modelStr, expectedValue);
   }
 
-  @ParameterizedTest
-  @MethodSource("de.monticore.tests.expressionsandstatements.Class2MCTestModels#getNativeJavaCases")
-  void testNativeJava(String modelStr, Object expectedValue) {
-    // empty collections are not supported yet
-    assumeFalse(expectedValue.toString().equals("[]"));
-
-    checkValue(modelStr, expectedValue);
-  }
-
   @ParameterizedTest(name = "[{index}] {0}")
-  @MethodSource("de.monticore.tests.expressionsandstatements.Class2MCTestModels#getAClassCases")
+  @MethodSource("de.monticore.tests.expressionsandstatements.Class2MCTestModels#getClass2MCCases")
   void testNativeJavaAClass(String tail, Object expectedValue) {
     // not supported yet, implementation missing
     assumeFalse(tail.contains(".set_"));
+    // empty collections are not supported yet
+    assumeFalse(expectedValue != null && expectedValue.toString().equals("[]"));
 
-    String modelStr = Class2MCTestModels.getModelPrefix() + tail;
-    checkValue(modelStr, expectedValue);
-  }
-
-  @ParameterizedTest(name = "[{index}] {0}")
-  @MethodSource("de.monticore.tests.expressionsandstatements.Class2MCTestModels#getInstanceOfCases")
-  void testInstanceOfCases(String tail, Object expectedValue) {
-    String modelStr = Class2MCTestModels.getModelPrefix() + tail;
-    checkValue(modelStr, expectedValue);
-  }
-
-  @ParameterizedTest(name = "[{index}] {0}")
-  @MethodSource("de.monticore.tests.expressionsandstatements.Class2MCTestModels#getCreatorExpressionCases")
-  void testCreatorExpressionCases(String tail, Object expectedValue) {
     String modelStr = Class2MCTestModels.getModelPrefix() + tail;
     checkValue(modelStr, expectedValue);
   }

@@ -17,8 +17,8 @@ public abstract class AbstractJavaTypeConverter
       CodeGenPrintAction exprPrintAction) {
     printer.print("((");
     printer.print(getJavaTypePrint(targetType));
-    printer.print(") ");
+    printer.print(") (");
     exprPrintAction.print(printer);
-    printer.print(")");
+    printer.print("))");
   }
 }

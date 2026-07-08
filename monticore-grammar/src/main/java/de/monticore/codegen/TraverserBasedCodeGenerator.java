@@ -31,15 +31,18 @@ public interface TraverserBasedCodeGenerator
     }
     I.isGenerating.set(true);
 
-    String code;
-    getPrinter().clearBuffer();
-    getTraverser().clearTraversedElements();
-    node.accept(getTraverser());
-    getPrinter().stripTrailing();
-    code = getPrinter().getContent();
+    try {
+      getPrinter().clearBuffer();
+      getTraverser().clearTraversedElements();
+      node.accept(getTraverser());
+      getPrinter().stripTrailing();
+      String code = getPrinter().getContent();
+      return code;
+    }
+    finally {
+      I.isGenerating.set(false);
+    }
 
-    I.isGenerating.set(false);
-    return code;
   }
 
   /**
