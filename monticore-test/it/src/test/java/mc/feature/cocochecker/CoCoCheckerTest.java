@@ -88,14 +88,8 @@ public class CoCoCheckerTest extends GeneratorIntegrationsTest {
   
   @BeforeEach
   public void setUp() {
-    Optional<ASTX> astOpt = Optional.empty();
-    try {
-      astOpt = new AParser().parseX(new StringReader("xyz"));
-    }
-    catch (IOException e) {
-      e.printStackTrace();
-      fail("Parser Error.");
-    }
+    Optional<ASTX> astOpt =
+        new AParser().parseX(new StringReader("xyz"));
     assertTrue(astOpt.isPresent());
     ast = astOpt.get();
     checked.setLength(0);

@@ -171,7 +171,6 @@ public class MCBasicTypesPrettyPrinterTest {
 
     String[] primitives = new String[]{"boolean", "byte", "char", "short", "int", "long",
         "float", "double"};
-    try {
       for (String primitive : primitives) {
         prettyprinter.getPrinter().clearBuffer();
         MCBasicTypesTestParser mcBasicTypesParser = new MCBasicTypesTestParser();
@@ -182,9 +181,6 @@ public class MCBasicTypesPrettyPrinterTest {
         assertEquals(primitive, prettyprinter.prettyprint(type.get()));
         assertInstanceOf(ASTMCPrimitiveType.class, type.get());
       }
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
     
     assertTrue(Log.getFindings().isEmpty());
   }
@@ -193,15 +189,11 @@ public class MCBasicTypesPrettyPrinterTest {
   public void simpleReferenceTest(){
     MCBasicTypesFullPrettyPrinter prettyprinter = new MCBasicTypesFullPrettyPrinter(new IndentPrinter());
     String simpleReference = "de.monticore.types.prettyprint";
-    try{
       MCBasicTypesTestParser mcBasicTypesParser= new MCBasicTypesTestParser();
       Optional<? extends ASTMCType> type = mcBasicTypesParser.parse_StringMCQualifiedType(simpleReference);
       assertTrue(type.isPresent());
       assertEquals(simpleReference, prettyprinter.prettyprint(type.get()));
       assertInstanceOf(ASTMCQualifiedType.class, type.get());
-    }catch(IOException e){
-      e.printStackTrace();
-    }
   
     assertTrue(Log.getFindings().isEmpty());
   }

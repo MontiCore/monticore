@@ -172,22 +172,12 @@ public class AbstractTypeVisitorTest extends AbstractMCTest {
 
   // Parse a String expression of the according language
   protected Optional<ASTExpression> parseStringExpr(String exprStr) {
-    try {
-      return parser.parse_StringExpression(exprStr);
-    }
-    catch (IOException e) {
-      return fail(e);
-    }
+    return parser.parse_StringExpression(exprStr);
   }
 
   // Parse a String type identifier of the according language
   protected Optional<ASTMCType> parseStringMCType(String mcTypeStr) {
-    try {
-      return parser.parse_StringMCType(mcTypeStr);
-    }
-    catch (IOException e) {
-      return fail(e);
-    }
+    return parser.parse_StringMCType(mcTypeStr);
   }
 
   protected void generateScopes(ASTExpression expr) {

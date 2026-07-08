@@ -14,7 +14,6 @@ import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -38,7 +37,6 @@ public class PrintTypeAstExtensionTests {
     String[] primitives = {"boolean","byte","short","int","char","float","long","double"};
 
     for(String simpleReference:primitives) {
-      try {
         Optional<? extends ASTMCType> type = parser.parse_StringMCType(simpleReference);
 
         for (Finding f : Log.getFindings()) {
@@ -46,11 +44,6 @@ public class PrintTypeAstExtensionTests {
         }
 
         assertEquals(simpleReference.trim(), type.get().printType().trim());
-
-
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
     }
     
     assertTrue(Log.getFindings().isEmpty());
@@ -61,12 +54,8 @@ public class PrintTypeAstExtensionTests {
   public void printTypeMethodObjectTypeTest() {
     MCBasicTypesTestParser mcBasicTypesParser= new MCBasicTypesTestParser();
     String simpleReference = "de.monticore.types.prettyprint";
-    try {
       Optional<? extends ASTMCType> type = mcBasicTypesParser.parse_StringMCObjectType(simpleReference);
       assertEquals(simpleReference.trim(), type.get().printType().trim());
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
   
     assertTrue(Log.getFindings().isEmpty());
   }
@@ -75,12 +64,8 @@ public class PrintTypeAstExtensionTests {
   public void printTypeMethodQualifiedTypeTest() {
     MCBasicTypesTestParser mcBasicTypesParser= new MCBasicTypesTestParser();
     String simpleReference = "de.monticore.types.prettyprint";
-    try {
       Optional<? extends ASTMCType> type = mcBasicTypesParser.parse_StringMCQualifiedType(simpleReference);
       assertEquals(simpleReference.trim(), type.get().printType().trim());
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
   
     assertTrue(Log.getFindings().isEmpty());
   }
@@ -90,12 +75,8 @@ public class PrintTypeAstExtensionTests {
   public void printTypeMethodReturnTypeTest() {
     MCBasicTypesTestParser mcBasicTypesParser= new MCBasicTypesTestParser();
     String simpleReference = "de.monticore.types.Prettyprint";
-    try {
       Optional<ASTMCReturnType> type = mcBasicTypesParser.parse_StringMCReturnType(simpleReference);
       assertEquals(simpleReference.trim(), type.get().printType().trim());
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
   
     assertTrue(Log.getFindings().isEmpty());
   }
@@ -104,12 +85,8 @@ public class PrintTypeAstExtensionTests {
   public void printTypeMethodReturnTypeVoidTest() {
     MCBasicTypesTestParser mcBasicTypesParser= new MCBasicTypesTestParser();
     String simpleReference = "void";
-    try {
       Optional<ASTMCReturnType> type = mcBasicTypesParser.parse_StringMCReturnType(simpleReference);
       assertEquals(simpleReference.trim(), type.get().printType().trim());
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
   
     assertTrue(Log.getFindings().isEmpty());
   }
@@ -118,15 +95,9 @@ public class PrintTypeAstExtensionTests {
   public void printTypeMethodTullGenericTypeTest() {
     MCFullGenericTypesTestParser parser= new MCFullGenericTypesTestParser();
     String simpleReference = "de.monticore<T>.types.prettyprint<S>";
-    try {
       Optional<? extends ASTMCType> type = parser.parse_StringMCType(simpleReference);
       assertEquals(simpleReference.trim(), type.get().printType().trim());
 
-
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-  
     assertTrue(Log.getFindings().isEmpty());
   }
 
@@ -135,15 +106,9 @@ public class PrintTypeAstExtensionTests {
   public void printTypeMethodTullGenericType2Test() {
     MCFullGenericTypesTestParser parser= new MCFullGenericTypesTestParser();
     String simpleReference = "de.monticore<T>.types.prettyprint";
-    try {
       Optional<? extends ASTMCType> type = parser.parse_StringMCType(simpleReference);
       assertEquals(simpleReference.trim(), type.get().printType().trim());
 
-
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-  
     assertTrue(Log.getFindings().isEmpty());
   }
 
@@ -152,14 +117,8 @@ public class PrintTypeAstExtensionTests {
     MCFullGenericTypesTestParser parser= new MCFullGenericTypesTestParser();
     String[] types = {"Person<Konto>","java.util.List<socnet.Person<Konto>,List<boolean>>"};
     for(String simpleReference:types) {
-      try {
         Optional<? extends ASTMCType> type = parser.parse_StringMCType(simpleReference);
         assertEquals(simpleReference.trim(), type.get().printType().trim());
-
-
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
     }
   
     assertTrue(Log.getFindings().isEmpty());
@@ -173,14 +132,8 @@ public class PrintTypeAstExtensionTests {
 
     String[] collectionTypes = {"List<boolean>","Optional<a.b.cd.Person>","Map<boolean,a.P>","Set<Person>"};
     for(String simpleReference:collectionTypes) {
-      try {
         Optional<? extends ASTMCType> type = parser.parse_StringMCType(simpleReference);
         assertEquals(simpleReference.trim(), type.get().printType().trim());
-
-
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
     }
   
     assertTrue(Log.getFindings().isEmpty());
@@ -191,15 +144,9 @@ public class PrintTypeAstExtensionTests {
   public void printTypeMethodTullGenericTypeWildcardExtendsTest() {
     MCFullGenericTypesTestParser parser= new MCFullGenericTypesTestParser();
     String simpleReference = "de.monticore<T>.types.prettyprint<? extends T>";
-    try {
       Optional<? extends ASTMCType> type = parser.parse_StringMCType(simpleReference);
       assertEquals(simpleReference.trim(), type.get().printType().trim());
 
-
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-  
     assertTrue(Log.getFindings().isEmpty());
   }
 
@@ -208,7 +155,6 @@ public class PrintTypeAstExtensionTests {
   public void printTypeMethodTullGenericTypeExtendsTest() {
     MCFullGenericTypesTestParser parser= new MCFullGenericTypesTestParser();
     String simpleReference = "de.monticore<T>.types.prettyprint<? extends T>";
-    try {
       Optional<? extends ASTMCType> type = parser.parse_StringMCType(simpleReference);
 
       for(Finding f : Log.getFindings()) {
@@ -217,11 +163,6 @@ public class PrintTypeAstExtensionTests {
 
       assertEquals(simpleReference.trim(), type.get().printType().trim());
 
-
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-  
     assertTrue(Log.getFindings().isEmpty());
   }
 
@@ -230,16 +171,10 @@ public class PrintTypeAstExtensionTests {
   public void printTypeMethodTullGenericTypeWildcardSuperTest() {
     MCFullGenericTypesTestParser parser= new MCFullGenericTypesTestParser();
     String simpleReference = "de.monticore<T>.types.prettyprint<? super Compareable<T>>";
-    try {
       Optional<? extends ASTMCType> type = parser.parse_StringMCType(simpleReference);
 
       assertEquals(simpleReference.trim(), type.get().printType().trim());
 
-
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-  
     assertTrue(Log.getFindings().isEmpty());
   }
 
@@ -247,7 +182,6 @@ public class PrintTypeAstExtensionTests {
   public void printTypeMethodImportStatementTest() {
     MCFullGenericTypesTestParser parser= new MCFullGenericTypesTestParser();
     String simpleReference = "import a.b.C;";
-    try {
       Optional<ASTMCImportStatement> type = parser.parse_StringMCImportStatement(simpleReference);
 
       for(Finding f : Log.getFindings()) {
@@ -256,11 +190,6 @@ public class PrintTypeAstExtensionTests {
 
       assertEquals(simpleReference.trim(), type.get().printType().trim());
 
-
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-  
     assertTrue(Log.getFindings().isEmpty());
   }
 
@@ -268,7 +197,6 @@ public class PrintTypeAstExtensionTests {
   public void printTypeMethodStarImportStatementTest() {
     MCFullGenericTypesTestParser parser= new MCFullGenericTypesTestParser();
     String simpleReference = "import a.b.c.*;";
-    try {
       Optional<ASTMCImportStatement> type = parser.parse_StringMCImportStatement(simpleReference);
 
       for(Finding f : Log.getFindings()) {
@@ -277,11 +205,6 @@ public class PrintTypeAstExtensionTests {
 
       assertEquals(simpleReference.trim(), type.get().printType().trim());
 
-
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-  
     assertTrue(Log.getFindings().isEmpty());
   }
 
