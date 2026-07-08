@@ -4,8 +4,6 @@ package mc.testcases.automaton.transformation.rule._parser;
 import de.se_rwth.commons.logging.LogStub;
 import mc.testcases.automaton.tr.automatontr._parser.AutomatonTRParser;
 
-import java.io.IOException;
-
 import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,13 +22,9 @@ public class AutomatonTransformationRuleTransitionMCConcreteParserTest {
   public void testParse2() {
     String input = "[[ d -y> d; :- ]]";
     AutomatonTRParser p =new AutomatonTRParser();
-    try {
-      p.parse_StringITFTransition(input);
-      assertFalse(p.hasErrors());
-    } catch (IOException e) {
-      fail(e.toString());
-    }
-  
+    p.parse_StringITFTransition(input);
+    assertFalse(p.hasErrors());
+
     assertTrue(Log.getFindings().isEmpty());
   }
 
