@@ -1,6 +1,13 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("grammarName", "astClassName", "parseRuleNameJavaCompatible")}
-  ${grammarName}AntlrParser parser = create(fileName);
+  ${grammarName}AntlrParser parser;
+  try {
+    parser = create(fileName);
+  } catch (java.io.IOException e) {
+    setError(true);
+    Log.error("IOException occurred for file " + fileName, e);
+    return Optional.empty();
+  }
   ${astClassName} astPV;
   var prc = parser.${parseRuleNameJavaCompatible}();
   if (parser.hasErrors()) {

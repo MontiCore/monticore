@@ -233,9 +233,6 @@ public class ParserForSuperDecorator extends AbstractDecorator {
 
   protected List<ASTCDMethod> getOverriddenMethods(CDTypeSymbol type, DiagramSymbol grammar, Collection<CDTypeSymbol> firstClasses){
     List<ASTCDMethod> methods = Lists.newArrayList();
-    ASTMCQualifiedName ioException = MCBasicTypesMill.mCQualifiedNameBuilder()
-        .setPartsList(Lists.newArrayList("java", "io", "IOException"))
-        .build();
 
     String millFullName = service.getMillFullName();
 
@@ -247,13 +244,11 @@ public class ParserForSuperDecorator extends AbstractDecorator {
     ASTMCType returnType = getMCTypeFacade().createOptionalTypeOf(getMCTypeFacade().createQualifiedType(superProdFullName));
     ASTCDParameter fileNameParameter = getCDParameterFacade().createParameter(String.class, "fileName");
     ASTCDMethod parse = getCDMethodFacade().createMethod(PUBLIC.build(), returnType, "parse" + prodName, fileNameParameter);
-    parse.setCDThrowsDeclaration(CD4CodeBasisMill.cDThrowsDeclarationBuilder().addException(ioException).build());
 
 
     ASTMCType readerType = getMCTypeFacade().createQualifiedType("java.io.Reader");
     ASTCDParameter readerParameter = getCDParameterFacade().createParameter(readerType, "reader");
     ASTCDMethod parseReader = getCDMethodFacade().createMethod(PUBLIC.build(), returnType, "parse" + prodName, readerParameter);
-    parseReader.setCDThrowsDeclaration(CD4CodeBasisMill.cDThrowsDeclarationBuilder().addException(ioException).build());
 
     //if a nonterminal overrides two or more other nonterminals that do not extend each other then the nonterminal can only extend one of them due to single inheritance
     //the parse-method generated for the second or third/fourth... overridden nonterminal logs an error upon invocation because the overridding nonterminal does not extend it and
@@ -279,9 +274,6 @@ public class ParserForSuperDecorator extends AbstractDecorator {
 
   protected List<ASTCDMethod> getParseMethodsForOtherProds(CDTypeSymbol type, DiagramSymbol grammar){
     List<ASTCDMethod> methods = Lists.newArrayList();
-    ASTMCQualifiedName ioException = MCBasicTypesMill.mCQualifiedNameBuilder()
-        .setPartsList(Lists.newArrayList("java", "io", "IOException"))
-        .build();
 
     String millFullName = service.getMillFullName();
 
@@ -292,14 +284,12 @@ public class ParserForSuperDecorator extends AbstractDecorator {
     ASTMCType returnType = getMCTypeFacade().createOptionalTypeOf(getMCTypeFacade().createQualifiedType(superProdFullName));
     ASTCDParameter fileNameParameter = getCDParameterFacade().createParameter(String.class, "fileName");
     ASTCDMethod parse = getCDMethodFacade().createMethod(PUBLIC.build(), returnType, "parse" + prodName, fileNameParameter);
-    parse.setCDThrowsDeclaration(CD4CodeBasisMill.cDThrowsDeclarationBuilder().addException(ioException).build());
     this.replaceTemplate(EMPTY_BODY, parse, new TemplateHookPoint(TEMPLATE_PATH + "ParseSup", millFullName, prodName));
     methods.add(parse);
 
     ASTMCType readerType = getMCTypeFacade().createQualifiedType("java.io.Reader");
     ASTCDParameter readerParameter = getCDParameterFacade().createParameter(readerType, "reader");
     ASTCDMethod parseReader = getCDMethodFacade().createMethod(PUBLIC.build(), returnType, "parse" + prodName, readerParameter);
-    parseReader.setCDThrowsDeclaration(CD4CodeBasisMill.cDThrowsDeclarationBuilder().addException(ioException).build());
     this.replaceTemplate(EMPTY_BODY, parseReader, new TemplateHookPoint(TEMPLATE_PATH + "ParseSupReader", millFullName, prodName));
     methods.add(parseReader);
     return methods;
