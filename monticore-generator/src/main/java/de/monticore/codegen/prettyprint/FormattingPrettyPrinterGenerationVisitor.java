@@ -115,6 +115,46 @@ public class FormattingPrettyPrinterGenerationVisitor implements GrammarVisitor2
     Map<String, IteratorData> iterators = new HashMap<>();
 
     this.addNegatedOptsFromOtherAlts(blockData);
+    //component ArrayList 4 element
+    //  1 ASTTERMINAL
+    //  2 ASTTERMINAL
+    //  3 ASTBLOCK
+    //  4 ASTTERMINAL
+
+
+
+
+    //Bei den terminal mache ich warscheinlich einfach
+    // getPrinter().emit("{", "LCURLY", "2");
+    // aber sonderfall für wenn das terminal " oder { oder : oder ; ist ?
+    // Was ist mit dem 2ten argument
+    // wie genereiere ich den boolean case?
+    // if (node.isInitial()) {
+    //      getPrinter().emit("<<", "LTLT", "2");
+    //      getPrinter().emit("initial", "INITIAL1948342084", "initial");
+    //      getPrinter().emit(">>", "GTGT", "4");
+    //    }
+    // warum wird hier die 3 rausgelassen?
+    // bekommt inital indirekt die 3?
+
+    //soll ich das hier in dieser methode machen oder in der visit methode von terminal
+    //
+
+    //getCachedLexSymbolName() gibt mir einfach nur die strings zurück
+    //soll ich getCachedLexSymbolName() in den temapltes oder hier  in der java methods benutzten?
+    // -> ParserGeneratorHelper und dann im java die namen generieren
+    // immmoment klappt das nicht also ermal eine placeholder
+
+
+    //P = ALT;
+    //Al productionsregel
+    //ich sammel daten in den visitorn und am ende der alt definition generiere ich die methode.
+
+    // mit den viustorn sammel ich die daten und am ende hinzufügen von dem counter (sonst hacky)
+    //entweder eine zahl oder wenn ein name von dem productionssymbol existiret dann der name und die zahl skippen
+
+
+
 
     if (!currentClassProdData.getErroringNonTerminals().isEmpty())
       this.failureMessage = "The NonTerminal(s) " + currentClassProdData.getErroringNonTerminals() + " caused the automatic generation to fail";
