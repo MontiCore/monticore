@@ -8,7 +8,6 @@ import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 
-import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Paths;
 import java.util.Optional;
@@ -16,7 +15,7 @@ import java.util.Optional;
 public class Grammar_WithConceptsParser extends Grammar_WithConceptsParserTOP {
 
   @Override
-  public Optional<ASTMCGrammar> parse_String(String str) throws IOException {
+  public Optional<ASTMCGrammar> parse_String(String str) {
     Optional<ASTMCGrammar> grammar = super.parse_String(str);
     if (grammar.isPresent()) {
       GrammarTransformer.transform(grammar.get());
@@ -25,7 +24,7 @@ public class Grammar_WithConceptsParser extends Grammar_WithConceptsParserTOP {
   }
 
   @Override
-  public Optional<ASTMCGrammar> parse(Reader reader) throws IOException {
+  public Optional<ASTMCGrammar> parse(Reader reader) {
     Optional<ASTMCGrammar> grammar = super.parse(reader);
     if (grammar.isPresent()) {
       GrammarTransformer.transform(grammar.get());
@@ -37,7 +36,7 @@ public class Grammar_WithConceptsParser extends Grammar_WithConceptsParserTOP {
    * @see MCConcreteParser#parse(String)
    */
   @Override
-  public Optional<de.monticore.grammar.grammar._ast.ASTMCGrammar> parse(String fileName) throws IOException {
+  public Optional<de.monticore.grammar.grammar._ast.ASTMCGrammar> parse(String fileName) {
     Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
     Optional<ASTMCGrammar> ast = parseMCGrammar(fileName);
     if (ast.isPresent()) {
