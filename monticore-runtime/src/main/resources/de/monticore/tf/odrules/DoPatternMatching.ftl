@@ -18,11 +18,6 @@ public boolean doPatternMatching() {
   reset_${optional.getObjectName()}();
 </#list>
 
-  if (isHostGraphDirty || searchPlan == null) {
-    this.loadIntoModelTraverser();
-    isHostGraphDirty= false;
-  }
-
   if (searchPlan == null) {
     searchPlan = findSearchPlan();
 
