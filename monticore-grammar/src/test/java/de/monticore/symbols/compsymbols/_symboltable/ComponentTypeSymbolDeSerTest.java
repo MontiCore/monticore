@@ -455,10 +455,12 @@ public class ComponentTypeSymbolDeSerTest {
     PortSymbol out1 = createSimplePort("out1", true);
     PortSymbol out2 = createSimplePort("out2", true);
 
-    comp.getSpannedScope().add(in1);
-    comp.getSpannedScope().add(in2);
-    comp.getSpannedScope().add(out1);
-    comp.getSpannedScope().add(out2);
+
+    ICompSymbolsScope scope = comp.getSpannedScope();
+    scope.add(in1);
+    scope.add(in2);
+    scope.add(out1);
+    scope.add(out2);
 
     chain.put(in1, out1);
     chain.put(in2, out2);
@@ -485,9 +487,10 @@ public class ComponentTypeSymbolDeSerTest {
     PortSymbol out1 = createSimplePort("out1", true);
     PortSymbol out2 = createSimplePort("out2", true);
 
-    comp.getSpannedScope().add(in1);
-    comp.getSpannedScope().add(out1);
-    comp.getSpannedScope().add(out2);
+    ICompSymbolsScope scope = comp.getSpannedScope();
+    scope.add(in1);
+    scope.add(out1);
+    scope.add(out2);
 
     chain.put(in1, out1);
     chain.put(in1, out2);
@@ -514,10 +517,11 @@ public class ComponentTypeSymbolDeSerTest {
     PortSymbol out1 = createSimplePort("out", true);
     PortSymbol out2 = createSimplePort("out", true);
 
-    comp.getSpannedScope().add(in1);
-    comp.getSpannedScope().add(in2);
-    comp.getSpannedScope().add(out1);
-    comp.getSpannedScope().add(out2);
+    ICompSymbolsScope scope = comp.getSpannedScope();
+    scope.add(in1);
+    scope.add(in2);
+    scope.add(out1);
+    scope.add(out2);
 
     chain.put(in1, out1);
     chain.put(in2, out2);

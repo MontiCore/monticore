@@ -138,8 +138,6 @@ public class ComponentTypeSymbolDeSer extends ComponentTypeSymbolDeSerTOP {
     }
     s2j.getJsonPrinter().beginObject(EFFECT_CHAIN);
     for (var key : effectChains.keys()) {
-
-
       s2j.getJsonPrinter().beginArray(key.getFullName());
       for (PortSymbol outPort : effectChains.get(key)) {
         s2j.getJsonPrinter().addToArray(new UserJsonString(outPort.getFullName()));
@@ -151,11 +149,13 @@ public class ComponentTypeSymbolDeSer extends ComponentTypeSymbolDeSerTOP {
 
   @Override
   protected Multimap<PortSymbol, PortSymbol> deserializeEffectChains(JsonObject symbolJson) {
+    // Because we need the ports before being able to fill the chains, we only create the empty multimap here.
     return ArrayListMultimap.create();
   }
 
   @Override
   protected Multimap<PortSymbol, PortSymbol> deserializeEffectChains(ICompSymbolsScope scope, JsonObject symbolJson) {
+    // Because we need the ports before being able to fill the chains, we only create the empty multimap here.
     return ArrayListMultimap.create();
   }
 
@@ -184,6 +184,4 @@ public class ComponentTypeSymbolDeSer extends ComponentTypeSymbolDeSerTOP {
     super.deserializeAddons(symbol, symbolJson);
     fillEffectChain(symbol, symbolJson);
   }
-
-
 }
