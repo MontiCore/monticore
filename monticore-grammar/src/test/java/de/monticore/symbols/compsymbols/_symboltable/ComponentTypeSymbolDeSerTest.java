@@ -55,20 +55,19 @@ public class ComponentTypeSymbolDeSerTest {
     // Given
     // create a symbol for the super component type
     ComponentTypeSymbol superCType = CompSymbolsMill.componentTypeSymbolBuilder()
-            .setName("SuperCType")
-            .setSpannedScope(CompSymbolsMill.scope())
-            .build();
+        .setName("SuperCType")
+        .setSpannedScope(CompSymbolsMill.scope())
+        .build();
 
     // create a reference to the super component type
-    CompKindExpression parentType = new CompKindOfComponentType(superCType) {
-    };
+    CompKindExpression parentType = new CompKindOfComponentType(superCType) {};
 
     // create a symbol for a component type, reference its super type
     ComponentTypeSymbol cType = CompSymbolsMill.componentTypeSymbolBuilder()
-            .setName("CompTypeWithSuper1")
-            .setSpannedScope(CompSymbolsMill.scope())
-            .addSuperComponents(parentType)
-            .build();
+        .setName("CompTypeWithSuper1")
+        .setSpannedScope(CompSymbolsMill.scope())
+        .addSuperComponents(parentType)
+        .build();
 
     // When
     String actual = deSer.serialize(cType, comp2json);
@@ -86,13 +85,13 @@ public class ComponentTypeSymbolDeSerTest {
     // Given
     // create symbols for the two super component types
     ComponentTypeSymbol superCType1 = CompSymbolsMill.componentTypeSymbolBuilder()
-            .setName("SuperCType1")
-            .setSpannedScope(CompSymbolsMill.scope())
-            .build();
+        .setName("SuperCType1")
+        .setSpannedScope(CompSymbolsMill.scope())
+        .build();
     ComponentTypeSymbol superCType2 = CompSymbolsMill.componentTypeSymbolBuilder()
-            .setName("SuperCType2")
-            .setSpannedScope(CompSymbolsMill.scope())
-            .build();
+        .setName("SuperCType2")
+        .setSpannedScope(CompSymbolsMill.scope())
+        .build();
 
     // create a reference for to each of the two super component types
     CompKindExpression parentType1 = new CompKindOfComponentType(superCType1);
@@ -100,11 +99,11 @@ public class ComponentTypeSymbolDeSerTest {
 
     // symbol for a component type, reference its super types
     ComponentTypeSymbol cType = CompSymbolsMill.componentTypeSymbolBuilder()
-            .setName("CompTypeWithSuper2")
-            .setSpannedScope(CompSymbolsMill.scope())
-            .addSuperComponents(parentType1)
-            .addSuperComponents(parentType2)
-            .build();
+        .setName("CompTypeWithSuper2")
+        .setSpannedScope(CompSymbolsMill.scope())
+        .addSuperComponents(parentType1)
+        .addSuperComponents(parentType2)
+        .build();
 
     // When
     String actual = deSer.serialize(cType, comp2json);
@@ -138,16 +137,16 @@ public class ComponentTypeSymbolDeSerTest {
     // Given
     ComponentTypeSymbol comp = createSimpleComp("Comp");
     comp.getSpannedScope().add(
-            CompSymbolsMill.typeVarSymbolBuilder()
-                    .setName("A")
-                    .setSpannedScope(CompSymbolsMill.scope())
-                    .build()
+        CompSymbolsMill.typeVarSymbolBuilder()
+            .setName("A")
+            .setSpannedScope(CompSymbolsMill.scope())
+            .build()
     );
     comp.getSpannedScope().add(
-            CompSymbolsMill.typeVarSymbolBuilder()
-                    .setName("B")
-                    .setSpannedScope(CompSymbolsMill.scope())
-                    .build()
+        CompSymbolsMill.typeVarSymbolBuilder()
+            .setName("B")
+            .setSpannedScope(CompSymbolsMill.scope())
+            .build()
     );
 
     // When
@@ -166,13 +165,13 @@ public class ComponentTypeSymbolDeSerTest {
     // Given
     ComponentTypeSymbol comp = createSimpleComp("Comp");
     VariableSymbol paramA = CompSymbolsMill.variableSymbolBuilder()
-            .setName("a")
-            .setType(SymTypeExpressionFactory.createPrimitive("int"))
-            .build();
+        .setName("a")
+        .setType(SymTypeExpressionFactory.createPrimitive("int"))
+        .build();
     VariableSymbol paramB = CompSymbolsMill.variableSymbolBuilder()
-            .setName("b")
-            .setType(SymTypeExpressionFactory.createPrimitive("int"))
-            .build();
+        .setName("b")
+        .setType(SymTypeExpressionFactory.createPrimitive("int"))
+        .build();
 
     comp.getSpannedScope().add(paramA);
     comp.getSpannedScope().add(paramB);
@@ -195,19 +194,19 @@ public class ComponentTypeSymbolDeSerTest {
     // Given
     ComponentTypeSymbol comp = createSimpleComp("Comp");
     PortSymbol portIncoming = CompSymbolsMill.portSymbolBuilder()
-            .setName("inc")
-            .setIncoming(true)
-            .setType(SymTypeExpressionFactory.createPrimitive("int"))
-            .setTiming(Timing.TIMED)
-            .setStronglyCausal(false)
-            .build();
+        .setName("inc")
+        .setIncoming(true)
+        .setType(SymTypeExpressionFactory.createPrimitive("int"))
+        .setTiming(Timing.TIMED)
+        .setStronglyCausal(false)
+        .build();
     PortSymbol portOutgoing = CompSymbolsMill.portSymbolBuilder()
-            .setName("outg")
-            .setOutgoing(true)
-            .setType(SymTypeExpressionFactory.createPrimitive("int"))
-            .setTiming(Timing.TIMED)
-            .setStronglyCausal(false)
-            .build();
+        .setName("outg")
+        .setOutgoing(true)
+        .setType(SymTypeExpressionFactory.createPrimitive("int"))
+        .setTiming(Timing.TIMED)
+        .setStronglyCausal(false)
+        .build();
 
     comp.getSpannedScope().add(portIncoming);
     comp.getSpannedScope().add(portOutgoing);
@@ -245,8 +244,8 @@ public class ComponentTypeSymbolDeSerTest {
     // Then
     assertEquals(2, comp.getTypeParameters().size());
     assertAll(
-            () -> assertEquals("A", comp.getTypeParameters().getFirst().getName()),
-            () -> assertEquals("B", comp.getTypeParameters().get(1).getName())
+        () -> assertEquals("A", comp.getTypeParameters().getFirst().getName()),
+        () -> assertEquals("B", comp.getTypeParameters().get(1).getName())
     );
   }
 
@@ -261,12 +260,12 @@ public class ComponentTypeSymbolDeSerTest {
     assertEquals(2, comp.getParameterList().size());
     assertEquals(2, comp.getSpannedScope().getLocalVariableSymbols().size());
     assertAll(
-            () -> assertEquals("a", comp.getParameterList().getFirst().getName()),
-            () -> assertEquals("b", comp.getParameterList().get(1).getName()),
-            () -> assertTrue(comp.getSpannedScope().resolveVariable("a").isPresent()),
-            () -> assertTrue(comp.getSpannedScope().resolveVariable("b").isPresent()),
-            () -> assertEquals(comp.getSpannedScope().resolveVariable("a").orElseThrow(), comp.getParameterList().getFirst()),
-            () -> assertEquals(comp.getSpannedScope().resolveVariable("b").orElseThrow(), comp.getParameterList().get(1))
+        () -> assertEquals("a", comp.getParameterList().getFirst().getName()),
+        () -> assertEquals("b", comp.getParameterList().get(1).getName()),
+        () -> assertTrue(comp.getSpannedScope().resolveVariable("a").isPresent()),
+        () -> assertTrue(comp.getSpannedScope().resolveVariable("b").isPresent()),
+        () -> assertEquals(comp.getSpannedScope().resolveVariable("a").orElseThrow(), comp.getParameterList().getFirst()),
+        () -> assertEquals(comp.getSpannedScope().resolveVariable("b").orElseThrow(), comp.getParameterList().get(1))
     );
   }
 
@@ -281,12 +280,12 @@ public class ComponentTypeSymbolDeSerTest {
     assertEquals(2, comp.getPorts().size());
     assertEquals(2, comp.getSpannedScope().getLocalPortSymbols().size());
     assertAll(
-            () -> assertEquals("inc", comp.getPorts().getFirst().getName()),
-            () -> assertEquals("outg", comp.getPorts().get(1).getName()),
-            () -> assertTrue(comp.getSpannedScope().resolvePort("inc").isPresent()),
-            () -> assertTrue(comp.getSpannedScope().resolvePort("outg").isPresent()),
-            () -> assertEquals(comp.getSpannedScope().resolvePort("inc").orElseThrow(), comp.getPorts().getFirst()),
-            () -> assertEquals(comp.getSpannedScope().resolvePort("outg").orElseThrow(), comp.getPorts().get(1))
+        () -> assertEquals("inc", comp.getPorts().getFirst().getName()),
+        () -> assertEquals("outg", comp.getPorts().get(1).getName()),
+        () -> assertTrue(comp.getSpannedScope().resolvePort("inc").isPresent()),
+        () -> assertTrue(comp.getSpannedScope().resolvePort("outg").isPresent()),
+        () -> assertEquals(comp.getSpannedScope().resolvePort("inc").orElseThrow(), comp.getPorts().getFirst()),
+        () -> assertEquals(comp.getSpannedScope().resolvePort("outg").orElseThrow(), comp.getPorts().get(1))
     );
   }
 
@@ -295,10 +294,10 @@ public class ComponentTypeSymbolDeSerTest {
     // Given
     ComponentTypeSymbol comp = createSimpleComp("Parent");
     comp.getSpannedScope().add(
-            CompSymbolsMill.subcomponentSymbolBuilder()
-                    .setName("inst")
-                    .setType(new CompKindOfComponentType(createSimpleComp("Comp")))
-                    .build()
+        CompSymbolsMill.subcomponentSymbolBuilder()
+            .setName("inst")
+            .setType(new CompKindOfComponentType(createSimpleComp("Comp")))
+            .build()
     );
 
     // When
@@ -323,17 +322,17 @@ public class ComponentTypeSymbolDeSerTest {
     assertEquals(1, comp.getSubcomponents().size());
     assertEquals(1, comp.getSpannedScope().getLocalSubcomponentSymbols().size());
     assertAll(
-            () -> assertEquals("inst", comp.getSubcomponents().getFirst().getName()),
-            () -> assertTrue(comp.getSpannedScope().resolveSubcomponent("inst").isPresent()),
-            () -> assertEquals(comp.getSpannedScope().resolveSubcomponent("inst").orElseThrow(), comp.getSubcomponents().getFirst())
+        () -> assertEquals("inst", comp.getSubcomponents().getFirst().getName()),
+        () -> assertTrue(comp.getSpannedScope().resolveSubcomponent("inst").isPresent()),
+        () -> assertEquals(comp.getSpannedScope().resolveSubcomponent("inst").orElseThrow(), comp.getSubcomponents().getFirst())
     );
   }
 
   protected static ComponentTypeSymbol createSimpleComp(String name) {
     return CompSymbolsMill.componentTypeSymbolBuilder()
-            .setName(name)
-            .setSpannedScope(CompSymbolsMill.scope())
-            .build();
+        .setName(name)
+        .setSpannedScope(CompSymbolsMill.scope())
+        .build();
   }
 
   @Test
@@ -373,10 +372,10 @@ public class ComponentTypeSymbolDeSerTest {
     // Given
     ComponentTypeSymbol comp = createSimpleComp("Comp");
     comp.getSpannedScope().add(
-            CompSymbolsMill.componentTypeSymbolBuilder()
-                    .setName("inst")
-                    .setSpannedScope(CompSymbolsMill.scope())
-                    .build()
+        CompSymbolsMill.componentTypeSymbolBuilder()
+            .setName("inst")
+            .setSpannedScope(CompSymbolsMill.scope())
+            .build()
     );
 
     // When
@@ -400,7 +399,7 @@ public class ComponentTypeSymbolDeSerTest {
     // Then
     assertEquals(1, comp.getSpannedScope().getLocalComponentTypeSymbols().size());
     assertAll(
-            () -> assertEquals("inst", comp.getSpannedScope().getLocalComponentTypeSymbols().getFirst().getName())
+        () -> assertEquals("inst", comp.getSpannedScope().getLocalComponentTypeSymbols().getFirst().getName())
     );
   }
 
@@ -409,10 +408,10 @@ public class ComponentTypeSymbolDeSerTest {
     // Given
     ComponentTypeSymbol comp = createSimpleComp("Comp");
     comp.getSpannedScope().add(
-            CompSymbolsMill.variableSymbolBuilder()
-                    .setName("inst")
-                    .setType(SymTypeExpressionFactory.createPrimitive(BasicSymbolsMill.INT))
-                    .build()
+        CompSymbolsMill.variableSymbolBuilder()
+            .setName("inst")
+            .setType(SymTypeExpressionFactory.createPrimitive(BasicSymbolsMill.INT))
+            .build()
     );
 
     // When
@@ -436,7 +435,7 @@ public class ComponentTypeSymbolDeSerTest {
     // Then
     assertEquals(1, comp.getFields().size());
     assertAll(
-            () -> assertEquals("inst", comp.getFields().getFirst().getName())
+        () -> assertEquals("inst", comp.getFields().getFirst().getName())
     );
   }
 

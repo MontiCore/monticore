@@ -50,7 +50,7 @@ public class ComponentTypeSymbolDeSer extends ComponentTypeSymbolDeSerTOP {
     s2j.getJsonPrinter().beginArray(SUPER);
     for (CompKindExpression superComponent : superComponents) {
       s2j.getJsonPrinter().addToArray(JsonElementFactory
-              .createJsonString(this.getCompTypeExprDeSer().serialize(superComponent)));
+          .createJsonString(this.getCompTypeExprDeSer().serialize(superComponent)));
     }
     s2j.getJsonPrinter().endArray();
   }
@@ -91,8 +91,8 @@ public class ComponentTypeSymbolDeSer extends ComponentTypeSymbolDeSerTOP {
         parameterResult.add(paramSym);
       } else {
         Log.error(String.format(
-                "0xD0101 Malformed json, parameter '%s' of unsupported kind '%s'",
-                param.getAsJsonObject().getStringMember(JsonDeSers.NAME), paramJsonKind
+            "0xD0101 Malformed json, parameter '%s' of unsupported kind '%s'",
+            param.getAsJsonObject().getStringMember(JsonDeSers.NAME), paramJsonKind
         ));
       }
     }
@@ -105,7 +105,7 @@ public class ComponentTypeSymbolDeSer extends ComponentTypeSymbolDeSerTOP {
     s2j.getJsonPrinter().beginArray(REFINEMENTS);
     for (CompKindExpression superComponent : refinements) {
       s2j.getJsonPrinter().addToArray(JsonElementFactory
-              .createJsonString(compTypeExprDeSer.serialize(superComponent)));
+          .createJsonString(compTypeExprDeSer.serialize(superComponent)));
     }
     s2j.getJsonPrinter().endArray();
   }
