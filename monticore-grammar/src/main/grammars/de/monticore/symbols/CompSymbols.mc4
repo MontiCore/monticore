@@ -32,14 +32,6 @@ component grammar CompSymbols extends de.monticore.symbols.BasicSymbols, de.mont
     method public List<de.monticore.symbols.compsymbols._symboltable.SubcomponentSymbol> getSubcomponents() {
       return this.getSpannedScope().getLocalSubcomponentSymbols();
     }
-
-    method public List<de.monticore.symbols.compsymbols._symboltable.PortSymbol> getAffectedPorts(de.monticore.symbols.compsymbols._symboltable.PortSymbol port) {
-      return effectChains.get(port).stream().toList();
-    }
-
-    method public void addAffectedPort(de.monticore.symbols.compsymbols._symboltable.PortSymbol port, de.monticore.symbols.compsymbols._symboltable.PortSymbol affectedPort) {
-      effectChains.put(port, affectedPort);
-    }
   ;
 
   interface symbol Subcomponent = Name;
