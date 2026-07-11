@@ -34,12 +34,23 @@ public class Class2MCTestModels {
 
   static public Stream<Arguments> getClass2MCCases() {
     return Stream.of(
-        getAClassCases(),
         getNativeJavaCases(),
+        getAClassCases(),
         getInstanceOfCases(),
         getCreatorExpressionCases(),
-        getTypeCastingCases()
+        getTypeCastingCases(),
+        getEnumCases()
     ).flatMap(Function.identity());
+  }
+
+  static protected Stream<Arguments> getNativeJavaCases() {
+    return Stream.of(
+        Arguments.of("java.lang.Integer.MAX_VALUE", Integer.MAX_VALUE),
+        Arguments.of("java.lang.Math.abs(-2)", 2),
+        Arguments.of("((java.lang.Integer) 5) + 2.0", 7.0),
+        Arguments.of("((java.lang.Integer) 5) + (java.lang.Double) 2", 7.0),
+        Arguments.of("ArrayList()", new ArrayList<>())
+    );
   }
 
   static protected Stream<Arguments> getAClassCases() {
@@ -148,16 +159,6 @@ public class Class2MCTestModels {
     );
   }
 
-  static protected Stream<Arguments> getNativeJavaCases() {
-    return Stream.of(
-        Arguments.of("java.lang.Integer.MAX_VALUE", Integer.MAX_VALUE),
-        Arguments.of("java.lang.Math.abs(-2)", 2),
-        Arguments.of("((java.lang.Integer) 5) + 2.0", 7.0),
-        Arguments.of("((java.lang.Integer) 5) + (java.lang.Double) 2", 7.0),
-        Arguments.of("ArrayList()", new ArrayList<>())
-    );
-  }
-
   static public Stream<Arguments> getInstanceOfCases() {
     return Stream.of(
         Arguments.of("person instanceof Student", false),
@@ -202,6 +203,17 @@ public class Class2MCTestModels {
         Arguments.of("(float)(Float)(Object)(Float)4", (float) 4),
         Arguments.of("(Comparable<Boolean>)(Boolean)true", true),
         Arguments.of("(Comparable<Integer>)(Integer)4", 4)
+    );
+  }
+
+  static public Stream<Arguments> getEnumCases() {
+    return Stream.of(
+        // todo enable after
+        //  https://git.rwth-aachen.de/monticore/monticore/-/work_items/4997
+        //Arguments.of("int x = 0; switch(State.ON) {case ON: x = 1;} x", 1),
+        //Arguments.of("int x = 0; switch(State.ON) {case OFF: x = 1;} x", 0),
+        Arguments.of("int x = 0; switch(State.ON) {case State.ON: x = 1;} x", 1),
+        Arguments.of("int x = 0; switch(State.ON) {case State.OFF: x = 1;} x", 0)
     );
   }
 

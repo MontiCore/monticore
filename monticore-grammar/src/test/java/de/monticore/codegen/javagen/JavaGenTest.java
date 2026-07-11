@@ -20,6 +20,7 @@ public class JavaGenTest extends AbstractJavaGenTest {
   @BeforeEach
   public void setupAClass() {
     Class2MCTestUtil.addClassPathEntry(AClass.class);
+    AClass.resetStaticVariables();
   }
 
   @ParameterizedTest
@@ -49,6 +50,7 @@ public class JavaGenTest extends AbstractJavaGenTest {
   void testNativeJavaAClass(String tail, Object expectedValue) {
     // not supported yet, implementation missing
     assumeFalse(tail.contains(".set_"));
+    assumeFalse(tail.contains("switch"));
     // empty collections are not supported yet
     assumeFalse(expectedValue != null && expectedValue.toString().equals("[]"));
 

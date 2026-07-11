@@ -1,6 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.values;
 
+import java.util.Objects;
+
 public class MCValueError implements MCValue {
 
   Throwable throwable;
@@ -36,6 +38,22 @@ public class MCValueError implements MCValue {
   @Override
   public boolean checkEqualityOperator(MCValue other) {
     return other.isError() && throwable == other.asNativeObject();
+  }
+
+  @Override
+  public boolean equals(Object otherObj) {
+    if (this == otherObj) {
+      return true;
+    }
+    if (!(otherObj instanceof MCValueError other)) {
+      return false;
+    }
+    return throwable.equals(other.throwable);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(throwable);
   }
 
   @Override

@@ -15,13 +15,16 @@ public class InterpreterClass2MCTest extends AbstractInterpreterTest {
   @BeforeEach
   public void setupAClass() {
     Class2MCTestUtil.addClassPathEntry(AClass.class);
+    AClass.resetStaticVariables();
   }
 
-  @ParameterizedTest(name = "[{index}] {0}")
+  @ParameterizedTest
   @MethodSource("de.monticore.tests.expressionsandstatements.Class2MCTestModels#getClass2MCCases")
-  void testNativeJavaAClass(String tail, Object expectedValue) {
+  void testNativeJava(String tail, Object expectedValue) {
+    // not supported yet
     assumeFalse(Class2MCTestModels.getInstanceOfCases().anyMatch(a -> a.get()[0].equals(tail)));
     assumeFalse(Class2MCTestModels.getCreatorExpressionCases().anyMatch(a -> a.get()[0].equals(tail)));
+
     String modelStr = Class2MCTestModels.getModelPrefix() + tail;
     checkValue(modelStr, expectedValue);
   }
