@@ -16,6 +16,7 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types3.util.MapBasedTypeCheck3;
 
 import static de.monticore.codegen.CodeGenSymTypeExpressionConverter.printConverted;
+import static de.monticore.types3.SymTypeRelations.normalize;
 import static de.monticore.types3.TypeCheck3.symTypeFromAST;
 import static de.monticore.types3.TypeCheck3.typeOf;
 
@@ -64,7 +65,7 @@ public class MCVarDeclarationStatementsJavaGenVisitor
     // And statements are printed to Java statements.
     ASTLocalVariableDeclaration varDeclaration =
         node.getLocalVariableDeclaration();
-    SymTypeExpression varType = symTypeFromAST(varDeclaration.getMCType());
+    SymTypeExpression varType = normalize(symTypeFromAST(varDeclaration.getMCType()));
     String javaVarType = SymTypeExpression2JavaConverter.getJavaTypePrint(varType);
 
     // for `int x = 2, y = 3` we will print
