@@ -508,6 +508,10 @@ public final class HierarchyHelper {
     Set<String> createStrings = replacements.getCreateObjectsList().stream().map(ASTCreateOperation::getName).collect(Collectors.toSet());
     return replacements.getChangesList().stream().filter(m -> !createStrings.contains(m.getObjectName())).collect(Collectors.toCollection(ArrayList::new));
   }
+  
+  public boolean isCreatedObject(ASTReplacement replacement, String objectName) {
+    return replacement.getCreateObjectsList().stream().anyMatch(c -> c.getName().equals(objectName));
+  }
 
     /**
      * Only change objects with the list type.

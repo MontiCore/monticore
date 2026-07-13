@@ -11,6 +11,7 @@
   <#if !isWithinList>
   if (!is_${create.getName()}_fix) {
     <#if create.getFactoryName() != "__missing">
+      List<Consumer<ASTNode>> delayedAttachmentNotifications = new ArrayList<>();
       ${create.getType()}Builder builder = ${create.getFactoryName()}.${create.getSimpleType()?keep_after("AST")?uncap_first}Builder();
       <#list ast.getReplacement().getChangesList() as change>
         <#if change.getObjectName() == create.getName()>
@@ -26,10 +27,20 @@
                 <#assign changeGetValue += ".get()">
               </#if>
             </#if>
+      <#-- In case we attach an AST node to a newly created object, the ModelAccessor must be notified
+           However this can only happen, after the new parent node is fully constructed by calling
+           the build method.
+           To circumvent this, we delay the notifications by storing them in an intermediate supplier
+           that is applied after the object is fully constructed. -->
             <#if change.isCopy()>
-      builder.${change.getSetter()}(${changeGetValue}.deepClone());
+      ${change.getValueType()} cloneObj = ${changeGetValue}.deepClone();
+      builder.${change.getSetter()}(cloneObj);
+      delayedAttachmentNotifications.add(p -> this.modelAccessor.notifyNodeAttach(cloneObj, p));
             <#else>
       builder.${change.getSetter()}(${changeGetValue});
+              <#if hierarchyHelper.isCreatedObject(ast.getReplacement(), change.getValue())>
+      delayedAttachmentNotifications.add(p -> this.modelAccessor.notifyNodeAttach(${changeGetValue}, p));
+              </#if>
             </#if>
           <#else>
       builder.${change.getSetter()}();
@@ -37,6 +48,8 @@
         </#if>
       </#list>
       m.${create.getName()} = <#if isWithinOpt>Optional.of(</#if>builder.build()<#if isWithinOpt>)</#if>;
+      delayedAttachmentNotifications.forEach(n -> n.accept(m.${create.getName()}<#if isWithinOpt>.get()</#if>));
+
     <#list ast.getReplacement().getChangesList() as change>
       <#if change.getObjectName() == create.getName()>
       Reporting.reportTransformationObjectChange("${ast.getClassname()}",m.${create.getName()}<#if isWithinOpt>.get()</#if>, "${change.getAttributeName()}");

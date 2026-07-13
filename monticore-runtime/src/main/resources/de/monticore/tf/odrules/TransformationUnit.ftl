@@ -3,6 +3,7 @@ package ${hierarchyHelper.getPackageName()};
 
 import java.util.*;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.tf.runtime.FastLookupList;
