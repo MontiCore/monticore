@@ -16,6 +16,8 @@ Reporting.reportTransformationObjectChange("${ruleClassName}",${ast.getObjectGet
     m.${ast.getObjectName()}_${ast.getOldValue()}_before_pos = ${ast.getObjectGetter()}.${ast.getGetter()}().indexOf(${ast.getOldValueGetter()});
     ${ast.getObjectGetter()}.${ast.getUnsetter()}(${ast.getOldValueGetter()});
 
+    this.modelAccessor.notifyNodeDetach(${ast.getOldValueGetter()}, ${ast.getObjectGetter()});
+
     <#if ast.isOldValueWithinOpt()>}</#if>
 
 <#elseif ast.attributeIterated && !ast.copy >
@@ -28,6 +30,8 @@ Reporting.reportTransformationObjectChange("${ruleClassName}",${ast.getObjectGet
         <#if ast.isPresentInsertPosition()>pos,</#if>
         ${ast.getValueGetter()}
     );
+
+    this.modelAccessor.notifyNodeAttach(${ast.getValueGetter()}, ${ast.getObjectGetter()});
 
     <#if ast.isValueWithinOpt()>}</#if>
 
@@ -49,6 +53,8 @@ Reporting.reportTransformationObjectChange("${ruleClassName}",${ast.getObjectGet
         d
     );
 
+    this.modelAccessor.notifyNodeAttach(d, ${ast.getObjectGetter()});
+
     <#if ast.isValueWithinOpt()>}</#if>
 
 <#elseif !ast.attributeIterated && !ast.isPresentValue()>
@@ -61,8 +67,13 @@ Reporting.reportTransformationObjectChange("${ruleClassName}",${ast.getObjectGet
     <#if ast.isAttributeOptional()>
         m.${ast.getObjectName()}_${ast.getOldValue()}_before = ${ast.getObjectGetter()}.${ast.getGetter()}();
         ${ast.getObjectGetter()}.${ast.getSetter()}(null);
-    </#if>
 
+        <#if ast.isAttributeOptional() && ast.isPresentGetIsPresent()>
+        if (${ast.getObjectGetter()}.${ast.getGetIsPresent()}) {
+            this.modelAccessor.notifyNodeDetach(${ast.getObjectGetter()}.${ast.getGetter()}(), ${ast.getObjectGetter()});
+        }
+        </#if>
+    </#if>
     <#if ast.isOldValueWithinOpt()>}</#if>
 
 <#elseif !ast.attributeIterated && ast.isPresentValue()>
@@ -81,7 +92,15 @@ Reporting.reportTransformationObjectChange("${ruleClassName}",${ast.getObjectGet
 
     <#if ast.isAttributeOptional()>}</#if>
 
-    ${ast.getObjectGetter()}.${ast.getSetter()}(${ast.getValueGetter()}<#if ast.copy>.deepClone()</#if>);
+    <#if ast.copy>
+    ${ast.getValueType()} clonedValue = ${ast.getValueGetter()}.deepClone();
+    ${ast.getObjectGetter()}.${ast.getSetter()}();
+
+    this.modelAccessor.notifyNodeAttach(clonedValue, ${ast.getObjectGetter()});
+    <#else>
+    ${ast.getObjectGetter()}.${ast.getSetter()}(${ast.getValueGetter()});
+    this.modelAccessor.notifyNodeAttach(${ast.getValueGetter()}, ${ast.getObjectGetter()});
+    </#if>
 
     <#if ast.isValueWithinOpt()>}</#if>
 
