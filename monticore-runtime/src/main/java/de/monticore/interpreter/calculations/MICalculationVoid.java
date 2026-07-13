@@ -26,6 +26,9 @@ public interface MICalculationVoid extends MICalculation {
   }
 
   default MICalculationVoid getChainedBefore(MICalculationVoid nextCalc) {
+    if (this == NOOP_CALC) {
+      return nextCalc;
+    }
     return frame -> {
       this.calculate(frame);
       nextCalc.calculate(frame);
@@ -33,6 +36,9 @@ public interface MICalculationVoid extends MICalculation {
   }
 
   default MICalculation getChainedBefore(MICalculation nextCalc) {
+    if (this == NOOP_CALC) {
+      return nextCalc;
+    }
     MICalculation chainedCalc;
     if (nextCalc.isCalculationBoolean()) {
       MICalculationBoolean booleanCalc = nextCalc.asCalculationBoolean();
