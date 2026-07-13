@@ -157,8 +157,6 @@ public class MCCommonStatementsInterpreter
   @Override
   public void traverse(ASTEnhancedForControl node) {
     SymTypeExpression exprType = normalize(typeOf(node.getExpression()));
-    SymTypeExpression varType =
-        normalize(symTypeFromAST(node.getFormalParameter().getMCType()));
     FieldSymbol varSym = node.getFormalParameter().getDeclarator().getSymbol();
     iData.getFrameLayoutStack().peek().declareVariable(varSym);
     MISetter varSetter =
