@@ -1,6 +1,7 @@
 package de.monticore.tf.runtime.inc;
 
 import com.google.common.collect.HashMultimap;
+import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 import de.monticore.ast.ASTNode;
 import de.monticore.visitor.ITraverser;
@@ -15,8 +16,8 @@ public class CandidateIndex<E extends ITraverser> implements IModelIndex<E> {
   protected Multimap<Class<?>, Class<?>> subClasses;
   
   public CandidateIndex() {
-    this.candidates = HashMultimap.create();
-    this.subClasses = HashMultimap.create();
+    this.candidates = LinkedHashMultimap.create();
+    this.subClasses = LinkedHashMultimap.create();
   }
   
   @Override
