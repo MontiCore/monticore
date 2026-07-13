@@ -21,7 +21,8 @@ ${ast.getDoStatement()}
 	isHostGraphDirty = true;
 </#if>
 
-    Reporting.flush(hostGraph.get(0));
+    // TODO: Update Reporting for Model Accessors
+    //Reporting.flush(hostGraph.get(0));
 
     doReplacementExecuted = true;
 
