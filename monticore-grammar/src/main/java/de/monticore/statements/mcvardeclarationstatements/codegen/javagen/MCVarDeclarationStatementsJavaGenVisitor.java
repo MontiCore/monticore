@@ -41,6 +41,19 @@ public class MCVarDeclarationStatementsJavaGenVisitor
   // that may need to be extended to support some corner cases
   // in some languages.
 
+  // recursive functions are currently not supported
+  // they could be supported, e.g., through temporary variables:
+  /*
+  Function1<Integer, Integer> s = ((Supplier<Function1<Integer, Integer>>)
+      () -> {
+        @SuppressWarnings("unchecked")
+        Function1<Integer, Integer>[] tmp = new Function1[1];
+        tmp[0] = (Integer n) -> (((n) > (0)) ? (n) + ((tmp[0]).apply((n) - (1))) : 0);
+        return tmp[0];
+      }
+  ).get();
+  */
+
   @Override
   public void traverse(ASTLocalVariableDeclarationStatement node) {
     // Q: Why is the logic not in traverse(ASTLocalVariableDeclaration)?
