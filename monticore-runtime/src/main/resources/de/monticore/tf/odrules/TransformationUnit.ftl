@@ -8,6 +8,7 @@ import de.monticore.ast.ASTNode;
 import de.monticore.tf.runtime.FastLookupList;
 import de.monticore.tf.runtime.ODRule;
 import de.monticore.tf.runtime.ValueComparator;
+import de.monticore.tf.runtime.inc.ModelAccessor;
 import de.monticore.tf.runtime.inc.IModelAccessor;
 import com.google.common.collect.Lists;
 import static com.google.common.collect.Lists.*;
