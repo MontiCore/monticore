@@ -56,19 +56,19 @@ public class IndexHandler<E extends ITraverser> implements IIncrementalListener 
   }
   
   @Override
-  public void onASTNodeAddition(ASTNode node, ASTNode parent) {
-    this.candidateIndex.onASTNodeAddition(node, parent);
-    this.parentIndex.onASTNodeAddition(node, parent);
+  public void onASTNodeAttach(ASTNode node, ASTNode parent) {
+    this.candidateIndex.onASTNodeAttach(node, parent);
+    this.parentIndex.onASTNodeAttach(node, parent);
     
-    this.customIndices.values().forEach(index -> index.onASTNodeAddition(node, parent));
+    this.customIndices.values().forEach(index -> index.onASTNodeAttach(node, parent));
   }
   
   @Override
-  public void onASTNodeRemoval(ASTNode node, ASTNode parent) {
-    this.candidateIndex.onASTNodeRemoval(node, parent);
-    this.parentIndex.onASTNodeRemoval(node, parent);
+  public void onASTNodeDetach(ASTNode node, ASTNode parent) {
+    this.candidateIndex.onASTNodeDetach(node, parent);
+    this.parentIndex.onASTNodeDetach(node, parent);
     
-    this.customIndices.values().forEach(index -> index.onASTNodeRemoval(node, parent));
+    this.customIndices.values().forEach(index -> index.onASTNodeDetach(node, parent));
   }
   
   @Override

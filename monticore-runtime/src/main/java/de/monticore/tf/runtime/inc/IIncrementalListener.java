@@ -4,9 +4,9 @@ import de.monticore.ast.ASTNode;
 
 public interface IIncrementalListener {
   
-  void onASTNodeAddition(ASTNode node, ASTNode parent);
+  void onASTNodeAttach(ASTNode node, ASTNode parent);
   
-  void onASTNodeRemoval(ASTNode node, ASTNode parent);
+  void onASTNodeDetach(ASTNode node, ASTNode parent);
   
   void onASTNodeModification(ASTNode node, ASTNode parent, String attributeName, Object oldValue, Object newValue);
 }

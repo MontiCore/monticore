@@ -28,13 +28,13 @@ public class ModelAccessor<E extends ITraverser> implements IModelAccessor<E> {
   }
   
   @Override
-  public void notifyAdd(ASTNode node, ASTNode parent) {
-    this.indexHandler.onASTNodeAddition(node, parent);
+  public void notifyNodeAttach(ASTNode node, ASTNode parent) {
+    this.indexHandler.onASTNodeAttach(node, parent);
   }
   
   @Override
-  public void notifyDeletion(ASTNode node, ASTNode parent) {
-    this.indexHandler.onASTNodeRemoval(node, parent);
+  public void notifyNodeDetach(ASTNode node, ASTNode parent) {
+    this.indexHandler.onASTNodeDetach(node, parent);
   }
   
   @Override

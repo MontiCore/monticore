@@ -56,13 +56,13 @@ public class CandidateIndex<E extends ITraverser> implements IModelIndex<E> {
   }
   
   @Override
-  public void onASTNodeAddition(ASTNode node, ASTNode parent) {
+  public void onASTNodeAttach(ASTNode node, ASTNode parent) {
     this.candidates.put(node.getClass(), node);
     Log.debug(() -> "Added node with type %s!".formatted(node.getClass()), "CandidateIndex");
   }
   
   @Override
-  public void onASTNodeRemoval(ASTNode node, ASTNode parent) {
+  public void onASTNodeDetach(ASTNode node, ASTNode parent) {
     this.candidates.remove(node.getClass(), node);
     Log.debug(() -> "Deleted node with type %s!".formatted(node.getClass()), "CandidateIndex");
   }

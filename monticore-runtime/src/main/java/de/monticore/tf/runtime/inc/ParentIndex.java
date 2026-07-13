@@ -11,13 +11,13 @@ import java.util.Stack;
 public class ParentIndex<E extends ITraverser> implements IModelIndex<E> {
   
   @Override
-  public void onASTNodeAddition(ASTNode node, ASTNode parent) {
+  public void onASTNodeAttach(ASTNode node, ASTNode parent) {
     attachComment(node, parent);
     Log.debug(() -> "Added parent comment to node with type %s!".formatted(node.getClass()), "ParentIndex");
   }
   
   @Override
-  public void onASTNodeRemoval(ASTNode node, ASTNode parent) {
+  public void onASTNodeDetach(ASTNode node, ASTNode parent) {
     // Most likely not needed, since children are either removed or moved to a new position
     // In that case, their parent comment should be overwritten
   }
