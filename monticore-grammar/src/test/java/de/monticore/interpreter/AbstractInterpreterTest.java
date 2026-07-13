@@ -16,6 +16,7 @@ import de.monticore.ocl.setexpressions.interpreter.SetExpressionsInterpreter;
 import de.monticore.runtime.junit.AbstractMCTest;
 import de.monticore.statements.mcassertstatements.interpreter.MCAssertStatementsInterpreter;
 import de.monticore.statements.mccommonstatements.interpreter.MCCommonStatementsInterpreter;
+import de.monticore.statements.mclowlevelstatements.interpreter.MCLowLevelStatementsInterpreter;
 import de.monticore.statements.mcvardeclarationstatements.interpreter.MCVarDeclarationStatementsInterpreter;
 import de.monticore.symbols.util.Class2MCTestUtil;
 import de.monticore.tests.expressionsandstatements.ExpressionsAndStatementsMill;
@@ -58,6 +59,7 @@ public abstract class AbstractInterpreterTest extends AbstractMCTest {
     traverser.setOptionalOperatorsHandler(new OptionalOperatorsInterpreter(iData));
     traverser.setMCAssertStatementsHandler(new MCAssertStatementsInterpreter(iData));
     traverser.setMCCommonStatementsHandler(new MCCommonStatementsInterpreter(iData));
+    traverser.setMCLowLevelStatementsHandler(new MCLowLevelStatementsInterpreter(iData));
     traverser.setMCVarDeclarationStatementsHandler(new MCVarDeclarationStatementsInterpreter(iData));
     traverser.setExpressionsAndStatementsHandler(new ExpressionsAndStatementsInterpreter(iData));
     InterpreterAccess4Tests access =
