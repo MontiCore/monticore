@@ -23,7 +23,8 @@ public class ParentIndex<E extends ITraverser> implements IModelIndex<E> {
   }
   
   @Override
-  public void onASTNodeModification(ASTNode node, ASTNode parent) {
+  public void onASTNodeModification(ASTNode node, ASTNode parent, String attributeName,
+      Object oldValue, Object newValue) {
     // Most likely not needed...
   }
   

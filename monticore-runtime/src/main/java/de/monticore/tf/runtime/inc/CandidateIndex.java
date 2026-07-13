@@ -1,6 +1,5 @@
 package de.monticore.tf.runtime.inc;
 
-import com.google.common.collect.HashMultimap;
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 import de.monticore.ast.ASTNode;
@@ -69,7 +68,8 @@ public class CandidateIndex<E extends ITraverser> implements IModelIndex<E> {
   }
   
   @Override
-  public void onASTNodeModification(ASTNode node, ASTNode parent) {
+  public void onASTNodeModification(ASTNode node, ASTNode parent, String attributeName,
+      Object oldValue, Object newValue) {
     // CandidateIndex does not care about modifications
   }
   

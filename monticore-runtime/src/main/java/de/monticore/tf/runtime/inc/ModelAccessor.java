@@ -38,8 +38,8 @@ public class ModelAccessor<E extends ITraverser> implements IModelAccessor<E> {
   }
   
   @Override
-  public void notifyModification(ASTNode node, ASTNode parent) {
-    this.indexHandler.onASTNodeModification(node, parent);
+  public void notifyModification(ASTNode node, ASTNode parent, String attributeName, Object oldValue, Object newValue) {
+    this.indexHandler.onASTNodeModification(node, parent, attributeName, oldValue, newValue);
   }
   
   @Override

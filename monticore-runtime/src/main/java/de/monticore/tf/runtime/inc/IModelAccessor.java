@@ -9,7 +9,7 @@ public interface IModelAccessor<E extends ITraverser> {
   
   void notifyDeletion(ASTNode node, ASTNode parent);
   
-  void notifyModification(ASTNode node, ASTNode parent);
+  void notifyModification(ASTNode node, ASTNode parent, String attributeName, Object oldValue, Object newValue);
   
   IndexHandler<E> indices();
 }

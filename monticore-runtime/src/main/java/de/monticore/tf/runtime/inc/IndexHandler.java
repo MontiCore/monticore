@@ -72,10 +72,11 @@ public class IndexHandler<E extends ITraverser> implements IIncrementalListener 
   }
   
   @Override
-  public void onASTNodeModification(ASTNode node, ASTNode parent) {
-    this.candidateIndex.onASTNodeModification(node, parent);
-    this.parentIndex.onASTNodeModification(node, parent);
+  public void onASTNodeModification(ASTNode node, ASTNode parent, String attributeName,
+      Object oldValue, Object newValue) {
+    this.candidateIndex.onASTNodeModification(node, parent, attributeName, oldValue, newValue);
+    this.parentIndex.onASTNodeModification(node, parent, attributeName, oldValue, newValue);
     
-    this.customIndices.values().forEach(index -> index.onASTNodeModification(node, parent));
+    this.customIndices.values().forEach(index -> index.onASTNodeModification(node, parent, attributeName, oldValue, newValue));
   }
 }

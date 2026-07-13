@@ -8,5 +8,5 @@ public interface IIncrementalListener {
   
   void onASTNodeRemoval(ASTNode node, ASTNode parent);
   
-  void onASTNodeModification(ASTNode node, ASTNode parent);
+  void onASTNodeModification(ASTNode node, ASTNode parent, String attributeName, Object oldValue, Object newValue);
 }
