@@ -18,7 +18,6 @@ ${tc.include("de.monticore.tf.odrules.doreplacement.ChangeAttributeValues")}
 <#if ast.getDoStatement()?has_content>
     // execute do statements
 ${ast.getDoStatement()}
-	isHostGraphDirty = true;
 </#if>
 
     // TODO: Update Reporting for Model Accessors
