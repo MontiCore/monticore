@@ -12,15 +12,8 @@ import java.util.Map;
 
 import static de.monticore.codegen.CodeGenSymTypeExpressionConverter.printConverted;
 import static de.monticore.codegen.ICodeGenOperationHandler.BinaryOperator.*;
-import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getAsJavaType;
-import static de.monticore.types3.SymTypeRelations.isByte;
-import static de.monticore.types3.SymTypeRelations.isChar;
-import static de.monticore.types3.SymTypeRelations.isDouble;
-import static de.monticore.types3.SymTypeRelations.isFloat;
-import static de.monticore.types3.SymTypeRelations.isInt;
-import static de.monticore.types3.SymTypeRelations.isLong;
+import static de.monticore.codegen.javagen.JavaGenSymTypeRelations.generatesToJavaNumeric;
 import static de.monticore.types3.SymTypeRelations.isNumericType;
-import static de.monticore.types3.SymTypeRelations.isShort;
 
 /**
  * Supports numbers,
@@ -132,19 +125,9 @@ public class JavaNumericOperationHandler implements ICodeGenOperationHandler {
   }
 
   protected boolean isSupported(SymTypeExpression modelType) {
-    SymTypeExpression javaType = getAsJavaType(modelType);
     // specifically check the Java types,
     // in case that further primitives have been added.
-    return isNumericType(modelType)
-        && (
-        isByte(javaType)
-            || isShort(javaType)
-            || isChar(javaType)
-            || isInt(javaType)
-            || isLong(javaType)
-            || isFloat(javaType)
-            || isDouble(javaType)
-    );
+    return isNumericType(modelType) && generatesToJavaNumeric(modelType);
   }
 
   protected String getJavaOperator(BinaryOperator operator) {

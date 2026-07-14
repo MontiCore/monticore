@@ -20,6 +20,21 @@ public class MCValueInt implements MCValue {
   }
 
   @Override
+  public byte asByte() {
+    return (byte) value;
+  }
+
+  @Override
+  public short asShort() {
+    return (short) value;
+  }
+
+  @Override
+  public char asChar() {
+    return (char) value;
+  }
+
+  @Override
   public int asInt() {
     return value;
   }

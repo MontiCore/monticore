@@ -1,7 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.literals.mccommonliterals.codegen.javagen;
 
-import de.monticore.codegen.javagen.AbstractJavaGenVisitor;
+import com.google.common.base.Preconditions;
+import de.monticore.codegen.javagen.JavaGenVisitorState;
 import de.monticore.literals.mccommonliterals._ast.ASTBasicDoubleLiteral;
 import de.monticore.literals.mccommonliterals._ast.ASTBasicFloatLiteral;
 import de.monticore.literals.mccommonliterals._ast.ASTBasicLongLiteral;
@@ -14,93 +15,85 @@ import de.monticore.literals.mccommonliterals._ast.ASTSignedBasicFloatLiteral;
 import de.monticore.literals.mccommonliterals._ast.ASTSignedBasicLongLiteral;
 import de.monticore.literals.mccommonliterals._ast.ASTSignedNatLiteral;
 import de.monticore.literals.mccommonliterals._ast.ASTStringLiteral;
-import de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsHandler;
-import de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsTraverser;
+import de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsInheritanceHandler;
 import de.monticore.prettyprint.IndentPrinter;
 
-public class MCCommonLiteralsJavaGenVisitor extends AbstractJavaGenVisitor
-    implements MCCommonLiteralsHandler {
+public class MCCommonLiteralsJavaGenVisitor
+    extends MCCommonLiteralsInheritanceHandler {
 
-  // Traverser
-  protected MCCommonLiteralsTraverser traverser;
+  protected JavaGenVisitorState state;
 
-  public MCCommonLiteralsJavaGenVisitor(IndentPrinter printer) {
-    super(printer);
+  public MCCommonLiteralsJavaGenVisitor(JavaGenVisitorState state) {
+    this.state = Preconditions.checkNotNull(state);
   }
 
-  @Override
-  public MCCommonLiteralsTraverser getTraverser() {
-    return traverser;
-  }
-
-  @Override
-  public void setTraverser(MCCommonLiteralsTraverser traverser) {
-    this.traverser = traverser;
+  protected IndentPrinter getPrinter() {
+    return state.getPrinter();
   }
 
   // CodeGen
 
   @Override
-  public void handle(ASTNullLiteral node) {
+  public void traverse(ASTNullLiteral node) {
     getPrinter().print("null");
   }
 
   @Override
-  public void handle(ASTBooleanLiteral node) {
+  public void traverse(ASTBooleanLiteral node) {
     getPrinter().print(node.getValue());
   }
 
   @Override
-  public void handle(ASTCharLiteral node) {
+  public void traverse(ASTCharLiteral node) {
     getPrinter().print("'");
     getPrinter().print(node.getValue());
     getPrinter().print("'");
   }
 
   @Override
-  public void handle(ASTStringLiteral node) {
+  public void traverse(ASTStringLiteral node) {
     getPrinter().print("\"");
     getPrinter().print(node.getSource());
     getPrinter().print("\"");
   }
 
   @Override
-  public void handle(ASTNatLiteral node) {
+  public void traverse(ASTNatLiteral node) {
     getPrinter().print(node.getSource());
   }
 
   @Override
-  public void handle(ASTSignedNatLiteral node) {
+  public void traverse(ASTSignedNatLiteral node) {
     getPrinter().print(node.getValue());
   }
 
   @Override
-  public void handle(ASTBasicLongLiteral node) {
+  public void traverse(ASTBasicLongLiteral node) {
     getPrinter().print(node.getSource());
   }
 
   @Override
-  public void handle(ASTSignedBasicLongLiteral node) {
+  public void traverse(ASTSignedBasicLongLiteral node) {
     getPrinter().print(node.getSource());
   }
 
   @Override
-  public void handle(ASTBasicFloatLiteral node) {
+  public void traverse(ASTBasicFloatLiteral node) {
     getPrinter().print(node.getSource());
   }
 
   @Override
-  public void handle(ASTSignedBasicFloatLiteral node) {
+  public void traverse(ASTSignedBasicFloatLiteral node) {
     getPrinter().print(node.getSource());
   }
 
   @Override
-  public void handle(ASTBasicDoubleLiteral node) {
+  public void traverse(ASTBasicDoubleLiteral node) {
     getPrinter().print(node.getSource());
   }
 
   @Override
-  public void handle(ASTSignedBasicDoubleLiteral node) {
+  public void traverse(ASTSignedBasicDoubleLiteral node) {
     getPrinter().print(node.getSource());
   }
 }

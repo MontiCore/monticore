@@ -72,9 +72,6 @@ import de.monticore.codegen.cd2java.data.DataDecorator;
 import de.monticore.codegen.cd2java.data.DataDecoratorUtil;
 import de.monticore.codegen.cd2java.data.InterfaceDecorator;
 import de.monticore.codegen.cd2java.data.ListSuffixDecorator;
-import de.monticore.codegen.cd2java.interpreter.ASTEvaluateDecorator;
-import de.monticore.codegen.cd2java.interpreter.InterpreterDecorator;
-import de.monticore.codegen.cd2java.interpreter.InterpreterInterfaceDecorator;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.codegen.cd2java.methods.accessor.MandatoryAccessorDecorator;
@@ -106,7 +103,7 @@ import de.monticore.generating.templateengine.freemarker.FreeMarkerTemplateEngin
 import de.monticore.generating.templateengine.freemarker.MontiCoreTemplateLoader;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.grammar.MCGrammarSymbolTableHelper;
-import de.monticore.grammar.cocos.GrammarCoCos;
+import de.monticore.grammar.cocos.GrammarCoCosFix;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
@@ -428,7 +425,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   public void runGrammarCoCos(ASTMCGrammar ast, IGrammar_WithConceptsGlobalScope scope) {
     // Run context conditions
     Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
-    checker.addChecker((new GrammarCoCos()).getCoCoChecker());
+    checker.addChecker((new GrammarCoCosFix()).getCoCoChecker());
     checker.checkAll(ast);
     return;
   }
@@ -803,21 +800,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     CDTraverserDecorator decorator = new CDTraverserDecorator(glex, handCodedPath, visitorService, iTraverserDecorator, traverserDecorator, visitor2Decorator, handlerDecorator, inheritanceHandlerDecorator);
     decorator.decorate(cd, decoratedCD);
 
-  }
-
-  public void decorateWithInterpreter(List<ASTCDCompilationUnit> cds,
-                                      ASTCDCompilationUnit decoratedCD,
-                                      GlobalExtensionManagement glex) {
-    VisitorService visitorService = new VisitorService(cds.get(0));
-
-    InterpreterInterfaceDecorator interpreterInterfaceDecorator = new InterpreterInterfaceDecorator(glex, visitorService);
-    interpreterInterfaceDecorator.decorate(cds.get(0), decoratedCD);
-
-    InterpreterDecorator interpreterDecorator = new InterpreterDecorator(glex, visitorService);
-    interpreterDecorator.decorate(cds.get(0), decoratedCD);
-
-    ASTEvaluateDecorator evaluateDecorator = new ASTEvaluateDecorator(glex, visitorService);
-    evaluateDecorator.decorate(cds.get(0), decoratedCD);
   }
 
   public void decorateForCoCoPackage(GlobalExtensionManagement glex,
@@ -1520,7 +1502,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
           builder.addVariable(TEMPLATEPATH_LONG, templatePath);
           builder.addVariable(GROOVYHOOK1, mcConfig.getGroovyHook1());
           builder.addVariable(GROOVYHOOK2, mcConfig.getGroovyHook2());
-          builder.addVariable(GENINT, mcConfig.getGenINT().orElse(false));
           builder.addVariable("LOG_ID", LOG_ID);
           builder.addVariable("grammarIterator", grammarsPath.getEntries().iterator());
           reportsOpt = Optional.of(new MontiCoreReports(mcConfig.getOut().getAbsolutePath(),

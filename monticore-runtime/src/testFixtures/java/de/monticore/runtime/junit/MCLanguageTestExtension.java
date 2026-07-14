@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.runtime.junit;
 
+import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -22,7 +23,7 @@ public class MCLanguageTestExtension implements BeforeEachCallback, AfterEachCal
 
 
   @Override
-  public void afterEach(ExtensionContext extensionContext) {
+  public void afterEach(@NonNull ExtensionContext extensionContext) {
     getAnnotation(extensionContext)
             .ifPresent(a -> invokeStaticMethod(a.value(), "reset"));
 

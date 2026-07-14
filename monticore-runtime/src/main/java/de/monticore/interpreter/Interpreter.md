@@ -90,26 +90,26 @@ TLDR: If you can do it once, only do it once.
 The interpreter is a collection of handlers traversing the AST.
 The AST has to have a symbol table and must be of a valid model (CoCos).
 Each language should provide its own class(es)
-offering access to interpretation in a language specific way,
-e.g., for `ExpressionsInterpreter`:
+offering access to interpretation in a language specific way.
 
 Combine all applicable Handlers above into one traverser of your language.
-Initialize the `ExpressionsInterpreter` with said traverser.
+Initialize the specific `Interpreter` with said traverser.
 Call `interpret` on a valid expression with symbol table.
 
 ```java
 // setup, done once (simplified)
 InterpreterData IData = new InterpreterData();
 MyLangTraverser traverser = new MyLangMill.inheritanceTraverser();
-traverser.setExpressionsBasisHandler(new ExpressionsBasisHandler(iData)); // etc.
-ExpressionsInterpreter interpreter = new ExpressionsInterpreter(traverser, IData);
+traverser.setMyLangHandler(new MyLangHandler(iData)); // etc.
+// Class specifically to interpret this language
+MyLangInterpreter interpreter = new MyLangInterpreter(traverser, IData);
 
 // for each model
-ASTNode expr = parseAndCreateSymTabAndRunCoCos("1 + 3");
+ASTNode expr = parseAndCreateSymTabAndRunCoCos(myModel);
 MCValue result = interpreter.interpret(expr);
 // check that no error occured with isError()
 if (result.isInt()) {
-    System.out.println("1 + 3 = "+result.asInt());
+    System.out.println("result is " + result.asInt());
 }
 ```
 

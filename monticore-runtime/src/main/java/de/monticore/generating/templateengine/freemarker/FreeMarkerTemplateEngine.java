@@ -5,11 +5,9 @@ package de.monticore.generating.templateengine.freemarker;
 import static com.google.common.base.Strings.isNullOrEmpty;
 
 import java.io.IOException;
-import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 import com.google.common.base.Preconditions;
-import de.se_rwth.commons.logging.Log;
 import freemarker.log.Logger;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -91,11 +89,22 @@ public class FreeMarkerTemplateEngine {
           causedExceptionInfo.append("\n").append(targetException);
         }
       }
-      throw new MontiCoreFreeMarkerException("0xA0561 Unable to execute template " + template.getName() + " : " +
+      MontiCoreFreeMarkerException mcFtlException = new MontiCoreFreeMarkerException("0xA0561 Unable to execute template " + template.getName() + " : " +
               e.getLocalizedMessage() +
               seperator + "Exception-type: " + e.getCause() + causedExceptionInfo.toString() +
               seperator + "Caused by " + seperator + e.getFTLInstructionStack(),
           e.getCause());
+      if (e.getCause() instanceof Error) {
+        // In case an error is thrown (such as MCFatalErrors), we omit setting
+        // the FTL context and instead pass the error directly along (to make errors readable)
+
+        // The MontiCoreFreeMarkerException/ftl context is added to the
+        // stacktrace as a suppressed exception
+        // (but does not modify the error message)
+        e.getCause().addSuppressed(mcFtlException);
+        throw (Error) e.getCause();
+      }
+      throw mcFtlException;
     }
     catch (IOException e) {
       throw new MontiCoreFreeMarkerException("0xA0563 Could not read template " + template.getName() + " : " + e.getLocalizedMessage() +

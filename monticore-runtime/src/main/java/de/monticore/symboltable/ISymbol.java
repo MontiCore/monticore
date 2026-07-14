@@ -3,7 +3,7 @@ package de.monticore.symboltable;
 
 import com.google.common.collect.ImmutableList;
 import de.monticore.ast.ASTNode;
-import de.monticore.interpreter.Value;
+import de.monticore.values.MCValue;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.modifiers.BasicAccessModifier;
 import de.monticore.symboltable.stereotypes.IStereotypeReference;
@@ -68,7 +68,7 @@ public interface ISymbol {
    * The keys of the map reference {@link IStereotypeSymbol}s, while the values
    * reference the optionally associated stereovalue.
    */
-  Map<IStereotypeReference, Optional<Value>> getStereoinfo();
+  Map<IStereotypeReference, Optional<MCValue>> getStereoinfo();
 
   boolean isPresentAstNode();
 

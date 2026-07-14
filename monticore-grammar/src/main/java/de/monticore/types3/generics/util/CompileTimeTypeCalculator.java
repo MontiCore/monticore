@@ -33,7 +33,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static de.monticore.types.check.SymTypeExpressionFactory.createFunction;
@@ -252,10 +251,33 @@ public class CompileTimeTypeCalculator {
         type4Ast.setTypeOfExpression(callExpr, createObscureType());
         return;
       }
-
-      // store each function as an inference result.
       List<SymTypeOfFunction> functions =
           getFunctionsOfResolvedType(funcExprTypeNotNormalized);
+
+      // check the amount of arguments,
+      // as some visitors may not check the inference context
+      // for the amount of expected arguments and fails fast accordingly
+      {
+        boolean failed = false;
+        for (SymTypeOfFunction function : functions) {
+          if (!function.canHaveArity(arguments.size())) {
+            Log.error("0xFDAB5 encountered a function call with "
+                    + arguments.size() + " arguments"
+                    + ", but got a function type with a different arity: "
+                    + System.lineSeparator() + function.printFullName(),
+                callExpr.get_SourcePositionStart(),
+                callExpr.get_SourcePositionEnd()
+            );
+            failed = true;
+          }
+        }
+        if (failed) {
+          type4Ast.setTypeOfExpression(callExpr, createObscureType());
+          return;
+        }
+      }
+
+      // store each function as an inference result.
       inferenceResults = new ArrayList<>(functions.size());
       for (SymTypeOfFunction function : functions) {
         InferenceResult funcTypeAsInfRes = new InferenceResult();
@@ -406,13 +428,13 @@ public class CompileTimeTypeCalculator {
     }
     else {
       Log.error("0xFD114 internal error: unexpected inference results",
-        callExpr.get_SourcePositionStart(),
-        callExpr.get_SourcePositionEnd());
+          callExpr.get_SourcePositionStart(),
+          callExpr.get_SourcePositionEnd());
     }
   }
 
   /**
-   * Checks the arguments of the found compile-time function type,
+   * Checks the arguments of the found compile-time function types,
    * given an expression that calls said function.
    * Sets the type in type4Ast for the callExpr.
    * S.a. {@link #passInferenceInformationUpwardsForFunctionCall(ASTExpression, List, InferenceContext4Ast)}
@@ -431,7 +453,7 @@ public class CompileTimeTypeCalculator {
       Type4Ast type4Ast,
       InferenceContext4Ast infCtx4Ast
   ) {
-    assert !targetFunctions.isEmpty();
+    Preconditions.checkArgument(!targetFunctions.isEmpty());
 
     // Given multiple functions, at this point
     // all functions are valid compile-time types.
@@ -457,12 +479,19 @@ public class CompileTimeTypeCalculator {
     );
     List<SymTypeExpression> targetFuncArgTypes = new ArrayList<>();
     for (int i = 0; i < arguments.size(); i++) {
-      int argIdx = Math.min(i, targetFunctions.get(0).sizeArgumentTypes());
+      List<SymTypeExpression> targetFunctionCurrentArgTypes =
+          new ArrayList<>(targetFunctions.size());
+      for (SymTypeOfFunction targetFunction : targetFunctions) {
+        // very conservative;
+        // we have not filtered out non-callable functions
+        int argIdx = Math.min(i, targetFunction.sizeArgumentTypes() - 1);
+        targetFunctionCurrentArgTypes.add(
+            targetFunction.getArgumentType(argIdx
+            ));
+      }
       targetFuncArgTypes.add(createIntersectionOrDefault(
               createObscureType(),
-              targetFunctions.stream()
-                  .map(f -> f.getArgumentType(argIdx))
-                  .collect(Collectors.toList())
+              targetFunctionCurrentArgTypes
           )
       );
     }
@@ -1171,7 +1200,7 @@ public class CompileTimeTypeCalculator {
         + printFunctionForLog(infResult.getResolvedFunction())
         + (funcInfo.hasReturnTargetType()
         ? " with the target type "
-        + funcInfo.getReturnTargetType().printFullName()
+          + funcInfo.getReturnTargetType().printFullName()
         : "") + ".";
     if (invocationType.isEmpty()) {
       Log.error("0xFD447 cannot resolve function invocation type"
@@ -1409,20 +1438,23 @@ public class CompileTimeTypeCalculator {
     Optional<SymTypeExpression> nonFunctionType;
     List<SymTypeExpression> resolvedTypesNonNormalized =
         splitResolvedType(resolvedType);
-    List<SymTypeExpression> resolvedTypes =
+    List<SymTypeExpression> resolvedTypesNormalized =
         resolvedTypesNonNormalized.stream()
             .map(SymTypeRelations::normalize)
             .collect(Collectors.toList());
-    List<SymTypeExpression> nonFuncs = resolvedTypes.stream()
-        .filter(Predicate.not(SymTypeExpression::isFunctionType))
-        .collect(Collectors.toList());
     // more than 1 non-function type is in most languages not expected
     // if there are no non-functions, return the function(s),
     // this gets filtered outside of inference
-    if (nonFuncs.size() >= 1) {
+    List<SymTypeExpression> nonFuncsNonNormalized = new ArrayList<>();
+    for (int i = 0; i < resolvedTypesNormalized.size(); i++) {
+      if (!resolvedTypesNormalized.get(i).isFunctionType()) {
+        nonFuncsNonNormalized.add(resolvedTypesNonNormalized.get(i));
+      }
+    }
+    if (nonFuncsNonNormalized.size() >= 1) {
       nonFunctionType = Optional.of(SymTypeExpressionFactory
           .createIntersectionOrDefault(
-              resolvedType, nonFuncs
+              resolvedType, nonFuncsNonNormalized
           )
       );
     }

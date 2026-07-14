@@ -5,7 +5,6 @@ import de.monticore.codegen.CodeGenPrintAction;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.check.SymTypeExpression;
 
-import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getAsJavaType;
 import static de.monticore.types3.SymTypeRelations.isNumericType;
 import static de.monticore.types3.SymTypeRelations.unbox;
 
@@ -26,14 +25,14 @@ public class JavaNumericConversionHandler
       // unbox iff required
       CodeGenPrintAction printUnboxedAction = modelSourceType.isPrimitive() ?
           sourceExprPrintAction :
-          p -> printJavaCasted(p, getAsJavaType(unbox(modelSourceType)), sourceExprPrintAction);
+          p -> printJavaCasted(p, unbox(modelSourceType), sourceExprPrintAction);
       // cast as primitive
       CodeGenPrintAction printCastedAction =
-          p -> printJavaCasted(p, getAsJavaType(unbox(modelTargetType)), printUnboxedAction);
+          p -> printJavaCasted(p, unbox(modelTargetType), printUnboxedAction);
       // box iff required
       CodeGenPrintAction printAsTargetTypeAction = modelTargetType.isPrimitive() ?
           printCastedAction :
-          p -> printJavaCasted(p, getAsJavaType(modelTargetType), printCastedAction);
+          p -> printJavaCasted(p, modelTargetType, printCastedAction);
       // actually print
       printAsTargetTypeAction.print(printer);
       return true;

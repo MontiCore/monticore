@@ -1,0 +1,52 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.tests;
+
+import de.monticore.expressions.*;
+import de.monticore.literals.*;
+import de.monticore.ocl.*;
+import de.monticore.siunit.*;
+import de.monticore.statements.*;
+import de.monticore.symbols.*;
+import de.monticore.types.*;
+
+/* Test Grammar: This is not intended to become a MontiCore stable grammar. */
+
+grammar ExpressionsAndStatements
+    extends
+            // Literals
+            MCCommonLiterals,
+            SIUnitLiterals,
+            // Expressions
+            AssignmentExpressions,
+            BitExpressions,
+            LambdaExpressions,
+            OCLExpressions,
+            OptionalOperators,
+            SetExpressions,
+            TupleExpressions,
+            UglyExpressions,
+            // Types
+            SIUnitTypes4Computing,
+            SIUnitTypes4Math,
+            MCSimpleGenericTypes,
+            MCFunctionTypes,
+            MCStructuralTypes,
+            // Statements
+            MCAssertStatements,
+            MCCommonStatements,
+            MCReturnStatements,
+            MCLowLevelStatements,
+            MCVarDeclarationStatements,
+            // Symbols
+            OOSymbols {
+
+  BehaviorInput =
+    MCImportStatement*
+    MCBlockStatement*
+    Expression?
+  ;
+
+  // Unused
+  NonModifier implements MCModifier = "_does_not_occur#$@";
+
+}

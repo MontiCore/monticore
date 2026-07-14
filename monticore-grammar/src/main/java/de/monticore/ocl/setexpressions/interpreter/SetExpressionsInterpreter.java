@@ -9,12 +9,8 @@ import de.monticore.interpreter.calculations.MICalculationInt;
 import de.monticore.interpreter.calculations.MICalculationValue;
 import de.monticore.interpreter.calculations.MICalculationVoid;
 import de.monticore.interpreter.frames.MIFrame;
-import de.monticore.symbols.basicsymbols.interpreter.frames.MIFrameLayoutForBasicSymbols;
 import de.monticore.interpreter.setters.MISetter;
 import de.monticore.interpreter.util.InterpreterDataForBasicSymbols;
-import de.monticore.values.MCValue;
-import de.monticore.values.MCValueFactory;
-import de.monticore.values.MCValueObject;
 import de.monticore.ocl.setexpressions._ast.ASTGeneratorDeclaration;
 import de.monticore.ocl.setexpressions._ast.ASTSetCollectionItem;
 import de.monticore.ocl.setexpressions._ast.ASTSetComprehension;
@@ -25,10 +21,14 @@ import de.monticore.ocl.setexpressions._ast.ASTSetValueRange;
 import de.monticore.ocl.setexpressions._ast.ASTSetVariableDeclaration;
 import de.monticore.ocl.setexpressions._visitor.SetExpressionsInheritanceHandler;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
+import de.monticore.symbols.basicsymbols.interpreter.frames.MIFrameLayoutForBasicSymbols;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.mccollectiontypes.types3.MCCollectionSymTypeRelations;
 import de.monticore.types3.SymTypeRelations;
 import de.monticore.types3.TypeCheck3;
+import de.monticore.values.MCValue;
+import de.monticore.values.MCValueFactory;
+import de.monticore.values.MCValueObject;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -213,6 +213,14 @@ public class SetExpressionsInterpreter
 
   @Override
   public void traverse(ASTSetComprehension node) {
+    Preconditions.checkArgument(!node.getLeft().isPresentSetVariableDeclaration());
+    // the items in order of calculation (does not contain element calculation)
+    List<ASTSetComprehensionItem> cItemsInOrder = new ArrayList<>();
+    if (node.getLeft().isPresentGeneratorDeclaration()) {
+      cItemsInOrder.add(node.getLeft());
+    }
+    cItemsInOrder.addAll(node.getSetComprehensionItemList());
+
     // create a new scope layout
     // this has to be done prior to creating the MICalculations
     final MIFrameLayoutForBasicSymbols frameLayout =
@@ -221,7 +229,8 @@ public class SetExpressionsInterpreter
                 new MIFrameLayoutForBasicSymbols() :
                 new MIFrameLayoutForBasicSymbols(getScopeLayoutStack().peek())
         );
-    for (ASTSetComprehensionItem item : node.getSetComprehensionItemList()) {
+    // set the frame layout as applicable
+    for (ASTSetComprehensionItem item : cItemsInOrder) {
       VariableSymbol varSym = null;
       if (item.isPresentGeneratorDeclaration()) {
         varSym = item.getGeneratorDeclaration().getSymbol();
@@ -234,10 +243,20 @@ public class SetExpressionsInterpreter
       }
     }
 
-    node.getLeft().accept(getTraverser());
-    final MICalculation leftCalc = iData.popCalculation();
+    // the actual calculation which result will be store in the collection.
+    final MICalculation elemCalc;
+    if (node.getLeft().isPresentGeneratorDeclaration()) {
+      ASTGeneratorDeclaration genDecl = node.getLeft().getGeneratorDeclaration();
+      elemCalc = frameLayout.getVariableGetter(genDecl.getSymbol());
+    }
+    else {
+      // Expression
+      node.getLeft().accept(getTraverser());
+      elemCalc = iData.popCalculation();
+    }
+
     final List<SetComprehensionItemCalculation> itemCalcs = new ArrayList<>();
-    for (ASTSetComprehensionItem item : node.getSetComprehensionItemList()) {
+    for (ASTSetComprehensionItem item : cItemsInOrder) {
       if (item.isPresentGeneratorDeclaration()) {
         itemCalcs.add(getCalculationOfGenerator(item.getGeneratorDeclaration(), frameLayout));
       }
@@ -256,7 +275,7 @@ public class SetExpressionsInterpreter
       final MIFrame comprehensionFrame = new MIFrame(frameLayout, outerFrame);
       final Collection<Object> collection = collectionConstructor.get();
       MICalculationVoid comprehensionEvaluator = f -> collection.add(
-          leftCalc.asCalculationValue().calculate(f).asNativeObject()
+          elemCalc.asCalculationValue().calculate(f).asNativeObject()
       );
       // calculations are build up from right to left,
       // to be executed from left to right

@@ -46,7 +46,7 @@ public class CheckScannerlessTest {
     assertEquals("List", ast.getName());
     ASTTypeArguments ta = ast.getTypeArguments();
     assertEquals("Theo", ta.getType(0).getName());
-    // MCAssertions.assertNoFindings(); is implicitly called due to @TestWithMCLanguage
+    // due to @TestWithMCLanguage, we check after each test that no (unchecked) findings are present
   }
 
   @Test
@@ -57,12 +57,12 @@ public class CheckScannerlessTest {
     parser.parse_StringExpression("List<Set<Theo>>> >wert" );
     assertTrue(parser.hasErrors()); // check that the parser has errors
     
-    // assert a findings is present & remove it from the log
+    // assert a findings is present
     // We ignore the content of the finding, as it is a parser error 
     MCAssertions.assertHasFinding(); 
   }
   // The @TestWithMCLanguage ensures, that after each test:
-  //  - no more findings are present
+  //  - all reported findings were asserted for
   //  - the mill is torn down
 }
 ```
@@ -70,11 +70,11 @@ public class CheckScannerlessTest {
 The `@TestWithMCLanguage` annotation sets-up the test for a language.
 Before each test,
 
- 1. the logger is replaced with a side effect free stub that collects,  
- 2. the previous findings cleared, 
- 3. and the given mill initialized.
+ 1. the logger is replaced with a side effect free stub that collects findings,  
+ 2. the previous findings are cleared, 
+ 3. and the given mill is initialized.
 
-After each test, the log must not have any findings present.
+After each test, the log must not have any non-asserted findings present.
 If no Mill setup is desired, 
 the [`AbstractMCTest`](../monticore-runtime/src/testFixtures/java/de/monticore/runtime/junit/AbstractMCTest.java) class provides the same functionality.
 
@@ -85,19 +85,20 @@ class for e.g., Log assertions:
 The notable methods are:
 
 * [`MCAssertions#assertNoFindings()`](../monticore-runtime/src/testFixtures/java/de/monticore/runtime/junit/MCAssertions.java#assertHasFinding()) -
-  Ensure no findings are present (always called after each test)
+  Ensure no findings are present.
 * [`MCAssertions#assertHasFindingStartingWith(String expectedPrefix, String message)`](../monticore-runtime/src/testFixtures/java/de/monticore/runtime/junit/MCAssertions.java#assertHasFindingStartingWith(java.lang.String,java.lang.String)) -
-  Ensures that at least one finding starts with the prefix and removes & returns
+  Ensures that at least one finding starts with the prefix and returns
   that one finding
 * [`MCAssertions#assertHasFindingsStartingWith(String expectedPrefix, String message)`](../monticore-runtime/src/testFixtures/java/de/monticore/runtime/junit/MCAssertions.java#assertHasFindingsStartingWith(java.lang.String,java.lang.String)) -
-  Ensures that at least one finding starts with the prefix and removes & returns
+  Ensures that at least one finding starts with the prefix and returns
   all matching findings
 * [`MCAssertions#assertHasFinding(Predicate<Finding> predicate, String message)`](../monticore-runtime/src/testFixtures/java/de/monticore/runtime/junit/MCAssertions.java#assertHasFinding(java.util.function.Predicate,java.lang.String)) -
-  Ensures that at least one finding matches the predicate and removes & returns
+  Ensures that at least one finding matches the predicate and returns
   that one finding
 * [`MCAssertions#assertHasFindings(Predicate<Finding> predicate, String message)`](../monticore-runtime/src/testFixtures/java/de/monticore/runtime/junit/MCAssertions.java#assertHasFindings(java.util.function.Predicate,java.lang.String)) -
-  Ensures that at least one finding matches the predicate and removes & returns
+  Ensures that at least one finding matches the predicate and returns
   all matching findings
+
 
 When the generated pretty printer is customized via the TOP-mechanism,
  the `PrettyPrinterTester` class provides functionality for quickly writing a bunch of tests for the pretty printer.
