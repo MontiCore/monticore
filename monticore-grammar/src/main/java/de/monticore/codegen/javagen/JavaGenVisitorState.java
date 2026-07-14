@@ -54,6 +54,16 @@ public class JavaGenVisitorState
     getPrinter().print(")");
   }
 
+  public void startStatementBlock() {
+    getPrinter().println("{");
+    getPrinter().indent();
+  }
+
+  public void endStatementBlock() {
+    getPrinter().unindent();
+    getPrinter().println("}");
+  }
+
   public void endStatement() {
     getPrinter().println(";");
   }
