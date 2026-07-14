@@ -2,35 +2,43 @@ package de.monticore.tf.runtime.inc;
 
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
+import de.monticore.ast.ASTCNode;
 import de.monticore.ast.ASTNode;
 import de.monticore.visitor.ITraverser;
 import de.monticore.visitor.IVisitor;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.Collection;
+import java.util.*;
 
 public class CandidateIndex<E extends ITraverser> implements IModelIndex<E> {
   
   protected Multimap<Class<? extends ASTNode>, ASTNode> candidates;
-  protected Multimap<Class<?>, Class<?>> subClasses;
+  protected Multimap<Class<?>, Class<?>> subTypes;
   
   public CandidateIndex() {
     this.candidates = LinkedHashMultimap.create();
-    this.subClasses = LinkedHashMultimap.create();
+    this.subTypes = LinkedHashMultimap.create();
   }
   
   @Override
   public void finalizeInitialization() {
     this.candidates.forEach((k, v) -> {
-      checkSuperClass(k);
+      checkSuperTypes(k);
     });
   }
   
-  protected void checkSuperClass(Class<?> clazz) {
+  protected void checkSuperTypes(Class<?> clazz) {
     Class<?> superClass = clazz.getSuperclass();
     if (superClass != null) {
-      this.subClasses.put(superClass, clazz);
-      checkSuperClass(superClass);
+      this.subTypes.put(superClass, clazz);
+      if (superClass != ASTCNode.class) {
+        checkSuperTypes(superClass);
+      }
+    }
+    
+    for (Class<?> i : clazz.getInterfaces()) {
+      this.subTypes.put(i, clazz);
+      checkSuperTypes(i);
     }
   }
   
@@ -42,12 +50,36 @@ public class CandidateIndex<E extends ITraverser> implements IModelIndex<E> {
     return this.candidates.containsKey(clazz);
   }
   
-  public Collection<ASTNode> getCandidateNodesIncludingSubClasses(Class<? extends ASTNode> clazz) {
-    if (!this.subClasses.containsKey(clazz)) {
-      return getCandidateNodes(clazz);
+  protected Collection<Class<?>> getSubTypes(Class<?> clazz) {
+    Set<Class<?>> result  = new HashSet<>();
+    Set<Class<?>> visited = new HashSet<>();
+    
+    Collection<Class<?>> direct = this.subTypes.get(clazz);
+    Deque<Class<?>> stack = new ArrayDeque<>(direct);
+    
+    while (!stack.isEmpty()) {
+      Class<?> cur = stack.pop();
+      
+      if (!visited.add(cur)) {
+        continue;
+      }
+      
+      result.add(cur);
+      Collection<Class<?>> further = this.subTypes.get(cur);
+      for (Class<?> child : further) {
+        if (!visited.contains(child)) {
+          stack.push(child);
+        }
+      }
     }
-    return this.subClasses.get(clazz).stream().filter(x -> this.candidates.containsKey(x))
-        .map(x -> this.candidates.get((Class<? extends ASTNode>) x)).flatMap(Collection::stream)
+    return Collections.unmodifiableSet(result);
+  }
+  
+  public Collection<ASTNode> getSubTypeCandidateNodes(Class<?> clazz) {
+    return getSubTypes(clazz).stream()
+        .filter(x -> this.candidates.containsKey(x))
+        .map(x -> this.candidates.get((Class<? extends ASTNode>) x))
+        .flatMap(Collection::stream)
         .toList();
   }
   
