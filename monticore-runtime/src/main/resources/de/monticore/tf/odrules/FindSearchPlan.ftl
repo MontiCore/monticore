@@ -55,7 +55,7 @@
         </#list>
       }
     } else {
-      for (ASTNode cand : this.modelAccessor.indices().getCandidateIndex().getAllNodes()) {
+      for (ASTNode cand : this.modelAccessor.indices().getCandidateIndex().getSubTypeCandidateNodes(${type}.class)) {
         if (cand instanceof ${type}) {
         <#list ast.getPattern().getLHSObjectsList() as object>
           <#if object.type = type>
