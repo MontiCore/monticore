@@ -74,7 +74,7 @@
       m.${ast.getObjectName()}_${ast.getValue()}_before.put(${ast.getObjectGetter()}.get(i), ${ast.getObjectGetter()}.get(i).${ast.getGetter()}());
     ${ast.getObjectGetter()}.get(i).${ast.getSetter()}(${ast.getValueGetter()});
 
-    this.modelAccessor.notifyNodeAttach(${ast.getValueGetter()}, ${ast.getObjectGetter()});
+    this.modelAccessor.notifyNodeAttach(${ast.getValueGetter()}, ${ast.getObjectGetter()}.get(i));
   }
 <#elseif !ast.attributeIterated && !ast.copy>
   // single attribute (not in a list)
