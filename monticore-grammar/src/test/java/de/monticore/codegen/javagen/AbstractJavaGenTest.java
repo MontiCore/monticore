@@ -23,6 +23,7 @@ import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -30,6 +31,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
 import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getJavaTypePrint;
@@ -46,7 +48,7 @@ public abstract class AbstractJavaGenTest extends AbstractMCTest {
 
   // enable for experimenting:
   // it will print the generated code before evaluation
-  protected static final boolean PRINT_GENERATED_CODE = false;
+  protected static final boolean PRINT_GENERATED_CODE = true;
 
   protected static final String GENERATED_METHOD_NAME =
       "executeSystemUnderTest";
@@ -93,17 +95,16 @@ public abstract class AbstractJavaGenTest extends AbstractMCTest {
    * @param expectedValue    the expected value
    */
   protected void checkValue(String behaviorModelStr, Object expectedValue) {
-    // setup
-    ASTBehaviorInput ast = ExpressionsAndStatementsUtil
-        .getPreparedAST(behaviorModelStr);
-    Path javaArtifact = createJavaSource(ast);
-    String fileName = javaArtifact.getFileName().toString();
-    String className =
-        fileName.substring(0, fileName.length() - ".java".length());
-
-    // compile and invoke
-    compile(List.of(javaArtifact.toFile()));
-    Object result = invokeGeneratedMethod(className);
+    Path javaArtifact = generateJavaArtifact(behaviorModelStr);
+    Callable<Object> invoker = compileJavaArtifactAndGetCallable(javaArtifact);
+    Object result;
+    try {
+      result = invoker.call();
+    }
+    catch (Exception e) {
+      fail(e);
+      return;
+    }
 
     // compare
     assertEquals(expectedValue, result,
@@ -112,6 +113,33 @@ public abstract class AbstractJavaGenTest extends AbstractMCTest {
             + lineSeparator() + "********** Generated **********"
             + lineSeparator() + readFile(javaArtifact.toFile())
     );
+  }
+
+  /**
+   * compiles the model and returns a callable to invoke the generated code.
+   *
+   * @param behaviorModelStr the model to compile
+   * @return a callable to invoke the generated code
+   */
+  protected Callable<Object> compileToCallable(String behaviorModelStr) {
+    Path javaArtifact = generateJavaArtifact(behaviorModelStr);
+    return compileJavaArtifactAndGetCallable(javaArtifact);
+  }
+
+  protected Path generateJavaArtifact(String behaviorModelStr) {
+    // setup
+    ASTBehaviorInput ast = ExpressionsAndStatementsUtil
+        .getPreparedAST(behaviorModelStr);
+    return createJavaSource(ast);
+  }
+
+  protected Callable<Object> compileJavaArtifactAndGetCallable(Path javaArtifact) {
+    String fileName = javaArtifact.getFileName().toString();
+    String className =
+        fileName.substring(0, fileName.length() - ".java".length());
+    // compile and get invocation object
+    compile(List.of(javaArtifact.toFile()));
+    return () -> invokeGeneratedMethod(className);
   }
 
   /**
@@ -224,7 +252,7 @@ public abstract class AbstractJavaGenTest extends AbstractMCTest {
    * @param className the class containing the method
    * @return the result of the method call
    */
-  protected Object invokeGeneratedMethod(String className) {
+  protected Object invokeGeneratedMethod(String className) throws Exception {
     URL outputDirURL =
         assertDoesNotThrow(() -> GENERATED_CLASS_DIR.toUri().toURL());
     try (URLClassLoader classLoader = new URLClassLoader(
@@ -235,9 +263,17 @@ public abstract class AbstractJavaGenTest extends AbstractMCTest {
       Method method = compiledClass.getDeclaredMethod(GENERATED_METHOD_NAME);
       return method.invoke(null);
     }
-    catch (Exception e) {
-      fail(e);
-      return null;
+    // unpack InvocationTargetException if possible
+    catch (InvocationTargetException ite) {
+      if (ite.getCause() instanceof Exception e) {
+        throw e;
+      }
+      else if (ite.getCause() instanceof Error err) {
+        throw err;
+      }
+      else {
+        throw ite;
+      }
     }
   }
 
