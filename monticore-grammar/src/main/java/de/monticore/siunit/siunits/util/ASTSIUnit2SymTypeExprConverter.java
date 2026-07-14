@@ -127,7 +127,7 @@ public class ASTSIUnit2SymTypeExprConverter {
 
   protected static SIUnitBasic createSIUnit(ASTSIUnitDimensionless ast) {
     if (!ast.isPresentUnit()) {
-      return SymTypeExpressionFactory.createSIUnitBasic("º");
+      return SymTypeExpressionFactory.createSIUnitBasic("°");
     }
     else {
       return SymTypeExpressionFactory.createSIUnitBasic(ast.getUnit());
@@ -135,7 +135,7 @@ public class ASTSIUnit2SymTypeExprConverter {
   }
 
   protected static SIUnitBasic createSIUnit(ASTCelsiusFahrenheit ast) {
-    return SymTypeExpressionFactory.createSIUnitBasic("º" + ast.getUnit());
+    return SymTypeExpressionFactory.createSIUnitBasic("°" + ast.getUnit());
   }
 
   protected static List<SIUnitBasic> createSIUnit(ASTSIUnitKindGroupWithExponent ast) {

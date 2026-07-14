@@ -18,6 +18,10 @@ import de.monticore.ocl.oclexpressions.codegen.javagen.OCLExpressionsJavaGenVisi
 import de.monticore.ocl.optionaloperators.codegen.javagen.OptionalOperatorsJavaGenVisitor;
 import de.monticore.ocl.setexpressions.codegen.javagen.SetExpressionsJavaGenVisitor;
 import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.statements.mcassertstatements.codegen.javagen.MCAssertStatementsJavaGenVisitor;
+import de.monticore.statements.mccommonstatements.codegen.javagen.MCCommonStatementsJavaGenVisitor;
+import de.monticore.statements.mclowlevelstatements.codegen.javagen.MCLowLevelStatementsJavaGenVisitor;
+import de.monticore.statements.mcreturnstatements.codegen.javagen.MCReturnStatementsJavaGenVisitor;
 import de.monticore.statements.mcvardeclarationstatements.codegen.javagen.MCVarDeclarationStatementsJavaGenVisitor;
 import de.monticore.tests.expressionsandstatements.ExpressionsAndStatementsMill;
 import de.monticore.tests.expressionsandstatements._visitor.ExpressionsAndStatementsTraverser;
@@ -95,6 +99,22 @@ public class ExpressionsAndStatementsJavaGenerator
     traverser.setUglyExpressionsHandler(visUglyExpressions);
 
     // Statements
+
+    MCAssertStatementsJavaGenVisitor visMCAssertStatements =
+        new MCAssertStatementsJavaGenVisitor(state);
+    traverser.setMCAssertStatementsHandler(visMCAssertStatements);
+
+    MCCommonStatementsJavaGenVisitor visMCCommonStatements =
+        new MCCommonStatementsJavaGenVisitor(state);
+    traverser.setMCCommonStatementsHandler(visMCCommonStatements);
+
+    MCLowLevelStatementsJavaGenVisitor visMCLowLevelStatements =
+        new MCLowLevelStatementsJavaGenVisitor(state);
+    traverser.setMCLowLevelStatementsHandler(visMCLowLevelStatements);
+
+    MCReturnStatementsJavaGenVisitor visMCReturnStatements =
+        new MCReturnStatementsJavaGenVisitor(state);
+    traverser.setMCReturnStatementsHandler(visMCReturnStatements);
 
     MCVarDeclarationStatementsJavaGenVisitor visMCVarDeclarationStatements =
         new MCVarDeclarationStatementsJavaGenVisitor(state);

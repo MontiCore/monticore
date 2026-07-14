@@ -16,6 +16,7 @@ public class StatementsTestModels {
   static public Stream<Arguments> getStatementCases() {
     return Stream.of(
         getCommonStatementCases(),
+        getMCLowLevelStatementsCases(),
         getAssignmentCases(),
         getValidAssertStatementsCases()
     ).flatMap(Function.identity());
@@ -23,16 +24,21 @@ public class StatementsTestModels {
 
   static protected Stream<Arguments> getCommonStatementCases() {
     return Stream.of(
-        Arguments.of("int x; if (true) {x = 2;} else {x = 3;}; x", 2),
-        Arguments.of("int x; if (false) {x = 2;} else {x = 3;}; x", 3),
-        Arguments.of("int x = 1; if (true) {x = 2;} x", 2),
-        Arguments.of("int x = 1; if (false) {x = 2;} x", 1),
-        Arguments.of("int x = 1; while (x < 0) {x++;} x", 1),
-        Arguments.of("int x = 1; while (false) {x++;} x", 1),
-        Arguments.of("int x = 0; while (true) {x++; break; x++;} x", 1),
+        Arguments.of("int x; if (true) x = 2; else x = 3; x", 2),
+        Arguments.of("int x; if (false) x = 2; else x = 3; x", 3),
+        Arguments.of("int x = 1; if (true) x = 2; x", 2),
+        Arguments.of("int x = 1; if (false) x = 2; x", 1),
+        Arguments.of("int x = 1; while (x < 0) x++; x", 1),
+        Arguments.of("int x = 1; while (x == 17) x++; x", 1),
+        // use if(true) to avoid compilation errors
+        // with statements after break in Java.
+        Arguments.of("int x = 0; while (true) {x++; if(true) break; x++;} x", 1),
+        Arguments.of("int x = 0; while (x < 2) {x++; if(true) continue; x = 999;} x", 2),
+        Arguments.of("int x = 0; while (++x <= 3) continue; x", 4),
         Arguments.of("int x = 1; do {x++;} while (x < 10); x", 10),
         Arguments.of("int x = 1; do {x++;} while (false); x", 2),
-        Arguments.of("int x = 0; do {x++; break; x++;} while (true); x", 1),
+        Arguments.of("int x = 0; do {x++; if(true) break; x++;} while (true); x", 1),
+        Arguments.of("int x = 0; do {x++; if(true) continue; x = 999;} while (x < 2); x", 2),
         Arguments.of("int x = 0; for (int i = 0; i < 4; i++) x++; x", 4),
         Arguments.of("int x = 0, i = 0; for (x++, i = 0; i < 4; i++); x", 1),
         Arguments.of("int x = 0; for (int i = 0; i < 4; i++, x++); x", 4),
@@ -56,6 +62,49 @@ public class StatementsTestModels {
             x
             """, 6),
         Arguments.of("int x = 1; ; ; ; x", 1)
+    );
+  }
+
+  static protected Stream<Arguments> getMCLowLevelStatementsCases() {
+    return Stream.of(
+        Arguments.of("int x = 0; l: while (true) {x++; break l;} x", 1),
+        Arguments.of("""
+                int x = 0, y = 0;
+                l: while (++x < 4) {
+                  if (x != 2)
+                    continue l;
+                  y = x;
+                }
+                y
+                """,
+            2
+        ),
+        Arguments.of("""
+                int x = 0;
+                l: while (x < 2) {
+                  while (true) {
+                    x++;
+                    continue l;
+                  }
+                }
+                x
+                """,
+            2
+        ),
+        Arguments.of("""
+                int x = 0;
+                l: for (int i = 0; i < 2; i++)
+                     for (int j = 0; j < 2; j++)
+                       {x++; break l;}
+                x
+                """,
+            1
+        ),
+        // label at random other statements
+        // this does not make much sense and could be forbidden in the future
+        // but, as it is currently allowed,
+        // we test it here
+        Arguments.of("int x = 0; l: x++; x", 1)
     );
   }
 
