@@ -680,24 +680,32 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     // after the non-visitor traversal, types have been calculated if they exist
     Optional<SymTypeExpression> exprType;
     Optional<SymTypeExpression> typeId = Optional.empty();
-    // case: expression "." name, e.g., getX().var
-    if (getType4Ast().hasTypeOfExpression(expr.getExpression())) {
-      exprType = calculateExprFieldAccessOrLogError(expr, false);
-    }
+    boolean innerIsExpression =
+        getType4Ast().hasTypeOfExpression(expr.getExpression());
+    boolean innerIsTypeIdentifier =
+        isSeriesOfNames(expr.getExpression()) &&
+            getType4Ast().hasTypeOfTypeIdentifierForName(expr.getExpression());
     // case: typeIdentifier "." name, e.g., XClass.staticVar
-    // in Java, if variable exists, typeIdentifier "." name is ignored,
-    // even if variable "." name does not exist
-    else if (getType4Ast().hasTypeOfTypeIdentifierForName(expr.getExpression())) {
+    // in Java, if a variable exists, the type identifier is not retained as an
+    // alternative and therefore remains ignored.
+    if (innerIsTypeIdentifier) {
       exprType = calculateTypeIdFieldAccessOrLogError(expr,
-          expectedResult != FieldAccessExpectedResult.EXPRESSION_TYPE);
+          innerIsExpression ||
+              expectedResult != FieldAccessExpectedResult.EXPRESSION_TYPE);
       // case: typeid "." typeid2 ("." name), e.g., C1.CInner.staticVar
       if (exprType.isEmpty() && expectedResult != FieldAccessExpectedResult.EXPRESSION_TYPE) {
-        // always expecting a result here, as we tried expressions already
-        typeId = calculateInnerTypeIdFieldAccessOrLogError(expr, false);
+        typeId = calculateInnerTypeIdFieldAccessOrLogError(expr, innerIsExpression);
       }
     }
-    // case: qualifier "." name
     else {
+      exprType = Optional.empty();
+    }
+    // case: expression "." name, e.g., getX().var
+    if (exprType.isEmpty() && typeId.isEmpty() && innerIsExpression) {
+      exprType = calculateExprFieldAccessOrLogError(expr, false);
+    }
+    // case: qualifier "." name
+    else if (!innerIsExpression && !innerIsTypeIdentifier) {
       // case: qualifier "." name as Expression
       exprType = calculateExprQNameOrLogError(expr,
           expectedResult != FieldAccessExpectedResult.EXPRESSION_TYPE);
@@ -745,14 +753,30 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
    */
   protected void calculateFieldAccessFirstName(ASTNameExpression expr) {
     Optional<SymTypeExpression> nameAsExprType =
-        calculateExprQName(expr);
+        calculateExprQName(expr, false);
     Optional<SymTypeExpression> nameAsTypeIdType =
         calculateTypeIdQName(expr);
+
     if (nameAsExprType.isPresent()) {
       // here there is no need for type inference
       getType4Ast().setTypeOfExpression(expr, nameAsExprType.get());
     }
-    else if (nameAsTypeIdType.isPresent()) {
+
+    // Check if there is a second possible interpretation as Type Identifier
+    Optional<SymTypeExpression> nameAsExprTypeOptional =
+        nameAsTypeIdType.isPresent() ?
+            calculateExprQName(expr, true) : Optional.empty();
+
+    boolean nameIsExprAndType =
+        nameAsExprType.isPresent() &&
+            nameAsExprTypeOptional.isPresent() &&
+            nameAsTypeIdType.isPresent() &&
+            !nameAsExprType.get().deepEquals(nameAsExprTypeOptional.get()) &&
+            nameAsExprTypeOptional.get().deepEquals(nameAsTypeIdType.get());
+
+    if (nameAsTypeIdType.isPresent() &&
+        (nameAsExprType.isEmpty() || nameIsExprAndType)
+    ) {
       getType4Ast().setTypeOfTypeIdentifierForName(
           expr,
           nameAsTypeIdType.get()
@@ -1072,7 +1096,8 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
       type = WithinScopeBasicSymbolsResolver
           .resolveNameAsExpr(
               getAsBasicSymbolsScope(expr.getEnclosingScope()),
-              nameOpt.get()
+              nameOpt.get(),
+              resultsAreOptional
           );
     }
     else {
@@ -1086,9 +1111,19 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
    */
   protected Optional<SymTypeExpression> calculateExprQName(
       ASTNameExpression expr) {
+    return calculateExprQName(expr, false);
+  }
+
+  /**
+   * calculates "a" as expression
+   */
+  protected Optional<SymTypeExpression> calculateExprQName(
+      ASTNameExpression expr,
+      boolean resultsAreOptional) {
     return WithinScopeBasicSymbolsResolver.resolveNameAsExpr(
         getAsBasicSymbolsScope(expr.getEnclosingScope()),
-        expr.getName()
+        expr.getName(),
+        resultsAreOptional
     );
   }
 

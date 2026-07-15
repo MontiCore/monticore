@@ -62,7 +62,33 @@ public class WithinScopeBasicSymbolsResolver {
   public static Optional<SymTypeExpression> resolveNameAsExpr(
       IBasicSymbolsScope enclosingScope,
       String name) {
-    return getDelegate()._resolveNameAsExpr(enclosingScope, name);
+    return resolveNameAsExpr(enclosingScope, name, false);
+  }
+
+  /**
+   * resolves the name as an expression (variable or function)
+   *
+   * @param resultsAreOptional whether an empty result is expected by the caller
+   */
+  public static Optional<SymTypeExpression> resolveNameAsExpr(
+      IBasicSymbolsScope enclosingScope,
+      String name,
+      boolean resultsAreOptional) {
+    return getDelegate()._resolveNameAsExpr(
+        enclosingScope,
+        name,
+        resultsAreOptional
+    );
+  }
+
+  /**
+   * Extension point for resolvers that handle optional results differently.
+   */
+  protected Optional<SymTypeExpression> _resolveNameAsExpr(
+      IBasicSymbolsScope enclosingScope,
+      String name,
+      boolean resultsAreOptional) {
+    return _resolveNameAsExpr(enclosingScope, name);
   }
 
   protected Optional<SymTypeExpression> _resolveNameAsExpr(
