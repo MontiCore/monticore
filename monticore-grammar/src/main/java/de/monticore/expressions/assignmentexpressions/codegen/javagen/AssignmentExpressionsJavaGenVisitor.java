@@ -1,18 +1,21 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.expressions.assignmentexpressions.codegen.javagen;
 
+import com.google.common.base.Preconditions;
 import de.monticore.codegen.CodeGenPrintAction;
-import de.monticore.codegen.javagen.AbstractJavaGenVisitor;
+import de.monticore.codegen.javagen.JavaGenVisitorState;
 import de.monticore.codegen.javagen.JavaOperationPrinter;
 import de.monticore.expressions.assignmentexpressions._ast.ASTAssignmentExpression;
 import de.monticore.expressions.assignmentexpressions._ast.ASTDecPrefixExpression;
 import de.monticore.expressions.assignmentexpressions._ast.ASTDecSuffixExpression;
 import de.monticore.expressions.assignmentexpressions._ast.ASTIncPrefixExpression;
 import de.monticore.expressions.assignmentexpressions._ast.ASTIncSuffixExpression;
-import de.monticore.expressions.assignmentexpressions._visitor.AssignmentExpressionsHandler;
-import de.monticore.expressions.assignmentexpressions._visitor.AssignmentExpressionsTraverser;
+import de.monticore.expressions.assignmentexpressions._visitor.AssignmentExpressionsInheritanceHandler;
 import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.check.SymTypeExpressionFactory;
+import de.monticore.types3.TypeCheck3;
 import de.monticore.types3.util.TypeVisitorOperatorCalculator;
 import de.se_rwth.commons.logging.Log;
 
@@ -22,6 +25,7 @@ import static de.monticore.codegen.CodeGenOperationPrinter.printModulo;
 import static de.monticore.codegen.CodeGenOperationPrinter.printMultiply;
 import static de.monticore.codegen.CodeGenOperationPrinter.printPlus;
 import static de.monticore.codegen.CodeGenSymTypeExpressionConverter.printConverted;
+import static de.monticore.codegen.javagen.JavaGenSymTypeRelations.generatesToJavaNumeric;
 import static de.monticore.expressions.assignmentexpressions._ast.ASTConstantsAssignmentExpressions.EQUALS;
 import static de.monticore.expressions.assignmentexpressions._ast.ASTConstantsAssignmentExpressions.MINUSEQUALS;
 import static de.monticore.expressions.assignmentexpressions._ast.ASTConstantsAssignmentExpressions.PERCENTEQUALS;
@@ -36,51 +40,105 @@ import static de.monticore.types3.TypeCheck3.typeOf;
  * as {@code x = (typeOf(x)) (x + 2)}.
  */
 public class AssignmentExpressionsJavaGenVisitor
-    extends AbstractJavaGenVisitor
-    implements AssignmentExpressionsHandler {
+    extends AssignmentExpressionsInheritanceHandler {
 
-  // Traverser
+  protected JavaGenVisitorState state;
 
-  protected AssignmentExpressionsTraverser traverser;
-
-  @Override
-  public AssignmentExpressionsTraverser getTraverser() {
-    return traverser;
+  public AssignmentExpressionsJavaGenVisitor(JavaGenVisitorState state) {
+    this.state = Preconditions.checkNotNull(state);
   }
 
-  @Override
-  public void setTraverser(AssignmentExpressionsTraverser traverser) {
-    this.traverser = traverser;
-  }
-
-  public AssignmentExpressionsJavaGenVisitor(IndentPrinter printer) {
-    super(printer);
+  public IndentPrinter getPrinter() {
+    return state.getPrinter();
   }
 
   // CodoGen
 
   @Override
-  public void handle(ASTIncSuffixExpression expr) {
-    _willBeRemoved_logUnimplemented(expr);
+  public void traverse(ASTIncSuffixExpression expr) {
+    // NOTE: this is only a temporary implementation,
+    // as in the future, templates provided by the symbols
+    // are to be used instead.
+
+    if (generatesToJavaNumeric(TypeCheck3.typeOf(expr.getExpression()))) {
+      expr.getExpression().accept(getTraverser());
+      getPrinter().print("++");
+    }
+    else {
+      Log.error("0xFD350 Unhandled increment suffix operator "
+              + ". This is an alpha version and needs to be extended.",
+          expr.get_SourcePositionStart(),
+          expr.get_SourcePositionEnd()
+      );
+    }
   }
 
   @Override
-  public void handle(ASTDecSuffixExpression expr) {
-    _willBeRemoved_logUnimplemented(expr);
+  public void traverse(ASTDecSuffixExpression expr) {
+    // NOTE: this is only a temporary implementation,
+    // as in the future, templates provided by the symbols
+    // are to be used instead.
+
+    if (generatesToJavaNumeric(TypeCheck3.typeOf(expr.getExpression()))) {
+      expr.getExpression().accept(getTraverser());
+      getPrinter().print("--");
+    }
+    else {
+      Log.error("0xFD351 Unhandled increment suffix operator "
+              + ". This is an alpha version and needs to be extended.",
+          expr.get_SourcePositionStart(),
+          expr.get_SourcePositionEnd()
+      );
+    }
   }
 
   @Override
-  public void handle(ASTIncPrefixExpression expr) {
-    _willBeRemoved_logUnimplemented(expr);
+  public void traverse(ASTIncPrefixExpression expr) {
+    SymTypeExpression resultType = normalize(typeOf(expr));
+    SymTypeExpression innerType = normalize(typeOf(expr.getExpression()));
+
+    JavaOperationPrinter.printAssignment(
+        getPrinter(),
+        resultType,
+        innerType,
+        // left type due to conversion
+        innerType,
+        p -> expr.getExpression().accept(getTraverser()),
+        p2 -> printPlus(getPrinter(),
+            resultType,
+            innerType,
+            SymTypeExpressionFactory.createPrimitive("int"),
+            p -> expr.getExpression().accept(getTraverser()),
+            (p) -> p.print("1")
+        )
+    );
   }
 
   @Override
-  public void handle(ASTDecPrefixExpression expr) {
-    _willBeRemoved_logUnimplemented(expr);
+  public void traverse(ASTDecPrefixExpression expr) {
+    SymTypeExpression resultType = normalize(typeOf(expr));
+    SymTypeExpression innerType = normalize(typeOf(expr.getExpression()));
+
+    JavaOperationPrinter.printAssignment(
+        getPrinter(),
+        resultType,
+        innerType,
+        // left type due to conversion
+        innerType,
+        p -> expr.getExpression().accept(getTraverser()),
+        p2 -> printMinus(
+            getPrinter(),
+            resultType,
+            innerType,
+            SymTypeExpressionFactory.createPrimitive(BasicSymbolsMill.INT),
+            p -> expr.getExpression().accept(getTraverser()),
+            (p) -> p.print("1")
+        )
+    );
   }
 
   @Override
-  public void handle(ASTAssignmentExpression assignment) {
+  public void traverse(ASTAssignmentExpression assignment) {
 
     // should be the same as target
     SymTypeExpression resultType = normalize(typeOf(assignment));
@@ -152,7 +210,7 @@ public class AssignmentExpressionsJavaGenVisitor
     }
 
     JavaOperationPrinter.printAssignment(
-        printer,
+        getPrinter(),
         resultType,
         leftType,
         // left type due to conversion

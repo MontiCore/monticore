@@ -33,6 +33,8 @@ public class JsonDeSers {
 
   public static final String STEREO_INFO = "stereoinfo";
 
+  public static final String SYMBOL_HIERARCHY = "symbolHierarchy";
+
   /**
    * This method deserializes a stored package. If no package is stored, the default
    * empty package ("") is returned.

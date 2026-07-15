@@ -1,10 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.symboltable.stereotypes;
 
-import de.monticore.interpreter.Value;
 import de.monticore.symboltable.IScope;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.symboltable.serialization.json.JsonElement;
+import de.monticore.values.MCValue;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Map;
@@ -64,7 +64,7 @@ public class StereoinfoDeSer {
    * See {@link StereoinfoDeSer} on how to configure how this facade behaves.
    */
   public static String printAsJson(
-    Map.Entry<? extends IStereotypeReference, Optional<Value>> stereoinfo) {
+    Map.Entry<? extends IStereotypeReference, Optional<MCValue>> stereoinfo) {
     return printAsJson(stereoinfo.getKey(), stereoinfo.getValue());
   }
 
@@ -74,12 +74,12 @@ public class StereoinfoDeSer {
    * <p>
    * See {@link StereoinfoDeSer} on how to configure how this facade behaves.
    */
-  public static String printAsJson(IStereotypeReference stereotype, Optional<Value> value) {
+  public static String printAsJson(IStereotypeReference stereotype, Optional<MCValue> value) {
 
     return getInstance().doPrintAsJson(stereotype, value);
   }
 
-  protected String doPrintAsJson(IStereotypeReference stereotype, Optional<Value> value) {
+  protected String doPrintAsJson(IStereotypeReference stereotype, Optional<MCValue> value) {
     if (value.isPresent()) {
       Log.errorInternal(
         "0x82401 Internal error: The serialization of values for symbolic stereotypes is not yet " +
@@ -110,14 +110,14 @@ public class StereoinfoDeSer {
    * <p>
    * See {@link StereoinfoDeSer} on how to configure how this facade behaves.
    */
-  public static Map.Entry<IStereotypeReference, Optional<Value>> deserialize(
+  public static Map.Entry<IStereotypeReference, Optional<MCValue>> deserialize(
     JsonElement json, IScope enclosingScope) {
 
     return getInstance().doDeserialize(json, enclosingScope);
   }
 
   @SuppressWarnings("unused")
-  protected Map.Entry<IStereotypeReference, Optional<Value>> doDeserialize(JsonElement json,
+  protected Map.Entry<IStereotypeReference, Optional<MCValue>> doDeserialize(JsonElement json,
                                                                            IScope enclosingScope) {
     Log.errorInternal(
       "0x82402 Internal error: The deserialization of stereotype annotations is not supported by " +

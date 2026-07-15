@@ -323,6 +323,17 @@ public class GenerateConditionsVisitor implements
           ASTObjectCondition roleCondition2 = ODRuleGenerationMill.objectConditionBuilder().uncheckedBuild();
           roleCondition2.setObjectName(rightObjectName);
           roleCondition2.setConditionString(createTargetObjectCondition(node, leftObjectName, isIterated, isOptional));
+
+          if (isIterated) {
+            // we either check parent.getChilds().contains(child)
+            // or getParent(child) == parent, depending on if we have more than 10
+            // In the best case/future work, we cache the size value in a boolean?
+            secondObjectCondition.setConditionString(format("(%s_cand.get%sList().size() > 10 &&",
+                uncapitalize(leftObjectName),
+                Util.makeSingular(node.getRightRole())
+               ) + secondObjectCondition.getConditionString() + ")");
+          }
+
           if (!leftObjectName.isEmpty()) {
             ASTDependency dependency = ODRuleGenerationMill.dependencyBuilder().uncheckedBuild();
             dependency.setContent(leftObjectName);
@@ -387,7 +398,9 @@ public class GenerateConditionsVisitor implements
 
   protected String createTargetObjectCondition(ASTODLink node, String leftObjectName, boolean isIterated, boolean isOptional) {
     if (isIterated) {
-      return format("!%s_cand.get%sList().contains(cand)",
+      return format("(%s_cand.get%sList().size() <= 10 && !%s_cand.get%sList().contains(cand))",
+          uncapitalize(leftObjectName),
+          Util.makeSingular(node.getRightRole()),
           uncapitalize(leftObjectName),
           Util.makeSingular(node.getRightRole()));
     } else if (isOptional) {

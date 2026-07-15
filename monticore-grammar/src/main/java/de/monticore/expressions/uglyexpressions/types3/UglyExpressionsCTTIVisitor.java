@@ -44,6 +44,9 @@ public class UglyExpressionsCTTIVisitor
       getType4Ast().setTypeOfExpression(expr, createObscureType());
     }
     else {
+      getInferenceContext4Ast().setTargetTypeOfExpression(
+          expr.getExpression(), typeResult
+      );
       visit(expr);
       traverse(expr);
       endVisit(expr);

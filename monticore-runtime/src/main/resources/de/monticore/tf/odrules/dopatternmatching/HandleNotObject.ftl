@@ -2,7 +2,7 @@
 ${signature("isOptional", "parentObject")}
 
 <#assign notObject = ast>
-if (nextNode.equals("${notObject.getObjectName()}")) {
+case "${notObject.getObjectName()}" -> {
   // this is a negative object, reset candidates list
   if (!isBacktracking) {
     if (!isBacktrackingNegative) {
@@ -15,9 +15,7 @@ if (nextNode.equals("${notObject.getObjectName()}")) {
       // if no object ist found, test if backtracking stack is empty
       if (backtrackingNegative.isEmpty()) {
         // no match of negative elements can be found go on with lists
-        <#if !isOptional>
         foundMatch = true;
-        </#if>
         isBacktrackingNegative = false;
         backtracking.push(nextNode);
         while (!searchPlan.isEmpty() && !searchPlan.peek().endsWith("_$List")) {

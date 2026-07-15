@@ -2,7 +2,7 @@
 ${signature("isOptional", "parentObject")}
 
 <#assign normalObject = ast>
-if (nextNode.equals("${normalObject.getObjectName()}")) {
+case "${normalObject.getObjectName()}" -> {
   if(isBacktrackingNegative) {
     isBacktracking = true;
     isBacktrackingNegative = false;
@@ -24,12 +24,11 @@ if (nextNode.equals("${normalObject.getObjectName()}")) {
     // if no object ist found, test if backtracking stack is empty
     if(backtracking.isEmpty()) {
       // no match of the pattern can be found
-    <#if !isOptional>
       foundMatch = false;
-    <#elseif parentObject?has_content>
+    <#if isOptional && parentObject?has_content>
       reset_${parentObject.getObjectName()}();
     </#if>
-    break;
+    break mainLoop;
     } else {
       // start backtracking
       isBacktracking = true;

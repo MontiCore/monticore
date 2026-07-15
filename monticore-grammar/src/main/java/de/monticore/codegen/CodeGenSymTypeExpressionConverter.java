@@ -7,6 +7,7 @@ import de.monticore.types.check.SymTypeExpression;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Collection;
+import java.util.List;
 
 import static de.monticore.types3.SymTypeRelations.normalize;
 
@@ -14,16 +15,28 @@ public abstract class CodeGenSymTypeExpressionConverter {
 
   protected static CodeGenSymTypeExpressionConverter delegate;
 
-  protected Collection<ICodeGenSymTypeExpressionConversionHandler> conversionHandlers;
+  protected List<Collection<ICodeGenSymTypeExpressionConversionHandler>>
+      conversionHandlersByPriority;
 
-  protected Collection<ICodeGenSymTypeExpressionConversionHandler> getConversionHandlers() {
-    return this.conversionHandlers;
+  /**
+   * The actual handlers managing the conversion.
+   *
+   * @return A list of collections of handlers;
+   *     the collections are ordered by priority.
+   *     If a handler with a higher priority handles the conversion,
+   *     the lower priority handlers are not called.
+   *     If two handlers with the same priority handle the conversion,
+   *     the handlers are not configured correctly.
+   */
+  protected List<Collection<ICodeGenSymTypeExpressionConversionHandler>>
+  getConversionHandlersByPriority() {
+    return this.conversionHandlersByPriority;
   }
 
-  protected void setConversionHandlers(
-      Collection<ICodeGenSymTypeExpressionConversionHandler> conversionHandlers
+  protected void setConversionHandlersByPriority(
+      List<Collection<ICodeGenSymTypeExpressionConversionHandler>> conversionHandlersByPriority
   ) {
-    this.conversionHandlers = conversionHandlers;
+    this.conversionHandlersByPriority = conversionHandlersByPriority;
   }
 
   // methods
@@ -53,21 +66,26 @@ public abstract class CodeGenSymTypeExpressionConverter {
   ) {
     SymTypeExpression targetNormalized = normalize(modelTargetType);
     SymTypeExpression sourceNormalized = normalize(modelSourceType);
-    if (targetNormalized.deepEquals(sourceNormalized)) {
-      sourceExprPrintAction.print(printer);
-    }
-    else {
-      int numTimesPrinted = 0;
-      for (ICodeGenSymTypeExpressionConversionHandler conversionHandler : getConversionHandlers()) {
-        if (conversionHandler.tryPrintConverted(printer, targetNormalized, sourceNormalized, sourceExprPrintAction)) {
+    int numTimesPrinted = 0;
+    for (
+        Collection<ICodeGenSymTypeExpressionConversionHandler>
+            conversionHandlers : getConversionHandlersByPriority()
+    ) {
+      for (
+          ICodeGenSymTypeExpressionConversionHandler
+              conversionHandler : conversionHandlers
+      ) {
+        if (conversionHandler.tryPrintConverted(
+            printer,
+            targetNormalized,
+            sourceNormalized,
+            sourceExprPrintAction)
+        ) {
           numTimesPrinted++;
         }
       }
-      if (numTimesPrinted == 0) {
-        Log.warn("0xFD220 Could not convert " + modelSourceType.printFullName()
-            + " to " + modelTargetType.printFullName()
-        );
-        sourceExprPrintAction.print(printer);
+      if (numTimesPrinted == 1) {
+        break;
       }
       else if (numTimesPrinted > 1) {
         Log.error("0xFD222 internal error: "
@@ -76,7 +94,15 @@ public abstract class CodeGenSymTypeExpressionConverter {
             + modelTargetType.printFullName() + "."
             + " This should never happen!"
         );
+        break;
       }
+    }
+
+    if (numTimesPrinted == 0) {
+      Log.warn("0xFD220 Could not convert " + modelSourceType.printFullName()
+          + " to " + modelTargetType.printFullName()
+      );
+      sourceExprPrintAction.print(printer);
     }
   }
 

@@ -33,12 +33,11 @@ public boolean doPatternMatching() {
     splitSearchplan(); // for OptList structures
     isBacktracking = false;
   }
-  Stack<String> backtracking = new Stack<String>();
-  Stack<String> backtrackingNegative = new Stack<String>();
   String nextNode = null;
-  while(!searchPlan.isEmpty()) {
+  mainLoop: while(!searchPlan.isEmpty()) {
     nextNode = searchPlan.pop();
-    <#--creates an if statement for each object for matching the object-->
+    switch(nextNode) {
+    <#--creates a switch case for each object for matching the object-->
 <#list hierarchyHelper.getMandatoryObjectsWithoutListChilds(ast.getPattern().getLHSObjectsList()) as object>
   <#if object.isListObject()>
     ${tc.includeArgs("de.monticore.tf.odrules.dopatternmatching.HandleListObject", object, [false, ""])}
@@ -49,8 +48,8 @@ public boolean doPatternMatching() {
   <#else>
     ${tc.includeArgs("de.monticore.tf.odrules.dopatternmatching.HandleNormalObject", object, [false, ""])}
   </#if>
-  <#if object_has_next>else</#if>
 </#list>
+    }
     if (!isBacktrackingNegative) {
       if (searchPlan.isEmpty()) {
         if (!checkConstraints()) {
@@ -93,6 +92,9 @@ public boolean doPatternMatching() {
       searchPlan.push(nextNode);
     }
     allMatches.add(match);
+    // And remove last backtracking
+    if (!backtracking.isEmpty())
+      backtracking.pop();
   }
   return foundMatch;
 }

@@ -80,18 +80,24 @@ public class DSL2TransformationLanguageVisitor implements
     // set supergrammars
     boolean noUncommenSupers = true;
     for (MCGrammarSymbol dslSuper : srcNode.getSymbol().getSuperGrammarSymbols()) {
-    if (DSTLGenInheritanceHelper.getInstance().isCommonSuperGrammar(dslSuper.getName())){
-      tfLang.getSupergrammarList().add(GrammarMill.grammarReferenceBuilder()
-              .addAllNames(Splitters.DOT.splitToList(dslSuper.getFullName())).build());
-      } else {
+      if (DSTLGenInheritanceHelper.getInstance().isCommonSuperGrammar(dslSuper.getName())) {
+        tfLang.getSupergrammarList().add(GrammarMill.grammarReferenceBuilder()
+            .addAllNames(Splitters.DOT.splitToList(dslSuper.getFullName())).build());
+      }
+      else {
         noUncommenSupers = false;
         ASTGrammarReference tfSuper = GrammarMill.grammarReferenceBuilder().uncheckedBuild();
+        tfSuper.setNameList(new ArrayList<>());
+
         // copy package if present
-      ;
-      tfSuper.setNameList(new ArrayList<>(Splitters.DOT.splitToList(dslSuper.getPackageName())));
+        List<String> splittedSuper = Splitters.DOT.splitToList(dslSuper.getPackageName());
+        if (!splittedSuper.isEmpty() && !splittedSuper.getFirst().isBlank()) {
+          tfSuper.getNameList().addAll(splittedSuper);
+        }
+
         // add suffix
         tfSuper.getNameList().add("tr");
-      tfSuper.getNameList().add(dslSuper.getName() + "TR");
+        tfSuper.getNameList().add(dslSuper.getName() + "TR");
 
         tfLang.getSupergrammarList().add(tfSuper);
       }
@@ -330,6 +336,24 @@ public class DSL2TransformationLanguageVisitor implements
     targetConceptList.add(targetNode);
 
     map(srcNode, targetNode);
+  }
+
+  @Override
+  public void visit(ASTSplitRule srcNode) {
+    Log.debug("Visiting " + srcNode.toString(), LOG);
+    tfLang.addSplitRule(srcNode.deepClone());
+  }
+
+  @Override
+  public void visit(ASTKeywordRule srcNode) {
+    Log.debug("Visiting " + srcNode.toString(), LOG);
+    tfLang.addKeywordRule(srcNode.deepClone());
+  }
+
+  @Override
+  public void visit(ASTReplaceRule srcNode) {
+    Log.debug("Visiting " + srcNode.toString(), LOG);
+    tfLang.addReplaceRule(srcNode.deepClone());
   }
 
   public ASTMCGrammar getTfLang() {

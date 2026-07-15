@@ -3,7 +3,7 @@
   <#if list.isListObject()>
   <#assign mandatoryObjects = hierarchyHelper.getListChilds(ast.getPattern().getLHSObjectsList(), list)>
   <#assign matchingObjects = hierarchyHelper.getListChilds(ast.getPattern().getMatchingObjectsList(), list)>
-public class Match${list.getObjectName()}{
+public static class Match${list.getObjectName()}{
   protected Match${list.getObjectName()}(
   <#list mandatoryObjects as object>
     <#if !object.isListObject()> ${object.getType()}
@@ -30,28 +30,15 @@ public class Match${list.getObjectName()}{
     protected Stack<String> backtracking;
 }
 
-  <#list mandatoryObjects as listchild>
-  // Method for checkConditions to get the Elements of the List to compare while Matching
-  protected List<${listchild.getType()}> get_${listchild.getObjectName()}_temp_cands() {
-    List<${listchild.getType()}> ${listchild.getObjectName()} = new ArrayList<${listchild.getType()}>();
-    ListIterator ${list.getObjectName()}It = ${list.getObjectName()}_candidates.listIterator();
-    while(${list.getObjectName()}It.hasNext()) {
-      Match${list.getObjectName()} ${list.getObjectName()} = (Match${list.getObjectName()})${list.getObjectName()}It.next();
-    <#assign isInOpt = hierarchyHelper.isWithinOptionalStructure(listchild.getObjectName())>
-    <#if isInOpt>if(${list.getObjectName()}.${listchild.getObjectName()}.isPresent()) {</#if>
-    ${listchild.getObjectName()}.add(${list.getObjectName()}.${listchild.getObjectName()}<#if isInOpt>.get()</#if>);
-    <#if isInOpt>}</#if>
-    }
-    return ${listchild.getObjectName()};
-  }
-  </#list>
-
   //Method for checking if the given object is already matched by the list
   protected boolean isMatchedBy${list.getObjectName()} (ASTNode cand) {
     return
-  <#list mandatoryObjects as listchild>get_${listchild.getObjectName()}_temp_cands().contains(cand)
-    <#if listchild_has_next> || </#if>
-  </#list>;
+      <#list mandatoryObjects as listchild>
+      <#assign isInOpt = hierarchyHelper.isWithinOptionalStructure(listchild.getObjectName())>
+      <#if isInOpt>${list.getObjectName()}_candidates.stream().filter(x -> x.${listchild.getObjectName()} != null && x.${listchild.getObjectName()}.isPresent()).map(x -> x.${listchild.getObjectName()}.get()).anyMatch(x -> x.equals(cand))
+      <#else>${list.getObjectName()}_candidates.stream().anyMatch(x -> x.${listchild.getObjectName()} != null && x.${listchild.getObjectName()}.equals(cand))
+      </#if><#if listchild_has_next> || </#if>
+      </#list>;
   }
 </#if>
 </#list>

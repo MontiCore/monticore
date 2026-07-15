@@ -23,10 +23,12 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
     testImplementation "org.junit.jupiter:junit-jupiter-params:$junit_version"
     testImplementation "org.junit.jupiter:junit-jupiter-engine:$junit_version"
+    testImplementation "de.monticore:class2mc:$previous_mc_version"
     testRuntimeOnly "org.junit.platform:junit-platform-launcher:$junit_version"
-    testRuntimeOnly project(":monticore-libraries:javagen-runtime")
+    testImplementation project(":monticore-libraries:javagen-runtime")
     testImplementation 'org.apache.groovy:groovy:4.0.2'
     testImplementation testFixtures(project(':monticore-runtime'))
+    testImplementation testFixtures(project(':monticore-grammar'))
 }
 
 def srcDir = layout.buildDirectory.dir("main/java")
@@ -70,7 +72,6 @@ tasks.named('generateMCGrammars') {
   script = "de/monticore/monticore_emf.groovy"
   modelPath = "${project(':monticore-grammar').projectDir}/src/main/grammars"
   handWrittenCodeDir = files(srcDir)
-  genINT = true
   dependsOn(copySrc, copyTest, copyTestResources)
 }
 
@@ -78,7 +79,6 @@ generateTestMCGrammars {
   script = "de/monticore/monticore_emf.groovy"
   modelPath = files("$grammarDir", "${project(':monticore-grammar').projectDir}/src/test/grammars", "${project(':monticore-grammar').projectDir}/src/main/examples")
   handWrittenCodeDir = files(srcDir, testDir)
-  genINT = true
   dependsOn(copySrc, copyTest, copyTestResources)
 }
 

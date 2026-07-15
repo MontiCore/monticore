@@ -29,14 +29,17 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static de.monticore.runtime.junit.MCAssertions.assertHasFindingsStartingWith;
 import static de.monticore.runtime.junit.MCAssertions.assertNoFindings;
-import static de.monticore.types3.util.DefsTypesForTests.*;
 import static de.monticore.types.check.SymTypeExpressionFactory.createGenerics;
 import static de.monticore.types.check.SymTypeExpressionFactory.createIntersection;
 import static de.monticore.types.check.SymTypeExpressionFactory.createTuple;
@@ -44,7 +47,10 @@ import static de.monticore.types.check.SymTypeExpressionFactory.createTypeArray;
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeObject;
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeVariable;
 import static de.monticore.types.check.SymTypeExpressionFactory.createUnion;
-import static org.junit.jupiter.api.Assertions.*;
+import static de.monticore.types3.util.DefsTypesForTests.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CommonExpressionTypeVisitorTest
     extends AbstractTypeVisitorTest {
@@ -2020,39 +2026,32 @@ public class CommonExpressionTypeVisitorTest
     checkExpr("overloadedFunc1(42)", "boolean");
   }
 
-  @Test
-  public void testInvalidCallExpression() throws IOException {
-    //method isNot() is not in scope -> method cannot be resolved -> method has no return type
+  @ParameterizedTest
+  @MethodSource
+  public void testInvalidCallExpressions(String exprStr, String expectedError) {
     init_advanced();
-    checkErrorExpr("isNot()", "0xFD118");
+    checkErrorExpr(exprStr, expectedError);
   }
 
-  @Test
-  public void testInvalidCallExpressionWithMissingNameAndNotComposedOfCallback()
-      throws IOException {
-    // Expression (2 + 3)() and all other Expressions in front of brackets are parsable
-    init_advanced();
-    checkErrorExpr("(2 + 3)()", "0xFDAB4");
-  }
-
-  @Test
-  public void testInvalidCallExpressionWithInvalidQualifiedName() throws IOException {
-    //method isInt() is not in the specified scope -> method cannot be resolved
-    init_advanced();
-    checkErrorExpr("notAScope.isInt()", "0xF735F");
-  }
-
-  @Test
-  public void testInvalidCallExpressionWithFunctionChaining() throws IOException {
-    //function isNot() is part of the return type of getIsInt() -> function cannot be resolved
-    init_advanced();
-    checkErrorExpr("getIsInt.isNot()", "0xFDB3A");
-  }
-
-  @Test
-  public void testInvalidCallExpressionWithInvalidArgument() throws IOException {
-    init_advanced();
-    checkErrorExpr("isInt(\"foo\" / 2)", "0xB0163");
+  static public Stream<Arguments> testInvalidCallExpressions() {
+    return Stream.of(
+        //function notASymbol() is not in scope
+        // -> function cannot be resolved
+        // -> function has no return type
+        Arguments.of("notASymbol()", "0xFD118"),
+        // Expression (2 + 3)() and all other Expressions in front of brackets are parsable
+        Arguments.of("(2 + 3)()", "0xFDAB4"),
+        //method isInt() is not in the specified scope -> method cannot be resolved
+        Arguments.of("notAScope.isInt()", "0xF735F"),
+        //function isNot() is part of the return type of getIsInt() -> function cannot be resolved
+        Arguments.of("getIsInt.isNot()", "0xFDB3A"),
+        // invalid argument
+        Arguments.of("isInt(\"foo\" / 2)", "0xB0163"),
+        // missing function with missing args
+        Arguments.of("missingMethod(missing1, missing2)", "0xFD118"),
+        // CTTI: invalid number of arguments
+        Arguments.of("(((byte, int) t) -> (0, t)) (1, 2)", "0xFDAB5")
+    );
   }
 
   @Test
@@ -2067,11 +2066,6 @@ public class CommonExpressionTypeVisitorTest
   @Test
   public void testRegularAssignmentWithTwoMissingFields() throws IOException {
     checkErrorExpr("missingField = missingField2", "0xFD118");
-  }
-
-  @Test
-  public void testMissingMethodWithMissingArgs() throws IOException {
-    checkErrorExpr("missingMethod(missing1, missing2)", "0xFD118");
   }
 
   /**

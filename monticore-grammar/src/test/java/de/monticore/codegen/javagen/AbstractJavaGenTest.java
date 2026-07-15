@@ -1,254 +1,306 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.codegen.javagen;
 
+import de.monticore.ast.ASTNode;
 import de.monticore.codegen.CodeGenerator;
-import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
-import de.monticore.expressions.combineexpressionswithliterals._ast.ASTFoo;
-import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsArtifactScope;
-import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
-import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.expressions.lambdaexpressions._ast.ASTLambdaExpression;
-import de.monticore.expressions.lambdaexpressions._symboltable.LambdaExpressionsSTCompleteTypes2;
-import de.monticore.ocl.oclexpressions.symboltable.OCLExpressionsSymbolTableCompleter;
-import de.monticore.ocl.setexpressions.symboltable.SetExpressionsSymbolTableCompleter;
-import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.codegen.util.Node2Name;
 import de.monticore.runtime.junit.AbstractMCTest;
-import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
-import de.monticore.types.check.SymTypeExpression;
-import de.monticore.types.check.SymTypeExpressionFactory;
-import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types3.SymTypeRelations;
-import de.monticore.types3.TypeCheck3;
-import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserFactory;
-import de.monticore.types3.util.DefsTypesForTests;
-import de.monticore.types3.util.OOWithinScopeBasicSymbolsResolver;
-import de.monticore.types3.util.OOWithinTypeBasicSymbolsResolver;
-import de.monticore.visitor.ITraverser;
-import jdk.jshell.JShell;
-import jdk.jshell.Snippet;
-import jdk.jshell.SnippetEvent;
+import de.monticore.symbols.util.Class2MCTestUtil;
+import de.monticore.tests.expressionsandstatements.ExpressionsAndStatementsMill;
+import de.monticore.tests.expressionsandstatements.ExpressionsAndStatementsUtil;
+import de.monticore.tests.expressionsandstatements._ast.ASTBehaviorInput;
+import de.monticore.tests.expressionsandstatements.codegen.javagen.ExpressionsAndStatementsJavaGenerator;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 
+import javax.tools.Diagnostic;
+import javax.tools.DiagnosticCollector;
+import javax.tools.JavaCompiler;
+import javax.tools.JavaFileObject;
+import javax.tools.StandardJavaFileManager;
+import javax.tools.ToolProvider;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
-import java.util.Optional;
+import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
+import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getJavaTypePrint;
 import static de.monticore.runtime.junit.MCAssertions.assertNoFindings;
+import static de.monticore.types3.SymTypeRelations.normalize;
+import static de.monticore.types3.TypeCheck3.typeOf;
+import static java.lang.System.lineSeparator;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 public abstract class AbstractJavaGenTest extends AbstractMCTest {
 
-  protected JShell jshell;
+  // enable for experimenting:
+  // it will print the generated code before evaluation
+  protected static final boolean PRINT_GENERATED_CODE = true;
+
+  protected static final String GENERATED_METHOD_NAME =
+      "executeSystemUnderTest";
+
+  protected static final Path GENERATED_SOURCE_DIR =
+      Path.of("target", "codegen-test", "java");
+
+  protected static final Path GENERATED_CLASS_DIR =
+      Path.of("target", "codegen-test", "class");
+
+  CodeGenerator generator;
+
+  protected static JavaCompiler javac;
+
+  @BeforeAll
+  protected static void setup() throws IOException {
+    javac = ToolProvider.getSystemJavaCompiler();
+    if (javac == null) {
+      fail("Java Compiler could not be found.");
+    }
+
+    // assure that the paths exist for .java and .class artifacts
+    Files.createDirectories(GENERATED_SOURCE_DIR);
+    Files.createDirectories(GENERATED_CLASS_DIR);
+  }
+
+  @AfterAll
+  protected static void cleanUp() {
+    javac = null;
+  }
 
   @BeforeEach
   void beforeEach() {
-    CombineExpressionsWithLiteralsMill.reset();
-    CombineExpressionsWithLiteralsMill.init();
-    BasicSymbolsMill.initializePrimitives();
-    DefsTypesForTests.set_boxedPrimitives();
-
-    SymTypeRelations.init();
-    OOWithinScopeBasicSymbolsResolver.init();
-    OOWithinTypeBasicSymbolsResolver.init();
-    CombineExpressionsWithLiteralsTypeTraverserFactory.initTypeCheck3();
-
-    jshell = JShell.create();
-  }
-
-  protected CodeGenerator createCodeGenerator() {
-    return new CombineExpressionWithLiteralsCodeGenerator(new IndentPrinter());
+    LogStub.initPlusLog();
+    ExpressionsAndStatementsUtil.init();
+    Class2MCTestUtil.initializeClass2MC4OOSymbols();
+    generator = new ExpressionsAndStatementsJavaGenerator();
   }
 
   /**
-   * Evaluates an expression.
-   * First, generates Java code.
-   * Then, generates required functional interfaces.
-   * Ultimately, evaluates the Java code using the JShell API.
+   * Executes the model and compares the result with the expected value.
    *
-   * @param javaStr The java expression.
-   * @return A List of {@see jdk.shell.SnippetEvent}s.
+   * @param behaviorModelStr the model to execute
+   * @param expectedValue    the expected value
    */
-  protected List<SnippetEvent> evalJava(String javaStr) {
-    String[] classpaths = System.getProperty("java.class.path")
-        .split(File.pathSeparator);
-    for (String classpath : classpaths) {
-      getJShell().addToClasspath(classpath);
-    }
-    return getJShell().eval(javaStr + ";");
-  }
-
-  protected void checkValue(String exprStr, String expectedValue) {
-    String javaStr = generateJavaFromExpression(exprStr);
-    List<SnippetEvent> events = evalJava(javaStr);
-    assertEquals(1, events.size(),
-        "More/Less than exactly one events where triggered by the evaluation."
-    );
-    SnippetEvent event = events.get(0);
-    assertEquals(Snippet.Status.VALID, event.status(),
-        "JShell failed:" + System.lineSeparator()
-            + printDiags(event.snippet()) + System.lineSeparator()
-            + "Expression:" + System.lineSeparator() + javaStr
-    );
-    assertEquals(expectedValue, event.value(),
-        "The evaluated Java code does not match the expected output."
-            + " Expression:" + System.lineSeparator() + javaStr
-    );
-  }
-
-  protected String generateJavaFromExpression(String exprStr) {
-    ASTExpression astExpr = parseExpr(exprStr);
-
-    generateScopes(astExpr);
-    SymTypeExpression type = TypeCheck3.typeOf(astExpr);
-    assertNoFindings();
-    assertFalse(type.isObscureType());
-
-    CodeGenerator generator = createCodeGenerator();
-    generator.generateCode(astExpr);
-    String javaExpr = generator.getPrinter().getContent();
-    assertNoFindings();
-
-    return javaExpr;
-  }
-
-  protected String generateJavaFromType(String typeStr) {
-    ASTMCType astType = parseMCType(typeStr);
-
-    generateScopes(astType);
-    SymTypeExpression type = TypeCheck3.symTypeFromAST(astType);
-    assertNoFindings();
-    assertFalse(type.isObscureType());
-
-    CodeGenerator generator = createCodeGenerator();
-    generator.generateCode(astType);
-    return generator.getPrinter().getContent();
-  }
-
-  protected void generateScopes(ASTExpression expr) {
-    // create a root
-    ASTFoo rootNode = CombineExpressionsWithLiteralsMill.fooBuilder()
-        .setExpression(expr)
-        .build();
-    ICombineExpressionsWithLiteralsArtifactScope rootScope =
-        CombineExpressionsWithLiteralsMill.scopesGenitorDelegator()
-            .createFromAST(rootNode);
-    rootScope.setName("fooRoot");
-    // complete the symbol table
-    expr.accept(getSymbolTableCompleter());
-  }
-
-  protected void generateScopes(ASTMCType mcType) {
-    // create an expression to contain the type
-    // currently (MC 7.8) lambda expressions are the only expressions
-    // which can directly contain MCTypes
-    ASTLambdaExpression lambda = CombineExpressionsWithLiteralsMill
-        .lambdaExpressionBuilder()
-        .setLambdaParameters(
-            CombineExpressionsWithLiteralsMill.lambdaParametersBuilder()
-                .setLambdaParametersList(List.of(
-                    CombineExpressionsWithLiteralsMill.lambdaParameterBuilder()
-                        .setName("parameter")
-                        .setMCType(mcType)
-                        .build()
-                ))
-                .build()
-        )
-        .setLambdaBody(
-            CombineExpressionsWithLiteralsMill.lambdaExpressionBodyBuilder()
-                .setExpression(
-                    CombineExpressionsWithLiteralsMill.literalExpressionBuilder()
-                        .setLiteral(
-                            CombineExpressionsWithLiteralsMill
-                                .natLiteralBuilder()
-                                .setDigits("8243721")
-                                .build()
-                        )
-                        .build()
-                )
-                .setType(SymTypeExpressionFactory.createPrimitive("int"))
-                .build()
-        )
-        .build();
-    // create a root
-    ASTFoo rootNode = CombineExpressionsWithLiteralsMill.fooBuilder()
-        .setExpression(lambda)
-        .build();
-    ICombineExpressionsWithLiteralsArtifactScope rootScope =
-        CombineExpressionsWithLiteralsMill.scopesGenitorDelegator()
-            .createFromAST(rootNode);
-    rootScope.setName("fooRoot");
-  }
-
-  // Parse a String expression of the according language
-  protected Optional<ASTExpression> parseStringExpr(String exprStr) {
+  protected void checkValue(String behaviorModelStr, Object expectedValue) {
+    Path javaArtifact = generateJavaArtifact(behaviorModelStr);
+    Callable<Object> invoker = compileJavaArtifactAndGetCallable(javaArtifact);
+    Object result;
     try {
-      return CombineExpressionsWithLiteralsMill.parser()
-          .parse_StringExpression(exprStr);
+      result = invoker.call();
+    }
+    catch (Exception e) {
+      fail(e);
+      return;
+    }
+
+    // compare
+    assertEquals(expectedValue, result,
+        "The resulting value is not the same as the expected value."
+            + lineSeparator() + " File: " + javaArtifact.toAbsolutePath()
+            + lineSeparator() + "********** Generated **********"
+            + lineSeparator() + readFile(javaArtifact.toFile())
+    );
+  }
+
+  /**
+   * compiles the model and returns a callable to invoke the generated code.
+   *
+   * @param behaviorModelStr the model to compile
+   * @return a callable to invoke the generated code
+   */
+  protected Callable<Object> compileToCallable(String behaviorModelStr) {
+    Path javaArtifact = generateJavaArtifact(behaviorModelStr);
+    return compileJavaArtifactAndGetCallable(javaArtifact);
+  }
+
+  protected Path generateJavaArtifact(String behaviorModelStr) {
+    // setup
+    ASTBehaviorInput ast = ExpressionsAndStatementsUtil
+        .getPreparedAST(behaviorModelStr);
+    return createJavaSource(ast);
+  }
+
+  protected Callable<Object> compileJavaArtifactAndGetCallable(Path javaArtifact) {
+    String fileName = javaArtifact.getFileName().toString();
+    String className =
+        fileName.substring(0, fileName.length() - ".java".length());
+    // compile and get invocation object
+    compile(List.of(javaArtifact.toFile()));
+    return () -> invokeGeneratedMethod(className);
+  }
+
+  /**
+   * creates a .java artifact
+   *
+   * @param ast the behavior that will be turned into a .java artifact
+   * @return the Path of the created .java artifact
+   */
+  protected Path createJavaSource(ASTBehaviorInput ast) {
+    String className = Node2Name.getName(ast);
+    String javaStatementsStr = generateCode(ast);
+    String javaReturnType = ast.isPresentExpression() ?
+        getJavaTypePrint(normalize(typeOf(ast.getExpression()))) :
+        "void";
+    assertNoFindings();
+    // assure that we don't have any comments
+    String prettyPrintedModel =
+        ExpressionsAndStatementsMill.prettyPrint(ast, false);
+
+    String javaMethodStr = "public static " + javaReturnType + " "
+        + GENERATED_METHOD_NAME + "() {" + lineSeparator()
+        + javaStatementsStr
+        + "}";
+    String javaClassStr = "public class " + className + " {"
+        + lineSeparator() + javaMethodStr + lineSeparator()
+        + "}" + lineSeparator();
+    // prints the generated code,
+    // can help during development
+    if (PRINT_GENERATED_CODE) {
+      System.out.println("***** Generated Code *****");
+      System.out.println(javaClassStr);
+      System.out.println("**************************");
+    }
+    // add a comment of the original input
+    // to better identify the generated artifacts
+    String artifactFullStr =
+        javaClassStr + lineSeparator()
+            + "// ********** Original Model **********" + lineSeparator()
+            + "/*" + lineSeparator()
+            + prettyPrintedModel + lineSeparator()
+            + "*/" + lineSeparator();
+
+    // store as a file
+    Path sourceFile = GENERATED_SOURCE_DIR.resolve(className + ".java");
+    assertDoesNotThrow(() ->
+        Files.writeString(sourceFile, artifactFullStr, StandardCharsets.UTF_8)
+    );
+
+    return sourceFile;
+  }
+
+  /**
+   * produces Java code given a model.
+   * HookPoint
+   *
+   * @param node the node to generate code from
+   * @return the generated Java code
+   */
+  protected String generateCode(ASTNode node) {
+    return generator.generateCode(node);
+  }
+
+  /**
+   * compiles the provided Java artifacts
+   *
+   * @param files the Java artifacts to compile
+   */
+  protected void compile(
+      List<File> files
+  ) {
+    DiagnosticCollector<JavaFileObject> diagnosticsCollector =
+        new DiagnosticCollector<>();
+    StandardJavaFileManager javaFileManager = javac.getStandardFileManager(
+        diagnosticsCollector, null, StandardCharsets.UTF_8
+    );
+    Iterable<? extends JavaFileObject> compilationUnits =
+        javaFileManager.getJavaFileObjectsFromFiles(files);
+
+    String classPath = System.getProperty("java.class.path");
+    List<String> options = List.of(
+        "-d", GENERATED_CLASS_DIR.toString(),
+        "-classpath", classPath
+    );
+    JavaCompiler.CompilationTask task = javac.getTask(
+        null,
+        javaFileManager,
+        diagnosticsCollector,
+        options,
+        null,
+        compilationUnits
+    );
+
+    boolean success = task.call();
+    assertTrue(success,
+        () -> formatDiagnostics(diagnosticsCollector.getDiagnostics())
+            + lineSeparator() + "********** Models ***********"
+            + lineSeparator() + files.stream()
+            .map(this::readFile)
+            .collect(Collectors.joining(
+                lineSeparator()
+                    + "---------------------------"
+                    + lineSeparator()
+            ))
+    );
+  }
+
+  /**
+   * executes the test method and returns the result
+   *
+   * @param className the class containing the method
+   * @return the result of the method call
+   */
+  protected Object invokeGeneratedMethod(String className) throws Exception {
+    URL outputDirURL =
+        assertDoesNotThrow(() -> GENERATED_CLASS_DIR.toUri().toURL());
+    try (URLClassLoader classLoader = new URLClassLoader(
+        new URL[] { outputDirURL }, getClass().getClassLoader()
+    )) {
+      Class<?> compiledClass =
+          Class.forName(className, true, classLoader);
+      Method method = compiledClass.getDeclaredMethod(GENERATED_METHOD_NAME);
+      return method.invoke(null);
+    }
+    // unpack InvocationTargetException if possible
+    catch (InvocationTargetException ite) {
+      if (ite.getCause() instanceof Exception e) {
+        throw e;
+      }
+      else if (ite.getCause() instanceof Error err) {
+        throw err;
+      }
+      else {
+        throw ite;
+      }
+    }
+  }
+
+  // small helper
+
+  protected String formatDiagnostics(
+      List<Diagnostic<? extends JavaFileObject>> diagnostics
+  ) {
+    return diagnostics.stream()
+        .map(this::formatDiagnostic)
+        .collect(Collectors.joining(lineSeparator()));
+  }
+
+  protected String formatDiagnostic(
+      Diagnostic<? extends JavaFileObject> diagnostic
+  ) {
+    return "Diag<" + diagnostic.getStartPosition()
+        + ", " + diagnostic.getEndPosition() + ">: "
+        + diagnostic.getMessage(null);
+  }
+
+  protected String readFile(File file) {
+    try {
+      return Files.readString(file.toPath(), StandardCharsets.UTF_8);
     }
     catch (IOException e) {
       return fail(e);
     }
   }
-
-  // Parse a String type identifier of the according language
-  protected Optional<ASTMCType> parseStringMCType(String mcTypeStr) {
-    try {
-      return CombineExpressionsWithLiteralsMill.parser()
-          .parse_StringMCType(mcTypeStr);
-    }
-    catch (IOException e) {
-      return fail(e);
-    }
-  }
-
-  protected ASTExpression parseExpr(String exprStr) {
-    Optional<ASTExpression> astExpression = parseStringExpr(exprStr);
-    assertNoFindings();
-    assertTrue(astExpression.isPresent());
-    return astExpression.get();
-  }
-
-  protected ASTMCType parseMCType(String typeStr) {
-    Optional<ASTMCType> mcType = parseStringMCType(typeStr);
-    assertNoFindings();
-    assertTrue(mcType.isPresent());
-    return mcType.get();
-  }
-
-  protected ITraverser getSymbolTableCompleter() {
-    CombineExpressionsWithLiteralsTraverser combinedScopesCompleter =
-        CombineExpressionsWithLiteralsMill.traverser();
-    combinedScopesCompleter.add4LambdaExpressions(
-        new LambdaExpressionsSTCompleteTypes2()
-    );
-    OCLExpressionsSymbolTableCompleter oclExprCompleter =
-        new OCLExpressionsSymbolTableCompleter();
-    combinedScopesCompleter.add4OCLExpressions(oclExprCompleter);
-    combinedScopesCompleter.setOCLExpressionsHandler(oclExprCompleter);
-    SetExpressionsSymbolTableCompleter setExprCompleter =
-        new SetExpressionsSymbolTableCompleter();
-    combinedScopesCompleter.add4SetExpressions(setExprCompleter);
-    combinedScopesCompleter.setSetExpressionsHandler(setExprCompleter);
-    return combinedScopesCompleter;
-  }
-
-  protected JShell getJShell() {
-    return jshell;
-  }
-
-  protected String printDiags(Snippet snippet) {
-    return getJShell().diagnostics(snippet)
-        .map(diag ->
-            "Diag<" + diag.getStartPosition()
-                + ", " + diag.getEndPosition() + ">: "
-                + diag.getMessage(null)
-        )
-        .collect(Collectors.joining(System.lineSeparator()));
-  }
-
 }

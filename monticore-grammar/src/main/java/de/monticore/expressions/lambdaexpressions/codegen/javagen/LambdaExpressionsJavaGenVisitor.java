@@ -1,82 +1,73 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions.lambdaexpressions.codegen.javagen;
 
-import de.monticore.codegen.javagen.AbstractJavaGenVisitor;
+import com.google.common.base.Preconditions;
+import de.monticore.codegen.javagen.JavaGenVisitorState;
 import de.monticore.expressions.lambdaexpressions._ast.ASTLambdaExpression;
 import de.monticore.expressions.lambdaexpressions._ast.ASTLambdaExpressionBody;
 import de.monticore.expressions.lambdaexpressions._ast.ASTLambdaParameter;
-import de.monticore.expressions.lambdaexpressions._visitor.LambdaExpressionsHandler;
-import de.monticore.expressions.lambdaexpressions._visitor.LambdaExpressionsTraverser;
+import de.monticore.expressions.lambdaexpressions._visitor.LambdaExpressionsInheritanceHandler;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfFunction;
-import de.monticore.types.check.SymTypeOfGenerics;
 
-import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getAsJavaType;
-import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.printJavaType;
+import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getBoxedJavaTypePrint;
+import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getJavaTypePrint;
 import static de.monticore.types3.SymTypeRelations.normalize;
 import static de.monticore.types3.TypeCheck3.typeOf;
 
-public class LambdaExpressionsJavaGenVisitor extends AbstractJavaGenVisitor
-    implements LambdaExpressionsHandler {
+public class LambdaExpressionsJavaGenVisitor
+    extends LambdaExpressionsInheritanceHandler {
 
-  // Traverser
-  protected LambdaExpressionsTraverser traverser;
+  protected JavaGenVisitorState state;
 
-  @Override
-  public LambdaExpressionsTraverser getTraverser() {
-    return traverser;
+  public LambdaExpressionsJavaGenVisitor(JavaGenVisitorState state) {
+    this.state = Preconditions.checkNotNull(state);
+  }
+
+  protected IndentPrinter getPrinter() {
+    return state.getPrinter();
   }
 
   @Override
-  public void setTraverser(LambdaExpressionsTraverser traverser) {
-    this.traverser = traverser;
-  }
-
-  public LambdaExpressionsJavaGenVisitor(IndentPrinter printer) {
-    super(printer);
-  }
-
-  @Override
-  public void handle(ASTLambdaExpressionBody node) {
-    startParentheses();
+  public void traverse(ASTLambdaExpressionBody node) {
+    state.startParentheses();
     node.getExpression().accept(getTraverser());
-    endParentheses();
+    state.endParentheses();
   }
 
   @Override
-  public void handle(ASTLambdaExpression node) {
+  public void traverse(ASTLambdaExpression node) {
     SymTypeOfFunction funcType = normalize(typeOf(node)).asFunctionType();
-    SymTypeOfGenerics javaFuncType = getAsJavaType(funcType).asGenericType();
 
-    startParentheses();
+    state.startParentheses();
 
     // cast to Java function type
     getPrinter().print("(");
-    getPrinter().print(printJavaType(javaFuncType));
+    getPrinter().print(getJavaTypePrint(funcType));
     getPrinter().print(") ");
 
     // parameters
-    startParentheses();
+    state.startParentheses();
     for (int i = 0; i < node.getLambdaParameters().sizeLambdaParameters(); i++) {
       ASTLambdaParameter par = node.getLambdaParameters().getLambdaParameter(i);
       String parName = par.getName();
-      SymTypeExpression parType = javaFuncType.getArgument(i + 1);
+      SymTypeExpression parType = funcType.getArgumentType(i);
       if (i != 0) {
         getPrinter().print(", ");
       }
-      getPrinter().print(printJavaType(getAsJavaType(parType)));
+      getPrinter().print(getBoxedJavaTypePrint(parType));
       getPrinter().print(" ");
       getPrinter().print(parName);
     }
-    endParentheses();
+    state.endParentheses();
 
     getPrinter().print(" -> ");
 
     // body
     node.getLambdaBody().accept(getTraverser());
 
-    endParentheses();
+    state.endParentheses();
   }
 
 }

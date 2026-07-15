@@ -2,6 +2,7 @@
 package de.monticore.codegen.cd2java._symboltable.symbol;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
@@ -21,6 +22,7 @@ import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -77,6 +79,7 @@ public class SymbolBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDCla
     ASTCDClass symbolBuilder = builderDecorator.decorate(decoratedSymbolClass);
     builderDecorator.setPrintBuildMethodTemplate(true);
 
+    addAccessModifierDefaultValue(symbolBuilder);
     addStereoinfoDefaultValue(symbolBuilder);
 
     if (hasInheritedSymbol) {
@@ -99,7 +102,7 @@ public class SymbolBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDCla
     ASTMCType builderType = getMCTypeFacade().createQualifiedType(symbolBuilder.getName());
     symbolBuilder.addAllCDMembers(createStereoinfoConvenienceMethods(builderType));
 
-    List<ASTCDAttribute> buildAttributes = Lists.newArrayList(decoratedSymbolClass.getCDAttributeList());
+    Set<ASTCDAttribute> buildAttributes = Sets.newLinkedHashSet(decoratedSymbolClass.getCDAttributeList());
 
     // builder has all attributes
     buildAttributes.addAll(defaultAttrs);
@@ -150,7 +153,6 @@ public class SymbolBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDCla
     attrs.add(this.getCDAttributeFacade().createAttribute(PROTECTED.build(), optionalTypeOfASTNode, AST_NODE_VAR));
 
     ASTCDAttribute accessModifier = this.getCDAttributeFacade().createAttribute(PROTECTED.build(), ACCESS_MODIFIER, "accessModifier");
-    this.replaceTemplate(VALUE, accessModifier, new StringHookPoint("= " + ACCESS_MODIFIER_ALL_INCLUSION));
     attrs.add(accessModifier);
 
     ASTMCType symbolicStereotype = getMCTypeFacade().createQualifiedType(I_STEREOTYPE_REFERENCE);
@@ -164,6 +166,14 @@ public class SymbolBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDCla
             symbolTableService.getScopeInterfaceFullName(), ENCLOSING_SCOPE_VAR));
 
     return attrs;
+  }
+
+  protected void addAccessModifierDefaultValue(ASTCDClass builder) {
+    HookPoint defaultVal = new StringHookPoint("= " + ACCESS_MODIFIER_ALL_INCLUSION);
+
+    builder.getCDAttributeList().stream()
+      .filter(a -> "accessModifier".equals(a.getName()))
+      .forEach(a -> this.replaceTemplate(VALUE, a, defaultVal));
   }
 
   protected void addStereoinfoDefaultValue(ASTCDClass builder) {
