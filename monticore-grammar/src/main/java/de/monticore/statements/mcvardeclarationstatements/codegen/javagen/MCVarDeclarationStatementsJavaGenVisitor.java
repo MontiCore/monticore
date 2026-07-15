@@ -65,8 +65,6 @@ public class MCVarDeclarationStatementsJavaGenVisitor
     // And statements are printed to Java statements.
     ASTLocalVariableDeclaration varDeclaration =
         node.getLocalVariableDeclaration();
-    SymTypeExpression varType = normalize(symTypeFromAST(varDeclaration.getMCType()));
-    String javaVarType = SymTypeExpression2JavaConverter.getJavaTypePrint(varType);
 
     // for `int x = 2, y = 3` we will print
     // `int x = 2; int y = 3;`,
@@ -76,7 +74,7 @@ public class MCVarDeclarationStatementsJavaGenVisitor
         modifier.accept(getTraverser());
         getPrinter().print(" ");
       }
-      getPrinter().print(javaVarType);
+      varDeclaration.getMCType().accept(getTraverser());
       getPrinter().print(" ");
       getPrinter().print(varDeclarator.getDeclarator().getName());
       if (varDeclarator.isPresentVariableInit()) {

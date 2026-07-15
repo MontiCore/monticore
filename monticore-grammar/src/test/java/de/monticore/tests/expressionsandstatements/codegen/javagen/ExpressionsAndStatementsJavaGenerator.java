@@ -18,6 +18,9 @@ import de.monticore.ocl.oclexpressions.codegen.javagen.OCLExpressionsJavaGenVisi
 import de.monticore.ocl.optionaloperators.codegen.javagen.OptionalOperatorsJavaGenVisitor;
 import de.monticore.ocl.setexpressions.codegen.javagen.SetExpressionsJavaGenVisitor;
 import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.regex.regextype.codegen.javagen.RegExTypeJavaGenVisitor;
+import de.monticore.siunit.siunittypes4computing.codegen.javagen.SIUnitTypes4ComputingJavaGenVisitor;
+import de.monticore.siunit.siunittypes4math.codegen.javagen.SIUnitTypes4MathJavaGenVisitor;
 import de.monticore.statements.mcassertstatements.codegen.javagen.MCAssertStatementsJavaGenVisitor;
 import de.monticore.statements.mccommonstatements.codegen.javagen.MCCommonStatementsJavaGenVisitor;
 import de.monticore.statements.mclowlevelstatements.codegen.javagen.MCLowLevelStatementsJavaGenVisitor;
@@ -25,6 +28,11 @@ import de.monticore.statements.mcreturnstatements.codegen.javagen.MCReturnStatem
 import de.monticore.statements.mcvardeclarationstatements.codegen.javagen.MCVarDeclarationStatementsJavaGenVisitor;
 import de.monticore.tests.expressionsandstatements.ExpressionsAndStatementsMill;
 import de.monticore.tests.expressionsandstatements._visitor.ExpressionsAndStatementsTraverser;
+import de.monticore.types.mcbasictypes.codegen.javagen.MCBasicTypesJavaGenVisitor;
+import de.monticore.types.mccollectiontypes.codegen.javagen.MCCollectionTypesJavaGenVisitor;
+import de.monticore.types.mcfunctiontypes.codegen.javagen.MCFunctionTypesJavaGenVisitor;
+import de.monticore.types.mcsimplegenerictypes.codegen.javagen.MCSimpleGenericTypesJavaGenVisitor;
+import de.monticore.types.mcstructuraltypes.codegen.javagen.MCStructuralTypesJavaGenVisitor;
 import de.monticore.visitor.ITraverser;
 
 public class ExpressionsAndStatementsJavaGenerator
@@ -119,6 +127,32 @@ public class ExpressionsAndStatementsJavaGenerator
     MCVarDeclarationStatementsJavaGenVisitor visMCVarDeclarationStatements =
         new MCVarDeclarationStatementsJavaGenVisitor(state);
     traverser.setMCVarDeclarationStatementsHandler(visMCVarDeclarationStatements);
+
+    // Types
+
+    MCBasicTypesJavaGenVisitor visMCBasicTypes = new MCBasicTypesJavaGenVisitor(state);
+    traverser.setMCBasicTypesHandler(visMCBasicTypes);
+
+    MCCollectionTypesJavaGenVisitor visMCCollectionTypes = new MCCollectionTypesJavaGenVisitor(state);
+    traverser.setMCCollectionTypesHandler(visMCCollectionTypes);
+
+    MCFunctionTypesJavaGenVisitor visMCFunctionTypes = new MCFunctionTypesJavaGenVisitor(state);
+    traverser.setMCFunctionTypesHandler(visMCFunctionTypes);
+
+    RegExTypeJavaGenVisitor visRegExType = new RegExTypeJavaGenVisitor(state);
+    traverser.setRegExTypeHandler(visRegExType);
+
+    MCStructuralTypesJavaGenVisitor visMCStructuralTypes = new MCStructuralTypesJavaGenVisitor(state);
+    traverser.setMCStructuralTypesHandler(visMCStructuralTypes);
+
+    SIUnitTypes4ComputingJavaGenVisitor visSIUnitTypes4Computing = new SIUnitTypes4ComputingJavaGenVisitor(state);
+    traverser.setSIUnitTypes4ComputingHandler(visSIUnitTypes4Computing);
+
+    SIUnitTypes4MathJavaGenVisitor visSIUnitTypes4Math = new SIUnitTypes4MathJavaGenVisitor(state);
+    traverser.setSIUnitTypes4MathHandler(visSIUnitTypes4Math);
+
+    MCSimpleGenericTypesJavaGenVisitor visMCSimpleGenericTypes = new MCSimpleGenericTypesJavaGenVisitor(state);
+    traverser.setMCSimpleGenericTypesHandler(visMCSimpleGenericTypes);
   }
 
   @Override
