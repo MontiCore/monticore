@@ -7,19 +7,20 @@ import de.monticore.codegen.javagen.SymTypeExpression2JavaConverter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.monticore.types.mcbasictypes._ast.ASTMCPackageDeclaration;
-import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
-import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
-import de.monticore.types.mcbasictypes._ast.ASTMCVoidType;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._visitor.MCBasicTypesInheritanceHandler;
+import de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor2;
 import de.monticore.types3.SymTypeRelations;
 import de.monticore.types3.TypeCheck3;
 
-public class MCBasicTypesJavaGenVisitor extends MCBasicTypesInheritanceHandler {
+public class MCBasicTypesJavaGenVisitor extends MCBasicTypesInheritanceHandler implements MCBasicTypesVisitor2 {
 
   protected JavaGenVisitorState state;
+  protected int mcTypeNesting;
 
   public MCBasicTypesJavaGenVisitor(JavaGenVisitorState state) {
     this.state = Preconditions.checkNotNull(state);
+    mcTypeNesting = 0;
   }
 
   protected IndentPrinter getPrinter() {
@@ -27,20 +28,16 @@ public class MCBasicTypesJavaGenVisitor extends MCBasicTypesInheritanceHandler {
   }
 
   @Override
-  public void traverse(ASTMCQualifiedName node) {
-    Preconditions.checkNotNull(node);
-    this.getPrinter().print(SymTypeExpression2JavaConverter.getJavaTypePrint(SymTypeRelations.normalize(TypeCheck3.symTypeFromAST(node))) + " ");
+  public void visit(ASTMCType node) {
+    mcTypeNesting++;
   }
 
   @Override
-  public void traverse(ASTMCPrimitiveType node) {
-    Preconditions.checkNotNull(node);
-    this.getPrinter().print(SymTypeExpression2JavaConverter.getJavaTypePrint(SymTypeRelations.normalize(TypeCheck3.symTypeFromAST(node))) + " ");
-  }
-
-  @Override
-  public void traverse(ASTMCVoidType node) {
-    this.getPrinter().print(SymTypeExpression2JavaConverter.getJavaTypePrint(SymTypeRelations.normalize(TypeCheck3.symTypeFromAST(node))) + " ");
+  public void endVisit(ASTMCType node) {
+    mcTypeNesting--;
+    if (mcTypeNesting == 0) {
+      this.getPrinter().print(SymTypeExpression2JavaConverter.getJavaTypePrint(SymTypeRelations.normalize(TypeCheck3.symTypeFromAST(node))));
+    }
   }
 
   @Override
