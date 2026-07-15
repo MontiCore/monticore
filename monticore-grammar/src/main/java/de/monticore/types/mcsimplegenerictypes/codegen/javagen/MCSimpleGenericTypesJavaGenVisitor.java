@@ -7,6 +7,7 @@ import de.monticore.codegen.javagen.SymTypeExpression2JavaConverter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesInheritanceHandler;
+import de.monticore.types3.SymTypeRelations;
 import de.monticore.types3.TypeCheck3;
 
 public class MCSimpleGenericTypesJavaGenVisitor extends MCSimpleGenericTypesInheritanceHandler {
@@ -24,6 +25,6 @@ public class MCSimpleGenericTypesJavaGenVisitor extends MCSimpleGenericTypesInhe
   @Override
   public void traverse(ASTMCBasicGenericType node) {
     Preconditions.checkNotNull(node);
-    this.getPrinter().print(SymTypeExpression2JavaConverter.getJavaTypePrint(TypeCheck3.symTypeFromAST(node)));
+    this.getPrinter().print(SymTypeExpression2JavaConverter.getJavaTypePrint(SymTypeRelations.normalize(TypeCheck3.symTypeFromAST(node))));
   }
 }

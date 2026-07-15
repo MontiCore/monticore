@@ -10,6 +10,7 @@ import de.monticore.types.mcstructuraltypes._ast.ASTMCIntersectionType;
 import de.monticore.types.mcstructuraltypes._ast.ASTMCTupleType;
 import de.monticore.types.mcstructuraltypes._ast.ASTMCUnionType;
 import de.monticore.types.mcstructuraltypes._visitor.MCStructuralTypesInheritanceHandler;
+import de.monticore.types3.SymTypeRelations;
 import de.monticore.types3.TypeCheck3;
 
 public class MCStructuralTypesJavaGenVisitor extends MCStructuralTypesInheritanceHandler {
@@ -27,24 +28,24 @@ public class MCStructuralTypesJavaGenVisitor extends MCStructuralTypesInheritanc
   @Override
   public void traverse(ASTMCTupleType node) {
     Preconditions.checkNotNull(node);
-    this.getPrinter().print(SymTypeExpression2JavaConverter.getJavaTypePrint(TypeCheck3.symTypeFromAST(node)));
+    this.getPrinter().print(SymTypeExpression2JavaConverter.getJavaTypePrint(SymTypeRelations.normalize(TypeCheck3.symTypeFromAST(node))));
   }
 
   @Override
   public void traverse(ASTMCUnionType node) {
     Preconditions.checkNotNull(node);
-    this.getPrinter().print(SymTypeExpression2JavaConverter.getJavaTypePrint(TypeCheck3.symTypeFromAST(node)));
+    this.getPrinter().print(SymTypeExpression2JavaConverter.getJavaTypePrint(SymTypeRelations.normalize(TypeCheck3.symTypeFromAST(node))));
   }
 
   @Override
   public void traverse(ASTMCIntersectionType node) {
     Preconditions.checkNotNull(node);
-    this.getPrinter().print(SymTypeExpression2JavaConverter.getJavaTypePrint(TypeCheck3.symTypeFromAST(node)));
+    this.getPrinter().print(SymTypeExpression2JavaConverter.getJavaTypePrint(SymTypeRelations.normalize(TypeCheck3.symTypeFromAST(node))));
   }
 
   @Override
   public void traverse(ASTMCBracketType node) {
     Preconditions.checkNotNull(node);
-    this.getPrinter().print(SymTypeExpression2JavaConverter.getJavaTypePrint(TypeCheck3.symTypeFromAST(node)));
+    this.getPrinter().print(SymTypeExpression2JavaConverter.getJavaTypePrint(SymTypeRelations.normalize(TypeCheck3.symTypeFromAST(node))));
   }
 }

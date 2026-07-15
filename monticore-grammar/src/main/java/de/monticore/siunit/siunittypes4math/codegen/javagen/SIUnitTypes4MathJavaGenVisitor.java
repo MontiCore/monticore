@@ -7,6 +7,7 @@ import de.monticore.codegen.javagen.SymTypeExpression2JavaConverter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.siunit.siunittypes4math._ast.ASTSIUnitType;
 import de.monticore.siunit.siunittypes4math._visitor.SIUnitTypes4MathInheritanceHandler;
+import de.monticore.types3.SymTypeRelations;
 import de.monticore.types3.TypeCheck3;
 
 public class SIUnitTypes4MathJavaGenVisitor extends SIUnitTypes4MathInheritanceHandler {
@@ -24,6 +25,6 @@ public class SIUnitTypes4MathJavaGenVisitor extends SIUnitTypes4MathInheritanceH
   @Override
   public void traverse(ASTSIUnitType node) {
     Preconditions.checkNotNull(node);
-    this.getPrinter().print(SymTypeExpression2JavaConverter.getJavaTypePrint(TypeCheck3.symTypeFromAST(node)));
+    this.getPrinter().print(SymTypeExpression2JavaConverter.getJavaTypePrint(SymTypeRelations.normalize(TypeCheck3.symTypeFromAST(node))));
   }
 }

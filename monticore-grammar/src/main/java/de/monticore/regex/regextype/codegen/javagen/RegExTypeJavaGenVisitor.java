@@ -7,6 +7,7 @@ import de.monticore.codegen.javagen.SymTypeExpression2JavaConverter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.regex.regextype._ast.ASTRegExType;
 import de.monticore.regex.regextype._visitor.RegExTypeInheritanceHandler;
+import de.monticore.types3.SymTypeRelations;
 import de.monticore.types3.TypeCheck3;
 
 public class RegExTypeJavaGenVisitor extends RegExTypeInheritanceHandler {
@@ -24,6 +25,6 @@ public class RegExTypeJavaGenVisitor extends RegExTypeInheritanceHandler {
   @Override
   public void traverse(ASTRegExType node) {
     Preconditions.checkNotNull(node);
-    this.getPrinter().print(SymTypeExpression2JavaConverter.getJavaTypePrint(TypeCheck3.symTypeFromAST(node)));
+    this.getPrinter().print(SymTypeExpression2JavaConverter.getJavaTypePrint(SymTypeRelations.normalize(TypeCheck3.symTypeFromAST(node))));
   }
 }

@@ -7,6 +7,7 @@ import de.monticore.codegen.javagen.SymTypeExpression2JavaConverter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcarraytypes._ast.ASTMCArrayType;
 import de.monticore.types.mcarraytypes._visitor.MCArrayTypesInheritanceHandler;
+import de.monticore.types3.SymTypeRelations;
 import de.monticore.types3.TypeCheck3;
 
 public class MCArrayTypesJavaGenVisitor extends MCArrayTypesInheritanceHandler {
@@ -24,6 +25,6 @@ public class MCArrayTypesJavaGenVisitor extends MCArrayTypesInheritanceHandler {
   @Override
   public void traverse(ASTMCArrayType node) {
     Preconditions.checkNotNull(node);
-    this.getPrinter().print(SymTypeExpression2JavaConverter.getJavaTypePrint(TypeCheck3.symTypeFromAST(node)));
+    this.getPrinter().print(SymTypeExpression2JavaConverter.getJavaTypePrint(SymTypeRelations.normalize(TypeCheck3.symTypeFromAST(node))));
   }
 }

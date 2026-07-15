@@ -8,6 +8,7 @@ import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcfunctiontypes._ast.ASTMCFunctionType;
 import de.monticore.types.mcfunctiontypes._ast.ASTMCUnaryFunctionType;
 import de.monticore.types.mcfunctiontypes._visitor.MCFunctionTypesInheritanceHandler;
+import de.monticore.types3.SymTypeRelations;
 import de.monticore.types3.TypeCheck3;
 
 public class MCFunctionTypesJavaGenVisitor extends MCFunctionTypesInheritanceHandler {
@@ -25,12 +26,12 @@ public class MCFunctionTypesJavaGenVisitor extends MCFunctionTypesInheritanceHan
   @Override
   public void traverse(ASTMCFunctionType node) {
     Preconditions.checkNotNull(node);
-    this.getPrinter().print(SymTypeExpression2JavaConverter.getJavaTypePrint(TypeCheck3.symTypeFromAST(node)));
+    this.getPrinter().print(SymTypeExpression2JavaConverter.getJavaTypePrint(SymTypeRelations.normalize(TypeCheck3.symTypeFromAST(node))));
   }
 
   @Override
   public void traverse(ASTMCUnaryFunctionType node) {
     Preconditions.checkNotNull(node);
-    this.getPrinter().print(SymTypeExpression2JavaConverter.getJavaTypePrint(TypeCheck3.symTypeFromAST(node)));
+    this.getPrinter().print(SymTypeExpression2JavaConverter.getJavaTypePrint(SymTypeRelations.normalize(TypeCheck3.symTypeFromAST(node))));
   }
 }
