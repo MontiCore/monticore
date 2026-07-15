@@ -15,6 +15,7 @@ import de.monticore.literals.mccommonliterals.types3.MCCommonLiteralsTypeVisitor
 import de.monticore.ocl.oclexpressions.types3.OCLExpressionsTypeVisitor;
 import de.monticore.ocl.optionaloperators.types3.OptionalOperatorsTypeVisitor;
 import de.monticore.ocl.setexpressions.types3.SetExpressionsCTTIVisitor;
+import de.monticore.regex.regextype.types3.RegExTypeTypeVisitor;
 import de.monticore.siunit.siunitliterals.types3.SIUnitLiteralsTypeVisitor;
 import de.monticore.siunit.siunittypes4computing.types3.SIUnitTypes4ComputingTypeVisitor;
 import de.monticore.siunit.siunittypes4math.types3.SIUnitTypes4MathTypeVisitor;
@@ -156,6 +157,10 @@ public class ExpressionsAndStatementsTypeCheck3 extends MapBasedTypeCheck3 {
     SIUnitTypes4MathTypeVisitor visSIUnitTypes4Math = new SIUnitTypes4MathTypeVisitor();
     visSIUnitTypes4Math.setType4Ast(type4Ast);
     traverser.add4SIUnitTypes4Math(visSIUnitTypes4Math);
+
+    RegExTypeTypeVisitor visRegExType = new RegExTypeTypeVisitor();
+    visRegExType.setType4Ast(type4Ast);
+    traverser.add4RegExType(visRegExType);
 
     // create delegate
     ExpressionsAndStatementsTypeCheck3 oclTC3 = new ExpressionsAndStatementsTypeCheck3(traverser, type4Ast, ctx4Ast);

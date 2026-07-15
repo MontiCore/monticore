@@ -26,7 +26,7 @@ public class JavaObjectConversionHandler
     boolean sourceIsObject =
         modelSourceType.isObjectType() || modelSourceType.isGenericType() || SymTypeRelations.isStringOrSubType(modelSourceType);
     boolean targetIsObject =
-        modelTargetType.isObjectType() || modelTargetType.isGenericType();
+        modelTargetType.isObjectType() || modelTargetType.isGenericType() || SymTypeRelations.isStringOrSubType(modelTargetType);
     if (sourceIsObject && targetIsObject) {
       printJavaCasted(printer, modelTargetType, sourceExprPrintAction);
       return true;
