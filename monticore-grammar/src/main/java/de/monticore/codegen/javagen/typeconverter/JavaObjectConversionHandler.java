@@ -4,6 +4,7 @@ package de.monticore.codegen.javagen.typeconverter;
 import de.monticore.codegen.CodeGenPrintAction;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types3.SymTypeRelations;
 
 /**
  * Conversions between Objects (including generics)
@@ -23,9 +24,9 @@ public class JavaObjectConversionHandler
       CodeGenPrintAction sourceExprPrintAction
   ) {
     boolean sourceIsObject =
-        modelSourceType.isObjectType() || modelSourceType.isGenericType();
+        modelSourceType.isObjectType() || modelSourceType.isGenericType() || SymTypeRelations.isStringOrSubType(modelSourceType);
     boolean targetIsObject =
-        modelTargetType.isObjectType() || modelTargetType.isGenericType();
+        modelTargetType.isObjectType() || modelTargetType.isGenericType() || SymTypeRelations.isStringOrSubType(modelTargetType);
     if (sourceIsObject && targetIsObject) {
       printJavaCasted(printer, modelTargetType, sourceExprPrintAction);
       return true;

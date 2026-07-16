@@ -16,6 +16,7 @@ import de.monticore.ocl.setexpressions.interpreter.SetExpressionsInterpreter;
 import de.monticore.runtime.junit.AbstractMCTest;
 import de.monticore.statements.mcassertstatements.interpreter.MCAssertStatementsInterpreter;
 import de.monticore.statements.mccommonstatements.interpreter.MCCommonStatementsInterpreter;
+import de.monticore.statements.mclowlevelstatements.interpreter.MCLowLevelStatementsInterpreter;
 import de.monticore.statements.mcvardeclarationstatements.interpreter.MCVarDeclarationStatementsInterpreter;
 import de.monticore.symbols.util.Class2MCTestUtil;
 import de.monticore.tests.expressionsandstatements.ExpressionsAndStatementsMill;
@@ -31,6 +32,7 @@ import static de.monticore.runtime.junit.MCAssertions.assertNoFindings;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public abstract class AbstractInterpreterTest extends AbstractMCTest {
 
@@ -57,6 +59,7 @@ public abstract class AbstractInterpreterTest extends AbstractMCTest {
     traverser.setOptionalOperatorsHandler(new OptionalOperatorsInterpreter(iData));
     traverser.setMCAssertStatementsHandler(new MCAssertStatementsInterpreter(iData));
     traverser.setMCCommonStatementsHandler(new MCCommonStatementsInterpreter(iData));
+    traverser.setMCLowLevelStatementsHandler(new MCLowLevelStatementsInterpreter(iData));
     traverser.setMCVarDeclarationStatementsHandler(new MCVarDeclarationStatementsInterpreter(iData));
     traverser.setExpressionsAndStatementsHandler(new ExpressionsAndStatementsInterpreter(iData));
     InterpreterAccess4Tests access =
@@ -83,29 +86,41 @@ public abstract class AbstractInterpreterTest extends AbstractMCTest {
   protected void checkValue(String modelStr, Object expectedValue) {
     MCValue value = interpret(modelStr);
     // handle numbers, as they are represented differently in the interpreter
-    if (expectedValue instanceof Byte) {
-      assertEquals(expectedValue, value.asByte());
+    try {
+      if (expectedValue instanceof Byte) {
+        assertEquals(expectedValue, value.asByte());
+      }
+      else if (expectedValue instanceof Short) {
+        assertEquals(expectedValue, value.asShort());
+      }
+      else if (expectedValue instanceof Character) {
+        assertEquals(expectedValue, value.asChar());
+      }
+      else if (expectedValue instanceof Integer) {
+        assertEquals(expectedValue, value.asInt());
+      }
+      else if (expectedValue instanceof Long) {
+        assertEquals(expectedValue, value.asLong());
+      }
+      else if (expectedValue instanceof Float) {
+        assertEquals(expectedValue, value.asFloat());
+      }
+      else if (expectedValue instanceof Double) {
+        assertEquals(expectedValue, value.asDouble());
+      }
+      else {
+        assertEquals(expectedValue, value.asNativeObject());
+      }
     }
-    else if (expectedValue instanceof Short) {
-      assertEquals(expectedValue, value.asShort());
-    }
-    else if (expectedValue instanceof Character) {
-      assertEquals(expectedValue, value.asChar());
-    }
-    else if (expectedValue instanceof Integer) {
-      assertEquals(expectedValue, value.asInt());
-    }
-    else if (expectedValue instanceof Long) {
-      assertEquals(expectedValue, value.asLong());
-    }
-    else if (expectedValue instanceof Float) {
-      assertEquals(expectedValue, value.asFloat());
-    }
-    else if (expectedValue instanceof Double) {
-      assertEquals(expectedValue, value.asDouble());
-    }
-    else {
-      assertEquals(expectedValue, value.asNativeObject());
+    catch (RuntimeException e) {
+      System.out.println(
+          "Exception while comparing." + System.lineSeparator()
+              + "Type: " + value.printType() + System.lineSeparator()
+              + "Value: " + value.printValue() + System.lineSeparator()
+              + "Expected: " + expectedValue + System.lineSeparator()
+              + "Model:" + System.lineSeparator() + modelStr
+      );
+      fail(e);
     }
   }
 

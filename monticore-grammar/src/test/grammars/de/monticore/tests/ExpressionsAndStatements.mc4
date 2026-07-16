@@ -8,6 +8,7 @@ import de.monticore.siunit.*;
 import de.monticore.statements.*;
 import de.monticore.symbols.*;
 import de.monticore.types.*;
+import de.monticore.regex.RegExType;
 
 /* Test Grammar: This is not intended to become a MontiCore stable grammar. */
 
@@ -31,6 +32,7 @@ grammar ExpressionsAndStatements
             MCSimpleGenericTypes,
             MCFunctionTypes,
             MCStructuralTypes,
+            RegExType,
             // Statements
             MCAssertStatements,
             MCCommonStatements,
