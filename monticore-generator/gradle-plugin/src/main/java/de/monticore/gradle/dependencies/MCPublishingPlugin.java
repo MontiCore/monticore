@@ -9,15 +9,12 @@ import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.PublishArtifact;
-import org.gradle.api.attributes.Attribute;
-import org.gradle.api.attributes.Bundling;
-import org.gradle.api.attributes.Category;
-import org.gradle.api.attributes.DocsType;
-import org.gradle.api.attributes.Usage;
+import org.gradle.api.attributes.*;
 import org.gradle.api.component.AdhocComponentWithVariants;
 import org.gradle.api.component.ConfigurationVariantDetails;
 import org.gradle.api.component.SoftwareComponentFactory;
 import org.gradle.api.internal.tasks.TaskDependencyFactory;
+import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.plugins.JavaPluginExtension;
 import org.gradle.api.plugins.internal.JavaConfigurationVariantMapping;
 import org.gradle.api.publish.PublishingExtension;
@@ -207,6 +204,9 @@ public class MCPublishingPlugin extends APublishingPlugin implements Plugin<Proj
     // This allows consumption from another project
     // See https://docs.gradle.org/current/userguide/how_to_share_outputs_between_projects.html
 
+    // Create (to-be consumed) configurations
+    createElementsConfigurations(sourceSet, project, jarTask);
+
     project.getPluginManager().withPlugin("maven-publish", p -> {
       setupNonMainPublish(grammarsJarArtifact, project, sourceSet, component, jarArtifact, sourcesJarArtifact);
     });
@@ -382,4 +382,65 @@ public class MCPublishingPlugin extends APublishingPlugin implements Plugin<Proj
     project.getLogger().error(msg);
     throw new GradleException(msg);
   }
+
+  protected void createElementsConfigurations(SourceSet sourceSet, Project project, TaskProvider<?> jarTask) {
+    // These configurations are the to-be used by a consumer
+
+    ObjectFactory objects = project.getObjects();
+
+    Configuration runtimeElements = project.getConfigurations().maybeCreate(sourceSet.getRuntimeElementsConfigurationName()); // ${name}RuntimeElements
+    runtimeElements.setCanBeConsumed(true);
+    runtimeElements.setCanBeResolved(false);
+    runtimeElements.extendsFrom(project.getConfigurations().getByName(sourceSet.getRuntimeOnlyConfigurationName())); // ${name}RuntimeOnly
+
+    //
+    runtimeElements.getAttributes().attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage.class, Usage.JAVA_RUNTIME));
+    runtimeElements.getAttributes().attribute(Category.CATEGORY_ATTRIBUTE, objects.named(Category.class, Category.LIBRARY));
+    runtimeElements.getAttributes().attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, objects.named(LibraryElements.class, LibraryElements.JAR));
+    runtimeElements.getAttributes().attribute(Bundling.BUNDLING_ATTRIBUTE, objects.named(Bundling.class, Bundling.EXTERNAL));
+    runtimeElements.getAttributes().attribute(GRAMMAR_SOURCE_SET_ATTRIBUTE, sourceSet.getName());
+
+    setupElementsConfigurationWithArtifacts(sourceSet, runtimeElements, jarTask, objects, project);
+
+    Configuration apiElements = project.getConfigurations().maybeCreate(sourceSet.getApiElementsConfigurationName()); // ${name}ApiElements
+    apiElements.setCanBeConsumed(true);
+    apiElements.setCanBeResolved(false);
+    apiElements.extendsFrom(project.getConfigurations().getByName(sourceSet.getCompileOnlyConfigurationName())); // ${name}CompileOnly
+
+    //
+    apiElements.getAttributes().attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage.class, Usage.JAVA_API));
+    apiElements.getAttributes().attribute(Category.CATEGORY_ATTRIBUTE, objects.named(Category.class, Category.LIBRARY));
+    apiElements.getAttributes().attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, objects.named(LibraryElements.class, LibraryElements.JAR));
+    apiElements.getAttributes().attribute(Bundling.BUNDLING_ATTRIBUTE, objects.named(Bundling.class, Bundling.EXTERNAL));
+    apiElements.getAttributes().attribute(GRAMMAR_SOURCE_SET_ATTRIBUTE, sourceSet.getName());
+
+    setupElementsConfigurationWithArtifacts(sourceSet, apiElements, jarTask, objects, project);
+  }
+
+  protected void setupElementsConfigurationWithArtifacts(SourceSet sourceSet, Configuration runtimeElements, TaskProvider<?> jarTask, ObjectFactory objects, Project project) {
+    runtimeElements.outgoing(outgoing -> {
+      outgoing.artifact(jarTask);
+
+      outgoing.capability(project.getGroup() + ":" + project.getName() + "-" + sourceSet.getName() + ":" + project.getVersion().toString());
+
+      // Also register a variant for local builds without the jarTask
+      outgoing.variants(configurationVariants -> {
+        configurationVariants.create("classes", configurationVariant -> {
+          configurationVariant.artifact(sourceSet.getOutput().getClassesDirs().getSingleFile(), a -> {
+            a.builtBy(sourceSet.getClassesTaskName());
+          });
+          configurationVariant.getAttributes().attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, objects.named(LibraryElements.class, LibraryElements.CLASSES));
+        });
+        if (sourceSet.getOutput().getResourcesDir() != null) {
+          configurationVariants.create("resources", configurationVariant -> {
+            configurationVariant.artifact(sourceSet.getOutput().getResourcesDir(), a -> {
+              a.builtBy(sourceSet.getProcessResourcesTaskName());
+            });
+            configurationVariant.getAttributes().attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, objects.named(LibraryElements.class, LibraryElements.RESOURCES));
+          });
+        }
+      });
+    });
+  }
+
 }
