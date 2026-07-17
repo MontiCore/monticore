@@ -421,7 +421,10 @@ public class MCPublishingPlugin extends APublishingPlugin implements Plugin<Proj
     runtimeElements.outgoing(outgoing -> {
       outgoing.artifact(jarTask);
 
-      outgoing.capability(project.getGroup() + ":" + project.getName() + "-" + sourceSet.getName() + ":" + project.getVersion().toString());
+      project.afterEvaluate(p -> {
+        // AfterEvaluate due to group being a weird attribute
+        outgoing.capability(p.getGroup() + ":" + p.getName() + "-" + sourceSet.getName() + ":" + p.getVersion());
+      });
 
       // Also register a variant for local builds without the jarTask
       outgoing.variants(configurationVariants -> {
