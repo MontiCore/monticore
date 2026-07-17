@@ -41,9 +41,9 @@ allprojects {
 
 dependencies {
     implementation "de.monticore:monticore-grammar:$previous_mc_version"
-    implementation "de.se_rwth.commons:se-commons-groovy:$se_commons_version"
-    implementation "de.se_rwth.commons:se-commons-logging:$se_commons_version"
-    implementation "de.se_rwth.commons:se-commons-gradle:$se_gradle_version"
+    implementation "de.se_rwth.commons:se-commons-groovy:$previous_se_commons_version"
+    implementation "de.se_rwth.commons:se-commons-logging:$previous_se_commons_version"
+    implementation "de.se_rwth.commons:se-commons-gradle:$se_commons_version" // use the current version here
 
     implementation "org.apache.commons:commons-lang3:$commons_lang3_version"
     implementation "org.freemarker:freemarker:$freemarker_version"
@@ -54,7 +54,7 @@ dependencies {
     implementation 'ch.qos.logback:logback-classic:[1.2.9,1.3.0)' // we appear to be incompatible with logback >= 1.3.0
     implementation 'ch.qos.logback:logback-core:[1.2.9,1.3.0)'
 
-    implementation "de.monticore.lang:cd4analysis:$cd4a_version"
+    implementation "de.monticore.lang:cd4analysis:$previous_cd4a_version"
     implementation "org.antlr:antlr4:$antlr_version"
     implementation "org.apache.groovy:groovy:$groovy_version"
     implementation "com.google.guava:guava:$guava_version"
