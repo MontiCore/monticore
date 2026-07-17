@@ -6,7 +6,6 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.compsymbols.CompSymbolsMill;
-import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.serialization.ISymbolDeSer;
 import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.JsonPrinter;
@@ -171,7 +170,7 @@ public class ComponentTypeSymbolDeSer extends ComponentTypeSymbolDeSerTOP {
     JsonObject chain = symbolJson.getObjectMember(EFFECT_CHAIN);
     Multimap<PortSymbol, PortSymbol> effectMap = symbol.getEffectChains();
     for (Entry<String, JsonElement> entry : chain.getMembers().entrySet()) {
-      List<PortSymbol> inPorts = symbol.getSpannedScope().resolvePortLocallyMany(true, entry.getKey(), AccessModifier.ALL_INCLUSION, (PortSymbol p) -> true);
+      List<PortSymbol> inPorts = symbol.getAllIncomingPorts().stream().filter(p -> p.getFullName().equals(entry.getKey())).toList();
       List<PortSymbol> outPorts = entry.getValue().getAsJsonArray().getValues().stream()
               .map(outPortName -> symbol.getSpannedScope().resolvePortMany(outPortName.toString()))
               .flatMap(Collection::stream).toList();

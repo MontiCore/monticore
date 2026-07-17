@@ -44,6 +44,7 @@ public class ComponentTypeSymbolDeSerTest {
     return CompSymbolsMill.portSymbolBuilder()
             .setName(name)
             .setOutgoing(outgoing)
+            .setIncoming(!outgoing)
             .setType(SymTypeExpressionFactory.createPrimitive("int"))
             .setTiming(Timing.TIMED)
             .setStronglyCausal(false)
