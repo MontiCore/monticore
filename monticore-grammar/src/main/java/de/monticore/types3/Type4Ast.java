@@ -42,7 +42,7 @@ public class Type4Ast {
 
   /**
    * the actual map from expression to types,
-   * strictly seperated from the map for type identifiers
+   * strictly separated from the map for type identifiers
    * we use ASTNode to support non-ASTExpression Nodes (e.g., literals)
    * however, we do NOT support non-expression ASTNodes,
    * e.g. in MyClass.myMethod(): the "MyClass" is not an expression by itself
@@ -55,7 +55,7 @@ public class Type4Ast {
 
   /**
    * the actual map from type identifier to types,
-   * strictly seperated from the map for expressions
+   * strictly separated from the map for expressions
    * we use ASTNode to support non-ASTMCType Nodes (e.g. qualified Names)
    * however, we do NOT support expression ASTNodes,
    * e.g. other qualified names that represent a variable, rather than a type
