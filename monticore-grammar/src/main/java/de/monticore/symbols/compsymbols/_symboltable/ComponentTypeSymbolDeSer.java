@@ -19,6 +19,7 @@ import de.se_rwth.commons.logging.Log;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.*;
+import java.util.Map.Entry;
 
 public class ComponentTypeSymbolDeSer extends ComponentTypeSymbolDeSerTOP {
 
@@ -137,7 +138,7 @@ public class ComponentTypeSymbolDeSer extends ComponentTypeSymbolDeSerTOP {
       return;
     }
     s2j.getJsonPrinter().beginObject(EFFECT_CHAIN);
-    for (var key : effectChains.keys()) {
+    for (PortSymbol key : effectChains.keys()) {
       s2j.getJsonPrinter().beginArray(key.getFullName());
       for (PortSymbol outPort : effectChains.get(key)) {
         s2j.getJsonPrinter().addToArray(new UserJsonString(outPort.getFullName()));
@@ -166,9 +167,9 @@ public class ComponentTypeSymbolDeSer extends ComponentTypeSymbolDeSerTOP {
     if (!symbolJson.hasMember(EFFECT_CHAIN)) {
       return;
     }
-    var chain = symbolJson.getObjectMember(EFFECT_CHAIN);
-    var effectMap = symbol.getEffectChains();
-    for (var entry : chain.getMembers().entrySet()) {
+    JsonObject chain = symbolJson.getObjectMember(EFFECT_CHAIN);
+    Multimap<PortSymbol, PortSymbol> effectMap = symbol.getEffectChains();
+    for (Entry<String, JsonElement> entry : chain.getMembers().entrySet()) {
       List<PortSymbol> inPorts = symbol.getSpannedScope().resolvePortMany(entry.getKey());
       List<PortSymbol> outPorts = entry.getValue().getAsJsonArray().getValues().stream()
               .map(outPortName -> symbol.getSpannedScope().resolvePortMany(outPortName.toString()))
