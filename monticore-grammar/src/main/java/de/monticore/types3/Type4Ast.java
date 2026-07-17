@@ -383,6 +383,7 @@ public class Type4Ast {
       );
       typeExpr.getSourceInfo()._internal_setSourceNode(node);
       getExpression2Type().put(node, typeExpr);
+      assertNotExpressionAndType(node);
     }
     else {
       if (internal_hasTypeOfExpression(node)) {
@@ -491,6 +492,7 @@ public class Type4Ast {
       );
       typeExpr.getSourceInfo()._internal_setSourceNode(node);
       getTypeIdentifier2Type().put(node, typeExpr);
+      assertNotExpressionAndType(node);
     }
     else {
       if (internal_hasTypeOfTypeIdentifier(node)) {
@@ -529,6 +531,26 @@ public class Type4Ast {
             LOG_NAME
         );
       }
+  }
+
+  /**
+   * If a node is an expression, it must not be a type identifier.
+   * If a node is a type identifier, it must not be an expression.
+   * Selection has to be done before storing it in Type4AST
+   */
+  protected void assertNotExpressionAndType(ASTNode node) {
+    if (internal_hasTypeOfExpression(node) &&
+        internal_hasTypeOfTypeIdentifier(node)
+    ) {
+      throw new IllegalStateException("0xFD888 internal error: "
+          + "A type identifier ("
+          + getTypeIdentifier2Type().get(node).printFullName()
+          + ") and expression type ("
+          + getExpression2Type().get(node).printFullName()
+          + ") have BOTH been set."
+          + " Only one is allowed per AST node: " + node2InfoString(node)
+      );
+    }
   }
 
   /**
