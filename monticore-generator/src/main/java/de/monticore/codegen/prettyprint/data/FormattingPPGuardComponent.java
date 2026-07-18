@@ -18,7 +18,7 @@ public class FormattingPPGuardComponent {
   protected final int iteration;
   protected final boolean isMCCommonLiteralsSuper;
   protected boolean hasNoSpace = false;
-  protected String placeholder = "placeholder";
+  protected String tokenType = "placeholder";
   protected String nameOrIndex;
   protected ASTNode node;
 
@@ -27,7 +27,7 @@ public class FormattingPPGuardComponent {
 
   public FormattingPPGuardComponent(FormattingPPGuardType type, FormattingBlockData blockData, String name, String nameToUse,
                                     String separator, Set<Map.Entry<String, String>> constants, int iteration, boolean isMCCommonLiteralsSuper,
-                                    boolean isLexical, ASTNode node) {
+                                    boolean isLexical, ASTNode node, String tokenType, String nameOrIndex) {
     this.type = type;
     this.blockData = blockData;
     this.name = name;
@@ -38,6 +38,8 @@ public class FormattingPPGuardComponent {
     this.isMCCommonLiteralsSuper = isMCCommonLiteralsSuper;
     this.isLexical = isLexical;
     this.node = node;
+    this.tokenType = tokenType;
+    this.nameOrIndex = nameOrIndex;
   }
 
   public FormattingPPGuardType getType() { return type; }
@@ -55,7 +57,7 @@ public class FormattingPPGuardComponent {
     return getIteration() == ASTConstantsGrammar.PLUS || getIteration() == ASTConstantsGrammar.STAR;
   }
 
-  // FIXED: No more name-guessing. Strictly use the flag passed by the Visitor.
+  // Strictly use the flag passed by the Visitor.
   public boolean isStringType() {
     return this.isLexical;
   }
@@ -63,35 +65,34 @@ public class FormattingPPGuardComponent {
   public boolean isOpt() { return getIteration() == ASTConstantsGrammar.QUESTION; }
   public boolean isHasNoSpace() { return this.hasNoSpace; }
   public void setHasNoSpace(boolean hasNoSpace) { this.hasNoSpace = hasNoSpace; }
-  public String getPlaceholder() { return placeholder; }
-  public void setPlaceholder(String placeholder) { this.placeholder = placeholder; }
+  public String getTokenType() { return tokenType; }
+  public void setTokenType(String tokenType) { this.tokenType = tokenType; }
   public String getNameOrIndex() { return nameOrIndex; }
   public void setNameOrIndex(String nameOrIndex) { this.nameOrIndex = nameOrIndex; }
 
   public enum FormattingPPGuardType { BLOCK, CG, NT, NT_ITERATED, NT_AST_DEF, T }
 
-  // --- Updated Factories ---
-  public static FormattingPPGuardComponent forBlock(FormattingBlockData blockData, int iteration, ASTNode node) {
-    return new FormattingPPGuardComponent(FormattingPPGuardType.BLOCK, blockData, null, null, null, null, iteration, false, false, node);
+  public static FormattingPPGuardComponent forBlock(FormattingBlockData blockData, int iteration, ASTNode node, String tokenType) {
+    return new FormattingPPGuardComponent(FormattingPPGuardType.BLOCK, blockData, null, null, null, null, iteration, false, false, node, tokenType, null);
   }
 
-  public static FormattingPPGuardComponent forNT(String name, String nameToUse, int iteration, boolean iterated, boolean isMCCommonLiteralsSuper, boolean isLexical, ASTNode node) {
-    return new FormattingPPGuardComponent(iterated ? FormattingPPGuardType.NT_ITERATED : FormattingPPGuardType.NT, null, name, nameToUse, null, null, iteration, isMCCommonLiteralsSuper, isLexical, node);
+  public static FormattingPPGuardComponent forNT(String name, String nameToUse, int iteration, boolean iterated, boolean isMCCommonLiteralsSuper, boolean isLexical, ASTNode node, String tokenType) {
+    return new FormattingPPGuardComponent(iterated ? FormattingPPGuardType.NT_ITERATED : FormattingPPGuardType.NT, null, name, nameToUse, null, null, iteration, isMCCommonLiteralsSuper, isLexical, node, tokenType, null);
   }
 
-  public static FormattingPPGuardComponent forNTSingle(String name, String nameToUse, int iteration, boolean isMCCommonLiteralsSuper, boolean isLexical, ASTNode node) {
-    return new FormattingPPGuardComponent(FormattingPPGuardType.NT_AST_DEF, null, name, nameToUse, null, null, iteration, isMCCommonLiteralsSuper, isLexical, node);
+  public static FormattingPPGuardComponent forNTSingle(String name, String nameToUse, int iteration, boolean isMCCommonLiteralsSuper, boolean isLexical, ASTNode node, String tokenType) {
+    return new FormattingPPGuardComponent(FormattingPPGuardType.NT_AST_DEF, null, name, nameToUse, null, null, iteration, isMCCommonLiteralsSuper, isLexical, node, tokenType, null);
   }
 
-  public static FormattingPPGuardComponent forT(String name, ASTNode node) {
-    return new FormattingPPGuardComponent(FormattingPPGuardType.T, null, name, name, null, null, ASTConstantsGrammar.DEFAULT, false, false, node);
+  public static FormattingPPGuardComponent forT(String name, ASTNode node, String tokenType) {
+    return new FormattingPPGuardComponent(FormattingPPGuardType.T, null, name, name, null, null, ASTConstantsGrammar.DEFAULT, false, false, node, tokenType, null);
   }
 
-  public static FormattingPPGuardComponent forT(String name, String usageName, int iteration, ASTNode node) {
-    return new FormattingPPGuardComponent(FormattingPPGuardType.T, null, name, usageName, null, null, iteration, false, false, node);
+  public static FormattingPPGuardComponent forT(String name, String usageName, int iteration, ASTNode node, String tokenType) {
+    return new FormattingPPGuardComponent(FormattingPPGuardType.T, null, name, usageName, null, null, iteration, false, false, node, tokenType, null);
   }
 
-  public static FormattingPPGuardComponent forCG(String usageName, Set<Map.Entry<String, String>> constants, ASTNode node) {
-    return new FormattingPPGuardComponent(FormattingPPGuardType.CG, null, usageName, usageName, null, constants, 0, false, false, node);
+  public static FormattingPPGuardComponent forCG(String usageName, Set<Map.Entry<String, String>> constants, ASTNode node, String tokenType) {
+    return new FormattingPPGuardComponent(FormattingPPGuardType.CG, null, usageName, usageName, null, constants, 0, false, false, node, tokenType, null);
   }
 }

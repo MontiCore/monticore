@@ -318,8 +318,9 @@ public class FormattingPrettyPrinterGenerationVisitor implements GrammarVisitor2
           refName,
           iteration,
           isMCCommonLiteralsSuper,
-          isLex, // Pass the lexical flag
-          node
+          isLex,
+          node,
+          "placeholder"
       );
 
       altData.getComponentList().add(component);
@@ -355,8 +356,9 @@ public class FormattingPrettyPrinterGenerationVisitor implements GrammarVisitor2
         iteration,
         isIteratorUsed,
         isMCCommonLiteralsSuper,
-        isLex, // Pass the lexical flag
-        node
+        isLex,
+        node,
+        "placeholder"
     );
 
     altData.getComponentList().add(component);
@@ -400,11 +402,11 @@ public class FormattingPrettyPrinterGenerationVisitor implements GrammarVisitor2
 
       if (currentClassProdData.isIteratorNeeded(usageName)) {
         // explicitly pass true for the isLexical flag here
-        altData.getComponentList().add(FormattingPPGuardComponent.forNT("Name", usageName, nodeIteration, true, isMCCommonLiteralsSuper, true, node));
+        altData.getComponentList().add(FormattingPPGuardComponent.forNT("Name", usageName, nodeIteration, true, isMCCommonLiteralsSuper, true, node, "placeholder"));
         blockDataStack.peek().markListReady();
         altData.markListReady();
       } else {
-        altData.getComponentList().add(FormattingPPGuardComponent.forT(node.getName(), usageName, nodeIteration, node));
+        altData.getComponentList().add(FormattingPPGuardComponent.forT(node.getName(), usageName, nodeIteration, node, "placeholder"));
       }
 
       int iteration = getEffectiveIteration(blockDataStack.peek().getInheritedIteration(), nodeIteration);
@@ -433,7 +435,7 @@ public class FormattingPrettyPrinterGenerationVisitor implements GrammarVisitor2
         altData.getExpressionList().add(FormattingAltData.TRUE_EXPRESSION);
       }
     }else {
-      FormattingPPGuardComponent component = FormattingPPGuardComponent.forT(string, node);
+      FormattingPPGuardComponent component = FormattingPPGuardComponent.forT(string, node, "placeholder");
       altData.getComponentList().add(component);
       altData.getExpressionList().add(FormattingAltData.TRUE_EXPRESSION);
     }
@@ -445,7 +447,7 @@ public class FormattingPrettyPrinterGenerationVisitor implements GrammarVisitor2
     FormattingAltData altData = altDataStack.peek();
     FormattingBlockData blockData = new FormattingBlockData(false, node.getIteration(), getEffectiveIteration(outerBlock.getInheritedIteration(), node.getIteration()), node);
     blockDataStack.push(blockData);
-    altData.getComponentList().add(FormattingPPGuardComponent.forBlock(blockData, node.getIteration(), node));
+    altData.getComponentList().add(FormattingPPGuardComponent.forBlock(blockData, node.getIteration(), node, "placeholder"));
   }
 
   @Override
@@ -544,14 +546,14 @@ public class FormattingPrettyPrinterGenerationVisitor implements GrammarVisitor2
       constants = constants.stream().limit(1).collect(Collectors.toSet());
     }
 
-    FormattingPPGuardComponent component = FormattingPPGuardComponent.forCG(getter, constants, node);
+    FormattingPPGuardComponent component = FormattingPPGuardComponent.forCG(getter, constants, node, "placeholder");
 
     FormattingAltData altData;
     Optional<FormattingBlockData> blockDataOpt = Optional.empty();
     if (node.getIteration() == ASTConstantsGrammar.QUESTION || node.getIteration() == ASTConstantsGrammar.STAR) {
       FormattingBlockData outerBlock = blockDataStack.peek();
       blockDataOpt = Optional.of(new FormattingBlockData(false, node.getIteration(), getEffectiveIteration(outerBlock.getInheritedIteration(), node.getIteration()), null));
-      altDataStack.peek().getComponentList().add(FormattingPPGuardComponent.forBlock(blockDataOpt.get(), node.getIteration(), node));
+      altDataStack.peek().getComponentList().add(FormattingPPGuardComponent.forBlock(blockDataOpt.get(), node.getIteration(), node, "placeholder"));
       altData = new FormattingAltData(node);
       blockDataOpt.get().getAltDataList().add(altData);
     }else {

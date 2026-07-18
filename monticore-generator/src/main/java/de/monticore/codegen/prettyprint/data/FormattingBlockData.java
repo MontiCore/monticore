@@ -2,6 +2,7 @@
 package de.monticore.codegen.prettyprint.data;
 
 import de.monticore.ast.ASTNode;
+import de.monticore.grammar.grammar._ast.ASTBlock;
 import de.monticore.grammar.grammar._ast.ASTConstantsGrammar;
 
 import java.util.ArrayList;
@@ -19,20 +20,20 @@ public class FormattingBlockData {
   protected final boolean isClassProd;
   protected final int iteration;
   protected final int inheritedIteration;
-  protected final ASTNode node;
+  protected final ASTBlock node;
   protected boolean isListReady = false;
 
   protected final Set<String> optionalSet = new LinkedHashSet<>();
   protected final Set<String> requiredSet = new LinkedHashSet<>();
 
-  public FormattingBlockData(boolean isClassProd, int iteration, int inheritedIteration, ASTNode node) {
+  public FormattingBlockData(boolean isClassProd, int iteration, int inheritedIteration, ASTBlock node) {
     this.isClassProd = isClassProd;
     this.iteration = iteration;
     this.inheritedIteration = inheritedIteration;
     this.node = node;
   }
 
-  public ASTNode getNode() {
+  public ASTBlock getBlock() {
     return node;
   }
 

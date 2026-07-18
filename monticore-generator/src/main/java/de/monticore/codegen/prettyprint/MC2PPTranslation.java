@@ -6,6 +6,7 @@ import de.monticore.cd.facade.CDModifier;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDConstructor;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis.CDBasisMill;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.codegen.cd2java.AbstractCreator;
@@ -126,6 +127,7 @@ public class MC2PPTranslation extends AbstractCreator<ASTMCGrammar, ASTCDCompila
     ASTCDAttribute ppPrintCommentsAttribute = addAttribute(prettyPrinterCDClass, true, true, getMCTypeFacade().createBooleanType(), "printComments");
     addAttribute(prettyPrinterCDClass, true, true, Joiners.DOT.join(packageName) + "._visitor." + grammar.getName() + VisitorConstants.TRAVERSER_SUFFIX, "traverser");
 
+    //IndentPrinter Constructor
     ASTCDConstructor constructor = this.getCDConstructorFacade().createConstructor(CDModifier.PUBLIC.build(), prettyPrinterCDClass.getName(),
             getCDParameterFacade().createParameters(ppPrinterAttribute, ppPrintCommentsAttribute));
     prettyPrinterCDClass.addCDMember(constructor);
@@ -141,27 +143,51 @@ public class MC2PPTranslation extends AbstractCreator<ASTMCGrammar, ASTCDCompila
     formattingPrettyPrinterCDClass.addCDMember(constructor);
     this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("super(printer, printComments); \n this.printer=printer; this.printComments=printComments;"));
 
-    // And generate the FullPrettyPrinter
+    // And generate the FullPrettyPrinter attribute
     ASTCDAttribute fPPPrinter = addAttribute(fullPrettyPrinterCDClass, true, false, "de.monticore.prettyprint.IndentPrinter", "printer");
     addAttribute(fullPrettyPrinterCDClass, true, true, Joiners.DOT.join(packageName) + "._visitor." + grammar.getName() + VisitorConstants.TRAVERSER_SUFFIX, "traverser");
 
+    // FullPrettyPrinter (IndentPrinter, printComments) Constructor
     constructor = this.getCDConstructorFacade().createConstructor(CDModifier.PUBLIC.build(), fullPrettyPrinterCDClass.getName(),
             getCDParameterFacade().createParameters(ppPrinterAttribute, ppPrintCommentsAttribute));
     fullPrettyPrinterCDClass.addCDMember(constructor);
     this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint("_prettyprinter.full.FPPConstructor",
             grammar.getName(), Joiners.DOT.join(packageName)));
 
+    // FullPrettyPrinter (IndentPrinter) Constructor
     constructor = this.getCDConstructorFacade().createConstructor(CDModifier.PUBLIC.build(), fullPrettyPrinterCDClass.getName(),
             getCDParameterFacade().createParameters(fPPPrinter));
     fullPrettyPrinterCDClass.addCDMember(constructor);
     this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("this(printer, true);"));
 
-    // Dedicated (overrideable) method for setting all the pretty printers
-    ASTCDMethod method = getCDMethodFacade().createMethod(CDModifier.PROTECTED.build(), "initializeTraverser", getCDParameterFacade().createParameter(getMCTypeFacade().createBooleanType(), "printComments"));
+
+    // FullPrettyPrinter (FormattingPrinter, printComments) Constructor
+    constructor = this.getCDConstructorFacade().createConstructor(CDModifier.PUBLIC.build(), fullPrettyPrinterCDClass.getName(),
+            getCDParameterFacade().createParameters(fmtPrinterAttribute, fmtPrintCommentsAttribute));
+    fullPrettyPrinterCDClass.addCDMember(constructor);
+    this.replaceTemplate(EMPTY_BODY, constructor, new TemplateHookPoint("_prettyprinter.full.FPPFormattingConstructor",
+            grammar.getName(), Joiners.DOT.join(packageName)));
+
+    // FullPrettyPrinter (FormattingPrinter, printComments) Constructor
+    constructor = this.getCDConstructorFacade().createConstructor(CDModifier.PUBLIC.build(), fullPrettyPrinterCDClass.getName(),
+            getCDParameterFacade().createParameters(fmtPrinterAttribute));
+    fullPrettyPrinterCDClass.addCDMember(constructor);
+    this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("this(printer, true);"));
+
+    // InitializeTraverser
+    ASTCDParameter printCommentsParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createBooleanType(), "printComments");
+    ASTCDParameter indentPrinterParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType("de.monticore.prettyprint.IndentPrinter"), "printer");
+    ASTCDParameter formattingPrinterParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType("de.monticore.prettyprint.FormattingPrinter"), "printer");
+    ASTCDMethod method = getCDMethodFacade().createMethod(CDModifier.PROTECTED.build(), "initializeTraverser", indentPrinterParameter, printCommentsParameter);
     fullPrettyPrinterCDClass.addCDMember(method);
     Map<String, Map<ProdSymbol, Map<String, Collection<String>>>> replacedKeywordGrammars = findReplacedKeywords(grammar.getSymbol());
-
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_prettyprinter.full.FPPTraverserInit",
+        grammar.getSymbol(), superGrammars, replacedKeywordGrammars));
+
+    // InitializeFormattingTraverser
+    ASTCDMethod formattingMethod = getCDMethodFacade().createMethod(CDModifier.PROTECTED.build(), "initializeFormattingTraverser", formattingPrinterParameter, printCommentsParameter);
+    fullPrettyPrinterCDClass.addCDMember(formattingMethod);
+    this.replaceTemplate(EMPTY_BODY, formattingMethod, new TemplateHookPoint("_prettyprinter.full.FPPFormattingTraverserInit",
         grammar.getSymbol(), superGrammars, replacedKeywordGrammars));
 
     // Method to toggle printComments

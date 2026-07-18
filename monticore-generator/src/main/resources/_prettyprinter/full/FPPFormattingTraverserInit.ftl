@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 <#--
-  traverse initialization for a FullPrettyPrinter
+  FormattingTraverse initialization for a FullPrettyPrinter
   This method is overrideable
 -->
 <#-- @ftlvariable name="tc" type="de.monticore.generating.templateengine.TemplateController" -->
@@ -20,9 +20,10 @@ getTraverser().set${grammarName}Handler(${grammarName?uncap_first});
 getTraverser().add4${grammarName}(${grammarName?uncap_first});
 
 // SuperGrammars
+
 <#list superGrammars as supergrammar>
-    <#assign ppClass>${"${supergrammar.getPackageName()}."?remove_beginning(".")}${supergrammar.getName()?lower_case}._prettyprint.${supergrammar.getName()}PrettyPrinter</#assign>
-    ${ppClass} ${supergrammar.getName()?uncap_first} = new ${ppClass}(printer, printComments)
+    <#assign formattingPPClass>${"${supergrammar.getPackageName()}."?remove_beginning(".")}${supergrammar.getName()?lower_case}._prettyprint.${supergrammar.getName()}FormattingPrettyPrinter</#assign>
+    ${formattingPPClass} ${supergrammar.getName()?uncap_first} = new ${formattingPPClass}(printer, printComments)
     <#if replacedKeywordGrammars[supergrammar.getFullName()]??>
         ${includeArgs("FPPReplaceKeywords", supergrammar, replacedKeywordGrammars[supergrammar.getFullName()])}
     <#else>
@@ -32,4 +33,3 @@ getTraverser().add4${grammarName}(${grammarName?uncap_first});
     getTraverser().add4${supergrammar.getName()}(${supergrammar.getName()?uncap_first});
 </#list>
 
-${glex.defineHookPoint(tc,"<Statement>*FPPTraverserInit:end", ast)}
