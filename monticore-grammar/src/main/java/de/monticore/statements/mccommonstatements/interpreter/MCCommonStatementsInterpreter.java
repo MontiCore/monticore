@@ -22,24 +22,30 @@ import de.monticore.statements.mccommonstatements._ast.ASTIfStatement;
 import de.monticore.statements.mccommonstatements._ast.ASTMCJavaBlock;
 import de.monticore.statements.mccommonstatements._ast.ASTWhileStatement;
 import de.monticore.statements.mccommonstatements._visitor.MCCommonStatementsInheritanceHandler;
+import de.monticore.statements.mclowlevelstatements._symboltable.LabelSymbol;
+import de.monticore.statements.mcstatementsbasis._ast.ASTMCStatement;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.values.MCValue;
 import de.monticore.values.MCValueFactory;
 import de.monticore.values.MCValueObject;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.BooleanSupplier;
 
 import static de.monticore.types3.SymTypeRelations.normalize;
-import static de.monticore.types3.TypeCheck3.symTypeFromAST;
 import static de.monticore.types3.TypeCheck3.typeOf;
 
 /**
  * Interpreter Visitor for MCCommonStatements
+ * <p>
+ * Note: For simplicity, has a dependency on MCLowLevelStatements
  */
 public class MCCommonStatementsInterpreter
     extends MCCommonStatementsInheritanceHandler {
@@ -99,19 +105,39 @@ public class MCCommonStatementsInterpreter
   // It returns if the body should be calculated.
   @Override
   public void traverse(ASTForStatement node) {
+    // for control
     node.getForControl().accept(getTraverser());
     MICalculationValue forControlCalc =
         iData.popCalculation().asCalculationValue();
+    // null if initialization has not happened.
+    // needs to be reset after the loop
+    final BooleanSupplier[] updateAndCheckIter = new BooleanSupplier[1];
+    MICalculationBoolean forControlAsConditionCalc = frame -> {
+      if (updateAndCheckIter[0] == null) {
+        updateAndCheckIter[0] =
+            forControlCalc.calculate(frame).asObject().unsafeCast();
+      }
+      return updateAndCheckIter[0].getAsBoolean();
+    };
+    MICalculationVoid resetInitialized = frame -> updateAndCheckIter[0] = null;
+
+    // body
     node.getMCStatement().accept(getTraverser());
     MICalculationVoid bodyCalc =
         iData.popCalculation().asCalculationVoid();
+
+    // full loop, resets initialization afterwarts
+    MICalculationVoid forCalcWithOutReset =
+        createWhileLoop(node, forControlAsConditionCalc, bodyCalc);
     MICalculationVoid forCalc = frame -> {
-      BooleanSupplier updateAndCheckIter =
-          forControlCalc.calculate(frame).asObject().unsafeCast();
-      while (updateAndCheckIter.getAsBoolean()) {
-        bodyCalc.calculate(frame);
+      try {
+        forCalcWithOutReset.calculate(frame);
+      }
+      finally {
+        resetInitialized.calculate(frame);
       }
     };
+
     iData.putCalculation(forCalc);
   }
 
@@ -157,8 +183,6 @@ public class MCCommonStatementsInterpreter
   @Override
   public void traverse(ASTEnhancedForControl node) {
     SymTypeExpression exprType = normalize(typeOf(node.getExpression()));
-    SymTypeExpression varType =
-        normalize(symTypeFromAST(node.getFormalParameter().getMCType()));
     FieldSymbol varSym = node.getFormalParameter().getDeclarator().getSymbol();
     iData.getFrameLayoutStack().peek().declareVariable(varSym);
     MISetter varSetter =
@@ -217,44 +241,29 @@ public class MCCommonStatementsInterpreter
     node.getMCStatement().accept(getTraverser());
     MICalculationVoid bodyCalc =
         iData.popCalculation().asCalculationVoid();
-    MICalculationVoid whileCalc = frame -> {
-      while (conditionCalc.calculate(frame)) {
-        try {
-          bodyCalc.calculate(frame);
-        }
-        catch (MCSignalBreak ignored) {
-          break;
-        }
-        catch (MCSignalContinue ignored) {
-          // no-op
-        }
-      }
-    };
+    MICalculationVoid whileCalc =
+        createWhileLoop(node, conditionCalc, bodyCalc);
     iData.putCalculation(whileCalc);
   }
 
   @Override
   public void traverse(ASTDoWhileStatement node) {
-    node.getMCStatement().accept(getTraverser());
-    MICalculationVoid bodyCalc =
-        iData.popCalculation().asCalculationVoid();
+    // condition:
+    // as it is a do-while loop, it is skipped during the first run.
     node.getCondition().accept(getTraverser());
     MICalculationBoolean conditionCalc =
         iData.popCalculation().asCalculationBoolean();
-    MICalculationVoid doWhileCalc = frame -> {
-      do {
-        try {
-          bodyCalc.calculate(frame);
-        }
-        catch (MCSignalBreak ignored) {
-          break;
-        }
-        catch (MCSignalContinue ignored) {
-          // no-op
-        }
-      }
-      while (conditionCalc.calculate(frame));
-    };
+    final boolean[] firstRun = new boolean[] { true };
+    MICalculationBoolean conditionCalcSkipFirst = frame ->
+        firstRun[0] ? !(firstRun[0] = false) : conditionCalc.calculate(frame);
+
+    // body
+    node.getMCStatement().accept(getTraverser());
+    MICalculationVoid bodyCalc =
+        iData.popCalculation().asCalculationVoid();
+
+    MICalculationVoid doWhileCalc =
+        createWhileLoop(node, conditionCalcSkipFirst, bodyCalc);
     iData.putCalculation(doWhileCalc);
   }
 
@@ -292,6 +301,51 @@ public class MCCommonStatementsInterpreter
       expressionsCalc = expressionsCalc.getChainedBefore(exprCalc);
     }
     return expressionsCalc;
+  }
+
+  /**
+   * Creates the calculation of a while-loop.
+   * <p>
+   * This will handle {@code break} and {@code continue} statements,
+   * including labels.
+   *
+   * @param node          the node that represents the loop,
+   *                      it must be the loop that has the label iff applicable.
+   * @param conditionCalc the condition if the loop body should be executed.
+   *                      Needs to carry out any setup iff required.
+   * @param bodyCalc      the body of the loop to be executed
+   *                      based on the condition.
+   * @return A calculation representing the while-loop.
+   */
+  protected MICalculationVoid createWhileLoop(
+      ASTMCStatement node,
+      MICalculationBoolean conditionCalc,
+      MICalculationVoid bodyCalc
+  ) {
+    Optional<LabelSymbol> labelSymbolOpt =
+        LabelSymbol.getLabelOfStatement(node);
+    @Nullable final String labelStr = labelSymbolOpt
+        .map(LabelSymbol::getName)
+        .orElse(null);
+    return frame -> {
+      while (conditionCalc.calculate(frame)) {
+        try {
+          bodyCalc.calculate(frame);
+        }
+        catch (MCSignalBreak signal) {
+          if (!Objects.equals(labelStr, signal.getLabel().orElse(null))) {
+            throw signal;
+          }
+          break;
+        }
+        catch (MCSignalContinue signal) {
+          if (!Objects.equals(labelStr, signal.getLabel().orElse(null))) {
+            throw signal;
+          }
+          continue;
+        }
+      }
+    };
   }
 
 }

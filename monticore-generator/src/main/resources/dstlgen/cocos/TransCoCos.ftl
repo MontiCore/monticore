@@ -23,10 +23,11 @@ public class ${className} {
 
     // Add CoCos from all super grammars
     <#list symbolTable.getAllSuperGrammars() as superG>
+        <#assign superPackagePrefix = (superG.getPackageName() == "")?then("", superG.getPackageName() + ".")>
         <#if superG.getFullName() != "de.monticore.MCBasics" >
           // Also add cocos from super (trans) grammar ${superG.getFullName()}
           checker.addChecker(
-            ${superG.getPackageName()}.tr.${superG.getName()?lower_case}tr._cocos.TransCoCos.getCheckerForLanguageCoCos()
+            ${superPackagePrefix}tr.${superG.getName()?lower_case}tr._cocos.TransCoCos.getCheckerForLanguageCoCos()
           );
         </#if>
     </#list>

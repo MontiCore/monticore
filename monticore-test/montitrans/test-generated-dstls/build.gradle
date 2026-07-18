@@ -5,7 +5,7 @@ def _outputDir = "$buildDir/generated-sources/trafogen"
 
 dependencies {
   grammar project(':monticore-test:montitrans:test-dstl-gen')
-  implementation project(path:':monticore-test:montitrans:test-dstl-gen', configuration: 'trafoOut')
+  implementation project(path:':monticore-test:montitrans:test-dstl-gen', configuration: 'trafoRuntimeElements')
 }
 
 import de.monticore.MontiTransExec

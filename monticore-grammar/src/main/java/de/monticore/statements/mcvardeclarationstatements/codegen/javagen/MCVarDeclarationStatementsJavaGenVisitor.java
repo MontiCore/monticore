@@ -16,6 +16,7 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types3.util.MapBasedTypeCheck3;
 
 import static de.monticore.codegen.CodeGenSymTypeExpressionConverter.printConverted;
+import static de.monticore.types3.SymTypeRelations.normalize;
 import static de.monticore.types3.TypeCheck3.symTypeFromAST;
 import static de.monticore.types3.TypeCheck3.typeOf;
 
@@ -41,6 +42,19 @@ public class MCVarDeclarationStatementsJavaGenVisitor
   // that may need to be extended to support some corner cases
   // in some languages.
 
+  // recursive functions are currently not supported
+  // they could be supported, e.g., through temporary variables:
+  /*
+  Function1<Integer, Integer> s = ((Supplier<Function1<Integer, Integer>>)
+      () -> {
+        @SuppressWarnings("unchecked")
+        Function1<Integer, Integer>[] tmp = new Function1[1];
+        tmp[0] = (Integer n) -> (((n) > (0)) ? (n) + ((tmp[0]).apply((n) - (1))) : 0);
+        return tmp[0];
+      }
+  ).get();
+  */
+
   @Override
   public void traverse(ASTLocalVariableDeclarationStatement node) {
     // Q: Why is the logic not in traverse(ASTLocalVariableDeclaration)?
@@ -51,7 +65,7 @@ public class MCVarDeclarationStatementsJavaGenVisitor
     // And statements are printed to Java statements.
     ASTLocalVariableDeclaration varDeclaration =
         node.getLocalVariableDeclaration();
-    SymTypeExpression varType = symTypeFromAST(varDeclaration.getMCType());
+    SymTypeExpression varType = normalize(symTypeFromAST(varDeclaration.getMCType()));
     String javaVarType = SymTypeExpression2JavaConverter.getJavaTypePrint(varType);
 
     // for `int x = 2, y = 3` we will print

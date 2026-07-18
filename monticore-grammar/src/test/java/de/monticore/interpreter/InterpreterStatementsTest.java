@@ -29,8 +29,8 @@ public class InterpreterStatementsTest extends AbstractInterpreterTest {
   void testAssertStatementFailureWithMessage() {
     MCValue MCValue = interpret("assert false : \"message\";");
     assertTrue(MCValue.isError());
-    assertInstanceOf(AssertionError.class, MCValue.asNativeObject());
-    AssertionError error = (AssertionError) MCValue.asNativeObject();
+    AssertionError error =
+        assertInstanceOf(AssertionError.class, MCValue.asNativeObject());
     assertEquals("message", error.getMessage());
   }
 

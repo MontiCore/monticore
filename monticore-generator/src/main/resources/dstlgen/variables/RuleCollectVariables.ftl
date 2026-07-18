@@ -30,9 +30,10 @@ public class ${className} {
     traverser.add4${ast.getName()}TR(thisV);
     traverser.set${ast.getName()}TRHandler(thisV);
     <#list inheritanceHelper.getSuperGrammars(ast) as super>
+        <#assign superPackagePrefix = (super.getPackageName() == "")?then("", super.getPackageName() + ".")>
         {
-        ${super.getPackageName()}.tr.translation.
-        ${super.getName()}RuleCollectVariablesVisitor v = new ${super.getPackageName()}.tr.translation.
+        ${superPackagePrefix}tr.translation.
+        ${super.getName()}RuleCollectVariablesVisitor v = new ${superPackagePrefix}tr.translation.
         ${super.getName()}RuleCollectVariablesVisitor(state);
         traverser.set${super.getName()}TRHandler(v);
         traverser.add4${super.getName()}TR(v);
