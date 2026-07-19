@@ -201,7 +201,9 @@ public class Class2MCTestModels {
         Arguments.of("(boolean)(Boolean)(Object)(Boolean)true", true),
         Arguments.of("(float)(Float)(Object)(Float)4", (float) 4),
         Arguments.of("(Comparable<Boolean>)(Boolean)true", true),
-        Arguments.of("(Comparable<Integer>)(Integer)4", 4)
+        Arguments.of("(Comparable<Integer>)(Integer)4", 4),
+        Arguments.of("(Object)\"a\"", "a"),
+        Arguments.of("(R\"a\")((Object)\"a\")", "a")
     );
   }
 
