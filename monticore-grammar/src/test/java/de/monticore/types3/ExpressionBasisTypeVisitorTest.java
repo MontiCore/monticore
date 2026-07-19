@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types3;
 
+import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsGlobalScope;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,12 +9,15 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
+import static de.monticore.runtime.junit.MCAssertions.assertNoFindings;
 import static de.monticore.types3.util.DefsTypesForTests._intSymType;
 import static de.monticore.types3.util.DefsTypesForTests._personSymType;
 import static de.monticore.types3.util.DefsTypesForTests._shortSymType;
 import static de.monticore.types3.util.DefsTypesForTests.function;
 import static de.monticore.types3.util.DefsTypesForTests.inScope;
 import static de.monticore.types3.util.DefsTypesForTests.variable;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ExpressionBasisTypeVisitorTest extends AbstractTypeVisitorTest {
 
@@ -73,6 +77,19 @@ public class ExpressionBasisTypeVisitorTest extends AbstractTypeVisitorTest {
   @Test
   public void deriveTFromASTNameExpression7() throws IOException {
     checkExpr("intLinkedList", "java.util.LinkedList<int>");
+  }
+
+  @Test
+  public void doesNotReinterpretTypeIdentifierAsExpression() throws IOException {
+    ASTNameExpression expr = (ASTNameExpression) parseExpr("Person");
+    generateScopes(expr);
+    getType4Ast().setTypeOfTypeIdentifierForName(expr, _personSymType);
+
+    expr.accept(getTypeMapTraverser());
+
+    assertTrue(getType4Ast().hasTypeOfTypeIdentifierForName(expr));
+    assertFalse(getType4Ast().hasPartialTypeOfExpression(expr));
+    assertNoFindings();
   }
 
   @Test
