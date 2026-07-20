@@ -35,13 +35,13 @@ public boolean doPatternMatching() {
     <#--creates a switch case for each object for matching the object-->
 <#list hierarchyHelper.getMandatoryObjectsWithoutListChilds(ast.getPattern().getLHSObjectsList()) as object>
   <#if object.isListObject()>
-    ${tc.includeArgs("de.monticore.tf.odrules.dopatternmatching.HandleListObject", object, [false, ""])}
+    ${tc.includeArgs("de.monticore.tf.odrules.dopatternmatching.HandleListObject", object, [false, false, ""])}
   <#elseif object.isOptObject()>
-    ${tc.includeArgs("de.monticore.tf.odrules.dopatternmatching.HandleOptObject", object, [false, ""])}
+    ${tc.includeArgs("de.monticore.tf.odrules.dopatternmatching.HandleOptObject", object, [false, false, ""])}
   <#elseif object.isNotObject()>
-    ${tc.includeArgs("de.monticore.tf.odrules.dopatternmatching.HandleNotObject", object, [false, ""])}
+    ${tc.includeArgs("de.monticore.tf.odrules.dopatternmatching.HandleNotObject", object, [false, false, ""])}
   <#else>
-    ${tc.includeArgs("de.monticore.tf.odrules.dopatternmatching.HandleNormalObject", object, [false, ""])}
+    ${tc.includeArgs("de.monticore.tf.odrules.dopatternmatching.HandleNormalObject", object, [false, false, ""])}
   </#if>
 </#list>
     }
