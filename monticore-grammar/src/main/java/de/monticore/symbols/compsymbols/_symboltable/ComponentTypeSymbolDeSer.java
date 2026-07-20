@@ -161,15 +161,9 @@ public class ComponentTypeSymbolDeSer extends ComponentTypeSymbolDeSerTOP {
   }
 
   protected void fillEffectChain(ComponentTypeSymbol symbol, JsonObject symbolJson) {
-    if (symbolJson == null) {
-      return;
-    }
-    if (!symbolJson.hasMember(EFFECT_CHAIN)) {
-      return;
-    }
-    JsonObject chain = symbolJson.getObjectMember(EFFECT_CHAIN);
+    Optional<JsonObject> chain = symbolJson.getObjectMemberOpt(EFFECT_CHAIN);
     Multimap<PortSymbol, PortSymbol> effectMap = symbol.getEffectChains();
-    for (Entry<String, JsonElement> entry : chain.getMembers().entrySet()) {
+    for (Entry<String, JsonElement> entry : chain.map(c -> c.getMembers().entrySet()).orElseGet(Collections::emptySet)) {
       List<PortSymbol> inPorts = symbol.getAllIncomingPorts().stream().filter(p -> p.getFullName().equals(entry.getKey())).toList();
       List<PortSymbol> outPorts = entry.getValue().getAsJsonArray().getValues().stream()
               .map(outPortName -> symbol.getSpannedScope().resolvePortMany(outPortName.toString()))
