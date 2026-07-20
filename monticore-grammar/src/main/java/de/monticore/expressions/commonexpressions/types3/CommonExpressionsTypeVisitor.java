@@ -752,7 +752,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
    */
   protected void calculateFieldAccessFirstName(ASTNameExpression expr) {
     Optional<SymTypeExpression> nameAsExprType =
-        calculateExprQName(expr, false);
+        calculateExprQName(expr, true);
     Optional<SymTypeExpression> nameAsTypeIdType =
         calculateTypeIdQName(expr);
 
@@ -760,22 +760,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
       // here there is no need for type inference
       getType4Ast().setTypeOfExpression(expr, nameAsExprType.get());
     }
-
-    // Check if there is a second possible interpretation as Type Identifier
-    Optional<SymTypeExpression> nameAsExprTypeOptional =
-        nameAsTypeIdType.isPresent() ?
-            calculateExprQName(expr, true) : Optional.empty();
-
-    boolean nameIsExprAndType =
-        nameAsExprType.isPresent() &&
-            nameAsExprTypeOptional.isPresent() &&
-            nameAsTypeIdType.isPresent() &&
-            !nameAsExprType.get().deepEquals(nameAsExprTypeOptional.get()) &&
-            nameAsExprTypeOptional.get().deepEquals(nameAsTypeIdType.get());
-
-    if (nameAsTypeIdType.isPresent() &&
-        (nameAsExprType.isEmpty() || nameIsExprAndType)
-    ) {
+    if (nameAsTypeIdType.isPresent()) {
       getType4Ast().setTypeOfTypeIdentifierForName(
           expr,
           nameAsTypeIdType.get()
