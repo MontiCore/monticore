@@ -22,7 +22,7 @@ The following classes contribute to the interpreter:
     * Functions are encoded the following way :
         * [MCValueFunctionOfModel](values/MCValueFunctionOfModel.java)
           (function declared within the model, e.g., lambdas)
-        * [MIValueFunctionOfMethodHandle](values/MCValueFunctionOfMethodHandle.java)
+        * [MCValueFunctionOfMethodHandle](values/MCValueFunctionOfMethodHandle.java)
           (native java method)
 * MIFrame provides a calculation frame: It contains, e.g., local variables:
     * [MIFrameForBasicSymbols](../symbols/basicsymbols/interpreter/frames/MIFrameForBasicSymbols.java)
