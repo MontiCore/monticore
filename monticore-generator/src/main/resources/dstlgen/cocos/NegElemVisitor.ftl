@@ -25,8 +25,9 @@ public class ${className} implements ${ast.getName()}TRVisitor2, ${ast.getName()
     traverser.set${ast.getName()}TRHandler(this);
 
     <#list inheritanceHelper.getSuperGrammars(ast) as superGrammar>
+        <#assign superPackagePrefix = (superGrammar.getPackageName() == "")?then("", superGrammar.getPackageName() + ".")>
       {
-        ${superGrammar.packageName}.tr.${superGrammar.getName()?lower_case}tr._cocos.${superGrammar.getName()}NegElemVisitor v = new ${superGrammar.packageName}.tr.${superGrammar.getName()?lower_case}tr._cocos.${superGrammar.getName()}NegElemVisitor(state);
+        ${superPackagePrefix}tr.${superGrammar.getName()?lower_case}tr._cocos.${superGrammar.getName()}NegElemVisitor v = new ${superPackagePrefix}tr.${superGrammar.getName()?lower_case}tr._cocos.${superGrammar.getName()}NegElemVisitor(state);
         traverser.add4${superGrammar.getName()}TR(v);
         traverser.set${superGrammar.getName()}TRHandler(v);
       }

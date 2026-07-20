@@ -38,15 +38,18 @@ As of now, only Java code generation is supported.
 
 * [CodeGenerator](CodeGenerator.java)
   (Provides the main interface to generate code from an AST node.)
-   * [AbstractCodeGenVisitor](AbstractCodeGenVisitor.java)
-     (Abstract SuperClass for CodeGenerators based on the visitor pattern)
-   * [CodeGenPrintAction](CodeGenPrintAction.java)
-     (represents unprinted code fragments, technical, internal class)
+    * [TraverserBasedCodeGenerator](TraverserBasedCodeGenerator.java)
+      (more specific interface for traverser based code generation.
+      This is the default.)
+    * [CodeGenPrintAction](CodeGenPrintAction.java)
+      (represents unprinted code fragments; technical, internal class)
+    * [CodeGenVisitorState](CodeGenVisitorState.java)
+      (shared state and functionality of the code generation visitors)
 * [CodeGenSymTypeExpressionConverter](CodeGenSymTypeExpressionConverter.java)
   (converts SymTypeExpressions into corresponding types
   in the target language)
-   * [ICodeGenSymTypeExpressionConversionHandler](ICodeGenSymTypeExpressionConversionHandler.java)
-     (provides (parts of) the implementation of
-    CodeGenSymTypeExpressionConverter)
+    * [ICodeGenSymTypeExpressionConversionHandler](ICodeGenSymTypeExpressionConversionHandler.java)
+      (provides (parts of) the implementation of
+      CodeGenSymTypeExpressionConverter)
 * [Node2Name](util/Node2Name.java)
   (Utility; Provides unique names for ASTNodes)

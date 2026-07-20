@@ -57,6 +57,7 @@ public class CLIDecorator extends AbstractCreator<ASTCDCompilationUnit, Optional
         .setModifier(PUBLIC.build())
         .setName(cliClassName)
         .addCDMember(createMainMethod(parserService.getCDSymbol()))
+        .addCDMember(createGradleMainMethod(parserService.getCDSymbol()))
         .addCDMember(createRunMethod(startProdPresent, parserService.getCDSymbol()))
         .addCDMember(createParseMethod(parserService.getCDSymbol()))
         .addCDMember(createInitMethod())
@@ -100,6 +101,27 @@ public class CLIDecorator extends AbstractCreator<ASTCDCompilationUnit, Optional
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "Main", grammarname));
     return method;
   }
+
+  /**
+   * creates static gradleMain method to execute the CLI from gradle
+   *
+   * @param cdSymbol class diagram of the current language
+   * @return the decorated gradleMain method
+   */
+  protected ASTCDMethod createGradleMainMethod(DiagramSymbol cdSymbol) {
+    String grammarname = cdSymbol.getName();
+    ASTMCType stringArrayType = getMCTypeFacade().createArrayType("String", 1);
+    ASTCDParameter parameter = getCDParameterFacade().createParameter(stringArrayType, "args");
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC_STATIC.build(), "gradleMain", parameter);
+    this.replaceTemplate(JAVADOC, method,
+            JavaDoc.of("Entry point for the tool from Gradle.",
+                            "This method MUST NOT exit the JVM, but it may throw exceptions.")
+                    .param("args", "the arguments given to the tool")
+                    .asHP());
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "MainGradle", grammarname));
+    return method;
+  }
+
 
   /**
    * creates Run method to execute the CLI

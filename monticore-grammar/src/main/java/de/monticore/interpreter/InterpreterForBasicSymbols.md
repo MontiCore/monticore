@@ -66,6 +66,8 @@ The following classes contribute to the interpreter:
           (handles assert statements, e.g., `assert x > 0;`)
         * [MCCommonStatementsInterpreter](../statements/mccommonstatements/interpreter/MCCommonStatementsInterpreter.java)
           (handles common statements, e.g., `if`, incomplete)
+        * [MCLowLevelStatementsInterpreter](../statements/mclowlevelstatements/interpreter/MCLowLevelStatementsInterpreter.java)
+          (handles `break`/`continue` and labels, e.g., `break outer;`)
         * [MCReturnStatementsInterpreter](../statements/mcreturnstatements/interpreter/MCReturnStatementsInterpreter.java)
           (handles return statements, e.g., `return x;`)
         * [MCVarDeclarationStatementsInterpreter](../statements/mcvardeclarationstatements/interpreter/MCVarDeclarationStatementsInterpreter.java)

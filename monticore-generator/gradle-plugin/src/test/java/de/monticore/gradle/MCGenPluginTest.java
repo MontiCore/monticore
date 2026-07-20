@@ -88,12 +88,14 @@ public class MCGenPluginTest {
   
   // Test if the plugin can be applied
   @ParameterizedTest
-  @ValueSource(strings = {"8.5", "8.7", "8.14.4", "9.5.1"})
+  @ValueSource(strings = {"8.5", "8.7", "8.14.4", "9.5.1", "9.6.1"})
   public void testCanApplyPlugin(String version) throws IOException {
     writeFile(settingsFile, "rootProject.name = 'hello-world'");
-    String buildFileContent = "plugins {" +
-            "    id 'de.monticore.generator' " +
-            "}";
+    String buildFileContent = """
+        plugins {
+          id 'de.monticore.generator'
+        }
+        """;
     writeFile(buildFile, buildFileContent);
 
     BuildResult result = GradleRunner.create()
@@ -116,21 +118,31 @@ public class MCGenPluginTest {
   // and up-to-date-checks work on modified files
   // and up-to-date-checks work on modified super files
   @ParameterizedTest
-  @ValueSource(strings = {"8.5", "8.7", "8.14.4", "9.5.1"})
+  @ValueSource(strings = {"8.5", "8.7", "8.14.4", "9.5.1", "9.6.1"})
   public void testGenerateGrammar(String version) throws IOException {
     writeFile(settingsFile, "rootProject.name = 'hello-world'");
-    writeFile(propertiesFile, "de.monticore.gradle.show_performance_statistic=true\norg.gradle.jvmargs=-XX:MaxMetaspaceSize=1g\n");
-    String buildFileContent = "plugins {\n" +
-            "    id 'de.monticore.generator' \n" +
-            "}\n" +
-            createMCToolDependency();
+    writeFile(propertiesFile, """
+        de.monticore.gradle.show_performance_statistic=true
+        org.gradle.jvmargs=-XX:MaxMetaspaceSize=1g
+        """);
+    String buildFileContent = """
+        plugins {
+          id 'de.monticore.generator'
+        }
+        """ + createMCToolDependency();
     writeFile(buildFile, buildFileContent);
     // Note: We are unable to load MCBasics or compile,
     // as the monticore-grammar dependency might not be available yet
-    writeFile(new File(grammarDir, "MyTestGrammar.mc4"),
-            "grammar MyTestGrammar { Monti = \"Core\"; }");
-    writeFile(new File(grammarDir, "MyTestGrammarS.mc4"),
-            "grammar MyTestGrammarS extends MyTestGrammar { Monti = \"Core\"; }");
+    writeFile(new File(grammarDir, "MyTestGrammar.mc4"), """
+        grammar MyTestGrammar {
+          Monti = "Core";
+        }
+        """);
+    writeFile(new File(grammarDir, "MyTestGrammarS.mc4"), """
+        grammar MyTestGrammarS extends MyTestGrammar {
+          Monti = "Core";
+        }
+        """);
 
     // use a custom gradle home directory to ensure fresh caches
     File gradleHome = createDirectory(temporaryFolder.resolve("gradleHome"));
@@ -179,8 +191,11 @@ public class MCGenPluginTest {
 
     // Next, test up-to-date checks:
     // by changing MyTestGrammarS
-    writeFile(new File(grammarDir, "MyTestGrammarS.mc4"),
-            "grammar MyTestGrammarS extends MyTestGrammar { Monti = \"Core2\"; }");
+    writeFile(new File(grammarDir, "MyTestGrammarS.mc4"), """
+        grammar MyTestGrammarS extends MyTestGrammar {
+          Monti = "Core2";
+        }
+        """);
     // and run again
     result = GradleRunner.create()
             .withPluginClasspath()
@@ -204,8 +219,11 @@ public class MCGenPluginTest {
 
 
     // and change MyTestGrammar
-    writeFile(new File(grammarDir, "MyTestGrammar.mc4"),
-            "grammar MyTestGrammar { Monti = \"Core2\"; }");
+    writeFile(new File(grammarDir, "MyTestGrammar.mc4"), """
+        grammar MyTestGrammar {
+          Monti = "Core2";
+        }
+        """);
     // and run again
     result = GradleRunner.create()
             .withPluginClasspath()
@@ -232,44 +250,59 @@ public class MCGenPluginTest {
   // and up-to-date-checks work on modified files
   // and up-to-date-checks work on modified super files
   @ParameterizedTest
-  @ValueSource(strings = {"8.5", "8.7", "8.14.4", "9.5.1"})
+  @ValueSource(strings = {"8.5", "8.7", "8.14.4", "9.5.1", "9.6.1"})
   public void testMultiProject(String version) throws IOException {
-    writeFile(settingsFile, "rootProject.name = 'hello-world'\ninclude('A')\ninclude('B')");
-    writeFile(propertiesFile, "de.monticore.gradle.show_performance_statistic=true\norg.gradle.jvmargs=-XX:MaxMetaspaceSize=1g\n");
-    String buildFileContentA = "plugins {" +
-            "    id 'de.monticore.generator' \n" +
-            "    id 'maven-publish' \n" +
-            "}\n" +
-            "publishing { " +
-            "  publications { " +
-            "    maven(MavenPublication) {\n" +
-            "      groupId = 'de.mc.test'\n" +
-            "      artifactId = 'A'\n" +
-            "      version = '0.1'\n" +
-            "      from components.java\n" +
-            "    }" +
-            "  }" +
-            "}\n" + createMCToolDependency();
+    writeFile(settingsFile, """
+        rootProject.name = 'hello-world'
+        include('A')
+        include('B')
+        """);
+    writeFile(propertiesFile, """
+        de.monticore.gradle.show_performance_statistic=true
+        org.gradle.jvmargs=-XX:MaxMetaspaceSize=1g
+        """);
+    String buildFileContentA = """
+        plugins {
+          id 'de.monticore.generator'
+          id 'maven-publish'
+        }
+        publishing {
+          publications {
+            maven(MavenPublication) {
+              groupId = 'de.mc.test'
+              artifactId = 'A'
+              version = '0.1'
+              from components.java
+            }
+          }
+        }
+        """ + createMCToolDependency();
     var aDir = new File(testProjectDir, "A");
     writeFile(new File(aDir, "build.gradle"), buildFileContentA);
     // Note: We are unable to load MCBasics or compile,
     // as the monticore-grammar dependency might not be available yet
-    writeFile(new File(new File(aDir, "src/main/grammars"), "MyTestGrammar.mc4"),
-              "grammar MyTestGrammar { Monti = \"Core\"; }");
-
-    String buildFileContentB = "plugins {" +
-            "    id 'de.monticore.generator' \n" +
-            "}\n" +
-            "dependencies { " +
-            "  grammar(project(':A')) " +
-            "}\n"
-            + createMCToolDependency();
+    writeFile(new File(new File(aDir, "src/main/grammars"), "MyTestGrammar.mc4"), """
+        grammar MyTestGrammar {
+          Monti = "Core";
+        }
+        """);
+    
+    String buildFileContentB = """
+        plugins {
+          id 'de.monticore.generator'
+        }
+        dependencies {
+          grammar(project(':A'))
+        }
+        """ + createMCToolDependency();
     var bDir = new File(testProjectDir, "B");
     writeFile(new File(bDir, "build.gradle"), buildFileContentB);
-
-
-    writeFile(new File(new File(bDir, "src/main/grammars"), "MyTestGrammarS.mc4"),
-              "grammar MyTestGrammarS extends MyTestGrammar { Monti = \"Core\"; }");
+    
+    writeFile(new File(new File(bDir, "src/main/grammars"), "MyTestGrammarS.mc4"), """
+        grammar MyTestGrammarS extends MyTestGrammar {
+          Monti = "Core";
+        }
+        """);
 
     // use a custom gradle home directory to ensure fresh cashes
     File gradleHome = createDirectory(temporaryFolder.resolve("gradleHome"));
@@ -326,8 +359,11 @@ public class MCGenPluginTest {
 
     // Next, test up-to-date checks:
     // by changing MyTestGrammarS
-    writeFile(new File(new File(bDir, "src/main/grammars"), "MyTestGrammarS.mc4"),
-              "grammar MyTestGrammarS extends MyTestGrammar { Monti = \"Core2\"; }");
+    writeFile(new File(new File(bDir, "src/main/grammars"), "MyTestGrammarS.mc4"), """
+        grammar MyTestGrammarS extends MyTestGrammar {
+          Monti = "Core2";
+        }
+        """);
     // and run again
     result = GradleRunner.create()
             .withPluginClasspath()
@@ -354,8 +390,11 @@ public class MCGenPluginTest {
 
 
     // and change MyTestGrammar
-    writeFile(new File(new File(aDir, "src/main/grammars"), "MyTestGrammar.mc4"),
-              "grammar MyTestGrammar { Monti = \"Core2\"; }");
+    writeFile(new File(new File(aDir, "src/main/grammars"), "MyTestGrammar.mc4"), """
+        grammar MyTestGrammar {
+          Monti = "Core2";
+        }
+        """);
     // and run again
     result = GradleRunner.create()
             .withPluginClasspath()
@@ -437,13 +476,19 @@ public class MCGenPluginTest {
   String createMCToolDependency() {
     String projVersion = loadProperties().getProperty("version");
     File mcGenToolJar = new File(new File("../target/libs/"), "monticore-generator-" + projVersion + "-mc-tool.jar");
-    return  "repositories {\n" + " if ((\"true\").equals(getProperty('useLocalRepo'))) {\n "
-            + "  mavenLocal()\n" + " }\n"
-            + " maven{ url  'https://nexus.se.rwth-aachen.de/content/groups/public' }\n"
-            + " mavenCentral()\n" + "}\n" +
-            // We have to inject the cdlang jar for this project (as it is not yet published)
-            "dependencies {\n" + " mcTool files('" + mcGenToolJar.getAbsolutePath().replace("\\", "\\\\")
-            + "')\n"
-            + "}\n";
+    return """
+        repositories {
+          if ("true".equals(getProperty('useLocalRepo'))) {
+            mavenLocal()
+          }
+          maven {
+            url = 'https://nexus.se.rwth-aachen.de/content/groups/public'
+          }
+          mavenCentral()
+        }
+        dependencies {
+          mcTool files('%s')
+        }
+        """.formatted(mcGenToolJar.getAbsolutePath().replace("\\", "\\\\"));
   }
 }
