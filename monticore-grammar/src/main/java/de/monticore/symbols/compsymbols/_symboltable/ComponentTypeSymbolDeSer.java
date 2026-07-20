@@ -2,6 +2,8 @@
 package de.monticore.symbols.compsymbols._symboltable;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.compsymbols.CompSymbolsMill;
 import de.monticore.symboltable.serialization.ISymbolDeSer;
@@ -10,20 +12,21 @@ import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonElementFactory;
 import de.monticore.symboltable.serialization.json.JsonObject;
+import de.monticore.symboltable.serialization.json.UserJsonString;
 import de.monticore.types.check.CompKindExpression;
 import de.monticore.types.check.CompKindExpressionDeSer;
 import de.se_rwth.commons.logging.Log;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.Map.Entry;
 
 public class ComponentTypeSymbolDeSer extends ComponentTypeSymbolDeSerTOP {
 
   public static final String PARAMETERS = "parameters";
   public static final String SUPER = "super";
   public static final String REFINEMENTS = "refinements";
+  private static final String EFFECT_CHAIN = "effectChain";
 
   protected final CompKindExpressionDeSer compTypeExprDeSer;
 
@@ -127,5 +130,53 @@ public class ComponentTypeSymbolDeSer extends ComponentTypeSymbolDeSerTOP {
   @Override
   protected List<CompKindExpression> deserializeSuperComponents(JsonObject symbolJson) {
     throw new UnsupportedOperationException();
+  }
+
+  @Override
+  protected void serializeEffectChains(Multimap<PortSymbol, PortSymbol> effectChains, CompSymbolsSymbols2Json s2j) {
+    if (effectChains == null) {
+      return;
+    }
+    s2j.getJsonPrinter().beginObject(EFFECT_CHAIN);
+    for (PortSymbol key : effectChains.keys()) {
+      s2j.getJsonPrinter().beginArray(key.getFullName());
+      for (PortSymbol outPort : effectChains.get(key)) {
+        s2j.getJsonPrinter().addToArray(new UserJsonString(outPort.getFullName()));
+      }
+      s2j.getJsonPrinter().endArray();
+    }
+    s2j.getJsonPrinter().endObject();
+  }
+
+  @Override
+  protected Multimap<PortSymbol, PortSymbol> deserializeEffectChains(JsonObject symbolJson) {
+    // Because we need the ports before being able to fill the chains, we only create the empty multimap here.
+    return ArrayListMultimap.create();
+  }
+
+  @Override
+  protected Multimap<PortSymbol, PortSymbol> deserializeEffectChains(ICompSymbolsScope scope, JsonObject symbolJson) {
+    // Because we need the ports before being able to fill the chains, we only create the empty multimap here.
+    return ArrayListMultimap.create();
+  }
+
+  protected void fillEffectChain(ComponentTypeSymbol symbol, JsonObject symbolJson) {
+    Optional<JsonObject> chain = symbolJson.getObjectMemberOpt(EFFECT_CHAIN);
+    Multimap<PortSymbol, PortSymbol> effectMap = symbol.getEffectChains();
+    for (Entry<String, JsonElement> entry : chain.map(c -> c.getMembers().entrySet()).orElseGet(Collections::emptySet)) {
+      List<PortSymbol> inPorts = symbol.getAllIncomingPorts().stream().filter(p -> p.getFullName().equals(entry.getKey())).toList();
+      List<PortSymbol> outPorts = entry.getValue().getAsJsonArray().getValues().stream()
+              .map(outPortName -> symbol.getSpannedScope().resolvePortMany(outPortName.toString()))
+              .flatMap(Collection::stream).toList();
+      for (PortSymbol inPort : inPorts) {
+        effectMap.putAll(inPort, outPorts);
+      }
+    }
+  }
+
+  @Override
+  protected void deserializeAddons(ComponentTypeSymbol symbol, JsonObject symbolJson) {
+    super.deserializeAddons(symbol, symbolJson);
+    fillEffectChain(symbol, symbolJson);
   }
 }

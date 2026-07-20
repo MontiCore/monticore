@@ -15,19 +15,21 @@ about the concrete interpreter implementations.
 The following classes contribute to the interpreter:
 
 * [MCValue](../../../../../../../monticore-runtime/src/main/java/de/monticore/values/MCValue.md)
-  represents interpreter values (encodes 'int', 'long', 'String', 'List<T>, etc.,
+  represents interpreter values
+  (encodes `int`, `long`, `String`, `List<T>`, etc.,
   higher order function types and all object types)
   in form of subclasses.
     * Functions are encoded the following way :
-        * [MIValueFunctionOfModel](values/MCValueFunctionOfModel.java)
+        * [MCValueFunctionOfModel](values/MCValueFunctionOfModel.java)
           (function declared within the model, e.g., lambdas)
-        * [MIValueFunctionOfMethodHandle](values/MCValueFunctionOfMethodHandle.java)
+        * [MCValueFunctionOfMethodHandle](values/MCValueFunctionOfMethodHandle.java)
           (native java method)
-* MIFrame provides a calculation frame: It e.g. contains local variables:
+* MIFrame provides a calculation frame: It contains, e.g., local variables:
     * [MIFrameForBasicSymbols](../symbols/basicsymbols/interpreter/frames/MIFrameForBasicSymbols.java)
       (MIFrame with support for local variables)
     * [MIFrameLayoutForBasicSymbols](../symbols/basicsymbols/interpreter/frames/MIFrameLayoutForBasicSymbols.java)
-      (MIFrameLayout with support for local variables) (??)
+      (MIFrameLayout with support for local variables;
+      it stores the location of each variable in a frame)
 * [AbstractInterpreterForBasicSymbols](../symbols/basicsymbols/interpreter/AbstractInterpreterForBasicSymbols.java):
   Interpreter API with support for local variables and functions
     * [ExpressionsInterpreter](../expressions/interpreter/ExpressionsInterpreter.java)
@@ -35,14 +37,16 @@ The following classes contribute to the interpreter:
     * [StatementsInterpreter](../statements/interpreter/StatementsInterpreter.java)
       (Example interpreter API for Statements)
 * [MCSignalFlowControl](signals/MCSignalFlowControl.java)
-  signal that manipulates the stack according to the respective statement (??)
+  signal that manipulates the stack according to the respective statement,
+  e.g., a `return` will unroll the stack up until the function call.
     * [MCSignalBreak](signals/MCSignalBreak.java)
       (represents `break`)
     * [MCSignalContinue](signals/MCSignalContinue.java)
       (represents `continue`)
     * [MCSignalReturn](signals/MCSignalReturn.java)
       (represents `return`, may contain a return value)
-* Traversers for the abstract syntax tree that is interpreted (serves as core infrastructure for the interpreter)
+* Traversers for the abstract syntax tree that is interpreted
+  (serves as core infrastructure for the interpreter)
     * Expressions
         * [AssignmentExpressionsInterpreter](../expressions/assignmentexpressions/interpreter/AssignmentExpressionsInterpreter.java)
           (handles assignment expressions, e.g., `a = 5`)
@@ -89,31 +93,41 @@ The following classes contribute to the interpreter:
 To use externally defined and maintained variables (respectively their values)
 and functions during interpretation, two steps are needed:
 
-1. Add the corresponding symbol (i.e. normally either a 'VariableSymbol' or a 
-   'FunctionSymbol')
-   to the symbol table. Then the symbol is available
-   for the CoCos and thus can be used in the expression that iss
-   to be interpreted.
-1. Before the interpreter starts the values in the interpreter
-   need to be set accordingly using 'addVariable'. 
+1. Add the corresponding symbol
+   (i.e., normally either a 'VariableSymbol' or a 'FunctionSymbol')
+   to the symbol table.
+   Then the symbol is available for the CoCos
+   and thus can be used in, e.g., the expression that is to be interpreted.
+2. Before the interpreter starts the values in the interpreter
+   need to be set accordingly using `addVariable`. 
    The following code shows an example:
 
+<!-- copy of InterpreterDocuTest.java -->
 ```java
-// add Symbol "j" to the symbol table
+// add Symbol "j" to the symbol table, e.g., in the global scope
+VariableSymbol jSymbol = BasicSymbolsMill.variableSymbolBuilder()
+        .setName("j")
+        .setType(SymTypeExpressionFactory.createPrimitive("int"))
+        .build();
+BasicSymbolsMill.globalScope().add(jSymbol);
 
 // initialize an interpreter
-ASTNode stmt = parseAndCreateSymTabAndRunCoCos("int i = j++;");
+ASTMCBlockStatement stmt =
+    parseAndCreateSymTabAndRunCoCos("int i = j++;");
 StatementsInterpreter interpreter = getMyLangInterpreter();
 
 // add the variable to the interpreters current scope
-interpreter.addVariable(jSymbol, new MIValueInt(2));
+interpreter.addVariable(jSymbol, new MCValueInt(2));
 interpreter.interpret(stmt);
 
-VariableSymbol iSymbol = // resolve for "i" in the model's scope
+// resolve for "i" in the model's scope
+VariableSymbol iSymbol = BasicSymbolsMill.globalScope()
+    .resolveVariable("i").get();
 int i = interpreter.getVariable(iSymbol).asInt(); // i == 2
-int j = interpreter.getVariable(jSymbol).asInt(); // j == 3
+int j = interpreter.getVariable(jSymbol).asInt(); // j == 3, due to ++
+
 // j is already in the interpreter's scope, use 'set' to set a new value
-interpreter.setVariable(jSymbol, new MIValueInt(4));
+interpreter.setVariable(jSymbol, new MCValueInt(4));
 ```
 
 ## How to use Java classes in the interpreter
@@ -125,32 +139,32 @@ it is in principle possible to access and manipulate other Java
 objects in that virtual machine if access through respective symbols 
 is granted.
 
-For that
-simply initialize the 'Class2MC' symbol infrastructure, which
-adds many symbols extracted from Java code to the symbol table.
+For that simply initialize the 'Class2MC' symbol infrastructure,
+which adds many symbols extracted from Java code to the symbol table.
 Then the Java classes, publicly available attributes and methods
-that are included in the 'Class2MC' 
-infrastructure can be fully used with the interpreter.
-'Class2MC' can include handwritten code speciafically written 
-from the application as well as core frameworks and only
-relies on 'class'-files. (??)
+that are included in the 'Class2MC' infrastructure
+can be fully used with the interpreter.
+'Class2MC' can include handwritten code specifically written 
+for the application as well as core frameworks
+and only relies on `.class`-files.
 
 _Is it safe?_   
 __No! Adding Class2MC allows the execution of arbitrary code!__
 
-To regain security one migth consider:
+To regain security one might consider:
 
 * Setting a special version of the predicate of the 'Class2MCResolver'
   to filter out all classes not explicitly allowed.
-    * currently, there is no explicit filter 
-* or: use a CoCo to check for whether the occuring  model elements are indeed 
+    * per default, there is no explicit filter;
+      all public classes are available until a filter is set.
+* or: use a CoCo to check for whether the occurring model elements are indeed 
   allowed.
 * or: _NOT_ initialize Class2MC
-     1. explicitely add the allowed symbols to the symbol table
-     1. use `addVariable`/`addFunction` to set the values, and
+     1. explicitly add the allowed symbols to the symbol table
+     2. use `addVariable`/`addFunction` to set the values
 
 Regarding static symbols;   
-if JavaInteroperability is used with static variables/methods,
+if Java interoperability is used with static variables/methods,
 then global values can be changed,
 which in turn can influence the execution of the current program,
 or different interpreters might influence each other.   
@@ -160,11 +174,11 @@ In most cases, it is recommended to not allow access to static symbols.
 
 * [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
 * [MontiCore documentation](https://www.monticore.de/)
-* [**List of languages**](https://github.com/MontiCore/monticore/blob/opendev/docs/Languages.md)
+* [**List of languages**](https://github.com/MontiCore/monticore/blob/dev/docs/Languages.md)
 * [**MontiCore Core Grammar Library
-  **](https://github.com/MontiCore/monticore/blob/opendev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
+  **](https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
 * [TypeSystem documentation](../types3/TypeSystem3.md)
-* [Best Practices](https://github.com/MontiCore/monticore/blob/opendev/docs/BestPractices.md)
+* [Best Practices](https://github.com/MontiCore/monticore/blob/dev/docs/BestPractices.md)
 * [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
 * [Licence definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)
 
