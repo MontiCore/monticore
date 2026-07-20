@@ -69,8 +69,3 @@
   public List<Match> getMatches(){
     return allMatches;
   }
-
-  public void doAll(){
-    doPatternMatching();
-    doReplacement();
-  }

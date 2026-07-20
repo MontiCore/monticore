@@ -14,6 +14,14 @@ public abstract class ODRule {
   public abstract boolean doPatternMatching();
 
   public abstract void doReplacement();
+  
+  public boolean doAll(){
+    if (doPatternMatching()) {
+      doReplacement();
+      return true;
+    }
+    return false;
+  }
 
   public GlobalExtensionManagement getGlex() {
     return glex;
