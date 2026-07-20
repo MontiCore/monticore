@@ -20,7 +20,7 @@ The following classes contribute to the interpreter:
   higher order function types and all object types)
   in form of subclasses.
     * Functions are encoded the following way :
-        * [MIValueFunctionOfModel](values/MCValueFunctionOfModel.java)
+        * [MCValueFunctionOfModel](values/MCValueFunctionOfModel.java)
           (function declared within the model, e.g., lambdas)
         * [MIValueFunctionOfMethodHandle](values/MCValueFunctionOfMethodHandle.java)
           (native java method)
