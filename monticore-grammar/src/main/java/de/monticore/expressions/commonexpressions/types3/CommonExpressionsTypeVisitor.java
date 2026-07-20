@@ -611,9 +611,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
       if (expr.getExpression() instanceof ASTFieldAccessExpression) {
         ASTFieldAccessExpression innerFieldAccessExpr =
             (ASTFieldAccessExpression) (expr.getExpression());
-        fieldAccessCustomTraverse(
-            innerFieldAccessExpr
-        );
+        fieldAccessCustomTraverse(innerFieldAccessExpr);
         // if expression or type identifier has been found,
         // continue to require further results
         if (!getType4Ast().hasTypeOfExpression(innerFieldAccessExpr.getExpression()) &&
@@ -686,8 +684,9 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
         isSeriesOfNames(expr.getExpression()) &&
             getType4Ast().hasTypeOfTypeIdentifierForName(expr.getExpression());
     // case: typeIdentifier "." name, e.g., XClass.staticVar
-    // in Java, if a variable exists, the type identifier is not retained as an
-    // alternative and therefore remains ignored.
+    // in Java, if a variable exists,
+    // the type identifier is not retained as an alternative
+    // and therefore remains ignored.
     if (innerIsTypeIdentifier) {
       exprType = calculateTypeIdFieldAccessOrLogError(expr,
           innerIsExpression ||
