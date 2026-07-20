@@ -3,46 +3,41 @@
 <!-- Alpha-version: This is intended to become a MontiCore stable explanation. -->
 
 
-This documentation is a technology-oriented extension of
+This documentation is an extension of
 [Interpreter.md](../../../../../../../monticore-runtime/src/main/java/de/monticore/interpreter/Interpreter.md)
 which should be read first.
-This documentation goes into technical details
-and especially lists relevant classes and their purpose
-about the concrete interpreter implementations.
+This documentation goes into more detail
+about the concrete interpreter implementations in monticore-grammar.
 
-## Given infrastructure in MontiCore 
-
-The following classes contribute to the interpreter:
+## Given infrastructure in MontiCore
 
 * [MCValue](../../../../../../../monticore-runtime/src/main/java/de/monticore/values/MCValue.md)
-  represents interpreter values (encodes 'int', 'long', 'String', 'List<T>, etc.,
-  higher order function types and all object types)
-  in form of subclasses.
-    * Functions are encoded the following way :
+  (represents values)
+    * Functions
         * [MIValueFunctionOfModel](values/MCValueFunctionOfModel.java)
           (function declared within the model, e.g., lambdas)
         * [MIValueFunctionOfMethodHandle](values/MCValueFunctionOfMethodHandle.java)
           (native java method)
-* MIFrame provides a calculation frame: It e.g. contains local variables:
+* MIFrame
     * [MIFrameForBasicSymbols](../symbols/basicsymbols/interpreter/frames/MIFrameForBasicSymbols.java)
-      (MIFrame with support for local variables)
+      (MIFrame with support for Variables)
     * [MIFrameLayoutForBasicSymbols](../symbols/basicsymbols/interpreter/frames/MIFrameLayoutForBasicSymbols.java)
-      (MIFrameLayout with support for local variables) (??)
-* [AbstractInterpreterForBasicSymbols](../symbols/basicsymbols/interpreter/AbstractInterpreterForBasicSymbols.java):
-  Interpreter API with support for local variables and functions
+      (MIFrameLayout with support for Variables)
+* [AbstractInterpreterForBasicSymbols](../symbols/basicsymbols/interpreter/AbstractInterpreterForBasicSymbols.java)
+  (Interpreter API with support for Variables/Functions)
     * [ExpressionsInterpreter](../expressions/interpreter/ExpressionsInterpreter.java)
-      (Example interpreter API for Expressions)
+      (Example Interpreter API for Expressions)
     * [StatementsInterpreter](../statements/interpreter/StatementsInterpreter.java)
-      (Example interpreter API for Statements)
+      (Example Interpreter API for Statements)
 * [MCSignalFlowControl](signals/MCSignalFlowControl.java)
-  signal that manipulates the stack according to the respective statement (??)
+  (signal that unwinds the stack)
     * [MCSignalBreak](signals/MCSignalBreak.java)
       (represents `break`)
     * [MCSignalContinue](signals/MCSignalContinue.java)
       (represents `continue`)
     * [MCSignalReturn](signals/MCSignalReturn.java)
       (represents `return`, may contain a return value)
-* Traversers for the abstract syntax tree that is interpreted (serves as core infrastructure for the interpreter)
+* Traversers
     * Expressions
         * [AssignmentExpressionsInterpreter](../expressions/assignmentexpressions/interpreter/AssignmentExpressionsInterpreter.java)
           (handles assignment expressions, e.g., `a = 5`)
@@ -74,37 +69,30 @@ The following classes contribute to the interpreter:
           (handles variable declaration statements, e.g., `int x = 5;`)
     * [InterpreterDataForBasicSymbols](util/InterpreterDataForBasicSymbols.java)
       (data exchange between traversers with support for variables/functions)
-* Utilities
+* Utility
     * [SymbolAccessHandler](util/SymbolAccessHandler.java)
-      handles access to each type/variable/function symbol within an expression
+    (handles access to any type/variable/function symbols
+    within expressions)
     * [NativeStorageSelector](util/NativeStorageSelector.java)
-      specifies which model type is represented in which internal format
+      (specifies which model type is represented in which internal format)
     * [SymTypeExpression2JavaClassVisitor](util/SymTypeExpression2JavaClassVisitor.java)
-      maps SymTypeExpressions to `Class<?>` objects for native Java types
+      (maps SymTypeExpressions to `Class<?>` objects for native Java types)
     * [TypeSymbolNativityChecker](util/TypeSymbolNativityChecker.java)
-      checks if a symbol is of a native Java type
+      (checks if a symbol is of a native Java type)
 
 ## How to store/load variables/functions (to be) used in the interpreter
 
-To use externally defined and maintained variables (respectively their values)
-and functions during interpretation, two steps are needed:
+To use custom values during interpretation,
+first, add the corresponding symbols (VariableSymbol/FunctionSymbol)
+to the symbol table, as they have to be available for the CoCos to pass.
 
-1. Add the corresponding symbol (i.e. normally either a 'VariableSymbol' or a 
-   'FunctionSymbol')
-   to the symbol table. Then the symbol is available
-   for the CoCos and thus can be used in the expression that iss
-   to be interpreted.
-1. Before the interpreter starts the values in the interpreter
-   need to be set accordingly using 'addVariable'. 
-   The following code shows an example:
+Afterwards, set the values in the interpreter accordingly;
+E.g., for `StatementsInterpreter`:
 
 ```java
-// add Symbol "j" to the symbol table
-
-// initialize an interpreter
+// add j to the symbol table
 ASTNode stmt = parseAndCreateSymTabAndRunCoCos("int i = j++;");
 StatementsInterpreter interpreter = getMyLangInterpreter();
-
 // add the variable to the interpreters current scope
 interpreter.addVariable(jSymbol, new MIValueInt(2));
 interpreter.interpret(stmt);
@@ -116,41 +104,29 @@ int j = interpreter.getVariable(jSymbol).asInt(); // j == 3
 interpreter.setVariable(jSymbol, new MIValueInt(4));
 ```
 
-## How to use Java classes in the interpreter
+## How to use Java Classes in the Interpreter
 
-_Danger zone_: The interpreter is a shallow interpreter.
-That means that while the abstract syntax tree of the interpreted
-expression and the local variables are kept in a local environment,
-it is in principle possible to access and manipulate other Java
-objects in that virtual machine if access through respective symbols 
-is granted.
+Simply initialize Class2MC and Java classes can be used with the interpreter.
 
-For that
-simply initialize the 'Class2MC' symbol infrastructure, which
-adds many symbols extracted from Java code to the symbol table.
-Then the Java classes, publicly available attributes and methods
-that are included in the 'Class2MC' 
-infrastructure can be fully used with the interpreter.
-'Class2MC' can include handwritten code speciafically written 
-from the application as well as core frameworks and only
-relies on 'class'-files. (??)
-
-_Is it safe?_   
+_But is it safe?_   
 __No! Adding Class2MC allows the execution of arbitrary code!__
 
-To regain security one migth consider:
+One should consider
 
-* Setting a special version of the predicate of the 'Class2MCResolver'
+* setting the predicate of the Class2MCResolver
   to filter out all classes not explicitly allowed.
-    * currently, there is no explicit filter 
-* or: use a CoCo to check for whether the occuring  model elements are indeed 
-  allowed.
-* or: _NOT_ initialize Class2MC
-     1. explicitely add the allowed symbols to the symbol table
-     1. use `addVariable`/`addFunction` to set the values, and
+    * currently, this cannot filter attributes/methods
+* Use a CoCo to check for whether all model elements are allowed.
+
+A safer Approach is to
+
+1. _NOT_ initialize Class2MC
+2. add all allowed symbols to the symbol table
+3. use `addVariable`/`addFunction` to set the values
+4. interpret using this limited, but safe(r), set of symbols
 
 Regarding static symbols;   
-if JavaInteroperability is used with static variables/methods,
+If JavaInteroperability is used with static variables/methods,
 then global values can be changed,
 which in turn can influence the execution of the current program,
 or different interpreters might influence each other.   
@@ -167,4 +143,3 @@ In most cases, it is recommended to not allow access to static symbols.
 * [Best Practices](https://github.com/MontiCore/monticore/blob/opendev/docs/BestPractices.md)
 * [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
 * [Licence definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)
-
