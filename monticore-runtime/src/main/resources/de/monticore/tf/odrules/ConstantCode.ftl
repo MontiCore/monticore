@@ -6,7 +6,6 @@
 
   public static boolean optimizeSP = true;
 
-  protected GlobalExtensionManagement glex;
   protected IModelAccessor<${grammarName}Traverser> modelAccessor;
   protected List<Match> allMatches;
   protected boolean doReplacementExecuted = false;
