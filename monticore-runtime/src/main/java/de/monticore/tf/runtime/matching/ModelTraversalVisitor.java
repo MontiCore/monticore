@@ -6,7 +6,11 @@ import de.monticore.visitor.IVisitor;
 
 import java.util.LinkedList;
 
-
+/**
+ * @deprecated This visitor should no longer be used. Pattern matching now relies on
+ * incremental indices instead of {@link ModelTraversal}.
+ */
+@Deprecated(since = "7.9.0")
 public class ModelTraversalVisitor implements IVisitor {
 
   protected final ModelTraversal<?> modelTraversal;
