@@ -3,8 +3,7 @@ package de.monticore.tf.runtime.inc;
 import de.monticore.ast.ASTNode;
 import de.monticore.visitor.ITraverser;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Provides a facade for propagating model change notifications and accessing
@@ -16,6 +15,8 @@ public class ModelAccessor<E extends ITraverser> implements IModelAccessor<E> {
   
   private final IndexHandler<E> indexHandler;
   
+  private final Set<IIncrementalListener> listeners;
+  
   /**
    * Creates a model accessor with the default indices and the given root nodes.
    *
@@ -24,6 +25,7 @@ public class ModelAccessor<E extends ITraverser> implements IModelAccessor<E> {
    */
   public ModelAccessor(E traverser, ASTNode... roots) {
     this.indexHandler = new IndexHandler<>(traverser, roots);
+    this.listeners = new HashSet<>();
   }
   
   /**
@@ -35,6 +37,7 @@ public class ModelAccessor<E extends ITraverser> implements IModelAccessor<E> {
    */
   public ModelAccessor(E traverser, Map<String, IModelIndex<E>> customIndices, ASTNode... roots) {
     this.indexHandler = new IndexHandler<>(traverser, customIndices, roots);
+    this.listeners = new HashSet<>();
   }
   
   /**
@@ -45,6 +48,7 @@ public class ModelAccessor<E extends ITraverser> implements IModelAccessor<E> {
    */
   public ModelAccessor(E traverser, List<ASTNode> roots) {
     this.indexHandler = new IndexHandler<>(traverser, roots);
+    this.listeners = new HashSet<>();
   }
   
   /**
@@ -57,6 +61,26 @@ public class ModelAccessor<E extends ITraverser> implements IModelAccessor<E> {
   public ModelAccessor(E traverser, Map<String, IModelIndex<E>> customIndices,
       List<ASTNode> roots) {
     this.indexHandler = new IndexHandler<>(traverser, customIndices, roots);
+    this.listeners = new HashSet<>();
+  }
+  
+  /**
+   * Attaches a listener to receive incremental model change notifications.
+   *
+   * @param listener the listener to attach
+   */
+  public void attachListener(IIncrementalListener listener) {
+    this.listeners.add(listener);
+  }
+  
+  /**
+   * Detaches a listener from receiving incremental model change notifications.
+   *
+   * @param listener the listener to detach
+   * @return true if the listener was removed, false otherwise
+   */
+  public boolean detachListener(IIncrementalListener listener) {
+    return this.listeners.remove(listener);
   }
   
   /**
@@ -68,6 +92,8 @@ public class ModelAccessor<E extends ITraverser> implements IModelAccessor<E> {
   @Override
   public void notifyNodeAttach(ASTNode node, ASTNode parent) {
     this.indexHandler.onASTNodeAttach(node, parent);
+    
+    this.listeners.forEach(listener -> listener.onASTNodeAttach(node, parent));
   }
   
   /**
@@ -79,6 +105,8 @@ public class ModelAccessor<E extends ITraverser> implements IModelAccessor<E> {
   @Override
   public void notifyNodeDetach(ASTNode node, ASTNode parent) {
     this.indexHandler.onASTNodeDetach(node, parent);
+    
+    this.listeners.forEach(listener -> listener.onASTNodeDetach(node, parent));
   }
   
   /**
@@ -94,6 +122,8 @@ public class ModelAccessor<E extends ITraverser> implements IModelAccessor<E> {
   @Override
   public void notifyModification(ASTNode node, ASTNode parent, String attributeName, Object oldValue, Object newValue) {
     this.indexHandler.onASTNodeModification(node, parent, attributeName, oldValue, newValue);
+    
+    this.listeners.forEach(listener -> listener.onASTNodeModification(node, parent, attributeName, oldValue, newValue));
   }
   
   /**
@@ -104,5 +134,15 @@ public class ModelAccessor<E extends ITraverser> implements IModelAccessor<E> {
   @Override
   public IndexHandler<E> indices() {
     return this.indexHandler;
+  }
+  
+  /**
+   * Returns the listeners currently registered for incremental model changes.
+   *
+   * @return a collection of listeners
+   */
+  @Override
+  public Collection<IIncrementalListener> listeners() {
+    return this.listeners;
   }
 }

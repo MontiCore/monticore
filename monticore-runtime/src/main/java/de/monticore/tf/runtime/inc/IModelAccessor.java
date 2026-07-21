@@ -3,6 +3,8 @@ package de.monticore.tf.runtime.inc;
 import de.monticore.ast.ASTNode;
 import de.monticore.visitor.ITraverser;
 
+import java.util.Collection;
+
 /**
  * Provides notifications about structural and attribute changes in a model
  * and offers access to the corresponding index handler.
@@ -44,4 +46,11 @@ public interface IModelAccessor<E extends ITraverser> {
    * @return the index handler
    */
   IndexHandler<E> indices();
+  
+  /**
+   * Returns the listeners used for incremental model changes.
+   *
+   * @return a collection of listeners
+   */
+  Collection<IIncrementalListener> listeners();
 }
