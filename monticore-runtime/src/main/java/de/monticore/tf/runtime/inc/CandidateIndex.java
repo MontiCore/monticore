@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.tf.runtime.inc;
 
 import com.google.common.collect.LinkedHashMultimap;
