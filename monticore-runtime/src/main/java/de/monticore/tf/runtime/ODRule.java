@@ -10,11 +10,16 @@ public abstract class ODRule {
 
   protected GlobalExtensionManagement glex = new GlobalExtensionManagement();
 
-
   public abstract boolean doPatternMatching();
 
   public abstract void doReplacement();
   
+  /**
+   * Executes the given transformation rule once by running pattern matching and,
+   * if successful, applying the replacement.
+   *
+   * @return {@code true} if the rule matched and was applied, otherwise {@code false}
+   */
   public boolean doAll(){
     if (doPatternMatching()) {
       doReplacement();
