@@ -108,7 +108,7 @@ public class ModelAccessor<E extends ITraverser> implements IModelAccessor<E> {
   }
   
   /**
-   * Forwards a node attach notification to the underlying index handler.
+   * Forwards a node attach notification to the underlying index handler and listeners.
    *
    * @param node the attached node
    * @param parent the parent the node was attached to
@@ -121,7 +121,7 @@ public class ModelAccessor<E extends ITraverser> implements IModelAccessor<E> {
   }
   
   /**
-   * Forwards a node detach notification to the underlying index handler.
+   * Forwards a node detach notification to the underlying index handler and listeners.
    *
    * @param node the detached node
    * @param parent the parent the node was detached from
@@ -135,7 +135,7 @@ public class ModelAccessor<E extends ITraverser> implements IModelAccessor<E> {
   
   /**
    * Forwards an attribute modification notification to the underlying index
-   * handler.
+   * handler and listeners.
    *
    * @param node the modified node
    * @param parent the parent containing the node
