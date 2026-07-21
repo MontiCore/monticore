@@ -62,6 +62,7 @@ class VarDeclarationNameAlreadyDefinedInScopeTest {
     checker.addCoCo(new VarDeclarationNameAlreadyDefinedInScope());
 
     ASTRootVarDeclaration astDecl = parseAndBuildAST("int a = 10, a, a = -12;");
+    astDecl.getEnclosingScope().setOrdered(true);
 
     // When
     checker.checkAll(astDecl);
