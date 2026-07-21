@@ -6,6 +6,8 @@ import de.monticore.statements.mcvardeclarationstatements._symboltable.MCVarDecl
 import de.monticore.statements.testmcvardeclarationstatements.TestMCVarDeclarationStatementsMill;
 import de.monticore.statements.testmcvardeclarationstatements._ast.ASTRootVarDeclaration;
 import de.monticore.statements.testmcvardeclarationstatements._cocos.TestMCVarDeclarationStatementsCoCoChecker;
+import de.monticore.statements.testmcvardeclarationstatements._symboltable.ITestMCVarDeclarationStatementsScope;
+import de.monticore.statements.testmcvardeclarationstatements._symboltable.TestMCVarDeclarationStatementsScope;
 import de.monticore.statements.testmcvardeclarationstatements._visitor.TestMCVarDeclarationStatementsTraverser;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserFactory;
@@ -68,7 +70,6 @@ class VarDeclarationNameAlreadyDefinedInScopeTest {
 
     List<String> expected = List.of(
       VarDeclarationNameAlreadyDefinedInScope.ERROR_CODE,
-      VarDeclarationNameAlreadyDefinedInScope.ERROR_CODE,
       VarDeclarationNameAlreadyDefinedInScope.ERROR_CODE
     );
 
@@ -99,6 +100,55 @@ class VarDeclarationNameAlreadyDefinedInScopeTest {
     // Then
     assertEquals(List.of(VarDeclarationNameAlreadyDefinedInScope.ERROR_CODE), Log.getFindings()
       .stream().map(f -> f.getMsg().substring(0, 7)).collect(Collectors.toList())
+    );
+  }
+
+  @Test
+  void testInvalidVarDeclarationWithSymbolInSuperNonShadowingScope() throws IOException {
+    // Given
+    TestMCVarDeclarationStatementsCoCoChecker checker = new TestMCVarDeclarationStatementsCoCoChecker();
+    checker.addCoCo(new VarDeclarationNameAlreadyDefinedInScope());
+
+    ASTRootVarDeclaration astDecl = parseAndBuildAST("int a = 10;");
+    ITestMCVarDeclarationStatementsScope scope = TestMCVarDeclarationStatementsMill.scope();
+    astDecl.getEnclosingScope().getEnclosingScope().addSubScope(scope);
+    scope.addSubScope(astDecl.getEnclosingScope());
+    scope.add(TestMCVarDeclarationStatementsMill.variableSymbolBuilder()
+        .setName("a")
+        .setEnclosingScope(astDecl.getEnclosingScope())
+        .build());
+
+    // When
+    checker.checkAll(astDecl);
+
+    // Then
+    assertEquals(List.of(VarDeclarationNameAlreadyDefinedInScope.ERROR_CODE), Log.getFindings()
+        .stream().map(f -> f.getMsg().substring(0, 7)).collect(Collectors.toList())
+    );
+  }
+
+  @Test
+  void testInvalidVarDeclarationWithSymbolInSuperShadowingScope() throws IOException {
+    // Given
+    TestMCVarDeclarationStatementsCoCoChecker checker = new TestMCVarDeclarationStatementsCoCoChecker();
+    checker.addCoCo(new VarDeclarationNameAlreadyDefinedInScope());
+
+    ASTRootVarDeclaration astDecl = parseAndBuildAST("int a = 10;");
+    ITestMCVarDeclarationStatementsScope scope = TestMCVarDeclarationStatementsMill.scope();
+    ((TestMCVarDeclarationStatementsScope) scope).setShadowing(true);
+    astDecl.getEnclosingScope().getEnclosingScope().addSubScope(scope);
+    scope.addSubScope(astDecl.getEnclosingScope());
+    scope.add(TestMCVarDeclarationStatementsMill.variableSymbolBuilder()
+        .setName("a")
+        .setEnclosingScope(astDecl.getEnclosingScope())
+        .build());
+
+    // When
+    checker.checkAll(astDecl);
+
+    // Then
+    assertEquals(List.of(VarDeclarationNameAlreadyDefinedInScope.ERROR_CODE), Log.getFindings()
+        .stream().map(f -> f.getMsg().substring(0, 7)).collect(Collectors.toList())
     );
   }
 }

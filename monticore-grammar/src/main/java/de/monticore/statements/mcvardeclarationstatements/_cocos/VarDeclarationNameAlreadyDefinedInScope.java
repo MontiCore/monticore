@@ -3,7 +3,6 @@ package de.monticore.statements.mcvardeclarationstatements._cocos;
 
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTVariableDeclarator;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
-import de.monticore.symboltable.modifiers.AccessModifier;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.List;
@@ -34,14 +33,17 @@ public class VarDeclarationNameAlreadyDefinedInScope implements MCVarDeclaration
       return;
     }
 
-    List<VariableSymbol> localVarSymbols = node.getEnclosingScope().resolveVariableLocallyMany(
-        false,
+    List<VariableSymbol> localVarSymbols = node.getEnclosingScope().resolveVariableMany(
         node.getDeclarator().getName(),
-        AccessModifier.ALL_INCLUSION,
         (v) -> v != node.getDeclarator().getSymbol()
     );
 
-    if (!localVarSymbols.isEmpty()) {
+    boolean hasPreviousDeclaration = localVarSymbols.stream().anyMatch(
+        v -> !v.isPresentAstNode()
+            || v.getAstNode().get_SourcePositionStart().compareTo(node.get_SourcePositionStart()) < 0
+    );
+
+    if (hasPreviousDeclaration) {
       Log.error(ERROR_CODE + " " + String.format(ERROR_MSG_FORMAT,
           node.getDeclarator().getName()),
           node.get_SourcePositionStart(), node.get_SourcePositionEnd());
