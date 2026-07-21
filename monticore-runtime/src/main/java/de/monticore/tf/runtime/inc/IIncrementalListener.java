@@ -17,7 +17,9 @@ public interface IIncrementalListener {
    * @param node the AST node that was attached
    * @param parent the parent node to which the node was attached
    */
-  void onASTNodeAttach(ASTNode node, ASTNode parent);
+  default void onASTNodeAttach(ASTNode node, ASTNode parent) {
+    // Override to add custom implementation
+  }
   
   /**
    * Called when an AST node is detached from a parent node.
@@ -25,7 +27,9 @@ public interface IIncrementalListener {
    * @param node the AST node that was detached
    * @param parent the former parent node from which the node was detached
    */
-  void onASTNodeDetach(ASTNode node, ASTNode parent);
+  default void onASTNodeDetach(ASTNode node, ASTNode parent) {
+    // Override to add custom implementation
+  }
   
   /**
    * Called when an attribute of an AST node is modified.
@@ -36,5 +40,8 @@ public interface IIncrementalListener {
    * @param oldValue the previous value of the attribute
    * @param newValue the new value of the attribute
    */
-  void onASTNodeModification(ASTNode node, ASTNode parent, String attributeName, Object oldValue, Object newValue);
+  default void onASTNodeModification(ASTNode node, ASTNode parent, String attributeName, Object oldValue,
+      Object newValue) {
+    // Override to add custom implementation
+  }
 }
