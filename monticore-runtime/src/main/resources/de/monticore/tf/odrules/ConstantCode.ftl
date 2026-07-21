@@ -48,7 +48,7 @@
     ${tc.include("de.monticore.tf.odrules.constantcode.HandleDeleteObject", deleteObject)}
   </#list>-->
 
-  public void reportChange(ASTNode astNode, String attr, String from, String to) {
+<#--  public void reportChange(ASTNode astNode, String attr, String from, String to) {
     reportTransformationObjectChange("${ast.getClassname()}", astNode, attr);
     reportTransformationOldValue("${ast.getClassname()}", from);
     reportTransformationNewValue("${ast.getClassname()}", to);
@@ -64,7 +64,7 @@
 
   public void reportMatch(ASTNode astNode){
     reportTransformationObjectMatch("${ast.getClassname()}", astNode);
-  }
+  }-->
 
   public List<Match> getMatches(){
     return allMatches;

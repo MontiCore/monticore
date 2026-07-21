@@ -20,8 +20,8 @@ ${tc.include("de.monticore.tf.odrules.doreplacement.ChangeAttributeValues")}
 ${ast.getDoStatement()}
 </#if>
 
-    // TODO: Update Reporting for Model Accessors
-    //Reporting.flush(hostGraph.get(0));
+    <#--// TODO: Update Reporting for Model Accessors
+    Reporting.flush(hostGraph.get(0));-->
 
     doReplacementExecuted = true;
 

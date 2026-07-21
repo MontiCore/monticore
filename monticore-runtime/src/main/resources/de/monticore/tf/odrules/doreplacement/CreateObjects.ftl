@@ -50,18 +50,20 @@
       m.${create.getName()} = <#if isWithinOpt>Optional.of(</#if>builder.build()<#if isWithinOpt>)</#if>;
       delayedAttachmentNotifications.forEach(n -> n.accept(m.${create.getName()}<#if isWithinOpt>.get()</#if>));
 
-    <#list ast.getReplacement().getChangesList() as change>
+    <#--<#list ast.getReplacement().getChangesList() as change>
       <#if change.getObjectName() == create.getName()>
       Reporting.reportTransformationObjectChange("${ast.getClassname()}",m.${create.getName()}<#if isWithinOpt>.get()</#if>, "${change.getAttributeName()}");
       </#if>
-    </#list>
+    </#list>-->
   <#else>
     // TODO: There exists no builder for ${create.getType()}s - check if this is set from external
   </#if>
   } else {
     m.${create.getName()} = <#if isWithinOpt>Optional.of(</#if>(${create.getType()}) ${create.getName()}_candidates.get(0)<#if isWithinOpt>)</#if>;
   }
+<#--
   Reporting.reportTransformationObjectCreation("${ast.getClassname()}",m.${create.getName()}<#if isWithinOpt>.get()</#if>);
+-->
   <#else>
   <#assign listParent = hierarchyHelper.getListParent(create.getName())>
   if (!is_${create.getName()}_fix) {

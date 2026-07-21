@@ -28,7 +28,7 @@ public ${ast.getJavaClassName()}(ASTNode astNode) {
 public ${ast.getJavaClassName()}(ASTNode astNode, GlobalExtensionManagement glex) {
   this.modelAccessor = new ModelAccessor<>(${grammarName}Mill.inheritanceTraverser(), astNode);
   this.glex = glex;
-  this.setupReporting();
+  <#--this.setupReporting();-->
 }
 
 public ${ast.getJavaClassName()}(IModelAccessor<${grammarName}Traverser> modelAccessor) {
@@ -42,7 +42,7 @@ public ${ast.getJavaClassName()}(GlobalExtensionManagement glex, IModelAccessor<
   // but that would be a breaking change on which existing code depends
 }
 
-protected void setupReporting() {
+<#--protected void setupReporting() {
   ReportManager.ReportManagerFactory factory = new ReportManager.ReportManagerFactory() {
     @Override
     public ReportManager provide(String modelName) {
@@ -56,4 +56,4 @@ protected void setupReporting() {
 
   Reporting.init("target/generated-sources/reports/transformations", "target/generated-sources", factory);
   Reporting.on("${ast.getClassname()}");
-}
+}-->

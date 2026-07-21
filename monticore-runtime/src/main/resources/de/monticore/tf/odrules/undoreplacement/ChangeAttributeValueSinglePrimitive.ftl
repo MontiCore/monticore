@@ -9,13 +9,13 @@ ${signature("ruleClassName")}
     }
 <#else>
     // single attribute (not in a list)
-    Reporting.reportTransformationObjectChange("${ruleClassName}",${ast.getObjectGetter()}, "${ast.getAttributeName()}");
+    <#--Reporting.reportTransformationObjectChange("${ruleClassName}",${ast.getObjectGetter()}, "${ast.getAttributeName()}");
 
     <#if ast.isPresentOldValue()>
         Reporting.reportTransformationOldValue("${ruleClassName}",<#if ast.composite>m.</#if>${ast.getOldValueGetter()?keep_after("m.")}<#if ast.isValueStringList()>.toString()</#if>);
-    </#if>
+    </#if>-->
 
-    <#if ast.isAttributeOptional()>
+    <#--<#if ast.isAttributeOptional()>
         if (${ast.getObjectGetter()}.isPresent${ast.getAttributeName()?cap_first}()){
     </#if>
 
@@ -29,7 +29,7 @@ ${signature("ruleClassName")}
 
     <#if ast.isAttributeOptional()>
         }
-    </#if>
+    </#if>-->
 
     ${ast.getObjectGetter()}.${ast.getSetter()}(m.${ast.getObjectName()}_${ast.getAttributeName()}_before);
 </#if>

@@ -17,13 +17,15 @@ import static de.se_rwth.commons.StringTransformations.*;
 import java.util.stream.Collectors;
 import com.google.common.base.*;
 import de.se_rwth.commons.logging.Log;
+import de.monticore.generating.templateengine.*;
+<#--
 import de.monticore.generating.templateengine.reporting.Reporting;
 import static de.monticore.generating.templateengine.reporting.Reporting.*;
-import de.monticore.generating.templateengine.*;
 import de.monticore.generating.templateengine.reporting.commons.ReportManager;
 import de.monticore.generating.templateengine.reporting.commons.ReportingRepository;
 import de.monticore.generating.templateengine.reporting.reporter.TransformationReporter;
 import de.monticore.generating.templateengine.reporting.commons.ASTNodeIdentHelper;
+-->
 
 <#list hierarchyHelper.getCustomImports() as customImport> ${customImport}</#list>
 
