@@ -12,6 +12,24 @@ import de.monticore.ast.ASTNode;
 public interface IIncrementalListener {
   
   /**
+   * Called when a transformation starts.
+   *
+   * @param transformationName the name of the transformation
+   */
+  default void onTransformationStart(String transformationName) {
+    // Override to add custom implementation
+  }
+  
+  /**
+   * Called when a transformation ends.
+   *
+   * @param transformationName the name of the transformation
+   */
+  default void onTransformationEnd(String transformationName) {
+    // Override to add custom implementation
+  }
+  
+  /**
    * Called when an AST node is attached to a parent node.
    *
    * @param node the AST node that was attached

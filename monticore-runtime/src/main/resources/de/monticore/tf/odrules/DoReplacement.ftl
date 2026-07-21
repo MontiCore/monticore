@@ -2,6 +2,8 @@
 
 public void doReplacement() {
 
+  this.modelAccessor.notifyTransformationStart(getClass().getCanonicalName());
+
   for(Match m:allMatches){
 
     // assign values
@@ -28,4 +30,6 @@ ${ast.getDoStatement()}
     //do it only for the first match
     break;
   }
+
+  this.modelAccessor.notifyTransformationEnd(getClass().getCanonicalName());
 }

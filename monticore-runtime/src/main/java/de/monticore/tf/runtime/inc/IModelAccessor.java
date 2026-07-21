@@ -14,6 +14,20 @@ import java.util.Collection;
 public interface IModelAccessor<E extends ITraverser> {
   
   /**
+   * Notifies that a transformation has started.
+   *
+   * @param transformationName the name of the transformation
+   */
+  void notifyTransformationStart(String transformationName);
+
+  /**
+   * Notifies that a transformation has ended.
+   *
+   * @param transformationName the name of the transformation
+   */
+  void notifyTransformationEnd(String transformationName);
+  
+  /**
    * Notifies that a node has been attached to a parent node.
    *
    * @param node the attached node

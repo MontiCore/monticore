@@ -84,6 +84,30 @@ public class ModelAccessor<E extends ITraverser> implements IModelAccessor<E> {
   }
   
   /**
+   * Forwards the start of a transformation to the underlying index handler and listeners.
+   *
+   * @param transformationName the name of the transformation
+   */
+  @Override
+  public void notifyTransformationStart(String transformationName) {
+    this.indexHandler.onTransformationStart(transformationName);
+    
+    this.listeners.forEach(listener -> listener.onTransformationStart(transformationName));
+  }
+  
+  /**
+   * Forwards the end of a transformation to the underlying index handler and listeners.
+   *
+   * @param transformationName the name of the transformation
+   */
+  @Override
+  public void notifyTransformationEnd(String transformationName) {
+    this.indexHandler.onTransformationEnd(transformationName);
+    
+    this.listeners.forEach(listener -> listener.onTransformationEnd(transformationName));
+  }
+  
+  /**
    * Forwards a node attach notification to the underlying index handler.
    *
    * @param node the attached node
