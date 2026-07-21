@@ -34,13 +34,15 @@ public class VarDeclarationNameAlreadyDefinedInScope implements MCVarDeclaration
     }
 
     List<VariableSymbol> localVarSymbols = node.getEnclosingScope().resolveVariableMany(
-        node.getDeclarator().getName(),
-        (v) -> v != node.getDeclarator().getSymbol()
+        node.getDeclarator().getName()
     );
 
     boolean hasPreviousDeclaration = localVarSymbols.stream().anyMatch(
-        v -> !v.isPresentAstNode()
-            || v.getAstNode().get_SourcePositionStart().compareTo(node.get_SourcePositionStart()) < 0
+        v -> v != node.getDeclarator().getSymbol() &&
+            (!v.isPresentAstNode()
+            || !v.getAstNode().isPresent_SourcePositionStart()
+            || !node.isPresent_SourcePositionStart()
+            || v.getAstNode().get_SourcePositionStart().compareTo(node.get_SourcePositionStart()) < 0)
     );
 
     if (hasPreviousDeclaration) {

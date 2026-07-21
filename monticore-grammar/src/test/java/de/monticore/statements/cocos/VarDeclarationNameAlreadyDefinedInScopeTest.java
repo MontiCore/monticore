@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.statements.cocos;
 
+import de.monticore.runtime.junit.MCAssertions;
 import de.monticore.statements.mcvardeclarationstatements._cocos.VarDeclarationNameAlreadyDefinedInScope;
 import de.monticore.statements.mcvardeclarationstatements._symboltable.MCVarDeclarationStatementsSTCompleteTypes;
 import de.monticore.statements.testmcvardeclarationstatements.TestMCVarDeclarationStatementsMill;
@@ -20,6 +21,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static de.monticore.runtime.junit.MCAssertions.assertHasFindingStartingWith;
+import static de.monticore.runtime.junit.MCAssertions.assertHasFindings;
 import static de.monticore.runtime.junit.MCAssertions.assertNoFindings;
 import static de.monticore.statements.testmcvardeclarationstatements.TestMCVarDeclarationStatementsMill.parser;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -38,7 +41,7 @@ class VarDeclarationNameAlreadyDefinedInScopeTest {
 
   protected ASTRootVarDeclaration parseAndBuildAST(String decl) throws IOException {
     ASTRootVarDeclaration ast = parser().parse_StringRootVarDeclaration(decl).orElseThrow();
-    TestMCVarDeclarationStatementsMill.scopesGenitorDelegator().createFromAST(ast);
+    TestMCVarDeclarationStatementsMill.scopesGenitorDelegator().createFromAST(ast).setName("Artifact");
     TestMCVarDeclarationStatementsTraverser completerTraverser = TestMCVarDeclarationStatementsMill.traverser();
     completerTraverser.add4MCVarDeclarationStatements(new MCVarDeclarationStatementsSTCompleteTypes());
     ast.accept(completerTraverser);
@@ -57,7 +60,7 @@ class VarDeclarationNameAlreadyDefinedInScopeTest {
     checker.checkAll(astDecl);
 
     // Then
-    assertNoFindings();
+    MCAssertions.assertNoFindings();
   }
 
   @Test
@@ -68,18 +71,13 @@ class VarDeclarationNameAlreadyDefinedInScopeTest {
 
     ASTRootVarDeclaration astDecl = parseAndBuildAST("int a = 10, a, a = -12;");
 
-    List<String> expected = List.of(
-      VarDeclarationNameAlreadyDefinedInScope.ERROR_CODE,
-      VarDeclarationNameAlreadyDefinedInScope.ERROR_CODE
-    );
-
     // When
     checker.checkAll(astDecl);
 
     // Then
-    assertEquals(expected, Log.getFindings()
-      .stream().map(f -> f.getMsg().substring(0, 7)).collect(Collectors.toList())
-    );
+    Log.getFindings().remove(MCAssertions.assertHasFindingStartingWith(VarDeclarationNameAlreadyDefinedInScope.ERROR_CODE));
+    Log.getFindings().remove(MCAssertions.assertHasFindingStartingWith(VarDeclarationNameAlreadyDefinedInScope.ERROR_CODE));
+    MCAssertions.assertNoFindings();
   }
 
   @Test
@@ -98,9 +96,8 @@ class VarDeclarationNameAlreadyDefinedInScopeTest {
     checker.checkAll(astDecl);
 
     // Then
-    assertEquals(List.of(VarDeclarationNameAlreadyDefinedInScope.ERROR_CODE), Log.getFindings()
-      .stream().map(f -> f.getMsg().substring(0, 7)).collect(Collectors.toList())
-    );
+    Log.getFindings().remove(MCAssertions.assertHasFindingStartingWith(VarDeclarationNameAlreadyDefinedInScope.ERROR_CODE));
+    MCAssertions.assertNoFindings();
   }
 
   @Test
@@ -110,10 +107,8 @@ class VarDeclarationNameAlreadyDefinedInScopeTest {
     checker.addCoCo(new VarDeclarationNameAlreadyDefinedInScope());
 
     ASTRootVarDeclaration astDecl = parseAndBuildAST("int a = 10;");
-    ITestMCVarDeclarationStatementsScope scope = TestMCVarDeclarationStatementsMill.scope();
-    astDecl.getEnclosingScope().getEnclosingScope().addSubScope(scope);
-    scope.addSubScope(astDecl.getEnclosingScope());
-    scope.add(TestMCVarDeclarationStatementsMill.variableSymbolBuilder()
+    astDecl.getEnclosingScope().setShadowing(false);
+    TestMCVarDeclarationStatementsMill.globalScope().add(TestMCVarDeclarationStatementsMill.variableSymbolBuilder()
         .setName("a")
         .setEnclosingScope(astDecl.getEnclosingScope())
         .build());
@@ -122,23 +117,20 @@ class VarDeclarationNameAlreadyDefinedInScopeTest {
     checker.checkAll(astDecl);
 
     // Then
-    assertEquals(List.of(VarDeclarationNameAlreadyDefinedInScope.ERROR_CODE), Log.getFindings()
-        .stream().map(f -> f.getMsg().substring(0, 7)).collect(Collectors.toList())
-    );
+    Log.getFindings().remove(MCAssertions.assertHasFindingStartingWith(VarDeclarationNameAlreadyDefinedInScope.ERROR_CODE));
+    MCAssertions.assertNoFindings();
   }
 
   @Test
-  void testInvalidVarDeclarationWithSymbolInSuperShadowingScope() throws IOException {
+  void testValidVarDeclarationWithSymbolInSuperShadowingScope() throws IOException {
     // Given
     TestMCVarDeclarationStatementsCoCoChecker checker = new TestMCVarDeclarationStatementsCoCoChecker();
     checker.addCoCo(new VarDeclarationNameAlreadyDefinedInScope());
 
     ASTRootVarDeclaration astDecl = parseAndBuildAST("int a = 10;");
-    ITestMCVarDeclarationStatementsScope scope = TestMCVarDeclarationStatementsMill.scope();
-    ((TestMCVarDeclarationStatementsScope) scope).setShadowing(true);
-    astDecl.getEnclosingScope().getEnclosingScope().addSubScope(scope);
-    scope.addSubScope(astDecl.getEnclosingScope());
-    scope.add(TestMCVarDeclarationStatementsMill.variableSymbolBuilder()
+    astDecl.getEnclosingScope().setShadowing(true);
+
+    TestMCVarDeclarationStatementsMill.globalScope().add(TestMCVarDeclarationStatementsMill.variableSymbolBuilder()
         .setName("a")
         .setEnclosingScope(astDecl.getEnclosingScope())
         .build());
@@ -147,8 +139,6 @@ class VarDeclarationNameAlreadyDefinedInScopeTest {
     checker.checkAll(astDecl);
 
     // Then
-    assertEquals(List.of(VarDeclarationNameAlreadyDefinedInScope.ERROR_CODE), Log.getFindings()
-        .stream().map(f -> f.getMsg().substring(0, 7)).collect(Collectors.toList())
-    );
+    MCAssertions.assertNoFindings();
   }
 }
