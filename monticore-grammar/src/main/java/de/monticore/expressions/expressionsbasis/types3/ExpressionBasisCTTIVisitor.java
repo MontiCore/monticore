@@ -37,9 +37,7 @@ public class ExpressionBasisCTTIVisitor
    */
   @Override
   public void handle(ASTNameExpression expr) {
-    // Keep a classification already made while checking a parent expression.
-    if (getType4Ast().hasPartialTypeOfExpression(expr) ||
-        getType4Ast().hasPartialTypeOfTypeIdentifierForName(expr)) {
+    if (getType4Ast().hasPartialTypeOfExpression(expr)) {
       return;
     }
 

@@ -34,9 +34,8 @@ public class ExpressionBasisTypeVisitor extends AbstractTypeVisitor
    */
   @Override
   public void endVisit(ASTNameExpression expr) {
-    // Keep a classification already made while checking a parent expression.
-    if (getType4Ast().hasPartialTypeOfExpression(expr) ||
-        getType4Ast().hasPartialTypeOfTypeIdentifierForName(expr)) {
+    // check if inference already calculated something
+    if (getType4Ast().hasPartialTypeOfExpression(expr)) {
       return;
     }
     Optional<SymTypeExpression> wholeResult =
