@@ -50,7 +50,7 @@ public class ResolveTypeIdAsConstructorTest extends AbstractTypeVisitorTest {
     CombineExpressionsWithLiteralsMill.init();
     // replace the typeMapTraverser with an OO-aware variant
     CombineExpressionsWithLiteralsTypeTraverserFactory
-        .initTypeCheck3ForOOWithConstructors();
+        .initTypeCheck3ForOO();
   }
 
   // class t {

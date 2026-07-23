@@ -923,6 +923,14 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
             v -> true,
             f -> true
         );
+        if (type.isEmpty() && !resultsAreOptional) {
+          type = WithinTypeBasicSymbolsResolver.resolveTypeAsExpression(
+              innerAsTypeIdType,
+              name,
+              modifier,
+              t -> true
+          );
+        }
         // Log remark about access modifier,
         // if access modifier is the reason it has not been resolved
         if (type.isEmpty() && !resultsAreOptional) {
@@ -1077,6 +1085,13 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     }
     else {
       type = Optional.empty();
+    }
+    if (type.isEmpty() && !resultsAreOptional) {
+      type = WithinScopeBasicSymbolsResolver
+          .resolveTypeAsExpression(
+              getAsBasicSymbolsScope(expr.getEnclosingScope()),
+              nameOpt.get()
+          );
     }
     return type;
   }
