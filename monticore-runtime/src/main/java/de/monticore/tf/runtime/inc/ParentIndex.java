@@ -3,21 +3,16 @@ package de.monticore.tf.runtime.inc;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.ast.Comment;
-import de.monticore.visitor.ITraverser;
-import de.monticore.visitor.IVisitor;
 import de.se_rwth.commons.logging.Log;
 import org.jspecify.annotations.NonNull;
 
 import javax.annotation.Nullable;
-import java.util.Stack;
 
 /**
  * Maintains parent relationships for AST nodes by storing parent references in
  * wrapped post-comments.
- *
- * @param <E> the traverser type used to initialize this index
  */
-public class ParentIndex<E extends ITraverser> implements IModelIndex<E> {
+public class ParentIndex implements IModelIndex {
   
   /**
    * Attaches parent information to a newly attached node.
@@ -60,33 +55,6 @@ public class ParentIndex<E extends ITraverser> implements IModelIndex<E> {
   public void onASTNodeModification(@NonNull ASTNode node, ASTNode parent, String attributeName,
       Object oldValue, Object newValue) {
     // Most likely not needed...
-  }
-  
-  /**
-   * Registers a visitor that records the current parent node while traversing
-   * the AST and stores it on each visited child node.
-   *
-   * @param traverser the traverser to register this index into
-   */
-  @Override
-  public void registerIntoTraverser(E traverser) {
-    traverser.add4IVisitor(new IVisitor() {
-      
-      private final Stack<ASTNode> parent = new Stack<>();
-      
-      @Override
-      public void visit(ASTNode node) {
-        if (!parent.isEmpty()) {
-          attachComment(node, parent.peek());
-        }
-        parent.push(node);
-      }
-      
-      @Override
-      public void endVisit(ASTNode node) {
-        parent.pop();
-      }
-    });
   }
   
   /**

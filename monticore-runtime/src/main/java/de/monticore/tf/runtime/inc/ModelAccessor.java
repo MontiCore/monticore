@@ -15,7 +15,7 @@ import java.util.*;
  */
 public class ModelAccessor<E extends ITraverser> implements IModelAccessor<E> {
   
-  private final IndexHandler<E> indexHandler;
+  private final IndexHandler indexHandler;
   
   private final Set<IIncrementalListener> listeners;
   
@@ -26,8 +26,7 @@ public class ModelAccessor<E extends ITraverser> implements IModelAccessor<E> {
    * @param roots the root nodes used for initialization
    */
   public ModelAccessor(E traverser, ASTNode... roots) {
-    this.indexHandler = new IndexHandler<>(traverser, roots);
-    this.listeners = new HashSet<>();
+    this(traverser, Arrays.stream(roots).toList());
   }
   
   /**
@@ -37,9 +36,8 @@ public class ModelAccessor<E extends ITraverser> implements IModelAccessor<E> {
    * @param customIndices the custom indices to register by name
    * @param roots the root nodes used for initialization
    */
-  public ModelAccessor(E traverser, Map<String, IModelIndex<E>> customIndices, ASTNode... roots) {
-    this.indexHandler = new IndexHandler<>(traverser, customIndices, roots);
-    this.listeners = new HashSet<>();
+  public ModelAccessor(E traverser, Map<String, IModelIndex> customIndices, ASTNode... roots) {
+    this(traverser, Arrays.stream(roots).toList(), customIndices);
   }
   
   /**
@@ -49,21 +47,39 @@ public class ModelAccessor<E extends ITraverser> implements IModelAccessor<E> {
    * @param roots the root nodes used for initialization
    */
   public ModelAccessor(E traverser, List<ASTNode> roots) {
-    this.indexHandler = new IndexHandler<>(traverser, roots);
-    this.listeners = new HashSet<>();
+    this(traverser, roots, new HashMap<>(), new HashSet<>());
   }
   
   /**
    * Creates a model accessor with the given custom indices and root nodes.
    *
    * @param traverser the traverser used to initialize the indices
-   * @param customIndices the custom indices to register by name
    * @param roots the root nodes used for initialization
+   * @param customIndices the custom indices to register by name
    */
-  public ModelAccessor(E traverser, Map<String, IModelIndex<E>> customIndices,
-      List<ASTNode> roots) {
-    this.indexHandler = new IndexHandler<>(traverser, customIndices, roots);
-    this.listeners = new HashSet<>();
+  public ModelAccessor(E traverser, List<ASTNode> roots, Map<String, IModelIndex> customIndices) {
+    this(traverser, roots, customIndices, new HashSet<>());
+  }
+  
+  /**
+   * Creates a model accessor with explicit listener set injection.
+   *
+   * <p>This constructor is primarily intended for internal use and tests where
+   * the listener collection should be preconfigured.</p>
+   *
+   * @param traverser the traverser used to initialize the indices
+   * @param roots the root nodes used for initialization
+   * @param customIndices the custom indices to register by name
+   * @param listeners listeners that should receive incremental model events
+   */
+  protected ModelAccessor(E traverser, List<ASTNode> roots, Map<String, IModelIndex> customIndices, Set<IIncrementalListener> listeners) {
+    this.indexHandler = new IndexHandler(customIndices);
+    this.listeners = listeners;
+    
+    ModelInitializationMessenger<E> initializationMessenger = new ModelInitializationMessenger<>(this, traverser);
+    roots.forEach(initializationMessenger::initialize);
+    
+    this.indexHandler.finalizeInitialization();
   }
   
   /**
@@ -158,7 +174,7 @@ public class ModelAccessor<E extends ITraverser> implements IModelAccessor<E> {
    * @return the index handler
    */
   @Override
-  public IndexHandler<E> indices() {
+  public IndexHandler indices() {
     return this.indexHandler;
   }
   

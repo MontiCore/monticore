@@ -2,78 +2,62 @@
 package de.monticore.tf.runtime.inc;
 
 import de.monticore.ast.ASTNode;
-import de.monticore.visitor.ITraverser;
 import org.jspecify.annotations.NonNull;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
- * Coordinates the built-in and custom model indices and forwards incremental
- * model change events to all registered indices.
+ * Coordinates built-in and custom model indices and forwards incremental
+ * model change events to all managed indices.
  *
- * @param <E> the traverser type used to initialize and register indices
+ * <p>The handler only stores and dispatches to indices. The initial traversal
+ * over root nodes is performed externally (for example by
+ * {@link ModelInitializationMessenger}).</p>
  */
-public class IndexHandler<E extends ITraverser> implements IIncrementalListener {
+public class IndexHandler implements IIncrementalListener {
   
-  private final CandidateIndex<E> candidateIndex;
-  private final ParentIndex<E> parentIndex;
+  private final CandidateIndex candidateIndex;
+  private final ParentIndex parentIndex;
   
-  private final Map<String, IModelIndex<E>> customIndices;
-  
-  /**
-   * Creates an index handler with the built-in indices and no custom indices.
-   *
-   * @param traverser the traverser used to initialize the indices
-   * @param roots the root nodes used for index initialization
-   */
-  public IndexHandler(E traverser, ASTNode ...roots) {
-    this(traverser, new HashMap<>(), List.of(roots));
-  }
-  
-  /**
-   * Creates an index handler with the built-in indices and the given custom
-   * indices.
-   *
-   * @param traverser the traverser used to initialize the indices
-   * @param customIndices the custom indices to register by name
-   * @param roots the root nodes used for index initialization
-   */
-  public IndexHandler(E traverser, Map<String, IModelIndex<E>> customIndices, ASTNode... roots) {
-    this(traverser, customIndices, List.of(roots));
-  }
+  private final Map<String, IModelIndex> customIndices;
   
   /**
    * Creates an index handler with the built-in indices and no custom indices.
    *
-   * @param traverser the traverser used to initialize the indices
-   * @param roots the root nodes used for index initialization
    */
-  public IndexHandler(E traverser, List<ASTNode> roots) {
-    this(traverser, new HashMap<>(), roots);
+  public IndexHandler() {
+    this(new HashMap<>());
   }
   
   /**
-   * Creates an index handler, initializes all built-in and custom indices, and
-   * registers them through an index initializer.
+   * Creates an index handler with the built-in indices and custom indices.
    *
-   * @param traverser the traverser used to initialize the indices
+   * <p>No root traversal is triggered here. Index population happens via
+   * incremental events sent to this handler. The given map is copied
+   * defensively.</p>
+   *
    * @param customIndices the custom indices to register by name
-   * @param roots the root nodes used for index initialization
    */
-  public IndexHandler(E traverser, Map<String, IModelIndex<E>> customIndices, List<ASTNode> roots) {
-    this.candidateIndex = new CandidateIndex<>();
-    this.parentIndex = new ParentIndex<>();
+  public IndexHandler(Map<String, IModelIndex> customIndices) {
+    this.candidateIndex = new CandidateIndex();
+    this.parentIndex = new ParentIndex();
     this.customIndices = new HashMap<>(customIndices);
-    
-    IndexInitializer<E> initializer = new IndexInitializer<>(traverser, roots);
-    initializer.addIndex(this.candidateIndex);
-    initializer.addIndex(this.parentIndex);
-    this.customIndices.values().forEach(initializer::addIndex);
-    
-    initializer.init();
+  }
+
+  /**
+   * Finalizes initialization for all managed indices after initial events have
+   * been processed.
+   *
+   * <p>Call this after the initial model traversal/event replay has finished
+   * (for example after using {@link ModelInitializationMessenger}).</p>
+   */
+  public void finalizeInitialization() {
+    this.candidateIndex.finalizeInitialization();
+    this.parentIndex.finalizeInitialization();
+    this.customIndices.values().forEach(IModelIndex::finalizeInitialization);
   }
   
   /**
@@ -81,7 +65,7 @@ public class IndexHandler<E extends ITraverser> implements IIncrementalListener 
    *
    * @return the candidate index
    */
-  public CandidateIndex<E> getCandidateIndex() {
+  public CandidateIndex getCandidateIndex() {
     return candidateIndex;
   }
   
@@ -90,7 +74,7 @@ public class IndexHandler<E extends ITraverser> implements IIncrementalListener 
    *
    * @return the parent index
    */
-  public ParentIndex<E> getParentIndex() {
+  public ParentIndex getParentIndex() {
     return parentIndex;
   }
   
@@ -108,10 +92,11 @@ public class IndexHandler<E extends ITraverser> implements IIncrementalListener 
    * Returns the custom index registered under the given name.
    *
    * @param name the index name
-   * @return the registered custom index, or {@code null} if none exists
+   * @return an {@link Optional} containing the registered custom index, or an
+   *     empty {@link Optional} if none exists
    */
-  public IModelIndex<E> getCustomIndex(String name) {
-    return this.customIndices.get(name);
+  public Optional<IModelIndex> getCustomIndex(String name) {
+    return Optional.ofNullable(this.customIndices.get(name));
   }
   
   /**
@@ -146,13 +131,14 @@ public class IndexHandler<E extends ITraverser> implements IIncrementalListener 
    * Forwards a node modification event to all managed indices.
    *
    * @param node the modified node
-   * @param parent the parent containing the node
+   * @param parent the parent containing the node, or {@code null} if the node
+   *     has no parent (for example, root-level updates)
    * @param attributeName the name of the modified attribute
    * @param oldValue the previous attribute value
    * @param newValue the new attribute value
    */
   @Override
-  public void onASTNodeModification(@NonNull ASTNode node, ASTNode parent, String attributeName,
+  public void onASTNodeModification(@NonNull ASTNode node, @Nullable ASTNode parent, String attributeName,
       Object oldValue, Object newValue) {
     this.candidateIndex.onASTNodeModification(node, parent, attributeName, oldValue, newValue);
     this.parentIndex.onASTNodeModification(node, parent, attributeName, oldValue, newValue);

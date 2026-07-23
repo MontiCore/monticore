@@ -1,25 +1,17 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.tf.runtime.inc;
 
-import de.monticore.visitor.ITraverser;
-
 /**
- * Represents a model index that listens to incremental model changes and can
- * be registered into a traverser.
+ * Represents a model index that listens to incremental model changes.
  *
- * @param <E> the traverser type used by this index
+ * <p>Implementations are typically managed by {@link IndexHandler} and may
+ * perform additional setup in {@link #finalizeInitialization()} after the
+ * initial model traversal has emitted its events.</p>
  */
-public interface IModelIndex<E extends ITraverser> extends IIncrementalListener {
+public interface IModelIndex extends IIncrementalListener {
   
   /**
-   * Registers this index into the given traverser.
-   *
-   * @param traverser the traverser to register this index into
-   */
-  void registerIntoTraverser(E traverser);
-  
-  /**
-   * Finalizes the index initialization after registration and setup.
+   * Finalizes index-specific setup after initial events have been processed.
    * Implementations may override this hook if additional initialization is
    * required.
    */

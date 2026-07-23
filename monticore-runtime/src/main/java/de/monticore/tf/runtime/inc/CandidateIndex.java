@@ -5,8 +5,6 @@ import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 import de.monticore.ast.ASTCNode;
 import de.monticore.ast.ASTNode;
-import de.monticore.visitor.ITraverser;
-import de.monticore.visitor.IVisitor;
 import de.se_rwth.commons.logging.Log;
 import org.jspecify.annotations.NonNull;
 
@@ -19,10 +17,8 @@ import java.util.*;
  * <p>The index stores AST nodes grouped by their concrete runtime class.
  * Additionally, it stores subtype relationships between AST-related classes
  * to allow lookup of candidates by supertype.</p>
- *
- * @param <E> type of traverser this index can be registered into
  */
-public class CandidateIndex<E extends ITraverser> implements IModelIndex<E> {
+public class CandidateIndex implements IModelIndex {
   
   /**
    * Stores candidate AST nodes grouped by their concrete class.
@@ -224,24 +220,5 @@ public class CandidateIndex<E extends ITraverser> implements IModelIndex<E> {
   public void onASTNodeModification(@NonNull ASTNode node, ASTNode parent, String attributeName,
       Object oldValue, Object newValue) {
     // CandidateIndex does not care about modifications
-  }
-  
-  /**
-   * Registers this index into the given traverser.
-   *
-   * <p>Whenever the traverser visits an AST node, the node is automatically
-   * added to the candidate index.</p>
-   *
-   * @param traverser traverser into which the visitor should be registered
-   */
-  @Override
-  public void registerIntoTraverser(E traverser) {
-    traverser.add4IVisitor(new IVisitor() {
-      
-      @Override
-      public void visit(ASTNode node) {
-        candidates.put(node.getClass(), node);
-      }
-    });
   }
 }

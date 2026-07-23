@@ -50,19 +50,19 @@ public interface IModelAccessor<E extends ITraverser> {
    * Notifies that a node attribute has been modified.
    *
    * @param node the modified node
-   * @param parent the parent containing the node
+   * @param parent the parent containing the node, or {@code null} if no parent is available
    * @param attributeName the name of the modified attribute
    * @param oldValue the previous attribute value
    * @param newValue the new attribute value
    */
-  void notifyModification(@Nonnull ASTNode node, ASTNode parent, String attributeName, Object oldValue, Object newValue);
+  void notifyModification(@Nonnull ASTNode node, @Nullable ASTNode parent, String attributeName, Object oldValue, Object newValue);
   
   /**
    * Returns the index handler used to keep model indices in sync.
    *
    * @return the index handler
    */
-  IndexHandler<E> indices();
+  IndexHandler indices();
   
   /**
    * Returns the listeners used for incremental model changes.
