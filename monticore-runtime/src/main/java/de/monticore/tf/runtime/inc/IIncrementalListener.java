@@ -3,6 +3,9 @@ package de.monticore.tf.runtime.inc;
 
 import de.monticore.ast.ASTNode;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * Listener interface for reacting to incremental changes in an AST.
  *
@@ -17,7 +20,7 @@ public interface IIncrementalListener {
    *
    * @param transformationName the name of the transformation
    */
-  default void onTransformationStart(String transformationName) {
+  default void onTransformationStart(@Nonnull String transformationName) {
     // Override to add custom implementation
   }
   
@@ -26,7 +29,7 @@ public interface IIncrementalListener {
    *
    * @param transformationName the name of the transformation
    */
-  default void onTransformationEnd(String transformationName) {
+  default void onTransformationEnd(@Nonnull String transformationName) {
     // Override to add custom implementation
   }
   
@@ -36,7 +39,7 @@ public interface IIncrementalListener {
    * @param node the AST node that was attached
    * @param parent the parent node to which the node was attached
    */
-  default void onASTNodeAttach(ASTNode node, ASTNode parent) {
+  default void onASTNodeAttach(@Nonnull ASTNode node, @Nullable ASTNode parent) {
     // Override to add custom implementation
   }
   
@@ -46,7 +49,7 @@ public interface IIncrementalListener {
    * @param node the AST node that was detached
    * @param parent the former parent node from which the node was detached
    */
-  default void onASTNodeDetach(ASTNode node, ASTNode parent) {
+  default void onASTNodeDetach(@Nonnull ASTNode node, @Nonnull ASTNode parent) {
     // Override to add custom implementation
   }
   
@@ -59,7 +62,7 @@ public interface IIncrementalListener {
    * @param oldValue the previous value of the attribute
    * @param newValue the new value of the attribute
    */
-  default void onASTNodeModification(ASTNode node, ASTNode parent, String attributeName, Object oldValue,
+  default void onASTNodeModification(@Nonnull ASTNode node, ASTNode parent, String attributeName, Object oldValue,
       Object newValue) {
     // Override to add custom implementation
   }

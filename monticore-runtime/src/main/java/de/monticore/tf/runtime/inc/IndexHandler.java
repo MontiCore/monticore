@@ -3,6 +3,7 @@ package de.monticore.tf.runtime.inc;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.visitor.ITraverser;
+import org.jspecify.annotations.NonNull;
 
 import java.util.HashMap;
 import java.util.List;
@@ -119,7 +120,7 @@ public class IndexHandler<E extends ITraverser> implements IIncrementalListener 
    * @param parent the parent the node was attached to
    */
   @Override
-  public void onASTNodeAttach(ASTNode node, ASTNode parent) {
+  public void onASTNodeAttach(@NonNull ASTNode node, ASTNode parent) {
     this.candidateIndex.onASTNodeAttach(node, parent);
     this.parentIndex.onASTNodeAttach(node, parent);
     
@@ -133,7 +134,7 @@ public class IndexHandler<E extends ITraverser> implements IIncrementalListener 
    * @param parent the parent the node was detached from
    */
   @Override
-  public void onASTNodeDetach(ASTNode node, ASTNode parent) {
+  public void onASTNodeDetach(@NonNull ASTNode node, @NonNull ASTNode parent) {
     this.candidateIndex.onASTNodeDetach(node, parent);
     this.parentIndex.onASTNodeDetach(node, parent);
     
@@ -150,7 +151,7 @@ public class IndexHandler<E extends ITraverser> implements IIncrementalListener 
    * @param newValue the new attribute value
    */
   @Override
-  public void onASTNodeModification(ASTNode node, ASTNode parent, String attributeName,
+  public void onASTNodeModification(@NonNull ASTNode node, ASTNode parent, String attributeName,
       Object oldValue, Object newValue) {
     this.candidateIndex.onASTNodeModification(node, parent, attributeName, oldValue, newValue);
     this.parentIndex.onASTNodeModification(node, parent, attributeName, oldValue, newValue);

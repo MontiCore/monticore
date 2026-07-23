@@ -3,6 +3,7 @@ package de.monticore.tf.runtime.inc;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.visitor.ITraverser;
+import org.jspecify.annotations.NonNull;
 
 import java.util.*;
 
@@ -90,7 +91,7 @@ public class ModelAccessor<E extends ITraverser> implements IModelAccessor<E> {
    * @param transformationName the name of the transformation
    */
   @Override
-  public void notifyTransformationStart(String transformationName) {
+  public void notifyTransformationStart(@NonNull String transformationName) {
     this.indexHandler.onTransformationStart(transformationName);
     
     this.listeners.forEach(listener -> listener.onTransformationStart(transformationName));
@@ -102,7 +103,7 @@ public class ModelAccessor<E extends ITraverser> implements IModelAccessor<E> {
    * @param transformationName the name of the transformation
    */
   @Override
-  public void notifyTransformationEnd(String transformationName) {
+  public void notifyTransformationEnd(@NonNull String transformationName) {
     this.indexHandler.onTransformationEnd(transformationName);
     
     this.listeners.forEach(listener -> listener.onTransformationEnd(transformationName));
@@ -115,7 +116,7 @@ public class ModelAccessor<E extends ITraverser> implements IModelAccessor<E> {
    * @param parent the parent the node was attached to
    */
   @Override
-  public void notifyNodeAttach(ASTNode node, ASTNode parent) {
+  public void notifyNodeAttach(@NonNull ASTNode node, ASTNode parent) {
     this.indexHandler.onASTNodeAttach(node, parent);
     
     this.listeners.forEach(listener -> listener.onASTNodeAttach(node, parent));
@@ -128,7 +129,7 @@ public class ModelAccessor<E extends ITraverser> implements IModelAccessor<E> {
    * @param parent the parent the node was detached from
    */
   @Override
-  public void notifyNodeDetach(ASTNode node, ASTNode parent) {
+  public void notifyNodeDetach(@NonNull ASTNode node, @NonNull ASTNode parent) {
     this.indexHandler.onASTNodeDetach(node, parent);
     
     this.listeners.forEach(listener -> listener.onASTNodeDetach(node, parent));
@@ -145,7 +146,7 @@ public class ModelAccessor<E extends ITraverser> implements IModelAccessor<E> {
    * @param newValue the new attribute value
    */
   @Override
-  public void notifyModification(ASTNode node, ASTNode parent, String attributeName, Object oldValue, Object newValue) {
+  public void notifyModification(@NonNull ASTNode node, ASTNode parent, String attributeName, Object oldValue, Object newValue) {
     this.indexHandler.onASTNodeModification(node, parent, attributeName, oldValue, newValue);
     
     this.listeners.forEach(listener -> listener.onASTNodeModification(node, parent, attributeName, oldValue, newValue));

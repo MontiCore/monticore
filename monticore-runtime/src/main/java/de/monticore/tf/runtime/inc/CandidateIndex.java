@@ -8,6 +8,7 @@ import de.monticore.ast.ASTNode;
 import de.monticore.visitor.ITraverser;
 import de.monticore.visitor.IVisitor;
 import de.se_rwth.commons.logging.Log;
+import org.jspecify.annotations.NonNull;
 
 import java.util.*;
 
@@ -187,7 +188,7 @@ public class CandidateIndex<E extends ITraverser> implements IModelIndex<E> {
    * @param parent parent node to which the node was attached
    */
   @Override
-  public void onASTNodeAttach(ASTNode node, ASTNode parent) {
+  public void onASTNodeAttach(@NonNull ASTNode node, ASTNode parent) {
     this.candidates.put(node.getClass(), node);
     Log.debug(() -> "Added node with type %s!".formatted(node.getClass()), "CandidateIndex");
   }
@@ -201,7 +202,7 @@ public class CandidateIndex<E extends ITraverser> implements IModelIndex<E> {
    * @param parent former parent node
    */
   @Override
-  public void onASTNodeDetach(ASTNode node, ASTNode parent) {
+  public void onASTNodeDetach(@NonNull ASTNode node, @NonNull ASTNode parent) {
     this.candidates.remove(node.getClass(), node);
     Log.debug(() -> "Deleted node with type %s!".formatted(node.getClass()), "CandidateIndex");
   }
@@ -219,7 +220,7 @@ public class CandidateIndex<E extends ITraverser> implements IModelIndex<E> {
    * @param newValue new value of the attribute
    */
   @Override
-  public void onASTNodeModification(ASTNode node, ASTNode parent, String attributeName,
+  public void onASTNodeModification(@NonNull ASTNode node, ASTNode parent, String attributeName,
       Object oldValue, Object newValue) {
     // CandidateIndex does not care about modifications
   }

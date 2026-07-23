@@ -6,6 +6,7 @@ import de.monticore.ast.Comment;
 import de.monticore.visitor.ITraverser;
 import de.monticore.visitor.IVisitor;
 import de.se_rwth.commons.logging.Log;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Stack;
 
@@ -24,9 +25,11 @@ public class ParentIndex<E extends ITraverser> implements IModelIndex<E> {
    * @param parent the parent the node was attached to
    */
   @Override
-  public void onASTNodeAttach(ASTNode node, ASTNode parent) {
-    attachComment(node, parent);
-    Log.debug(() -> "Added parent comment to node with type %s!".formatted(node.getClass()), "ParentIndex");
+  public void onASTNodeAttach(@NonNull ASTNode node, ASTNode parent) {
+    if (parent != null) {
+      attachComment(node, parent);
+      Log.debug(() -> "Added parent comment to node with type %s!".formatted(node.getClass()), "ParentIndex");
+    }
   }
   
   /**
@@ -37,7 +40,7 @@ public class ParentIndex<E extends ITraverser> implements IModelIndex<E> {
    * @param parent the parent the node was detached from
    */
   @Override
-  public void onASTNodeDetach(ASTNode node, ASTNode parent) {
+  public void onASTNodeDetach(@NonNull ASTNode node, @NonNull ASTNode parent) {
     // Most likely not needed, since children are either removed or moved to a new position
     // In that case, their parent comment should be overwritten
   }
@@ -53,7 +56,7 @@ public class ParentIndex<E extends ITraverser> implements IModelIndex<E> {
    * @param newValue the new attribute value
    */
   @Override
-  public void onASTNodeModification(ASTNode node, ASTNode parent, String attributeName,
+  public void onASTNodeModification(@NonNull ASTNode node, ASTNode parent, String attributeName,
       Object oldValue, Object newValue) {
     // Most likely not needed...
   }

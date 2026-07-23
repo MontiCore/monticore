@@ -3,6 +3,7 @@ package de.monticore.tf.runtime.inc;
 
 import de.monticore.ast.ASTNode;
 import de.se_rwth.commons.logging.Log;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Logs incremental transformation and AST change events.
@@ -15,7 +16,7 @@ public class LoggingListener implements IIncrementalListener {
    * @param transformationName the name of the transformation
    */
   @Override
-  public void onTransformationStart(String transformationName) {
+  public void onTransformationStart(@NonNull String transformationName) {
     Log.info("Transformation started: " + transformationName,
         LoggingListener.class.getSimpleName());
   }
@@ -26,7 +27,7 @@ public class LoggingListener implements IIncrementalListener {
    * @param transformationName the name of the transformation
    */
   @Override
-  public void onTransformationEnd(String transformationName) {
+  public void onTransformationEnd(@NonNull String transformationName) {
     Log.info("Transformation ended: " + transformationName, LoggingListener.class.getSimpleName());
   }
   
@@ -37,7 +38,7 @@ public class LoggingListener implements IIncrementalListener {
    * @param parent the parent node
    */
   @Override
-  public void onASTNodeAttach(ASTNode node, ASTNode parent) {
+  public void onASTNodeAttach(@NonNull ASTNode node, ASTNode parent) {
     Log.info(
         "Node attached: " + node.getClass().getSimpleName() + " to parent: " + parent.getClass()
             .getSimpleName(), LoggingListener.class.getSimpleName());
@@ -50,7 +51,7 @@ public class LoggingListener implements IIncrementalListener {
    * @param parent the former parent node
    */
   @Override
-  public void onASTNodeDetach(ASTNode node, ASTNode parent) {
+  public void onASTNodeDetach(@NonNull ASTNode node, @NonNull ASTNode parent) {
     Log.info(
         "Node detached: " + node.getClass().getSimpleName() + " from parent: " + parent.getClass()
             .getSimpleName(), LoggingListener.class.getSimpleName());

@@ -4,6 +4,8 @@ package de.monticore.tf.runtime.inc;
 import de.monticore.ast.ASTNode;
 import de.monticore.visitor.ITraverser;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collection;
 
 /**
@@ -19,14 +21,14 @@ public interface IModelAccessor<E extends ITraverser> {
    *
    * @param transformationName the name of the transformation
    */
-  void notifyTransformationStart(String transformationName);
+  void notifyTransformationStart(@Nonnull String transformationName);
 
   /**
    * Notifies that a transformation has ended.
    *
    * @param transformationName the name of the transformation
    */
-  void notifyTransformationEnd(String transformationName);
+  void notifyTransformationEnd(@Nonnull String transformationName);
   
   /**
    * Notifies that a node has been attached to a parent node.
@@ -34,7 +36,7 @@ public interface IModelAccessor<E extends ITraverser> {
    * @param node the attached node
    * @param parent the parent the node was attached to
    */
-  void notifyNodeAttach(ASTNode node, ASTNode parent);
+  void notifyNodeAttach(@Nonnull ASTNode node, @Nullable ASTNode parent);
   
   /**
    * Notifies that a node has been detached from a parent node.
@@ -42,7 +44,7 @@ public interface IModelAccessor<E extends ITraverser> {
    * @param node the detached node
    * @param parent the parent the node was detached from
    */
-  void notifyNodeDetach(ASTNode node, ASTNode parent);
+  void notifyNodeDetach(@Nonnull ASTNode node, @Nonnull ASTNode parent);
   
   /**
    * Notifies that a node attribute has been modified.
@@ -53,7 +55,7 @@ public interface IModelAccessor<E extends ITraverser> {
    * @param oldValue the previous attribute value
    * @param newValue the new attribute value
    */
-  void notifyModification(ASTNode node, ASTNode parent, String attributeName, Object oldValue, Object newValue);
+  void notifyModification(@Nonnull ASTNode node, ASTNode parent, String attributeName, Object oldValue, Object newValue);
   
   /**
    * Returns the index handler used to keep model indices in sync.
