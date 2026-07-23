@@ -5,6 +5,8 @@ import de.monticore.ast.ASTNode;
 import de.se_rwth.commons.logging.Log;
 import org.jspecify.annotations.NonNull;
 
+import javax.annotation.Nullable;
+
 /**
  * Logs incremental transformation and AST change events.
  */
@@ -38,10 +40,15 @@ public class LoggingListener implements IIncrementalListener {
    * @param parent the parent node
    */
   @Override
-  public void onASTNodeAttach(@NonNull ASTNode node, ASTNode parent) {
-    Log.info(
-        "Node attached: " + node.getClass().getSimpleName() + " to parent: " + parent.getClass()
-            .getSimpleName(), LoggingListener.class.getSimpleName());
+  public void onASTNodeAttach(@NonNull ASTNode node, @Nullable ASTNode parent) {
+    if (parent == null) {
+      Log.info(
+          "Root Node attached: " + node.getClass().getSimpleName(), LoggingListener.class.getSimpleName());
+    } else {
+      Log.info(
+          "Node attached: " + node.getClass().getSimpleName() + " to parent: " + parent.getClass()
+              .getSimpleName(), LoggingListener.class.getSimpleName());
+    }
   }
   
   /**

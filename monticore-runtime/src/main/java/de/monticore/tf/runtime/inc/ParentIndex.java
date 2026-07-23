@@ -8,6 +8,7 @@ import de.monticore.visitor.IVisitor;
 import de.se_rwth.commons.logging.Log;
 import org.jspecify.annotations.NonNull;
 
+import javax.annotation.Nullable;
 import java.util.Stack;
 
 /**
@@ -25,7 +26,7 @@ public class ParentIndex<E extends ITraverser> implements IModelIndex<E> {
    * @param parent the parent the node was attached to
    */
   @Override
-  public void onASTNodeAttach(@NonNull ASTNode node, ASTNode parent) {
+  public void onASTNodeAttach(@NonNull ASTNode node, @Nullable ASTNode parent) {
     if (parent != null) {
       attachComment(node, parent);
       Log.debug(() -> "Added parent comment to node with type %s!".formatted(node.getClass()), "ParentIndex");

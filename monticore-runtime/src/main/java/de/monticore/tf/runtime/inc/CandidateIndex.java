@@ -10,6 +10,7 @@ import de.monticore.visitor.IVisitor;
 import de.se_rwth.commons.logging.Log;
 import org.jspecify.annotations.NonNull;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 /**
@@ -188,7 +189,7 @@ public class CandidateIndex<E extends ITraverser> implements IModelIndex<E> {
    * @param parent parent node to which the node was attached
    */
   @Override
-  public void onASTNodeAttach(@NonNull ASTNode node, ASTNode parent) {
+  public void onASTNodeAttach(@NonNull ASTNode node, @Nullable ASTNode parent) {
     this.candidates.put(node.getClass(), node);
     Log.debug(() -> "Added node with type %s!".formatted(node.getClass()), "CandidateIndex");
   }

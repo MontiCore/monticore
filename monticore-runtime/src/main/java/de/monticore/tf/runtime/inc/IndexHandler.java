@@ -5,6 +5,7 @@ import de.monticore.ast.ASTNode;
 import de.monticore.visitor.ITraverser;
 import org.jspecify.annotations.NonNull;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -120,7 +121,7 @@ public class IndexHandler<E extends ITraverser> implements IIncrementalListener 
    * @param parent the parent the node was attached to
    */
   @Override
-  public void onASTNodeAttach(@NonNull ASTNode node, ASTNode parent) {
+  public void onASTNodeAttach(@NonNull ASTNode node, @Nullable ASTNode parent) {
     this.candidateIndex.onASTNodeAttach(node, parent);
     this.parentIndex.onASTNodeAttach(node, parent);
     
