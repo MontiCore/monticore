@@ -1,6 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.tf.odrules;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.Multimap;
 import de.monticore.tf.odrulegeneration._ast.*;
 import de.monticore.tf.odrules._ast.ASTODDefinition;
 import de.monticore.tf.odrules._ast.ASTODInnerLink;
@@ -9,9 +12,17 @@ import de.monticore.tf.odrules._ast.ASTODRule;
 import de.monticore.tf.odrules.util.ODRuleStereotypes;
 import de.monticore.tf.odrules.util.Util;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Utility to analyze containment hierarchies of OD rule objects.
+ *
+ * <p>The helper precomputes list-child relations for LHS and RHS and offers
+ * convenience filters for mandatory/optional/list-related matching and change objects.
+ */
 public final class HierarchyHelper {
   private final static String optionalType = "de.monticore.tf.ast.IOptional";
   private final static String listType = "de.monticore.tf.ast.IList";
@@ -20,9 +31,9 @@ public final class HierarchyHelper {
   private ASTODDefinition lhs;
   private Optional<ASTODDefinition> rhs = Optional.empty();
 
-  private Map<String, List<String>> listChildPairs = new LinkedHashMap<>();
-  private Map<String, List<String>> listChildPairsLhs = new LinkedHashMap<>();
-  private Map<String, List<String>> listChildPairsWithOptionals = new LinkedHashMap<>();
+  private Multimap<String, String> listChildPairs = LinkedListMultimap.create();
+  private Multimap<String, String> listChildPairsLhs = LinkedListMultimap.create();
+  private Multimap<String, String> listChildPairsWithOptionals = LinkedListMultimap.create();
 
   private List<String> listChildNames = new ArrayList<>();
   private List<String> listChildNamesLhs = new ArrayList<>();
@@ -36,7 +47,7 @@ public final class HierarchyHelper {
     lhs = ODRulesMill.oDDefinitionBuilder().uncheckedBuild();
   }
 
-  public HierarchyHelper(ASTODRule astodRule) {
+  public HierarchyHelper(@Nonnull ASTODRule astodRule) {
     rule = astodRule;
     lhs = rule.getLhs();
     rhs = rule.isPresentRhs() ? Optional.of(rule.getRhs()) : Optional.empty();
@@ -51,17 +62,18 @@ public final class HierarchyHelper {
     }
 
     listChildPairsWithOptionals = getListChildPairsWithOptionals(lhs.getODObjectList());
-    Map<String, List<String>> rhsListChildPairs = rhs.isPresent() ?
-            getListChildPairs(rhs.get().getODObjectList()) : new LinkedHashMap<>();
+    Multimap<String, String> rhsListChildPairs =
+        rhs.map(astodDefinition -> getListChildPairs(astodDefinition.getODObjectList()))
+            .orElseGet(LinkedListMultimap::create);
     for (String key : rhsListChildPairs.keySet()) {
       // Every list on the lhs is also on the rhs
       // If there are objects to create in a list put them to the Map
-      if (!listChildPairs.get(key).containsAll(rhsListChildPairs.get(key))) {
-        List<String> temporary = rhsListChildPairs.get(key);
+      if (!new HashSet<>(listChildPairs.get(key)).containsAll(rhsListChildPairs.get(key))) {
+        List<String> temporary = new ArrayList<>(rhsListChildPairs.get(key));
         // No duplicates
         temporary.removeAll(listChildPairs.get(key));
         temporary.addAll(listChildPairs.get(key));
-        listChildPairs.put(key, temporary);
+        listChildPairs.putAll(key, temporary);
       }
       listChildNamesRhs.addAll(rhsListChildPairs.get(key));
     }
@@ -72,12 +84,12 @@ public final class HierarchyHelper {
   }
 
   /**
-   * Checks whether the object with the given name is a list object.
+   * Checks whether the object with the given name is marked as a list object.
    *
    * @param objectName the name of the object
-   * @return whether it is a list
+   * @return {@code true} if the object exists and has the list stereotype
    */
-  public boolean isListObject(String objectName) {
+  public boolean isListObject(@Nonnull String objectName) {
 
     // try to resolve it by the left-hand side first
     ASTODObject obj = Util.getODObject(lhs, objectName);
@@ -90,14 +102,15 @@ public final class HierarchyHelper {
         }
       }
     }
-    return obj.hasStereotype(ODRuleStereotypes.LIST);
+    return obj != null && obj.hasStereotype(ODRuleStereotypes.LIST);
   }
 
   /**
    * Get package name for code generation
    *
-   * @return
+   * @return configured package name, or an empty string if none was configured
    */
+  @Nonnull
   public String getPackageName() {
     return packageName;
   }
@@ -105,16 +118,16 @@ public final class HierarchyHelper {
   /**
    * Set package name for code generation
    *
-   * @param packageName
+   * @param packageName package name to use during code generation
    */
-  public void setPackageName(String packageName) {
+  public void setPackageName(@Nonnull String packageName) {
     this.packageName = packageName;
   }
 
   /**
    * Check if package name for code generation is set
    *
-   * @return
+   * @return {@code true} if a non-empty package name is configured
    */
   public boolean packageisPresentName() {
     return !"".equals(packageName);
@@ -123,8 +136,9 @@ public final class HierarchyHelper {
   /**
    * Get all custom imports for code generation
    *
-   * @return
+   * @return mutable list of additional imports for generated code
    */
+  @Nonnull
   public List<String> getCustomImports() {
     return customImports;
   }
@@ -132,9 +146,9 @@ public final class HierarchyHelper {
   /**
    * Add custom import for code generation
    *
-   * @param customImport
+   * @param customImport fully qualified import string
    */
-  public void addCustomImports(String customImport) {
+  public void addCustomImports(@Nonnull String customImport) {
     customImports.add(customImport);
   }
 
@@ -144,9 +158,9 @@ public final class HierarchyHelper {
    * @param objects List of objects to be checked for Lists
    * @return A mapping for each list to their children
    */
-  private Map<String, List<String>> getListChildPairs(
+  private Multimap<String, String> getListChildPairs(
           List<ASTODObject> objects) {
-    Map<String, List<String>> result = new LinkedHashMap<>();
+    Multimap<String, String> result = HashMultimap.create();
     List<String> childs;
     List<ASTODObject> innerObjects;
     // Search for every List in the given Objects
@@ -158,7 +172,7 @@ public final class HierarchyHelper {
         // If there is a name for the list, save it and the childnames of the
         // list
         if (object.isPresentName()) {
-          result.put(object.getName(), childs);
+          result.putAll(object.getName(), childs);
         }
       }
       innerObjects = new ArrayList<>();
@@ -171,9 +185,9 @@ public final class HierarchyHelper {
     return result;
   }
 
-  private Map<String, List<String>> getListChildPairsWithOptionals(
+  private Multimap<String, String> getListChildPairsWithOptionals(
           List<ASTODObject> objects) {
-    Map<String, List<String>> result = new LinkedHashMap<>();
+    Multimap<String, String> result = LinkedListMultimap.create();
     List<String> childs;
     List<ASTODObject> innerObjects;
     // Search for every List in the given Objects
@@ -185,7 +199,7 @@ public final class HierarchyHelper {
         // If there is a name for the list, save it and the childnames of the
         // list
         if (object.isPresentName()) {
-          result.put(object.getName(), childs);
+          result.putAll(object.getName(), childs);
         }
       }
       innerObjects = new ArrayList<>();
@@ -199,23 +213,22 @@ public final class HierarchyHelper {
   }
 
   /**
-   * Calculates all inner objects of a given object
+   * Resolves all named inner-link objects of a given LHS match object.
    *
-   * @param obj        The list from which we want the childs.
-   * @param allMatches The list of all LHS match elements.
-   * @return a List of the names of all (direct) childs from the list.
+   * @param obj object whose inner link names should be resolved
+   * @param allMatches all available LHS match objects
+   * @return all resolved inner-link objects in declaration order
    */
-  public List<ASTMatchingObject> getInnerLinkObjectsLHS(List<ASTMatchingObject> allMatches,
-                                                        ASTMatchingObject obj) {
+  @Nonnull
+  public List<ASTMatchingObject> getInnerLinkObjectsLHS(@Nonnull List<ASTMatchingObject> allMatches,
+                                                        @Nonnull ASTMatchingObject obj) {
     ArrayList<ASTMatchingObject> innerObjects = new ArrayList<>();
 
     for (String innerObjectName : obj.getInnerLinkObjectNamesList()) {
 
       Optional<ASTMatchingObject> innerLinkObject = allMatches.stream()
               .filter(m -> m.getObjectName().equals(innerObjectName)).findAny();
-      if (innerLinkObject.isPresent()) {
-        innerObjects.add(innerLinkObject.get());
-      }
+      innerLinkObject.ifPresent(innerObjects::add);
     }
 
     return innerObjects;
@@ -268,15 +281,14 @@ public final class HierarchyHelper {
   }
 
   /**
-   * Removes every mandatory object.
+   * Returns all match objects that represent list objects.
    *
    * @param allObjects list of all objects
-   * @return a list of all found list objects
+   * @return all objects that are marked as list objects
    */
   public List<ASTMatchingObject> getListObjects(List<ASTMatchingObject> allObjects) {
-    ArrayList<ASTMatchingObject> mandatoryObjects = allObjects.stream()
-            .filter(c -> c.isListObject()).collect(Collectors.toCollection(ArrayList::new));
-    return mandatoryObjects;
+    return allObjects.stream()
+            .filter(ASTMatchingObject::isListObject).collect(Collectors.toCollection(ArrayList::new));
   }
 
   /**
@@ -326,12 +338,8 @@ public final class HierarchyHelper {
           int index = allMatches.indexOf(object);
           if (allMatches.get(index + i).isOptObject() || allMatches.get(index + i).getType().endsWith("IOptional")) {
             for (String innerLinkName : allMatches.get(index + i).getInnerLinkObjectNamesList()) {
-              for (Iterator<ASTMatchingObject> it = mandatoryObjects.iterator(); it.hasNext(); ) {
-                ASTMatchingObject mandatoryObject = it.next();
-                if (mandatoryObject.getObjectName().equals(innerLinkName)) {
-                  it.remove();
-                }
-              }
+              mandatoryObjects.removeIf(
+                  mandatoryObject -> mandatoryObject.getObjectName().equals(innerLinkName));
             }
           }
         }
@@ -341,12 +349,8 @@ public final class HierarchyHelper {
           int index = allMatches.indexOf(object);
           if (allMatches.get(index + i).isListObject() || allMatches.get(index + i).getType().endsWith("IList")) {
             for (String innerLinkName : allMatches.get(index + i).getInnerLinkObjectNamesList()) {
-              for (Iterator<ASTMatchingObject> it = mandatoryObjects.iterator(); it.hasNext(); ) {
-                ASTMatchingObject mandatoryObject = it.next();
-                if (mandatoryObject.getObjectName().equals(innerLinkName)) {
-                  it.remove();
-                }
-              }
+              mandatoryObjects.removeIf(
+                  mandatoryObject -> mandatoryObject.getObjectName().equals(innerLinkName));
             }
           }
         }
@@ -363,20 +367,20 @@ public final class HierarchyHelper {
    */
   public List<ASTMatchingObject> getMandatoryObjectsWithoutListChilds(
           List<ASTMatchingObject> allMatches) {
-    ArrayList<ASTMatchingObject> mandatoryObjects = allMatches.stream()
+    return allMatches.stream()
             .filter(c -> !isWithinListStructure(c.getObjectName()))
             .collect(Collectors.toCollection(ArrayList<ASTMatchingObject>::new));
-    return mandatoryObjects;
   }
 
   /**
-   * Removes every optional and listChild match-object.
+   * Returns all direct children of a specific list object (based on LHS precomputation).
    *
-   * @param allObjects list of all match-objects
-   * @return a list of match-objects without optional and listChild objects
+   * @param allObjects all available match objects
+   * @param list target list object
+   * @return all match objects that are children of {@code list}
    */
-  public List<ASTMatchingObject> getListChilds(List<ASTMatchingObject> allObjects,
-                                               ASTMatchingObject list) {
+  public List<ASTMatchingObject> getListChilds(@Nonnull List<ASTMatchingObject> allObjects,
+                                               @Nonnull ASTMatchingObject list) {
     ArrayList<ASTMatchingObject> mandatoryObjects = allObjects.stream()
             .filter(c -> listChildPairsLhs.get(list.getObjectName()).contains(c.getObjectName()))
             .collect(Collectors.toCollection(ArrayList::new));
@@ -384,13 +388,14 @@ public final class HierarchyHelper {
   }
 
   /**
-   * Gives all child objects from a given list of objects, including optionals
+   * Returns all direct children of a specific list object, including optional wrapper objects.
    *
-   * @param allobjects the objects to search in
-   * @return all objects in lists in the given objects
+   * @param allobjects all available match objects
+   * @param list target list object
+   * @return all child objects of {@code list}, including optionals
    */
-  public List<ASTMatchingObject> getListChildsWithOptionals(List<ASTMatchingObject> allobjects,
-                                                            ASTMatchingObject list) {
+  public List<ASTMatchingObject> getListChildsWithOptionals(@Nonnull List<ASTMatchingObject> allobjects,
+                                                            @Nonnull ASTMatchingObject list) {
     ArrayList<ASTMatchingObject> mandatoryObjects = allobjects.stream()
             .filter(
                     c -> listChildPairsWithOptionals.get(list.getObjectName()).contains(c.getObjectName()))
@@ -426,12 +431,13 @@ public final class HierarchyHelper {
   }
 
   /**
-   * Gives the ListStructure Name the given objectName lies in
+   * Returns the nearest list parent name for the given object name.
    *
-   * @param object The name of the object
-   * @return The name of the list Structure which contains the object
+   * @param object name of the child object
+   * @return containing list name, or {@code null} if the object is not inside any list structure
    */
-  public String getListParent(String object) {
+  @Nullable
+  public String getListParent(@Nonnull String object) {
     for (String key : listChildPairs.keySet()) {
       if (listChildPairs.get(key).contains(object)) {
         return key;
@@ -441,14 +447,15 @@ public final class HierarchyHelper {
   }
 
   /**
-   * Method to get the Treepath the object lies in.
+   * Computes the list hierarchy path for an object.
    *
    * @param object The Object for which we want to find a path in the
    *               List-Structure Tree
    * @return A List starting with the root-list and ending with the list
    * containing the given Object.
    */
-  public List<String> getListTree(String object) {
+  @Nonnull
+  public List<String> getListTree(@Nonnull String object) {
     List<String> result = new ArrayList<>();
     if (this.isListChild(object)) {
       for (String key : listChildPairs.keySet()) {
@@ -463,13 +470,14 @@ public final class HierarchyHelper {
   }
 
   /**
-   * Gives the Object to a Name in a given List of Objects
+   * Resolves an object by name from a list.
    *
-   * @param allObjects The List of objects where the object should be found in.
-   * @param name       The given objectname
-   * @return The object which has the given name, null if no object was found
+   * @param allObjects candidate objects
+   * @param name object name to search
+   * @return matching object, or {@code null} if no object with this name exists
    */
-  public ASTMatchingObject getObjectByName(List<ASTMatchingObject> allObjects, String name) {
+  @Nullable
+  public ASTMatchingObject getObjectByName(@Nonnull List<ASTMatchingObject> allObjects, @Nonnull String name) {
     for (ASTMatchingObject obj : allObjects) {
       if (obj.getObjectName().equals(name)) {
         return obj;
@@ -479,16 +487,15 @@ public final class HierarchyHelper {
   }
 
   /**
-   * Removes every Change object with the Optional type.
+   * Filters out optional and list wrapper change objects.
    *
    * @param allChanges list of all Change objects
-   * @return a list of Changes without optional objects
+   * @return all changes excluding optional/list wrapper types
    */
   public List<ASTChange> getMandatoryChangeObjects(List<ASTChange> allChanges) {
-    ArrayList<ASTChange> mandatoryObjects = allChanges.stream()
+    return allChanges.stream()
             .filter(c -> !c.getType().equals(optionalType) && !c.getType().equals(listType))
             .collect(Collectors.toCollection(ArrayList::new));
-    return mandatoryObjects;
   }
 
   /**
@@ -504,20 +511,33 @@ public final class HierarchyHelper {
     return mandatoryObjects.stream().filter(a -> !isWithinListStructure(a.getObjectName())).collect(Collectors.toCollection(ArrayList::new));
   }
 
+  /**
+   * Returns all changes except those that are also declared as create operations.
+   *
+   * @param replacements replacement block containing creates and changes
+   * @return changes that reference already existing objects
+   */
   public List<ASTChange> getChangeObjectsWhithoutCreate(ASTReplacement replacements) {
     Set<String> createStrings = replacements.getCreateObjectsList().stream().map(ASTCreateOperation::getName).collect(Collectors.toSet());
     return replacements.getChangesList().stream().filter(m -> !createStrings.contains(m.getObjectName())).collect(Collectors.toCollection(ArrayList::new));
   }
   
+  /**
+   * Checks whether the given object is created by the replacement.
+   *
+   * @param replacement replacement block
+   * @param objectName object name to check
+   * @return {@code true} if a create operation exists for {@code objectName}
+   */
   public boolean isCreatedObject(ASTReplacement replacement, String objectName) {
     return replacement.getCreateObjectsList().stream().anyMatch(c -> c.getName().equals(objectName));
   }
 
     /**
-     * Only change objects with the list type.
+     * Returns changes for objects inside list structures, excluding optional/list wrapper nodes.
      *
      * @param allChanges list of all Change objects
-     * @return a list of Changes, which are list objects
+     * @return changes whose target object is nested in a list structure
      */
   public List<ASTChange> getMandatoryChangeObjectsOnlyList(List<ASTChange> allChanges) {
     ArrayList<ASTChange> mandatoryObjects = allChanges.stream()
@@ -528,10 +548,10 @@ public final class HierarchyHelper {
   }
 
   /**
-   * Removes every Delete object with the Optional type.
+   * Filters out optional and list wrapper delete objects.
    *
    * @param allDeletes list of all Delete objects
-   * @return a list of Deletes without optional objects
+   * @return all deletes excluding optional/list wrapper types
    */
   public List<ASTDeleteOperation> getMandatoryDeleteObjects(List<ASTDeleteOperation> allDeletes) {
     ArrayList<ASTDeleteOperation> mandatoryObjects = allDeletes.stream()
@@ -584,7 +604,7 @@ public final class HierarchyHelper {
    *
    * @param matches  list of matches to check
    * @param linkName the name of the object to look for
-   * @return <code>true</code>, if the object with the given name is no optional
+   * @return {@code true} if the object with the given name is not optional
    */
   public boolean isNoOptionalName(List<ASTMatchingObject> matches, String linkName) {
     for (ASTMatchingObject linkObject : matches) {
@@ -734,7 +754,7 @@ public final class HierarchyHelper {
    *
    * @param parent    the parent ODObject
    * @param childName the child ODObject
-   * @return whether the object is a child of the definition
+   * @return whether the object is a descendant of {@code parent}
    */
   private boolean isChild(ASTODObject parent, String childName) {
     // getODObject performs a depth-first search if necessary
@@ -742,7 +762,15 @@ public final class HierarchyHelper {
     return (result != null && !result.deepEquals(parent));
   }
 
-  public static ASTMatchingObject getMatchingObject(List<ASTMatchingObject> allObjects, String name) {
+  /**
+   * Resolves the first matching object with the given name from a list.
+   *
+   * @param allObjects candidate objects
+   * @param name searched object name
+   * @return matching object, or {@code null} if no object has the given name
+   */
+  @Nullable
+  public static ASTMatchingObject getMatchingObject(@Nonnull List<ASTMatchingObject> allObjects, @Nonnull String name) {
     return allObjects.stream().filter(o -> o.getObjectName().equals(name)).findFirst().orElse(null);
   }
 

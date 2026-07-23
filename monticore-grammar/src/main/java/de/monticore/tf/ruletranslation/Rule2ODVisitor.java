@@ -21,13 +21,14 @@ import de.se_rwth.commons.Splitters;
 import de.se_rwth.commons.logging.Log;
 import de.monticore.tf.odrules.ODRulesMill;
 import de.monticore.tf.odrules._ast.*;
-import de.monticore.tf.odrules._parser.ODRulesParser;
 import de.monticore.tf.odrules.util.ODRuleStereotypes;
 import de.monticore.tf.odrules.util.Util;
 import de.monticore.tf.rule2od.Variable2AttributeMap;
 import de.monticore.tf.tfcommons._ast.*;
 import de.monticore.tf.tfcommons._visitor.TFCommonsVisitor2;
 import de.monticore.tf.ast.*;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -39,6 +40,9 @@ import java.util.function.Function;
 import static de.se_rwth.commons.StringTransformations.capitalize;
 import static de.monticore.tf.ruletranslation.Position.*;
 
+/**
+ * Base visitor that translates TF rules into object diagram (OD) based rules.
+ */
 @SuppressWarnings("unused")
 public abstract class Rule2ODVisitor implements TFCommonsVisitor2 {
 
@@ -50,22 +54,34 @@ public abstract class Rule2ODVisitor implements TFCommonsVisitor2 {
    */
   public final static Comment LISTCHILD_COMMENT = new Comment("/* INTERNAL: LISTCHILD_ASSIGNMENT */");
 
-
+  /**
+   * Creates a translation visitor with fresh state.
+   *
+   * @param variable2Attributes mapping from schema variables to attribute metadata
+   * @param parents parent map of parsed AST nodes
+   */
   public Rule2ODVisitor(Variable2AttributeMap variable2Attributes, Map<ASTNode, ASTNode> parents) {
     super();
     this.state = new Rule2ODState(variable2Attributes,parents);
   }
   
+  /**
+   * Creates a translation visitor reusing an existing state.
+   *
+   * @param state existing translation state
+   */
   public Rule2ODVisitor(Rule2ODState state){
     this.state = state;
   }
 
 
   /**
-   * @param name the name of an object that has been created by this visitor
-   * @return the object with this name if existent, null otherwise
+   * Resolves an object in the generated LHS by its name.
+   *
+   * @param name object name
+   * @return the matching object, or {@code null} if no object exists
    */
-  protected ASTODObject getLhsObjectByName(String name) {
+  protected @Nullable ASTODObject getLhsObjectByName(@Nonnull String name) {
     for (ASTODObject o : Util.getAllODObjects(state.getLhs())) {
       if (name.equals(o.getName())) {
         return o;
@@ -75,10 +91,12 @@ public abstract class Rule2ODVisitor implements TFCommonsVisitor2 {
   }
 
   /**
-   * @param name the name of an object that has been created by this visitor
-   * @return the object with this name if existent, null otherwise
+   * Resolves an object in the generated RHS by its name.
+   *
+   * @param name object name
+   * @return the matching object, or {@code null} if no object exists
    */
-  protected ASTODObject getRhsObjectByName(String name) {
+  protected @Nullable ASTODObject getRhsObjectByName(@Nonnull String name) {
     for (ASTODObject o : Util.getAllODObjects(state.getRhs())) {
       if (name.equals(o.getName())) {
         return o;
@@ -88,13 +106,13 @@ public abstract class Rule2ODVisitor implements TFCommonsVisitor2 {
   }
 
   /**
-   * This method will add an ASTODObject to the LHS of the rule.
-   * If the hierarchyStack is empty, it will just add it to the
-   * lhs definition. If the hierarchyStack contains an element,
-   * it will add the object as an inner link of the object in the stack.
-   * @param object the object
+   * Adds an object to the generated LHS.
+   * If no hierarchy parent exists, the object is added as top-level object,
+   * otherwise it is attached as inner link of the current hierarchy parent.
+   *
+   * @param object object to add
    */
-  protected void addObjectToLHS(ASTODObject object) {
+  protected void addObjectToLHS(@Nonnull ASTODObject object) {
     if (state.getHierarchyLHS().isEmpty()) {
       state.getLhs().addODObject(object);
     }
@@ -105,7 +123,14 @@ public abstract class Rule2ODVisitor implements TFCommonsVisitor2 {
     }
   }
 
-  protected void addObjectToRHS(ASTODObject object) {
+  /**
+   * Adds an object to the generated RHS.
+   * If no hierarchy parent exists, the object is added as top-level object,
+   * otherwise it is attached as inner link of the current hierarchy parent.
+   *
+   * @param object object to add
+   */
+  protected void addObjectToRHS(@Nonnull ASTODObject object) {
     if (state.getHierarchyRHS().isEmpty()) {
       state.getRhs().addODObject(object);
     }
@@ -134,7 +159,7 @@ public abstract class Rule2ODVisitor implements TFCommonsVisitor2 {
   @Override
   public void visit(ASTTFFolding node) {
     for (de.monticore.tf.tfcommons._ast.ASTFoldingSet f : node.getFoldingSetList()) {
-      state.getGenRule().addFoldingSet(transfromFoldingSet(f));
+      state.getGenRule().addFoldingSet(transformFoldingSet(f));
     }
   }
 
@@ -159,7 +184,7 @@ public abstract class Rule2ODVisitor implements TFCommonsVisitor2 {
       try {
         ASTAssignment assignment = ODRulesMill.assignmentBuilder().uncheckedBuild();
         assignment.setLhs(key);
-        assignment.setRhs(new ODRulesParser().parse_StringExpression(value).get());
+        assignment.setRhs(ODRulesMill.parser().parse_StringExpression(value).get());
         if (isListChild) {
           assignment.add_PostComment(LISTCHILD_COMMENT);
         }
@@ -176,14 +201,26 @@ public abstract class Rule2ODVisitor implements TFCommonsVisitor2 {
     state.getGenRule().setDoBlock(node.getMCJavaBlock().deepClone());
   }
 
-  protected de.monticore.tf.odrules._ast.ASTFoldingSet transfromFoldingSet(de.monticore.tf.tfcommons._ast.ASTFoldingSet f) {
+  /**
+   * Transforms a TF folding set into the ODRules representation.
+   *
+   * @param f source folding set
+   * @return transformed folding set
+   */
+  protected @Nonnull de.monticore.tf.odrules._ast.ASTFoldingSet transformFoldingSet(@Nonnull de.monticore.tf.tfcommons._ast.ASTFoldingSet f) {
     de.monticore.tf.odrules._ast.ASTFoldingSet s = ODRulesMill.foldingSetBuilder().uncheckedBuild();
     s.setObjectNamesList(new ArrayList<>());
     s.getObjectNamesList().addAll(f.getObjectNamesList());
     return s;
   }
 
-  protected void handleLHS(IPattern node, ASTODObject o_lhs) {
+  /**
+   * Handles one pattern element for the LHS object and applies negative stereotype if required.
+   *
+   * @param node pattern node from the TF rule
+   * @param o_lhs target OD object on the LHS
+   */
+  protected void handleLHS(@Nonnull IPattern node, @Nonnull ASTODObject o_lhs) {
     doHandle(node, o_lhs);
     if (state.isNegative()) {
       ASTStereotype not = ODRulesMill.stereotypeBuilder().uncheckedBuild();
@@ -195,11 +232,23 @@ public abstract class Rule2ODVisitor implements TFCommonsVisitor2 {
     }
   }
 
-  protected void handleRHS(IPattern node, ASTODObject o_rhs) {
+  /**
+   * Handles one pattern element for the RHS object.
+   *
+   * @param node pattern node from the TF rule
+   * @param o_rhs target OD object on the RHS
+   */
+  protected void handleRHS(@Nonnull IPattern node, @Nonnull ASTODObject o_rhs) {
     doHandle(node, o_rhs);
   }
 
-  protected void doHandle(IPattern node, ASTODObject obj) {
+  /**
+   * Initializes object name and type from the given TF pattern node.
+   *
+   * @param node source TF pattern node
+   * @param obj target OD object to initialize
+   */
+  protected void doHandle(@Nonnull IPattern node, @Nonnull ASTODObject obj) {
     obj.setName(state.getNameGen().getNameForElement(node, state.getParents()));
     List<String> qType =
             Splitters.DOT.splitToList(node._getTFElementType().getName());
@@ -208,19 +257,40 @@ public abstract class Rule2ODVisitor implements TFCommonsVisitor2 {
     obj.setType(type);
   }
 
-  protected void handleListLHS(IList node, ITFObject listElement) {
+  /**
+   * Resolves and marks a list element on LHS with list metadata.
+   *
+   * @param node list wrapper node
+   * @param listElement element contained in the list
+   */
+  protected void handleListLHS(@Nonnull IList node, @Nonnull ITFObject listElement) {
     String objectName = state.getNameGen().getNameForElement(listElement, node);
     ASTODObject object = getLhsObjectByName(objectName);
     doHandleList(node, object);
   }
 
-  protected void handleListRHS(IList node, ITFObject listElement) {
+  /**
+   * Resolves and marks a list element on RHS with list metadata.
+   *
+   * @param node list wrapper node
+   * @param listElement element contained in the list
+   */
+  protected void handleListRHS(@Nonnull IList node, @Nonnull ITFObject listElement) {
     String objectName = state.getNameGen().getNameForElement(listElement, node);
     ASTODObject object = getRhsObjectByName(objectName);
     doHandleList(node, object);
   }
 
-  protected void doHandleList(IList node, ASTODObject object) {
+  /**
+   * Applies list-specific naming and stereotypes to an OD object.
+   *
+   * @param node list wrapper node
+   * @param object OD object to mark as list object; may be {@code null}
+   */
+  protected void doHandleList(@Nonnull IList node, @Nullable ASTODObject object) {
+    if (object == null) {
+      return;
+    }
     if (node.isPresentSchemaVarName()) {
       object.setName(node.getSchemaVarName());
     }
@@ -235,9 +305,10 @@ public abstract class Rule2ODVisitor implements TFCommonsVisitor2 {
   /**
    * Creates an ASTODObject for the given list node
    * and puts it on the hierarchy stack.
+   *
    * @param node the list node
    */
-  protected void handleList(IList node) {
+  protected void handleList(@Nonnull IList node) {
     ASTODObject objectLhs = ODRulesMill.oDObjectBuilder().uncheckedBuild();
     ASTODObject objectRhs = ODRulesMill.oDObjectBuilder().uncheckedBuild();
 
@@ -269,9 +340,10 @@ public abstract class Rule2ODVisitor implements TFCommonsVisitor2 {
   /**
    * Creates an ASTODObject for the given optional node
    * and puts it on the hierarchy stack.
+   *
    * @param node the optional node
    */
-  protected void handleOpt(IOptional node) {
+  protected void handleOpt(@Nonnull IOptional node) {
     ASTODObject objectLhs = ODRulesMill.oDObjectBuilder().uncheckedBuild();
     ASTODObject objectRhs = ODRulesMill.oDObjectBuilder().uncheckedBuild();
 
@@ -300,36 +372,59 @@ public abstract class Rule2ODVisitor implements TFCommonsVisitor2 {
     state.getHierarchyRHS().push(objectRhs);
   }
 
+  /**
+   * Checks whether the current traversal position contributes to the left-hand side.
+   *
+   * @return {@code true} if current visitor position affects the LHS
+   */
   protected boolean isOnLHS() {
     return (state.getPosition().equals(LHS) || state.getPosition().equals(BOTH));
   }
 
+  /**
+   * Checks whether the current traversal position contributes to the right-hand side.
+   *
+   * @return {@code true} if current visitor position affects the RHS
+   */
   protected boolean isOnRHS() {
     return (state.getPosition().equals(RHS) || state.getPosition().equals(BOTH));
   }
 
-  protected ASTExpression createQualifiedNameExpression(List<String> parts) {
+  /**
+   * Creates an expression from a qualified name.
+   * If parsing fails, returns an empty name-expression node.
+   *
+   * @param parts qualified-name parts
+   * @return parsed expression or fallback expression node
+   */
+  protected @Nonnull ASTExpression createQualifiedNameExpression(@Nonnull List<String> parts) {
     try {
-      Optional<ASTExpression> exp = new ODRulesParser()
-          .parse_StringExpression(
-              Names.getQualifiedName(parts));
+      Optional<ASTExpression> exp = ODRulesMill.parser()
+          .parse_StringExpression(Names.constructQualifiedName(parts));
       if (exp.isPresent()) {
         return exp.get();
       }
       else {
         Log.error(
-            "0xF0006: " + Names.getQualifiedName(parts) + " cannot be treated as an expression");
+            "0xF0006: " + Names.constructQualifiedName(parts) + " cannot be treated as an expression");
         return ODRulesMill.nameExpressionBuilder().uncheckedBuild();
       }
     }
     catch (IOException e) {
       Log.error(
-          "0xF0004: " + Names.getQualifiedName(parts) + " cannot be treated as an expression");
+          "0xF0004: " + Names.constructQualifiedName(parts) + " cannot be treated as an expression");
       return ODRulesMill.nameExpressionBuilder().uncheckedBuild();
     }
   }
 
-  protected ITFObject getElementAsObject(ITFElement child, Function<IReplacement, ITFElement> repSide) {
+  /**
+   * Resolves wrappers such as replacements/lists/optionals to the effective TF object.
+   *
+   * @param child wrapped element
+   * @param repSide accessor selecting the LHS/RHS side of replacements
+   * @return effective object represented by the element
+   */
+  protected @Nonnull ITFObject getElementAsObject(@Nonnull ITFElement child, @Nonnull Function<IReplacement, ITFElement> repSide) {
     // replacements do represent an element themself, instead they refer to a LHS and RHS
     // in order to create links, we need to get the actual element of the optional
     if (child instanceof IReplacement) {
@@ -344,18 +439,46 @@ public abstract class Rule2ODVisitor implements TFCommonsVisitor2 {
     }
   }
 
-  protected ASTODLink createLHSComposition(ITFObject parent, ITFElement child, String roleName, String genericType, boolean attrIsIterated, boolean attrIsOptional) {
+  /**
+   * Creates a composition link for the LHS side.
+   *
+   * @param parent parent object of the composition
+   * @param child referenced child element
+   * @param roleName association role name
+   * @param genericType generic type metadata
+   * @param attrIsIterated whether the attribute is iterated
+   * @param attrIsOptional whether the attribute is optional
+   * @return generated LHS composition link
+   */
+  protected @Nonnull ASTODLink createLHSComposition(@Nonnull ITFObject parent, @Nonnull ITFElement child, @Nonnull String roleName, @Nonnull String genericType, boolean attrIsIterated, boolean attrIsOptional) {
     ITFObject component = getElementAsObject(child, IReplacement::getLhs);
     return createLink(parent, roleName, genericType, component, attrIsIterated, attrIsOptional);
   }
 
-  protected ASTODLink createRHSComposition(ITFObject parent, ITFElement child, String roleName, String genericType,
+  /**
+   * Creates a composition link for the RHS side.
+   *
+   * @param parent parent object of the composition
+   * @param child referenced child element
+   * @param roleName association role name
+   * @param genericType generic type metadata
+   * @param attrIsIterated whether the attribute is iterated
+   * @param attrIsOptional whether the attribute is optional
+   * @return generated RHS composition link
+   */
+  protected @Nonnull ASTODLink createRHSComposition(@Nonnull ITFObject parent, @Nonnull ITFElement child, @Nonnull String roleName, @Nonnull String genericType,
                                            boolean attrIsIterated, boolean attrIsOptional) {
     ITFObject component = getElementAsObject(child, IReplacement::getRhs);
     return createLink(parent, roleName, genericType, component, attrIsIterated, attrIsOptional);
   }
 
-  protected ITFObject getActualElement(ITFObject component) {
+  /**
+   * Unwraps list/optional wrapper elements and returns the actual object element.
+   *
+   * @param component wrapped or direct object
+   * @return unwrapped object element
+   */
+  protected @Nonnull ITFObject getActualElement(@Nonnull ITFObject component) {
     if (component instanceof IOptional || component instanceof  IList) {
       component = (ITFObject) component.getTFElement();
       return getActualElement(component);
@@ -364,7 +487,19 @@ public abstract class Rule2ODVisitor implements TFCommonsVisitor2 {
     }
   }
 
-  protected ASTODLink createLinkInsertAt(ITFObject parent, String roleName, String genericType, ITFObject component, String insertType, boolean attrIsIterated, boolean attrIsOptional) {
+  /**
+   * Creates a link and adds the {@code insertType} stereotype metadata.
+   *
+   * @param parent parent object of the composition
+   * @param roleName association role name
+   * @param genericType generic type metadata
+   * @param component referenced component object
+   * @param insertType insertion strategy identifier
+   * @param attrIsIterated whether the attribute is iterated
+   * @param attrIsOptional whether the attribute is optional
+   * @return generated link with insert-type metadata
+   */
+  protected @Nonnull ASTODLink createLinkInsertAt(@Nonnull ITFObject parent, @Nonnull String roleName, @Nonnull String genericType, @Nonnull ITFObject component, @Nonnull String insertType, boolean attrIsIterated, boolean attrIsOptional) {
     ASTODLink composition = createLink(parent, roleName, genericType, component, attrIsIterated, attrIsOptional);
     ASTStereotype stereotype = composition.getStereotype();
     ASTStereoValue stereoValueType = ODRulesMill.stereoValueBuilder().uncheckedBuild();
@@ -373,8 +508,21 @@ public abstract class Rule2ODVisitor implements TFCommonsVisitor2 {
     stereotype.addValues(stereoValueType);
     return composition;
   }
-  protected ASTODLink createLinkInsertAt(ITFObject parent, String roleName, String genericType, ITFObject component, String insertType,
-                                         ITFObject insertAt, boolean attrIsIterated, boolean attrIsOptional) {
+  /**
+   * Creates a link with {@code insertType} and concrete {@code insertAt} metadata.
+   *
+   * @param parent parent object of the composition
+   * @param roleName association role name
+   * @param genericType generic type metadata
+   * @param component referenced component object
+   * @param insertType insertion strategy identifier
+   * @param insertAt anchor object for insertion
+   * @param attrIsIterated whether the attribute is iterated
+   * @param attrIsOptional whether the attribute is optional
+   * @return generated link with insert-type and insert-at metadata
+   */
+  protected @Nonnull ASTODLink createLinkInsertAt(@Nonnull ITFObject parent, @Nonnull String roleName, @Nonnull String genericType, @Nonnull ITFObject component, @Nonnull String insertType,
+                                         @Nonnull ITFObject insertAt, boolean attrIsIterated, boolean attrIsOptional) {
     ASTODLink composition = createLinkInsertAt(parent, roleName, genericType, component, insertType, attrIsIterated, attrIsOptional);
     ASTStereoValue stereoValueAt = ODRulesMill.stereoValueBuilder().uncheckedBuild();
     stereoValueAt.setName("insertAt");
@@ -383,8 +531,19 @@ public abstract class Rule2ODVisitor implements TFCommonsVisitor2 {
     return composition;
   }
 
-  protected ASTODLink createLink(ITFObject parent, String roleName, String genericType,
-                                 ITFObject component, boolean attrIsIterated, boolean attrIsOptional){
+  /**
+   * Creates an OD composition link with references, cardinality and optional generic metadata.
+   *
+   * @param parent parent object of the composition
+   * @param roleName association role name
+   * @param genericType generic type metadata
+   * @param component referenced component object
+   * @param attrIsIterated whether the attribute is iterated
+   * @param attrIsOptional whether the attribute is optional
+   * @return generated OD link
+   */
+  protected @Nonnull ASTODLink createLink(@Nonnull ITFObject parent, @Nonnull String roleName, @Nonnull String genericType,
+                                 @Nonnull ITFObject component, boolean attrIsIterated, boolean attrIsOptional){
     ASTODLink composition = ODRulesMill.oDLinkBuilder().uncheckedBuild();
     composition.setRightRole(roleName);
     List<String> lhs_compositeName = Splitters.DOT.splitToList(state.getNameGen().getNameForElement(parent, state.getParents()));
@@ -412,7 +571,15 @@ public abstract class Rule2ODVisitor implements TFCommonsVisitor2 {
     return composition;
   }
 
-  protected ASTODAttribute createAttributeForBoolean(String name, ASTExpression value, boolean isOptional) {
+  /**
+   * Creates a boolean-typed OD attribute and assigns the provided value.
+   *
+   * @param name attribute name
+   * @param value attribute value expression
+   * @param isOptional whether cardinality is optional
+   * @return generated boolean attribute
+   */
+  protected @Nonnull ASTODAttribute createAttributeForBoolean(@Nonnull String name, @Nonnull ASTExpression value, boolean isOptional) {
     ASTODAttribute attribute = ODRulesMill.oDAttributeBuilder().uncheckedBuild();
     attribute.setName(name);
     ASTMCPrimitiveType primitiveType = ODRulesMill.mCPrimitiveTypeBuilder().uncheckedBuild();
@@ -425,19 +592,38 @@ public abstract class Rule2ODVisitor implements TFCommonsVisitor2 {
     return attribute;
   }
 
-  protected ASTExpression createExpressionForBoolean(int astConstant) {
+  /**
+   * Creates a boolean literal expression from the parser constant.
+   *
+   * @param astConstant parser constant representing a boolean value
+   * @return generated boolean literal expression
+   */
+  protected @Nonnull ASTExpression createExpressionForBoolean(int astConstant) {
     ASTBooleanLiteral booleanLiteral = ODRulesMill.booleanLiteralBuilder().uncheckedBuild();
     booleanLiteral.setSource(astConstant);
     return ExpressionsBasisMill.literalExpressionBuilder().setLiteral(booleanLiteral).build();
   }
   
-  protected ASTExpression createExpressionForInt(int astConstant) {
+  /**
+   * Creates an int literal expression from the parser constant.
+   *
+   * @param astConstant parser constant representing an int value
+   * @return generated int literal expression
+   */
+  protected @Nonnull ASTExpression createExpressionForInt(int astConstant) {
     ASTIntLiteral intLiteral = ODRulesMill.intLiteralBuilder().uncheckedBuild();
     intLiteral.setSource(""+astConstant);
     return ExpressionsBasisMill.literalExpressionBuilder().setLiteral(intLiteral).build();
   }
 
-  protected ASTODAttribute createAttributeForString(String name, boolean isOptional) {
+  /**
+   * Creates a string-typed OD attribute.
+   *
+   * @param name attribute name
+   * @param isOptional whether cardinality is optional
+   * @return generated string attribute
+   */
+  protected @Nonnull ASTODAttribute createAttributeForString(@Nonnull String name, boolean isOptional) {
     ASTODAttribute attribute = ODRulesMill.oDAttributeBuilder().uncheckedBuild();
     ASTMCBasicGenericType type = ODRulesMill.mCBasicGenericTypeBuilder().uncheckedBuild();
     type.setNameList(Splitters.DOT.splitToList("String"));
@@ -449,18 +635,28 @@ public abstract class Rule2ODVisitor implements TFCommonsVisitor2 {
     return attribute;
   }
 
-  protected ASTExpression createPrimaryExpressionForString(String variableName) {
+  /**
+   * Creates a string literal expression from the given raw value.
+   *
+   * @param variableName literal source content
+   * @return generated string literal expression
+   */
+  protected @Nonnull ASTExpression createPrimaryExpressionForString(@Nonnull String variableName) {
     ASTStringLiteral stringLiteral =  ODRulesMill.stringLiteralBuilder().uncheckedBuild();
     stringLiteral.setSource(variableName);
     return ExpressionsBasisMill.literalExpressionBuilder().setLiteral(stringLiteral).build();
   }
 
-  protected void createQualifiedNameExpressionAsAttributeValue(ASTODAttribute attribute,
-      String... parts) {
+  /**
+   * Creates a qualified-name expression and assigns it as attribute value.
+   *
+   * @param attribute target attribute
+   * @param parts qualified-name parts
+   */
+  protected void createQualifiedNameExpressionAsAttributeValue(@Nonnull ASTODAttribute attribute,
+      @Nonnull String... parts) {
     List<String> stringList = Lists.newArrayList(parts);
     ASTExpression qualifiedNameExpression = createQualifiedNameExpression(stringList);
     attribute.setSingleValue(qualifiedNameExpression);
   }
-
-
 }

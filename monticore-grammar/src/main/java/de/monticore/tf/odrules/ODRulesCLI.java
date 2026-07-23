@@ -84,7 +84,7 @@ public class ODRulesCLI {
   public Optional<ASTODRule> parseODRule(Path model) {
     Log.debug("Start parsing of the model " + model, LOG_ID);
     try {
-      ODRulesParser parser = new ODRulesParser();
+      ODRulesParser parser = ODRulesMill.parser();
       Optional<ASTODRule> ast = parser.parse(model.toString());
       if (!parser.hasErrors() && ast.isPresent()) {
         Log.debug("Model " + model + " parsed successfully", LOG_ID);
@@ -108,27 +108,16 @@ public class ODRulesCLI {
     Options options = new Options();
     
     // parse input grammars
-    options.addOption(Option.builder("i")
-        .longOpt("input")
-        .argName("file")
-        .hasArg()
-        .desc("Processes the given model and triggers the transformation generation.")
-        .build());
+    options.addOption(Option.builder("i").longOpt("input").argName("file").hasArg()
+        .desc("Processes the given model and triggers the transformation generation.").get());
     
     // specify custom output directory
-    options.addOption(Option.builder("o")
-        .longOpt("out")
-        .argName("path")
-        .hasArg()
-        .desc("Output directory for all generated artifacts.")
-        .build());
+    options.addOption(Option.builder("o").longOpt("out").argName("path").hasArg()
+        .desc("Output directory for all generated artifacts.").get());
     
     
     // help dialog
-    options.addOption(Option.builder("h")
-        .longOpt("help")
-        .desc("Prints this help dialog")
-        .build());
+    options.addOption(Option.builder("h").longOpt("help").desc("Prints this help dialog").get());
     
     return options;
   }

@@ -50,7 +50,7 @@ public class Util {
     Optional<ODObjectSymbol> resultSymbol = getFirstSymbol(symb.getSpannedScope().resolveODObjectDownMany(attrName));
 
     if(resultSymbol.isPresent() && resultSymbol.get().isPresentAstNode()) {
-      return (ASTODObject) resultSymbol.get().getAstNode();
+      return resultSymbol.get().getAstNode();
     }
     else {
       // the object is not a direct child of the ODDefinition.
@@ -102,7 +102,7 @@ public class Util {
    * @return optional of the first symbol or empty optional if collection is null or empty
    */
   private static Optional<ODObjectSymbol> getFirstSymbol(Collection<ODObjectSymbol> symbols) {
-    if (symbols == null || symbols.size() == 0) {
+    if (symbols == null || symbols.isEmpty()) {
       return Optional.empty();
     }
     else {
@@ -183,19 +183,9 @@ public class Util {
 
   public static boolean isBuiltInType(ASTODAttribute attribute) {
     String typename = attribute.printType();
-    if("boolean".equals(typename)
-            || "int".equals(typename)
-            || "float".equals(typename)
-            || "double".equals(typename)
-            || "char".equals(typename)
-            || "long".equals(typename)
-            || "byte".equals(typename)
-            || "short".equals(typename)
-            || "String".equals(typename)){
-      return true;
-
-    }
-    return false;
+    return "boolean".equals(typename) || "int".equals(typename) || "float".equals(typename)
+        || "double".equals(typename) || "char".equals(typename) || "long".equals(typename)
+        || "byte".equals(typename) || "short".equals(typename) || "String".equals(typename);
   }
 
   @Deprecated
@@ -251,17 +241,17 @@ public class Util {
 
     // This may be required depending on whether there is a usage name for this
     // attribute
-    if (!attribute.isPresent()) {
+    if (attribute.isEmpty()) {
       attribute = getProdComponent(prod, StringTransformations.capitalize(attributeName));
     }
-    if (!attribute.isPresent()) {
+    if (attribute.isEmpty()) {
       attribute = getProdComponent(prod, attributeName.concat("s"));
     }
-    if (!attribute.isPresent() && attributeName.endsWith("s")) {
+    if (attribute.isEmpty() && attributeName.endsWith("s")) {
       attributeName = attributeName.substring(0, attributeName.length() - 1);
       attribute = getProdComponent(prod, attributeName);
     }
-    if (!attribute.isPresent() && attributeName.endsWith("e")) {
+    if (attribute.isEmpty() && attributeName.endsWith("e")) {
       attributeName = attributeName.substring(0, attributeName.length() - 1);
       attribute = getProdComponent(prod, attributeName);
     }

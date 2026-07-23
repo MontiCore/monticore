@@ -1,6 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.tf.odrules;
 
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.Multimap;
 import de.monticore.ast.ASTNode;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
 import de.monticore.umlstereotype._ast.ASTStereoValue;
@@ -14,22 +16,15 @@ import de.monticore.tf.odrules._ast.ASTODRule;
 import de.monticore.tf.odrules._parser.ODRulesParser;
 import de.monticore.tf.odrules.util.ODRuleStereotypes;
 import de.monticore.tf.odrules.util.Util;
+import javax.annotation.Nonnull;
 
 import java.io.IOException;
 import java.util.*;
 
 public class DifferenceFinder {
-
-
-  private static class ChangePair<T extends ASTNode> {
-
-    ChangePair(T from, T to) {
-      this.from = from;
-      this.to = to;
-    }
-
-    private T from;
-    private T to;
+  
+  private record ChangePair<T extends ASTNode>(@Nonnull T from, @Nonnull T to) {
+  
   }
 
 
@@ -43,35 +38,37 @@ public class DifferenceFinder {
   private List<ASTODLink> unchangedLinks = new LinkedList<>();
   private ASTODDefinition lhs;
 
-  private LinkedHashMap<ASTODObject, List<ASTODLink>> toCreateObjectsAttr = new LinkedHashMap();
+  private Multimap<ASTODObject, ASTODLink> toCreateObjectsAttr = LinkedListMultimap.create();
 
   private HierarchyHelper hierarchyHelper;
 
-  public DifferenceFinder(HierarchyHelper hierarchyHelper) {
+  public DifferenceFinder(@Nonnull HierarchyHelper hierarchyHelper) {
     this.hierarchyHelper = hierarchyHelper;
   }
 
 
   /**
-   * @param transformationRulesFilename Filename to the mtod File that contains
-   *          both lhs and rhs of the Rules.
-   * @return
+   * Parses a transformation rule file and calculates the resulting change operations.
    *
+   * @param transformationRulesFilename the path to the *.mtod file containing both LHS and RHS
+   * @return the ordered list of change operations; never {@code null}
+   * @throws IOException if the file cannot be read
    */
-  public List<ASTChangeOperation> getDifference(String transformationRulesFilename) throws IOException {
-    ODRulesParser parser = new ODRulesParser();
+  public @Nonnull List<ASTChangeOperation> getDifference(@Nonnull String transformationRulesFilename) throws IOException {
+    ODRulesParser parser = ODRulesMill.parser();
     Optional<ASTODRule> rule = parser.parse(transformationRulesFilename);
     return getDifference(rule.get());
   }
 
 
   /**
-   * @param rule the parsed ODRule
-   * @return returns the Composition of all change operations that have to be
-   *         performed. Throws IllegalArgumentException, if the there are type
-   *         mismatches in lhs rhs.
+   * Calculates the difference between the left-hand side and right-hand side of one rule.
+   *
+   * @param rule the parsed rule
+   * @return the ordered composition of change operations; never {@code null}
+   * @throws IllegalArgumentException if there are type mismatches between LHS and RHS
    */
-  public List<ASTChangeOperation> getDifference(ASTODRule rule) {
+  public @Nonnull List<ASTChangeOperation> getDifference(@Nonnull ASTODRule rule) {
     this.lhs = rule.getLhs();
     //clear all lists for new calculation
     toDeleteObjects = new ArrayList<>();
@@ -112,20 +109,24 @@ public class DifferenceFinder {
       //calculate and return the composition of all changes
       return calculateChanges(rule, lhs, rule.getRhs());
     }
-    return new ArrayList<ASTChangeOperation>();
+    return new ArrayList<>();
   }
 
 
   /**
-   * Calculates the change between the LHS and the RHS
-   * based on the fields toDeleteObjects, toCreateObjects,
-   * toChangeObjects, toDeleteLinks, toCreateLinks
+   * Composes all collected object and link updates into executable change operations.
+   * This method uses the previously computed state in {@code toDeleteObjects},
+   * {@code toCreateObjects}, {@code toChangeObjects}, {@code toDeleteLinks}, and
+   * {@code toCreateLinks}.
    *
-   * @param lhs left hand side of the Rules
-   * @param rhs right hand side of the Rules
-   * @return the changeComposition containing all changes.
+   * @param rule the full transformation rule
+   * @param lhs the left-hand side object diagram
+   * @param rhs the right-hand side object diagram
+   * @return the ordered change operations; never {@code null}
    */
-  private List<ASTChangeOperation> calculateChanges(ASTODRule rule, ASTODDefinition lhs, ASTODDefinition rhs) {
+  private @Nonnull List<ASTChangeOperation> calculateChanges(@Nonnull ASTODRule rule,
+      @Nonnull ASTODDefinition lhs,
+      @Nonnull ASTODDefinition rhs) {
     ChangeOperationFactory operationFactory = new ChangeOperationFactory(rule, lhs, rhs, hierarchyHelper);
 
     List<ASTChangeOperation> changeOpList = new ArrayList<ASTChangeOperation>();
@@ -160,13 +161,14 @@ public class DifferenceFinder {
   }
 
   /**
-   * Calculates the list of deleted objects stored in the field toDeleteObjects
-   * and the list of changed objects stored in the field toChangeObjects
+   * Calculates deleted and changed objects by comparing LHS objects with RHS objects.
+   * Results are stored in {@code toDeleteObjects} and {@code toChangeObjects}.
    *
-   * @param leftObjects List of objects from the LHS
-   * @param rightObjects List of objects from the RHS
+   * @param leftObjects objects from the LHS
+   * @param rightObjects objects from the RHS
    */
-  private void calculateObjectsToChangeOrDelete(List<ASTODObject> leftObjects, List<ASTODObject> rightObjects){
+  private void calculateObjectsToChangeOrDelete(@Nonnull List<ASTODObject> leftObjects,
+      @Nonnull List<ASTODObject> rightObjects) {
     for (ASTODObject left : leftObjects) {
       // says, weather the variable from the left side is found on the
       // right side.
@@ -197,12 +199,14 @@ public class DifferenceFinder {
   }
 
   /**
-   * Calculates the list of created objects stored in the field toCreateObjects
+   * Calculates objects that are present on the RHS but missing on the LHS.
+   * Results are stored in {@code toCreateObjects}.
    *
-   * @param leftObjects List of objects from the LHS
-   * @param rightObjects List of objects from the RHS
+   * @param leftObjects objects from the LHS
+   * @param rightObjects objects from the RHS
    */
-  private void calculateObjectsToCreate(List<ASTODObject> leftObjects, List<ASTODObject> rightObjects){
+  private void calculateObjectsToCreate(@Nonnull List<ASTODObject> leftObjects,
+      @Nonnull List<ASTODObject> rightObjects) {
     for (ASTODObject right : rightObjects) {
       // says, weather the variable from the right side is found on the
       // left side.
@@ -222,13 +226,14 @@ public class DifferenceFinder {
   }
 
   /**
-   * Calculates the list of deleted links stored in the field toDeleteLinks
-   * and the list of changed links stored in the field toChangeLinks
+   * Calculates links that are present on the LHS but missing on the RHS.
+   * Results are stored in {@code toDeleteLinks} and {@code unchangedLinks}.
    *
-   * @param lhsLinks List of links from the LHS
-   * @param rhsLinks List of links from the RHS
+   * @param lhsLinks links from the LHS
+   * @param rhsLinks links from the RHS
    */
-  private void calculateLinksToDelete(List<ASTODLink> lhsLinks, List<ASTODLink> rhsLinks) {
+  private void calculateLinksToDelete(@Nonnull List<ASTODLink> lhsLinks,
+      @Nonnull List<ASTODLink> rhsLinks) {
     for (ASTODLink left : lhsLinks) {
       // says, whether the variable from the left side is found on the
       // right side.
@@ -266,34 +271,36 @@ public class DifferenceFinder {
     }
   }
 
-  private boolean referencesAreEqual(List<ASTMCQualifiedName> rightReferenceNames,
-      List<ASTMCQualifiedName> rightReferenceNames1) {
-    return rightReferenceNames.get(0).deepEquals(rightReferenceNames1.get(0));
+  private boolean referencesAreEqual(@Nonnull List<ASTMCQualifiedName> rightReferenceNames,
+      @Nonnull List<ASTMCQualifiedName> rightReferenceNames1) {
+    return rightReferenceNames.getFirst().deepEquals(rightReferenceNames1.getFirst());
   }
 
-  private boolean isMatchForSetValuedLink(ASTODLink left, ASTODLink right){
+  private boolean isMatchForSetValuedLink(@Nonnull ASTODLink left, @Nonnull ASTODLink right) {
     return (referencesAreEqual(left.getLeftReferenceNameList(),right.getLeftReferenceNameList())
         && referencesAreEqual(left.getRightReferenceNameList(),right.getRightReferenceNameList()))
         && areRolesEqual(left, right);
   }
 
-  private boolean areRolesEqual(ASTODLink left, ASTODLink right){
+  private boolean areRolesEqual(@Nonnull ASTODLink left, @Nonnull ASTODLink right) {
     return ((left.getRightRole() == null && right.getRightRole() == null)
         || (left.getRightRole() != null && left.getRightRole().equals(right.getRightRole())));
   }
 
-  private boolean isMatchForLink(ASTODLink left, ASTODLink right){
+  private boolean isMatchForLink(@Nonnull ASTODLink left, @Nonnull ASTODLink right) {
     return referencesAreEqual(left.getLeftReferenceNameList(),right.getLeftReferenceNameList())
         && areRolesEqual(left, right);
   }
 
   /**
-   * Calculates the list of created links stored in the field toCreateLinks
+   * Calculates links that are present on the RHS but missing on the LHS.
+   * Results are stored in {@code toCreateLinks}.
    *
-   * @param lhsLinks List of links from the LHS
-   * @param rhsLinks List of links from the RHS
+   * @param lhsLinks links from the LHS
+   * @param rhsLinks links from the RHS
    */
-  private void calculateLinksToCreate(List<ASTODLink> lhsLinks, List<ASTODLink> rhsLinks){
+  private void calculateLinksToCreate(@Nonnull List<ASTODLink> lhsLinks,
+      @Nonnull List<ASTODLink> rhsLinks) {
     for (ASTODLink right : rhsLinks) {
       // says, weather the variable from the right side is found on the
       // left side.

@@ -41,9 +41,8 @@ public class AddSuffixToOptionalsVisitor implements
     public void visit(ASTArguments node) {
         List<ASTExpression> newExpressions = new ArrayList<>();
         for(ASTExpression expr : node.getExpressionList()) {
-            if(expr instanceof ASTNameExpression) {
-                ASTNameExpression nameExpr = (ASTNameExpression) expr;
-                newExpressions.add(replaceNode(nameExpr));
+            if(expr instanceof ASTNameExpression nameExpr) {
+              newExpressions.add(replaceNode(nameExpr));
             } else {
                 newExpressions.add(expr);
             }
@@ -53,69 +52,69 @@ public class AddSuffixToOptionalsVisitor implements
 
     @Override
     public void visit(ASTFieldAccessExpression node) {
-        if (node.getExpression() instanceof ASTNameExpression) {
-            node.setExpression(replaceNode((ASTNameExpression) node.getExpression()));
+        if (node.getExpression() instanceof ASTNameExpression nameExpr) {
+            node.setExpression(replaceNode(nameExpr));
         }
     }
 
     @Override
     public void visit(ASTBooleanNotExpression node) {
-        if (node.getExpression() instanceof ASTNameExpression) {
-            node.setExpression(replaceNode((ASTNameExpression) node.getExpression()));
+        if (node.getExpression() instanceof ASTNameExpression nameExpr) {
+            node.setExpression(replaceNode(nameExpr));
         }
     }
 
     @Override
     public void visit(ASTLogicalNotExpression node) {
-        if (node.getExpression() instanceof ASTNameExpression) {
-            node.setExpression(replaceNode((ASTNameExpression) node.getExpression()));
+        if (node.getExpression() instanceof ASTNameExpression nameExpr) {
+            node.setExpression(replaceNode(nameExpr));
         }
     }
 
     @Override
     public void visit(ASTEqualsExpression node) {
-        if (node.getLeft() instanceof ASTNameExpression) {
-            node.setLeft(replaceNode((ASTNameExpression) node.getLeft()));
+        if (node.getLeft() instanceof ASTNameExpression nameExpr) {
+            node.setLeft(replaceNode(nameExpr));
         }
-        if (node.getRight() instanceof ASTNameExpression) {
-            node.setRight(replaceNode((ASTNameExpression) node.getRight()));
+        if (node.getRight() instanceof ASTNameExpression nameExpr) {
+            node.setRight(replaceNode(nameExpr));
         }
     }
 
     @Override
     public void visit(ASTBooleanAndOpExpression node) {
-        if (node.getLeft() instanceof ASTNameExpression) {
-            node.setLeft(replaceNode((ASTNameExpression) node.getLeft()));
+        if (node.getLeft() instanceof ASTNameExpression nameExpr) {
+            node.setLeft(replaceNode(nameExpr));
         }
-        if (node.getRight() instanceof ASTNameExpression) {
-            node.setRight(replaceNode((ASTNameExpression) node.getRight()));
+        if (node.getRight() instanceof ASTNameExpression nameExpr) {
+            node.setRight(replaceNode(nameExpr));
         }
     }
 
     @Override
     public void visit(ASTBooleanOrOpExpression node) {
-        if (node.getLeft() instanceof ASTNameExpression) {
-            node.setLeft(replaceNode((ASTNameExpression) node.getLeft()));
+        if (node.getLeft() instanceof ASTNameExpression nameExpr) {
+            node.setLeft(replaceNode(nameExpr));
         }
-        if (node.getRight() instanceof ASTNameExpression) {
-            node.setRight(replaceNode((ASTNameExpression) node.getRight()));
+        if (node.getRight() instanceof ASTNameExpression nameExpr) {
+            node.setRight(replaceNode(nameExpr));
         }
     }
 
     @Override
     public void visit(ASTPlusExpression node) {
-        if (node.getLeft() instanceof ASTNameExpression) {
-            node.setLeft(replaceNode((ASTNameExpression) node.getLeft()));
+        if (node.getLeft() instanceof ASTNameExpression nameExpr) {
+            node.setLeft(replaceNode(nameExpr));
         }
-        if (node.getRight() instanceof ASTNameExpression) {
-            node.setRight(replaceNode((ASTNameExpression) node.getRight()));
+        if (node.getRight() instanceof ASTNameExpression nameExpr) {
+            node.setRight(replaceNode(nameExpr));
         }
     }
 
     @Override
     public void visit(ASTBracketExpression node) {
-        if (node.getExpression() instanceof ASTNameExpression) {
-            node.setExpression(replaceNode((ASTNameExpression) node.getExpression()));
+        if (node.getExpression() instanceof ASTNameExpression nameExpr) {
+            node.setExpression(replaceNode(nameExpr));
         }
     }
 
