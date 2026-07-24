@@ -5,6 +5,7 @@ import de.monticore.ast.ASTNode;
 import de.monticore.visitor.ITraverser;
 import org.jspecify.annotations.NonNull;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 /**
@@ -137,10 +138,10 @@ public class ModelAccessor<E extends ITraverser> implements IModelAccessor<E> {
    * Forwards a node attach notification to the managed indices and listeners.
    *
    * @param node the attached node
-   * @param parent the parent the node was attached to
+   * @param parent the parent the node was attached to, or {@code null} if the node is a root node
    */
   @Override
-  public void notifyNodeAttach(@NonNull ASTNode node, ASTNode parent) {
+  public void notifyNodeAttach(@NonNull ASTNode node, @Nullable ASTNode parent) {
     this.parentIndex.onASTNodeAttach(node, parent);
     this.candidateIndex.onASTNodeAttach(node, parent);
     this.customIndices.values().forEach(index -> index.onASTNodeAttach(node, parent));

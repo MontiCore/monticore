@@ -18,7 +18,7 @@ public class ParentIndex implements IModelIndex {
    * Attaches parent information to a newly attached node.
    *
    * @param node the attached node
-   * @param parent the parent the node was attached to
+   * @param parent the parent the node was attached to, or {@code null} if the node is a root node
    */
   @Override
   public void onASTNodeAttach(@NonNull ASTNode node, @Nullable ASTNode parent) {

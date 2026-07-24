@@ -35,7 +35,7 @@ public interface IModelAccessor<E extends ITraverser> {
    * Notifies that a node has been attached to a parent node.
    *
    * @param node the attached node
-   * @param parent the parent the node was attached to
+   * @param parent the parent the node was attached to, or {@code null} if the node is a root node
    */
   void notifyNodeAttach(@Nonnull ASTNode node, @Nullable ASTNode parent);
   
