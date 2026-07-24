@@ -13,7 +13,7 @@ if (cmd.hasOption("stacktrace")) {
   } else {
     // --stacktrace=WARN          <- also prints the stacktrace of warnings to stdout
     // --stacktrace=ERROR:stderr  <- prints the stacktrace of errors to stderr
-    List< String> stacktraceLevels = Arrays.stream(stackTrace)
+    List<String> stacktraceLevels = Arrays.stream(stackTrace)
         .flatMap(v-> Arrays.stream(v.split(",")))
         .map(String::trim)
         .filter(s -> !s.isEmpty())

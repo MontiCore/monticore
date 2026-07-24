@@ -10,7 +10,7 @@ try{
     //help: when --help
     if(cmd.hasOption("h")){
         printHelp(options);
-        //do not continue, when help is printed.
+        // then help is printed, do not continue.
         return;
     }
     //version: when --version
