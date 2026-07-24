@@ -287,8 +287,8 @@ public class GenerateConditionsVisitor implements
 
     if (!node.isLink()) {
       // if it is a composition the left side is the parent of the right
-      objectCondition.setConditionString(format("this.modelAccessor.indices().getParentIndex().getParent(%s_cand) != cand", rightObjectName));
-      secondObjectCondition.setConditionString(format("this.modelAccessor.indices().getParentIndex().getParent(cand) != %s_cand", leftObjectName));
+      objectCondition.setConditionString(format("this.modelAccessor.getParentIndex().getParent(%s_cand) != cand", rightObjectName));
+      secondObjectCondition.setConditionString(format("this.modelAccessor.getParentIndex().getParent(cand) != %s_cand", leftObjectName));
       if (!rightObjectName.isEmpty()) {
         ASTDependency dependency = ODRuleGenerationMill.dependencyBuilder().uncheckedBuild();
         dependency.setContent(rightObjectName);

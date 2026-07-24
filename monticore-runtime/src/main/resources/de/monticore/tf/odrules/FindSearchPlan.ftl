@@ -37,8 +37,8 @@
     <#list ast.getPattern().getTypesList() as type>
       <#if type != "de.monticore.tf.ast.IOptional" && type != "de.monticore.tf.ast.IList">
     // count occurrences of object types for the costs
-    if (this.modelAccessor.indices().getCandidateIndex().hasCandidateNodes(${type}.class)){
-      for (ASTNode cand : this.modelAccessor.indices().getCandidateIndex().getCandidateNodes(${type}.class)){
+    if (this.modelAccessor.getCandidateIndex().hasCandidateNodes(${type}.class)){
+      for (ASTNode cand : this.modelAccessor.getCandidateIndex().getCandidateNodes(${type}.class)){
         <#list ast.getPattern().getLHSObjectsList() as object>
           <#if object.type = type>
             <#if object.isNotObject()>
@@ -55,7 +55,7 @@
         </#list>
       }
     } else {
-      for (ASTNode cand : this.modelAccessor.indices().getCandidateIndex().getSubTypeCandidateNodes(${type}.class)) {
+      for (ASTNode cand : this.modelAccessor.getCandidateIndex().getSubTypeCandidateNodes(${type}.class)) {
         if (cand instanceof ${type}) {
         <#list ast.getPattern().getLHSObjectsList() as object>
           <#if object.type = type>

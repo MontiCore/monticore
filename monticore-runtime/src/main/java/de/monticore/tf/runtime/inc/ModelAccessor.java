@@ -15,7 +15,11 @@ import java.util.*;
  */
 public class ModelAccessor<E extends ITraverser> implements IModelAccessor<E> {
   
-  private final IndexHandler indexHandler;
+  private final ParentIndex parentIndex;
+  
+  private final CandidateIndex candidateIndex;
+  
+  private final Map<String, IModelIndex> customIndices;
   
   private final Set<IIncrementalListener> listeners;
   
@@ -73,13 +77,15 @@ public class ModelAccessor<E extends ITraverser> implements IModelAccessor<E> {
    * @param listeners listeners that should receive incremental model events
    */
   protected ModelAccessor(E traverser, List<ASTNode> roots, Map<String, IModelIndex> customIndices, Set<IIncrementalListener> listeners) {
-    this.indexHandler = new IndexHandler(customIndices);
+    this.parentIndex = new ParentIndex();
+    this.candidateIndex = new CandidateIndex();
+    this.customIndices = new HashMap<>(customIndices);
     this.listeners = listeners;
     
     ModelInitializationMessenger<E> initializationMessenger = new ModelInitializationMessenger<>(this, traverser);
     roots.forEach(initializationMessenger::initialize);
     
-    this.indexHandler.finalizeInitialization();
+    finalizeInitialization();
   }
   
   /**
@@ -102,58 +108,62 @@ public class ModelAccessor<E extends ITraverser> implements IModelAccessor<E> {
   }
   
   /**
-   * Forwards the start of a transformation to the underlying index handler and listeners.
+   * Forwards a transformation start notification to the managed indices and listeners.
    *
    * @param transformationName the name of the transformation
    */
   @Override
   public void notifyTransformationStart(@NonNull String transformationName) {
-    this.indexHandler.onTransformationStart(transformationName);
-    
+    this.parentIndex.onTransformationStart(transformationName);
+    this.candidateIndex.onTransformationStart(transformationName);
+    this.customIndices.values().forEach(index -> index.onTransformationStart(transformationName));
     this.listeners.forEach(listener -> listener.onTransformationStart(transformationName));
   }
   
   /**
-   * Forwards the end of a transformation to the underlying index handler and listeners.
+   * Forwards a transformation end notification to the managed indices and listeners.
    *
    * @param transformationName the name of the transformation
    */
   @Override
   public void notifyTransformationEnd(@NonNull String transformationName) {
-    this.indexHandler.onTransformationEnd(transformationName);
-    
+    this.parentIndex.onTransformationEnd(transformationName);
+    this.candidateIndex.onTransformationEnd(transformationName);
+    this.customIndices.values().forEach(index -> index.onTransformationEnd(transformationName));
     this.listeners.forEach(listener -> listener.onTransformationEnd(transformationName));
   }
   
   /**
-   * Forwards a node attach notification to the underlying index handler and listeners.
+   * Forwards a node attach notification to the managed indices and listeners.
    *
    * @param node the attached node
    * @param parent the parent the node was attached to
    */
   @Override
   public void notifyNodeAttach(@NonNull ASTNode node, ASTNode parent) {
-    this.indexHandler.onASTNodeAttach(node, parent);
-    
+    this.parentIndex.onASTNodeAttach(node, parent);
+    this.candidateIndex.onASTNodeAttach(node, parent);
+    this.customIndices.values().forEach(index -> index.onASTNodeAttach(node, parent));
     this.listeners.forEach(listener -> listener.onASTNodeAttach(node, parent));
   }
   
   /**
-   * Forwards a node detach notification to the underlying index handler and listeners.
+   * Forwards a node detach notification to the managed indices and listeners.
    *
    * @param node the detached node
    * @param parent the parent the node was detached from
    */
   @Override
   public void notifyNodeDetach(@NonNull ASTNode node, @NonNull ASTNode parent) {
-    this.indexHandler.onASTNodeDetach(node, parent);
-    
+    this.parentIndex.onASTNodeDetach(node, parent);
+    this.candidateIndex.onASTNodeDetach(node, parent);
+    this.customIndices.values().forEach(index -> index.onASTNodeDetach(node, parent));
     this.listeners.forEach(listener -> listener.onASTNodeDetach(node, parent));
   }
   
   /**
-   * Forwards an attribute modification notification to the underlying index
-   * handler and listeners.
+   * Forwards an attribute modification notification to the managed indices
+   * and listeners.
    *
    * @param node the modified node
    * @param parent the parent containing the node
@@ -163,19 +173,10 @@ public class ModelAccessor<E extends ITraverser> implements IModelAccessor<E> {
    */
   @Override
   public void notifyModification(@NonNull ASTNode node, ASTNode parent, String attributeName, Object oldValue, Object newValue) {
-    this.indexHandler.onASTNodeModification(node, parent, attributeName, oldValue, newValue);
-    
+    this.parentIndex.onASTNodeModification(node, parent, attributeName, oldValue, newValue);
+    this.candidateIndex.onASTNodeModification(node, parent, attributeName, oldValue, newValue);
+    this.customIndices.values().forEach(index -> index.onASTNodeModification(node, parent, attributeName, oldValue, newValue));
     this.listeners.forEach(listener -> listener.onASTNodeModification(node, parent, attributeName, oldValue, newValue));
-  }
-  
-  /**
-   * Returns the index handler managed by this accessor.
-   *
-   * @return the index handler
-   */
-  @Override
-  public IndexHandler indices() {
-    return this.indexHandler;
   }
   
   /**
@@ -186,5 +187,57 @@ public class ModelAccessor<E extends ITraverser> implements IModelAccessor<E> {
   @Override
   public Collection<IIncrementalListener> listeners() {
     return this.listeners;
+  }
+  
+  /**
+   * Returns the built-in candidate index.
+   *
+   * @return the candidate index
+   */
+  public CandidateIndex getCandidateIndex() {
+    return candidateIndex;
+  }
+  
+  /**
+   * Returns the built-in parent index.
+   *
+   * @return the parent index
+   */
+  public ParentIndex getParentIndex() {
+    return parentIndex;
+  }
+  
+  /**
+   * Checks whether a custom index with the given name exists.
+   *
+   * @param name the index name
+   * @return {@code true} if a custom index with the given name is registered
+   */
+  public boolean hasCustomIndex(String name) {
+    return this.customIndices.containsKey(name);
+  }
+  
+  /**
+   * Returns the custom index registered under the given name.
+   *
+   * @param name the index name
+   * @return an {@link Optional} containing the registered custom index, or an
+   *     empty {@link Optional} if none exists
+   */
+  public Optional<IModelIndex> getCustomIndex(String name) {
+    return Optional.ofNullable(this.customIndices.get(name));
+  }
+  
+  /**
+   * Finalizes initialization for all managed indices after initial events have
+   * been processed.
+   *
+   * <p>Call this after the initial model traversal/event replay has finished
+   * (for example after using {@link ModelInitializationMessenger}).</p>
+   */
+  public void finalizeInitialization() {
+    this.candidateIndex.finalizeInitialization();
+    this.parentIndex.finalizeInitialization();
+    this.customIndices.values().forEach(IModelIndex::finalizeInitialization);
   }
 }
