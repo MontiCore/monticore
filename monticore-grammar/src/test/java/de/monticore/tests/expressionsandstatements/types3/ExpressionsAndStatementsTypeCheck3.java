@@ -4,10 +4,8 @@ package de.monticore.tests.expressionsandstatements.types3;
 import de.monticore.expressions.assignmentexpressions.types3.AssignmentExpressionsCTTIVisitor;
 import de.monticore.expressions.bitexpressions.types3.BitExpressionsTypeVisitor;
 import de.monticore.expressions.commonexpressions.types3.CommonExpressionsCTTIVisitor;
-import de.monticore.expressions.commonexpressions.types3.CommonExpressionsTypeIdAsConstructorCTTIVisitor;
 import de.monticore.expressions.commonexpressions.types3.util.CommonExpressionsLValueRelations;
 import de.monticore.expressions.expressionsbasis.types3.ExpressionBasisCTTIVisitor;
-import de.monticore.expressions.expressionsbasis.types3.ExpressionBasisTypeIdAsConstructorCTTIVisitor;
 import de.monticore.expressions.lambdaexpressions.types3.LambdaExpressionsTypeVisitor;
 import de.monticore.expressions.tupleexpressions.types3.TupleExpressionsCTTIVisitor;
 import de.monticore.expressions.uglyexpressions.types3.UglyExpressionsCTTIVisitor;
@@ -85,14 +83,14 @@ public class ExpressionsAndStatementsTypeCheck3 extends MapBasedTypeCheck3 {
     traverser.add4BitExpressions(visBitExpressions);
 
     CommonExpressionsCTTIVisitor visCommonExpressions =
-        new CommonExpressionsTypeIdAsConstructorCTTIVisitor();
+        new CommonExpressionsCTTIVisitor();
     visCommonExpressions.setType4Ast(type4Ast);
     visCommonExpressions.setContext4Ast(ctx4Ast);
     traverser.add4CommonExpressions(visCommonExpressions);
     traverser.setCommonExpressionsHandler(visCommonExpressions);
 
     ExpressionBasisCTTIVisitor visExpressionBasis =
-        new ExpressionBasisTypeIdAsConstructorCTTIVisitor();
+        new ExpressionBasisCTTIVisitor();
     visExpressionBasis.setType4Ast(type4Ast);
     visExpressionBasis.setContext4Ast(ctx4Ast);
     traverser.add4ExpressionsBasis(visExpressionBasis);
