@@ -19,6 +19,7 @@ ${tc.include("de.monticore.tf.odrules.doreplacement.ChangeAttributeValues")}
 
 <#if ast.getDoStatement()?has_content>
     // execute do statements
+    // TODO: How should we handle change notifications for DoStatements
 ${ast.getDoStatement()}
 </#if>
 

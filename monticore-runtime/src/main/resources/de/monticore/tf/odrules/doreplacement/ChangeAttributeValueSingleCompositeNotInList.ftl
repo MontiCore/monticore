@@ -12,12 +12,14 @@ Reporting.reportTransformationObjectChange("${ruleClassName}",${ast.getObjectGet
     // no value is given -> deletion
     <#if ast.isOldValueWithinOpt()>if(m.${ast.getOldValue()}.isPresent()) {</#if>
 
-    <#--if (${ast.getOldValueGetter()} != null) {
-      Reporting.reportTransformationOldValue("${ruleClassName}",${ast.getOldValueGetter()});
-    }-->
+
+<#--if (${ast.getOldValueGetter()} != null) {
+  Reporting.reportTransformationOldValue("${ruleClassName}",${ast.getOldValueGetter()});
+}-->
     m.${ast.getObjectName()}_${ast.getOldValue()}_before_pos = ${ast.getObjectGetter()}.${ast.getGetter()}().indexOf(${ast.getOldValueGetter()});
     ${ast.getObjectGetter()}.${ast.getUnsetter()}(${ast.getOldValueGetter()});
 
+    this.modelAccessor.notifyListModification(${ast.getObjectGetter()}, "${ast.getAttributeName()}", m.${ast.getObjectName()}_${ast.getOldValue()}_before_pos, ModificationOp.UNSET, ${ast.getOldValueGetter()}, null);
     this.modelAccessor.notifyNodeDetach(${ast.getOldValueGetter()}, ${ast.getObjectGetter()});
 
     <#if ast.isOldValueWithinOpt()>}</#if>
@@ -33,6 +35,7 @@ Reporting.reportTransformationObjectChange("${ruleClassName}",${ast.getObjectGet
         ${ast.getValueGetter()}
     );
 
+    this.modelAccessor.notifyListModification(${ast.getObjectGetter()}, "${ast.getAttributeName()}", <#if ast.isPresentInsertPosition()>pos<#else>${ast.getObjectGetter()}.${ast.getGetter()}().size()</#if>, ModificationOp.SET, null, ${ast.getValueGetter()});
     this.modelAccessor.notifyNodeAttach(${ast.getValueGetter()}, ${ast.getObjectGetter()});
 
     <#if ast.isValueWithinOpt()>}</#if>
@@ -55,6 +58,7 @@ Reporting.reportTransformationObjectChange("${ruleClassName}",${ast.getObjectGet
         d
     );
 
+    this.modelAccessor.notifyListModification(${ast.getObjectGetter()}, "${ast.getAttributeName()}", <#if ast.isPresentInsertPosition()>pos<#else>${ast.getObjectGetter()}.${ast.getGetter()}().size()</#if>, ModificationOp.SET, null, d);
     this.modelAccessor.notifyNodeAttach(d, ${ast.getObjectGetter()});
 
     <#if ast.isValueWithinOpt()>}</#if>
@@ -67,14 +71,15 @@ Reporting.reportTransformationObjectChange("${ruleClassName}",${ast.getObjectGet
     // deletion of a list or single object
     // setting null here results in an Optional.empty()
     <#if ast.isAttributeOptional()>
-        m.${ast.getObjectName()}_${ast.getOldValue()}_before = ${ast.getObjectGetter()}.${ast.getGetter()}();
-        ${ast.getObjectGetter()}.${ast.getSetter()}(null);
-
         <#if ast.isAttributeOptional() && ast.isPresentGetIsPresent()>
         if (${ast.getObjectGetter()}.${ast.getGetIsPresent()}) {
             this.modelAccessor.notifyNodeDetach(${ast.getObjectGetter()}.${ast.getGetter()}(), ${ast.getObjectGetter()});
         }
         </#if>
+        this.modelAccessor.notifyModification(${ast.getObjectGetter()}, "${ast.getAttributeName()}", ModificationOp.UNSET, ${ast.getObjectGetter()}.${ast.getGetter()}(), null);
+
+        m.${ast.getObjectName()}_${ast.getOldValue()}_before = ${ast.getObjectGetter()}.${ast.getGetter()}();
+        ${ast.getObjectGetter()}.${ast.getSetter()}(null);
     </#if>
     <#if ast.isOldValueWithinOpt()>}</#if>
 
@@ -93,14 +98,16 @@ Reporting.reportTransformationObjectChange("${ruleClassName}",${ast.getObjectGet
     }-->
 
     <#if ast.isAttributeOptional()>}</#if>
-
+    // TODO: Detach Notification for the old value (in case not primitive...)
     <#if ast.copy>
     ${ast.getValueType()} clonedValue = ${ast.getValueGetter()}.deepClone();
     ${ast.getObjectGetter()}.${ast.getSetter()}();
 
+    this.modelAccessor.notifyModification(${ast.getObjectGetter()}, "${ast.getAttributeName()}", ModificationOp.REPLACE, m.${ast.getObjectName()}_${ast.getValue()}_before, clonedValue);
     this.modelAccessor.notifyNodeAttach(clonedValue, ${ast.getObjectGetter()});
     <#else>
     ${ast.getObjectGetter()}.${ast.getSetter()}(${ast.getValueGetter()});
+    this.modelAccessor.notifyModification(${ast.getObjectGetter()}, "${ast.getAttributeName()}", ModificationOp.REPLACE, m.${ast.getObjectName()}_${ast.getValue()}_before, ${ast.getValueGetter()});
     this.modelAccessor.notifyNodeAttach(${ast.getValueGetter()}, ${ast.getObjectGetter()});
     </#if>
 

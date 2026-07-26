@@ -31,6 +31,8 @@ ${signature("ruleClassName")}
     <#if ast.isAttributeOptional()>
         }
     </#if>-->
+
     m.${ast.getObjectName()}_${ast.getAttributeName()}_before = ${ast.getObjectGetter()}.${ast.getGetter()}();
     ${ast.getObjectGetter()}.${ast.getSetter()}(${ast.getValue()});
+    this.modelAccessor.notifyModification(${ast.getObjectGetter()}, "${ast.getAttributeName()}", ModificationOp.REPLACE, m.${ast.getObjectName()}_${ast.getAttributeName()}_before, ${ast.getValue()});
 </#if>

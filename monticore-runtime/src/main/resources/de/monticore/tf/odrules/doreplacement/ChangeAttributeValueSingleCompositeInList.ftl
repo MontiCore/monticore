@@ -7,9 +7,12 @@ ${signature("ruleClassName")}
     // no value is given -> deletion
     <#if ast.isOldValueWithinOpt()>if(${ast.getOldValueGetter()?replace(".get()",".isPresent()")})</#if>
     for (${ast.getType()} d : ${ast.getOldValueGetter()}) {
-      m.${ast.getObjectName()}_${ast.getOldValue()}_before.put(d, ${ast.getObjectGetter()}.${ast.getGetter()}().indexOf(d));
+      int valIdx = ${ast.getObjectGetter()}.${ast.getGetter()}().indexOf(d);
+      m.${ast.getObjectName()}_${ast.getOldValue()}_before.put(d, valIdx);
+
       ${ast.getObjectGetter()}.${ast.getGetter()}().remove(d);
 
+      this.modelAccessor.notifyListModification(${ast.getObjectGetter()}, "${ast.getAttributeName()}", valIdx, ModificationOp.UNSET, d, null);
       this.modelAccessor.notifyNodeDetach(d, ${ast.getObjectGetter()});
     }
 <#elseif ast.attributeIterated && !ast.copy>
@@ -18,8 +21,11 @@ ${signature("ruleClassName")}
     <#if ast.isValueWithinOpt()>if(${ast.getValueGetter()?replace(".get()",".isPresent()")})</#if>
     for (${ast.getType()} d : ${ast.getValueGetter()}) {
       ${ast.getObjectGetter()}.${ast.getSetter()}(d);
-      m.${ast.getObjectName()}_${ast.getValue()}_before.put(d, ${ast.getObjectGetter()}.${ast.getGetter()}().indexOf(d));
 
+      int valIdx = ${ast.getObjectGetter()}.${ast.getGetter()}().indexOf(d);
+      m.${ast.getObjectName()}_${ast.getValue()}_before.put(d, valIdx);
+
+      this.modelAccessor.notifyListModification(${ast.getObjectGetter()}, "${ast.getAttributeName()}", valIdx, ModificationOp.SET, null, d);
       this.modelAccessor.notifyNodeAttach(d, ${ast.getObjectGetter()});
   }
 <#elseif ast.attributeIterated && ast.copy>
@@ -29,8 +35,11 @@ ${signature("ruleClassName")}
     for (${ast.getType()} d : ${ast.getValueGetter()}) {
       ${ast.getType()} d_copy = d.deepClone();
       ${ast.getObjectGetter()}.${ast.getSetter()}(d_copy);
-      m.${ast.getObjectName()}_${ast.getValue()}_before.put(d_copy, ${ast.getObjectGetter()}.${ast.getGetter()}().indexOf(d_copy));
 
+      int valIdx = ${ast.getObjectGetter()}.${ast.getGetter()}().indexOf(d_copy);
+      m.${ast.getObjectName()}_${ast.getValue()}_before.put(d_copy, valIdx);
+
+      this.modelAccessor.notifyListModification(${ast.getObjectGetter()}, "${ast.getAttributeName()}", valIdx, ModificationOp.SET, null, d_copy);
       this.modelAccessor.notifyNodeAttach(d_copy, ${ast.getObjectGetter()});
     }
 <#elseif !ast.attributeIterated && !ast.isPresentValue()>
@@ -41,6 +50,7 @@ ${signature("ruleClassName")}
       m.${ast.getObjectName()}_${ast.getOldValue()}_before = d;
       ${ast.getObjectGetter()}.${ast.getSetter()}Absent();
 
+      this.modelAccessor.notifyModification(${ast.getObjectGetter()}, "${ast.getAttributeName()}", ModificationOp.UNSET, d, null);
       this.modelAccessor.notifyNodeDetach(d, ${ast.getObjectGetter()});
     }
 <#elseif !ast.attributeIterated && !ast.copy>
@@ -52,6 +62,7 @@ ${signature("ruleClassName")}
       m.${ast.getObjectName()}_${ast.getValue()}_before = ${ast.getObjectGetter()}.${ast.getGetter()}();
       ${ast.getObjectGetter()}.${ast.getSetter()}(d);
 
+      this.modelAccessor.notifyModification(${ast.getObjectGetter()}, "${ast.getAttributeName()}", ModificationOp.REPLACE, m.${ast.getObjectName()}_${ast.getValue()}_before, d);
       this.modelAccessor.notifyNodeAttach(d, ${ast.getObjectGetter()});
     }
 <#elseif !ast.attributeIterated && ast.copy>
@@ -64,6 +75,8 @@ ${signature("ruleClassName")}
       <#if ast.attributeOptional>}</#if>
       ${ast.getType()} d_copy = d.deepClone();
       ${ast.getObjectGetter()}.${ast.getSetter()}(d_copy);
+
+      this.modelAccessor.notifyModification(${ast.getObjectGetter()}, "${ast.getAttributeName()}", ModificationOp.REPLACE, m.${ast.getObjectName()}_${ast.getValue()}_before, d_copy);
       this.modelAccessor.notifyNodeAttach(d_copy, ${ast.getObjectGetter()});
     }
 </#if>
