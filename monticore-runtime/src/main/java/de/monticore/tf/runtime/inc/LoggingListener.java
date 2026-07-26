@@ -63,4 +63,28 @@ public class LoggingListener implements IIncrementalListener {
         "Node detached: " + node.getClass().getSimpleName() + " from parent: " + parent.getClass()
             .getSimpleName(), LoggingListener.class.getSimpleName());
   }
+  
+  @Override
+  public void onASTNodeModification(@NonNull ASTNode node, @NonNull String attributeName,
+      ModificationOp modificationType, @org.jspecify.annotations.Nullable Object oldValue,
+      @org.jspecify.annotations.Nullable Object newValue) {
+    String message = switch (modificationType) {
+      case SET -> "Node modified: " + node.getClass().getSimpleName() + " attribute: " + attributeName + " value: " + newValue;
+      case UNSET -> "Node modified: " + node.getClass().getSimpleName() + " attribute: " + attributeName + " old value: " + oldValue;
+      case REPLACE -> "Node modified: " + node.getClass().getSimpleName() + " attribute: " + attributeName + " old value: " + oldValue + " new value: " + newValue;
+    };
+    Log.info(message, LoggingListener.class.getSimpleName());
+  }
+  
+  @Override
+  public void onASTNodeListModification(@NonNull ASTNode node, String attributeName, int idx,
+      ModificationOp modificationType, @org.jspecify.annotations.Nullable Object oldValue,
+      @org.jspecify.annotations.Nullable Object newValue) {
+    String message = switch (modificationType) {
+      case SET -> "Node list modified: " + node.getClass().getSimpleName() + " attribute: " + attributeName + " index: " + idx + " value: " + newValue;
+      case UNSET -> "Node list modified: " + node.getClass().getSimpleName() + " attribute: " + attributeName + " index: " + idx + " old value: " + oldValue;
+      case REPLACE -> "Node list modified: " + node.getClass().getSimpleName() + " attribute: " + attributeName + " index: " + idx + " old value: " + oldValue + " new value: " + newValue;
+    };
+    Log.info(message, LoggingListener.class.getSimpleName());
+  }
 }

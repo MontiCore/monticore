@@ -51,12 +51,24 @@ public interface IModelAccessor<E extends ITraverser> {
    * Notifies that a node attribute has been modified.
    *
    * @param node the modified node
-   * @param parent the parent containing the node, or {@code null} if no parent is available
    * @param attributeName the name of the modified attribute
-   * @param oldValue the previous attribute value
-   * @param newValue the new attribute value
+   * @param modificationOperation the type of modification
+   * @param oldValue the previous attribute value, or {@code null} if not applicable
+   * @param newValue the new attribute value, or {@code null} if not applicable
    */
-  void notifyModification(@Nonnull ASTNode node, @Nullable ASTNode parent, String attributeName, Object oldValue, Object newValue);
+  void notifyModification(@Nonnull ASTNode node, String attributeName, ModificationOp modificationOperation, @Nullable Object oldValue, @Nullable Object newValue);
+  
+  /**
+   * Notifies that an element in a list attribute of a node has been modified.
+   *
+   * @param node the modified node
+   * @param attributeName the name of the modified list attribute
+   * @param idx the index of the modified element within the list
+   * @param modificationOperation the type of list-element modification
+   * @param oldValue the previous value of the element, or {@code null} if not applicable
+   * @param newValue the new value of the element, or {@code null} if not applicable
+   */
+  void notifyListModification(@Nonnull ASTNode node, String attributeName, int idx, ModificationOp modificationOperation, @Nullable Object oldValue, @Nullable Object newValue);
   
   
   /**

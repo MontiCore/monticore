@@ -203,22 +203,4 @@ public class CandidateIndex implements IModelIndex {
     this.candidates.remove(node.getClass(), node);
     Log.debug(() -> "Deleted node with type %s!".formatted(node.getClass()), "CandidateIndex");
   }
-  
-  /**
-   * Called when an attribute of an AST node is modified.
-   *
-   * <p>This index does not react to attribute changes because it only tracks
-   * node existence and node classes.</p>
-   *
-   * @param node modified AST node
-   * @param parent parent node of the modified node
-   * @param attributeName name of the modified attribute
-   * @param oldValue previous value of the attribute
-   * @param newValue new value of the attribute
-   */
-  @Override
-  public void onASTNodeModification(@NonNull ASTNode node, ASTNode parent, String attributeName,
-      Object oldValue, Object newValue) {
-    // CandidateIndex does not care about modifications
-  }
 }

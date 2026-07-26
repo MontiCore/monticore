@@ -42,22 +42,6 @@ public class ParentIndex implements IModelIndex {
   }
   
   /**
-   * Handles node modification events. Parent information does not need to be
-   * updated for plain attribute changes.
-   *
-   * @param node the modified node
-   * @param parent the parent containing the node
-   * @param attributeName the name of the modified attribute
-   * @param oldValue the previous attribute value
-   * @param newValue the new attribute value
-   */
-  @Override
-  public void onASTNodeModification(@NonNull ASTNode node, ASTNode parent, String attributeName,
-      Object oldValue, Object newValue) {
-    // Most likely not needed...
-  }
-  
-  /**
    * Stores the given parent reference on the node by using a wrapped
    * post-comment. Existing wrapped comments are updated, while regular comments
    * are preserved.

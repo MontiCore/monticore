@@ -167,17 +167,43 @@ public class ModelAccessor<E extends ITraverser> implements IModelAccessor<E> {
    * and listeners.
    *
    * @param node the modified node
-   * @param parent the parent containing the node
    * @param attributeName the name of the modified attribute
-   * @param oldValue the previous attribute value
-   * @param newValue the new attribute value
+   * @param modificationOp the type of modification
+   * @param oldValue the previous attribute value, or {@code null} if not applicable
+   * @param newValue the new attribute value, or {@code null} if not applicable
    */
   @Override
-  public void notifyModification(@NonNull ASTNode node, ASTNode parent, String attributeName, Object oldValue, Object newValue) {
-    this.parentIndex.onASTNodeModification(node, parent, attributeName, oldValue, newValue);
-    this.candidateIndex.onASTNodeModification(node, parent, attributeName, oldValue, newValue);
-    this.customIndices.values().forEach(index -> index.onASTNodeModification(node, parent, attributeName, oldValue, newValue));
-    this.listeners.forEach(listener -> listener.onASTNodeModification(node, parent, attributeName, oldValue, newValue));
+  public void notifyModification(@NonNull ASTNode node, String attributeName, ModificationOp modificationOp, @Nullable Object oldValue,
+      @Nullable Object newValue) {
+    this.parentIndex.onASTNodeModification(node, attributeName, modificationOp, oldValue, newValue);
+    this.candidateIndex.onASTNodeModification(node, attributeName, modificationOp, oldValue, newValue);
+    this.customIndices.values()
+        .forEach(index -> index.onASTNodeModification(node, attributeName, modificationOp, oldValue, newValue));
+    this.listeners.forEach(
+        listener -> listener.onASTNodeModification(node, attributeName, modificationOp, oldValue, newValue));
+  }
+  
+  /**
+   * Forwards a list attribute modification notification to the managed indices
+   * and listeners.
+   *
+   * @param node the modified node
+   * @param attributeName the name of the modified list attribute
+   * @param idx the index of the modified element within the list
+   * @param modificationOp the type of list-element modification
+   * @param oldValue the previous value of the element, or {@code null} if not applicable
+   * @param newValue the new value of the element, or {@code null} if not applicable
+   */
+  @Override
+  public void notifyListModification(@NonNull ASTNode node, String attributeName, int idx,
+      ModificationOp modificationOp, @Nullable Object oldValue, @Nullable Object newValue) {
+    this.parentIndex.onASTNodeListModification(node, attributeName, idx, modificationOp, oldValue, newValue);
+    this.candidateIndex.onASTNodeListModification(node, attributeName, idx, modificationOp, oldValue, newValue);
+    this.customIndices.values().forEach(
+        index -> index.onASTNodeListModification(node, attributeName, idx, modificationOp, oldValue, newValue));
+    this.listeners.forEach(
+        listener -> listener.onASTNodeListModification(node, attributeName, idx, modificationOp, oldValue,
+            newValue));
   }
   
   /**

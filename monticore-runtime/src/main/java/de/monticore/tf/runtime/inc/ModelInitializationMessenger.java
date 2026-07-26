@@ -15,6 +15,7 @@ import java.util.Stack;
  * implementation, this messenger traverses the existing model and reports the
  * visited nodes to the accessor. This effectively simulates the original model
  * construction process so that the accessor can rebuild its internal state.
+ * Note: Only attachment notifications are emitted, no modification notifications!
  *
  * @param <E> concrete traverser type used to visit the model
  */
