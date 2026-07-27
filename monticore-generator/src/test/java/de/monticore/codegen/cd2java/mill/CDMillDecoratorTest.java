@@ -181,7 +181,10 @@ public class CDMillDecoratorTest extends DecoratorTestCase {
     Optional<ASTCDPackage> p = decoratedCompilationUnit.getCDDefinition().getCDPackagesList().stream()
             .filter(pp -> "de.monticore.codegen.symboltable.automaton".equals(pp.getName())).findAny();
     assertTrue (p.isPresent());
-    assertEquals(1, p.get().getCDElementList().size());
+    //we expect two classes in the mill package: StatechartMill and StatechartMillState
+    assertEquals(2, p.get().getCDElementList().size());
+    assertEquals("AutomatonMill", ((ASTCDClass) p.get().getCDElementList().get(0)).getName());
+    assertEquals("AutomatonMillState", ((ASTCDClass) p.get().getCDElementList().get(1)).getName());
   
     assertTrue(Log.getFindings().isEmpty());
   }
