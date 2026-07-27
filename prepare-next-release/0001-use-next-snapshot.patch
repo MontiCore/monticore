@@ -8,44 +8,40 @@ diff --git a/gradle.properties b/gradle.properties
 index cb9de09ab..3fdc12ea2 100644
 --- a/gradle.properties
 +++ b/gradle.properties
-@@ -17,12 +17,12 @@ org.gradle.caching=true
+@@ -17,10 +17,10 @@ org.gradle.caching=true
  # org.gradle.caching.debug=true
  
  # versions used
 -version=7.9.0-SNAPSHOT
 -previous_mc_version=7.8.0
+-previous_se_commons_version=7.8.0
+-previous_cd4a_version=7.8.0
 +version=7.10.0-SNAPSHOT
 +previous_mc_version=7.9.0-SNAPSHOT
- 
--cd4a_version=7.8.0
--mlc_version=7.8.0
--se_commons_version=7.8.0
-+cd4a_version=7.9.0-SNAPSHOT
-+mlc_version=7.9.0-SNAPSHOT
-+se_commons_version=7.9.0-SNAPSHOT
- 
- antlr_version=4.12.0
- junit_version=6.0.3
++previous_se_commons_version=7.9.0-SNAPSHOT
++previous_cd4a_version=7.9.0-SNAPSHOT
+
+ se_commons_version=7.9.0-SNAPSHOT
+ se_gradle_version=7.9.0-SNAPSHOT
 diff --git a/monticore-generator/gradle.properties b/monticore-generator/gradle.properties
-index d54bbbd2c..557baba04 100644
+index 051fc5951..4db170dd0 100644
 --- a/monticore-generator/gradle.properties
 +++ b/monticore-generator/gradle.properties
-@@ -9,11 +9,11 @@ useLocalRepo=false
+@@ -9,10 +9,10 @@ useLocalRepo=false
  showTestOutput=false
  
  # versions used
 -version=7.9.0-SNAPSHOT
 -previous_mc_version=7.8.0
+-previous_se_commons_version=7.8.0
+-previous_cd4a_version=7.8.0
 +version=7.10.0-SNAPSHOT
 +previous_mc_version=7.9.0-SNAPSHOT
- 
--cd4a_version=7.8.0
--se_commons_version=7.8.0
-+cd4a_version=7.9.0-SNAPSHOT
-+se_commons_version=7.9.0-SNAPSHOT
++previous_se_commons_version=7.9.0-SNAPSHOT
++previous_cd4a_version=7.9.0-SNAPSHOT
+
+ se_commons_version=7.9.0-SNAPSHOT
  se_gradle_version=7.9.0-SNAPSHOT
- 
- antlr_version=4.12.0
 -- 
 2.47.1.windows.1
 
