@@ -8,7 +8,7 @@ import java.util.Set;
 
 /**
  * Created by Alexander Wilts on 10.11.2016.
- *
+ * <p>
  * Objects of type ODSubConstraint represent modules of constraints that can be checked independently.
  */
 public class ODSubConstraint {

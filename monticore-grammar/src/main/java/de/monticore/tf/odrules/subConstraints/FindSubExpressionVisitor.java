@@ -8,7 +8,7 @@ import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisi
 
 /**
  * Created by Alexander Wilts on 16.01.2017.
- *
+ * <p>
  * This visitor calculates if the given expression contains any further subExpressions.
  * A subExpression is every expression, that does not contain any further {@code &&} or {@code ||} operators.
  */

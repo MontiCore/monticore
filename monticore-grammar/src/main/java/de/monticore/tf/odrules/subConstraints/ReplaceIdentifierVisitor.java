@@ -15,9 +15,9 @@ import java.util.Optional;
 
 /**
  * Created by Alexander Wilts on 16.01.2017.
- *
+ * <p>
  * This visitor replaces identifier variables with a call to their real variables.
- *
+ * <p>
  * An identifier variable is a short way to reference the name of an element in a transformation.
  * This identifier does not have any value before it is assigned in later stages of the transformation.
  * In order to read the identifier variable early on in the transformation we have to replace it.
@@ -36,16 +36,16 @@ public class ReplaceIdentifierVisitor implements
 
   @Override
   public void visit(ASTFieldAccessExpression node) {
-    if (node.getExpression() instanceof ASTNameExpression) {
-      Optional<ASTAssignment> assignment = checkAssignment((ASTNameExpression)node.getExpression());
+    if (node.getExpression() instanceof ASTNameExpression nameExpression) {
+      Optional<ASTAssignment> assignment = checkAssignment(nameExpression);
       assignment.ifPresent(astAssignment -> node.setExpression(astAssignment.getRhs()));
     }
   }
 
   @Override
   public void visit(ASTBooleanNotExpression node) {
-    if (node.getExpression() instanceof ASTNameExpression) {
-      Optional<ASTAssignment> assignment = checkAssignment((ASTNameExpression)node.getExpression());
+    if (node.getExpression() instanceof ASTNameExpression nameExpression) {
+      Optional<ASTAssignment> assignment = checkAssignment(nameExpression);
       assignment.ifPresent(astAssignment -> node.setExpression(astAssignment.getRhs()));
     }
   }
@@ -53,8 +53,8 @@ public class ReplaceIdentifierVisitor implements
 
   @Override
   public void visit(ASTLogicalNotExpression node) {
-    if (node.getExpression() instanceof ASTNameExpression) {
-      Optional<ASTAssignment> assignment = checkAssignment((ASTNameExpression)node.getExpression());
+    if (node.getExpression() instanceof ASTNameExpression nameExpression) {
+      Optional<ASTAssignment> assignment = checkAssignment(nameExpression);
       assignment.ifPresent(astAssignment -> node.setExpression(astAssignment.getRhs()));
     }
   }
@@ -127,8 +127,8 @@ public class ReplaceIdentifierVisitor implements
   public void visit(ASTArguments node) {
     int index = 0;
     for(ASTExpression expr : node.getExpressionList()){
-      if (expr instanceof ASTNameExpression) {
-        Optional<ASTAssignment> assignment = checkAssignment((ASTNameExpression)expr);
+      if (expr instanceof ASTNameExpression nameExpression) {
+        Optional<ASTAssignment> assignment = checkAssignment(nameExpression);
         if(assignment.isPresent()) {
           node.setExpression(index, assignment.get().getRhs());
         }
