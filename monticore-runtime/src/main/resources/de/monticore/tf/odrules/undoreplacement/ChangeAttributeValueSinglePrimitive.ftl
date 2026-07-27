@@ -31,5 +31,7 @@ ${signature("ruleClassName")}
         }
     </#if>-->
 
+    ${ast.getValueType()} ${ast.getAttributeName()}_oldValue = ${ast.getObjectGetter()}.${ast.getGetter()}();
     ${ast.getObjectGetter()}.${ast.getSetter()}(m.${ast.getObjectName()}_${ast.getAttributeName()}_before);
+    this.modelAccessor.notifyModification(${ast.getObjectGetter()}, "${ast.getAttributeName()}", ModificationOp.REPLACE, ${ast.getAttributeName()}_oldValue, ${ast.getObjectGetter()}.${ast.getGetter()}());
 </#if>
