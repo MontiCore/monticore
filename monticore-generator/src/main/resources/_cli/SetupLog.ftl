@@ -28,8 +28,13 @@ if (cmd.hasOption("stacktrace")) {
         Log.addLogHook(new de.se_rwth.commons.logging.WarningStacktraceConsoleLogHook(target));
       } else  if (level.equalsIgnoreCase("info")) {
         Log.addLogHook(new de.se_rwth.commons.logging.InfoStacktraceConsoleLogHook(target));
+      } else  if (level.equalsIgnoreCase("trace")) {
+        Log.addLogHook(new de.se_rwth.commons.logging.TraceStacktraceConsoleLogHook(target));
+      } else  if (level.equalsIgnoreCase("debug")) {
+        Log.addLogHook(new de.se_rwth.commons.logging.DebugStacktraceConsoleLogHook(target));
       } else {
-        Log.error("0xA1064x${generatedError}: Could not set stacktraces for unknown log level " + level);
+        Log.error("0xA1064x${generatedError}: Could not set stacktraces for unknown log level " + level
+          + ". - only ERROR, WARN, INFO, TRACE, and DEBUG are known log levels.");
       }
     }
   }
