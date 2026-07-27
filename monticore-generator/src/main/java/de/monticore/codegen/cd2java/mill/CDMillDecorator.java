@@ -6,6 +6,7 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.codegen.cd2java.AbstractDecorator;
+import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.prettyprint.PrettyPrinterConstants;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 
@@ -31,7 +32,7 @@ public class CDMillDecorator extends AbstractDecorator {
     this.millDecorator = millDecorator;
   }
 
-  public void decorate(final ASTCDCompilationUnit inputCD, ASTCDCompilationUnit decoratedCD) {
+  public void decorate(SymbolTableService symbolTableService, final ASTCDCompilationUnit inputCD, ASTCDCompilationUnit decoratedCD) {
     // decorate for mill classes
     List<ASTCDPackage> packageList = Lists.newArrayList();
     packageList.add(getPackage(inputCD, decoratedCD, AST_PACKAGE));
@@ -45,5 +46,10 @@ public class CDMillDecorator extends AbstractDecorator {
     // create package at the top level of the grammar package
     ASTCDPackage millPackage = getPackage(inputCD, decoratedCD, DEFAULT_PACKAGE);
     millPackage.addCDElement(millClass);
+
+    //create the MillState class in the mill package
+    MillStateDecorator stateDecorator = new MillStateDecorator(glex, symbolTableService);
+    ASTCDClass millStateClass = stateDecorator.decorate(packageList);
+    millPackage.addCDElement(millStateClass);
   }
 }

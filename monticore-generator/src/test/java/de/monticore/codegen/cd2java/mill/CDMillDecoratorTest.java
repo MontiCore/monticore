@@ -82,7 +82,7 @@ public class CDMillDecoratorTest extends DecoratorTestCase {
     MillDecorator millDecorator = new MillDecorator(this.glex, symbolTableService, visitorService, parserService);
 
     CDMillDecorator cdMillDecorator = new CDMillDecorator(this.glex, millDecorator);
-    cdMillDecorator.decorate(originalCompilationUnit, decoratedCompilationUnit);
+    cdMillDecorator.decorate(symbolTableService, originalCompilationUnit, decoratedCompilationUnit);
   }
 
   protected ASTCDCompilationUnit getASTCD() {

@@ -219,6 +219,13 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
     ASTCDMethod resetMethod = addResetMethod(superSymbolList);
     millClass.addCDMember(resetMethod);
 
+    // add snapshot and load method
+    ASTCDMethod snapshotMethod = addSnapshotMethod(superSymbolList);
+    millClass.addCDMember(snapshotMethod);
+
+    ASTCDMethod loadMethod = addLoadMethod(superSymbolList);
+    millClass.addCDMember(loadMethod);
+
     return millClass;
   }
 
@@ -646,6 +653,27 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
     attributeMethods.add(protectedMethod);
 
     return attributeMethods;
+  }
+
+  protected ASTCDMethod addSnapshotMethod(List<DiagramSymbol> superSymbolList) {
+    String stateClassName = symbolTableService.getCDName() + "MillState";
+    ASTMCType stateType = this.getMCTypeFacade().createQualifiedType(stateClassName);
+
+    ASTCDMethod snapshotMethod = this.getCDMethodFacade().createMethod(PUBLIC_STATIC.build(), stateType, "snapshot");
+
+    this.replaceTemplate(EMPTY_BODY, snapshotMethod, new TemplateHookPoint("mill.SnapshotMethod", stateClassName, superSymbolList));
+    return snapshotMethod;
+  }
+
+  protected ASTCDMethod addLoadMethod(List<DiagramSymbol> superSymbolList) {
+    String stateClassName = symbolTableService.getCDName() + "MillState";
+    ASTMCType stateType = this.getMCTypeFacade().createQualifiedType(stateClassName);
+    ASTCDParameter stateParam = this.getCDParameterFacade().createParameter(stateType, "state");
+
+    ASTCDMethod loadMethod = this.getCDMethodFacade().createMethod(PUBLIC_STATIC.build(), "load", stateParam);
+
+    this.replaceTemplate(EMPTY_BODY, loadMethod, new TemplateHookPoint("mill.LoadMethod", superSymbolList));
+    return loadMethod;
   }
 
 }
