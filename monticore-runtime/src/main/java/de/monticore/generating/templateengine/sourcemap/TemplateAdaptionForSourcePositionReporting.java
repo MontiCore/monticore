@@ -49,7 +49,7 @@ public class TemplateAdaptionForSourcePositionReporting {
   private static void addSourcePositionReport(TemplateElement t, StringBuilder sb, String canonicalForm, Configuration configuration, boolean reportAstMapping) {
 
     // The Freemarker Engine uses Source Positions starting at line and column 1, but we report them zero based
-    int curPairId = pairId.getAndIncrement();
+    int curPairId = pairId.get().getAndIncrement();
     String endPos;
     String startPos;
 

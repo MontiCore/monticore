@@ -17,42 +17,39 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class SourceMapCalculator {
-  protected static Stack<Template> templates = new Stack<>();
+  protected static ThreadLocal<Stack<Template>> templates = ThreadLocal.withInitial(() -> new Stack<>());
 
   // We need this for nested template evaluations
-  protected static Stack<Pair<Integer, Integer>> curAbsolutePos = new Stack<>();
+  protected static ThreadLocal<Stack<Pair<Integer, Integer>>> curAbsolutePos = ThreadLocal.withInitial(() -> new Stack<>());
 
-  public static List<SimpleSourceMapping> mappings = new ArrayList<>();
-  public static List<SimpleSourceMapping> astMappings = new ArrayList<>();
-  public static AtomicInteger pairId = new AtomicInteger();
+  public static ThreadLocal<List<SimpleSourceMapping>> mappings = ThreadLocal.withInitial(ArrayList::new);
+  public static ThreadLocal<List<SimpleSourceMapping>> astMappings = ThreadLocal.withInitial(ArrayList::new);
+  public static ThreadLocal<AtomicInteger> pairId = ThreadLocal.withInitial(AtomicInteger::new);
 
   public static void pushTemplate(Template template) {
-    templates.push(template);
+    templates.get().push(template);
 
     // Ask parent template for its known last absolute pos inside nested template evaluation
-    int curLine = curAbsolutePos.isEmpty()? 0 : curAbsolutePos.peek().getLeft();
-    int curColumn = curAbsolutePos.isEmpty()? 0 : curAbsolutePos.peek().getRight();
-    curAbsolutePos.push(Pair.of(curLine,curColumn));
+    int curLine = curAbsolutePos.get().isEmpty()? 0 : curAbsolutePos.get().peek().getLeft();
+    int curColumn = curAbsolutePos.get().isEmpty()? 0 : curAbsolutePos.get().peek().getRight();
+    curAbsolutePos.get().push(Pair.of(curLine,curColumn));
 
-    assert curAbsolutePos.size() == templates.size();
+    assert curAbsolutePos.get().size() == templates.get().size();
   }
 
   public static void popTemplate(Template template) {
-    if (templates.pop() != template) {
+    if (templates.get().pop() != template) {
       throw new IllegalStateException();
     }
 
-    curAbsolutePos.pop();
+    curAbsolutePos.get().pop();
 
-    if(templates.size() != curAbsolutePos.size()) {
+    if(templates.get().size() != curAbsolutePos.get().size()) {
       throw new IllegalStateException();
     }
 
-    if (templates.isEmpty()) {
-      List<DecodedMapping> templateSourceMappings = calculateMappings(mappings);
-      List<DecodedMapping> astSourceMappings = calculateMappings(astMappings);
-      Reporting.reportASTSourceMapping(astSourceMappings);
-      Reporting.reportTemplateSourceMapping(templateSourceMappings);
+    if (templates.get().isEmpty()) {
+      flushMappings();
       reset();
     }
   }
@@ -112,58 +109,6 @@ public class SourceMapCalculator {
     this.template = template;
   }
 
-  // Probably not needed
-/*  public static void reportStringHP(String content, String source, ASTNode astNode) {
-    int curPairId = pairId.getAndIncrement();
-    int newLines = numberOfNewLines(content);
-    int columnPosOfLastLine = getColumnOfLastLine(content);
-    var currentRelativePosition = getCurrentRelativePosition();
-
-    int absoluteFirstLinePos = *//*lastPrintedPositionInFinalGeneratedOutput.getKey() + *//*currentRelativePosition.getLeft();
-    int absoluteFirstColumnPos = *//*lastPrintedPositionInFinalGeneratedOutput.getRight() +*//*currentRelativePosition.getRight();
-
-    int absoluteLastLinePos = absoluteFirstLinePos + newLines;
-    int absoluteLastColumnPos = newLines > 0? columnPosOfLastLine : columnPosOfLastLine + absoluteFirstColumnPos;
-
-    SourcePosition generatedStart = new SourcePosition(absoluteFirstLinePos, absoluteFirstColumnPos);
-    SourcePosition generatedEnd = new SourcePosition(absoluteLastLinePos, absoluteLastColumnPos);
-
-    addASTMapping(astNode, true,generatedStart,curPairId);
-    addASTMapping(astNode, false, generatedEnd,curPairId);
-
-    //System.out.println("Line "+(newLines+1)+ " Column "+columnPosOfLastLine+" Templ "+source+ " Stack Size "+templates.size());
-
-    mappings.add(new SimpleSourceMapping(new SourcePosition(0, 0, "SHP"+source),
-        generatedStart, curPairId));
-
-    // Theoretically we have to load the template here and check for its last pos
-    mappings.add(new SimpleSourceMapping(new SourcePosition(newLines+1, columnPosOfLastLine,"SHP"+source),
-        generatedEnd, curPairId));
-    assert curAbsolutePos.size() == templates.size();
-  }*/
-
-  // This method is bad -> positionState should not be a Stack and it should definitely not be popped and pushed just to iterate it
-/*  protected static Pair<Integer, Integer> getCurrentRelativePosition() {
-   List<Pair<Integer, Integer>> posList = new ArrayList<>(curAbsolutePos.size());
-
-    while(curAbsolutePos.size() >= 2) {
-      posList.add(curAbsolutePos.pop());
-    }
-    posList.forEach(e -> curAbsolutePos.push(e));
-    int relativeLine = 0;
-    int relativeColumn = 0;
-    Collections.reverse(posList);
-    for (Pair<Integer, Integer> pos : posList) {
-      relativeLine+=pos.getLeft();
-      if(pos.getLeft() > 0) {
-        relativeColumn = pos.getRight();
-      } else {
-        relativeColumn += pos.getRight();
-      }
-    }
-    return Pair.of(relativeLine, relativeColumn);
-  }*/
-
   public void report(int pairId, int lineInTemplate, int colInTemplate, String templateSource, ASTNode astNode, boolean isStart) {
     String content = sw.getCurrentContent();
 
@@ -176,7 +121,7 @@ public class SourceMapCalculator {
     addASTMapping(astNode, isStart, positionInGeneratedFile, pairId);
     addTemplateMapping(lineInTemplate, colInTemplate, templateSource, positionInGeneratedFile, pairId);
 
-    assert curAbsolutePos.size() == templates.size();
+    assert curAbsolutePos.get().size() == templates.get().size();
   }
 
   public void report(int pairId, int lineInTemplate, int colInTemplate, String templateSource) {
@@ -190,28 +135,27 @@ public class SourceMapCalculator {
     SourcePosition positionInGeneratedFile = new SourcePosition(absPos.getLeft(), absPos.getRight(), "GenOutput");
     addTemplateMapping(lineInTemplate, colInTemplate, templateSource, positionInGeneratedFile, pairId);
 
-    assert curAbsolutePos.size() == templates.size();
+    assert curAbsolutePos.get().size() == templates.get().size();
   }
 
   /**
    * This function does not add a new position state but updates the current one
    */
   private static Pair<Integer, Integer> updateAndGetAbsolutePos(int numberOfLinesInContent, int curGeneratedColPos) {
-
-    curAbsolutePos.pop();
+    curAbsolutePos.get().pop();
 
     int lineOffset = 0;
     int columnOffset = 0;
-    if(!curAbsolutePos.empty()) {
-      Pair<Integer, Integer> offsetFromParentTemplate = curAbsolutePos.peek();
+    if(!curAbsolutePos.get().empty()) {
+      Pair<Integer, Integer> offsetFromParentTemplate = curAbsolutePos.get().peek();
       lineOffset = offsetFromParentTemplate.getLeft();
       columnOffset = offsetFromParentTemplate.getRight();
     }
 
     int absoluteLine = lineOffset + numberOfLinesInContent;
     int absoluteColumn = numberOfLinesInContent==0? columnOffset + curGeneratedColPos : curGeneratedColPos;
-    curAbsolutePos.push(Pair.of(absoluteLine, absoluteColumn));
-    return curAbsolutePos.peek();
+    curAbsolutePos.get().push(Pair.of(absoluteLine, absoluteColumn));
+    return curAbsolutePos.get().peek();
   }
 
   /**
@@ -235,20 +179,20 @@ public class SourceMapCalculator {
         SourcePosition s = startOrEnd.getFileName().isPresent()?
             new SourcePosition(startOrEnd.getLine()-1, startOrEnd.getColumn(), startOrEnd.getFileName().get()) :
             new SourcePosition(startOrEnd.getLine()-1, startOrEnd.getColumn());
-        astMappings.add(new SimpleSourceMapping(s, positionInGeneratedFile, pairId));
+        astMappings.get().add(new SimpleSourceMapping(s, positionInGeneratedFile, pairId));
       }
     }
   }
 
   protected void addTemplateMapping(int lineInTemplate, int colInTemplate, String templateSource, SourcePosition positionInGeneratedFile, int pairId) {
-    if(mappings.stream().map(mapping -> mapping.pairId).anyMatch(i -> i == pairId)
-        && mappings.get(mappings.size()-1).pairId != pairId) {
-      mappings.removeIf(m -> m.pairId == pairId);
-    } else if(!mappings.isEmpty() && mappings.get(mappings.size()-1).targetPosition.equals(positionInGeneratedFile) && mappings.get(mappings.size()-1).pairId == pairId) {
+    if(mappings.get().stream().map(mapping -> mapping.pairId).anyMatch(i -> i == pairId)
+        && mappings.get().get(mappings.get().size()-1).pairId != pairId) {
+      mappings.get().removeIf(m -> m.pairId == pairId);
+    } else if(!mappings.get().isEmpty() && mappings.get().get(mappings.get().size()-1).targetPosition.equals(positionInGeneratedFile) && mappings.get().get(mappings.get().size()-1).pairId == pairId) {
       // Nothing was generated
-      mappings.remove(mappings.size()-1);
+      mappings.get().remove(mappings.get().size()-1);
     } else {
-      mappings.add(new SimpleSourceMapping(new SourcePosition(lineInTemplate, colInTemplate, templateSource),
+      mappings.get().add(new SimpleSourceMapping(new SourcePosition(lineInTemplate, colInTemplate, templateSource),
           positionInGeneratedFile, pairId));
     }
   }
@@ -264,17 +208,36 @@ public class SourceMapCalculator {
   }
 
   protected static boolean currentlyInMainTemplateForGeneration() {
-    return templates.size() == 1;
+    return templates.get().size() == 1;
   }
 
   protected static boolean isChildTemplateForGeneration() {
-    return templates.size() > 1;
+    return templates.get().size() > 1;
+  }
+
+  public static void flushMappings(){
+    List<DecodedMapping> templateSourceMappings = calculateMappings(mappings.get());
+    List<DecodedMapping> astSourceMappings = calculateMappings(astMappings.get());
+    Reporting.reportASTSourceMapping(astSourceMappings);
+    Reporting.reportTemplateSourceMapping(templateSourceMappings);
+    clearMappings();
+  }
+
+  public static void clearMappings(){
+    mappings.get().clear();
+    mappings.remove();
+    astMappings.get().clear();
+    astMappings.remove();
   }
 
   public static void reset() {
-    templates.clear();
-    curAbsolutePos.clear();
-    mappings.clear();
-    astMappings.clear();
+    templates.get().clear();
+    templates.remove();
+    curAbsolutePos.get().clear();
+    curAbsolutePos.remove();
+    mappings.get().clear();
+    mappings.remove();
+    astMappings.get().clear();
+    astMappings.remove();
   }
 }
