@@ -17,17 +17,6 @@ int pos;
     ${tc.includeArgs("de.monticore.tf.odrules.doreplacement.ChangeAttributeValueSingleCompositeInList", change, [ast.getClassname()])}
   </#if>
 
-
-  <#if change.isPresentValue() && !change.isObjectWithinList()>
-    <#if change.isValueWithinOpt()>if(m.${change.getValue()}.isPresent()) {
-  //TODO find a way for lists
-      <#--<#if !change.isObjectWithinList()>
-  Reporting.reportTransformationNewValue("${ast.getClassname()}",<#if change.composite>m.</#if>${change.getValue()}<#if change.isValueWithinOpt()>.get()</#if><#if change.isValueStringList()>.toString()</#if>);
-      </#if>-->
-  }</#if>
-  </#if>
-
-
   <#if change.isObjectWithinOpt()>
   } else {
   // no new objects should be created

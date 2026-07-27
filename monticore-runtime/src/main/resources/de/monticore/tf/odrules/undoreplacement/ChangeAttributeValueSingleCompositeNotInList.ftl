@@ -3,18 +3,10 @@ ${signature("ruleClassName")}
 
 
 // composition points on an object not in a list
-<#--
-Reporting.reportTransformationObjectChange("${ruleClassName}",${ast.getObjectGetter()}, "${ast.getAttributeName()}");
--->
-
 <#if ast.attributeIterated && !ast.isPresentValue()>
     // attribute is a list
     // no value was given -> undo deletion
     <#if ast.isOldValueWithinOpt()>if(m.${ast.getOldValue()}.isPresent()) {</#if>
-
-    <#--if (${ast.getOldValueGetter()} != null) {
-      Reporting.reportTransformationOldValue("${ruleClassName}",${ast.getOldValueGetter()});
-    }-->
     ${ast.getObjectGetter()}.${ast.getSetter()}(
         m.${ast.getObjectName()}_${ast.getOldValue()}_before_pos,
         ${ast.getOldValueGetter()});
@@ -42,7 +34,6 @@ Reporting.reportTransformationObjectChange("${ruleClassName}",${ast.getObjectGet
     // value was copied, remove copy
     <#if ast.isValueWithinOpt()>if(m.${ast.getValue()}.isPresent()) {</#if>
 
-<#--    <#if ast.isPresentInsertPosition()>pos = ${ast.getInsertPosition()};</#if>-->
     <#assign valueName = ast.getValueGetter()?remove_beginning("m.")?remove_ending(".get()")>
     ${ast.getValueType()} ${valueName}_${ast.getAttributeName()}_value = m.${ast.getObjectName()}_${ast.getValue()}_before.keySet().iterator().next();
     int ${valueName}_${ast.getAttributeName()}_valueIdx = ${ast.getObjectGetter()}.${ast.getGetter()}().indexOf(${valueName}_${ast.getAttributeName()}_value);
@@ -70,9 +61,6 @@ Reporting.reportTransformationObjectChange("${ruleClassName}",${ast.getObjectGet
     // a different value was given, but change it back
     <#if ast.isValueWithinOpt()>if (m.${ast.getValue()}.isPresent()) {</#if>
 
-    <#--if(${ast.getObjectGetter()}.${ast.getGetter()}() != null) {
-        Reporting.reportTransformationOldValue("${ruleClassName}",${ast.getObjectGetter()}.${ast.getGetter()}());
-    }-->
     <#assign valueName = ast.getValueGetter()?remove_beginning("m.")?remove_ending(".get()")>
     ${ast.getValueType()} ${valueName}_${ast.getAttributeName()}_oldValue = (${ast.getValueType()}) ${ast.getObjectGetter()}.${ast.getGetter()}();
 

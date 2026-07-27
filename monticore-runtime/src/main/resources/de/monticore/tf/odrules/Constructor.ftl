@@ -2,8 +2,6 @@
 public ${ast.getJavaClassName()}(List<ASTNode> hostGraph) {
   this.modelAccessor = new ModelAccessor<>(${grammarName}Mill.inheritanceTraverser(), hostGraph);
 	this.glex = new GlobalExtensionManagement();
-	// technically, we should call setupReporting here as well
-	// but that would be a breaking change on which existing code depends
 }
 
 public ${ast.getJavaClassName()}(ASTNode... hostGraph){
@@ -13,8 +11,6 @@ public ${ast.getJavaClassName()}(ASTNode... hostGraph){
 public ${ast.getJavaClassName()}(GlobalExtensionManagement glex, ASTNode... hostGraph){
   this.modelAccessor = new ModelAccessor<>(${grammarName}Mill.inheritanceTraverser(), hostGraph);
 	this.glex = glex;
-	// technically, we should call setupReporting here as well
-	// but that would be a breaking change on which existing code depends
 }
 
 public ${ast.getJavaClassName()}(GlobalExtensionManagement glex, ASTNode astNode){
@@ -28,7 +24,6 @@ public ${ast.getJavaClassName()}(ASTNode astNode) {
 public ${ast.getJavaClassName()}(ASTNode astNode, GlobalExtensionManagement glex) {
   this.modelAccessor = new ModelAccessor<>(${grammarName}Mill.inheritanceTraverser(), astNode);
   this.glex = glex;
-  <#--this.setupReporting();-->
 }
 
 public ${ast.getJavaClassName()}(IModelAccessor<${grammarName}Traverser> modelAccessor) {
@@ -38,22 +33,4 @@ public ${ast.getJavaClassName()}(IModelAccessor<${grammarName}Traverser> modelAc
 public ${ast.getJavaClassName()}(GlobalExtensionManagement glex, IModelAccessor<${grammarName}Traverser> modelAccessor) {
   this.modelAccessor = modelAccessor;
   this.glex = glex;
-  // technically, we should call setupReporting here as well
-  // but that would be a breaking change on which existing code depends
 }
-
-<#--protected void setupReporting() {
-  ReportManager.ReportManagerFactory factory = new ReportManager.ReportManagerFactory() {
-    @Override
-    public ReportManager provide(String modelName) {
-      ReportManager reports = new ReportManager("target/generated-sources");
-      TransformationReporter transformationReporter = new TransformationReporter(
-      "target/generated-sources/reports/transformations", modelName, new ReportingRepository(new ASTNodeIdentHelper()));
-      reports.addReportEventHandler(transformationReporter);
-      return reports;
-    }
-  };
-
-  Reporting.init("target/generated-sources/reports/transformations", "target/generated-sources", factory);
-  Reporting.on("${ast.getClassname()}");
-}-->

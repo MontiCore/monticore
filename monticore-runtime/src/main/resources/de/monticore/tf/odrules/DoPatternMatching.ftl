@@ -7,9 +7,6 @@
 </#macro>
 
 public boolean doPatternMatching() {
-<#--
-  Reporting.reportTransformationStart("${ast.getClassname()}");
--->
   boolean foundMatch = true;
   // indicates whether this rule is currently backtracking
   // (this will skip all attempts to match negative nodes)
@@ -75,16 +72,6 @@ public boolean doPatternMatching() {
   // create a replacement candidate if a match was found
   if (foundMatch) {
     Match match = new Match(<@commaSeperatedNames/>);
-<#--    <#list ast.getPattern().getLHSObjectsList() as object>
-      <#if !object.isNotObject() && !object.isListObject() && !object.isOptObject() && !hierarchyHelper.isWithinOptionalStructure(object.getObjectName()) && !hierarchyHelper.isWithinListStructure(object.getObjectName())>
-    if (${object.getObjectName()}_cand != null) {
-      Reporting.reportTransformationObjectMatch("${ast.getClassname()}",${object.getObjectName()}_cand);
-    }
-    if (${object.getObjectName()}_cand != null) {
-      Reporting.reportTransformationObjectMatch("${ast.getClassname()}",${object.getObjectName()}_cand);
-    }
-      </#if>
-    </#list>-->
     if (nextNode != null) {
       searchPlan.push(nextNode);
     }

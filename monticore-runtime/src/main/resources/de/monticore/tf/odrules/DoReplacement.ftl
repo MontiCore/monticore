@@ -22,10 +22,6 @@ ${tc.include("de.monticore.tf.odrules.doreplacement.ChangeAttributeValues")}
     // TODO: How should we handle change notifications for DoStatements
 ${ast.getDoStatement()}
 </#if>
-
-    <#--// TODO: Update Reporting for Model Accessors
-    Reporting.flush(hostGraph.get(0));-->
-
     doReplacementExecuted = true;
 
     //do it only for the first match

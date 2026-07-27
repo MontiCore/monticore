@@ -3,19 +3,10 @@ ${signature("ruleClassName")}
 
 
 // composition points on an object not in a list
-<#--
-Reporting.reportTransformationObjectChange("${ruleClassName}",${ast.getObjectGetter()}, "${ast.getAttributeName()}");
--->
-
 <#if ast.attributeIterated && !ast.isPresentValue()>
     // attribute is a list
     // no value is given -> deletion
     <#if ast.isOldValueWithinOpt()>if(m.${ast.getOldValue()}.isPresent()) {</#if>
-
-
-<#--if (${ast.getOldValueGetter()} != null) {
-  Reporting.reportTransformationOldValue("${ruleClassName}",${ast.getOldValueGetter()});
-}-->
     m.${ast.getObjectName()}_${ast.getOldValue()}_before_pos = ${ast.getObjectGetter()}.${ast.getGetter()}().indexOf(${ast.getOldValueGetter()});
     ${ast.getObjectGetter()}.${ast.getUnsetter()}(${ast.getOldValueGetter()});
 
@@ -93,9 +84,6 @@ Reporting.reportTransformationObjectChange("${ruleClassName}",${ast.getObjectGet
     </#if>
 
     m.${ast.getObjectName()}_${ast.getValue()}_before = ${ast.getObjectGetter()}.${ast.getGetter()}();
-    <#--if(${ast.getObjectGetter()}.${ast.getGetter()}() != null) {
-      Reporting.reportTransformationOldValue("${ruleClassName}",${ast.getObjectGetter()}.${ast.getGetter()}());
-    }-->
 
     <#if ast.isAttributeOptional()>}</#if>
     // TODO: Detach Notification for the old value (in case not primitive...)
