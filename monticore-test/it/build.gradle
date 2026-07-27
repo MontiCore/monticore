@@ -17,7 +17,6 @@ sonarqube {
 dependencies {
   implementation project(':monticore-runtime')
   implementation project(':monticore-grammar')
-  implementation "de.se_rwth.commons:se-commons-utilities:$se_commons_version"
 //  implementation project (':monticore-generator')
   testImplementation testFixtures(project(':monticore-runtime'))
   testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
