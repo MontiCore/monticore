@@ -35,7 +35,7 @@ Reporting.reportTransformationObjectChange("${ruleClassName}",${ast.getObjectGet
         ${ast.getValueGetter()}
     );
 
-    this.modelAccessor.notifyListModification(${ast.getObjectGetter()}, "${ast.getAttributeName()}", <#if ast.isPresentInsertPosition()>pos<#else>${ast.getObjectGetter()}.${ast.getGetter()}().size()</#if>, ModificationOp.SET, null, ${ast.getValueGetter()});
+    this.modelAccessor.notifyListModification(${ast.getObjectGetter()}, "${ast.getAttributeName()}", <#if ast.isPresentInsertPosition()>pos<#else>${ast.getObjectGetter()}.${ast.getGetter()}().size() - 1</#if>, ModificationOp.SET, null, ${ast.getValueGetter()});
     this.modelAccessor.notifyNodeAttach(${ast.getValueGetter()}, ${ast.getObjectGetter()});
 
     <#if ast.isValueWithinOpt()>}</#if>
@@ -58,7 +58,7 @@ Reporting.reportTransformationObjectChange("${ruleClassName}",${ast.getObjectGet
         d
     );
 
-    this.modelAccessor.notifyListModification(${ast.getObjectGetter()}, "${ast.getAttributeName()}", <#if ast.isPresentInsertPosition()>pos<#else>${ast.getObjectGetter()}.${ast.getGetter()}().size()</#if>, ModificationOp.SET, null, d);
+    this.modelAccessor.notifyListModification(${ast.getObjectGetter()}, "${ast.getAttributeName()}", <#if ast.isPresentInsertPosition()>pos<#else>${ast.getObjectGetter()}.${ast.getGetter()}().size() - 1</#if>, ModificationOp.SET, null, d);
     this.modelAccessor.notifyNodeAttach(d, ${ast.getObjectGetter()});
 
     <#if ast.isValueWithinOpt()>}</#if>
