@@ -568,6 +568,71 @@ public class WithinTypeBasicSymbolsResolver {
     return resolved.stream().findAny();
   }
 
+  /**
+   * Resolves a type identifier as an expression,
+   * delegates to
+   * {@link #getTypeAsExpression(SymTypeExpression, AccessModifier)}.
+   */
+  public static Optional<SymTypeExpression> resolveTypeAsExpression(
+      SymTypeExpression thisType,
+      String name,
+      AccessModifier accessModifier,
+      Predicate<TypeSymbol> predicate
+  ) {
+    return getDelegate()
+        ._resolveTypeAsExpression(thisType, name, accessModifier, predicate);
+  }
+
+  protected Optional<SymTypeExpression> _resolveTypeAsExpression(
+      SymTypeExpression thisType,
+      String name,
+      AccessModifier accessModifier,
+      Predicate<TypeSymbol> predicate) {
+    Optional<SymTypeExpression> typeIdType =
+        resolveType(thisType, name, accessModifier, predicate);
+    Optional<SymTypeExpression> typeIdAsExprType = typeIdType.flatMap(t ->
+        WithinTypeBasicSymbolsResolver.getTypeAsExpression(t, accessModifier)
+    );
+    return typeIdAsExprType;
+  }
+
+  /**
+   * Takes a type identifier,
+   * but returns the type of the corresponding expression.
+   * This is used whenever an expression is required,
+   * but the name cannot be resolved to an expression.
+   * If the name refers to a type,
+   * the type identifier can be interpreted as an expression,
+   * depending on the language.
+   * <p>
+   * Example: {@code Person("Riley", 26);}
+   * is used by a greater subset of MontiCore languages
+   * as the object construction of a {@code Person},
+   * even though {@code Person} is not an expression
+   * but a type identifier.
+   * <p>
+   * {@link WithinScopeBasicSymbolsResolver#resolveNameAsExpr(IBasicSymbolsScope, String)}
+   * and similar should always have the higher priority!
+   *
+   * @param thisType       the type resolved
+   * @param accessModifier the modifier used to access the type identifier
+   * @return the type of the expression
+   *     which is based on the resolved type
+   */
+  protected static Optional<SymTypeExpression> getTypeAsExpression(
+      SymTypeExpression thisType,
+      AccessModifier accessModifier
+  ) {
+    return getDelegate()._getTypeAsExpression(thisType, accessModifier);
+  }
+
+  protected Optional<SymTypeExpression> _getTypeAsExpression(
+      SymTypeExpression thisType,
+      AccessModifier accessModifier
+  ) {
+    return Optional.empty();
+  }
+
   // Helper
 
   /**
