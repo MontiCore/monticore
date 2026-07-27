@@ -9,7 +9,8 @@ ${signature("ruleClassName")}
     }
 <#else>
     // single attribute (not in a list)
-    ${ast.getValueType()} ${ast.getAttributeName()}_oldValue = ${ast.getObjectGetter()}.${ast.getGetter()}();
+    <#assign valueName = ast.getObjectGetter()?remove_beginning("m.")?remove_ending(".get()")>
+    ${ast.getValueType()} ${valueName}_${ast.getAttributeName()}_oldValue = ${ast.getObjectGetter()}.${ast.getGetter()}();
     ${ast.getObjectGetter()}.${ast.getSetter()}(m.${ast.getObjectName()}_${ast.getAttributeName()}_before);
-    this.modelAccessor.notifyModification(${ast.getObjectGetter()}, "${ast.getAttributeName()}", ModificationOp.REPLACE, ${ast.getAttributeName()}_oldValue, ${ast.getObjectGetter()}.${ast.getGetter()}());
+    this.modelAccessor.notifyModification(${ast.getObjectGetter()}, "${ast.getAttributeName()}", ModificationOp.REPLACE, ${valueName}_${ast.getAttributeName()}_oldValue, ${ast.getObjectGetter()}.${ast.getGetter()}());
 </#if>

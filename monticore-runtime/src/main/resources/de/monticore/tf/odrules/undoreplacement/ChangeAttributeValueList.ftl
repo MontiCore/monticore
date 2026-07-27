@@ -74,12 +74,12 @@
   }
 <#elseif !ast.attributeIterated && !ast.isValueWithinList()>
   // single attribute (not in a list)
-  // Not possible, the right side hast to be in a list when the left side is
+  // Not possible, the right side has to be in a list when the left side is
   for (${ast.getObjectType()} d : m.${ast.getObjectName()}_${ast.getValue()}_before.keySet()) {
-    ${ast.getValueType()} oldVal = d.${ast.getGetter()};
+    ${ast.getValueType()} oldVal = d.${ast.getGetter()}();
     d.${ast.getSetter()}(m.${ast.getObjectName()}_${ast.getValue()}_before.get(d));
 
-    this.modelAccessor.notifyModification(d, "${ast.getAttributeName()}", ModificationOp.REPLACE, oldVal, d.${ast.getGetter()});
+    this.modelAccessor.notifyModification(d, "${ast.getAttributeName()}", ModificationOp.REPLACE, oldVal, d.${ast.getGetter()}());
     this.modelAccessor.notifyNodeAttach(m.${ast.getObjectName()}_${ast.getValue()}_before.get(d), d);
   }
 <#elseif !ast.attributeIterated && !ast.copy>
