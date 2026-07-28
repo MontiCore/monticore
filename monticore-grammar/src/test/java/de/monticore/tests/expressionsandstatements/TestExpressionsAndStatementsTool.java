@@ -340,7 +340,7 @@ public class TestExpressionsAndStatementsTool
     return interpret(ast, false);
   }
 
-  protected InterpreterAccess4Tests initializeInterpreter() {
+  public InterpreterAccess4Tests initializeInterpreter() {
     InterpreterDataForBasicSymbols iData = new InterpreterDataForBasicSymbols();
     ExpressionsAndStatementsTraverser traverser = ExpressionsAndStatementsMill.inheritanceTraverser();
     traverser.setExpressionsBasisHandler(new ExpressionsBasisInterpreter(iData));
