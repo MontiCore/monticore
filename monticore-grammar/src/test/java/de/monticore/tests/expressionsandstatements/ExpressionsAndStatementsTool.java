@@ -9,90 +9,22 @@ import de.monticore.ocl.oclexpressions.cocos.IterateExpressionVariableUsageIsCor
 import de.monticore.ocl.oclexpressions.symboltable.OCLExpressionsSymbolTableCompleter;
 import de.monticore.ocl.setexpressions.cocos.SetComprehensionHasGenerator;
 import de.monticore.ocl.setexpressions.symboltable.SetExpressionsSymbolTableCompleter;
+import de.monticore.regex.regularexpressions.cocos.RangeHasLowerOrUpperBound;
 import de.monticore.statements.mccommonstatements._symboltable.MCCommonStatementsSymTabCompletion;
 import de.monticore.statements.mccommonstatements.cocos.*;
 import de.monticore.statements.mcvardeclarationstatements._cocos.VarDeclarationInitializationHasCorrectType;
 import de.monticore.statements.mcvardeclarationstatements._cocos.VarDeclarationNameAlreadyDefinedInScope;
 import de.monticore.statements.mcvardeclarationstatements._symboltable.MCVarDeclarationStatementsSymTabCompletion;
-import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
-import de.monticore.symboltable.ImportStatement;
 import de.monticore.tests.expressionsandstatements._ast.ASTBehaviorInput;
 import de.monticore.tests.expressionsandstatements._cocos.ExpressionsAndStatementsCoCoChecker;
-import de.monticore.tests.expressionsandstatements._symboltable.IExpressionsAndStatementsArtifactScope;
 import de.monticore.tests.expressionsandstatements._visitor.ExpressionsAndStatementsTraverser;
-import de.monticore.tests.expressionsandstatements.types3.ExpressionsAndStatementsTypeCheck3;
 import de.monticore.types.mcbasictypes.cocos.QualifiedTypeHasNoTypeParameters;
 
-import java.io.IOException;
-import java.util.Optional;
+public class ExpressionsAndStatementsTool
+    extends ExpressionsAndStatementsToolTOP {
 
-import static de.monticore.runtime.junit.MCAssertions.assertNoFindings;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
-/**
- * Provides simplified access to parsing/CoCo-checks/SymTab-Generierung/etc.
- * specifically for tests.
- */
-public class ExpressionsAndStatementsUtil {
-
-  public static void init() {
-    // Mill
-    ExpressionsAndStatementsMill.reset();
-    ExpressionsAndStatementsMill.init();
-    ExpressionsAndStatementsMill.globalScope().clear();
-
-    // TypeCheck
-    ExpressionsAndStatementsTypeCheck3.init();
-
-    // Symbols
-    BasicSymbolsMill.initializePrimitives();
-  }
-
-  /**
-   * Given a model, this provides an AST with symbol table.
-   * The CoCos are already checked.
-   *
-   * @param modelStr the model to create an AST of
-   * @return the AST with corresponding symbol table
-   */
-  public static ASTBehaviorInput getPreparedAST(String modelStr) {
-    ASTBehaviorInput ast = parse(modelStr);
-    runSymTabGenitor(ast);
-    runSymTabCompleter(ast);
-    runContextConditionChecks(ast);
-    return ast;
-  }
-
-  public static ASTBehaviorInput parse(String modelStr) {
-    try {
-      Optional<ASTBehaviorInput> astOpt =
-          ExpressionsAndStatementsMill.parser().parse_String(modelStr);
-      assertNoFindings();
-      assertTrue(astOpt.isPresent());
-      return astOpt.get();
-    }
-    catch (IOException e) {
-      fail(e);
-      return null;
-    }
-  }
-
-  public static IExpressionsAndStatementsArtifactScope runSymTabGenitor(
-      ASTBehaviorInput ast
-  ) {
-    IExpressionsAndStatementsArtifactScope scope =
-        ExpressionsAndStatementsMill.scopesGenitorDelegator().createFromAST(ast);
-    assertNoFindings();
-    // default import
-    scope.addImports(new ImportStatement("java.lang", true));
-    scope.addImports(new ImportStatement("java.util", true));
-    return scope;
-  }
-
-  public static void runSymTabCompleter(
-      ASTBehaviorInput ast
-  ) {
+  @Override
+  public void completeSymbolTable(ASTBehaviorInput node) {
     ExpressionsAndStatementsTraverser symTabCompleter =
         ExpressionsAndStatementsMill.inheritanceTraverser();
 
@@ -124,13 +56,10 @@ public class ExpressionsAndStatementsUtil {
         new MCVarDeclarationStatementsSymTabCompletion();
     symTabCompleter.add4MCVarDeclarationStatements(mcVarDeclarationStatementsCompleter);
 
-    ast.accept(symTabCompleter);
-    assertNoFindings();
+    node.accept(symTabCompleter);
   }
 
-  public static void runContextConditionChecks(
-      ASTBehaviorInput ast
-  ) {
+  public void runDefaultCoCos(ASTBehaviorInput ast) {
     ExpressionsAndStatementsCoCoChecker checker = new ExpressionsAndStatementsCoCoChecker();
     checker.addCoCo(new DoWhileConditionHasBooleanType());
     checker.addCoCo(new ExpressionStatementIsValid());
@@ -138,12 +67,12 @@ public class ExpressionsAndStatementsUtil {
     checker.addCoCo(new ForEachIsValid());
     checker.addCoCo(new IfConditionHasBooleanType());
     checker.addCoCo(new SwitchStatementValid());
-    //checker.addCoCo(new SynchronizedArgIsReftype());
+    checker.addCoCo(new SynchronizedArgIsReftype());
     checker.addCoCo(new WhileConditionHasBooleanType());
     checker.addCoCo(new AssertIsValid());
-    //checker.addCoCo(new CatchIsValid());
-    //checker.addCoCo(new ThrowIsValid());
-    //checker.addCoCo(new ResourceInTryStatementCloseable());
+    checker.addCoCo(new CatchIsValid());
+    checker.addCoCo(new ThrowIsValid());
+    checker.addCoCo(new ResourceInTryStatementCloseable());
     checker.addCoCo(new ExpressionValid());
     checker.addCoCo(new IterateExpressionVariableUsageIsCorrect());
     checker.addCoCo(new VarDeclarationInitializationHasCorrectType());
@@ -151,12 +80,9 @@ public class ExpressionsAndStatementsUtil {
     checker.addCoCo((AssignmentExpressionsASTAssignmentExpressionCoCo) new AssignmentExpressionsOnlyAssignToLValuesCoCo());
     checker.addCoCo(new IterateExpressionVariableUsageIsCorrect());
     checker.addCoCo(new SetComprehensionHasGenerator());
-    //checker.addCoCo(new RangeHasLowerOrUpperBound());
+    checker.addCoCo(new RangeHasLowerOrUpperBound());
     checker.addCoCo(new QualifiedTypeHasNoTypeParameters());
-    //checker.addCoCo(new TypeParameterNoCyclicInheritance());
-    //checker.addCoCo(new TypeParametersHaveUniqueNames());
     checker.checkAll(ast);
-    assertNoFindings();
   }
 
 }
