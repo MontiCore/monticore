@@ -359,15 +359,6 @@ public final class MontiCoreConfiguration extends AMontiCoreConfiguration implem
   }
 
   /**
-   * Getter for the optional tagging generation.
-   *
-   * @return Optional boolean for the tagging generation
-   */
-  public Optional<Boolean> getGenTag() {
-    return getAsBoolean(GENTAG_LONG);
-  }
-  
-  /**
    * @param files as String names to convert
    * @return list of files by creating file objects from the Strings
    */
@@ -408,14 +399,6 @@ public final class MontiCoreConfiguration extends AMontiCoreConfiguration implem
           .map(p-> (JsonElement) new JsonBoolean(p))
           .orElse(new JsonNull());
       result.putMember(GENDST_LONG, dstlGen);
-    }
-
-    // GenTag
-    {
-      JsonElement tagGen = this.getGenTag()
-              .map(p-> (JsonElement) new JsonBoolean(p))
-              .orElse(new JsonNull());
-      result.putMember(GENTAG_LONG, tagGen);
     }
 
     // Custom Script set?
