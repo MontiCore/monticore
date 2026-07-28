@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions.uglyexpressions.types3;
 
 import de.monticore.expressions.uglyexpressions._ast.ASTArrayCreator;
@@ -28,7 +29,9 @@ import java.util.stream.Collectors;
 
 import static de.monticore.types.check.SymTypeExpressionFactory.createIntersection;
 import static de.monticore.types.check.SymTypeExpressionFactory.createObscureType;
+import static de.monticore.types3.SymTypeRelations.isBoolean;
 import static de.monticore.types3.SymTypeRelations.isBottom;
+import static de.monticore.types3.SymTypeRelations.isNumericType;
 
 public class UglyExpressionsTypeVisitor
     extends AbstractTypeVisitor
@@ -51,16 +54,23 @@ public class UglyExpressionsTypeVisitor
 
   @Override
   public void endVisit(ASTTypeCastExpression expr) {
-    SymTypeExpression typeResult = getType4Ast().getPartialTypeOfTypeId(expr.getMCType());
-    SymTypeExpression exprResult = getType4Ast().getPartialTypeOfExpr(expr.getExpression());
+    SymTypeExpression typeResult =
+        getType4Ast().getPartialTypeOfTypeId(expr.getMCType());
+    SymTypeExpression exprResult =
+        getType4Ast().getPartialTypeOfExpr(expr.getExpression());
 
     SymTypeExpression result;
     if (typeResult.isObscureType() || exprResult.isObscureType()) {
       // if any inner obscure then error already logged
       result = createObscureType();
     }
-    else if (SymTypeRelations.isNumericType(typeResult) && SymTypeRelations.isNumericType(exprResult)) {
+    else if (isNumericType(typeResult) && isNumericType(exprResult)) {
       // allow to cast numbers down, e.g., (int) 5.0 or (byte) 5
+      // this includes boxing/unboxing
+      result = typeResult;
+    }
+    else if (isBoolean(typeResult) && isBoolean(exprResult)) {
+      // allow explicit boxing/unboxing of booleans.
       result = typeResult;
     }
     else if (

@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static de.monticore.cd.codegen.CD2JavaTemplates.ANNOTATIONS;
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 import static de.monticore.cd.codegen.CD2JavaTemplates.VALUE;
 import static de.monticore.cd.facade.CDModifier.PROTECTED;
@@ -96,7 +97,7 @@ public class SymbolSurrogateBuilderDecorator extends AbstractCreator<ASTCDType, 
 
     builderAttributes.forEach(this::addAttributeDefaultValues);
 
-    return CD4AnalysisMill.cDClassBuilder()
+    ASTCDClass surrogateBuilderClass = CD4AnalysisMill.cDClassBuilder()
         .setName(symbolSurrogateBuilderName)
         .setModifier(modifier)
         .addCDMember(createDefaultConstructor(symbolSurrogateBuilderName))
@@ -116,6 +117,8 @@ public class SymbolSurrogateBuilderDecorator extends AbstractCreator<ASTCDType, 
         .addAllCDMembers(enclosingScopeMutatorMethods)
         .addCDMember(createBuildMethod(symbolSurrogateName, builderAttributes))
         .build();
+    this.replaceTemplate(ANNOTATIONS, surrogateBuilderClass, new StringHookPoint("@Deprecated(forRemoval = true)"));
+    return surrogateBuilderClass;
   }
 
   protected ASTCDConstructor createDefaultConstructor(String symbolSurrogateBuilderName) {
@@ -190,6 +193,7 @@ public class SymbolSurrogateBuilderDecorator extends AbstractCreator<ASTCDType, 
 
   protected ASTCDMethod createBuildMethod(String symbolSurrogate, List<ASTCDAttribute> attributeList) {
     ASTCDMethod buildMethod = getCDMethodFacade().createMethod(PUBLIC.build(), getMCTypeFacade().createQualifiedType(symbolSurrogate), "build");
+    this.replaceTemplate(ANNOTATIONS, buildMethod, new StringHookPoint("@SuppressWarnings(\"removal\")"));
     this.replaceTemplate(EMPTY_BODY, buildMethod, new TemplateHookPoint(TEMPLATE_PATH + "BuildSymbolSurrogate", symbolSurrogate, attributeList));
     return buildMethod;
   }

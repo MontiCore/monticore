@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import com.google.common.base.Preconditions;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
@@ -10,7 +11,6 @@ import de.monticore.types3.SymTypeRelations;
 import de.monticore.types3.generics.TypeParameterRelations;
 import de.monticore.types3.generics.bounds.Bound;
 import de.monticore.types3.generics.util.BoundResolution;
-import de.monticore.types3.util.SymTypeExpressionComparator;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -39,7 +39,7 @@ public class SymTypeOfFunction extends SymTypeExpression {
   /**
    * @deprecated only required for the deprecated type symbol
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public static final String TYPESYMBOL_NAME = "function";
 
   /**
@@ -76,6 +76,8 @@ public class SymTypeOfFunction extends SymTypeExpression {
       SymTypeExpression returnType,
       List<? extends SymTypeExpression> argumentTypes,
       boolean elliptic) {
+    Preconditions.checkNotNull(returnType);
+    Preconditions.checkNotNull(argumentTypes);
     super.typeSymbol = new TypeSymbol(TYPESYMBOL_NAME);
     super.typeSymbol.setEnclosingScope(BasicSymbolsMill.scope());
     super.typeSymbol.setSpannedScope(BasicSymbolsMill.scope());
@@ -88,7 +90,7 @@ public class SymTypeOfFunction extends SymTypeExpression {
   /**
    * @deprecated the other constructor is to be used
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public SymTypeOfFunction(SymTypeExpression returnType, List<SymTypeExpression> argumentTypes,
       boolean elliptic) {
     this(null, returnType, argumentTypes, elliptic);
@@ -220,14 +222,13 @@ public class SymTypeOfFunction extends SymTypeExpression {
 
   protected Map<SymTypeVariable, SymTypeExpression> getTypeVariableReplaceMap() {
 
-    Map<SymTypeVariable, SymTypeExpression> replaceMap =
-        new TreeMap<>(new SymTypeExpressionComparator());
+    Map<SymTypeVariable, SymTypeExpression> replaceMap = new TreeMap<>();
     if (hasSymbol()) {
       // skolem variables:
       List<SymTypeInferenceVariable> infVars =
           TypeParameterRelations.getIncludedInferenceVariables(this);
       Map<SymTypeInferenceVariable, SymTypeExpression> infVar2Skolem =
-          new TreeMap<>(new SymTypeExpressionComparator());
+          new TreeMap<>();
       for (SymTypeInferenceVariable infVar : infVars) {
         infVar2Skolem.put(infVar,
             SymTypeExpressionFactory.createTypeObjectViaSurrogate(
@@ -236,8 +237,7 @@ public class SymTypeOfFunction extends SymTypeExpression {
             )
         );
       }
-      Map<SymTypeExpression, SymTypeInferenceVariable> skolem2infVar =
-          new TreeMap<>(new SymTypeExpressionComparator());
+      Map<SymTypeExpression, SymTypeInferenceVariable> skolem2infVar = new TreeMap<>();
       infVar2Skolem.forEach((k, v) -> skolem2infVar.put(v, k));
       SymTypeOfFunction thisWithSkolems = TypeParameterRelations
           .replaceInferenceVariables(this, infVar2Skolem)
@@ -250,8 +250,7 @@ public class SymTypeOfFunction extends SymTypeExpression {
           = TypeParameterRelations.getFreeVariableReplaceMap(
           declType, BasicSymbolsMill.scope()
       );
-      Map<SymTypeInferenceVariable, SymTypeVariable> freeVar2TypePar =
-          new TreeMap<>(new SymTypeExpressionComparator());
+      Map<SymTypeInferenceVariable, SymTypeVariable> freeVar2TypePar = new TreeMap<>();
       typePar2FreeVar.forEach((k, v) -> freeVar2TypePar.put(v, k));
       SymTypeOfFunction declTypeWithFreeVars = TypeParameterRelations
           .replaceTypeVariables(declType, typePar2FreeVar)

@@ -5,13 +5,16 @@ import java.util.*;
 import java.util.Optional;
 
 import de.monticore.ast.ASTNode;
+import de.monticore.tf.runtime.FastLookupList;
 import de.monticore.tf.runtime.ODRule;
 import de.monticore.tf.runtime.ValueComparator;
 import de.monticore.tf.runtime.matching.ModelTraversal;
-import de.monticore.tf.runtime.matching.ModelTraversalFactory;
+import de.monticore.tf.runtime.matching.CommentBasedModelTraversal;
+import de.monticore.tf.runtime.matching.CommentBasedModelTraversalFactory;
 import com.google.common.collect.Lists;
 import static com.google.common.collect.Lists.*;
 import static de.se_rwth.commons.StringTransformations.*;
+import java.util.stream.Collectors;
 import com.google.common.base.*;
 import de.se_rwth.commons.logging.Log;
 import de.monticore.generating.templateengine.reporting.Reporting;

@@ -46,7 +46,7 @@ public class CheckScannerlessTest {
     assertEquals("List", ast.getName());
     ASTTypeArguments ta = ast.getTypeArguments();
     assertEquals("Theo", ta.getType(0).getName());
-    // MCAssertions.assertNoFindings(); is implicitly called due to @TestWithMCLanguage
+    // due to @TestWithMCLanguage, we check after each test that no (unchecked) findings are present
   }
 
   @Test
@@ -57,41 +57,71 @@ public class CheckScannerlessTest {
     parser.parse_StringExpression("List<Set<Theo>>> >wert" );
     assertTrue(parser.hasErrors()); // check that the parser has errors
     
-    // assert a findings is present & remove it from the log
+    // assert a findings is present
     // We ignore the content of the finding, as it is a parser error 
     MCAssertions.assertHasFinding(); 
   }
   // The @TestWithMCLanguage ensures, that after each test:
-  //  - no more findings are present
+  //  - all reported findings were asserted for
   //  - the mill is torn down
 }
 ```
 
 The `@TestWithMCLanguage` annotation sets-up the test for a language.
 Before each test,
- the logger is replaced with a side effect free stub that collects,
- the previous findings cleared,
- and the given mill initialized.
-After each test, the log must not have any findings present.
-If no Mill setup is desired, the `AbstractMCTest` class provides the same functionality.
 
-In addition to jUnits `Assertions`, MontiCore provides a `MCAssertions` class for e.g. Log assertions:
+ 1. the logger is replaced with a side effect free stub that collects findings,  
+ 2. the previous findings are cleared, 
+ 3. and the given mill is initialized.
+
+After each test, the log must not have any non-asserted findings present.
+If no Mill setup is desired, 
+the [`AbstractMCTest`](../monticore-runtime/src/testFixtures/java/de/monticore/runtime/junit/AbstractMCTest.java) class provides the same functionality.
+
+In addition to jUnits [`Assertions`](https://docs.junit.org/current/api/org.junit.jupiter.api/org/junit/jupiter/api/Assertions.html), 
+MontiCore provides a [`MCAssertions`](../monticore-runtime/src/testFixtures/java/de/monticore/runtime/junit/MCAssertions.java)
+class for e.g., Log assertions:
 
 The notable methods are:
 
-* `MCAssertions#assertNoFindings(String message)` - Ensure no findings are present (always called after each test)
-* `MCAssertions#assertHasFindingStartingWith(String expectedPrefix, String message)` - Ensures that at least one finding starts with the prefix and removes & returns that one finding
-* `MCAssertions#assertHasFindingsStartingWith(String expectedPrefix, String message)` - Ensures that at least one finding starts with the prefix and removes & returns all matching findings
-* `MCAssertions#assertHasFinding(Predicate<Finding> predicate, String message)` - Ensures that at least one finding matches the predicate and removes & returns that one finding
-* `MCAssertions#assertHasFindings(Predicate<Finding> predicate, String message)` - Ensures that at least one finding matches the predicate and removes & returns all matching findings
+* [`MCAssertions#assertNoFindings()`](../monticore-runtime/src/testFixtures/java/de/monticore/runtime/junit/MCAssertions.java#assertHasFinding()) -
+  Ensure no findings are present.
+* [`MCAssertions#assertHasFindingStartingWith(String expectedPrefix, String message)`](../monticore-runtime/src/testFixtures/java/de/monticore/runtime/junit/MCAssertions.java#assertHasFindingStartingWith(java.lang.String,java.lang.String)) -
+  Ensures that at least one finding starts with the prefix and returns
+  that one finding
+* [`MCAssertions#assertHasFindingsStartingWith(String expectedPrefix, String message)`](../monticore-runtime/src/testFixtures/java/de/monticore/runtime/junit/MCAssertions.java#assertHasFindingsStartingWith(java.lang.String,java.lang.String)) -
+  Ensures that at least one finding starts with the prefix and returns
+  all matching findings
+* [`MCAssertions#assertHasFinding(Predicate<Finding> predicate, String message)`](../monticore-runtime/src/testFixtures/java/de/monticore/runtime/junit/MCAssertions.java#assertHasFinding(java.util.function.Predicate,java.lang.String)) -
+  Ensures that at least one finding matches the predicate and returns
+  that one finding
+* [`MCAssertions#assertHasFindings(Predicate<Finding> predicate, String message)`](../monticore-runtime/src/testFixtures/java/de/monticore/runtime/junit/MCAssertions.java#assertHasFindings(java.util.function.Predicate,java.lang.String)) -
+  Ensures that at least one finding matches the predicate and returns
+  all matching findings
+
 
 When the generated pretty printer is customized via the TOP-mechanism,
  the `PrettyPrinterTester` class provides functionality for quickly writing a bunch of tests for the pretty printer.
 
 The test functionality of MontiCore is provided by the [test fixture](https://docs.gradle.org/current/userguide/java_testing.html#sec:java_test_fixtures) 
-`testFixture("de.monticore:monticore-grammar:$mc_version")` dependency.
+`testImplementation testFixtures("de.monticore:monticore-grammar:$mc_version")` dependency.
+
+```groovy 
+// build.gradle
+dependencies {
+  testImplementation testFixtures("de.monticore:monticore-grammar:$mc_version")
+}
+```
+
 For smaller examples of parsing, pretty printing, etc., models can be written within the test class and
 external model files are not needed.
+
+## Testing the Symbol Table of a Language
+
+!!! note "This Best Practice is still under development"
+      
+      The testing of symbol table creation, the resolving of symbols, possible adapters, and DeSers is WIP
+
 
 ## Testing Context Conditions
 
@@ -101,7 +131,8 @@ whereas the latter ensure that invalid models do violate the context condition
 (i.e. true negatives and no false positives). 
 Consequently, two different kinds of tests should exist for every context condition.
 
-Similar to parser tests, the `@TestWithMCLanguage` annotation or `AbstractMCTest` class can be used to set up tests.
+Similar to parser tests, the [`@TestWithMCLanguage`](../monticore-runtime/src/testFixtures/java/de/monticore/runtime/junit/TestWithMCLanguage.java) 
+annotation or [`AbstractMCTest`](../monticore-runtime/src/testFixtures/java/de/monticore/runtime/junit/AbstractMCTest.java) class can be used to set up tests.
 
 ### Testing a Context Condition on a Valid Model
 
@@ -188,16 +219,26 @@ or complete error message as well.
 However, it is often useful to reduce the assertion to checking the error code (`0xADD03`), 
 because error messages are relatively often modified.
 
-The handbook describes testing of language features in [Section 10.3 and 21.5](https://www.monticore.de/handbook.pdf).
+### Uniqueness of Error Codes
 
-    
+!!! note "This Best Practice is still under development"
+    Check the `check-error-codes` GitHub action for now
+   
+
+## Testing the Command Line Interface of a Language
+
+!!! note "This Best Practice is still under development"
+
+
+The handbook describes testing of language features in [Sections 10.3 and 21.5](https://www.monticore.de/handbook.pdf).
+
 ## Further Information
 
 * [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
 * [MontiCore documentation](https://www.monticore.de/)
-* [**List of languages**](https://github.com/MontiCore/monticore/blob/opendev/docs/Languages.md)
-* [**MontiCore Core Grammar Library**](https://github.com/MontiCore/monticore/blob/opendev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
-* [Best Practices](https://github.com/MontiCore/monticore/blob/opendev/docs/BestPractices.md)
+* [**List of languages**](https://github.com/MontiCore/monticore/blob/dev/docs/Languages.md)
+* [**MontiCore Core Grammar Library**](https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
+* [Best Practices](https://github.com/MontiCore/monticore/blob/dev/docs/BestPractices.md)
 * [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
 * [License definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)
 

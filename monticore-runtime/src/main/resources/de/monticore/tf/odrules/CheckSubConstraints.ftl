@@ -3,7 +3,7 @@
 <#if subConstraints??>
   <#list subConstraints as subConstraint>
     <#if subConstraint.dependVars??>
-      private boolean isSubConstraintValid_${subConstraint?index}(
+      protected boolean isSubConstraintValid_${subConstraint?index}(
       <#list subConstraint.dependVars as dependVar>
         <#if dependVar?index gt 0>, </#if>
         ${dependVar.getType()} ${dependVar.getObjectName()}

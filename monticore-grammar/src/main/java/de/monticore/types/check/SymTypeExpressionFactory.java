@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
@@ -322,9 +323,9 @@ public class SymTypeExpressionFactory {
 
   /**
    * splits the type-string along commas, but only on such that are on the first depth of generics
-   * @param type type-string, like {@code Map<Double, HashMap<String, Integer>>}
+   * @param type type-string, like {@code Map<Double, LinkedHashMap<String, Integer>>}
    * @param start first occurrence of an opening generic
-   * @return all first sub-generics as a list, like {@code [Double; HashMap<String, Integer>]}
+   * @return all first sub-generics as a list, like {@code [Double; LinkedHashMap<String, Integer>]}
    */
   @Deprecated(forRemoval = true)
   protected static List<String> iterateBrackets(String type, int start){
@@ -359,6 +360,19 @@ public class SymTypeExpressionFactory {
             .map(tp -> createTypeVariable(tp))
             .collect(Collectors.toList());
     return createGenerics(typeSymbol, parameters);
+  }
+
+  public static SymTypeExpression createDeclaredType(TypeSymbol typeSymbol) {
+    // check against legacy inheritance
+    Preconditions.checkArgument(!(typeSymbol instanceof TypeVarSymbol));
+    SymTypeExpression declared;
+    if (typeSymbol.getSpannedScope().getTypeVarSymbolsWithSubKinds().isEmpty()) {
+      declared = createTypeObject(typeSymbol);
+    }
+    else {
+      declared = createGenericsDeclaredType(typeSymbol);
+    }
+    return declared;
   }
 
   /**
@@ -418,9 +432,8 @@ public class SymTypeExpressionFactory {
    * whenever appropriate
    */
   public static SymTypeExpression createFromSymbol(TypeSymbol typeSymbol) {
-    IBasicSymbolsTypeDispatcher typeDispatcher =
-        BasicSymbolsMill.typeDispatcher();
-    if(typeDispatcher.isBasicSymbolsTypeVar(typeSymbol)) {
+    // TODO: use TypeDispatcher as soon as it is fixed
+    if(typeSymbol instanceof TypeVarSymbol) {
       return createTypeVariable((TypeVarSymbol) typeSymbol);
     }
     if(typeSymbol.getSpannedScope().getLocalTypeVarSymbols().isEmpty()) {

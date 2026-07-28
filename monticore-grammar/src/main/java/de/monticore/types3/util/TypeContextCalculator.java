@@ -1,6 +1,7 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.types3.util;
 
+import com.google.common.base.Preconditions;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._util.IBasicSymbolsTypeDispatcher;
@@ -39,11 +40,9 @@ public class TypeContextCalculator {
     for (IScope scope = enclosingScope;
          scope != null && enclosingType.isEmpty();
          scope = scope.getEnclosingScope()) {
-      if (scope.isPresentSpanningSymbol() &&
-          getTypeDispatcher().isBasicSymbolsType(scope.getSpanningSymbol())) {
-        enclosingType = Optional.of(
-            getTypeDispatcher().asBasicSymbolsType(scope.getSpanningSymbol())
-        );
+      //TODO: use TypeDispatcher as soon as it is fixed
+      if (scope.isPresentSpanningSymbol() && scope.getSpanningSymbol() instanceof TypeSymbol) {
+        enclosingType = Optional.of((TypeSymbol) scope.getSpanningSymbol());
       }
     }
     return enclosingType;
@@ -147,7 +146,7 @@ public class TypeContextCalculator {
   }
 
   protected static void setDelegate(TypeContextCalculator newDelegate) {
-    TypeContextCalculator.delegate = Log.errorIfNull(newDelegate);
+    TypeContextCalculator.delegate = Preconditions.checkNotNull(newDelegate);
   }
 
   protected static TypeContextCalculator getDelegate() {

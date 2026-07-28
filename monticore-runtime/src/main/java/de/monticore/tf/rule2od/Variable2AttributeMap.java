@@ -5,7 +5,7 @@ package de.monticore.tf.rule2od;
 import com.google.common.collect.Maps;
 import de.monticore.tf.ast.ITFObject;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -21,7 +21,7 @@ public class Variable2AttributeMap {
     this.v2a = v2a;
   }
 
-  private Map<String, AttributeEntry> v2a = new HashMap<>();
+  private Map<String, AttributeEntry> v2a = new LinkedHashMap<>();
 
   public void addDeclaration(String variableName, ITFObject object, String attributeName) {
     v2a.put(variableName, new AttributeEntry(object, attributeName));

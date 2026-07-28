@@ -16,6 +16,10 @@ related tooling are currently available for download:
 .md-typeset table:not([class]) td {
   padding:.3em .7em;
 }
+/*Hide sidebar/navigation to gain even more space*/
+.md-sidebar--primary {
+  display: none;
+}
 </style>
 
 | Artifact                            | Description                     | Download     |
@@ -51,6 +55,6 @@ Please note the [MontiCore 3-Level License](../00.org/Licenses/LICENSE-MONTICORE
 * [Licenses](../00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md) - MontiCore 3-Level License
 * [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
 * [**List of languages**](https://monticore.github.io/monticore/docs/Languages/)
-* [**MontiCore Core Grammar Library**](https://github.com/MontiCore/monticore/blob/opendev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
+* [**MontiCore Core Grammar Library**](https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
 * [Best Practices](https://monticore.github.io/monticore/docs/BestPractices/)
 * [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)

@@ -33,7 +33,7 @@ import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -477,12 +477,12 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
         getType4Ast().getPartialTypeOfExpr(expr.getExpression())
     );
     if (calculatedInner.isIntersectionType()) {
-      inner = new HashSet<>(
+      inner = new LinkedHashSet<>(
           ((SymTypeOfIntersection) calculatedInner).getIntersectedTypeSet()
       );
     }
     else {
-      inner = new HashSet<>();
+      inner = new LinkedHashSet<>();
       inner.add(calculatedInner);
     }
     if (inner.stream().allMatch(SymTypeExpression::isObscureType)) {
@@ -812,8 +812,9 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
       type = Optional.empty();
     }
     else {
-      SymTypeExpression innerAsExprType =
-          getType4Ast().getPartialTypeOfExpr(expr.getExpression());
+      SymTypeExpression innerAsExprType = SymTypeRelations.normalize(
+          getType4Ast().getPartialTypeOfExpr(expr.getExpression())
+      );
       if (WithinTypeBasicSymbolsResolver.canResolveIn(innerAsExprType)) {
         AccessModifier modifier = innerAsExprType.hasTypeInfo() ?
             TypeContextCalculator.getAccessModifier(
@@ -922,6 +923,14 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
             v -> true,
             f -> true
         );
+        if (type.isEmpty() && !resultsAreOptional) {
+          type = WithinTypeBasicSymbolsResolver.resolveTypeAsExpression(
+              innerAsTypeIdType,
+              name,
+              modifier,
+              t -> true
+          );
+        }
         // Log remark about access modifier,
         // if access modifier is the reason it has not been resolved
         if (type.isEmpty() && !resultsAreOptional) {
@@ -1035,7 +1044,8 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
       boolean resultsAreOptional
   ) {
     // case qualifier "." name as an expression
-    Optional<SymTypeExpression> type = calculateExprQName(expr);
+    Optional<SymTypeExpression> type =
+        calculateExprQName(expr, resultsAreOptional);
     if (type.isEmpty() && !resultsAreOptional) {
       if (isSeriesOfNames(expr)) {
         Log.error("0xF735F unable to interpret qualified name \""
@@ -1075,6 +1085,13 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     }
     else {
       type = Optional.empty();
+    }
+    if (type.isEmpty() && !resultsAreOptional) {
+      type = WithinScopeBasicSymbolsResolver
+          .resolveTypeAsExpression(
+              getAsBasicSymbolsScope(expr.getEnclosingScope()),
+              nameOpt.get()
+          );
     }
     return type;
   }
@@ -1135,7 +1152,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
       Predicate<VariableSymbol> varPredicate,
       Predicate<FunctionSymbol> funcPredicate
   ) {
-    Set<SymTypeExpression> types = new HashSet<>();
+    Set<SymTypeExpression> types = new LinkedHashSet<>();
     Optional<SymTypeExpression> variable =
         WithinTypeBasicSymbolsResolver.resolveVariable(innerAsExprType,
             name,

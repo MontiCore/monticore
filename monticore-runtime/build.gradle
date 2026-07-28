@@ -24,20 +24,28 @@ configurations {
 }
 
 dependencies {
-  api 'de.se_rwth.commons:se-commons-logging:' + se_commons_version
+  api "de.se_rwth.commons:se-commons-logging:$se_commons_version"
   api "org.antlr:antlr4-runtime:$antlr_version"
   api "commons-cli:commons-cli:$commons_cli_version"
   api "com.google.guava:guava:$guava_version"
 
-  implementation 'de.se_rwth.commons:se-commons-utilities:' + se_commons_version
+  api "com.github.spotbugs:spotbugs-annotations:$spotbugs_annotations_version"
+  api "org.checkerframework:checker-qual:$checkerframework_version"
+
+  implementation "de.se_rwth.commons:se-commons-utilities:$se_commons_version"
   implementation "org.freemarker:freemarker:$freemarker_version"
-  implementation group: 'org.apache.commons', name: 'commons-text', version: '1.10.0'
+  implementation "org.apache.commons:commons-text:$commons_text_version"
 
   testFixturesImplementation  "org.junit.jupiter:junit-jupiter-api:$junit_version"
 
+  testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
   testImplementation "org.junit.jupiter:junit-jupiter-params:$junit_version"
-  testImplementation "org.junit.vintage:junit-vintage-engine:$junit_version"
-  testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
+  testImplementation "org.junit.jupiter:junit-jupiter-engine:$junit_version"
+  testRuntimeOnly "org.junit.platform:junit-platform-launcher:$junit_version"
+}
+
+test {
+  useJUnitPlatform()
 }
 
 
@@ -54,6 +62,58 @@ java {
 tasks.named("jar") {
   dependsOn testsJar
 }
+
+// Workaround for https://github.com/gradle/gradle/issues/20539
+
+import org.gradle.api.plugins.internal.JavaConfigurationVariantMapping
+import org.gradle.api.plugins.internal.JvmPluginsHelper
+import org.gradle.api.plugins.internal.JavaPluginHelper
+import org.gradle.internal.component.external.model.ProjectDerivedCapability
+import org.gradle.internal.component.external.model.TestFixturesSupport
+import org.gradle.jvm.component.internal.DefaultJvmSoftwareComponent
+
+pluginManager.withPlugin("java-test-fixtures") {
+  def sourceSet = sourceSets["testFixtures"]
+  def caps = [new ProjectDerivedCapability(project, "testFixtures")];
+  if (GradleVersion.current() != GradleVersion.version("8.5"))
+    caps = caps.toSet()
+  def testFixturesSources = JvmPluginsHelper.createDocumentationVariantWithArtifact(
+      sourceSet.sourcesElementsConfigurationName,
+      TestFixturesSupport.TEST_FIXTURE_SOURCESET_NAME,
+      DocsType.SOURCES,
+      caps,
+      sourceSet.sourcesJarTaskName,
+      sourceSet.allSource,
+      project
+  )
+  def testFixturesJavaDoc = JvmPluginsHelper.createDocumentationVariantWithArtifact(
+      sourceSet.javadocElementsConfigurationName,
+      TestFixturesSupport.TEST_FIXTURE_SOURCESET_NAME,
+      DocsType.JAVADOC,
+      caps,
+      sourceSet.javadocJarTaskName,
+      tasks.named(sourceSet.javadocTaskName),
+      project
+  )
+  def component = JavaPluginHelper.getJavaComponent(project) as DefaultJvmSoftwareComponent
+  component.addVariantsFromConfiguration(testFixturesSources, new JavaConfigurationVariantMapping("runtime", true))
+  component.addVariantsFromConfiguration(testFixturesJavaDoc, new JavaConfigurationVariantMapping("runtime", true))
+}
+publishing {
+  publications {
+    maven(MavenPublication) {
+      // ignore warning of test fixtures
+      suppressPomMetadataWarningsFor("testFixturesApiElements")
+      suppressPomMetadataWarningsFor("testFixturesJavadocElements")
+      suppressPomMetadataWarningsFor("testFixturesRuntimeElements")
+      suppressPomMetadataWarningsFor("testFixturesSourcesElements")
+      // ignore warnings for the monticore-runtime-tests
+      suppressPomMetadataWarningsFor("testsApiElements")
+      suppressPomMetadataWarningsFor("testsRuntimeElements")
+    }
+  }
+}
+//End Workaround
 
 tasks.named("build") {
   dependsOn javadoc, testFixturesJavadoc

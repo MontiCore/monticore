@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types3;
 
+import com.google.common.base.Preconditions;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types3.generics.bounds.Bound;
 import de.monticore.types3.util.SymTypeRelationsDefaultDelegatee;
@@ -389,7 +390,7 @@ public abstract class SymTypeRelations {
   }
 
   protected static void setDelegate(SymTypeRelations newDelegate) {
-    SymTypeRelations.delegate = Log.errorIfNull(newDelegate);
+    SymTypeRelations.delegate = Preconditions.checkNotNull(newDelegate);
   }
 
   protected static SymTypeRelations getDelegate() {

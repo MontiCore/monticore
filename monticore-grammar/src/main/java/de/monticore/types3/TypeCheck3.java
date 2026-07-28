@@ -1,5 +1,7 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types3;
 
+import com.google.common.base.Preconditions;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.types.check.SymTypeExpression;
@@ -155,7 +157,7 @@ public abstract class TypeCheck3 {
   );
 
   protected static void setDelegate(TypeCheck3 delegate) {
-    TypeCheck3.delegate = Log.errorIfNull(delegate);
+    TypeCheck3.delegate = Preconditions.checkNotNull(delegate);
   }
 
   protected static void resetDelegate() {

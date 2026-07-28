@@ -18,7 +18,8 @@ permissions:
   packages: write
 
 env:
-  GRADLE_VERSION: 7.6 # Gradle version used
+  GRADLE_VERSION: 8.14.4 # Gradle version used
+  JAVA_VERSION: 21 # Java version used
   GRADLE_CLI_OPTS: "-Pci" # CLI option passed to Gradle
 
 jobs:
@@ -28,14 +29,30 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout project sources
-        uses: actions/checkout@v3
-      - name: Deploy the snapshot
-        uses: gradle/actions/setup-gradle@v3
+        uses: actions/checkout@v4
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: ${{ env.JAVA_VERSION }}
+      - name: Prepare Gradle for Deploy
+        uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: ${{env.GRADLE_VERSION}}
-          arguments: deployMC ${{env.GRADLE_CLI_OPTS}} -PmavenPassword=${{secrets.SE_NEXUS_PASSWORD}} -PmavenUser=${{secrets.SE_NEXUS_USER}} -PgenEMF=true -PgenTR=true -PgenTagging=true
+      - name: Deploy the snapshot
+        run: gradle deployMC ${{env.GRADLE_CLI_OPTS}} -PmavenPassword=${{secrets.SE_NEXUS_PASSWORD}} -PmavenUser=${{secrets.SE_NEXUS_USER}} -PgenEMF=true -PgenTR=true -PgenTagging=true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload Javadoc
+        uses: actions/upload-artifact@v4
+        # uploads the Javadocs to be used
+        with:
+          name: javadoc
+          path: |
+            monticore-runtime/target/docs/javadoc/
+            monticore-runtime/target/docs/testFixturesJavadoc/
+            monticore-grammar/target/docs/javadoc/
+            monticore-grammar/target/docs/testFixturesJavadoc/
 
   # Trigger GitHub downstream projects (without reporting the pipeline result)
   trigger-github-downstream:

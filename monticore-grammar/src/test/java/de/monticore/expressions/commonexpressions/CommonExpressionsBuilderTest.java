@@ -3,8 +3,9 @@
 package de.monticore.expressions.commonexpressions;
 
 import de.monticore.runtime.junit.TestWithMCLanguage;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @TestWithMCLanguage(CommonExpressionsMill.class)
 public class CommonExpressionsBuilderTest {
@@ -16,6 +17,6 @@ public class CommonExpressionsBuilderTest {
             .setRight(CommonExpressionsMill.nameExpressionBuilder().setName("r").build())
             .build();
     // And that the actual operator is "&&" (instead of "" from the infix operator)
-    Assertions.assertEquals("&&", elem.getOperator());
+    assertEquals("&&", elem.getOperator());
   }
 }

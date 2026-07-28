@@ -43,21 +43,21 @@ plugins {
 }
 
 java {
-  // Configure the java toolchain to use Java 11 (overriding the locally installed JDK)
+  // Configure the java toolchain to use Java 21 (overriding the locally installed JDK)
   // https://docs.gradle.org/current/userguide/toolchains.html
   toolchain {
-    languageVersion = JavaLanguageVersion.of(11)
+    languageVersion = JavaLanguageVersion.of(21)
   }
 }
 
 dependencies {
-  // Depend on the MontiCore language library (which in term depends on the runtime)
+  // Depend on the MontiCore language library (which in turn depends on the runtime)
   grammar "de.monticore:monticore-grammar:$mc_version"
   // and depend on the junit dependencies
   testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
   testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
   // and add the test fixtures (used to set-up tests)
-  testImplementation testFixtures("de.monticore:monticore-grammar:$mc_version"))
+  testImplementation testFixtures("de.monticore:monticore-grammar:$mc_version")
 }
 
 // Where can we find the dependencies?
@@ -306,6 +306,35 @@ This might be fixed by [8078641](https://github.com/openjdk/jdk/commit/21012f2bb
 * Modelpath adding: see above using the source sets
 * Ensure the generation target is NOT added to the java sources (otherwise the TOP mechanism will fail)
 * Ensure no resources.srcDirs += grammarOutDir is used (otherwise your build will depend on itself)
+
+### Root-Warning
+
+Only applies if you see the following warning:
+> WARNING: The se-commons cached work queue is setup multiple times.  
+> Reporting, log prefixes, and performance might be incorrect.  
+> Please add the (possibly MontiCore Generator) plugin to your root plugin (possible with apply false).  
+
+Gradle separates the plugins of subprojects against the plugins of other subprojects.
+As MontiCore (and other generation plugins) schedules its work,
+ this separation may leads to issues.
+While the plugin tries to work around the separation,
+ the performance decreases, the log prefixes might be missing,
+ and the `reportCachedQueueService` task does not contain the tasknames.
+
+You can solve this problem by adding the offending plugin in the (shared) root project
+ of your subprojects:
+
+```gradle
+//build.gradle
+plugins {
+    id 'de.monticore.generator' version "$mc_version" apply false // see https://monticore.github.io/monticore/docs/Gradle/#root-warning
+}
+//subproject/build.gradle
+plugins {
+    id 'de.monticore.generator' // plugin's version is specified in the root project
+}
+```
+
 
 ### Using legacy-dependencies with the new plugin
 

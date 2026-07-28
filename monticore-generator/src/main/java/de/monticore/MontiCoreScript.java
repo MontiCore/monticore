@@ -2,6 +2,7 @@
 
 package de.monticore;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
@@ -71,9 +72,6 @@ import de.monticore.codegen.cd2java.data.DataDecorator;
 import de.monticore.codegen.cd2java.data.DataDecoratorUtil;
 import de.monticore.codegen.cd2java.data.InterfaceDecorator;
 import de.monticore.codegen.cd2java.data.ListSuffixDecorator;
-import de.monticore.codegen.cd2java.interpreter.ASTEvaluateDecorator;
-import de.monticore.codegen.cd2java.interpreter.InterpreterDecorator;
-import de.monticore.codegen.cd2java.interpreter.InterpreterInterfaceDecorator;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.codegen.cd2java.methods.accessor.MandatoryAccessorDecorator;
@@ -94,6 +92,7 @@ import de.monticore.codegen.parser.Languages;
 import de.monticore.codegen.parser.ParserGenerator;
 import de.monticore.codegen.prettyprint.CDPrettyPrinterDecorator;
 import de.monticore.codegen.prettyprint.PrettyPrinterGenerator;
+import de.monticore.de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsPhasedSTCFix;
 import de.monticore.dstlgen.DSTLGenScript;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
@@ -104,7 +103,7 @@ import de.monticore.generating.templateengine.freemarker.FreeMarkerTemplateEngin
 import de.monticore.generating.templateengine.freemarker.MontiCoreTemplateLoader;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.grammar.MCGrammarSymbolTableHelper;
-import de.monticore.grammar.cocos.GrammarCoCos;
+import de.monticore.grammar.cocos.GrammarCoCosFix;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
@@ -320,7 +319,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   public void generateParser(GlobalExtensionManagement glex, ASTCDCompilationUnit astClassDiagram, ASTMCGrammar grammar,
                              IGrammar_WithConceptsGlobalScope symbolTable, MCPath handcodedPath, MCPath templatePath,
                              File outputDirectory) {
-    Log.errorIfNull(
+    Preconditions.checkNotNull(
             grammar,
             "0xA4107 Parser generation can't be processed: the reference to the grammar ast is null");
     ParserGenerator.generateFullParser(glex, astClassDiagram, grammar, symbolTable, handcodedPath, templatePath, outputDirectory);
@@ -336,7 +335,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   public void generateParser(GlobalExtensionManagement glex, ASTMCGrammar grammar, IGrammar_WithConceptsGlobalScope symbolTable,
                              MCPath handcodedPath, MCPath templatePath, File outputDirectory,
                              boolean embeddedJavaCode, Languages lang) {
-    Log.errorIfNull(
+    Preconditions.checkNotNull(
             grammar,
             "0xA4108 Parser generation can't be processed: the reference to the grammar ast is null");
     ParserGenerator.generateParser(glex, grammar, symbolTable, handcodedPath, templatePath, outputDirectory, embeddedJavaCode, lang);
@@ -352,7 +351,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
    * @return a CD for the _prettyprint package
    */
   public ASTCDCompilationUnit generatePrettyPrinter(GlobalExtensionManagement glex, ASTMCGrammar grammar) {
-    Log.errorIfNull(
+    Preconditions.checkNotNull(
             grammar,
             "0xA4109 PrettyPrinter generation can't be processed: the reference to the grammar ast is null");
     return PrettyPrinterGenerator.generatePrettyPrinter(glex, grammar);
@@ -374,7 +373,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     if(grammarSymbol.isPresent()) {
       result = grammarSymbol.get().getAstNode();
     } else {
-      Grammar_WithConceptsPhasedSTC stCreator = new Grammar_WithConceptsPhasedSTC();
+      Grammar_WithConceptsPhasedSTC stCreator = new Grammar_WithConceptsPhasedSTCFix();
       stCreator.createFromAST(result);
     }
 
@@ -426,7 +425,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   public void runGrammarCoCos(ASTMCGrammar ast, IGrammar_WithConceptsGlobalScope scope) {
     // Run context conditions
     Grammar_WithConceptsCoCoChecker checker = new Grammar_WithConceptsCoCoChecker();
-    checker.addChecker((new GrammarCoCos()).getCoCoChecker());
+    checker.addChecker((new GrammarCoCosFix()).getCoCoChecker());
     checker.checkAll(ast);
     return;
   }
@@ -737,6 +736,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     ArtifactScopeClassDecorator artifactScopeDecorator = new ArtifactScopeClassDecorator(glex, symbolTableService, visitorService, methodDecorator);
     SymbolSurrogateDecorator symbolReferenceDecorator = new SymbolSurrogateDecorator(glex, symbolTableService, visitorService, methodDecorator, new MandatoryMutatorSymbolSurrogateDecorator(glex));
     SymbolSurrogateBuilderDecorator symbolReferenceBuilderDecorator = new SymbolSurrogateBuilderDecorator(glex, symbolTableService, accessorDecorator);
+    SymbolSupplierDecorator symbolSupplierDecorator = new SymbolSupplierDecorator(glex, symbolTableService);
     CommonSymbolInterfaceDecorator commonSymbolInterfaceDecorator = new CommonSymbolInterfaceDecorator(glex, symbolTableService, visitorService, methodDecorator);
     SymbolResolverInterfaceDecorator symbolResolverInterfaceDecorator = new SymbolResolverInterfaceDecorator(glex, symbolTableService);
     SymbolDeSerDecorator symbolDeSerDecorator = new SymbolDeSerDecorator(glex, symbolTableService, handCodedPath);
@@ -747,6 +747,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
 
     SymbolTableCDDecorator symbolTableCDDecorator = new SymbolTableCDDecorator(glex, handCodedPath, symbolTableService, symbolDecorator,
             symbolBuilderDecorator, symbolReferenceDecorator, symbolReferenceBuilderDecorator,
+            symbolSupplierDecorator,
             scopeInterfaceDecorator, scopeClassDecorator,
             globalScopeInterfaceDecorator, globalScopeClassDecorator,
             artifactScopeInterfaceDecorator, artifactScopeDecorator,
@@ -799,21 +800,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     CDTraverserDecorator decorator = new CDTraverserDecorator(glex, handCodedPath, visitorService, iTraverserDecorator, traverserDecorator, visitor2Decorator, handlerDecorator, inheritanceHandlerDecorator);
     decorator.decorate(cd, decoratedCD);
 
-  }
-
-  public void decorateWithInterpreter(List<ASTCDCompilationUnit> cds,
-                                      ASTCDCompilationUnit decoratedCD,
-                                      GlobalExtensionManagement glex) {
-    VisitorService visitorService = new VisitorService(cds.get(0));
-
-    InterpreterInterfaceDecorator interpreterInterfaceDecorator = new InterpreterInterfaceDecorator(glex, visitorService);
-    interpreterInterfaceDecorator.decorate(cds.get(0), decoratedCD);
-
-    InterpreterDecorator interpreterDecorator = new InterpreterDecorator(glex, visitorService);
-    interpreterDecorator.decorate(cds.get(0), decoratedCD);
-
-    ASTEvaluateDecorator evaluateDecorator = new ASTEvaluateDecorator(glex, visitorService);
-    evaluateDecorator.decorate(cds.get(0), decoratedCD);
   }
 
   public void decorateForCoCoPackage(GlobalExtensionManagement glex,
@@ -1482,7 +1468,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
       List<MCPath> mcPaths = new ArrayList<>();
       Optional<MontiCoreReports> reportsOpt = Optional.empty();
 
-      DelegatingClassLoader groovyClassLoader = new DelegatingClassLoader(this.getClass().getClassLoader());
       try {
         if(config.isPresent()) {
           MontiCoreConfiguration mcConfig = MontiCoreConfiguration.withConfiguration(config.get());
@@ -1517,7 +1502,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
           builder.addVariable(TEMPLATEPATH_LONG, templatePath);
           builder.addVariable(GROOVYHOOK1, mcConfig.getGroovyHook1());
           builder.addVariable(GROOVYHOOK2, mcConfig.getGroovyHook2());
-          builder.addVariable(GENINT, mcConfig.getGenINT().orElse(false));
           builder.addVariable("LOG_ID", LOG_ID);
           builder.addVariable("grammarIterator", grammarsPath.getEntries().iterator());
           reportsOpt = Optional.of(new MontiCoreReports(mcConfig.getOut().getAbsolutePath(),
@@ -1530,9 +1514,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
           // the "force" parameter, which is always true
           builder.addVariable("force", true);
         }
-        // Use a delegating classloader for groovy to reduce
-        // the impact of JDK-8078641
-        builder.withClassLoader(groovyClassLoader);
 
         GroovyInterpreter g = builder.build();
         g.evaluate(script);
@@ -1545,11 +1526,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
         }
         // Notify the reporters about flushing & closing their file handles
         reportsOpt.ifPresent(MontiCoreReports::close);
-        // Clean up after groovy
-        try {
-          groovyClassLoader.close();
-        } catch (IOException ignored) {
-        }
       }
     }
   }

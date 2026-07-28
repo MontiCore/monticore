@@ -8,7 +8,7 @@ import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 public class SymTypeOfIntersectionDeSer {
@@ -48,7 +48,7 @@ public class SymTypeOfIntersectionDeSer {
     if (serialized.hasMember(SERIALIZED_TYPES)) {
       List<SymTypeExpression> intersectedTypesList =
           SymTypeExpressionDeSer.deserializeListMember(SERIALIZED_TYPES, serialized, enclosingScope);
-      return SymTypeExpressionFactory.createIntersection(new HashSet<>(intersectedTypesList));
+      return SymTypeExpressionFactory.createIntersection(new LinkedHashSet<>(intersectedTypesList));
     }
     Log.error(
         "0x9E2F7 Internal error: Loading ill-structured SymTab: missing "

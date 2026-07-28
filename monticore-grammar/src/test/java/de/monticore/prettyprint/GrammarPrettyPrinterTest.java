@@ -5,7 +5,6 @@ import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -15,6 +14,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 import java.util.stream.Stream;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * This test checks if all (hand-written) MontiCore grammars are print-able using the generated pretty printers
@@ -59,23 +60,23 @@ public class GrammarPrettyPrinterTest {
     System.err.println(path.toAbsolutePath());
     Optional<ASTMCGrammar> astOpt = Grammar_WithConceptsMill.parser().parse(path.toString());
 
-    Assertions.assertTrue(astOpt.isPresent());
+    assertTrue(astOpt.isPresent());
 
     String pretty = Grammar_WithConceptsMill.prettyPrint(astOpt.get(), true);
-    Assertions.assertEquals(0, Log.getFindingsCount(), "Failed to pretty print without findings: " + path);
+    assertEquals(0, Log.getFindingsCount(), "Failed to pretty print without findings: " + path);
     Optional<ASTMCGrammar> parsedAST = Grammar_WithConceptsMill.parser().parse_String(pretty);
     if (parsedAST.isEmpty()) {
-      Assertions.assertEquals(Files.readString(path), pretty, "Failed to parse " + path);
-      Assertions.fail("Failed to parse " + path);
+      assertEquals(Files.readString(path), pretty, "Failed to parse " + path);
+      fail("Failed to parse " + path);
     }
     if (!Log.getFindings().isEmpty()) {
-      Assertions.assertEquals(Files.readString(path), pretty, "Failed to parse " + path + " without findings");
-      Assertions.fail("Failed to parse " + path + " without findings");
+      assertEquals(Files.readString(path), pretty, "Failed to parse " + path + " without findings");
+      fail("Failed to parse " + path + " without findings");
     }
 
     if (!astOpt.get().deepEquals(parsedAST.get())) {
-      Assertions.assertEquals(Files.readString(path), pretty, "Failed to deep-equals " + path);
-      Assertions.fail("Failed to deep-equals");
+      assertEquals(Files.readString(path), pretty, "Failed to deep-equals " + path);
+      fail("Failed to deep-equals");
     }
   }
 

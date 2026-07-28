@@ -13,28 +13,31 @@ import de.monticore.tf.runtime.ODRule;
 import de.monticore.visitor.ITraverser;
 import de.monticore.visitor.IVisitor;
 import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import mc.testcases.expressiondsl.ExpressionDSLMill;
 import mc.testcases.expressiondsl._ast.ASTCDAttribute;
 import mc.testcases.expressiondsl._ast.ASTFoo;
 import mc.testcases.tr.expressiondsltr.ExpressionDSLTRMill;
-import org.junit.*;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
 import java.util.function.Function;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ExpressionDSLTest {
 
-  @Before
+  @BeforeEach
   public void beforeEach() {
     Log.clearFindings();
   }
 
-  @BeforeClass
+  @BeforeAll
   public static void beforeClass() {
-    Log.init();
+    LogStub.init();
     Log.enableFailQuick(false);
     ExpressionDSLMill.init();
   }
@@ -116,12 +119,12 @@ public class ExpressionDSLTest {
   @Test
   public void testExpressionInterfacePatternPriority() throws IOException {
     Optional<ASTExpression_Pat> astExpressionOpt = ExpressionDSLTRMill.parser().parse_StringExpression_Pat("Expression $name");
-    Assert.assertTrue(astExpressionOpt.isPresent());
-    Assert.assertEquals(ASTExpression_Pat.class.getName(), astExpressionOpt.get().getClass().getName());
+    assertTrue(astExpressionOpt.isPresent());
+    assertEquals(ASTExpression_Pat.class.getName(), astExpressionOpt.get().getClass().getName());
 
     Optional<ASTITFExpression> astitfExpressionOpt = ExpressionDSLTRMill.parser().parse_StringITFExpression("Expression $name");
-    Assert.assertTrue(astitfExpressionOpt.isPresent());
-    Assert.assertEquals(ASTExpression_Pat.class.getName(), astitfExpressionOpt.get().getClass().getName());
+    assertTrue(astitfExpressionOpt.isPresent());
+    assertEquals(ASTExpression_Pat.class.getName(), astitfExpressionOpt.get().getClass().getName());
   }
 
 
@@ -142,10 +145,10 @@ public class ExpressionDSLTest {
 
   protected void test(String input, Function<ASTFoo, ODRule> rule, String expected) throws IOException {
     Optional<ASTFoo> fooOpt = ExpressionDSLMill.parser().parse_String(input);
-    Assert.assertTrue(fooOpt.isPresent());
+    assertTrue(fooOpt.isPresent());
 
     ODRule trafo = rule.apply(fooOpt.get());
-    assertTrue("Failed to match pattern", trafo.doPatternMatching());
+    assertTrue(trafo.doPatternMatching(), "Failed to match pattern");
     trafo.doReplacement();
 
     testDeepEqualsFoo(fooOpt.get(), expected);
@@ -153,10 +156,10 @@ public class ExpressionDSLTest {
 
   protected void testCDAttribute(String input, Function<ASTCDAttribute, ODRule> rule, String expected) throws IOException {
     Optional<ASTCDAttribute> fooOpt = ExpressionDSLMill.parser().parse_StringCDAttribute(input);
-    Assert.assertTrue(fooOpt.isPresent());
+    assertTrue(fooOpt.isPresent());
 
     ODRule trafo = rule.apply(fooOpt.get());
-    assertTrue("Failed to match pattern", trafo.doPatternMatching());
+    assertTrue(trafo.doPatternMatching(), "Failed to match pattern");
     trafo.doReplacement();
 
     testDeepEqualsCDAttribute(fooOpt.get(), expected);
@@ -173,13 +176,13 @@ public class ExpressionDSLTest {
   }
 
   private void testDeepEquals(ASTNode ast, String expected, Optional<? extends ASTNode> fooOpt) {
-    Assert.assertTrue("Failed to parse expected", fooOpt.isPresent());
+    assertTrue(fooOpt.isPresent(), "Failed to parse expected");
     if (!fooOpt.get().deepEquals(ast)) {
-      Assert.assertEquals(ExpressionDSLMill.prettyPrint(fooOpt.get(), false), ExpressionDSLMill.prettyPrint(ast, false));
-      Assert.assertEquals(astPrinter(fooOpt.get(), ExpressionDSLMill.inheritanceTraverser()),
+      assertEquals(ExpressionDSLMill.prettyPrint(fooOpt.get(), false), ExpressionDSLMill.prettyPrint(ast, false));
+      assertEquals(astPrinter(fooOpt.get(), ExpressionDSLMill.inheritanceTraverser()),
           astPrinter(ast, ExpressionDSLMill.inheritanceTraverser()));
 
-      Assert.fail("Failed to deep equal: " + ExpressionDSLMill.prettyPrint(fooOpt.get(), false) + ", expected " + expected);
+      fail("Failed to deep equal: " + ExpressionDSLMill.prettyPrint(fooOpt.get(), false) + ", expected " + expected);
     }
   }
 

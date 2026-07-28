@@ -19,8 +19,8 @@ import de.monticore.generating.GeneratorSetup;
 import de.monticore.types.MCTypeFacade;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static de.monticore.cd.facade.CDModifier.PRIVATE;
 import static de.monticore.cd.facade.CDModifier.PROTECTED;
@@ -31,15 +31,13 @@ import static de.monticore.codegen.cd2java.DecoratorAssert.assertBoolean;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class PackageImplDecoratorTest extends DecoratorTestCase {
 
   private ASTCDClass packageClass;
 
-  @Before
+  @BeforeEach
   public void setup() {
     LogStub.init();         // replace log by a sideffect free variant
         // LogStub.initPlusLog();  // for manual testing purpose only
@@ -332,7 +330,7 @@ public class PackageImplDecoratorTest extends DecoratorTestCase {
     // test parsing
     ParserConfiguration configuration = new ParserConfiguration();
     JavaParser parser = new JavaParser(configuration);
-    ParseResult parseResult = parser.parse(sb.toString());
+    ParseResult<?> parseResult = parser.parse(sb.toString());
     assertTrue(parseResult.isSuccessful());
   
     assertTrue(Log.getFindings().isEmpty());

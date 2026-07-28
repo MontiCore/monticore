@@ -515,7 +515,7 @@ public class JsonPrinter {
     }
   }
 
-  private JsonObject getParentObject() {
+  protected JsonObject getParentObject() {
     if (currElements.isEmpty()) {
       Log.error("0xA0613 JsonPrinter detected an invalid nesting of Json. "
           + "Cannot add a member as the first element of a Json String!");

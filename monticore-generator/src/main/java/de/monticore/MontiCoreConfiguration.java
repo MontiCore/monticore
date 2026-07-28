@@ -55,16 +55,12 @@ public final class MontiCoreConfiguration extends AMontiCoreConfiguration implem
 
   public static final String HELP = "h";
   
-  public static final String GENINT = "genINT";
-
   public static final String GROOVYHOOK1_LONG = "groovyHook1";
 
   public static final String GROOVYHOOK2_LONG = "groovyHook2";
 
   public static final String HELP_LONG = "help";
   
-  public static final String GENINT_LONG = "genInterpreter";
-
 
   /**
    * Constants for the allowed CLI options in their long and short froms.
@@ -369,15 +365,6 @@ public final class MontiCoreConfiguration extends AMontiCoreConfiguration implem
    */
   public Optional<Boolean> getGenTag() {
     return getAsBoolean(GENTAG_LONG);
-  }
-  
-  /**
-   * Getter for the optional interpreter infrastructure generation.
-   *
-   * @return Optional path to the script
-   */
-  public Optional<Boolean> getGenINT() {
-    return hasProperty(GENINT) ? Optional.of(true) : Optional.empty();
   }
   
   /**

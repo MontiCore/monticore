@@ -294,11 +294,9 @@ public class GrammarScopesGenitor extends GrammarScopesGenitorTOP {
     for (ASTGrammarReference ref : astGrammar.getSupergrammarList()) {
       final String superGrammarName = getQualifiedName(ref.getNameList());
 
-      final MCGrammarSymbolSurrogate superGrammar = new MCGrammarSymbolSurrogate(
-          superGrammarName);
-      superGrammar.setEnclosingScope(getCurrentScope().orElse(null));
+      IGrammarScope enclosingScope = getCurrentScope().orElse(null);
 
-      grammarSymbol.addSuperGrammar(superGrammar);
+      grammarSymbol.addSuperGrammarSupplier(GrammarSymbolSupplier.memoize(new GrammarSymbolSupplier(superGrammarName, enclosingScope)));
     }
   }
 

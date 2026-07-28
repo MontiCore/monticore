@@ -2,6 +2,7 @@
 
 package de.monticore.generating.templateengine.reporting.commons;
 
+import com.google.common.base.Preconditions;
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.reporting.artifacts.ReportingNameHelper;
@@ -28,7 +29,7 @@ public class ReportManager implements IReportEventHandler {
   }
 
   public void addReportEventHandler(IReportEventHandler handler) {
-    Log.errorIfNull(handler);
+    Preconditions.checkNotNull(handler);
     this.reportEventHandlers.add(handler);
   }
 

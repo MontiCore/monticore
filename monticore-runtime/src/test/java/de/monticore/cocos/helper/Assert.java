@@ -2,14 +2,14 @@
 
 package de.monticore.cocos.helper;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.util.Collection;
 
 import com.google.common.base.Joiner;
 
 import de.se_rwth.commons.logging.Finding;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Helper for testing CoCos.
@@ -30,8 +30,8 @@ public class Assert {
     for (Finding expectedError : expectedErrors) {
       boolean found = actualErrors.stream()
           .filter(s -> s.buildMsg().contains(expectedError.buildMsg())).count() >= 1;
-      assertTrue("The following expected error was not found: " + expectedError
-          + actualErrorsJoined, found);
+      assertTrue(found,
+          "The following expected error was not found: " + expectedError + actualErrorsJoined);
     }
   }
   
@@ -50,8 +50,8 @@ public class Assert {
       boolean found = actualErrors.stream().filter(
           f -> f.getMsg().equals(expectedError.getMsg())
           ).count() >= 1;
-      assertTrue("The following expected error was not found: " + expectedError
-          + actualErrorsJoined, found);
+      assertTrue(found,
+          "The following expected error was not found: " + expectedError + actualErrorsJoined);
     }
   }
   
@@ -66,10 +66,9 @@ public class Assert {
     String actualErrorsJoined = "\nactual Errors: \n\t" + Joiner.on("\n\t").join(actualErrors);
     String expectedErrorsJoined = "\nexpected Errors: \n\t"
         + Joiner.on("\n\t").join(expectedErrors);
-    assertEquals(
+    assertEquals(expectedErrors.size(), actualErrors.size(),
         "Expected " + expectedErrors.size() + " errors, but found " + actualErrors.size()
-            + "." + expectedErrorsJoined + actualErrorsJoined, expectedErrors.size(),
-        actualErrors.size());
+            + "." + expectedErrorsJoined + actualErrorsJoined);
     
   }
 }

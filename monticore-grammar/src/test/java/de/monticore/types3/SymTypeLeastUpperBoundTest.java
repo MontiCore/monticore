@@ -7,7 +7,6 @@ import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICom
 import de.monticore.runtime.junit.AbstractMCTest;
 import de.monticore.types3.util.DefsTypesForTests;
 import de.monticore.types.check.SymTypeExpression;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -25,6 +24,7 @@ import static de.monticore.types.check.SymTypeExpressionFactory.createBottomType
 import static de.monticore.types.check.SymTypeExpressionFactory.createIntersection;
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeArray;
 import static de.monticore.types.check.SymTypeExpressionFactory.createUnion;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SymTypeLeastUpperBoundTest extends AbstractMCTest {
 
@@ -65,6 +65,6 @@ public class SymTypeLeastUpperBoundTest extends AbstractMCTest {
     Optional<SymTypeExpression> lubOpt = SymTypeRelations.leastUpperBound(type);
     String printed = lubOpt.map(SymTypeExpression::printFullName).orElse("");
     assertNoFindings();
-    Assertions.assertEquals(expectedPrint, printed);
+    assertEquals(expectedPrint, printed);
   }
 }

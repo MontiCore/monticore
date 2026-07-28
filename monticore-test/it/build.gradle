@@ -7,7 +7,6 @@ plugins {
 description = 'MontiCore Generator Main Integration Test'
 
 ext.grammarDir = 'src/main/grammars'
-ext.junit_version = '5.10.3'
 
 configurations {grammar}
 
@@ -18,12 +17,12 @@ sonarqube {
 dependencies {
   implementation project(':monticore-runtime')
   implementation project(':monticore-grammar')
-  implementation "de.se_rwth.commons:se-commons-utilities:$se_commons_version"
 //  implementation project (':monticore-generator')
   testImplementation testFixtures(project(':monticore-runtime'))
   testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
-  testImplementation "org.junit.vintage:junit-vintage-engine:$junit_version"
-  testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
+  testImplementation "org.junit.jupiter:junit-jupiter-params:$junit_version"
+  testImplementation "org.junit.jupiter:junit-jupiter-engine:$junit_version"
+  testRuntimeOnly "org.junit.platform:junit-platform-launcher:$junit_version"
   grammar (project(path: ':monticore-grammar')){
     capabilities {
       requireCapability("de.monticore:monticore-grammar-grammars")
@@ -37,8 +36,8 @@ if (!hasProperty('buildProfile')) ext.buildProfile = 'default'  // chooses the p
 apply from: "profile-${buildProfile}.gradle"  // includes the corresponding build file
 
 tasks.withType(JavaCompile) {
-  sourceCompatibility = JavaVersion.VERSION_11
-  targetCompatibility = JavaVersion.VERSION_11
+  sourceCompatibility = JavaVersion.VERSION_21
+  targetCompatibility = JavaVersion.VERSION_21
   options.warnings = false
   options.encoding = 'UTF-8'
 }
@@ -49,11 +48,12 @@ compileJava {
 
 java {
   toolchain {
-    languageVersion = JavaLanguageVersion.of(11)
+    languageVersion = JavaLanguageVersion.of(21)
   }
 }
 
 test {
+  useJUnitPlatform()
   testLogging {
     showStandardStreams = true
   }

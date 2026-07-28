@@ -4,8 +4,6 @@ package de.monticore.codegen.cd2java;
 
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.StringHookPoint;
-import de.monticore.generating.templateengine.TemplateHookPoint;
-import org.apache.tools.ant.taskdefs.Java;
 
 import java.util.*;
 

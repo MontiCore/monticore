@@ -10,6 +10,7 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.cli.updateChecker.UpdateCheckerRunnable;
 import de.monticore.codegen.cd2java.AbstractCreator;
+import de.monticore.codegen.cd2java.JavaDoc;
 import de.monticore.codegen.cd2java._parser.ParserService;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -21,6 +22,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import java.time.LocalDate;
 import java.util.Optional;
 
+import static de.monticore.cd.codegen.CD2JavaTemplates.JAVADOC;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.cd.facade.CDModifier.PUBLIC_STATIC;
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
@@ -55,6 +57,7 @@ public class CLIDecorator extends AbstractCreator<ASTCDCompilationUnit, Optional
         .setModifier(PUBLIC.build())
         .setName(cliClassName)
         .addCDMember(createMainMethod(parserService.getCDSymbol()))
+        .addCDMember(createGradleMainMethod(parserService.getCDSymbol()))
         .addCDMember(createRunMethod(startProdPresent, parserService.getCDSymbol()))
         .addCDMember(createParseMethod(parserService.getCDSymbol()))
         .addCDMember(createInitMethod())
@@ -89,9 +92,36 @@ public class CLIDecorator extends AbstractCreator<ASTCDCompilationUnit, Optional
     ASTMCType stringArrayType = getMCTypeFacade().createArrayType("String", 1);
     ASTCDParameter parameter = getCDParameterFacade().createParameter(stringArrayType, "args");
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC_STATIC.build(), "main", parameter);
+    this.replaceTemplate(JAVADOC, method,
+        JavaDoc.of("Entry point for the tool from CLI ONLY.",
+                "This WILL exit the Java VM.",
+                "From Java code itself, call {@link #run(String[])} instead.")
+            .param("args", "the arguments given to the tool")
+            .asHP());
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "Main", grammarname));
     return method;
   }
+
+  /**
+   * creates static gradleMain method to execute the CLI from gradle
+   *
+   * @param cdSymbol class diagram of the current language
+   * @return the decorated gradleMain method
+   */
+  protected ASTCDMethod createGradleMainMethod(DiagramSymbol cdSymbol) {
+    String grammarname = cdSymbol.getName();
+    ASTMCType stringArrayType = getMCTypeFacade().createArrayType("String", 1);
+    ASTCDParameter parameter = getCDParameterFacade().createParameter(stringArrayType, "args");
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC_STATIC.build(), "gradleMain", parameter);
+    this.replaceTemplate(JAVADOC, method,
+            JavaDoc.of("Entry point for the tool from Gradle.",
+                            "This method MUST NOT exit the JVM, but it may throw exceptions.")
+                    .param("args", "the arguments given to the tool")
+                    .asHP());
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "MainGradle", grammarname));
+    return method;
+  }
+
 
   /**
    * creates Run method to execute the CLI
@@ -105,6 +135,12 @@ public class CLIDecorator extends AbstractCreator<ASTCDCompilationUnit, Optional
     ASTMCType stringArrayType = getMCTypeFacade().createArrayType("String", 1);
     ASTCDParameter parameter = getCDParameterFacade().createParameter(stringArrayType, "args");
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), "run", parameter);
+    this.replaceTemplate(JAVADOC, method,
+        JavaDoc.of("Entry point for the tool from Java code.",
+                "Except from not exiting the Java VM and catching exceptions,",
+                "this is identical to calling {@link #main(String[])} directly.")
+            .param("args", "the arguments given to the tool")
+            .asHP());
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "Run", startProdPresent, cliName, generatedError));
     return method;
   }

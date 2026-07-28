@@ -2,15 +2,11 @@
 
 package de.monticore.prettyprint;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
 
 import de.monticore.testcompleteness.TestCompletenessMill;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import de.monticore.completeness._ast.ASTCompleteness;
@@ -18,6 +14,9 @@ import de.monticore.completeness._prettyprint.CompletenessFullPrettyPrinter;
 import de.monticore.testcompleteness._parser.TestCompletenessParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CompletenessPrettyPrinterTest {
   
@@ -33,79 +32,79 @@ public class CompletenessPrettyPrinterTest {
   public void testCompleteness() throws IOException {
     TestCompletenessParser parser = new TestCompletenessParser();
     Optional<ASTCompleteness> result = parser.parseCompleteness(new StringReader("(c)"));
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(result.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
     ASTCompleteness completeness = result.get();
     
     CompletenessFullPrettyPrinter prettyPrinter = new CompletenessFullPrettyPrinter(new IndentPrinter());
     String output = prettyPrinter.prettyprint(completeness);
     
     result = parser.parseCompleteness(new StringReader(output));
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(result.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
     
-    Assertions.assertTrue(completeness.deepEquals(result.get()));
+    assertTrue(completeness.deepEquals(result.get()));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
   public void testIncompleteness() throws IOException {
     TestCompletenessParser parser = new TestCompletenessParser();
     Optional<ASTCompleteness> result = parser.parseCompleteness(new StringReader("(...)"));
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(result.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
     ASTCompleteness completeness = result.get();
     
     CompletenessFullPrettyPrinter prettyPrinter = new CompletenessFullPrettyPrinter(new IndentPrinter());
     String output = prettyPrinter.prettyprint(completeness);
     
     result = parser.parseCompleteness(new StringReader(output));
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(result.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
     
-    Assertions.assertTrue(completeness.deepEquals(result.get()));
+    assertTrue(completeness.deepEquals(result.get()));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
   public void testRightCompleteness() throws IOException {
     TestCompletenessParser parser = new TestCompletenessParser();
     Optional<ASTCompleteness> result = parser.parseCompleteness(new StringReader("(...,c)"));
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(result.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
     ASTCompleteness completeness = result.get();
     
     CompletenessFullPrettyPrinter prettyPrinter = new CompletenessFullPrettyPrinter(new IndentPrinter());
     String output = prettyPrinter.prettyprint(completeness);
     
     result = parser.parseCompleteness(new StringReader(output));
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(result.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
     
-    Assertions.assertTrue(completeness.deepEquals(result.get()));
+    assertTrue(completeness.deepEquals(result.get()));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
   public void testLeftCompleteness() throws IOException {
     TestCompletenessParser parser = new TestCompletenessParser();
     Optional<ASTCompleteness> result = parser.parseCompleteness(new StringReader("(c,...)"));
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(result.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
     ASTCompleteness completeness = result.get();
     
     CompletenessFullPrettyPrinter prettyPrinter = new CompletenessFullPrettyPrinter(new IndentPrinter());
     String output = prettyPrinter.prettyprint(completeness);
     
     result = parser.parseCompleteness(new StringReader(output));
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(result.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
     
-    Assertions.assertTrue(completeness.deepEquals(result.get()));
+    assertTrue(completeness.deepEquals(result.get()));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

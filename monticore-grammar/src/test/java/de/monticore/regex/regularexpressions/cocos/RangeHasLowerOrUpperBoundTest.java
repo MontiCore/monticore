@@ -8,7 +8,6 @@ import de.monticore.regex.regularexpressions._cocos.RegularExpressionsCoCoChecke
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -16,8 +15,8 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class RangeHasLowerOrUpperBoundTest {
 
@@ -51,10 +50,10 @@ public class RangeHasLowerOrUpperBoundTest {
     CombineExpressionsWithLiteralsParser parser = new CombineExpressionsWithLiteralsParser();
     Optional<ASTRegExLiteral> optAST =
         parser.parse_StringRegExLiteral(expressionString);
-    Assertions.assertTrue(optAST.isPresent());
+    assertTrue(optAST.isPresent());
     Log.getFindings().clear();
     checker.checkAll(optAST.get());
-    Assertions.assertTrue(Log.getFindings().isEmpty(), Log.getFindings().stream()
+    assertTrue(Log.getFindings().isEmpty(), Log.getFindings().stream()
             .map(Finding::buildMsg)
             .collect(Collectors.joining(System.lineSeparator())));
   }
@@ -63,10 +62,10 @@ public class RangeHasLowerOrUpperBoundTest {
     CombineExpressionsWithLiteralsParser parser = new CombineExpressionsWithLiteralsParser();
     Optional<ASTRegExLiteral> optAST =
         parser.parse_StringRegExLiteral(expressionString);
-    Assertions.assertTrue(optAST.isPresent());
+    assertTrue(optAST.isPresent());
     Log.getFindings().clear();
     checker.checkAll(optAST.get());
-    Assertions.assertFalse(Log.getFindings().isEmpty());
+    assertFalse(Log.getFindings().isEmpty());
   }
 
 }

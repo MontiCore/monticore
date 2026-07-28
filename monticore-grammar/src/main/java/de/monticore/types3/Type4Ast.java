@@ -22,7 +22,7 @@ import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.io.FilenameUtils;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -42,7 +42,7 @@ public class Type4Ast {
 
   /**
    * the actual map from expression to types,
-   * strictly seperated from the map for type identifiers
+   * strictly separated from the map for type identifiers
    * we use ASTNode to support non-ASTExpression Nodes (e.g., literals)
    * however, we do NOT support non-expression ASTNodes,
    * e.g. in MyClass.myMethod(): the "MyClass" is not an expression by itself
@@ -55,7 +55,7 @@ public class Type4Ast {
 
   /**
    * the actual map from type identifier to types,
-   * strictly seperated from the map for expressions
+   * strictly separated from the map for expressions
    * we use ASTNode to support non-ASTMCType Nodes (e.g. qualified Names)
    * however, we do NOT support expression ASTNodes,
    * e.g. other qualified names that represent a variable, rather than a type
@@ -71,8 +71,8 @@ public class Type4Ast {
   }
 
   public void reset() {
-    expr2type = new HashMap<>();
-    typeID2type = new HashMap<>();
+    expr2type = new LinkedHashMap<>();
+    typeID2type = new LinkedHashMap<>();
   }
 
   /**
@@ -383,6 +383,7 @@ public class Type4Ast {
       );
       typeExpr.getSourceInfo()._internal_setSourceNode(node);
       getExpression2Type().put(node, typeExpr);
+      assertNotExpressionAndType(node);
     }
     else {
       if (internal_hasTypeOfExpression(node)) {
@@ -491,6 +492,7 @@ public class Type4Ast {
       );
       typeExpr.getSourceInfo()._internal_setSourceNode(node);
       getTypeIdentifier2Type().put(node, typeExpr);
+      assertNotExpressionAndType(node);
     }
     else {
       if (internal_hasTypeOfTypeIdentifier(node)) {
@@ -529,6 +531,26 @@ public class Type4Ast {
             LOG_NAME
         );
       }
+  }
+
+  /**
+   * If a node is an expression, it must not be a type identifier.
+   * If a node is a type identifier, it must not be an expression.
+   * Selection has to be done before storing it in Type4AST
+   */
+  protected void assertNotExpressionAndType(ASTNode node) {
+    if (internal_hasTypeOfExpression(node) &&
+        internal_hasTypeOfTypeIdentifier(node)
+    ) {
+      throw new IllegalStateException("0xFD888 internal error: "
+          + "A type identifier ("
+          + getTypeIdentifier2Type().get(node).printFullName()
+          + ") and expression type ("
+          + getExpression2Type().get(node).printFullName()
+          + ") have BOTH been set."
+          + " Only one is allowed per AST node: " + node2InfoString(node)
+      );
+    }
   }
 
   /**

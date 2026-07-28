@@ -37,6 +37,10 @@ public class ProductionFactory {
   public static final String PSYM_TFTFSchema = "TFSchema";
   public static final String PSYM_TFOBJECTS = "TFRule";
   public static final String PSYM_SCHEMAVAR = "schemaVar";
+  /**
+   * Usage name of the production's name in a pattern
+   */
+  public static final String PSYM_PRODUNAME = "__tfpname";
   public static final String PSYM_PATTERN = "de.monticore.tf.ast.IPattern";
 
   public static final String NONTERM_PREFIX = "ITF";
@@ -262,6 +266,7 @@ public class ProductionFactory {
     // NTName as keyword
     ASTTerminal terminal = GrammarMill.terminalBuilder().uncheckedBuild();
     terminal.setName(srcNode.getName());
+    terminal.setUsageName(PSYM_PRODUNAME);
     terminal.setIteration(DEFAULT);
     abstractAlt.getComponentList().add(terminal);
     // schema variable
@@ -303,6 +308,7 @@ public class ProductionFactory {
     ASTAlt ntOptionalAlt = GrammarMill.altBuilder().uncheckedBuild();
     terminal = GrammarMill.terminalBuilder().uncheckedBuild();
     terminal.setName(srcNode.getName());
+    terminal.setUsageName(PSYM_PRODUNAME);
     terminal.setIteration(ASTConstantsGrammar.QUESTION);
     ntOptionalAlt.getComponentList().add(terminal);
     ntOptionalAlt.getComponentList()
@@ -312,6 +318,7 @@ public class ProductionFactory {
     // nonterminal is mandatory but variable is optional
     terminal = GrammarMill.terminalBuilder().uncheckedBuild();
     terminal.setName(srcNode.getName());
+    terminal.setUsageName(PSYM_PRODUNAME);
     terminal.setIteration(DEFAULT);
     varOptionalAlt.getComponentList().add(terminal);
     ASTNonTerminal schemaVarNameOptional = schemaVarName.deepClone();
@@ -382,6 +389,7 @@ public class ProductionFactory {
     // NTName as keyword
     ASTTerminal terminal = GrammarMill.terminalBuilder().uncheckedBuild();
     terminal.setName(srcNode.getName());
+    terminal.setUsageName(PSYM_PRODUNAME);
     terminal.setIteration(DEFAULT);
     abstractAlt.getComponentList().add(terminal);
     // schema variable
@@ -396,6 +404,7 @@ public class ProductionFactory {
     // syntax in parentheses
     terminal = GrammarMill.terminalBuilder().uncheckedBuild();
     terminal.setName(srcNode.getName());
+    terminal.setUsageName(PSYM_PRODUNAME);
     terminal.setIteration(DEFAULT);
     mixedAlt.getComponentList().add(terminal);
     ASTNonTerminal schemaVarNameOptional = schemaVarName.deepClone();
@@ -788,7 +797,7 @@ public class ProductionFactory {
               .build();
       //  "X" identifier:TFSchema ";"
       ASTAlt fourth = GrammarMill.altBuilder()
-              .addComponent(GrammarMill.terminalBuilder().setName(srcNode.getName()).build())
+              .addComponent(GrammarMill.terminalBuilder().setName(srcNode.getName()).setUsageName(PSYM_PRODUNAME).build())
               .addComponent(GrammarMill.nonTerminalBuilder().setUsageName("identifierSchema").setName(PSYM_TFTFSchema).build())
               .addComponent(GrammarMill.terminalBuilder().setName(";").build())
               .build();
@@ -796,6 +805,14 @@ public class ProductionFactory {
               .addSuperInterfaceRule(GrammarMill.ruleReferenceBuilder().setName(PSYM_TFIDENTIFIER).build())
               .build());
     }
+  }
+  
+  /**
+   * Create a new @Override annotation
+   * @return ASTGrammarAnnotation with override property
+   */
+  protected ASTGrammarAnnotation createOverrideAnnotation() {
+    return GrammarMill.grammarAnnotationBuilder().setOverride(true).build();
   }
 
 }

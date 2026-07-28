@@ -4,19 +4,19 @@ package trafo;
 import de.monticore.tf.SetInitial;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import junit.framework.TestCase;
 import mc.testcases.statechart.statechart._ast.ASTState;
 import mc.testcases.statechart.statechart._ast.ASTStatechart;
 import mc.testcases.statechart.statechart._parser.StatechartParser;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-public class Test11_SetInitialTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class Test11_SetInitialTest {
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);

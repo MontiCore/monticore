@@ -22,8 +22,8 @@ import de.monticore.generating.GeneratorSetup;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.logging.Log;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.util.List;
@@ -39,9 +39,7 @@ import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodsBy;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SymbolDecoratorTest extends DecoratorTestCase {
 
@@ -67,13 +65,13 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
 
   private static final String I_STEREOTYPE_REF = "de.monticore.symboltable.stereotypes.IStereotypeReference";
 
-  private static final String VALUE = "de.monticore.interpreter.Value";
+  private static final String VALUE = "de.monticore.values.MCValue";
 
   private static final String I_AUTOMATON_SCOPE = "de.monticore.codegen.symboltable.automatonsymbolcd._symboltable.IAutomatonSymbolCDScope";
 
   private static final String AUTOMATON_TRAVERSER = "de.monticore.codegen.symboltable.automatonsymbolcd._visitor.AutomatonSymbolCDTraverser";
 
-  @Before
+  @BeforeEach
   public void setUp() {
     this.mcTypeFacade = MCTypeFacade.getInstance();
 
@@ -263,7 +261,7 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testMethods() {
-    assertEquals(23, symbolClassAutomaton.getCDMethodList().size());
+    assertEquals(25, symbolClassAutomaton.getCDMethodList().size());
   }
 
   @Test
@@ -572,7 +570,7 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     // test parsing
     ParserConfiguration configuration = new ParserConfiguration();
     JavaParser parser = new JavaParser(configuration);
-    ParseResult parseResult = parser.parse(sb.toString());
+    ParseResult<?> parseResult = parser.parse(sb.toString());
     assertTrue(parseResult.isSuccessful());
   
     assertTrue(Log.getFindings().isEmpty());
@@ -608,30 +606,30 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     assertTrue(Log.getFindings().isEmpty());
   }
 
-  @Test(expected = AssertionError.class)
+  @Test
   public void testSpannedScopeAttributeStateSymbol() {
-    getAttributeBy("spannedScope", symbolClassState);
+    assertThrows(AssertionError.class, () -> getAttributeBy("spannedScope", symbolClassState));
   
     assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMethodsStateSymbol() {
-    assertEquals(21, symbolClassState.getCDMethodList().size());
+    assertEquals(23, symbolClassState.getCDMethodList().size());
   
     assertTrue(Log.getFindings().isEmpty());
   }
 
-  @Test(expected = AssertionError.class)
+  @Test
   public void testGetSpannedScopeMethodStateSymbol() {
-    getMethodBy("getSpannedScope", symbolClassState);
+    assertThrows(AssertionError.class, () -> getMethodBy("getSpannedScope", symbolClassState));
   
     assertTrue(Log.getFindings().isEmpty());
   }
 
-  @Test(expected = AssertionError.class)
+  @Test
   public void testSetSpannedScopeMethodStateSymbol() {
-    getMethodBy("setSpannedScope", symbolClassState);
+    assertThrows(AssertionError.class, () -> getMethodBy("setSpannedScope", symbolClassState));
   
     assertTrue(Log.getFindings().isEmpty());
   }
@@ -727,7 +725,7 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     // test parsing
     ParserConfiguration configuration = new ParserConfiguration();
     JavaParser parser = new JavaParser(configuration);
-    ParseResult parseResult = parser.parse(sb.toString());
+    ParseResult<?> parseResult = parser.parse(sb.toString());
     assertTrue(parseResult.isSuccessful());
   
     assertTrue(Log.getFindings().isEmpty());
