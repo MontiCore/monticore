@@ -64,10 +64,6 @@ public abstract class MCGenTask extends MCSingleFileTask implements ICachedQueue
 
   @Input
   @Optional
-  public abstract Property<Boolean> getGenTag();
-  
-  @Input
-  @Optional
   public abstract Property<String> getCustomLog();
 
   /**
@@ -107,10 +103,6 @@ public abstract class MCGenTask extends MCSingleFileTask implements ICachedQueue
     args.add("-" + MontiCoreConfiguration.GENDST_LONG);
     args.add(Boolean.toString(getGenDST().getOrElse(false)));
 
-    // genTag
-    args.add("-" + MontiCoreConfiguration.GENTAG_LONG);
-    args.add(Boolean.toString(getGenTag().getOrElse(false)));
-    
     if (getCustomLog().isPresent()) {
       args.add("-" + MontiCoreConfiguration.CUSTOMLOG);
       args.add(this.getCustomLog().get());
@@ -192,24 +184,6 @@ public abstract class MCGenTask extends MCSingleFileTask implements ICachedQueue
   public FileTree getTROutput() {
     return this.getOutputs().getFiles().getAsFileTree()
             .matching(patternFilterable -> patternFilterable.include( "**/*TR.mc4"));
-  }
-
-  /**
-   * Utility shortcut to access the generated TagDefinition grammars
-   */
-  @Internal
-  public FileTree getTagDefOutput() {
-    return this.getOutputs().getFiles().getAsFileTree()
-            .matching(patternFilterable -> patternFilterable.include( "**/*TagDefinition.mc4"));
-  }
-
-  /**
-   * Utility shortcut to access the generated TagSchema grammars
-   */
-  @Internal
-  public FileTree getTagSchemaOutput() {
-    return this.getOutputs().getFiles().getAsFileTree()
-            .matching(patternFilterable -> patternFilterable.include( "**/*TagSchema.mc4"));
   }
 
   // Alias for the MC Generator: The inputs are also known as grammars
