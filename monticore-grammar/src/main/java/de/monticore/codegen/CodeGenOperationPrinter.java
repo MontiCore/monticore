@@ -165,6 +165,84 @@ public abstract class CodeGenOperationPrinter {
     );
   }
 
+  public static void printBitwiseAnd(
+      IndentPrinter printer, SymTypeExpression resultType,
+      SymTypeExpression leftType, SymTypeExpression rightType,
+      CodeGenPrintAction leftExprPrintAction,
+      CodeGenPrintAction rightExprPrintAction
+  ) {
+    getDelegate().printOperation(
+        ICodeGenOperationHandler.BinaryOperator.BITWISE_AND,
+        printer, resultType, leftType, rightType,
+        leftExprPrintAction, rightExprPrintAction
+    );
+  }
+
+  public static void printBitwiseOr(
+      IndentPrinter printer, SymTypeExpression resultType,
+      SymTypeExpression leftType, SymTypeExpression rightType,
+      CodeGenPrintAction leftExprPrintAction,
+      CodeGenPrintAction rightExprPrintAction
+  ) {
+    getDelegate().printOperation(
+        ICodeGenOperationHandler.BinaryOperator.BITWISE_OR,
+        printer, resultType, leftType, rightType,
+        leftExprPrintAction, rightExprPrintAction
+    );
+  }
+
+  public static void printBitwiseXor(
+      IndentPrinter printer, SymTypeExpression resultType,
+      SymTypeExpression leftType, SymTypeExpression rightType,
+      CodeGenPrintAction leftExprPrintAction,
+      CodeGenPrintAction rightExprPrintAction
+  ) {
+    getDelegate().printOperation(
+        ICodeGenOperationHandler.BinaryOperator.BITWISE_XOR,
+        printer, resultType, leftType, rightType,
+        leftExprPrintAction, rightExprPrintAction
+    );
+  }
+
+  public static void printLeftShift(
+      IndentPrinter printer, SymTypeExpression resultType,
+      SymTypeExpression leftType, SymTypeExpression rightType,
+      CodeGenPrintAction leftExprPrintAction,
+      CodeGenPrintAction rightExprPrintAction
+  ) {
+    getDelegate().printOperation(
+        ICodeGenOperationHandler.BinaryOperator.LEFT_SHIFT,
+        printer, resultType, leftType, rightType,
+        leftExprPrintAction, rightExprPrintAction
+    );
+  }
+
+  public static void printRightShiftSigned(
+      IndentPrinter printer, SymTypeExpression resultType,
+      SymTypeExpression leftType, SymTypeExpression rightType,
+      CodeGenPrintAction leftExprPrintAction,
+      CodeGenPrintAction rightExprPrintAction
+  ) {
+    getDelegate().printOperation(
+        ICodeGenOperationHandler.BinaryOperator.RIGHT_SHIFT_SIGNED,
+        printer, resultType, leftType, rightType,
+        leftExprPrintAction, rightExprPrintAction
+    );
+  }
+
+  public static void printRightShiftUnsigned(
+      IndentPrinter printer, SymTypeExpression resultType,
+      SymTypeExpression leftType, SymTypeExpression rightType,
+      CodeGenPrintAction leftExprPrintAction,
+      CodeGenPrintAction rightExprPrintAction
+  ) {
+    getDelegate().printOperation(
+        ICodeGenOperationHandler.BinaryOperator.RIGHT_SHIFT_UNSIGNED,
+        printer, resultType, leftType, rightType,
+        leftExprPrintAction, rightExprPrintAction
+    );
+  }
+
   // needs extension: add missing functions,
   // see ICodeGenOperationHandler
 
