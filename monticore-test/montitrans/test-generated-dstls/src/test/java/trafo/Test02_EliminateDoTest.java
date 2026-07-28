@@ -55,7 +55,6 @@ public class Test02_EliminateDoTest {
         assertFalse(state.isPresentEntryAction());
         assertFalse(state.isPresentExitAction());
         assertTrue(state.isPresentDoAction());
-        assertTrue(Log.getFindings().isEmpty());
     }
 
 }

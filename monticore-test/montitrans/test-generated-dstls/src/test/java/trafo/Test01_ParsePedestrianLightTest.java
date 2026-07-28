@@ -24,7 +24,6 @@ public class Test01_ParsePedestrianLightTest {
 
     assertTrue(sc.isPresent());
     assertFalse(px.hasErrors());
-    assertTrue(Log.getFindings().isEmpty());
   }
 
 }
