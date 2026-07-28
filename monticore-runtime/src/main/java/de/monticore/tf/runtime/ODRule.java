@@ -36,25 +36,4 @@ public abstract class ODRule {
     this.glex = glex;
   }
 
-  public void reportChange(String transformation, ASTNode astNode, String attr, String from, String to){
-    reportTransformationObjectChange(transformation, astNode, attr);
-    reportTransformationOldValue(transformation, from);
-    reportTransformationNewValue(transformation, to);
-  }
-
-  public void reportDeletion(String transformation, ASTNode astNode){
-    reportTransformationObjectDeletion(transformation, astNode);
-  }
-
-  public void reportCreation(String transformation, ASTNode astNode){
-    reportTransformationObjectCreation(transformation, astNode);
-  }
-
-  public void reportMatch(String transformation, ASTNode astNode){
-    reportTransformationObjectMatch(transformation, astNode);
-
-  }
-
-
-
 }
