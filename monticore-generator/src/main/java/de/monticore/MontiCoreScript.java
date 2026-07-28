@@ -1387,13 +1387,6 @@ public class MontiCoreScript extends Script implements GroovyRunner {
   }
 
   /**
-   * Generate the TagSchema and TagDefinition grammars and output them as mc4 files
-   */
-  public void generateTaggingLanguages(ASTMCGrammar astGrammar, File outputDirectory, MCPath modelPathHC) throws IOException {
-    TagGenerator.generateTaggingLanguages(astGrammar, outputDirectory, modelPathHC);
-  }
-
-  /**
    * Instantiates the glex and initializes it with all available default
    * options based on the current configuration.
    *

@@ -110,11 +110,6 @@ while (grammarIterator.hasNext()) {
       generateDSTLanguage(astGrammar, out, modelPathHC)
     }
 
-    if (!genTag) {
-      // Generate the tagging grammars (ending in TagSchema.mc4 and TagDefinition.mc4) for non-tag grammars
-      generateTaggingLanguages(astGrammar, out, modelPathHC)
-    }
-
     // M9: Write reports to files
     // M9.1: Inform about successful completion for grammar
     Log.info("Grammar " + astGrammar.getName() +
