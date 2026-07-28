@@ -1,0 +1,97 @@
+import java.lang.*;
+import java.util.*;
+import java.io.ByteArrayOutputStream;
+
+// based on:
+// https://benchmarksgame-team.pages.debian.net/benchmarksgame/description/mandelbrot.html#mandelbrot
+// test output for size=200:
+// https://benchmarksgame-team.pages.debian.net/benchmarksgame/download/mandelbrot-output.txt
+
+int size = 200;
+double fac = 2.0 / size;
+int shift = 0;
+if (!(size % 8 == 0)) {
+  shift = 8 - size % 8;
+}
+
+ByteArrayOutputStream buffer = ByteArrayOutputStream();
+
+// header
+buffer.write(80);
+buffer.write(52);
+buffer.write(10);
+
+int hW = size;
+int hDiv = 1;
+int hTmp = hW;
+while (hTmp >= 10) {
+  hTmp = hTmp / 10;
+  hDiv = hDiv * 10;
+}
+while (hDiv > 0) {
+  int hDig = hW / hDiv;
+  buffer.write(48 + hDig);
+  hW = hW - hDig * hDiv;
+  hDiv = hDiv / 10;
+}
+
+buffer.write(32);
+
+int hH = size;
+int hDiv2 = 1;
+int hTmp2 = hH;
+while (hTmp2 >= 10) {
+  hTmp2 = hTmp2 / 10;
+  hDiv2 = hDiv2 * 10;
+}
+while (hDiv2 > 0) {
+  int hDig2 = hH / hDiv2;
+  buffer.write(48 + hDig2);
+  hH = hH - hDig2 * hDiv2;
+  hDiv2 = hDiv2 / 10;
+}
+
+buffer.write(10);
+
+int y = 0;
+while (y < size) {
+  int bits = 0;
+  double Ci = y * fac - 1.0;
+  int x = 0;
+  while (x < size) {
+    double Zr = 0.0;
+    double Zi = 0.0;
+    double Cr = x * fac - 1.5;
+    int i = 50;
+    double ZrN = 0.0;
+    double ZiN = 0.0;
+    boolean escaped = false;
+    do {
+      Zi = 2.0 * Zr * Zi + Ci;
+      Zr = (ZrN - ZiN) + Cr;
+      ZiN = Zi * Zi;
+      ZrN = Zr * Zr;
+      escaped = ZiN + ZrN > 4.0;
+      if (!escaped) {
+        i = i - 1;
+      }
+    } while (!escaped && i > 0);
+
+    bits = bits << 1;
+    if (i == 0) {
+      bits = bits + 1;
+    }
+    if (x % 8 == 7) {
+      buffer.write(bits);
+      bits = 0;
+    }
+    x = x + 1;
+  }
+
+  if (!(shift == 0)) {
+    bits = bits << shift;
+    buffer.write(bits);
+  }
+  y = y + 1;
+}
+buffer.toByteArray()
