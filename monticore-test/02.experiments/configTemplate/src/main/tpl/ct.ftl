@@ -7,7 +7,7 @@ ${glex.replaceTemplate("cd2java.EmptyBody", hpWarn)}
 
 <#assign astPackage = cd.getPackageWithName("automata._ast").get()>
 <#-- Override the specific sizeStates method of the automaton to always return 10 -->
-<#assign sizeStateMethod = astPackage.getCDElementList()?first.getCDMemberList()[17]>
+<#assign sizeStateMethod = astPackage.getCDElementList()?first.getCDMemberList()[18]>
 <#assign hpSize = hpService.templateHP("SizeStateTen")>
 ${glex.replaceTemplate("cd2java.EmptyBody", sizeStateMethod, hpSize)}
 
