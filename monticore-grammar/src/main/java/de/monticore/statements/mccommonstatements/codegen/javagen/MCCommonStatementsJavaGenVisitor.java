@@ -170,7 +170,7 @@ public class MCCommonStatementsJavaGenVisitor
     SymTypeExpression parType = normalize(symTypeFromAST(node.getMCType()));
     String parTypeJava = getJavaTypePrint(parType);
 
-    node.getJavaModifierList().forEach(m -> {
+    node.getMCModifierList().forEach(m -> {
       m.accept(getTraverser());
       getPrinter().print(" ");
     });
