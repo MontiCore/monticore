@@ -58,6 +58,7 @@ public class CLIDecorator extends AbstractCreator<ASTCDCompilationUnit, Optional
         .addCDMember(createMainMethod(parserService.getCDSymbol()))
         .addCDMember(createGradleMainMethod(parserService.getCDSymbol()))
         .addCDMember(createRunMethod(startProdPresent, parserService.getCDSymbol()))
+        .addCDMember(createDoRunMethod())
         .addCDMember(createSetupLogMethod(parserService.getCDSymbol()))
         .addCDMember(createParseMethod(parserService.getCDSymbol()))
         .addCDMember(createInitMethod())
@@ -142,6 +143,22 @@ public class CLIDecorator extends AbstractCreator<ASTCDCompilationUnit, Optional
             .param("args", "the arguments given to the tool")
             .asHP());
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "Run", startProdPresent, cliName, generatedError));
+    return method;
+  }
+
+  /**
+   * creates doRun method to execute the CLI
+   *
+   * @return the decorated doRun method
+   */
+  protected ASTCDMethod createDoRunMethod() {
+    ASTCDParameter parameter = getCDParameterFacade().createParameter(CommandLine.class.getName(), "cmd");
+    ASTCDMethod method = getCDMethodFacade().createMethod(PROTECTED.build(), "doRun", parameter);
+    this.replaceTemplate(JAVADOC, method,
+            JavaDoc.of("Method containing the tool's logic.")
+                    .param("cmd", "the arguments given to the tool as commandline options")
+                    .asHP());
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "DoRun"));
     return method;
   }
 
