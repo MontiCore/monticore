@@ -13,9 +13,8 @@ import java.util.Optional;
  * Provides notifications about structural and attribute changes in a model
  * and offers access to the corresponding managed indices.
  *
- * @param <E> the traverser type used by the associated indices
  */
-public interface IModelAccessor<E extends ITraverser> {
+public interface IModelAccessor {
   
   /**
    * Notifies that a transformation has started.

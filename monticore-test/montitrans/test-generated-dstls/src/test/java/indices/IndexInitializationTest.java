@@ -8,7 +8,6 @@ import de.monticore.tf.runtime.inc.ParentIndex;
 import mc.testcases.statechart.statechart.StatechartMill;
 import mc.testcases.statechart.statechart._ast.*;
 import mc.testcases.statechart.statechart._parser.StatechartParser;
-import mc.testcases.statechart.statechart._visitor.StatechartTraverser;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -27,8 +26,7 @@ public class IndexInitializationTest {
     assertTrue(sc.isPresent());
     assertFalse(px.hasErrors());
     
-    ModelAccessor<StatechartTraverser> ma =
-        new ModelAccessor<>(StatechartMill.inheritanceTraverser(), sc.get());
+    ModelAccessor ma = new ModelAccessor(StatechartMill::inheritanceTraverser, sc.get());
     
     // Check the candidate index for correctness
     assertEquals(37, ma.getCandidateIndex().getAllNodes().size());

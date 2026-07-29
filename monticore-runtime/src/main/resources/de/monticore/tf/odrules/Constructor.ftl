@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 public ${ast.getJavaClassName()}(List<ASTNode> hostGraph) {
-  this.modelAccessor = new ModelAccessor<>(${grammarName}Mill.inheritanceTraverser(), hostGraph);
+  this.modelAccessor = new ModelAccessor(${grammarName}Mill::inheritanceTraverser, hostGraph);
 	this.glex = new GlobalExtensionManagement();
 }
 
@@ -9,7 +9,7 @@ public ${ast.getJavaClassName()}(ASTNode... hostGraph){
 }
 
 public ${ast.getJavaClassName()}(GlobalExtensionManagement glex, ASTNode... hostGraph){
-  this.modelAccessor = new ModelAccessor<>(${grammarName}Mill.inheritanceTraverser(), hostGraph);
+  this.modelAccessor = new ModelAccessor(${grammarName}Mill::inheritanceTraverser, hostGraph);
 	this.glex = glex;
 }
 
@@ -22,15 +22,15 @@ public ${ast.getJavaClassName()}(ASTNode astNode) {
 }
 
 public ${ast.getJavaClassName()}(ASTNode astNode, GlobalExtensionManagement glex) {
-  this.modelAccessor = new ModelAccessor<>(${grammarName}Mill.inheritanceTraverser(), astNode);
+  this.modelAccessor = new ModelAccessor(${grammarName}Mill::inheritanceTraverser, astNode);
   this.glex = glex;
 }
 
-public ${ast.getJavaClassName()}(IModelAccessor<${grammarName}Traverser> modelAccessor) {
+public ${ast.getJavaClassName()}(IModelAccessor modelAccessor) {
   this(new GlobalExtensionManagement(), modelAccessor);
 }
 
-public ${ast.getJavaClassName()}(GlobalExtensionManagement glex, IModelAccessor<${grammarName}Traverser> modelAccessor) {
+public ${ast.getJavaClassName()}(GlobalExtensionManagement glex, IModelAccessor modelAccessor) {
   this.modelAccessor = modelAccessor;
   this.glex = glex;
 }

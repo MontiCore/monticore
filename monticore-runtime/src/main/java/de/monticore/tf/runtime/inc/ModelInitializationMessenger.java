@@ -5,6 +5,7 @@ import de.monticore.visitor.ITraverser;
 import de.monticore.visitor.IVisitor;
 
 import java.util.Stack;
+import java.util.function.Supplier;
 
 /**
  * Simulates the construction of an already existing model for a
@@ -17,12 +18,11 @@ import java.util.Stack;
  * construction process so that the accessor can rebuild its internal state.
  * Note: Only attachment notifications are emitted, no modification notifications!
  *
- * @param <E> concrete traverser type used to visit the model
  */
-public class ModelInitializationMessenger<E extends ITraverser> {
+public class ModelInitializationMessenger {
   
-  protected final E traverser;
-  protected final IModelAccessor<E> accessor;
+  protected final ITraverser traverser;
+  protected final IModelAccessor accessor;
   protected final Stack<ASTNode> parentStack;
   
   /**
@@ -32,9 +32,9 @@ public class ModelInitializationMessenger<E extends ITraverser> {
    * @param accessor accessor whose indices are initialized from the traversal
    * @param traverser traverser used to visit all nodes in the model
    */
-  public ModelInitializationMessenger(IModelAccessor<E> accessor, E traverser) {
+  public ModelInitializationMessenger(IModelAccessor accessor, Supplier<ITraverser> traverser) {
     this.accessor = accessor;
-    this.traverser = traverser;
+    this.traverser = traverser.get();
     this.parentStack = new Stack<>();
     
     setupTraverser();

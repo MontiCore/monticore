@@ -6,7 +6,7 @@
 
   public static boolean optimizeSP = true;
 
-  protected IModelAccessor<${grammarName}Traverser> modelAccessor;
+  protected IModelAccessor modelAccessor;
   protected List<Match> allMatches;
   protected boolean doReplacementExecuted = false;
 

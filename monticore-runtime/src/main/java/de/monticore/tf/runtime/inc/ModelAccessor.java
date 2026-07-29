@@ -3,18 +3,18 @@ package de.monticore.tf.runtime.inc;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.visitor.ITraverser;
-import org.jspecify.annotations.NonNull;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.Supplier;
 
 /**
  * Provides a facade for propagating model change notifications and accessing
  * the managed indices.
  *
- * @param <E> the traverser type used to initialize the underlying indices
  */
-public class ModelAccessor<E extends ITraverser> implements IModelAccessor<E> {
+public class ModelAccessor implements IModelAccessor {
   
   private final ParentIndex parentIndex;
   
@@ -30,7 +30,7 @@ public class ModelAccessor<E extends ITraverser> implements IModelAccessor<E> {
    * @param traverser the traverser used to initialize the indices
    * @param roots the root nodes used for initialization
    */
-  public ModelAccessor(E traverser, ASTNode... roots) {
+  public ModelAccessor(Supplier<ITraverser> traverser, ASTNode... roots) {
     this(traverser, Arrays.stream(roots).toList());
   }
   
@@ -41,7 +41,7 @@ public class ModelAccessor<E extends ITraverser> implements IModelAccessor<E> {
    * @param customIndices the custom indices to register by name
    * @param roots the root nodes used for initialization
    */
-  public ModelAccessor(E traverser, Map<String, IModelIndex> customIndices, ASTNode... roots) {
+  public ModelAccessor(Supplier<ITraverser> traverser, Map<String, IModelIndex> customIndices, ASTNode... roots) {
     this(traverser, Arrays.stream(roots).toList(), customIndices);
   }
   
@@ -51,7 +51,7 @@ public class ModelAccessor<E extends ITraverser> implements IModelAccessor<E> {
    * @param traverser the traverser used to initialize the indices
    * @param roots the root nodes used for initialization
    */
-  public ModelAccessor(E traverser, List<ASTNode> roots) {
+  public ModelAccessor(Supplier<ITraverser> traverser, List<ASTNode> roots) {
     this(traverser, roots, new HashMap<>(), new HashSet<>());
   }
   
@@ -62,7 +62,7 @@ public class ModelAccessor<E extends ITraverser> implements IModelAccessor<E> {
    * @param roots the root nodes used for initialization
    * @param customIndices the custom indices to register by name
    */
-  public ModelAccessor(E traverser, List<ASTNode> roots, Map<String, IModelIndex> customIndices) {
+  public ModelAccessor(Supplier<ITraverser> traverser, List<ASTNode> roots, Map<String, IModelIndex> customIndices) {
     this(traverser, roots, customIndices, new HashSet<>());
   }
   
@@ -77,13 +77,13 @@ public class ModelAccessor<E extends ITraverser> implements IModelAccessor<E> {
    * @param customIndices the custom indices to register by name
    * @param listeners listeners that should receive incremental model events
    */
-  protected ModelAccessor(E traverser, List<ASTNode> roots, Map<String, IModelIndex> customIndices, Set<IIncrementalListener> listeners) {
+  protected ModelAccessor(Supplier<ITraverser> traverser, List<ASTNode> roots, Map<String, IModelIndex> customIndices, Set<IIncrementalListener> listeners) {
     this.parentIndex = new ParentIndex();
-    this.candidateIndex = new CandidateIndex();
+    this.candidateIndex = new CandidateIndex(traverser);
     this.customIndices = new HashMap<>(customIndices);
     this.listeners = listeners;
     
-    ModelInitializationMessenger<E> initializationMessenger = new ModelInitializationMessenger<>(this, traverser);
+    ModelInitializationMessenger initializationMessenger = new ModelInitializationMessenger(this, traverser);
     roots.forEach(initializationMessenger::initialize);
     
     finalizeInitialization();
@@ -114,7 +114,7 @@ public class ModelAccessor<E extends ITraverser> implements IModelAccessor<E> {
    * @param transformationName the name of the transformation
    */
   @Override
-  public void notifyTransformationStart(@NonNull String transformationName) {
+  public void notifyTransformationStart(@Nonnull String transformationName) {
     this.parentIndex.onTransformationStart(transformationName);
     this.candidateIndex.onTransformationStart(transformationName);
     this.customIndices.values().forEach(index -> index.onTransformationStart(transformationName));
@@ -127,7 +127,7 @@ public class ModelAccessor<E extends ITraverser> implements IModelAccessor<E> {
    * @param transformationName the name of the transformation
    */
   @Override
-  public void notifyTransformationEnd(@NonNull String transformationName) {
+  public void notifyTransformationEnd(@Nonnull String transformationName) {
     this.parentIndex.onTransformationEnd(transformationName);
     this.candidateIndex.onTransformationEnd(transformationName);
     this.customIndices.values().forEach(index -> index.onTransformationEnd(transformationName));
@@ -141,7 +141,7 @@ public class ModelAccessor<E extends ITraverser> implements IModelAccessor<E> {
    * @param parent the parent the node was attached to, or {@code null} if the node is a root node
    */
   @Override
-  public void notifyNodeAttach(@NonNull ASTNode node, @Nullable ASTNode parent) {
+  public void notifyNodeAttach(@Nonnull ASTNode node, @Nullable ASTNode parent) {
     this.parentIndex.onASTNodeAttach(node, parent);
     this.candidateIndex.onASTNodeAttach(node, parent);
     this.customIndices.values().forEach(index -> index.onASTNodeAttach(node, parent));
@@ -155,7 +155,7 @@ public class ModelAccessor<E extends ITraverser> implements IModelAccessor<E> {
    * @param parent the parent the node was detached from
    */
   @Override
-  public void notifyNodeDetach(@NonNull ASTNode node, @NonNull ASTNode parent) {
+  public void notifyNodeDetach(@Nonnull ASTNode node, @Nonnull ASTNode parent) {
     this.parentIndex.onASTNodeDetach(node, parent);
     this.candidateIndex.onASTNodeDetach(node, parent);
     this.customIndices.values().forEach(index -> index.onASTNodeDetach(node, parent));
@@ -173,7 +173,7 @@ public class ModelAccessor<E extends ITraverser> implements IModelAccessor<E> {
    * @param newValue the new attribute value, or {@code null} if not applicable
    */
   @Override
-  public void notifyModification(@NonNull ASTNode node, String attributeName, ModificationOp modificationOp, @Nullable Object oldValue,
+  public void notifyModification(@Nonnull ASTNode node, String attributeName, ModificationOp modificationOp, @Nullable Object oldValue,
       @Nullable Object newValue) {
     this.parentIndex.onASTNodeModification(node, attributeName, modificationOp, oldValue, newValue);
     this.candidateIndex.onASTNodeModification(node, attributeName, modificationOp, oldValue, newValue);
@@ -195,7 +195,7 @@ public class ModelAccessor<E extends ITraverser> implements IModelAccessor<E> {
    * @param newValue the new value of the element, or {@code null} if not applicable
    */
   @Override
-  public void notifyListModification(@NonNull ASTNode node, String attributeName, int idx,
+  public void notifyListModification(@Nonnull ASTNode node, String attributeName, int idx,
       ModificationOp modificationOp, @Nullable Object oldValue, @Nullable Object newValue) {
     this.parentIndex.onASTNodeListModification(node, attributeName, idx, modificationOp, oldValue, newValue);
     this.candidateIndex.onASTNodeListModification(node, attributeName, idx, modificationOp, oldValue, newValue);
