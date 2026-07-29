@@ -5,11 +5,14 @@ import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 import de.monticore.ast.ASTCNode;
 import de.monticore.ast.ASTNode;
+import de.monticore.visitor.ITraverser;
+import de.monticore.visitor.IVisitor;
 import de.se_rwth.commons.logging.Log;
 import org.jspecify.annotations.NonNull;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.Supplier;
 
 /**
  * Index for AST nodes that can be used as candidates for later processing.
@@ -36,14 +39,18 @@ public class CandidateIndex implements IModelIndex {
    */
   protected Multimap<Class<?>, Class<?>> subTypes;
   
+  protected ITraverser detachTraverser;
   
   /**
    * Creates an empty candidate index.
    */
-  public CandidateIndex() {
+  public CandidateIndex(Supplier<ITraverser> traverser) {
     // LinkedHashMultimap preserves insertion order and avoids duplicate key-value pairs.
     this.candidates = LinkedHashMultimap.create();
     this.subTypes = LinkedHashMultimap.create();
+    this.detachTraverser = traverser.get();
+    
+    initDetachTraverser();
   }
   
   /**
@@ -200,7 +207,17 @@ public class CandidateIndex implements IModelIndex {
    */
   @Override
   public void onASTNodeDetach(@NonNull ASTNode node, @NonNull ASTNode parent) {
-    this.candidates.remove(node.getClass(), node);
-    Log.debug(() -> "Deleted node with type %s!".formatted(node.getClass()), "CandidateIndex");
+    node.accept(this.detachTraverser);
+  }
+  
+  protected void initDetachTraverser() {
+    this.detachTraverser.add4IVisitor(new IVisitor() {
+      
+      @Override
+      public void endVisit(ASTNode node) {
+        candidates.remove(node.getClass(), node);
+        Log.debug(() -> "Deleted node with type %s!".formatted(node.getClass()), "CandidateIndex");
+      }
+    });
   }
 }
