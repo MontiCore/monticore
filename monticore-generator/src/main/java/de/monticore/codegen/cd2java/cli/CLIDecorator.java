@@ -18,14 +18,13 @@ import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import org.apache.commons.cli.CommandLine;
 
-import java.time.LocalDate;
 import java.util.Optional;
 
 import static de.monticore.cd.codegen.CD2JavaTemplates.JAVADOC;
-import static de.monticore.cd.facade.CDModifier.PUBLIC;
-import static de.monticore.cd.facade.CDModifier.PUBLIC_STATIC;
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
+import static de.monticore.cd.facade.CDModifier.*;
 
 /**
  * creates the CLI class for a given Grammar
@@ -59,6 +58,8 @@ public class CLIDecorator extends AbstractCreator<ASTCDCompilationUnit, Optional
         .addCDMember(createMainMethod(parserService.getCDSymbol()))
         .addCDMember(createGradleMainMethod(parserService.getCDSymbol()))
         .addCDMember(createRunMethod(startProdPresent, parserService.getCDSymbol()))
+        .addCDMember(createDoRunMethod())
+        .addCDMember(createSetupLogMethod(parserService.getCDSymbol()))
         .addCDMember(createParseMethod(parserService.getCDSymbol()))
         .addCDMember(createInitMethod())
         .addCDMember(createPrettyPrintMethod())
@@ -142,6 +143,40 @@ public class CLIDecorator extends AbstractCreator<ASTCDCompilationUnit, Optional
             .param("args", "the arguments given to the tool")
             .asHP());
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "Run", startProdPresent, cliName, generatedError));
+    return method;
+  }
+
+  /**
+   * creates doRun method to execute the CLI
+   *
+   * @return the decorated doRun method
+   */
+  protected ASTCDMethod createDoRunMethod() {
+    ASTCDParameter parameter = getCDParameterFacade().createParameter(CommandLine.class.getName(), "cmd");
+    ASTCDMethod method = getCDMethodFacade().createMethod(PROTECTED.build(), "doRun", parameter);
+    this.replaceTemplate(JAVADOC, method,
+            JavaDoc.of("Method containing the tool's logic.")
+                    .param("cmd", "the arguments given to the tool as commandline options")
+                    .asHP());
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "DoRun"));
+    return method;
+  }
+
+  /**
+   * creates setupLog method to configure the log settings
+   *
+   * @param cdSymbol class diagram of the current language
+   * @return the decorated setupLog method
+   */
+  protected ASTCDMethod createSetupLogMethod(DiagramSymbol cdSymbol) {
+    String generatedError = symbolTableService.getGeneratedErrorCode(cdSymbol.getName() + "setuplog");
+    ASTCDParameter parameter = getCDParameterFacade().createParameter(CommandLine.class.getName(), "cmd");
+    ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), "setupLog", parameter);
+    this.replaceTemplate(JAVADOC, method,
+            JavaDoc.of("Sets up the log levels and stacktrace handling.")
+                    .param("cmd", "The commandline options")
+                    .asHP());
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(TEMPLATE_PATH + "SetupLog", generatedError));
     return method;
   }
 
