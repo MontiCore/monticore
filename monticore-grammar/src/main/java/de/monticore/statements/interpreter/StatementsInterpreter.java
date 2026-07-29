@@ -2,7 +2,7 @@
 package de.monticore.statements.interpreter;
 
 import de.monticore.interpreter.util.InterpreterDataForBasicSymbols;
-import de.monticore.statements.mcstatementsbasis._ast.ASTMCStatement;
+import de.monticore.statements.mcstatementsbasis._ast.ASTMCBlockStatement;
 import de.monticore.symbols.basicsymbols.interpreter.AbstractInterpreterForBasicSymbols;
 import de.monticore.values.MCValue;
 import de.monticore.visitor.ITraverser;
@@ -19,7 +19,7 @@ public class StatementsInterpreter extends AbstractInterpreterForBasicSymbols {
     super(traverser, iData);
   }
 
-  public MCValue interpret(ASTMCStatement statement) {
+  public MCValue interpret(ASTMCBlockStatement statement) {
     return interpretNode(statement);
   }
 

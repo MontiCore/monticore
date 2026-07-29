@@ -2,6 +2,7 @@
 package de.monticore.symbols.compsymbols._symboltable;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.HashMultimap;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -68,6 +69,12 @@ public class ComponentTypeSymbolBuilder extends ComponentTypeSymbolBuilderTOP {
     if (this.typeParameters != null) {
       this.getTypeParameters().forEach(symbol.getSpannedScope()::add);
     }
+    if (this.effectChains != null){
+      symbol.setEffectChains(this.effectChains);
+    } else if (symbol.getEffectChains() == null){
+      symbol.setEffectChains(HashMultimap.create());
+    }
+
     return symbol;
   }
 

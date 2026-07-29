@@ -24,6 +24,7 @@ public interface MCGeneratorExtension {
 
   /**
    * Publish additional grammars of a source set
+   * The published artifact is suffixed with "-${sourceSetName}"
    *
    * @param sourceSet the source set whose grammars should be published
    */

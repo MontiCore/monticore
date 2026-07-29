@@ -31,6 +31,7 @@ public class MCGeneratorPlugin implements Plugin<Project> {
     project.getPlugins().apply(MCGeneratorBasePlugin.class);
     project.getPlugins().apply(MCSourcesPlugin.class);
     project.getPlugins().apply(MCPublishingPlugin.class);
+    project.getPlugins().apply(MCGeneratorWithTRSetupPlugin.class);
 
     // Add a MCGenTask by default to each source set
     project.getExtensions().getByType(JavaPluginExtension.class).getSourceSets().all(sourceSet -> {
