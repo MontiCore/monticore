@@ -5,7 +5,9 @@ ${signature("ruleClassName")}
 <#if ast.isObjectWithinList()>
     // in a list is changed
     for (${ast.getObjectType()} d : ${ast.getObjectGetter()}) {
+      ${ast.getValueType()} oldValue = d.${ast.getGetter()}();
       d.${ast.getSetter()}(m.${ast.getObjectName()}_${ast.getAttributeName()}_before.get(d));
+      this.modelAccessor.notifyModification(d, "${ast.getAttributeName()}", ModificationOp.REPLACE, oldValue, d.${ast.getGetter()}());
     }
 <#else>
     // single attribute (not in a list)
