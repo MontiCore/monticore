@@ -1,0 +1,5 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+statechart $_ {
+  [[ :- $from -> $to; ]]
+}
