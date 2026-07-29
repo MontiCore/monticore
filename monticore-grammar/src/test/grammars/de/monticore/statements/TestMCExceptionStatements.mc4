@@ -5,4 +5,7 @@ package de.monticore.statements;
 grammar TestMCExceptionStatements extends de.monticore.statements.MCExceptionStatements,
                                           de.monticore.expressions.CombineExpressionsWithLiterals {
 
+  // should use Modifiers from MCCommonStatements instead
+  @Override
+  TModifier implements MCModifier = "ModifierThatIsDefinitelyUnused";
 }
