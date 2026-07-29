@@ -120,7 +120,7 @@ EnhancedForControl implements ForControl
     = FormalParameter ":" Expression;
 
 FormalParameter
-    =   JavaModifier* MCType Declarator;
+    =   MCModifier* MCType Declarator;
 
 WhileStatement implements MCStatement
     = "while" "(" condition:Expression ")" MCStatement ;
