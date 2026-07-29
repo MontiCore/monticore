@@ -6,105 +6,97 @@ import de.monticore.literals.mccommonliterals._ast.ASTBasicFloatLiteral;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.literals.testmccommonliterals.TestMCCommonLiteralsMill;
 import de.monticore.literals.testmccommonliterals._parser.TestMCCommonLiteralsParser;
+import de.monticore.runtime.junit.MCAssertions;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@TestWithMCLanguage(TestMCCommonLiteralsMill.class)
 public class FloatCommonLiteralsTest {
-
-  @BeforeEach
-  public void init() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-    TestMCCommonLiteralsMill.reset();
-    TestMCCommonLiteralsMill.init();
+  
+  static Stream<Arguments> checkFloatLiteralArgs() {
+    return Stream.of(
+        Arguments.of(0.0f, "0.0f"),
+        Arguments.of(23.4f, "23.4f")
+    );
   }
 
-  private void checkFloatLiteral(float f, String s) throws IOException {
-    TestMCCommonLiteralsParser parser = new TestMCCommonLiteralsParser();
+  @ParameterizedTest
+  @MethodSource("checkFloatLiteralArgs")
+  public void checkFloatLiteral(float f, String s) throws IOException {
+    TestMCCommonLiteralsParser parser = TestMCCommonLiteralsMill.parser();
     Optional<ASTLiteral> lit = parser.parseLiteral(new StringReader(s));
     assertTrue(lit.isPresent());
     assertInstanceOf(ASTBasicFloatLiteral.class, lit.get());
     assertEquals(f, ((ASTBasicFloatLiteral) lit.get()).getValue(), 0);
-    assertTrue(true);
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
-  private void checkFalse(String s) throws IOException {
-    TestMCCommonLiteralsParser parser = new TestMCCommonLiteralsParser();
+  @ParameterizedTest
+  @ValueSource(strings = {
+      "0F",
+      ".4F",
+      "5.F",
+      "009.f",
+      "009f",
+      "009e2f",
+      "2e3F",
+      "2E-3F",
+      "009f",
+      ".1e1F",
+      ".1F",
+      ".11e12F",
+      ".11e+12F",
+      "29.18e08F",
+      "0029.0008e-00008F",
+      "0. 0f",
+      "0 .0f",
+      "23.4 f",
+      
+      // hexadezimal number
+      "0x5.p1f",
+      "0x.5p1f",
+      "0xFp-9f",
+      "0xfP2F",
+      "0xfp1F",
+      "0x.fP1F",
+      "0x0p0F",
+      "0x0.0p1F",
+      "0x.0p1F",
+      "0x.5AFp1f",
+      "0x0050AF.CD9p-008f",
+      "0x1.fffffeP+127f",
+      "0x0p-5f",
+      "0x0p1F",
+      "0x0p-5F",
+      
+      // Examples from Java Language Specification
+      "1e1f",
+      "2.f",
+      ".3f",
+      "0f",
+      "6.022137e+23f",
+  })
+  public void checkFalse(String s) throws IOException {
+    TestMCCommonLiteralsParser parser = TestMCCommonLiteralsMill.parser();
     Optional<ASTBasicFloatLiteral> lit = parser.parseBasicFloatLiteral(new StringReader(s));
     assertFalse(lit.isPresent());
-   }
-
-  @Test
-  public void testFloatLiterals() {
-    try {
-      checkFloatLiteral(0.0f, "0.0f");
-      checkFloatLiteral(23.4f, "23.4f");
-    }
-    catch (IOException e)
-    {
-      fail(e.getMessage());
-    }
-  }
-
-  @Test
-  public void checkFalseLiterals() {
-    try {
-      checkFalse("0F");
-      checkFalse(".4F");
-      checkFalse("5.F");
-      checkFalse("009.f");
-      checkFalse("009f");
-      checkFalse("009e2f");
-      checkFalse("2e3F");
-      checkFalse("2E-3F");
-      checkFalse("009f");
-      checkFalse(".1e1F");
-      checkFalse(".1F");
-      checkFalse(".11e12F");
-      checkFalse(".11e+12F");
-      checkFalse("29.18e08F");
-      checkFalse("0029.0008e-00008F");
-      checkFalse("0. 0f");
-      checkFalse("0 .0f");
-      checkFalse("23.4 f");
-
-      // hexadezimal number
-      checkFalse("0x5.p1f");
-      checkFalse("0x.5p1f");
-      checkFalse("0xFp-9f");
-      checkFalse("0xfP2F");
-      checkFalse("0xfp1F");
-      checkFalse("0x.fP1F");
-      checkFalse("0x0p0F");
-      checkFalse("0x0.0p1F");
-      checkFalse("0x.0p1F");
-      checkFalse("0x.5AFp1f");
-      checkFalse("0x0050AF.CD9p-008f");
-      checkFalse("0x1.fffffeP+127f");
-      checkFalse("0x0p-5f");
-      checkFalse("0x0p1F");
-      checkFalse("0x0p-5F");
-
-      // Examples from Java Language Specification
-      checkFalse("1e1f");
-      checkFalse("2.f");
-      checkFalse(".3f");
-      checkFalse("0f");
-      checkFalse("6.022137e+23f");
-    }
-    catch (IOException e)
-    {
-      fail(e.getMessage());
+    
+    Log.getFindings().removeAll(
+        MCAssertions.assertHasFindingsStartingWith("rule basicFloatLiteral failed predicate"));
+    
+    if (Log.getFindingsCount() == 1) {
+      Log.getFindings().remove(
+          MCAssertions.assertHasFindingStartingWith("token recognition error"));
     }
   }
 }

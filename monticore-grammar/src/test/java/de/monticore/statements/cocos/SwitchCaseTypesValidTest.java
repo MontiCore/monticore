@@ -1,6 +1,8 @@
 /* (c) [https://github.com/MontiCore/monticore](https://github.com/MontiCore/monticore) */
 package de.monticore.statements.cocos;
 
+import de.monticore.runtime.junit.MCAssertions;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.statements.mccommonstatements.cocos.SwitchCaseTypesValid;
 import de.monticore.statements.mcstatementsbasis._ast.ASTMCBlockStatement;
 import de.monticore.statements.testmccommonstatements.TestMCCommonStatementsMill;
@@ -8,7 +10,6 @@ import de.monticore.statements.testmccommonstatements._cocos.TestMCCommonStateme
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserFactory;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -24,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
+@TestWithMCLanguage(TestMCCommonStatementsMill.class)
 class SwitchCaseTypesValidTest {
 
   static Stream<Arguments> invalidCaseLabelProvider() {
@@ -34,10 +36,6 @@ class SwitchCaseTypesValidTest {
 
   @BeforeEach
   void init() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-    TestMCCommonStatementsMill.reset();
-    TestMCCommonStatementsMill.init();
     CombineExpressionsWithLiteralsTypeTraverserFactory.initTypeCheck3();
     BasicSymbolsMill.initializePrimitives();
   }
@@ -57,9 +55,6 @@ class SwitchCaseTypesValidTest {
 
     // When
     checker.checkAll(ast);
-
-    // Then
-    assertTrue(Log.getFindings().isEmpty(), () -> Log.getFindings().toString());
   }
 
   @ParameterizedTest
@@ -73,10 +68,10 @@ class SwitchCaseTypesValidTest {
 
     // When
     checker.checkAll(ast);
-
+    
     // Then
-    assertEquals(1, Log.getFindings().size());
-    assertTrue(Log.getFindings().get(0).getMsg().startsWith(SwitchCaseTypesValid.CASE_ERROR_CODE));
+    Log.getFindings().remove(
+        MCAssertions.assertHasFindingStartingWith(SwitchCaseTypesValid.CASE_ERROR_CODE));
   }
 
   @Test
@@ -89,9 +84,6 @@ class SwitchCaseTypesValidTest {
 
     // When
     checker.checkAll(ast);
-
-    // Then
-    assertTrue(Log.getFindings().isEmpty(), () -> Log.getFindings().toString());
   }
 
   @ParameterizedTest
@@ -109,9 +101,6 @@ class SwitchCaseTypesValidTest {
 
     // When
     checker.checkAll(ast);
-
-    // Then
-    assertTrue(Log.getFindings().isEmpty(), () -> Log.getFindings().toString());
   }
 
   @Test
@@ -124,9 +113,9 @@ class SwitchCaseTypesValidTest {
 
     // When
     checker.checkAll(ast);
-
+    
     // Then
-    assertEquals(1, Log.getFindings().size());
-    assertTrue(Log.getFindings().get(0).getMsg().startsWith(SwitchCaseTypesValid.CASE_ERROR_CODE));
+    Log.getFindings().remove(
+        MCAssertions.assertHasFindingStartingWith(SwitchCaseTypesValid.CASE_ERROR_CODE));
   }
 }

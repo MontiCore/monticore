@@ -1,11 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions.combineexpressionswithliterals._cocos;
 
+import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
 import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.monticore.expressions.javaclassexpressions._ast.ASTClassExpression;
 import de.monticore.expressions.javaclassexpressions._ast.ASTJavaClassExpressionsNode;
+import de.monticore.runtime.junit.MCAssertions;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -15,14 +17,14 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@TestWithMCLanguage(CombineExpressionsWithLiteralsMill.class)
 public class TestNoClassExpressionForGenerics {
 
-  CombineExpressionsWithLiteralsParser p = new CombineExpressionsWithLiteralsParser();
+  CombineExpressionsWithLiteralsParser p;
 
   @BeforeEach
   public void setup(){
-    LogStub.init();
-    Log.enableFailQuick(false);
+    p = CombineExpressionsWithLiteralsMill.parser();
   }
 
   @Test
@@ -33,7 +35,6 @@ public class TestNoClassExpressionForGenerics {
 
     CombineExpressionsWithLiteralsCoCoChecker coCoChecker = new CombineExpressionsWithLiteralsCoCoChecker().getCombineExpressionsWithLiteralsCoCoChecker();
     coCoChecker.checkAll((ASTJavaClassExpressionsNode) optClass.get());
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -44,7 +45,6 @@ public class TestNoClassExpressionForGenerics {
 
     CombineExpressionsWithLiteralsCoCoChecker coCoChecker = new CombineExpressionsWithLiteralsCoCoChecker().getCombineExpressionsWithLiteralsCoCoChecker();
     coCoChecker.checkAll((ASTJavaClassExpressionsNode) optClass.get());
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -56,8 +56,8 @@ public class TestNoClassExpressionForGenerics {
 
     CombineExpressionsWithLiteralsCoCoChecker coCoChecker = new CombineExpressionsWithLiteralsCoCoChecker().getCombineExpressionsWithLiteralsCoCoChecker();
     coCoChecker.checkAll((ASTJavaClassExpressionsNode) optClass.get());
-    assertFalse(Log.getFindings().isEmpty());
-    assertTrue(Log.getFindings().get(Log.getFindings().size()-1).getMsg().startsWith(NoClassExpressionForGenerics.ERROR_CODE));
+    
+    Log.getFindings().remove(MCAssertions.assertHasFindingStartingWith(NoClassExpressionForGenerics.ERROR_CODE));
   }
 
   @Test
@@ -69,8 +69,8 @@ public class TestNoClassExpressionForGenerics {
 
     CombineExpressionsWithLiteralsCoCoChecker coCoChecker = new CombineExpressionsWithLiteralsCoCoChecker().getCombineExpressionsWithLiteralsCoCoChecker();
     coCoChecker.checkAll((ASTJavaClassExpressionsNode) optClass.get());
-    assertFalse(Log.getFindings().isEmpty());
-    assertTrue(Log.getFindings().get(Log.getFindings().size()-1).getMsg().startsWith(NoClassExpressionForGenerics.ERROR_CODE));
+    
+    Log.getFindings().remove(MCAssertions.assertHasFindingStartingWith(NoClassExpressionForGenerics.ERROR_CODE));
   }
 
 }

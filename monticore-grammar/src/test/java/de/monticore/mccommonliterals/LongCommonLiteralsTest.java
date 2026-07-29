@@ -6,76 +6,53 @@ import de.monticore.literals.mccommonliterals._ast.ASTBasicLongLiteral;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.literals.testmccommonliterals.TestMCCommonLiteralsMill;
 import de.monticore.literals.testmccommonliterals._parser.TestMCCommonLiteralsParser;
+import de.monticore.runtime.junit.MCAssertions;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@TestWithMCLanguage(TestMCCommonLiteralsMill.class)
 public class LongCommonLiteralsTest {
   
-  @BeforeEach
-  public void init() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-    TestMCCommonLiteralsMill.reset();
-    TestMCCommonLiteralsMill.init();
+  static Stream<Arguments> checkLongLiteralArgs() {
+    return Stream.of(
+        // decimal number
+        Arguments.of(0L, "0L"),
+        Arguments.of(123L, "123L"),
+        Arguments.of(10L, "10L"),
+        Arguments.of(5L, "5L"),
+        Arguments.of(5L, "05L"),
+        Arguments.of(5L, "05L")
+    );
   }
 
-  private void checkLongLiteral(long l, String s) throws IOException {
-    TestMCCommonLiteralsParser parser = new TestMCCommonLiteralsParser();
-    Optional<ASTLiteral> lit = parser.parseLiteral(new StringReader(s));
+  @ParameterizedTest
+  @MethodSource("checkLongLiteralArgs")
+  public void checkLongLiteral(long l, String s) throws IOException {
+    TestMCCommonLiteralsParser parser = TestMCCommonLiteralsMill.parser();
+    Optional<ASTLiteral> lit = parser.parse_StringLiteral(s);
     assertTrue(lit.isPresent());
     assertInstanceOf(ASTBasicLongLiteral.class, lit.get());
     assertEquals(l, ((ASTBasicLongLiteral) lit.get()).getValue());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
-  private void checkFalse(String s) throws IOException {
-    TestMCCommonLiteralsParser parser = new TestMCCommonLiteralsParser();
-    Optional<ASTBasicLongLiteral> lit = parser.parseBasicLongLiteral(new StringReader(s));
+  @ParameterizedTest
+  @ValueSource(strings = { "0x12L", "0XeffL", "0x1234567890L", "0xabcdefL", "0x0L", "0xaL",
+      "0xC0FFEEL", "0x005fL", "0 L" })
+  public void checkFalse(String s) throws IOException {
+    TestMCCommonLiteralsParser parser = TestMCCommonLiteralsMill.parser();
+    Optional<ASTBasicLongLiteral> lit = parser.parse_StringBasicLongLiteral(s);
     assertFalse(lit.isPresent());
-  }
-
-  @Test
-  public void testLongLiterals() {
-    try {
-      // decimal number
-      checkLongLiteral(0L, "0L");
-      checkLongLiteral(123L, "123L");
-      checkLongLiteral(10L, "10L");
-      checkLongLiteral(5L, "5L");
-      checkLongLiteral(5L, "05L");
-      checkLongLiteral(5L, "05L");
-
-    }
-    catch (IOException e) {
-      fail(e.getMessage());
-    }
-  }
-
-  @Test
-  public void testFalse() {
-    try {
-      // hexadezimal number
-      checkFalse("0x12L");
-      checkFalse("0XeffL");
-      checkFalse("0x1234567890L");
-      checkFalse("0xabcdefL");
-      checkFalse("0x0L");
-      checkFalse("0xaL");
-      checkFalse("0xC0FFEEL");
-      checkFalse("0x005fL");
-      checkFalse("0 L");
-    }
-    catch (IOException e) {
-      fail(e.getMessage());
-    }
+    
+    Log.getFindings().removeAll(MCAssertions.assertHasFindingsStartingWith("rule basicLongLiteral failed predicate"));
   }
 }

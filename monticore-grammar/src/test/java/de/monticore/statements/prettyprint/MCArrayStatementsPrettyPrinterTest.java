@@ -1,14 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.statements.prettyprint;
 
-import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.statements.mcarraystatements._ast.ASTArrayDeclaratorId;
 import de.monticore.statements.mcarraystatements._ast.ASTArrayInit;
-import de.monticore.statements.mcarraystatements._prettyprint.MCArrayStatementsFullPrettyPrinter;
 import de.monticore.statements.testmcarraystatements.TestMCArrayStatementsMill;
 import de.monticore.statements.testmcarraystatements._parser.TestMCArrayStatementsParser;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -17,19 +15,14 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@TestWithMCLanguage(TestMCArrayStatementsMill.class)
 public class MCArrayStatementsPrettyPrinterTest {
 
-  private TestMCArrayStatementsParser parser = new TestMCArrayStatementsParser();
-
-  private MCArrayStatementsFullPrettyPrinter prettyPrinter = new MCArrayStatementsFullPrettyPrinter(new IndentPrinter());
+  private TestMCArrayStatementsParser parser;
 
   @BeforeEach
   public void init() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-    TestMCArrayStatementsMill.reset();
-    TestMCArrayStatementsMill.init();
-    prettyPrinter.getPrinter().clearBuffer();
+    parser = TestMCArrayStatementsMill.parser();
   }
 
 
@@ -41,8 +34,8 @@ public class MCArrayStatementsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTArrayInit ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
-    assertEquals(input.replaceAll(" ",  ""), output.replaceAll(" ", "").replaceAll("\n", ""));
+    String output = TestMCArrayStatementsMill.prettyPrint(ast, false);
+    assertEquals(input.replace(" ",  ""), output.replace(" ", "").replace("\n", ""));
 
     result = parser.parse_StringArrayInit(output);
     assertFalse(parser.hasErrors());
@@ -60,7 +53,7 @@ public class MCArrayStatementsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTArrayDeclaratorId ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestMCArrayStatementsMill.prettyPrint(ast, false);
 
     result = parser.parse_StringArrayDeclaratorId(output);
     assertFalse(parser.hasErrors());

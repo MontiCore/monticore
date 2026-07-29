@@ -6,70 +6,50 @@ import de.monticore.literals.mccommonliterals._ast.ASTBasicDoubleLiteral;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.literals.testmccommonliterals.TestMCCommonLiteralsMill;
 import de.monticore.literals.testmccommonliterals._parser.TestMCCommonLiteralsParser;
+import de.monticore.runtime.junit.MCAssertions;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@TestWithMCLanguage(TestMCCommonLiteralsMill.class)
 public class DoubleCommonLiteralsTest {
 
-  @BeforeEach
-  public void init() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-    TestMCCommonLiteralsMill.reset();
-    TestMCCommonLiteralsMill.init();
+  static Stream<Arguments> checkDoubleLiteralArgs() {
+    return Stream.of(
+        // decimal number
+        Arguments.of(0.0, "0.0"),
+        Arguments.of(0.0, "0.0"),
+        Arguments.of(3.0, "3.0"),
+        Arguments.of(3.0, "3.0")
+    );
   }
-
-  private void checkDoubleLiteral(double d, String s) throws IOException {
-    TestMCCommonLiteralsParser parser = new TestMCCommonLiteralsParser();
-    Optional<ASTLiteral> lit = parser.parseLiteral(new StringReader(s));
+  
+  @ParameterizedTest
+  @MethodSource("checkDoubleLiteralArgs")
+  public void checkDoubleLiteral(double d, String s) throws IOException {
+    TestMCCommonLiteralsParser parser = TestMCCommonLiteralsMill.parser();
+    Optional<ASTLiteral> lit = parser.parse_StringLiteral(s);
     assertTrue(lit.isPresent());
     assertInstanceOf(ASTBasicDoubleLiteral.class, lit.get());
     assertEquals(d, ((ASTBasicDoubleLiteral) lit.get()).getValue(), 0);
   }
 
-  private void checkFalse(String s) throws IOException {
-    TestMCCommonLiteralsParser parser = new TestMCCommonLiteralsParser();
-    Optional<ASTBasicDoubleLiteral> lit = parser.parseBasicDoubleLiteral(new StringReader(s));
+  @ParameterizedTest
+  @ValueSource(strings = { ".0d", "0.d", "5d", "009e2d", "0 .0", "0.0 d" })
+  public void checkFalse(String s) throws IOException {
+    TestMCCommonLiteralsParser parser = TestMCCommonLiteralsMill.parser();
+    Optional<ASTBasicDoubleLiteral> lit = parser.parse_StringBasicDoubleLiteral(s);
     assertFalse(lit.isPresent());
-  }
-
-  @Test
-  public void testDoubleLiterals() {
-    try {
-      // decimal number
-      checkDoubleLiteral(0.0, "0.0");
-      checkDoubleLiteral(0.0, "0.0");
-      checkDoubleLiteral(3.0, "3.0");
-      checkDoubleLiteral(3.0, "3.0");
-    }
-    catch (IOException e) {
-      fail(e.getMessage());
-    }
-  
-    assertTrue(Log.getFindings().isEmpty());
-  }
-
-  @Test
-  public void testFalseDoubleLiterals() {
-    try {
-      // decimal number
-      checkFalse(".0d");
-      checkFalse("0.d");
-      checkFalse("5d");
-      checkFalse("009e2d");
-      checkFalse("0 .0");
-      checkFalse("0.0 d");
-    }
-    catch (IOException e) {
-      fail(e.getMessage());
-    }
+    
+    Log.getFindings().removeAll(MCAssertions.assertHasFindingsStartingWith("extraneous input"));
   }
 }

@@ -1,12 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.prettyprint;
 
-import de.monticore.literals.mccommonliterals._prettyprint.MCCommonLiteralsFullPrettyPrinter;
 import de.monticore.literals.mccommonliterals._ast.*;
 import de.monticore.literals.testmccommonliterals.TestMCCommonLiteralsMill;
 import de.monticore.literals.testmccommonliterals._parser.TestMCCommonLiteralsParser;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -16,19 +15,14 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@TestWithMCLanguage(TestMCCommonLiteralsMill.class)
 public class MCCommonLiteralsPrettyPrinterTest {
 
-  private TestMCCommonLiteralsParser parser = new TestMCCommonLiteralsParser();
-
-  private MCCommonLiteralsFullPrettyPrinter prettyPrinter = new MCCommonLiteralsFullPrettyPrinter(new IndentPrinter());
+  private TestMCCommonLiteralsParser parser;
 
   @BeforeEach
   public void init() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-    TestMCCommonLiteralsMill.reset();
-    TestMCCommonLiteralsMill.init();
-    prettyPrinter.getPrinter().clearBuffer();
+    parser = TestMCCommonLiteralsMill.parser();
   }
 
   @Test
@@ -38,7 +32,7 @@ public class MCCommonLiteralsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTNullLiteral ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestMCCommonLiteralsMill.prettyPrint(ast, false);
 
     result = parser.parse_StringNullLiteral(output);
     assertFalse(parser.hasErrors());
@@ -57,7 +51,7 @@ public class MCCommonLiteralsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTBooleanLiteral ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestMCCommonLiteralsMill.prettyPrint(ast, false);
 
     result = parser.parse_StringBooleanLiteral(output);
     assertFalse(parser.hasErrors());
@@ -76,7 +70,7 @@ public class MCCommonLiteralsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTBooleanLiteral ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestMCCommonLiteralsMill.prettyPrint(ast, false);
 
     result = parser.parse_StringBooleanLiteral(output);
     assertFalse(parser.hasErrors());
@@ -94,7 +88,7 @@ public class MCCommonLiteralsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTCharLiteral ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestMCCommonLiteralsMill.prettyPrint(ast, false);
 
     result = parser.parse_StringCharLiteral(output);
     assertFalse(parser.hasErrors());
@@ -112,7 +106,7 @@ public class MCCommonLiteralsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTStringLiteral ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestMCCommonLiteralsMill.prettyPrint(ast, false);
 
     result = parser.parse_StringStringLiteral(output);
     assertFalse(parser.hasErrors());
@@ -130,7 +124,7 @@ public class MCCommonLiteralsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTSignedNatLiteral ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestMCCommonLiteralsMill.prettyPrint(ast, false);
 
     result = parser.parse_StringSignedNatLiteral(output);
     assertFalse(parser.hasErrors());
@@ -148,7 +142,7 @@ public class MCCommonLiteralsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTBasicLongLiteral ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestMCCommonLiteralsMill.prettyPrint(ast, false);
 
     result = parser.parse_StringBasicLongLiteral(output);
     assertFalse(parser.hasErrors());
@@ -166,7 +160,7 @@ public class MCCommonLiteralsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTSignedBasicLongLiteral ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestMCCommonLiteralsMill.prettyPrint(ast, false);
 
     result = parser.parse_StringSignedBasicLongLiteral(output);
     assertFalse(parser.hasErrors());
@@ -184,7 +178,7 @@ public class MCCommonLiteralsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTBasicFloatLiteral ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestMCCommonLiteralsMill.prettyPrint(ast, false);
 
     result = parser.parse_StringBasicFloatLiteral(output);
     assertFalse(parser.hasErrors());
@@ -202,7 +196,7 @@ public class MCCommonLiteralsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTSignedBasicFloatLiteral ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestMCCommonLiteralsMill.prettyPrint(ast, false);
 
     result = parser.parse_StringSignedBasicFloatLiteral(output);
     assertFalse(parser.hasErrors());
@@ -220,7 +214,7 @@ public class MCCommonLiteralsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTBasicDoubleLiteral ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestMCCommonLiteralsMill.prettyPrint(ast, false);
 
     result = parser.parse_StringBasicDoubleLiteral(output);
     assertFalse(parser.hasErrors());
@@ -238,7 +232,7 @@ public class MCCommonLiteralsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTSignedBasicDoubleLiteral ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestMCCommonLiteralsMill.prettyPrint(ast, false);
 
     result = parser.parse_StringSignedBasicDoubleLiteral(output);
     assertFalse(parser.hasErrors());

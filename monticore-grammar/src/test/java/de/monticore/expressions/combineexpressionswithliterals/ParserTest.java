@@ -3,9 +3,7 @@ package de.monticore.expressions.combineexpressionswithliterals;
 
 import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.BeforeAll;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -13,14 +11,8 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@TestWithMCLanguage(CombineExpressionsWithLiteralsMill.class)
 class ParserTest {
-
-  @BeforeAll
-  public static void setup() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-    CombineExpressionsWithLiteralsMill.init();
-  }
 
   @Test
   void parseBigExpr() throws IOException {

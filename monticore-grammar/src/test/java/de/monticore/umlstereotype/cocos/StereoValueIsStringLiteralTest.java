@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.umlstereotype.cocos;
 
-import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.testmccommon._parser.TestMCCommonParser;
 import de.monticore.umlstereotype._ast.ASTStereotype;
 import de.monticore.umlstereotype._cocos.UMLStereotypeCoCoChecker;

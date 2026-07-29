@@ -2,11 +2,12 @@
 
 package de.monticore.mcliterals;
 
+import de.monticore.runtime.junit.MCAssertions;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.testmcliteralsv2.TestMCLiteralsV2Mill;
 import de.monticore.testmcliteralsv2._ast.*;
 import de.monticore.testmcliteralsv2._parser.TestMCLiteralsV2Parser;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import mcnumbers._ast.ASTDecimal;
 import mcnumbers._ast.ASTInteger;
 import mcnumbers._ast.ASTNumber;
@@ -17,22 +18,17 @@ import stringliterals._ast.ASTCharLiteral;
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
-// import de.monticore.mcliteralsv2._ast.*;
-
+@TestWithMCLanguage(TestMCLiteralsV2Mill.class)
 public class MCLiteralsUnitTest {
   
   // setup the language infrastructure
-  TestMCLiteralsV2Parser parser = new TestMCLiteralsV2Parser() ;
+  TestMCLiteralsV2Parser parser;
   
   @BeforeEach
   public void init() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-    TestMCLiteralsV2Mill.reset();
-    TestMCLiteralsV2Mill.init();
+    parser = TestMCLiteralsV2Mill.parser();
   }
   
   // --------------------------------------------------------------------
@@ -53,8 +49,6 @@ public class MCLiteralsUnitTest {
     assertTrue(t.isPresentDecimalToken());
     assertEquals("67", t.getDecimalToken());
     t = ast.getAnyToken(4);
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
   
   // --------------------------------------------------------------------
@@ -68,21 +62,20 @@ public class MCLiteralsUnitTest {
     assertEquals("9", ast.getSource());
     assertEquals(9, ast.getValue());
     assertEquals(9, ast.getValueInt());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
   @Test
   public void testNat2() throws IOException {
     ASTDecimal ast = parser.parse_StringDecimal( " 0" ).get();
     assertEquals("0", ast.getSource());
     assertEquals(0, ast.getValue());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
   @Test
   public void testNat3() throws IOException {
     Optional<ASTDecimal> os = parser.parse_StringDecimal( " 00 0 " );
-    assertEquals(false, os.isPresent());
+    assertFalse(os.isPresent());
+    
+    Log.getFindings()
+        .remove(MCAssertions.assertHasFindingStartingWith("Expected EOF but found token"));
   }
   @Test
   public void testNat4() throws IOException {
@@ -90,22 +83,21 @@ public class MCLiteralsUnitTest {
     assertEquals("23", ast.getSource());
     assertEquals(23, ast.getValue());
     assertEquals(23, ast.getValueInt());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
   @Test
   public void testNat5() throws IOException {
     ASTDecimal ast = parser.parse_StringDecimal( " 463 " ).get();
     assertEquals(463, ast.getValue());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   // --------------------------------------------------------------------
   @Test
   public void testNat6() throws IOException {
     Optional<ASTDecimal> os = parser.parse_StringDecimal( " 0x23 " );
-    assertEquals(false, os.isPresent());
+    assertFalse(os.isPresent());
+    
+    Log.getFindings()
+        .remove(MCAssertions.assertHasFindingStartingWith("Expected EOF but found token"));
   }
 
   // --------------------------------------------------------------------
@@ -119,8 +111,6 @@ public class MCLiteralsUnitTest {
     ASTAnyToken a1 = ast.getAnyToken(1);
     assertTrue(a1.isPresentDecimalToken());
     assertEquals("23", a1.getDecimalToken());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   // --------------------------------------------------------------------
@@ -136,8 +126,6 @@ public class MCLiteralsUnitTest {
     assertEquals("0", ast.getAnyToken(3).getDecimalToken());
     assertEquals("0", ast.getAnyToken(4).getDecimalToken());
     assertEquals("47", ast.getAnyToken(5).getDecimalToken());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   // --------------------------------------------------------------------
@@ -147,8 +135,6 @@ public class MCLiteralsUnitTest {
     assertEquals(234, ast.getValue());
     assertEquals(234, ast.getValueInt());
     assertEquals("234", ast.getSource());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   // --------------------------------------------------------------------
@@ -162,8 +148,6 @@ public class MCLiteralsUnitTest {
     assertEquals(-463, ast.getValue());
     assertEquals(-463, ast.getValueInt());
     assertEquals("-463", ast.getSource());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   // --------------------------------------------------------------------
@@ -182,15 +166,16 @@ public class MCLiteralsUnitTest {
     assertEquals(-47, ast.getInteger(3).getValue());
     // space between the two token is missing
     assertEquals("-47", ast.getInteger(3).getSource());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   // --------------------------------------------------------------------
   @Test
   public void testIntNEG() throws IOException {
     Optional<ASTInteger> os = parser.parse_StringInteger( " 0x34 " );
-    assertEquals(false, os.isPresent());
+    assertFalse(os.isPresent());
+    
+    Log.getFindings()
+        .remove(MCAssertions.assertHasFindingStartingWith("Expected EOF but found token"));
   }
 
   // --------------------------------------------------------------------
@@ -203,8 +188,6 @@ public class MCLiteralsUnitTest {
     ASTBTest ast = parser.parse_StringBTest( " X2X, XFF001DX" ).get();
     assertEquals("X2X", ast.getXHexDigit(0));
     assertEquals("XFF001DX", ast.getXHexDigit(1));
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   
@@ -225,8 +208,6 @@ public class MCLiteralsUnitTest {
 
     // repeat wg. buffering
     assertEquals("ZWeR", ast.getStringLiteral(0).getValue());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   // --------------------------------------------------------------------
@@ -239,8 +220,6 @@ public class MCLiteralsUnitTest {
     ASTCharLiteral ast = parser.parse_StringCharLiteral( " 'h'" ).get();
     assertEquals("h", ast.getSource());
     assertEquals('h', ast.getValue());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   // --------------------------------------------------------------------
@@ -256,8 +235,6 @@ public class MCLiteralsUnitTest {
     // Encoded by Java
     assertEquals('\7', ast.getCharLiteral(5).getValue());
     assertEquals('o', ast.getCharLiteral(7).getValue());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   // --------------------------------------------------------------------
@@ -270,8 +247,6 @@ public class MCLiteralsUnitTest {
     assertEquals('\u23EF', ast.getCharLiteral(1).getValue());
     assertEquals('\u0001', ast.getCharLiteral(2).getValue());
     assertEquals('\uAFFA', ast.getCharLiteral(3).getValue());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

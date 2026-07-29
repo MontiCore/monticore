@@ -8,8 +8,8 @@ import de.monticore.literals.mcjavaliterals.cocos.FloatLiteralRangeCoCo;
 import de.monticore.literals.mcjavaliterals.cocos.IntLiteralRangeCoCo;
 import de.monticore.literals.mcjavaliterals.cocos.LongLiteralRangeCoCo;
 import de.monticore.literals.testmcjavaliterals.TestMCJavaLiteralsMill;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.se_rwth.commons.logging.Log;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -19,16 +19,8 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@TestWithMCLanguage(TestMCJavaLiteralsMill.class)
 public class RangeCoCosTest {
-
-  @BeforeEach
-  public void setup(){
-    Log.init();
-    Log.enableFailQuick(false);
-    TestMCJavaLiteralsMill.reset();
-    TestMCJavaLiteralsMill.init();
-  }
-
 
   protected final void checkIntLiteral(String expression, BigInteger min, BigInteger max) throws IOException {
     Log.clearFindings();

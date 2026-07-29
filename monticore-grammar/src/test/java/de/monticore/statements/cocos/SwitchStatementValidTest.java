@@ -1,8 +1,11 @@
 /* (c) [https://github.com/MontiCore/monticore](https://github.com/MontiCore/monticore) */
 package de.monticore.statements.cocos;
 
+import de.monticore.runtime.junit.MCAssertions;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.statements.mccommonstatements._symboltable.IMCCommonStatementsArtifactScope;
 import de.monticore.statements.mccommonstatements._symboltable.MCCommonStatementsSymbols2Json;
+import de.monticore.statements.mccommonstatements.cocos.SwitchCaseTypesValid;
 import de.monticore.statements.mccommonstatements.cocos.SwitchStatementValid;
 import de.monticore.statements.mcstatementsbasis._ast.ASTMCBlockStatement;
 import de.monticore.statements.testmccommonstatements.TestMCCommonStatementsMill;
@@ -14,7 +17,6 @@ import de.monticore.types.check.FlatExpressionScopeSetter;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserFactory;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -28,17 +30,15 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static de.monticore.statements.testmccommonstatements.TestMCCommonStatementsMill.parser;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
+@TestWithMCLanguage(TestMCCommonStatementsMill.class)
 class SwitchStatementValidTest {
 
   @BeforeEach
   void init() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-    TestMCCommonStatementsMill.reset();
-    TestMCCommonStatementsMill.init();
     CombineExpressionsWithLiteralsTypeTraverserFactory.initTypeCheck3();
     BasicSymbolsMill.initializePrimitives();
   }
@@ -58,9 +58,6 @@ class SwitchStatementValidTest {
 
     // When
     checker.checkAll(ast);
-
-    // Then
-    assertTrue(Log.getFindings().isEmpty(), () -> Log.getFindings().toString());
   }
 
   @ParameterizedTest
@@ -76,9 +73,8 @@ class SwitchStatementValidTest {
     checker.checkAll(ast);
 
     // Then
-    assertEquals(List.of(SwitchStatementValid.ERROR_CODE), Log.getFindings()
-      .stream().map(f -> f.getMsg().substring(0, 7)).collect(Collectors.toList())
-    );
+    Log.getFindings().remove(
+        MCAssertions.assertHasFindingStartingWith(SwitchStatementValid.ERROR_CODE));
   }
 
   static Stream<Arguments> invalidSwitchExpressionsProvider() {
@@ -115,9 +111,6 @@ class SwitchStatementValidTest {
 
     // When
     checker.checkAll(ast);
-
-    // Then
-    assertTrue(Log.getFindings().isEmpty(), () -> Log.getFindings().toString());
   }
 
   @Test
@@ -147,8 +140,9 @@ class SwitchStatementValidTest {
     checker.checkAll(ast);
 
     // Then
-    assertEquals(1, Log.getFindings().size());
-    assertTrue(Log.getFindings().get(0).getMsg().startsWith(SwitchStatementValid.ERROR_CODE));
+    Log.getFindings().remove(
+        MCAssertions.assertHasFindingStartingWith(SwitchStatementValid.ERROR_CODE));
+    
   }
 
   @ParameterizedTest
@@ -165,9 +159,6 @@ class SwitchStatementValidTest {
 
     // When
     checker.checkAll(ast);
-
-    // Then
-    assertTrue(Log.getFindings().isEmpty(), () -> Log.getFindings().toString());
   }
 
   @Test
@@ -182,7 +173,7 @@ class SwitchStatementValidTest {
     checker.checkAll(ast);
 
     // Then
-    assertEquals(1, Log.getFindings().size());
-    assertTrue(Log.getFindings().get(0).getMsg().startsWith(SwitchStatementValid.ERROR_CODE));
+    Log.getFindings().remove(
+        MCAssertions.assertHasFindingStartingWith(SwitchStatementValid.ERROR_CODE));
   }
 }

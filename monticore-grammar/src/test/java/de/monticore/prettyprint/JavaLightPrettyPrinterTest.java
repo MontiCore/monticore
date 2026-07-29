@@ -2,11 +2,10 @@
 package de.monticore.prettyprint;
 
 import de.monticore.javalight._ast.*;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.testjavalight.TestJavaLightMill;
 import de.monticore.testjavalight._parser.TestJavaLightParser;
-import de.monticore.javalight._prettyprint.JavaLightFullPrettyPrinter;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -16,19 +15,14 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@TestWithMCLanguage(TestJavaLightMill.class)
 public class JavaLightPrettyPrinterTest {
 
-  private TestJavaLightParser parser = new TestJavaLightParser();
-
-  private JavaLightFullPrettyPrinter prettyPrinter = new JavaLightFullPrettyPrinter(new IndentPrinter());
+  private TestJavaLightParser parser;
 
   @BeforeEach
   public void init() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-    TestJavaLightMill.reset();
-    TestJavaLightMill.init();
-    prettyPrinter.getPrinter().clearBuffer();
+    parser = TestJavaLightMill.parser();
   }
   
   @Test
@@ -38,7 +32,7 @@ public class JavaLightPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTMethodDeclaration ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestJavaLightMill.prettyPrint(ast, false);
 
     result = parser.parse_StringMethodDeclaration(output);
     assertFalse(parser.hasErrors());
@@ -56,7 +50,7 @@ public class JavaLightPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTMethodDeclaration ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestJavaLightMill.prettyPrint(ast, false);
 
     result = parser.parse_StringMethodDeclaration(output);
     assertFalse(parser.hasErrors());
@@ -75,7 +69,7 @@ public class JavaLightPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTMethodDeclaration ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestJavaLightMill.prettyPrint(ast, false);
 
     result = parser.parse_StringMethodDeclaration(output);
     assertFalse(parser.hasErrors());
@@ -93,7 +87,7 @@ public class JavaLightPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTConstructorDeclaration ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestJavaLightMill.prettyPrint(ast, false);
 
     result = parser.parse_StringConstructorDeclaration(output);
     assertFalse(parser.hasErrors());
@@ -111,7 +105,7 @@ public class JavaLightPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTConstDeclaration ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestJavaLightMill.prettyPrint(ast, false);
 
     result = parser.parse_StringConstDeclaration(output);
     assertFalse(parser.hasErrors());
@@ -129,7 +123,7 @@ public class JavaLightPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTThrows ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestJavaLightMill.prettyPrint(ast, false);
 
     result = parser.parse_StringThrows(output);
     assertFalse(parser.hasErrors());
@@ -147,7 +141,7 @@ public class JavaLightPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTFormalParameters ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestJavaLightMill.prettyPrint(ast, false);
 
     result = parser.parse_StringFormalParameters(output);
     assertFalse(parser.hasErrors());
@@ -165,7 +159,7 @@ public class JavaLightPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTFormalParameterListing ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestJavaLightMill.prettyPrint(ast, false);
 
     result = parser.parse_StringFormalParameterListing(output);
     assertFalse(parser.hasErrors());
@@ -183,7 +177,7 @@ public class JavaLightPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTLastFormalParameter ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestJavaLightMill.prettyPrint(ast, false);
 
     result = parser.parse_StringLastFormalParameter(output);
     assertFalse(parser.hasErrors());
@@ -201,7 +195,7 @@ public class JavaLightPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTAnnotation ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestJavaLightMill.prettyPrint(ast, false);
 
     result = parser.parse_StringAnnotation(output);
     assertFalse(parser.hasErrors());
@@ -219,7 +213,7 @@ public class JavaLightPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTAnnotationPairArguments ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestJavaLightMill.prettyPrint(ast, false);
 
     result = parser.parse_StringAnnotationPairArguments(output);
     assertFalse(parser.hasErrors());
@@ -238,7 +232,7 @@ public class JavaLightPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTElementValueOrExpr ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestJavaLightMill.prettyPrint(ast, false);
 
     result = parser.parse_StringElementValueOrExpr(output);
     assertFalse(parser.hasErrors());
@@ -256,7 +250,7 @@ public class JavaLightPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTElementValueArrayInitializer ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestJavaLightMill.prettyPrint(ast, false);
 
     result = parser.parse_StringElementValueArrayInitializer(output);
     assertFalse(parser.hasErrors());
@@ -274,7 +268,7 @@ public class JavaLightPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTElementValuePair ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestJavaLightMill.prettyPrint(ast, false);
 
     result = parser.parse_StringElementValuePair(output);
     assertFalse(parser.hasErrors());
@@ -291,7 +285,7 @@ public class JavaLightPrettyPrinterTest {
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
     ASTArrayDimensionByInitializer ast = result.get();
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestJavaLightMill.prettyPrint(ast, false);
 
     result = parser.parse_StringArrayDimensionByInitializer(output);
     assertFalse(parser.hasErrors());

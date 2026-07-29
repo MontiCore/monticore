@@ -1,6 +1,8 @@
 /* (c) [https://github.com/MontiCore/monticore](https://github.com/MontiCore/monticore) */
 package de.monticore.statements.cocos;
 
+import de.monticore.runtime.junit.MCAssertions;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.statements.mccommonstatements._ast.ASTEnhancedForControl;
 import de.monticore.statements.mccommonstatements.cocos.ForEachIsValid;
 import de.monticore.statements.testmccommonstatements.TestMCCommonStatementsMill;
@@ -15,7 +17,6 @@ import de.monticore.types.check.FlatExpressionScopeSetter;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserFactory;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -30,34 +31,21 @@ import java.util.stream.Stream;
 
 import static de.monticore.statements.mccommonstatements.cocos.ForEachIsValid.FOR_EACH_EXPR_NOT_ITERABLE_ERROR_CODE;
 import static de.monticore.statements.mccommonstatements.cocos.ForEachIsValid.FOR_EACH_TYPE_MISMATCH_ERROR_CODE;
-import static de.monticore.statements.testmccommonstatements.TestMCCommonStatementsMill.fieldSymbolBuilder;
-import static de.monticore.statements.testmccommonstatements.TestMCCommonStatementsMill.globalScope;
-import static de.monticore.statements.testmccommonstatements.TestMCCommonStatementsMill.oOTypeSymbolBuilder;
-import static de.monticore.statements.testmccommonstatements.TestMCCommonStatementsMill.scope;
-import static de.monticore.statements.testmccommonstatements.TestMCCommonStatementsMill.typeVarSymbolBuilder;
+import static de.monticore.statements.testmccommonstatements.TestMCCommonStatementsMill.*;
 import static de.monticore.symbols.basicsymbols.BasicSymbolsMill.BOOLEAN;
 import static de.monticore.symbols.basicsymbols.BasicSymbolsMill.INT;
-import static de.monticore.types.check.SymTypeExpressionFactory.createGenerics;
-import static de.monticore.types.check.SymTypeExpressionFactory.createPrimitive;
-import static de.monticore.types.check.SymTypeExpressionFactory.createTypeArray;
-import static de.monticore.types.check.SymTypeExpressionFactory.createTypeObject;
-import static de.monticore.types.check.SymTypeExpressionFactory.createTypeVariable;
+import static de.monticore.types.check.SymTypeExpressionFactory.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 /**
  * The class under test is {@link ForEachIsValid}.
  */
+@TestWithMCLanguage(TestMCCommonStatementsMill.class)
 class ForEachIsValidTest {
 
   @BeforeEach
   void init() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-
-    TestMCCommonStatementsMill.reset();
-    TestMCCommonStatementsMill.init();
     CombineExpressionsWithLiteralsTypeTraverserFactory.initTypeCheck3();
     BasicSymbolsMill.initializePrimitives();
 
@@ -235,10 +223,6 @@ class ForEachIsValidTest {
 
     // When
     checker.checkAll(ast);
-
-    // Then
-
-    assertTrue(Log.getFindings().isEmpty(), () -> Log.getFindings().toString());
   }
 
   @ParameterizedTest
@@ -259,11 +243,12 @@ class ForEachIsValidTest {
 
     // When
     checker.checkAll(ast);
-
+    
     // Then
-    assertEquals(Arrays.asList(error), Log.getFindings()
-      .stream().map(f -> f.getMsg().substring(0, 7)).collect(Collectors.toList())
-    );
+    for (String errorCode : error) {
+      Log.getFindings().remove(
+          MCAssertions.assertHasFindingStartingWith(errorCode));
+    }
   }
 
   static Stream<Arguments> exprAndErrorProvider() {

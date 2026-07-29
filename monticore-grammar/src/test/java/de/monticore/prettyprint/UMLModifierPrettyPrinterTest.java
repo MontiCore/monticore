@@ -2,36 +2,27 @@
 
 package de.monticore.prettyprint;
 
+import de.monticore.runtime.junit.TestWithMCLanguage;
+import de.monticore.testumlmodifier.TestUMLModifierMill;
+import de.monticore.testumlmodifier._parser.TestUMLModifierParser;
+import de.monticore.umlmodifier._ast.ASTModifier;
+import de.monticore.umlmodifier._prettyprint.UMLModifierFullPrettyPrinter;
+import de.se_rwth.commons.logging.Log;
+import org.junit.jupiter.api.Test;
+
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
 
-import de.monticore.testumlmodifier.TestUMLModifierMill;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import de.monticore.umlmodifier._prettyprint.UMLModifierFullPrettyPrinter;
-import de.monticore.testumlmodifier._parser.TestUMLModifierParser;
-import de.monticore.umlmodifier._ast.ASTModifier;
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@TestWithMCLanguage(TestUMLModifierMill.class)
 public class UMLModifierPrettyPrinterTest {
-  
-  @BeforeEach
-  public void init() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-    TestUMLModifierMill.reset();
-    TestUMLModifierMill.init();
-  }
 
   @Test
   public void testModifierWord() throws IOException {
-    TestUMLModifierParser parser = new TestUMLModifierParser();
+    TestUMLModifierParser parser = TestUMLModifierMill.parser();
     Optional<ASTModifier> result = parser.parseModifier(new StringReader("private"));
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
@@ -51,7 +42,7 @@ public class UMLModifierPrettyPrinterTest {
   
   @Test
   public void testModifierSymbol() throws IOException {
-    TestUMLModifierParser parser = new TestUMLModifierParser();
+    TestUMLModifierParser parser = TestUMLModifierMill.parser();
     Optional<ASTModifier> result = parser.parseModifier(new StringReader("-"));
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());

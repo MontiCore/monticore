@@ -6,8 +6,9 @@ import de.monticore.literals.mccommonliterals._cocos.MCCommonLiteralsCoCoChecker
 import de.monticore.literals.mccommonliterals.cocos.*;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.literals.testmccommonliterals.TestMCCommonLiteralsMill;
+import de.monticore.runtime.junit.MCAssertions;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.se_rwth.commons.logging.Log;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -15,17 +16,11 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@TestWithMCLanguage(TestMCCommonLiteralsMill.class)
 public class RangeCoCosTest {
-
-  @BeforeEach
-  public void setup(){
-    Log.init();
-    Log.enableFailQuick(false);
-    TestMCCommonLiteralsMill.reset();
-    TestMCCommonLiteralsMill.init();
-  }
 
   protected final void checkLiteral(String expression, BigInteger min, BigInteger max) throws IOException {
     Log.clearFindings();
@@ -39,8 +34,6 @@ public class RangeCoCosTest {
     checker.addCoCo(new NatLiteralRangeCoCo(min, max));
 
     checker.checkAll(astex.get());
-
-    assertFalse(Log.getErrorCount() > 0);
   }
 
   protected final void checkLiteral(String expression) throws IOException {
@@ -55,8 +48,6 @@ public class RangeCoCosTest {
     checker.addCoCo(new NatLiteralRangeCoCo());
 
     checker.checkAll(astex.get());
-
-    assertFalse(Log.getErrorCount() > 0);
   }
 
   protected final void checkSignedLiteral(String expression) throws IOException {
@@ -71,8 +62,6 @@ public class RangeCoCosTest {
     checker.addCoCo(new SignedNatLiteralRangeCoCo());
 
     checker.checkAll(astex.get());
-
-    assertFalse(Log.getErrorCount() > 0);
   }
 
   protected final void checkErrorLiteral(String expression, BigInteger min, BigInteger max, String expectedError) throws IOException {
@@ -88,8 +77,7 @@ public class RangeCoCosTest {
 
     checker.checkAll(astex.get());
 
-    assertEquals(1, Log.getErrorCount());
-    assertTrue(Log.getFindings().get(0).getMsg().startsWith(expectedError));
+    Log.getFindings().remove(MCAssertions.assertHasFindingStartingWith(expectedError));
   }
 
   protected final void checkErrorLiteral(String expression, String expectedError) throws IOException {

@@ -2,14 +2,13 @@
 
 package de.monticore.prettyprint;
 
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.testmchexnumbers.TestMCHexNumbersMill;
 import de.monticore.testmchexnumbers._parser.TestMCHexNumbersParser;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import mchexnumbers._ast.ASTHexInteger;
 import mchexnumbers._ast.ASTHexadecimal;
 import mchexnumbers._prettyprint.MCHexNumbersFullPrettyPrinter;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -19,19 +18,12 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@TestWithMCLanguage(TestMCHexNumbersMill.class)
 public class MCHexNumbersPrettyPrinterTest {
-  
-  @BeforeEach
-  public void init() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-    TestMCHexNumbersMill.reset();
-    TestMCHexNumbersMill.init();
-  }
-  
+
   @Test
   public void testHexadecimal() throws IOException {
-    TestMCHexNumbersParser parser = new TestMCHexNumbersParser();
+    TestMCHexNumbersParser parser = TestMCHexNumbersMill.parser();
     Optional<ASTHexadecimal> result = parser.parseHexadecimal(new StringReader("0X6b90A"));
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
@@ -51,7 +43,7 @@ public class MCHexNumbersPrettyPrinterTest {
   
   @Test
   public void testHexIntegerPositiv() throws IOException {
-    TestMCHexNumbersParser parser = new TestMCHexNumbersParser();
+    TestMCHexNumbersParser parser = TestMCHexNumbersMill.parser();
     Optional<ASTHexInteger> result = parser.parseHexInteger(new StringReader("0X6b90A"));
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
@@ -71,7 +63,7 @@ public class MCHexNumbersPrettyPrinterTest {
   
   @Test
   public void testHexIntegerNegative() throws IOException {
-    TestMCHexNumbersParser parser = new TestMCHexNumbersParser();
+    TestMCHexNumbersParser parser = TestMCHexNumbersMill.parser();
     Optional<ASTHexInteger> result = parser.parseHexInteger(new StringReader("-0xaf67"));
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());

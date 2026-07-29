@@ -1,9 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.statements.prettyprint;
 
-import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.statements.mccommonstatements._ast.*;
-import de.monticore.statements.mccommonstatements._prettyprint.MCCommonStatementsFullPrettyPrinter;
 import de.monticore.statements.mcstatementsbasis._ast.ASTMCBlockStatement;
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTDeclaratorId;
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTLocalVariableDeclaration;
@@ -11,7 +10,6 @@ import de.monticore.statements.mcvardeclarationstatements._ast.ASTVariableDeclar
 import de.monticore.statements.testmccommonstatements.TestMCCommonStatementsMill;
 import de.monticore.statements.testmccommonstatements._parser.TestMCCommonStatementsParser;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -21,19 +19,14 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@TestWithMCLanguage(TestMCCommonStatementsMill.class)
 public class MCCommonStatementsPrettyPrinterTest {
 
-  private TestMCCommonStatementsParser parser = new TestMCCommonStatementsParser();
-
-  private MCCommonStatementsFullPrettyPrinter prettyPrinter= new MCCommonStatementsFullPrettyPrinter(new IndentPrinter());
+  private TestMCCommonStatementsParser parser;
 
   @BeforeEach
   public void init() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-    TestMCCommonStatementsMill.reset();
-    TestMCCommonStatementsMill.init();
-    prettyPrinter.getPrinter().clearBuffer();
+    parser = TestMCCommonStatementsMill.parser();
   }
 
   @Test
@@ -43,7 +36,7 @@ public class MCCommonStatementsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTMCJavaBlock ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestMCCommonStatementsMill.prettyPrint(ast, false);
 
     result = parser.parse_StringMCJavaBlock(output);
     assertFalse(parser.hasErrors());
@@ -61,8 +54,7 @@ public class MCCommonStatementsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTMCBlockStatement ast = result.get();
 
-    ast.accept(prettyPrinter.getTraverser());
-    String output = prettyPrinter.getPrinter().getContent();
+    String output = TestMCCommonStatementsMill.prettyPrint(ast, false);
 
     result = parser.parse_StringMCBlockStatement(output);
     assertFalse(parser.hasErrors());
@@ -80,7 +72,7 @@ public class MCCommonStatementsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTLocalVariableDeclaration ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestMCCommonStatementsMill.prettyPrint(ast, false);
 
     result = parser.parse_StringLocalVariableDeclaration(output);
     assertFalse(parser.hasErrors());
@@ -98,7 +90,7 @@ public class MCCommonStatementsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTVariableDeclarator ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestMCCommonStatementsMill.prettyPrint(ast, false);
 
     result = parser.parse_StringVariableDeclarator(output);
     assertFalse(parser.hasErrors());
@@ -116,7 +108,7 @@ public class MCCommonStatementsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTDeclaratorId ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestMCCommonStatementsMill.prettyPrint(ast, false);
 
     result = parser.parse_StringDeclaratorId(output);
     assertFalse(parser.hasErrors());
@@ -134,7 +126,7 @@ public class MCCommonStatementsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTIfStatement ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestMCCommonStatementsMill.prettyPrint(ast, false);
 
     result = parser.parse_StringIfStatement(output);
     assertFalse(parser.hasErrors());
@@ -152,7 +144,7 @@ public class MCCommonStatementsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTForStatement ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestMCCommonStatementsMill.prettyPrint(ast, false);
 
     result = parser.parse_StringForStatement(output);
     assertFalse(parser.hasErrors());
@@ -170,7 +162,7 @@ public class MCCommonStatementsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTCommonForControl ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestMCCommonStatementsMill.prettyPrint(ast, false);
 
     result = parser.parse_StringCommonForControl(output);
     assertFalse(parser.hasErrors());
@@ -188,7 +180,7 @@ public class MCCommonStatementsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTEnhancedForControl ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestMCCommonStatementsMill.prettyPrint(ast, false);
 
     result = parser.parse_StringEnhancedForControl(output);
     assertFalse(parser.hasErrors());
@@ -206,7 +198,7 @@ public class MCCommonStatementsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTFormalParameter ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestMCCommonStatementsMill.prettyPrint(ast, false);
 
     result = parser.parse_StringFormalParameter(output);
     assertFalse(parser.hasErrors());
@@ -224,7 +216,7 @@ public class MCCommonStatementsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTForInitByExpressions ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestMCCommonStatementsMill.prettyPrint(ast, false);
 
     result = parser.parse_StringForInitByExpressions(output);
     assertFalse(parser.hasErrors());
@@ -242,7 +234,7 @@ public class MCCommonStatementsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTWhileStatement ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestMCCommonStatementsMill.prettyPrint(ast, false);
 
     result = parser.parse_StringWhileStatement(output);
     assertFalse(parser.hasErrors());
@@ -260,7 +252,7 @@ public class MCCommonStatementsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTDoWhileStatement ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestMCCommonStatementsMill.prettyPrint(ast, false);
 
     result = parser.parse_StringDoWhileStatement(output);
     assertFalse(parser.hasErrors());
@@ -278,7 +270,7 @@ public class MCCommonStatementsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTSwitchStatement ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestMCCommonStatementsMill.prettyPrint(ast, false);
 
     result = parser.parse_StringSwitchStatement(output);
     assertFalse(parser.hasErrors());
@@ -296,7 +288,7 @@ public class MCCommonStatementsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTEmptyStatement ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestMCCommonStatementsMill.prettyPrint(ast, false);
 
     result = parser.parse_StringEmptyStatement(output);
     assertFalse(parser.hasErrors());
@@ -314,7 +306,7 @@ public class MCCommonStatementsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTExpressionStatement ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestMCCommonStatementsMill.prettyPrint(ast, false);
 
     result = parser.parse_StringExpressionStatement(output);
     assertFalse(parser.hasErrors());
@@ -332,7 +324,7 @@ public class MCCommonStatementsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTSwitchBlockStatementGroup ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestMCCommonStatementsMill.prettyPrint(ast, false);
 
     result = parser.parse_StringSwitchBlockStatementGroup(output);
     assertFalse(parser.hasErrors());
@@ -350,7 +342,7 @@ public class MCCommonStatementsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTConstantExpressionSwitchLabel ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestMCCommonStatementsMill.prettyPrint(ast, false);
 
     result = parser.parse_StringConstantExpressionSwitchLabel(output);
     assertFalse(parser.hasErrors());
@@ -368,7 +360,7 @@ public class MCCommonStatementsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTEnumConstantSwitchLabel ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestMCCommonStatementsMill.prettyPrint(ast, false);
 
     result = parser.parse_StringEnumConstantSwitchLabel(output);
     assertFalse(parser.hasErrors());
@@ -386,7 +378,7 @@ public class MCCommonStatementsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTDefaultSwitchLabel ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestMCCommonStatementsMill.prettyPrint(ast, false);
 
     result = parser.parse_StringDefaultSwitchLabel(output);
     assertFalse(parser.hasErrors());
@@ -404,7 +396,7 @@ public class MCCommonStatementsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTBreakStatement ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestMCCommonStatementsMill.prettyPrint(ast, false);
 
     result = parser.parse_StringBreakStatement(output);
     assertFalse(parser.hasErrors());

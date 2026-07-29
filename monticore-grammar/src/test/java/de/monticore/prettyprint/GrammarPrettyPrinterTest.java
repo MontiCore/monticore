@@ -3,9 +3,8 @@ package de.monticore.prettyprint;
 
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -20,21 +19,13 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * This test checks if all (hand-written) MontiCore grammars are print-able using the generated pretty printers
  */
+@TestWithMCLanguage(Grammar_WithConceptsMill.class)
 public class GrammarPrettyPrinterTest {
-  @BeforeEach
-  public void init() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-    Log.clearFindings();
-    Grammar_WithConceptsMill.reset();
-    Grammar_WithConceptsMill.init();
-  }
 
   @Test
   public void testPrintMainGrammars() throws IOException {
     testPrintInPath("src/main/grammars");
   }
-
 
   @Test
   public void testPrintTestGrammars() throws IOException {

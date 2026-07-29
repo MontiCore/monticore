@@ -5,14 +5,13 @@ import de.monticore.cardinality._ast.ASTCardinality;
 import de.monticore.completeness._ast.ASTCompleteness;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.literals.mccommonliterals._ast.ASTNatLiteral;
+import de.monticore.runtime.junit.MCAssertions;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.testmccommon.TestMCCommonMill;
-import de.monticore.testmccommon._parser.TestMCCommonParser;
 import de.monticore.umlmodifier._ast.ASTModifier;
 import de.monticore.umlstereotype._ast.ASTStereoValue;
 import de.monticore.umlstereotype._ast.ASTStereotype;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -21,19 +20,8 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@TestWithMCLanguage(TestMCCommonMill.class)
 public class MCCommonUnitTest {
-  
-  // setup the language infrastructure
-  TestMCCommonParser parser = new TestMCCommonParser() ;
-  
-  @BeforeEach
-  public void init() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-    LogStub.getFindings().clear();
-    TestMCCommonMill.reset();
-    TestMCCommonMill.init();
-  }
   
   // --------------------------------------------------------------------
   // Numbers: Nat
@@ -42,7 +30,9 @@ public class MCCommonUnitTest {
   // --------------------------------------------------------------------
   @Test
   public void testNat1() throws IOException {
-    ASTNatLiteral ast = parser.parse_StringNatLiteral( " 9" ).get();
+    Optional<ASTNatLiteral> astOpt = TestMCCommonMill.parser().parse_StringNatLiteral( " 9" );
+    assertTrue(astOpt.isPresent());
+    ASTNatLiteral ast = astOpt.get();
     assertEquals("9", ast.getSource());
     assertEquals(9, ast.getValue());
   
@@ -51,7 +41,9 @@ public class MCCommonUnitTest {
   
   @Test
   public void testNat4() throws IOException {
-    ASTNatLiteral ast = parser.parse_StringNatLiteral( " 42 " ).get();
+    Optional<ASTNatLiteral> astOpt = TestMCCommonMill.parser().parse_StringNatLiteral( " 42 " );
+    assertTrue(astOpt.isPresent());
+    ASTNatLiteral ast = astOpt.get();
     assertEquals("42", ast.getSource());
     assertEquals(42, ast.getValue());
   
@@ -65,7 +57,9 @@ public class MCCommonUnitTest {
   // --------------------------------------------------------------------
   @Test
   public void testModifier() throws IOException {
-    ASTModifier ast = parser.parse_StringModifier( "# final" ).get();
+    Optional<ASTModifier> astOpt = TestMCCommonMill.parser().parse_StringModifier( "# final" );
+    assertTrue(astOpt.isPresent());
+    ASTModifier ast = astOpt.get();
     assertTrue(ast.isProtected());
     assertTrue(ast.isFinal());
     assertFalse(ast.isLocal());
@@ -77,7 +71,9 @@ public class MCCommonUnitTest {
   // --------------------------------------------------------------------
   @Test
   public void testModifierStereo() throws IOException {
-    ASTModifier ast = parser.parse_StringModifier( "<<bla=\"x1\">>#+?" ).get();
+    Optional<ASTModifier> astOpt = TestMCCommonMill.parser().parse_StringModifier( "<<bla=\"x1\">>#+?" );
+    assertTrue(astOpt.isPresent());
+    ASTModifier ast = astOpt.get();
     assertTrue(ast.isProtected());
     assertTrue(ast.isPublic());
     assertTrue(ast.isReadonly());
@@ -98,7 +94,9 @@ public class MCCommonUnitTest {
   // --------------------------------------------------------------------
   @Test
   public void testStereoValue() throws IOException {
-    ASTStereoValue ast = parser.parse_StringStereoValue( "bla=\"17\"" ).get();
+    Optional<ASTStereoValue> astOpt = TestMCCommonMill.parser().parse_StringStereoValue( "bla=\"17\"" );
+    assertTrue(astOpt.isPresent());
+    ASTStereoValue ast = astOpt.get();
     assertEquals("bla", ast.getName());
     assertTrue(ast.isPresentText());
     assertEquals("17", ast.getText().getValue());
@@ -111,7 +109,9 @@ public class MCCommonUnitTest {
   // --------------------------------------------------------------------
   @Test
   public void testStereoValue2() throws IOException {
-    ASTStereoValue ast = parser.parse_StringStereoValue( "cc" ).get();
+    Optional<ASTStereoValue> astOpt = TestMCCommonMill.parser().parse_StringStereoValue( "cc" );
+    assertTrue(astOpt.isPresent());
+    ASTStereoValue ast = astOpt.get();
     assertEquals("cc", ast.getName());
     assertFalse(ast.isPresentText());
     assertEquals("", ast.getValue());
@@ -123,7 +123,9 @@ public class MCCommonUnitTest {
   // --------------------------------------------------------------------
   @Test
   public void testStereoValueExpr() throws IOException {
-    ASTStereoValue ast = parser.parse_StringStereoValue( "bla=name1" ).get();
+    Optional<ASTStereoValue> astOpt = TestMCCommonMill.parser().parse_StringStereoValue( "bla=name1" );
+    assertTrue(astOpt.isPresent());
+    ASTStereoValue ast = astOpt.get();
     assertEquals("bla", ast.getName());
     assertFalse(ast.isPresentText());
     assertTrue(ast.getExpression() instanceof ASTNameExpression);
@@ -135,7 +137,9 @@ public class MCCommonUnitTest {
   // --------------------------------------------------------------------
   @Test
   public void testStereotype() throws IOException {
-    ASTStereotype ast = parser.parse_StringStereotype( "<< a1 >>" ).get();
+    Optional<ASTStereotype> astOpt = TestMCCommonMill.parser().parse_StringStereotype( "<< a1 >>" );
+    assertTrue(astOpt.isPresent());
+    ASTStereotype ast = astOpt.get();
     List<ASTStereoValue> svl = ast.getValuesList();
     assertEquals(1, svl.size());
     assertTrue(ast.contains("a1"));
@@ -150,8 +154,10 @@ public class MCCommonUnitTest {
   // --------------------------------------------------------------------
   @Test
   public void testStereotype2() throws IOException {
-    ASTStereotype ast = parser.parse_StringStereotype(
-    	"<< bla, a1=\"wert1\" >>" ).get();
+    Optional<ASTStereotype> astOpt = TestMCCommonMill.parser().parse_StringStereotype(
+    	"<< bla, a1=\"wert1\" >>" );
+    assertTrue(astOpt.isPresent());
+    ASTStereotype ast = astOpt.get();
     List<ASTStereoValue> svl = ast.getValuesList();
     assertEquals(2, svl.size());
     assertTrue(ast.contains("a1"));
@@ -165,7 +171,9 @@ public class MCCommonUnitTest {
   // --------------------------------------------------------------------
   @Test
   public void testStereotype3() throws IOException {
-    ASTStereotype ast = parser.parse_StringStereotype( "<< a1=name1 >>" ).get();
+    Optional<ASTStereotype> astOpt = TestMCCommonMill.parser().parse_StringStereotype( "<< a1=name1 >>" );
+    assertTrue(astOpt.isPresent());
+    ASTStereotype ast = astOpt.get();
     List<ASTStereoValue> svl = ast.getValuesList();
     assertEquals(1, svl.size());
     assertTrue(ast.contains("a1"));
@@ -182,8 +190,10 @@ public class MCCommonUnitTest {
   // --------------------------------------------------------------------
   @Test
   public void testGetValue() throws IOException {
-    ASTStereotype ast = parser.parse_StringStereotype(
-        "<< bla, a1=\"wert1\" >>" ).get();
+    Optional<ASTStereotype> astOpt = TestMCCommonMill.parser().parse_StringStereotype(
+        "<< bla, a1=\"wert1\" >>" );
+    assertTrue(astOpt.isPresent());
+    ASTStereotype ast = astOpt.get();
     assertEquals("wert1", ast.getValue("a1"));
     try {
       assertEquals("", ast.getValue("foo"));
@@ -197,10 +207,13 @@ public class MCCommonUnitTest {
 
   @Test
   public void testEnding() throws IOException {
-    Optional<ASTStereotype> oast = parser.parse_StringStereotype(
+    Optional<ASTStereotype> oast = TestMCCommonMill.parser().parse_StringStereotype(
         "<< bla, a1=\"wert1\" > >" );
     assertFalse(oast.isPresent());
     
+    Log.getFindings().remove(
+        MCAssertions.assertHasFindingStartingWith("no viable alternative at input '>'")
+    );
   }
 
 
@@ -211,7 +224,9 @@ public class MCCommonUnitTest {
   // --------------------------------------------------------------------
   @Test
   public void testBasics() throws IOException {
-    ASTCompleteness ast = parser.parse_StringCompleteness( "(c)"  ).get();
+    Optional<ASTCompleteness> astOpt = TestMCCommonMill.parser().parse_StringCompleteness( "(c)"  );
+    assertTrue(astOpt.isPresent());
+    ASTCompleteness ast = astOpt.get();
     assertTrue(ast.isComplete());
     assertFalse(ast.isIncomplete());
   
@@ -222,7 +237,9 @@ public class MCCommonUnitTest {
   // --------------------------------------------------------------------
   @Test
   public void testBasics2() throws IOException {
-    ASTCompleteness ast = parser.parse_StringCompleteness( "(...)"  ).get();
+    Optional<ASTCompleteness> astOpt = TestMCCommonMill.parser().parse_StringCompleteness( "(...)"  );
+    assertTrue(astOpt.isPresent());
+    ASTCompleteness ast = astOpt.get();
     assertFalse(ast.isComplete());
     assertTrue(ast.isIncomplete());
     assertFalse(ast.isRightComplete());
@@ -235,7 +252,9 @@ public class MCCommonUnitTest {
   // --------------------------------------------------------------------
   @Test
   public void testBasics3() throws IOException {
-    ASTCompleteness ast = parser.parse_StringCompleteness( "(...,c)"  ).get();
+    Optional<ASTCompleteness> astOpt = TestMCCommonMill.parser().parse_StringCompleteness( "(...,c)"  );
+    assertTrue(astOpt.isPresent());
+    ASTCompleteness ast = astOpt.get();
     assertFalse(ast.isComplete());
     assertFalse(ast.isIncomplete());
     assertTrue(ast.isRightComplete());
@@ -249,8 +268,11 @@ public class MCCommonUnitTest {
   @Test
   public void testIllegalComplete() throws IOException {
     Optional<ASTCompleteness> ast =
-    		parser.parse_StringCompleteness( "(...,d)"  );
+    		TestMCCommonMill.parser().parse_StringCompleteness( "(...,d)"  );
     assertFalse(ast.isPresent());
+    Log.getFindings().remove(
+        MCAssertions.assertHasFindingStartingWith("mismatched input ',' expecting ')' (found: COMMA)")
+    );
   }
 
   // --------------------------------------------------------------------
@@ -260,7 +282,9 @@ public class MCCommonUnitTest {
   // --------------------------------------------------------------------
   @Test
   public void testMany() throws IOException {
-    ASTCardinality ast = parser.parse_StringCardinality("[*]").get();
+    Optional<ASTCardinality> astOpt = TestMCCommonMill.parser().parse_StringCardinality("[*]");
+    assertTrue(astOpt.isPresent());
+    ASTCardinality ast = astOpt.get();
     assertTrue(ast.isMany());
     assertEquals(0, ast.getLowerBound());
     assertEquals(0, ast.getUpperBound());
@@ -272,7 +296,9 @@ public class MCCommonUnitTest {
   // --------------------------------------------------------------------
   @Test
   public void testLowAndStar() throws IOException {
-    ASTCardinality ast = parser.parse_StringCardinality("[7..*]").get();
+    Optional<ASTCardinality> astOpt = TestMCCommonMill.parser().parse_StringCardinality("[7..*]");
+    assertTrue(astOpt.isPresent());
+    ASTCardinality ast = astOpt.get();
     assertFalse(ast.isMany());
     assertTrue(ast.isNoUpperLimit());
     assertEquals(7, ast.getLowerBound());
@@ -285,7 +311,9 @@ public class MCCommonUnitTest {
   // --------------------------------------------------------------------
   @Test
   public void testLowAndUp() throws IOException {
-    ASTCardinality ast = parser.parse_StringCardinality("[17..235]").get();
+    Optional<ASTCardinality> astOpt = TestMCCommonMill.parser().parse_StringCardinality("[17..235]");
+    assertTrue(astOpt.isPresent());
+    ASTCardinality ast = astOpt.get();
     assertFalse(ast.isMany());
     assertEquals(17, ast.getLowerBound());
     assertEquals(235, ast.getUpperBound());
@@ -297,7 +325,9 @@ public class MCCommonUnitTest {
   // --------------------------------------------------------------------
   @Test
   public void testSpace() throws IOException {
-    ASTCardinality ast = parser.parse_StringCardinality(" [ 34 .. 15 ] ").get();
+    Optional<ASTCardinality> astOpt = TestMCCommonMill.parser().parse_StringCardinality(" [ 34 .. 15 ] ");
+    assertTrue(astOpt.isPresent());
+    ASTCardinality ast = astOpt.get();
     assertFalse(ast.isMany());
     assertEquals(34, ast.getLowerBound());
     assertEquals(15, ast.getUpperBound());
@@ -311,9 +341,15 @@ public class MCCommonUnitTest {
   // akzeptiert
   @Test
   public void testHex() throws IOException {
-    Optional<ASTCardinality> oast = parser.parse_StringCardinality(
+    Optional<ASTCardinality> oast = TestMCCommonMill.parser().parse_StringCardinality(
     		"[0x34..0x15]");
     assertFalse(oast.isPresent());
+    Log.getFindings().remove(
+        MCAssertions.assertHasFindingStartingWith("extraneous input 'x34'")
+    );
+    Log.getFindings().remove(
+        MCAssertions.assertHasFindingStartingWith("extraneous input 'x15'")
+    );
   }
 
 

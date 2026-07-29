@@ -3,6 +3,7 @@
 package de.monticore.mcjavaliterals;
 
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
+import de.monticore.literals.testmcjavaliterals.TestMCJavaLiteralsMill;
 import de.monticore.literals.testmcjavaliterals._parser.TestMCJavaLiteralsParser;
 
 import java.io.IOException;
@@ -47,7 +48,7 @@ public class MCJavaLiteralsTestHelper {
    * @throws IOException
    */
   public ASTLiteral parseLiteral(String input) throws IOException {
-    TestMCJavaLiteralsParser parser = new TestMCJavaLiteralsParser();
+    TestMCJavaLiteralsParser parser = TestMCJavaLiteralsMill.parser();
     Optional<ASTLiteral> res = parser.parseLiteral(new StringReader(input));
     assertTrue(res.isPresent());
     return res.get();
