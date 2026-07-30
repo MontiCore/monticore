@@ -164,7 +164,7 @@ public class MCCommonStatementsJavaGenVisitor
 
   @Override
   public void traverse(ASTFormalParameter node) {
-    node.getJavaModifierList().forEach(m -> {
+    node.getMCModifierList().forEach(m -> {
       m.accept(getTraverser());
       getPrinter().print(" ");
     });
