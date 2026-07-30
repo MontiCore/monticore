@@ -169,7 +169,7 @@ public class MCValueObject implements MCValue {
 
   @Override
   public boolean checkEqualityOperator(MCValue other) {
-    return other.isObjectOfJava() && value == other.asObject().value;
+    return other.isObject() && value == other.asObject().value;
   }
 
   @Override

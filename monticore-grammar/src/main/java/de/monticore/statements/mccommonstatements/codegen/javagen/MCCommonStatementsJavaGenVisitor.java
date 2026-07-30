@@ -14,11 +14,9 @@ import de.monticore.statements.mcvardeclarationstatements._ast.ASTVariableDeclar
 import de.monticore.types.check.SymTypeExpression;
 
 import static de.monticore.codegen.CodeGenSymTypeExpressionConverter.printConverted;
-import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getJavaTypePrint;
 import static de.monticore.symbols.basicsymbols.BasicSymbolsMill.BOOLEAN;
 import static de.monticore.types.check.SymTypeExpressionFactory.createPrimitive;
 import static de.monticore.types3.SymTypeRelations.normalize;
-import static de.monticore.types3.TypeCheck3.symTypeFromAST;
 import static de.monticore.types3.TypeCheck3.typeOf;
 
 /**
@@ -129,8 +127,7 @@ public class MCCommonStatementsJavaGenVisitor
       getPrinter().print(" ");
     });
 
-    SymTypeExpression varType = normalize(symTypeFromAST(node.getMCType()));
-    getPrinter().print(getJavaTypePrint(varType));
+    node.getMCType().accept(getTraverser());
     getPrinter().print(" ");
 
     for (int i = 0; i < node.sizeVariableDeclarators(); i++) {
@@ -167,14 +164,11 @@ public class MCCommonStatementsJavaGenVisitor
 
   @Override
   public void traverse(ASTFormalParameter node) {
-    SymTypeExpression parType = normalize(symTypeFromAST(node.getMCType()));
-    String parTypeJava = getJavaTypePrint(parType);
-
-    node.getJavaModifierList().forEach(m -> {
+    node.getMCModifierList().forEach(m -> {
       m.accept(getTraverser());
       getPrinter().print(" ");
     });
-    getPrinter().print(parTypeJava);
+    node.getMCType().accept(getTraverser());
     getPrinter().print(" ");
     getPrinter().print(node.getDeclarator().getName());
   }
