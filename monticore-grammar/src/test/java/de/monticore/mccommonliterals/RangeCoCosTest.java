@@ -77,7 +77,8 @@ public class RangeCoCosTest {
 
     checker.checkAll(astex.get());
 
-    Log.getFindings().remove(MCAssertions.assertHasFindingStartingWith(expectedError));
+    Log.getFindings().remove(
+        MCAssertions.assertHasFindingStartingWith(expectedError));
   }
 
   protected final void checkErrorLiteral(String expression, String expectedError) throws IOException {
@@ -92,9 +93,9 @@ public class RangeCoCosTest {
     checker.addCoCo(new NatLiteralRangeCoCo());
 
     checker.checkAll(astex.get());
-
-    assertEquals(1, Log.getErrorCount());
-    assertTrue(Log.getFindings().get(0).getMsg().startsWith(expectedError));
+    
+    Log.getFindings().remove(
+        MCAssertions.assertHasFindingStartingWith(expectedError));
   }
 
   protected final void checkErrorSignedLiteral(String expression, BigInteger min, BigInteger max, String expectedError) throws IOException {
@@ -109,9 +110,9 @@ public class RangeCoCosTest {
     checker.addCoCo(new SignedNatLiteralRangeCoCo(min, max));
 
     checker.checkAll(astex.get());
-
-    assertEquals(1, Log.getErrorCount());
-    assertTrue(Log.getFindings().get(0).getMsg().startsWith(expectedError));
+    
+    Log.getFindings().remove(
+        MCAssertions.assertHasFindingStartingWith(expectedError));
   }
 
   protected final void checkErrorSignedLiteral(String expression, String expectedError) throws IOException {
@@ -126,9 +127,9 @@ public class RangeCoCosTest {
     checker.addCoCo(new SignedNatLiteralRangeCoCo());
 
     checker.checkAll(astex.get());
-
-    assertEquals(1, Log.getErrorCount());
-    assertTrue(Log.getFindings().get(0).getMsg().startsWith(expectedError));
+    
+    Log.getFindings().remove(
+        MCAssertions.assertHasFindingStartingWith(expectedError));
   }
 
 

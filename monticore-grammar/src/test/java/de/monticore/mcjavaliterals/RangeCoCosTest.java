@@ -8,6 +8,7 @@ import de.monticore.literals.mcjavaliterals.cocos.FloatLiteralRangeCoCo;
 import de.monticore.literals.mcjavaliterals.cocos.IntLiteralRangeCoCo;
 import de.monticore.literals.mcjavaliterals.cocos.LongLiteralRangeCoCo;
 import de.monticore.literals.testmcjavaliterals.TestMCJavaLiteralsMill;
+import de.monticore.runtime.junit.MCAssertions;
 import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.Test;
@@ -31,8 +32,6 @@ public class RangeCoCosTest {
     checker.addCoCo(new IntLiteralRangeCoCo(min, max));
 
     checker.checkAll((ASTMCJavaLiteralsNode) astex.get());
-
-    assertFalse(Log.getErrorCount() > 0);
   }
 
   protected final void checkLongLiteral(String expression, BigInteger min, BigInteger max) throws IOException {
@@ -44,8 +43,6 @@ public class RangeCoCosTest {
     checker.addCoCo(new LongLiteralRangeCoCo(min, max));
 
     checker.checkAll((ASTMCJavaLiteralsNode) astex.get());
-
-    assertFalse(Log.getErrorCount() > 0);
   }
 
   protected final void checkDoubleLiteral(String expression, BigDecimal min, BigDecimal max) throws IOException {
@@ -57,8 +54,6 @@ public class RangeCoCosTest {
     checker.addCoCo(new DoubleLiteralRangeCoCo(min, max));
 
     checker.checkAll((ASTMCJavaLiteralsNode) astex.get());
-
-    assertFalse(Log.getErrorCount() > 0);
   }
 
   protected final void checkFloatLiteral(String expression, BigDecimal min, BigDecimal max) throws IOException {
@@ -70,8 +65,6 @@ public class RangeCoCosTest {
     checker.addCoCo(new FloatLiteralRangeCoCo(min, max));
 
     checker.checkAll((ASTMCJavaLiteralsNode) astex.get());
-
-    assertFalse(Log.getErrorCount() > 0);
   }
 
   protected final void checkErrorIntLiteral(String expression, BigInteger min, BigInteger max, String expectedError) throws IOException {
@@ -83,9 +76,9 @@ public class RangeCoCosTest {
     checker.addCoCo(new IntLiteralRangeCoCo(min, max));
 
     checker.checkAll((ASTMCJavaLiteralsNode) astex.get());
-
-    assertEquals(1, Log.getErrorCount());
-    assertTrue(Log.getFindings().get(0).getMsg().startsWith(expectedError));
+    
+    Log.getFindings().remove(
+        MCAssertions.assertHasFindingStartingWith(expectedError));
   }
 
   protected final void checkErrorLongLiteral(String expression, BigInteger min, BigInteger max, String expectedError) throws IOException {
@@ -97,9 +90,9 @@ public class RangeCoCosTest {
     checker.addCoCo(new LongLiteralRangeCoCo(min, max));
 
     checker.checkAll((ASTMCJavaLiteralsNode) astex.get());
-
-    assertEquals(1, Log.getErrorCount());
-    assertTrue(Log.getFindings().get(0).getMsg().startsWith(expectedError));
+    
+    Log.getFindings().remove(
+        MCAssertions.assertHasFindingStartingWith(expectedError));
   }
 
   protected final void checkErrorDoubleLiteral(String expression, BigDecimal min, BigDecimal max, String expectedError) throws IOException {
@@ -111,9 +104,9 @@ public class RangeCoCosTest {
     checker.addCoCo(new DoubleLiteralRangeCoCo(min, max));
 
     checker.checkAll((ASTMCJavaLiteralsNode) astex.get());
-
-    assertEquals(1, Log.getErrorCount());
-    assertTrue(Log.getFindings().get(0).getMsg().startsWith(expectedError));
+    
+    Log.getFindings().remove(
+        MCAssertions.assertHasFindingStartingWith(expectedError));
   }
 
   protected final void checkErrorFloatLiteral(String expression, BigDecimal min, BigDecimal max, String expectedError) throws IOException {
@@ -125,9 +118,9 @@ public class RangeCoCosTest {
     checker.addCoCo(new FloatLiteralRangeCoCo(min, max));
 
     checker.checkAll((ASTMCJavaLiteralsNode) astex.get());
-
-    assertEquals(1, Log.getErrorCount());
-    assertTrue(Log.getFindings().get(0).getMsg().startsWith(expectedError));
+    
+    Log.getFindings().remove(
+        MCAssertions.assertHasFindingStartingWith(expectedError));
   }
   
   @Test

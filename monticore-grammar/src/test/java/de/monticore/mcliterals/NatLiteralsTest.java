@@ -5,7 +5,9 @@ package de.monticore.mcliterals;
 import de.monticore.literals.mccommonliterals._ast.ASTNatLiteral;
 import de.monticore.literals.testmccommonliterals.TestMCCommonLiteralsMill;
 import de.monticore.literals.testmccommonliterals._parser.TestMCCommonLiteralsParser;
+import de.monticore.runtime.junit.MCAssertions;
 import de.monticore.runtime.junit.TestWithMCLanguage;
+import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -39,11 +41,21 @@ public class NatLiteralsTest {
     assertEquals(i, ast.get().getValue());
   }
   
+  static Stream<Arguments> checkFailingNatLiteralArgs() {
+    return Stream.of(
+        Arguments.of("0x5", "Expected EOF but found token"),
+        Arguments.of("-5", "extraneous input '-'")
+    );
+  }
+  
   @ParameterizedTest
-  @ValueSource(strings = {"0x5", "-5"})
-  public void checkFailingNatLiteral(String s) throws IOException {
+  @MethodSource("checkFailingNatLiteralArgs")
+  public void checkFailingNatLiteral(String s, String expectedError) throws IOException {
     TestMCCommonLiteralsParser parser = TestMCCommonLiteralsMill.parser();
     parser.parse_StringNatLiteral(s);
     assertTrue(parser.hasErrors());
+    
+    Log.getFindings().remove(
+        MCAssertions.assertHasFindingStartingWith(expectedError));
   }
 }

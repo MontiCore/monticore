@@ -42,14 +42,26 @@ public class DoubleCommonLiteralsTest {
     assertInstanceOf(ASTBasicDoubleLiteral.class, lit.get());
     assertEquals(d, ((ASTBasicDoubleLiteral) lit.get()).getValue(), 0);
   }
+  
+  static Stream<Arguments> checkFalseArgs() {
+    return Stream.of(
+        Arguments.of(".0d", "extraneous input '.'"),
+        Arguments.of("0.d", "mismatched input 'd'"),
+        Arguments.of("5d", "mismatched input 'd'"),
+        Arguments.of("009e2d", "mismatched input 'e2d'"),
+        Arguments.of("0 .0", "rule basicDoubleLiteral failed predicate"),
+        Arguments.of("0.0 d", "Expected EOF but found token")
+    );
+  }
 
   @ParameterizedTest
-  @ValueSource(strings = { ".0d", "0.d", "5d", "009e2d", "0 .0", "0.0 d" })
-  public void checkFalse(String s) throws IOException {
+  @MethodSource("checkFalseArgs")
+  public void checkFalse(String s, String expectedError) throws IOException {
     TestMCCommonLiteralsParser parser = TestMCCommonLiteralsMill.parser();
     Optional<ASTBasicDoubleLiteral> lit = parser.parse_StringBasicDoubleLiteral(s);
     assertFalse(lit.isPresent());
     
-    Log.getFindings().removeAll(MCAssertions.assertHasFindingsStartingWith("extraneous input"));
+    Log.getFindings().removeAll(
+        MCAssertions.assertHasFindingsStartingWith(expectedError));
   }
 }
