@@ -46,6 +46,7 @@ public class MCBasicTypesJavaGenVisitor extends MCBasicTypesInheritanceHandler i
           SymTypeExpression2JavaConverter.getJavaTypePrint(
               SymTypeRelations.normalize(TypeCheck3.symTypeFromAST(node)))
       );
+    rootMCBasicType = null;
     }
   }
 
