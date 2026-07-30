@@ -76,12 +76,17 @@ public class MCVarDeclarationStatementsJavaGenVisitor
       }
       varDeclaration.getMCType().accept(getTraverser());
       getPrinter().print(" ");
-      getPrinter().print(varDeclarator.getDeclarator().getName());
-      if (varDeclarator.isPresentVariableInit()) {
-        getPrinter().print(" = ");
-        varDeclarator.getVariableInit().accept(getTraverser());
-      }
+      varDeclarator.accept(getTraverser());
       state.endStatement();
+    }
+  }
+
+  @Override
+  public void traverse(ASTVariableDeclarator node) {
+    getPrinter().print(node.getDeclarator().getName());
+    if (node.isPresentVariableInit()) {
+      getPrinter().print(" = ");
+      node.getVariableInit().accept(getTraverser());
     }
   }
 
