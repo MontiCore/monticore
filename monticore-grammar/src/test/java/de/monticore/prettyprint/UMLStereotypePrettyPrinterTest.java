@@ -7,12 +7,9 @@ import de.monticore.testumlstereotype.TestUMLStereotypeMill;
 import de.monticore.testumlstereotype._parser.TestUMLStereotypeParser;
 import de.monticore.umlstereotype._ast.ASTStereoValue;
 import de.monticore.umlstereotype._ast.ASTStereotype;
-import de.monticore.umlstereotype._prettyprint.UMLStereotypeFullPrettyPrinter;
-import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -24,40 +21,35 @@ public class UMLStereotypePrettyPrinterTest {
   @Test
   public void testStereotype() throws IOException {
     TestUMLStereotypeParser parser = TestUMLStereotypeMill.parser();
-    Optional<ASTStereotype> result = parser.parseStereotype(new StringReader("<<s1=\"S1\">>"));
+    Optional<ASTStereotype> result = parser.parse_StringStereotype("<<s1=\"S1\">>");
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
     ASTStereotype stereotype = result.get();
     
-    UMLStereotypeFullPrettyPrinter prettyPrinter = new UMLStereotypeFullPrettyPrinter(new IndentPrinter());
-    String output = prettyPrinter.prettyprint(stereotype);
+    String output = TestUMLStereotypeMill.prettyPrint(stereotype, false);
     
-    result = parser.parseStereotype(new StringReader(output));
+    result = parser.parse_StringStereotype(output);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
     
     assertTrue(stereotype.deepEquals(result.get()));
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
   public void testStereoValue() throws IOException {
     TestUMLStereotypeParser parser = TestUMLStereotypeMill.parser();
-    Optional<ASTStereoValue> result = parser.parseStereoValue(new StringReader("s1=\"S1\""));
+    Optional<ASTStereoValue> result = parser.parse_StringStereoValue("s1=\"S1\"");
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
     ASTStereoValue stereovalue = result.get();
     
-    UMLStereotypeFullPrettyPrinter prettyPrinter = new UMLStereotypeFullPrettyPrinter(new IndentPrinter());
-    String output = prettyPrinter.prettyprint(stereovalue);
-    result = parser.parseStereoValue(new StringReader(output));
+    String output = TestUMLStereotypeMill.prettyPrint(stereovalue, false);
+    
+    result = parser.parse_StringStereoValue(output);
     
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
     
     assertTrue(stereovalue.deepEquals(result.get()));
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 }

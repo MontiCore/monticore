@@ -14,11 +14,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.Optional;
 
 import static de.monticore.literals.mccommonliterals.cocos.NoLineBreaksInStringLiteralCoCo.ERROR_CODE;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @TestWithMCLanguage(TestMCCommonLiteralsMill.class)
@@ -27,7 +25,7 @@ public class NoLineBreaksInStringLiteralTest {
   private void checkStringLiteral(String s) throws IOException {
     // Parsing
     TestMCCommonLiteralsParser parser = TestMCCommonLiteralsMill.parser();
-    Optional<ASTLiteral> lit = parser.parseLiteral(new StringReader(s));
+    Optional<ASTLiteral> lit = parser.parse_StringLiteral(s);
     assertTrue(lit.isPresent());
 
     // check CoCo

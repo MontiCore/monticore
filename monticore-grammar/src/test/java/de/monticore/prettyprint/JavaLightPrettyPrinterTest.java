@@ -5,7 +5,6 @@ import de.monticore.javalight._ast.*;
 import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.testjavalight.TestJavaLightMill;
 import de.monticore.testjavalight._parser.TestJavaLightParser;
-import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -39,8 +38,6 @@ public class JavaLightPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -56,10 +53,7 @@ public class JavaLightPrettyPrinterTest {
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
 
-
     assertTrue(ast.deepEquals(result.get()), "Parse pp output: "  + output);
-
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -76,8 +70,6 @@ public class JavaLightPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
-
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -94,8 +86,6 @@ public class JavaLightPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -112,8 +102,6 @@ public class JavaLightPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -130,8 +118,6 @@ public class JavaLightPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -148,8 +134,6 @@ public class JavaLightPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -166,8 +150,6 @@ public class JavaLightPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -184,8 +166,6 @@ public class JavaLightPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -202,8 +182,6 @@ public class JavaLightPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -220,8 +198,6 @@ public class JavaLightPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -239,8 +215,6 @@ public class JavaLightPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -257,8 +231,6 @@ public class JavaLightPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -275,8 +247,6 @@ public class JavaLightPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -292,8 +262,6 @@ public class JavaLightPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

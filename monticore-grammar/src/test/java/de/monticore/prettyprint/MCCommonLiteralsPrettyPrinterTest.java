@@ -5,7 +5,6 @@ import de.monticore.literals.mccommonliterals._ast.*;
 import de.monticore.literals.testmccommonliterals.TestMCCommonLiteralsMill;
 import de.monticore.literals.testmccommonliterals._parser.TestMCCommonLiteralsParser;
 import de.monticore.runtime.junit.TestWithMCLanguage;
-import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -39,8 +38,6 @@ public class MCCommonLiteralsPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -58,8 +55,6 @@ public class MCCommonLiteralsPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -77,8 +72,6 @@ public class MCCommonLiteralsPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -95,8 +88,6 @@ public class MCCommonLiteralsPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -113,8 +104,6 @@ public class MCCommonLiteralsPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -131,8 +120,6 @@ public class MCCommonLiteralsPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -149,8 +136,6 @@ public class MCCommonLiteralsPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -167,8 +152,6 @@ public class MCCommonLiteralsPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -185,8 +168,6 @@ public class MCCommonLiteralsPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -203,8 +184,6 @@ public class MCCommonLiteralsPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -221,8 +200,6 @@ public class MCCommonLiteralsPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -239,7 +216,5 @@ public class MCCommonLiteralsPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 }

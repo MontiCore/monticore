@@ -15,7 +15,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -35,7 +34,7 @@ public class FloatCommonLiteralsTest {
   @MethodSource("checkFloatLiteralArgs")
   public void checkFloatLiteral(float f, String s) throws IOException {
     TestMCCommonLiteralsParser parser = TestMCCommonLiteralsMill.parser();
-    Optional<ASTLiteral> lit = parser.parseLiteral(new StringReader(s));
+    Optional<ASTLiteral> lit = parser.parse_StringLiteral(s);
     assertTrue(lit.isPresent());
     assertInstanceOf(ASTBasicFloatLiteral.class, lit.get());
     assertEquals(f, ((ASTBasicFloatLiteral) lit.get()).getValue(), 0);
@@ -88,7 +87,7 @@ public class FloatCommonLiteralsTest {
   })
   public void checkFalse(String s) throws IOException {
     TestMCCommonLiteralsParser parser = TestMCCommonLiteralsMill.parser();
-    Optional<ASTBasicFloatLiteral> lit = parser.parseBasicFloatLiteral(new StringReader(s));
+    Optional<ASTBasicFloatLiteral> lit = parser.parse_StringBasicFloatLiteral(s);
     assertFalse(lit.isPresent());
     
     Log.getFindings().removeAll(

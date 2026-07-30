@@ -12,9 +12,9 @@ import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -45,23 +45,25 @@ public class DoubleCommonLiteralsTest {
   
   static Stream<Arguments> checkFalseArgs() {
     return Stream.of(
-        Arguments.of(".0d", "extraneous input '.'"),
-        Arguments.of("0.d", "mismatched input 'd'"),
-        Arguments.of("5d", "mismatched input 'd'"),
-        Arguments.of("009e2d", "mismatched input 'e2d'"),
-        Arguments.of("0 .0", "rule basicDoubleLiteral failed predicate"),
-        Arguments.of("0.0 d", "Expected EOF but found token")
+        Arguments.of(".0d", List.of("mismatched input 'd' expecting '.'", "extraneous input '.'")),
+        Arguments.of("0.d", List.of("mismatched input 'd'")),
+        Arguments.of("5d", List.of("mismatched input 'd'")),
+        Arguments.of("009e2d", List.of("mismatched input 'e2d'")),
+        Arguments.of("0 .0", List.of("rule basicDoubleLiteral failed predicate")),
+        Arguments.of("0.0 d", List.of("Expected EOF but found token"))
     );
   }
 
   @ParameterizedTest
   @MethodSource("checkFalseArgs")
-  public void checkFalse(String s, String expectedError) throws IOException {
+  public void checkFalse(String s, List<String> expectedErrors) throws IOException {
     TestMCCommonLiteralsParser parser = TestMCCommonLiteralsMill.parser();
     Optional<ASTBasicDoubleLiteral> lit = parser.parse_StringBasicDoubleLiteral(s);
     assertFalse(lit.isPresent());
     
-    Log.getFindings().removeAll(
-        MCAssertions.assertHasFindingsStartingWith(expectedError));
+    for (String expectedError : expectedErrors) {
+      Log.getFindings().removeAll(
+          MCAssertions.assertHasFindingsStartingWith(expectedError));
+    }
   }
 }

@@ -8,10 +8,8 @@ import de.monticore.teststringliterals._parser.TestStringLiteralsParser;
 import org.junit.jupiter.api.Test;
 import stringliterals._ast.ASTCharLiteral;
 import stringliterals._ast.ASTStringLiteral;
-import stringliterals._prettyprint.StringLiteralsFullPrettyPrinter;
 
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -23,16 +21,14 @@ public class StringLiteralsPrettyPrinterTest {
   @Test
   public void testCharLiteralEscapeSequenz() throws IOException {
     TestStringLiteralsParser parser = TestStringLiteralsMill.parser();
-    Optional<ASTCharLiteral> result = parser.parseCharLiteral(new StringReader("'\"'"));
+    Optional<ASTCharLiteral> result = parser.parse_StringCharLiteral("'\"'");
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
     ASTCharLiteral cliteral = result.get();
     
-    StringLiteralsFullPrettyPrinter prettyPrinter = new StringLiteralsFullPrettyPrinter(
-        new IndentPrinter());
-    String output = prettyPrinter.prettyprint(cliteral);
+    String output = TestStringLiteralsMill.prettyPrint(cliteral, false);
     
-    result = parser.parseCharLiteral(new StringReader(output));
+    result = parser.parse_StringCharLiteral(output);
     assertFalse(parser.hasErrors(), output);
     assertTrue(result.isPresent());
     
@@ -42,16 +38,14 @@ public class StringLiteralsPrettyPrinterTest {
   @Test
   public void testCharLiteral() throws IOException {
     TestStringLiteralsParser parser = TestStringLiteralsMill.parser();
-    Optional<ASTCharLiteral> result = parser.parseCharLiteral(new StringReader("'c'"));
+    Optional<ASTCharLiteral> result = parser.parse_StringCharLiteral("'c'");
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
     ASTCharLiteral cliteral = result.get();
     
-    StringLiteralsFullPrettyPrinter prettyPrinter = new StringLiteralsFullPrettyPrinter(
-        new IndentPrinter());
-    String output = prettyPrinter.prettyprint(cliteral);
+    String output = TestStringLiteralsMill.prettyPrint(cliteral, false);
     
-    result = parser.parseCharLiteral(new StringReader(output));
+    result = parser.parse_StringCharLiteral(output);
     assertFalse(parser.hasErrors(), output);
     assertTrue(result.isPresent());
     
@@ -62,15 +56,14 @@ public class StringLiteralsPrettyPrinterTest {
   public void testStringLiteral() throws IOException {
     TestStringLiteralsParser parser = TestStringLiteralsMill.parser();
     Optional<ASTStringLiteral> result = parser
-        .parseStringLiteral(new StringReader("\"Text mit 893\""));
+        .parse_StringStringLiteral("\"Text mit 893\"");
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
     ASTStringLiteral sliteral = result.get();
     
-    StringLiteralsFullPrettyPrinter prettyPrinter = new StringLiteralsFullPrettyPrinter(
-        new IndentPrinter());
-    String output = prettyPrinter.prettyprint(sliteral);
-    result = parser.parseStringLiteral(new StringReader(output));
+    String output = TestStringLiteralsMill.prettyPrint(sliteral, false);
+    
+    result = parser.parse_StringStringLiteral(output);
     assertFalse(parser.hasErrors(), output);
     assertTrue(result.isPresent());
     

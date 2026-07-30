@@ -49,8 +49,6 @@ public class IntCommonLiteralsTest {
     assertTrue(lit.isPresent());
     assertInstanceOf(ASTNatLiteral.class, lit.get());
     assertEquals(i, ((ASTNatLiteral) lit.get()).getValue());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
   
   static Stream<Arguments> checkSignedIntLiteralArgs() {
@@ -77,7 +75,7 @@ public class IntCommonLiteralsTest {
     Optional<ASTSignedNatLiteral> lit = parser.parse_StringSignedNatLiteral(s);
     assertTrue(lit.isPresent());
     assertInstanceOf(ASTSignedNatLiteral.class, lit.get());
-    assertEquals(i, ((ASTSignedNatLiteral) lit.get()).getValue());
+    assertEquals(i, lit.get().getValue());
   }
 
   @ParameterizedTest
@@ -90,16 +88,23 @@ public class IntCommonLiteralsTest {
     Log.getFindings().removeAll(
         MCAssertions.assertHasFindingsStartingWith("Expected EOF but found token"));
   }
+  
+  static Stream<Arguments> checkSignedFalseArgs() {
+    return Stream.of(
+        Arguments.of("0x12", "Expected EOF but found token"),
+        Arguments.of("- 2", "no viable alternative at input '-'"),
+        Arguments.of("- 02", "no viable alternative at input '-'")
+    );
+  }
 
   @ParameterizedTest
-  @ValueSource(strings = { "0x12", "- 2", "- 02" })
-  public void checkSignedFalse(String s) throws IOException {
+  @MethodSource("checkSignedFalseArgs")
+  public void checkSignedFalse(String s, String expectedError) throws IOException {
     TestMCCommonLiteralsParser parser = TestMCCommonLiteralsMill.parser();
     Optional<ASTSignedNatLiteral> lit = parser.parse_StringSignedNatLiteral(s);
     assertFalse(lit.isPresent());
     
-    Log.getFindings().remove(MCAssertions.assertHasFinding(
-        f -> f.getMsg().startsWith("Expected EOF but found token") || f.getMsg()
-            .startsWith("no viable alternative at input")));
+    Log.getFindings().remove(
+        MCAssertions.assertHasFindingStartingWith(expectedError));
   }
 }

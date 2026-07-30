@@ -20,13 +20,10 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static de.monticore.statements.testmccommonstatements.TestMCCommonStatementsMill.*;
 import static de.monticore.types.check.SymTypeExpressionFactory.createPrimitive;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 @TestWithMCLanguage(TestMCCommonStatementsMill.class)

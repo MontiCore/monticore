@@ -10,7 +10,6 @@ import de.monticore.testmcliteralsv2._parser.TestMCLiteralsV2Parser;
 import de.se_rwth.commons.logging.Log;
 import mcnumbers._ast.ASTDecimal;
 import mcnumbers._ast.ASTInteger;
-import mcnumbers._ast.ASTNumber;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import stringliterals._ast.ASTCharLiteral;
@@ -20,6 +19,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@SuppressWarnings("UnnecessaryUnicodeEscape")
 @TestWithMCLanguage(TestMCLiteralsV2Mill.class)
 public class MCLiteralsUnitTest {
   
@@ -38,7 +38,9 @@ public class MCLiteralsUnitTest {
   // --------------------------------------------------------------------
   @Test
   public void testCardinalityToken() throws IOException {
-    ASTAnyTokenList ast = parser.parse_StringAnyTokenList( ":[65..67]:" ).get();
+    Optional<ASTAnyTokenList> astOpt = parser.parse_StringAnyTokenList( ":[65..67]:" );
+    assertTrue(astOpt.isPresent());
+    ASTAnyTokenList ast = astOpt.get();
     assertEquals(5, ast.sizeAnyTokens());
     ASTAnyToken t = ast.getAnyToken(0);
     t = ast.getAnyToken(1);
@@ -58,14 +60,18 @@ public class MCLiteralsUnitTest {
   // --------------------------------------------------------------------
   @Test
   public void testNat1() throws IOException {
-    ASTDecimal ast = parser.parse_StringDecimal( " 9" ).get();
+    Optional<ASTDecimal> astOpt = parser.parse_StringDecimal( " 9" );
+    assertTrue(astOpt.isPresent());
+    ASTDecimal ast = astOpt.get();
     assertEquals("9", ast.getSource());
     assertEquals(9, ast.getValue());
     assertEquals(9, ast.getValueInt());
   }
   @Test
   public void testNat2() throws IOException {
-    ASTDecimal ast = parser.parse_StringDecimal( " 0" ).get();
+    Optional<ASTDecimal> astOpt = parser.parse_StringDecimal( " 0" );
+    assertTrue(astOpt.isPresent());
+    ASTDecimal ast = astOpt.get();
     assertEquals("0", ast.getSource());
     assertEquals(0, ast.getValue());
   }
@@ -79,14 +85,18 @@ public class MCLiteralsUnitTest {
   }
   @Test
   public void testNat4() throws IOException {
-    ASTDecimal ast = parser.parse_StringDecimal( " 23 " ).get();
+    Optional<ASTDecimal> astOpt = parser.parse_StringDecimal( " 23 " );
+    assertTrue(astOpt.isPresent());
+    ASTDecimal ast = astOpt.get();
     assertEquals("23", ast.getSource());
     assertEquals(23, ast.getValue());
     assertEquals(23, ast.getValueInt());
   }
   @Test
   public void testNat5() throws IOException {
-    ASTDecimal ast = parser.parse_StringDecimal( " 463 " ).get();
+    Optional<ASTDecimal> astOpt = parser.parse_StringDecimal( " 463 " );
+    assertTrue(astOpt.isPresent());
+    ASTDecimal ast = astOpt.get();
     assertEquals(463, ast.getValue());
   }
 
@@ -103,7 +113,9 @@ public class MCLiteralsUnitTest {
   // --------------------------------------------------------------------
   @Test
   public void testTokens() throws IOException {
-    ASTAnyTokenList ast = parser.parse_StringAnyTokenList( ":463 23:" ).get();
+    Optional<ASTAnyTokenList> astOpt = parser.parse_StringAnyTokenList( ":463 23:" );
+    assertTrue(astOpt.isPresent());
+    ASTAnyTokenList ast = astOpt.get();
     assertEquals(2, ast.sizeAnyTokens());
     ASTAnyToken a0 = ast.getAnyToken(0);
     assertTrue(a0.isPresentDecimalToken());
@@ -116,8 +128,10 @@ public class MCLiteralsUnitTest {
   // --------------------------------------------------------------------
   @Test
   public void testTokens2() throws IOException {
-    ASTAnyTokenList ast = parser.parse_StringAnyTokenList(
-      ":9 'a' 45 00 47:" ).get();
+    Optional<ASTAnyTokenList> astOpt = parser.parse_StringAnyTokenList(
+      ":9 'a' 45 00 47:" );
+    assertTrue(astOpt.isPresent());
+    ASTAnyTokenList ast = astOpt.get();
     assertEquals(6, ast.sizeAnyTokens());
     assertEquals("9", ast.getAnyToken(0).getDecimalToken());
     assertEquals("a", ast.getAnyToken(1).getCharToken());
@@ -131,7 +145,9 @@ public class MCLiteralsUnitTest {
   // --------------------------------------------------------------------
   @Test
   public void testAbstractInterfaceFunctions() throws IOException {
-    ASTNumber ast = parser.parse_StringDecimal( " 234 " ).get();
+    Optional<ASTDecimal> astOpt = parser.parse_StringDecimal( " 234 " );
+    assertTrue(astOpt.isPresent());
+    ASTDecimal ast = astOpt.get();
     assertEquals(234, ast.getValue());
     assertEquals(234, ast.getValueInt());
     assertEquals("234", ast.getSource());
@@ -144,7 +160,9 @@ public class MCLiteralsUnitTest {
   // --------------------------------------------------------------------
   @Test
   public void testInt() throws IOException {
-    ASTInteger ast = parser.parse_StringInteger( " -463 " ).get();
+    Optional<ASTInteger> astOpt = parser.parse_StringInteger( " -463 " );
+    assertTrue(astOpt.isPresent());
+    ASTInteger ast = astOpt.get();
     assertEquals(-463, ast.getValue());
     assertEquals(-463, ast.getValueInt());
     assertEquals("-463", ast.getSource());
@@ -153,8 +171,10 @@ public class MCLiteralsUnitTest {
   // --------------------------------------------------------------------
   @Test
   public void testIntTokens2() throws IOException {
-    ASTIntegerList ast = parser.parse_StringIntegerList(
-        "[9, -45, -0, - 47]" ).get();
+    Optional<ASTIntegerList> astOpt = parser.parse_StringIntegerList(
+        "[9, -45, -0, - 47]" );
+    assertTrue(astOpt.isPresent());
+    ASTIntegerList ast = astOpt.get();
     assertEquals(4, ast.sizeIntegers());
     assertEquals(9, ast.getInteger(0).getValue());
     assertEquals("9", ast.getInteger(0).getSource());
@@ -185,7 +205,9 @@ public class MCLiteralsUnitTest {
   // --------------------------------------------------------------------
   @Test
   public void testB() throws IOException {
-    ASTBTest ast = parser.parse_StringBTest( " X2X, XFF001DX" ).get();
+    Optional<ASTBTest> astOpt = parser.parse_StringBTest( " X2X, XFF001DX" );
+    assertTrue(astOpt.isPresent());
+    ASTBTest ast = astOpt.get();
     assertEquals("X2X", ast.getXHexDigit(0));
     assertEquals("XFF001DX", ast.getXHexDigit(1));
   }
@@ -198,8 +220,10 @@ public class MCLiteralsUnitTest {
   // --------------------------------------------------------------------
   @Test
   public void testString() throws IOException {
-    ASTStringList ast = parser.parse_StringStringList(
-     "[\"ZWeR\",\"4\", \"',\\b,\\\\;\", \"S\\u34F4W\", \"o\"]" ).get();
+    Optional<ASTStringList> astOpt = parser.parse_StringStringList(
+     "[\"ZWeR\",\"4\", \"',\\b,\\\\;\", \"S\\u34F4W\", \"o\"]" );
+    assertTrue(astOpt.isPresent());
+    ASTStringList ast = astOpt.get();
     assertEquals("ZWeR", ast.getStringLiteral(0).getValue());
     assertEquals("4", ast.getStringLiteral(1).getValue());
     assertEquals("',\b,\\;", ast.getStringLiteral(2).getValue());
@@ -217,7 +241,9 @@ public class MCLiteralsUnitTest {
   // --------------------------------------------------------------------
   @Test
   public void testChar() throws IOException {
-    ASTCharLiteral ast = parser.parse_StringCharLiteral( " 'h'" ).get();
+    Optional<ASTCharLiteral> astOpt = parser.parse_StringCharLiteral( " 'h'" );
+    assertTrue(astOpt.isPresent());
+    ASTCharLiteral ast = astOpt.get();
     assertEquals("h", ast.getSource());
     assertEquals('h', ast.getValue());
   }
@@ -225,8 +251,10 @@ public class MCLiteralsUnitTest {
   // --------------------------------------------------------------------
   @Test
   public void testChar2() throws IOException {
-    ASTCharList ast = parser.parse_StringCharList(
-     "['Z','4','\\'', '\\b', '\\\\', '\7', '\\7', 'o']" ).get();
+    Optional<ASTCharList> astOpt = parser.parse_StringCharList(
+     "['Z','4','\\'', '\\b', '\\\\', '\7', '\\7', 'o']" );
+    assertTrue(astOpt.isPresent());
+    ASTCharList ast = astOpt.get();
     assertEquals('Z', ast.getCharLiteral(0).getValue());
     assertEquals('4', ast.getCharLiteral(1).getValue());
     assertEquals('\'', ast.getCharLiteral(2).getValue());
@@ -241,8 +269,10 @@ public class MCLiteralsUnitTest {
   // --------------------------------------------------------------------
   @Test
   public void testCharUnicode() throws IOException {
-    ASTCharList ast = parser.parse_StringCharList(
-     "['\\u2345', '\\u23EF', '\\u0001', '\\uAFFA']" ).get();
+    Optional<ASTCharList> astOpt = parser.parse_StringCharList(
+     "['\\u2345', '\\u23EF', '\\u0001', '\\uAFFA']" );
+    assertTrue(astOpt.isPresent());
+    ASTCharList ast = astOpt.get();
     assertEquals('\u2345', ast.getCharLiteral(0).getValue());
     assertEquals('\u23EF', ast.getCharLiteral(1).getValue());
     assertEquals('\u0001', ast.getCharLiteral(2).getValue());
