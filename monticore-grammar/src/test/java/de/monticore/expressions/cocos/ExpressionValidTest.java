@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions.cocos;
 
+import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
 import de.monticore.expressions.combineexpressionswithliterals._parser.CombineExpressionsWithLiteralsParser;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._cocos.ExpressionsBasisCoCoChecker;
@@ -24,6 +25,8 @@ public class ExpressionValidTest extends CocoTest {
 
   @BeforeEach
   public void init() {
+    CombineExpressionsWithLiteralsMill.reset();
+    CombineExpressionsWithLiteralsMill.init();
     BasicSymbolsMill.initializePrimitives();
     TypeCalculator typeCheck = new TypeCalculator(null, new FullDeriveFromCombineExpressionsWithLiterals());
     checker = new ExpressionsBasisCoCoChecker();
