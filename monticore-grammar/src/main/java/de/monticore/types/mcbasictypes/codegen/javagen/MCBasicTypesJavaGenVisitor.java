@@ -21,11 +21,11 @@ import de.monticore.types3.TypeCheck3;
 public class MCBasicTypesJavaGenVisitor extends MCBasicTypesInheritanceHandler implements MCBasicTypesVisitor2 {
 
   protected JavaGenVisitorState state;
-  protected int mcTypeNesting;
+  protected ASTMCType rootMCBasicType;
 
   public MCBasicTypesJavaGenVisitor(JavaGenVisitorState state) {
     this.state = Preconditions.checkNotNull(state);
-    mcTypeNesting = 0;
+    rootMCBasicType = null;
   }
 
   protected IndentPrinter getPrinter() {
@@ -34,13 +34,14 @@ public class MCBasicTypesJavaGenVisitor extends MCBasicTypesInheritanceHandler i
 
   @Override
   public void visit(ASTMCType node) {
-    mcTypeNesting++;
+    if (rootMCBasicType == null) {
+      rootMCBasicType = node;
+    }
   }
 
   @Override
   public void endVisit(ASTMCType node) {
-    mcTypeNesting--;
-    if (mcTypeNesting == 0) {
+    if (rootMCBasicType == node) {
       this.getPrinter().print(
           SymTypeExpression2JavaConverter.getJavaTypePrint(
               SymTypeRelations.normalize(TypeCheck3.symTypeFromAST(node)))
