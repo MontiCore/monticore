@@ -13,6 +13,11 @@ import de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor2;
 import de.monticore.types3.SymTypeRelations;
 import de.monticore.types3.TypeCheck3;
 
+/**
+ * This Visitor generates Java code for _any_ MCType,
+ * not just for MCBasicTypes.
+ * Thus, no further Java Generators are needed for MCTypes.
+ */
 public class MCBasicTypesJavaGenVisitor extends MCBasicTypesInheritanceHandler implements MCBasicTypesVisitor2 {
 
   protected JavaGenVisitorState state;
@@ -36,7 +41,10 @@ public class MCBasicTypesJavaGenVisitor extends MCBasicTypesInheritanceHandler i
   public void endVisit(ASTMCType node) {
     mcTypeNesting--;
     if (mcTypeNesting == 0) {
-      this.getPrinter().print(SymTypeExpression2JavaConverter.getJavaTypePrint(SymTypeRelations.normalize(TypeCheck3.symTypeFromAST(node))));
+      this.getPrinter().print(
+          SymTypeExpression2JavaConverter.getJavaTypePrint(
+              SymTypeRelations.normalize(TypeCheck3.symTypeFromAST(node)))
+      );
     }
   }
 
