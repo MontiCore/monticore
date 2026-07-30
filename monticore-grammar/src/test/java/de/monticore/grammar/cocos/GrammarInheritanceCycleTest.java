@@ -5,7 +5,8 @@ package de.monticore.grammar.cocos;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
 import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
-import de.se_rwth.commons.logging.Finding;
+import de.monticore.runtime.junit.MCAssertions;
+import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -14,9 +15,6 @@ import java.util.Optional;
 
 import static de.monticore.grammar.cocos.GrammarInheritanceCycle.ERROR_CODE;
 import static de.se_rwth.commons.logging.Log.getFindings;
-import static java.lang.String.format;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class GrammarInheritanceCycleTest extends CocoTest {
 
@@ -34,12 +32,9 @@ public class GrammarInheritanceCycleTest extends CocoTest {
 
     getFindings().clear();
     checker.checkAll(grammar.get());
-
-    assertFalse(getFindings().isEmpty());
-    assertEquals(1, getFindings().size());
-    for (Finding f : getFindings()) {
-      assertEquals(format(ERROR_CODE + MESSAGE, ""), f.getMsg());
-    }
+    
+    Log.getFindings().remove(
+        MCAssertions.assertHasFindingStartingWith(ERROR_CODE + MESSAGE.formatted("")));
   }
 
   @Test

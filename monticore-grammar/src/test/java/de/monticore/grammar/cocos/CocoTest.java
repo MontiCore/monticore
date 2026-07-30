@@ -7,14 +7,15 @@ import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
-import de.se_rwth.commons.logging.Finding;
+import de.monticore.runtime.junit.AbstractMCTest;
+import de.monticore.runtime.junit.MCAssertions;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.BeforeEach;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public abstract class CocoTest {
+public abstract class CocoTest extends AbstractMCTest {
 
   protected Grammar_WithConceptsCoCoChecker checker;
 
@@ -35,11 +36,8 @@ public abstract class CocoTest {
         .orElse(null);
     assertNotNull(grammarSymbol);
     assertTrue(grammarSymbol.getAstGrammar().isPresent());
-    
-    Log.getFindings().clear();
+
     checker.checkAll(grammarSymbol.getAstGrammar().get());
-    
-    assertTrue(Log.getFindings().isEmpty());
   }
   
   protected void testInvalidGrammar(String grammar, String code, String message,
@@ -61,28 +59,8 @@ public abstract class CocoTest {
     Log.getFindings().clear();
     checker.checkAll(grammarSymbol.getAstGrammar().get());
     
-    assertFalse(Log.getFindings().isEmpty());
     assertEquals(numberOfFindings, Log.getFindings().size());
-    for (Finding f : Log.getFindings()) {
-      assertEquals(code + message, f.getMsg());
-    }
-  }
-  
-  protected void testInvalidGrammarKeepFindings(String grammar, String code, String message,
-      Grammar_WithConceptsCoCoChecker checker) {
-    final Grammar_WithConceptsGlobalScope globalScope = GrammarGlobalScopeTestFactory.create();
-    
-    // test grammar symbol
-    final MCGrammarSymbol grammarSymbol = globalScope
-        .resolveMCGrammar(grammar)
-        .orElse(null);
-    assertNotNull(grammarSymbol);
-    assertTrue(grammarSymbol.getAstGrammar().isPresent());
-    checker.checkAll(grammarSymbol.getAstGrammar().get());
-    assertFalse(Log.getFindings().isEmpty());
-    assertEquals(1, Log.getFindings().size());
-    for (Finding f : Log.getFindings()) {
-      assertEquals(code + message, f.getMsg());
-    }
+    Log.getFindings().removeAll(
+        MCAssertions.assertHasFindingsStartingWith(code + message));
   }
 }
