@@ -20,7 +20,6 @@ description = 'MontiCore: Grammar'
 group = "de.monticore"
 
 def grammarOutDir = "$buildDir/generated-sources/monticore/sourcecode"
-def taggingOutDir = "$buildDir/generated-sources/monticore/tagging"
 
 sourceSets {
   // Add mlc files to grammars source set (resulting in them being included in the grammars-jar)
