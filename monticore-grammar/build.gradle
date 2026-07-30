@@ -106,7 +106,7 @@ tasks.register("generateSingleMCGrammarForDev", MCGenTask) {
   group = 'mc'
 }
 
-// Note: In the future we will introduce options for TR/Tag output to the tool
+// Note: In the future we will introduce options for TR output to the tool
 import de.monticore.gradle.gen.MCGenTask;
 
 
