@@ -35,7 +35,7 @@ public class ExpressionValidTest extends CocoTest {
   }
 
   public void checkValid(String expressionString) throws IOException {
-    CombineExpressionsWithLiteralsParser parser = new CombineExpressionsWithLiteralsParser();
+    CombineExpressionsWithLiteralsParser parser = CombineExpressionsWithLiteralsMill.parser();
     Optional<ASTExpression> optAST = parser.parse_StringExpression(expressionString);
     assertTrue(optAST.isPresent());
     Log.getFindings().clear();
@@ -44,7 +44,7 @@ public class ExpressionValidTest extends CocoTest {
   }
 
   public void checkInvalid(String expressionString) throws IOException {
-    CombineExpressionsWithLiteralsParser parser = new CombineExpressionsWithLiteralsParser();
+    CombineExpressionsWithLiteralsParser parser = CombineExpressionsWithLiteralsMill.parser();
     Optional<ASTExpression> optAST = parser.parse_StringExpression(expressionString);
     assertTrue(optAST.isPresent());
     Log.getFindings().clear();
