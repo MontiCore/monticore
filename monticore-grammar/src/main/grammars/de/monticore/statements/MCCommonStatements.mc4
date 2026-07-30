@@ -43,12 +43,56 @@ scope(non_exporting ordered) MCJavaBlock implements MCStatement
     
 /**
  * All the Java Modifier
+ * The method getModifier() ensures conservative behaviour with previous
+ * grammar definition that used an enumeration. The square brackets are
+ * required to generate the ASTConstantsMCCommonStatements constants.
  */
-JavaModifier implements MCModifier =
-      Modifier:["private" | "public" | "protected" | "static"
-          | "transient" | "final" | "abstract" | "native"
-          | "threadsafe" | "synchronized" | "const" | "volatile"
-          | "strictfp" | modifier_default:"default"] ;
+interface JavaModifier extends MCModifier;
+
+astrule JavaModifier
+    = method public int getModifier(){};
+
+ModifierPrivate implements JavaModifier
+    = [private:"private"];
+
+ModifierProtected implements JavaModifier
+    = [protected:"protected"];
+
+ModifierPublic implements JavaModifier
+    = [public:"public"];
+
+ModifierStatic implements JavaModifier
+    = [static:"static"];
+
+ModifierTransient implements JavaModifier
+    = [transient:"transient"];
+
+ModifierFinal implements JavaModifier
+    = [final:"final"];
+
+ModifierAbstract implements JavaModifier
+    = [abstract:"abstract"];
+
+ModifierNative implements JavaModifier
+    = [native:"native"];
+
+ModifierThreadsafe implements JavaModifier
+    = [threadsafe:"threadsafe"];
+
+ModifierSynchronized implements JavaModifier
+    = [synchronized:"synchronized"];
+
+ModifierConst implements JavaModifier
+    = [const:"const"];
+
+ModifierVolatile implements JavaModifier
+    = [volatile:"volatile"];
+
+ModifierStrictFp implements JavaModifier
+    = [strictfp:"strictfp"];
+
+ModifierDefault implements JavaModifier
+    = [modifier_default:"default"];
 
 IfStatement implements MCStatement
     =   "if" "(" condition:Expression ")"
