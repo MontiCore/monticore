@@ -46,10 +46,6 @@ public interface MCValue {
     return false;
   }
 
-  default boolean isObjectOfJava() {
-    return false;
-  }
-
   /**
    * helper for String specifically
    */

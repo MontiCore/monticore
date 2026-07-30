@@ -25,6 +25,7 @@ import de.monticore.statements.mcreturnstatements.codegen.javagen.MCReturnStatem
 import de.monticore.statements.mcvardeclarationstatements.codegen.javagen.MCVarDeclarationStatementsJavaGenVisitor;
 import de.monticore.tests.expressionsandstatements.ExpressionsAndStatementsMill;
 import de.monticore.tests.expressionsandstatements._visitor.ExpressionsAndStatementsTraverser;
+import de.monticore.types.mcbasictypes.codegen.javagen.MCBasicTypesJavaGenVisitor;
 import de.monticore.visitor.ITraverser;
 
 public class ExpressionsAndStatementsJavaGenerator
@@ -119,6 +120,12 @@ public class ExpressionsAndStatementsJavaGenerator
     MCVarDeclarationStatementsJavaGenVisitor visMCVarDeclarationStatements =
         new MCVarDeclarationStatementsJavaGenVisitor(state);
     traverser.setMCVarDeclarationStatementsHandler(visMCVarDeclarationStatements);
+
+    // Types
+
+    MCBasicTypesJavaGenVisitor visMCBasicTypes = new MCBasicTypesJavaGenVisitor(state);
+    traverser.setMCBasicTypesHandler(visMCBasicTypes);
+    traverser.add4MCBasicTypes(visMCBasicTypes);
   }
 
   @Override
