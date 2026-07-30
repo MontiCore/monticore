@@ -54,7 +54,7 @@ statements ought to be added later in development.
           (CodeGenVisitor for MCVarDeclarationStatements, simplified cases only)
     * Types
         * [MCBasicTypesJavaGenVisitor](../../types/mcbasictypes/codegen/javagen/MCBasicTypesJavaGenVisitor.java)
-          (CodeGenVisitor for MCBasicTypes)
+          (CodeGenVisitor for *all* `MCType`s)
 * [JavaGenSymTypeExpressionConverter](JavaGenSymTypeExpressionConverter.java)
   (CodeGenSymTypeExpressionConverter for conversion of types in Java)
     * [AbstractJavaTypeConverter](typeconverter/AbstractJavaTypeConverter.java)
