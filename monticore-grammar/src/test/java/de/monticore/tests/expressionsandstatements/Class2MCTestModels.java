@@ -35,6 +35,7 @@ public class Class2MCTestModels {
   static public Stream<Arguments> getClass2MCCases() {
     return Stream.of(
         getAClassCases(),
+        getEnumCases(),
         getNativeJavaCases(),
         getInstanceOfCases(),
         getCreatorExpressionCases(),
@@ -145,6 +146,15 @@ public class Class2MCTestModels {
         Arguments.of("AClass.set_var_s_Long(22L); AClass.var_s_Long", 22L),
         Arguments.of("AClass.set_var_s_Float(23.0f); AClass.var_s_Float", 23.0f),
         Arguments.of("AClass.set_var_s_Double(24.0); AClass.var_s_Double", 24.0d)
+    );
+  }
+
+  static protected Stream<Arguments> getEnumCases() {
+    return Stream.of(
+        Arguments.of("Color.GREEN == Color.GREEN", true),
+        Arguments.of("Color.GREEN == Color.RED", false),
+        Arguments.of("Color.GREEN.equals(Color.GREEN)", true),
+        Arguments.of("Color.GREEN.equals(Color.RED)", false)
     );
   }
 

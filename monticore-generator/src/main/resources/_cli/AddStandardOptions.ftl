@@ -11,6 +11,15 @@ options.addOption(org.apache.commons.cli.Option.builder("v")
     .desc("Prints version information")
     .build());
 
+//stacktrace option
+options.addOption(org.apache.commons.cli.Option.builder()
+    .longOpt("stacktrace")
+    .argName("loglevel")
+    .hasArgs()
+    .optionalArg(true)
+    .desc("Enables stacktraces, such as --stacktrace or --stacktrace=ERROR,WARN or --stacktrace=ERROR:stderr,warn:stderr (optional)")
+    .build());
+
 //parse input file
 options.addOption(org.apache.commons.cli.Option.builder("i")
     .longOpt("input")
@@ -19,7 +28,7 @@ options.addOption(org.apache.commons.cli.Option.builder("i")
     .desc("Reads the source file (mandatory) and parses the contents")
     .build());
 
-//pretty print runner
+//pretty print model
 options.addOption(org.apache.commons.cli.Option.builder("pp")
     .longOpt("prettyprint")
     .argName("file")
@@ -28,7 +37,7 @@ options.addOption(org.apache.commons.cli.Option.builder("pp")
     .desc("Prints the AST to stdout or the specified file (optional)")
     .build());
 
-// pretty print SC
+//output symbol table
 options.addOption(org.apache.commons.cli.Option.builder("s")
     .longOpt("symboltable")
     .argName("file")
@@ -36,7 +45,7 @@ options.addOption(org.apache.commons.cli.Option.builder("s")
     .desc("Serializes the symbol table of the given artifact.")
     .build());
 
-//reports about the runner
+//reports about the model
 options.addOption(org.apache.commons.cli.Option.builder("r")
     .longOpt("report")
     .argName("dir")
