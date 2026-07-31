@@ -8,9 +8,9 @@ import de.monticore.symboltable.ISymbol;
 
 public interface IASTNodeIdentHelper {
   
-  public static final String LAYOUT_FULL = "@%s!%s";
+  String LAYOUT_FULL = "@%s!%s";
   
-  public static final String LAYOUT_TYPE = "@!%s";
+  String LAYOUT_TYPE = "@!%s";
   
   default String format(String id, String type) {
     return String.format(LAYOUT_FULL, id, type);
@@ -20,7 +20,7 @@ public interface IASTNodeIdentHelper {
     return String.format(LAYOUT_TYPE, type);
   }
   
-  public String getIdent(ASTNode ast);
+  String getIdent(ASTNode ast);
   
   default String getIdent(ISymbol symbol) {
     return format(maskSpecialChars(symbol.getName()), "Symbol");
@@ -40,7 +40,7 @@ public interface IASTNodeIdentHelper {
     String type;
     if (scope.getClass().getName().endsWith("ArtifactScope")) {
       type = "ArtifactScope";
-    } else if (scope.getClass().getName().endsWith("ArtifactScope")) {
+    } else if (scope.getClass().getName().endsWith("GlobalScope")) {
       type = "GlobalScope";
     } else {
       type = "Scope";

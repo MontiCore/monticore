@@ -77,9 +77,9 @@ public class JsonToken {
 
   @Override public String toString() {
     if (kind.hasValue()) {
-      return "{" + kind.toString() + "=" + value + "}";
+      return "{" + kind + "=" + value + "}";
     }
-    return "{" + kind.toString() + "}";
+    return "{" + kind + "}";
   }
 
 }

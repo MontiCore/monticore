@@ -36,9 +36,9 @@ public abstract class Alias implements TemplateMethodModelEx {
     return getMethod().exec(arguments);
   }
 
-  protected List convertVarargsToList(List arguments, int startIndex) throws TemplateModelException {
+  protected List<Object> convertVarargsToList(List<Object> arguments, int startIndex) throws TemplateModelException {
     // Conversion of ... syntax
-    List l = new ArrayList();
+    List<Object> l = new ArrayList<>();
     if(!arguments.isEmpty()) {
       ObjectWrapperAndUnwrapper wrapper = (ObjectWrapperAndUnwrapper) Environment.getCurrentEnvironment().getObjectWrapper();
       for (Object o : arguments.subList(startIndex, arguments.size())) {
@@ -48,20 +48,20 @@ public abstract class Alias implements TemplateMethodModelEx {
     return l;
   }
 
-  protected CollectionModel convertVarargsToCollectionModel(List arguments, int startIndex) throws TemplateModelException{
+  protected CollectionModel convertVarargsToCollectionModel(List<Object> arguments, int startIndex) throws TemplateModelException{
     return new CollectionModel(
         convertVarargsToList(arguments, startIndex),
         (BeansWrapper) Environment.getCurrentEnvironment().getObjectWrapper()
     );
   }
 
-  protected void exactArguments(List arguments, int count) throws TemplateModelException {
+  protected void exactArguments(List<Object> arguments, int count) throws TemplateModelException {
     if(arguments.size() != count){
       throw new TemplateModelException("Expected " + count + " arguments but got " + arguments.size());
     }
   }
 
-  protected void atLeastArguments(List arguments, int count) throws TemplateModelException {
+  protected void atLeastArguments(List<Object> arguments, int count) throws TemplateModelException {
     if(arguments.size() < count){
       throw new TemplateModelException("Expected at least " + count + " arguments but got " + arguments.size());
     }
