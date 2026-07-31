@@ -166,7 +166,7 @@ public class ODRuleCodeGenerator {
     ASTPatternBuilder patternBuilder = ODRuleGenerationMill.patternBuilder();
 
     if (!ast.getPackageList().isEmpty()) {
-      tsBuilder.setPackage(Names.getQualifiedName(ast.getPackageList()));
+      tsBuilder.setPackage(Names.constructQualifiedName(ast.getPackageList()));
     } else {
       tsBuilder.setPackage("de.monticore.tf");
     }
@@ -717,7 +717,7 @@ public class ODRuleCodeGenerator {
   protected Collection<ASTVariable> generateVariables(
           ASTArrayInit list,
           Collection<String> collectedNames) {
-    Collection result = new ArrayList<>();
+    Collection<ASTVariable> result = new ArrayList<>();
     for (ASTVariableInit initializer : list.getVariableInitList()) {
       String init = new TFExpressionFullPrettyPrinter(new IndentPrinter()).prettyprint(initializer);
       if (init.startsWith("\"$")) {

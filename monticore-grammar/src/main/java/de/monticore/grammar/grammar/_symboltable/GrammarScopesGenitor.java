@@ -15,11 +15,6 @@ import de.se_rwth.commons.logging.Log;
 import java.util.List;
 import java.util.Optional;
 
-import static de.se_rwth.commons.Names.getQualifiedName;
-import static de.se_rwth.commons.logging.Log.error;
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
-
 public class GrammarScopesGenitor extends GrammarScopesGenitorTOP {
 
   public GrammarScopesGenitor(){
@@ -188,7 +183,7 @@ public class GrammarScopesGenitor extends GrammarScopesGenitorTOP {
     if (prodSymbol.isPresent()) {
       ast.getAdditionalAttributeList().forEach(a -> addAttributeInAST(prodSymbol.get(), a, true));
     } else {
-      error(
+      Log.error(
           "0xA4076 There must not exist an AST rule for the nonterminal " + ast.getType()
               + " because there exists no production defining " + ast.getType(),
           ast.get_SourcePositionStart());
@@ -202,7 +197,7 @@ public class GrammarScopesGenitor extends GrammarScopesGenitorTOP {
     if (prodSymbol.isPresent()) {
       ast.getAdditionalAttributeList().forEach(a -> addAttributeInAST(prodSymbol.get(), a, false));
     } else {
-      error(
+      Log.error(
           "0xA4077 There must not exist an symbol rule for the nonterminal " + ast.getType()
               + " because there exists no production defining " + ast.getType(),
           ast.get_SourcePositionStart());
@@ -292,7 +287,7 @@ public class GrammarScopesGenitor extends GrammarScopesGenitorTOP {
 
   protected void addSuperGrammars(ASTMCGrammar astGrammar, MCGrammarSymbolBuilder grammarSymbol) {
     for (ASTGrammarReference ref : astGrammar.getSupergrammarList()) {
-      final String superGrammarName = getQualifiedName(ref.getNameList());
+      final String superGrammarName = Names.constructQualifiedName(ref.getNameList());
 
       IGrammarScope enclosingScope = getCurrentScope().orElse(null);
 
@@ -320,10 +315,10 @@ public class GrammarScopesGenitor extends GrammarScopesGenitorTOP {
     if (getCurrentScope().isPresent()) {
       IGrammarScope scope = getCurrentScope().get();
       if (scope.isPresentSpanningSymbol() && scope.getSpanningSymbol() instanceof ProdSymbol) {
-        return of((ProdSymbol) scope.getSpanningSymbol());
+        return Optional.of((ProdSymbol) scope.getSpanningSymbol());
       }
     }
-    return empty();
+    return Optional.empty();
   }
 
   protected List<String> findImplicitTypes(ASTLexActionOrPredicate action,

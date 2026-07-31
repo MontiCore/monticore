@@ -159,7 +159,7 @@ public abstract class Rule2ODVisitor implements TFCommonsVisitor2 {
       try {
         ASTAssignment assignment = ODRulesMill.assignmentBuilder().uncheckedBuild();
         assignment.setLhs(key);
-        assignment.setRhs(new ODRulesParser().parse_StringExpression(value).get());
+        assignment.setRhs(ODRulesMill.parser().parse_StringExpression(value).get());
         if (isListChild) {
           assignment.add_PostComment(LISTCHILD_COMMENT);
         }
@@ -310,21 +310,21 @@ public abstract class Rule2ODVisitor implements TFCommonsVisitor2 {
 
   protected ASTExpression createQualifiedNameExpression(List<String> parts) {
     try {
-      Optional<ASTExpression> exp = new ODRulesParser()
+      Optional<ASTExpression> exp = ODRulesMill.parser()
           .parse_StringExpression(
-              Names.getQualifiedName(parts));
+              Names.constructQualifiedName(parts));
       if (exp.isPresent()) {
         return exp.get();
       }
       else {
         Log.error(
-            "0xF0006: " + Names.getQualifiedName(parts) + " cannot be treated as an expression");
+            "0xF0006: " + Names.constructQualifiedName(parts) + " cannot be treated as an expression");
         return ODRulesMill.nameExpressionBuilder().uncheckedBuild();
       }
     }
     catch (IOException e) {
       Log.error(
-          "0xF0004: " + Names.getQualifiedName(parts) + " cannot be treated as an expression");
+          "0xF0004: " + Names.constructQualifiedName(parts) + " cannot be treated as an expression");
       return ODRulesMill.nameExpressionBuilder().uncheckedBuild();
     }
   }

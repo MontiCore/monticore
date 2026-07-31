@@ -10,7 +10,6 @@ import de.se_rwth.commons.logging.Log;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class NoForbiddenSymbolName implements GrammarASTMCGrammarCoCo {
 

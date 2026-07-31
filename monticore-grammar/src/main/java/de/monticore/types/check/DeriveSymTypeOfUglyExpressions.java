@@ -21,7 +21,6 @@ import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static de.monticore.types.check.TypeCheck.compatible;
 

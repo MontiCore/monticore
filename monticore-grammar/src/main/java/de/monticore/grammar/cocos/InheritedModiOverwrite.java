@@ -8,7 +8,6 @@ import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class InheritedModiOverwrite implements GrammarASTMCGrammarCoCo {
 

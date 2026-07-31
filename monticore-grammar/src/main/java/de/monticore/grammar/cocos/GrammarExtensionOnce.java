@@ -14,7 +14,7 @@ public class GrammarExtensionOnce implements GrammarASTMCGrammarCoCo {
   
   public static final String ERROR_CODE = "0xA4150";
   
-  public static final String ERROR_MSG_FORMAT = "Grammar %s must not extend another grammar multiple times.";
+  public static final String ERROR_MSG_FORMAT = " Grammar %s must not extend another grammar multiple times.";
   
   @Override
   public void check(ASTMCGrammar gr) {

@@ -330,7 +330,7 @@ public class SymTypeExpressionFactory {
   protected static List<String> iterateBrackets(String type, int start){
     List<String> list = new ArrayList<>();
     int depth = 0;
-    for(int i = 0; i < type.toCharArray().length; i++) {
+    for(int i = 0; i < type.length(); i++) {
       char c = type.toCharArray()[i];
       if(c == '<'){
         depth++;

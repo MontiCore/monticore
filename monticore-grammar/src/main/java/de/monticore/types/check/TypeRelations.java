@@ -4,7 +4,6 @@ package de.monticore.types.check;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static de.monticore.types.check.SymTypePrimitive.unbox;
 

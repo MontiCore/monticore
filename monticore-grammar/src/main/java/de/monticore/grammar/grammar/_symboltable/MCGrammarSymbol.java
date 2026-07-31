@@ -301,7 +301,7 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
       }
     }
 
-    return Names.getQualifiedName(nameParts);
+    return Names.constructQualifiedName(nameParts);
   }
 
   protected String determinePackageName() {

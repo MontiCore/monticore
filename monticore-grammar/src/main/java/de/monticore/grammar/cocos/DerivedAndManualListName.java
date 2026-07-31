@@ -10,7 +10,6 @@ import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * checks that one NonTerminal does not define a component with the same derived and a manual name at the same time

@@ -326,7 +326,7 @@ public class ODRulesPrettyPrinter  implements ODRulesVisitor2,
     String sep = "";
     while (iter.hasNext()) {
       printer.append(sep);
-      printer.append(Names.getQualifiedName(iter.next().getPartsList())); // visit
+      printer.append(Names.constructQualifiedName(iter.next().getPartsList())); // visit
       // item
       sep = seperator;
     }

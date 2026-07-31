@@ -11,7 +11,6 @@ import de.monticore.tagging.tagschema._symboltable.*;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Visitor that checks if a tag conforms to the schema

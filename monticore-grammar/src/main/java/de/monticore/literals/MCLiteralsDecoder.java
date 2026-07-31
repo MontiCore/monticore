@@ -3,7 +3,7 @@
 package de.monticore.literals;
 
 import de.se_rwth.commons.logging.Log;
-import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 /**
  * This class provides methods for converting literals. The LiteralsHelper is a singleton.

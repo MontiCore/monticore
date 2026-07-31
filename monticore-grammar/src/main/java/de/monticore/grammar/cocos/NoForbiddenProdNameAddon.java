@@ -9,7 +9,6 @@ import de.se_rwth.commons.logging.Log;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class NoForbiddenProdNameAddon implements GrammarASTMCGrammarCoCo {
 

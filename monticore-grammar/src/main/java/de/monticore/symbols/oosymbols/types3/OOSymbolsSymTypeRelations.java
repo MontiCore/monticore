@@ -18,7 +18,6 @@ import de.se_rwth.commons.logging.Log;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * relations for SymTypes of wrt. OOSymbols,

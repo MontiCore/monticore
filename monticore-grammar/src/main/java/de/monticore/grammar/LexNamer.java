@@ -189,8 +189,8 @@ public class LexNamer {
   }
 
   protected String convertKeyword(String key)  {
-    key = StringUtils.replace(key, "\\\"", "\"");
-    key = StringUtils.replace(key, "'", "\\'");
+    key = key.replace("\\\"", "\"");
+    key = key.replace("'", "\\'");
     return key;
   }
 

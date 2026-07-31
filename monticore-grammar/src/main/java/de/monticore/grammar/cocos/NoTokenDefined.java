@@ -11,7 +11,6 @@ import de.monticore.grammar.grammar._visitor.GrammarTraverser;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class NoTokenDefined implements GrammarASTMCGrammarCoCo {
 

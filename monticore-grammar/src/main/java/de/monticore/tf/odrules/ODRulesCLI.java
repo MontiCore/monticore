@@ -9,6 +9,7 @@ import de.monticore.tf.odrules._parser.ODRulesParser;
 import de.monticore.tf.odrules._symboltable.ODRulesScopesGenitorDelegator;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.cli.*;
+import org.apache.commons.cli.help.HelpFormatter;
 
 import java.io.File;
 import java.io.IOException;
@@ -84,7 +85,7 @@ public class ODRulesCLI {
   public Optional<ASTODRule> parseODRule(Path model) {
     Log.debug("Start parsing of the model " + model, LOG_ID);
     try {
-      ODRulesParser parser = new ODRulesParser();
+      ODRulesParser parser = ODRulesMill.parser();
       Optional<ASTODRule> ast = parser.parse(model.toString());
       if (!parser.hasErrors() && ast.isPresent()) {
         Log.debug("Model " + model + " parsed successfully", LOG_ID);
@@ -113,7 +114,7 @@ public class ODRulesCLI {
         .argName("file")
         .hasArg()
         .desc("Processes the given model and triggers the transformation generation.")
-        .build());
+        .get());
     
     // specify custom output directory
     options.addOption(Option.builder("o")
@@ -121,22 +122,26 @@ public class ODRulesCLI {
         .argName("path")
         .hasArg()
         .desc("Output directory for all generated artifacts.")
-        .build());
+        .get());
     
     
     // help dialog
     options.addOption(Option.builder("h")
         .longOpt("help")
         .desc("Prints this help dialog")
-        .build());
+        .get());
     
     return options;
   }
   
   protected void printHelp(Options options) {
-    HelpFormatter formatter = new HelpFormatter();
-    formatter.setWidth(80);
-    formatter.printHelp("ODRulesCLI", options);
+    HelpFormatter formatter = HelpFormatter.builder().get();
+    try {
+      formatter.printHelp("java " + this.getClass().getSimpleName(), "", options, "", true);
+    }
+    catch (java.io.IOException e) {
+      throw new RuntimeException(e);
+    }
   }
   
   static final String LOG_ID = "ODRules";

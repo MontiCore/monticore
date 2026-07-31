@@ -18,8 +18,6 @@ import de.monticore.types3.util.SymTypePrintFullNameVisitor;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 

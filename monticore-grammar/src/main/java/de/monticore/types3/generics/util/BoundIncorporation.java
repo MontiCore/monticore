@@ -471,9 +471,8 @@ public class BoundIncorporation {
     List<Constraint> constraints = new ArrayList<>();
     incorporateNonSymmetrical(bE, bS).ifPresent(constraints::add);
     Optional<TypeEqualityBound> flipped = bE.getFlipped();
-    flipped.ifPresent(
-        typeEqualityBound -> incorporateNonSymmetrical(typeEqualityBound, bS).ifPresent(
-            constraints::add));
+    flipped.flatMap(typeEqualityBound -> incorporateNonSymmetrical(typeEqualityBound, bS))
+        .ifPresent(constraints::add);
     return constraints;
   }
 
@@ -520,9 +519,8 @@ public class BoundIncorporation {
     List<Constraint> constraints = new ArrayList<>();
     incorporateNonSymmetrical(bE, bComp).ifPresent(constraints::add);
     Optional<TypeEqualityBound> flipped = bE.getFlipped();
-    flipped.ifPresent(
-        typeEqualityBound -> incorporateNonSymmetrical(typeEqualityBound, bComp).ifPresent(
-            constraints::add));
+    flipped.flatMap(typeEqualityBound -> incorporateNonSymmetrical(typeEqualityBound, bComp))
+        .ifPresent(constraints::add);
     return constraints;
   }
 

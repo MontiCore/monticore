@@ -6,8 +6,6 @@ import de.monticore.codegen.ICodeGenOperationHandler;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.check.SymTypeExpression;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 
 import static de.monticore.codegen.CodeGenSymTypeExpressionConverter.printConverted;

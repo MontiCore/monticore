@@ -9,7 +9,6 @@ import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * checks whether a grammar contains two or more prods that have the same name.

@@ -59,7 +59,7 @@ public class DifferenceFinder {
    *
    */
   public List<ASTChangeOperation> getDifference(String transformationRulesFilename) throws IOException {
-    ODRulesParser parser = new ODRulesParser();
+    ODRulesParser parser = ODRulesMill.parser();
     Optional<ASTODRule> rule = parser.parse(transformationRulesFilename);
     return getDifference(rule.get());
   }
