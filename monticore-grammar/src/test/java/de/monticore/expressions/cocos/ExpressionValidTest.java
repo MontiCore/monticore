@@ -75,8 +75,7 @@ public class ExpressionValidTest extends CocoTest {
     checker.checkAll(optAST.get());
     
     for (String expectedError : expectedErrors) {
-      Log.getFindings().remove(
-          MCAssertions.assertHasFindingStartingWith(expectedError));
+      MCAssertions.assertHasFindingStartingWith(expectedError);
     }
   }
 }
