@@ -5,62 +5,53 @@ package de.monticore.mcjavaliterals;
 import de.monticore.literals.mcjavaliterals._ast.ASTIntLiteral;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.literals.testmcjavaliterals.TestMCJavaLiteralsMill;
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import de.monticore.runtime.junit.TestWithMCLanguage;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.IOException;
+import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
+@SuppressWarnings("OctalInteger")
+@TestWithMCLanguage(TestMCJavaLiteralsMill.class)
 public class IntJavaLiteralsTest {
-  
-  @BeforeEach
-  public void init() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-    TestMCJavaLiteralsMill.reset();
-    TestMCJavaLiteralsMill.init();
+
+  static Stream<Arguments> checkIntLiteralArgs() {
+    return Stream.of(
+        // decimal number
+        Arguments.of(0, "0"),
+        Arguments.of(123, "123"),
+        Arguments.of(10, "10"),
+        Arguments.of(5, "5"),
+        
+        // hexadezimal number
+        Arguments.of(0x12, "0x12"),
+        Arguments.of(0Xeff, "0Xeff"),
+        Arguments.of(0x34567890, "0x34567890"),
+        Arguments.of(0xabcdef, "0xabcdef"),
+        Arguments.of(0x0, "0x0"),
+        Arguments.of(0xa, "0xa"),
+        Arguments.of(0xC0FFEE, "0xC0FFEE"),
+        Arguments.of(0x005f, "0x005f"),
+        
+        // octal number
+        Arguments.of(02, "02"),
+        Arguments.of(07, "07"),
+        Arguments.of(00, "00"),
+        Arguments.of(076543210, "076543210"),
+        Arguments.of(00017, "00017")
+    );
   }
   
-  private void checkIntLiteral(int i, String s) throws IOException {
+  @ParameterizedTest
+  @MethodSource("checkIntLiteralArgs")
+  public void checkIntLiteral(int i, String s) throws IOException {
     ASTLiteral lit = MCJavaLiteralsTestHelper.getInstance().parseLiteral(s);
     assertInstanceOf(ASTIntLiteral.class, lit);
     assertEquals(i, ((ASTIntLiteral) lit).getValue());
-  
-    assertTrue(Log.getFindings().isEmpty());
-  }
-
-  @Test
-  public void testIntLiterals() {
-    try {
-      // decimal number
-      checkIntLiteral(0, "0");
-      checkIntLiteral(123, "123");
-      checkIntLiteral(10, "10");
-      checkIntLiteral(5, "5");
-      
-      // hexadezimal number
-      checkIntLiteral(0x12, "0x12");
-      checkIntLiteral(0Xeff, "0Xeff");
-      checkIntLiteral(0x34567890, "0x34567890");
-      checkIntLiteral(0xabcdef, "0xabcdef");
-      checkIntLiteral(0x0, "0x0");
-      checkIntLiteral(0xa, "0xa");
-      checkIntLiteral(0xC0FFEE, "0xC0FFEE");
-      checkIntLiteral(0x005f, "0x005f");
-      
-      // octal number
-      checkIntLiteral(02, "02");
-      checkIntLiteral(07, "07");
-      checkIntLiteral(00, "00");
-      checkIntLiteral(076543210, "076543210");
-      checkIntLiteral(00017, "00017");
-    }
-    catch (IOException e) {
-      fail(e.getMessage());
-    }
   }
 }

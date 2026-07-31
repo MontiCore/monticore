@@ -4,8 +4,7 @@ package de.monticore.expressions.prettyprint;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.teststreamexpressions.TestStreamExpressionsMill;
 import de.monticore.expressions.teststreamexpressions._parser.TestStreamExpressionsParser;
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -16,16 +15,13 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@TestWithMCLanguage(TestStreamExpressionsMill.class)
 public class StreamExpressionsPrettyPrinterTest {
 
   protected TestStreamExpressionsParser parser;
 
   @BeforeEach
   public void init() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-    TestStreamExpressionsMill.reset();
-    TestStreamExpressionsMill.init();
     parser = TestStreamExpressionsMill.parser();
   }
 
@@ -57,7 +53,5 @@ public class StreamExpressionsPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
-
-    assertTrue(Log.getFindings().isEmpty());
   }
 }

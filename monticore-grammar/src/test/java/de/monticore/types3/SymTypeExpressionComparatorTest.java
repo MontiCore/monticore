@@ -7,11 +7,7 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types3.util.SymTypeExpressionGenerator;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static de.monticore.runtime.junit.MCAssertions.assertNoFindings;

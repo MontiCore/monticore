@@ -7,133 +7,101 @@ import de.monticore.literals.mccommonliterals._ast.ASTSignedNatLiteral;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.literals.testmccommonliterals.TestMCCommonLiteralsMill;
 import de.monticore.literals.testmccommonliterals._parser.TestMCCommonLiteralsParser;
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import de.monticore.runtime.junit.MCAssertions;
+import de.monticore.runtime.junit.TestWithMCLanguage;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@TestWithMCLanguage(TestMCCommonLiteralsMill.class)
 public class IntCommonLiteralsTest {
-
-  @BeforeEach
-  public void init() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-    TestMCCommonLiteralsMill.reset();
-    TestMCCommonLiteralsMill.init();
+  
+  static Stream<Arguments> checkIntLiteralArgs() {
+    return Stream.of(
+        // decimal number
+        Arguments.of(0, "0"),
+        Arguments.of(123, "123"),
+        Arguments.of(10, "10"),
+        Arguments.of(5, "5"),
+        
+        // number with leading 0
+        Arguments.of(2, "02"),
+        Arguments.of(7, "07"),
+        Arguments.of(0, "00"),
+        Arguments.of(76543210, "076543210"),
+        Arguments.of(17, "00017")
+    );
   }
 
-  private void checkIntLiteral(int i, String s) throws IOException {
-    TestMCCommonLiteralsParser parser = new TestMCCommonLiteralsParser();
-    Optional<ASTLiteral> lit = parser.parseLiteral(new StringReader(s));
+  @ParameterizedTest
+  @MethodSource("checkIntLiteralArgs")
+  public void checkIntLiteral(int i, String s) throws IOException {
+    TestMCCommonLiteralsParser parser = TestMCCommonLiteralsMill.parser();
+    Optional<ASTLiteral> lit = parser.parse_StringLiteral(s);
     assertTrue(lit.isPresent());
     assertInstanceOf(ASTNatLiteral.class, lit.get());
     assertEquals(i, ((ASTNatLiteral) lit.get()).getValue());
+  }
   
-    assertTrue(Log.getFindings().isEmpty());
+  static Stream<Arguments> checkSignedIntLiteralArgs() {
+    return Stream.of(
+        // decimal number
+        Arguments.of(0, "0"),
+        Arguments.of(-123, "-123"),
+        Arguments.of(-10, "-10"),
+        Arguments.of(-5, "-5"),
+        
+        // number with leading 0
+        Arguments.of(-2, "-02"),
+        Arguments.of(-7, "-07"),
+        Arguments.of(0, "00"),
+        Arguments.of(-76543210, "-076543210"),
+        Arguments.of(-17, "-00017")
+    );
   }
 
-  private void checkSignedIntLiteral(int i, String s) throws IOException {
-    TestMCCommonLiteralsParser parser = new TestMCCommonLiteralsParser();
-    Optional<ASTSignedNatLiteral> lit = parser.parseSignedNatLiteral(new StringReader(s));
+  @ParameterizedTest
+  @MethodSource("checkSignedIntLiteralArgs")
+  public void checkSignedIntLiteral(int i, String s) throws IOException {
+    TestMCCommonLiteralsParser parser = TestMCCommonLiteralsMill.parser();
+    Optional<ASTSignedNatLiteral> lit = parser.parse_StringSignedNatLiteral(s);
     assertTrue(lit.isPresent());
     assertInstanceOf(ASTSignedNatLiteral.class, lit.get());
-    assertEquals(i, ((ASTSignedNatLiteral) lit.get()).getValue());
-  
-    assertTrue(Log.getFindings().isEmpty());
+    assertEquals(i, lit.get().getValue());
   }
 
-  private void checkFalse(String s) throws IOException {
-    TestMCCommonLiteralsParser parser = new TestMCCommonLiteralsParser();
-    Optional<ASTNatLiteral> lit = parser.parseNatLiteral(new StringReader(s));
+  @ParameterizedTest
+  @ValueSource(strings = { "0x12", "0Xeff", "0x34567890", "0xabcdef", "0x0", "0xa", "0xC0FFEE", "0x005f" })
+  public void checkFalse(String s) throws IOException {
+    TestMCCommonLiteralsParser parser = TestMCCommonLiteralsMill.parser();
+    Optional<ASTNatLiteral> lit = parser.parse_StringNatLiteral(s);
     assertFalse(lit.isPresent());
+    
+    MCAssertions.assertHasFindingsStartingWith("Expected EOF but found token");
   }
-
-  private void checkSignedFalse(String s) throws IOException {
-    TestMCCommonLiteralsParser parser = new TestMCCommonLiteralsParser();
-    Optional<ASTSignedNatLiteral> lit = parser.parseSignedNatLiteral(new StringReader(s));
-    assertFalse(lit.isPresent());
   
-    assertTrue(Log.getFindings().isEmpty());
+  static Stream<Arguments> checkSignedFalseArgs() {
+    return Stream.of(
+        Arguments.of("0x12", "Expected EOF but found token"),
+        Arguments.of("- 2", "no viable alternative at input '-'"),
+        Arguments.of("- 02", "no viable alternative at input '-'")
+    );
   }
 
-  @Test
-  public void testIntLiterals() {
-    try {
-      // decimal number
-      checkIntLiteral(0, "0");
-      checkIntLiteral(123, "123");
-      checkIntLiteral(10, "10");
-      checkIntLiteral(5, "5");
-      
-      // number with leading 0
-      checkIntLiteral(2, "02");
-      checkIntLiteral(7, "07");
-      checkIntLiteral(0, "00");
-      checkIntLiteral(76543210, "076543210");
-      checkIntLiteral(17, "00017");
-    }
-    catch (IOException e) {
-      fail(e.getMessage());
-    }
+  @ParameterizedTest
+  @MethodSource("checkSignedFalseArgs")
+  public void checkSignedFalse(String s, String expectedError) throws IOException {
+    TestMCCommonLiteralsParser parser = TestMCCommonLiteralsMill.parser();
+    Optional<ASTSignedNatLiteral> lit = parser.parse_StringSignedNatLiteral(s);
+    assertFalse(lit.isPresent());
+    
+    MCAssertions.assertHasFindingStartingWith(expectedError);
   }
-
-  @Test
-  public void testFalse() {
-    try {
-      // hexadezimal number
-      checkFalse("0x12");
-      checkFalse("0Xeff");
-      checkFalse("0x34567890");
-      checkFalse("0xabcdef");
-      checkFalse("0x0");
-      checkFalse("0xa");
-      checkFalse("0xC0FFEE");
-      checkFalse("0x005f");
-    }
-    catch (IOException e) {
-      fail(e.getMessage());
-    }
-  }
-
-  @Test
-  public void testSignedIntLiterals() {
-    try {
-      // decimal number
-      checkSignedIntLiteral(0, "0");
-      checkSignedIntLiteral(-123, "-123");
-      checkSignedIntLiteral(-10, "-10");
-      checkSignedIntLiteral(-5, "-5");
-
-      // number with leading 0
-      checkSignedIntLiteral(-2, "-02");
-      checkSignedIntLiteral(-7, "-07");
-      checkSignedIntLiteral(0, "00");
-      checkSignedIntLiteral(-76543210, "-076543210");
-      checkSignedIntLiteral(-17, "-00017");
-    }
-    catch (IOException e) {
-      fail(e.getMessage());
-    }
-  }
-
-  @Test
-  public void testSignedFalse() {
-    try {
-      // hexadezimal number
-      checkFalse("0x12");
-      checkFalse("- 2");
-      checkFalse("- 02");
-    }
-    catch (IOException e) {
-      fail(e.getMessage());
-    }
-  }
-
-
 }

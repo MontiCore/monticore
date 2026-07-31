@@ -4,15 +4,14 @@ package de.monticore.javalight.cocos;
 
 import de.monticore.javalight._cocos.JavaLightCoCoChecker;
 import de.monticore.types3.util.DefsTypesForTests;
+import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static de.monticore.types3.util.DefsTypesForTests.oOtype;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import de.se_rwth.commons.logging.Log;
-
-import java.util.List;
 
 public class MethodExceptionThrowsTest extends JavaLightCocoTest {
   private final String fileName = "de.monticore.javalight.cocos.invalid.A0811.A0811";

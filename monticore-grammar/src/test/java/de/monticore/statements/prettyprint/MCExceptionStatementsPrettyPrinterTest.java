@@ -1,13 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.statements.prettyprint;
 
-import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.statements.mcexceptionstatements._ast.*;
-import de.monticore.statements.mcexceptionstatements._prettyprint.MCExceptionStatementsFullPrettyPrinter;
 import de.monticore.statements.testmcexceptionstatements.TestMCExceptionStatementsMill;
 import de.monticore.statements.testmcexceptionstatements._parser.TestMCExceptionStatementsParser;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -17,19 +15,14 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@TestWithMCLanguage(TestMCExceptionStatementsMill.class)
 public class MCExceptionStatementsPrettyPrinterTest {
 
-  private TestMCExceptionStatementsParser parser = new TestMCExceptionStatementsParser();
-
-  private MCExceptionStatementsFullPrettyPrinter prettyPrinter = new MCExceptionStatementsFullPrettyPrinter(new IndentPrinter());
+  private TestMCExceptionStatementsParser parser;
 
   @BeforeEach
   public void init() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-    TestMCExceptionStatementsMill.reset();
-    TestMCExceptionStatementsMill.init();
-    prettyPrinter.getPrinter().clearBuffer();
+    parser = TestMCExceptionStatementsMill.parser();
   }
 
   @Test
@@ -39,7 +32,7 @@ public class MCExceptionStatementsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTTryStatement2 ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestMCExceptionStatementsMill.prettyPrint(ast, false);
 
     result = parser.parse_StringTryStatement2(output);
     assertFalse(parser.hasErrors());
@@ -57,7 +50,7 @@ public class MCExceptionStatementsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTTryStatement1 ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestMCExceptionStatementsMill.prettyPrint(ast, false);
 
     result = parser.parse_StringTryStatement1(output);
     assertFalse(parser.hasErrors());
@@ -78,7 +71,7 @@ public class MCExceptionStatementsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTTryStatement3 ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestMCExceptionStatementsMill.prettyPrint(ast, false);
 
     result = parser.parse_StringTryStatement3(output);
     assertFalse(parser.hasErrors());
@@ -97,7 +90,7 @@ public class MCExceptionStatementsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTTryLocalVariableDeclaration ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestMCExceptionStatementsMill.prettyPrint(ast, false);
 
     result = parser.parse_StringTryLocalVariableDeclaration(output);
     assertFalse(parser.hasErrors());
@@ -116,7 +109,7 @@ public class MCExceptionStatementsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTCatchClause ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestMCExceptionStatementsMill.prettyPrint(ast, false);
 
     result = parser.parse_StringCatchClause(output);
     assertFalse(parser.hasErrors());
@@ -135,7 +128,7 @@ public class MCExceptionStatementsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTCatchTypeList ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestMCExceptionStatementsMill.prettyPrint(ast, false);
 
     result = parser.parse_StringCatchTypeList(output);
     assertFalse(parser.hasErrors());
@@ -154,7 +147,7 @@ public class MCExceptionStatementsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTThrowStatement ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestMCExceptionStatementsMill.prettyPrint(ast, false);
 
     result = parser.parse_StringThrowStatement(output);
     assertFalse(parser.hasErrors());

@@ -2,6 +2,7 @@
 package de.monticore.statements.cocos;
 
 import de.monticore.runtime.junit.MCAssertions;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.statements.mcvardeclarationstatements._cocos.VarDeclarationNameAlreadyDefinedInScope;
 import de.monticore.statements.mcvardeclarationstatements._symboltable.MCVarDeclarationStatementsSTCompleteTypes;
 import de.monticore.statements.testmcvardeclarationstatements.TestMCVarDeclarationStatementsMill;
@@ -10,8 +11,6 @@ import de.monticore.statements.testmcvardeclarationstatements._cocos.TestMCVarDe
 import de.monticore.statements.testmcvardeclarationstatements._visitor.TestMCVarDeclarationStatementsTraverser;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserFactory;
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -19,14 +18,11 @@ import java.io.IOException;
 
 import static de.monticore.statements.testmcvardeclarationstatements.TestMCVarDeclarationStatementsMill.parser;
 
+@TestWithMCLanguage(TestMCVarDeclarationStatementsMill.class)
 class VarDeclarationNameAlreadyDefinedInScopeTest {
 
   @BeforeEach
   void init() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-    TestMCVarDeclarationStatementsMill.reset();
-    TestMCVarDeclarationStatementsMill.init();
     CombineExpressionsWithLiteralsTypeTraverserFactory.initTypeCheck3();
     BasicSymbolsMill.initializePrimitives();
   }
@@ -50,9 +46,6 @@ class VarDeclarationNameAlreadyDefinedInScopeTest {
 
     // When
     checker.checkAll(astDecl);
-
-    // Then
-    MCAssertions.assertNoFindings();
   }
 
   @Test
@@ -68,9 +61,8 @@ class VarDeclarationNameAlreadyDefinedInScopeTest {
     checker.checkAll(astDecl);
 
     // Then
-    Log.getFindings().remove(MCAssertions.assertHasFindingStartingWith(VarDeclarationNameAlreadyDefinedInScope.ERROR_CODE));
-    Log.getFindings().remove(MCAssertions.assertHasFindingStartingWith(VarDeclarationNameAlreadyDefinedInScope.ERROR_CODE));
-    MCAssertions.assertNoFindings();
+    MCAssertions.assertHasFindingStartingWith(VarDeclarationNameAlreadyDefinedInScope.ERROR_CODE);
+    MCAssertions.assertHasFindingStartingWith(VarDeclarationNameAlreadyDefinedInScope.ERROR_CODE);
   }
 
   @Test
@@ -86,10 +78,9 @@ class VarDeclarationNameAlreadyDefinedInScopeTest {
     checker.checkAll(astDecl);
 
     // Then
-    Log.getFindings().remove(MCAssertions.assertHasFindingStartingWith(VarDeclarationNameAlreadyDefinedInScope.ERROR_CODE));
-    Log.getFindings().remove(MCAssertions.assertHasFindingStartingWith(VarDeclarationNameAlreadyDefinedInScope.ERROR_CODE));
-    Log.getFindings().remove(MCAssertions.assertHasFindingStartingWith(VarDeclarationNameAlreadyDefinedInScope.ERROR_CODE));
-    MCAssertions.assertNoFindings();
+    MCAssertions.assertHasFindingStartingWith(VarDeclarationNameAlreadyDefinedInScope.ERROR_CODE);
+    MCAssertions.assertHasFindingStartingWith(VarDeclarationNameAlreadyDefinedInScope.ERROR_CODE);
+    MCAssertions.assertHasFindingStartingWith(VarDeclarationNameAlreadyDefinedInScope.ERROR_CODE);
   }
 
   @Test
@@ -108,8 +99,7 @@ class VarDeclarationNameAlreadyDefinedInScopeTest {
     checker.checkAll(astDecl);
 
     // Then
-    Log.getFindings().remove(MCAssertions.assertHasFindingStartingWith(VarDeclarationNameAlreadyDefinedInScope.ERROR_CODE));
-    MCAssertions.assertNoFindings();
+    MCAssertions.assertHasFindingStartingWith(VarDeclarationNameAlreadyDefinedInScope.ERROR_CODE);
   }
 
   @Test
@@ -129,8 +119,7 @@ class VarDeclarationNameAlreadyDefinedInScopeTest {
     checker.checkAll(astDecl);
 
     // Then
-    Log.getFindings().remove(MCAssertions.assertHasFindingStartingWith(VarDeclarationNameAlreadyDefinedInScope.ERROR_CODE));
-    MCAssertions.assertNoFindings();
+    MCAssertions.assertHasFindingStartingWith(VarDeclarationNameAlreadyDefinedInScope.ERROR_CODE);
   }
 
   @Test
@@ -148,8 +137,5 @@ class VarDeclarationNameAlreadyDefinedInScopeTest {
 
     // When
     checker.checkAll(astDecl);
-
-    // Then
-    MCAssertions.assertNoFindings();
   }
 }
