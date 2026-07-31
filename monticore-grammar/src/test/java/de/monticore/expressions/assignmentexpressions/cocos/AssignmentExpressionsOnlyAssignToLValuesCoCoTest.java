@@ -24,6 +24,9 @@ public class AssignmentExpressionsOnlyAssignToLValuesCoCoTest {
 
   @BeforeEach
   public void before() {
+    // this test is (currently) not type dependent,
+    // as whether something is a lvalue can be derived from the ASTNode-type
+    // thus nothing type related needs to be initialized
     CombineExpressionsWithLiteralsTypeTraverserFactory.initTypeCheck3();
   }
 
