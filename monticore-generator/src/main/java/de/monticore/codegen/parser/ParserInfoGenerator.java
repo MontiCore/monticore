@@ -196,11 +196,10 @@ public class ParserInfoGenerator {
   private static Map<String, Set<Integer>> groupStatesByReferencedSymbol(Map<ASTNode, Set<Integer>> nonTerminalToParserStates) {
     Map<String, Set<Integer>> referencedSymbolToStates = new LinkedHashMap<>();
     nonTerminalToParserStates.forEach((astNode, states) -> {
-      if(!(astNode instanceof ASTNonTerminal)){
+      if(!(astNode instanceof ASTNonTerminal astNonTerminal)){
         return;
       }
-      ASTNonTerminal astNonTerminal = (ASTNonTerminal) astNode;
-
+      
       if(astNonTerminal.isPresentReferencedSymbol()) {
         String referencedSymbol = astNonTerminal.getReferencedSymbol();
         if (!referencedSymbolToStates.containsKey(referencedSymbol)) {

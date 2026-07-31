@@ -6,6 +6,7 @@ import com.google.common.collect.Sets;
 import de.monticore.grammar.grammar.GrammarMill;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
+import de.monticore.grammar.grammar._symboltable.ProdSymbolTOP;
 import de.se_rwth.commons.Names;
 
 import java.util.Collections;
@@ -51,10 +52,12 @@ public class DSTLGenInheritanceHelper {
     if (tfCommonsGrammarSymbol.isPresent()) {
       // modelPath appears to not contain TFCommons (e.g. when using the script tests)
       // Thus, we do not have the problem of potentially overlapping tokens (and instead are unable to run monticore on the generated TR grammar)
-      tfCommonsGrammarSymbol.get().getSpannedScope().getLocalProdSymbols().stream().filter(ps -> ps.isIsLexerProd()).forEach(ps -> tfCommonLexProds.add(ps.getName()));
+      tfCommonsGrammarSymbol.get().getSpannedScope().getLocalProdSymbols().stream().filter(
+          ProdSymbolTOP::isIsLexerProd).forEach(ps -> tfCommonLexProds.add(ps.getName()));
       tfCommonSuperFQNs.add(tfCommonsGrammarSymbol.get().getFullName());
       for (MCGrammarSymbol superGrammar : tfCommonsGrammarSymbol.get().getAllSuperGrammars()) {
-        superGrammar.getSpannedScope().getLocalProdSymbols().stream().filter(ps -> ps.isIsLexerProd()).forEach(ps -> tfCommonLexProds.add(ps.getName()));
+        superGrammar.getSpannedScope().getLocalProdSymbols().stream().filter(
+            ProdSymbolTOP::isIsLexerProd).forEach(ps -> tfCommonLexProds.add(ps.getName()));
         tfCommonSuperFQNs.add(superGrammar.getFullName());
       }
     }
@@ -69,7 +72,7 @@ public class DSTLGenInheritanceHelper {
       List<String> p = ast.getSupergrammarList().stream()
                                             .filter(s -> !isCommonSuperGrammar(s.getNameList()))
                                             .findFirst().get().getNameList();
-      return Names.getQualifiedName(p.subList(0,p.size()-1));
+      return Names.constructQualifiedName(p.subList(0,p.size()-1));
     }
     return "";
   }

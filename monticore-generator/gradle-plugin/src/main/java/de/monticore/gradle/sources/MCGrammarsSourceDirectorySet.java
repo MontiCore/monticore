@@ -17,7 +17,7 @@ public interface MCGrammarsSourceDirectorySet extends SourceDirectorySet {
   /**
    * Constant of where this SourceDirectorySet can be found (similar to java or ressources)
    */
-  final String GRAMMARS = "grammars";
+  String GRAMMARS = "grammars";
 
   static MCGrammarsSourceDirectorySet getGrammars(@Nonnull SourceSet sourceSet) {
     return sourceSet.getExtensions().getByType(MCGrammarsSourceDirectorySet.class);

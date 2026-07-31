@@ -7,6 +7,7 @@ import de.monticore.cd4codebasis._ast.ASTCDConstructor;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDAttributeTOP;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.AbstractTransformer;
@@ -69,7 +70,7 @@ public class DataDecorator extends AbstractTransformer<ASTCDClass> {
     List<ASTCDAttribute> ownAttributes = originalClass.getCDAttributeList()
             .stream()
             .filter(a -> !service.isInheritedAttribute(a))
-            .map(a -> a.deepClone())
+            .map(ASTCDAttributeTOP::deepClone)
             .collect(Collectors.toList());
 
     changedClass.addAllCDMembers(getAllDataMethods(originalClass, originalClass.getCDAttributeList()));

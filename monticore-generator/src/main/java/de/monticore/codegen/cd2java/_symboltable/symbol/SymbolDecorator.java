@@ -6,8 +6,10 @@ import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDConstructor;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cd4codebasis._ast.ASTCDMethodTOP;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
+import de.monticore.cdbasis._ast.ASTCDAttributeTOP;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
@@ -88,7 +90,7 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
     List<ASTCDAttribute> symbolRuleAttributes = symbolInput.getCDAttributeList()
             .stream()
             .filter(attr -> !symbolTableService.isInheritedAttribute(attr))
-            .map(a -> a.deepClone())
+            .map(ASTCDAttributeTOP::deepClone)
             .collect(Collectors.toList());
     symbolRuleAttributes.forEach(a -> getDecorationHelper().addAttributeDefaultValues(a, this.glex));
     List<ASTCDMethod> symbolRuleAttributeMethods = symbolRuleAttributes
@@ -97,7 +99,7 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
             .flatMap(List::stream)
             .collect(Collectors.toList());
     List<ASTCDMethod> symbolRuleMethods = symbolInput.getCDMethodList().stream()
-            .map(a -> a.deepClone())
+            .map(ASTCDMethodTOP::deepClone)
             .collect(Collectors.toList());
     for (ASTCDMethod meth: symbolRuleMethods) {
       if (symbolTableService.isMethodBodyPresent(meth)) {
@@ -268,7 +270,7 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
   }
 
   protected ASTCDAttribute createSpannedScopeAttribute() {
-    return getCDAttributeFacade().createAttribute(PROTECTED.build(), symbolTableService.getScopeInterfaceType(), String.format(SPANNED_SCOPE_VAR, ""));
+    return getCDAttributeFacade().createAttribute(PROTECTED.build(), symbolTableService.getScopeInterfaceType(), SPANNED_SCOPE_VAR);
   }
 
   protected List<ASTCDMethod> createSpannedScopeMethods(String scopeInterface) {

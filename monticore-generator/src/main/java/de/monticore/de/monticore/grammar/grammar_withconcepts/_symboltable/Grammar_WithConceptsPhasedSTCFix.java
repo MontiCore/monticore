@@ -14,7 +14,7 @@ import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConcep
 public class Grammar_WithConceptsPhasedSTCFix extends Grammar_WithConceptsPhasedSTC {
   public Grammar_WithConceptsPhasedSTCFix() {
     super();
-    this.priorityList.get(0).setAntlrHandler(new DoNotTCJavaCode());
+    this.priorityList.getFirst().setAntlrHandler(new DoNotTCJavaCode());
   }
 
 

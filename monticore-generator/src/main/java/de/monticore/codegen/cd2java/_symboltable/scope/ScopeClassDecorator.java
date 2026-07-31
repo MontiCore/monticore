@@ -7,6 +7,7 @@ import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDConstructor;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cd4codebasis._ast.ASTCDMethodTOP;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
@@ -93,7 +94,7 @@ public class ScopeClassDecorator extends AbstractDecorator {
             .stream()
             .map(ASTCDClass::getCDAttributeList)
             .flatMap(List::stream)
-            .map(a -> a.deepClone())
+            .map(ASTCDAttributeTOP::deepClone)
             .collect(Collectors.toList());
     scopeRuleAttributeList
         .forEach(a -> getDecorationHelper().addAttributeDefaultValues(a, this.glex));
@@ -103,7 +104,7 @@ public class ScopeClassDecorator extends AbstractDecorator {
             .stream()
             .map(ASTCDClass::getCDMethodList)
             .flatMap(List::stream)
-            .map(a -> a.deepClone())
+            .map(ASTCDMethodTOP::deepClone)
             .collect(Collectors.toList());
     for (ASTCDMethod meth: scopeRuleMethodList) {
       if (symbolTableService.isMethodBodyPresent(meth)) {
@@ -157,7 +158,7 @@ public class ScopeClassDecorator extends AbstractDecorator {
             .stream()
             .filter(ASTCDClass::isPresentCDExtendUsage)
             .findFirst()
-            .map(c -> c.deepClone());
+            .map(ASTCDClassTOP::deepClone);
 
     List<ASTCDMethod> resolveSubKindsMethods = createResolveSubKindsNameMethods(symbolInput.getCDDefinition());
 
@@ -191,9 +192,8 @@ public class ScopeClassDecorator extends AbstractDecorator {
         .addAllCDMembers(createSubScopeMethods(scopeInterfaceType))
         .addAllCDMembers(createSuperScopeMethods(symbolTableService.getScopeInterfaceFullName()))
         .addAllCDMembers(resolveSubKindsMethods);
-    if (scopeRuleSuperClass.isPresent()) {
-      builder.setCDExtendUsage(scopeRuleSuperClass.get().getCDExtendUsage().deepClone());
-    }
+    scopeRuleSuperClass.ifPresent(
+        astcdClass -> builder.setCDExtendUsage(astcdClass.getCDExtendUsage().deepClone()));
     ASTCDClass clazz = builder.build();
 
     clazz.addCDMember(createAcceptTraverserMethod(clazz));
@@ -426,7 +426,7 @@ public class ScopeClassDecorator extends AbstractDecorator {
     mutatorDecorator.enableTemplates();
     // only one setter, because the attribute is mandatory
     if (mutatorMethods.size() == 1) {
-      this.replaceTemplate(EMPTY_BODY, mutatorMethods.get(0),
+      this.replaceTemplate(EMPTY_BODY, mutatorMethods.getFirst(),
           new TemplateHookPoint(TEMPLATE_PATH + "SetEnclosingScope"));
     }
     enclosingScopeMethods.addAll(mutatorMethods);

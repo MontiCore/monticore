@@ -84,8 +84,7 @@ public class InheritedAttributesTranslation implements
   protected Map<ASTProd, List<ASTRuleComponent>> getInheritedRuleComponents(ASTProd sourceNode) {
     return TransformationHelper.getAllSuperProds(sourceNode).stream()
             .distinct()
-            .collect(Collectors.toMap(Function.identity(),
-                    astProd -> TransformationHelper.getAllComponents(astProd)));
+            .collect(Collectors.toMap(Function.identity(), TransformationHelper::getAllComponents));
   }
 
 
@@ -160,7 +159,7 @@ public class InheritedAttributesTranslation implements
     List<ASTInterfaceProd> directInterfaces = TransformationHelper.getDirectSuperProds(astNode).stream()
             .filter(ASTInterfaceProd.class::isInstance)
             .map(ASTInterfaceProd.class::cast)
-            .collect(Collectors.toList());
+            .toList();
     List<ASTInterfaceProd> allSuperRules = new ArrayList<>();
     for (ASTInterfaceProd superInterface : directInterfaces) {
       allSuperRules.addAll(getAllInterfacesWithoutImplementation(superInterface));

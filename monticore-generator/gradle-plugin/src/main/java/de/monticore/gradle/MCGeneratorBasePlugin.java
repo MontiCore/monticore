@@ -49,9 +49,7 @@ public abstract class MCGeneratorBasePlugin implements Plugin<Project> {
     });
 
     // writeMCBuildInfo should always be performed before processing resources...
-    project.getTasks().withType(ProcessResources.class).configureEach(t -> {
-      t.dependsOn(writeMCBuildInfo);
-    });
+    project.getTasks().withType(ProcessResources.class).configureEach(t -> t.dependsOn(writeMCBuildInfo));
 
     // ... or before generating grammars
     project.getTasks().withType(MCGenTask.class).configureEach(t -> {

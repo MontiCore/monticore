@@ -2,7 +2,6 @@
 package de.monticore.codegen.cd2java._ast_emf.enums;
 
 import de.monticore.cd4code.CD4CodeMill;
-import de.monticore.cd4codebasis.CD4CodeBasisMill;
 import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd.facade.CDModifier;

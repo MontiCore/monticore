@@ -69,19 +69,19 @@ public class MCGrammarInfo {
   public MCGrammarInfo(MCGrammarSymbol grammarSymbol) {
     this.grammarSymbol = grammarSymbol;
     findAllKeywords();
-    grammarSymbol.getTokenRulesWithInherited().forEach(t -> addSplitRule(t));
-    grammarSymbol.getKeywordRulesWithInherited().forEach(k -> keywordRules.add(k));
+    grammarSymbol.getTokenRulesWithInherited().forEach(this::addSplitRule);
+    keywordRules.addAll(grammarSymbol.getKeywordRulesWithInherited());
 
     addSubRules();
     addHWAntlrCode();
   }
 
   protected void addSplitRule(String s) {
-    String name = "";
+    StringBuilder name = new StringBuilder();
     for (char c:s.toCharArray()) {
-      name += getLexNamer().getConstantName(String.valueOf(c));
+      name.append(getLexNamer().getOrComputeConstantName(String.valueOf(c)));
     }
-    splitRules.put(s, name.toLowerCase());
+    splitRules.put(s, name.toString().toLowerCase());
   }
 
   public Map<String, String> getSplitRules() {
@@ -101,7 +101,7 @@ public class MCGrammarInfo {
    */
   protected void addSubRules() {
     Set<MCGrammarSymbol> grammarsToHandle = Sets
-        .newLinkedHashSet(Arrays.asList(grammarSymbol));
+        .newLinkedHashSet(Collections.singletonList(grammarSymbol));
     grammarsToHandle.addAll(MCGrammarSymbolTableHelper.getAllSuperGrammars(grammarSymbol));
     for (MCGrammarSymbol grammar : grammarsToHandle) {
       LinkedHashMap<String, List<ASTRuleReference>> ruleMap = Maps.newLinkedHashMap();
@@ -184,7 +184,7 @@ public class MCGrammarInfo {
   protected void addHWAntlrCode() {
     // Get Antlr hwc
     Set<MCGrammarSymbol> grammarsToHandle = Sets
-        .newLinkedHashSet(Arrays.asList(grammarSymbol));
+        .newLinkedHashSet(Collections.singletonList(grammarSymbol));
     grammarsToHandle.addAll(MCGrammarSymbolTableHelper.getAllSuperGrammars(grammarSymbol));
     for (MCGrammarSymbol grammar : grammarsToHandle) {
       if (grammar.isPresentAstNode()) {
@@ -261,8 +261,7 @@ public class MCGrammarInfo {
   protected void findAllKeywords() {
     for (ProdSymbol ruleSymbol : grammarSymbol.getProdsWithInherited().values()) {
       if (ruleSymbol.isParserProd()) {
-        if (ruleSymbol.isPresentAstNode() && ruleSymbol.getAstNode() instanceof ASTClassProd) {
-          ASTClassProd astProd = (ASTClassProd) ruleSymbol.getAstNode();
+        if (ruleSymbol.isPresentAstNode() && ruleSymbol.getAstNode() instanceof ASTClassProd astProd) {
           if (astProd.getAltList().isEmpty()) {
             // if a rule has been overwritten and is empty, consider the superclass
             for (MCGrammarSymbolSurrogate g : grammarSymbol.getSuperGrammars()) {
