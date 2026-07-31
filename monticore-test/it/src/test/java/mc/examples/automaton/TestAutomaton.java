@@ -6,14 +6,12 @@ import de.monticore.generating.templateengine.reporting.commons.ASTNodeIdentHelp
 import de.monticore.generating.templateengine.reporting.commons.ReportingRepository;
 import de.monticore.prettyprint.IndentPrinter;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import mc.GeneratorIntegrationsTest;
 import mc.examples.automaton.automaton.AutomatonMill;
 import mc.examples.automaton.automaton._ast.ASTAutomaton;
 import mc.examples.automaton.automaton._od.Automaton2OD;
 import mc.examples.automaton.automaton._parser.AutomatonParser;
 import mc.examples.automaton.automaton._visitor.AutomatonTraverser;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -27,13 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TestAutomaton extends GeneratorIntegrationsTest {
-
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-
+  
   private ASTAutomaton parse() throws IOException {
     AutomatonParser parser = new AutomatonParser();
     Optional<ASTAutomaton> optAutomaton;
@@ -54,7 +46,7 @@ public class TestAutomaton extends GeneratorIntegrationsTest {
     traverser.add4Automaton(odCreator);
     traverser.setAutomatonHandler(odCreator);
     odCreator.printObjectDiagram(symbolName, ast);
-    assertTrue(printer.getContent().length()>0);
+    assertFalse(printer.getContent().isEmpty());
     assertTrue(readFile("src/test/resources/examples/automaton/Output.od", StandardCharsets.UTF_8).endsWith(printer.getContent()));
   }
 

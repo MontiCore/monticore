@@ -1,8 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.feature.hwc;
 
-import java.io.IOException;
-
 import de.se_rwth.commons.logging.LogStub;
 import org.antlr.v4.runtime.RecognitionException;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,26 +24,26 @@ public class BuildersTest {
   }
   
   @BeforeEach
-  public void setUp() throws RecognitionException, IOException {
+  public void setUp() throws RecognitionException {
     Log.getFindings().clear();
   }
   
   @Test
-  public void testMyTransitionBuilder() throws IOException {
+  public void testMyTransitionBuilder() {
     ASTTransition transition = StatechartDSLMill.transitionBuilder().setFrom("setByGenBuilder").setFrom("xxxx").setTo("setByGenBuilder").build();
     assertEquals("xxxxSuf2", transition.getFrom());
     assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
-  public void testHWCClassGeneratedBuilder() throws IOException {
+  public void testHWCClassGeneratedBuilder() {
     ASTStatechart aut = StatechartDSLMill.statechartBuilder().setName("setByGeneratedBuilder").build();
     assertEquals("setByGeneratedBuilder", aut.getName());
     assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
-  public void testHWCClassHWCBuilder() throws IOException {
+  public void testHWCClassHWCBuilder() {
     ASTState state = StatechartDSLMill.stateBuilder().setName("x2").setFinal(true).setName("state1").build();
     assertEquals("state1Suf1", state.getName());
     assertTrue(Log.getFindings().isEmpty());

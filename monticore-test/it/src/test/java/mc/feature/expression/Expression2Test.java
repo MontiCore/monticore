@@ -2,12 +2,10 @@
 
 package mc.feature.expression;
 
-import de.se_rwth.commons.logging.LogStub;
 import mc.GeneratorIntegrationsTest;
 import mc.feature.expression.expression2._ast.*;
 import mc.feature.expression.expression2._parser.Expression2Parser;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -17,12 +15,6 @@ import java.util.Optional;
 import de.se_rwth.commons.logging.Log;
 
 public class Expression2Test extends GeneratorIntegrationsTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
   
   public Optional<ASTExpr> parse(String input) throws IOException {
     Expression2Parser parser = new Expression2Parser();
@@ -36,7 +28,7 @@ public class Expression2Test extends GeneratorIntegrationsTest {
       Optional<ASTExpr> res = parse("1+2");
       Assertions.assertTrue(res.isPresent());
       ASTExpr ast = res.get();
-      Assertions.assertTrue(ast instanceof ASTAddExpr);
+      Assertions.assertInstanceOf(ASTAddExpr.class, ast);
       Assertions.assertEquals(ASTConstantsExpression2.PLUS, ((ASTAddExpr) ast).getOp());
     } catch (Exception e) {
       Assertions.fail(e.getMessage());
@@ -50,7 +42,7 @@ public class Expression2Test extends GeneratorIntegrationsTest {
       Optional<ASTExpr> res = parse("1");
       Assertions.assertTrue(res.isPresent());
       ASTExpr ast = res.get();
-      Assertions.assertTrue(ast instanceof ASTPrimaryExpr);
+      Assertions.assertInstanceOf(ASTPrimaryExpr.class, ast);
       
       Assertions.assertEquals("1", ((ASTPrimaryExpr) ast).getNumericLiteral());
     } catch (Exception e) {
@@ -65,7 +57,7 @@ public class Expression2Test extends GeneratorIntegrationsTest {
       Optional<ASTExpr> res = parse("1*2");
       Assertions.assertTrue(res.isPresent());
       ASTExpr ast = res.get();
-      Assertions.assertTrue(ast instanceof ASTMultExpr);
+      Assertions.assertInstanceOf(ASTMultExpr.class, ast);
       
       Assertions.assertEquals(ASTConstantsExpression2.STAR, ((ASTMultExpr) ast).getOp());
     } catch (Exception e) {
@@ -80,7 +72,7 @@ public class Expression2Test extends GeneratorIntegrationsTest {
       Optional<ASTExpr> res = parse("(1*2)");
       Assertions.assertTrue(res.isPresent());
       ASTExpr ast = res.get();
-      Assertions.assertTrue(ast instanceof ASTBracketExpr);
+      Assertions.assertInstanceOf(ASTBracketExpr.class, ast);
     } catch (Exception e) {
       Assertions.fail(e.getMessage());
     }
@@ -93,7 +85,7 @@ public class Expression2Test extends GeneratorIntegrationsTest {
       Optional<ASTExpr> res = parse("1*2+3");
       Assertions.assertTrue(res.isPresent());
       ASTExpr ast = res.get();
-      Assertions.assertTrue(ast instanceof ASTAddExpr);
+      Assertions.assertInstanceOf(ASTAddExpr.class, ast);
       
       Assertions.assertEquals(ASTConstantsExpression2.PLUS, ((ASTAddExpr) ast).getOp());
     } catch (Exception e) {
@@ -108,7 +100,7 @@ public class Expression2Test extends GeneratorIntegrationsTest {
       Optional<ASTExpr> res = parse("1+2*3");
       Assertions.assertTrue(res.isPresent());
       ASTExpr ast = res.get();
-      Assertions.assertTrue(ast instanceof ASTAddExpr);
+      Assertions.assertInstanceOf(ASTAddExpr.class, ast);
       
       Assertions.assertEquals(ASTConstantsExpression2.PLUS, ((ASTAddExpr) ast).getOp());
     } catch (Exception e) {
@@ -123,7 +115,7 @@ public class Expression2Test extends GeneratorIntegrationsTest {
       Optional<ASTExpr> res = parse("1-2-3");
       Assertions.assertTrue(res.isPresent());
       ASTExpr ast = res.get();
-      Assertions.assertTrue(ast instanceof ASTAddExpr);
+      Assertions.assertInstanceOf(ASTAddExpr.class, ast);
       
       Assertions.assertEquals(ASTConstantsExpression2.MINUS, ((ASTAddExpr) ast).getOp());
     } catch (Exception e) {
@@ -137,7 +129,7 @@ public class Expression2Test extends GeneratorIntegrationsTest {
     try {
       Optional<ASTExpr> res = parse("2^3^4");
       Assertions.assertTrue(res.isPresent());
-      Assertions.assertTrue(res.get() instanceof ASTPowerExpr);
+      Assertions.assertInstanceOf(ASTPowerExpr.class, res.get());
     } catch (Exception e) {
       Assertions.fail(e.getMessage());
     }

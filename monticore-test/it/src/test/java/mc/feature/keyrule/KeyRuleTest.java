@@ -2,13 +2,10 @@
 
 package mc.feature.keyrule;
 
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import mc.GeneratorIntegrationsTest;
 import mc.feature.keyrule.keyrule._ast.ASTB;
 import mc.feature.keyrule.keyrule._ast.ASTJ;
 import mc.feature.keyrule.keyrule._parser.KeyRuleParser;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -17,12 +14,6 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class KeyRuleTest extends GeneratorIntegrationsTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
   
   @Test
   public void test() throws IOException {

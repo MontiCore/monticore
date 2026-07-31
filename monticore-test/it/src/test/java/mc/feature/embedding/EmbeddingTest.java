@@ -8,8 +8,6 @@ import java.io.StringReader;
 import java.util.Optional;
 
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import mc.GeneratorIntegrationsTest;
@@ -22,12 +20,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class EmbeddingTest extends GeneratorIntegrationsTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
   
   private ASTOuter createAST(String filename, Reader r) throws IOException {
     

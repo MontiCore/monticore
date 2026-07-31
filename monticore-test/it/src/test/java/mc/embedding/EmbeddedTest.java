@@ -3,7 +3,6 @@
 package mc.embedding;
 
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import mc.GeneratorIntegrationsTest;
 import mc.embedding.embedded.EmbeddedMill;
 import mc.embedding.embedded._symboltable.IEmbeddedGlobalScope;
@@ -12,19 +11,12 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.nio.file.Paths;
 
 public class EmbeddedTest extends GeneratorIntegrationsTest {
   
   @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-
-  @BeforeEach
-  public void setUp() throws IOException {
+  public void setUp() {
     EmbeddedMill.reset();
     EmbeddedMill.init();
   }

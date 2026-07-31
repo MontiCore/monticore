@@ -2,11 +2,9 @@
 
 package mc.feature.visitor.inheritance;
 
-import de.se_rwth.commons.logging.LogStub;
 import mc.feature.visitor.inheritance.a.AMill;
 import mc.feature.visitor.inheritance.b.BMill;
 import mc.feature.visitor.inheritance.c.CMill;
-import org.junit.jupiter.api.BeforeEach;
 
 import mc.GeneratorIntegrationsTest;
 import mc.feature.visitor.inheritance.c._visitor.CTraverser;
@@ -23,12 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * 
  */
 public class VisitorTest extends GeneratorIntegrationsTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
   
   @Test
   public void testSimple() {

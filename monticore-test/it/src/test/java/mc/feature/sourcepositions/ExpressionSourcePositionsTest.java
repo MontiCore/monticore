@@ -6,9 +6,6 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
 
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.BeforeEach;
-
 import mc.GeneratorIntegrationsTest;
 import mc.feature.expression.expression._ast.ASTExpr;
 import mc.feature.expression.expression._parser.ExpressionParser;
@@ -24,12 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * 
  */
 public class ExpressionSourcePositionsTest extends GeneratorIntegrationsTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
   
   @Test
   public void testExp() throws IOException {

@@ -7,7 +7,6 @@ import java.io.StringReader;
 import java.util.Optional;
 
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -42,46 +41,15 @@ import static org.junit.jupiter.api.Assertions.*;
 public class CoCoCheckerTest extends GeneratorIntegrationsTest {
   final StringBuilder checked = new StringBuilder();
   
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
+  final private AASTXCoCo cocoA = node -> checked.append("A");
   
-  final private AASTXCoCo cocoA = new AASTXCoCo() {
-    @Override
-    public void check(ASTX node) {
-      checked.append("A");
-    }
-  };
+  final private BASTXCoCo cocoB = node -> checked.append("B");
   
-  final private BASTXCoCo cocoB = new BASTXCoCo() {
-    @Override
-    public void check(mc.feature.cocochecker.b._ast.ASTX node) {
-      checked.append("B");
-    }
-  };
+  final private BASTYCoCo cocoY = node -> checked.append("Y");
   
-  final private BASTYCoCo cocoY = new BASTYCoCo() {
-    @Override
-    public void check(mc.feature.cocochecker.b._ast.ASTY node) {
-      checked.append("Y");
-    }
-  };
+  final private CASTXCoCo cocoC = node -> checked.append("C");
   
-  final private CASTXCoCo cocoC = new CASTXCoCo() {
-    @Override
-    public void check(mc.feature.cocochecker.c._ast.ASTX node) {
-      checked.append("C");
-    }
-  };
-  
-  final private CASTZCoCo cocoZ = new CASTZCoCo() {
-    @Override
-    public void check(mc.feature.cocochecker.c._ast.ASTZ node) {
-      checked.append("Z");
-    }
-  };
+  final private CASTZCoCo cocoZ = node -> checked.append("Z");
   
   // the ast used for testing.
   private ASTANode ast;

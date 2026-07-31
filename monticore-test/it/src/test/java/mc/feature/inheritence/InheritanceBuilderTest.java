@@ -2,7 +2,6 @@
 package mc.feature.inheritence;
 
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import mc.GeneratorIntegrationsTest;
 import mc.feature.inheritence.sup.sub.subgrammar.SubGrammarMill;
 import mc.feature.inheritence.sup.sub.subgrammar._ast.ASTBBuilder;
@@ -10,16 +9,9 @@ import mc.feature.inheritence.sup.sub.subgrammar._ast.ASTD;
 import mc.feature.inheritence.sup.supergrammar.SuperGrammarMill;
 import mc.feature.inheritence.sup.supergrammar._ast.*;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class InheritanceBuilderTest extends GeneratorIntegrationsTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
   
   @Test
   public void testBuildX() {

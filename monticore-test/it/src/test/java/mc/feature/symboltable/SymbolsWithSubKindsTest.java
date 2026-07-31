@@ -43,7 +43,7 @@ public class SymbolsWithSubKindsTest extends GeneratorIntegrationsTest {
                 .scopesGenitorDelegator().createFromAST(astSup.get());
 
         Assertions.assertSame(1, scope.getSubScopes().size());
-        ISymbolsWithSubKindsScope spannedScope =  scope.getSubScopes().get(0);
+        ISymbolsWithSubKindsScope spannedScope =  scope.getSubScopes().getFirst();
         Assertions.assertInstanceOf(SymbolsWithSubKindsScope.class , spannedScope);
 
         // check if the methods return the correct number of symbols
@@ -58,15 +58,15 @@ public class SymbolsWithSubKindsTest extends GeneratorIntegrationsTest {
         Assertions.assertSame(1, spannedScope.getMotorcycleSymbolsWithSubKinds().size());
         Assertions.assertSame(8, spannedScope.getVehicleSymbolsWithSubKinds().size());
 
-        Assertions.assertEquals("carFordName",      spannedScope.getFordSymbolsWithSubKinds().values().get(0).getName());
-        Assertions.assertEquals("carVolvoName",     spannedScope.getVolvoSymbolsWithSubKinds().values().get(0).getName());
+        Assertions.assertEquals("carFordName",      spannedScope.getFordSymbolsWithSubKinds().values().getFirst().getName());
+        Assertions.assertEquals("carVolvoName",     spannedScope.getVolvoSymbolsWithSubKinds().values().getFirst().getName());
 
         Assertions.assertEquals("carFordName",      spannedScope.getTruckSymbolsWithSubKinds().values().stream().filter(m -> m.getClass().equals(FordSymbol.class)).findAny().get().getName());
         Assertions.assertEquals("carVolvoName",     spannedScope.getTruckSymbolsWithSubKinds().values().stream().filter(m -> m.getClass().equals(VolvoSymbol.class)).findAny().get().getName());
         Assertions.assertEquals("carTruckName",     spannedScope.getTruckSymbolsWithSubKinds().values().stream().filter(m -> m.getClass().equals(TruckSymbol.class)).findAny().get().getName());
 
-        Assertions.assertEquals("carMazdaName",     spannedScope.getMazdaSymbolsWithSubKinds().values().get(0).getName());
-        Assertions.assertEquals("carBeatleName",    spannedScope.getBeatleSymbolsWithSubKinds().values().get(0).getName());
+        Assertions.assertEquals("carMazdaName",     spannedScope.getMazdaSymbolsWithSubKinds().values().getFirst().getName());
+        Assertions.assertEquals("carBeatleName",    spannedScope.getBeatleSymbolsWithSubKinds().values().getFirst().getName());
 
         Assertions.assertEquals("carMazdaName",     spannedScope.getCabrioletSymbolsWithSubKinds().values().stream().filter(m -> m.getClass().equals(MazdaSymbol.class)).findAny().get().getName());
         Assertions.assertEquals("carBeatleName",    spannedScope.getCabrioletSymbolsWithSubKinds().values().stream().filter(m -> m.getClass().equals(BeatleSymbol.class)).findAny().get().getName());
@@ -80,9 +80,9 @@ public class SymbolsWithSubKindsTest extends GeneratorIntegrationsTest {
         Assertions.assertEquals("carCabrioletName", spannedScope.getCarSymbolsWithSubKinds().values().stream().filter(m -> m.getClass().equals(CabrioletSymbol.class)).findAny().get().getName());
         Assertions.assertEquals("carCarName",       spannedScope.getCarSymbolsWithSubKinds().values().stream().filter(m -> m.getClass().equals(CarSymbol.class)).findAny().get().getName());
 
-        Assertions.assertEquals("motorcycleName",   spannedScope.getMotorcycleSymbolsWithSubKinds().values().get(0).getName());;
-
-        Assertions.assertEquals("carFordName",      spannedScope.getVehicleSymbolsWithSubKinds().values().stream().filter(m -> m.getClass().equals(FordSymbol.class)).findAny().get().getName());
+        Assertions.assertEquals("motorcycleName",   spannedScope.getMotorcycleSymbolsWithSubKinds().values().getFirst().getName());
+      
+      Assertions.assertEquals("carFordName",      spannedScope.getVehicleSymbolsWithSubKinds().values().stream().filter(m -> m.getClass().equals(FordSymbol.class)).findAny().get().getName());
         Assertions.assertEquals("carVolvoName",     spannedScope.getVehicleSymbolsWithSubKinds().values().stream().filter(m -> m.getClass().equals(VolvoSymbol.class)).findAny().get().getName());
         Assertions.assertEquals("carTruckName",     spannedScope.getVehicleSymbolsWithSubKinds().values().stream().filter(m -> m.getClass().equals(TruckSymbol.class)).findAny().get().getName());
         Assertions.assertEquals("carMazdaName",     spannedScope.getVehicleSymbolsWithSubKinds().values().stream().filter(m -> m.getClass().equals(MazdaSymbol.class)).findAny().get().getName());

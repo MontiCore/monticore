@@ -6,8 +6,6 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
 
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import mc.GeneratorIntegrationsTest;
@@ -18,12 +16,6 @@ import de.se_rwth.commons.logging.Log;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MultipleOptionTest extends GeneratorIntegrationsTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
   
   @Test
   public void test() throws IOException {

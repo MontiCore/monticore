@@ -12,13 +12,12 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.nio.file.Paths;
 
 public class TransHostTest extends GeneratorIntegrationsTest {
   
   @BeforeEach
-  public void setUp() throws IOException {
+  public void setUp() {
     TransHostMill.reset();
     TransHostMill.init();
     LogStub.init();

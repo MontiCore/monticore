@@ -2,12 +2,9 @@
 
 package mc.feature.replacekeyword;
 
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import mc.GeneratorIntegrationsTest;
 import mc.feature.replacerule.replacerule2.ReplaceRule2Mill;
 import mc.feature.replacerule.replacerule2._parser.ReplaceRule2Parser;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -16,12 +13,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ReplaceRuleTest extends GeneratorIntegrationsTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
   
   @Test
   public void test() throws IOException {

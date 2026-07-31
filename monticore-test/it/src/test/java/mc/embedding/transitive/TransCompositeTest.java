@@ -18,13 +18,12 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.nio.file.Paths;
 
 public class TransCompositeTest extends GeneratorIntegrationsTest {
   
   @BeforeEach
-  public void setUp() throws IOException {
+  public void setUp() {
     TransCompositeMill.reset();
     TransCompositeMill.init();
     LogStub.init();
@@ -42,19 +41,19 @@ public class TransCompositeTest extends GeneratorIntegrationsTest {
     Assertions.assertEquals("TransComposite", transHostSymbol.getName());
 
     // Symbol of the embedded language
-    Assertions.assertTrue(transHostSymbol.getSpannedScope() instanceof IHostScope);
+    Assertions.assertInstanceOf(IHostScope.class, transHostSymbol.getSpannedScope());
     final HostSymbol hostSymbol = ((IHostScope)transHostSymbol.getSpannedScope()).resolveHost("TransHost").orElse(null);
     Assertions.assertNotNull(hostSymbol);
 
     // Symbol of the transitive embedded language
-    Assertions.assertTrue(hostSymbol.getSpannedScope() instanceof IEmbeddedScope);
+    Assertions.assertInstanceOf(IEmbeddedScope.class, hostSymbol.getSpannedScope());
     final TextSymbol textSymbol = ((IEmbeddedScope)hostSymbol.getSpannedScope()).resolveText("Hello").orElse(null);
     Assertions.assertNotNull(textSymbol);
 
     // transitive adapted text symbol -> content symbol
     final ContentSymbol text2ContentSymbol = hostSymbol.getSpannedScope().resolveContent("Hello").orElse(null);
     Assertions.assertNotNull(text2ContentSymbol);
-    Assertions.assertTrue(text2ContentSymbol instanceof Text2ContentAdapter);
+    Assertions.assertInstanceOf(Text2ContentAdapter.class, text2ContentSymbol);
   
     Assertions.assertTrue(Log.getFindings().isEmpty());
   }

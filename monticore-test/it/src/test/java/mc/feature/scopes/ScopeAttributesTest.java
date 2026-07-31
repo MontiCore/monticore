@@ -55,7 +55,7 @@ public class ScopeAttributesTest {
   @Test
   public void testScopeShadowing() {
     Assertions.assertEquals(1, startProd.getAList().size());
-    IScopeAttributesScope scopeShadowed = startProd.getAList().get(0).getSpannedScope();
+    IScopeAttributesScope scopeShadowed = startProd.getAList().getFirst().getSpannedScope();
     Assertions.assertTrue(scopeShadowed.isShadowing());
     Assertions.assertFalse(scopeShadowed.isOrdered());
     Assertions.assertTrue(scopeShadowed.isExportingSymbols());
@@ -65,7 +65,7 @@ public class ScopeAttributesTest {
   @Test
   public void testScopeNonExporting() {
     Assertions.assertEquals(1, startProd.getBList().size());
-    IScopeAttributesScope scopeShadowed = startProd.getBList().get(0).getSpannedScope();
+    IScopeAttributesScope scopeShadowed = startProd.getBList().getFirst().getSpannedScope();
     Assertions.assertFalse(scopeShadowed.isShadowing());
     Assertions.assertFalse(scopeShadowed.isOrdered());
     Assertions.assertFalse(scopeShadowed.isExportingSymbols());
@@ -75,7 +75,7 @@ public class ScopeAttributesTest {
   @Test
   public void testScopeOrdered() {
     Assertions.assertEquals(1, startProd.getCList().size());
-    IScopeAttributesScope scopeShadowed = startProd.getCList().get(0).getSpannedScope();
+    IScopeAttributesScope scopeShadowed = startProd.getCList().getFirst().getSpannedScope();
     Assertions.assertFalse(scopeShadowed.isShadowing());
     Assertions.assertTrue(scopeShadowed.isOrdered());
     Assertions.assertTrue(scopeShadowed.isExportingSymbols());
@@ -88,7 +88,7 @@ public class ScopeAttributesTest {
   @Test
   public void testScopeSpanningSymbolShadowing() {
     Assertions.assertEquals(1, startProd.getDList().size());
-    IScopeAttributesScope scopeShadowed = startProd.getDList().get(0).getSpannedScope();
+    IScopeAttributesScope scopeShadowed = startProd.getDList().getFirst().getSpannedScope();
     Assertions.assertTrue(scopeShadowed.isShadowing());
     Assertions.assertFalse(scopeShadowed.isOrdered());
     Assertions.assertTrue(scopeShadowed.isExportingSymbols());
@@ -98,7 +98,7 @@ public class ScopeAttributesTest {
   @Test
   public void testScopeSpanningSymbolNonExporting() {
     Assertions.assertEquals(1, startProd.getEList().size());
-    IScopeAttributesScope scopeShadowed = startProd.getEList().get(0).getSpannedScope();
+    IScopeAttributesScope scopeShadowed = startProd.getEList().getFirst().getSpannedScope();
     Assertions.assertFalse(scopeShadowed.isShadowing());
     Assertions.assertFalse(scopeShadowed.isOrdered());
     Assertions.assertFalse(scopeShadowed.isExportingSymbols());
@@ -108,7 +108,7 @@ public class ScopeAttributesTest {
   @Test
   public void testScopeSpanningSymbolOrdered() {
     Assertions.assertEquals(1, startProd.getFList().size());
-    IScopeAttributesScope scopeShadowed = startProd.getFList().get(0).getSpannedScope();
+    IScopeAttributesScope scopeShadowed = startProd.getFList().getFirst().getSpannedScope();
     Assertions.assertFalse(scopeShadowed.isShadowing());
     Assertions.assertTrue(scopeShadowed.isOrdered());
     Assertions.assertTrue(scopeShadowed.isExportingSymbols());

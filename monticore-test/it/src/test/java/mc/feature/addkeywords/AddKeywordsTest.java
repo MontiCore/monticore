@@ -7,8 +7,6 @@ import java.io.StringReader;
 import java.util.Optional;
 
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import mc.GeneratorIntegrationsTest;
@@ -19,12 +17,6 @@ import mc.feature.addkeywords.addkeywords._parser.AddKeywordsParser;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class AddKeywordsTest extends GeneratorIntegrationsTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
   
   @Test
   public void testB() throws IOException {

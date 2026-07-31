@@ -5,8 +5,6 @@ package mc.grammar;
 import java.io.IOException;
 import java.util.Optional;
 
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import mc.GeneratorIntegrationsTest;
@@ -17,12 +15,6 @@ import de.se_rwth.commons.logging.Log;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MCParserTest extends GeneratorIntegrationsTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
   
   @Test
   public void test1() throws IOException {

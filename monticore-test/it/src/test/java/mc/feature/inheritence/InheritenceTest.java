@@ -7,8 +7,6 @@ import java.io.StringReader;
 import java.util.Optional;
 
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import mc.GeneratorIntegrationsTest;
@@ -30,12 +28,6 @@ import mc.feature.inheritence.inheritence._parser.InheritenceParser;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class InheritenceTest extends GeneratorIntegrationsTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
   
   // // Test1 : IG should parse all "a", "b", and "c"
   // A(IF) = "a" ;

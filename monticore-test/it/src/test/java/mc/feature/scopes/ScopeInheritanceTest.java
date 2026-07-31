@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.Optional;
 import com.google.common.base.Preconditions;
 
@@ -53,7 +52,7 @@ public class ScopeInheritanceTest {
     @Test
     public void testScopeInheritanceA() {
         Assertions.assertEquals(2, startProd.getAList().size());
-        IScopeInheritanceScope scopeShadowingNonExportingOrdered = startProd.getAList().get(0).getSpannedScope();
+        IScopeInheritanceScope scopeShadowingNonExportingOrdered = startProd.getAList().getFirst().getSpannedScope();
         Preconditions.checkNotNull(scopeShadowingNonExportingOrdered);
         Assertions.assertFalse(scopeShadowingNonExportingOrdered.isExportingSymbols());
         Assertions.assertTrue(scopeShadowingNonExportingOrdered.isShadowing());
@@ -71,7 +70,7 @@ public class ScopeInheritanceTest {
     @Test
     public void testScopeInheritanceB() {
         Assertions.assertEquals(1, startProd.getBList().size());
-        IScopeInheritanceScope scopeShadowingNonExporting = startProd.getBList().get(0).getSpannedScope();
+        IScopeInheritanceScope scopeShadowingNonExporting = startProd.getBList().getFirst().getSpannedScope();
         Preconditions.checkNotNull(scopeShadowingNonExporting);
         Assertions.assertFalse(scopeShadowingNonExporting.isExportingSymbols());
         Assertions.assertTrue(scopeShadowingNonExporting.isShadowing());
@@ -82,7 +81,7 @@ public class ScopeInheritanceTest {
     @Test
     public void testScopeInheritanceC() {
         Assertions.assertEquals(1, startProd.getCList().size());
-        IScopeInheritanceScope scopeShadowingOrdered = startProd.getCList().get(0).getSpannedScope();
+        IScopeInheritanceScope scopeShadowingOrdered = startProd.getCList().getFirst().getSpannedScope();
         Preconditions.checkNotNull(scopeShadowingOrdered);
         Assertions.assertTrue(scopeShadowingOrdered.isExportingSymbols());
         Assertions.assertTrue(scopeShadowingOrdered.isShadowing());
@@ -93,7 +92,7 @@ public class ScopeInheritanceTest {
     @Test
     public void testScopeInheritanceD() {
         Assertions.assertEquals(1, startProd.getDList().size());
-        IScopeInheritanceScope scopeNonExportingOrdered = startProd.getDList().get(0).getSpannedScope();
+        IScopeInheritanceScope scopeNonExportingOrdered = startProd.getDList().getFirst().getSpannedScope();
         Preconditions.checkNotNull(scopeNonExportingOrdered);
         Assertions.assertFalse(scopeNonExportingOrdered.isExportingSymbols());
         Assertions.assertFalse(scopeNonExportingOrdered.isShadowing());
@@ -104,7 +103,7 @@ public class ScopeInheritanceTest {
     @Test
     public void testScopeInheritanceE() {
         Assertions.assertEquals(1, startProd.getEList().size());
-        IScopeInheritanceScope scopeShadowing = startProd.getEList().get(0).getSpannedScope();
+        IScopeInheritanceScope scopeShadowing = startProd.getEList().getFirst().getSpannedScope();
         Preconditions.checkNotNull(scopeShadowing);
         Assertions.assertTrue(scopeShadowing.isExportingSymbols());
         Assertions.assertTrue(scopeShadowing.isShadowing());
@@ -115,7 +114,7 @@ public class ScopeInheritanceTest {
     @Test
     public void testScopeInheritanceF() {
         Assertions.assertEquals(1, startProd.getFList().size());
-        IScopeInheritanceScope scopeNonExporting = startProd.getFList().get(0).getSpannedScope();
+        IScopeInheritanceScope scopeNonExporting = startProd.getFList().getFirst().getSpannedScope();
         Preconditions.checkNotNull(scopeNonExporting);
         Assertions.assertFalse(scopeNonExporting.isExportingSymbols());
         Assertions.assertFalse(scopeNonExporting.isShadowing());
@@ -126,7 +125,7 @@ public class ScopeInheritanceTest {
     @Test
     public void testScopeInheritanceG() {
         Assertions.assertEquals(1, startProd.getGList().size());
-        IScopeInheritanceScope scopeOrdered = startProd.getGList().get(0).getSpannedScope();
+        IScopeInheritanceScope scopeOrdered = startProd.getGList().getFirst().getSpannedScope();
         Preconditions.checkNotNull(scopeOrdered);
         Assertions.assertTrue(scopeOrdered.isExportingSymbols());
         Assertions.assertFalse(scopeOrdered.isShadowing());
@@ -137,7 +136,7 @@ public class ScopeInheritanceTest {
     @Test
     public void testScopeInheritanceH() {
         Assertions.assertEquals(1, startProd.getHList().size());
-        IScopeInheritanceScope scopeDefault = startProd.getHList().get(0).getSpannedScope();
+        IScopeInheritanceScope scopeDefault = startProd.getHList().getFirst().getSpannedScope();
         Preconditions.checkNotNull(scopeDefault);
         Assertions.assertTrue(scopeDefault.isExportingSymbols());
         Assertions.assertFalse(scopeDefault.isShadowing());

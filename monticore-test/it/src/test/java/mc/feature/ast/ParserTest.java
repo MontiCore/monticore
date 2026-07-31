@@ -10,9 +10,6 @@ import java.util.List;
 import java.util.Optional;
 
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import mc.GeneratorIntegrationsTest;
@@ -30,12 +27,6 @@ import mc.feature.featuredsl._parser.FeatureDSLParser;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ParserTest extends GeneratorIntegrationsTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
   
   @Test
   public void testConstants() throws IOException {

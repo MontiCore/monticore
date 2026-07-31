@@ -6,9 +6,6 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
 
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.BeforeEach;
-
 import de.se_rwth.commons.logging.Log;
 import mc.GeneratorIntegrationsTest;
 import mc.feature.visitor.sub.SubMill;
@@ -22,12 +19,6 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class VisitorTest extends GeneratorIntegrationsTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
   
   @Test
   public void testConcreteVisitor() throws IOException {

@@ -3,7 +3,6 @@
 package mc.embedding;
 
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import mc.GeneratorIntegrationsTest;
 import mc.embedding.composite.CompositeMill;
 import mc.embedding.composite._symboltable.ICompositeGlobalScope;
@@ -16,19 +15,12 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.nio.file.Paths;
 
 public class CompositeTest extends GeneratorIntegrationsTest {
   
   @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-
-  @BeforeEach
-  public void setUp() throws IOException {
+  public void setUp() {
     CompositeMill.reset();
     CompositeMill.init();
    }
@@ -44,14 +36,14 @@ public class CompositeTest extends GeneratorIntegrationsTest {
     Assertions.assertEquals("ZComposite", hostSymbol.getName());
 
     // Symbol of the embedded language
-    Assertions.assertTrue(hostSymbol.getSpannedScope() instanceof ICompositeScope);
+    Assertions.assertInstanceOf(ICompositeScope.class, hostSymbol.getSpannedScope());
         final TextSymbol textSymbol = ((ICompositeScope)hostSymbol.getSpannedScope()).resolveText("Hello").orElse(null);
     Assertions.assertNotNull(textSymbol);
 
     // Adapted text symbol -> content symbol
     final ContentSymbol text2ContentSymbol = hostSymbol.getSpannedScope().resolveContent("Hello").orElse(null);
     Assertions.assertNotNull(text2ContentSymbol);
-    Assertions.assertTrue(text2ContentSymbol instanceof Text2ContentAdapter);
+    Assertions.assertInstanceOf(Text2ContentAdapter.class, text2ContentSymbol);
   
   
     Assertions.assertTrue(Log.getFindings().isEmpty());

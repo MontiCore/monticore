@@ -6,8 +6,6 @@ import java.io.IOException;
 import java.io.StringReader;
 
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import mc.GeneratorIntegrationsTest;
@@ -17,20 +15,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class EmbedTest extends GeneratorIntegrationsTest {
   
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
-  
   @Test
   public void test() throws IOException {
     
     EmbeddedParser parser = new EmbeddedParser();
     parser.parseStart(new StringReader("a a a"));
     
-    assertEquals(false, parser.hasErrors());
+    assertFalse(parser.hasErrors());
     assertTrue(Log.getFindings().isEmpty());
   }
   

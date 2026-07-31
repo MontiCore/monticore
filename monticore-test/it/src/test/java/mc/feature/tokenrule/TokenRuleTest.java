@@ -2,27 +2,17 @@
 
 package mc.feature.tokenrule;
 
-import de.se_rwth.commons.logging.LogStub;
 import mc.GeneratorIntegrationsTest;
 import mc.feature.tokenrule.tokenrule._ast.ASTC;
 import mc.feature.tokenrule.tokenrule._ast.ASTG;
 import mc.feature.tokenrule.tokenrule._parser.TokenRuleParser;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
 
-import de.se_rwth.commons.logging.Log;
-
 public class TokenRuleTest extends GeneratorIntegrationsTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
   
   @Test
   public void test() throws IOException {

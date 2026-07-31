@@ -12,13 +12,12 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.nio.file.Paths;
 
 public class EmbeddedTest extends GeneratorIntegrationsTest {
   
   @BeforeEach
-  public void setUp() throws IOException {
+  public void setUp() {
     EmbeddedMill.reset();
     EmbeddedMill.init();
     LogStub.init();

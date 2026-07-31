@@ -6,9 +6,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import mc.examples.lwc.edl.edl.EDLMill;
-import org.junit.jupiter.api.BeforeEach;
 
 import com.google.common.collect.Lists;
 
@@ -21,12 +19,6 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestEDL extends GeneratorIntegrationsTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
   
   @Test
   public void testParser() throws IOException {

@@ -2,25 +2,15 @@
 
 package mc.feature.semanticpredicate;
 
-import de.se_rwth.commons.logging.LogStub;
 import mc.GeneratorIntegrationsTest;
 
 import mc.feature.semanticpredicate.predefinedsempred._parser.PredefinedSemPredParser;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import de.se_rwth.commons.logging.Log;
-
 public class PredefinedSemPredTest extends GeneratorIntegrationsTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
   
   @Test
   public void testParse() throws IOException {

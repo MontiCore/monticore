@@ -16,13 +16,12 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.nio.file.Paths;
 
 public class CompositeTest extends GeneratorIntegrationsTest {
 
   @BeforeEach
-  public void setUp() throws IOException {
+  public void setUp() {
     CompositeMill.reset();
     CompositeMill.init();
     LogStub.init();
@@ -40,14 +39,14 @@ public class CompositeTest extends GeneratorIntegrationsTest {
     Assertions.assertEquals("ZComposite", hostSymbol.getName());
 
     // Symbol of the embedded language
-    Assertions.assertTrue(hostSymbol.getSpannedScope() instanceof ICompositeScope);
+    Assertions.assertInstanceOf(ICompositeScope.class, hostSymbol.getSpannedScope());
     final TextSymbol textSymbol = ((ICompositeScope)hostSymbol.getSpannedScope()).resolveText("Hello").orElse(null);
     Assertions.assertNotNull(textSymbol);
 
     // Adapted text symbol -> content symbol
     final ContentSymbol text2ContentSymbol = ((ICompositeScope) hostSymbol.getSpannedScope()).resolveContent("Hello").orElse(null);
     Assertions.assertNotNull(text2ContentSymbol);
-    Assertions.assertTrue(text2ContentSymbol instanceof Text2ContentAdapter);
+    Assertions.assertInstanceOf(Text2ContentAdapter.class, text2ContentSymbol);
   
   
     Assertions.assertTrue(Log.getFindings().isEmpty());

@@ -6,8 +6,6 @@ import java.io.IOException;
 import java.io.StringReader;
 
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.BeforeEach;
 
 import mc.GeneratorIntegrationsTest;
 import mc.feature.featuredsl._ast.ASTAutomaton;
@@ -21,12 +19,6 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CommentTest extends GeneratorIntegrationsTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
   
   @Test
   public void testConstants() throws IOException  {
@@ -58,9 +50,9 @@ public class CommentTest extends GeneratorIntegrationsTest {
     
     assertEquals("// Test ", ast.get_PreCommentList().get(0).getText());
     assertEquals("/*Second*/", ast.get_PreCommentList().get(1).getText());
-    assertEquals("// First Constant 1", ast.getWiredList().get(0).get_PreCommentList().get(0).getText());
-    assertEquals("// First Constant 2", ast.getWiredList().get(0).get_PostCommentList().get(0).getText());
-    assertEquals("/*Second Constant*/", ast.getWiredList().get(1).get_PreCommentList().get(0).getText());
+    assertEquals("// First Constant 1", ast.getWiredList().get(0).get_PreCommentList().getFirst().getText());
+    assertEquals("// First Constant 2", ast.getWiredList().get(0).get_PostCommentList().getFirst().getText());
+    assertEquals("/*Second Constant*/", ast.getWiredList().get(1).get_PreCommentList().getFirst().getText());
   
     assertTrue(Log.getFindings().isEmpty());
   }

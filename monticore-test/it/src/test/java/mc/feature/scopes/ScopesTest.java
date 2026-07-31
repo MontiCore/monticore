@@ -11,7 +11,6 @@ import mc.feature.scopes.supautomaton._symboltable.SupAutomatonScope;
 import mc.feature.scopes.supautomaton._symboltable.SupAutomatonScopesGenitorDelegator;
 import mc.feature.scopes.superautomaton._symboltable.AutomatonSymbol;
 import mc.feature.scopes.superautomaton._symboltable.StateSymbol;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -50,7 +49,6 @@ public class ScopesTest {
 
     this.astSup = astSup.get();
     this.globalScope = globalScope;
-    this.symbolTableCreator = symbolTableCreator;
   }
 
   @Test

@@ -3,10 +3,8 @@
 package mc.feature.symboltable;
 
 import de.monticore.symboltable.IScopeSpanningSymbol;
-import de.se_rwth.commons.logging.LogStub;
 import mc.GeneratorIntegrationsTest;
 import mc.feature.symboltable.automatonwithstinfo5._symboltable.*;
-import org.junit.jupiter.api.BeforeEach;
 
 import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.Test;
@@ -14,12 +12,6 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class AutomatonWithSTInfo5Test extends GeneratorIntegrationsTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
   
   /**
    * This test ensures that all expected classes are generated. Otherwise, the test will not compile

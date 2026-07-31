@@ -2,7 +2,6 @@
 
 package mc.feature.visitor.inheritance.delegator;
 
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -31,12 +30,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * them is called.
  */
 public class ComposeSimpleTest extends CommonVisitorTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
   
   // the composer
   private CTraverser traverser = CMill.traverser();

@@ -6,8 +6,6 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
 
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import de.se_rwth.commons.logging.Log;
@@ -23,12 +21,6 @@ import mc.feature.expression.expression3._parser.Expression3Parser;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class Expression3Test extends GeneratorIntegrationsTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
   
   public Optional<ASTExpr> parse(String input) throws IOException {
     Expression3Parser parser = new Expression3Parser();

@@ -5,8 +5,7 @@ package mc.feature.semanticpredicate;
 import java.io.IOException;
 import java.io.StringReader;
 
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.BeforeEach;
+import mc.feature.semanticpredicate.sempredwithinterface.SemPredWithInterfaceMill;
 
 import mc.GeneratorIntegrationsTest;
 import mc.feature.semanticpredicate.sempredwithinterface._ast.ASTISequence;
@@ -18,17 +17,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class SemPredWithInterfaceParserTest extends GeneratorIntegrationsTest {
   
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
   @Test
   public void testParse() {
     String input = "foo foo";
-    SemPredWithInterfaceParser p = new SemPredWithInterfaceParser();
-    java.util.Optional<ASTISequence> ast = null;
+    SemPredWithInterfaceParser p = SemPredWithInterfaceMill.parser();
+    java.util.Optional<ASTISequence> ast = java.util.Optional.empty();
     try {
        ast = p.parseISequence(new StringReader(input));
     } catch (IOException e) {

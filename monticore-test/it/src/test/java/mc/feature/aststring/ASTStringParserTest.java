@@ -7,10 +7,8 @@ import java.io.StringReader;
 import java.util.Optional;
 
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import mc.feature.aststring.aststring.AststringMill;
 import mc.feature.aststring.aststring._ast.ASTTestSingleQuote;
-import org.junit.jupiter.api.BeforeEach;
 
 import mc.GeneratorIntegrationsTest;
 import mc.feature.aststring.aststring._ast.ASTStart;
@@ -20,12 +18,6 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ASTStringParserTest extends GeneratorIntegrationsTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
   
   @Test
   public void testParser() throws IOException {
@@ -54,7 +46,7 @@ public class ASTStringParserTest extends GeneratorIntegrationsTest {
     assertEquals("eh", ast.getDList().get(1));
     
     // Test toString method
-    assertEquals("ef", ast.getDList().get(2).toString());
+    assertEquals("ef", ast.getDList().get(2));
   
     assertTrue(Log.getFindings().isEmpty());
   }

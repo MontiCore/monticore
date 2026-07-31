@@ -7,8 +7,6 @@ import java.io.StringReader;
 import java.util.Optional;
 
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import mc.GeneratorIntegrationsTest;
@@ -19,12 +17,6 @@ import mc.feature.lexerformat.lexerformat._parser.LexerFormatParser;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class LexerTest extends GeneratorIntegrationsTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
   
   @Test
   public void test0() throws IOException {

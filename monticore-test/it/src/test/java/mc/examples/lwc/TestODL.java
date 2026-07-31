@@ -6,9 +6,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import mc.examples.lwc.odl.odl.ODLMill;
-import org.junit.jupiter.api.BeforeEach;
 
 import com.google.common.collect.Lists;
 
@@ -21,12 +19,6 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestODL extends GeneratorIntegrationsTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
   
   @Test
   public void testParser() throws IOException {
@@ -42,15 +34,15 @@ public class TestODL extends GeneratorIntegrationsTest {
     assertEquals("MyWorld", instances.getName());
     assertEquals(2, instances.getObjectList().size());
     
-    assertEquals("person", instances.getObjectList().get(0).getName());
-    assertTrue(instances.getObjectList().get(0).getType().deepEquals(
+    assertEquals("person", instances.getObjectList().getFirst().getName());
+    assertTrue(instances.getObjectList().getFirst().getType().deepEquals(
         ODLMill.qualifiedNameBuilder().setNamesList(Lists.newArrayList("Person")).build()));
     
-    assertEquals(4, instances.getObjectList().get(0).getAssignmentList().size());
-    assertEquals("birthday", instances.getObjectList().get(0).getAssignmentList().get(0).getName());
+    assertEquals(4, instances.getObjectList().getFirst().getAssignmentList().size());
+    assertEquals("birthday", instances.getObjectList().getFirst().getAssignmentList().get(0).getName());
     assertTrue(instances
         .getObjectList()
-        .get(0)
+        .getFirst()
         .getAssignmentList()
         .get(0)
         .getValue()
@@ -58,10 +50,10 @@ public class TestODL extends GeneratorIntegrationsTest {
             ODLMill.dateValueBuilder()
                 .setDate(ODLMill.dateBuilder().setDay("01").setMonth("01").setYear("1999").build()).build()));
     
-    assertEquals("name", instances.getObjectList().get(0).getAssignmentList().get(1).getName());
+    assertEquals("name", instances.getObjectList().getFirst().getAssignmentList().get(1).getName());
     assertTrue(instances
         .getObjectList()
-        .get(0)
+        .getFirst()
         .getAssignmentList()
         .get(1)
         .getValue()
@@ -69,10 +61,10 @@ public class TestODL extends GeneratorIntegrationsTest {
             ODLMill.stringValueBuilder()
                 .setSTRING("alice").build()));
     
-    assertEquals("id", instances.getObjectList().get(0).getAssignmentList().get(2).getName());
+    assertEquals("id", instances.getObjectList().getFirst().getAssignmentList().get(2).getName());
     assertTrue(instances
         .getObjectList()
-        .get(0)
+        .getFirst()
         .getAssignmentList()
         .get(2)
         .getValue()

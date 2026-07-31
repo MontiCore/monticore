@@ -6,9 +6,6 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
 
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.BeforeEach;
-
 import de.se_rwth.commons.logging.Log;
 import mc.GeneratorIntegrationsTest;
 import mc.feature.expression.expression._ast.ASTConstantsExpression;
@@ -19,12 +16,6 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ExpressionTest extends GeneratorIntegrationsTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
   
   public Optional<ASTExpr> parse(String input) throws IOException {
     ExpressionParser parser = new ExpressionParser();
