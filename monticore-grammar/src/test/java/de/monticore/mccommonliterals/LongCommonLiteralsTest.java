@@ -8,7 +8,6 @@ import de.monticore.literals.testmccommonliterals.TestMCCommonLiteralsMill;
 import de.monticore.literals.testmccommonliterals._parser.TestMCCommonLiteralsParser;
 import de.monticore.runtime.junit.MCAssertions;
 import de.monticore.runtime.junit.TestWithMCLanguage;
-import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -53,6 +52,6 @@ public class LongCommonLiteralsTest {
     Optional<ASTBasicLongLiteral> lit = parser.parse_StringBasicLongLiteral(s);
     assertFalse(lit.isPresent());
     
-    Log.getFindings().removeAll(MCAssertions.assertHasFindingsStartingWith("rule basicLongLiteral failed predicate"));
+    MCAssertions.assertHasFindingsStartingWith("rule basicLongLiteral failed predicate");
   }
 }

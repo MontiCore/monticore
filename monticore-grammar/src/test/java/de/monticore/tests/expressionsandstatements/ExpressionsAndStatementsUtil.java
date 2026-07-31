@@ -10,14 +10,7 @@ import de.monticore.ocl.oclexpressions.symboltable.OCLExpressionsSymbolTableComp
 import de.monticore.ocl.setexpressions.cocos.SetComprehensionHasGenerator;
 import de.monticore.ocl.setexpressions.symboltable.SetExpressionsSymbolTableCompleter;
 import de.monticore.statements.mccommonstatements._symboltable.MCCommonStatementsSymTabCompletion;
-import de.monticore.statements.mccommonstatements.cocos.AssertIsValid;
-import de.monticore.statements.mccommonstatements.cocos.DoWhileConditionHasBooleanType;
-import de.monticore.statements.mccommonstatements.cocos.ExpressionStatementIsValid;
-import de.monticore.statements.mccommonstatements.cocos.ForConditionHasBooleanType;
-import de.monticore.statements.mccommonstatements.cocos.ForEachIsValid;
-import de.monticore.statements.mccommonstatements.cocos.IfConditionHasBooleanType;
-import de.monticore.statements.mccommonstatements.cocos.SwitchStatementValid;
-import de.monticore.statements.mccommonstatements.cocos.WhileConditionHasBooleanType;
+import de.monticore.statements.mccommonstatements.cocos.*;
 import de.monticore.statements.mcvardeclarationstatements._cocos.VarDeclarationInitializationHasCorrectType;
 import de.monticore.statements.mcvardeclarationstatements._cocos.VarDeclarationNameAlreadyDefinedInScope;
 import de.monticore.statements.mcvardeclarationstatements._symboltable.MCVarDeclarationStatementsSymTabCompletion;

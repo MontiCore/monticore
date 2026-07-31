@@ -10,7 +10,6 @@ import de.monticore.testjavalight.TestJavaLightMill;
 import de.monticore.testjavalight._parser.TestJavaLightParser;
 import de.monticore.testjavalight._visitor.TestJavaLightTraverser;
 import de.monticore.types.check.FlatExpressionScopeSetter;
-import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -72,10 +71,8 @@ public class ReturnTypeAssignmentIsValidTest extends JavaLightCocoTest {
     TestJavaLightTraverser traverser = getFlatExpressionScopeSetter();
     optAST.get().accept(traverser);
     checker.checkAll((ASTBasicSymbolsNode) optAST.get());
-
-    Log.getFindings().remove(
-        MCAssertions.assertHasFindingStartingWith(expectedError));
-
+    
+    MCAssertions.assertHasFindingStartingWith(expectedError);
   }
 
   protected TestJavaLightTraverser getFlatExpressionScopeSetter() {

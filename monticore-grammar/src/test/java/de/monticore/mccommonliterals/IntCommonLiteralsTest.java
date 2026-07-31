@@ -9,7 +9,6 @@ import de.monticore.literals.testmccommonliterals.TestMCCommonLiteralsMill;
 import de.monticore.literals.testmccommonliterals._parser.TestMCCommonLiteralsParser;
 import de.monticore.runtime.junit.MCAssertions;
 import de.monticore.runtime.junit.TestWithMCLanguage;
-import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -85,8 +84,7 @@ public class IntCommonLiteralsTest {
     Optional<ASTNatLiteral> lit = parser.parse_StringNatLiteral(s);
     assertFalse(lit.isPresent());
     
-    Log.getFindings().removeAll(
-        MCAssertions.assertHasFindingsStartingWith("Expected EOF but found token"));
+    MCAssertions.assertHasFindingsStartingWith("Expected EOF but found token");
   }
   
   static Stream<Arguments> checkSignedFalseArgs() {
@@ -104,7 +102,6 @@ public class IntCommonLiteralsTest {
     Optional<ASTSignedNatLiteral> lit = parser.parse_StringSignedNatLiteral(s);
     assertFalse(lit.isPresent());
     
-    Log.getFindings().remove(
-        MCAssertions.assertHasFindingStartingWith(expectedError));
+    MCAssertions.assertHasFindingStartingWith(expectedError);
   }
 }

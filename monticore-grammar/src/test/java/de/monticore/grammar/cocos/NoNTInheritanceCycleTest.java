@@ -7,7 +7,6 @@ import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
 import de.monticore.runtime.junit.MCAssertions;
-import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -39,13 +38,10 @@ public class NoNTInheritanceCycleTest extends CocoTest {
     assertNotNull(grammarSymbol);
     assertTrue(grammarSymbol.getAstGrammar().isPresent());
 
-    Log.getFindings().clear();
     checker.checkAll(grammarSymbol.getAstGrammar().get());
     
-    Log.getFindings().remove(
-        MCAssertions.assertHasFindingStartingWith(NoNTInheritanceCycle.ERROR_CODE + String.format(NoNTInheritanceCycle.ERROR_MSG_FORMAT, "de.monticore.grammar.cocos.invalid.A4022.A4022b.A")));
-    Log.getFindings().remove(
-        MCAssertions.assertHasFindingStartingWith(NoNTInheritanceCycle.ERROR_CODE + String.format(NoNTInheritanceCycle.ERROR_MSG_FORMAT, "de.monticore.grammar.cocos.invalid.A4022.A4022b.B")));
+    MCAssertions.assertHasFindingStartingWith(NoNTInheritanceCycle.ERROR_CODE + String.format(NoNTInheritanceCycle.ERROR_MSG_FORMAT, "de.monticore.grammar.cocos.invalid.A4022.A4022b.A"));
+    MCAssertions.assertHasFindingStartingWith(NoNTInheritanceCycle.ERROR_CODE + String.format(NoNTInheritanceCycle.ERROR_MSG_FORMAT, "de.monticore.grammar.cocos.invalid.A4022.A4022b.B"));
   }
 
   @Test

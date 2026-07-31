@@ -8,7 +8,6 @@ import de.monticore.literals.testmccommonliterals.TestMCCommonLiteralsMill;
 import de.monticore.literals.testmccommonliterals._parser.TestMCCommonLiteralsParser;
 import de.monticore.runtime.junit.MCAssertions;
 import de.monticore.runtime.junit.TestWithMCLanguage;
-import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -54,7 +53,6 @@ public class FloatCommonLiteralsTest {
       ".1e1F",
       ".1F",
       ".11e12F",
-      ".11e+12F",
       "29.18e08F",
       "0029.0008e-00008F",
       "0. 0f",
@@ -73,7 +71,6 @@ public class FloatCommonLiteralsTest {
       "0x.0p1F",
       "0x.5AFp1f",
       "0x0050AF.CD9p-008f",
-      "0x1.fffffeP+127f",
       "0x0p-5f",
       "0x0p1F",
       "0x0p-5F",
@@ -82,20 +79,32 @@ public class FloatCommonLiteralsTest {
       "1e1f",
       "2.f",
       ".3f",
-      "0f",
-      "6.022137e+23f",
+      "0f"
   })
   public void checkFalse(String s) throws IOException {
     TestMCCommonLiteralsParser parser = TestMCCommonLiteralsMill.parser();
     Optional<ASTBasicFloatLiteral> lit = parser.parse_StringBasicFloatLiteral(s);
     assertFalse(lit.isPresent());
     
-    Log.getFindings().removeAll(
-        MCAssertions.assertHasFindingsStartingWith("rule basicFloatLiteral failed predicate"));
+    MCAssertions.assertHasFindingsStartingWith("rule basicFloatLiteral failed predicate");
+  }
+  
+  @ParameterizedTest
+  @ValueSource(strings = {
+      ".11e+12F",
+      
+      // hexadezimal number
+      "0x1.fffffeP+127f",
+      
+      // Examples from Java Language Specification
+      "6.022137e+23f",
+  })
+  public void checkFalse2(String s) throws IOException {
+    TestMCCommonLiteralsParser parser = TestMCCommonLiteralsMill.parser();
+    Optional<ASTBasicFloatLiteral> lit = parser.parse_StringBasicFloatLiteral(s);
+    assertFalse(lit.isPresent());
     
-    if (Log.getFindingsCount() == 1) {
-      Log.getFindings().remove(
-          MCAssertions.assertHasFindingStartingWith("token recognition error"));
-    }
+    MCAssertions.assertHasFindingsStartingWith("rule basicFloatLiteral failed predicate");
+    MCAssertions.assertHasFindingStartingWith("token recognition error");
   }
 }

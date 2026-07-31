@@ -5,7 +5,6 @@ import de.monticore.runtime.junit.MCAssertions;
 import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.statements.mccommonstatements._symboltable.IMCCommonStatementsArtifactScope;
 import de.monticore.statements.mccommonstatements._symboltable.MCCommonStatementsSymbols2Json;
-import de.monticore.statements.mccommonstatements.cocos.SwitchCaseTypesValid;
 import de.monticore.statements.mccommonstatements.cocos.SwitchStatementValid;
 import de.monticore.statements.mcstatementsbasis._ast.ASTMCBlockStatement;
 import de.monticore.statements.testmccommonstatements.TestMCCommonStatementsMill;
@@ -16,7 +15,6 @@ import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.types.check.FlatExpressionScopeSetter;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserFactory;
-import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -25,13 +23,9 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static de.monticore.statements.testmccommonstatements.TestMCCommonStatementsMill.parser;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 @TestWithMCLanguage(TestMCCommonStatementsMill.class)
@@ -73,8 +67,7 @@ class SwitchStatementValidTest {
     checker.checkAll(ast);
 
     // Then
-    Log.getFindings().remove(
-        MCAssertions.assertHasFindingStartingWith(SwitchStatementValid.ERROR_CODE));
+    MCAssertions.assertHasFindingStartingWith(SwitchStatementValid.ERROR_CODE);
   }
 
   static Stream<Arguments> invalidSwitchExpressionsProvider() {
@@ -140,8 +133,7 @@ class SwitchStatementValidTest {
     checker.checkAll(ast);
 
     // Then
-    Log.getFindings().remove(
-        MCAssertions.assertHasFindingStartingWith(SwitchStatementValid.ERROR_CODE));
+    MCAssertions.assertHasFindingStartingWith(SwitchStatementValid.ERROR_CODE);
     
   }
 
@@ -173,7 +165,6 @@ class SwitchStatementValidTest {
     checker.checkAll(ast);
 
     // Then
-    Log.getFindings().remove(
-        MCAssertions.assertHasFindingStartingWith(SwitchStatementValid.ERROR_CODE));
+    MCAssertions.assertHasFindingStartingWith(SwitchStatementValid.ERROR_CODE);
   }
 }

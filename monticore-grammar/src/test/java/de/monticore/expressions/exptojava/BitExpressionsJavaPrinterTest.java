@@ -3,7 +3,6 @@ package de.monticore.expressions.exptojava;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.testbitexpressions.TestBitExpressionsMill;
-import de.monticore.expressions.testbitexpressions._auxiliary.BitExpressionsMillForTestBitExpressions;
 import de.monticore.expressions.testbitexpressions._parser.TestBitExpressionsParser;
 import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.se_rwth.commons.logging.Log;

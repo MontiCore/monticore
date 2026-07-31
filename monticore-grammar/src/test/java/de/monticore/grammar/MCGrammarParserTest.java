@@ -8,7 +8,6 @@ import de.monticore.grammar.grammar_withconcepts._parser.GrammarTransformer;
 import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
 import de.monticore.runtime.junit.MCAssertions;
 import de.monticore.runtime.junit.TestWithMCLanguage;
-import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -103,9 +102,8 @@ public class MCGrammarParserTest {
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
     
-    Log.getFindings().remove(
-        MCAssertions.assertHasFindingStartingWith("0xA4003 The grammar name Automaton must be identical "
-            + "to the file name AutomatonV3 of the grammar (without its file extension)."));
+    MCAssertions.assertHasFindingStartingWith("0xA4003 The grammar name Automaton must be identical "
+        + "to the file name AutomatonV3 of the grammar (without its file extension).");
   }
 
   @Test
@@ -126,10 +124,9 @@ public class MCGrammarParserTest {
     Optional<ASTMCGrammar> result = parser.parse(model);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
-
-    Log.getFindings().remove(
-        MCAssertions.assertHasFindingStartingWith("0xA4003 The grammar name InvAutomaton must be identical "
-            + "to the file name AutomatonWithInvsComp of the grammar (without its file extension)."));
+    
+    MCAssertions.assertHasFindingStartingWith("0xA4003 The grammar name InvAutomaton must be identical "
+        + "to the file name AutomatonWithInvsComp of the grammar (without its file extension).");
   }
 
   @Test
@@ -141,9 +138,8 @@ public class MCGrammarParserTest {
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
     
-    Log.getFindings().remove(
-        MCAssertions.assertHasFindingStartingWith("0xA4003 The grammar name Automaton must be identical "
-            + "to the file name AutomatonWithInvs of the grammar (without its file extension)."));
+    MCAssertions.assertHasFindingStartingWith("0xA4003 The grammar name Automaton must be identical "
+        + "to the file name AutomatonWithInvs of the grammar (without its file extension).");
   }
 
   @Test
@@ -155,9 +151,8 @@ public class MCGrammarParserTest {
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
     
-    Log.getFindings().remove(
-        MCAssertions.assertHasFindingStartingWith("0xA4003 The grammar name Automaton must be identical "
-            + "to the file name AutomatonWithInvsAndStartRule of the grammar (without its file extension)."));
+    MCAssertions.assertHasFindingStartingWith("0xA4003 The grammar name Automaton must be identical "
+        + "to the file name AutomatonWithInvsAndStartRule of the grammar (without its file extension).");
   }
 
   @Test
@@ -189,9 +184,9 @@ public class MCGrammarParserTest {
     Grammar_WithConceptsParser parser = Grammar_WithConceptsMill.parser();
     parser.parse(model);
     
-    Log.getFindings().remove(MCAssertions.assertHasFindingStartingWith(
-        "0xA4004 The package declaration point.in.packagename of the grammar must not differ from "
-            + "the package of the grammar file."));
+    MCAssertions.assertHasFindingStartingWith(
+    "0xA4004 The package declaration point.in.packagename of the grammar must not differ from "
+        + "the package of the grammar file.");
   }
 
   @Test
@@ -201,9 +196,8 @@ public class MCGrammarParserTest {
     Grammar_WithConceptsParser parser = Grammar_WithConceptsMill.parser();
     parser.parse(model);
     
-    Log.getFindings().remove(
-        MCAssertions.assertHasFindingStartingWith(
-        "0xA4004 The package declaration de.ronticore of the grammar "
-            + "must not differ from the package of the grammar file."));
+    MCAssertions.assertHasFindingStartingWith(
+    "0xA4004 The package declaration de.ronticore of the grammar "
+        + "must not differ from the package of the grammar file.");
   }
 }

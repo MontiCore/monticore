@@ -35,8 +35,6 @@ public class MCCommonUnitTest {
     ASTNatLiteral ast = astOpt.get();
     assertEquals("9", ast.getSource());
     assertEquals(9, ast.getValue());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -46,8 +44,6 @@ public class MCCommonUnitTest {
     ASTNatLiteral ast = astOpt.get();
     assertEquals("42", ast.getSource());
     assertEquals(42, ast.getValue());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   // --------------------------------------------------------------------
@@ -63,8 +59,6 @@ public class MCCommonUnitTest {
     assertTrue(ast.isProtected());
     assertTrue(ast.isFinal());
     assertFalse(ast.isLocal());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -81,8 +75,6 @@ public class MCCommonUnitTest {
     assertTrue(ast.isPresentStereotype());
     ASTStereotype sty = ast.getStereotype();
     assertEquals("x1", sty.getValue("bla"));
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -115,8 +107,6 @@ public class MCCommonUnitTest {
     assertEquals("cc", ast.getName());
     assertFalse(ast.isPresentText());
     assertEquals("", ast.getValue());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -128,10 +118,8 @@ public class MCCommonUnitTest {
     ASTStereoValue ast = astOpt.get();
     assertEquals("bla", ast.getName());
     assertFalse(ast.isPresentText());
-    assertTrue(ast.getExpression() instanceof ASTNameExpression);
+    assertInstanceOf(ASTNameExpression.class, ast.getExpression());
     assertTrue(((ASTNameExpression) ast.getExpression()).getName().equals("name1"));
-
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   // --------------------------------------------------------------------
@@ -146,8 +134,6 @@ public class MCCommonUnitTest {
     assertFalse(ast.contains("bla"));
     assertTrue(ast.contains("a1", ""));
     assertFalse(ast.contains("a1", "wert1"));
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -163,8 +149,6 @@ public class MCCommonUnitTest {
     assertTrue(ast.contains("a1"));
     assertFalse(ast.contains("a1", ""));
     assertTrue(ast.contains("a1", "wert1"));
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -182,8 +166,6 @@ public class MCCommonUnitTest {
     assertFalse(ast.contains("a1", "name1"));
     assertInstanceOf(ASTNameExpression.class, ast.getValues(0).getExpression());
     assertEquals("name1", ((ASTNameExpression) ast.getValues(0).getExpression()).getName());
-
-    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -198,7 +180,7 @@ public class MCCommonUnitTest {
     try {
       assertEquals("", ast.getValue("foo"));
       fail("Expected an Exception to be thrown");
-    } catch (java.util.NoSuchElementException ex) { }
+    } catch (java.util.NoSuchElementException ignored) { }
     assertEquals("", ast.getValue("bla"));
   
     assertTrue(Log.getFindings().isEmpty());
@@ -211,9 +193,7 @@ public class MCCommonUnitTest {
         "<< bla, a1=\"wert1\" > >" );
     assertFalse(oast.isPresent());
     
-    Log.getFindings().remove(
-        MCAssertions.assertHasFindingStartingWith("no viable alternative at input '>'")
-    );
+    MCAssertions.assertHasFindingStartingWith("no viable alternative at input '>'");
   }
 
 
@@ -229,8 +209,6 @@ public class MCCommonUnitTest {
     ASTCompleteness ast = astOpt.get();
     assertTrue(ast.isComplete());
     assertFalse(ast.isIncomplete());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -244,8 +222,6 @@ public class MCCommonUnitTest {
     assertTrue(ast.isIncomplete());
     assertFalse(ast.isRightComplete());
     assertFalse(ast.isLeftComplete());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -259,8 +235,6 @@ public class MCCommonUnitTest {
     assertFalse(ast.isIncomplete());
     assertTrue(ast.isRightComplete());
     assertFalse(ast.isLeftComplete());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -270,9 +244,8 @@ public class MCCommonUnitTest {
     Optional<ASTCompleteness> ast =
     		TestMCCommonMill.parser().parse_StringCompleteness( "(...,d)"  );
     assertFalse(ast.isPresent());
-    Log.getFindings().remove(
-        MCAssertions.assertHasFindingStartingWith("mismatched input ',' expecting ')' (found: COMMA)")
-    );
+    
+    MCAssertions.assertHasFindingStartingWith("mismatched input ',' expecting ')' (found: COMMA)");
   }
 
   // --------------------------------------------------------------------
@@ -288,8 +261,6 @@ public class MCCommonUnitTest {
     assertTrue(ast.isMany());
     assertEquals(0, ast.getLowerBound());
     assertEquals(0, ast.getUpperBound());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -303,8 +274,6 @@ public class MCCommonUnitTest {
     assertTrue(ast.isNoUpperLimit());
     assertEquals(7, ast.getLowerBound());
     assertEquals(0, ast.getUpperBound());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -317,8 +286,6 @@ public class MCCommonUnitTest {
     assertFalse(ast.isMany());
     assertEquals(17, ast.getLowerBound());
     assertEquals(235, ast.getUpperBound());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -331,8 +298,6 @@ public class MCCommonUnitTest {
     assertFalse(ast.isMany());
     assertEquals(34, ast.getLowerBound());
     assertEquals(15, ast.getUpperBound());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -344,13 +309,8 @@ public class MCCommonUnitTest {
     Optional<ASTCardinality> oast = TestMCCommonMill.parser().parse_StringCardinality(
     		"[0x34..0x15]");
     assertFalse(oast.isPresent());
-    Log.getFindings().remove(
-        MCAssertions.assertHasFindingStartingWith("extraneous input 'x34'")
-    );
-    Log.getFindings().remove(
-        MCAssertions.assertHasFindingStartingWith("extraneous input 'x15'")
-    );
+
+    MCAssertions.assertHasFindingStartingWith("extraneous input 'x34'");
+    MCAssertions.assertHasFindingStartingWith("extraneous input 'x15'");
   }
-
-
 }

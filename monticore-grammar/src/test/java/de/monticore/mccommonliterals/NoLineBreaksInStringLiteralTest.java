@@ -9,7 +9,6 @@ import de.monticore.literals.testmccommonliterals.TestMCCommonLiteralsMill;
 import de.monticore.literals.testmccommonliterals._parser.TestMCCommonLiteralsParser;
 import de.monticore.runtime.junit.MCAssertions;
 import de.monticore.runtime.junit.TestWithMCLanguage;
-import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -45,7 +44,6 @@ public class NoLineBreaksInStringLiteralTest {
   public void testFalseStringLiterals(String val) throws IOException {
     checkStringLiteral(val);
     
-    Log.getFindings().remove(
-        MCAssertions.assertHasFindingStartingWith(ERROR_CODE));
+    MCAssertions.assertHasFindingStartingWith(ERROR_CODE);
   }
 }

@@ -8,7 +8,6 @@ import de.monticore.literals.testmccommonliterals.TestMCCommonLiteralsMill;
 import de.monticore.literals.testmccommonliterals._parser.TestMCCommonLiteralsParser;
 import de.monticore.runtime.junit.MCAssertions;
 import de.monticore.runtime.junit.TestWithMCLanguage;
-import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -62,8 +61,7 @@ public class DoubleCommonLiteralsTest {
     assertFalse(lit.isPresent());
     
     for (String expectedError : expectedErrors) {
-      Log.getFindings().removeAll(
-          MCAssertions.assertHasFindingsStartingWith(expectedError));
+      MCAssertions.assertHasFindingsStartingWith(expectedError);
     }
   }
 }

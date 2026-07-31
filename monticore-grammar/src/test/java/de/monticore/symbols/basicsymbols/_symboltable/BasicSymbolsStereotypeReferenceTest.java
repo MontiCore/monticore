@@ -7,7 +7,6 @@ import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symboltable.serialization.json.JsonElementFactory;
 import de.monticore.symboltable.stereotypes.IStereotypeReference;
 import de.monticore.symboltable.stereotypes.IStereotypeSymbol;
-import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -56,8 +55,7 @@ class BasicSymbolsStereotypeReferenceTest {
     // Then
     assertTrue(resolvedStereotype.isEmpty());
     
-    Log.getFindings().remove(
-        MCAssertions.assertHasFindingStartingWith("0x82406"));
+    MCAssertions.assertHasFindingStartingWith("0x82406");
   }
 
   @Test
@@ -77,8 +75,8 @@ class BasicSymbolsStereotypeReferenceTest {
 
     // Then
     assertTrue(resolvedStereotype.isEmpty());
-    Log.getFindings().remove(
-        MCAssertions.assertHasFindingStartingWith("0xA4095"));
+
+    MCAssertions.assertHasFindingStartingWith("0xA4095");
   }
 
   protected MCStereotypeSymbol createStereotype(String name) {

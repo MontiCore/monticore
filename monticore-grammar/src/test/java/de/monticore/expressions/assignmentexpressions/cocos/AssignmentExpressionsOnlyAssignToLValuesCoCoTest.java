@@ -177,8 +177,7 @@ public class AssignmentExpressionsOnlyAssignToLValuesCoCoTest {
   })
   public void testInvalid(String exprStr) throws IOException {
     check(exprStr);
-    Log.getFindings().remove(
-        MCAssertions.assertHasFindingStartingWith("0xFDD47"));
+    MCAssertions.assertHasFindingStartingWith("0xFDD47");
   }
 
   protected void check(String exprStr) throws IOException {

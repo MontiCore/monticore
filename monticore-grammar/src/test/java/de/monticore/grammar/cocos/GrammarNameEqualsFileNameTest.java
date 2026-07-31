@@ -4,7 +4,6 @@ package de.monticore.grammar.cocos;
 
 import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
 import de.monticore.runtime.junit.MCAssertions;
-import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -21,17 +20,15 @@ public class GrammarNameEqualsFileNameTest extends CocoTest {
   public void testInvalidFilename() throws IOException {
     parser.parse("target/resources/test/de/monticore/grammar/cocos/invalid/A4003/A4003.mc4");
     
-    Log.getFindings().removeAll(
-        MCAssertions.assertHasFindingsStartingWith("0xA4003 The grammar name A4002 must be identical to the file name"
-            + " A4003 of the grammar (without its file extension)."));
+    MCAssertions.assertHasFindingsStartingWith("0xA4003 The grammar name A4002 must be identical to the file name"
+        + " A4003 of the grammar (without its file extension).");
   }
 
   @Test
   public void testInvalidPackage() throws IOException {
     parser.parse("target/resources/test/de/monticore/grammar/cocos/invalid/A4004/A4004.mc4");
-
-    Log.getFindings().removeAll(
-        MCAssertions.assertHasFindingsStartingWith("0xA4004 The package declaration de.monticore.grammar.cocos.invalid.A4003 of the grammar must not"
-        + " differ from the package of the grammar file."));
+    
+    MCAssertions.assertHasFindingsStartingWith("0xA4004 The package declaration de.monticore.grammar.cocos.invalid.A4003 of the grammar must not"
+      + " differ from the package of the grammar file.");
   }
 }

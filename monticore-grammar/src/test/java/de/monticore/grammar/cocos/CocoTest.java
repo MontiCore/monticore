@@ -60,7 +60,7 @@ public abstract class CocoTest extends AbstractMCTest {
     checker.checkAll(grammarSymbol.getAstGrammar().get());
     
     assertEquals(numberOfFindings, Log.getFindings().size());
-    Log.getFindings().removeAll(
-        MCAssertions.assertHasFindingsStartingWith(code + message));
+
+    MCAssertions.assertHasFindingsStartingWith(code + message);
   }
 }

@@ -9,7 +9,6 @@ import de.monticore.statements.testmccommonstatements.TestMCCommonStatementsMill
 import de.monticore.statements.testmccommonstatements._cocos.TestMCCommonStatementsCoCoChecker;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserFactory;
-import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -17,12 +16,9 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static de.monticore.statements.testmccommonstatements.TestMCCommonStatementsMill.parser;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 @TestWithMCLanguage(TestMCCommonStatementsMill.class)
@@ -65,8 +61,7 @@ class ForConditionHasBooleanTypeTest {
     checker.checkAll(ast);
     
     // Then
-    Log.getFindings().remove(
-        MCAssertions.assertHasFindingStartingWith(error));
+    MCAssertions.assertHasFindingStartingWith(error);
   }
 
   static Stream<Arguments> exprAndErrorProvider() {

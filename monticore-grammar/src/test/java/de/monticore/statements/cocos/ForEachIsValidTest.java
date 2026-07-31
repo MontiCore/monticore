@@ -16,7 +16,6 @@ import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 import de.monticore.types.check.FlatExpressionScopeSetter;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserFactory;
-import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -24,9 +23,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static de.monticore.statements.mccommonstatements.cocos.ForEachIsValid.FOR_EACH_EXPR_NOT_ITERABLE_ERROR_CODE;
@@ -35,7 +32,6 @@ import static de.monticore.statements.testmccommonstatements.TestMCCommonStateme
 import static de.monticore.symbols.basicsymbols.BasicSymbolsMill.BOOLEAN;
 import static de.monticore.symbols.basicsymbols.BasicSymbolsMill.INT;
 import static de.monticore.types.check.SymTypeExpressionFactory.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 /**
@@ -246,8 +242,7 @@ class ForEachIsValidTest {
     
     // Then
     for (String errorCode : error) {
-      Log.getFindings().remove(
-          MCAssertions.assertHasFindingStartingWith(errorCode));
+      MCAssertions.assertHasFindingStartingWith(errorCode);
     }
   }
 

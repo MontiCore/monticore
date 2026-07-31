@@ -7,7 +7,6 @@ import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
-import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -172,16 +171,13 @@ public class BasicSymbolsSymbols2JsonTest {
 
     BasicSymbolsSymbols2Json symbols2Json = new BasicSymbolsSymbols2Json();
     symbols2Json.deserialize(invalidJsonForSerializing);
-    Log.getFindings().remove(
-        MCAssertions.assertHasFindingStartingWith("0xA1238"));
+    MCAssertions.assertHasFindingStartingWith("0xA1238");
 
     symbols2Json.deserialize(invalidJsonForSerializing2);
-    Log.getFindings().remove(
-        MCAssertions.assertHasFindingStartingWith("0xA1233"));
+    MCAssertions.assertHasFindingStartingWith("0xA1233");
 
     symbols2Json.deserialize(invalidJsonForSerializing3);
-    Log.getFindings().remove(
-        MCAssertions.assertHasFindingStartingWith("0xA0572"));
+    MCAssertions.assertHasFindingStartingWith("0xA0572");
   }
 
 

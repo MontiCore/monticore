@@ -10,7 +10,6 @@ import de.monticore.literals.mcjavaliterals.cocos.LongLiteralRangeCoCo;
 import de.monticore.literals.testmcjavaliterals.TestMCJavaLiteralsMill;
 import de.monticore.runtime.junit.MCAssertions;
 import de.monticore.runtime.junit.TestWithMCLanguage;
-import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -153,7 +152,7 @@ public class RangeCoCosTest {
 
     checker.checkAll((ASTMCJavaLiteralsNode) astex.get());
     
-    Log.getFindings().remove(MCAssertions.assertHasFindingStartingWith(expectedError));
+    MCAssertions.assertHasFindingStartingWith(expectedError);
   }
 
   static Stream<Arguments> checkErrorLongLiteralArgs() {
@@ -176,7 +175,7 @@ public class RangeCoCosTest {
 
     checker.checkAll((ASTMCJavaLiteralsNode) astex.get());
     
-    Log.getFindings().remove(MCAssertions.assertHasFindingStartingWith(expectedError));
+    MCAssertions.assertHasFindingStartingWith(expectedError);
   }
 
   static Stream<Arguments> checkErrorDoubleLiteralArgs() {
@@ -199,7 +198,7 @@ public class RangeCoCosTest {
 
     checker.checkAll((ASTMCJavaLiteralsNode) astex.get());
     
-    Log.getFindings().remove(MCAssertions.assertHasFindingStartingWith(expectedError));
+    MCAssertions.assertHasFindingStartingWith(expectedError);
   }
 
   static Stream<Arguments> checkErrorFloatLiteralArgs() {
@@ -222,6 +221,6 @@ public class RangeCoCosTest {
 
     checker.checkAll((ASTMCJavaLiteralsNode) astex.get());
     
-    Log.getFindings().remove(MCAssertions.assertHasFindingStartingWith(expectedError));
+    MCAssertions.assertHasFindingStartingWith(expectedError);
   }
 }

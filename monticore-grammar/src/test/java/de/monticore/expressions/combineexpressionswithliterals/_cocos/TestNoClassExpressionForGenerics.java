@@ -7,14 +7,12 @@ import de.monticore.expressions.javaclassexpressions._ast.ASTClassExpression;
 import de.monticore.expressions.javaclassexpressions._ast.ASTJavaClassExpressionsNode;
 import de.monticore.runtime.junit.MCAssertions;
 import de.monticore.runtime.junit.TestWithMCLanguage;
-import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @TestWithMCLanguage(CombineExpressionsWithLiteralsMill.class)
@@ -57,7 +55,7 @@ public class TestNoClassExpressionForGenerics {
     CombineExpressionsWithLiteralsCoCoChecker coCoChecker = new CombineExpressionsWithLiteralsCoCoChecker().getCombineExpressionsWithLiteralsCoCoChecker();
     coCoChecker.checkAll((ASTJavaClassExpressionsNode) optClass.get());
     
-    Log.getFindings().remove(MCAssertions.assertHasFindingStartingWith(NoClassExpressionForGenerics.ERROR_CODE));
+    MCAssertions.assertHasFindingStartingWith(NoClassExpressionForGenerics.ERROR_CODE);
   }
 
   @Test
@@ -70,7 +68,7 @@ public class TestNoClassExpressionForGenerics {
     CombineExpressionsWithLiteralsCoCoChecker coCoChecker = new CombineExpressionsWithLiteralsCoCoChecker().getCombineExpressionsWithLiteralsCoCoChecker();
     coCoChecker.checkAll((ASTJavaClassExpressionsNode) optClass.get());
     
-    Log.getFindings().remove(MCAssertions.assertHasFindingStartingWith(NoClassExpressionForGenerics.ERROR_CODE));
+    MCAssertions.assertHasFindingStartingWith(NoClassExpressionForGenerics.ERROR_CODE);
   }
 
 }

@@ -12,7 +12,6 @@ import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 import de.monticore.types.check.FlatExpressionScopeSetter;
 import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserFactory;
-import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -81,8 +80,7 @@ class ExpressionStatementIsValidTest {
     checker.checkAll(ast);
     
     // Then
-    Log.getFindings().remove(
-        MCAssertions.assertHasFindingStartingWith(error));
+    MCAssertions.assertHasFindingStartingWith(error);
   }
 
   static Stream<Arguments> exprAndErrorProvider() {

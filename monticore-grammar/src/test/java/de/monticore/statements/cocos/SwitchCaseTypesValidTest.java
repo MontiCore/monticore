@@ -9,7 +9,6 @@ import de.monticore.statements.testmccommonstatements.TestMCCommonStatementsMill
 import de.monticore.statements.testmccommonstatements._cocos.TestMCCommonStatementsCoCoChecker;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserFactory;
-import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -21,8 +20,6 @@ import java.io.IOException;
 import java.util.stream.Stream;
 
 import static de.monticore.statements.testmccommonstatements.TestMCCommonStatementsMill.parser;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 @TestWithMCLanguage(TestMCCommonStatementsMill.class)
@@ -70,8 +67,7 @@ class SwitchCaseTypesValidTest {
     checker.checkAll(ast);
     
     // Then
-    Log.getFindings().remove(
-        MCAssertions.assertHasFindingStartingWith(SwitchCaseTypesValid.CASE_ERROR_CODE));
+    MCAssertions.assertHasFindingStartingWith(SwitchCaseTypesValid.CASE_ERROR_CODE);
   }
 
   @Test
@@ -115,7 +111,6 @@ class SwitchCaseTypesValidTest {
     checker.checkAll(ast);
     
     // Then
-    Log.getFindings().remove(
-        MCAssertions.assertHasFindingStartingWith(SwitchCaseTypesValid.CASE_ERROR_CODE));
+    MCAssertions.assertHasFindingStartingWith(SwitchCaseTypesValid.CASE_ERROR_CODE);
   }
 }

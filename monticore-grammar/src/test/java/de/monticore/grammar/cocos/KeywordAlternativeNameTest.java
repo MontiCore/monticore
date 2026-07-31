@@ -6,7 +6,6 @@ import de.monticore.grammar.GrammarGlobalScopeTestFactory;
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
 import de.monticore.runtime.junit.MCAssertions;
-import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -27,8 +26,7 @@ public class KeywordAlternativeNameTest extends CocoTest {
     // test grammar symbol
     globalScope.resolveMCGrammar(grammar).orElse(null);
     
-    Log.getFindings().remove(
-        MCAssertions.assertHasFindingStartingWith("0xA2345" + MESSAGE));
+    MCAssertions.assertHasFindingStartingWith("0xA2345" + MESSAGE);
   }
   
   @Test

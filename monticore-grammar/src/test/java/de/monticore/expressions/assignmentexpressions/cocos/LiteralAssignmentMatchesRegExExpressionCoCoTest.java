@@ -87,7 +87,7 @@ public class LiteralAssignmentMatchesRegExExpressionCoCoTest {
   @MethodSource("testInvalidArgs")
   public void testInvalid(String type, String exprStr) throws IOException {
     check(type, exprStr);
-    Log.getFindings().remove(MCAssertions.assertHasFindingStartingWith("0xFD724"));
+    MCAssertions.assertHasFindingStartingWith("0xFD724");
   }
 
   protected void check(String type, String exprStr) throws IOException {

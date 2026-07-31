@@ -6,39 +6,21 @@ import de.monticore.expressions.combineexpressionswithliterals.CombineExpression
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsGlobalScope;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsScope;
 import de.monticore.runtime.junit.AbstractMCTest;
-import de.monticore.types3.util.DefsTypesForTests;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsGlobalScope;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
-import de.monticore.types.check.SymTypeExpression;
-import de.monticore.types.check.SymTypeExpressionFactory;
-import de.monticore.types.check.SymTypeInferenceVariable;
-import de.monticore.types.check.SymTypeOfGenerics;
-import de.monticore.types.check.SymTypeOfNumericWithSIUnit;
-import de.monticore.types.check.SymTypeOfObject;
-import de.monticore.types.check.SymTypeOfRegEx;
-import de.monticore.types.check.SymTypeVariable;
+import de.monticore.types.check.*;
+import de.monticore.types3.util.DefsTypesForTests;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 import java.util.List;
 
+import static de.monticore.types.check.SymTypeExpressionFactory.*;
 import static de.monticore.types3.util.DefsTypesForTests.*;
-import static de.monticore.types.check.SymTypeExpressionFactory.createFunction;
-import static de.monticore.types.check.SymTypeExpressionFactory.createGenerics;
-import static de.monticore.types.check.SymTypeExpressionFactory.createIntersection;
-import static de.monticore.types.check.SymTypeExpressionFactory.createNumericWithSIUnit;
-import static de.monticore.types.check.SymTypeExpressionFactory.createTuple;
-import static de.monticore.types.check.SymTypeExpressionFactory.createTypeArray;
-import static de.monticore.types.check.SymTypeExpressionFactory.createTypeObject;
-import static de.monticore.types.check.SymTypeExpressionFactory.createTypeOfNull;
-import static de.monticore.types.check.SymTypeExpressionFactory.createTypeRegEx;
-import static de.monticore.types.check.SymTypeExpressionFactory.createTypeVariable;
-import static de.monticore.types.check.SymTypeExpressionFactory.createUnion;
-import static de.monticore.types.check.SymTypeExpressionFactory.createWildcard;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
