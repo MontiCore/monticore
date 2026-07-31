@@ -18,6 +18,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+// using a language containing lvalue and non-lvalue expressions
 @TestWithMCLanguage(CombineExpressionsWithLiteralsMill.class)
 public class AssignmentExpressionsOnlyAssignToLValuesCoCoTest {
 
