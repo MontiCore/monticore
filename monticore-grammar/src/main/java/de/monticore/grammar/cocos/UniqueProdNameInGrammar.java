@@ -29,7 +29,7 @@ public class UniqueProdNameInGrammar implements GrammarASTMCGrammarCoCo {
     List<String> prodNames = grammarSymbol.getProds()
         .stream()
         .map(ProdSymbol::getName)
-        .collect(Collectors.toList());
+        .toList();
     for (int i = 0; i < prodNames.size(); i++) {
       for (int j = i + 1; j < prodNames.size(); j++) {
         if (prodNames.get(i).equals(prodNames.get(j))) {

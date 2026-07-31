@@ -71,7 +71,7 @@ public class StreamExpressionsTypeVisitor extends AbstractTypeVisitor
     SymTypeExpression result;
     List<SymTypeExpression> containedExprTypes = expr.getExpressionList().stream()
         .map(e -> getType4Ast().getPartialTypeOfExpr(e))
-        .collect(Collectors.toList());
+        .toList();
     Optional<SymTypeExpression> givenElementType =
         expr.isPresentMCTypeArgument() ?
             Optional.of(getType4Ast().getPartialTypeOfTypeId(expr.getMCTypeArgument())) :

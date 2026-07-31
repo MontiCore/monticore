@@ -165,9 +165,7 @@ public class WithinTypeBasicSymbolsResolver {
     for (String name : names) {
       Optional<SymTypeExpression> varOpt =
           resolveVariable(thisType, name, accessModifier, predicate);
-      if (varOpt.isPresent()) {
-        allVariables.put(name, varOpt.get());
-      }
+      varOpt.ifPresent(symTypeExpression -> allVariables.put(name, symTypeExpression));
     }
     return allVariables;
   }
@@ -200,12 +198,11 @@ public class WithinTypeBasicSymbolsResolver {
       AccessModifier accessModifier,
       Predicate<FunctionSymbol> predicate
   ) {
-    List<SymTypeOfFunction> resolvedSymTypes = new ArrayList<>();
     List<SymTypeOfFunction> resolvedInThis =
         resolveFunctionsInThisType(
             thisType, name, accessModifier, predicate
         );
-    resolvedSymTypes.addAll(resolvedInThis);
+    List<SymTypeOfFunction> resolvedSymTypes = new ArrayList<>(resolvedInThis);
     // search in super types
     List<SymTypeOfFunction> resolvedInSuper =
         resolvedFunctionsInSuperTypes(
@@ -559,7 +556,7 @@ public class WithinTypeBasicSymbolsResolver {
             .and(getIsNotTypeVarSymbolPredicate())
             .and(getIsLocalSymbolPredicate(scope))
         )
-        .collect(Collectors.toList());
+        .toList();
     // todo remove as soon as resolveTypeLocally is used
     if (resolved.size() > 1) {
       Log.error("0xFD221 resolved multiple types \""
@@ -715,7 +712,7 @@ public class WithinTypeBasicSymbolsResolver {
           ((SymTypeOfUnion) type).getUnionizedTypeSet();
       Optional<SymTypeExpression> lubOpt =
           SymTypeRelations.leastUpperBound(unionizedTypes);
-      spannedScope = lubOpt.flatMap(lub -> getSpannedScope(lub));
+      spannedScope = lubOpt.flatMap(this::getSpannedScope);
     }
     else if (type.isRegExType()) {
       // considered empty, String is the (direct) nominal supertype,
@@ -870,7 +867,7 @@ public class WithinTypeBasicSymbolsResolver {
           .getSpannedScope().getLocalTypeVarSymbols();
       List<SymTypeVariable> includedVars = includedVarSyms.stream()
           .map(SymTypeExpressionFactory::createTypeVariable)
-          .collect(Collectors.toList());
+          .toList();
       if (freeTypeVars.stream().anyMatch(
           ftv -> includedVars.stream().noneMatch(ftv::deepEquals))
       ) {

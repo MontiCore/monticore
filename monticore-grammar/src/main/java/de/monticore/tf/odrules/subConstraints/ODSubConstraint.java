@@ -8,7 +8,7 @@ import java.util.Set;
 
 /**
  * Created by Alexander Wilts on 10.11.2016.
- *
+ * <p>
  * Objects of type ODSubConstraint represent modules of constraints that can be checked independently.
  */
 public class ODSubConstraint {
@@ -33,12 +33,8 @@ public class ODSubConstraint {
     }
 
     public boolean isDependendOn(ASTMatchingObject object){
-        boolean dependsOnObject = dependVars.stream().anyMatch(astMatchingObject -> astMatchingObject.getObjectName() == object.getObjectName());
-        if(dependsOnObject){
-            return true;
-        }else {
-            return false;
-        }
+      return dependVars.stream().anyMatch(astMatchingObject -> astMatchingObject.getObjectName()
+          .equals(object.getObjectName()));
     }
 
     public String getConstrExpr(){

@@ -382,7 +382,7 @@ public class SymTypeCompatibilityCalculator {
     List<Bound> result;
     List<List<Bound>> satisfiableResults = bounds.stream()
         .filter(r -> r.stream().noneMatch(Bound::isUnsatisfiableBound))
-        .collect(Collectors.toList());
+        .toList();
     if (satisfiableResults.stream().anyMatch(List::isEmpty)) {
       result = Collections.emptyList();
     }
@@ -392,7 +392,7 @@ public class SymTypeCompatibilityCalculator {
       );
     }
     else if (satisfiableResults.size() == 1) {
-      result = satisfiableResults.get(0);
+      result = satisfiableResults.getFirst();
     }
     else {
       // Warning: Heuristic! (potential false negatives)
@@ -959,7 +959,7 @@ public class SymTypeCompatibilityCalculator {
           result.addAll(superCheckBounds);
           isSatisfiable = true;
         }
-        else if (!superIsSatisfiable && !isSatisfiable) {
+        else if (!isSatisfiable) {
           unsatisfiableResult.addAll(superCheckBounds);
         }
       }
@@ -1133,9 +1133,9 @@ public class SymTypeCompatibilityCalculator {
   }
 
   protected List<Bound> functionConstrainSameType(SymTypeOfFunction funcA, SymTypeOfFunction funcB) {
-    List<Bound> result = new ArrayList<>();
-    // return type
-    result.addAll(internal_constrainSameTypePreNormalized(funcA.getType(), funcB.getType()));
+    // initialize with return type
+    List<Bound> result =
+        new ArrayList<>(internal_constrainSameTypePreNormalized(funcA.getType(), funcB.getType()));
     // either both are elliptic or none are
     if (funcA.isElliptic() != funcB.isElliptic()) {
       result.add(new UnsatisfiableBound(funcA.printFullName()

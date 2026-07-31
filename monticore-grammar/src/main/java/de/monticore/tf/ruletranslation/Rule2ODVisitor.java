@@ -163,7 +163,7 @@ public abstract class Rule2ODVisitor implements TFCommonsVisitor2 {
         if (isListChild) {
           assignment.add_PostComment(LISTCHILD_COMMENT);
         }
-        state.getGenRule().getAssignmentList().add(0,assignment);
+        state.getGenRule().getAssignmentList().addFirst(assignment);
       }
       catch (IOException e) {
         Log.error("0xF0901: Invalid Java Expression used in Transformation Rule", e);

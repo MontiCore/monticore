@@ -150,7 +150,7 @@ public class PartialFunctionInfo {
   public PartialFunctionInfo deepClone() {
     PartialFunctionInfo clone = new PartialFunctionInfo();
     clone.returnTargetType = returnTargetType.map(SymTypeExpression::deepClone);
-    clone.parameterCount = parameterCount.map(Function.identity());
+    clone.parameterCount = parameterCount;
     clone.argumentExprs = new LinkedHashMap<>(argumentExprs);
     clone.argumentTypes = new LinkedHashMap<>(argumentTypes);
     return clone;

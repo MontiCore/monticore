@@ -75,7 +75,7 @@ public class TypeParameterRelationsDefaultDelegatee
               .calculate(type, SymTypeExpression::isInferenceVariable)
               .stream()
               .map(SymTypeExpression::asInferenceVariable)
-              .collect(Collectors.toList())
+              .toList()
       );
     }
     return infVars;

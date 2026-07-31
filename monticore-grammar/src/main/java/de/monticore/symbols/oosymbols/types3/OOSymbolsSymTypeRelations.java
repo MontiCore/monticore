@@ -102,7 +102,7 @@ public class OOSymbolsSymTypeRelations {
       List<SymTypeOfFunction> methods =
           name2AbstractMethods.values().stream()
               .flatMap(List::stream)
-              .collect(Collectors.toList());
+              .toList();
       List<SymTypeOfFunction> abstractMethods = methods.stream()
           .filter(m -> OOSymbolsMill.typeDispatcher()
               .isOOSymbolsMethod(m.getSymbol())
@@ -110,9 +110,9 @@ public class OOSymbolsSymTypeRelations {
           .filter(m -> OOSymbolsMill.typeDispatcher()
               .asOOSymbolsMethod(m.getSymbol()).isIsAbstract()
           )
-          .collect(Collectors.toList());
+          .toList();
       if (abstractMethods.size() == 1) {
-        res = Optional.of(abstractMethods.get(0));
+        res = Optional.of(abstractMethods.getFirst());
       }
       else {
         res = Optional.empty();

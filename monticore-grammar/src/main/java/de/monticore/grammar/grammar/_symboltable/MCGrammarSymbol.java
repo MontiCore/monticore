@@ -14,7 +14,6 @@ import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.se_rwth.commons.Names;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
 import static com.google.common.collect.ImmutableList.copyOf;
@@ -33,16 +32,17 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
 
   protected final LoadingCache<String, Optional<ProdSymbol>> prodCache = CacheBuilder.newBuilder()
           .maximumSize(10000)
-          .build(new CacheLoader<String, Optional<ProdSymbol>>() {
-                   @Override
-                   public Optional<ProdSymbol> load(String key) {
-                     Optional<ProdSymbol> mcProd = getProd(key);
-                     if (mcProd.isPresent()) {
-                       return mcProd;
-                     }
-                     return getInheritedProd(key);
-                   }
-                 });
+          .build(new CacheLoader<>() {
+            
+            @Override
+            public Optional<ProdSymbol> load(String key) {
+              Optional<ProdSymbol> mcProd = getProd(key);
+              if (mcProd.isPresent()) {
+                return mcProd;
+              }
+              return getInheritedProd(key);
+            }
+          });
 
   // the start production of the grammar
   protected ProdSymbol startProd;
@@ -88,7 +88,8 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
     List<MCGrammarSymbol> supGrammars = new ArrayList<>(this.getSuperGrammarSymbols());
     List<MCGrammarSymbol> superSuperGrammars = new ArrayList<>();
     for (MCGrammarSymbol superGrammar : supGrammars) {
-      superGrammar.getAllSuperGrammars().stream().filter(s -> !superSuperGrammars.contains(s)).forEach(s -> superSuperGrammars.add(s));
+      superGrammar.getAllSuperGrammars().stream().filter(s -> !superSuperGrammars.contains(s)).forEach(
+          superSuperGrammars::add);
     }
     superSuperGrammars.stream().filter(s -> !supGrammars.contains(s)).forEach(supGrammars::add);
     return copyOf(supGrammars);
@@ -175,7 +176,7 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
 
       ret.addAll(superGrammarRef.getTokenRulesWithInherited());
     }
-    forEachSplitRules(t -> ret.add(t));
+    forEachSplitRules(ret::add);
     return ret;
   }
 
@@ -187,7 +188,7 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
 
       ret.addAll(superGrammarRef.getKeywordRulesWithInherited());
     }
-    forEachNoKeywords(t -> ret.add(t));
+    forEachNoKeywords(ret::add);
     return ret;
   }
 
@@ -196,7 +197,7 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
     final Map<String, Collection<String>> ret = Maps.newHashMap(tokenModes);
     // allToken is the list of all already assigned characters
     Collection<String> allToken = Sets.newHashSet();
-    ret.forEach((k,v) -> v.forEach(t -> allToken.add(t)));
+    ret.forEach((k,v) -> allToken.addAll(v));
     for (MCGrammarSymbol superGrammar: getAllSuperGrammars()) {
       for (Map.Entry<String, Collection<String>> superMode: superGrammar.getTokenModes().entrySet()) {
         Collection<String> superTokenSet;
@@ -206,7 +207,7 @@ public class MCGrammarSymbol extends MCGrammarSymbolTOP {
         } else {
           superTokenSet = Sets.newHashSet();
         }
-        superMode.getValue().stream().filter(t ->!allToken.contains(t)).forEach(t ->superTokenSet.add(t));
+        superMode.getValue().stream().filter(t ->!allToken.contains(t)).forEach(superTokenSet::add);
         if (!superTokenSet.isEmpty()) {
           ret.put(superMode.getKey(), superTokenSet);
           allToken.addAll(superTokenSet);

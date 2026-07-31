@@ -9,7 +9,7 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 
 /**
  * Created by Alexander Wilts on 16.01.2017.
- *
+ * <p>
  * Determines the context of an Optional.
  * If it is used inside a OR-Expression it has to be handled differently from an AND-Expression.
  */

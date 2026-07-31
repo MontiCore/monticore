@@ -3,13 +3,13 @@
 options.addOption(org.apache.commons.cli.Option.builder("h")
     .longOpt("help")
     .desc("Prints this help dialog")
-    .build());
+    .get());
 
 //version
 options.addOption(org.apache.commons.cli.Option.builder("v")
     .longOpt("version")
     .desc("Prints version information")
-    .build());
+    .get());
 
 //stacktrace option
 options.addOption(org.apache.commons.cli.Option.builder()
@@ -18,7 +18,7 @@ options.addOption(org.apache.commons.cli.Option.builder()
     .hasArgs()
     .optionalArg(true)
     .desc("Enables stacktraces, such as --stacktrace or --stacktrace=ERROR,WARN or --stacktrace=ERROR:stderr,warn:stderr (optional)")
-    .build());
+    .get());
 
 //parse input file
 options.addOption(org.apache.commons.cli.Option.builder("i")
@@ -26,7 +26,7 @@ options.addOption(org.apache.commons.cli.Option.builder("i")
     .argName("file")
     .hasArg()
     .desc("Reads the source file (mandatory) and parses the contents")
-    .build());
+    .get());
 
 //pretty print model
 options.addOption(org.apache.commons.cli.Option.builder("pp")
@@ -35,7 +35,7 @@ options.addOption(org.apache.commons.cli.Option.builder("pp")
     .optionalArg(true)
     .numberOfArgs(1)
     .desc("Prints the AST to stdout or the specified file (optional)")
-    .build());
+    .get());
 
 //output symbol table
 options.addOption(org.apache.commons.cli.Option.builder("s")
@@ -43,7 +43,7 @@ options.addOption(org.apache.commons.cli.Option.builder("s")
     .argName("file")
     .hasArg()
     .desc("Serializes the symbol table of the given artifact.")
-    .build());
+    .get());
 
 //reports about the model
 options.addOption(org.apache.commons.cli.Option.builder("r")
@@ -51,12 +51,12 @@ options.addOption(org.apache.commons.cli.Option.builder("r")
     .argName("dir")
     .hasArg(true)
     .desc("Prints reports of the artifact to the specified directory.")
-    .build());
+    .get());
 
 // model paths
 options.addOption(org.apache.commons.cli.Option.builder("path")
     .hasArgs()
     .desc("Sets the artifact path for imported symbols, space separated.")
-    .build());
+    .get());
 
 return options;

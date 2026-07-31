@@ -209,8 +209,7 @@ public class DeriveSymTypeOfUglyExpressions
     if (!extTypeResult.isObscureType()) {
       //the definition of the Arrays are based on the assumption that MCType is not an array
       if (!extTypeResult.isArrayType()) {
-        if (creator.getArrayDimensionSpecifier() instanceof ASTArrayDimensionByExpression) {
-          ASTArrayDimensionByExpression arrayInitializer = (ASTArrayDimensionByExpression) creator.getArrayDimensionSpecifier();
+        if (creator.getArrayDimensionSpecifier() instanceof ASTArrayDimensionByExpression arrayInitializer) {
           int dim = arrayInitializer.getDimList().size() + arrayInitializer.getExpressionList().size();
           //teste dass alle Expressions integer-zahl sind
           for (ASTExpression expr : arrayInitializer.getExpressionList()) {
@@ -273,7 +272,7 @@ public class DeriveSymTypeOfUglyExpressions
     for (FunctionSymbol constructor : constructors) {
       if (constructor.getParameterList().size() == symTypeOfArguments.size()) {
         //get the types of the constructor arguments
-        List<SymTypeExpression> constructorArguments = constructor.getParameterList().stream().map(VariableSymbol::getType).collect(Collectors.toList());
+        List<SymTypeExpression> constructorArguments = constructor.getParameterList().stream().map(VariableSymbol::getType).toList();
         for (int i = 0; i < constructorArguments.size(); i++) {
           if (!compatible(constructorArguments.get(i), symTypeOfArguments.get(i))) {
             //wrong constructor, argument is not compatible to constructor definition

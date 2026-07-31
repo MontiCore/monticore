@@ -24,15 +24,15 @@ public class LexNamer {
 
   protected int lexCounter = 0;
   
-  protected Map<String, String> usedLex = new LinkedHashMap<String, String>();
+  protected Map<String, String> usedLex = new LinkedHashMap<>();
   
-  protected Map<String, String> usedConstants = new LinkedHashMap<String, String>();
+  protected Map<String, String> usedConstants = new LinkedHashMap<>();
   
   protected static Map<String, String> goodNames = null;
   
   public static Map<String, String> getGoodNames() {
     if (goodNames == null) {
-      goodNames = new LinkedHashMap<String, String>();
+      goodNames = new LinkedHashMap<>();
       // Put all common names here, one character only, since all others are
       // concatanation of these
       goodNames.put(";", "SEMI");

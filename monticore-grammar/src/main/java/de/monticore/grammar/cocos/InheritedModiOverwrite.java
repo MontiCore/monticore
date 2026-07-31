@@ -5,11 +5,9 @@ import de.monticore.grammar.grammar._ast.ASTLexProd;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class InheritedModiOverwrite implements GrammarASTMCGrammarCoCo {
@@ -29,7 +27,7 @@ public class InheritedModiOverwrite implements GrammarASTMCGrammarCoCo {
         if (lexProd.isPresentMode()) {
           String modeString = lexProd.getMode();
           String prodName = lexProd.getName();
-          List<ASTLexProd> supLexProdList = node.getLexProdList().stream().filter(prod -> prod.getName().equals(prodName)).collect(Collectors.toList());
+          List<ASTLexProd> supLexProdList = node.getLexProdList().stream().filter(prod -> prod.getName().equals(prodName)).toList();
           for (ASTLexProd lex : supLexProdList) {
             if (!lex.isPresentMode()) {
               //warn the user that he inherits a token mode

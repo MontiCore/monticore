@@ -192,10 +192,8 @@ public class BoundResolution {
           var2Equal.get(typeEqualityBound.getFirstType())
               .add(typeEqualityBound.getSecondType());
           Optional<TypeEqualityBound> flipped = typeEqualityBound.getFlipped();
-          if (flipped.isPresent()) {
-            var2Equal.get(flipped.get().getFirstType())
-                .add(flipped.get().getSecondType());
-          }
+          flipped.ifPresent(equalityBound -> var2Equal.get(equalityBound.getFirstType())
+              .add(equalityBound.getSecondType()));
         }
         else if (bound.isCaptureBound()) {
           if (var2CaptureBound.containsKey(varBounds.getKey())) {
@@ -375,23 +373,20 @@ public class BoundResolution {
           SymTypeInferenceVariable newInfVar = origVar2NewInfVar.get(origVar);
           Optional<SymTypeExpression> lowerBound =
               getLubOfProperLowerBounds(var2LowerBounds.get(origVar));
-          if (lowerBound.isPresent()) {
-            newInfVarsBounds.add(new SubTypingBound(lowerBound.get(), newInfVar));
-          }
+          lowerBound.ifPresent(symTypeExpression -> newInfVarsBounds.add(
+              new SubTypingBound(symTypeExpression, newInfVar)));
           List<SymTypeExpression> replacedUpperBounds =
               var2UpperBounds.get(origVar).stream()
                   .map(t -> TypeParameterRelations.replaceInferenceVariables(t, origVar2NewInfVar))
                   .collect(Collectors.toList());
           Optional<SymTypeExpression> upperBound =
               getGlbOfProperUpperBounds(replacedUpperBounds);
-          if (upperBound.isPresent()) {
-            newInfVarsBounds.add(new SubTypingBound(newInfVar, upperBound.get()));
-          }
+          upperBound.ifPresent(symTypeExpression -> newInfVarsBounds.add(
+              new SubTypingBound(newInfVar, symTypeExpression)));
           Optional<SymTypeExpression> sourceBound =
               getLubOfProperLowerBounds(var2SourceBounds.get(origVar));
-          if (sourceBound.isPresent()) {
-            newInfVarsBounds.add(new TypeCompatibilityBound(sourceBound.get(), newInfVar));
-          }
+          sourceBound.ifPresent(symTypeExpression -> newInfVarsBounds.add(
+              new TypeCompatibilityBound(symTypeExpression, newInfVar)));
           // FDr: need to check if this replacement is fine
           // currently no reason to assume otherwise
           List<SymTypeExpression> replacedTargetBounds =
@@ -400,9 +395,8 @@ public class BoundResolution {
                   .collect(Collectors.toList());
           Optional<SymTypeExpression> targetBound =
               getGlbOfProperUpperBounds(replacedTargetBounds);
-          if (targetBound.isPresent()) {
-            newInfVarsBounds.add(new TypeCompatibilityBound(newInfVar, targetBound.get()));
-          }
+          targetBound.ifPresent(symTypeExpression -> newInfVarsBounds.add(
+              new TypeCompatibilityBound(newInfVar, symTypeExpression)));
           // check for bound consistency
           if (lowerBound.isPresent() && upperBound.isPresent()) {
             if (!isSubTypeOf(lowerBound.get(), upperBound.get())) {
@@ -479,7 +473,7 @@ public class BoundResolution {
         // any instantiation is OK, as at this point the constraints hold
         // that all the instantiations are pairwise equal.
         else {
-          var2Instantiation.put(var, instantiations.get(0));
+          var2Instantiation.put(var, instantiations.getFirst());
         }
       }
       Log.trace("END resolving bounds; "
@@ -570,10 +564,10 @@ public class BoundResolution {
 
       List<SymTypeExpression> properSources = var2SourceBounds.get(var).stream()
           .filter(Predicate.not(TypeParameterRelations::hasInferenceVariables))
-          .collect(Collectors.toList());
+          .toList();
       List<SymTypeExpression> properTargets = var2TargetBounds.get(var).stream()
           .filter(Predicate.not(TypeParameterRelations::hasInferenceVariables))
-          .collect(Collectors.toList());
+          .toList();
 
       // search for better lower bound in the source bounds
       List<SymTypeExpression> sourcesThatAreInSubTypingRelation = new ArrayList<>();
@@ -746,9 +740,7 @@ public class BoundResolution {
         TypeEqualityBound typeEqualityBound = (TypeEqualityBound) bound;
         varsToBeAdded.add(typeEqualityBound.getFirstType());
         Optional<TypeEqualityBound> flipped = typeEqualityBound.getFlipped();
-        if (flipped.isPresent()) {
-          varsToBeAdded.add(flipped.get().getFirstType());
-        }
+        flipped.ifPresent(equalityBound -> varsToBeAdded.add(equalityBound.getFirstType()));
       }
       else if (bound.isCaptureBound()) {
         CaptureBound captureBound = (CaptureBound) bound;
@@ -805,10 +797,8 @@ public class BoundResolution {
         dependencies.get(typeEqualityBound.getFirstType())
             .add(typeEqualityBound);
         Optional<TypeEqualityBound> flipped = typeEqualityBound.getFlipped();
-        if (flipped.isPresent()) {
-          dependencies.get(flipped.get().getFirstType())
-              .add(typeEqualityBound);
-        }
+        flipped.ifPresent(
+            equalityBound -> dependencies.get(equalityBound.getFirstType()).add(typeEqualityBound));
       }
       else if (bound.isCaptureBound()) {
         CaptureBound captureBound = (CaptureBound) bound;
@@ -828,19 +818,17 @@ public class BoundResolution {
   protected Map<SymTypeInferenceVariable, List<Bound>> completeVarBoundDependencies(
       Map<SymTypeInferenceVariable, List<Bound>> varBoundDependencies
   ) {
-    Map<SymTypeInferenceVariable, List<Bound>> completeDependencies = new TreeMap<>();
-    completeDependencies.putAll(varBoundDependencies);
+    Map<SymTypeInferenceVariable, List<Bound>> completeDependencies =
+        new TreeMap<>(varBoundDependencies);
     List<SymTypeExpression> includedTypes = new ArrayList<>();
     for (List<Bound> bounds : varBoundDependencies.values()) {
       for (Bound bound : bounds) {
         includedTypes.addAll(bound.getIncludedTypes());
       }
     }
-    Set<SymTypeInferenceVariable> includedVariables = new TreeSet<>();
-    includedVariables.addAll(includedTypes.stream().flatMap(t ->
-            TypeParameterRelations.getIncludedInferenceVariables(t).stream()
-        ).collect(Collectors.toList())
-    );
+    Set<SymTypeInferenceVariable> includedVariables = includedTypes.stream()
+        .flatMap(t -> TypeParameterRelations.getIncludedInferenceVariables(t).stream())
+        .collect(Collectors.toCollection(TreeSet::new));
     for (SymTypeInferenceVariable var : includedVariables) {
       List<Bound> bounds = completeDependencies
           .getOrDefault(var, Collections.emptyList());

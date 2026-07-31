@@ -261,7 +261,7 @@ public class GrammarScopesGenitor extends GrammarScopesGenitorTOP {
     for (String typeName : findImplicitTypes(action, prettyPrinter)) {
       // Create rule if needed
       Optional<ProdSymbol> rule = grammarSymbol.getProd(typeName);
-      if (!rule.isPresent()) {
+      if (rule.isEmpty()) {
         // Create entry for an implicit rule
         final ProdSymbol prodSymbol = new ProdSymbol(typeName);
         prodSymbol.setIsLexerProd(true);
@@ -329,9 +329,7 @@ public class GrammarScopesGenitor extends GrammarScopesGenitorTOP {
   protected List<String> findImplicitTypes(ASTLexActionOrPredicate action,
                                                Grammar_WithConceptsFullPrettyPrinter prettyPrinter) {
     List<String> ret = Lists.newArrayList();
-    StringBuilder buffer = new StringBuilder();
-    buffer.append(prettyPrinter.prettyprint(action.getExpressionPredicate()));
-    String actionText = buffer.toString();
+    String actionText = prettyPrinter.prettyprint(action.getExpressionPredicate());
     if (actionText.contains("_ttype")) {
       String[] split = actionText.split("_ttype");
 
@@ -351,7 +349,7 @@ public class GrammarScopesGenitor extends GrammarScopesGenitorTOP {
 
       for (int i = 1; i < split.length; i++) {
         String rest = split[i].trim();
-        if (rest.length() > 0) {
+        if (!rest.isEmpty()) {
 
           if (!rest.startsWith("Token")) {
             String string = rest.split("[ )]")[0];

@@ -43,7 +43,7 @@ public class DifferenceFinder {
   private List<ASTODLink> unchangedLinks = new LinkedList<>();
   private ASTODDefinition lhs;
 
-  private LinkedHashMap<ASTODObject, List<ASTODLink>> toCreateObjectsAttr = new LinkedHashMap();
+  private LinkedHashMap<ASTODObject, List<ASTODLink>> toCreateObjectsAttr = new LinkedHashMap<>();
 
   private HierarchyHelper hierarchyHelper;
 
@@ -112,7 +112,7 @@ public class DifferenceFinder {
       //calculate and return the composition of all changes
       return calculateChanges(rule, lhs, rule.getRhs());
     }
-    return new ArrayList<ASTChangeOperation>();
+    return new ArrayList<>();
   }
 
 
@@ -128,7 +128,7 @@ public class DifferenceFinder {
   private List<ASTChangeOperation> calculateChanges(ASTODRule rule, ASTODDefinition lhs, ASTODDefinition rhs) {
     ChangeOperationFactory operationFactory = new ChangeOperationFactory(rule, lhs, rhs, hierarchyHelper);
 
-    List<ASTChangeOperation> changeOpList = new ArrayList<ASTChangeOperation>();
+    List<ASTChangeOperation> changeOpList = new ArrayList<>();
     List<ASTODLink> toCreateLinksCopy = new LinkedList<>(toCreateLinks);
 
     for (ChangePair<ASTODObject> pair : toChangeObjects) {
@@ -268,7 +268,7 @@ public class DifferenceFinder {
 
   private boolean referencesAreEqual(List<ASTMCQualifiedName> rightReferenceNames,
       List<ASTMCQualifiedName> rightReferenceNames1) {
-    return rightReferenceNames.get(0).deepEquals(rightReferenceNames1.get(0));
+    return rightReferenceNames.getFirst().deepEquals(rightReferenceNames1.getFirst());
   }
 
   private boolean isMatchForSetValuedLink(ASTODLink left, ASTODLink right){

@@ -29,12 +29,12 @@ public class NoForbiddenSymbolName implements GrammarASTMCGrammarCoCo {
     List<ProdSymbol> symbolProds = symbol.getProdsWithInherited().values()
         .stream()
         .filter(ProdSymbol::isIsSymbolDefinition)
-        .collect(Collectors.toList());
+        .toList();
     if(grammarName.endsWith(SYMBOL)){
       String nameWithoutSymbol = grammarName.substring(0,grammarName.lastIndexOf(SYMBOL));
       List<ProdSymbol> forbidden = symbolProds.stream()
           .filter(p -> p.getName().equals(nameWithoutSymbol))
-          .collect(Collectors.toList());
+          .toList();
       if(!forbidden.isEmpty()){
         for(ProdSymbol prod: forbidden){
           Log.error(ERROR_CODE + String.format(ERROR_MSG_FORMAT, prod.getName(), grammarName), prod.getSourcePosition());

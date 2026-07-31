@@ -55,11 +55,11 @@ public enum Multiplicity {
     return STANDARD;
   }
 
-  protected static int getMaxCardinality(ASTCard cardinality) {
+  private static int getMaxCardinality(ASTCard cardinality) {
     return Integer.parseInt(cardinality.getMax());
   }
 
-  protected static int getMinCardinality(ASTCard cardinality) {
+  private static int getMinCardinality(ASTCard cardinality) {
     return Integer.parseInt(cardinality.getMin());
   }
 
@@ -110,7 +110,8 @@ public enum Multiplicity {
     return max(newArrayList);
   }
 
-  protected static Multiplicity multiplicityByAlternative(ASTMCGrammar rootNode, ASTRuleComponent astNode, List<ASTGrammarNode> intermediates) {
+  private static Multiplicity multiplicityByAlternative(ASTMCGrammar rootNode,
+      ASTRuleComponent astNode, List<ASTGrammarNode> intermediates) {
     boolean containedInAlternative = false;
     for (ASTNode intermediate : intermediates) {
       if (intermediate instanceof ASTClassProd) {
@@ -122,7 +123,8 @@ public enum Multiplicity {
     return containedInAlternative ? OPTIONAL : STANDARD;
   }
 
-  protected static Multiplicity multiplicityByDuplicates(ASTMCGrammar rootNode, ASTRuleComponent astNode, List<ASTGrammarNode> intermediates) {
+  private static Multiplicity multiplicityByDuplicates(ASTMCGrammar rootNode,
+      ASTRuleComponent astNode, List<ASTGrammarNode> intermediates) {
     boolean hasDuplicate = getAllNodesInRelatedRuleComponents(rootNode, astNode, intermediates)
         .anyMatch(sibling -> areDuplicates(rootNode, astNode, sibling));
     if (hasDuplicate) {
@@ -152,21 +154,21 @@ public enum Multiplicity {
     return Optional.empty();
   }
 
-  protected static boolean areDuplicates(ASTMCGrammar rootNode, ASTRuleComponent firstNode, ASTRuleComponent secondNode) {
+  private static boolean areDuplicates(ASTMCGrammar rootNode, ASTRuleComponent firstNode,
+      ASTRuleComponent secondNode) {
     Optional<String> firstName = Optional.of(firstNode.getName());
     Optional<String> firstUsageName = getUsageName(firstNode);
     Optional<String> secondName = Optional.of(secondNode.getName());
     Optional<String> secondUsageName = getUsageName(secondNode);
 
-    boolean bothUsageNamesAbsent = !firstUsageName.isPresent() && !secondUsageName.isPresent();
+    boolean bothUsageNamesAbsent = firstUsageName.isEmpty() && secondUsageName.isEmpty();
     boolean namesMatch = firstName.equals(secondName);
     boolean usageNamesMatch = firstUsageName.equals(secondUsageName);
     return (bothUsageNamesAbsent && namesMatch) || (!bothUsageNamesAbsent && usageNamesMatch);
   }
 
-  protected static Stream<ASTRuleComponent> getAllNodesInRelatedRuleComponents(ASTMCGrammar rootNode,
-                                                                               ASTRuleComponent astNode,
-                                                                               List<ASTGrammarNode> intermediates) {
+  private static Stream<ASTRuleComponent> getAllNodesInRelatedRuleComponents(ASTMCGrammar rootNode,
+      ASTRuleComponent astNode, List<ASTGrammarNode> intermediates) {
 
     Set<ASTRuleComponent> ancestorRuleComponents = intermediates.stream()
         .filter(ASTRuleComponent.class::isInstance)
@@ -196,7 +198,7 @@ public enum Multiplicity {
     return multiplicity;
   }
 
-  protected static int getIterationInt(ASTNode ancestor) {
+  private static int getIterationInt(ASTNode ancestor) {
     int iteration = ASTConstantsGrammar.DEFAULT;
     if (ancestor instanceof ASTBlock) {
       iteration = ((ASTBlock) ancestor).getIteration();

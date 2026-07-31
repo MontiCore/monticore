@@ -40,7 +40,7 @@ public class SynthesizeSymTypeFromMCFunctionTypes extends AbstractSynthesizeFrom
   public void handle(ASTMCFunctionType functionType) {
     SymTypeExpression symType;
 
-    List<SymTypeExpression> arguments = new LinkedList<SymTypeExpression>();
+    List<SymTypeExpression> arguments = new LinkedList<>();
     for (int i = 0; i<functionType.getMCFunctionParTypes().sizeMCTypes(); i++) {
       ASTMCType arg = functionType.getMCFunctionParTypes().getMCType(i);
       getTypeCheckResult().reset();

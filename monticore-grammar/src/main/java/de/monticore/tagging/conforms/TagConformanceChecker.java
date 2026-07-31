@@ -91,7 +91,7 @@ public class TagConformanceChecker implements TagsVisitor2 {
       this.found = true;
     } else {
       List<String> allowedValues = enumeratedTagTypes.stream().filter(t -> t.getName().equals(node.getName())).map(
-              EnumeratedTagTypeSymbol::getValuesList).flatMap(Collection::stream).collect(Collectors.toList());
+              EnumeratedTagTypeSymbol::getValuesList).flatMap(Collection::stream).toList();
       Log.error("0x74683: Valued tag " + node.getName() + " is not in the set of allowed values: " + allowedValues + ", but " + node.getValue() + " present");
     }
   }

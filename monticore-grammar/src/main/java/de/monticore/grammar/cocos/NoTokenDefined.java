@@ -6,6 +6,7 @@ import de.monticore.grammar.grammar.GrammarMill;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
+import de.monticore.grammar.grammar._symboltable.MCGrammarSymbolTOP;
 import de.monticore.grammar.grammar._visitor.GrammarTraverser;
 import de.se_rwth.commons.logging.Log;
 
@@ -29,9 +30,9 @@ public class NoTokenDefined implements GrammarASTMCGrammarCoCo {
     if (node.isPresentSymbol() && !node.getSymbol().isIsComponent()) {
       MCGrammarSymbol symbol = node.getSymbol();
       List<ASTMCGrammar> superGrammars = symbol.getAllSuperGrammars().stream()
-          .filter(x -> x.isPresentAstNode())
+          .filter(MCGrammarSymbolTOP::isPresentAstNode)
           .map(x -> (ASTMCGrammar) x.getAstNode())
-          .collect(Collectors.toList());
+          .toList();
       //check for own and super grammars tokens
       if (!hasTokenDefinition(node) && superGrammars.stream().noneMatch(this::hasTokenDefinition)) {
         Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, node.getName()),

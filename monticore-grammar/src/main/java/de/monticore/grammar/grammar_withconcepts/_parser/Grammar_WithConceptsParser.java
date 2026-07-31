@@ -18,18 +18,14 @@ public class Grammar_WithConceptsParser extends Grammar_WithConceptsParserTOP {
   @Override
   public Optional<ASTMCGrammar> parse_String(String str) throws IOException {
     Optional<ASTMCGrammar> grammar = super.parse_String(str);
-    if (grammar.isPresent()) {
-      GrammarTransformer.transform(grammar.get());
-    }
+    grammar.ifPresent(GrammarTransformer::transform);
     return grammar;
   }
 
   @Override
   public Optional<ASTMCGrammar> parse(Reader reader) throws IOException {
     Optional<ASTMCGrammar> grammar = super.parse(reader);
-    if (grammar.isPresent()) {
-      GrammarTransformer.transform(grammar.get());
-    }
+    grammar.ifPresent(GrammarTransformer::transform);
     return grammar;
   }
 
@@ -65,7 +61,7 @@ public class Grammar_WithConceptsParser extends Grammar_WithConceptsParserTOP {
 
     Optional<ASTMCGrammar> result = Optional.empty();
     if (ast.isPresent()) {
-      result = Optional.of(ast.get());
+      result = ast;
     }
     return result;
   }

@@ -40,13 +40,14 @@ public class SymTypeExpressionJavaPrinterVisitor
   protected final Map<String, String> javaTypeSymbolMap;
 
   public SymTypeExpressionJavaPrinterVisitor() {
-    Map<String, String> javaTypeSymbolMap_temp = new HashMap<>();
-    javaTypeSymbolMap_temp.put("Stream.Stream", RTE_PACKAGE + ".streams.Stream");
-    javaTypeSymbolMap_temp.put("EventStream.EventStream", RTE_PACKAGE + ".streams.EventStream");
-    javaTypeSymbolMap_temp.put("SyncStream.SyncStream", RTE_PACKAGE + ".streams.SyncStream");
-    javaTypeSymbolMap_temp.put("ToptStream.ToptStream", RTE_PACKAGE + ".streams.ToptStream");
-    javaTypeSymbolMap_temp.put("UntimedStream.UntimedStream", RTE_PACKAGE + ".streams.UntimedStream");
-    javaTypeSymbolMap = Collections.unmodifiableMap(javaTypeSymbolMap_temp);
+    javaTypeSymbolMap =
+        Map.of(
+            "Stream.Stream", RTE_PACKAGE + ".streams.Stream",
+            "EventStream.EventStream",RTE_PACKAGE + ".streams.EventStream",
+            "SyncStream.SyncStream", RTE_PACKAGE + ".streams.SyncStream",
+            "ToptStream.ToptStream", RTE_PACKAGE + ".streams.ToptStream",
+            "UntimedStream.UntimedStream", RTE_PACKAGE + ".streams.UntimedStream"
+        );
   }
 
   @Override

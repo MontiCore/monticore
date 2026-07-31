@@ -95,9 +95,9 @@ public class BoundIncorporation {
       }
     }
     // get the additional bounds given by CaptureBounds
-    for (int i = 0; i < newBounds.size(); i++) {
-      if (newBounds.get(i).isCaptureBound()) {
-        CaptureBound cB = (CaptureBound) newBounds.get(i);
+    for (Bound newBound : newBounds) {
+      if (newBound.isCaptureBound()) {
+        CaptureBound cB = (CaptureBound) newBound;
         for (Bound impliedBound : cB.getImpliedBounds()) {
           constraints.add(new BoundWrapperConstraint(impliedBound));
         }
@@ -471,9 +471,9 @@ public class BoundIncorporation {
     List<Constraint> constraints = new ArrayList<>();
     incorporateNonSymmetrical(bE, bS).ifPresent(constraints::add);
     Optional<TypeEqualityBound> flipped = bE.getFlipped();
-    if (flipped.isPresent()) {
-      incorporateNonSymmetrical(flipped.get(), bS).ifPresent(constraints::add);
-    }
+    flipped.ifPresent(
+        typeEqualityBound -> incorporateNonSymmetrical(typeEqualityBound, bS).ifPresent(
+            constraints::add));
     return constraints;
   }
 
@@ -520,9 +520,9 @@ public class BoundIncorporation {
     List<Constraint> constraints = new ArrayList<>();
     incorporateNonSymmetrical(bE, bComp).ifPresent(constraints::add);
     Optional<TypeEqualityBound> flipped = bE.getFlipped();
-    if (flipped.isPresent()) {
-      incorporateNonSymmetrical(flipped.get(), bComp).ifPresent(constraints::add);
-    }
+    flipped.ifPresent(
+        typeEqualityBound -> incorporateNonSymmetrical(typeEqualityBound, bComp).ifPresent(
+            constraints::add));
     return constraints;
   }
 
@@ -853,14 +853,14 @@ public class BoundIncorporation {
     }
     List<Constraint> constraints;
     if (oredConstraintsFiltered.size() == 1) {
-      constraints = oredConstraintsFiltered.get(0);
+      constraints = oredConstraintsFiltered.getFirst();
     }
     else {
       if (oredConstraintsFiltered.isEmpty()) {
-        constraints = oredConstraints.get(0);
+        constraints = oredConstraints.getFirst();
       }
       else {
-        constraints = oredConstraintsFiltered.get(0);
+        constraints = oredConstraintsFiltered.getFirst();
       }
       Log.debug("given Bounds " + b1.print() + ", " + b2.print()
               + " arbitrarily choosing Constraints" + System.lineSeparator()
@@ -905,8 +905,8 @@ public class BoundIncorporation {
     ) {
       List<SymTypeOfTuple> tuples = commonSuperTypesWithoutInfVars.stream()
           .map(SymTypeExpression::asTupleType)
-          .collect(Collectors.toList());
-      int length = tuples.get(0).sizeTypes();
+          .toList();
+      int length = tuples.getFirst().sizeTypes();
       if (!tuples.stream().allMatch(t -> t.sizeTypes() == length)) {
         Log.error("0xFD442 internal error: unexpected (impossible)"
             + " collection of common super types: " + System.lineSeparator()
@@ -942,9 +942,9 @@ public class BoundIncorporation {
       // this can be optimized if required (s. tuples comment)
       List<SymTypeOfFunction> functions = commonSuperTypesWithoutInfVars.stream()
           .map(SymTypeExpression::asFunctionType)
-          .collect(Collectors.toList());
-      int parLength = functions.get(0).sizeArgumentTypes();
-      boolean isElliptic = functions.get(0).isElliptic();
+          .toList();
+      int parLength = functions.getFirst().sizeArgumentTypes();
+      boolean isElliptic = functions.getFirst().isElliptic();
       if (!functions.stream().allMatch(f ->
           f.sizeArgumentTypes() != parLength
               || f.isElliptic() != isElliptic

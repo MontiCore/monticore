@@ -12,6 +12,7 @@ import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -78,9 +79,8 @@ public class SymTypeExpressionDeSer {
 
   public static void serializeMember(JsonPrinter printer, String memberName,
       Optional<SymTypeExpression> member) {
-    if (member.isPresent()) {
-      printer.memberJson(memberName, member.get().printAsJson());
-    }
+    member.ifPresent(
+        symTypeExpression -> printer.memberJson(memberName, symTypeExpression.printAsJson()));
   }
 
   public static void serializeMember(JsonPrinter printer, String memberName,
@@ -150,12 +150,8 @@ public class SymTypeExpressionDeSer {
    * @param theInstance
    */
   public static void setInstance(SymTypeExpressionDeSer theInstance) {
-    if (null == theInstance) {  //in this case, "reset" to default type
-      instance = new SymTypeExpressionDeSer();
-    }
-    else {
-      instance = theInstance;
-    }
+    // "reset" to default type, in case theInstance is null
+    instance = Objects.requireNonNullElseGet(theInstance, SymTypeExpressionDeSer::new);
   }
 
   public String serialize(SymTypeExpression toSerialize) {

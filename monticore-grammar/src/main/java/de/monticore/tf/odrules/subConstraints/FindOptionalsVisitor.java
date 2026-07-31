@@ -12,7 +12,7 @@ import java.util.Set;
 
 /**
  * Created by Alexander Wilts on 16.01.2017.
- *
+ * <p>
  * This visitor calculates if there are any elements with stereotype 'optional' or 'null' contained in the given expression.
  */
 public class FindOptionalsVisitor implements

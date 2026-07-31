@@ -59,7 +59,7 @@ public class SubrulesUseInterfaceNTs implements GrammarASTMCGrammarCoCo {
         .map(MCGrammarSymbol::getProds)
         .flatMap(Collection::stream)
         .filter(x -> x.getName().equals(prodSymbol.getName()))
-        .collect(Collectors.toList());
+        .toList();
     if (overwrittenProds.isEmpty()) {
       logError(prodSymbol, interfaceSymbol, interfaceSymbol.getProdComponents().stream().findFirst().get());
     }

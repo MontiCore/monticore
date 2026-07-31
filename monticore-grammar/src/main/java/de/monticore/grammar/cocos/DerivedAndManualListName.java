@@ -35,7 +35,7 @@ public class DerivedAndManualListName implements GrammarASTProdCoCo {
     if (node.isPresentSymbol()) {
       List<RuleComponentSymbol> listComponents = node.getSymbol().getProdComponents().stream()
           .filter(RuleComponentSymbolTOP::isIsList)
-          .collect(Collectors.toList());
+          .toList();
       for (int i = 0; i < listComponents.size(); i++) {
         for (int j = i + 1; j < listComponents.size(); j++) {
           if ((listComponents.get(i).isIsNonterminal() && listComponents.get(j).isIsNonterminal()) ||

@@ -327,8 +327,7 @@ public class CommonExpressionsJavaGenVisitor
       // peephole optimization, this is not (strictly) required
       if (funcType.hasSymbol()) {
         FunctionSymbol funcSym = funcType.getSymbol();
-        if (funcSym instanceof MethodSymbol) {
-          MethodSymbol methodSym = (MethodSymbol) funcSym;
+        if (funcSym instanceof MethodSymbol methodSym) {
           if (!methodSym.getSpannedScope().isPresentSpanningSymbol()) {
             Log.error("0xFD225 internal error: "
                     + "method symbol has no enclosing (OO)type: "
@@ -356,9 +355,7 @@ public class CommonExpressionsJavaGenVisitor
             didPrintSpecialCase = true;
           }
           // something .method(arguments)
-          else if (node.getExpression() instanceof ASTFieldAccessExpression) {
-            ASTFieldAccessExpression fieldAccessExpr =
-                (ASTFieldAccessExpression) node.getExpression();
+          else if (node.getExpression() instanceof ASTFieldAccessExpression fieldAccessExpr) {
             state.startParentheses();
             fieldAccessExpr.getExpression().accept(getTraverser());
             state.endParentheses();
@@ -389,7 +386,7 @@ public class CommonExpressionsJavaGenVisitor
       List<SymTypeExpression> argTypes = node.getArguments().streamExpressions()
           .map(TypeCheck3::typeOf)
           .map(SymTypeRelations::normalize)
-          .collect(Collectors.toList());
+          .toList();
       state.startParentheses();
       for (int i = 0; i < node.getArguments().sizeExpressions(); i++) {
         ASTExpression argExpr = node.getArguments().getExpression(i);

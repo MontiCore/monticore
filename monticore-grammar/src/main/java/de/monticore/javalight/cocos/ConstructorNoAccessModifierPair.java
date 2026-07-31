@@ -4,17 +4,12 @@ package de.monticore.javalight.cocos;
 import de.monticore.javalight.JavaLightMill;
 import de.monticore.javalight._ast.ASTConstructorDeclaration;
 import de.monticore.javalight._cocos.JavaLightASTConstructorDeclarationCoCo;
-import de.monticore.javalight._symboltable.JavaMethodSymbol;
 import de.monticore.statements.mccommonstatements._ast.ASTConstantsMCCommonStatements;
 import de.monticore.statements.mccommonstatements._ast.ASTJavaModifier;
 import de.monticore.statements.mcstatementsbasis._ast.ASTMCModifier;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class ConstructorNoAccessModifierPair implements JavaLightASTConstructorDeclarationCoCo {
 

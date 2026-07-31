@@ -37,14 +37,12 @@ public class JavaGenSymTypeRelations {
     javaPrimitiveNumericTypes.add(BasicSymbolsMill.INT);
     javaPrimitiveNumericTypes.add(BasicSymbolsMill.LONG);
     javaPrimitiveNumericTypes.add(BasicSymbolsMill.SHORT);
-
-    Set<String> javaPrimitiveTypes_temp = new HashSet<>();
-    javaPrimitiveTypes_temp.addAll(javaPrimitiveNumericTypes);
+    
+    Set<String> javaPrimitiveTypes_temp = new HashSet<>(javaPrimitiveNumericTypes);
     javaPrimitiveTypes_temp.add(BasicSymbolsMill.BOOLEAN);
     javaPrimitiveTypes = Collections.unmodifiableSet(javaPrimitiveTypes_temp);
-
-    Set<String> javaNumericTypes_temp = new HashSet<>();
-    javaNumericTypes_temp.addAll(javaPrimitiveNumericTypes);
+    
+    Set<String> javaNumericTypes_temp = new HashSet<>(javaPrimitiveNumericTypes);
     javaNumericTypes_temp.add("java.lang.Byte");
     javaNumericTypes_temp.add("java.lang.Character");
     javaNumericTypes_temp.add("java.lang.Double");

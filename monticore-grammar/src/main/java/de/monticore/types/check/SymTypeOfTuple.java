@@ -3,14 +3,8 @@ package de.monticore.types.check;
 
 import com.google.common.base.Preconditions;
 import de.monticore.types3.ISymTypeVisitor;
-import de.se_rwth.commons.logging.Log;
 
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Spliterator;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
@@ -75,7 +69,7 @@ public class SymTypeOfTuple extends SymTypeExpression {
   }
 
   public boolean containsAllTypes(Collection<?> collection) {
-    return this.getTypeList().containsAll(collection);
+    return new HashSet<>(this.getTypeList()).containsAll(collection);
   }
 
   public boolean isEmptyTypes() {

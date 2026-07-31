@@ -10,7 +10,7 @@ ${tc.signature("simpleName", "symbolFullName", "scopeInterface")}
   // to prevent resolving cycles caused by cyclic symbol adapters
   set${simpleName}SymbolsAlreadyResolved(true);
   final List<${symbolFullName}> resolvedSymbols = this.resolve${simpleName}LocallyMany(foundSymbols, name, modifier, predicate);
-  foundSymbols = foundSymbols || resolvedSymbols.size() > 0;
+  foundSymbols = foundSymbols || !resolvedSymbols.isEmpty();
   set${simpleName}SymbolsAlreadyResolved(false);
 
   final String resolveCall = "resolveDownMany(\"" + name + "\", \"" + "${simpleName}Symbol"

@@ -24,24 +24,13 @@ public class JavaNumericOperationHandler implements ICodeGenOperationHandler {
   protected static Map<BinaryOperator, String> BINARY_OPERATOR_2_JAVA;
 
   static {
-    Map<BinaryOperator, String> binaryOperator2JavaTmp = new HashMap<>();
-    binaryOperator2JavaTmp.put(PLUS, "+");
-    binaryOperator2JavaTmp.put(MINUS, "-");
-    binaryOperator2JavaTmp.put(MULTIPLY, "*");
-    binaryOperator2JavaTmp.put(DIVIDE, "/");
-    binaryOperator2JavaTmp.put(MODULO, "%");
-    binaryOperator2JavaTmp.put(BITWISE_AND, "&");
-    binaryOperator2JavaTmp.put(BITWISE_OR, "|");
-    binaryOperator2JavaTmp.put(BITWISE_XOR, "^");
-    binaryOperator2JavaTmp.put(LEFT_SHIFT, "<<");
-    binaryOperator2JavaTmp.put(RIGHT_SHIFT_SIGNED, ">>");
-    binaryOperator2JavaTmp.put(RIGHT_SHIFT_UNSIGNED, ">>>");
-    binaryOperator2JavaTmp.put(GREATER_THAN, ">");
-    binaryOperator2JavaTmp.put(LESS_THAN, "<");
-    binaryOperator2JavaTmp.put(GREATER_EQUALS, ">=");
-    binaryOperator2JavaTmp.put(LESS_EQUALS, "<=");
     BINARY_OPERATOR_2_JAVA =
-        Collections.unmodifiableMap(binaryOperator2JavaTmp);
+        Map.ofEntries(Map.entry(PLUS, "+"), Map.entry(MINUS, "-"), Map.entry(MULTIPLY, "*"),
+            Map.entry(DIVIDE, "/"), Map.entry(MODULO, "%"), Map.entry(BITWISE_AND, "&"),
+            Map.entry(BITWISE_OR, "|"), Map.entry(BITWISE_XOR, "^"), Map.entry(LEFT_SHIFT, "<<"),
+            Map.entry(RIGHT_SHIFT_SIGNED, ">>"), Map.entry(RIGHT_SHIFT_UNSIGNED, ">>>"),
+            Map.entry(GREATER_THAN, ">"), Map.entry(LESS_THAN, "<"),
+            Map.entry(GREATER_EQUALS, ">="), Map.entry(LESS_EQUALS, "<="));
   }
 
   @Override

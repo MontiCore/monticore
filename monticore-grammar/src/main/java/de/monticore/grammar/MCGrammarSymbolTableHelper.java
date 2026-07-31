@@ -40,7 +40,7 @@ public class MCGrammarSymbolTableHelper {
             .stream())
         .orElse(Stream.empty()).skip(1);
     return superGrammars.map(superGrammar -> superGrammar.getProd(name))
-        .filter(mcRuleSymbol -> mcRuleSymbol.isPresent())
+        .filter(Optional::isPresent)
         .map(Optional::get)
         .findFirst();
   }
@@ -84,10 +84,10 @@ public class MCGrammarSymbolTableHelper {
    */
   public static Set<MCGrammarSymbol> getAllSuperGrammars(
       MCGrammarSymbol grammarSymbol) {
-    Set<MCGrammarSymbol> allSuperGrammars = new LinkedHashSet<>();
     Set<MCGrammarSymbol> tmpList = new LinkedHashSet<>();
-    allSuperGrammars.addAll(grammarSymbol.getSuperGrammarSymbols());
-    boolean modified = false;
+    Set<MCGrammarSymbol> allSuperGrammars =
+        new LinkedHashSet<>(grammarSymbol.getSuperGrammarSymbols());
+    boolean modified;
     do {
       for (MCGrammarSymbol curGrammar : allSuperGrammars) {
         tmpList.addAll(curGrammar.getSuperGrammarSymbols());
@@ -105,9 +105,8 @@ public class MCGrammarSymbolTableHelper {
       return symbol.getName();
     } else {
       Optional<MCGrammarSymbol> grammarSymbol = getMCGrammarSymbol(astNode.getEnclosingScope());
-      String string = (grammarSymbol.isPresent()
-          ? grammarSymbol.get().getFullName().toLowerCase()
-          : "")
+      String string = (grammarSymbol.map(
+          mcGrammarSymbol -> mcGrammarSymbol.getFullName().toLowerCase()).orElse(""))
           + AST_DOT_PACKAGE_SUFFIX_DOT + prefix +
           StringTransformations.capitalize(symbol.getName() + suffix);
 
@@ -127,7 +126,7 @@ public class MCGrammarSymbolTableHelper {
     // derive attribute name from constant entry (but only if we have
     // one entry!)
     else if (ast.getConstantList().size() == 1) {
-      return ast.getConstantList().get(0).getHumanName();
+      return ast.getConstantList().getFirst().getHumanName();
     }
 
     Log.error("0xA2345 The name of the constant group could't be ascertained",
@@ -138,8 +137,7 @@ public class MCGrammarSymbolTableHelper {
 
   public static Set<ProdSymbol> getAllSuperProds(ProdSymbol prod) {
     Set<ProdSymbol> supersHandled = new LinkedHashSet<>();
-    List<ProdSymbol> supersToHandle = new ArrayList<>();
-    supersToHandle.addAll(getSuperProds(prod));
+    List<ProdSymbol> supersToHandle = new ArrayList<>(getSuperProds(prod));
     Set<ProdSymbol> supersNextRound = new LinkedHashSet<>();
 
     while (!supersToHandle.isEmpty()) {
@@ -157,22 +155,27 @@ public class MCGrammarSymbolTableHelper {
   }
 
   public static Set<ProdSymbol> getAllSuperInterfaces(ProdSymbol prod) {
-    return getAllSuperProds(prod).stream().filter(p -> p.isIsInterface()).collect(Collectors.toSet());
+    return getAllSuperProds(prod).stream().filter(ProdSymbolTOP::isIsInterface).collect(Collectors.toSet());
   }
 
   protected final static LoadingCache<ProdSymbol, List<ProdSymbol>> superProdCache = CacheBuilder.newBuilder().maximumSize(10000)
-    .build(new CacheLoader<ProdSymbol, List<ProdSymbol>>() {
+    .build(new CacheLoader<>() {
+      
       @Override
       public List<ProdSymbol> load(ProdSymbol prod) {
-        List<ProdSymbol> superTypes = prod.getSuperProds().stream().filter(s -> s.isSymbolPresent())
-            .map(s -> s.lazyLoadDelegate()).collect(Collectors.toList());
-        superTypes.addAll(prod.getSuperInterfaceProds().stream().filter(s -> s.isSymbolPresent())
-            .map(s -> s.lazyLoadDelegate()).collect(Collectors.toList()));
-
-        superTypes.addAll(prod.getAstSuperClasses().stream().filter(s -> s.isSymbolPresent())
-            .map(s -> s.lazyLoadDelegate()).collect(Collectors.toList()));
-        superTypes.addAll(prod.getAstSuperInterfaces().stream().filter(s -> s.isSymbolPresent())
-            .map(s -> s.lazyLoadDelegate()).collect(Collectors.toList()));
+        List<ProdSymbol> superTypes = prod.getSuperProds().stream().filter(
+                ProdSymbolSurrogate::isSymbolPresent)
+            .map(ProdSymbolSurrogateTOP::lazyLoadDelegate).collect(Collectors.toList());
+        superTypes.addAll(prod.getSuperInterfaceProds().stream().filter(
+                ProdSymbolSurrogate::isSymbolPresent)
+            .map(ProdSymbolSurrogateTOP::lazyLoadDelegate).toList());
+        
+        superTypes.addAll(prod.getAstSuperClasses().stream().filter(
+                ProdSymbolSurrogate::isSymbolPresent)
+            .map(ProdSymbolSurrogateTOP::lazyLoadDelegate).toList());
+        superTypes.addAll(prod.getAstSuperInterfaces().stream().filter(
+                ProdSymbolSurrogate::isSymbolPresent)
+            .map(ProdSymbolSurrogateTOP::lazyLoadDelegate).toList());
         return ImmutableList.copyOf(superTypes);
       }
     });
@@ -186,7 +189,7 @@ public class MCGrammarSymbolTableHelper {
   }
 
   public static boolean isSubtype(ProdSymbol subType, ProdSymbol superType) {
-    return isSubtype(subType, superType, newLinkedHashSet(Arrays.asList(subType)));
+    return isSubtype(subType, superType, newLinkedHashSet(Collections.singletonList(subType)));
   }
 
   protected static boolean isSubtype(ProdSymbol subType, ProdSymbol superType,
