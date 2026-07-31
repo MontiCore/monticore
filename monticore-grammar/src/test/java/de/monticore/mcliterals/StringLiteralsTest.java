@@ -5,63 +5,52 @@ package de.monticore.mcliterals;
 import de.monticore.literals.mccommonliterals._ast.ASTStringLiteral;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.literals.testmccommonliterals.TestMCCommonLiteralsMill;
-import de.monticore.literals.testmccommonliterals._ast.ASTA;
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import de.monticore.runtime.junit.TestWithMCLanguage;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
+import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
+@SuppressWarnings({ "UnnecessaryUnicodeEscape", "UnnecessaryStringEscape" })
+@TestWithMCLanguage(TestMCCommonLiteralsMill.class)
 public class StringLiteralsTest {
   
-  @BeforeEach
-  public void initLog() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-    TestMCCommonLiteralsMill.reset();
-    TestMCCommonLiteralsMill.init();
+  static Stream<Arguments> checkStringLiteralArgs() {
+    return Stream.of(
+      Arguments.of("abc ABC", "\"abc ABC\""),
+      Arguments.of("a", "\"a\""),
+      Arguments.of(" ", "\" \""),
+      Arguments.of(" a ", "\" a \""),
+      Arguments.of("\n", "\"\\n\""),
+      Arguments.of("\r", "\"\\r\""),
+      Arguments.of("", "\"\""),
+      Arguments.of("\\", "\"\\\\\""),
+      Arguments.of("\"", "\"\\\"\""),
+      Arguments.of("!\"§\\%&{([)]=}?´`*+~'#-_.:,;<>|^°@€",
+          "\"!\\\"§\\\\%&{([)]=}?´`*+~'#-_.:,;<>|^°@€\""),
+        
+      // Escape Sequences:
+      Arguments.of("\b\t\n\f\r\"\'\\", "\"\\b\\t\\n\\f\\r\\\"\\'\\\\\""),
+      
+      // Unicode:
+      Arguments.of("\u00ef", "\"\\u00ef\""),
+      Arguments.of("\u0000", "\"\\u0000\""),
+      Arguments.of("\uffff", "\"\\uffff\""),
+      Arguments.of("\u00aaf\u00dd1 123", "\"\\u00aaf\\u00dd1 123\""),
+      Arguments.of("\u010000", "\"\\u010000\"")
+    );
   }
-  
-  private void checkStringLiteral(String expected, String actual) throws IOException {
+
+  @ParameterizedTest
+  @MethodSource("checkStringLiteralArgs")
+  public void checkStringLiteral(String expected, String actual) throws IOException {
     ASTLiteral lit = MCLiteralsTestHelper.getInstance().parseLiteral(actual);
     assertInstanceOf(ASTStringLiteral.class, lit);
     assertEquals(expected, ((ASTStringLiteral) lit).getValue());
-  
-    assertTrue(Log.getFindings().isEmpty());
-  }
-
-  @Test
-  public void testStringLiterals() {
-    try {
-      checkStringLiteral("abc ABC", "\"abc ABC\"");
-      checkStringLiteral("a", "\"a\"");
-      checkStringLiteral(" ", "\" \"");
-      checkStringLiteral(" a ", "\" a \"");
-      checkStringLiteral("\n", "\"\\n\"");
-      checkStringLiteral("\r", "\"\\r\"");
-      checkStringLiteral("", "\"\"");
-      checkStringLiteral("\\", "\"\\\\\"");
-      checkStringLiteral("\"", "\"\\\"\"");
-      checkStringLiteral("!\"§\\%&{([)]=}?´`*+~'#-_.:,;<>|^°@€",
-          "\"!\\\"§\\\\%&{([)]=}?´`*+~'#-_.:,;<>|^°@€\"");
-      
-      // Escape Sequences:
-      checkStringLiteral("\b\t\n\f\r\"\'\\", "\"\\b\\t\\n\\f\\r\\\"\\'\\\\\"");
-      
-      // Unicode:
-      checkStringLiteral("\u00ef", "\"\\u00ef\"");
-      checkStringLiteral("\u0000", "\"\\u0000\"");
-      checkStringLiteral("\uffff", "\"\\uffff\"");
-      checkStringLiteral("\u00aaf\u00dd1 123", "\"\\u00aaf\\u00dd1 123\"");
-      checkStringLiteral("\u010000", "\"\\u010000\"");
-    }
-    catch (IOException e) {
-      fail(e.getMessage());
-    }
   }
 }

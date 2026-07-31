@@ -1,6 +1,8 @@
 /* (c) [https://github.com/MontiCore/monticore](https://github.com/MontiCore/monticore) */
 package de.monticore.statements.cocos;
 
+import de.monticore.runtime.junit.MCAssertions;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.statements.mcvardeclarationstatements._cocos.VarDeclarationInitializationHasCorrectType;
 import de.monticore.statements.mcvardeclarationstatements._symboltable.MCVarDeclarationStatementsSTCompleteTypes;
 import de.monticore.statements.testmcvardeclarationstatements.TestMCVarDeclarationStatementsMill;
@@ -10,8 +12,6 @@ import de.monticore.statements.testmcvardeclarationstatements._visitor.TestMCVar
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserFactory;
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -20,21 +20,16 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static de.monticore.statements.testmcvardeclarationstatements.TestMCVarDeclarationStatementsMill.parser;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
+@TestWithMCLanguage(TestMCVarDeclarationStatementsMill.class)
 class VarDeclarationInitializationHasCorrectTypeTest {
 
   @BeforeEach
   void init() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-    TestMCVarDeclarationStatementsMill.reset();
-    TestMCVarDeclarationStatementsMill.init();
     CombineExpressionsWithLiteralsTypeTraverserFactory.initTypeCheck3();
     BasicSymbolsMill.initializePrimitives();
     addMyTypeToGlobalScope();
@@ -79,9 +74,6 @@ class VarDeclarationInitializationHasCorrectTypeTest {
 
     // When
     checker.checkAll(ast);
-
-    // Then
-    assertTrue(Log.getFindings().isEmpty(), () -> Log.getFindings().toString());
   }
 
   @ParameterizedTest
@@ -96,10 +88,9 @@ class VarDeclarationInitializationHasCorrectTypeTest {
     checker.checkAll(ast);
 
     // Then
-    List<String> actualErrors = Log.getFindings().stream()
-      .map(f -> f.getMsg().substring(0, 7))
-      .collect(Collectors.toList());
-    assertEquals(expectedErrors, actualErrors);
+    for (String error : expectedErrors) {
+      MCAssertions.assertHasFindingStartingWith(error);
+    }
   }
 
   static Stream<Arguments> invalidExpressionAndErrorProvider() {

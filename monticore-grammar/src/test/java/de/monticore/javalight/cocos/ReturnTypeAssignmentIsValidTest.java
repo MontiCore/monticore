@@ -2,22 +2,27 @@
 package de.monticore.javalight.cocos;
 
 import de.monticore.javalight._cocos.JavaLightCoCoChecker;
+import de.monticore.runtime.junit.MCAssertions;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.symbols.basicsymbols._ast.ASTBasicSymbolsNode;
 import de.monticore.symbols.oosymbols._ast.ASTMethod;
 import de.monticore.testjavalight.TestJavaLightMill;
 import de.monticore.testjavalight._parser.TestJavaLightParser;
 import de.monticore.testjavalight._visitor.TestJavaLightTraverser;
 import de.monticore.types.check.FlatExpressionScopeSetter;
-import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@TestWithMCLanguage(TestJavaLightMill.class)
 public class ReturnTypeAssignmentIsValidTest extends JavaLightCocoTest {
   
   @BeforeEach
@@ -26,53 +31,48 @@ public class ReturnTypeAssignmentIsValidTest extends JavaLightCocoTest {
     checker.addCoCo(new ReturnTypeAssignmentIsValid());
   }
   
+  @ParameterizedTest
+  @ValueSource(strings = {
+      "public void test(){return;}",
+      "public int test(){return 3;}",
+      "public char test(){return 'c';}",
+      "public double test(){return 1.2;}",
+      "public boolean test(){return false;}",
+      "public double test(){return 2;}"
+  })
   public void checkValid(String expressionString) throws IOException {
+    TestJavaLightParser parser = TestJavaLightMill.parser();
+    Optional<ASTMethod> optAST = parser.parse_StringMethod(expressionString);
+    assertTrue(optAST.isPresent());
+
+    TestJavaLightTraverser traverser = getFlatExpressionScopeSetter();
+    optAST.get().accept(traverser);
+
+    checker.checkAll((ASTBasicSymbolsNode) optAST.get());
+  }
   
-    TestJavaLightParser parser = new TestJavaLightParser();
+  static Stream<Arguments> checkInvalidArgs() {
+    return Stream.of(
+        Arguments.of("public void test(){return 3;}", ReturnTypeAssignmentIsValid.ERROR_CODE),
+        Arguments.of("public int test(){return 3.0;}", ReturnTypeAssignmentIsValid.ERROR_CODE_3),
+        Arguments.of("public char test(){return;}", ReturnTypeAssignmentIsValid.ERROR_CODE_2),
+        Arguments.of("public double test(){return true;}", ReturnTypeAssignmentIsValid.ERROR_CODE_3),
+        Arguments.of("public boolean test(){return 'f';}", ReturnTypeAssignmentIsValid.ERROR_CODE_3)
+    );
+  }
+
+  @ParameterizedTest
+  @MethodSource("checkInvalidArgs")
+  public void checkInvalid(String expressionString, String expectedError) throws IOException {
+    TestJavaLightParser parser = TestJavaLightMill.parser();
     Optional<ASTMethod> optAST = parser.parse_StringMethod(expressionString);
     assertTrue(optAST.isPresent());
-    Log.getFindings().clear();
+
     TestJavaLightTraverser traverser = getFlatExpressionScopeSetter();
     optAST.get().accept(traverser);
     checker.checkAll((ASTBasicSymbolsNode) optAST.get());
-    assertTrue(Log.getFindings().isEmpty());
     
-  }
-
-  public void checkInvalid(String expressionString) throws IOException {
-
-    TestJavaLightParser parser = new TestJavaLightParser();
-    Optional<ASTMethod> optAST = parser.parse_StringMethod(expressionString);
-    assertTrue(optAST.isPresent());
-    Log.getFindings().clear();
-    TestJavaLightTraverser traverser = getFlatExpressionScopeSetter();
-    optAST.get().accept(traverser);
-    checker.checkAll((ASTBasicSymbolsNode) optAST.get());
-    assertFalse(Log.getFindings().isEmpty());
-
-  }
-
-  @Test
-  public void testValid() throws IOException {
-
-    checkValid("public void test(){return;}");
-    checkValid("public int test(){return 3;}");
-    checkValid("public char test(){return 'c';}");
-    checkValid("public double test(){return 1.2;}");
-    checkValid("public boolean test(){return false;}");
-    checkValid("public double test(){return 2;}");
-
-  }
-
-  @Test
-  public void testInvalid() throws IOException {
-
-    checkInvalid("public void test(){return 3;}");
-    checkInvalid("public int test(){return 3.0;}");
-    checkInvalid("public char test(){return;}");
-    checkInvalid("public double test(){return true;}");
-    checkInvalid("public boolean test(){return 'f';}");
-
+    MCAssertions.assertHasFindingStartingWith(expectedError);
   }
 
   protected TestJavaLightTraverser getFlatExpressionScopeSetter() {

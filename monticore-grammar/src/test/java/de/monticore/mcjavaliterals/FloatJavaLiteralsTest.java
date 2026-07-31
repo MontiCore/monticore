@@ -5,85 +5,74 @@ package de.monticore.mcjavaliterals;
 import de.monticore.literals.mcjavaliterals._ast.ASTFloatLiteral;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.literals.testmcjavaliterals.TestMCJavaLiteralsMill;
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import de.monticore.runtime.junit.TestWithMCLanguage;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.IOException;
+import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
+@TestWithMCLanguage(TestMCJavaLiteralsMill.class)
 public class FloatJavaLiteralsTest {
-
-  @BeforeEach
-  public void init() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-    TestMCJavaLiteralsMill.reset();
-    TestMCJavaLiteralsMill.init();
+  
+  static Stream<Arguments> checkFloatLiteralArgs() {
+    return Stream.of(
+        Arguments.of(0F, "0F"),
+        Arguments.of(0.0F, "0.0F"),
+        Arguments.of(5F, "5F"),
+        Arguments.of(.4F, ".4F"),
+        Arguments.of(000009.3F, "000009.3F"),
+        Arguments.of(5.F, "5.F"),
+        Arguments.of(009.f, "009.f"),
+        Arguments.of(009f, "009f"),
+        Arguments.of(009e2f, "009e2f"),
+        Arguments.of(23.4F, "23.4F"),
+        Arguments.of(2e3F, "2e3F"),
+        Arguments.of(2E-3F, "2E-3F"),
+        Arguments.of(009f, "009f"),
+        Arguments.of(.1e1F, ".1e1F"),
+        Arguments.of(.1F, ".1F"),
+        Arguments.of(.11e12F, ".11e12F"),
+        Arguments.of(.11e+12F, ".11e+12F"),
+        Arguments.of(29.18e08F, "29.18e08F"),
+        Arguments.of(0029.0008e-00008F, "0029.0008e-00008F"),
+        
+        // hexadezimal number
+        Arguments.of(0x5.p1f, "0x5.p1f"),
+        // Arguments.of()(0x.5p1f, "0x.5p1f"),
+        Arguments.of(0xFp-9f, "0xFp-9f"),
+        Arguments.of(0xfP2F, "0xfP2F"),
+        Arguments.of(0xfp1F, "0xfp1F"),
+        Arguments.of(0x.fP1F, "0x.fP1F"),
+        Arguments.of(0x0p0F, "0x0p0F"),
+        Arguments.of(0x0.0p1F, "0x0.0p1F"),
+        Arguments.of(0x.0p1F, "0x.0p1F"),
+        Arguments.of(0x.5AFp1f, "0x.5AFp1f"),
+        Arguments.of(0x0050AF.CD9p-008f, "0x0050AF.CD9p-008f"),
+        Arguments.of(0x1.fffffeP+127f, "0x1.fffffeP+127f"),
+        Arguments.of(0x0p-5f, "0x0p-5f"),
+        Arguments.of(0x0p1F, "0x0p1F"),
+        Arguments.of(0x0p-5F, "0x0p-5F"),
+        
+        // Examples from Java Language Specification
+        Arguments.of(1e1f, "1e1f"),
+        Arguments.of(2.f, "2.f"),
+        Arguments.of(.3f, ".3f"),
+        Arguments.of(0f, "0f"),
+        Arguments.of(3.14f, "3.14f"),
+        Arguments.of(6.022137e+23f, "6.022137e+23f")
+    );
   }
-
-  private void checkFloatLiteral(float f, String s) throws IOException {
+  
+  @ParameterizedTest
+  @MethodSource("checkFloatLiteralArgs")
+  public void checkFloatLiteral(float f, String s) throws IOException {
     ASTLiteral lit = MCJavaLiteralsTestHelper.getInstance().parseLiteral(s);
     assertInstanceOf(ASTFloatLiteral.class, lit);
     assertEquals(f, ((ASTFloatLiteral) lit).getValue(), 0);
-  
-    assertTrue(Log.getFindings().isEmpty());
-  }
-  
-  @Test
-  public void testFloatLiterals() {
-    // decimal number
-    try {
-      checkFloatLiteral(0F, "0F");
-      checkFloatLiteral(0.0F, "0.0F");
-      checkFloatLiteral(5F, "5F");
-      checkFloatLiteral(.4F, ".4F");
-      checkFloatLiteral(000009.3F, "000009.3F");
-      checkFloatLiteral(5.F, "5.F");
-      checkFloatLiteral(009.f, "009.f");
-      checkFloatLiteral(009f, "009f");
-      checkFloatLiteral(009e2f, "009e2f");
-      checkFloatLiteral(23.4F, "23.4F");
-      checkFloatLiteral(2e3F, "2e3F");
-      checkFloatLiteral(2E-3F, "2E-3F");
-      checkFloatLiteral(009f, "009f");
-      checkFloatLiteral(.1e1F, ".1e1F");
-      checkFloatLiteral(.1F, ".1F");
-      checkFloatLiteral(.11e12F, ".11e12F");
-      checkFloatLiteral(.11e+12F, ".11e+12F");
-      checkFloatLiteral(29.18e08F, "29.18e08F");
-      checkFloatLiteral(0029.0008e-00008F, "0029.0008e-00008F");
-      
-      // hexadezimal number
-      checkFloatLiteral(0x5.p1f, "0x5.p1f");
-      // checkFloatLiteral(0x.5p1f, "0x.5p1f");
-      checkFloatLiteral(0xFp-9f, "0xFp-9f");
-      checkFloatLiteral(0xfP2F, "0xfP2F");
-      checkFloatLiteral(0xfp1F, "0xfp1F");
-      checkFloatLiteral(0x.fP1F, "0x.fP1F");
-      checkFloatLiteral(0x0p0F, "0x0p0F");
-      checkFloatLiteral(0x0.0p1F, "0x0.0p1F");
-      checkFloatLiteral(0x.0p1F, "0x.0p1F");
-      checkFloatLiteral(0x.5AFp1f, "0x.5AFp1f");
-      checkFloatLiteral(0x0050AF.CD9p-008f, "0x0050AF.CD9p-008f");
-      checkFloatLiteral(0x1.fffffeP+127f, "0x1.fffffeP+127f");
-      checkFloatLiteral(0x0p-5f, "0x0p-5f");
-      checkFloatLiteral(0x0p1F, "0x0p1F");
-      checkFloatLiteral(0x0p-5F, "0x0p-5F");
-      
-      // Examples from Java Language Specification
-      checkFloatLiteral(1e1f, "1e1f");
-      checkFloatLiteral(2.f, "2.f");
-      checkFloatLiteral(.3f, ".3f");
-      checkFloatLiteral(0f, "0f");
-      checkFloatLiteral(3.14f, "3.14f");
-      checkFloatLiteral(6.022137e+23f, "6.022137e+23f");
-    }
-    catch (IOException e)
-    {
-      fail(e.getMessage());
-    }
   }
 }

@@ -1,14 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.statements.prettyprint;
 
-import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.statements.mcsynchronizedstatements._ast.ASTSynchronizedStatement;
-import de.monticore.statements.mcsynchronizedstatements._prettyprint.MCSynchronizedStatementsFullPrettyPrinter;
 import de.monticore.statements.testmcsynchronizedstatements.TestMCSynchronizedStatementsMill;
 import de.monticore.statements.testmcsynchronizedstatements._parser.TestMCSynchronizedStatementsParser;
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -17,37 +13,24 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@TestWithMCLanguage(TestMCSynchronizedStatementsMill.class)
 public class MCSynchronizedStatementsPrettyPrinterTest {
-
-  private TestMCSynchronizedStatementsParser parser = new TestMCSynchronizedStatementsParser();
-
-  private MCSynchronizedStatementsFullPrettyPrinter prettyPrinter = new MCSynchronizedStatementsFullPrettyPrinter(new IndentPrinter());
-
-  @BeforeEach
-  public void init() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-    TestMCSynchronizedStatementsMill.reset();
-    TestMCSynchronizedStatementsMill.init();
-    prettyPrinter.getPrinter().clearBuffer();
-  }
 
   @Test
   public void testReturnStatement() throws IOException {
+    TestMCSynchronizedStatementsParser parser = TestMCSynchronizedStatementsMill.parser();
     Optional<ASTSynchronizedStatement> result = parser.parse_StringSynchronizedStatement("synchronized (foo) { final Integer foo = a ;}");
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
     ASTSynchronizedStatement ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestMCSynchronizedStatementsMill.prettyPrint(ast, false);
 
     result = parser.parse_StringSynchronizedStatement(output);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
 }
