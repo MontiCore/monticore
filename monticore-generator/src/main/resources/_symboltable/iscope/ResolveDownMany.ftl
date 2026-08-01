@@ -22,7 +22,7 @@ ${tc.signature("simpleName", "symbolFullName", "scopeInterface")}
     for (${scopeInterface} subScope : getSubScopes()) {
       final List<${symbolFullName}> resolvedFromSub = subScope
         .continueAs${simpleName}SubScope(foundSymbols, name, modifier, predicate);
-      foundSymbols = foundSymbols || resolvedFromSub.size() > 0;
+      foundSymbols = foundSymbols || !resolvedFromSub.isEmpty();
       // (3) unify results
       resolvedSymbols.addAll(resolvedFromSub);
     }
