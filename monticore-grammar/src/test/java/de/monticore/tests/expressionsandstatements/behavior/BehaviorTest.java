@@ -15,9 +15,11 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Array;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +27,9 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.fail;
 
 /**
@@ -37,10 +41,7 @@ public class BehaviorTest {
   protected TestExpressionsAndStatementsTool testTool =
       new TestExpressionsAndStatementsTool();
 
-  protected static Path resourceDir = Path.of(
-      "src", "test", "resources", "de", "monticore",
-      "tests", "expressionsandstatements"
-  );
+  protected static Path resourceDir = resolveResourceDir();
 
   /**
    * contains additional checks to run on the result
@@ -149,4 +150,13 @@ public class BehaviorTest {
   protected String getClassName(ASTBehaviorInput ast) {
     return this.getClass().getSimpleName() + Node2Name.getName(ast);
   }
+
+  protected static Path resolveResourceDir() {
+    URL modelUrl = BehaviorTest.class.getClassLoader().getResource(
+        "de/monticore/tests/expressionsandstatements/Mandelbrot.bhv"
+    );
+    assertNotNull(modelUrl, "could not find test resources");
+    return assertDoesNotThrow(() -> Paths.get(modelUrl.toURI()).getParent());
+  }
+
 }
