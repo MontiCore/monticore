@@ -83,7 +83,7 @@ public class PackageInterfaceDecorator extends AbstractCreator<ASTCDCompilationU
   protected ASTCDAttribute createENSURIAttribute(String definitionName) {
     // e.g. String eNS_URI = "http://Automata/1.0";
     ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PACKAGE_PRIVATE.build(), String.class, ENS_URI);
-    this.replaceTemplate(VALUE, attribute, new StringHookPoint("= \"https://" + definitionName + "/1.0\""));
+    this.replaceTemplate(VALUE, attribute, new StringHookPoint("= \"http://" + definitionName + "/1.0\""));
     return attribute;
   }
 
