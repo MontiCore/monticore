@@ -24,8 +24,8 @@ ${tc.signature("cdClass", "isScopeSpanning")}
     <#assign attrGetter = genHelper.getPlainGetter(attr)>
     <#assign astChildTypeName = genHelper.getNativeTypeName(attr.getMCType())>
     {
-      for (${astChildTypeName} ${attrName} : node.${attrGetter}()) {
-        ${attrName}.accept(getTraverser());
+      for (${astChildTypeName} attr_${attrName} : node.${attrGetter}()) {
+        attr_${attrName}.accept(getTraverser());
       }
     }
   </#if>
