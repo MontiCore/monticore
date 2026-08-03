@@ -57,9 +57,9 @@ public class TestJavaCompiler implements AutoCloseable {
     javac = ToolProvider.getSystemJavaCompiler();
     assertNotNull(javac, "Java Compiler could not be found.");
 
-    outputDir = classOutputDir;
-    URL outputDirURL =
-        assertDoesNotThrow(() -> classOutputDir.toUri().toURL());
+    outputDir = classOutputDir.toAbsolutePath();
+    assureDirectoryExists(outputDir);
+    URL outputDirURL = assertDoesNotThrow(() -> outputDir.toUri().toURL());
     ClassLoader currentClassLoader = TestJavaCompiler.class.getClassLoader();
     classLoader = new URLClassLoader(
         new URL[] { outputDirURL },
