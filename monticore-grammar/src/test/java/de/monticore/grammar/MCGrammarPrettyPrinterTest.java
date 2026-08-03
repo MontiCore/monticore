@@ -5,11 +5,7 @@ package de.monticore.grammar;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._parser.Grammar_WithConceptsParser;
-import de.monticore.grammar.grammar_withconcepts._prettyprint.Grammar_WithConceptsFullPrettyPrinter;
-import de.monticore.prettyprint.IndentPrinter;
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.BeforeEach;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -19,15 +15,8 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@TestWithMCLanguage(Grammar_WithConceptsMill.class)
 public class MCGrammarPrettyPrinterTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-    Grammar_WithConceptsMill.reset();
-    Grammar_WithConceptsMill.init();
-  }
 
   @Test
   // Test simple grammar
@@ -35,15 +24,14 @@ public class MCGrammarPrettyPrinterTest {
     String model = "target/resources/test/de/monticore/Statechart.mc4";
     
     // Parsing input
-    Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
+    Grammar_WithConceptsParser parser = Grammar_WithConceptsMill.parser();
     Optional<ASTMCGrammar> result = parser.parseMCGrammar(model);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
     ASTMCGrammar grammar = result.get();
     
     // Prettyprinting input
-    Grammar_WithConceptsFullPrettyPrinter prettyPrinter = new Grammar_WithConceptsFullPrettyPrinter(new IndentPrinter());
-    String output = prettyPrinter.prettyprint(grammar);
+    String output = Grammar_WithConceptsMill.prettyPrint(grammar, false);
 
     // Parsing printed input
     result = parser.parseMCGrammar(new StringReader (output));
@@ -51,8 +39,6 @@ public class MCGrammarPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(grammar.deepEquals(result.get()), "Failed to deep equals: \n" + output);
-    
-    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -61,15 +47,14 @@ public class MCGrammarPrettyPrinterTest {
     String model = "target/resources/test/Automaton.mc4";
     
     // Parsing input
-    Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
+    Grammar_WithConceptsParser parser = Grammar_WithConceptsMill.parser();
     Optional<ASTMCGrammar> result = parser.parseMCGrammar(model);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
     ASTMCGrammar grammar = result.get();
     
     // Prettyprinting input
-    Grammar_WithConceptsFullPrettyPrinter prettyPrinter = new Grammar_WithConceptsFullPrettyPrinter(new IndentPrinter());
-    String output = prettyPrinter.prettyprint(grammar);
+    String output = Grammar_WithConceptsMill.prettyPrint(grammar, false);
     
     // Parsing printed input
     result = parser.parseMCGrammar(new StringReader(output));
@@ -77,8 +62,6 @@ public class MCGrammarPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(grammar.deepEquals(result.get()), "Failed to deep equals: \n" + output);
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -87,15 +70,14 @@ public class MCGrammarPrettyPrinterTest {
     String model = "target/resources/test/de/monticore/TestGrammar.mc4";
 
     // Parsing input
-    Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
+    Grammar_WithConceptsParser parser = Grammar_WithConceptsMill.parser();
     Optional<ASTMCGrammar> result = parser.parseMCGrammar(model);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
     ASTMCGrammar grammar = result.get();
 
     // Prettyprinting input
-    Grammar_WithConceptsFullPrettyPrinter prettyPrinter = new Grammar_WithConceptsFullPrettyPrinter(new IndentPrinter());
-    String output = prettyPrinter.prettyprint(grammar);
+    String output = Grammar_WithConceptsMill.prettyPrint(grammar, false);
 
     // Parsing printed input
     result = parser.parseMCGrammar(new StringReader(output));
@@ -103,8 +85,6 @@ public class MCGrammarPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(grammar.deepEquals(result.get()), "Failed to deep equals: \n" + output);
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -113,15 +93,14 @@ public class MCGrammarPrettyPrinterTest {
     String model = "target/resources/test/de/monticore/common/TestLexicals.mc4";
 
     // Parsing input
-    Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
+    Grammar_WithConceptsParser parser = Grammar_WithConceptsMill.parser();
     Optional<ASTMCGrammar> result = parser.parseMCGrammar(model);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
     ASTMCGrammar grammar = result.get();
 
     // Prettyprinting input
-    Grammar_WithConceptsFullPrettyPrinter prettyPrinter = new Grammar_WithConceptsFullPrettyPrinter(new IndentPrinter());
-    String output = prettyPrinter.prettyprint(grammar);
+    String output = Grammar_WithConceptsMill.prettyPrint(grammar, false);
 
     // Parsing printed input
     result = parser.parseMCGrammar(new StringReader(output));
@@ -129,8 +108,6 @@ public class MCGrammarPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(grammar.deepEquals(result.get()));
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -139,15 +116,14 @@ public class MCGrammarPrettyPrinterTest {
     String model = "target/resources/test/de/monticore/Annotations.mc4";
 
     // Parsing input
-    Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
+    Grammar_WithConceptsParser parser = Grammar_WithConceptsMill.parser();
     Optional<ASTMCGrammar> result = parser.parseMCGrammar(model);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
     ASTMCGrammar grammar = result.get();
 
     // Prettyprinting input
-    Grammar_WithConceptsFullPrettyPrinter prettyPrinter = new Grammar_WithConceptsFullPrettyPrinter(new IndentPrinter());
-    String output = prettyPrinter.prettyprint(grammar);
+    String output = Grammar_WithConceptsMill.prettyPrint(grammar, false);
 
     // Parsing printed input
     result = parser.parseMCGrammar(new StringReader(output));
@@ -155,8 +131,6 @@ public class MCGrammarPrettyPrinterTest {
     assertTrue(result.isPresent());
 
     assertTrue(grammar.deepEquals(result.get()), "Failed to deep equals: \n" + output);
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

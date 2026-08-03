@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.symbols.oosymbols._symboltable;
 
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symboltable.modifiers.BasicAccessModifier;
@@ -8,8 +9,6 @@ import de.monticore.symboltable.modifiers.CompoundAccessModifier;
 import de.monticore.symboltable.modifiers.StaticAccessModifier;
 import de.monticore.types.check.DefsTypeBasic;
 import de.monticore.types.check.SymTypeExpressionFactory;
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -17,17 +16,13 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@TestWithMCLanguage(OOSymbolsMill.class)
 public class ModifierTest {
 
   protected IOOSymbolsScope symbolTable;
 
   @BeforeEach
   public void init(){
-    LogStub.init();
-    Log.enableFailQuick(false);
-
-    OOSymbolsMill.reset();
-    OOSymbolsMill.init();
     BasicSymbolsMill.initializePrimitives();
 
     symbolTable = OOSymbolsMill.scope();

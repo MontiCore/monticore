@@ -40,7 +40,7 @@ jobs:
         with:
           gradle-version: ${{env.GRADLE_VERSION}}
       - name: Deploy the snapshot
-        run: gradle deployMC ${{env.GRADLE_CLI_OPTS}} -PmavenPassword=${{secrets.SE_NEXUS_PASSWORD}} -PmavenUser=${{secrets.SE_NEXUS_USER}} -PgenEMF=true -PgenTR=true -PgenTagging=true
+        run: gradle deployMC ${{env.GRADLE_CLI_OPTS}} -PmavenPassword=${{secrets.SE_NEXUS_PASSWORD}} -PmavenUser=${{secrets.SE_NEXUS_USER}} -PgenEMF=true -PgenTR=true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Upload Javadoc

@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.symbols.compsymbols._symboltable;
 
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.symbols.compsymbols.CompSymbolsMill;
 import de.monticore.symboltable.modifiers.BasicAccessModifier;
 import de.monticore.types.check.CompKindOfComponentType;
@@ -11,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Holds tests for {@link Subcomponent2VariableAdapter}.
  */
+@TestWithMCLanguage(CompSymbolsMill.class)
 public class Subcomponent2VariableAdapterTest {
 
   @Test

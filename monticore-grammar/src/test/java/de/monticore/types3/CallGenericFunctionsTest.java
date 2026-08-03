@@ -2,11 +2,7 @@
 package de.monticore.types3;
 
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
-import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
-import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsGlobalScope;
-import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
-import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
-import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -18,27 +14,11 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static de.monticore.runtime.junit.MCAssertions.assertNoFindings;
-import static de.monticore.types3.util.DefsTypesForTests._IntegerSymType;
-import static de.monticore.types3.util.DefsTypesForTests._carSymType;
-import static de.monticore.types3.util.DefsTypesForTests._floatSymType;
-import static de.monticore.types3.util.DefsTypesForTests._intSymType;
-import static de.monticore.types3.util.DefsTypesForTests._linkedListSymType;
-import static de.monticore.types3.util.DefsTypesForTests._personSymType;
-import static de.monticore.types3.util.DefsTypesForTests._unboxedString;
-import static de.monticore.types3.util.DefsTypesForTests._voidSymType;
-import static de.monticore.types3.util.DefsTypesForTests.function;
-import static de.monticore.types3.util.DefsTypesForTests.inScope;
-import static de.monticore.types3.util.DefsTypesForTests.type;
-import static de.monticore.types3.util.DefsTypesForTests.typeVariable;
-import static de.monticore.types3.util.DefsTypesForTests.variable;
+import static de.monticore.types.check.SymTypeExpressionFactory.*;
+import static de.monticore.types.mccollectiontypes.types3.util.MCCollectionSymTypeFactory.createList;
+import static de.monticore.types3.util.DefsTypesForTests.*;
 import static de.monticore.types3.util.DefsVariablesForTests._carVarSym;
 import static de.monticore.types3.util.DefsVariablesForTests._personVarSym;
-import static de.monticore.types.check.SymTypeExpressionFactory.createFunction;
-import static de.monticore.types.check.SymTypeExpressionFactory.createGenerics;
-import static de.monticore.types.check.SymTypeExpressionFactory.createTypeObject;
-import static de.monticore.types.check.SymTypeExpressionFactory.createTypeVariable;
-import static de.monticore.types.check.SymTypeExpressionFactory.createWildcard;
-import static de.monticore.types.mccollectiontypes.types3.util.MCCollectionSymTypeFactory.createList;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 public class CallGenericFunctionsTest

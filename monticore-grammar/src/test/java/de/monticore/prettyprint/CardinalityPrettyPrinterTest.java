@@ -3,88 +3,68 @@
 package de.monticore.prettyprint;
 
 import de.monticore.cardinality._ast.ASTCardinality;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.testcardinality.TestCardinalityMill;
 import de.monticore.testcardinality._parser.TestCardinalityParser;
-import de.monticore.cardinality._prettyprint.CardinalityFullPrettyPrinter;
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@TestWithMCLanguage(TestCardinalityMill.class)
 public class CardinalityPrettyPrinterTest {
-  
-  @BeforeEach
-  public void init() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-    TestCardinalityMill.reset();
-    TestCardinalityMill.init();
-  }
 
   @Test
   public void testCardinality1() throws IOException {
-    TestCardinalityParser parser = new TestCardinalityParser();
-    Optional<ASTCardinality> result = parser.parseCardinality(new StringReader("[*]"));
+    TestCardinalityParser parser = TestCardinalityMill.parser();
+    Optional<ASTCardinality> result = parser.parse_StringCardinality("[*]");
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
     ASTCardinality cardinality = result.get();
     
-    CardinalityFullPrettyPrinter prettyPrinter = new CardinalityFullPrettyPrinter(new IndentPrinter());
-    String output = prettyPrinter.prettyprint(cardinality);
+    String output = TestCardinalityMill.prettyPrint(cardinality, false);
     
-    result = parser.parseCardinality(new StringReader(output));
+    result = parser.parse_StringCardinality(output);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
     
     assertTrue(cardinality.deepEquals(result.get()));
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
   public void testCardinality2() throws IOException {
-    TestCardinalityParser parser = new TestCardinalityParser();
-    Optional<ASTCardinality> result = parser.parseCardinality(new StringReader("[5..9]"));
+    TestCardinalityParser parser = TestCardinalityMill.parser();
+    Optional<ASTCardinality> result = parser.parse_StringCardinality("[5..9]");
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
     ASTCardinality cardinality = result.get();
     
-    CardinalityFullPrettyPrinter prettyPrinter = new CardinalityFullPrettyPrinter(new IndentPrinter());
-    String output = prettyPrinter.prettyprint(cardinality);
+    String output = TestCardinalityMill.prettyPrint(cardinality, false);
     
-    result = parser.parseCardinality(new StringReader(output));
+    result = parser.parse_StringCardinality(output);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
     
     assertTrue(cardinality.deepEquals(result.get()));
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
   public void testCardinality3() throws IOException {
-    TestCardinalityParser parser = new TestCardinalityParser();
-    Optional<ASTCardinality> result = parser.parseCardinality(new StringReader("[6..*]"));
+    TestCardinalityParser parser = TestCardinalityMill.parser();
+    Optional<ASTCardinality> result = parser.parse_StringCardinality("[6..*]");
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
     ASTCardinality cardinality = result.get();
     
-    CardinalityFullPrettyPrinter prettyPrinter = new CardinalityFullPrettyPrinter(new IndentPrinter());
-    String output = prettyPrinter.prettyprint(cardinality);
+    String output = TestCardinalityMill.prettyPrint(cardinality, false);
     
-    result = parser.parseCardinality(new StringReader(output));
+    result = parser.parse_StringCardinality(output);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
     
     assertTrue(cardinality.deepEquals(result.get()));
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 }

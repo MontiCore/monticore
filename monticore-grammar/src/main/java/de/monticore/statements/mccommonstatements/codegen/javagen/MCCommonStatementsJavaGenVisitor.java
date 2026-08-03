@@ -53,8 +53,9 @@ public class MCCommonStatementsJavaGenVisitor
   // to add the curly brackets.
   // Compare ASTBracketExpression
 
+  // Interface has no traverse, so we use handle instead
   @Override
-  public void traverse(ASTJavaModifier node) {
+  public void handle(ASTJavaModifier node) {
     String modStr = MCCommonStatementsMill.prettyPrint(node, false);
     getPrinter().print(modStr);
   }
