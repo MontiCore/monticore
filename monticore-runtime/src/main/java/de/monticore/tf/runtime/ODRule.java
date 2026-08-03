@@ -1,10 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.tf.runtime;
 
-import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-
-import static de.monticore.generating.templateengine.reporting.Reporting.*;
 
 /**
  * Abstract base class for object-diagram (OD) transformation rules.

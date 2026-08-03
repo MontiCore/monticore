@@ -3,8 +3,8 @@ package de.monticore.tf.runtime.inc;
 
 import de.monticore.ast.ASTNode;
 import de.se_rwth.commons.logging.Log;
-import org.jspecify.annotations.NonNull;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
@@ -18,7 +18,7 @@ public class LoggingListener implements IIncrementalListener {
    * @param transformationName the name of the transformation
    */
   @Override
-  public void onTransformationStart(@NonNull String transformationName) {
+  public void onTransformationStart(@Nonnull String transformationName) {
     Log.info("Transformation started: " + transformationName,
         LoggingListener.class.getSimpleName());
   }
@@ -29,7 +29,7 @@ public class LoggingListener implements IIncrementalListener {
    * @param transformationName the name of the transformation
    */
   @Override
-  public void onTransformationEnd(@NonNull String transformationName) {
+  public void onTransformationEnd(@Nonnull String transformationName) {
     Log.info("Transformation ended: " + transformationName, LoggingListener.class.getSimpleName());
   }
   
@@ -40,7 +40,7 @@ public class LoggingListener implements IIncrementalListener {
    * @param parent the parent node
    */
   @Override
-  public void onASTNodeAttach(@NonNull ASTNode node, @Nullable ASTNode parent) {
+  public void onASTNodeAttach(@Nonnull ASTNode node, @Nullable ASTNode parent) {
     if (parent == null) {
       Log.info(
           "Root Node attached: " + node.getClass().getSimpleName(), LoggingListener.class.getSimpleName());
@@ -58,7 +58,7 @@ public class LoggingListener implements IIncrementalListener {
    * @param parent the former parent node
    */
   @Override
-  public void onASTNodeDetach(@NonNull ASTNode node, @NonNull ASTNode parent) {
+  public void onASTNodeDetach(@Nonnull ASTNode node, @Nonnull ASTNode parent) {
     Log.info(
         "Node detached: " + node.getClass().getSimpleName() + " from parent: " + parent.getClass()
             .getSimpleName(), LoggingListener.class.getSimpleName());
@@ -74,9 +74,9 @@ public class LoggingListener implements IIncrementalListener {
    * @param newValue the new value of the attribute
    */
   @Override
-  public void onASTNodeModification(@NonNull ASTNode node, @NonNull String attributeName,
-      ModificationOp modificationType, @org.jspecify.annotations.Nullable Object oldValue,
-      @org.jspecify.annotations.Nullable Object newValue) {
+  public void onASTNodeModification(@Nonnull ASTNode node, @Nonnull String attributeName,
+      ModificationOp modificationType, @Nullable Object oldValue,
+      @Nullable Object newValue) {
     String message = switch (modificationType) {
       case SET -> "Node modified: " + node.getClass().getSimpleName() + " attribute: " + attributeName + " value: " + newValue;
       case UNSET -> "Node modified: " + node.getClass().getSimpleName() + " attribute: " + attributeName + " old value: " + oldValue;
@@ -96,9 +96,9 @@ public class LoggingListener implements IIncrementalListener {
    * @param newValue the new value of the element
    */
   @Override
-  public void onASTNodeListModification(@NonNull ASTNode node, String attributeName, int idx,
-      ModificationOp modificationType, @org.jspecify.annotations.Nullable Object oldValue,
-      @org.jspecify.annotations.Nullable Object newValue) {
+  public void onASTNodeListModification(@Nonnull ASTNode node, String attributeName, int idx,
+      ModificationOp modificationType, @Nullable Object oldValue,
+      @Nullable Object newValue) {
     String message = switch (modificationType) {
       case SET -> "Node list modified: " + node.getClass().getSimpleName() + " attribute: " + attributeName + " index: " + idx + " value: " + newValue;
       case UNSET -> "Node list modified: " + node.getClass().getSimpleName() + " attribute: " + attributeName + " index: " + idx + " old value: " + oldValue;

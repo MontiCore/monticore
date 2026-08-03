@@ -4,8 +4,8 @@ package de.monticore.tf.runtime.inc;
 import de.monticore.ast.ASTNode;
 import de.monticore.ast.Comment;
 import de.se_rwth.commons.logging.Log;
-import org.jspecify.annotations.NonNull;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
@@ -21,7 +21,7 @@ public class ParentIndex implements IModelIndex {
    * @param parent the parent the node was attached to, or {@code null} if the node is a root node
    */
   @Override
-  public void onASTNodeAttach(@NonNull ASTNode node, @Nullable ASTNode parent) {
+  public void onASTNodeAttach(@Nonnull ASTNode node, @Nullable ASTNode parent) {
     if (parent != null) {
       attachComment(node, parent);
       Log.debug(() -> "Added parent comment to node with type %s!".formatted(node.getClass()), "ParentIndex");
@@ -36,7 +36,7 @@ public class ParentIndex implements IModelIndex {
    * @param parent the parent the node was detached from
    */
   @Override
-  public void onASTNodeDetach(@NonNull ASTNode node, @NonNull ASTNode parent) {
+  public void onASTNodeDetach(@Nonnull ASTNode node, @Nonnull ASTNode parent) {
     // Most likely not needed, since children are either removed or moved to a new position
     // In that case, their parent comment should be overwritten
   }
