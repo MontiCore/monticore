@@ -63,7 +63,16 @@ public class LoggingListener implements IIncrementalListener {
         "Node detached: " + node.getClass().getSimpleName() + " from parent: " + parent.getClass()
             .getSimpleName(), LoggingListener.class.getSimpleName());
   }
-  
+   
+  /**
+   * Logs that a node attribute has been modified.
+   *
+   * @param node the modified node
+   * @param attributeName the name of the modified attribute
+   * @param modificationType the type of modification
+   * @param oldValue the previous value of the attribute
+   * @param newValue the new value of the attribute
+   */
   @Override
   public void onASTNodeModification(@NonNull ASTNode node, @NonNull String attributeName,
       ModificationOp modificationType, @org.jspecify.annotations.Nullable Object oldValue,
@@ -76,6 +85,16 @@ public class LoggingListener implements IIncrementalListener {
     Log.info(message, LoggingListener.class.getSimpleName());
   }
   
+  /**
+   * Logs that an element in a list attribute of a node has been modified.
+   *
+   * @param node the modified node
+   * @param attributeName the name of the modified list attribute
+   * @param idx the index of the modified element within the list
+   * @param modificationType the type of list-element modification
+   * @param oldValue the previous value of the element
+   * @param newValue the new value of the element
+   */
   @Override
   public void onASTNodeListModification(@NonNull ASTNode node, String attributeName, int idx,
       ModificationOp modificationType, @org.jspecify.annotations.Nullable Object oldValue,

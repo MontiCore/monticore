@@ -43,6 +43,8 @@ public class CandidateIndex implements IModelIndex {
   
   /**
    * Creates an empty candidate index.
+   *
+   * @param traverser supplier for the traverser used to visit nodes during detachment
    */
   public CandidateIndex(Supplier<ITraverser> traverser) {
     // LinkedHashMultimap preserves insertion order and avoids duplicate key-value pairs.

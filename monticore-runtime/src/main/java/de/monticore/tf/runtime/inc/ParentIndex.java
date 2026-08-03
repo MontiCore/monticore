@@ -69,6 +69,8 @@ public class ParentIndex implements IModelIndex {
    *
    * @param node the node whose parent should be returned
    * @return the stored parent node
+   * @throws IndexOutOfBoundsException if the node has no post-comments
+   * @throws ClassCastException if the first post-comment is not a wrapped comment
    */
   public ASTNode getParent(ASTNode node) {
     return ((WComment) node.get_PostCommentList().getFirst()).getParent();
