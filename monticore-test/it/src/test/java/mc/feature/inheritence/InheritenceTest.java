@@ -2,41 +2,21 @@
 
 package mc.feature.inheritence;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.Optional;
-
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.BeforeEach;
+import de.monticore.runtime.junit.MCAssertions;
+import de.monticore.runtime.junit.TestWithMCLanguage;
+import mc.feature.inheritence.inheritence.InheritenceMill;
+import mc.feature.inheritence.inheritence._ast.*;
+import mc.feature.inheritence.inheritence._parser.InheritenceParser;
 import org.junit.jupiter.api.Test;
 
-import mc.GeneratorIntegrationsTest;
-import mc.feature.inheritence.inheritence._ast.ASTA;
-import mc.feature.inheritence.inheritence._ast.ASTB;
-import mc.feature.inheritence.inheritence._ast.ASTC;
-import mc.feature.inheritence.inheritence._ast.ASTD;
-import mc.feature.inheritence.inheritence._ast.ASTIG;
-import mc.feature.inheritence.inheritence._ast.ASTIH;
-import mc.feature.inheritence.inheritence._ast.ASTIM;
-import mc.feature.inheritence.inheritence._ast.ASTK;
-import mc.feature.inheritence.inheritence._ast.ASTL;
-import mc.feature.inheritence.inheritence._ast.ASTXAE;
-import mc.feature.inheritence.inheritence._ast.ASTXAO;
-import mc.feature.inheritence.inheritence._ast.ASTXF;
-import mc.feature.inheritence.inheritence._ast.ASTXP;
-import mc.feature.inheritence.inheritence._parser.InheritenceParser;
+import java.io.IOException;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class InheritenceTest extends GeneratorIntegrationsTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
+@TestWithMCLanguage(InheritenceMill.class)
+public class InheritenceTest {
+
   // // Test1 : IG should parse all "a", "b", and "c"
   // A(IF) = "a" ;
   //
@@ -47,35 +27,29 @@ public class InheritenceTest extends GeneratorIntegrationsTest {
   
   @Test
   public void test1a() throws IOException {
+    InheritenceParser parser = InheritenceMill.parser();
+    Optional<ASTIG> ast = parser.parse_StringIG("a");
     
-    InheritenceParser parser = new InheritenceParser();    
-    Optional<ASTIG> ast = parser.parseIG(new StringReader("a"));
-    
+    assertTrue(ast.isPresent());
     assertInstanceOf(ASTA.class, ast.get());
-    assertTrue(Log.getFindings().isEmpty());
-    
   }
   
   @Test
   public void test1b() throws IOException {
+    InheritenceParser parser = InheritenceMill.parser();
+    Optional<ASTIG> ast = parser.parse_StringIG("b");
     
-    InheritenceParser parser = new InheritenceParser();
-    Optional<ASTIG> ast = parser.parseIG(new StringReader("b"));
-    
+    assertTrue(ast.isPresent());
     assertInstanceOf(ASTB.class, ast.get());
-    assertTrue(Log.getFindings().isEmpty());
-    
   }
   
   @Test
   public void test1c() throws IOException {
+    InheritenceParser parser = InheritenceMill.parser();
+    Optional<ASTIG> ast = parser.parse_StringIG("c");
     
-    InheritenceParser parser = new InheritenceParser();
-    Optional<ASTIG> ast = parser.parseIG(new StringReader("c"));
-    
+    assertTrue(ast.isPresent());
     assertInstanceOf(ASTC.class, ast.get());
-    assertTrue(Log.getFindings().isEmpty());
-    
   }
   
   // // Test 2 : IH should parse "d" (calls D with parameters null)
@@ -85,12 +59,11 @@ public class InheritenceTest extends GeneratorIntegrationsTest {
   // "d";
   @Test
   public void test2() throws IOException {
+    InheritenceParser parser = InheritenceMill.parser();
+    Optional<ASTIH> ast = parser.parse_StringIH("d");
     
-    InheritenceParser parser = new InheritenceParser();
-    Optional<ASTIH> ast = parser.parseIH(new StringReader("d"));
+    assertTrue(ast.isPresent());
     assertInstanceOf(ASTD.class, ast.get());
-    assertTrue(Log.getFindings().isEmpty());
-    
   }
   
   // Test 3 : IM should parse "aa", "bb" and "ab" (predicate is necessary
@@ -101,62 +74,61 @@ public class InheritenceTest extends GeneratorIntegrationsTest {
   // }
   @Test
   public void test3a() throws IOException {
+    InheritenceParser parser = InheritenceMill.parser();
+    Optional<ASTIM> ast = parser.parse_StringIM("aa");
     
-    InheritenceParser parser = new InheritenceParser();
-    Optional<ASTIM> ast = parser.parseIM(new StringReader("aa"));
+    assertTrue(ast.isPresent());
     assertInstanceOf(ASTK.class, ast.get());
-    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
   public void test3b() throws IOException {
+    InheritenceParser parser = InheritenceMill.parser();
+    Optional<ASTIM> ast = parser.parse_StringIM("bb");
     
-    InheritenceParser parser = new InheritenceParser();
-    Optional<ASTIM> ast = parser.parseIM(new StringReader("bb"));
+    assertTrue(ast.isPresent());
     assertInstanceOf(ASTK.class, ast.get());
-    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
   public void test3c() throws IOException {
+    InheritenceParser parser = InheritenceMill.parser();
+    Optional<ASTIM> ast = parser.parse_StringIM("ab");
     
-    InheritenceParser parser = new InheritenceParser();
-    Optional<ASTIM> ast = parser.parseIM(new StringReader("ab"));
+    assertTrue(ast.isPresent());
     assertInstanceOf(ASTL.class, ast.get());
-    assertTrue(Log.getFindings().isEmpty());
-    
   }
   
   // Test 4 : XAE should parse "f" and return an XF
   //
   @Test
   public void test4a() throws IOException {
+    InheritenceParser parser = InheritenceMill.parser();
+    Optional<ASTXAE> ast = parser.parse_StringXAE("f");
     
-    InheritenceParser parser = new InheritenceParser();
-    Optional<ASTXAE> ast = parser.parseXAE(new StringReader("f"));
+    assertTrue(ast.isPresent());
     assertInstanceOf(ASTXF.class, ast.get());
-    assertTrue(Log.getFindings().isEmpty());
   }
   
   // Test 5 : XAO should parse "p" but not "q" and return an XP
   //
   @Test
   public void test5a() throws IOException {
+    InheritenceParser parser = InheritenceMill.parser();
+    Optional<ASTXAO> ast = parser.parse_StringXAO("p");
     
-    InheritenceParser parser = new InheritenceParser();
-    Optional<ASTXAO> ast = parser.parseXAO(new StringReader("p"));
+    assertTrue(ast.isPresent());
     assertInstanceOf(ASTXP.class, ast.get());
     assertFalse(parser.hasErrors());
-    assertTrue(Log.getFindings().isEmpty());
-    
   }
   
   @Test
   public void test5b() throws IOException {
-    
-    InheritenceParser parser = new InheritenceParser();
-    parser.parseXAO(new StringReader("q"));
+    InheritenceParser parser = InheritenceMill.parser();
+    parser.parse_StringXAO("q");
     assertTrue(parser.hasErrors());
+    
+    MCAssertions.assertHasFindingStartingWith("mismatched input 'q' expecting 'p'");
   }
  
 }

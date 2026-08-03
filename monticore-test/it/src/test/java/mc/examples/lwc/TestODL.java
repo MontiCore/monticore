@@ -2,35 +2,25 @@
 
 package mc.examples.lwc;
 
-import java.io.IOException;
-import java.util.Optional;
-
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import mc.examples.lwc.odl.odl.ODLMill;
-import org.junit.jupiter.api.BeforeEach;
-
 import com.google.common.collect.Lists;
-
-import mc.GeneratorIntegrationsTest;
+import de.monticore.runtime.junit.TestWithMCLanguage;
+import mc.examples.lwc.odl.odl.ODLMill;
 import mc.examples.lwc.odl.odl._ast.ASTInstances;
 import mc.examples.lwc.odl.odl._ast.ASTODLCompilationUnit;
 import mc.examples.lwc.odl.odl._parser.ODLParser;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestODL extends GeneratorIntegrationsTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
+@TestWithMCLanguage(ODLMill.class)
+public class TestODL {
+
   @Test
   public void testParser() throws IOException {
-    ODLParser parser = new ODLParser();
+    ODLParser parser = ODLMill.parser();
     Optional<ASTODLCompilationUnit> ast = parser
         .parseODLCompilationUnit("src/test/resources/examples/lwc/odl/MyWorld.odl");
     assertFalse(parser.hasErrors());
@@ -94,7 +84,6 @@ public class TestODL extends GeneratorIntegrationsTest {
     assertEquals("car", instances.getObjectList().get(1).getName());
     assertTrue(instances.getObjectList().get(1).getType().deepEquals(
         ODLMill.qualifiedNameBuilder().setNamesList(Lists.newArrayList("lwc", "edl", "Car")).build()));
-    assertTrue(Log.getFindings().isEmpty());
   }
   
 }

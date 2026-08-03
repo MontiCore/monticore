@@ -2,75 +2,64 @@
 
 package mc.feature.embedding;
 
-import java.io.IOException;
-import java.io.StringReader;
-
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.BeforeEach;
+import de.monticore.runtime.junit.MCAssertions;
+import de.monticore.runtime.junit.TestWithMCLanguage;
+import mc.feature.embedding.outer.embedded.EmbeddedMill;
+import mc.feature.embedding.outer.embedded._parser.EmbeddedParser;
 import org.junit.jupiter.api.Test;
 
-import mc.GeneratorIntegrationsTest;
-import mc.feature.embedding.outer.embedded._parser.EmbeddedParser;
+import java.io.IOException;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class EmbedTest extends GeneratorIntegrationsTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
-  
+@TestWithMCLanguage(EmbeddedMill.class)
+public class EmbedTest {
+
   @Test
   public void test() throws IOException {
     
-    EmbeddedParser parser = new EmbeddedParser();
-    parser.parseStart(new StringReader("a a a"));
+    EmbeddedParser parser = EmbeddedMill.parser();
+    parser.parse_StringStart("a a a");
     
-    assertEquals(false, parser.hasErrors());
-    assertTrue(Log.getFindings().isEmpty());
+    assertFalse(parser.hasErrors());
   }
   
   @Test
   public void test2_a() throws IOException {
     
-    EmbeddedParser parser = new EmbeddedParser();
-    parser.parseStart(new StringReader("a x a"));
+    EmbeddedParser parser = EmbeddedMill.parser();
+    parser.parse_StringStart("a x a");
     
     assertFalse(parser.hasErrors());
-    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
   public void test2_b() throws IOException {
     
-    EmbeddedParser parser = new EmbeddedParser();
-    parser.parseStart2(new StringReader("a x a"));
+    EmbeddedParser parser = EmbeddedMill.parser();
+    parser.parse_StringStart2("a x a");
     
     assertFalse(parser.hasErrors());
-    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
   public void test3() throws IOException {
     
-    EmbeddedParser parser = new EmbeddedParser();
-    parser.parseStart2(new StringReader("a a x a a"));
+    EmbeddedParser parser = EmbeddedMill.parser();
+    parser.parse_StringStart2("a a x a a");
     
     assertTrue(parser.hasErrors());
+    MCAssertions.assertHasFindingStartingWith("extraneous input 'a' expecting {'x', 'y'}");
   }
   
   @Test
   public void test4() throws IOException {
     
-    EmbeddedParser parser = new EmbeddedParser();
-    parser.parseStart3(new StringReader("b x"));
+    EmbeddedParser parser = EmbeddedMill.parser();
+    parser.parse_StringStart3("b x");
     
     assertFalse(parser.hasErrors());
-    assertTrue(Log.getFindings().isEmpty());
   }
   
 }
