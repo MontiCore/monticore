@@ -352,7 +352,7 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
           isMCCommonLiteralsSuper,
           node,
           isLex,
-          "placeholder1"
+          "placeholder1" // These placeholders should be replaced with the token type (if required)
       );
 
       altData.getComponentList().add(component);
@@ -585,7 +585,7 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
       constants = constants.stream().limit(1).collect(Collectors.toSet());
     }
 
-    PPGuardComponent component = PPGuardComponent.forCG(getter, constants, node, "placeholder7");
+    PPGuardComponent component = PPGuardComponent.forCG(getter, constants, node, getter);
 
     AltData altData;
     Optional<BlockData> blockDataOpt = Optional.empty();

@@ -30,6 +30,7 @@ public interface IFormatter {
   
   /**
    * Default implementation, based on curly brackets and semicolons
+   * TODO: This default formatter currently does not support the noSpace directive
    */
   public class DefaultIFormatter implements IFormatter {
     
