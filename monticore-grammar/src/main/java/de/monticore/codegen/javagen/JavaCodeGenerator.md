@@ -37,6 +37,8 @@ statements ought to be added later in development.
           (CodeGenVisitor for OptionalOperators)
         * [SetExpressionsJavaGenVisitor](../../ocl/setexpressions/codegen/javagen/SetExpressionsJavaGenVisitor.java)
           (CodeGenVisitor for SetExpressions)
+        * [StreamExpressionsJavaGenVisitor](../../expressions/streamexpressions/codegen/javagen/StreamExpressionsJavaGenVisitor.java)
+          (CodeGenVisitor for StreamExpressions)
         * [TupleExpressionsJavaGenVisitor](../../expressions/tupleexpressions/codegen/javagen/TupleExpressionsJavaGenVisitor.java)
           (CodeGenVisitor for TupleExpressions)
         * [UglyExpressionsJavaGenVisitor](../../expressions/uglyexpressions/codegen/javagen/UglyExpressionsJavaGenVisitor.java)
