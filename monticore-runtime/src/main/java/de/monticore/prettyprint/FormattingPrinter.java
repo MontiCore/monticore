@@ -69,6 +69,13 @@ public class FormattingPrinter extends IndentPrinter {
     tokenQueueFromEmit.add(new TokenToBePrinted(string, tokenType, position, productionStack.peek()));
   }
 
+  /**
+   * Mark the last token as being targeted by a noSpace directive
+   */
+  public void markLastTokenAsNoSpaceFromGrammar() {
+    tokenQueueFromEmit.getLast().markedAsNoSpace = true;
+  }
+
   boolean currentlyEmitting = false; // lock
   protected Stack<Integer> depthFromQueueStack = new Stack<>();
 
@@ -101,7 +108,8 @@ public class FormattingPrinter extends IndentPrinter {
                 last == null ? null : last.string,
                 next == null || !next.isToken() ? null : next.tokenType,
                 next == null || !next.isToken() ? null : next.string,
-                -42);
+                -42,
+                item.markedAsNoSpace);
         last = item;
       } else if (item.indentLevel == TokenToBePrinted.END_PROD) {
         int indent = depthFromQueueStack.pop();
@@ -129,9 +137,21 @@ public class FormattingPrinter extends IndentPrinter {
                              String lastTokenString,
                              String nextTokenType,
                              String nextTokenString,
-                             int depth) {
+                             int depth,
+                             boolean markedAsNoSpace) {
     int fmt = formatter.getFormatOptions(token, tokenType, position, productionName,
             lastTokenType, lastTokenString, nextTokenType, nextTokenString, depth);
+
+    if (markedAsNoSpace) // unset bits if marked as noSpace via the grammar
+    {
+      fmt &= ~IFormatter.SPACE_FOLLOWING;
+      fmt &= ~IFormatter.UNINDENT;
+      fmt &= ~IFormatter.INDENT;
+      fmt &= ~IFormatter.LINEBREAK_PRE;
+      fmt &= ~IFormatter.LINEBREAK_POST;
+      // Consider moving this into the getFormatOptions method?
+      // vs keeping it here, as that would ensure correct printing.
+    }
 
     if ((fmt & IFormatter.LINEBREAK_PRE) == IFormatter.LINEBREAK_PRE && !lastLineBreak)
       this.println();
@@ -177,14 +197,24 @@ public class FormattingPrinter extends IndentPrinter {
   }
 
   // Entry in the buffer
-  protected record TokenToBePrinted(
-          String string,
-          String tokenType,
-          String position,
-          String productionName,
-          int indentLevel) {
+  protected static class TokenToBePrinted {
+    String string;
+    String tokenType;
+    String position;
+    String productionName;
+    int indentLevel;
+    boolean markedAsNoSpace;
+
 
     static int UNKNOWN = -1, START_PROD = -2, END_PROD = -3;
+
+    protected TokenToBePrinted(String string, String tokenType, String position, String productionName, int indentLevel) {
+      this.string = string;
+      this.tokenType = tokenType;
+      this.position = position;
+      this.productionName = productionName;
+      this.indentLevel = indentLevel;
+    }
 
     boolean isToken() {
       return tokenType != null;

@@ -11,13 +11,16 @@ ${tc.signature("altData", "grammarName", "astPackage")}
     <#if comp.isList()>
       for (String ${comp.getNameToUse()?uncap_first} : node.get${comp.getNameToUse()?cap_first}List()) {
         getPrinter().emit(${comp.getNameToUse()?uncap_first}, "${comp.getTokenType()}", "${comp.getNameOrIndex()}");
+        <#if comp.isHasNoSpace()>getPrinter().markLastTokenAsNoSpaceFromGrammar();</#if>
       }
     <#elseif comp.isOpt()>
       if (node.isPresent${comp.getNameToUse()?cap_first}()) {
         getPrinter().emit(node.get${comp.getNameToUse()?cap_first}(), "${comp.getTokenType()}", "${comp.getNameOrIndex()}");
+        <#if comp.isHasNoSpace()>getPrinter().markLastTokenAsNoSpaceFromGrammar();</#if>
       }
     <#else>
       getPrinter().emit("${comp.getName()?j_string}", "${comp.getTokenType()}", "${comp.getNameOrIndex()}");
+        <#if comp.isHasNoSpace()>getPrinter().markLastTokenAsNoSpaceFromGrammar();</#if>
     </#if>
 
   <#elseif comp.getType().name() == "NT">
@@ -26,13 +29,16 @@ ${tc.signature("altData", "grammarName", "astPackage")}
       <#if comp.isList()>
         for (String ${comp.getNameToUse()?uncap_first} : node.get${comp.getNameToUse()?cap_first}List()) {
           getPrinter().emit(${comp.getNameToUse()?uncap_first}, "${comp.getTokenType()}", "${comp.getNameOrIndex()}");
+          <#if comp.isHasNoSpace()>getPrinter().markLastTokenAsNoSpaceFromGrammar();</#if>
         }
       <#elseif comp.isOpt()>
         if (node.isPresent${comp.getNameToUse()?cap_first}()) {
           getPrinter().emit(node.get${comp.getNameToUse()?cap_first}(), "${comp.getTokenType()}", "${comp.getNameOrIndex()}");
+          <#if comp.isHasNoSpace()>getPrinter().markLastTokenAsNoSpaceFromGrammar();</#if>
         }
       <#else>
         getPrinter().emit(node.get${comp.getNameToUse()?cap_first}(), "${comp.getTokenType()}", "${comp.getNameOrIndex()}");
+        <#if comp.isHasNoSpace()>getPrinter().markLastTokenAsNoSpaceFromGrammar();</#if>
       </#if>
     <#else>
       <#if comp.isList()>
@@ -50,6 +56,7 @@ ${tc.signature("altData", "grammarName", "astPackage")}
     <#-- NonTerminal with ASTRule reducing from List to Def -->
     <#if comp.isStringType()>
       getPrinter().emit(node.get${comp.getNameToUse()?cap_first}(0), "${comp.getTokenType()}", "${comp.getNameOrIndex()}");
+      <#if comp.isHasNoSpace()>getPrinter().markLastTokenAsNoSpaceFromGrammar();</#if>
     <#else>
       node.get${comp.getNameToUse()?cap_first}(0).accept(getTraverser());
     </#if>
@@ -58,6 +65,7 @@ ${tc.signature("altData", "grammarName", "astPackage")}
     <#-- Shared List Iterators (e.g., Expression ("," Expression)* ) -->
     <#if comp.isStringType()>
       getPrinter().emit(iter_${comp.getNameToUse()?uncap_first}.next(), "${comp.getTokenType()}", "${comp.getNameOrIndex()}");
+      <#if comp.isHasNoSpace()>getPrinter().markLastTokenAsNoSpaceFromGrammar();</#if>
     <#else>
       iter_${comp.getNameToUse()?uncap_first}.next().accept(getTraverser());
     </#if>
@@ -70,10 +78,12 @@ ${tc.signature("altData", "grammarName", "astPackage")}
     <#-- Constant Groups -->
     <#if comp.getConstants()?size == 1>
       getPrinter().emit("${comp.getConstants()?first.getValue()?j_string}", "${comp.getTokenType()}", "${comp.getNameOrIndex()}");
+      <#if comp.isHasNoSpace()>getPrinter().markLastTokenAsNoSpaceFromGrammar();</#if>
     <#else>
       <#list comp.getConstants() as const>
         <#if const_index == 0>if<#else>else if</#if> (node.${comp.getNameToUse()}() == ${astPackage}.ASTConstants${grammarName?cap_first}.${const.getKey()?upper_case}) {
           getPrinter().emit("${const.getValue()?j_string}", "${comp.getTokenType()}", "${comp.getNameOrIndex()}");
+          <#if comp.isHasNoSpace()>getPrinter().markLastTokenAsNoSpaceFromGrammar();</#if>
         }
       </#list>
     </#if>
