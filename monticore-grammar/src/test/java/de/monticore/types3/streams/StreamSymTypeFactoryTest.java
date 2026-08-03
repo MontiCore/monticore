@@ -4,91 +4,110 @@ package de.monticore.types3.streams;
 import de.monticore.runtime.junit.AbstractMCTest;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsGlobalScope;
+import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfGenerics;
-import de.monticore.types.mccollectiontypes.types3.util.MCCollectionSymTypeFactory;
-import de.monticore.types.mccollectiontypes.types3.util.MCCollectionTypeRelations;
-import de.monticore.types3.util.DefsTypesForTests;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static de.monticore.types3.util.DefsTypesForTests.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class StreamSymTypeFactoryTest extends AbstractMCTest {
 
-  MCCollectionTypeRelations collectionTypeRelations;
 
   @BeforeEach
   public void setup() {
     BasicSymbolsMill.reset();
     BasicSymbolsMill.init();
-    // make collection types available in unboxed AND boxed form
-    DefsTypesForTests.setup();
-    collectionTypeRelations = new MCCollectionTypeRelations();
+    StreamSymTypeRelations.init();
+    BasicSymbolsMill.initializePrimitives();
+    BasicSymbolsMill.initializeStreams();
   }
 
   @Test
-  public void createsList() {
+  public void createsStream() {
+    // Given
     IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();
+    SymTypeExpression intSymTypeExpression = SymTypeExpressionFactory.createPrimitive("int");
 
-    SymTypeOfGenerics intList = MCCollectionSymTypeFactory.createList(_intSymType);
-    assertTrue(intList.hasTypeInfo());
-    assertSame(_unboxedListSymType.getTypeInfo(), intList.getTypeInfo());
-    assertEquals("List", intList.getTypeConstructorFullName());
-    assertEquals(1, intList.sizeArguments());
-    assertTrue(_intSymType.deepEquals(intList.getArgument(0)));
-    assertTrue(getCollectionTypeRelations().isList(intList));
+    // When
+    SymTypeOfGenerics intStream = StreamSymTypeFactory.createStream(intSymTypeExpression);
+
+    // Then
+    assertTrue(intStream.hasTypeInfo());
+    assertSame(gs.resolveType("Stream").orElseThrow(), intStream.getTypeInfo());
+    assertEquals("Stream", intStream.getTypeConstructorFullName());
+    assertEquals(1, intStream.sizeArguments());
+    assertTrue(intSymTypeExpression.deepEquals(intStream.getArgument(0)));
   }
 
   @Test
-  public void createsSet() {
+  public void createsEventStream() {
+    // Given
     IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();
+    SymTypeExpression intSymTypeExpression = SymTypeExpressionFactory.createPrimitive("int");
 
-    SymTypeOfGenerics intSet = MCCollectionSymTypeFactory.createSet(_intSymType);
-    assertTrue(intSet.hasTypeInfo());
-    assertSame(_unboxedSetSymType.getTypeInfo(), intSet.getTypeInfo());
-    assertEquals("Set", intSet.getTypeConstructorFullName());
-    assertEquals(1, intSet.sizeArguments());
-    assertTrue(_intSymType.deepEquals(intSet.getArgument(0)));
-    assertTrue(getCollectionTypeRelations().isSet(intSet));
+    // When
+    SymTypeOfGenerics intStream = StreamSymTypeFactory.createEventStream(intSymTypeExpression);
 
-    // again, but with the unboxed "Set" not being available
-    gs.remove(gs.resolveType("Set").get());
-    intSet = MCCollectionSymTypeFactory.createSet(_intSymType);
-    assertTrue(intSet.hasTypeInfo());
-    assertSame(_boxedSetSymType.getTypeInfo(), intSet.getTypeInfo());
-    assertEquals("java.util.Set", intSet.getTypeConstructorFullName());
-    assertEquals(1, intSet.sizeArguments());
-    assertTrue(_intSymType.deepEquals(intSet.getArgument(0)));
-    assertTrue(getCollectionTypeRelations().isSet(intSet));
+    // Then
+    assertTrue(intStream.hasTypeInfo());
+    assertSame(gs.resolveType("EventStream").orElseThrow(), intStream.getTypeInfo());
+    assertEquals("EventStream", intStream.getTypeConstructorFullName());
+    assertEquals(1, intStream.sizeArguments());
+    assertTrue(intSymTypeExpression.deepEquals(intStream.getArgument(0)));
   }
 
   @Test
-  public void createsOptional() {
+  public void createsUntimedStream() {
+    // Given
     IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();
+    SymTypeExpression intSymTypeExpression = SymTypeExpressionFactory.createPrimitive("int");
 
-    SymTypeOfGenerics intOptional = MCCollectionSymTypeFactory.createOptional(_intSymType);
-    assertTrue(intOptional.hasTypeInfo());
-    assertSame(_unboxedOptionalSymType.getTypeInfo(), intOptional.getTypeInfo());
-    assertEquals("Optional", intOptional.getTypeConstructorFullName());
-    assertEquals(1, intOptional.sizeArguments());
-    assertTrue(_intSymType.deepEquals(intOptional.getArgument(0)));
-    assertTrue(getCollectionTypeRelations().isOptional(intOptional));
+    // When
+    SymTypeOfGenerics intStream = StreamSymTypeFactory.createUntimedStream(intSymTypeExpression);
 
-    // again, but with the unboxed "Optional" not being available
-    gs.remove(gs.resolveType("Optional").get());
-    intOptional = MCCollectionSymTypeFactory.createOptional(_intSymType);
-    assertTrue(intOptional.hasTypeInfo());
-    assertSame(_boxedOptionalSymType.getTypeInfo(), intOptional.getTypeInfo());
-    assertEquals("java.util.Optional", intOptional.getTypeConstructorFullName());
-    assertEquals(1, intOptional.sizeArguments());
-    assertTrue(_intSymType.deepEquals(intOptional.getArgument(0)));
-    assertTrue(getCollectionTypeRelations().isOptional(intOptional));
+    // Then
+    assertTrue(intStream.hasTypeInfo());
+    assertSame(gs.resolveType("UntimedStream").orElseThrow(), intStream.getTypeInfo());
+    assertEquals("UntimedStream", intStream.getTypeConstructorFullName());
+    assertEquals(1, intStream.sizeArguments());
+    assertTrue(intSymTypeExpression.deepEquals(intStream.getArgument(0)));
   }
 
-  // Helper
+  @Test
+  public void createsToptStream() {
+    // Given
+    IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();
+    SymTypeExpression intSymTypeExpression = SymTypeExpressionFactory.createPrimitive("int");
 
-  protected MCCollectionTypeRelations getCollectionTypeRelations() {
-    return collectionTypeRelations;
+    // When
+    SymTypeOfGenerics intStream = StreamSymTypeFactory.createToptStream(intSymTypeExpression);
+
+    // Then
+    assertTrue(intStream.hasTypeInfo());
+    assertSame(gs.resolveType("ToptStream").orElseThrow(), intStream.getTypeInfo());
+    assertEquals("ToptStream", intStream.getTypeConstructorFullName());
+    assertEquals(1, intStream.sizeArguments());
+    assertTrue(intSymTypeExpression.deepEquals(intStream.getArgument(0)));
+  }
+
+  @Test
+  public void createsSyncStream() {
+    // Given
+    IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();
+    SymTypeExpression intSymTypeExpression = SymTypeExpressionFactory.createPrimitive("int");
+
+    // When
+    SymTypeOfGenerics intStream = StreamSymTypeFactory.createToptStream(intSymTypeExpression);
+
+    // Then
+    assertTrue(intStream.hasTypeInfo());
+    assertSame(gs.resolveType("SyncStream").orElseThrow(), intStream.getTypeInfo());
+    assertEquals("SyncStream", intStream.getTypeConstructorFullName());
+    assertEquals(1, intStream.sizeArguments());
+    assertTrue(intSymTypeExpression.deepEquals(intStream.getArgument(0)));
   }
 }
