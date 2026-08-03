@@ -174,7 +174,7 @@ public class MC2PPTranslation extends AbstractCreator<ASTMCGrammar, ASTCDCompila
     fullPrettyPrinterCDClass.addCDMember(constructor);
     this.replaceTemplate(EMPTY_BODY, constructor, new StringHookPoint("this(printer, true);"));
 
-    // InitializeTraverser
+    // InitializeTraverser: Dedicated (overrideable) method for setting all the pretty printers
     ASTCDParameter printCommentsParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createBooleanType(), "printComments");
     ASTCDParameter indentPrinterParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType("de.monticore.prettyprint.IndentPrinter"), "printer");
     ASTCDParameter formattingPrinterParameter = getCDParameterFacade().createParameter(getMCTypeFacade().createQualifiedType("de.monticore.prettyprint.FormattingPrinter"), "printer");

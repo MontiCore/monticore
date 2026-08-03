@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 <#-- @ftlvariable name="tc" type="de.monticore.generating.templateengine.TemplateController" -->
-<#-- @ftlvariable name="altData" type="de.monticore.codegen.prettyprint.data.FormattingAltData" -->
+<#-- @ftlvariable name="altData" type="de.monticore.codegen.prettyprint.data.AltData" -->
 <#-- @ftlvariable name="grammarName" type="java.lang.String" -->
 <#-- @ftlvariable name="astPackage" type="java.lang.String" -->
 ${tc.signature("altData", "grammarName", "astPackage")}
