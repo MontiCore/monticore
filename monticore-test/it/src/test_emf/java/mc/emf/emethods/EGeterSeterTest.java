@@ -2,7 +2,7 @@
 
 package mc.emf.emethods;
 
-import mc.GeneratorIntegrationsTest;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import mc.feature.fautomaton.action.expression._ast.ASTAssignment;
 import mc.feature.fautomaton.action.expression.ExpressionMill;
 import mc.feature.fautomaton.action.expression._ast.ExpressionPackage;
@@ -15,7 +15,8 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class EGeterSeterTest extends GeneratorIntegrationsTest {
+@TestWithMCLanguage(FlatAutomatonMill.class)
+public class EGeterSeterTest {
   
   private ASTAutomaton aut;
   private ASTTransition transition;
