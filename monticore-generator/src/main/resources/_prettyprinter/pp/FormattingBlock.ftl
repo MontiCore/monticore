@@ -32,7 +32,7 @@ ${tc.signature("blockData", "grammarName", "astPackage")}
 <#-- DEFAULT: ( ... ) -->
 <#else>
   <#list blockData.getAltDataList() as alt>
-    <#if alt_index == 0>if<#else>else if</#if> (${alt.getExpressionConj()}) {
+    <#if alt_index == 0>if<#else><#if !blockData.isNotListButNoElse()>else<#else> /* noelse 2 */</#if> if</#if> (${alt.getExpressionConj()}) {
       ${includeArgs("_prettyprinter.pp.FormattingAlt", alt, grammarName, astPackage)}
     }
   </#list>
