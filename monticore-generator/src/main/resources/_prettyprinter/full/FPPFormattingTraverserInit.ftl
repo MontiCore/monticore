@@ -12,7 +12,7 @@ ${tc.signature("grammarSymbol", "superGrammars", "replacedKeywordGrammars")}
 
 <#assign grammarName=grammarSymbol.getName()>
 
-${grammarName}PrettyPrinter ${grammarName?uncap_first} = new ${grammarName}PrettyPrinter(printer, printComments);
+${grammarName}FormattingPrettyPrinter ${grammarName?uncap_first} = new ${grammarName}FormattingPrettyPrinter(printer, printComments);
 <#if replacedKeywordGrammars[grammarSymbol.getFullName()]??>
     // Note: Keywords were replaced in this grammar, but this has already been respected in the various handle methods
 </#if>
