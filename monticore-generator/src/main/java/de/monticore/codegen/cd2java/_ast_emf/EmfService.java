@@ -244,9 +244,13 @@ public class EmfService extends AbstractService<EmfService> {
    */
   protected boolean isObjectType(ASTMCType type) {
     return switch (getDecorationHelper().getSimpleNativeType(type)) {
-      case "Boolean", "Short", "Integer", "Long", "Character", "Float", "Double",
-           "java.lang.Boolean", "java.lang.Short", "java.lang.Integer", "java.lang.Long",
-           "java.lang.Character", "java.lang.Float", "java.lang.Double" -> true;
+      case "Boolean",   "java.lang.Boolean",
+           "Short",     "java.lang.Short",
+           "Integer",   "java.lang.Integer",
+           "Long",      "java.lang.Long",
+           "Character", "java.lang.Character",
+           "Float",     "java.lang.Float",
+           "Double",    "java.lang.Double" -> true;
       default -> false;
     };
   }
