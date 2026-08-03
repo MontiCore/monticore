@@ -179,6 +179,12 @@ public class FormattingPrinter extends IndentPrinter {
   }
 
   @Override
+  public void stripTrailing() {
+    this.workEmitQueue();
+    super.stripTrailing();
+  }
+
+  @Override
   public String getContent() {
     this.workEmitQueue();
     return super.getContent();
