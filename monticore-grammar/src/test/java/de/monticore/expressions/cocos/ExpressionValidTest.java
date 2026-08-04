@@ -6,17 +6,22 @@ import de.monticore.expressions.combineexpressionswithliterals._parser.CombineEx
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._cocos.ExpressionsBasisCoCoChecker;
 import de.monticore.grammar.cocos.CocoTest;
+import de.monticore.runtime.junit.MCAssertions;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.FullDeriveFromCombineExpressionsWithLiterals;
 import de.monticore.types.check.TypeCalculator;
 import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ExpressionValidTest extends CocoTest {
@@ -34,40 +39,43 @@ public class ExpressionValidTest extends CocoTest {
     new TypeCalculator(null, new FullDeriveFromCombineExpressionsWithLiterals());
   }
 
-  public void checkValid(String expressionString) throws IOException {
-    CombineExpressionsWithLiteralsParser parser = new CombineExpressionsWithLiteralsParser();
+  @ParameterizedTest
+  @ValueSource(strings = {
+      "7-4*2",
+      "4/2*6%4",
+      "(5<6)&&(1<=1)",
+      "!true||false&&(5>=0)",
+      "5.0/2.5%2"
+  })
+  public void testValid(String expressionString) throws IOException {
+    CombineExpressionsWithLiteralsParser parser = CombineExpressionsWithLiteralsMill.parser();
     Optional<ASTExpression> optAST = parser.parse_StringExpression(expressionString);
     assertTrue(optAST.isPresent());
     Log.getFindings().clear();
     checker.checkAll(optAST.get());
-    assertTrue(Log.getFindings().isEmpty(), Log.getFindings().toString());
   }
-
-  public void checkInvalid(String expressionString) throws IOException {
-    CombineExpressionsWithLiteralsParser parser = new CombineExpressionsWithLiteralsParser();
+  
+  static Stream<Arguments> testInvalidArgs() {
+    return Stream.of(
+        Arguments.of("5+false", List.of("0xA0168")),
+        Arguments.of("true-true", List.of("0xA0168")),
+        Arguments.of("!false!=5", List.of("0xA0166")),
+        Arguments.of("5||7", List.of("0xA0167")),
+        Arguments.of("true++", List.of("0xA0183")),
+        Arguments.of("(true&&6)||(false>=37)", List.of("0xA0167", "0xA0167"))
+    );
+  }
+  
+  @ParameterizedTest
+  @MethodSource("testInvalidArgs")
+  public void testInvalid(String expressionString, List<String> expectedErrors) throws IOException {
+    CombineExpressionsWithLiteralsParser parser = CombineExpressionsWithLiteralsMill.parser();
     Optional<ASTExpression> optAST = parser.parse_StringExpression(expressionString);
     assertTrue(optAST.isPresent());
-    Log.getFindings().clear();
     checker.checkAll(optAST.get());
-    assertFalse(Log.getFindings().isEmpty());
-  }
-
-  @Test
-  public void testValid() throws IOException {
-    checkValid("7-4*2");
-    checkValid("4/2*6%4");
-    checkValid("(5<6)&&(1<=1)");
-    checkValid("!true||false&&(5>=0)");
-    checkValid("5.0/2.5%2");
-  }
-
-  @Test
-  public void testInvalid() throws IOException {
-    checkInvalid("5+false");
-    checkInvalid("true-true");
-    checkInvalid("!false!=5");
-    checkInvalid("5||7");
-    checkInvalid("true++");
-    checkInvalid("(true&&6)||(false>=37)");
+    
+    for (String expectedError : expectedErrors) {
+      MCAssertions.assertHasFindingStartingWith(expectedError);
+    }
   }
 }

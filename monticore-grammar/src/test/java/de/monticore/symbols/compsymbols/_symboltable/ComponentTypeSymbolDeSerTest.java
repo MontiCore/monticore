@@ -4,6 +4,7 @@ package de.monticore.symbols.compsymbols._symboltable;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.compsymbols.CompSymbolsMill;
@@ -20,6 +21,7 @@ import java.util.Collections;
 import static java.nio.file.Files.readString;
 import static org.junit.jupiter.api.Assertions.*;
 
+@TestWithMCLanguage(CompSymbolsMill.class)
 public class ComponentTypeSymbolDeSerTest {
 
   protected static final String RELATIVE_DIR = "target/resources/test/de/monticore/symbols/compsymbols/_symboltable/";
@@ -29,8 +31,6 @@ public class ComponentTypeSymbolDeSerTest {
 
   @BeforeEach
   void setup() {
-    CompSymbolsMill.reset();
-    CompSymbolsMill.init();
     BasicSymbolsMill.initializePrimitives();
 
     deSer = new ComponentTypeSymbolDeSer();

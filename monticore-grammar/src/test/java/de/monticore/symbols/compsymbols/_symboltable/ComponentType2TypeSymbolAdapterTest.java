@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.symbols.compsymbols._symboltable;
 
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.symbols.compsymbols.CompSymbolsMill;
 import de.monticore.symboltable.modifiers.BasicAccessModifier;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -15,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  * Holds tests for {@link ComponentType2TypeSymbolAdapter}.
  */
+@TestWithMCLanguage(CompSymbolsMill.class)
 public class ComponentType2TypeSymbolAdapterTest {
 
   @ParameterizedTest

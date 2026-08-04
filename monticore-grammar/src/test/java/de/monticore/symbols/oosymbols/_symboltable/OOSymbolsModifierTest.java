@@ -1,20 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.symbols.oosymbols._symboltable;
 
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@TestWithMCLanguage(OOSymbolsMill.class)
 public class OOSymbolsModifierTest {
-
-  @BeforeEach
-  public void setup() {
-    OOSymbolsMill.reset();
-    OOSymbolsMill.init();
-  }
 
   @Test
   public void testOOTypeSymbolModifier() {

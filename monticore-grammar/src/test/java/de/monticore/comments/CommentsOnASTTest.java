@@ -4,11 +4,11 @@ package de.monticore.comments;
 import de.monticore.javalight._ast.ASTConstDeclaration;
 import de.monticore.javalight._ast.ASTJavaMethod;
 import de.monticore.javalight._ast.ASTMethodDeclaration;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.testjavalight.TestJavaLightMill;
 import de.monticore.testjavalight._parser.TestJavaLightParser;
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -19,21 +19,13 @@ import static org.junit.jupiter.api.Assertions.*;
  * This test should document the current comment behavior
  * Note: The location of comments has changed as of MC 7.7.0
  */
+@TestWithMCLanguage(TestJavaLightMill.class)
 public class CommentsOnASTTest {
-
-  @BeforeAll
-  public static void setup() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-    TestJavaLightMill.reset();
-    TestJavaLightMill.init();
-  }
 
   TestJavaLightParser parser;
 
   @BeforeEach
   public void before() {
-    Log.clearFindings();
     this.parser = TestJavaLightMill.parser();
   }
 

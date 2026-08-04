@@ -5,199 +5,183 @@ import de.monticore.expressions.assignmentexpressions._cocos.AssignmentExpressio
 import de.monticore.expressions.assignmentexpressions._cocos.AssignmentExpressionsCoCoChecker;
 import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.runtime.junit.MCAssertions;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserFactory;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+// using a language containing lvalue and non-lvalue expressions
+@TestWithMCLanguage(CombineExpressionsWithLiteralsMill.class)
 public class AssignmentExpressionsOnlyAssignToLValuesCoCoTest {
 
   @BeforeEach
   public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-    // using a language containing lvalue and non-lvalue expressions
-    CombineExpressionsWithLiteralsMill.reset();
-    CombineExpressionsWithLiteralsMill.init();
     // this test is (currently) not type dependent,
     // as whether something is a lvalue can be derived from the ASTNode-type
     // thus nothing type related needs to be initialized
     CombineExpressionsWithLiteralsTypeTraverserFactory.initTypeCheck3();
   }
 
-  @Test
-  public void testNameExprAssignments() throws IOException {
-    testValid("a = 42");
-    testValid("a += 0");
-    testValid("a -= 0");
-    testValid("a *= 0");
-    testValid("a /= 0");
-    testValid("a &= 0");
-    testValid("a |= 0");
-    testValid("a ^= 0");
-    testValid("a >>= 0");
-    testValid("a >>>= 0");
-    testValid("a <<= 0");
-    testValid("a %= 0");
-    testValid("C++");
-    testValid("C--");
-    testValid("--a");
-    testValid("++a");
-  }
-
-  @Test
-  public void testFieldAccessExprAssignments() throws IOException {
-    testValid("a.a = 42");
-    testValid("a.a += 0");
-    testValid("a.a -= 0");
-    testValid("a.a *= 0");
-    testValid("a.a /= 0");
-    testValid("a.a &= 0");
-    testValid("a.a |= 0");
-    testValid("a.a ^= 0");
-    testValid("a.a >>= 0");
-    testValid("a.a >>>= 0");
-    testValid("a.a <<= 0");
-    testValid("a.a %= 0");
-    testValid("a.a++");
-    testValid("a.a--");
-    testValid("--a.a");
-    testValid("++a.a");
-  }
-
-  @Test
-  public void testArrayAccessExprAssignments() throws IOException {
-    testValid("a[0] = 42");
-    testValid("a[0] += 0");
-    testValid("a[0] -= 0");
-    testValid("a[0] *= 0");
-    testValid("a[0] /= 0");
-    testValid("a[0] &= 0");
-    testValid("a[0] |= 0");
-    testValid("a[0] ^= 0");
-    testValid("a[0] >>= 0");
-    testValid("a[0] >>>= 0");
-    testValid("a[0] <<= 0");
-    testValid("a[0] %= 0");
-    testValid("a[0]++");
-    testValid("a[0]--");
-    testValid("--a[0]");
-    testValid("++a[0]");
-  }
-
-  @Test
-  public void testLiteralAssignments() throws IOException {
-    testInvalid("true = true");
-    testInvalid("'a' = 'a'");
-    testInvalid("1 = 1");
-    testInvalid("1l = 1l");
-    testInvalid("0.1f = 0.1f");
-    testInvalid("0.1 = 0.1");
-    testInvalid("'a' += 'a'");
-    testInvalid("1 += 1");
-    testInvalid("1l += 1l");
-    testInvalid("0.1f += 0.1f");
-    testInvalid("0.1 += 0.1");
-    testInvalid("'a' -= 'a'");
-    testInvalid("1 -= 1");
-    testInvalid("1l -= 1l");
-    testInvalid("0.1f -= 0.1f");
-    testInvalid("0.1 -= 0.1");
-    testInvalid("'a' *= 'a'");
-    testInvalid("1 *= 1");
-    testInvalid("1l *= 1l");
-    testInvalid("0.1f *= 0.1f");
-    testInvalid("0.1 *= 0.1");
-    testInvalid("'a' /= 'a'");
-    testInvalid("1 /= 1");
-    testInvalid("1l /= 1l");
-    testInvalid("0.1f /= 0.1f");
-    testInvalid("0.1 /= 0.1");
-    testInvalid("'a' %= 'a'");
-    testInvalid("1 %= 1");
-    testInvalid("1l %= 1l");
-    testInvalid("0.1f %= 0.1f");
-    testInvalid("0.1 %= 0.1");
-    testInvalid("'a' >>= 'a'");
-    testInvalid("1 >>= 1");
-    testInvalid("1l >>= 1l");
-    testInvalid("0.1f >>= 0.1f");
-    testInvalid("0.1 >>= 0.1");
-    testInvalid("'a' <<= 'a'");
-    testInvalid("1 <<= 1");
-    testInvalid("1l <<= 1l");
-    testInvalid("0.1f <<= 0.1f");
-    testInvalid("0.1 <<= 0.1");
-    testInvalid("'a' >>>= 'a'");
-    testInvalid("1 >>>= 1");
-    testInvalid("1l >>>= 1l");
-    testInvalid("0.1f >>>= 0.1f");
-    testInvalid("0.1 >>>= 0.1");
-    testInvalid("true &= true");
-    testInvalid("'a' &= 'a'");
-    testInvalid("1 &= 1");
-    testInvalid("1l &= 1l");
-    testInvalid("true |= true");
-    testInvalid("'a' |= 'a'");
-    testInvalid("1 |= 1");
-    testInvalid("1l |= 1l");
-    testInvalid("true ^= true");
-    testInvalid("'a' ^= 'a'");
-    testInvalid("1 ^= 1");
-    testInvalid("1l ^= 1l");
-    testInvalid("++'c'");
-    testInvalid("++1");
-    testInvalid("++1l");
-    testInvalid("++0.1f");
-    testInvalid("++0.1");
-    testInvalid("--'c'");
-    testInvalid("--1");
-    testInvalid("--1l");
-    testInvalid("--0.1f");
-    testInvalid("--0.1");
-    testInvalid("'c'++");
-    testInvalid("1++");
-    testInvalid("1l++");
-    testInvalid("0.1f++");
-    testInvalid("0.1++");
-    testInvalid("'c'--");
-    testInvalid("1--");
-    testInvalid("1l--");
-    testInvalid("0.1f--");
-    testInvalid("0.1--");
-  }
-
-  @Test
-  public void testFurtherInvalidAssignments() throws IOException {
-    testInvalid("(a) = (42)");
-    testInvalid("a + a = 84");
-    testInvalid("1 + 1 = 2");
-    testInvalid("getToInc()++");
-    testInvalid("getVar() = 2");
-  }
-
-  // Helper
-
-  protected void testValid(String exprStr) throws IOException {
+  @ParameterizedTest
+  @ValueSource(strings = {
+      // NameExpression assignments
+      "a = 42",
+      "a += 0",
+      "a -= 0",
+      "a *= 0",
+      "a /= 0",
+      "a &= 0",
+      "a |= 0",
+      "a ^= 0",
+      "a >>= 0",
+      "a >>>= 0",
+      "a <<= 0",
+      "a %= 0",
+      "C++",
+      "C--",
+      "--a",
+      "++a",
+      
+      // FieldAccessExpression assignments
+      "a.a = 42",
+      "a.a += 0",
+      "a.a -= 0",
+      "a.a *= 0",
+      "a.a /= 0",
+      "a.a &= 0",
+      "a.a |= 0",
+      "a.a ^= 0",
+      "a.a >>= 0",
+      "a.a >>>= 0",
+      "a.a <<= 0",
+      "a.a %= 0",
+      "a.a++",
+      "a.a--",
+      "--a.a",
+      "++a.a",
+      
+      // ArrayAccessExpression assignments
+      "a[0] = 42",
+      "a[0] += 0",
+      "a[0] -= 0",
+      "a[0] *= 0",
+      "a[0] /= 0",
+      "a[0] &= 0",
+      "a[0] |= 0",
+      "a[0] ^= 0",
+      "a[0] >>= 0",
+      "a[0] >>>= 0",
+      "a[0] <<= 0",
+      "a[0] %= 0",
+      "a[0]++",
+      "a[0]--",
+      "--a[0]",
+      "++a[0]"
+  })
+  public void testValid(String exprStr) throws IOException {
     check(exprStr);
-    assertTrue(Log.getFindings().isEmpty());
-    Log.clearFindings();
   }
 
-  protected void testInvalid(String exprStr) throws IOException {
+  @ParameterizedTest
+  @ValueSource(strings = {
+      // Literal assignments
+      "true = true",
+      "'a' = 'a'",
+      "1 = 1",
+      "1l = 1l",
+      "0.1f = 0.1f",
+      "0.1 = 0.1",
+      "'a' += 'a'",
+      "1 += 1",
+      "1l += 1l",
+      "0.1f += 0.1f",
+      "0.1 += 0.1",
+      "'a' -= 'a'",
+      "1 -= 1",
+      "1l -= 1l",
+      "0.1f -= 0.1f",
+      "0.1 -= 0.1",
+      "'a' *= 'a'",
+      "1 *= 1",
+      "1l *= 1l",
+      "0.1f *= 0.1f",
+      "0.1 *= 0.1",
+      "'a' /= 'a'",
+      "1 /= 1",
+      "1l /= 1l",
+      "0.1f /= 0.1f",
+      "0.1 /= 0.1",
+      "'a' %= 'a'",
+      "1 %= 1",
+      "1l %= 1l",
+      "0.1f %= 0.1f",
+      "0.1 %= 0.1",
+      "'a' >>= 'a'",
+      "1 >>= 1",
+      "1l >>= 1l",
+      "0.1f >>= 0.1f",
+      "0.1 >>= 0.1",
+      "'a' <<= 'a'",
+      "1 <<= 1",
+      "1l <<= 1l",
+      "0.1f <<= 0.1f",
+      "0.1 <<= 0.1",
+      "'a' >>>= 'a'",
+      "1 >>>= 1",
+      "1l >>>= 1l",
+      "0.1f >>>= 0.1f",
+      "0.1 >>>= 0.1",
+      "true &= true",
+      "'a' &= 'a'",
+      "1 &= 1",
+      "1l &= 1l",
+      "true |= true",
+      "'a' |= 'a'",
+      "1 |= 1",
+      "1l |= 1l",
+      "true ^= true",
+      "'a' ^= 'a'",
+      "1 ^= 1",
+      "1l ^= 1l",
+      "++'c'",
+      "++1",
+      "++1l",
+      "++0.1f",
+      "++0.1",
+      "--'c'",
+      "--1",
+      "--1l",
+      "--0.1f",
+      "--0.1",
+      "'c'++",
+      "1++",
+      "1l++",
+      "0.1f++",
+      "0.1++",
+      "'c'--",
+      "1--",
+      "1l--",
+      "0.1f--",
+      "0.1--",
+      
+      // further invalid assignments
+      "(a) = (42)",
+      "a + a = 84",
+      "1 + 1 = 2",
+      "getToInc()++",
+      "getVar() = 2"
+  })
+  public void testInvalid(String exprStr) throws IOException {
     check(exprStr);
-    assertFalse(Log.getFindings().isEmpty());
-    assertTrue(Log.getFindings().stream().anyMatch(
-        f -> f.getMsg().contains("0xFDD47")
-    ));
-    Log.clearFindings();
+    MCAssertions.assertHasFindingStartingWith("0xFDD47");
   }
 
   protected void check(String exprStr) throws IOException {

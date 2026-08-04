@@ -20,7 +20,8 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.util.Optional;
 
-import static de.monticore.types.check.DefsTypeBasic.*;
+import static de.monticore.types.check.DefsTypeBasic.field;
+import static de.monticore.types.check.DefsTypeBasic.method;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
