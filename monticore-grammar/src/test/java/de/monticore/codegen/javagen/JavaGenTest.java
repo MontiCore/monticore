@@ -23,6 +23,7 @@ public class JavaGenTest extends AbstractJavaGenTest {
 
   @BeforeEach
   public void setupAClass() {
+    AClass.resetStaticVars();
     Class2MCTestUtil.addClassPathEntry(AClass.class);
   }
 

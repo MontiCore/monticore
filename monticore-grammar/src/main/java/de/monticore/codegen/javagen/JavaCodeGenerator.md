@@ -24,7 +24,7 @@ statements ought to be added later in development.
         * [AssignmentExpressionsJavaGenVisitor](../../expressions/assignmentexpressions/codegen/javagen/AssignmentExpressionsJavaGenVisitor.java)
           (CodeGenVisitor for AssignmentExpressions, partially implemented)
         * [BitExpressionsJavaGenVisitor](../../expressions/bitexpressions/codegen/javagen/BitExpressionsJavaGenVisitor.java)
-          (CodeGenVisitor for BitExpressions, no implementation yet)
+          (CodeGenVisitor for BitExpressions)
         * [CommonExpressionsJavaGenVisitor](../../expressions/commonexpressions/codegen/javagen/CommonExpressionsJavaGenVisitor.java)
           (CodeGenVisitor for CommonExpressions, partially implemented)
         * [ExpressionsBasisJavaGenVisitor](../../expressions/expressionsbasis/codegen/javagen/ExpressionsBasisJavaGenVisitor.java)

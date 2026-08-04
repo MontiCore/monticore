@@ -22,6 +22,7 @@ public class InterpreterClass2MCTest extends AbstractInterpreterTest {
   void testNativeJavaAClass(String tail, Object expectedValue) {
     assumeFalse(Class2MCTestModels.getInstanceOfCases().anyMatch(a -> a.get()[0].equals(tail)));
     assumeFalse(Class2MCTestModels.getCreatorExpressionCases().anyMatch(a -> a.get()[0].equals(tail)));
+    assumeFalse(tail.contains("Integer | Double")); // not supported yet
     String modelStr = Class2MCTestModels.getModelPrefix() + tail;
     checkValue(modelStr, expectedValue);
   }
