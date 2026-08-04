@@ -6,5 +6,5 @@ ${tc.signature("cliName")}
     formatter.printHelp(this.getClass().getSimpleName(), "", options, "", true);
   }
   catch (java.io.IOException e) {
-    throw new RuntimeException(e);
+    throw new RuntimeException(e); // If the help-output could not be written to the help appendable
   }
