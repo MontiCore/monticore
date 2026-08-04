@@ -7,6 +7,11 @@ import de.monticore.interpreter.calculations.MICalculation;
 import de.monticore.values.MCValue;
 import de.monticore.visitor.ITraverser;
 
+import static de.monticore.runtime.junit.MCAssertions.assertNoFindings;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 /**
  * To access the internals
  */
@@ -26,7 +31,14 @@ public class InterpreterAccess4Tests extends ExpressionsInterpreter {
 
   @Override
   public MICalculation getCalculation(ASTNode node) {
-    return super.getCalculation(node);
+    MICalculation calculation = super.getCalculation(node);
+    // further checks for tests
+    assertNoFindings();
+    assertNotNull(calculation);
+    InterpreterDataForBasicSymbols iData = getInterpreterData();
+    assertEquals(0, iData.getFrameLayoutStack().size());
+    assertFalse(iData.isPresentCalculation());
+    return calculation;
   }
 
   @Override
