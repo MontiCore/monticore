@@ -10,7 +10,6 @@ import de.monticore.grammar.concepts.antlr.antlr._ast.ASTConceptAntlr;
 import de.monticore.grammar.concepts.antlr.antlr._ast.ASTJavaCodeExt;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar._symboltable.MCGrammarSymbolSurrogate;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.grammar.grammar._visitor.GrammarTraverser;
 import de.monticore.grammar.grammar._visitor.GrammarVisitor2;
@@ -264,8 +263,8 @@ public class MCGrammarInfo {
         if (ruleSymbol.isPresentAstNode() && ruleSymbol.getAstNode() instanceof ASTClassProd astProd) {
           if (astProd.getAltList().isEmpty()) {
             // if a rule has been overwritten and is empty, consider the superclass
-            for (MCGrammarSymbolSurrogate g : grammarSymbol.getSuperGrammars()) {
-              final Optional<ProdSymbol> ruleByName = g.lazyLoadDelegate().getProdWithInherited(astProd.getName());
+            for (MCGrammarSymbol g : grammarSymbol.getSuperGrammarSymbols()) {
+              final Optional<ProdSymbol> ruleByName = g.getProdWithInherited(astProd.getName());
               if (ruleByName.isPresent() && ruleByName.get().isClass()) {
                 if (ruleByName.get().isPresentAstNode() && ruleByName.get().getAstNode() instanceof ASTClassProd) {
                   astProd = (ASTClassProd) ruleByName.get().getAstNode();

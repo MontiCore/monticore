@@ -14,7 +14,6 @@ import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.PredicatePair;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar._symboltable.MCGrammarSymbolSurrogate;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbolTOP;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
@@ -573,8 +572,8 @@ public class ParserGeneratorHelper {
     if (!ast.getAltList().isEmpty()) {
       return ast.getAltList();
     }
-    for (MCGrammarSymbolSurrogate g : grammarSymbol.getSuperGrammars()) {
-      final Optional<ProdSymbol> ruleByName = g.lazyLoadDelegate().getProdWithInherited(ast.getName());
+    for (MCGrammarSymbol g : grammarSymbol.getSuperGrammarSymbols()) {
+      final Optional<ProdSymbol> ruleByName = g.getProdWithInherited(ast.getName());
       if (ruleByName.isPresent() && ruleByName.get().isClass()) {
         if (ruleByName.get().isPresentAstNode() && ruleByName.get().getAstNode() instanceof ASTClassProd) {
           return ((ASTClassProd)ruleByName.get().getAstNode()).getAltList();
