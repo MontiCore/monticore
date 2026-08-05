@@ -11,7 +11,7 @@ try {
       }
       Log.error("0xA1050${generatedError1} Model could not be parsed.");
     }
-    catch (NullPointerException | java.io.IOException e) {
+    catch (NullPointerException e) {
       Log.error("0xA1051${generatedError2} Failed to parse " + model, e);
     }
     // should never be reached (unless failquick is off)

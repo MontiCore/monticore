@@ -12,7 +12,6 @@ import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 
-import java.io.IOException;
 import java.io.StringReader;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -122,15 +121,10 @@ public class GrammarTransformer {
     extendedList = extendedList.replaceAll("%iterator%", iteration);
 
     Grammar_WithConceptsParser parser = Grammar_WithConceptsMill.parser();
-    Optional<ASTBlock> block = null;
-    try {
-      Log.debug("Create ast for " + extendedList, GrammarTransformer.class.getName());
-      block = parser.parseBlock(new StringReader(extendedList));
-      if (parser.hasErrors()) {
-        Log.error("0xA0362 RecognitionException during parsing " + extendedList);
-      }
-    } catch (IOException e) {
-      Log.error("0xA0361 IOException during parsing " + extendedList);
+    Log.debug("Create ast for " + extendedList, GrammarTransformer.class.getName());
+    Optional<ASTBlock> block = parser.parseBlock(new StringReader(extendedList));
+    if (parser.hasErrors()) {
+      Log.error("0xA0362 RecognitionException during parsing " + extendedList);
     }
     return block;
   }

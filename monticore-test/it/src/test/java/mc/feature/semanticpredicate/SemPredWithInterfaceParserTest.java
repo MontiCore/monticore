@@ -2,7 +2,6 @@
 
 package mc.feature.semanticpredicate;
 
-import java.io.IOException;
 import java.io.StringReader;
 
 import de.se_rwth.commons.logging.LogStub;
@@ -28,12 +27,8 @@ public class SemPredWithInterfaceParserTest extends GeneratorIntegrationsTest {
   public void testParse() {
     String input = "foo foo";
     SemPredWithInterfaceParser p = new SemPredWithInterfaceParser();
-    java.util.Optional<ASTISequence> ast = null;
-    try {
-       ast = p.parseISequence(new StringReader(input));
-    } catch (IOException e) {
-      fail();
-    }
+    java.util.Optional<ASTISequence> ast =
+        p.parseISequence(new StringReader(input));
     assertTrue(ast.isPresent());
     ASTISequence seq = ast.get();
     assertEquals(2, seq.getIList().size());
