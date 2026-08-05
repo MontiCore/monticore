@@ -44,32 +44,43 @@ component grammar StreamExpressions
   /* ------ Special Syntax for Functions on Streams ---------------- */
 
   /* 
-   * Stream constructor in concordance to the literature
-   * <> denotes the empty stream
-   * <a> is equal to a:<>
-   * <a,b> is equal to a:<b> and transitively a:b:<>
-   * ~ denotes the absence of a value (Topt streams only)
-   * <a,~> is equal to a:Abs:<>
-   * <~,~,a,b> is equal to Abs:Abs:a:b:<>
-   * Tick denotes the end of a time slice (Event streams only)
-   * <Tick,a> is equal to Tick:a:<>
-   * the default stream timing is (timed) event
+   * Stream constructor very similar to the to the Focus-literature
+   *
+   * Examples:
+   *   <> denotes the empty stream
+   *   <a> is equal to a:<>
+   *   <a,b> is equal to a:<b> and a:b:<>
+   *   ~ denotes the absence of a value (shorthand for Abs)
+   *     and can be used within streams of type Topt only
+   *   <a,~> is equal to a:Abs:<>
+   *   <~,~,a,b> is equal to Abs:Abs:a:b:<>
+   *   Tick denotes the end of a time slice
+   *     and can be used in Event streams only
+   *   <Tick,a> is equal to Tick:a:<>
+   *
+   * The default stream timing is (timed) event
    * Stream constructor has to bind harder than name expressions to avoid
    * the scanner recognizing timing keywords as names
    */
   StreamConstructorExpression implements Expression <360> =
-    ({noSpace(2)}? timing:[key("Event") | key("Sync") | key("Topt") | key("Untimed")])?
+    ({noSpace(2)}?
+        timing:[key("Event")
+      | key("Sync")
+      | key("Topt")
+      | key("Untimed")])?
     ("<" MCTypeArgument {noSpace(2)}? ">")?
     "<" (StreamConstructorElement || ",")* ">";
+
   StreamConstructorElement =
     tick:key("Tick") | absent:"~" | Expression;
 
   /*
-   * Append first element 
+   * Append first element at the beginning
+   * Rules and examples:
    * a:b:c  is equal to  a:(b:c), hence <rightassoc>
+   * (even so they are semantically associative)
    * a:b^^c  is equal to  a:(b^^c)
    * a+b:c  is equal to  (a+b):c, and
-   * (even so they are semantically associative)
    * a <= b:c  is equal to  a <= (b:c), hence the priority 360, 370
    */
   AppendStreamExpression implements Expression <360>, InfixExpression =
