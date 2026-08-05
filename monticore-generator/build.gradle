@@ -130,28 +130,6 @@ allprojects {
     }
 
     publishing {
-        // The gradle-plugin plugin deploys automatically a pluginMaven publication (from the main component)
-        repositories {
-            maven {
-                name = "SE-Nexus"
-                credentials.username = mavenUser
-                credentials.password = mavenPassword
-                def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-releases/"
-                def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-snapshots/"
-                url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
-            }
-            // Also publish to the github repository, if run on a github action
-            if (System.getenv("GITHUB_REPOSITORY") != null) {
-                maven {
-                    name = "GitHubPackages"
-                    url = "https://maven.pkg.github.com/" + System.getenv("GITHUB_REPOSITORY")
-                    credentials {
-                        username = System.getenv("GITHUB_ACTOR")
-                        password = System.getenv("GITHUB_TOKEN")
-                    }
-                }
-            }
-        }
         // Add the license information to the publication
         publications.configureEach {
             pom {
@@ -163,17 +141,38 @@ allprojects {
                 }
             }
         }
-
     }
 }
+
 publishing {
-  publications {
-    "maven"(MavenPublication) {
-      // the gradle plugin is published implicitly via the java-gradle-plugin plugin
-      // but the generator has to be published explicitly
-      from components.java
+    repositories {
+        maven {
+            name = "SE-Nexus"
+            credentials.username = mavenUser
+            credentials.password = mavenPassword
+            def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-releases/"
+            def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-snapshots/"
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+        }
+        // Also publish to the github repository, if run on a github action
+        if (System.getenv("GITHUB_REPOSITORY") != null) {
+            maven {
+                name = "GitHubPackages"
+                url = "https://maven.pkg.github.com/" + System.getenv("GITHUB_REPOSITORY")
+                credentials {
+                    username = System.getenv("GITHUB_ACTOR")
+                    password = System.getenv("GITHUB_TOKEN")
+                }
+            }
+        }
     }
-  }
+    publications {
+        "maven"(MavenPublication) {
+            // the gradle plugin is published implicitly via the java-gradle-plugin plugin
+            // but the generator has to be published explicitly
+            from components.java
+        }
+    }
 }
 
 tasks.named("shadowJar") { // all in one jar
