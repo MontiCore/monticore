@@ -50,7 +50,7 @@ component grammar StreamExpressions
    *   <> denotes the empty stream
    *   <a> is equal to a:<>
    *   <a,b> is equal to a:<b> and a:b:<>
-   *   ~ denotes the absence of a value (shorthand for Abs)
+   *   ~ denotes the absence of a real value (shorthand for Abs)
    *     and can be used within streams of type Topt only
    *   <a,~> is equal to a:Abs:<>
    *   <~,~,a,b> is equal to Abs:Abs:a:b:<>
