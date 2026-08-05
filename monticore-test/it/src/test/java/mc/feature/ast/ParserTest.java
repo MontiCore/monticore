@@ -50,7 +50,7 @@ public class ParserTest {
     p.parse_StringAutomaton("automaton a { spices2 ;}");
     
     assertTrue(p.hasErrors());
-    MCAssertions.assertHasFindingStartingWith("mismatched input ';' expecting {'pepper', 'none', 'garlic', '%'}");
+    MCAssertions.assertHasFindingStartingWith("mismatched input ';' expecting {'garlic', 'pepper', 'none', '%'}");
   }
   
   /*  Grammar:  B: A:A (B:A)*; 
