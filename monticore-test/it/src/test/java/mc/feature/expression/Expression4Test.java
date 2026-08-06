@@ -7,9 +7,13 @@ import mc.feature.expression.expression4.Expression4Mill;
 import mc.feature.expression.expression4._ast.*;
 import mc.feature.expression.expression4._parser.Expression4Parser;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -21,12 +25,25 @@ public class Expression4Test {
     return parser.parse_StringExpr(input);
   }
   
-  @Test
-  public void testPlus() throws IOException {
-    Optional<ASTExpr> res = parse("1+2");
+  static Stream<Arguments> testArgs() {
+    return Stream.of(
+        Arguments.of("1+2", ASTAddExpr.class),
+        Arguments.of("1*2", ASTMultExpr.class),
+        Arguments.of("(1*2)", ASTBracketExpr.class),
+        Arguments.of("1*2+3", ASTAddExpr.class),
+        Arguments.of("1+2*3", ASTAddExpr.class),
+        Arguments.of("1-2-3", ASTAddExpr.class),
+        Arguments.of("2^3^4", ASTPowerExpr.class)
+    );
+  }
+
+  @ParameterizedTest
+  @MethodSource("testArgs")
+  public void testPlus(String input, Class<?> clazz) throws IOException {
+    Optional<ASTExpr> res = parse(input);
     assertTrue(res.isPresent());
     ASTExpr ast = res.get();
-    assertInstanceOf(ASTAddExpr.class, ast);
+    assertInstanceOf(clazz, ast);
   }
   
   @Test
@@ -38,52 +55,5 @@ public class Expression4Test {
     
     assertEquals("1", ((ASTPrimaryExpr) ast).getNumericLiteral());
   }
-  
-  @Test
-  public void testStar() throws IOException {
-    Optional<ASTExpr> res = parse("1*2");
-    assertTrue(res.isPresent());
-    ASTExpr ast = res.get();
-    assertInstanceOf(ASTMultExpr.class, ast);
-  }
-  
-  @Test
-  public void testBracket() throws IOException {
-    Optional<ASTExpr> res = parse("(1*2)");
-    assertTrue(res.isPresent());
-    ASTExpr ast = res.get();
-    assertInstanceOf(ASTBracketExpr.class, ast);
-  }
-  
-  @Test
-  public void testExpr1() throws IOException {
-    Optional<ASTExpr> res = parse("1*2+3");
-    assertTrue(res.isPresent());
-    ASTExpr ast = res.get();
-    assertInstanceOf(ASTAddExpr.class, ast);
-  }
-  
-  @Test
-  public void testExpr2() throws IOException {
-    Optional<ASTExpr> res = parse("1+2*3");
-    assertTrue(res.isPresent());
-    ASTExpr ast = res.get();
-    assertInstanceOf(ASTAddExpr.class, ast);
-  }
-  
-  @Test
-  public void testExpr3() throws IOException {
-    Optional<ASTExpr> res = parse("1-2-3");
-    assertTrue(res.isPresent());
-    ASTExpr ast = res.get();
-    assertInstanceOf(ASTAddExpr.class, ast);
-  }
-  
-  @Test
-  public void testPowerWithRightAssoc() throws IOException {
-    Optional<ASTExpr> res = parse("2^3^4");
-    assertTrue(res.isPresent());
-    assertInstanceOf(ASTPowerExpr.class, res.get());
-  }
-  
+
 }
