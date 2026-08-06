@@ -1,0 +1,385 @@
+/* Based upon the "up42-py" projects landing page (link: https://sdk.up42.com/),
+heavily modified by the MontiCore team */
+
+.hero-section {
+  background: linear-gradient(var(--rwth-blau), var(--rwth-blau-50));
+  width: 100%;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.hero-container {
+  max-width: 100%;
+  margin: auto auto 42px auto;
+  padding: 0 1rem 1rem;
+  box-sizing: border-box;
+}
+
+.hero-content {
+  display: grid;
+  grid-template-columns: 4fr 3fr;
+  gap: 3rem;
+  align-items: center;
+  max-width: 61rem;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.hero-text {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.hero-title {
+  font-size: clamp(1.75rem, 4vw, 3.5rem);
+  font-weight: 700;
+  line-height: 1.1;
+  color: white;
+  margin-bottom: 1.5rem;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+.hero-subtitle {
+  font-size: clamp(1rem, 2.5vw, 1.25rem);
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 2rem;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.hero-features {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 2.5rem;
+}
+
+.hero-feature {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: clamp(0.875rem, 2vw, 1rem);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.hero-feature-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: var(--rwth-blau);
+  flex-shrink: 0;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+  font-size: clamp(0.875rem, 2vw, 1rem);
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.btn-primary {
+  background: linear-gradient(45deg, var(--rwth-blau-75), var(--rwth-blau));
+  color: #ffffff !important;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0, 84, 159, 0.3);
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.btn-icon {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+}
+
+.hero-image {
+  width: 100%;
+}
+
+.hero-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.hero-stat {
+  text-align: center;
+  min-width: 0;
+}
+
+.hero-stat-number {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 0.25rem;
+}
+
+.hero-stat-label {
+  font-size: clamp(0.75rem, 1.5vw, 0.875rem);
+  color: rgba(255, 255, 255, 0.8);
+  word-wrap: break-word;
+}
+
+.hero-visual {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.md-main {
+  flex-grow: 0
+}
+
+.md-main__inner {
+  display: flex;
+  height: 100%;
+}
+
+.feature-item h2 svg {
+  height: 30px;
+  float: left;
+  margin-right: 10px;
+  transform: translateY(10%);
+}
+
+.feature-item {
+  border-radius: 20px;
+  margin-top: .5rem;
+  margin-right: .5rem;
+  background-color: var(--md-primary-bg-color);
+  font-family: 'Lato', sans-serif;
+  font-weight: 300;
+  box-sizing: border-box;
+  padding: 0 15px;
+  word-break: break-word
+}
+
+.feature-item h2 {
+  color: #333;
+  font-weight: 300;
+  font-size: 25px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: normal;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  font-family: inherit;
+}
+
+.feature-item p {
+  font-size: 16px;
+  line-height: 1.8em;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  color: #111;
+  margin: 0 0 10px;
+  display: block;
+}
+
+.top-hr {
+  flex-direction: column;
+  width: 100%;
+  display: flex;
+  max-width: 61rem;
+  margin-top: 42px;
+  margin-right: auto;
+  margin-left: auto;
+  padding: 0 .2rem;
+  column-gap: .2rem;
+}
+
+.feature-item {
+  flex: 1;
+  min-width: 0;
+  border: lightgray 1px solid;
+  border-radius: 3px;
+}
+
+.feature-item:hover {
+  background-color: rgba(0, 84, 159, 0.3);
+  border-radius: 3px;
+}
+
+
+@media screen and (min-width: 60em) {
+  .md-sidebar--secondary {
+    display: none
+  }
+}
+
+@media screen and (min-width: 76.25em) {
+  .md-sidebar--primary {
+    display: none
+  }
+
+  /* On wider screens, we turn the top-hr feature list into a row.
+  For smaller screens it is a column */
+  .top-hr {
+    flex-direction: row;
+  }
+}
+
+.hr {
+  border-bottom: 1px solid #eee;
+  width: 100%;
+  margin: 20px 0;
+}
+
+.md-footer-meta__inner {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-top: 1.0rem;
+}
+
+.md-footer-social {
+  padding-top: 20px;
+}
+
+
+/* Large Desktop breakpoint */
+@media (max-width: 1600px) {
+  .hero-stats {
+    justify-content: flex-start;
+  }
+}
+
+/* Tablet breakpoint */
+@media (max-width: 1200px) {
+  .hero-content {
+    grid-template-columns: 1fr 1fr;
+    /* Equal columns on medium screens */
+    gap: 2rem;
+  }
+}
+
+/* Mobile breakpoint */
+@media (max-width: 968px) {
+  .hero-content {
+    grid-template-columns: 1fr;
+    /* Single column on mobile */
+    gap: 2rem;
+  }
+
+  .hero-container {
+    padding: 0 1rem 2rem;
+  }
+
+  .hero-actions {
+    justify-content: flex-start;
+  }
+
+  .hero-stats {
+    justify-content: center;
+  }
+
+  .hero-visual {
+    width: 100%;
+  }
+
+  .hero-image {
+    width: 70%;
+    margin: 10px 15%;
+  }
+
+  .btn-primary {
+    background: var(--rwth-blau);
+  }
+}
+
+/* Small mobile breakpoint */
+@media (max-width: 640px) {
+  .hero-section {
+    padding: 1.5rem 0 0;
+  }
+
+  .hero-container {
+    padding: 0 0.75rem 2rem;
+  }
+
+  .hero-content {
+    gap: 1.5rem;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .btn {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .hero-stats {
+    gap: 1rem;
+    justify-content: space-between;
+  }
+
+  .hero-stat {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .hero-decorations {
+    display: none;
+  }
+}
+
+/* Extra small mobile devices */
+@media (max-width: 480px) {
+  .hero-container {
+    padding: 0 0.5rem;
+  }
+
+  .hero-content {
+    gap: 1rem;
+  }
+
+  .hero-stats {
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: center;
+  }
+
+  .hero-stat {
+    width: 100%;
+  }
+}

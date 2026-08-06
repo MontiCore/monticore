@@ -1,20 +1,63 @@
 /* (c) https://github.com/MontiCore/monticore */
-.md-header {
-  background-color: #006BA5;
+html {
+  scroll-behavior: smooth;
 }
+
 :root {
-  --md-primary-fg-color: #006BA5;
+  --rwth-blau: #00549F;
+  --rwth-blau-75: #407FB7;
+  --rwth-blau-50: #8EBAE5;
+  --rwth-blau-10: #E8F1FA;
+  --rwth-magenta: #E30066;
+  --rwth-gelb: #FFED00;
+  --rwth-petrol: #006165;
+  --rwth-tuerkis: #0098A1;
+  --rwth-gruen: #57AB27;
+  --rwth-maigruen: #BDCD00;
+  --rwth-orange: #F6A800;
+  --rwth-rot: #CC071E;
+  --rwth-bordeaux: #A11035;
+  --rwth-violet: #612158;
+  --rwth-lila: #7A6FAC;
+
+  --md-primary-fg-color: var(--rwth-blau);
+  --md-primary-fg-color--light: var(--rwth-blau);
+  --md-primary-fg-color--dark: var(--rwth-blau);
+  --md-accent-fg-color: var(--rwth-blau-50);
+  --md-accent-fg-color--transparent: #00549F25;
+
+  --md-code-hl-color: var(--rwth-blau-50);
+  --md-code-hl-color--light: var(--rwth-blau-50);
+  --md-code-hl-number-color: var(--rwth-rot);
+  --md-code-hl-special-color: var(--rwth-bordeaux);
+  --md-code-hl-function-color: var(--rwth-violet);
+  --md-code-hl-constant-color: var(--rwth-lila);
+  --md-code-hl-keyword-color: var(--rwth-blau);
+  --md-code-hl-string-color: var(--rwth-gruen);
 }
+
+.md-header__topic {
+  height: inherit;
+}
+
+@media screen and (min-width: 60em) {
+  .md-search__form {
+    border-radius: 500px;
+  }
+}
+
 .tip {
   border: 2px solid grey;
   border-radius: 5px;
   padding: 10px;
   margin-bottom: 5px;
 }
+
 .tip-header {
   font-size: larger;
   border-bottom: 2px solid grey;
 }
+
 .bibliography {
   empty-cells: hide;
 }

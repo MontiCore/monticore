@@ -8,4 +8,4 @@ hide:
 <!-- Include the root Readme as a snippet -->
 <!-- All used images have to be copied via the preprocessing.sh script -->
 
---8<-- "README.md:11"
+--8<-- "README.md:19"
