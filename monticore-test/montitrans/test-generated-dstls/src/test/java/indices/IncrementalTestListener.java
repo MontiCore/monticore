@@ -7,6 +7,10 @@ import de.monticore.tf.runtime.inc.ModificationOp;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.LinkedList;
+import java.util.function.Consumer;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
 public class IncrementalTestListener implements IIncrementalListener {
   
@@ -97,5 +101,64 @@ public class IncrementalTestListener implements IIncrementalListener {
       ModificationOp modificationType, @Nullable Object oldValue, @Nullable Object newValue) {
     calls.add(new ASTNodeListModificationCall(node, attributeName, idx, modificationType, oldValue,
         newValue));
+  }
+  
+  public void assertNumberOfNotifications(int expected) {
+    assertEquals(expected, this.getNotifications().size(),
+        "Expected " + expected + " notifications, but got " + calls.size());
+  }
+  
+  public TransformationStartCall assertTransformationStartCall(int idx, Consumer<TransformationStartCall> consumer) {
+    assertInstanceOf(IncrementalTestListener.TransformationStartCall.class,
+        this.getNotification(idx));
+    IncrementalTestListener.TransformationStartCall call =
+        (IncrementalTestListener.TransformationStartCall) this.getNotification(idx);
+    consumer.accept(call);
+    return call;
+  }
+  
+  public TransformationEndCall assertTransformationEndCall(int idx, Consumer<TransformationEndCall> consumer) {
+    assertInstanceOf(IncrementalTestListener.TransformationEndCall.class,
+        this.getNotification(idx));
+    IncrementalTestListener.TransformationEndCall call =
+        (IncrementalTestListener.TransformationEndCall) this.getNotification(idx);
+    consumer.accept(call);
+    return call;
+  }
+  
+  public ASTNodeAttachCall assertASTNodeAttachCall(int idx, Consumer<ASTNodeAttachCall> consumer) {
+    assertInstanceOf(IncrementalTestListener.ASTNodeAttachCall.class,
+        this.getNotification(idx));
+    IncrementalTestListener.ASTNodeAttachCall call =
+        (IncrementalTestListener.ASTNodeAttachCall) this.getNotification(idx);
+    consumer.accept(call);
+    return call;
+  }
+  
+  public ASTNodeDetachCall assertASTNodeDetachCall(int idx, Consumer<ASTNodeDetachCall> consumer) {
+    assertInstanceOf(IncrementalTestListener.ASTNodeDetachCall.class,
+        this.getNotification(idx));
+    IncrementalTestListener.ASTNodeDetachCall call =
+        (IncrementalTestListener.ASTNodeDetachCall) this.getNotification(idx);
+    consumer.accept(call);
+    return call;
+  }
+  
+  public ASTNodeModificationCall assertASTNodeModificationCall(int idx, Consumer<ASTNodeModificationCall> consumer) {
+    assertInstanceOf(IncrementalTestListener.ASTNodeModificationCall.class,
+        this.getNotification(idx));
+    IncrementalTestListener.ASTNodeModificationCall call =
+        (IncrementalTestListener.ASTNodeModificationCall) this.getNotification(idx);
+    consumer.accept(call);
+    return call;
+  }
+  
+  public ASTNodeListModificationCall assertASTNodeListModificationCall(int idx, Consumer<ASTNodeListModificationCall> consumer) {
+    assertInstanceOf(IncrementalTestListener.ASTNodeListModificationCall.class,
+        this.getNotification(idx));
+    IncrementalTestListener.ASTNodeListModificationCall call =
+        (IncrementalTestListener.ASTNodeListModificationCall) this.getNotification(idx);
+    consumer.accept(call);
+    return call;
   }
 }

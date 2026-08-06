@@ -3,6 +3,7 @@ package indices;
 import de.monticore.ast.ASTNode;
 import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.tf.AddNewState;
+import de.monticore.tf.CreateInnerStateWithInnerState;
 import de.monticore.tf.RemoveInnerTransition;
 import de.monticore.tf.RenameState;
 import de.monticore.tf.runtime.inc.ModelAccessor;
@@ -40,52 +41,46 @@ public class IndexIncrementalUpdateTest {
     IncrementalTestListener testListener = new IncrementalTestListener();
     ma.attachListener(testListener);
     
-    assertEquals(0, testListener.getNotifications().size());
+    testListener.assertNumberOfNotifications(0);
     
     assertTrue(new AddNewState(ma).set_$newState("DefinitelyANewState").doAll());
     
-    assertEquals(5, testListener.getNotifications().size());
+    testListener.assertNumberOfNotifications(5);
     
-    assertInstanceOf(IncrementalTestListener.TransformationStartCall.class,
-        testListener.getNotification(0));
-    IncrementalTestListener.TransformationStartCall n1 =
-        (IncrementalTestListener.TransformationStartCall) testListener.getNotification(0);
-    assertEquals("de.monticore.tf.AddNewState", n1.transformationName());
-    
-    assertInstanceOf(IncrementalTestListener.ASTNodeModificationCall.class,
-        testListener.getNotification(1));
-    IncrementalTestListener.ASTNodeModificationCall n2 =
-        (IncrementalTestListener.ASTNodeModificationCall) testListener.getNotification(1);
-    ASTNode createdNode = n2.node();
-    assertEquals("name", n2.attributeName());
-    assertEquals(ModificationOp.SET, n2.modificationType());
-    assertNull(n2.oldValue());
-    assertEquals("DefinitelyANewState", n2.newValue());
-    
-    assertInstanceOf(IncrementalTestListener.ASTNodeListModificationCall.class,
-        testListener.getNotification(2));
-    IncrementalTestListener.ASTNodeListModificationCall n3 =
-        (IncrementalTestListener.ASTNodeListModificationCall) testListener.getNotification(2);
-    ASTNode modifiedParent = n3.node();
-    assertEquals("state", n3.attributeName());
-    assertEquals(2, n3.idx());
-    assertEquals(ModificationOp.SET, n3.modificationType());
-    assertNull(n3.oldValue());
-    assertEquals(createdNode, n3.newValue());
-    
-    assertInstanceOf(IncrementalTestListener.ASTNodeAttachCall.class,
-        testListener.getNotification(3));
-    IncrementalTestListener.ASTNodeAttachCall n4 =
-        (IncrementalTestListener.ASTNodeAttachCall) testListener.getNotification(3);
-    assertEquals(createdNode, n4.node());
-    assertEquals(modifiedParent, n4.parent());
-    
-    assertInstanceOf(IncrementalTestListener.TransformationEndCall.class,
-        testListener.getNotification(4));
-    IncrementalTestListener.TransformationEndCall n5 =
-        (IncrementalTestListener.TransformationEndCall) testListener.getNotification(4);
-    assertEquals("de.monticore.tf.AddNewState", n5.transformationName());
-    
+    testListener.assertTransformationStartCall(0, call -> {
+      assertEquals("de.monticore.tf.AddNewState", call.transformationName());
+    });
+
+    IncrementalTestListener.ASTNodeModificationCall nodeCreateCall =
+        testListener.assertASTNodeModificationCall(1, call -> {
+          assertEquals("name", call.attributeName());
+          assertEquals(ModificationOp.SET, call.modificationType());
+          assertNull(call.oldValue());
+          assertEquals("DefinitelyANewState", call.newValue());
+        });
+
+    ASTNode createdNode = nodeCreateCall.node();
+
+    IncrementalTestListener.ASTNodeListModificationCall listModCall =
+        testListener.assertASTNodeListModificationCall(2, call -> {
+          assertEquals("state", call.attributeName());
+          assertEquals(2, call.idx());
+          assertEquals(ModificationOp.SET, call.modificationType());
+          assertNull(call.oldValue());
+          assertEquals(createdNode, call.newValue());
+        });
+
+    ASTNode modifiedParent = listModCall.node();
+
+    testListener.assertASTNodeAttachCall(3, call -> {
+      assertEquals(createdNode, call.node());
+      assertEquals(modifiedParent, call.parent());
+    });
+
+    testListener.assertTransformationEndCall(4, call -> {
+      assertEquals("de.monticore.tf.AddNewState", call.transformationName());
+    });
+
     // Check CandidateIndex modification
     // There should be one additional ASTState and therefore one additional total node
     assertEquals(38, ma.getCandidateIndex().getAllNodes().size());
@@ -127,37 +122,32 @@ public class IndexIncrementalUpdateTest {
     
     assertTrue(new RemoveInnerTransition(ma).set_$from("Red").set_$to("Green").doAll());
     
-    assertEquals(4, testListener.getNotifications().size());
+    testListener.assertNumberOfNotifications(4);
     
-    assertInstanceOf(IncrementalTestListener.TransformationStartCall.class,
-        testListener.getNotification(0));
-    IncrementalTestListener.TransformationStartCall n1 =
-        (IncrementalTestListener.TransformationStartCall) testListener.getNotification(0);
-    assertEquals("de.monticore.tf.RemoveInnerTransition", n1.transformationName());
+    testListener.assertTransformationStartCall(0, call -> {
+      assertEquals("de.monticore.tf.RemoveInnerTransition", call.transformationName());
+    });
     
-    assertInstanceOf(IncrementalTestListener.ASTNodeListModificationCall.class,
-        testListener.getNotification(1));
-    IncrementalTestListener.ASTNodeListModificationCall n2 =
-        (IncrementalTestListener.ASTNodeListModificationCall) testListener.getNotification(1);
-    ASTNode modifiedNode = n2.node();
-    assertEquals("transition", n2.attributeName());
-    assertEquals(ModificationOp.UNSET, n2.modificationType());
-    assertNull(n2.newValue());
-    assertInstanceOf(ASTTransition.class, n2.oldValue());
-    ASTNode removedNode = (ASTTransition) n2.oldValue();
+    IncrementalTestListener.ASTNodeListModificationCall listModCall =
+        testListener.assertASTNodeListModificationCall(1, call -> {
+          assertEquals("transition", call.attributeName());
+          assertEquals(0, call.idx());
+          assertEquals(ModificationOp.UNSET, call.modificationType());
+          assertNull(call.newValue());
+          assertInstanceOf(ASTTransition.class, call.oldValue());
+        });
     
-    assertInstanceOf(IncrementalTestListener.ASTNodeDetachCall.class,
-        testListener.getNotification(2));
-    IncrementalTestListener.ASTNodeDetachCall n3 =
-        (IncrementalTestListener.ASTNodeDetachCall) testListener.getNotification(2);
-    assertEquals(removedNode, n3.node());
-    assertEquals(modifiedNode, n3.parent());
+    ASTNode modifiedNode = listModCall.node();
+    ASTNode removedNode = (ASTTransition) listModCall.oldValue();
     
-    assertInstanceOf(IncrementalTestListener.TransformationEndCall.class,
-        testListener.getNotification(3));
-    IncrementalTestListener.TransformationEndCall n4 =
-        (IncrementalTestListener.TransformationEndCall) testListener.getNotification(3);
-    assertEquals("de.monticore.tf.RemoveInnerTransition", n4.transformationName());
+    testListener.assertASTNodeDetachCall(2, call -> {
+      assertEquals(removedNode, call.node());
+      assertEquals(modifiedNode, call.parent());
+    });
+    
+    testListener.assertTransformationEndCall(3, call -> {
+      assertEquals("de.monticore.tf.RemoveInnerTransition", call.transformationName());
+    });
     
     // Check CandidateIndex modification
     // We removed one ASTTransition, together with its
@@ -191,52 +181,121 @@ public class IndexIncrementalUpdateTest {
     IncrementalTestListener testListener = new IncrementalTestListener();
     ma.attachListener(testListener);
     
-    assertEquals(0, testListener.getNotifications().size());
-    
+    testListener.assertNumberOfNotifications(0);
+
     assertTrue(new RenameState(ma).set_$oldName("PedestrianLightOff").set_$newName("PedestrianLightDark").doAll());
     
-    assertEquals(5, testListener.getNotifications().size());
+    testListener.assertNumberOfNotifications(5);
     
-    assertInstanceOf(IncrementalTestListener.TransformationStartCall.class,
-        testListener.getNotification(0));
-    IncrementalTestListener.TransformationStartCall n1 =
-        (IncrementalTestListener.TransformationStartCall) testListener.getNotification(0);
-    assertEquals("de.monticore.tf.RenameState", n1.transformationName());
+    testListener.assertTransformationStartCall(0, call -> {
+      assertEquals("de.monticore.tf.RenameState", call.transformationName());
+    });
     
-    assertInstanceOf(IncrementalTestListener.ASTNodeModificationCall.class,
-        testListener.getNotification(1));
-    IncrementalTestListener.ASTNodeModificationCall n2 =
-        (IncrementalTestListener.ASTNodeModificationCall) testListener.getNotification(1);
-    assertInstanceOf(ASTState.class, n2.node());
-    assertEquals("name", n2.attributeName());
-    assertEquals(ModificationOp.REPLACE, n2.modificationType());
-    assertEquals("PedestrianLightOff", n2.oldValue());
-    assertEquals("PedestrianLightDark", n2.newValue());
+    testListener.assertASTNodeModificationCall(1, call -> {
+      assertEquals("name", call.attributeName());
+      assertEquals(ModificationOp.REPLACE, call.modificationType());
+      assertEquals("PedestrianLightOff", call.oldValue());
+      assertEquals("PedestrianLightDark", call.newValue());
+    });
+
+    testListener.assertASTNodeModificationCall(2, call -> {
+      assertEquals("from", call.attributeName());
+      assertEquals(ModificationOp.REPLACE, call.modificationType());
+      assertEquals("PedestrianLightOff", call.oldValue());
+      assertEquals("PedestrianLightDark", call.newValue());
+    });
     
-    assertInstanceOf(IncrementalTestListener.ASTNodeModificationCall.class,
-        testListener.getNotification(2));
-    IncrementalTestListener.ASTNodeModificationCall n3 =
-        (IncrementalTestListener.ASTNodeModificationCall) testListener.getNotification(2);
-    assertInstanceOf(ASTTransition.class, n3.node());
-    assertEquals("from", n3.attributeName());
-    assertEquals(ModificationOp.REPLACE, n3.modificationType());
-    assertEquals("PedestrianLightOff", n3.oldValue());
-    assertEquals("PedestrianLightDark", n3.newValue());
+    testListener.assertASTNodeModificationCall(3, call -> {
+      assertEquals("to", call.attributeName());
+      assertEquals(ModificationOp.REPLACE, call.modificationType());
+      assertEquals("PedestrianLightOff", call.oldValue());
+      assertEquals("PedestrianLightDark", call.newValue());
+    });
     
-    assertInstanceOf(IncrementalTestListener.ASTNodeModificationCall.class,
-        testListener.getNotification(3));
-    IncrementalTestListener.ASTNodeModificationCall n4 =
-        (IncrementalTestListener.ASTNodeModificationCall) testListener.getNotification(3);
-    assertInstanceOf(ASTTransition.class, n4.node());
-    assertEquals("to", n4.attributeName());
-    assertEquals(ModificationOp.REPLACE, n4.modificationType());
-    assertEquals("PedestrianLightOff", n4.oldValue());
-    assertEquals("PedestrianLightDark", n4.newValue());
+    testListener.assertTransformationEndCall(4, call -> {
+      assertEquals("de.monticore.tf.RenameState", call.transformationName());
+    });
+  }
+  
+  @Test
+  public void testModification2() throws IOException {
+    StatechartParser px = StatechartMill.parser();
+    Optional<ASTStatechart> sc = px.parse("src/test/resources/trafo/PedestrianLight.sc");
     
-    assertInstanceOf(IncrementalTestListener.TransformationEndCall.class,
-        testListener.getNotification(4));
-    IncrementalTestListener.TransformationEndCall n5 =
-        (IncrementalTestListener.TransformationEndCall) testListener.getNotification(4);
-    assertEquals("de.monticore.tf.RenameState", n5.transformationName());
+    assertTrue(sc.isPresent());
+    assertFalse(px.hasErrors());
+    
+    ModelAccessor ma = new ModelAccessor(StatechartMill::inheritanceTraverser, sc.get());
+    
+    // Record change notifications
+    IncrementalTestListener testListener = new IncrementalTestListener();
+    ma.attachListener(testListener);
+    
+    testListener.assertNumberOfNotifications(0);
+    
+    assertTrue(new CreateInnerStateWithInnerState(ma).set_$outer("PedestrianLightOff")
+        .set_$inner("PedestrianLightBroken").set_$inner2("Exploded").doAll());
+    
+    testListener.assertNumberOfNotifications(8);
+    
+
+    testListener.assertTransformationStartCall(0, call -> {
+      assertEquals("de.monticore.tf.CreateInnerStateWithInnerState", call.transformationName());
+    });
+    
+    IncrementalTestListener.ASTNodeModificationCall nodeCreateCall1 =
+        testListener.assertASTNodeModificationCall(1, call -> {
+          assertEquals("name", call.attributeName());
+          assertEquals(ModificationOp.SET, call.modificationType());
+          assertNull(call.oldValue());
+          assertEquals("Exploded", call.newValue());
+        });
+    
+    ASTNode createdNode1 = nodeCreateCall1.node();
+    
+    IncrementalTestListener.ASTNodeModificationCall nodeCreateCall2 =
+        testListener.assertASTNodeModificationCall(2, call -> {
+          assertEquals("name", call.attributeName());
+          assertEquals(ModificationOp.SET, call.modificationType());
+          assertNull(call.oldValue());
+          assertEquals("PedestrianLightBroken", call.newValue());
+        });
+    
+    ASTNode createdNode2 = nodeCreateCall2.node();
+    
+    IncrementalTestListener.ASTNodeListModificationCall nodeListModCall3 =
+        testListener.assertASTNodeListModificationCall(3, call -> {
+          assertEquals(createdNode2, call.node());
+          assertEquals("state", call.attributeName());
+          assertEquals(0, call.idx());
+          assertEquals(ModificationOp.SET, call.modificationType());
+          assertNull(call.oldValue());
+          assertEquals(createdNode1, call.newValue());
+    });
+    
+    testListener.assertASTNodeAttachCall(4, call -> {
+      assertEquals(createdNode1, call.node());
+      assertEquals(createdNode2, call.parent());
+    });
+    
+    IncrementalTestListener.ASTNodeListModificationCall nodeModCall =
+        testListener.assertASTNodeListModificationCall(5, call -> {
+          assertEquals("state", call.attributeName());
+          assertEquals(0, call.idx());
+          assertEquals(ModificationOp.SET, call.modificationType());
+          assertNull(call.oldValue());
+          assertEquals(createdNode2, call.newValue());
+        });
+    
+    ASTNode modifiedNode = nodeModCall.node();
+    
+    testListener.assertASTNodeAttachCall(6, call -> {
+      assertEquals(createdNode2, call.node());
+      assertEquals(modifiedNode, call.parent());
+    });
+    
+    testListener.assertTransformationEndCall(7, call -> {
+      assertEquals("de.monticore.tf.CreateInnerStateWithInnerState", call.transformationName());
+    });
   }
 }
