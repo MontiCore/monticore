@@ -35,11 +35,19 @@
             <#if change.isCopy()>
       ${change.getValueType()} cloneObj = ${changeGetValue}.deepClone();
       builder.${change.getSetter()}(cloneObj);
+              <#if change.isAttributeIterated()>
+      delayedAttachmentNotifications.add(p -> this.modelAccessor.notifyListModification(p, "${change.getAttributeName()}", m.${create.getName()}.${change.getGetter()}().size() - 1, ModificationOp.SET, null, cloneObj));
+              <#else>
       delayedAttachmentNotifications.add(p -> this.modelAccessor.notifyModification(p, "${change.getAttributeName()}", ModificationOp.SET, null, cloneObj));
+              </#if>
       delayedAttachmentNotifications.add(p -> this.modelAccessor.notifyNodeAttach(cloneObj, p));
             <#else>
       builder.${change.getSetter()}(${changeGetValue});
+              <#if change.isAttributeIterated()>
+      delayedAttachmentNotifications.add(p -> this.modelAccessor.notifyListModification(p, "${change.getAttributeName()}", m.${create.getName()}.${change.getGetter()}().size() - 1, ModificationOp.SET, null, ${changeGetValue}));
+              <#else>
       delayedAttachmentNotifications.add(p -> this.modelAccessor.notifyModification(p, "${change.getAttributeName()}", ModificationOp.SET, null, ${changeGetValue}));
+              </#if>
               <#if hierarchyHelper.isCreatedObject(ast.getReplacement(), change.getValue())>
       delayedAttachmentNotifications.add(p -> this.modelAccessor.notifyNodeAttach(${changeGetValue}, p));
               </#if>
