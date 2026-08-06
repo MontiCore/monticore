@@ -45,7 +45,7 @@ public class StatechartResolvingTest {
     String packageName = String.join(".", artifact.get().getPackageDeclaration().getQualifiedName().getPartList());
     as.setPackageName(packageName);
     as.setName("MyStatechart");
-    
+
     MCAssertions.assertNoFindings();
     
     Optional<StatechartSymbol> myStatechart = gs.resolveStatechart("mc.feature.multipletopsymbols.MyStatechart");
