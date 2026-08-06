@@ -3,9 +3,9 @@ package indices;
 import de.monticore.ast.ASTNode;
 import de.monticore.tf.runtime.inc.IIncrementalListener;
 import de.monticore.tf.runtime.inc.ModificationOp;
-import org.jspecify.annotations.NonNull;
-import org.jspecify.annotations.Nullable;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.LinkedList;
 
 public class IncrementalTestListener implements IIncrementalListener {
@@ -19,23 +19,23 @@ public class IncrementalTestListener implements IIncrementalListener {
       permits TransformationStartCall, TransformationEndCall, ASTNodeAttachCall, ASTNodeDetachCall,
       ASTNodeModificationCall, ASTNodeListModificationCall {}
   
-  public record TransformationStartCall(@NonNull String transformationName)
+  public record TransformationStartCall(@Nonnull String transformationName)
       implements NotificationRecord {}
   
-  public record TransformationEndCall(@NonNull String transformationName)
+  public record TransformationEndCall(@Nonnull String transformationName)
       implements NotificationRecord {}
   
-  public record ASTNodeAttachCall(@NonNull ASTNode node, @Nullable ASTNode parent)
+  public record ASTNodeAttachCall(@Nonnull ASTNode node, @Nullable ASTNode parent)
       implements NotificationRecord {}
   
-  public record ASTNodeDetachCall(@NonNull ASTNode node, @NonNull ASTNode parent)
+  public record ASTNodeDetachCall(@Nonnull ASTNode node, @Nonnull ASTNode parent)
       implements NotificationRecord {}
   
-  public record ASTNodeModificationCall(@NonNull ASTNode node, @NonNull String attributeName,
+  public record ASTNodeModificationCall(@Nonnull ASTNode node, @Nonnull String attributeName,
       ModificationOp modificationType, @Nullable Object oldValue, @Nullable Object newValue)
       implements NotificationRecord {}
   
-  public record ASTNodeListModificationCall(@NonNull ASTNode node, String attributeName, int idx,
+  public record ASTNodeListModificationCall(@Nonnull ASTNode node, String attributeName, int idx,
       ModificationOp modificationType, @Nullable Object oldValue, @Nullable Object newValue)
       implements NotificationRecord {}
   
@@ -66,34 +66,34 @@ public class IncrementalTestListener implements IIncrementalListener {
   }
   
   @Override
-  public void onTransformationStart(@NonNull String transformationName) {
+  public void onTransformationStart(@Nonnull String transformationName) {
     calls.add(new TransformationStartCall(transformationName));
   }
   
   @Override
-  public void onTransformationEnd(@NonNull String transformationName) {
+  public void onTransformationEnd(@Nonnull String transformationName) {
     calls.add(new TransformationEndCall(transformationName));
   }
   
   @Override
-  public void onASTNodeAttach(@NonNull ASTNode node, @Nullable ASTNode parent) {
+  public void onASTNodeAttach(@Nonnull ASTNode node, @Nullable ASTNode parent) {
     calls.add(new ASTNodeAttachCall(node, parent));
   }
   
   @Override
-  public void onASTNodeDetach(@NonNull ASTNode node, @NonNull ASTNode parent) {
+  public void onASTNodeDetach(@Nonnull ASTNode node, @Nonnull ASTNode parent) {
     calls.add(new ASTNodeDetachCall(node, parent));
   }
   
   @Override
-  public void onASTNodeModification(@NonNull ASTNode node, @NonNull String attributeName,
+  public void onASTNodeModification(@Nonnull ASTNode node, @Nonnull String attributeName,
       ModificationOp modificationType, @Nullable Object oldValue, @Nullable Object newValue) {
     calls.add(
         new ASTNodeModificationCall(node, attributeName, modificationType, oldValue, newValue));
   }
   
   @Override
-  public void onASTNodeListModification(@NonNull ASTNode node, String attributeName, int idx,
+  public void onASTNodeListModification(@Nonnull ASTNode node, String attributeName, int idx,
       ModificationOp modificationType, @Nullable Object oldValue, @Nullable Object newValue) {
     calls.add(new ASTNodeListModificationCall(node, attributeName, idx, modificationType, oldValue,
         newValue));
