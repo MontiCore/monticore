@@ -2,39 +2,25 @@
 
 package mc.feature.aststring;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.Optional;
-
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import mc.feature.aststring.aststring.AststringMill;
-import mc.feature.aststring.aststring._ast.ASTTestSingleQuote;
-import org.junit.jupiter.api.BeforeEach;
-
-import mc.GeneratorIntegrationsTest;
 import mc.feature.aststring.aststring._ast.ASTStart;
+import mc.feature.aststring.aststring._ast.ASTTestSingleQuote;
 import mc.feature.aststring.aststring._parser.AststringParser;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ASTStringParserTest extends GeneratorIntegrationsTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
+@TestWithMCLanguage(AststringMill.class)
+public class ASTStringParserTest {
+
   @Test
   public void testParser() throws IOException {
-    
-    StringReader s = new StringReader(
-        "start ah be ce , oh pe qu , x.y.z , de eh ef");
-    
-    AststringParser p = new AststringParser();
-    java.util.Optional<ASTStart> opt = p.parseStart(s);
+    AststringParser p = AststringMill.parser();
+    Optional<ASTStart> opt = p.parse_StringStart("start ah be ce , oh pe qu , x.y.z , de eh ef");
     assertTrue(opt.isPresent());
     ASTStart ast = opt.get();
     
@@ -55,8 +41,6 @@ public class ASTStringParserTest extends GeneratorIntegrationsTest {
     
     // Test toString method
     assertEquals("ef", ast.getDList().get(2).toString());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
