@@ -553,8 +553,8 @@ public class SymTypeCompatibilityCalculator {
     }
     else if (typeA.isArrayType() && typeB.isArrayType()) {
       result = arrayConstrainSameType(
-          (SymTypeArray) typeA,
-          (SymTypeArray) typeB
+          typeA.asArrayType(),
+          typeB.asArrayType()
       );
     }
     // unboxed primitives
@@ -635,15 +635,15 @@ public class SymTypeCompatibilityCalculator {
     // arrays
     else if (superType.isArrayType() && subType.isArrayType()) {
       result = arrayConstrainSubTypeOf(
-          (SymTypeArray) subType,
-          (SymTypeArray) superType
+          subType.asArrayType(),
+          superType.asArrayType()
       );
     }
     // unboxed primitives
     else if (superType.isPrimitive() && subType.isPrimitive()) {
       result = unboxedPrimitiveConstrainSubTypeOf(
-          (SymTypePrimitive) subType,
-          (SymTypePrimitive) superType
+          subType.asPrimitive(),
+          superType.asPrimitive()
       );
     }
     // boxed primitives
@@ -655,8 +655,8 @@ public class SymTypeCompatibilityCalculator {
                 de.monticore.types3.SymTypeRelations.isBoolean(subType))
     ) {
       result = boxedPrimitiveConstrainSubTypeOf(
-          (SymTypeOfObject) subType,
-          (SymTypeOfObject) superType
+          subType.asObjectType(),
+          superType.asObjectType()
       );
     }
     // tuples
@@ -669,9 +669,8 @@ public class SymTypeCompatibilityCalculator {
     // functions
     else if (superType.isFunctionType() && subType.isFunctionType()) {
       result = functionConstrainSubTypeOf(
-          (SymTypeOfFunction) subType,
-          (SymTypeOfFunction) superType
-
+          subType.asFunctionType(),
+          superType.asFunctionType()
       );
     }
     // numerics with SIUnit
@@ -996,8 +995,8 @@ public class SymTypeCompatibilityCalculator {
     String superName;
     List<SymTypeExpression> superArgs;
     if (superType.isGenericType()) {
-      superName = ((SymTypeOfGenerics) superType).getTypeConstructorFullName();
-      superArgs = ((SymTypeOfGenerics) superType).getArgumentList();
+      superName = superType.asGenericType().getTypeConstructorFullName();
+      superArgs = superType.asGenericType().getArgumentList();
     }
     else {
       superName = superType.printFullName();
@@ -1006,8 +1005,8 @@ public class SymTypeCompatibilityCalculator {
     String subName;
     List<SymTypeExpression> subArgs;
     if (subType.isGenericType()) {
-      subName = ((SymTypeOfGenerics) subType).getTypeConstructorFullName();
-      subArgs = ((SymTypeOfGenerics) subType).getArgumentList();
+      subName = subType.asGenericType().getTypeConstructorFullName();
+      subArgs = subType.asGenericType().getArgumentList();
     }
     else {
       subName = subType.printFullName();
@@ -1283,8 +1282,8 @@ public class SymTypeCompatibilityCalculator {
     String nameA;
     List<SymTypeExpression> argsA;
     if (typeA.isGenericType()) {
-      nameA = ((SymTypeOfGenerics) typeA).getTypeConstructorFullName();
-      argsA = ((SymTypeOfGenerics) typeA).getArgumentList();
+      nameA = typeA.asGenericType().getTypeConstructorFullName();
+      argsA = typeA.asGenericType().getArgumentList();
     }
     else {
       nameA = typeA.printFullName();
@@ -1293,8 +1292,8 @@ public class SymTypeCompatibilityCalculator {
     String nameB;
     List<SymTypeExpression> argsB;
     if (typeB.isGenericType()) {
-      nameB = ((SymTypeOfGenerics) typeB).getTypeConstructorFullName();
-      argsB = ((SymTypeOfGenerics) typeB).getArgumentList();
+      nameB = typeB.asGenericType().getTypeConstructorFullName();
+      argsB = typeB.asGenericType().getArgumentList();
     }
     else {
       nameB = typeB.printFullName();
