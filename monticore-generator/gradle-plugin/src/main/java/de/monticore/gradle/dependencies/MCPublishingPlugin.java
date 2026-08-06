@@ -204,7 +204,7 @@ public class MCPublishingPlugin extends APublishingPlugin implements Plugin<Proj
 
     // Create (to-be consumed) configurations
     createElementsConfigurations(sourceSet, project, jarTask);
-    
+
     project.getPluginManager().withPlugin("maven-publish",
         p -> setupNonMainPublish(grammarsJarArtifact, project, sourceSet, component, jarArtifact,
             sourcesJarArtifact));

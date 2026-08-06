@@ -7,7 +7,6 @@ import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDConstructor;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
-import de.monticore.cd4codebasis._ast.ASTCDMethodTOP;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
@@ -94,7 +93,7 @@ public class ScopeClassDecorator extends AbstractDecorator {
             .stream()
             .map(ASTCDClass::getCDAttributeList)
             .flatMap(List::stream)
-            .map(ASTCDAttributeTOP::deepClone)
+            .map(ASTCDAttribute::deepClone)
             .collect(Collectors.toList());
     scopeRuleAttributeList
         .forEach(a -> getDecorationHelper().addAttributeDefaultValues(a, this.glex));
@@ -104,7 +103,7 @@ public class ScopeClassDecorator extends AbstractDecorator {
             .stream()
             .map(ASTCDClass::getCDMethodList)
             .flatMap(List::stream)
-            .map(ASTCDMethodTOP::deepClone)
+            .map(ASTCDMethod::deepClone)
             .collect(Collectors.toList());
     for (ASTCDMethod meth: scopeRuleMethodList) {
       if (symbolTableService.isMethodBodyPresent(meth)) {
@@ -158,7 +157,7 @@ public class ScopeClassDecorator extends AbstractDecorator {
             .stream()
             .filter(ASTCDClass::isPresentCDExtendUsage)
             .findFirst()
-            .map(ASTCDClassTOP::deepClone);
+            .map(ASTCDClass::deepClone);
 
     List<ASTCDMethod> resolveSubKindsMethods = createResolveSubKindsNameMethods(symbolInput.getCDDefinition());
 

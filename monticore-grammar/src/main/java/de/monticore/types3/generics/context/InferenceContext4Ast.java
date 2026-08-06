@@ -158,11 +158,17 @@ public class InferenceContext4Ast {
         result.append(FilenameUtils.getName(startPos.getFileName().get()));
         result.append(":");
       }
-      result.append("<").append(startPos.getLine()).append(",").append(startPos.getColumn())
-          .append(">");
+      result.append("<");
+      result.append(startPos.getLine());
+      result.append(",");
+      result.append(startPos.getColumn());
+      result.append(">");
       result.append("-");
-      result.append("<").append(endPos.getLine()).append(",").append(endPos.getColumn())
-          .append(">");
+      result.append("<");
+      result.append(endPos.getLine());
+      result.append(",");
+      result.append(endPos.getColumn());
+      result.append(">");
     }
     else {
       result.append("unknown position");

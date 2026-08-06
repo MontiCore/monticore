@@ -44,9 +44,8 @@ public class MCToolInvoker {
       RuntimeException newThrow = e;
       if (e.getCause() instanceof AmbiguityException) { // Freemarker adds special Freemarker Exceptions
         newThrow = new RuntimeException("""
-            This might be a gradle-setup problem. Are the MontiCore-Plugin and UMLP-Plugin loaded in the same project?\s
-            Gradle doesn't isolate plugins, so resources are found twice.\s
-            
+            This might be a gradle-setup problem. Are the MontiCore-Plugin and UMLP-Plugin loaded in the same project?
+            Gradle doesn't isolate plugins, so resources are found twice.
             """, e);
       }
       throw newThrow;

@@ -192,8 +192,9 @@ public class BoundResolution {
           var2Equal.get(typeEqualityBound.getFirstType())
               .add(typeEqualityBound.getSecondType());
           Optional<TypeEqualityBound> flipped = typeEqualityBound.getFlipped();
-          flipped.ifPresent(equalityBound -> var2Equal.get(equalityBound.getFirstType())
-              .add(equalityBound.getSecondType()));
+          flipped.ifPresent(equalityBound ->
+              var2Equal.get(equalityBound.getFirstType()).add(equalityBound.getSecondType())
+          );
         }
         else if (bound.isCaptureBound()) {
           if (var2CaptureBound.containsKey(varBounds.getKey())) {
@@ -373,20 +374,23 @@ public class BoundResolution {
           SymTypeInferenceVariable newInfVar = origVar2NewInfVar.get(origVar);
           Optional<SymTypeExpression> lowerBound =
               getLubOfProperLowerBounds(var2LowerBounds.get(origVar));
-          lowerBound.ifPresent(symTypeExpression -> newInfVarsBounds.add(
-              new SubTypingBound(symTypeExpression, newInfVar)));
+          lowerBound.ifPresent(symTypeExpression ->
+              newInfVarsBounds.add(new SubTypingBound(symTypeExpression, newInfVar))
+          );
           List<SymTypeExpression> replacedUpperBounds =
               var2UpperBounds.get(origVar).stream()
                   .map(t -> TypeParameterRelations.replaceInferenceVariables(t, origVar2NewInfVar))
                   .collect(Collectors.toList());
           Optional<SymTypeExpression> upperBound =
               getGlbOfProperUpperBounds(replacedUpperBounds);
-          upperBound.ifPresent(symTypeExpression -> newInfVarsBounds.add(
-              new SubTypingBound(newInfVar, symTypeExpression)));
+          upperBound.ifPresent(symTypeExpression ->
+              newInfVarsBounds.add(new SubTypingBound(newInfVar, symTypeExpression))
+          );
           Optional<SymTypeExpression> sourceBound =
               getLubOfProperLowerBounds(var2SourceBounds.get(origVar));
-          sourceBound.ifPresent(symTypeExpression -> newInfVarsBounds.add(
-              new TypeCompatibilityBound(symTypeExpression, newInfVar)));
+          sourceBound.ifPresent(symTypeExpression ->
+              newInfVarsBounds.add(new TypeCompatibilityBound(symTypeExpression, newInfVar))
+          );
           // FDr: need to check if this replacement is fine
           // currently no reason to assume otherwise
           List<SymTypeExpression> replacedTargetBounds =
@@ -395,8 +399,9 @@ public class BoundResolution {
                   .collect(Collectors.toList());
           Optional<SymTypeExpression> targetBound =
               getGlbOfProperUpperBounds(replacedTargetBounds);
-          targetBound.ifPresent(symTypeExpression -> newInfVarsBounds.add(
-              new TypeCompatibilityBound(newInfVar, symTypeExpression)));
+          targetBound.ifPresent(symTypeExpression ->
+              newInfVarsBounds.add(new TypeCompatibilityBound(newInfVar, symTypeExpression))
+          );
           // check for bound consistency
           if (lowerBound.isPresent() && upperBound.isPresent()) {
             if (!isSubTypeOf(lowerBound.get(), upperBound.get())) {
@@ -740,7 +745,9 @@ public class BoundResolution {
         TypeEqualityBound typeEqualityBound = (TypeEqualityBound) bound;
         varsToBeAdded.add(typeEqualityBound.getFirstType());
         Optional<TypeEqualityBound> flipped = typeEqualityBound.getFlipped();
-        flipped.ifPresent(equalityBound -> varsToBeAdded.add(equalityBound.getFirstType()));
+        flipped.ifPresent(equalityBound ->
+            varsToBeAdded.add(equalityBound.getFirstType())
+        );
       }
       else if (bound.isCaptureBound()) {
         CaptureBound captureBound = (CaptureBound) bound;
@@ -797,8 +804,9 @@ public class BoundResolution {
         dependencies.get(typeEqualityBound.getFirstType())
             .add(typeEqualityBound);
         Optional<TypeEqualityBound> flipped = typeEqualityBound.getFlipped();
-        flipped.ifPresent(
-            equalityBound -> dependencies.get(equalityBound.getFirstType()).add(typeEqualityBound));
+        flipped.ifPresent(equalityBound ->
+                dependencies.get(equalityBound.getFirstType()).add(typeEqualityBound)
+        );
       }
       else if (bound.isCaptureBound()) {
         CaptureBound captureBound = (CaptureBound) bound;

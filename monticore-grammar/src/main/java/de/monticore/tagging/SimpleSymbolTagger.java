@@ -100,7 +100,7 @@ public class SimpleSymbolTagger extends AbstractTagger implements ISymbolTagger 
         // Add the matching ASTTargetElement from #findTagTargetsOfTagUnit to the buffer
         return findTagTargetsOfTagUnit(tagUnit, fqn);
       }
-      
+
       @Override
       protected void cleanup() {
         // cleanup (remove unloaded TagUnits)

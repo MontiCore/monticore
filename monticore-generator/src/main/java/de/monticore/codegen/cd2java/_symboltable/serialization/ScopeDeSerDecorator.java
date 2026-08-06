@@ -111,7 +111,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
             .stream()
             .map(ASTCDClass::getCDAttributeList)
             .flatMap(List::stream)
-            .map(ASTCDAttributeTOP::deepClone)
+            .map(ASTCDAttribute::deepClone)
             .collect(Collectors.toList());
     scopeRuleAttrList.forEach(a -> getDecorationHelper().addAttributeDefaultValues(a, this.glex));
 

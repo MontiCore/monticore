@@ -18,8 +18,6 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Created by Alexander Wilts on 16.01.2017.
- * <p>
  * This visitor replaces elements with stereotype 'not' or 'optional' with a new variable with suffix '_candAsOptional'.
  * Additionally the visitor adds a '.get()' call behind that variable.
  */

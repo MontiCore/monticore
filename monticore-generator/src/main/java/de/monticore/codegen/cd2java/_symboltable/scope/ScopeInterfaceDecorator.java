@@ -6,7 +6,6 @@ import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
-import de.monticore.cd4codebasis._ast.ASTCDMethodTOP;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
@@ -93,14 +92,14 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
             .stream()
             .map(ASTCDClass::getCDAttributeList)
             .flatMap(List::stream)
-            .map(ASTCDAttributeTOP::deepClone)
+            .map(ASTCDAttribute::deepClone)
             .toList();
 
     List<ASTCDMethod> scopeRuleMethodList = scopeInput.deepClone().getCDDefinition().getCDClassesList()
             .stream()
             .map(ASTCDClass::getCDMethodList)
             .flatMap(List::stream)
-            .map(ASTCDMethodTOP::deepClone)
+            .map(ASTCDMethod::deepClone)
             .collect(Collectors.toList());
     scopeRuleMethodList.forEach(m -> m.getModifier().setAbstract(true));
 

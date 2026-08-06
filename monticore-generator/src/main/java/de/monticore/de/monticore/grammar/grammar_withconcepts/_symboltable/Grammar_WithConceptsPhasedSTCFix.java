@@ -8,7 +8,7 @@ import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConcep
 
 /**
  * Backport of Grammar_WithConceptsPhasedSTC fix
- * <a href="https://git.rwth-aachen.de/monticore/monticore/-/issues/4842">...</a>
+ * <a href="https://git.rwth-aachen.de/monticore/monticore/-/issues/4842">monticore#4842</a>
  * Remove after 7.9.0 release
  */
 public class Grammar_WithConceptsPhasedSTCFix extends Grammar_WithConceptsPhasedSTC {

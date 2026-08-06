@@ -103,7 +103,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
           .map(ASTCDClass.class::cast)
           .filter(x -> !x.getModifier().isAbstract())
           .filter(this::checkIncludeInMill)
-          .map(ASTCDClassTOP::deepClone)
+          .map(ASTCDClass::deepClone)
           .collect(Collectors.toList());
 
 

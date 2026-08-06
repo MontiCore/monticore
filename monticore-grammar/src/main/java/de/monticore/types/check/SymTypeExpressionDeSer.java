@@ -79,8 +79,9 @@ public class SymTypeExpressionDeSer {
 
   public static void serializeMember(JsonPrinter printer, String memberName,
       Optional<SymTypeExpression> member) {
-    member.ifPresent(
-        symTypeExpression -> printer.memberJson(memberName, symTypeExpression.printAsJson()));
+    member.ifPresent(symTypeExpression ->
+        printer.memberJson(memberName, symTypeExpression.printAsJson())
+    );
   }
 
   public static void serializeMember(JsonPrinter printer, String memberName,

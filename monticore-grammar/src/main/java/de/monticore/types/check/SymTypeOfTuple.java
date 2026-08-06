@@ -69,7 +69,7 @@ public class SymTypeOfTuple extends SymTypeExpression {
   }
 
   public boolean containsAllTypes(Collection<?> collection) {
-    return new HashSet<>(this.getTypeList()).containsAll(collection);
+    return this.getTypeList().containsAll(collection);
   }
 
   public boolean isEmptyTypes() {

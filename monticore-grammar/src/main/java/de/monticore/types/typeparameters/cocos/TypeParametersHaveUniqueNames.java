@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.typeparameters.cocos;
 
-import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolTOP;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.types.typeparameters._ast.ASTTypeParameter;
 import de.monticore.types.typeparameters._ast.ASTTypeParameters;
 import de.monticore.types.typeparameters._cocos.TypeParametersASTTypeParametersCoCo;
@@ -19,7 +19,7 @@ public class TypeParametersHaveUniqueNames
   public void check(ASTTypeParameters node) {
     List<String> names = node.getTypeParameterList().stream()
         .map(ASTTypeParameter::getSymbol)
-        .map(TypeSymbolTOP::getName)
+        .map(TypeSymbol::getName)
         .collect(Collectors.toList());
     Set<String> duplicates = findDuplicates(names);
     for (String dupName : duplicates) {

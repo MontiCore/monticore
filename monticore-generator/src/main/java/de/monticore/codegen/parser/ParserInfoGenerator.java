@@ -9,7 +9,6 @@ import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
-import de.monticore.grammar.grammar._symboltable.ProdSymbolTOP;
 import de.monticore.grammar.grammar._visitor.GrammarVisitor2;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsTraverser;
@@ -151,7 +150,7 @@ public class ParserInfoGenerator {
                 return true;
               }
               Set<ProdSymbol> superProds = MCGrammarSymbolTableHelper.getAllSuperProds(s);
-              return superProds.stream().anyMatch(ProdSymbolTOP::isIsSymbolDefinition);
+              return superProds.stream().anyMatch(ProdSymbol::isIsSymbolDefinition);
             })
             // find name non-terminals with the usage name "name", which parse a name definition
             .flatMap(s -> {

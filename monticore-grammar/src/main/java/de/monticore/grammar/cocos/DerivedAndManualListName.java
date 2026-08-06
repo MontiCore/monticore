@@ -5,7 +5,6 @@ import de.monticore.grammar.grammar._ast.ASTNonTerminal;
 import de.monticore.grammar.grammar._ast.ASTProd;
 import de.monticore.grammar.grammar._cocos.GrammarASTProdCoCo;
 import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
-import de.monticore.grammar.grammar._symboltable.RuleComponentSymbolTOP;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 
@@ -33,7 +32,7 @@ public class DerivedAndManualListName implements GrammarASTProdCoCo {
   public void check(ASTProd node) {
     if (node.isPresentSymbol()) {
       List<RuleComponentSymbol> listComponents = node.getSymbol().getProdComponents().stream()
-          .filter(RuleComponentSymbolTOP::isIsList)
+          .filter(RuleComponentSymbol::isIsList)
           .toList();
       for (int i = 0; i < listComponents.size(); i++) {
         for (int j = i + 1; j < listComponents.size(); j++) {

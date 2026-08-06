@@ -23,12 +23,23 @@ public class JavaNumericOperationHandler implements ICodeGenOperationHandler {
 
   static {
     BINARY_OPERATOR_2_JAVA =
-        Map.ofEntries(Map.entry(PLUS, "+"), Map.entry(MINUS, "-"), Map.entry(MULTIPLY, "*"),
-            Map.entry(DIVIDE, "/"), Map.entry(MODULO, "%"), Map.entry(BITWISE_AND, "&"),
-            Map.entry(BITWISE_OR, "|"), Map.entry(BITWISE_XOR, "^"), Map.entry(LEFT_SHIFT, "<<"),
-            Map.entry(RIGHT_SHIFT_SIGNED, ">>"), Map.entry(RIGHT_SHIFT_UNSIGNED, ">>>"),
-            Map.entry(GREATER_THAN, ">"), Map.entry(LESS_THAN, "<"),
-            Map.entry(GREATER_EQUALS, ">="), Map.entry(LESS_EQUALS, "<="));
+        Map.ofEntries(
+            Map.entry(PLUS, "+"),
+            Map.entry(MINUS, "-"),
+            Map.entry(MULTIPLY, "*"),
+            Map.entry(DIVIDE, "/"),
+            Map.entry(MODULO, "%"),
+            Map.entry(BITWISE_AND, "&"),
+            Map.entry(BITWISE_OR, "|"),
+            Map.entry(BITWISE_XOR, "^"),
+            Map.entry(LEFT_SHIFT, "<<"),
+            Map.entry(RIGHT_SHIFT_SIGNED, ">>"),
+            Map.entry(RIGHT_SHIFT_UNSIGNED, ">>>"),
+            Map.entry(GREATER_THAN, ">"),
+            Map.entry(LESS_THAN, "<"),
+            Map.entry(GREATER_EQUALS, ">="),
+            Map.entry(LESS_EQUALS, "<=")
+        );
   }
 
   @Override

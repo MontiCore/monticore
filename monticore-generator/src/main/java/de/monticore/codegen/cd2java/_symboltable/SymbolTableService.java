@@ -8,8 +8,8 @@ import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
-import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolTOP;
-import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolTOP;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
+import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
@@ -638,9 +638,9 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
 
     List<CDTypeSymbol> superInterfaces = type.getSymbol().getSuperTypesList().stream()
             .map(SymTypeExpression::getTypeInfo)
-            .map(TypeSymbolTOP::getName)
+            .map(TypeSymbol::getName)
             .map(this::resolveCDType)
-            .filter(OOTypeSymbolTOP::isIsInterface)
+            .filter(OOTypeSymbol::isIsInterface)
             .toList();
 
     for (CDTypeSymbol superType : superInterfaces) {

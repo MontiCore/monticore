@@ -15,7 +15,6 @@ import de.monticore.grammar.PredicatePair;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
-import de.monticore.grammar.grammar._symboltable.ProdSymbolTOP;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTAction;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTExpressionPredicate;
@@ -461,7 +460,7 @@ public class ParserGeneratorHelper {
           prodList.add((ASTLexProd) localToken.get().getAstNode());
         } else {
           grammarSymbol.getSpannedScope().resolveProdMany(tokenName).stream().filter(
-              ProdSymbolTOP::isIsLexerProd).forEach(p -> prodList.add((ASTLexProd) p.getAstNode()));
+              ProdSymbol::isIsLexerProd).forEach(p -> prodList.add((ASTLexProd) p.getAstNode()));
         }
       }
     }
@@ -480,7 +479,7 @@ public class ParserGeneratorHelper {
             prodList.add(localToken.get().getAstNode());
           } else {
             grammarSymbol.getSpannedScope().resolveProdMany(tokenName).stream().filter(
-                ProdSymbolTOP::isIsLexerProd).forEach(p -> prodList.add(p.getAstNode()));
+                ProdSymbol::isIsLexerProd).forEach(p -> prodList.add(p.getAstNode()));
           }
         }
         retMap.put(e.getKey(), prodList);

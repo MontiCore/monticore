@@ -99,7 +99,7 @@ public abstract class SymTypeRelations {
    * <p>
    * todo should just return top?
    * todo need to rename to e.g. simplifiedLeastUpperBound
-   * <a href="https://git.rwth-aachen.de/monticore/monticore/-/issues/4187">...</a>
+   * <a href="https://git.rwth-aachen.de/monticore/monticore/-/issues/4187">monticore#4187</a>
    * empty represents the universal type (aka the lack of a bound)
    * Obscure is returned, if no lub could be calculated, e.g. lub(int, Person)
    */

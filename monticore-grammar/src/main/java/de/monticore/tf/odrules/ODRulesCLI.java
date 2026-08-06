@@ -135,11 +135,12 @@ public class ODRulesCLI {
   }
   
   protected void printHelp(Options options) {
-    HelpFormatter formatter = HelpFormatter.builder().get();
+    HelpFormatter formatter = HelpFormatter.builder().setShowSince(false).get();
     try {
-      formatter.printHelp("java " + this.getClass().getSimpleName(), "", options, "", true);
+      formatter.printHelp(this.getClass().getSimpleName(), "", options, "", true);
     }
     catch (java.io.IOException e) {
+      // If the help-output could not be written to the help appendable
       throw new RuntimeException(e);
     }
   }

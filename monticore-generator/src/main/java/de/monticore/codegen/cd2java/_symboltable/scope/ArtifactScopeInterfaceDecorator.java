@@ -20,7 +20,6 @@ import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
-import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolTOP;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
@@ -187,7 +186,7 @@ public class ArtifactScopeInterfaceDecorator extends AbstractCreator<ASTCDCompil
       // only filter for types which define a symbol
       List<ASTCDType> symbolProds = symbolTableService.getAllCDTypes(cdDefinitionSymbol)
           .stream()
-          .filter(TypeSymbolTOP::isPresentAstNode)
+          .filter(TypeSymbol::isPresentAstNode)
           .filter(t -> symbolTableService.hasSymbolStereotype(t.getAstNode().getModifier()))
           .filter(CDTypeSymbol::isPresentAstNode)
           .map(CDTypeSymbol::getAstNode)

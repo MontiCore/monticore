@@ -11,7 +11,7 @@ import de.monticore.symboltable.ISymbol;
 
 /**
  * todo remove this after
- * <a href="https://git.rwth-aachen.de/monticore/monticore/-/work_items/5031">...</a>
+ * <a href="https://git.rwth-aachen.de/monticore/monticore/-/work_items/5031">monticore#5031</a>
  */
 public class TypeDispatcherHotfix {
 

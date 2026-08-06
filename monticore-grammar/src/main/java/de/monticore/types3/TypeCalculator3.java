@@ -16,7 +16,7 @@ import de.monticore.visitor.ITraverser;
 /**
  * Temporary(!) interface implementation for the temporary(!) usage of TC3.
  * This is temporary as the interface had not been discussed yet.
- * s. <a href="https://git.rwth-aachen.de/monticore/monticore/-/issues/3420">...</a>
+ * s. <a href="https://git.rwth-aachen.de/monticore/monticore/-/issues/3420">monticore#3420</a>
  * @deprecated use {@link TypeCheck3}
  */
 @Deprecated

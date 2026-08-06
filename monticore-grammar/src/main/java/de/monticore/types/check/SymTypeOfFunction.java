@@ -329,7 +329,7 @@ public class SymTypeOfFunction extends SymTypeExpression {
   }
 
   public boolean containsAllArgumentTypes(Collection<?> collection) {
-    return new HashSet<>(this.getArgumentTypeList()).containsAll(collection);
+    return this.getArgumentTypeList().containsAll(collection);
   }
 
   public boolean isEmptyArgumentTypes() {

@@ -155,7 +155,7 @@ public class MCGrammarSymbolTableHelper {
   }
 
   public static Set<ProdSymbol> getAllSuperInterfaces(ProdSymbol prod) {
-    return getAllSuperProds(prod).stream().filter(ProdSymbolTOP::isIsInterface).collect(Collectors.toSet());
+    return getAllSuperProds(prod).stream().filter(ProdSymbol::isIsInterface).collect(Collectors.toSet());
   }
 
   protected final static LoadingCache<ProdSymbol, List<ProdSymbol>> superProdCache = CacheBuilder.newBuilder().maximumSize(10000)
@@ -165,17 +165,17 @@ public class MCGrammarSymbolTableHelper {
       public List<ProdSymbol> load(ProdSymbol prod) {
         List<ProdSymbol> superTypes = prod.getSuperProds().stream().filter(
                 ProdSymbolSurrogate::isSymbolPresent)
-            .map(ProdSymbolSurrogateTOP::lazyLoadDelegate).collect(Collectors.toList());
+            .map(ProdSymbolSurrogate::lazyLoadDelegate).collect(Collectors.toList());
         superTypes.addAll(prod.getSuperInterfaceProds().stream().filter(
                 ProdSymbolSurrogate::isSymbolPresent)
-            .map(ProdSymbolSurrogateTOP::lazyLoadDelegate).toList());
+            .map(ProdSymbolSurrogate::lazyLoadDelegate).toList());
         
         superTypes.addAll(prod.getAstSuperClasses().stream().filter(
                 ProdSymbolSurrogate::isSymbolPresent)
-            .map(ProdSymbolSurrogateTOP::lazyLoadDelegate).toList());
+            .map(ProdSymbolSurrogate::lazyLoadDelegate).toList());
         superTypes.addAll(prod.getAstSuperInterfaces().stream().filter(
                 ProdSymbolSurrogate::isSymbolPresent)
-            .map(ProdSymbolSurrogateTOP::lazyLoadDelegate).toList());
+            .map(ProdSymbolSurrogate::lazyLoadDelegate).toList());
         return ImmutableList.copyOf(superTypes);
       }
     });
