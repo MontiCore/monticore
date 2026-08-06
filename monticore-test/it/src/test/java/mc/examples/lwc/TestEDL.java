@@ -2,35 +2,25 @@
 
 package mc.examples.lwc;
 
-import java.io.IOException;
-import java.util.Optional;
-
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import mc.examples.lwc.edl.edl.EDLMill;
-import org.junit.jupiter.api.BeforeEach;
-
 import com.google.common.collect.Lists;
-
-import mc.GeneratorIntegrationsTest;
+import de.monticore.runtime.junit.TestWithMCLanguage;
+import mc.examples.lwc.edl.edl.EDLMill;
 import mc.examples.lwc.edl.edl._ast.ASTEDLCompilationUnit;
 import mc.examples.lwc.edl.edl._ast.ASTEntity;
 import mc.examples.lwc.edl.edl._parser.EDLParser;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestEDL extends GeneratorIntegrationsTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
+@TestWithMCLanguage(EDLMill.class)
+public class TestEDL {
+
   @Test
   public void testParser() throws IOException {
-    EDLParser parser = new EDLParser();
+    EDLParser parser = EDLMill.parser();
     Optional<ASTEDLCompilationUnit> ast = parser
         .parseEDLCompilationUnit("src/test/resources/examples/lwc/edl/Car.edl");
     assertFalse(parser.hasErrors());
@@ -82,8 +72,6 @@ public class TestEDL extends GeneratorIntegrationsTest {
                 .setQualifiedName(
                     EDLMill.qualifiedNameBuilder().setNamesList(Lists.newArrayList("lwc", "edl", "Person"))
                         .build()).build()));
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
   
 }

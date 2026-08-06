@@ -3,9 +3,9 @@
 package mc.emf.serialization;
 
 import de.monticore.emf.util.AST2ModelFiles;
-import mc.GeneratorIntegrationsTest;
-import mc.feature.fautomaton.automaton.flatautomaton._ast.ASTAutomaton;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import mc.feature.fautomaton.automaton.flatautomaton.FlatAutomatonMill;
+import mc.feature.fautomaton.automaton.flatautomaton._ast.ASTAutomaton;
 import mc.feature.fautomaton.automaton.flatautomaton._ast.FlatAutomatonPackage;
 import mc.feature.fautomaton.automatonwithaction.actionautomaton._ast.ActionAutomatonPackage;
 import org.eclipse.emf.common.util.URI;
@@ -21,21 +21,23 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.IOException;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Disabled
-public class ASTModelSerialDeserialTest extends GeneratorIntegrationsTest {
+@TestWithMCLanguage(FlatAutomatonMill.class)
+public class ASTModelSerialDeserialTest {
   
   @Test
-  public void testECoreFileOFSuperGrammar() {
+  public void testECoreFileOFSuperGrammar() throws IOException {
     
     ASTAutomaton aut = FlatAutomatonMill.automatonBuilder().uncheckedBuild();
-    try {
-      AST2ModelFiles.get().serializeASTInstance(aut, "Aut1");
+    
+    AST2ModelFiles.get().serializeASTInstance(aut, "Aut1");
     
     ResourceSet resourceSet = new ResourceSetImpl();
-    resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(
-            Resource.Factory.Registry.DEFAULT_EXTENSION, new XMIResourceFactoryImpl());
+    resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap()
+        .put(Resource.Factory.Registry.DEFAULT_EXTENSION, new XMIResourceFactoryImpl());
     
     URI fileURI = URI.createFileURI(new File("FlatAutomaton.ecore").getAbsolutePath());
     Resource resource = resourceSet.getResource(fileURI, true);
@@ -43,49 +45,50 @@ public class ASTModelSerialDeserialTest extends GeneratorIntegrationsTest {
     
     EClass serializedState = (EClass) serializedEPackage.getEClassifier("State");
     
-    int expectedFeatureCountAutomaton = FlatAutomatonPackage.eINSTANCE.getASTAutomaton().getFeatureCount();
+    int expectedFeatureCountAutomaton =
+        FlatAutomatonPackage.eINSTANCE.getASTAutomaton().getFeatureCount();
     String expectedNameOfInitial = "initial";
     
     assertEquals("FlatAutomaton", serializedEPackage.getName());
     assertEquals(expectedFeatureCountAutomaton,
-            ((EClass) serializedEPackage.getEClassifier("Automaton")).getFeatureCount());
+        ((EClass) serializedEPackage.getEClassifier("Automaton")).getFeatureCount());
     assertEquals(expectedNameOfInitial,
-            serializedState.getEAllStructuralFeatures().get(FlatAutomatonPackage.ASTState_Initial).getName());
-    }
-    catch (IOException e) {
-      fail("Should not reach this, but: " + e);
-    }
+        serializedState.getEAllStructuralFeatures().get(FlatAutomatonPackage.ASTState_Initial)
+            .getName());
   }
   
   @Test
   public void testECoreFileOFGrammar() {
     ResourceSet resourceSet = new ResourceSetImpl();
-    resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(
-            Resource.Factory.Registry.DEFAULT_EXTENSION, new XMIResourceFactoryImpl());
+    resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap()
+        .put(Resource.Factory.Registry.DEFAULT_EXTENSION, new XMIResourceFactoryImpl());
     
     URI fileURI = URI.createFileURI(new File("ActionAutomaton.ecore").getAbsolutePath());
     Resource resource = resourceSet.getResource(fileURI, true);
     EPackage serializedEPackage = (EPackage) resource.getContents().get(0);
     
-    EClass serializedTransitionWithAction = (EClass) serializedEPackage.getEClassifier("TransitionWithAction");
+    EClass serializedTransitionWithAction =
+        (EClass) serializedEPackage.getEClassifier("TransitionWithAction");
     
-    int expectedFeatureCountAutomaton = ActionAutomatonPackage.eINSTANCE.getASTAutomaton().getFeatureCount();
+    int expectedFeatureCountAutomaton =
+        ActionAutomatonPackage.eINSTANCE.getASTAutomaton().getFeatureCount();
     String expectedNameOfAction = "action";
     String expectedFirstSuperType = "Transition";
     
     assertEquals("ActionAutomaton", serializedEPackage.getName());
-    assertEquals(expectedFeatureCountAutomaton, ((EClass) serializedEPackage.getEClassifier("Automaton")).getFeatureCount());
+    assertEquals(expectedFeatureCountAutomaton,
+        ((EClass) serializedEPackage.getEClassifier("Automaton")).getFeatureCount());
     assertEquals(expectedFirstSuperType,
-            serializedTransitionWithAction.getESuperTypes().get(0).getName());
-    assertEquals(expectedNameOfAction,
-            serializedTransitionWithAction.getEAllStructuralFeatures().get(ActionAutomatonPackage.ASTCounter_Names).getName());
+        serializedTransitionWithAction.getESuperTypes().get(0).getName());
+    assertEquals(expectedNameOfAction, serializedTransitionWithAction.getEAllStructuralFeatures()
+        .get(ActionAutomatonPackage.ASTCounter_Names).getName());
   }
   
   @Test
   public void testECoreFileOFASTENode() {
     ResourceSet resourceSet = new ResourceSetImpl();
-    resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(
-            Resource.Factory.Registry.DEFAULT_EXTENSION, new XMIResourceFactoryImpl());
+    resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap()
+        .put(Resource.Factory.Registry.DEFAULT_EXTENSION, new XMIResourceFactoryImpl());
     
     URI fileURI = URI.createFileURI(new File("ASTENode.ecore").getAbsolutePath());
     Resource resource = resourceSet.getResource(fileURI, true);

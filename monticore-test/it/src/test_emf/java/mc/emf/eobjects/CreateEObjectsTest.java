@@ -3,7 +3,7 @@
 package mc.emf.eobjects;
 
 import de.monticore.emf._ast.ASTENode;
-import mc.GeneratorIntegrationsTest;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import mc.feature.fautomaton.automaton.flatautomaton.FlatAutomatonMill;
 import mc.feature.fautomaton.automaton.flatautomaton._ast.ASTAutomaton;
 import mc.feature.fautomaton.automaton.flatautomaton._ast.ASTState;
@@ -12,7 +12,9 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class CreateEObjectsTest extends GeneratorIntegrationsTest {
+@TestWithMCLanguage(FlatAutomatonMill.class)
+public class CreateEObjectsTest {
+
   @Test
   public void builderTest() {
     ASTENode ast = FlatAutomatonMill.automatonBuilder().setName(("A")).build();

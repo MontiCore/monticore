@@ -2,17 +2,8 @@
 
 package mc.examples.coord;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.Optional;
-
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import de.monticore.prettyprint.IndentPrinter;
-import mc.GeneratorIntegrationsTest;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import mc.examples.cartesian.coordcartesian.CoordcartesianMill;
 import mc.examples.cartesian.coordcartesian._ast.ASTCoordinateFile;
 import mc.examples.cartesian.coordcartesian._parser.CoordcartesianParser;
@@ -24,22 +15,22 @@ import mc.examples.coord.transform.Mirror;
 import mc.examples.polar.coordpolar.CoordpolarMill;
 import mc.examples.polar.coordpolar._parser.CoordpolarParser;
 import mc.examples.polar.coordpolar._visitor.CoordpolarTraverser;
+import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestCoordinates extends GeneratorIntegrationsTest {
+@TestWithMCLanguage(CoordcartesianMill.class)
+public class TestCoordinates {
   
   private static final double DELTA = 1e-5;
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
+
   @Test
   public void testCoordcartesianParser() throws IOException {
-    CoordcartesianParser parser = new CoordcartesianParser();
+    CoordcartesianParser parser = CoordcartesianMill.parser();
     Optional<ASTCoordinateFile> astCartesian = parser
         .parseCoordinateFile("src/test/resources/examples/coord/coordinates.cart"); // (2,4)
                                                                       // (5,2)
@@ -57,8 +48,6 @@ public class TestCoordinates extends GeneratorIntegrationsTest {
     
     assertEquals(1, astCartesian.get().getCoordinateList().get(2).getX());
     assertEquals(7, astCartesian.get().getCoordinateList().get(2).getY());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -84,12 +73,11 @@ public class TestCoordinates extends GeneratorIntegrationsTest {
     
     assertEquals(47.11, astPolar.get().getCoordinateList().get(2).getD(), DELTA);
     assertEquals(0.815, astPolar.get().getCoordinateList().get(2).getPhi(), DELTA);
-    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
   public void cartesian2Polar() throws IOException {
-    CoordcartesianParser parser = new CoordcartesianParser();
+    CoordcartesianParser parser = CoordcartesianMill.parser();
     Optional<ASTCoordinateFile> astCartesian = parser
         .parseCoordinateFile("src/test/resources/examples/coord/coordinates.cart");
     assertFalse(parser.hasErrors());
@@ -126,13 +114,11 @@ public class TestCoordinates extends GeneratorIntegrationsTest {
     
     assertEquals(7.07106, astPolar.get().getCoordinateList().get(2).getD(), DELTA);
     assertEquals(1.428899, astPolar.get().getCoordinateList().get(2).getPhi(), DELTA);
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
   public void mirrorTransformation() throws IOException {
-    CoordcartesianParser parser = new CoordcartesianParser();
+    CoordcartesianParser parser = CoordcartesianMill.parser();
     Optional<ASTCoordinateFile> astCartesian = parser
         .parseCoordinateFile("src/test/resources/examples/coord/coordinates.cart");
     assertFalse(parser.hasErrors());
@@ -178,8 +164,6 @@ public class TestCoordinates extends GeneratorIntegrationsTest {
     
     assertEquals(7, astTransformed.get().getCoordinateList().get(2).getX());
     assertEquals(1, astTransformed.get().getCoordinateList().get(2).getY());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
   
 }

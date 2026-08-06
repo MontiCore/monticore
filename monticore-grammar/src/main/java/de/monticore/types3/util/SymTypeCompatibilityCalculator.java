@@ -1,7 +1,19 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.types3.util;
 
-import de.monticore.types.check.*;
+import de.monticore.types.check.SymTypeArray;
+import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.check.SymTypeOfFunction;
+import de.monticore.types.check.SymTypeOfGenerics;
+import de.monticore.types.check.SymTypeOfIntersection;
+import de.monticore.types.check.SymTypeOfNull;
+import de.monticore.types.check.SymTypeOfNumericWithSIUnit;
+import de.monticore.types.check.SymTypeOfObject;
+import de.monticore.types.check.SymTypeOfSIUnit;
+import de.monticore.types.check.SymTypeOfTuple;
+import de.monticore.types.check.SymTypeOfUnion;
+import de.monticore.types.check.SymTypeOfWildcard;
+import de.monticore.types.check.SymTypePrimitive;
 import de.monticore.types3.SymTypeRelations;
 import de.monticore.types3.generics.bounds.Bound;
 import de.monticore.types3.generics.bounds.SubTypingBound;
@@ -95,9 +107,20 @@ public class SymTypeCompatibilityCalculator {
       result = Collections.emptyList();
     }
     //todo https://git.rwth-aachen.de/monticore/monticore/-/issues/4362
-    // need more (e.g. tuple) (function???)
     else if (source.isNullType()) {
       result = nullConstrainCompatible(target, source.asNullType());
+    }
+    else if (source.isFunctionType() && target.isFunctionType()) {
+      result = functionConstrainCompatible(
+          target.asFunctionType(),
+          source.asFunctionType()
+      );
+    }
+    else if (source.isTupleType() && target.isTupleType()) {
+      result = tupleConstrainCompatible(
+          target.asTupleType(),
+          source.asTupleType()
+      );
     }
     // subtypes are assignable to their supertypes
     // in addition, we allow boxing
@@ -217,7 +240,6 @@ public class SymTypeCompatibilityCalculator {
   protected List<Bound> nullConstrainCompatible(
       SymTypeExpression target,
       SymTypeOfNull source
-
   ) {
     // null is compatible to any object type
     // including arrays for java-compatibility
@@ -231,6 +253,90 @@ public class SymTypeCompatibilityCalculator {
     else {
       return List.of(getUnsatisfiableBoundForCompatibilty(target, source));
     }
+  }
+
+  protected List<Bound> tupleConstrainCompatible(
+      SymTypeOfTuple target,
+      SymTypeOfTuple source
+  ) {
+    List<Bound> result = new ArrayList<>();
+    if (target.sizeTypes() != source.sizeTypes()) {
+      result.add(new UnsatisfiableBound(
+          source.printFullName() + " cannot be compatible to "
+              + target.printFullName() + " as they have different lengths"
+      ));
+    }
+    else {
+      for (int i = 0; i < source.sizeTypes(); i++) {
+        result.addAll(constrainCompatiblePreNormalized(
+            target.getType(i),
+            source.getType(i)
+        ));
+      }
+    }
+    return result;
+  }
+
+  protected List<Bound> functionConstrainCompatible(
+      SymTypeOfFunction target,
+      SymTypeOfFunction source
+  ) {
+    List<Bound> result = new ArrayList<>();
+    // return type
+    if (source.getType().isVoidType() != target.getType().isVoidType()) {
+      result.add(new UnsatisfiableBound(source.printFullName()
+          + " is not compatible to " + target.printFullName()
+          + " as only one of them has a return type (and the other has void)."
+      ));
+    }
+    else if (!source.getType().isVoidType() && !target.getType().isVoidType()) {
+      // return types: co-variant
+      result.addAll(constrainCompatiblePreNormalized(
+          target.getType(),
+          source.getType())
+      );
+    }
+    // if the target-function is elliptic, the source one must be as well
+    if (target.isElliptic() && !source.isElliptic()) {
+      result.add(new UnsatisfiableBound(source.printFullName()
+          + " is not compatible to " + target.printFullName()
+          + " as it is not elliptic and the target type is."
+      ));
+    }
+    // if they are not elliptic, the number of arguments must be the same
+    if (!(target.isElliptic() || source.isElliptic() ||
+        target.sizeArgumentTypes() == source.sizeArgumentTypes())) {
+      result.add(new UnsatisfiableBound(source.printFullName()
+          + " is not compatible to " + target.printFullName()
+          + " as they do not have the same amount of parameters."
+      ));
+    }
+    // check if all arguments are compatible
+    int argsToCheck = Math.max(
+        target.sizeArgumentTypes(),
+        source.isElliptic() ?
+            source.sizeArgumentTypes() - 1 :
+            source.sizeArgumentTypes()
+    );
+    for (int i = 0; i < argsToCheck; i++) {
+      SymTypeExpression sourceParamType =
+          source.isEmptyArgumentTypes() ?
+              createObscureType() :
+              source.getArgumentType(
+                  Math.min(i, source.sizeArgumentTypes() - 1)
+              );
+      SymTypeExpression targetParamType =
+          target.isEmptyArgumentTypes() ?
+              createObscureType() :
+              target.getArgumentType(
+                  Math.min(i, target.sizeArgumentTypes() - 1)
+              );
+      // argument types: contra-variant
+      result.addAll(constrainCompatiblePreNormalized(
+          sourceParamType, targetParamType
+      ));
+    }
+    return result;
   }
 
   /**
@@ -447,8 +553,8 @@ public class SymTypeCompatibilityCalculator {
     }
     else if (typeA.isArrayType() && typeB.isArrayType()) {
       result = arrayConstrainSameType(
-          (SymTypeArray) typeA,
-          (SymTypeArray) typeB
+          typeA.asArrayType(),
+          typeB.asArrayType()
       );
     }
     // unboxed primitives
@@ -465,9 +571,8 @@ public class SymTypeCompatibilityCalculator {
     // functions
     else if (typeA.isFunctionType() && typeB.isFunctionType()) {
       result = functionConstrainSameType(
-          (SymTypeOfFunction) typeA,
-          (SymTypeOfFunction) typeB
-
+          typeA.asFunctionType(),
+          typeB.asFunctionType()
       );
     }
     // numerics with SIUnit
@@ -530,15 +635,15 @@ public class SymTypeCompatibilityCalculator {
     // arrays
     else if (superType.isArrayType() && subType.isArrayType()) {
       result = arrayConstrainSubTypeOf(
-          (SymTypeArray) subType,
-          (SymTypeArray) superType
+          subType.asArrayType(),
+          superType.asArrayType()
       );
     }
     // unboxed primitives
     else if (superType.isPrimitive() && subType.isPrimitive()) {
       result = unboxedPrimitiveConstrainSubTypeOf(
-          (SymTypePrimitive) subType,
-          (SymTypePrimitive) superType
+          subType.asPrimitive(),
+          superType.asPrimitive()
       );
     }
     // boxed primitives
@@ -550,8 +655,8 @@ public class SymTypeCompatibilityCalculator {
                 de.monticore.types3.SymTypeRelations.isBoolean(subType))
     ) {
       result = boxedPrimitiveConstrainSubTypeOf(
-          (SymTypeOfObject) subType,
-          (SymTypeOfObject) superType
+          subType.asObjectType(),
+          superType.asObjectType()
       );
     }
     // tuples
@@ -564,9 +669,8 @@ public class SymTypeCompatibilityCalculator {
     // functions
     else if (superType.isFunctionType() && subType.isFunctionType()) {
       result = functionConstrainSubTypeOf(
-          (SymTypeOfFunction) subType,
-          (SymTypeOfFunction) superType
-
+          subType.asFunctionType(),
+          superType.asFunctionType()
       );
     }
     // numerics with SIUnit
@@ -891,8 +995,8 @@ public class SymTypeCompatibilityCalculator {
     String superName;
     List<SymTypeExpression> superArgs;
     if (superType.isGenericType()) {
-      superName = ((SymTypeOfGenerics) superType).getTypeConstructorFullName();
-      superArgs = ((SymTypeOfGenerics) superType).getArgumentList();
+      superName = superType.asGenericType().getTypeConstructorFullName();
+      superArgs = superType.asGenericType().getArgumentList();
     }
     else {
       superName = superType.printFullName();
@@ -901,8 +1005,8 @@ public class SymTypeCompatibilityCalculator {
     String subName;
     List<SymTypeExpression> subArgs;
     if (subType.isGenericType()) {
-      subName = ((SymTypeOfGenerics) subType).getTypeConstructorFullName();
-      subArgs = ((SymTypeOfGenerics) subType).getArgumentList();
+      subName = subType.asGenericType().getTypeConstructorFullName();
+      subArgs = subType.asGenericType().getArgumentList();
     }
     else {
       subName = subType.printFullName();
@@ -1178,8 +1282,8 @@ public class SymTypeCompatibilityCalculator {
     String nameA;
     List<SymTypeExpression> argsA;
     if (typeA.isGenericType()) {
-      nameA = ((SymTypeOfGenerics) typeA).getTypeConstructorFullName();
-      argsA = ((SymTypeOfGenerics) typeA).getArgumentList();
+      nameA = typeA.asGenericType().getTypeConstructorFullName();
+      argsA = typeA.asGenericType().getArgumentList();
     }
     else {
       nameA = typeA.printFullName();
@@ -1188,8 +1292,8 @@ public class SymTypeCompatibilityCalculator {
     String nameB;
     List<SymTypeExpression> argsB;
     if (typeB.isGenericType()) {
-      nameB = ((SymTypeOfGenerics) typeB).getTypeConstructorFullName();
-      argsB = ((SymTypeOfGenerics) typeB).getArgumentList();
+      nameB = typeB.asGenericType().getTypeConstructorFullName();
+      argsB = typeB.asGenericType().getArgumentList();
     }
     else {
       nameB = typeB.printFullName();

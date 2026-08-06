@@ -2,7 +2,8 @@
 
 package mc.emf.epackage;
 
-import mc.GeneratorIntegrationsTest;
+import de.monticore.runtime.junit.TestWithMCLanguage;
+import mc.feature.fautomaton.action.expression.ExpressionMill;
 import mc.feature.fautomaton.action.expression._ast.ASTAssignment;
 import mc.feature.fautomaton.action.expression._ast.ExpressionPackage;
 import mc.feature.fautomaton.automaton.flatautomaton._ast.ASTAutomaton;
@@ -14,11 +15,9 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class MetaObjectTest extends GeneratorIntegrationsTest {
-
-  public void setup() {
-
-  }
+@TestWithMCLanguage(ExpressionMill.class)
+public class MetaObjectTest {
+  
   @Test
   @Disabled
   public void testSuperTypes() {
@@ -31,6 +30,7 @@ public class MetaObjectTest extends GeneratorIntegrationsTest {
     assertTrue(supertypes.contains(ExpressionPackage.eINSTANCE.getASTExpression()));
   }
 
+  @Test
   public void testEClass() {
     EClass exp = ExpressionPackage.eINSTANCE.getASTExpression();
     EClass incExp = (EClass) ExpressionPackage.eINSTANCE
@@ -61,8 +61,7 @@ public class MetaObjectTest extends GeneratorIntegrationsTest {
   public void testEAttribute() {
     EAttribute varName = ExpressionPackage.eINSTANCE.getASTExpression_Varname();
     
-    assertEquals(varName.getFeatureID(),
-        ExpressionPackage.ASTExpression_Varname);
+    assertEquals(ExpressionPackage.ASTExpression_Varname, varName.getFeatureID());
     assertEquals(EcorePackage.Literals.ESTRING, varName.getEType());
     assertEquals("Varname", varName.getName());
   }
@@ -72,8 +71,7 @@ public class MetaObjectTest extends GeneratorIntegrationsTest {
     EReference state = FlatAutomatonPackage.eINSTANCE.getASTAutomaton_States();
     
     // check feature ids
-    assertEquals(state.getFeatureID(),
-        FlatAutomatonPackage.ASTAutomaton_States);
+    assertEquals(FlatAutomatonPackage.ASTAutomaton_States, state.getFeatureID());
         
     assertEquals(FlatAutomatonPackage.eINSTANCE.getASTState(), state
         .getEReferenceType());

@@ -1,11 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.feature.interfaces;
 
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import mc.feature.interfaces.optionalgeneration._ast.*;
+import de.monticore.runtime.junit.TestWithMCLanguage;
+import mc.feature.interfaces.optionalgeneration.OptionalGenerationMill;
+import mc.feature.interfaces.optionalgeneration._ast.ASTOpt1;
+import mc.feature.interfaces.optionalgeneration._ast.ASTOpt2;
+import mc.feature.interfaces.optionalgeneration._ast.ASTTest2;
+import mc.feature.interfaces.optionalgeneration._ast.ASTTest4;
 import mc.feature.interfaces.optionalgeneration._parser.OptionalGenerationParser;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -13,60 +15,47 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@TestWithMCLanguage(OptionalGenerationMill.class)
 public class OptionalInterfacesTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
 
   @Test
   public void testMethodExistenceTest1() throws IOException{
-    OptionalGenerationParser parser = new OptionalGenerationParser();
+    OptionalGenerationParser parser = OptionalGenerationMill.parser();
     Optional<ASTOpt1> astOpt1 = parser.parse_StringOpt1("abc Name");
     assertFalse(parser.hasErrors());
     assertTrue(astOpt1.isPresent());
     assertTrue(astOpt1.get().isPresentName());
     assertEquals("Name", astOpt1.get().getName());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMethodExistenceTest2() throws IOException{
-    OptionalGenerationParser parser = new OptionalGenerationParser();
+    OptionalGenerationParser parser = OptionalGenerationMill.parser();
     Optional<ASTTest2> astTest2 = parser.parse_StringTest2("abc someName");
     assertFalse(parser.hasErrors());
     assertTrue(astTest2.isPresent());
     assertTrue(astTest2.get().isPresentName());
     assertEquals("someName", astTest2.get().getName());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMethodExistenceTest3() throws IOException{
-    OptionalGenerationParser parser = new OptionalGenerationParser();
+    OptionalGenerationParser parser = OptionalGenerationMill.parser();
     Optional<ASTOpt2> astOpt2 = parser.parse_StringOpt2("def Name");
     assertFalse(parser.hasErrors());
     assertTrue(astOpt2.isPresent());
     assertTrue(astOpt2.get().isPresentName());
     assertEquals("Name", astOpt2.get().getName());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMethodExistenceTest4() throws IOException{
-    OptionalGenerationParser parser = new OptionalGenerationParser();
+    OptionalGenerationParser parser = OptionalGenerationMill.parser();
     Optional<ASTTest4> astTest4 = parser.parse_StringTest4("def someName");
     assertFalse(parser.hasErrors());
     assertTrue(astTest4.isPresent());
     assertEquals("someName", astTest4.get().getName());
     assertTrue(astTest4.get().isPresentName());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
 }
