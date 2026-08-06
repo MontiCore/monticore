@@ -165,7 +165,9 @@ public class WithinTypeBasicSymbolsResolver {
     for (String name : names) {
       Optional<SymTypeExpression> varOpt =
           resolveVariable(thisType, name, accessModifier, predicate);
-      varOpt.ifPresent(symTypeExpression -> allVariables.put(name, symTypeExpression));
+      varOpt.ifPresent(symTypeExpression ->
+          allVariables.put(name, symTypeExpression)
+      );
     }
     return allVariables;
   }
