@@ -3,25 +3,18 @@
 package mc.feature.astlist;
 
 import de.monticore.ast.Comment;
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import mc.feature.list.lists.ListsMill;
 import mc.feature.list.lists._ast.ASTParent;
 import mc.feature.list.lists._ast.ASTSon;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@TestWithMCLanguage(ListsMill.class)
 public class CollectionTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
+
   @Test
   public void testDeepEquals1() {
     ASTParent p1 = ListsMill.parentBuilder().uncheckedBuild();
@@ -45,8 +38,6 @@ public class CollectionTest {
     p1.getSonsList().remove(s1);
     assertFalse(p1.deepEquals(p2, true));
     assertFalse(p2.deepEquals(p1, true));
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -74,8 +65,6 @@ public class CollectionTest {
     assertTrue(p2.deepEquals(p1, false));
     assertFalse(p1.deepEquals(p2, true));
     assertFalse(p2.deepEquals(p1, true));
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -101,8 +90,6 @@ public class CollectionTest {
     p1.getSonsList().remove(s1);
     assertFalse(p1.deepEqualsWithComments(p2));
     assertFalse(p2.deepEqualsWithComments(p1));
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -126,8 +113,6 @@ public class CollectionTest {
     
     assertFalse(p1.deepEqualsWithComments(p2));
     assertFalse(p2.deepEqualsWithComments(p1));
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -158,8 +143,6 @@ public class CollectionTest {
     
     assertFalse(p1.deepEqualsWithComments(p2));
     assertFalse(p2.deepEqualsWithComments(p1));
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -180,8 +163,6 @@ public class CollectionTest {
     ASTParent p2 = p1.deepClone();
     
     assertTrue(p1.deepEqualsWithComments(p2));
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -203,8 +184,6 @@ public class CollectionTest {
     ASTParent p2 = p1.deepClone();
     
     assertTrue(p1.deepEquals(p2));
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
   
 }

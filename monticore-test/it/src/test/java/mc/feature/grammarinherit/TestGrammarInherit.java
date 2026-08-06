@@ -2,38 +2,23 @@
 
 package mc.feature.grammarinherit;
 
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import mc.GeneratorIntegrationsTest;
+import de.monticore.runtime.junit.TestWithMCLanguage;
+import mc.feature.grammarinherit.sub.subfeaturedslgrammarinherit.SubFeatureDSLgrammarinheritMill;
 import mc.feature.grammarinherit.sub.subfeaturedslgrammarinherit._parser.SubFeatureDSLgrammarinheritParser;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.io.StringReader;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
-public class TestGrammarInherit extends GeneratorIntegrationsTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
+@TestWithMCLanguage(SubFeatureDSLgrammarinheritMill.class)
+public class TestGrammarInherit {
+ 
   @Test
   public void test1() throws IOException {
-    
-    StringReader s = new StringReader("automaton ad {\n state all;\n state bss;\n ass -> bss; }");
-    
-    SubFeatureDSLgrammarinheritParser p = new SubFeatureDSLgrammarinheritParser();
-    p.parseFile(s);
+    SubFeatureDSLgrammarinheritParser p = SubFeatureDSLgrammarinheritMill.parser();
+    p.parse_StringFile("automaton ad {\n state all;\n state bss;\n ass -> bss; }");
     
     assertFalse(p.hasErrors());
-  
-    
-    assertTrue(Log.getFindings().isEmpty());
   }
-  
 }

@@ -2,35 +2,26 @@
 package mc.feature.scoperules;
 
 import com.google.common.collect.Lists;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.SymTypeExpressionFactory;
-import de.se_rwth.commons.logging.LogStub;
 import mc.feature.scoperules.scoperuletest.ScoperuleTestMill;
+import mc.feature.scoperules.scoperuletest._ast.ASTFoo;
 import mc.feature.scoperules.scoperuletest._parser.ScoperuleTestParser;
 import mc.feature.scoperules.scoperuletest._symboltable.*;
-import mc.feature.scoperules.scoperuletest._ast.ASTFoo;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
 
-import de.se_rwth.commons.logging.Log;
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
 
+@TestWithMCLanguage(ScoperuleTestMill.class)
 public class ScoperuleTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
+
   @BeforeEach
   public void setup(){
-    ScoperuleTestMill.reset();
-    ScoperuleTestMill.init();
     BasicSymbolsMill.initializePrimitives();
   }
 
@@ -58,7 +49,6 @@ public class ScoperuleTest {
     assertEquals("bar", as.getModifiedName(1));
     assertEquals("test", as.getModifiedName(2));
     assertTrue(SymTypeExpressionFactory.createPrimitive("int").deepEquals(as.getSymType()));
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -70,7 +60,6 @@ public class ScoperuleTest {
     
     assertInstanceOf(IDummy.class, scope);
     IDummy dummyI = (IDummy) scope;
-    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

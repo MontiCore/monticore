@@ -2,13 +2,12 @@
 
 package mc.feature.deepclone;
 
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
+import de.monticore.runtime.junit.TestWithMCLanguage;
+import mc.feature.deepclone.deepclone.DeepCloneMill;
 import mc.feature.deepclone.deepclone._ast.*;
 import mc.feature.deepclone.deepclone._parser.DeepCloneParser;
-import mc.grammar.literals.ittestliterals._ast.ASTStringLiteral;
 import mc.grammar.literals.ittestliterals._ast.ASTIntLiteral;
-import org.junit.jupiter.api.BeforeEach;
+import mc.grammar.literals.ittestliterals._ast.ASTStringLiteral;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -17,41 +16,34 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@TestWithMCLanguage(DeepCloneMill.class)
 public class DeepCloneNotEqualTest {
-    
-    @BeforeEach
-    public void before() {
-        LogStub.init();
-        Log.enableFailQuick(false);
-    }
-    
+
     @Test
     public void TestName() throws IOException {
-        DeepCloneParser parser = new DeepCloneParser();
+        DeepCloneParser parser = DeepCloneMill.parser();
         Optional<ASTCloneName> ast = parser.parse_StringCloneName("Name");
         assertFalse(parser.hasErrors());
         assertTrue(ast.isPresent());
         ASTCloneName astClone = ast.get().deepClone();
         astClone.setName("NewName");
         assertFalse(ast.get().deepEquals(astClone));
-        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
     public void TestNameList() throws IOException {
-        DeepCloneParser parser = new DeepCloneParser();
+        DeepCloneParser parser = DeepCloneMill.parser();
         Optional<ASTCloneNameList> ast = parser.parse_StringCloneNameList("Name1 Name2 Name3");
         assertFalse(parser.hasErrors());
         assertTrue(ast.isPresent());
         ASTCloneNameList astClone = ast.get().deepClone();
         astClone.setName(1, "NewName");
         assertFalse(ast.get().deepEquals(astClone));
-        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
     public void TestNameOptionalPresent() throws IOException {
-        DeepCloneParser parser = new DeepCloneParser();
+        DeepCloneParser parser = DeepCloneMill.parser();
         Optional<ASTCloneNameOptional> ast = parser.parse_StringCloneNameOptional("opt Name");
         assertFalse(parser.hasErrors());
         assertTrue(ast.isPresent());
@@ -60,12 +52,11 @@ public class DeepCloneNotEqualTest {
         astClone.setNameAbsent();
         assertFalse(astClone.isPresentName());
         assertFalse(ast.get().deepEquals(astClone));
-        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
     public void TestNameOptionalAbsent() throws IOException {
-        DeepCloneParser parser = new DeepCloneParser();
+        DeepCloneParser parser = DeepCloneMill.parser();
         Optional<ASTCloneNameOptional> ast = parser.parse_StringCloneNameOptional("opt");
         assertFalse(parser.hasErrors());
         assertTrue(ast.isPresent());
@@ -74,24 +65,22 @@ public class DeepCloneNotEqualTest {
         astClone.setName("NewName");
         assertTrue(astClone.isPresentName());
         assertFalse(ast.get().deepEquals(astClone));
-        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
     public void TestAST() throws IOException {
-        DeepCloneParser parser = new DeepCloneParser();
+        DeepCloneParser parser = DeepCloneMill.parser();
         Optional<ASTCloneAST> ast = parser.parse_StringCloneAST("clone Name1 Name2 Name3");
         assertFalse(parser.hasErrors());
         assertTrue(ast.isPresent());
         ASTCloneAST astClone = ast.get().deepClone();
         astClone.getCloneNameList().setName(1, "NewName");
         assertFalse(ast.get().deepEquals(astClone));
-        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
     public void TestASTList() throws IOException {
-        DeepCloneParser parser = new DeepCloneParser();
+        DeepCloneParser parser = DeepCloneMill.parser();
         Optional<ASTCloneASTList> ast = parser
                 .parse_StringCloneASTList("clone Name1 Name2 clone Name3 Name4 Name5");
         assertFalse(parser.hasErrors());
@@ -99,12 +88,11 @@ public class DeepCloneNotEqualTest {
         ASTCloneASTList astClone = ast.get().deepClone();
         astClone.getCloneAST(1).getCloneNameList().setName(1, "NewName");
         assertFalse(ast.get().deepEquals(astClone));
-        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
     public void TestASTOptionalPresent() throws IOException {
-        DeepCloneParser parser = new DeepCloneParser();
+        DeepCloneParser parser = DeepCloneMill.parser();
         Optional<ASTCloneASTOptional> ast = parser
                 .parse_StringCloneASTOptional("opt clone Name1 Name2 Name3");
         assertFalse(parser.hasErrors());
@@ -114,12 +102,11 @@ public class DeepCloneNotEqualTest {
         astClone.setCloneASTAbsent();
         assertFalse(astClone.isPresentCloneAST());
         assertFalse(ast.get().deepEquals(astClone));
-        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
     public void TestASTOptionalAbsent() throws IOException {
-        DeepCloneParser parser = new DeepCloneParser();
+        DeepCloneParser parser = DeepCloneMill.parser();
         Optional<ASTCloneASTOptional> ast = parser.parse_StringCloneASTOptional("opt");
         assertFalse(parser.hasErrors());
         assertTrue(ast.isPresent());
@@ -129,12 +116,11 @@ public class DeepCloneNotEqualTest {
         astClone.setCloneAST(newast);
         assertTrue(astClone.isPresentCloneAST());
         assertFalse(ast.get().deepEquals(astClone));
-        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
     public void TestString() throws IOException {
-        DeepCloneParser parser = new DeepCloneParser();
+        DeepCloneParser parser = DeepCloneMill.parser();
         Optional<ASTCloneString> ast = parser.parse_StringCloneString("\"String\"");
         assertFalse(parser.hasErrors());
         assertTrue(ast.isPresent());
@@ -143,12 +129,11 @@ public class DeepCloneNotEqualTest {
         ASTStringLiteral string = parser.parse_StringCloneString("\"NewString\"").get().getStringLiteral();
         astClone.setStringLiteral(string);
         assertFalse(ast.get().deepEquals(astClone));
-        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
     public void TestStringList() throws IOException {
-        DeepCloneParser parser = new DeepCloneParser();
+        DeepCloneParser parser = DeepCloneMill.parser();
         Optional<ASTCloneStringList> ast = parser.parse_StringCloneStringList("\"String1\" \"String2\" \"String3\"");
         assertFalse(parser.hasErrors());
         assertTrue(ast.isPresent());
@@ -156,12 +141,11 @@ public class DeepCloneNotEqualTest {
         ASTStringLiteral string = parser.parse_StringCloneString("\"NewString\"").get().getStringLiteral();
         astClone.getStringLiteralList().set(1, string);
         assertFalse(ast.get().deepEquals(astClone));
-        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
     public void TestStringOptionalPresent() throws IOException {
-        DeepCloneParser parser = new DeepCloneParser();
+        DeepCloneParser parser = DeepCloneMill.parser();
         Optional<ASTCloneStringOptional> ast = parser.parse_StringCloneStringOptional("opt \"String\"");
         assertFalse(parser.hasErrors());
         assertTrue(ast.isPresent());
@@ -170,12 +154,11 @@ public class DeepCloneNotEqualTest {
         astClone.setStringLiteralAbsent();
         assertFalse(astClone.isPresentStringLiteral());
         assertFalse(ast.get().deepEquals(astClone));
-        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
     public void TestStringOptionalAbsent() throws IOException {
-        DeepCloneParser parser = new DeepCloneParser();
+        DeepCloneParser parser = DeepCloneMill.parser();
         Optional<ASTCloneStringOptional> ast = parser.parse_StringCloneStringOptional("opt");
         assertFalse(parser.hasErrors());
         assertTrue(ast.isPresent());
@@ -185,12 +168,11 @@ public class DeepCloneNotEqualTest {
         astClone.setStringLiteral(string);
         assertTrue(astClone.isPresentStringLiteral());
         assertFalse(ast.get().deepEquals(astClone));
-        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
     public void TestInt() throws IOException {
-        DeepCloneParser parser = new DeepCloneParser();
+        DeepCloneParser parser = DeepCloneMill.parser();
         Optional<ASTCloneInt> ast = parser.parse_StringCloneInt("1234");
         assertFalse(parser.hasErrors());
         assertTrue(ast.isPresent());
@@ -198,12 +180,11 @@ public class DeepCloneNotEqualTest {
         ASTIntLiteral i= parser.parse_StringCloneInt("4567").get().getIntLiteral();
         astClone.setIntLiteral(i);
         assertFalse(ast.get().deepEquals(astClone));
-        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
     public void TestIntList() throws IOException {
-        DeepCloneParser parser = new DeepCloneParser();
+        DeepCloneParser parser = DeepCloneMill.parser();
         Optional<ASTCloneIntList> ast = parser.parse_StringCloneIntList("12 34 56");
         assertFalse(parser.hasErrors());
         assertTrue(ast.isPresent());
@@ -211,12 +192,11 @@ public class DeepCloneNotEqualTest {
         ASTIntLiteral i= parser.parse_StringCloneInt("4567").get().getIntLiteral();
         astClone.setIntLiteral(1, i);
         assertFalse(ast.get().deepEquals(astClone));
-        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
     public void TestIntOptionalPresent() throws IOException {
-        DeepCloneParser parser = new DeepCloneParser();
+        DeepCloneParser parser = DeepCloneMill.parser();
         Optional<ASTCloneIntOptional> ast = parser.parse_StringCloneIntOptional("opt 234");
         assertFalse(parser.hasErrors());
         assertTrue(ast.isPresent());
@@ -225,12 +205,11 @@ public class DeepCloneNotEqualTest {
         astClone.setIntLiteralAbsent();
         assertFalse(astClone.isPresentIntLiteral());
         assertFalse(ast.get().deepEquals(astClone));
-        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
     public void TestIntOptionalAbsent() throws IOException {
-        DeepCloneParser parser = new DeepCloneParser();
+        DeepCloneParser parser = DeepCloneMill.parser();
         Optional<ASTCloneIntOptional> ast = parser.parse_StringCloneIntOptional("opt");
         assertFalse(parser.hasErrors());
         assertTrue(ast.isPresent());
@@ -240,36 +219,33 @@ public class DeepCloneNotEqualTest {
         astClone.setIntLiteral(i);
         assertTrue(astClone.isPresentIntLiteral());
         assertFalse(ast.get().deepEquals(astClone));
-        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
     public void TestString2() throws IOException {
-        DeepCloneParser parser = new DeepCloneParser();
+        DeepCloneParser parser = DeepCloneMill.parser();
         Optional<ASTCloneString2> ast = parser.parse_StringCloneString2("\"String\"");
         assertFalse(parser.hasErrors());
         assertTrue(ast.isPresent());
         ASTCloneString2 astClone = ast.get().deepClone();
         astClone.setString("NewString");
         assertFalse(ast.get().deepEquals(astClone));
-        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
     public void TestStringList2() throws IOException {
-        DeepCloneParser parser = new DeepCloneParser();
+        DeepCloneParser parser = DeepCloneMill.parser();
         Optional<ASTCloneStringList2> ast = parser.parse_StringCloneStringList2("\"String1\" \"String2\" \"String3\"");
         assertFalse(parser.hasErrors());
         assertTrue(ast.isPresent());
         ASTCloneStringList2 astClone = ast.get().deepClone();
         astClone.setString(1,"NewString");
         assertFalse(ast.get().deepEquals(astClone));
-        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
     public void TestStringOptionalPresent2() throws IOException {
-        DeepCloneParser parser = new DeepCloneParser();
+        DeepCloneParser parser = DeepCloneMill.parser();
         Optional<ASTCloneStringOptional2> ast = parser.parse_StringCloneStringOptional2("opt \"String\"");
         assertFalse(parser.hasErrors());
         assertTrue(ast.isPresent());
@@ -278,12 +254,11 @@ public class DeepCloneNotEqualTest {
         astClone.setStringAbsent();
         assertFalse(astClone.isPresentString());
         assertFalse(ast.get().deepEquals(astClone));
-        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
     public void TestStringOptionalAbsent2() throws IOException {
-        DeepCloneParser parser = new DeepCloneParser();
+        DeepCloneParser parser = DeepCloneMill.parser();
         Optional<ASTCloneStringOptional2> ast = parser.parse_StringCloneStringOptional2("opt");
         assertFalse(parser.hasErrors());
         assertTrue(ast.isPresent());
@@ -292,36 +267,33 @@ public class DeepCloneNotEqualTest {
         astClone.setString("NewString");
         assertTrue(astClone.isPresentString());
         assertFalse(ast.get().deepEquals(astClone));
-        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
     public void TestInt2() throws IOException {
-        DeepCloneParser parser = new DeepCloneParser();
+        DeepCloneParser parser = DeepCloneMill.parser();
         Optional<ASTCloneInt2> ast = parser.parse_StringCloneInt2("1234");
         assertFalse(parser.hasErrors());
         assertTrue(ast.isPresent());
         ASTCloneInt2 astClone = ast.get().deepClone();
         astClone.setNum_Int("4567");
         assertFalse(ast.get().deepEquals(astClone));
-        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
     public void TestIntList2() throws IOException {
-        DeepCloneParser parser = new DeepCloneParser();
+        DeepCloneParser parser = DeepCloneMill.parser();
         Optional<ASTCloneIntList2> ast = parser.parse_StringCloneIntList2("12 34 56");
         assertFalse(parser.hasErrors());
         assertTrue(ast.isPresent());
         ASTCloneIntList2 astClone = ast.get().deepClone();
         astClone.setNum_Int(1, "2345");
         assertFalse(ast.get().deepEquals(astClone));
-        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
     public void TestIntOptionalPresent2() throws IOException {
-        DeepCloneParser parser = new DeepCloneParser();
+        DeepCloneParser parser = DeepCloneMill.parser();
         Optional<ASTCloneIntOptional2> ast = parser.parse_StringCloneIntOptional2("opt 234");
         assertFalse(parser.hasErrors());
         assertTrue(ast.isPresent());
@@ -330,12 +302,11 @@ public class DeepCloneNotEqualTest {
         astClone.setNum_IntAbsent();
         assertFalse(astClone.isPresentNum_Int());
         assertFalse(ast.get().deepEquals(astClone));
-        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
     public void TestIntOptionalAbsent2() throws IOException {
-        DeepCloneParser parser = new DeepCloneParser();
+        DeepCloneParser parser = DeepCloneMill.parser();
         Optional<ASTCloneIntOptional2> ast = parser.parse_StringCloneIntOptional2("opt");
         assertFalse(parser.hasErrors());
         assertTrue(ast.isPresent());
@@ -344,12 +315,11 @@ public class DeepCloneNotEqualTest {
         astClone.setNum_Int("1234");
         assertTrue(astClone.isPresentNum_Int());
         assertFalse(ast.get().deepEquals(astClone));
-        assertTrue(Log.getFindings().isEmpty());
     }
 
  /* @Test
   public void TestEnumList() throws IOException {
-    DeepCloneParser parser = new DeepCloneParser();
+    DeepCloneParser parser = DeepCloneMill.parser();
     Optional<ASTCloneEnumList> ast = parser.parse_StringCloneEnumList("enum");
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
@@ -359,7 +329,7 @@ public class DeepCloneNotEqualTest {
 
     @Test
     public void TestEnumOptionalPresent() throws IOException {
-        DeepCloneParser parser = new DeepCloneParser();
+        DeepCloneParser parser = DeepCloneMill.parser();
         Optional<ASTCloneEnumOptional> ast = parser.parse_StringCloneEnumOptional("opt enum");
         assertFalse(parser.hasErrors());
         assertTrue(ast.isPresent());
@@ -368,12 +338,11 @@ public class DeepCloneNotEqualTest {
         astClone.setCloneEnumAbsent();
         assertFalse(astClone.isPresentCloneEnum());
         assertFalse(ast.get().deepEquals(astClone));
-        assertTrue(Log.getFindings().isEmpty());
     }
 
    /* @Test
     public void TestEnumOptionalAbsent() throws IOException {
-        DeepCloneParser parser = new DeepCloneParser();
+        DeepCloneParser parser = DeepCloneMill.parser();
         Optional<ASTCloneEnumOptional> ast = parser.parse_StringCloneEnumOptional("opt");
         assertFalse(parser.hasErrors());
         assertTrue(ast.isPresent());

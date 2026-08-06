@@ -2,15 +2,18 @@
 
 package mc.emf.epackage;
 
-import mc.GeneratorIntegrationsTest;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import mc.feature.fautomaton.action.expression._ast.ExpressionPackage;
+import mc.feature.fautomaton.automaton.flatautomaton.FlatAutomatonMill;
 import mc.feature.fautomaton.automaton.flatautomaton._ast.FlatAutomatonPackage;
 import mc.feature.fautomaton.automaton.flatautomaton._ast.FlatAutomatonPackageImpl;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class IDTest extends GeneratorIntegrationsTest {
+@TestWithMCLanguage(FlatAutomatonMill.class)
+public class IDTest {
   
   @Test
   public void testFeatureIDs() {
@@ -18,6 +21,8 @@ public class IDTest extends GeneratorIntegrationsTest {
     assertEquals(2, FlatAutomatonPackage.ASTTransition_To);
   }
   
+  @Test
+  @Disabled
   public void testInheritanceFeatureIDs() {
     // test feature ids for inheritance
     assertEquals(ExpressionPackage.ASTAssignment_Varname,
@@ -28,11 +33,11 @@ public class IDTest extends GeneratorIntegrationsTest {
   @Test
   public void testClassIDs() {
     // test EDatatype
-    assertEquals(ExpressionPackage.eINSTANCE.getVector().getClassifierID(),
-        ExpressionPackage.Vector);
+    assertEquals(ExpressionPackage.Vector,
+        ExpressionPackage.eINSTANCE.getVector().getClassifierID());
     // test Classes
-    assertEquals(ExpressionPackage.eINSTANCE.getASTDecreaseExpression().getClassifierID(),
-        ExpressionPackage.ASTDecreaseExpression);
+    assertEquals(ExpressionPackage.ASTDecreaseExpression,
+        ExpressionPackage.eINSTANCE.getASTDecreaseExpression().getClassifierID());
     assertEquals(FlatAutomatonPackage.eINSTANCE.getASTTransition(),
         FlatAutomatonPackageImpl.eINSTANCE.getASTTransition());
         

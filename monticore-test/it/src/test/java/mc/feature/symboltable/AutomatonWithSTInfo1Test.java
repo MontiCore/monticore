@@ -2,25 +2,16 @@
 
 package mc.feature.symboltable;
 
-import de.se_rwth.commons.logging.LogStub;
-import mc.GeneratorIntegrationsTest;
+import de.monticore.runtime.junit.TestWithMCLanguage;
+import mc.feature.symboltable.automatonwithstinfo1.AutomatonWithSTInfo1Mill;
 import mc.feature.symboltable.automatonwithstinfo1._symboltable.*;
-import org.junit.jupiter.api.BeforeEach;
 
-import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class AutomatonWithSTInfo1Test extends GeneratorIntegrationsTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
+@TestWithMCLanguage(AutomatonWithSTInfo1Mill.class)
+public class AutomatonWithSTInfo1Test {
   /**
    * This test ensures that all expected classes are generated. Otherwise, the test will not compile
    */
@@ -37,7 +28,6 @@ public class AutomatonWithSTInfo1Test extends GeneratorIntegrationsTest {
 //    Collection<StateSymbol> stateSymbols2 = stateSymbol.getStates();
 
     StateSymbolSurrogate stateSymbolReference;
-    assertTrue(Log.getFindings().isEmpty());
   }
 
 }
