@@ -220,9 +220,8 @@ public class ProductionFactory {
       result.getSuperRuleList().add(superInterface);
     }
 
-    addInterfaces(srcNode.getSuperRuleList(), result);
-    addInterfaces(srcNode.getSuperInterfaceRuleList(),
-            result);
+    addInterfaces(srcNode.getSuperRuleList(), result, ProductionType.PATTERN.getPrioMod());
+    addInterfaces(srcNode.getSuperInterfaceRuleList(), result, ProductionType.PATTERN.getPrioMod());
     if (!isEmpty) {
       superInterface = GrammarMill.ruleReferenceBuilder().uncheckedBuild();
       superInterface.setName("I" + srcNode.getSymbol().getEnclosingScope().getName() + "TFPart");
@@ -342,10 +341,12 @@ public class ProductionFactory {
     return patternAlts;
   }
 
-  protected void addInterfaces(List<ASTRuleReference> references, ASTClassProd result) {
+  protected void addInterfaces(List<ASTRuleReference> references, ASTClassProd result, int prioMod) {
     for (ASTRuleReference ref : references) {
       ASTRuleReference r = ref.deepClone();
       r.setName("ITF" + r.getName());
+      if (prioMod != 0)
+        r.setPrio(Integer.toString((r.isPresentPrio()?Integer.parseInt(r.getPrio()):0) + prioMod));
       result.getSuperInterfaceRuleList().add(r);
     }
   }
