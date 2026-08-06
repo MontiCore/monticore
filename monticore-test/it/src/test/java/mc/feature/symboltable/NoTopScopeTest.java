@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.feature.symboltable;
 
+import de.monticore.runtime.junit.AbstractMCTest;
 import de.monticore.symboltable.ISymbol;
-import de.se_rwth.commons.logging.LogStub;
 import mc.feature.symboltable.notopscope.NoTopScopeMill;
 import mc.feature.symboltable.notopscope._ast.ASTFoo;
 import mc.feature.symboltable.notopscope._parser.NoTopScopeParser;
@@ -13,23 +13,15 @@ import mc.feature.symboltable.subnotopscope.SubNoTopScopeMill;
 import mc.feature.symboltable.subnotopscope._ast.ASTSubFoo;
 import mc.feature.symboltable.subnotopscope._parser.SubNoTopScopeParser;
 import mc.feature.symboltable.subnotopscope._symboltable.ISubNoTopScopeGlobalScope;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Optional;
 
-import de.se_rwth.commons.logging.Log;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class NoTopScopeTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
+public class NoTopScopeTest extends AbstractMCTest {
   
   /**
    * test the generation of the method getTopLevelSymbol() of an ArtifactScope
@@ -41,10 +33,11 @@ public class NoTopScopeTest {
   @Test
   public void testGetTopLevelSymbol() throws IOException {
     // parse model
-    NoTopScopeParser scopeAttributesParser = new NoTopScopeParser();
+    NoTopScopeMill.init();
+    NoTopScopeParser scopeAttributesParser = NoTopScopeMill.parser();
     Optional<ASTFoo> astSup = scopeAttributesParser.parse("src/test/resources/mc/feature/symboltable/NoTopScope.st");
-    Assertions.assertFalse(scopeAttributesParser.hasErrors());
-    Assertions.assertTrue(astSup.isPresent());
+    assertFalse(scopeAttributesParser.hasErrors());
+    assertTrue(astSup.isPresent());
 
     // create symboltable
     INoTopScopeGlobalScope globalScope = NoTopScopeMill.globalScope();
@@ -56,24 +49,24 @@ public class NoTopScopeTest {
 
     // only one symbol
     Optional<ISymbol> topLevelSymbol = scope.getTopLevelSymbol();
-    Assertions.assertTrue(topLevelSymbol.isPresent());
-    Assertions.assertEquals("A", topLevelSymbol.get().getName());
+    assertTrue(topLevelSymbol.isPresent());
+    assertEquals("A", topLevelSymbol.get().getName());
 
     // two symbols
     FooSymbol eSymbol = new FooSymbol("E");
     scope.add(eSymbol);
     topLevelSymbol = scope.getTopLevelSymbol();
-    Assertions.assertFalse(topLevelSymbol.isPresent());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertFalse(topLevelSymbol.isPresent());
   }
 
   @Test
   public void testGetTopLevelSymbolWithInherited() throws IOException {
     // parse model
-    SubNoTopScopeParser scopeAttributesParser = new SubNoTopScopeParser();
+    SubNoTopScopeMill.init();
+    SubNoTopScopeParser scopeAttributesParser = SubNoTopScopeMill.parser();
     Optional<ASTSubFoo> astSup = scopeAttributesParser.parse("src/test/resources/mc/feature/symboltable/SubNoTopScope.st");
-    Assertions.assertFalse(scopeAttributesParser.hasErrors());
-    Assertions.assertTrue(astSup.isPresent());
+    assertFalse(scopeAttributesParser.hasErrors());
+    assertTrue(astSup.isPresent());
 
     // create symboltable
     ISubNoTopScopeGlobalScope globalScope = SubNoTopScopeMill.globalScope();
@@ -85,14 +78,13 @@ public class NoTopScopeTest {
 
     // only one symbol
     Optional<ISymbol> topLevelSymbol = scope.getTopLevelSymbol();
-    Assertions.assertTrue(topLevelSymbol.isPresent());
-    Assertions.assertEquals("A", topLevelSymbol.get().getName());
+    assertTrue(topLevelSymbol.isPresent());
+    assertEquals("A", topLevelSymbol.get().getName());
 
     // two symbols (add symbol from super grammar)
     FooSymbol eSymbol = NoTopScopeMill.fooSymbolBuilder().setName("E").build();
     scope.add(eSymbol);
     topLevelSymbol = scope.getTopLevelSymbol();
-    Assertions.assertFalse(topLevelSymbol.isPresent());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertFalse(topLevelSymbol.isPresent());
   }
 }

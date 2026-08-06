@@ -2,100 +2,88 @@
 
 package mc.feature.addkeywords;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.Optional;
-
-import de.se_rwth.commons.logging.Log;
-import org.junit.jupiter.api.Test;
-
-import mc.GeneratorIntegrationsTest;
+import de.monticore.runtime.junit.TestWithMCLanguage;
+import mc.feature.addkeywords.addkeywords.AddKeywordsMill;
 import mc.feature.addkeywords.addkeywords._ast.ASTD;
 import mc.feature.addkeywords.addkeywords._ast.ASTE;
 import mc.feature.addkeywords.addkeywords._parser.AddKeywordsParser;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+
+import java.io.IOException;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class AddKeywordsTest extends GeneratorIntegrationsTest {
+@TestWithMCLanguage(AddKeywordsMill.class)
+public class AddKeywordsTest {
   
-  @Test
-  public void testB() throws IOException {
-    
-    helperb("3");
-    helperb("keyword");
-    helperb("key2");
-  
-    assertTrue(Log.getFindings().isEmpty());
-  }
-  
-  private void helperb(String in) throws IOException {
-    AddKeywordsParser b = new AddKeywordsParser();
-    b.parseB(new StringReader(in));
+  @ParameterizedTest
+  @ValueSource( strings = {
+      "3", "keyword", "key2"
+  })
+  public void testB(String in) throws IOException {
+    AddKeywordsParser b = AddKeywordsMill.parser();
+    b.parse_StringB(in);
         
     assertFalse(b.hasErrors());
-    assertTrue(Log.getFindings().isEmpty());
   }
   
-  @Test
-  public void testC() throws IOException {
-    
-    helperc("15");
-    helperc("keyword");
-    helperc("key2");
-  
-    assertTrue(Log.getFindings().isEmpty());
-  }
-  
-  private void helperc(String in) throws IOException {
-    AddKeywordsParser b = new AddKeywordsParser();
-    b.parseC(new StringReader(in));
+  @ParameterizedTest
+  @ValueSource( strings = {
+      "15", "keyword", "key2"
+  })
+  public void testC(String in) throws IOException {
+    AddKeywordsParser b = AddKeywordsMill.parser();
+    b.parse_StringC(in);
     assertFalse(b.hasErrors());
   }
   
-  @Test
-  public void testD() throws IOException {
-    
-    helperd("1");
-    helperd("keyword");
-    helperd("key2");
-    
-    assertEquals(3, helperd("10 keyword 2").getNameList().size());
-    assertEquals(3, helperd("2 2 3").getNameList().size());
-    assertEquals(3, helperd("48 keyword key2").getNameList().size());
-  
-    assertTrue(Log.getFindings().isEmpty());
+  @ParameterizedTest
+  @ValueSource( strings = {
+      "1", "keyword", "key2"
+  })
+  public void testD(String value) throws IOException {
+    AddKeywordsParser createSimpleParser = AddKeywordsMill.parser();
+    Optional<ASTD> parse = createSimpleParser.parse_StringD(value);
+    assertTrue(parse.isPresent());
+    assertFalse(createSimpleParser.hasErrors());
   }
   
-  private ASTD helperd(String in) throws IOException {
-    AddKeywordsParser createSimpleParser = new AddKeywordsParser();
-    Optional<ASTD> parse = createSimpleParser.parseD(new StringReader(in));
+  @ParameterizedTest
+  @ValueSource( strings = {
+      "10 keyword 2", "2 2 3", "48 keyword key2"
+  })
+  public void testD3(String value) throws IOException {
+    AddKeywordsParser createSimpleParser = AddKeywordsMill.parser();
+    Optional<ASTD> parse = createSimpleParser.parse_StringD(value);
     assertTrue(parse.isPresent());
     assertFalse(createSimpleParser.hasErrors());
     
-    return parse.get();
+    assertEquals(3, parse.get().getNameList().size());
   }
   
-  @Test
-  public void testE() throws IOException {
-    
-    helpere("1");
-    helpere("keyword");
-    helpere("key2");
-    
-    assertEquals(3, helpere("10 keyword 2").getINTList().size());
-    assertEquals(3, helpere("2 2 3").getINTList().size());
-    assertEquals(3, helpere("48 keyword key2").getINTList().size());
-  
-    assertTrue(Log.getFindings().isEmpty());
+  @ParameterizedTest
+  @ValueSource( strings = {
+      "1", "keyword", "key2"
+  })
+  public void testE(String value) throws IOException {
+    AddKeywordsParser createSimpleParser = AddKeywordsMill.parser();
+    Optional<ASTE> parse = createSimpleParser.parse_StringE(value);
+    assertTrue(parse.isPresent());
+    assertFalse(createSimpleParser.hasErrors());
   }
   
-  private ASTE helpere(String in) throws IOException {
-    AddKeywordsParser createSimpleParser = new AddKeywordsParser();
-    Optional<ASTE> parse = createSimpleParser.parseE(new StringReader(in));
+  @ParameterizedTest
+  @ValueSource( strings = {
+      "10 keyword 2", "2 2 3", "48 keyword key2"
+  })
+  public void testE3(String value) throws IOException {
+    AddKeywordsParser createSimpleParser = AddKeywordsMill.parser();
+    Optional<ASTE> parse = createSimpleParser.parse_StringE(value);
     assertTrue(parse.isPresent());
     assertFalse(createSimpleParser.hasErrors());
     
-    return parse.get();
+    assertEquals(3, parse.get().getINTList().size());
   }
-  
 }

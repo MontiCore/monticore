@@ -2,39 +2,27 @@
 
 package mc.feature.ast;
 
-import java.io.ByteArrayOutputStream;
+import de.monticore.runtime.junit.MCAssertions;
+import de.monticore.runtime.junit.TestWithMCLanguage;
+import mc.feature.featuredsl.FeatureDSLMill;
+import mc.feature.featuredsl._ast.*;
+import mc.feature.featuredsl._parser.FeatureDSLParser;
+import org.junit.jupiter.api.Test;
+
 import java.io.IOException;
-import java.io.PrintStream;
-import java.io.StringReader;
 import java.util.List;
 import java.util.Optional;
 
-import de.se_rwth.commons.logging.Log;
-import org.junit.jupiter.api.Test;
-
-import mc.GeneratorIntegrationsTest;
-import mc.feature.featuredsl._ast.ASTA;
-import mc.feature.featuredsl._ast.ASTAutomaton;
-import mc.feature.featuredsl._ast.ASTB;
-import mc.feature.featuredsl._ast.ASTC;
-import mc.feature.featuredsl._ast.ASTComplexname;
-import mc.feature.featuredsl._ast.ASTConstants;
-import mc.feature.featuredsl._ast.ASTConstantsFeatureDSL;
-import mc.feature.featuredsl._ast.ASTSpices1;
-import mc.feature.featuredsl._ast.ASTSpices2;
-import mc.feature.featuredsl._parser.FeatureDSLParser;
-
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ParserTest extends GeneratorIntegrationsTest {
-  
+@TestWithMCLanguage(FeatureDSLMill.class)
+public class ParserTest {
+
   @Test
   public void testConstants() throws IOException {
-    StringReader s = new StringReader(
+    FeatureDSLParser p = FeatureDSLMill.parser();
+    Optional<ASTAutomaton> opt = p.parse_StringAutomaton(
         "automaton a { constants public; constants +; constants private; spices1 garlic pepper;	spices2 none;}");
-    
-    FeatureDSLParser p = new FeatureDSLParser();
-    Optional<ASTAutomaton> opt = p.parseAutomaton(s);
     assertTrue(opt.isPresent());
     ASTAutomaton ast = opt.get();
     
@@ -54,22 +42,15 @@ public class ParserTest extends GeneratorIntegrationsTest {
     assertTrue(((ASTSpices1) ast.getWiredList().get(3)).isPepper());
     
     assertEquals(ASTConstantsFeatureDSL.NONE, ((ASTSpices2) ((ASTAutomaton) ast).getWiredList().get(4)).getSpicelevel());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
   public void testConstantsParseError() throws IOException {
-    StringReader s = new StringReader(
-        "automaton a { spices2 ;}");
-    
-    // Ignore std.err
-    System.setOut(new PrintStream(new ByteArrayOutputStream()));
-    
-    FeatureDSLParser p = new FeatureDSLParser();
-    p.parseAutomaton(s);
+    FeatureDSLParser p = FeatureDSLMill.parser();
+    p.parse_StringAutomaton("automaton a { spices2 ;}");
     
     assertTrue(p.hasErrors());
+    MCAssertions.assertHasFindingStartingWith("mismatched input ';' expecting {'garlic', 'pepper', 'none', '%'}");
   }
   
   /*  Grammar:  B: A:A (B:A)*; 
@@ -78,22 +59,13 @@ public class ParserTest extends GeneratorIntegrationsTest {
    * */
   @Test
   public void testListError() throws IOException {
-    
-    StringReader s = new StringReader(
-        "private / private / private /");
-    
-    // Ignore std.err
-    System.setErr(new PrintStream(new ByteArrayOutputStream()));
-    
-    FeatureDSLParser p = new FeatureDSLParser();
-    Optional<ASTB> ast = p.parseB(s);
+    FeatureDSLParser p = FeatureDSLMill.parser();
+    Optional<ASTB> ast = p.parse_StringB("private / private / private /");
     
     assertFalse(p.hasErrors());
     assertTrue(ast.isPresent());
     assertInstanceOf(ASTA.class, ast.get().getA());
     assertInstanceOf(List.class, ast.get().getBList());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
   
   /*  Grammar:  B: A:A (A:A)*; 
@@ -102,21 +74,12 @@ public class ParserTest extends GeneratorIntegrationsTest {
    * */
   @Test
   public void testListError2() throws IOException {
-    
-    StringReader s = new StringReader(
-        "private / private / private /");
-    
-    // Ignore std.err
-    System.setErr(new PrintStream(new ByteArrayOutputStream()));
-    
-    FeatureDSLParser p = new FeatureDSLParser();
-    Optional<ASTC> ast = p.parseC(s);
+    FeatureDSLParser p = FeatureDSLMill.parser();
+    Optional<ASTC> ast = p.parse_StringC("private / private / private /");
     
     assertTrue(ast.isPresent());
     assertFalse(p.hasErrors());
     assertInstanceOf(List.class, ast.get().getAList());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
   
   /*  Grammar: 
@@ -125,17 +88,11 @@ public class ParserTest extends GeneratorIntegrationsTest {
    * */
   @Test
   public void testListError3() throws IOException {
-    
-    StringReader s = new StringReader(
-        "private / private / private /");
-    
-    // Ignore std.err
-    System.setErr(new PrintStream(new ByteArrayOutputStream()));
-    
-    FeatureDSLParser p = new FeatureDSLParser();
-    Optional<ASTComplexname> ast = p.parseComplexname(s);
+    FeatureDSLParser p = FeatureDSLMill.parser();
+    Optional<ASTComplexname> ast = p.parse_StringComplexname("private / private / private /");
     
     assertFalse(ast.isPresent());
+    MCAssertions.assertHasFindingStartingWith("mismatched input 'private' expecting '.'");
   }
   
 }

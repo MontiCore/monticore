@@ -2,28 +2,26 @@
 
 package mc.feature.cocochecker;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.Optional;
-
-import de.se_rwth.commons.logging.Log;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import mc.GeneratorIntegrationsTest;
+import de.monticore.runtime.junit.TestWithMCLanguage;
+import mc.feature.cocochecker.a.AMill;
 import mc.feature.cocochecker.a._ast.ASTANode;
 import mc.feature.cocochecker.a._ast.ASTX;
 import mc.feature.cocochecker.a._cocos.AASTXCoCo;
 import mc.feature.cocochecker.a._cocos.ACoCoChecker;
-import mc.feature.cocochecker.a._parser.AParser;
 import mc.feature.cocochecker.b._cocos.BASTXCoCo;
 import mc.feature.cocochecker.b._cocos.BASTYCoCo;
 import mc.feature.cocochecker.b._cocos.BCoCoChecker;
 import mc.feature.cocochecker.c._cocos.CASTXCoCo;
 import mc.feature.cocochecker.c._cocos.CASTZCoCo;
 import mc.feature.cocochecker.c._cocos.CCoCoChecker;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.io.IOException;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests adding cocos of super languages to a checker of a sublanguage.<br/>
@@ -38,9 +36,10 @@ import static org.junit.jupiter.api.Assertions.*;
  * language's checkers and then composing the checkers in A's checker.
  * 
  */
-public class CoCoCheckerTest extends GeneratorIntegrationsTest {
+@TestWithMCLanguage(AMill.class)
+public class CoCoCheckerTest {
   final StringBuilder checked = new StringBuilder();
-  
+
   final private AASTXCoCo cocoA = node -> checked.append("A");
   
   final private BASTXCoCo cocoB = node -> checked.append("B");
@@ -55,15 +54,8 @@ public class CoCoCheckerTest extends GeneratorIntegrationsTest {
   private ASTANode ast;
   
   @BeforeEach
-  public void setUp() {
-    Optional<ASTX> astOpt = Optional.empty();
-    try {
-      astOpt = new AParser().parseX(new StringReader("xyz"));
-    }
-    catch (IOException e) {
-      e.printStackTrace();
-      fail("Parser Error.");
-    }
+  public void setUp() throws IOException {
+    Optional<ASTX> astOpt = AMill.parser().parse_StringX("xyz");;
     assertTrue(astOpt.isPresent());
     ast = astOpt.get();
     checked.setLength(0);
@@ -80,7 +72,6 @@ public class CoCoCheckerTest extends GeneratorIntegrationsTest {
     
     checker.checkAll(ast);
     assertEquals("BAYZ", checked.toString());
-    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -103,7 +94,5 @@ public class CoCoCheckerTest extends GeneratorIntegrationsTest {
     
     checkerA.checkAll(ast);
     assertEquals("BAYZ", checked.toString());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 }

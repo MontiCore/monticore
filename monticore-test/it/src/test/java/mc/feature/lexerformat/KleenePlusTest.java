@@ -2,20 +2,21 @@
 
 package mc.feature.lexerformat;
 
+import de.monticore.runtime.junit.MCAssertions;
+import de.monticore.runtime.junit.TestWithMCLanguage;
+import mc.feature.lexerformat.kleeneplus.KleenePlusMill;
+import mc.feature.lexerformat.kleeneplus._ast.ASTKPStart;
+import mc.feature.lexerformat.kleeneplus._parser.KleenePlusParser;
+import org.junit.jupiter.api.Test;
+
 import java.io.IOException;
 import java.util.Optional;
 
-import mc.feature.lexerformat.kleeneplus.KleenePlusMill;
-import org.junit.jupiter.api.Test;
-
-import mc.GeneratorIntegrationsTest;
-import mc.feature.lexerformat.kleeneplus._ast.ASTKPStart;
-import mc.feature.lexerformat.kleeneplus._parser.KleenePlusParser;
-
 import static org.junit.jupiter.api.Assertions.*;
 
-public class KleenePlusTest extends GeneratorIntegrationsTest {
-  
+@TestWithMCLanguage(KleenePlusMill.class)
+public class KleenePlusTest {
+
   /**
    * Test the following lexer Production: token KLEENETOKEN = 'a' ('b')*;
    * 
@@ -43,6 +44,8 @@ public class KleenePlusTest extends GeneratorIntegrationsTest {
     
     ast = p.parse_StringKPStart("b");
     assertFalse(ast.isPresent());
+    MCAssertions.assertHasFindingStartingWith("token recognition error at: 'b'");
+    MCAssertions.assertHasFindingStartingWith("mismatched input '<EOF>'");
   }
   
   /**
@@ -72,6 +75,8 @@ public class KleenePlusTest extends GeneratorIntegrationsTest {
     
     ast = p.parse_StringKPStart("d");
     assertFalse(ast.isPresent());
+    MCAssertions.assertHasFindingStartingWith("token recognition error at: 'd'");
+    MCAssertions.assertHasFindingStartingWith("mismatched input '<EOF>'");
   }
   
   /**
@@ -101,6 +106,9 @@ public class KleenePlusTest extends GeneratorIntegrationsTest {
     
     ast = p.parse_StringKPStart("fg");
     assertFalse(ast.isPresent());
+    MCAssertions.assertHasFindingStartingWith("token recognition error at: 'f'");
+    MCAssertions.assertHasFindingStartingWith("token recognition error at: 'g'");
+    MCAssertions.assertHasFindingStartingWith("mismatched input '<EOF>'");
   }
   
   /**
@@ -114,6 +122,8 @@ public class KleenePlusTest extends GeneratorIntegrationsTest {
     
     ast = p.parse_StringKPStart("g");
     assertFalse(ast.isPresent());
+    MCAssertions.assertHasFindingStartingWith("token recognition error at: 'g'");
+    MCAssertions.assertHasFindingStartingWith("mismatched input '<EOF>'");
     
     ast = p.parse_StringKPStart("gh");
     assertTrue(ast.isPresent());
@@ -129,6 +139,8 @@ public class KleenePlusTest extends GeneratorIntegrationsTest {
     
     ast = p.parse_StringKPStart("h");
     assertFalse(ast.isPresent());
+    MCAssertions.assertHasFindingStartingWith("token recognition error at: 'h'");
+    MCAssertions.assertHasFindingStartingWith("mismatched input '<EOF>'");
   }
   
   /**
@@ -142,6 +154,8 @@ public class KleenePlusTest extends GeneratorIntegrationsTest {
     
     ast = p.parse_StringKPStart("i");
     assertFalse(ast.isPresent());
+    MCAssertions.assertHasFindingStartingWith("token recognition error at: 'i'");
+    MCAssertions.assertHasFindingStartingWith("mismatched input '<EOF>'");
     
     ast = p.parse_StringKPStart("ij");
     assertTrue(ast.isPresent());
@@ -157,6 +171,8 @@ public class KleenePlusTest extends GeneratorIntegrationsTest {
     
     ast = p.parse_StringKPStart("j");
     assertFalse(ast.isPresent());
+    MCAssertions.assertHasFindingStartingWith("token recognition error at: 'j'");
+    MCAssertions.assertHasFindingStartingWith("mismatched input '<EOF>'");
   }
   
   /**
@@ -170,6 +186,9 @@ public class KleenePlusTest extends GeneratorIntegrationsTest {
     
     ast = p.parse_StringKPStart("kk");
     assertFalse(ast.isPresent());
+    
+    MCAssertions.assertHasFindingStartingWith("token recognition error at: 'kk'");
+    MCAssertions.assertHasFindingStartingWith("mismatched input '<EOF>'");
     
     assertTrue(p.hasErrors());
     
@@ -187,6 +206,9 @@ public class KleenePlusTest extends GeneratorIntegrationsTest {
     
     ast = p.parse_StringKPStart("lm");
     assertFalse(ast.isPresent());
+    MCAssertions.assertHasFindingStartingWith("token recognition error at: 'l'");
+    MCAssertions.assertHasFindingStartingWith("token recognition error at: 'm'");
+    MCAssertions.assertHasFindingStartingWith("mismatched input '<EOF>'");
   }
   
 }

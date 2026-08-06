@@ -2,29 +2,24 @@
 
 package mc.feature.ast;
 
-import java.io.IOException;
-import java.io.StringReader;
-
-import de.se_rwth.commons.logging.Log;
-
-import mc.GeneratorIntegrationsTest;
+import de.monticore.runtime.junit.TestWithMCLanguage;
+import mc.feature.featuredsl.FeatureDSLMill;
 import mc.feature.featuredsl._parser.FeatureDSLParser;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.io.IOException;
 
-public class ParserForInterfaceTest extends GeneratorIntegrationsTest {
-  
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
+@TestWithMCLanguage(FeatureDSLMill.class)
+public class ParserForInterfaceTest {
+
   @Test
   public void testExtraComponent() throws IOException {
-    StringReader s = new StringReader("spices1 garlic ;");
-    
-    FeatureDSLParser p = new FeatureDSLParser();
-    p.parseExtraComponent(s);
+    FeatureDSLParser p = FeatureDSLMill.parser();
+    p.parse_StringExtraComponent("spices1 garlic ;");
     
     assertFalse(p.hasErrors());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
   
 }

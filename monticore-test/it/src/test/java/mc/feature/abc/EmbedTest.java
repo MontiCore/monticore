@@ -2,60 +2,31 @@
 
 package mc.feature.abc;
 
-import java.io.IOException;
-import java.io.StringReader;
-
-import de.se_rwth.commons.logging.Log;
-import org.junit.jupiter.api.Test;
-
-import mc.GeneratorIntegrationsTest;
+import de.monticore.runtime.junit.TestWithMCLanguage;
+import mc.feature.abc.realabc.RealABCMill;
 import mc.feature.abc.realabc._parser.RealABCParser;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.io.IOException;
 
-public class EmbedTest extends GeneratorIntegrationsTest {
-  
-  @Test
-  public void test() throws IOException {
-    
-    RealABCParser p = parse("a b c");
-    
-    assertFalse(p.hasErrors());
-    assertTrue(Log.getFindings().isEmpty());
-  }
-  
-  @Test
-  public void testb() throws IOException {
-    
-    RealABCParser p = parse("a b");
-    
-    assertFalse(p.hasErrors());
-    assertTrue(Log.getFindings().isEmpty());
-  }
-  
-  @Test
-  public void testc() throws IOException {
-    
-    RealABCParser p = parse("a a a b b b c c c");
-    
-    assertFalse(p.hasErrors());
-    assertTrue(Log.getFindings().isEmpty());
-  }
-  
-  @Test
-  public void testd() throws IOException {
-    
-    RealABCParser p = parse("a b c c");
-    
-    assertFalse(p.hasErrors());
-    assertTrue(Log.getFindings().isEmpty());
-  }
-  
-  private RealABCParser parse(String in) throws IOException {
-    RealABCParser parser = new  RealABCParser();
-    parser.parseS(new StringReader(in));
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
-    return parser;
+@TestWithMCLanguage(RealABCMill.class)
+public class EmbedTest {
+
+  @ParameterizedTest
+  @ValueSource( strings = {
+      "a b c",
+      "a b",
+      "a a a b b b c c c",
+      "a b c c"
+  })
+  public void parse(String in) throws IOException {
+    RealABCParser parser = RealABCMill.parser();
+    parser.parse_StringS(in);
+    
+    assertFalse(parser.hasErrors());
   }
   
 }

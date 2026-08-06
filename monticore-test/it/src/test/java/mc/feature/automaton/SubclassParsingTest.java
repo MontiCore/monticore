@@ -2,32 +2,29 @@
 
 package mc.feature.automaton;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.Optional;
-
-import de.se_rwth.commons.logging.Log;
-
-import mc.GeneratorIntegrationsTest;
-import mc.feature.automaton.automaton._parser.AutomatonParser;
+import de.monticore.runtime.junit.TestWithMCLanguage;
+import mc.feature.automaton.automaton.AutomatonMill;
 import mc.feature.automaton.automaton._ast.ASTSubTransition;
 import mc.feature.automaton.automaton._ast.ASTTransition;
+import mc.feature.automaton.automaton._parser.AutomatonParser;
 import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class SubclassParsingTest extends GeneratorIntegrationsTest {
-  
+@TestWithMCLanguage(AutomatonMill.class)
+public class SubclassParsingTest {
+
   @Test
   public void testSubtypeParsing() throws IOException {
     
-    AutomatonParser parser = new AutomatonParser();
+    AutomatonParser parser = AutomatonMill.parser();
     
-    Optional<ASTTransition> ast = parser.parseTransition(new StringReader("sub a -x> b;"));
+    Optional<ASTTransition> ast = parser.parse_StringTransition("sub a -x> b;");
     assertTrue(ast.isPresent());
     assertInstanceOf(ASTSubTransition.class, ast.get());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 }

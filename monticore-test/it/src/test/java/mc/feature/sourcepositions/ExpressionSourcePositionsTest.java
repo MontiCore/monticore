@@ -2,15 +2,15 @@
 
 package mc.feature.sourcepositions;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.Optional;
-
-import mc.GeneratorIntegrationsTest;
+import de.monticore.runtime.junit.TestWithMCLanguage;
+import mc.feature.expression.expression.ExpressionMill;
 import mc.feature.expression.expression._ast.ASTExpr;
 import mc.feature.expression.expression._parser.ExpressionParser;
-import de.se_rwth.commons.logging.Log;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+
+import java.io.IOException;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -20,18 +20,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * Defined grammar: mc.feature.expression.Expression.mc
  * 
  */
-public class ExpressionSourcePositionsTest extends GeneratorIntegrationsTest {
-  
-  @Test
-  public void testExp() throws IOException {
-    
-    doTestPExpSourcePositions(parse("1"));
-    doTestPExpSourcePositions(parse("1+1"));
-    doTestPExpSourcePositions(parse("1+2-3"));
-    doTestPExpSourcePositions(parse("1+1+2+3-4"));
-    doTestPExpSourcePositions(parse("1-1-2-3"));
-    doTestPExpSourcePositions(parse("1*2+3"));
-    doTestPExpSourcePositions(parse("1+2*3"));
+@TestWithMCLanguage(ExpressionMill.class)
+public class ExpressionSourcePositionsTest {
+
+  @ParameterizedTest
+  @ValueSource(strings = {"1", "1+1", "1+2-3", "1+1+2+3-4", "1-1-2-3", "1*2+3", "1+2*3"})
+  public void testExp(String value) throws IOException {
+    doTestPExpSourcePositions(parse(value));
   }
   
   private void doTestPExpSourcePositions(ASTExpr node) {
@@ -64,12 +59,11 @@ public class ExpressionSourcePositionsTest extends GeneratorIntegrationsTest {
       }
       node = leftChild;
     }
-    assertTrue(Log.getFindings().isEmpty());
   }
   
   private ASTExpr parse(String input) throws IOException {
-    ExpressionParser parser = new ExpressionParser();
-    Optional<ASTExpr> ast = parser.parseExpr(new StringReader(input));
+    ExpressionParser parser = ExpressionMill.parser();
+    Optional<ASTExpr> ast = parser.parse_StringExpr(input);
     assertTrue(ast.isPresent());
     return ast.get();
   }

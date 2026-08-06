@@ -2,17 +2,17 @@
 
 package mc.feature.symboltable;
 
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.symboltable.IScopeSpanningSymbol;
-import mc.GeneratorIntegrationsTest;
+import mc.feature.symboltable.automatonwithstinfo5.AutomatonWithSTInfo5Mill;
 import mc.feature.symboltable.automatonwithstinfo5._symboltable.*;
-
-import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
-public class AutomatonWithSTInfo5Test extends GeneratorIntegrationsTest {
-  
+@TestWithMCLanguage(AutomatonWithSTInfo5Mill.class)
+public class AutomatonWithSTInfo5Test {
   /**
    * This test ensures that all expected classes are generated. Otherwise, the test will not compile
    */
@@ -36,8 +36,6 @@ public class AutomatonWithSTInfo5Test extends GeneratorIntegrationsTest {
 //
 //    StateSymbol from = transitionSymbol.getFrom();
 //    StateSymbol to = transitionSymbol.getTo();
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

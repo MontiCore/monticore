@@ -2,24 +2,19 @@
 
 package mc.embedding;
 
-import de.se_rwth.commons.logging.Log;
-import mc.GeneratorIntegrationsTest;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import mc.embedding.embedded.EmbeddedMill;
 import mc.embedding.embedded._symboltable.IEmbeddedGlobalScope;
 import mc.embedding.embedded._symboltable.TextSymbol;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Paths;
 
-public class EmbeddedTest extends GeneratorIntegrationsTest {
-  
-  @BeforeEach
-  public void setUp() {
-    EmbeddedMill.reset();
-    EmbeddedMill.init();
-  }
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+@TestWithMCLanguage(EmbeddedMill.class)
+public class EmbeddedTest {
 
   @Test
   public void test() {
@@ -27,9 +22,8 @@ public class EmbeddedTest extends GeneratorIntegrationsTest {
     scope.getSymbolPath().addEntry(Paths.get("src/test/resources/mc/embedding"));
 
     final TextSymbol textSymbol = scope.resolveText("E").orElse(null);
-    Assertions.assertNotNull(textSymbol);
-    Assertions.assertEquals("E", textSymbol.getName());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertNotNull(textSymbol);
+    assertEquals("E", textSymbol.getName());
   }
 
 }

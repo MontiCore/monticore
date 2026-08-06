@@ -2,8 +2,7 @@
 
 package mc.feature.astlist;
 
-import de.se_rwth.commons.logging.Log;
-import mc.GeneratorIntegrationsTest;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import mc.feature.featuredsl.FeatureDSLMill;
 import mc.feature.featuredsl._ast.ASTB;
 import org.junit.jupiter.api.Test;
@@ -11,14 +10,13 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class TestLists extends GeneratorIntegrationsTest {
-  
+@TestWithMCLanguage(FeatureDSLMill.class)
+public class TestLists {
+
   /** Tests if remove function works correctly with the equals method */
   @Test
   public void testLists() {
-    
     ASTB a = FeatureDSLMill.bBuilder().uncheckedBuild();
     ASTB b = FeatureDSLMill.bBuilder().uncheckedBuild();
     ASTB c = FeatureDSLMill.bBuilder().uncheckedBuild();
@@ -39,7 +37,5 @@ public class TestLists extends GeneratorIntegrationsTest {
     assertEquals(6, list.indexOf(g));
     list.remove(g);
     assertEquals(-1, list.indexOf(g));
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 }

@@ -2,34 +2,33 @@
 
 package mc.feature.options;
 
+import de.monticore.runtime.junit.TestWithMCLanguage;
+import mc.feature.featuredsl.FeatureDSLMill;
+import mc.feature.featuredsl._ast.ASTTestOptions;
+import mc.feature.featuredsl._parser.FeatureDSLParser;
+import org.junit.jupiter.api.Test;
+
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
 
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import mc.GeneratorIntegrationsTest;
-import mc.feature.featuredsl._ast.ASTTestOptions;
-import mc.feature.featuredsl._parser.FeatureDSLParser;
-import de.se_rwth.commons.logging.Log;
+@TestWithMCLanguage(FeatureDSLMill.class)
+public class MultipleOptionTest {
 
-import static org.junit.jupiter.api.Assertions.*;
-
-public class MultipleOptionTest extends GeneratorIntegrationsTest {
-  
   @Test
   public void test() throws IOException {
     
     StringReader r = new StringReader("constants constants");
     
-    FeatureDSLParser p = new FeatureDSLParser();
+    FeatureDSLParser p = FeatureDSLMill.parser();
     
     Optional<ASTTestOptions> ast = p.parseTestOptions(r);
     
     assertFalse(p.hasErrors());
     assertTrue(ast.isPresent());
     assertFalse(ast.get().isA());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 }

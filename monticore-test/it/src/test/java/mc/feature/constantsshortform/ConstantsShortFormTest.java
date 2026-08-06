@@ -2,17 +2,18 @@
 
 package mc.feature.constantsshortform;
 
-import de.se_rwth.commons.logging.Log;
-import mc.GeneratorIntegrationsTest;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import mc.feature.constantsshortform.constantsshortform.ConstantsShortFormMill;
 import mc.feature.constantsshortform.constantsshortform._ast.ASTA;
 import mc.feature.constantsshortform.constantsshortform._ast.ASTB;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ConstantsShortFormTest extends GeneratorIntegrationsTest {
-  
+@TestWithMCLanguage(ConstantsShortFormMill.class)
+public class ConstantsShortFormTest {
+
   @Test
   public void test() {
     ASTA a = ConstantsShortFormMill.aBuilder().build();
@@ -24,7 +25,6 @@ public class ConstantsShortFormTest extends GeneratorIntegrationsTest {
     assertFalse(b.isConst());
     b.setConst(true);
     assertTrue(b.isConst());
-    assertTrue(Log.getFindings().isEmpty());
   }
   
 }

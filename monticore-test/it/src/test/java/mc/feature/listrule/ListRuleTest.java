@@ -2,82 +2,67 @@
 
 package mc.feature.listrule;
 
-import java.io.IOException;
-import java.io.StringReader;
-
-import de.se_rwth.commons.logging.Log;
+import de.monticore.runtime.junit.MCAssertions;
+import de.monticore.runtime.junit.TestWithMCLanguage;
+import mc.feature.listrule.listrule.ListRuleMill;
+import mc.feature.listrule.listrule._parser.ListRuleParser;
 import org.junit.jupiter.api.Test;
 
-import mc.GeneratorIntegrationsTest;
-import mc.feature.listrule.listrule._parser.ListRuleParser;
+import java.io.IOException;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ListRuleTest extends GeneratorIntegrationsTest {
-  
+@TestWithMCLanguage(ListRuleMill.class)
+public class ListRuleTest {
+
   @Test
   public void testParent1() throws IOException {
-    StringReader s = new StringReader(
-        "P1 a, P1 b");
-    ListRuleParser p = new ListRuleParser();
-    p.parseParent(s);
+    ListRuleParser p = ListRuleMill.parser();
+    p.parse_String("P1 a, P1 b");
     
     assertFalse(p.hasErrors());
 
     // Empty lists are NOT allowed
-    s = new StringReader("");
-    p.parse(s);
+    p.parse_String("");
     
     assertTrue(p.hasErrors());
+    MCAssertions.assertHasFindingStartingWith("mismatched input '<EOF>' expecting 'P1'");
   }
 
   @Test
   public void testParent2() throws IOException {
-    StringReader s = new StringReader(
-        "Parent2 P2 a, P2 b Parent2");
-    ListRuleParser p = new ListRuleParser();
-    p.parseParent2(s);
+    ListRuleParser p = ListRuleMill.parser();
+    p.parse_StringParent2("Parent2 P2 a, P2 b Parent2");
     
     assertFalse(p.hasErrors());
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testParent3() throws IOException {
-    StringReader s = new StringReader(
-        "P3 a, P3 b");
-    ListRuleParser p = new ListRuleParser();
-    p.parseParent3(s);
+    ListRuleParser p = ListRuleMill.parser();
+    p.parse_StringParent3("P3 a, P3 b");
     
     assertFalse(p.hasErrors());
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testParent4() throws IOException {
-    StringReader s = new StringReader(
-        "P4 a, P4 b");
-    ListRuleParser p = new ListRuleParser();
-    p.parseParent4(s);
+    ListRuleParser p = ListRuleMill.parser();
+    p.parse_StringParent4("P4 a, P4 b");
     
     assertFalse(p.hasErrors());
 
     // Empty lists are allowed
-    s = new StringReader("");
-    p.parseParent4(s);
+    p.parse_StringParent4("");
     
     assertFalse(p.hasErrors());
-    assertTrue(Log.getFindings().isEmpty());
   }
-
 
   @Test
   public void testParent6() throws IOException {
-    StringReader s = new StringReader(
-        "a, P");
-    ListRuleParser p = new ListRuleParser();
-    p.parseParent6(s);
+    ListRuleParser p = ListRuleMill.parser();
+    p.parse_StringParent6("a, P");
     
     assertFalse(p.hasErrors());
-    assertTrue(Log.getFindings().isEmpty());
   }}

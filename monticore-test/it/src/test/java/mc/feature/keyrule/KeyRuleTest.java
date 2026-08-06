@@ -2,7 +2,9 @@
 
 package mc.feature.keyrule;
 
-import mc.GeneratorIntegrationsTest;
+import de.monticore.runtime.junit.MCAssertions;
+import de.monticore.runtime.junit.TestWithMCLanguage;
+import mc.feature.keyrule.keyrule.KeyRuleMill;
 import mc.feature.keyrule.keyrule._ast.ASTB;
 import mc.feature.keyrule.keyrule._ast.ASTJ;
 import mc.feature.keyrule.keyrule._parser.KeyRuleParser;
@@ -13,17 +15,20 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class KeyRuleTest extends GeneratorIntegrationsTest {
-  
+@TestWithMCLanguage(KeyRuleMill.class)
+public class KeyRuleTest {
+
   @Test
   public void test() throws IOException {
-    KeyRuleParser parser = new KeyRuleParser();
+    KeyRuleParser parser = KeyRuleMill.parser();
     parser.parse_StringA("bla1 Foo");
     assertFalse(parser.hasErrors());
     parser.parse_StringA("bla2 Foo");
     assertFalse(parser.hasErrors());
     parser.parse_StringA("bla3 Foo");
     assertTrue(parser.hasErrors());
+    MCAssertions.assertHasFindingStartingWith(
+        "no viable alternative at input 'bla3', expecting 'bla1' or 'bla2'");
     Optional<ASTB> ast = parser.parse_StringB("bla1 Foo");
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
@@ -37,6 +42,8 @@ public class KeyRuleTest extends GeneratorIntegrationsTest {
     assertTrue(astj.isPresent());
     astj = parser.parse_StringJ("blax");
     assertTrue(parser.hasErrors());
+    assertFalse(astj.isPresent());
+    MCAssertions.assertHasFindingStartingWith("mismatched input 'blax', expecting 'blaj'");
   }
   
 }

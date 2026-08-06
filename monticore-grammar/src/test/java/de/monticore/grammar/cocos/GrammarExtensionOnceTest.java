@@ -21,8 +21,8 @@ public class GrammarExtensionOnceTest extends CocoTest {
 
   @Test
   public void testInvalid() {
-    testInvalidGrammar(grammar, GrammarExtensionOnce.ERROR_CODE, MESSAGE.formatted("A4150"), checker);
-    getFindings().clear();
+    testInvalidGrammar(grammar, GrammarExtensionOnce.ERROR_CODE,
+        MESSAGE.formatted("A4150", "de.monticore.common.TestTypes"), checker);
   }
 
   @Test

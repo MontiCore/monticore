@@ -2,18 +2,18 @@
 package mc.tfcs.ast;
 
 import com.google.common.collect.Lists;
-import de.se_rwth.commons.logging.Log;
-import mc.GeneratorIntegrationsTest;
+import de.monticore.runtime.junit.AbstractMCTest;
 import mc.feature.featuredsl.FeatureDSLMill;
 import mc.feature.featuredsl._ast.ASTTransition;
 import mc.feature.javasql.javasql.javasql.JavaSQLMill;
 import mc.feature.javasql.sql.sql.SQLMill;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class ASTBuilderTest extends GeneratorIntegrationsTest {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class ASTBuilderTest extends AbstractMCTest {
   
   @Test
   public void createASTBuilder() {
@@ -21,15 +21,17 @@ public class ASTBuilderTest extends GeneratorIntegrationsTest {
     String activate = "activateAttr";
     String to = "toAttr";
     
+    FeatureDSLMill.init();
+    
     // Create ASTTransition by Builder
     ASTTransition transition = FeatureDSLMill.transitionBuilder().
         setFrom(from).
         setActivate(activate).
         setTo(to).build();
     
-    Assertions.assertEquals(from, transition.getFrom());
-    Assertions.assertEquals(activate, transition.getActivate());
-    Assertions.assertEquals(to, transition.getTo());
+    assertEquals(from, transition.getFrom());
+    assertEquals(activate, transition.getActivate());
+    assertEquals(to, transition.getTo());
     
     // Create ASTTransition by Builder (unchecked)
     ASTTransition transition1 = FeatureDSLMill.transitionBuilder().uncheckedBuild();
@@ -37,8 +39,7 @@ public class ASTBuilderTest extends GeneratorIntegrationsTest {
     transition1.setActivate(activate);
     transition1.setTo(to);
     // Compare these instances
-    Assertions.assertTrue(transition.deepEquals(transition1));
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(transition.deepEquals(transition1));
   }
   
   @Test
@@ -46,6 +47,8 @@ public class ASTBuilderTest extends GeneratorIntegrationsTest {
     int distinct = 5;
     List<String> selection = Lists.newArrayList();
     String table = "tableAttr";
+    
+    JavaSQLMill.init();
 
    mc.feature.javasql.javasql.javasql._ast.ASTSelectStatement javasqlStatement = JavaSQLMill.selectStatementBuilder().
             setDistinct(distinct).
@@ -53,17 +56,19 @@ public class ASTBuilderTest extends GeneratorIntegrationsTest {
             setTable(table).
             build();
 
-    Assertions.assertEquals(distinct, javasqlStatement.getDistinct());
-    Assertions.assertEquals(selection, javasqlStatement.getSelectionList());
-    Assertions.assertEquals(table, javasqlStatement.getTable());
+    assertEquals(distinct, javasqlStatement.getDistinct());
+    assertEquals(selection, javasqlStatement.getSelectionList());
+    assertEquals(table, javasqlStatement.getTable());
 
     mc.feature.javasql.javasql.javasql._ast.ASTSelectStatement javasqlStatement1 = JavaSQLMill.selectStatementBuilder().build();
     javasqlStatement1.setDistinct(distinct);
     javasqlStatement1.setSelectionList(selection);
     javasqlStatement1.setTable(table);
 
-    Assertions.assertTrue(javasqlStatement.deepEquals(javasqlStatement1));
-
+    assertTrue(javasqlStatement.deepEquals(javasqlStatement1));
+    
+    SQLMill.init();
+    
     mc.feature.javasql.sql.sql._ast.ASTSelectStatement sqlStatement = SQLMill.selectStatementBuilder().
         setDistinct(distinct).
         setSelectionList(selection).
@@ -75,11 +80,10 @@ public class ASTBuilderTest extends GeneratorIntegrationsTest {
     sqlStatement1.setSelectionList(selection);
     sqlStatement1.setTable(table);
 
-    Assertions.assertTrue(sqlStatement.deepEquals(sqlStatement1));
+    assertTrue(sqlStatement.deepEquals(sqlStatement1));
 
-    Assertions.assertTrue(sqlStatement.getClass().isAssignableFrom(javasqlStatement.getClass()));
-    Assertions.assertFalse(javasqlStatement.getClass().isAssignableFrom(sqlStatement.getClass()));
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(sqlStatement.getClass().isAssignableFrom(javasqlStatement.getClass()));
+    assertFalse(javasqlStatement.getClass().isAssignableFrom(sqlStatement.getClass()));
   }
   
 }

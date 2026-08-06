@@ -2,17 +2,15 @@
 
 package mc.feature.visitor.inheritance;
 
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import mc.feature.visitor.inheritance.a.AMill;
 import mc.feature.visitor.inheritance.b.BMill;
 import mc.feature.visitor.inheritance.c.CMill;
 
-import mc.GeneratorIntegrationsTest;
 import mc.feature.visitor.inheritance.c._visitor.CTraverser;
-import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests that for grammar C extends B extends A the CVisitor also visits rules
@@ -20,7 +18,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * grammar are visited in both types, the sub and the super type.
  * 
  */
-public class VisitorTest extends GeneratorIntegrationsTest {
+@TestWithMCLanguage(CMill.class)
+public class VisitorTest {
   
   @Test
   public void testSimple() {
@@ -39,6 +38,5 @@ public class VisitorTest extends GeneratorIntegrationsTest {
     traverser.handle(CMill.xCBuilder().build());
     assertEquals("C", v.getRun());
     v.clear();
-    assertTrue(Log.getFindings().isEmpty());
   }
 }

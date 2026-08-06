@@ -14,7 +14,7 @@ public class GrammarExtensionOnce implements GrammarASTMCGrammarCoCo {
   
   public static final String ERROR_CODE = "0xA4150";
   
-  public static final String ERROR_MSG_FORMAT = " Grammar %s must not extend another grammar multiple times.";
+  public static final String ERROR_MSG_FORMAT = " Grammar '%s' must not extend grammar '%s' multiple times.";
   
   @Override
   public void check(ASTMCGrammar gr) {
@@ -22,7 +22,8 @@ public class GrammarExtensionOnce implements GrammarASTMCGrammarCoCo {
       for (int j = i + 1; j < gr.getSupergrammarList().size(); j++) {
         if (Names.constructQualifiedName(gr.getSupergrammar(i).getNameList()).equals(
             Names.constructQualifiedName(gr.getSupergrammar(j).getNameList()))) {
-          Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, gr.getName()),
+          Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, gr.getName(),
+                  Names.constructQualifiedName(gr.getSupergrammar(j).getNameList())),
               gr.get_SourcePositionStart());
         }
       }

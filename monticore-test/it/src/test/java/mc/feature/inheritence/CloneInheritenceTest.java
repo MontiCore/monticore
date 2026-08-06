@@ -1,18 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.feature.inheritence;
 
-import de.se_rwth.commons.logging.Log;
-import mc.GeneratorIntegrationsTest;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import mc.feature.inheritence.inheritence.InheritenceMill;
 import mc.feature.inheritence.inheritence._ast.ASTSub;
 import mc.feature.inheritence.inheritence._ast.ASTSuper;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-public class CloneInheritenceTest extends GeneratorIntegrationsTest {
-  
+@TestWithMCLanguage(InheritenceMill.class)
+public class CloneInheritenceTest {
+ 
   @Test
   public void test() {
 
@@ -32,7 +30,6 @@ public class CloneInheritenceTest extends GeneratorIntegrationsTest {
         .uncheckedBuild();
 
     t.deepClone();
-    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

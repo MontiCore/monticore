@@ -2,8 +2,8 @@
 package mc.feature.multipletopsymbols;
 
 import de.monticore.io.paths.MCPath;
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
+import de.monticore.runtime.junit.MCAssertions;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import mc.feature.multipletopsymbols.statechart.StatechartMill;
 import mc.feature.multipletopsymbols.statechart._ast.ASTSCArtifact;
 import mc.feature.multipletopsymbols.statechart._parser.StatechartParser;
@@ -12,7 +12,6 @@ import mc.feature.multipletopsymbols.statechart._symboltable.IStatechartGlobalSc
 import mc.feature.multipletopsymbols.statechart._symboltable.StateSymbol;
 import mc.feature.multipletopsymbols.statechart._symboltable.StatechartSymbol;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -22,37 +21,33 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@TestWithMCLanguage(StatechartMill.class)
 public class StatechartResolvingTest {
   
-  protected static IStatechartGlobalScope gs;
+  protected IStatechartGlobalScope gs;
 
-  @BeforeAll
-  public static void setup() {
+  @BeforeEach
+  public void setup() {
     gs = StatechartMill.globalScope();
     gs.setSymbolPath(new MCPath(Paths.get("src/test/resources")));
     gs.setFileExt("sc");
   }
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
+
   @Test
   public void testResolving() throws IOException {
     StatechartParser parser = StatechartMill.parser();
     Optional<ASTSCArtifact> artifact = parser.parse("src/test/resources/mc/feature/multipletopsymbols/MyStatechart.sc");
     assertTrue(artifact.isPresent());
     assertFalse(parser.hasErrors());
+    MCAssertions.assertNoFindings();
 
     IStatechartArtifactScope as = StatechartMill.scopesGenitorDelegator().createFromAST(artifact.get());
     String packageName = String.join(".", artifact.get().getPackageDeclaration().getQualifiedName().getPartList());
     as.setPackageName(packageName);
     as.setName("MyStatechart");
 
-    gs.addSubScope(as);
-
+    MCAssertions.assertNoFindings();
+    
     Optional<StatechartSymbol> myStatechart = gs.resolveStatechart("mc.feature.multipletopsymbols.MyStatechart");
     Optional<StatechartSymbol> mySC = gs.resolveStatechart("mc.feature.multipletopsymbols.MyStatechart.MySC");
     Optional<StateSymbol> s = gs.resolveState("mc.feature.multipletopsymbols.MyStatechart.s");
@@ -65,8 +60,6 @@ public class StatechartResolvingTest {
     assertTrue(t.isPresent());
     assertTrue(s2.isPresent());
     assertTrue(u.isPresent());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
 
