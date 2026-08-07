@@ -52,8 +52,11 @@ public class InheritedSymbolAttributesTranslation extends InheritedAttributesTra
                 .build();
         Optional<String> superGrammarName = MCGrammarSymbolTableHelper.getMCGrammarSymbol(entry.getKey().getEnclosingScope())
                 .map(MCGrammarSymbol::getFullName);
-        superGrammarName.ifPresent(s -> TransformationHelper.addStereoType(cdAttribute,
-            MC2CDStereotypes.INHERITED.toString(), s));
+        superGrammarName.ifPresent(s ->
+            TransformationHelper.addStereoType(
+                cdAttribute, MC2CDStereotypes.INHERITED.toString(), s
+            )
+        );
         link.target().addCDMember(cdAttribute);
         if (attributeInAST.isPresentAstNode()) {
           new Link<>(attributeInAST.getAstNode(), cdAttribute, link);

@@ -753,9 +753,9 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
       getType4Ast().setTypeOfExpression(expr, nameAsExprType.get());
     }
     else {
-      nameAsTypeIdType.ifPresent(
-          symTypeExpression -> getType4Ast().setTypeOfTypeIdentifierForName(expr,
-              symTypeExpression));
+      nameAsTypeIdType.ifPresent(symTypeExpression ->
+          getType4Ast().setTypeOfTypeIdentifierForName(expr, symTypeExpression)
+      );
     }
   }
 

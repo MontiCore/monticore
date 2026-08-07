@@ -38,14 +38,13 @@ public class SymTypeExpressionJavaPrinterVisitor
   protected final Map<String, String> javaTypeSymbolMap;
 
   public SymTypeExpressionJavaPrinterVisitor() {
-    javaTypeSymbolMap =
-        Map.of(
-            "Stream.Stream", RTE_PACKAGE + ".streams.Stream",
-            "EventStream.EventStream",RTE_PACKAGE + ".streams.EventStream",
-            "SyncStream.SyncStream", RTE_PACKAGE + ".streams.SyncStream",
-            "ToptStream.ToptStream", RTE_PACKAGE + ".streams.ToptStream",
-            "UntimedStream.UntimedStream", RTE_PACKAGE + ".streams.UntimedStream"
-        );
+    javaTypeSymbolMap = Map.ofEntries(
+        Map.entry("Stream.Stream", RTE_PACKAGE + ".streams.Stream"),
+        Map.entry("EventStream.EventStream", RTE_PACKAGE + ".streams.EventStream"),
+        Map.entry("SyncStream.SyncStream", RTE_PACKAGE + ".streams.SyncStream"),
+        Map.entry("ToptStream.ToptStream", RTE_PACKAGE + ".streams.ToptStream"),
+        Map.entry("UntimedStream.UntimedStream", RTE_PACKAGE + ".streams.UntimedStream")
+    );
   }
 
   @Override

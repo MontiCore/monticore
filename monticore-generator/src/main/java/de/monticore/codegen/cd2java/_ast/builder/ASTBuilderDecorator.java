@@ -58,7 +58,8 @@ public class ASTBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass>
 
     Optional<ASTCDMethod> buildMethod = builderClass.getCDMethodList().stream().filter(m -> BUILD_METHOD.equals(m.getName())).findFirst();
     buildMethod.ifPresent(b ->
-        this.replaceTemplate(BUILD_INIT_TEMPLATE, b, new TemplateHookPoint(AST_BUILDER_INIT_TEMPLATE, domainClass)));
+        this.replaceTemplate(BUILD_INIT_TEMPLATE, b, new TemplateHookPoint(AST_BUILDER_INIT_TEMPLATE, domainClass))
+    );
 
     // make the builder abstract for a abstract AST class
     ASTModifier modifier = service.createModifierPublicModifier(domainClass.getModifier());

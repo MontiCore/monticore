@@ -63,9 +63,10 @@ public class CommonExpressionsCTTIVisitor
       Optional<SymTypeOfFunction> targetFunc = callCtx
           .getPartialFunctionInfo()
           .getAsFunctionIfComplete();
-      targetFunc.ifPresent(
-          symTypeOfFunction -> getInferenceContext4Ast().getContextOfExpression(expr)
-              .setTargetType(symTypeOfFunction));
+      targetFunc.ifPresent(symTypeOfFunction ->
+          getInferenceContext4Ast().getContextOfExpression(expr)
+              .setTargetType(symTypeOfFunction)
+      );
     }
 
     visitForInference(expr);
