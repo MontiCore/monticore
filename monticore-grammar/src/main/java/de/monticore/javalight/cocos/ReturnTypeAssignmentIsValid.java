@@ -68,7 +68,7 @@ public class ReturnTypeAssignmentIsValid implements JavaLightASTMethodDeclaratio
     Map<ASTNode, Optional<ASTExpression>> returnExpressions = new HashMap<>();
     ReturnStatementCollectionVisitor returnStatementCollectionVisitor = new ReturnStatementCollectionVisitor(returnExpressions);
     traverser.add4MCReturnStatements(returnStatementCollectionVisitor);
-    traverser.visit(node);
+    node.accept(traverser);
     return returnStatementCollectionVisitor.getReturnExpressions();
   }
 }
