@@ -1,20 +1,18 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.javalight.cocos;
 
+import de.monticore.ast.ASTNode;
+import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.javalight.JavaLightMill;
 import de.monticore.javalight._ast.ASTMethodDeclaration;
 import de.monticore.javalight._cocos.JavaLightASTMethodDeclarationCoCo;
 import de.monticore.javalight._visitor.JavaLightTraverser;
-import de.monticore.statements.mcreturnstatements._ast.ASTReturnStatement;
-import de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsVisitor2;
 import de.monticore.types.check.SymTypeExpression;
-import de.monticore.types.check.TypeCalculator;
 import de.monticore.types3.SymTypeRelations;
 import de.monticore.types3.TypeCheck3;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class ReturnTypeAssignmentIsValid implements JavaLightASTMethodDeclarationCoCo {
   
@@ -30,42 +28,19 @@ public class ReturnTypeAssignmentIsValid implements JavaLightASTMethodDeclaratio
   
   public static final String ERROR_MSG_FORMAT_3 = "Return statement must be of the type of the method or a subtype of it.";
 
-  @Deprecated
-  TypeCalculator typeCheck;
-
-  /**
-   * @deprecated use default constructor
-   */
-  @Deprecated
-  public ReturnTypeAssignmentIsValid(TypeCalculator typeCheck) {
-    this.typeCheck = typeCheck;
-  }
-
   public ReturnTypeAssignmentIsValid() {}
   
   @Override
   public void check(ASTMethodDeclaration node) {
+    Map<ASTNode, Optional<ASTExpression>> returnStatements = getReturnExpressions(node);
     
-    // Collect return-statements
-    JavaLightTraverser traverser = JavaLightMill.traverser();
-    JavaReturnStatementCollector returnStatementCollector = new JavaReturnStatementCollector();
-    traverser.add4MCReturnStatements(returnStatementCollector);
-    node.accept(traverser);
-    List<ASTReturnStatement> returnStatements = returnStatementCollector.getReturnStatementList();
-    
-    SymTypeExpression typeOfMethod;
-    // support deprecated behavior
-    if (typeCheck != null) {
-      typeOfMethod = typeCheck.symTypeFromAST(node.getMCReturnType());
-    } else {
-      typeOfMethod = TypeCheck3.symTypeFromAST(node.getMCReturnType());
-    }
+    SymTypeExpression typeOfMethod = TypeCheck3.symTypeFromAST(node.getMCReturnType());
 
     // Check return-Statements
     if (node.isPresentMCJavaBlock()) {
       if (typeOfMethod.isVoidType()) {
-        for (ASTReturnStatement statement : returnStatements) {
-          if (statement.isPresentExpression()) {
+        for (Map.Entry<ASTNode, Optional<ASTExpression>> entry : returnStatements.entrySet()) {
+          if (entry.getValue().isPresent()) {
             Log.error(ERROR_CODE + ERROR_MSG_FORMAT, node.get_SourcePositionStart());
           }
         }
@@ -74,17 +49,11 @@ public class ReturnTypeAssignmentIsValid implements JavaLightASTMethodDeclaratio
         Log.error(ERROR_CODE_2 + ERROR_MSG_FORMAT_2, node.get_SourcePositionStart());
       }
       if (!typeOfMethod.isVoidType() && !returnStatements.isEmpty()) {
-        for (ASTReturnStatement returnStatement : returnStatements) {
-          if (!returnStatement.isPresentExpression()) {
+        for (Map.Entry<ASTNode, Optional<ASTExpression>> entry : returnStatements.entrySet()) {
+          if (entry.getValue().isEmpty()) {
             Log.error(ERROR_CODE_2 + ERROR_MSG_FORMAT_2, node.get_SourcePositionStart());
           } else {
-            SymTypeExpression returnType;
-            // support deprecated behavior
-            if (typeCheck != null) {
-              returnType = typeCheck.typeOf(returnStatement.getExpression());
-            } else {
-              returnType = TypeCheck3.typeOf(returnStatement.getExpression());
-            }
+            SymTypeExpression returnType = TypeCheck3.typeOf(entry.getValue().get(), typeOfMethod);
             if (!SymTypeRelations.isCompatible(typeOfMethod, returnType)) {
               Log.error(ERROR_CODE_3 + ERROR_MSG_FORMAT_3, node.get_SourcePositionStart());
             }
@@ -94,18 +63,12 @@ public class ReturnTypeAssignmentIsValid implements JavaLightASTMethodDeclaratio
     }
   }
   
-  private class JavaReturnStatementCollector implements MCReturnStatementsVisitor2 {
-    
-    List<ASTReturnStatement> returnStatementList = new ArrayList<>();
-    
-    private List<ASTReturnStatement> getReturnStatementList() {
-      return this.returnStatementList;
-    }
-    
-    @Override
-    public void visit(ASTReturnStatement node) {
-      returnStatementList.add(node);
-    }
-    
+  protected Map<ASTNode, Optional<ASTExpression>> getReturnExpressions(ASTNode node) {
+    JavaLightTraverser traverser = JavaLightMill.inheritanceTraverser();
+    Map<ASTNode, Optional<ASTExpression>> returnExpressions = new HashMap<>();
+    ReturnStatementCollectionVisitor returnStatementCollectionVisitor = new ReturnStatementCollectionVisitor(returnExpressions);
+    traverser.add4MCReturnStatements(returnStatementCollectionVisitor);
+    node.accept(traverser);
+    return returnStatementCollectionVisitor.getReturnExpressions();
   }
 }
