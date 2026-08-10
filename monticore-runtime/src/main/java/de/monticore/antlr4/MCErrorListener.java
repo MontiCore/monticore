@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 public class MCErrorListener extends BaseErrorListener {
 
-  protected MCParser parser = null;
+  protected MCParser parser;
 
   /**
    * This character (NO-BREAK SPACE) separates the error message
@@ -72,7 +72,7 @@ public class MCErrorListener extends BaseErrorListener {
           // Join as [a.b.c.d] as a, b, c or d
           msg += String.join(" or ",
                                        String.join(", ", noKeywordRules.subList(0, noKeywordRules.size() - 1)),
-                                       noKeywordRules.get(noKeywordRules.size() - 1)
+                                       noKeywordRules.getLast()
                                       );
         }
       } else if (e instanceof FailedPredicateException
@@ -100,7 +100,7 @@ public class MCErrorListener extends BaseErrorListener {
           // Join as [a.b.c.d] as a, b, c or d
           expectedTokens = String.join(" or ",
                                        String.join(", ", noKeywordRules.subList(0, noKeywordRules.size() - 1)),
-                                       noKeywordRules.get(noKeywordRules.size() - 1)
+                                       noKeywordRules.getLast()
                                       );
         }
         msg += ", expecting " + expectedTokens;

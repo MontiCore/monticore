@@ -18,8 +18,6 @@ import de.monticore.types3.util.SymTypePrintFullNameVisitor;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,13 +38,13 @@ public class SymTypeExpressionJavaPrinterVisitor
   protected final Map<String, String> javaTypeSymbolMap;
 
   public SymTypeExpressionJavaPrinterVisitor() {
-    Map<String, String> javaTypeSymbolMap_temp = new HashMap<>();
-    javaTypeSymbolMap_temp.put("Stream.Stream", RTE_PACKAGE + ".streams.Stream");
-    javaTypeSymbolMap_temp.put("EventStream.EventStream", RTE_PACKAGE + ".streams.EventStream");
-    javaTypeSymbolMap_temp.put("SyncStream.SyncStream", RTE_PACKAGE + ".streams.SyncStream");
-    javaTypeSymbolMap_temp.put("ToptStream.ToptStream", RTE_PACKAGE + ".streams.ToptStream");
-    javaTypeSymbolMap_temp.put("UntimedStream.UntimedStream", RTE_PACKAGE + ".streams.UntimedStream");
-    javaTypeSymbolMap = Collections.unmodifiableMap(javaTypeSymbolMap_temp);
+    javaTypeSymbolMap = Map.ofEntries(
+        Map.entry("Stream.Stream", RTE_PACKAGE + ".streams.Stream"),
+        Map.entry("EventStream.EventStream", RTE_PACKAGE + ".streams.EventStream"),
+        Map.entry("SyncStream.SyncStream", RTE_PACKAGE + ".streams.SyncStream"),
+        Map.entry("ToptStream.ToptStream", RTE_PACKAGE + ".streams.ToptStream"),
+        Map.entry("UntimedStream.UntimedStream", RTE_PACKAGE + ".streams.UntimedStream")
+    );
   }
 
   @Override

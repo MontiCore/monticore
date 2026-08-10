@@ -260,7 +260,7 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
           this.failureMessage = "Unable to handle noSpace control directive for block of non-default iteration";
           return -1;
         }else if (component.getBlockData().getAltDataList().size() != 1) {
-          int ret_index0 = markNoSpaceToken(component.getBlockData().getAltDataList().get(0), index);
+          int ret_index0 = markNoSpaceToken(component.getBlockData().getAltDataList().getFirst(), index);
           for (int ia = 1; ia < component.getBlockData().getAltDataList().size(); ia++) {
             int ret_index = markNoSpaceToken(component.getBlockData().getAltDataList().get(ia), index);
             if (ret_index != ret_index0) {
@@ -270,7 +270,7 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
           }
           index = ret_index0;
         } else {
-          index = markNoSpaceToken(component.getBlockData().getAltDataList().get(0), index);
+          index = markNoSpaceToken(component.getBlockData().getAltDataList().getFirst(), index);
         }
       } else if (index-- == 0) {
         component.setHasNoSpace(true);

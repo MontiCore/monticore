@@ -144,7 +144,7 @@ public class ASTSIUnit2SymTypeExprConverter {
       result.addAll(createSIUnit(ast.getSIUnitGroupPrimitive(i)));
       // the last one is the one that the exponent applies to
       int exp = getValue(ast.getExponent(i));
-      result.get(result.size() - 1).setExponent(exp);
+      result.getLast().setExponent(exp);
     }
     if (ast.sizeSIUnitGroupPrimitives() > ast.sizeExponent()) {
       int lastIndex = ast.sizeSIUnitGroupPrimitives() - 1;
@@ -211,9 +211,7 @@ public class ASTSIUnit2SymTypeExprConverter {
       // construct the SIUnitBasic using the extracted (prefix +) unit
       SIUnitBasic siUnitBasic =
           SymTypeExpressionFactory.createSIUnitBasic(unit);
-      if (prefix.isPresent()) {
-        siUnitBasic.setPrefix(prefix.get());
-      }
+      prefix.ifPresent(siUnitBasic::setPrefix);
       result.add(siUnitBasic);
     }
     return result;

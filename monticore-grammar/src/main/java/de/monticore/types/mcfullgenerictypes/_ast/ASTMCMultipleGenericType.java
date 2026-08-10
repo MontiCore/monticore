@@ -40,6 +40,6 @@ public class ASTMCMultipleGenericType extends ASTMCMultipleGenericTypeTOP {
 
   @Override
   public List<String> getNameList() {
-    return Lists.newArrayList(printWithoutTypeArguments().split("."));
+    return Lists.newArrayList(printWithoutTypeArguments().split("\\."));
   }
 }

@@ -24,7 +24,7 @@ public class CommentBasedModelTraversal<E extends ITraverser> extends ModelTrave
   
   @Override
   public ASTNode getParent(ASTNode node) {
-    return ((WComment) node.get_PostCommentList().get(0)).getParent();
+    return ((WComment) node.get_PostCommentList().getFirst()).getParent();
   }
   
   public void init() {
@@ -38,7 +38,7 @@ public class CommentBasedModelTraversal<E extends ITraverser> extends ModelTrave
         } else {
           // keep the comment
           node.getKey().get_PostCommentList()
-                  .set(0, new WComment(node.getKey().get_PostCommentList().get(0), node.getValue()));
+                  .set(0, new WComment(node.getKey().get_PostCommentList().getFirst(), node.getValue()));
         }
       }
     }

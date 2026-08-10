@@ -45,31 +45,31 @@ public class SymTypeOfSIUnit extends SymTypeExpression {
 
   @Override
   public String print() {
-    String result = "[";
+    StringBuilder result = new StringBuilder("[");
     if (getNumerator().isEmpty()) {
-      result += "1";
+      result.append("1");
     }
     else {
       for (int i = 0; i < getNumerator().size(); i++) {
         SIUnitBasic unitBasic = getNumerator().get(i);
-        result += unitBasic.print();
+        result.append(unitBasic.print());
         if (i < getNumerator().size() - 1 && unitBasic.getExponent() == 1) {
-          result += "^1";
+          result.append("^1");
         }
       }
     }
-    if (getDenominator().size() >= 1) {
-      result += "/";
+    if (!getDenominator().isEmpty()) {
+      result.append("/");
       for (int i = 0; i < getDenominator().size(); i++) {
         SIUnitBasic unitBasic = getDenominator().get(i);
-        result += unitBasic.print();
+        result.append(unitBasic.print());
         if (i < getDenominator().size() - 1 && unitBasic.getExponent() == 1) {
-          result += "^1";
+          result.append("^1");
         }
       }
     }
-    result += "]";
-    return result;
+    result.append("]");
+    return result.toString();
   }
 
   @Override

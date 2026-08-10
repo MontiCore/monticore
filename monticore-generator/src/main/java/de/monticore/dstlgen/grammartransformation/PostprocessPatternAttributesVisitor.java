@@ -96,8 +96,7 @@ public class PostprocessPatternAttributesVisitor implements
     for (int i = 0; i < node.size(); i++) {
       ASTRuleComponent c = node.get(i);
 
-      if (c instanceof ASTConstantGroup) {
-        ASTConstantGroup group = (ASTConstantGroup) c;
+      if (c instanceof ASTConstantGroup group) {
         node.remove(group);
         ASTNonTerminal nonTerminal = GrammarMill.nonTerminalBuilder().uncheckedBuild();
         nonTerminal.setName(grammarSymbol.getName() + "_" + DSTLUtil.getNameForConstant(group) + "_Constant");

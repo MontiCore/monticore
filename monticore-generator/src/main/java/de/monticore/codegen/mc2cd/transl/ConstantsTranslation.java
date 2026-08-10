@@ -46,7 +46,7 @@ public class ConstantsTranslation implements
     Set<String> grammarConstants = TransformationHelper
         .getAllGrammarConstants(rootLink.source()).stream().map(c -> lexNamer.getConstantName(c))
         .collect(Collectors.toSet());
-    Collection<String> sortedConstants = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+    Collection<String> sortedConstants = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
     sortedConstants.addAll(grammarConstants);
     for (String grammarConstant : sortedConstants) {
       ASTCDEnumConstant constant = CD4AnalysisMill.cDEnumConstantBuilder().

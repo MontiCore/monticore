@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.io;
 
-import com.google.common.base.Charsets;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.se_rwth.commons.io.SharedCloseable;
 import de.se_rwth.commons.logging.Log;
@@ -11,6 +10,7 @@ import java.net.JarURLConnection;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
@@ -43,7 +43,7 @@ public class FileReaderWriterFix extends FileReaderWriter {
           openedJarFiles.add(new SharedCloseable<>(((JarURLConnection) conn).getJarFile()));
         }
       }
-      return new InputStreamReader(conn.getInputStream(), Charsets.UTF_8.name());
+      return new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8);
     } catch (IOException | URISyntaxException e) {
       Log.error("0xA6104 Exception occurred while reading the file at '" + location + "':", e);
     }

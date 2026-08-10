@@ -32,15 +32,15 @@ public class TestODL {
     assertEquals("MyWorld", instances.getName());
     assertEquals(2, instances.getObjectList().size());
     
-    assertEquals("person", instances.getObjectList().get(0).getName());
-    assertTrue(instances.getObjectList().get(0).getType().deepEquals(
+    assertEquals("person", instances.getObjectList().getFirst().getName());
+    assertTrue(instances.getObjectList().getFirst().getType().deepEquals(
         ODLMill.qualifiedNameBuilder().setNamesList(Lists.newArrayList("Person")).build()));
     
-    assertEquals(4, instances.getObjectList().get(0).getAssignmentList().size());
-    assertEquals("birthday", instances.getObjectList().get(0).getAssignmentList().get(0).getName());
+    assertEquals(4, instances.getObjectList().getFirst().getAssignmentList().size());
+    assertEquals("birthday", instances.getObjectList().getFirst().getAssignmentList().get(0).getName());
     assertTrue(instances
         .getObjectList()
-        .get(0)
+        .getFirst()
         .getAssignmentList()
         .get(0)
         .getValue()
@@ -48,10 +48,10 @@ public class TestODL {
             ODLMill.dateValueBuilder()
                 .setDate(ODLMill.dateBuilder().setDay("01").setMonth("01").setYear("1999").build()).build()));
     
-    assertEquals("name", instances.getObjectList().get(0).getAssignmentList().get(1).getName());
+    assertEquals("name", instances.getObjectList().getFirst().getAssignmentList().get(1).getName());
     assertTrue(instances
         .getObjectList()
-        .get(0)
+        .getFirst()
         .getAssignmentList()
         .get(1)
         .getValue()
@@ -59,10 +59,10 @@ public class TestODL {
             ODLMill.stringValueBuilder()
                 .setSTRING("alice").build()));
     
-    assertEquals("id", instances.getObjectList().get(0).getAssignmentList().get(2).getName());
+    assertEquals("id", instances.getObjectList().getFirst().getAssignmentList().get(2).getName());
     assertTrue(instances
         .getObjectList()
-        .get(0)
+        .getFirst()
         .getAssignmentList()
         .get(2)
         .getValue()

@@ -48,7 +48,7 @@ public class PlusExpressionReturnsIntTest {
     MyOwnLanguageCoCoChecker coCoChecker = new MyOwnLanguageCoCoChecker().getMyOwnLanguageCoCoChecker();
     coCoChecker.checkAll((ASTCommonExpressionsNode) p1.get());
     Assertions.assertFalse(Log.getFindings().isEmpty());
-    Assertions.assertTrue(Log.getFindings().get(0).getMsg().startsWith(PlusExpressionReturnsInt.ERROR_CODE));
+    Assertions.assertTrue(Log.getFindings().getFirst().getMsg().startsWith(PlusExpressionReturnsInt.ERROR_CODE));
   }
 
 }

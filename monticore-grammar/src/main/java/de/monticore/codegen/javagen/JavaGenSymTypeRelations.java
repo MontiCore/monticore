@@ -21,6 +21,7 @@ import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getTy
  * that will be generated Java types from,
  * instead of using Java-SymTypeExpressions.
  */
+@SuppressWarnings("CollectionAddAllCanBeReplacedWithConstructor")
 public class JavaGenSymTypeRelations {
 
   protected static JavaGenSymTypeRelations delegate;

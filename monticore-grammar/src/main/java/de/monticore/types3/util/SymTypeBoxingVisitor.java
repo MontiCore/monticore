@@ -133,7 +133,7 @@ public class SymTypeBoxingVisitor extends SymTypeDeepCloneVisitor {
       final String boxedName = boxMap.get(name);
       Optional<TypeSymbol> boxedTypeSymbolOpt =
           BasicSymbolsMill.globalScope().resolveType(boxedName);
-      if (!boxedTypeSymbolOpt.isPresent()) {
+      if (boxedTypeSymbolOpt.isEmpty()) {
         Log.debug("symbol for boxed type "
                 + boxedName
                 + " is not found for type "

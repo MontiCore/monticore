@@ -42,7 +42,7 @@ public class FunctionSymbol extends FunctionSymbolTOP {
 
   public List<TypeVarSymbol> getAllAccessibleTypeVariables(){
     List<TypeVarSymbol> typeVarSymbolList =
-        new ArrayList(getTypeVariableList());
+        new ArrayList<>(getTypeVariableList());
     typeVarSymbolList.addAll(getTypeVariablesOfEnclosingType());
     return typeVarSymbolList;
   }

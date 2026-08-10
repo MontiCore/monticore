@@ -25,8 +25,8 @@ public class ReportingHelper {
    */
   public static String formatStringToReportingString(String toBeFormatted,
       int length) {
-    String replaced = toBeFormatted.replaceAll("\n", " ");
-    replaced = replaced.replaceAll("\t", " ");
+    String replaced = toBeFormatted.replace("\n", " ");
+    replaced = replaced.replace("\t", " ");
     replaced = replaced.replaceAll(" +", " ");
     if (length > 2 && replaced.length() < length - 2) {
       return "\"" + replaced + "\"";
@@ -48,7 +48,7 @@ public class ReportingHelper {
    */
   public static String formatLineToReportingLine(String toBeFormatted,
       int length) {
-    String replaced = toBeFormatted.replaceAll("\n", " ");
+    String replaced = toBeFormatted.replace("\n", " ");
     if (replaced.length() <= length) {
       return replaced;
     }

@@ -61,8 +61,7 @@ public class ExpressionsBasisJavaGenVisitor
       getPrinter().print("((");
       getPrinter().print(getJavaTypePrint(exprType));
       getPrinter().print(") ");
-      if (funcType.getSymbol() instanceof MethodSymbol) {
-        MethodSymbol methodSym = (MethodSymbol) funcType.getSymbol();
+      if (funcType.getSymbol() instanceof MethodSymbol methodSym) {
         if (!methodSym.getSpannedScope().isPresentSpanningSymbol()) {
           Log.error("0xFD227 internal error: "
                   + "method symbol has no enclosing (OO)type: "

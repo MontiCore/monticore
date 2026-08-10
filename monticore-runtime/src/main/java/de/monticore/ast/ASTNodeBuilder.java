@@ -2,13 +2,7 @@
 
 package de.monticore.ast;
 
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Optional;
-import java.util.Spliterator;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
@@ -116,7 +110,7 @@ public abstract class ASTNodeBuilder<T extends ASTNodeBuilder<?>> {
   }
   
   public boolean containsAll_PreComments(Collection<?> element) {
-    return this.precomments.containsAll(element);
+    return new HashSet<>(this.precomments).containsAll(element);
   }
   
   public boolean isEmpty_PreComments() {
@@ -271,7 +265,7 @@ public abstract class ASTNodeBuilder<T extends ASTNodeBuilder<?>> {
   }
   
   public boolean containsAll_PostComments(Collection<?> element) {
-    return this.postcomments.containsAll(element);
+    return new HashSet<>(this.postcomments).containsAll(element);
   }
   
   public boolean isEmpty_PostComments() {

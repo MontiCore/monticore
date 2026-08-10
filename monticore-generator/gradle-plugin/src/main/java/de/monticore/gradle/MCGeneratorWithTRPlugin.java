@@ -13,7 +13,6 @@ import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.Sync;
 import org.gradle.api.tasks.TaskProvider;
-import org.gradle.jvm.tasks.Jar;
 
 import java.util.Objects;
 import java.util.Map;
@@ -61,9 +60,8 @@ public class MCGeneratorWithTRPlugin implements Plugin<Project> {
     // (done in the WithTRSetup plugin)
 
     // Enable the DST flag
-    project.getTasks().named("generateTrafoMCGrammars", MCGenTask.class).configure(it -> {
-      it.getGenDST().set(true);
-    });
+    project.getTasks().named("generateTrafoMCGrammars", MCGenTask.class)
+        .configure(it -> it.getGenDST().set(true));
 
     // And mark the "trafo" source set for publishing
     // This bundles and publishes the generated TR artifacts separately as $projectname-trafo

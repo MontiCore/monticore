@@ -38,7 +38,7 @@ public class ReportingNameHelper {
   public static String getSimpleName(String qn) {
     String simpleName = qn;
     if (qn.contains(".")) {
-      simpleName = qn.substring(qn.lastIndexOf(".") + 1, qn.length());
+      simpleName = qn.substring(qn.lastIndexOf(".") + 1);
     }
     return simpleName;
   }
@@ -93,7 +93,8 @@ public class ReportingNameHelper {
     }
     if (path.getFileName() != null) {
       String[] seperatedFileName = path.getFileName().toString().split("\\.");
-      qualifiedName.append("." + seperatedFileName[0]);
+      qualifiedName.append(".");
+      qualifiedName.append(seperatedFileName[0]);
     }
     return qualifiedName.toString();
   }

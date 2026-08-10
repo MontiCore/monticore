@@ -83,9 +83,8 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
     if(getTypeCheckResult().isType() && getScope(expr.getEnclosingScope()).getEnclosingScope()!=null) {
       IBasicSymbolsScope testScope = getScope(expr.getEnclosingScope());
       while (testScope!=null) {
-        if(testScope.isPresentSpanningSymbol()&&testScope.getSpanningSymbol() instanceof OOTypeSymbol) {
+        if(testScope.isPresentSpanningSymbol()&& testScope.getSpanningSymbol() instanceof OOTypeSymbol sym) {
           count++;
-          OOTypeSymbol sym = (OOTypeSymbol) testScope.getSpanningSymbol();
           if (sym.getName().equals(innerResult.getTypeInfo().getName())&&count>1) {
             wholeResult = innerResult;
             break;
@@ -139,10 +138,9 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
     boolean isOuterType = false;
     IBasicSymbolsScope testScope = getScope(node.getEnclosingScope());
     while (testScope!=null) {
-      if(testScope.isPresentSpanningSymbol()&&testScope.getSpanningSymbol() instanceof TypeSymbol) {
+      if(testScope.isPresentSpanningSymbol()&& testScope.getSpanningSymbol() instanceof TypeSymbol sym) {
         count++;
-        TypeSymbol sym = (TypeSymbol) testScope.getSpanningSymbol();
-        if (sym.getName().equals(beforeSuperType.getTypeInfo().getName())&&count>1) {
+        if (sym.getName().equals(beforeSuperType.getTypeInfo().getName()) && count > 1) {
           isOuterType = true;
           break;
         }
@@ -153,7 +151,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
     if(isOuterType) {
       List<SymTypeExpression> superClasses = beforeSuperType.getTypeInfo().getSuperClassesOnly();
       if (superClasses.size() == 1) {
-        SymTypeExpression superClass = superClasses.get(0);
+        SymTypeExpression superClass = superClasses.getFirst();
         if (null != node.getSuperSuffix().getName() || !"".equals(node.getSuperSuffix().getName())) {
           ASTSuperSuffix superSuffix = node.getSuperSuffix();
           wholeResult = handleSuperSuffix(superSuffix, superClass);
@@ -178,7 +176,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
       //case 2 -> Expression.super.Field
       List<VariableSymbol> fields = superClass.getFieldList(superSuffix.getName(), false, AccessModifier.ALL_INCLUSION);
       if (fields.size()==1) {
-        return fields.get(0).getType();
+        return fields.getFirst().getType();
       }else{
         getTypeCheckResult().reset();
         Log.error("0xA1305 There cannot be more than one field with the same name");
@@ -272,7 +270,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
     if(typeSymbol.isPresent()) {
       List<SymTypeExpression> superClasses = typeSymbol.get().getSuperClassesOnly();
       if (superClasses.size() == 1) {
-        wholeResult = superClasses.get(0);
+        wholeResult = superClasses.getFirst();
       }
       else {
         getTypeCheckResult().reset();
@@ -458,7 +456,7 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
         Optional<TypeSymbol> subType = searchForTypeSymbolSpanningEnclosingScope(getScope(node.getEnclosingScope()));
         //get the superclass of this typesymbol and search for its fitting constructor
         if(subType.isPresent() &&subType.get().getSuperClassesOnly().size()==1){
-          SymTypeExpression superClass = subType.get().getSuperClassesOnly().get(0);
+          SymTypeExpression superClass = subType.get().getSuperClassesOnly().getFirst();
           List<FunctionSymbol> methods = superClass.getMethodList(superClass.getTypeInfo().getName(), false, AccessModifier.ALL_INCLUSION);
           if(!methods.isEmpty() && superSuffix.isPresentArguments()){
             //check if the constructors fit and return the right returntype

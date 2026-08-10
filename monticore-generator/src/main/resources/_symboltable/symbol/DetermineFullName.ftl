@@ -43,4 +43,4 @@ ${tc.signature("scopeInterface")}
   }
     }
 
-    return de.se_rwth.commons.Names.getQualifiedName(nameParts);
+    return de.se_rwth.commons.Names.constructQualifiedName(nameParts);

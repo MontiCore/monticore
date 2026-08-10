@@ -43,7 +43,7 @@ public class SwitchCaseTypesValid implements MCCommonStatementsASTSwitchStatemen
   }
 
 
-  protected class SwitchLabelHandler implements MCCommonStatementsHandler {
+  protected static class SwitchLabelHandler implements MCCommonStatementsHandler {
 
     protected final SymTypeExpression switchType;
     protected MCCommonStatementsTraverser traverser;
