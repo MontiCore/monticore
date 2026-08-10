@@ -37,7 +37,7 @@ public class InvolvedFilesReporter extends AReporter {
   
   protected Map<Path, Path> modelToArtifactMap = new LinkedHashMap<>();
   
-  protected String outputDirectory = "";
+  protected String outputDirectory;
   
   protected Optional<String> inputFile = Optional.empty();
   
@@ -104,10 +104,10 @@ public class InvolvedFilesReporter extends AReporter {
     }
     String toAdd = "";
     if (parentPath.isPresent()) {
-      toAdd = parentPath.get().toString() + PARENT_FILE_SEPARATOR + file.toString();
+      toAdd = parentPath.get() + PARENT_FILE_SEPARATOR + file.toString();
       modelToArtifactMap.put(file, parentPath.get());
     }
-    else if (modelToArtifactMap.keySet().contains(file)) {
+    else if (modelToArtifactMap.containsKey(file)) {
       toAdd = modelToArtifactMap.get(file).toString() + PARENT_FILE_SEPARATOR
           + file.toString();
     }
@@ -157,9 +157,7 @@ public class InvolvedFilesReporter extends AReporter {
   @Override
   protected void writeHeader() {
     writeInputFileHeading();
-    if (inputFile.isPresent()) {
-      writeLine(inputFile.get());
-    }
+    inputFile.ifPresent(this::writeLine);
   }
   
   protected String format(String fileName) {
@@ -169,14 +167,14 @@ public class InvolvedFilesReporter extends AReporter {
   
   protected void writeContent() {
     writeInputFilesHeading();
-    inputFiles.forEach(f -> writeLine(f));
+    inputFiles.forEach(this::writeLine);
     
     Collections.sort(outputFiles);
     writeOutputFileHeading();
-    outputFiles.forEach(f -> writeLine(f));
+    outputFiles.forEach(this::writeLine);
     
     writeHWCFileHeading();
-    checkedFiles.forEach(f -> writeLine(f));
+    checkedFiles.forEach(this::writeLine);
   }
   
 }

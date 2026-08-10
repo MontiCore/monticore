@@ -39,7 +39,7 @@ public class TemplateHookPoint extends HookPoint {
   
   @Override
   public String processValue(TemplateController controller, ASTNode ast) {
-    return controller.processTemplate(templateName, ast, this.templateArguments).toString();   
+    return controller.processTemplate(templateName, ast, this.templateArguments);
   }
   
   // Here we handle the case that arguments come from:
@@ -52,9 +52,9 @@ public class TemplateHookPoint extends HookPoint {
     if (!this.templateArguments.isEmpty()) {
       ArrayList<Object> l = Lists.newArrayList(args);
       l.addAll(this.templateArguments);
-      return controller.processTemplate(templateName, controller.getAST(), l).toString();
+      return controller.processTemplate(templateName, controller.getAST(), l);
     }
-    return controller.processTemplate(templateName, controller.getAST(), args).toString();
+    return controller.processTemplate(templateName, controller.getAST(), args);
   }
   
   @Override
@@ -76,8 +76,8 @@ public class TemplateHookPoint extends HookPoint {
     if (!this.templateArguments.isEmpty()) {
       ArrayList<Object> l = Lists.newArrayList(args);
       l.addAll(this.templateArguments);
-      return controller.processTemplate(templateName, node, l).toString();
+      return controller.processTemplate(templateName, node, l);
     }
-    return controller.processTemplate(templateName, node, args).toString();
+    return controller.processTemplate(templateName, node, args);
   }
 }

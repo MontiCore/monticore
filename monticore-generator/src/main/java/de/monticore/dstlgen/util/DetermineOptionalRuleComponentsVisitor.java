@@ -45,12 +45,7 @@ public class DetermineOptionalRuleComponentsVisitor implements
   }
 
   // Override the traversal of all other RuleComponent s
-
-  @Override
-  public void traverse(ASTNonTerminalSeparator node) {
-
-  }
-
+  
   @Override
   public void traverse(ASTKeyTerminal node) {
 
@@ -70,12 +65,7 @@ public class DetermineOptionalRuleComponentsVisitor implements
   public void traverse(ASTSemanticpredicateOrAction node) {
 
   }
-
-  @Override
-  public void traverse(ASTLexNonTerminal node) {
-
-  }
-
+  
   @Override
   public GrammarTraverser getTraverser() {
     return this.traverser;

@@ -244,7 +244,7 @@ public class ResolveWithinOOTypeTest extends AbstractTypeVisitorTest {
     List<MethodSymbol> constructors = functions.stream()
         .map(f -> (MethodSymbol) f)
         .collect(Collectors.toList());
-    assertTrue(constructors.stream().allMatch(MethodSymbolTOP::isIsConstructor));
+    assertTrue(constructors.stream().allMatch(MethodSymbol::isIsConstructor));
     return constructors;
   }
 

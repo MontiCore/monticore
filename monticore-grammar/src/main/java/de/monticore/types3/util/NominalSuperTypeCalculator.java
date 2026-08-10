@@ -108,8 +108,8 @@ public class NominalSuperTypeCalculator {
       Optional<SymTypeExpression> lubOpt =
           SymTypeRelations.leastUpperBound(unionizedTypes);
       unmodifiedSuperTypes = lubOpt
-          .filter(lub -> isSupported(lub))
-          .map(lub -> getNominalSuperTypes(lub))
+          .filter(this::isSupported)
+          .map(this::getNominalSuperTypes)
           .orElse(Collections.emptyList());
     }
     else if (thisType.isRegExType()) {

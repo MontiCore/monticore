@@ -2,6 +2,7 @@
 package de.monticore.interpreter;
 
 import de.monticore.tests.expressionsandstatements.ExpressionsTestModels;
+import de.monticore.values.MCValue;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -22,8 +23,8 @@ public class InterpreterExpressionsTest extends AbstractInterpreterTest {
   @MethodSource("de.monticore.tests.expressionsandstatements.ExpressionsTestModels#getExpressionsCases")
   void testExpressionsWithLog(String modelStr, Object expectedValue) {
     assumeSupported(modelStr, expectedValue);
-    interpreter = initializeInterpreterWithLog();
-    checkValue(modelStr, expectedValue);
+    MCValue value = interpret(modelStr, true);
+    checkValue(value, expectedValue);
     assertEquals(expectedValue, interpretAndCast(modelStr));
   }
 

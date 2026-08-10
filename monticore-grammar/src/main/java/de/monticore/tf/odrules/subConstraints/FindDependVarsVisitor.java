@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Created by Alexander Wilts on 16.01.2017.
- *
  * This visitor calculates the variables contained in a given expression.
  */
 public class FindDependVarsVisitor implements

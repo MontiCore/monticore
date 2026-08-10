@@ -94,7 +94,7 @@ public class ReturnTypeAssignmentIsValid implements JavaLightASTMethodDeclaratio
     }
   }
   
-  private class JavaReturnStatementCollector implements MCReturnStatementsVisitor2 {
+  private static class JavaReturnStatementCollector implements MCReturnStatementsVisitor2 {
     
     List<ASTReturnStatement> returnStatementList = new ArrayList<>();
     

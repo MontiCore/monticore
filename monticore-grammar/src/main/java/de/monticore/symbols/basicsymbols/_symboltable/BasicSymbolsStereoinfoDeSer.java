@@ -32,7 +32,7 @@ public class BasicSymbolsStereoinfoDeSer extends StereoinfoDeSer {
       );
     }
 
-    if (!(enclosingScope instanceof IBasicSymbolsScope)) {
+    if (!(enclosingScope instanceof IBasicSymbolsScope stereoScope)) {
       Log.error(
         "0x82404 StereotypeSymbolsStereoinfoDeSer#deserialize expected an enclosing scope of " +
           "type de.monticore.symbols.stereotypesymbols._symboltable.IStereotypeSymbolsScope, but " +
@@ -42,8 +42,7 @@ public class BasicSymbolsStereoinfoDeSer extends StereoinfoDeSer {
     }
 
     String stereotypeName = json.getAsJsonObject().getStringMember(STEREO_TYPE);
-    IBasicSymbolsScope stereoScope = ((IBasicSymbolsScope) enclosingScope);
-
+    
     return Map.entry(
       new BasicSymbolsStereotypeReference(stereotypeName, stereoScope),
       Optional.empty()

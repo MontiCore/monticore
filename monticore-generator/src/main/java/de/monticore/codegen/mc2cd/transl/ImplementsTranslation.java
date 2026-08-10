@@ -52,7 +52,7 @@ public class ImplementsTranslation implements
     // translates "implements"
     for (ASTRuleReference ruleReference : classProd.getSuperInterfaceRuleList()) {
       Optional<ProdSymbol> ruleSymbol = grammarSymbol.getProdWithInherited(ruleReference.getName());
-      if (!ruleSymbol.isPresent()) {
+      if (ruleSymbol.isEmpty()) {
         Log.error("0xA0137 The rule '" + ruleReference.getName() + "' does not exist!", ruleReference.get_SourcePositionStart());
       }
       if (!cdClass.isPresentCDInterfaceUsage()) {
@@ -86,7 +86,7 @@ public class ImplementsTranslation implements
         .getSuperInterfaceRuleList()) {
       MCGrammarSymbol grammarSymbol = astGrammar.getSymbol();
       Optional<ProdSymbol> ruleSymbol = grammarSymbol.getProdWithInherited(ruleReference.getName());
-      if (!ruleSymbol.isPresent()) {
+      if (ruleSymbol.isEmpty()) {
         Log.error("0xA0138 The rule '" + ruleReference.getName() + "' does not exist!");
       }
       if (!cdClass.isPresentCDInterfaceUsage()) {

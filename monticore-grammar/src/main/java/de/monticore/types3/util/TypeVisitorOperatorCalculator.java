@@ -1022,14 +1022,11 @@ public class TypeVisitorOperatorCalculator {
       return SymTypeExpressionFactory
           .createNumericWithSIUnit(siUnitType.get(), valueType.get());
     }
-    else if (siUnitType.isPresent() && valueType.isEmpty()) {
+    else if (siUnitType.isPresent()) {
       return siUnitType.get();
     }
-    else if (siUnitType.isEmpty() && valueType.isPresent()) {
-      return valueType.get();
-    }
     else {
-      return SymTypeExpressionFactory.createObscureType();
+      return valueType.orElseGet(SymTypeExpressionFactory::createObscureType);
     }
   }
 

@@ -2,36 +2,25 @@
 
 package mc.feature.wiki;
 
+import de.monticore.runtime.junit.TestWithMCLanguage;
+import mc.feature.wiki.wiki.WikiMill;
+import mc.feature.wiki.wiki._parser.WikiParser;
+import org.junit.jupiter.api.Test;
+
 import java.io.IOException;
 import java.io.StringReader;
 
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.BeforeEach;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
-import mc.GeneratorIntegrationsTest;
-import mc.feature.wiki.wiki._parser.WikiParser;
-import de.se_rwth.commons.logging.Log;
-import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
-
-public class WikiTest extends GeneratorIntegrationsTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
+@TestWithMCLanguage(WikiMill.class)
+public class WikiTest {
   @Test
   public void test() throws IOException {
     
-    WikiParser p = new WikiParser();
+    WikiParser p = WikiMill.parser();
     
     p.parseWikiArtikel(new StringReader("==Test==\n==Test== ==\n== test ==\n"));
     assertFalse(p.hasErrors());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
   
 }

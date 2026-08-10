@@ -129,7 +129,7 @@ public class DecorationHelper extends MCBasicTypesHelper {
     // check if type is Generic type like 'List<automaton._ast.ASTState>' -> returns automaton._ast.ASTState
     // if not generic returns simple Type like 'int'
     if (astType instanceof ASTMCGenericType && ((ASTMCGenericType) astType).getMCTypeArgumentList().size() == 1) {
-      return CD4CodeMill.prettyPrint(((ASTMCGenericType) astType).getMCTypeArgumentList().get(0).getMCTypeOpt().get(), false);
+      return CD4CodeMill.prettyPrint(((ASTMCGenericType) astType).getMCTypeArgumentList().getFirst().getMCTypeOpt().get(), false);
 
     }
     return CD4CodeMill.prettyPrint(astType, false);
@@ -149,7 +149,7 @@ public class DecorationHelper extends MCBasicTypesHelper {
       nativeAttributeType = nativeAttributeType.substring(nativeAttributeType.lastIndexOf(".") + 1);
     }
     if (nativeAttributeType.contains(">")) {
-      nativeAttributeType = nativeAttributeType.replaceAll(">", "");
+      nativeAttributeType = nativeAttributeType.replace(">", "");
     }
     return nativeAttributeType;
   }
@@ -181,7 +181,7 @@ public class DecorationHelper extends MCBasicTypesHelper {
 
   public ASTMCTypeArgument getReferenceTypeFromOptional(ASTMCType type) {
     Preconditions.checkArgument(isOptional(type));
-    return ((ASTMCGenericType) type).getMCTypeArgumentList().get(0);
+    return ((ASTMCGenericType) type).getMCTypeArgumentList().getFirst();
   }
 
   /**
@@ -208,12 +208,12 @@ public class DecorationHelper extends MCBasicTypesHelper {
     }
 
     List<String> listName = Arrays.asList(typeName.split("\\."));
-    if (!listName.get(listName.size() - 1).startsWith(AST_PREFIX)) {
+    if (!listName.getLast().startsWith(AST_PREFIX)) {
       return false;
     }
 
     Optional<? extends ISymbol> type = attr.getMCType().getDefiningSymbol();
-    if (!type.isPresent() || type.get() instanceof CDTypeSymbol) {
+    if (type.isEmpty() || type.get() instanceof CDTypeSymbol) {
       return false;
     }
     return ((CDTypeSymbol) type.get()).isIsEnum();

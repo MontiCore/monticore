@@ -14,7 +14,6 @@ import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.PredicatePair;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar._symboltable.MCGrammarSymbolSurrogate;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTAction;
@@ -74,7 +73,7 @@ public class ParserGeneratorHelper {
     this.astGrammar = ast;
     this.qualifiedGrammarName = astGrammar.getPackageList().isEmpty()
             ? astGrammar.getName()
-            : Joiner.on('.').join(Names.getQualifiedName(astGrammar.getPackageList()),
+            : Joiner.on('.').join(Names.constructQualifiedName(astGrammar.getPackageList()),
             astGrammar.getName());
     this.grammarInfo = grammarInfo;
     this.grammarSymbol = grammarInfo.getGrammarSymbol();
@@ -88,7 +87,7 @@ public class ParserGeneratorHelper {
     this.astGrammar = ast;
     this.qualifiedGrammarName = astGrammar.getPackageList().isEmpty()
             ? astGrammar.getName()
-            : Joiner.on('.').join(Names.getQualifiedName(astGrammar.getPackageList()),
+            : Joiner.on('.').join(Names.constructQualifiedName(astGrammar.getPackageList()),
             astGrammar.getName());
     this.grammarInfo = grammarInfo;
     this.grammarSymbol = grammarInfo.getGrammarSymbol();
@@ -214,7 +213,7 @@ public class ParserGeneratorHelper {
     retSet.addAll(
         grammarInfo.getKeywords().stream()
             .filter(f -> !grammarSymbol.getKeywordRulesWithInherited().contains(f))
-            .collect(Collectors.toList())
+            .toList()
     );
     return retSet;
  }
@@ -335,69 +334,88 @@ public class ParserGeneratorHelper {
     // default functions
     else if (a.getTypeList() == null || a.getTypeList().isEmpty()) {
       String variable = a.getVariable();
-
-      if ("int".equals(variable)) {
-        String function = "private int convert%name%(Token t) {\n"
-
-                + "  return Integer.parseInt(t.getText());\n"
-                + " }\n";
-        return createConvertFunction(name, function);
-      } else if ("boolean".equals(variable)) {
-        return createConvertFunction(
-                name,
-                "private boolean convert"
-                        + name
-                        + "(Token t) {\n"
-                        + "    if (t.getText().equals(\"1\")||t.getText().equals(\"start\")||t.getText().equals(\"on\")||t.getText().equals(\"true\")){return true;}else{return false;} \n"
-                        + "}\n");
-      } else if ("byte".equals(variable)) {
-        String function = "private byte convert%name%(Token t) {\n"
-                + "  return Byte.parseByte(t.getText());\n"
-                + " }\n";
-        return createConvertFunction(name, function);
-      } else if ("char".equals(variable)) {
-        return createConvertFunction(name, "private char convert" + name + "(Token t) " + "{\n"
-                + "  return t.getText().charAt(0); \n" + "}\n");
-      } else if ("float".equals(variable)) {
-        String function = "private float convert%name%(Token t) {\n"
-                + "  return Float.parseFloat(t.getText());\n"
-                + " }\n";
-        return createConvertFunction(name, function);
-      } else if ("double".equals(variable)) {
-        String function = "private double convert%name%(Token t) {\n"
-                + "  return Double.parseDouble(t.getText());\n"
-                + " }\n";
-        return createConvertFunction(name, function);
-      } else if ("long".equals(variable)) {
-        String function = "private long convert%name%(Token t) {\n"
-                + "  return Long.parseLong(t.getText());\n"
-                + " }\n";
-        return createConvertFunction(name, function);
-      } else if ("short".equals(variable)) {
-        String function = "private short convert%name%(Token t) {\n"
-                + "return Short.parseShort(t.getText());\n"
-                + " }\n";
-        return createConvertFunction(name, function);
-      } else if ("card".equals(variable)) {
-        String function = "private int convert%name%(Token t) {\n"
-                + "   if (t.getText().equals(\"*\")) return -1; else return Integer.parseInt(t.getText());\n"
-                + " }\n";
-        return createConvertFunction(name, function);
-      } else {
-        Log.warn(
-                "0xA1061 No function for " + a.getVariable() + " registered, will treat it as string!");
-        return createStringConvertFunction(name);
+      
+      switch (variable) {
+        case "int" -> {
+          String function = """
+              private int convert%name%(Token t) {
+                return Integer.parseInt(t.getText());
+               }
+              """;
+          return createConvertFunction(name, function);
+        }
+        case "boolean" -> {
+          String function = "private boolean convert" + name + "(Token t) {\n"
+              + "    if (t.getText().equals(\"1\")||t.getText().equals(\"start\")||t.getText().equals(\"on\")||t.getText().equals(\"true\")){return true;}else{return false;} \n"
+              + "}\n";
+          return createConvertFunction(name, function);
+        }
+        case "byte" -> {
+          String function = """
+              private byte convert%name%(Token t) {
+                return Byte.parseByte(t.getText());
+               }
+              """;
+          return createConvertFunction(name, function);
+        }
+        case "char" -> {
+          return createConvertFunction(name, "private char convert" + name + "(Token t) " + "{\n"
+              + "  return t.getText().charAt(0); \n" + "}\n");
+        }
+        case "float" -> {
+          String function = """
+              private float convert%name%(Token t) {
+                return Float.parseFloat(t.getText());
+               }
+              """;
+          return createConvertFunction(name, function);
+        }
+        case "double" -> {
+          String function = """
+              private double convert%name%(Token t) {
+                return Double.parseDouble(t.getText());
+               }
+              """;
+          return createConvertFunction(name, function);
+        }
+        case "long" -> {
+          String function = """
+              private long convert%name%(Token t) {
+                return Long.parseLong(t.getText());
+               }
+              """;
+          return createConvertFunction(name, function);
+        }
+        case "short" -> {
+          String function = """
+              private short convert%name%(Token t) {
+              return Short.parseShort(t.getText());
+               }
+              """;
+          return createConvertFunction(name, function);
+        }
+        case "card" -> {
+          String function = """
+              private int convert%name%(Token t) {
+                 if (t.getText().equals("*")) return -1; else return Integer.parseInt(t.getText());
+               }
+              """;
+          return createConvertFunction(name, function);
+        }
+        case null, default -> {
+          Log.warn("0xA1061 No function for " + a.getVariable()
+              + " registered, will treat it as string!");
+          return createStringConvertFunction(name);
+        }
       }
     }
     // specific function
     else {
       if (a.isPresentBlock()) {
-        StringBuilder buffer = new StringBuilder();
-        buffer.append(Grammar_WithConceptsMill.prettyPrint(a.getBlock(), true));
-        String createConvertFunction = createConvertFunction(name,
-                "private " + Names.getQualifiedName(a.getTypeList()) + " convert" + name
-                        + "(Token " + a.getVariable() + ")" + " {\n" + buffer.toString() + "}\n");
-        return createConvertFunction;
+        return createConvertFunction(name,
+                "private " + Names.constructQualifiedName(a.getTypeList()) + " convert" + name
+                        + "(Token " + a.getVariable() + ")" + " {\n" + Grammar_WithConceptsMill.prettyPrint(
+                    a.getBlock(), true) + "}\n");
       }
     }
     return "";
@@ -441,7 +459,8 @@ public class ParserGeneratorHelper {
         if (localToken.isPresent() && localToken.get().isIsLexerProd()) {
           prodList.add((ASTLexProd) localToken.get().getAstNode());
         } else {
-          grammarSymbol.getSpannedScope().resolveProdMany(tokenName).stream().filter(p -> p.isIsLexerProd()).forEach(p -> prodList.add((ASTLexProd) p.getAstNode()));
+          grammarSymbol.getSpannedScope().resolveProdMany(tokenName).stream().filter(
+              ProdSymbol::isIsLexerProd).forEach(p -> prodList.add((ASTLexProd) p.getAstNode()));
         }
       }
     }
@@ -459,7 +478,8 @@ public class ParserGeneratorHelper {
           if (localToken.isPresent() && localToken.get().isIsLexerProd()) {
             prodList.add(localToken.get().getAstNode());
           } else {
-            grammarSymbol.getSpannedScope().resolveProdMany(tokenName).stream().filter(p -> p.isIsLexerProd()).forEach(p -> prodList.add(p.getAstNode()));
+            grammarSymbol.getSpannedScope().resolveProdMany(tokenName).stream().filter(
+                ProdSymbol::isIsLexerProd).forEach(p -> prodList.add(p.getAstNode()));
           }
         }
         retMap.put(e.getKey(), prodList);
@@ -522,21 +542,17 @@ public class ParserGeneratorHelper {
    * @return String representing value i
    */
   public static String printIteration(int i) {
-    switch (i) {
-      case ASTConstantsGrammar.PLUS:
-        return "+";
-      case ASTConstantsGrammar.STAR:
-        return "*";
-      case ASTConstantsGrammar.QUESTION:
-        return "?";
-      default:
-        return "";
-    }
+    return switch (i) {
+      case ASTConstantsGrammar.PLUS -> "+";
+      case ASTConstantsGrammar.STAR -> "*";
+      case ASTConstantsGrammar.QUESTION -> "?";
+      default -> "";
+    };
   }
 
   public String getTmpVarNameForAntlrCode(ASTNonTerminal node) {
     Optional<ProdSymbol> prod = MCGrammarSymbolTableHelper.getEnclosingRule(node);
-    if (!prod.isPresent()) {
+    if (prod.isEmpty()) {
       Log.error("0xA1006 ASTNonterminal " + node.getName() + "(usageName: " + node.getUsageName()
               + ") can't be resolved.");
       return "";
@@ -555,8 +571,8 @@ public class ParserGeneratorHelper {
     if (!ast.getAltList().isEmpty()) {
       return ast.getAltList();
     }
-    for (MCGrammarSymbolSurrogate g : grammarSymbol.getSuperGrammars()) {
-      final Optional<ProdSymbol> ruleByName = g.lazyLoadDelegate().getProdWithInherited(ast.getName());
+    for (MCGrammarSymbol g : grammarSymbol.getSuperGrammarSymbols()) {
+      final Optional<ProdSymbol> ruleByName = g.getProdWithInherited(ast.getName());
       if (ruleByName.isPresent() && ruleByName.get().isClass()) {
         if (ruleByName.get().isPresentAstNode() && ruleByName.get().getAstNode() instanceof ASTClassProd) {
           return ((ASTClassProd)ruleByName.get().getAstNode()).getAltList();
@@ -581,31 +597,35 @@ public class ParserGeneratorHelper {
    */
   public static String getText(ASTNode node) {
     Preconditions.checkNotNull(node);
-
-    if (node instanceof ASTAction) {
-      StringBuilder buffer = new StringBuilder();
-      for (ASTMCBlockStatement action : ((ASTAction) node).getMCBlockStatementList()) {
-        buffer.append(Grammar_WithConceptsMill.prettyPrint(action, true));
+    
+    switch (node) {
+      case ASTAction astAction -> {
+        StringBuilder buffer = new StringBuilder();
+        for (ASTMCBlockStatement action : astAction.getMCBlockStatementList()) {
+          buffer.append(Grammar_WithConceptsMill.prettyPrint(action, true));
+        }
+        return buffer.toString();
       }
-      return buffer.toString();
-    }
-    if (node instanceof ASTJavaCode) {
-      StringBuilder buffer = new StringBuilder();
-      for (ASTClassBodyDeclaration action : ((ASTJavaCode) node).getClassBodyDeclarationList()) {
-        buffer.append(Grammar_WithConceptsMill.prettyPrint(action, true));
-
+      case ASTJavaCode astJavaCode -> {
+        StringBuilder buffer = new StringBuilder();
+        for (ASTClassBodyDeclaration action : astJavaCode.getClassBodyDeclarationList()) {
+          buffer.append(Grammar_WithConceptsMill.prettyPrint(action, true));
+        }
+        return buffer.toString();
       }
-      return buffer.toString();
-    }
-    if (node instanceof ASTExpressionPredicate) {
-      String exprPredicate = Grammar_WithConceptsMill.prettyPrint((((ASTExpressionPredicate) node).getExpression()), true);
-      Log.debug("ASTExpressionPredicate:\n" + exprPredicate, ParserGenerator.LOG);
-      return exprPredicate;
-    }
-    if (node instanceof ASTGrammar_WithConceptsNode) {
-      String output = Grammar_WithConceptsMill.prettyPrint((ASTGrammar_WithConceptsNode) node, true);
-      Log.debug("ASTGrammar_WithConceptsNode:\n" + output, ParserGenerator.LOG);
-      return output;
+      case ASTExpressionPredicate astExpressionPredicate -> {
+        String exprPredicate =
+            Grammar_WithConceptsMill.prettyPrint((astExpressionPredicate.getExpression()), true);
+        Log.debug("ASTExpressionPredicate:\n" + exprPredicate, ParserGenerator.LOG);
+        return exprPredicate;
+      }
+      case ASTGrammar_WithConceptsNode astGrammarWithConceptsNode -> {
+        String output = Grammar_WithConceptsMill.prettyPrint(astGrammarWithConceptsNode, true);
+        Log.debug("ASTGrammar_WithConceptsNode:\n" + output, ParserGenerator.LOG);
+        return output;
+      }
+      default -> {
+      }
     }
     return "";
   }
@@ -636,7 +656,7 @@ public class ParserGeneratorHelper {
   }
 
   public static String formatAttributeValue(Optional<Integer> value) {
-    if (!value.isPresent()) {
+    if (value.isEmpty()) {
       return "undef";
     } else if (value.get() == TransformationHelper.STAR) {
       return "*";
@@ -662,7 +682,7 @@ public class ParserGeneratorHelper {
   public static String getPackageName(ASTMCGrammar astGrammar, String suffix) {
     String qualifiedGrammarName = astGrammar.getPackageList().isEmpty()
         ? astGrammar.getName()
-        : Joiner.on('.').join(Names.getQualifiedName(astGrammar.getPackageList()),
+        : Joiner.on('.').join(Names.constructQualifiedName(astGrammar.getPackageList()),
         astGrammar.getName());
     return Joiner.on('.').join(qualifiedGrammarName.toLowerCase(), suffix);
   }

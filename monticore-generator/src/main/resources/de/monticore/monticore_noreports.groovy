@@ -63,7 +63,7 @@ while (grammarIterator.hasNext()) {
     astGrammar = astGrammar.get()
 
     // start reporting on that grammar
-    grammarName = Names.getQualifiedName(astGrammar.getPackageList(), astGrammar.getName())
+    grammarName = Names.constructQualifiedName(astGrammar.getPackageList(), astGrammar.getName())
     Reporting.on(grammarName)
     Reporting.reportModelStart(astGrammar, grammarName, "")
     Reporting.reportParseInputFile(input, grammarName)

@@ -54,15 +54,15 @@ public class CompKindExpressionDeSer {
     }
 
     JsonObject serializedCompExpr = serialized.getAsJsonObject();
-
-    switch (JsonDeSers.getKind(serializedCompExpr)) {
-      case CompKindOfComponentTypeDeSer.SERIALIZED_KIND:
-        return kindOfComponentDeSer.deserialize(scope, serializedCompExpr);
-      case CompKindOfGenericComponentTypeDeSer.SERIALIZED_KIND:
-        return kindOfGenericComponentDeSer.deserialize(scope, serializedCompExpr);
-    }
-
-    throw missingDeSerException(serializedCompExpr);
+    
+    return switch (JsonDeSers.getKind(serializedCompExpr)) {
+      case CompKindOfComponentTypeDeSer.SERIALIZED_KIND ->
+          kindOfComponentDeSer.deserialize(scope, serializedCompExpr);
+      case CompKindOfGenericComponentTypeDeSer.SERIALIZED_KIND ->
+          kindOfGenericComponentDeSer.deserialize(scope, serializedCompExpr);
+      default -> throw missingDeSerException(serializedCompExpr);
+    };
+    
   }
 
   protected IllegalStateException missingDeSerException(@NonNull JsonObject unloadableElement) {

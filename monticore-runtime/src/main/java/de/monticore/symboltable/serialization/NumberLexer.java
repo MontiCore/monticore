@@ -25,7 +25,7 @@ public class NumberLexer {
     AFTER_E,
     AFTER_E_SIGNUM,
     IN_EXPONENT_AFTER_ONE_DIGIT,
-    ERROR;
+    ERROR
   }
 
   protected State currentState;

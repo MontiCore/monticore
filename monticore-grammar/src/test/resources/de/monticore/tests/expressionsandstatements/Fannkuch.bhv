@@ -1,0 +1,87 @@
+import java.lang.*;
+import java.util.*;
+
+// based on
+// https://benchmarksgame-team.pages.debian.net/benchmarksgame/description/fannkuchredux.html
+// https://benchmarksgame-team.pages.debian.net/benchmarksgame/program/fannkuchredux-graalvmaot-8.html
+
+int n = 7;
+assert n >= 0;
+assert n <= 12 : "13! does not fit into int";
+
+int i, k, r;
+
+// init
+List<int> perm1 = ArrayList();
+i = 0;
+while (i < n) {
+  perm1.add(i);
+  i++;
+}
+List<int> perm = ArrayList();
+i = 0;
+while (i < n) {
+  perm.add(0);
+  i++;
+}
+List<int> count = ArrayList();
+i = 0;
+while (i < n) {
+  count.add(0);
+  i++;
+}
+int f = 0, flips = 0, nperm = 0, checksum = 0;
+
+boolean done = false;
+r = n;
+while (r > 0 && !done) {
+  i = 0;
+  while (r != 1) {
+    count.set(r - 1, r);
+    r--;
+  }
+  while (i < n) {
+    perm.set(i, perm1.get(i));
+    i++;
+  }
+
+  // Count flips and update max and checksum
+  f = 0;
+  k = perm.get(0);
+  while (k != 0) {
+    i = 0;
+    while (2 * i < k) {
+      int t = perm.get(i);
+      perm.set(i, perm.get(k - i));
+      perm.set(k - i, t);
+      i++;
+    }
+    k = perm.get(0);
+    f++;
+  }
+  if (f > flips) flips = f;
+  if (nperm % 2 == 0) checksum += f; else checksum -= f;
+
+  // Use incremental change to generate another permutation
+  boolean more = true;
+  while (more) {
+    if (r == n) {
+      done = true;
+      more = false;
+    } else {
+      int p0 = perm1.get(0);
+      i = 0;
+      while (i < r) {
+        int j = i + 1;
+        perm1.set(i, perm1.get(j));
+        i = j;
+      }
+      perm1.set(r, p0);
+      count.set(r, count.get(r) - 1);
+      if (count.get(r) > 0) more = false; else r++;
+    }
+  }
+  nperm++;
+}
+
+checksum + "\n" + "Pfannkuchen(" + n + ") = " + flips

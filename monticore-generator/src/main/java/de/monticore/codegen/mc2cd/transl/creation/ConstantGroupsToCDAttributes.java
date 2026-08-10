@@ -43,7 +43,7 @@ public class ConstantGroupsToCDAttributes implements UnaryOperator<Link<ASTMCGra
         .getMCGrammarSymbol(link.source().getEnclosingScope()).get()
         .getSpannedScope()
         .resolveProd(link.source().getName());
-    if (!typeProd.isPresent()) {
+    if (typeProd.isEmpty()) {
       Log.debug("Unknown type of the grammar rule "
           + link.source().getName() + " in the grammar "
           + MCGrammarSymbolTableHelper.getMCGrammarSymbol(link.source().getEnclosingScope()).get()
@@ -55,10 +55,9 @@ public class ConstantGroupsToCDAttributes implements UnaryOperator<Link<ASTMCGra
     ProdSymbol prodSymbol = typeProd.get();
     for (RuleComponentSymbol prodComponent : prodSymbol.getProdComponents()) {
       if (prodComponent.isIsConstantGroup() && prodComponent.isPresentAstNode()
-          && prodComponent.getAstNode() instanceof ASTConstantGroup) {
+          && prodComponent.getAstNode() instanceof ASTConstantGroup astConstantGroup) {
         ASTCDAttribute cdAttribute = CD4AnalysisMill.cDAttributeBuilder().setModifier(CD4CodeMill.modifierBuilder().build()).uncheckedBuild();
         link.target().addCDMember(cdAttribute);
-        ASTConstantGroup astConstantGroup = (ASTConstantGroup) prodComponent.getAstNode();
         new Link<>(astConstantGroup, cdAttribute, link);
       }
     }

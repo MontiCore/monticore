@@ -4,17 +4,14 @@ package de.monticore.types.check;
 import com.google.common.base.Preconditions;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
-import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mcbasictypes._visitor.MCBasicTypesHandler;
 import de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser;
 import de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor2;
 import de.se_rwth.commons.logging.Log;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 /**
  * Visitor for Derivation of SymType from MCBasicTypes
@@ -119,7 +116,7 @@ public class SynthesizeSymTypeFromMCBasicTypes extends AbstractSynthesizeFromTyp
       }
       */
 
-      SymTypeVariable symType = SymTypeExpressionFactory.createTypeVariable(matches.get(0));
+      SymTypeVariable symType = SymTypeExpressionFactory.createTypeVariable(matches.getFirst());
       return Optional.of(symType);
     }
   }
@@ -150,7 +147,7 @@ public class SynthesizeSymTypeFromMCBasicTypes extends AbstractSynthesizeFromTyp
         );
       }
       */
-      SymTypeOfObject symType = SymTypeExpressionFactory.createTypeObject(matches.get(0));
+      SymTypeOfObject symType = SymTypeExpressionFactory.createTypeObject(matches.getFirst());
       return Optional.of(symType);
     }
   }

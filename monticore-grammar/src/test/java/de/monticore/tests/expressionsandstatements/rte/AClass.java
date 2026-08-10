@@ -9,6 +9,10 @@ public class AClass {
   public AClass() {
   }
 
+  static {
+    resetStaticVars();
+  }
+
   public boolean var_boolean = false;
   public byte var_byte = 0;
   public short var_short = 0;
@@ -27,23 +31,43 @@ public class AClass {
   public Float var_Float = 0f;
   public Double var_Double = 0d;
 
-  public static boolean var_s_boolean = false;
-  public static byte var_s_byte = 0;
-  public static short var_s_short = 0;
-  public static char var_s_char = 0;
-  public static int var_s_int = 0;
-  public static long var_s_long = 0;
-  public static float var_s_float = 0;
-  public static double var_s_double = 0;
+  public static boolean var_s_boolean;
+  public static byte var_s_byte;
+  public static short var_s_short;
+  public static char var_s_char;
+  public static int var_s_int;
+  public static long var_s_long;
+  public static float var_s_float;
+  public static double var_s_double;
 
-  public static Boolean var_s_Boolean = false;
-  public static Byte var_s_Byte = 0;
-  public static Short var_s_Short = 0;
-  public static Character var_s_Character = 0;
-  public static Integer var_s_Integer = 0;
-  public static Long var_s_Long = 0L;
-  public static Float var_s_Float = 0f;
-  public static Double var_s_Double = 0d;
+  public static Boolean var_s_Boolean;
+  public static Byte var_s_Byte;
+  public static Short var_s_Short;
+  public static Character var_s_Character;
+  public static Integer var_s_Integer;
+  public static Long var_s_Long;
+  public static Float var_s_Float;
+  public static Double var_s_Double;
+
+  static public void resetStaticVars() {
+    var_s_boolean = false;
+    var_s_byte = 0;
+    var_s_short = 0;
+    var_s_char = 0;
+    var_s_int = 0;
+    var_s_long = 0;
+    var_s_float = 0;
+    var_s_double = 0;
+
+    var_s_Boolean = false;
+    var_s_Byte = 0;
+    var_s_Short = 0;
+    var_s_Character = 0;
+    var_s_Integer = 0;
+    var_s_Long = 0L;
+    var_s_Float = 0f;
+    var_s_Double = 0d;
+  }
 
   public boolean get_var_boolean() {
     return var_boolean;

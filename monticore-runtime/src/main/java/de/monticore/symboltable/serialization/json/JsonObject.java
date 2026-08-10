@@ -248,7 +248,7 @@ public class JsonObject implements JsonElement {
    */
   public Optional<Boolean> getBooleanMemberOpt(String name) {
     if (hasBooleanMember(name)) {
-      return Optional.ofNullable(getMember(name).getAsJsonBoolean().getValue());
+      return Optional.of(getMember(name).getAsJsonBoolean().getValue());
     }
     return Optional.empty();
   }
@@ -326,7 +326,7 @@ public class JsonObject implements JsonElement {
    */
   public Optional<Integer> getIntegerMemberOpt(String name) {
     if (hasIntegerMember(name)) {
-      return Optional.ofNullable(getMember(name).getAsJsonNumber().getNumberAsInteger());
+      return Optional.of(getMember(name).getAsJsonNumber().getNumberAsInteger());
     }
     return Optional.empty();
   }
@@ -365,7 +365,7 @@ public class JsonObject implements JsonElement {
    */
   public Optional<Double> getDoubleMemberOpt(String name) {
     if (hasIntegerMember(name)) {
-      return Optional.ofNullable(getMember(name).getAsJsonNumber().getNumberAsDouble());
+      return Optional.of(getMember(name).getAsJsonNumber().getNumberAsDouble());
     }
     return Optional.empty();
   }
@@ -404,7 +404,7 @@ public class JsonObject implements JsonElement {
    */
   public Optional<Float> getFloatMemberOpt(String name) {
     if (hasIntegerMember(name)) {
-      return Optional.ofNullable(getMember(name).getAsJsonNumber().getNumberAsFloat());
+      return Optional.of(getMember(name).getAsJsonNumber().getNumberAsFloat());
     }
     return Optional.empty();
   }
@@ -443,7 +443,7 @@ public class JsonObject implements JsonElement {
    */
   public Optional<Long> getLongMemberOpt(String name) {
     if (hasIntegerMember(name)) {
-      return Optional.ofNullable(getMember(name).getAsJsonNumber().getNumberAsLong());
+      return Optional.of(getMember(name).getAsJsonNumber().getNumberAsLong());
     }
     return Optional.empty();
   }

@@ -250,8 +250,8 @@ public class CommonExpressionsInterpreter
         (MICalculationBoolean) frame -> recursableCallCalcValue.calculate(frame).asBoolean(),
         (MICalculationInt) frame -> recursableCallCalcValue.calculate(frame).asInt(),
         (MICalculationDouble) frame -> recursableCallCalcValue.calculate(frame).asDouble(),
-        (MICalculationValue) frame -> recursableCallCalcValue.calculate(frame),
-        (MICalculationVoid) frame -> recursableCallCalcValue.calculate(frame)
+        (MICalculationValue) recursableCallCalcValue::calculate,
+        (MICalculationVoid) recursableCallCalcValue::calculate
     );
     iData.putCalculation(callCalc);
   }
@@ -297,9 +297,7 @@ public class CommonExpressionsInterpreter
     }
 
     iData.putCalculation(resGetter);
-    if (resSetterOpt.isPresent()) {
-      iData.putSetter(resSetterOpt.get());
-    }
+    resSetterOpt.ifPresent(miSetter -> iData.putSetter(miSetter));
   }
 
   // Stack Segmentation ~ Dark Magic, only touch with care!

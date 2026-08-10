@@ -213,7 +213,11 @@ public class Class2MCTestModels {
         Arguments.of("(Comparable<Boolean>)(Boolean)true", true),
         Arguments.of("(Comparable<Integer>)(Integer)4", 4),
         Arguments.of("(Object)\"a\"", "a"),
-        Arguments.of("(R\"a\")((Object)\"a\")", "a")
+        Arguments.of("(R\"a\")((Object)\"a\")", "a"),
+        Arguments.of("(Comparable<Integer>)(Integer)4", 4),
+        Arguments.of("((Integer | Double)Integer.valueOf(4)).equals(4.0)", true)
+        // no support yet
+        //Arguments.of("((Comparable<Integer> & Number)Integer.valueOf(4)).equals(4)", true)
     );
   }
 
