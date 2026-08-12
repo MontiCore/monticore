@@ -27,14 +27,20 @@ public class PPGuardComponent {
 
   protected final boolean isMCCommonLiteralsSuper;
 
+  protected String tokenType; // the corresponding token type (e.g., Name, AUT1234)
+  protected String nameOrIndex; // the position in the parsetree
   protected boolean hasNoSpace = false;
+
+  // NEW: Explicitly track if this is a Lexical token (String) or a Parser rule (ASTNode)
+  protected final boolean isLexical;
 
   // For tracing
   protected ASTNode node;
 
   public PPGuardComponent(PPGuardType type, BlockData blockData, String name, String nameToUse,
                           String separator, Set<Map.Entry<String, String>> constants, int iteration, boolean isMCCommonLiteralsSuper,
-                          ASTNode node) {
+                          ASTNode node,
+                          boolean isLexical, String tokenType, String nameOrIndex) {
     this.type = type;
     this.blockData = blockData;
     this.name = name;
@@ -44,6 +50,9 @@ public class PPGuardComponent {
     this.iteration = iteration;
     this.isMCCommonLiteralsSuper = isMCCommonLiteralsSuper;
     this.node = node;
+    this.isLexical = isLexical;
+    this.tokenType = tokenType;
+    this.nameOrIndex = nameOrIndex;
   }
 
   public PPGuardType getType() {
@@ -84,8 +93,7 @@ public class PPGuardComponent {
    * Anything which is represented by a String in the AST (such as lexed tokens)
    */
   public boolean isStringType() {
-    // Note: We catch LexProds earlier and substitute them with a Name
-    return "String".equals(getName()) || "Name".equals(getName()) || "Char".equals(getName()) || "Digits".equals(getName());
+    return this.isLexical;
   }
 
   public boolean isCommonTokenString() {
@@ -106,6 +114,14 @@ public class PPGuardComponent {
     return this.hasNoSpace;
   }
 
+  public String getTokenType() {
+    return this.tokenType;
+  }
+
+  public String getNameOrIndex() {
+    return this.nameOrIndex;
+  }
+
   /**
    * Guess if no Space before or after this terminal/constant is a possibility
    * If the terminal/constant is only consisting of non alpha-numeric or question mark characters
@@ -124,6 +140,10 @@ public class PPGuardComponent {
 
   public void setHasNoSpace(boolean hasNoSpace) {
     this.hasNoSpace = hasNoSpace;
+  }
+
+  public void setNameOrIndex(String nameOrIndex) {
+    this.nameOrIndex = nameOrIndex;
   }
 
   public enum PPGuardType {
@@ -155,30 +175,30 @@ public class PPGuardComponent {
   }
 
   public static PPGuardComponent forBlock(BlockData blockData,
-                                          int iteration, ASTNode node) {
-    return new PPGuardComponent(PPGuardType.BLOCK, blockData, null, null, null, null, iteration, false, node);
+                                          int iteration, ASTNode node, String tokenType) {
+    return new PPGuardComponent(PPGuardType.BLOCK, blockData, null, null, null, null, iteration, false, node, false, tokenType, null);
   }
 
   public static PPGuardComponent forNT(String name, String nameToUse,
-                                       int iteration, boolean iterated, boolean isMCCommonLiteralsSuper, ASTNode node) {
-    return new PPGuardComponent(iterated ? PPGuardType.NT_ITERATED : PPGuardType.NT, null, name, nameToUse, null, null, iteration, isMCCommonLiteralsSuper, node);
+                                       int iteration, boolean iterated, boolean isMCCommonLiteralsSuper, ASTNode node, boolean isLexical, String tokenType) {
+    return new PPGuardComponent(iterated ? PPGuardType.NT_ITERATED : PPGuardType.NT, null, name, nameToUse, null, null, iteration, isMCCommonLiteralsSuper, node, isLexical, tokenType, null);
   }
 
   public static PPGuardComponent forNTSingle(String name, String nameToUse,
-                                             int iteration, boolean isMCCommonLiteralsSuper, ASTNode node) {
-    return new PPGuardComponent(PPGuardType.NT_AST_DEF, null, name, nameToUse, null, null, iteration, isMCCommonLiteralsSuper, node);
+                                             int iteration, boolean isMCCommonLiteralsSuper, ASTNode node, boolean isLexical, String tokenType) {
+    return new PPGuardComponent(PPGuardType.NT_AST_DEF, null, name, nameToUse, null, null, iteration, isMCCommonLiteralsSuper, node, isLexical, tokenType, null);
   }
 
-  public static PPGuardComponent forT(String name, ASTNode node) {
-    return new PPGuardComponent(PPGuardType.T, null, name, name, null, null, ASTConstantsGrammar.DEFAULT, false, node);
+  public static PPGuardComponent forT(String name, ASTNode node, String tokenType) {
+    return new PPGuardComponent(PPGuardType.T, null, name, name, null, null, ASTConstantsGrammar.DEFAULT, false, node, false, tokenType, null);
   }
 
-  public static PPGuardComponent forT(String name, String usageName, int iteration, ASTNode node) {
-    return new PPGuardComponent(PPGuardType.T, null, name, usageName, null, null, iteration, false, node);
+  public static PPGuardComponent forT(String name, String usageName, int iteration, ASTNode node, String tokenType) {
+    return new PPGuardComponent(PPGuardType.T, null, name, usageName, null, null, iteration, false, node, false, tokenType, null);
   }
 
-  public static PPGuardComponent forCG(String usageName, Set<Map.Entry<String, String>> constants, ASTNode node) {
-    return new PPGuardComponent(PPGuardType.CG, null, usageName, usageName, null, constants, 0, false, node);
+  public static PPGuardComponent forCG(String usageName, Set<Map.Entry<String, String>> constants, ASTNode node, String tokenType) {
+    return new PPGuardComponent(PPGuardType.CG, null, usageName, usageName, null, constants, 0, false, node, false, tokenType, null);
   }
 
 }
