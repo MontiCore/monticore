@@ -31,7 +31,7 @@ import java.util.stream.Stream;
  */
 public final class MCPath {
 
-  protected final Map<URLClassLoader, URL> classloaderMap = new LinkedHashMap<>();
+  private final Map<URLClassLoader, URL> classloaderMap = new LinkedHashMap<>();
 
   public MCPath() { }
 
@@ -189,7 +189,7 @@ public final class MCPath {
               e.printStackTrace();
               return null;
             }
-          }).collect(Collectors.toList()));
+          }).toList());
         }
       }
       File folder = p.resolve(folderPath).toFile(); //e.g., "src/test/resources/foo/bar"
@@ -203,7 +203,7 @@ public final class MCPath {
     }
 
     if (1 == resolvedURLs.size()) {
-      return Optional.of(resolvedURLs.get(0));
+      return Optional.of(resolvedURLs.getFirst());
     }
     else if (1 < resolvedURLs.size()) {
       reportAmbiguity(resolvedURLs, fileNameRegEx);
@@ -229,22 +229,22 @@ public final class MCPath {
     if (1 == resolvedURLs.size()) {
       try {
         // Note: URL#getFile() might be unexpectedly encoded
-        URI resolvedURI = resolvedURLs.get(0).toURI();
+        URI resolvedURI = resolvedURLs.getFirst().toURI();
         if (resolvedURI.isOpaque() || !resolvedURI.isAbsolute()) {
           // For example, a jar:file:/home/.../MyFile.jar!/de/mc/Entry.mc4
           // As the "parentFile" would be within the jar-filesystem, we do not do the check case-sensitive check
-          return Optional.of(resolvedURLs.get(0));
+          return Optional.of(resolvedURLs.getFirst());
         }
         File resolvedFile = new File(resolvedURI);
         File parentFile = new File(resolvedFile.getParent());
         if (parentFile.isDirectory()) {
           // Special handling to ensure the file name matches without ignoring the case
-          String simpleName = new File(resolvedURLs.get(0).getFile()).getName();
+          String simpleName = new File(resolvedURLs.getFirst().getFile()).getName();
           if (Arrays.stream(parentFile.listFiles()).anyMatch(f -> simpleName.equals(f.getName()))) {
-            return Optional.of(resolvedURLs.get(0));
+            return Optional.of(resolvedURLs.getFirst());
           }
         } else {
-          return Optional.of(resolvedURLs.get(0));
+          return Optional.of(resolvedURLs.getFirst());
         }
       } catch (URISyntaxException e) {
         Log.error("0xFDAB1: Unexpected uri format " + e.getMessage());
@@ -257,11 +257,11 @@ public final class MCPath {
     return Optional.empty();
   }
 
-  protected List<URL> findResolvedUrls(String fixedPath){
+  private List<URL> findResolvedUrls(String fixedPath){
     return resolvedUrlsCache.getUnchecked(fixedPath);
   }
 
-  protected List<URL> do_findResolvedUrls(String fixedPath) {
+  private List<URL> do_findResolvedUrls(String fixedPath) {
     return classloaderMap.keySet().stream()
         .map(classloader -> FileReaderWriter.getResource(classloader, fixedPath))
         .filter(Optional::isPresent)
@@ -299,7 +299,7 @@ public final class MCPath {
     }
   }
 
-  protected static void reportAmbiguity(List<URL> resolvedURLs, String path) {
+  static void reportAmbiguity(List<URL> resolvedURLs, String path) {
     StringBuilder ambiguityArray = new StringBuilder("{");
     String sep = "";
     for (URL url : resolvedURLs) {
@@ -310,12 +310,12 @@ public final class MCPath {
     ambiguityArray.append("}");
     Log.error(
         "0xA1294 The following entries for the file `" + path + "` are ambiguous:"
-            + "\n" + ambiguityArray.toString());
+            + "\n" + ambiguityArray);
   }
 
   public void close(){
     invalidateCaches();
-    classloaderMap.keySet().stream().forEach(c -> {
+    classloaderMap.keySet().forEach(c -> {
       try {
         c.close();
       }

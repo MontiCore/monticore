@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("symbolReferenceName", "symbolName", "simpelName", "scopeName", "generatedError1", "generatedError2")}
-  if(!delegate.isPresent()){
+  if(delegate.isEmpty()){
     if (name == null || name.isEmpty()) throw new IllegalArgumentException("0xA4070${generatedError1} Symbol name may not be null or empty.");
 
     Log.debug("Load full information of '" + name + "' (Kind " + "${symbolName}" + ").", ${symbolReferenceName}.class.getSimpleName());
@@ -12,7 +12,7 @@ ${tc.signature("symbolReferenceName", "symbolName", "simpelName", "scopeName", "
     if (resolvedSymbol.isPresent()) {
       Log.debug("Loaded full information of '" + name + "' successfully.",
       ${symbolReferenceName}.class.getSimpleName());
-      delegate = Optional.of(resolvedSymbol.get());
+      delegate = resolvedSymbol;
       return delegate.get();
     } else {
       Log.error("0xA1038 " + ${symbolReferenceName}.class.getSimpleName() + " Could not load full information of '" +

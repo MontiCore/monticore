@@ -236,8 +236,7 @@ public class MontiCoreTool {
    */
   protected final void useLogbackConfiguration(InputStream config) throws JoranException {
     ILoggerFactory lf = LoggerFactory.getILoggerFactory();
-    if(lf instanceof LoggerContext) {
-      LoggerContext context = (LoggerContext) lf;
+    if(lf instanceof LoggerContext context) {
       JoranConfigurator configurator = new JoranConfigurator();
       configurator.setContext(context);
   

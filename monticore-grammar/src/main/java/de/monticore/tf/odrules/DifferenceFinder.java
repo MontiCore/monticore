@@ -129,7 +129,7 @@ public class DifferenceFinder {
       @Nonnull ASTODDefinition rhs) {
     ChangeOperationFactory operationFactory = new ChangeOperationFactory(rule, lhs, rhs, hierarchyHelper);
 
-    List<ASTChangeOperation> changeOpList = new ArrayList<ASTChangeOperation>();
+    List<ASTChangeOperation> changeOpList = new ArrayList<>();
     List<ASTODLink> toCreateLinksCopy = new LinkedList<>(toCreateLinks);
 
     for (ChangePair<ASTODObject> pair : toChangeObjects) {

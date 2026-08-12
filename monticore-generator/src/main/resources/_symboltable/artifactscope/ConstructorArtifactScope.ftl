@@ -1,8 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
   super(true);
-  if (enclosingScope.isPresent()) {
-    setEnclosingScope(enclosingScope.get());
-  }
+  enclosingScope.ifPresent(this::setEnclosingScope);
   setExportingSymbols(true);
   Preconditions.checkNotNull(packageName);
   Preconditions.checkNotNull(imports);

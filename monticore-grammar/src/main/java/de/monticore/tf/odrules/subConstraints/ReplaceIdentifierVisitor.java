@@ -14,8 +14,6 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * Created by Alexander Wilts on 16.01.2017.
- * <p>
  * This visitor replaces identifier variables with a call to their real variables.
  * <p>
  * An identifier variable is a short way to reference the name of an element in a transformation.

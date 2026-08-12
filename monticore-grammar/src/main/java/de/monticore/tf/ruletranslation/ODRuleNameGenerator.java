@@ -83,7 +83,7 @@ public class ODRuleNameGenerator {
       else {
         prefix = StringTransformations.uncapitalize(elementType.getSimpleName().substring(3));
       }
-      String name = StringTransformations.uncapitalize(prefix + "_" + Integer.toString(nextNumber));
+      String name = StringTransformations.uncapitalize(prefix + "_" + nextNumber);
       generatedNames.put(element, name);
     }
     return generatedNames.get(element);

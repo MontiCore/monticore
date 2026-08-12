@@ -242,7 +242,7 @@ public class GlobalScopeClassDecorator extends AbstractCreator<ASTCDCompilationU
       ASTMCType listType = getMCTypeFacade().createListTypeOf(symbolResolverInterfaceTypeName);
 
       ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PROTECTED.build(), listType, attrName);
-      this.replaceTemplate(VALUE, attribute, new StringHookPoint(" = new ArrayList<" + symbolResolverInterfaceTypeName + ">()"));
+      this.replaceTemplate(VALUE, attribute, new StringHookPoint(" = new ArrayList<>()"));
       return Optional.ofNullable(attribute);
     }
     return Optional.empty();

@@ -97,8 +97,7 @@ public class TypeContextCalculator {
         // todo reactivate after typedispatcher fix
         //else if (getTypeDispatcher().isType(spanningSymbol)) {
         //  TypeSymbol typeSymbol = getTypeDispatcher().asType(spanningSymbol);
-        else if (spanningSymbol instanceof TypeSymbol) {
-          TypeSymbol typeSymbol = (TypeSymbol) spanningSymbol;
+        else if (spanningSymbol instanceof TypeSymbol typeSymbol) {
           if (typeSymbol == type) {
             exprIsInType = true;
           }

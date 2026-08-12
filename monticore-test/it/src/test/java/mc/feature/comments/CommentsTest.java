@@ -2,7 +2,6 @@
 
 package mc.feature.comments;
 
-import de.monticore.ast.ASTNode;
 import de.monticore.runtime.junit.TestWithMCLanguage;
 import mc.feature.comments.commenttest.CommentTestMill;
 import mc.feature.comments.commenttest._ast.ASTStart;
@@ -30,8 +29,8 @@ public class CommentsTest {
     assertFalse(p.hasErrors());
     assertEquals(1, ast.getAList().size());
     assertEquals(1, ast.getBList().size());
-    assertEquals(1, ((ASTNode) ast.getAList().get(0)).get_PreCommentList().size());
-    assertEquals(1, ((ASTNode) ast.getAList().get(0)).get_PostCommentList().size());
-    assertEquals(0, ((ASTNode) ast.getBList().get(0)).get_PreCommentList().size());
+    assertEquals(1, ast.getAList().getFirst().get_PreCommentList().size());
+    assertEquals(1, ast.getAList().getFirst().get_PostCommentList().size());
+    assertEquals(0, ast.getBList().getFirst().get_PreCommentList().size());
   }
 }

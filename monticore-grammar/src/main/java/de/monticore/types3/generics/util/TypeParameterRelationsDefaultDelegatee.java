@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * Default delegatee for TypeParameterRelations.
@@ -75,7 +74,7 @@ public class TypeParameterRelationsDefaultDelegatee
               .calculate(type, SymTypeExpression::isInferenceVariable)
               .stream()
               .map(SymTypeExpression::asInferenceVariable)
-              .collect(Collectors.toList())
+              .toList()
       );
     }
     return infVars;

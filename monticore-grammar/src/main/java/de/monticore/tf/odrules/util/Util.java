@@ -109,8 +109,8 @@ public class Util {
       for (ODObjectSymbol symb : symbols) {
         return Optional.of(symb);
       }
-      return Optional.empty();
     }
+    return Optional.empty();
   }
 
   /**

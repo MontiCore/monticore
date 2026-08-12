@@ -2,7 +2,7 @@
   List<String> remainingSymbolNames = new ArrayList<>();
   String packageAS = this.getPackageName();
   if(symbolName.startsWith(packageAS)){
-    if(!packageAS.equals("")){
+    if(!packageAS.isEmpty()){
       symbolName = symbolName.substring(packageAS.length()+1);
     }
     String asName = this.getName() + ".";

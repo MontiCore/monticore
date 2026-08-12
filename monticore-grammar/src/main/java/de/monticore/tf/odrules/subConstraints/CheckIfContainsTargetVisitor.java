@@ -6,8 +6,6 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.visitor.IVisitor;
 
 /**
- * Created by Alexander Wilts on 16.01.2017.
- * <p>
  * This visitor determines if if an Expression contains a given Expression targetNode.
  */
 public class CheckIfContainsTargetVisitor implements
@@ -15,7 +13,7 @@ public class CheckIfContainsTargetVisitor implements
 {
 
   protected ASTExpression targetNode;
-  public boolean containsTarget = false;
+  public boolean containsTarget;
 
   public CheckIfContainsTargetVisitor(ASTExpression targetNode){
     super();

@@ -19,7 +19,7 @@ public class MCFunctionTypesTypeVisitor extends AbstractTypeVisitor
   public void endVisit(ASTMCFunctionType functionType) {
     SymTypeExpression symType;
 
-    List<SymTypeExpression> arguments = new LinkedList<SymTypeExpression>();
+    List<SymTypeExpression> arguments = new LinkedList<>();
     for (int i = 0; i < functionType.getMCFunctionParTypes().sizeMCTypes(); i++) {
       ASTMCType par = functionType.getMCFunctionParTypes().getMCType(i);
 

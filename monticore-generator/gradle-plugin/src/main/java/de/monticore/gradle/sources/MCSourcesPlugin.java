@@ -39,9 +39,8 @@ public class MCSourcesPlugin implements Plugin<Project> {
   @Override
   public void apply(@Nonnull Project target) {
     target.getPluginManager().apply("java-base");
-    target.getExtensions().getByType(JavaPluginExtension.class).getSourceSets().all(sourceSet -> {
-      addSourceSetExtension(sourceSet, target);
-    });
+    target.getExtensions().getByType(JavaPluginExtension.class).getSourceSets()
+        .all(sourceSet -> addSourceSetExtension(sourceSet, target));
   }
 
   /**

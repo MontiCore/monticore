@@ -69,13 +69,12 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
     // create list of cdDefinitions from superclass and own class
     List<ASTCDDefinition> definitionList = new ArrayList<>();
     definitionList.add(ast.getCDDefinition());
-    definitionList.addAll(superCDsTransitive.stream().map(x -> (ASTCDDefinition)x.getAstNode()).collect(
-        Collectors.toList()));
+    definitionList.addAll(superCDsTransitive.stream().map(x -> (ASTCDDefinition)x.getAstNode()).toList());
 
     List<String> visitorSimpleNameList = Lists.newArrayList(visitorService.getVisitorSimpleName());
     visitorSimpleNameList.addAll(superCDsTransitive.stream()
         .map(visitorService::getVisitorSimpleName)
-        .collect(Collectors.toList()));
+        .toList());
 
     List<ASTMCObjectType> superInterfaces = this.visitorService.getSuperTraverserInterfaces();
     if (superInterfaces.isEmpty()) {
@@ -458,7 +457,8 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
    * @return The decorated method
    */
   protected ASTCDMethod addDelegatingMethod(ASTMCType astType, String simpleVisitorName, String methodName) {
-    return addDelegatingMethod(astType, new ArrayList<>(Arrays.asList(simpleVisitorName)), methodName);
+    return addDelegatingMethod(astType, new ArrayList<>(
+        Collections.singletonList(simpleVisitorName)), methodName);
   }
   
   /**
@@ -486,9 +486,9 @@ public class TraverserInterfaceDecorator extends AbstractCreator<ASTCDCompilatio
    * @return The set of all qualified symbol names
    */
   protected Set<String> getSymbolsTransitive() {
-    Set<String> superSymbolNames = new LinkedHashSet<>();
-    // add local symbols
-    superSymbolNames.addAll(symbolTableService.retrieveSymbolNamesFromCD(visitorService.getCDSymbol()));
+    // initialize with local symbols
+    Set<String> superSymbolNames = new LinkedHashSet<>(
+        symbolTableService.retrieveSymbolNamesFromCD(visitorService.getCDSymbol()));
     
     // add symbols of super CDs
     List<DiagramSymbol> superCDsTransitive = visitorService.getSuperCDsTransitive();

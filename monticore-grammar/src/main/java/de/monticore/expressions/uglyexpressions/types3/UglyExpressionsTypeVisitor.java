@@ -260,11 +260,10 @@ public class UglyExpressionsTypeVisitor
       ASTArrayDimensionSpecifier dimSpec) {
     Optional<Integer> dimensions;
     // todo use typedispatcher as soon as it works
-    if (dimSpec instanceof ASTArrayDimensionByExpression) {
-      ASTArrayDimensionByExpression dims = (ASTArrayDimensionByExpression) dimSpec;
+    if (dimSpec instanceof ASTArrayDimensionByExpression dims) {
       List<SymTypeExpression> expressions = dims.getExpressionList().stream()
           .map(e -> getType4Ast().getPartialTypeOfExpr(e))
-          .collect(Collectors.toList());
+          .toList();
       boolean expressionsOK = true;
       if (expressions.stream().anyMatch(SymTypeExpression::isObscureType)) {
         expressionsOK = false;

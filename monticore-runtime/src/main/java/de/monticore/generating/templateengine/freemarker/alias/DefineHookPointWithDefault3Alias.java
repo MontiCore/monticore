@@ -16,8 +16,8 @@ public class DefineHookPointWithDefault3Alias extends GlexAlias {
   public Object exec(List arguments) throws TemplateModelException {
     exactArguments(arguments, 3);
 
-    ArrayList args = new ArrayList(arguments);
-    args.add(0, Environment.getCurrentEnvironment().getVariable("tc"));
+    ArrayList<Object> args = new ArrayList<>(arguments);
+    args.addFirst(Environment.getCurrentEnvironment().getVariable("tc"));
     return super.exec(args);
   }
 }

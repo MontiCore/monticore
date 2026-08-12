@@ -9,6 +9,7 @@ import de.monticore.tf.odrules._parser.ODRulesParser;
 import de.monticore.tf.odrules._symboltable.ODRulesScopesGenitorDelegator;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.cli.*;
+import org.apache.commons.cli.help.HelpFormatter;
 
 import java.io.File;
 import java.io.IOException;
@@ -123,9 +124,14 @@ public class ODRulesCLI {
   }
   
   protected void printHelp(Options options) {
-    HelpFormatter formatter = new HelpFormatter();
-    formatter.setWidth(80);
-    formatter.printHelp("ODRulesCLI", options);
+    HelpFormatter formatter = HelpFormatter.builder().setShowSince(false).get();
+    try {
+      formatter.printHelp(this.getClass().getSimpleName(), "", options, "", true);
+    }
+    catch (java.io.IOException e) {
+      // If the help-output could not be written to the help appendable
+      throw new RuntimeException(e);
+    }
   }
   
   static final String LOG_ID = "ODRules";
