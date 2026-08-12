@@ -29,6 +29,13 @@ public interface IModelAccessor {
    * @param transformationName the name of the transformation
    */
   void notifyTransformationEnd(@Nonnull String transformationName);
+
+  /**
+   * Notifies that a node has been created.
+   *
+   * @param node the newly created node
+   */
+  void notifyNodeCreation(@Nonnull ASTNode node);
   
   /**
    * Notifies that a node has been attached to a parent node.

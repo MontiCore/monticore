@@ -38,6 +38,7 @@
     int valIdx = ${ast.getObjectGetter()}.get(i).${ast.getGetter()}().indexOf(d_copy);
     m.${ast.getObjectName()}_${ast.getValue()}_before.put(d_copy, valIdx);
 
+    notifyDeepClone(d_copy);
     this.modelAccessor.notifyListModification(${ast.getObjectGetter()}.get(i), "${ast.getAttributeName()}", valIdx, ModificationOp.SET, null, d_copy);
     this.modelAccessor.notifyNodeAttach(d_copy, ${ast.getObjectGetter()}.get(i));
   }
@@ -65,6 +66,7 @@
     m.${ast.getObjectName()}_${ast.getValue()}_before.put(d_copy, valIdx);
 
     // TODO: REPLACE instead of SET modification??
+    notifyDeepClone(d_copy);
     this.modelAccessor.notifyListModification(${ast.getObjectGetter()}.get(${ast.getValueGetter()}.indexOf(d)), "${ast.getAttributeName()}", valIdx, ModificationOp.SET, null, d_copy);
     this.modelAccessor.notifyNodeAttach(d_copy, ${ast.getObjectGetter()}.get(${ast.getValueGetter()}.indexOf(d)));
   }
@@ -121,6 +123,7 @@
     ${ast.getType()} d_copy = d.deepClone();
     ${ast.getObjectName()}.${ast.getSetter()}(d_copy);
 
+    notifyDeepClone(d_copy);
     this.modelAccessor.notifyModification(${ast.getObjectName()}, "${ast.getAttributeName()}", ModificationOp.REPLACE, m.${ast.getObjectName()}_${ast.getValue()}_before.get(${ast.getObjectName()}), d_copy);
     this.modelAccessor.notifyNodeAttach(d_copy, ${ast.getObjectName()});
   }

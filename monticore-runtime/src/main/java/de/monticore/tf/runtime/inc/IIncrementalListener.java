@@ -32,6 +32,15 @@ public interface IIncrementalListener {
   default void onTransformationEnd(@Nonnull String transformationName) {
     // Override to add custom implementation
   }
+
+  /**
+   * Called when an AST node is created.
+   *
+   * @param node the newly created AST node
+   */
+  default void onASTNodeCreation(@Nonnull ASTNode node) {
+    // Override to add custom implementation
+  }
   
   /**
    * Called when an AST node is attached to a parent node.

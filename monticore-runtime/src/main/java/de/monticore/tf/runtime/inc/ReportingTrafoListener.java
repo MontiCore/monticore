@@ -101,11 +101,10 @@ public class ReportingTrafoListener implements IIncrementalListener {
   /**
    * Reports the creation of an AST node as a transformation event.
    *
-   * @param node newly attached AST node
-   * @param parent optional parent node
+   * @param node newly created AST node
    */
   @Override
-  public void onASTNodeAttach(@Nonnull ASTNode node, @Nullable ASTNode parent) {
+  public void onASTNodeCreation(@Nonnull ASTNode node) {
     reportTransformationObjectCreation(this.currentTransformationName, node);
   }
   

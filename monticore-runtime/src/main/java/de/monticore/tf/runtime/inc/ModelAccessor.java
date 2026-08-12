@@ -133,7 +133,20 @@ public class ModelAccessor implements IModelAccessor {
     this.customIndices.values().forEach(index -> index.onTransformationEnd(transformationName));
     this.listeners.forEach(listener -> listener.onTransformationEnd(transformationName));
   }
-  
+
+  /**
+   * Forwards a node creation notification to the managed indices and listeners.
+   *
+   * @param node the newly created node
+   */
+  @Override
+  public void notifyNodeCreation(@Nonnull ASTNode node) {
+    this.parentIndex.onASTNodeCreation(node);
+    this.candidateIndex.onASTNodeCreation(node);
+    this.customIndices.values().forEach(index -> index.onASTNodeCreation(node));
+    this.listeners.forEach(listener -> listener.onASTNodeCreation(node));
+  }
+
   /**
    * Forwards a node attach notification to the managed indices and listeners.
    *

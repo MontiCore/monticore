@@ -32,7 +32,17 @@ public class LoggingListener implements IIncrementalListener {
   public void onTransformationEnd(@Nonnull String transformationName) {
     Log.info("Transformation ended: " + transformationName, LoggingListener.class.getSimpleName());
   }
-  
+
+  /**
+   * Logs that an AST node has been created.
+   *
+   * @param node the newly created AST node
+   */
+  @Override
+  public void onASTNodeCreation(@Nonnull ASTNode node) {
+    Log.info("AST node created: " + node.getClass().getSimpleName(), LoggingListener.class.getSimpleName());
+  }
+
   /**
    * Logs that a node has been attached to a parent node.
    *

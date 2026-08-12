@@ -39,6 +39,7 @@ ${signature("ruleClassName")}
       int valIdx = ${ast.getObjectGetter()}.${ast.getGetter()}().indexOf(d_copy);
       m.${ast.getObjectName()}_${ast.getValue()}_before.put(d_copy, valIdx);
 
+      notifyDeepClone(d_copy);
       this.modelAccessor.notifyListModification(${ast.getObjectGetter()}, "${ast.getAttributeName()}", valIdx, ModificationOp.SET, null, d_copy);
       this.modelAccessor.notifyNodeAttach(d_copy, ${ast.getObjectGetter()});
     }
@@ -76,6 +77,7 @@ ${signature("ruleClassName")}
       ${ast.getType()} d_copy = d.deepClone();
       ${ast.getObjectGetter()}.${ast.getSetter()}(d_copy);
 
+      notifyDeepClone(d_copy);
       this.modelAccessor.notifyModification(${ast.getObjectGetter()}, "${ast.getAttributeName()}", ModificationOp.REPLACE, m.${ast.getObjectName()}_${ast.getValue()}_before, d_copy);
       this.modelAccessor.notifyNodeAttach(d_copy, ${ast.getObjectGetter()});
     }

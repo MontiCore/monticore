@@ -49,6 +49,7 @@ ${signature("ruleClassName")}
         d
     );
 
+    notifyDeepClone(d);
     this.modelAccessor.notifyListModification(${ast.getObjectGetter()}, "${ast.getAttributeName()}", <#if ast.isPresentInsertPosition()>pos<#else>${ast.getObjectGetter()}.${ast.getGetter()}().size() - 1</#if>, ModificationOp.SET, null, d);
     this.modelAccessor.notifyNodeAttach(d, ${ast.getObjectGetter()});
 
@@ -91,6 +92,7 @@ ${signature("ruleClassName")}
     ${ast.getValueType()} clonedValue = ${ast.getValueGetter()}.deepClone();
     ${ast.getObjectGetter()}.${ast.getSetter()}();
 
+    notifyDeepClone(clonedValue);
     this.modelAccessor.notifyModification(${ast.getObjectGetter()}, "${ast.getAttributeName()}", ModificationOp.REPLACE, m.${ast.getObjectName()}_${ast.getValue()}_before, clonedValue);
     this.modelAccessor.notifyNodeAttach(clonedValue, ${ast.getObjectGetter()});
     <#else>

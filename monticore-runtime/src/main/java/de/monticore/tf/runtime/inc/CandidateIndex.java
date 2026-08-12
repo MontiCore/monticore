@@ -38,6 +38,11 @@ public class CandidateIndex implements IModelIndex {
    * of that class or interface.</p>
    */
   protected Multimap<Class<?>, Class<?>> subTypes;
+
+  /**
+   * Stores detached subtree roots in insertion order for later processing.
+   */
+  protected LinkedHashSet<ASTNode> danglingSubtrees;
   
   protected ITraverser detachTraverser;
   
@@ -51,6 +56,7 @@ public class CandidateIndex implements IModelIndex {
     this.candidates = LinkedHashMultimap.create();
     this.subTypes = LinkedHashMultimap.create();
     this.detachTraverser = traverser.get();
+    this.danglingSubtrees = new LinkedHashSet<>();
     
     initDetachTraverser();
   }
@@ -186,15 +192,14 @@ public class CandidateIndex implements IModelIndex {
   }
   
   /**
-   * Called when an AST node is attached to a parent node.
+   * Called when an AST node is created.
    *
-   * <p>The attached node is added to the candidate index.</p>
+   * <p>The created node is added to the candidate index.</p>
    *
-   * @param node attached AST node
-   * @param parent parent node to which the node was attached
+   * @param node the newly created AST node
    */
   @Override
-  public void onASTNodeAttach(@Nonnull ASTNode node, @Nullable ASTNode parent) {
+  public void onASTNodeCreation(@Nonnull ASTNode node) {
     this.candidates.put(node.getClass(), node);
     Log.debug(() -> "Added node with type %s!".formatted(node.getClass()), "CandidateIndex");
   }
@@ -202,16 +207,51 @@ public class CandidateIndex implements IModelIndex {
   /**
    * Called when an AST node is detached from a parent node.
    *
-   * <p>The detached node is removed from the candidate index.</p>
+   * <p>The detached node is marked as dangling and removed lazily at
+   * transformation end unless it gets re-attached before that.</p>
    *
    * @param node detached AST node
    * @param parent former parent node
    */
   @Override
   public void onASTNodeDetach(@Nonnull ASTNode node, @Nonnull ASTNode parent) {
-    node.accept(this.detachTraverser);
+    this.danglingSubtrees.add(node);
   }
-  
+
+  /**
+   * Called when an AST node is attached to a parent node.
+   *
+   * <p>If the node was previously marked as dangling, it is unmarked so it is
+   * not removed at transformation end.</p>
+   *
+   * @param node attached AST node
+   * @param parent parent node, or {@code null} if the node is a root node
+   */
+  @Override
+  public void onASTNodeAttach(@Nonnull ASTNode node, @Nullable ASTNode parent) {
+    this.danglingSubtrees.remove(node);
+  }
+
+  /**
+   * Called when a transformation ends.
+   *
+   * <p>All still-dangling subtrees are traversed and removed from the index,
+   * then the dangling set is cleared.</p>
+   *
+   * @param transformationName the name of the transformation
+   */
+  @Override
+  public void onTransformationEnd(@Nonnull String transformationName) {
+    this.danglingSubtrees.forEach(x -> x.accept(this.detachTraverser));
+    this.danglingSubtrees.clear();
+  }
+
+  /**
+   * Initializes the traverser used for deferred subtree removal.
+   *
+   * <p>During post-order traversal, each visited node is removed from the
+   * candidate map.</p>
+   */
   protected void initDetachTraverser() {
     this.detachTraverser.add4IVisitor(new IVisitor() {
       

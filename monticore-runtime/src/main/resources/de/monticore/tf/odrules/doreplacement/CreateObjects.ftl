@@ -58,6 +58,7 @@
         </#if>
       </#list>
       m.${create.getName()} = <#if isWithinOpt>Optional.of(</#if>builder.build()<#if isWithinOpt>)</#if>;
+      this.modelAccessor.notifyNodeCreation(m.${create.getName()}<#if isWithinOpt>.get()</#if>);
       delayedAttachmentNotifications.forEach(n -> n.accept(m.${create.getName()}<#if isWithinOpt>.get()</#if>));
   <#else>
     // TODO: There exists no builder for ${create.getType()}s - check if this is set from external

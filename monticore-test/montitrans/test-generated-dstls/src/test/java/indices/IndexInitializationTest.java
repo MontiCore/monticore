@@ -54,7 +54,6 @@ public class IndexInitializationTest {
     // Check the parent index for correctness
     // Each node (besides the root) should have one PostComment
     ma.getCandidateIndex().getAllNodes().forEach(n -> {
-      ;
       if (!(n instanceof ASTStatechart)) {
         assertEquals(1, n.get_PostCommentList().size());
         assertInstanceOf(ParentIndex.WComment.class, n.get_PostCommentList().getFirst());
