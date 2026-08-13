@@ -88,7 +88,7 @@ public class OOTypeSymbol extends OOTypeSymbolTOP {
 
   public SymTypeExpression getSuperClass() {
     if (isPresentSuperClass()) {
-      return getSuperClassesOnly().get(0);
+      return getSuperClassesOnly().getFirst();
     }
     Log.error("0xA1067 SuperClass does not exist");
     // Normally this statement is not reachable
@@ -102,7 +102,7 @@ public class OOTypeSymbol extends OOTypeSymbolTOP {
     List<SymTypeExpression> oOSuperTypes = superTypes.stream()
       .filter(type -> type.getTypeInfo() instanceof OOTypeSymbol)
       .filter(type -> ((OOTypeSymbol) type.getTypeInfo()).isIsClass())
-      .collect(Collectors.toList());
+      .toList();
     normalSuperTypes.addAll(oOSuperTypes);
     return normalSuperTypes;
   }

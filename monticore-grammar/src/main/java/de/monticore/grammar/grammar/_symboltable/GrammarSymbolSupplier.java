@@ -30,12 +30,11 @@ public class GrammarSymbolSupplier implements Supplier<Optional<MCGrammarSymbol>
     if (resolvedSymbol.isPresent()) {
       Log.debug("Loaded full information of '" + qualifiedName + "' successfully.",
                 GrammarSymbolSupplier.class.getSimpleName());
-      return resolvedSymbol;
     } else {
       Log.error("0xA1037 " + GrammarSymbolSupplier.class.getSimpleName() + " Could not load full information of '" +
                         qualifiedName + "' (Kind " + "de.monticore.grammar.grammar._symboltable.MCGrammarSymbol" + ").");
-      return resolvedSymbol;
     }
+    return resolvedSymbol;
   }
 
   public static <T> Supplier<T> memoize(Supplier<T> delegate) {

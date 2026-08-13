@@ -24,7 +24,7 @@ statements ought to be added later in development.
         * [AssignmentExpressionsJavaGenVisitor](../../expressions/assignmentexpressions/codegen/javagen/AssignmentExpressionsJavaGenVisitor.java)
           (CodeGenVisitor for AssignmentExpressions, partially implemented)
         * [BitExpressionsJavaGenVisitor](../../expressions/bitexpressions/codegen/javagen/BitExpressionsJavaGenVisitor.java)
-          (CodeGenVisitor for BitExpressions, no implementation yet)
+          (CodeGenVisitor for BitExpressions)
         * [CommonExpressionsJavaGenVisitor](../../expressions/commonexpressions/codegen/javagen/CommonExpressionsJavaGenVisitor.java)
           (CodeGenVisitor for CommonExpressions, partially implemented)
         * [ExpressionsBasisJavaGenVisitor](../../expressions/expressionsbasis/codegen/javagen/ExpressionsBasisJavaGenVisitor.java)
@@ -52,6 +52,9 @@ statements ought to be added later in development.
           (CodeGenVisitor for MCReturnStatements)
         * [MCVarDeclarationStatementsJavaGenVisitor](../../statements/mcvardeclarationstatements/codegen/javagen/MCVarDeclarationStatementsJavaGenVisitor.java)
           (CodeGenVisitor for MCVarDeclarationStatements, simplified cases only)
+    * Types
+        * [MCBasicTypesJavaGenVisitor](../../types/mcbasictypes/codegen/javagen/MCBasicTypesJavaGenVisitor.java)
+          (CodeGenVisitor for *all* `MCType`s)
 * [JavaGenSymTypeExpressionConverter](JavaGenSymTypeExpressionConverter.java)
   (CodeGenSymTypeExpressionConverter for conversion of types in Java)
     * [AbstractJavaTypeConverter](typeconverter/AbstractJavaTypeConverter.java)

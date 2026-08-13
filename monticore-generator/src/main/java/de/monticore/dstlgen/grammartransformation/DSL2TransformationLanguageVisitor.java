@@ -115,7 +115,7 @@ public class DSL2TransformationLanguageVisitor implements
     if (!DSTLGenInheritanceHelper.getInstance().isCommonSuperGrammar(grammarSymbol.getName())) {
       Optional<Integer> depth = grammarSymbol.getSuperGrammarSymbols().stream().map(this::recursiveCalculateGrammarDepth)
           .max(Integer::compare);
-      return depth.isPresent() ? 1 + depth.get() : 1;
+      return depth.map(integer -> 1 + integer).orElse(1);
     }
 
     return 0;
@@ -139,7 +139,7 @@ public class DSL2TransformationLanguageVisitor implements
   @Override
   public void endVisit(ASTMCGrammar srcNode) {
     ASTClassProd tfObjectProduction = productionFactory.createTFRuleProduction(grammarSymbol);
-    tfLang.getClassProdList().add(0, tfObjectProduction);
+    tfLang.getClassProdList().addFirst(tfObjectProduction);
 
     // This language-specific interface might be required,
     // as otherwise the ITFPart parser method body could exceed Javas limit.
@@ -247,32 +247,32 @@ public class DSL2TransformationLanguageVisitor implements
         p.add_PreComment(new Comment(" /*Skipping supers due to empty prod*/ "));
       }
       addASTClassProdAnnotations(p, overridden);
-      targetClassProdList.add(0, p);
+      targetClassProdList.addFirst(p);
 
       p = productionFactory.createProd(srcNode, OPTIONAL, superExternal, isLeftRecursive);
       if (!addASTClassProdInterfaces(srcNode, p, OPTIONAL, isLeftRecursive, isEmpty)) {
         p.add_PreComment(new Comment(" /*Skipping supers due to " + (isEmpty ? "empty prod " : "") + (isLeftRecursive ? "left recursiveness " : "") + " */ "));
       }
       addASTClassProdAnnotations(p, overridden);
-      targetClassProdList.add(0, p);
+      targetClassProdList.addFirst(p);
 
       p = productionFactory.createProd(srcNode, NEGATION, superExternal, isLeftRecursive);
       if (!addASTClassProdInterfaces(srcNode, p, NEGATION, isLeftRecursive, isEmpty)) {
         p.add_PreComment(new Comment(" /*Skipping supers due to " + (isEmpty ? "empty prod " : "") + (isLeftRecursive ? "left recursiveness " : "") + " */ "));
       }
       addASTClassProdAnnotations(p, overridden);
-      targetClassProdList.add(0, p);
+      targetClassProdList.addFirst(p);
 
       p =  productionFactory.createPatternProd(srcNode,grammarSymbol, superExternal, isLeftRecursive, isEmpty);
       addASTClassProdAnnotations(p, overridden);
-      targetClassProdList.add(0, p);
+      targetClassProdList.addFirst(p);
 
       p = productionFactory.createReplacementProd(srcNode, superExternal);
       if (!addASTClassProdInterfaces(srcNode, p, REPLACEMENT, isLeftRecursive, isEmpty)) {
         p.add_PreComment(new Comment(" /*Skipping supers due to " + (isEmpty ? "empty prod " : "") + (isLeftRecursive ? "left recursiveness " : "") + " */ "));
       }
       addASTClassProdAnnotations(p, overridden);
-      targetClassProdList.add(0, p);
+      targetClassProdList.addFirst(p);
 
       targetAstRuleList.add(astRuleFactory.createAstProd(srcNode, LIST, overridden, grammarSymbol));
       targetAstRuleList.add(astRuleFactory.createAstProd(srcNode, NEGATION, overridden, grammarSymbol));

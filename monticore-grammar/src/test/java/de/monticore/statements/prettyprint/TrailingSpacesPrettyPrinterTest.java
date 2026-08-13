@@ -2,14 +2,12 @@
 package de.monticore.statements.prettyprint;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.statements.mccommonstatements._ast.ASTMCJavaBlock;
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTLocalVariableDeclarationStatement;
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTSimpleInit;
 import de.monticore.statements.testmccommonstatements.TestMCCommonStatementsMill;
 import de.monticore.statements.testmccommonstatements._parser.TestMCCommonStatementsParser;
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -17,23 +15,14 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@TestWithMCLanguage(TestMCCommonStatementsMill.class)
 public class TrailingSpacesPrettyPrinterTest {
-
-  TestMCCommonStatementsParser parser;
-
-  @BeforeEach
-  public void init() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-    TestMCCommonStatementsMill.reset();
-    TestMCCommonStatementsMill.init();
-    parser = TestMCCommonStatementsMill.parser();
-  }
 
   @Test
   public void testSingleLineCommentEOL() throws IOException {
     // Scenario: An expression is string-concatenated into a statement as the initial value
     // First, we have to extract the inner AST node with the comment
+    TestMCCommonStatementsParser parser = TestMCCommonStatementsMill.parser();
     Optional<ASTMCJavaBlock> blocks = parser.parse_StringMCJavaBlock("{int i1 = a // single line comment\n; int i2 = b; }");
     assertFalse(parser.hasErrors());
     assertTrue(blocks.isPresent());

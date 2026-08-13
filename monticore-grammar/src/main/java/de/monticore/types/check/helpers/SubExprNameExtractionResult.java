@@ -30,8 +30,8 @@ public class SubExprNameExtractionResult {
   public void maybeAppendInvalidExprAtStart(ASTExpression expression) {
     ExprToOptNamePair toBeAdded = ExprToOptNamePair.of(expression, Optional.empty());
 
-    if (subExpressions.isEmpty() || !subExpressions.get(0).getExpression().equals(expression)) {
-      subExpressions.add(0, toBeAdded);
+    if (subExpressions.isEmpty() || !subExpressions.getFirst().getExpression().equals(expression)) {
+      subExpressions.addFirst(toBeAdded);
     }
   }
 
@@ -43,8 +43,8 @@ public class SubExprNameExtractionResult {
   protected void putNameAtStart(ASTExpression expression, String name) {
     ExprToOptNamePair toBeAdded = ExprToOptNamePair.of(expression, Optional.of(name));
 
-    if(subExpressions.isEmpty() || !subExpressions.get(0).getExpression().equals(expression)) {
-      subExpressions.add(0, toBeAdded);
+    if(subExpressions.isEmpty() || !subExpressions.getFirst().getExpression().equals(expression)) {
+      subExpressions.addFirst(toBeAdded);
     } else {
       subExpressions.set(0, toBeAdded);
     }
@@ -82,7 +82,7 @@ public class SubExprNameExtractionResult {
     if(subExpressions.isEmpty()) {
       return Optional.empty();
     } else {
-      return subExpressions.get(subExpressions.size() - 1).getName();
+      return subExpressions.getLast().getName();
     }
   }
 

@@ -18,18 +18,14 @@ public class Grammar_WithConceptsParser extends Grammar_WithConceptsParserTOP {
   @Override
   public Optional<ASTMCGrammar> parse_String(String str) throws IOException {
     Optional<ASTMCGrammar> grammar = super.parse_String(str);
-    if (grammar.isPresent()) {
-      GrammarTransformer.transform(grammar.get());
-    }
+    grammar.ifPresent(GrammarTransformer::transform);
     return grammar;
   }
 
   @Override
   public Optional<ASTMCGrammar> parse(Reader reader) throws IOException {
     Optional<ASTMCGrammar> grammar = super.parse(reader);
-    if (grammar.isPresent()) {
-      GrammarTransformer.transform(grammar.get());
-    }
+    grammar.ifPresent(GrammarTransformer::transform);
     return grammar;
   }
 
@@ -38,7 +34,6 @@ public class Grammar_WithConceptsParser extends Grammar_WithConceptsParserTOP {
    */
   @Override
   public Optional<de.monticore.grammar.grammar._ast.ASTMCGrammar> parse(String fileName) throws IOException {
-    Grammar_WithConceptsParser parser = new Grammar_WithConceptsParser();
     Optional<ASTMCGrammar> ast = parseMCGrammar(fileName);
     if (ast.isPresent()) {
 
@@ -47,7 +42,7 @@ public class Grammar_WithConceptsParser extends Grammar_WithConceptsParserTOP {
       String simpleFileName = Files.getNameWithoutExtension(fileName);
       String modelName = ast.get().getName();
       String packageName = Names.getPathFromFilename(pathName);
-      String packageDeclaration = Names.getPathFromPackage(Names.getQualifiedName(ast.get().getPackageList()));
+      String packageDeclaration = Names.getPathFromPackage(Names.constructQualifiedName(ast.get().getPackageList()));
       if (!modelName.equals(simpleFileName)) {
         Log.error("0xA4003 The grammar name " + modelName + " must be identical to the file name "
                 + simpleFileName + " of "
@@ -55,7 +50,7 @@ public class Grammar_WithConceptsParser extends Grammar_WithConceptsParserTOP {
       }
 
       if(!packageName.endsWith(packageDeclaration)){
-        Log.error("0xA4004 The package declaration " + Names.getQualifiedName(ast.get().getPackageList()) + " of the grammar must not differ from the "
+        Log.error("0xA4004 The package declaration " + Names.constructQualifiedName(ast.get().getPackageList()) + " of the grammar must not differ from the "
                 + "package of the grammar file.");
       }
 
@@ -65,7 +60,7 @@ public class Grammar_WithConceptsParser extends Grammar_WithConceptsParserTOP {
 
     Optional<ASTMCGrammar> result = Optional.empty();
     if (ast.isPresent()) {
-      result = Optional.of(ast.get());
+      result = ast;
     }
     return result;
   }

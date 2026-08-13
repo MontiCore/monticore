@@ -2,13 +2,11 @@
 
 package de.monticore.prettyprint;
 
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.siunit.siunits.SIUnitsMill;
 import de.monticore.siunit.siunits._ast.ASTSIUnit;
 import de.monticore.siunit.siunits._parser.SIUnitsParser;
 import de.monticore.siunit.siunits._prettyprint.SIUnitsFullPrettyPrinter;
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -21,15 +19,8 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@TestWithMCLanguage(SIUnitsMill.class)
 public class SIUnitPrettyPrinterTest {
-
-  @BeforeEach
-  public void init() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-    SIUnitsMill.reset();
-    SIUnitsMill.init();
-  }
 
   @ParameterizedTest
   @MethodSource
@@ -47,10 +38,8 @@ public class SIUnitPrettyPrinterTest {
 
     Optional<ASTSIUnit> parsedPrinted = parser.parse_String(prettyPrinted);
     assertFalse(parser.hasErrors());
-    assertTrue(parsedOpt.isPresent());
+    assertTrue(parsedPrinted.isPresent());
     assertTrue(parsed.deepEquals(parsedPrinted.get()));
-
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   public static Stream<Arguments> testSIUnitPrettyPrinting() {

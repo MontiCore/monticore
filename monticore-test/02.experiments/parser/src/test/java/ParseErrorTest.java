@@ -315,7 +315,7 @@ public class ParseErrorTest {
   public void testP() throws IOException {
     parser.parse_StringP("KeyWord abc");
     Assertions.assertTrue(parser.hasErrors());
-    Assertions.assertEquals("mismatched input 'KeyWord' expecting {'bx', 'ax'} (found: Name) in rule stack: [P]\u00A0\n" +
+    Assertions.assertEquals("mismatched input 'KeyWord' expecting {'ax', 'bx'} (found: Name) in rule stack: [P]\u00A0\n" +
         "KeyWord abc" + "\n" +
         "^", Log.getFindings().get(0).getMsg());
   }

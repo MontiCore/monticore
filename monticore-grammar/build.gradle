@@ -20,7 +20,6 @@ description = 'MontiCore: Grammar'
 group = "de.monticore"
 
 def grammarOutDir = "$buildDir/generated-sources/monticore/sourcecode"
-def taggingOutDir = "$buildDir/generated-sources/monticore/tagging"
 
 sourceSets {
   // Add mlc files to grammars source set (resulting in them being included in the grammars-jar)
@@ -43,12 +42,6 @@ sourceSets {
   }
   // The trafo source set might be configured based on the genTR property via the -withtr plugin
 
-  // If tagging is enabled, also create the tagging source set
-  if (("true").equals(getProperty('genTagging'))) {
-    tagging { // and compile its java code
-      java.srcDirs(taggingOutDir)
-    }
-  }
 }
 
 // Declare the de.monticore:monticore-grammar-grammars capability for compatibility reasons
@@ -76,6 +69,7 @@ dependencies {
   api project(':monticore-runtime')
   implementation "com.google.guava:guava:$guava_version"
   implementation "org.apache.commons:commons-lang3:$commons_lang3_version"
+  implementation "org.apache.commons:commons-text:$commons_text_version"
 
   testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
   testImplementation "org.junit.jupiter:junit-jupiter-params:$junit_version"
@@ -87,10 +81,6 @@ dependencies {
   // grammar test fixtures includes runtime test dependencies
   testFixturesApi testFixtures(project(":monticore-runtime"))
   testFixturesImplementation "de.monticore:class2mc:$previous_mc_version"
-  if (("true").equals(getProperty('genTagging'))) {
-    // use compileOnly as the tagging- and trafo-artifact are only an extension to the default artifact
-    taggingCompileOnly project(path)
-  }
 }
 
 test {
@@ -116,47 +106,8 @@ tasks.register("generateSingleMCGrammarForDev", MCGenTask) {
   group = 'mc'
 }
 
-// Note: In the future we will introduce options for TR/Tag output to the tool
+// Note: In the future we will introduce options for TR output to the tool
 import de.monticore.gradle.gen.MCGenTask;
-
-if (("true").equals(getProperty('genTagging'))) {
-  // Explicitly configure tagging
-  tasks.register("generateTagDefGrammars", MCGenTask.class) {
-    // Make sure we use the output of the generate task
-    // (this ensures, that the inputs are not evaluated too early, resulting in this task being skipped)
-    grammar.setFrom(tasks.named("generateMCGrammars", MCGenTask.class).get().getTagDefOutput().matching {
-      exclude(['**/de/monticore/tagging/*', '**/Grammar_WithConcepts*'])
-    })
-    outputDir = file taggingOutDir
-    genTag = true
-    modelPath.from(file grammarOutDir)
-    dependsOn("generateMCGrammars")
-
-
-    if (findProperty("ci") != null) {
-      script = "de/monticore/monticore_noreports.groovy"
-    }
-    symbolPathConfiguration.from(configurations.named("taggingGrammarSymbolDependencies"))
-  }
-  compileTaggingJava.dependsOn(generateTagDefGrammars)
-  processGrammarsForVariantResources.dependsOn(generateTagDefGrammars)
-  tasks.register("generateTagSchemaGrammars", MCGenTask.class) {
-    // Make sure we use the output of the generate task
-    // (this ensures, that the inputs are not evaluated too early, resulting in this task being skipped)
-    grammar.setFrom(tasks.named("generateMCGrammars", MCGenTask.class).get().getTagSchemaOutput().matching {
-      exclude(['**/de/monticore/tagging/*', '**/de/monticore/grammar/*'])
-    })
-    outputDir = file taggingOutDir
-    modelPath.from(file grammarOutDir)
-    dependsOn("generateMCGrammars")
-    if (findProperty("ci") != null) {
-      script = "de/monticore/monticore_noreports.groovy"
-    }
-    symbolPathConfiguration.from(configurations.named("taggingGrammarSymbolDependencies"))
-  }
-  compileTaggingJava.dependsOn(generateTagSchemaGrammars)
-  processGrammarsForVariantResources.dependsOn(generateTagSchemaGrammars)
-}
 
 
 if (("true").equals(getProperty('genTR'))) {
@@ -608,45 +559,6 @@ publishing {
     maven {
       artifact reportsJar
     }
-  }
-}
-
-if (("true").equals(getProperty('genTagging'))) {
-  // Because tagging is not properly published as a source set we instead add the tag definitions to the main grammar jars
-  ["grammarsJar", "grammarsForVariantJar"].forEach { taskname ->
-    // We have to add it to both the "compability grammarsForVariant", as well as the grammarsJar publication
-    tasks.named(taskname, org.gradle.api.tasks.bundling.Jar) {
-      from(tasks.generateMCGrammars.outputDir) {
-        include "**/*TagDefinition.mc4", "**/*TagSchema.mc4"
-      }
-      includeEmptyDirs = false
-    }
-  }
-  // Bundle and publish the generated tagging artifacts separately as monticore-grammar-tagging
-  tasks.register('taggingJar', Jar) {
-    from sourceSets.tagging.output
-    group 'build'
-    dependsOn(tasks.generateTaggingMCGrammars, tasks.generateTagDefGrammars, tasks.generateTagSchemaGrammars)
-  }
-  tasks.register('taggingSourcesJar', Jar) {
-    from sourceSets.tagging.java
-    group 'build'
-    dependsOn(tasks.generateTaggingMCGrammars, tasks.generateTagDefGrammars, tasks.generateTagSchemaGrammars)
-  }
-  publishing {
-    publications {
-      "tagging"(MavenPublication) {
-        artifactId = project.name + "-tagging"
-        artifact tasks.taggingJar { archiveAppendix = 'tagging' }
-        artifact tasks.taggingSourcesJar { archiveAppendix = 'tagging'; archiveClassifier = 'sources' }
-      }
-    }
-  }
-  configurations {
-    tagging
-  }
-  artifacts {
-    tagging(taggingJar)
   }
 }
 

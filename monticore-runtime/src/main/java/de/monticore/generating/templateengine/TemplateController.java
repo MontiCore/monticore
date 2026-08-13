@@ -21,7 +21,6 @@ import java.nio.file.Paths;
 import java.util.*;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Lists.newArrayList;
 
 /**
@@ -111,11 +110,11 @@ public class TemplateController {
    * results together in one big String and include that into the currently
    * processed output. We iterate on the templates and ASTNodes. In case order
    * is important: The iteration goes like this:
-   *
+   * <p>
    *  for ( templates ) {
    *    for ( ASTNodes ) {...}
    *  }
-   *
+   * <p>
    * Inside the inner loop, it is checked whether Hookpoints are to be called.
    * Template filename may be qualified (using "."). When it
    * is not qualified, the filename is taken from the current package (same as
@@ -577,11 +576,8 @@ public class TemplateController {
 
       // Run template with data to create output
       config.getFreeMarkerTemplateEngine().run(ret, tc.data, template);
-
-      if (oldAst.isPresent()) {
-        d.put(AST, oldAst.get());
-      }
-
+      
+      oldAst.ifPresent(templateModel -> d.put(AST, templateModel));
     } else {
       // no template
       String usage = this.templatename != null ? " (used in " + this.templatename + ")" : "";
@@ -613,7 +609,7 @@ public class TemplateController {
     ASTNode ast = null;
 
     Object o = getValueFromData(AST);
-    if ((o != null) && (o instanceof ASTNode)) {
+    if (o instanceof ASTNode) {
       ast = (ASTNode) o;
     }
 

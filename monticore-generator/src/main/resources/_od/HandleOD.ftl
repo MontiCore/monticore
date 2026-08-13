@@ -68,7 +68,7 @@ ${tc.signature("cdClass", "classFullName")}
   }
     <#elseif genHelper.isOptional(attr.getMCType())>
   if (node.isPresent${genHelper.getNativeAttributeName(attr.getName())?cap_first}()) {
-    printAttribute("${attr.getName()}", "\"" + String.valueOf(node.${attrGetter}()) + "\"");
+    printAttribute("${attr.getName()}", "\"" + node.${attrGetter}() + "\"");
   } else if (printEmptyOptional) {
     pp.println("${attr.getName()} = absent;");
   }

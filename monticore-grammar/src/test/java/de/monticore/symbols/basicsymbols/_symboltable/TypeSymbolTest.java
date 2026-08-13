@@ -1,21 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.symbols.basicsymbols._symboltable;
 
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@TestWithMCLanguage(BasicSymbolsMill.class)
 public class TypeSymbolTest {
-
-  @BeforeEach
-  void setUp() {
-    LogStub.init();
-    BasicSymbolsMill.init();
-  }
 
   @Test @SuppressWarnings({"EqualsWithItself", "ConstantConditions"})
   void equalsShouldEqualSame() {

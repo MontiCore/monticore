@@ -2,26 +2,17 @@
 
 package mc.feature.symboltable;
 
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.symboltable.IScopeSpanningSymbol;
-import de.se_rwth.commons.logging.LogStub;
-import mc.GeneratorIntegrationsTest;
 import mc.feature.symboltable.automatonwithstinfo3.AutomatonWithSTInfo3Mill;
 import mc.feature.symboltable.automatonwithstinfo3._symboltable.*;
-import org.junit.jupiter.api.BeforeEach;
 
-import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class AutomatonWithSTInfo3Test extends GeneratorIntegrationsTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
+@TestWithMCLanguage(AutomatonWithSTInfo3Mill.class)
+public class AutomatonWithSTInfo3Test {
   
   /**
    * This test ensures that all expected classes are generated. Otherwise, the test will not compile
@@ -43,7 +34,6 @@ public class AutomatonWithSTInfo3Test extends GeneratorIntegrationsTest {
     StateSymbol stateSymbol = new StateSymbol("S");
     assertFalse(stateSymbol instanceof IScopeSpanningSymbol);
     StateSymbolSurrogate stateSymbolSurrogate;
-    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

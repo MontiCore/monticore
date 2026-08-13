@@ -1,20 +1,18 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.feature.parserinfo;
 
-import de.se_rwth.commons.logging.LogStub;
+import de.monticore.runtime.junit.AbstractMCTest;
 import mc.feature.parserinfo.parserinfosimpleinheritancetest._parser._auxiliary.ParserInfoSimpleInheritanceTestParserInfoForParserInfoTest;
 import mc.feature.parserinfo.parserinfotest._parser.ParserInfoTestParserInfo;
-
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
-import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.Parameter;
 import org.junit.jupiter.params.ParameterizedClass;
 import org.junit.jupiter.params.provider.ValueSource;
+
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -24,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 @ParameterizedClass
 @ValueSource(booleans =  {true, false})
-public class ParserInfoTest {
+public class ParserInfoTest extends AbstractMCTest {
     @Parameter
     private boolean useSimpleInheritance;
 
@@ -41,25 +39,18 @@ public class ParserInfoTest {
         }
     }
     
-    @BeforeEach
-    public void before() {
-        LogStub.init();
-        Log.enableFailQuick(false);
-    }
-    
     @Test
     public void testNoRef() {
         List<Integer> states = IntStream.range(0, MAX_STATE_NUMBER)
                 .filter(ParserInfoTestParserInfo::stateHasUsageNameUsageName1)
                 .boxed()
-                .collect(Collectors.toList());
+                .toList();
 
         assertEquals(1, states.size());
 
-        int s = states.get(0);
+        int s = states.getFirst();
         assertFalse(ParserInfoTestParserInfo.stateReferencesElementASymbol(s));
         assertFalse(ParserInfoTestParserInfo.stateReferencesElementBSymbol(s));
-        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
@@ -67,14 +58,13 @@ public class ParserInfoTest {
         List<Integer> states = IntStream.range(0, MAX_STATE_NUMBER)
                 .filter(ParserInfoTestParserInfo::stateHasUsageNameUsageName2)
                 .boxed()
-                .collect(Collectors.toList());
+                .toList();
 
         assertEquals(1, states.size());
 
-        int s = states.get(0);
+        int s = states.getFirst();
         assertTrue(ParserInfoTestParserInfo.stateReferencesElementASymbol(s));
         assertFalse(ParserInfoTestParserInfo.stateReferencesElementBSymbol(s));
-        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
@@ -82,14 +72,13 @@ public class ParserInfoTest {
         List<Integer> states = IntStream.range(0, MAX_STATE_NUMBER)
                 .filter(ParserInfoTestParserInfo::stateHasUsageNameRefA)
                 .boxed()
-                .collect(Collectors.toList());
+                .toList();
 
         assertEquals(1, states.size());
 
-        int s = states.get(0);
+        int s = states.getFirst();
         assertTrue(ParserInfoTestParserInfo.stateReferencesElementASymbol(s));
         assertFalse(ParserInfoTestParserInfo.stateReferencesElementBSymbol(s));
-        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
@@ -97,14 +86,13 @@ public class ParserInfoTest {
         List<Integer> states = IntStream.range(0, MAX_STATE_NUMBER)
                 .filter(ParserInfoTestParserInfo::stateHasUsageNameRefB)
                 .boxed()
-                .collect(Collectors.toList());
+                .toList();
 
         assertEquals(1, states.size());
 
-        int s = states.get(0);
+        int s = states.getFirst();
         assertFalse(ParserInfoTestParserInfo.stateReferencesElementASymbol(s));
         assertTrue(ParserInfoTestParserInfo.stateReferencesElementBSymbol(s));
-        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
@@ -112,7 +100,7 @@ public class ParserInfoTest {
         List<Integer> states = IntStream.range(0, MAX_STATE_NUMBER)
                 .filter(ParserInfoTestParserInfo::stateHasUsageNameUsageNameForList1)
                 .boxed()
-                .collect(Collectors.toList());
+                .toList();
 
         // '(a || ",")+' is replaced with 'a ("," a)*'
         assertEquals(2, states.size());
@@ -121,7 +109,6 @@ public class ParserInfoTest {
             assertTrue(ParserInfoTestParserInfo.stateReferencesElementASymbol(s));
             assertFalse(ParserInfoTestParserInfo.stateReferencesElementBSymbol(s));
         }
-        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
@@ -129,7 +116,7 @@ public class ParserInfoTest {
         List<Integer> states = IntStream.range(0, MAX_STATE_NUMBER)
                 .filter(ParserInfoTestParserInfo::stateHasUsageNameUsageNameForList2)
                 .boxed()
-                .collect(Collectors.toList());
+                .toList();
 
         assertEquals(2, states.size());
 
@@ -137,7 +124,6 @@ public class ParserInfoTest {
             assertTrue(ParserInfoTestParserInfo.stateReferencesElementASymbol(s));
             assertFalse(ParserInfoTestParserInfo.stateReferencesElementBSymbol(s));
         }
-        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
@@ -146,7 +132,7 @@ public class ParserInfoTest {
             List<Integer> states = IntStream.range(0, MAX_STATE_NUMBER)
                     .filter(ParserInfoTestParserInfo::stateReferencesElementASymbol)
                     .boxed()
-                    .collect(Collectors.toList());
+                    .toList();
 
             assertFalse(states.isEmpty());
         }
@@ -162,11 +148,10 @@ public class ParserInfoTest {
             List<Integer> states = IntStream.range(0, MAX_STATE_NUMBER)
                     .filter(ParserInfoTestParserInfo::stateReferencesElementASymbol)
                     .boxed()
-                    .collect(Collectors.toList());
+                    .toList();
 
             assertTrue(states.isEmpty());
         }
-        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
@@ -174,7 +159,7 @@ public class ParserInfoTest {
         List<Integer> states = IntStream.range(0, MAX_STATE_NUMBER)
             .filter(ParserInfoTestParserInfo::stateDefinesName)
             .boxed()
-            .collect(Collectors.toList());
+            .toList();
 
         // ElementA to D are symbols and therefore define names
         assertEquals(4, states.size());
@@ -191,7 +176,6 @@ public class ParserInfoTest {
             assertFalse(ParserInfoTestParserInfo.stateReferencesElementASymbol(state));
             assertFalse(ParserInfoTestParserInfo.stateReferencesElementBSymbol(state));
         });
-        assertTrue(Log.getFindings().isEmpty());
     }
 
 }

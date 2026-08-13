@@ -133,7 +133,7 @@ public class DataDecoratorTest extends DecoratorTestCase {
   @Test
   public void testMethods() {
     assertFalse(dataClass.getCDMethodList().isEmpty());
-    assertEquals(52, dataClass.getCDMethodList().size());
+    assertEquals(53, dataClass.getCDMethodList().size());
   
     assertTrue(Log.getFindings().isEmpty());
   }

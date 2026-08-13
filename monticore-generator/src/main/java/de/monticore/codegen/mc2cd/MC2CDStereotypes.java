@@ -90,9 +90,9 @@ public enum MC2CDStereotypes {
    */
   TERMINAL_DEFAULT_VALUE("defaultTerminalValue");
 
-  protected final String stereotype;
+  private final String stereotype;
 
-  private MC2CDStereotypes(String stereotype) {
+  MC2CDStereotypes(String stereotype) {
     this.stereotype = stereotype;
   }
 

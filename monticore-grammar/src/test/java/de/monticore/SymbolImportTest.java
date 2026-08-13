@@ -3,12 +3,10 @@ package de.monticore;
 
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar._symboltable.MCGrammarSymbolSurrogate;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._symboltable.IGrammar_WithConceptsGlobalScope;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -19,16 +17,11 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@TestWithMCLanguage(Grammar_WithConceptsMill.class)
 public class SymbolImportTest {
 
   @BeforeEach
   public void init() {
-    Log.init();
-    LogStub.enableFailQuick(false);
-
-    Grammar_WithConceptsMill.reset();
-    Grammar_WithConceptsMill.init();
-
     IGrammar_WithConceptsGlobalScope globalScope = Grammar_WithConceptsMill.globalScope();
     globalScope.clear();
 
@@ -74,16 +67,16 @@ public class SymbolImportTest {
     MCGrammarSymbol symbol = grammarOpt.get().getSymbol();
 
 
-    String allSuperGrammars = symbol.getSuperGrammars().stream().map(MCGrammarSymbol::getFullName).collect(Collectors.joining(", "));
-    String allSuperGrammarsLazy = symbol.getSuperGrammars().stream().map(MCGrammarSymbol::getFullName).collect(Collectors.joining(", "));
+    String allSuperGrammars = symbol.getSuperGrammarSymbols().stream().map(MCGrammarSymbol::getFullName).collect(Collectors.joining(", "));
+    String allSuperGrammarsLazy = symbol.getSuperGrammarSymbols().stream().map(MCGrammarSymbol::getFullName).collect(Collectors.joining(", "));
 
     // check if the surrogate is returning the correct symbol
-    assertTrue(symbol.getSuperGrammars().stream().anyMatch(x -> x.getFullName().equals("de.monticore.grammar.SamePackage")), "SamePackage import failed: " + allSuperGrammars);
-    assertTrue(symbol.getSuperGrammars().stream().anyMatch(x -> x.getFullName().equals("de.monticore.grammar.pack.DifferentPackage")), "DifferentPackage import failed: " + allSuperGrammars);
+    assertTrue(symbol.getSuperGrammarSymbols().stream().anyMatch(x -> x.getFullName().equals("de.monticore.grammar.SamePackage")), "SamePackage import failed: " + allSuperGrammars);
+    assertTrue(symbol.getSuperGrammarSymbols().stream().anyMatch(x -> x.getFullName().equals("de.monticore.grammar.pack.DifferentPackage")), "DifferentPackage import failed: " + allSuperGrammars);
 
     // check if the surrogate is returning the correct fullname
-    assertTrue(symbol.getSuperGrammars().stream().anyMatch(x -> x.getFullName().equals("de.monticore.grammar.SamePackage")), "SamePackage lazy import failed: " + allSuperGrammarsLazy);
-    assertTrue(symbol.getSuperGrammars().stream().anyMatch(x -> x.getFullName().equals("de.monticore.grammar.pack.DifferentPackage")), "DifferentPackage lazy import failed: " + allSuperGrammarsLazy);
+    assertTrue(symbol.getSuperGrammarSymbols().stream().anyMatch(x -> x.getFullName().equals("de.monticore.grammar.SamePackage")), "SamePackage lazy import failed: " + allSuperGrammarsLazy);
+    assertTrue(symbol.getSuperGrammarSymbols().stream().anyMatch(x -> x.getFullName().equals("de.monticore.grammar.pack.DifferentPackage")), "DifferentPackage lazy import failed: " + allSuperGrammarsLazy);
 
   }
 }

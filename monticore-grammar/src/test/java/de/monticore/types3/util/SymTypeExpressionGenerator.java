@@ -8,17 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import static de.monticore.types.check.SymTypeExpressionFactory.createFunction;
-import static de.monticore.types.check.SymTypeExpressionFactory.createInferenceVariable;
-import static de.monticore.types.check.SymTypeExpressionFactory.createIntersection;
-import static de.monticore.types.check.SymTypeExpressionFactory.createObscureType;
-import static de.monticore.types.check.SymTypeExpressionFactory.createPrimitive;
-import static de.monticore.types.check.SymTypeExpressionFactory.createTuple;
-import static de.monticore.types.check.SymTypeExpressionFactory.createTypeArray;
-import static de.monticore.types.check.SymTypeExpressionFactory.createTypeOfNull;
-import static de.monticore.types.check.SymTypeExpressionFactory.createTypeVoid;
-import static de.monticore.types.check.SymTypeExpressionFactory.createUnion;
-import static de.monticore.types.check.SymTypeExpressionFactory.createWildcard;
+import static de.monticore.types.check.SymTypeExpressionFactory.*;
 
 /**
  * A generator to generate random SymTypeExpressions for testing purposes.

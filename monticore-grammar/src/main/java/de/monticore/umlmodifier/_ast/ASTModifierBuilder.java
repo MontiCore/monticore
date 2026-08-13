@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public class ASTModifierBuilder extends ASTModifierBuilderTOP {
   public ASTModifierBuilder addStereoValues(ASTStereoValue... value) {
-    if (!this.stereotype.isPresent()) {
+    if (this.stereotype.isEmpty()) {
       this.stereotype = Optional.of(UMLStereotypeMill.stereotypeBuilder().build());
     }
     this.stereotype.get().addAllValues(Arrays.asList(value));

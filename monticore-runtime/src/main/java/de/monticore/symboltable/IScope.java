@@ -101,13 +101,13 @@ public interface IScope {
       final List<String> nameParts = getNameParts(symbolName).toList();
 
       if (nameParts.size() > 1) {
-        final String firstNamePart = nameParts.get(0);
+        final String firstNamePart = nameParts.getFirst();
         // A scope that exports symbols usually has a name.
         if (this.isPresentName()) {
           return symbolName.startsWith(getName());
         }
         else {
-          return firstNamePart.equals("");
+          return firstNamePart.isEmpty();
         }
       }
     }

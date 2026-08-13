@@ -19,6 +19,7 @@ import de.monticore.siunit.siunittypes4computing.types3.SIUnitTypes4ComputingTyp
 import de.monticore.siunit.siunittypes4math.types3.SIUnitTypes4MathTypeVisitor;
 import de.monticore.tests.expressionsandstatements.ExpressionsAndStatementsMill;
 import de.monticore.tests.expressionsandstatements._visitor.ExpressionsAndStatementsTraverser;
+import de.monticore.types.mcarraytypes.types3.MCArrayTypesTypeVisitor;
 import de.monticore.types.mcbasictypes.types3.MCBasicTypesTypeVisitor;
 import de.monticore.types.mccollectiontypes.types3.MCCollectionSymTypeRelations;
 import de.monticore.types.mccollectiontypes.types3.MCCollectionTypesTypeVisitor;
@@ -30,11 +31,7 @@ import de.monticore.types3.Type4Ast;
 import de.monticore.types3.TypeCheck3;
 import de.monticore.types3.generics.TypeParameterRelations;
 import de.monticore.types3.generics.context.InferenceContext4Ast;
-import de.monticore.types3.util.MapBasedTypeCheck3;
-import de.monticore.types3.util.OOWithinScopeBasicSymbolsResolver;
-import de.monticore.types3.util.OOWithinTypeBasicSymbolsResolver;
-import de.monticore.types3.util.TypeContextCalculator;
-import de.monticore.types3.util.TypeVisitorOperatorCalculator;
+import de.monticore.types3.util.*;
 import de.monticore.visitor.ITraverser;
 import de.se_rwth.commons.logging.Log;
 
@@ -127,6 +124,10 @@ public class ExpressionsAndStatementsTypeCheck3 extends MapBasedTypeCheck3 {
     traverser.setUglyExpressionsHandler(visUglyExpressions);
 
     // MCTypes
+
+    MCArrayTypesTypeVisitor visMCArrayTypes = new MCArrayTypesTypeVisitor();
+    visMCArrayTypes.setType4Ast(type4Ast);
+    traverser.add4MCArrayTypes(visMCArrayTypes);
 
     MCBasicTypesTypeVisitor visMCBasicTypes = new MCBasicTypesTypeVisitor();
     visMCBasicTypes.setType4Ast(type4Ast);

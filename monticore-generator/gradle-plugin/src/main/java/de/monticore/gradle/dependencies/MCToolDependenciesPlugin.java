@@ -11,6 +11,8 @@ import javax.annotation.Nonnull;
 import java.io.InputStream;
 import java.util.Objects;
 import java.util.Properties;
+import org.gradle.api.logging.Logger;
+import org.gradle.api.logging.Logging;
 
 
 /**
@@ -20,6 +22,8 @@ import java.util.Properties;
 public class MCToolDependenciesPlugin implements Plugin<Project> {
 
   public static final String MC_CONFIG_TOOL = "mcTool";
+
+  private static final Logger LOGGER = Logging.getLogger(MCToolDependenciesPlugin.class);
 
   @Override
   public void apply(@Nonnull Project project) {
@@ -32,6 +36,7 @@ public class MCToolDependenciesPlugin implements Plugin<Project> {
     // Load the buildInfo.properties file (containing the current version)
     Properties buildInfo = new Properties();
     try(InputStream is = MCToolDependenciesPlugin.class.getResourceAsStream("/buildInfo.properties")) {
+      LOGGER.debug("Loading buildInfo.properties from {}", is);
       buildInfo.load(is);
     } catch (Exception e){
       Log.error("Can not load /buildInfo.properties from classpath", e);
@@ -40,6 +45,7 @@ public class MCToolDependenciesPlugin implements Plugin<Project> {
             buildInfo.getProperty("version"),
             "Can not find version in buildInfo.properties"
     );
+    LOGGER.debug("Using version {} for the default mcTool dependencies", version);
     // Add the (default) dependencies to the toolConfig
     toolConfig.setCanBeResolved(true);
     toolConfig.defaultDependencies(dependencies -> {

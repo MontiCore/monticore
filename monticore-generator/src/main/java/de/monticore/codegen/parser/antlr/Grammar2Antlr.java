@@ -588,7 +588,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
   @Override
   public void visit(ASTNonTerminal ast) {
     Optional<ProdSymbol> prod = grammarEntry.getProdWithInherited(ast.getName());
-    if (!prod.isPresent()) {
+    if (prod.isEmpty()) {
       Log.error("0xA2201 Production symbol for " + ast.getName() + " couldn't be resolved.",
           ast.get_SourcePositionStart());
     }
@@ -625,7 +625,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
   @Override
   public void endVisit(ASTAlt alt) {
     if (!altList.isEmpty()) {
-      altList.remove(altList.size() - 1);
+      altList.removeLast();
     }
   }
 
@@ -715,14 +715,12 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
         }
       }
 
-      if (entry.getAlternative() instanceof ASTAlt) {
+      if (entry.getAlternative() instanceof ASTAlt alt) {
         // Left recursive rule
-        ASTAlt alt = (ASTAlt) entry.getAlternative();
-
         alt.accept(getTraverser());
       } else {
         if (left && entry.getAlternative() instanceof ASTClassProd && ((ASTClassProd) entry.getAlternative()).getAltList().size() == 1) {
-          ASTAlt alt = ((ASTClassProd) entry.getAlternative()).getAltList().get(0);
+          ASTAlt alt = ((ASTClassProd) entry.getAlternative()).getAltList().getFirst();
           alt.accept(getTraverser());
         } else {
           // normal rule
@@ -807,10 +805,10 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
           Optional<ProdSymbol> rule = MCGrammarSymbolTableHelper
               .getEnclosingRule(componentSymbol);
           term.setUsageName(ParserGeneratorHelper.getUsageName(ast));
-
-          if (rule.isPresent()) {
-            addActionForKeyword(term, rule.get(), componentSymbol.isIsList(), tmpName + (isRuleIterated?"+=":"="));
-          }
+          
+          rule.ifPresent(
+              prodSymbol -> addActionForKeyword(term, prodSymbol, componentSymbol.isIsList(),
+                  tmpName + (isRuleIterated ? "+=" : "=")));
         }
       }
     }
@@ -829,7 +827,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
    */
   protected void addCodeForRuleReference(ASTNonTerminal ast) {
     Optional<ProdSymbol> scope = MCGrammarSymbolTableHelper.getEnclosingRule(ast);
-    if (!scope.isPresent()) {
+    if (scope.isEmpty()) {
       return;
     }
 
@@ -890,7 +888,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
 
   protected void addDummyRules(String rulenameInternal) {
     Optional<ASTAlt> follow2 = parserHelper.getAlternativeForFollowOption(rulenameInternal);
-    if (!follow2.isPresent()) {
+    if (follow2.isEmpty()) {
       return;
     }
     follow2.get().accept(getTraverser());

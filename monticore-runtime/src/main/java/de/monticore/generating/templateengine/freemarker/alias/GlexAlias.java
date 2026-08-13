@@ -6,7 +6,7 @@ import freemarker.ext.beans.BeanModel;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModelException;
 
-public class GlexAlias extends Alias{
+public class GlexAlias extends Alias {
   protected GlexAlias(String name, String method) {
     super(name, method);
   }

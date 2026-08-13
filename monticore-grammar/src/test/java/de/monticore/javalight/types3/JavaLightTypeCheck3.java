@@ -14,11 +14,7 @@ import de.monticore.types.mccollectiontypes.types3.MCCollectionTypesTypeVisitor;
 import de.monticore.types.mcsimplegenerictypes.types3.MCSimpleGenericTypesTypeVisitor;
 import de.monticore.types3.Type4Ast;
 import de.monticore.types3.generics.context.InferenceContext4Ast;
-import de.monticore.types3.util.MapBasedTypeCheck3;
-import de.monticore.types3.util.OOWithinScopeBasicSymbolsResolver;
-import de.monticore.types3.util.OOWithinTypeBasicSymbolsResolver;
-import de.monticore.types3.util.TypeContextCalculator;
-import de.monticore.types3.util.TypeVisitorOperatorCalculator;
+import de.monticore.types3.util.*;
 import de.monticore.visitor.ITraverser;
 import de.se_rwth.commons.logging.Log;
 

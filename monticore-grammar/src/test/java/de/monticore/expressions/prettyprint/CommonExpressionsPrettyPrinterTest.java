@@ -3,14 +3,11 @@ package de.monticore.expressions.prettyprint;
 
 import de.monticore.expressions.commonexpressions.CommonExpressionsMill;
 import de.monticore.expressions.commonexpressions._ast.*;
-import de.monticore.expressions.commonexpressions._prettyprint.CommonExpressionsFullPrettyPrinter;
 import de.monticore.expressions.expressionsbasis._ast.ASTArguments;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.testcommonexpressions.TestCommonExpressionsMill;
 import de.monticore.expressions.testcommonexpressions._parser.TestCommonExpressionsParser;
-import de.monticore.prettyprint.IndentPrinter;
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -19,20 +16,14 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@TestWithMCLanguage(TestCommonExpressionsMill.class)
 public class CommonExpressionsPrettyPrinterTest {
 
   protected TestCommonExpressionsParser parser;
-  protected CommonExpressionsFullPrettyPrinter prettyPrinter;
   
   @BeforeEach
   public void init() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-    TestCommonExpressionsMill.reset();
-    TestCommonExpressionsMill.init();
-    parser = new TestCommonExpressionsParser();
-    prettyPrinter = new CommonExpressionsFullPrettyPrinter(new IndentPrinter());
-    prettyPrinter.getPrinter().clearBuffer();
+    parser = TestCommonExpressionsMill.parser();
   }
 
   @Test
@@ -42,15 +33,13 @@ public class CommonExpressionsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTMinusPrefixExpression ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestCommonExpressionsMill.prettyPrint(ast, false);
 
     result = parser.parse_StringMinusPrefixExpression(output);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -60,15 +49,13 @@ public class CommonExpressionsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTPlusPrefixExpression ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestCommonExpressionsMill.prettyPrint(ast, false);
 
     result = parser.parse_StringPlusPrefixExpression(output);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
   @Test
   public void testBooleanNotExpression() throws IOException {
@@ -77,15 +64,13 @@ public class CommonExpressionsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTBooleanNotExpression ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestCommonExpressionsMill.prettyPrint(ast, false);
 
     result = parser.parse_StringBooleanNotExpression(output);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -95,15 +80,13 @@ public class CommonExpressionsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTLogicalNotExpression ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestCommonExpressionsMill.prettyPrint(ast, false);
 
     result = parser.parse_StringLogicalNotExpression(output);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -114,15 +97,13 @@ public class CommonExpressionsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTBracketExpression ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestCommonExpressionsMill.prettyPrint(ast, false);
 
     result = parser.parse_StringBracketExpression(output);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -133,15 +114,13 @@ public class CommonExpressionsPrettyPrinterTest {
     assertTrue(result.isPresent());
     ASTArguments ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestCommonExpressionsMill.prettyPrint(ast, false);
 
     result = parser.parse_StringArguments(output);
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
 
     assertTrue(ast.deepEquals(result.get()));
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -156,11 +135,9 @@ public class CommonExpressionsPrettyPrinterTest {
         .setArguments(arguments.get())
         .build();
 
-    String output = prettyPrinter.prettyprint(result);
+    String output = TestCommonExpressionsMill.prettyPrint(result, false);
 
     assertEquals("a(b,c)", output);
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -173,11 +150,9 @@ public class CommonExpressionsPrettyPrinterTest {
         .setName("foo")
         .build();
 
-    String output = prettyPrinter.prettyprint(result);
+    String output = TestCommonExpressionsMill.prettyPrint(result, false);
 
     assertEquals("a.foo", output);
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -193,11 +168,9 @@ public class CommonExpressionsPrettyPrinterTest {
         .setRight(b.get())
         .build();
 
-    String output = prettyPrinter.prettyprint(result);
+    String output = TestCommonExpressionsMill.prettyPrint(result, false);
 
     assertEquals("a*b", output);
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -213,11 +186,9 @@ public class CommonExpressionsPrettyPrinterTest {
         .setRight(b.get())
         .build();
 
-    String output = prettyPrinter.prettyprint(result);
+    String output = TestCommonExpressionsMill.prettyPrint(result, false);
 
     assertEquals("a/b", output);
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -233,11 +204,9 @@ public class CommonExpressionsPrettyPrinterTest {
         .setRight(b.get())
         .build();
 
-    String output = prettyPrinter.prettyprint(result);
+    String output = TestCommonExpressionsMill.prettyPrint(result, false);
 
     assertEquals("a%b", output);
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -253,11 +222,9 @@ public class CommonExpressionsPrettyPrinterTest {
         .setRight(b.get())
         .build();
 
-    String output = prettyPrinter.prettyprint(result);
+    String output = TestCommonExpressionsMill.prettyPrint(result, false);
 
     assertEquals("a+b", output);
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -273,11 +240,9 @@ public class CommonExpressionsPrettyPrinterTest {
         .setRight(b.get())
         .build();
 
-    String output = prettyPrinter.prettyprint(result);
+    String output = TestCommonExpressionsMill.prettyPrint(result, false);
 
     assertEquals("a-b", output);
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -293,11 +258,9 @@ public class CommonExpressionsPrettyPrinterTest {
         .setRight(b.get())
         .build();
 
-    String output = prettyPrinter.prettyprint(result);
+    String output = TestCommonExpressionsMill.prettyPrint(result, false);
 
     assertEquals("a<=b", output);
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -313,11 +276,9 @@ public class CommonExpressionsPrettyPrinterTest {
         .setRight(b.get())
         .build();
 
-    String output = prettyPrinter.prettyprint(result);
+    String output = TestCommonExpressionsMill.prettyPrint(result, false);
 
     assertEquals("a>=b", output);
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -333,11 +294,9 @@ public class CommonExpressionsPrettyPrinterTest {
         .setRight(b.get())
         .build();
 
-    String output = prettyPrinter.prettyprint(result);
+    String output = TestCommonExpressionsMill.prettyPrint(result, false);
 
     assertEquals("a<b", output);
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -353,11 +312,9 @@ public class CommonExpressionsPrettyPrinterTest {
         .setRight(b.get())
         .build();
 
-    String output = prettyPrinter.prettyprint(result);
+    String output = TestCommonExpressionsMill.prettyPrint(result, false);
 
     assertEquals("a>b", output);
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -373,11 +330,9 @@ public class CommonExpressionsPrettyPrinterTest {
         .setRight(b.get())
         .build();
 
-    String output = prettyPrinter.prettyprint(result);
+    String output = TestCommonExpressionsMill.prettyPrint(result, false);
 
     assertEquals("a==b", output);
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -393,11 +348,9 @@ public class CommonExpressionsPrettyPrinterTest {
         .setRight(b.get())
         .build();
 
-    String output = prettyPrinter.prettyprint(result);
+    String output = TestCommonExpressionsMill.prettyPrint(result, false);
 
     assertEquals("a!=b", output);
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -413,11 +366,9 @@ public class CommonExpressionsPrettyPrinterTest {
         .setRight(b.get())
         .build();
 
-    String output = prettyPrinter.prettyprint(result);
+    String output = TestCommonExpressionsMill.prettyPrint(result, false);
 
     assertEquals("a&&b", output);
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -433,11 +384,9 @@ public class CommonExpressionsPrettyPrinterTest {
         .setRight(b.get())
         .build();
 
-    String output = prettyPrinter.prettyprint(result);
+    String output = TestCommonExpressionsMill.prettyPrint(result, false);
 
     assertEquals("a||b", output);
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -455,10 +404,8 @@ public class CommonExpressionsPrettyPrinterTest {
         .setFalseExpression(c.get())
         .build();
 
-    String output = prettyPrinter.prettyprint(result);
+    String output = TestCommonExpressionsMill.prettyPrint(result, false);
 
     assertEquals("a ? b:c", output);
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 }

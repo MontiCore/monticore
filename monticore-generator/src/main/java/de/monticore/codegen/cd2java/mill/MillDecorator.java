@@ -7,29 +7,19 @@ import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDConstructor;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
-import de.monticore.cdbasis._ast.ASTCDAttribute;
-import de.monticore.cdbasis._ast.ASTCDClass;
-import de.monticore.cdbasis._ast.ASTCDDefinition;
-import de.monticore.cdbasis._ast.ASTCDPackage;
-import de.monticore.cdbasis._ast.ASTCDMember;
+import de.monticore.cdbasis._ast.*;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.JavaDoc;
 import de.monticore.codegen.cd2java._parser.ParserService;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
-import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.mcbasics._prettyprint.MCBasicsFullPrettyPrinter;
-import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
-import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
-import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import de.monticore.umlmodifier._ast.ASTModifier;
 import de.se_rwth.commons.StringTransformations;
 
@@ -113,7 +103,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
           .map(ASTCDClass.class::cast)
           .filter(x -> !x.getModifier().isAbstract())
           .filter(this::checkIncludeInMill)
-          .map(x -> x.deepClone())
+          .map(ASTCDClass::deepClone)
           .collect(Collectors.toList());
 
 
@@ -131,7 +121,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
       topClassList = topClassList
           .stream()
           .filter(this::checkIncludeInMill)
-          .collect(Collectors.toList());
+          .toList();
       // add to classes which need a builder method
       classList.addAll(topClassList);
 
@@ -164,7 +154,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
     // decorate for traverser
     List<ASTCDMethod> traverserMethods = getAttributeMethods(visitorService.getTraverserSimpleName(),
         visitorService.getTraverserFullName(), TRAVERSER, visitorService.getTraverserInterfaceFullName());
-    this.replaceTemplate(JAVADOC, traverserMethods.get(0), JavaDoc.of("A traverser is the conceptual entry point for every action within the visitor infrastructure.",
+    this.replaceTemplate(JAVADOC, traverserMethods.getFirst(), JavaDoc.of("A traverser is the conceptual entry point for every action within the visitor infrastructure.",
             "Visitors may be added, which contain the implementations for the visit and endVisit methods.",
             "Handlers may be added to modify the default traversal strategy.",
             "Each traverser retains their traversed elements to avoid duplicate traversal, ",
@@ -427,7 +417,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
     String scopesGenitorSimpleName = symbolTableService.getScopesGenitorDelegatorSimpleName();
     String scopesGenitorFullName = symbolTableService.getScopesGenitorDelegatorFullName();
     List<ASTCDMethod> ret = getStaticAndProtectedMethods(StringTransformations.uncapitalize(SCOPES_GENITOR_SUFFIX + DELEGATOR_SUFFIX), scopesGenitorSimpleName, scopesGenitorFullName);
-    this.replaceTemplate(JAVADOC, ret.get(0), JavaDoc.of("Returns a new ScopeGenitorDelegator.",
+    this.replaceTemplate(JAVADOC, ret.getFirst(), JavaDoc.of("Returns a new ScopeGenitorDelegator.",
                     "Delegates to the ScopeGenitors of composed languages, used for instantiating symbol tables in the context of language composition",
                     "See the delegators #createFromAST method.")
             .block("return", "a new instance of this language's scope genitor delegator")
@@ -439,7 +429,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
     String scopesGenitorSimpleName = symbolTableService.getScopesGenitorSimpleName();
     String scopesGenitorFullName = symbolTableService.getScopesGenitorFullName();
     List<ASTCDMethod> ret = getStaticAndProtectedMethods(StringTransformations.uncapitalize(SCOPES_GENITOR_SUFFIX), scopesGenitorSimpleName, scopesGenitorFullName);
-    this.replaceTemplate(JAVADOC, ret.get(0), JavaDoc.of("Returns a new ScopeGenitor.",
+    this.replaceTemplate(JAVADOC, ret.getFirst(), JavaDoc.of("Returns a new ScopeGenitor.",
                     "ScopeGenitors are responsible for creating the scope structure of artifacts of only this language and linking it with the AST nodes.",
                     "Note: ScopeGenitors do NOT delegate to elements of composed languages",
                     "which is why you are most likely looking for {@link #scopesGenitorDelegator()}.")
