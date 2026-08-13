@@ -15,9 +15,7 @@
     protected ${object.getType()} match_${object.getObjectName()}(){
         //test if there are candidates for the object
         while(!${object.getObjectName()}_candidates_temp.isEmpty()){
-          if(${object.getObjectName()}_candidates_temp.get(0) instanceof ${object.getType()}) {
-    ${object.getType()} cand = (${object.getType()})${object.getObjectName()}_candidates_temp.get(0);
-
+          if(${object.getObjectName()}_candidates_temp.get(0) instanceof ${object.getType()} cand) {
             //test if candidate matches the conditions for this object
             if(checkConditions_${object.getObjectName()}(cand)
     <#list mandatoryObjects as o>
