@@ -27,10 +27,10 @@ public ${ast.getJavaClassName()}(ASTNode astNode, GlobalExtensionManagement glex
 }
 
 public ${ast.getJavaClassName()}(IModelAccessor modelAccessor) {
-  this(new GlobalExtensionManagement(), modelAccessor);
+  this(modelAccessor, new GlobalExtensionManagement());
 }
 
-public ${ast.getJavaClassName()}(GlobalExtensionManagement glex, IModelAccessor modelAccessor) {
+public ${ast.getJavaClassName()}(IModelAccessor modelAccessor, GlobalExtensionManagement glex) {
   this.modelAccessor = modelAccessor;
   this.glex = glex;
 }
