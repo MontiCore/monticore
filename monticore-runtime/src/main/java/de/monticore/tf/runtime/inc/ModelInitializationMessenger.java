@@ -49,16 +49,17 @@ public class ModelInitializationMessenger {
       
       @Override
       public void visit(ASTNode node) {
-        ASTNode parent = parentStack.isEmpty() ? null : parentStack.peek();
         accessor.notifyNodeCreation(node);
-        accessor.notifyNodeAttach(node, parent);
-        
+
         parentStack.push(node);
       }
       
       @Override
       public void endVisit(ASTNode node) {
         parentStack.pop();
+
+        ASTNode parent = parentStack.isEmpty() ? null : parentStack.peek();
+        accessor.notifyNodeAttach(node, parent);
       }
     });
   }
