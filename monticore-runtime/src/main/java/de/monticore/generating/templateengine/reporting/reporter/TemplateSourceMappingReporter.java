@@ -61,7 +61,6 @@ public class TemplateSourceMappingReporter extends DefaultReportEventHandler {
 
   @Override
   public void reportFileCreation(String templateName, String qualifiedFilename, String fileExtension, ASTNode ast) {
-    System.out.println("Reporting file finalized "+qualifiedFilename);
     SourceMapCalculator.flushMappings();
     writeContent(currentGeneratedFile);
   }
@@ -84,6 +83,10 @@ public class TemplateSourceMappingReporter extends DefaultReportEventHandler {
    */
   protected void writeLine(File writeToFile, String content) {
     try {
+      // Create possible subdirectories (for first file as the source map is written before the actual file)
+      File parentDir = writeToFile.getParentFile();
+      if(parentDir != null && !parentDir.exists())
+        parentDir.mkdirs();
       writeToFile.createNewFile();
       reportingHelper.openFile(writeToFile);
       reportingHelper.writeLineToFile(writeToFile, content);
