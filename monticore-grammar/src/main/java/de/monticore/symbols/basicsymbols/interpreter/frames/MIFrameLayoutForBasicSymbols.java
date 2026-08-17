@@ -24,7 +24,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.function.IntSupplier;
+import java.util.function.Supplier;
 
+import static de.monticore.interpreter.util.NativeStorageSelector.switchByFormat;
 import static de.monticore.types3.SymTypeRelations.normalize;
 
 /**
@@ -215,7 +217,7 @@ public class MIFrameLayoutForBasicSymbols implements MIFrameLayout {
   public MISetter getVariableSetter(VariableSymbol varSym) {
     final int scopeLevel = getScopeLevelOfVarOrThrow(varSym);
     final int idxInScope = getIdxInScope(varSym, scopeLevel);
-    return NativeStorageSelector.switchByFormat(varSym,
+    return switchByFormat(varSym,
         (MISetterBoolean) (currentFrame, value) ->
             currentFrame.getParentFrame(scopeLevel)
                 .setBoolean(idxInScope, value),
@@ -243,36 +245,36 @@ public class MIFrameLayoutForBasicSymbols implements MIFrameLayout {
       VariableSymbol varSym,
       MICalculation valueCalc
   ) {
-    if (valueCalc.isCalculationBoolean() && booleans.contains(varSym)) {
-      final MICalculationBoolean calcBool = valueCalc.asCalculationBoolean();
-      final int booleanPos = booleans.indexOf(varSym);
-      return (frame) ->
-          frame.setBoolean(booleanPos, calcBool.calculate(frame));
-    }
-    else if (valueCalc.isCalculationInt() && integers.contains(varSym)) {
-      final MICalculationInt calcInt = valueCalc.asCalculationInt();
-      final int intPos = integers.indexOf(varSym);
-      return (frame) ->
-          frame.setInt(intPos, calcInt.calculate(frame));
-    }
-    else if (valueCalc.isCalculationDouble() && doubles.contains(varSym)) {
-      final MICalculationDouble calcDouble = valueCalc.asCalculationDouble();
-      final int doublePos = doubles.indexOf(varSym);
-      return (frame) ->
-          frame.setDouble(doublePos, calcDouble.calculate(frame));
-    }
-    else {
-      final MICalculationValue calcValue = valueCalc.asCalculationValue();
-      final int objectPos = objects.indexOf(varSym);
-      return (frame) ->
-          frame.setObject(objectPos, calcValue.calculate(frame));
-    }
+    return (NativeStorageSelector.<Supplier<MICalculationVoid>> switchByFormat(
+        varSym,
+        () -> {
+          final MICalculationBoolean calcBool = valueCalc.asCalculationBoolean();
+          final int booleanPos = booleans.indexOf(varSym);
+          return frame ->
+              frame.setBoolean(booleanPos, calcBool.calculate(frame));
+        }, () -> {
+          final MICalculationInt calcInt = valueCalc.asCalculationInt();
+          final int intPos = integers.indexOf(varSym);
+          return frame ->
+              frame.setInt(intPos, calcInt.calculate(frame));
+        }, () -> {
+          final MICalculationDouble calcDouble = valueCalc.asCalculationDouble();
+          final int doublePos = doubles.indexOf(varSym);
+          return frame ->
+              frame.setDouble(doublePos, calcDouble.calculate(frame));
+        }, () -> {
+          final MICalculationValue calcValue = valueCalc.asCalculationValue();
+          final int objectPos = objects.indexOf(varSym);
+          return frame ->
+              frame.setObject(objectPos, calcValue.calculate(frame));
+        }
+    )).get();
   }
 
   public MICalculation getVariableGetter(VariableSymbol varSym) {
     final int scopeLevel = getScopeLevelOfVarOrThrow(varSym);
     final int idxInScope = getIdxInScope(varSym, scopeLevel);
-    return NativeStorageSelector.switchByFormat(varSym,
+    return switchByFormat(varSym,
         (MICalculationBoolean) frame ->
             frame.getParentFrame(scopeLevel).getBoolean(idxInScope),
         (MICalculationInt) frame ->
