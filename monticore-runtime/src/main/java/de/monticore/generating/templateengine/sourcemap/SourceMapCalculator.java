@@ -7,8 +7,8 @@ import de.monticore.sourcemap.DecodedMapping;
 import de.monticore.sourcemap.DecodedSource;
 import de.monticore.sourcemap.convenience.PositionMapping;
 import de.se_rwth.commons.SourcePosition;
+import de.se_rwth.commons.logging.Log;
 import freemarker.template.Template;
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.net.MalformedURLException;
@@ -27,17 +27,25 @@ public class SourceMapCalculator {
   public static ThreadLocal<AtomicInteger> pairId = ThreadLocal.withInitial(AtomicInteger::new);
 
   public static void pushTemplate(Template template) {
+    // Do not push config-templates as they should not be reported
+    if(Reporting.isConfigTemplate(template.getName()))
+      return;
+
     templates.get().push(template);
 
     // Ask parent template for its known last absolute pos inside nested template evaluation
-    int curLine = curAbsolutePos.get().isEmpty()? 0 : curAbsolutePos.get().peek().getLeft();
-    int curColumn = curAbsolutePos.get().isEmpty()? 0 : curAbsolutePos.get().peek().getRight();
+    int curLine = curAbsolutePos.get().isEmpty() ? 1 : curAbsolutePos.get().peek().getLeft();
+    int curColumn = curAbsolutePos.get().isEmpty() ? 0 : curAbsolutePos.get().peek().getRight();
     curAbsolutePos.get().push(Pair.of(curLine,curColumn));
 
     assert curAbsolutePos.get().size() == templates.get().size();
   }
 
   public static void popTemplate(Template template) {
+    // Do not consider config-templates
+    if(Reporting.isConfigTemplate(template.getName()))
+      return;
+
     if (templates.get().pop() != template) {
       throw new IllegalStateException();
     }
@@ -55,33 +63,40 @@ public class SourceMapCalculator {
   }
 
   public static List<DecodedMapping> calculateMappings(List<SimpleSourceMapping> simpleMappings) {
-    // group by pairId
-    List<Pair<SimpleSourceMapping, SimpleSourceMapping>> pairs = new ArrayList<>();
-    Map<Integer, SimpleSourceMapping> openIds = new HashMap<>();
-    for (SimpleSourceMapping mapping : simpleMappings) {
+    Map<Integer, SimpleSourceMapping> opendIds = new HashMap<>();
+    List<SimpleSourceMapping> validMappings = new ArrayList<>();
+
+    for(SimpleSourceMapping mapping : simpleMappings) {
+      if(mapping.sourcePosition.getLine() < 0 || mapping.targetPosition.getLine() < 0){
+        Log.warn("Negative lines detected in mapping, ignoring...");
+        continue;
+      }
       int id = mapping.pairId;
-      if (openIds.containsKey(id)) {
-        SimpleSourceMapping start = openIds.remove(id);
-        pairs.add(new ImmutablePair<>(start, mapping));
+      if(opendIds.containsKey(id)){
+        SimpleSourceMapping start = opendIds.remove(id);
+        validMappings.add(start);
+        validMappings.add(mapping);
       } else {
-        openIds.put(id, mapping);
+        opendIds.put(id, mapping);
       }
     }
 
-    // convert position => line, row
-    List<DecodedMapping> res = new ArrayList<>();
-    for (Pair<SimpleSourceMapping, SimpleSourceMapping> pair : pairs) {
-      SimpleSourceMapping p1 = pair.getKey();
-      SimpleSourceMapping p2 = pair.getValue();
+    // Sort by generated position first, then original position to prevent VLQ line deltas from jumping
+    // out of order across generated lines
+    validMappings.sort(
+            Comparator.comparingInt((SimpleSourceMapping m) -> m.targetPosition.getLine())
+                    .thenComparing(m -> m.targetPosition.getColumn())
+                    .thenComparing(m -> m.sourcePosition.getLine())
+                    .thenComparing(m -> m.sourcePosition.getColumn())
 
-      URL urlToSource = createSourceURL(p1.sourcePosition.getFileName());
+    );
+    // Convert to decoded mappings
+    List<DecodedMapping> res = new ArrayList<>(validMappings.size());
+    for(SimpleSourceMapping mapping : validMappings) {
+      URL urlToSource = createSourceURL(mapping.sourcePosition.getFileName());
       res.add(new DecodedMapping(
           new DecodedSource(urlToSource),
-          new PositionMapping(urlToSource, p1.sourcePosition, p1.targetPosition)
-      ));
-      res.add(new DecodedMapping(
-          new DecodedSource(urlToSource),
-          new PositionMapping(urlToSource, p2.sourcePosition, p2.targetPosition)
+          new PositionMapping(urlToSource, mapping.sourcePosition, mapping.targetPosition)
       ));
     }
     return res;
@@ -110,11 +125,16 @@ public class SourceMapCalculator {
   }
 
   public void report(int pairId, int lineInTemplate, int colInTemplate, String templateSource, ASTNode astNode, boolean isStart) {
+    // Suppress recording if this is a config template
+    if(Reporting.isConfigTemplate(template.getName()))
+      return;
+
     String content = sw.getCurrentContent();
 
     int numberOfLinesInContent = numberOfNewLines(content);
     int curGeneratedColPos = getColumnOfLastLine(content);
 
+    // Update absolute position stack so line numbering stays in sync
     Pair<Integer,Integer> absPos = updateAndGetAbsolutePos(numberOfLinesInContent, curGeneratedColPos);
 
     SourcePosition positionInGeneratedFile = new SourcePosition(absPos.getLeft(), absPos.getRight(), "GenOutput");
@@ -125,11 +145,16 @@ public class SourceMapCalculator {
   }
 
   public void report(int pairId, int lineInTemplate, int colInTemplate, String templateSource) {
+    // Suppress recording if this is a config template
+    if(Reporting.isConfigTemplate(template.getName()))
+      return;
+
     String content = sw.getCurrentContent();
 
     int numberOfLinesInContent = numberOfNewLines(content);
     int curGeneratedColPos = getColumnOfLastLine(content);
 
+    // Update absolute position stack so line numbering stays in sync
     Pair<Integer,Integer> absPos = updateAndGetAbsolutePos(numberOfLinesInContent, curGeneratedColPos);
 
     SourcePosition positionInGeneratedFile = new SourcePosition(absPos.getLeft(), absPos.getRight(), "GenOutput");
@@ -153,9 +178,10 @@ public class SourceMapCalculator {
     }
 
     int absoluteLine = lineOffset + numberOfLinesInContent;
-    int absoluteColumn = numberOfLinesInContent==0? columnOffset + curGeneratedColPos : curGeneratedColPos;
-    curAbsolutePos.get().push(Pair.of(absoluteLine, absoluteColumn));
-    return curAbsolutePos.get().peek();
+    int absoluteColumn = numberOfLinesInContent == 0 ? columnOffset + curGeneratedColPos : curGeneratedColPos;
+    Pair<Integer, Integer> newPos = Pair.of(absoluteLine, absoluteColumn);
+    curAbsolutePos.get().push(newPos);
+    return newPos;
   }
 
   /**
@@ -176,25 +202,52 @@ public class SourceMapCalculator {
       }
       if(startOrEnd != null) {
         // Zero based in line and column numbers
+        int line = Math.max(0, startOrEnd.getLine() - 1);
+        int col = Math.max(0, startOrEnd.getColumn() );
         SourcePosition s = startOrEnd.getFileName().isPresent()?
-            new SourcePosition(startOrEnd.getLine()-1, startOrEnd.getColumn(), startOrEnd.getFileName().get()) :
-            new SourcePosition(startOrEnd.getLine()-1, startOrEnd.getColumn());
-        astMappings.get().add(new SimpleSourceMapping(s, positionInGeneratedFile, pairId));
+            new SourcePosition(line, col, startOrEnd.getFileName().get()) :
+            new SourcePosition(line, col);
+        Optional<SimpleSourceMapping> startMappingOpt = astMappings.get().stream()
+                .filter(mapping -> mapping.pairId == pairId)
+                .findFirst();
+        if(startMappingOpt.isPresent()) {
+          SimpleSourceMapping startMapping = startMappingOpt.get();
+          if(startMapping.targetPosition.equals(positionInGeneratedFile)) {
+            astMappings.get().remove(startMapping);
+          }else{
+            astMappings.get().add(new SimpleSourceMapping(s, positionInGeneratedFile, pairId));
+          }
+        }else{
+          astMappings.get().add(new SimpleSourceMapping(s, positionInGeneratedFile, pairId));
+        }
       }
     }
   }
 
   protected void addTemplateMapping(int lineInTemplate, int colInTemplate, String templateSource, SourcePosition positionInGeneratedFile, int pairId) {
-    if(mappings.get().stream().map(mapping -> mapping.pairId).anyMatch(i -> i == pairId)
-        && mappings.get().get(mappings.get().size()-1).pairId != pairId) {
-      mappings.get().removeIf(m -> m.pairId == pairId);
-    } else if(!mappings.get().isEmpty() && mappings.get().get(mappings.get().size()-1).targetPosition.equals(positionInGeneratedFile) && mappings.get().get(mappings.get().size()-1).pairId == pairId) {
-      // Nothing was generated
-      mappings.get().remove(mappings.get().size()-1);
-    } else {
-      mappings.get().add(new SimpleSourceMapping(new SourcePosition(lineInTemplate, colInTemplate, templateSource),
-          positionInGeneratedFile, pairId));
+    int line = Math.max(0, lineInTemplate);
+    int col = Math.max(0, colInTemplate);
+
+    Optional<SimpleSourceMapping> startMappingOpt = mappings.get().stream()
+            .filter(m -> m.pairId == pairId)
+            .findFirst();
+    if(startMappingOpt.isPresent()){
+      SimpleSourceMapping startMapping = startMappingOpt.get();
+      // If not moved since start-mapping, nothing was generated
+      /*if(startMapping.targetPosition.equals(positionInGeneratedFile)) {
+        mappings.get().remove(startMapping); // Drop to keep source-map clean
+      }else{
+        mappings.get().add(new SimpleSourceMapping(new SourcePosition(line, col, templateSource),
+                positionInGeneratedFile, pairId));
+      }*/
+      mappings.get().add(new SimpleSourceMapping(new SourcePosition(line, col, templateSource),
+              positionInGeneratedFile, pairId));
+    }else{
+      // Start mapping
+      mappings.get().add(new SimpleSourceMapping(new SourcePosition(line, col, templateSource),
+              positionInGeneratedFile, pairId));
     }
+
   }
 
   private static int numberOfNewLines(String wholeContent) {
