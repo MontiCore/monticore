@@ -2,6 +2,7 @@
 package de.monticore.umlstereotype._ast;
 
 import de.monticore.expressions.expressionsbasis.ExpressionsBasisMill;
+import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
 import de.monticore.literals.mccommonliterals.MCCommonLiteralsMill;
 import de.monticore.literals.mccommonliterals._ast.ASTStringLiteral;
 import de.se_rwth.commons.logging.Log;
@@ -11,23 +12,16 @@ public class ASTStereoValue extends ASTStereoValueTOP {
 
   public boolean isPresentText() {
     if (isPresentExpression()) {
-      return ExpressionsBasisMill
-        .typeDispatcher()
-        .isExpressionsBasisASTLiteralExpression(expression.get())
-        && MCCommonLiteralsMill.typeDispatcher()
-        .isMCCommonLiteralsASTStringLiteral(ExpressionsBasisMill
-          .typeDispatcher().asExpressionsBasisASTLiteralExpression(expression.get())
-          .getLiteral());
+      return expression.get() instanceof ASTLiteralExpression literalExpression
+          && literalExpression.getLiteral() instanceof ASTStringLiteral;
     }
     return false;
   }
 
   public ASTStringLiteral getText() {
-    if (isPresentText()) {
-      return MCCommonLiteralsMill.typeDispatcher()
-        .asMCCommonLiteralsASTStringLiteral(ExpressionsBasisMill.typeDispatcher()
-          .asExpressionsBasisASTLiteralExpression(expression.get())
-          .getLiteral());
+    if (isPresentText() && expression.get() instanceof ASTLiteralExpression literalExpression
+        && literalExpression.getLiteral() instanceof ASTStringLiteral stringLiteral) {
+      return stringLiteral;
     }
     Log.error("0xA7003x52066 get for Text can't return a value. Attribute is empty.");
     // Normally this statement is not reachable
