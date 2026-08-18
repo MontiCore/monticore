@@ -1,13 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions.assignmentexpressions.cocos;
 
-import de.monticore.expressions.assignmentexpressions.AssignmentExpressionsMill;
 import de.monticore.expressions.assignmentexpressions._ast.ASTAssignmentExpression;
 import de.monticore.expressions.assignmentexpressions._cocos.AssignmentExpressionsASTAssignmentExpressionCoCo;
-import de.monticore.expressions.assignmentexpressions._util.IAssignmentExpressionsTypeDispatcher;
 import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
-import de.monticore.literals.mccommonliterals.MCCommonLiteralsMill;
-import de.monticore.literals.mccommonliterals._util.IMCCommonLiteralsTypeDispatcher;
+import de.monticore.literals.mccommonliterals._ast.ASTStringLiteral;
 import de.monticore.types.check.IDerive;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.TypeCheckResult;
@@ -48,18 +45,10 @@ public class LiteralAssignmentMatchesRegExExpressionCoCo implements
       }
     }
 
-    IAssignmentExpressionsTypeDispatcher expressionsDispatcher =
-        AssignmentExpressionsMill.typeDispatcher();
-    IMCCommonLiteralsTypeDispatcher literalDispatcher =
-        MCCommonLiteralsMill.typeDispatcher();
-
       if (leftType.isRegExType() &&
-          expressionsDispatcher.isExpressionsBasisASTLiteralExpression(node.getRight())) {
-        ASTLiteralExpression literalExpression =
-            expressionsDispatcher.asExpressionsBasisASTLiteralExpression(node.getRight());
-        if (literalDispatcher.isMCCommonLiteralsASTStringLiteral(literalExpression.getLiteral())) {
-          String s = literalDispatcher.asMCCommonLiteralsASTStringLiteral(literalExpression.getLiteral())
-              .getSource();
+          node.getRight() instanceof ASTLiteralExpression literalExpression) {
+        if (literalExpression.getLiteral() instanceof ASTStringLiteral stringLiteral) {
+          String s = stringLiteral.getSource();
           String regex = leftType.asRegExType().getRegExString();
 
           if (!s.matches(regex)) {
