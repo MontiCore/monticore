@@ -67,7 +67,8 @@ public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUni
 
     addGettersAndSetters(optAttributes, dispatcher);
 
-    this.replaceTemplate(ANNOTATIONS, dispatcher, new StringHookPoint("@Deprecated(forRemoval = true)"));
+    replaceTemplate(ANNOTATIONS, dispatcher,
+        new StringHookPoint("@Deprecated(forRemoval = true)"));
 
     return dispatcher;
   }
@@ -224,6 +225,10 @@ public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUni
       replaceTemplate(EMPTY_BODY, isMethod, new TemplateHookPoint(
           "dispatcher.IsMethod", name.simpleName, name.parameterName));
 
+      replaceTemplate(ANNOTATIONS, isMethod,
+          new StringHookPoint("@Deprecated(forRemoval = true)"));
+
+
       methods.add(isMethod);
 
       ASTCDMethod asMethod = cdMethodFacade.createMethod(
@@ -234,6 +239,10 @@ public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUni
 
       replaceTemplate(EMPTY_BODY, asMethod, new TemplateHookPoint(
           "dispatcher.AsMethod", name.simpleName, name.parameterName));
+
+      replaceTemplate(ANNOTATIONS, asMethod,
+          new StringHookPoint("@Deprecated(forRemoval = true)"));
+
 
       methods.add(asMethod);
     }
