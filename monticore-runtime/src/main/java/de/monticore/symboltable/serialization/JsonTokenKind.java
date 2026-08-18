@@ -26,21 +26,9 @@ public enum JsonTokenKind {
    * @return
    */
   public boolean hasValue() {
-    switch (this) {
-      case STRING:
-      case NUMBER:
-      case BOOLEAN:
-        return true;
-      case BEGIN_ARRAY:
-      case END_ARRAY:
-      case BEGIN_OBJECT:
-      case END_OBJECT:
-      case NULL:
-      case COMMA:
-      case COLON:
-      case WHITESPACE:
-      default:
-        return false;
-    }
+    return switch (this) {
+      case STRING, NUMBER, BOOLEAN -> true;
+      default -> false;
+    };
   }
 }

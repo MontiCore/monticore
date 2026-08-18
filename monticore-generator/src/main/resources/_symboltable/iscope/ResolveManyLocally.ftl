@@ -4,9 +4,7 @@ ${tc.signature("simpleName", "symbolFullName")}
 
   try {
     Optional<${symbolFullName}> resolvedSymbol = filter${simpleName}(name, get${simpleName}Symbols());
-    if (resolvedSymbol.isPresent()) {
-      resolvedSymbols.add(resolvedSymbol.get());
-    }
+    resolvedSymbol.ifPresent(resolvedSymbols::add);
   } catch (de.monticore.symboltable.resolving.ResolvedSeveralEntriesForSymbolException e) {
     resolvedSymbols.addAll(e.getSymbols());
   }
@@ -16,7 +14,7 @@ ${tc.signature("simpleName", "symbolFullName")}
 
   // filter out symbols that are not included within the access modifier
   List<${symbolFullName}> filteredSymbols = filterSymbolsByAccessModifier(modifier, resolvedSymbols);
-  filteredSymbols = new ArrayList<>(filteredSymbols.stream().filter(predicate).collect(java.util.stream.Collectors.toList()));
+  filteredSymbols = filteredSymbols.stream().filter(predicate).collect(java.util.stream.Collectors.toList());
 
   //try to find adapted one
   filteredSymbols.addAll(resolveAdapted${simpleName}LocallyMany(foundSymbols, name, modifier, predicate));

@@ -5,12 +5,7 @@ import com.google.common.base.Preconditions;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.types3.ISymTypeVisitor;
-import de.monticore.types3.SymTypeRelations;
 import de.se_rwth.commons.logging.Log;
-
-import java.util.LinkedHashSet;
-import java.util.Optional;
-import java.util.Set;
 
 public class SymTypeVariable extends SymTypeExpression {
 
@@ -182,11 +177,10 @@ public class SymTypeVariable extends SymTypeExpression {
   public boolean deepEquals(SymTypeExpression sym) {
     //support deprecated code:
     if (typeSymbol != null) {
-      if (!(sym instanceof SymTypeVariable)) {
+      if (!(sym instanceof SymTypeVariable symVar)) {
         return false;
       }
-      SymTypeVariable symVar = (SymTypeVariable) sym;
-      if (this.typeSymbol == null || symVar.typeSymbol == null) {
+      if (symVar.typeSymbol == null) {
         return false;
       }
       if (!this.typeSymbol.getEnclosingScope().equals(symVar.typeSymbol.getEnclosingScope())) {

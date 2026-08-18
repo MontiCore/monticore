@@ -3,7 +3,6 @@ package de.monticore.statements.mcvardeclarationstatements.codegen.javagen;
 
 import com.google.common.base.Preconditions;
 import de.monticore.codegen.javagen.JavaGenVisitorState;
-import de.monticore.codegen.javagen.SymTypeExpression2JavaConverter;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.statements.mcstatementsbasis._ast.ASTMCModifier;
@@ -16,8 +15,6 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types3.util.MapBasedTypeCheck3;
 
 import static de.monticore.codegen.CodeGenSymTypeExpressionConverter.printConverted;
-import static de.monticore.types3.SymTypeRelations.normalize;
-import static de.monticore.types3.TypeCheck3.symTypeFromAST;
 import static de.monticore.types3.TypeCheck3.typeOf;
 
 /**
@@ -65,8 +62,6 @@ public class MCVarDeclarationStatementsJavaGenVisitor
     // And statements are printed to Java statements.
     ASTLocalVariableDeclaration varDeclaration =
         node.getLocalVariableDeclaration();
-    SymTypeExpression varType = normalize(symTypeFromAST(varDeclaration.getMCType()));
-    String javaVarType = SymTypeExpression2JavaConverter.getJavaTypePrint(varType);
 
     // for `int x = 2, y = 3` we will print
     // `int x = 2; int y = 3;`,
@@ -76,14 +71,22 @@ public class MCVarDeclarationStatementsJavaGenVisitor
         modifier.accept(getTraverser());
         getPrinter().print(" ");
       }
-      getPrinter().print(javaVarType);
+      varDeclaration.getMCType().accept(getTraverser());
       getPrinter().print(" ");
-      getPrinter().print(varDeclarator.getDeclarator().getName());
-      if (varDeclarator.isPresentVariableInit()) {
-        getPrinter().print(" = ");
-        varDeclarator.getVariableInit().accept(getTraverser());
-      }
+      varDeclarator.accept(getTraverser());
       state.endStatement();
+    }
+  }
+
+  // Note: The current usage of VariableDeclarator in MontiCore
+  // should make this directly compatible with VariableDeclarators in Java.
+  // Thus, we can use a direct mapping.
+  @Override
+  public void traverse(ASTVariableDeclarator node) {
+    getPrinter().print(node.getDeclarator().getName());
+    if (node.isPresentVariableInit()) {
+      getPrinter().print(" = ");
+      node.getVariableInit().accept(getTraverser());
     }
   }
 

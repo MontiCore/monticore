@@ -7,30 +7,20 @@ import de.monticore.grammar.grammar._symboltable.IGrammarScope;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.symboltable.modifiers.AccessModifier;
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@TestWithMCLanguage(Grammar_WithConceptsMill.class)
 public class IGrammarScopeTest {
 
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-    Grammar_WithConceptsMill.reset();
-    Grammar_WithConceptsMill.init();
-  }
-
   @Test
-  public void testCombiningGrammarSymbolTable() throws IOException {
+  public void testCombiningGrammarSymbolTable() {
     final Grammar_WithConceptsGlobalScope globalScope = GrammarGlobalScopeTestFactory.create();
     final Optional<MCGrammarSymbol> grammar = globalScope
             .resolveMCGrammar("de.monticore.CombiningGrammar");
@@ -60,12 +50,10 @@ public class IGrammarScopeTest {
     assertTrue(innerScope.resolveMCGrammar("de.monticore.inherited.Supergrammar").isPresent());
     assertTrue(innerScope.resolveMCGrammar("CombiningGrammar").isPresent());
     assertTrue(innerScope.resolveMCGrammar("Automaton").isPresent());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
-  public void testCombiningGrammarResolveInSuperGrammars() throws IOException {
+  public void testCombiningGrammarResolveInSuperGrammars() {
     final Grammar_WithConceptsGlobalScope globalScope = GrammarGlobalScopeTestFactory.create();
     final Optional<MCGrammarSymbol> grammar = globalScope
             .resolveMCGrammar("de.monticore.CombiningGrammar");
@@ -89,12 +77,10 @@ public class IGrammarScopeTest {
     assertFalse(innerScope.resolveInSuperGrammars("Supergrammar", AccessModifier.ALL_INCLUSION).isPresent());
     assertFalse(innerScope.resolveInSuperGrammars("de.monticore.inherited.Supergrammar", AccessModifier.ALL_INCLUSION).isPresent());
     assertFalse(innerScope.resolveInSuperGrammars("CombiningGrammar", AccessModifier.ALL_INCLUSION).isPresent());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
-  public void testSubsubgrammarSymbolTable() throws IOException {
+  public void testSubsubgrammarSymbolTable() {
     final Grammar_WithConceptsGlobalScope globalScope = GrammarGlobalScopeTestFactory.create();
     final Optional<MCGrammarSymbol> grammar = globalScope
             .resolveMCGrammar("de.monticore.inherited.Subsubgrammar");
@@ -133,12 +119,10 @@ public class IGrammarScopeTest {
     assertTrue(innerScope.resolveMCGrammar("de.monticore.inherited.Subgrammar").isPresent());
     assertTrue(innerScope.resolveMCGrammar("de.monticore.inherited.Subsubgrammar").isPresent());
     assertTrue(innerScope.resolveMCGrammar("Subsubgrammar").isPresent());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
-  public void testSubsubgrammarResolveInSuperGrammars() throws IOException {
+  public void testSubsubgrammarResolveInSuperGrammars() {
     final Grammar_WithConceptsGlobalScope globalScope = GrammarGlobalScopeTestFactory.create();
     final Optional<MCGrammarSymbol> grammar = globalScope
             .resolveMCGrammar("de.monticore.inherited.Subsubgrammar");
@@ -170,7 +154,5 @@ public class IGrammarScopeTest {
     assertFalse(innerScope.resolveInSuperGrammars("de.monticore.inherited.Subgrammar", AccessModifier.ALL_INCLUSION).isPresent());
     assertFalse(innerScope.resolveInSuperGrammars("Subsubgrammar", AccessModifier.ALL_INCLUSION).isPresent());
     assertFalse(innerScope.resolveInSuperGrammars("de.monticore.inherited.Subsubgrammar", AccessModifier.ALL_INCLUSION).isPresent());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 }

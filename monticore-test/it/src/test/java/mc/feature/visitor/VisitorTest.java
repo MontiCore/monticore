@@ -2,15 +2,8 @@
 
 package mc.feature.visitor;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.Optional;
-
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.BeforeEach;
-
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.se_rwth.commons.logging.Log;
-import mc.GeneratorIntegrationsTest;
 import mc.feature.visitor.sub.SubMill;
 import mc.feature.visitor.sub._ast.ASTE;
 import mc.feature.visitor.sub._parser.SubParser;
@@ -19,20 +12,19 @@ import mc.feature.visitor.sup._ast.ASTA;
 import mc.feature.visitor.sup._visitor.SupVisitor2;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 
-public class VisitorTest extends GeneratorIntegrationsTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
+@TestWithMCLanguage(SubMill.class)
+public class VisitorTest {
+
   @Test
   public void testConcreteVisitor() throws IOException {
     // Create AST
-    SubParser p = new SubParser();
+    SubParser p = SubMill.parser();
     Optional<ASTA> node = p.parseA(new StringReader("test1 test2"));
     assertFalse(p.hasErrors());
     assertTrue(node.isPresent());
@@ -52,13 +44,12 @@ public class VisitorTest extends GeneratorIntegrationsTest {
     // no expected error, as super visitor should run on sub language
     t2.handle(node.get());
     assertEquals(errorCount, Log.getErrorCount());
-    assertTrue(Log.getFindings().isEmpty());
   }
   
   
   @Test
   public void testInheritanceTraversal() throws IOException {
-    SubParser p = new SubParser();
+    SubParser p = SubMill.parser();
     Optional<ASTE> node = p.parse_String("test2 NodeOverride");
     assertFalse(p.hasErrors());
     assertTrue(node.isPresent());
@@ -81,7 +72,6 @@ public class VisitorTest extends GeneratorIntegrationsTest {
     // inheritance traverser should reach the interface implementation precisely once
     node.get().accept(t2);
     assertEquals(1, c2.getNum());
-    
   }
   
 }

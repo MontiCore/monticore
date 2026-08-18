@@ -4,11 +4,11 @@ package de.monticore.tests;
 import de.monticore.expressions.*;
 import de.monticore.literals.*;
 import de.monticore.ocl.*;
+import de.monticore.regex.*;
 import de.monticore.siunit.*;
 import de.monticore.statements.*;
 import de.monticore.symbols.*;
 import de.monticore.types.*;
-import de.monticore.regex.RegExType;
 
 /* Test Grammar: This is not intended to become a MontiCore stable grammar. */
 
@@ -27,17 +27,22 @@ grammar ExpressionsAndStatements
             TupleExpressions,
             UglyExpressions,
             // Types
-            SIUnitTypes4Computing,
-            SIUnitTypes4Math,
-            MCSimpleGenericTypes,
+            MCArrayTypes,
+            MCBasicTypes,
             MCFunctionTypes,
+            MCSimpleGenericTypes,
             MCStructuralTypes,
             RegExType,
+            SIUnitTypes4Computing,
+            SIUnitTypes4Math,
             // Statements
+            MCArrayStatements,
             MCAssertStatements,
             MCCommonStatements,
-            MCReturnStatements,
+            MCExceptionStatements,
             MCLowLevelStatements,
+            MCReturnStatements,
+            MCSynchronizedStatements,
             MCVarDeclarationStatements,
             // Symbols
             OOSymbols {

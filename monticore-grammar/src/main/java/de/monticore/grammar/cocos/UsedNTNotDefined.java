@@ -29,7 +29,7 @@ public class UsedNTNotDefined implements GrammarASTNonTerminalCoCo {
         .getMCGrammarSymbol(a.getEnclosingScope());
     Optional<ProdSymbol> ruleSymbol = MCGrammarSymbolTableHelper.getEnclosingRule(a);
     String ruleName = ruleSymbol.isPresent()? ruleSymbol.get().getName() : "";
-    if (grammarSymbol.isPresent() && !grammarSymbol.get().getProdWithInherited(a.getName()).isPresent()) {
+    if (grammarSymbol.isPresent() && grammarSymbol.get().getProdWithInherited(a.getName()).isEmpty()) {
       Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, ruleName, a.getName(),
           a.getName()),
           a.get_SourcePositionStart());

@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class ValueComparator implements Comparator<String> {
   
-  protected Map<String, Integer> data = null;
+  protected Map<String, Integer> data;
   
   public ValueComparator(Map<String, Integer> data) {
     this.data = data;
@@ -14,8 +14,8 @@ public class ValueComparator implements Comparator<String> {
   
   @Override
   public int compare(String o1, String o2) {
-    int value1 = (Integer) data.get(o1);
-    int value2 = (Integer) data.get(o2);
+    int value1 = data.get(o1);
+    int value2 = data.get(o2);
     return (value1 > value2) ? -1 : (value2 >= value1) ? 1 : 0;
   }
   

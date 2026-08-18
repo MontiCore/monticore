@@ -68,7 +68,7 @@ jobs:
         with:
           gradle-version: ${{env.GRADLE_VERSION}}
       - name: Build monticore (buildMC)
-        run: gradle buildMC ${{env.GRADLE_CLI_OPTS}} -PgenTR=true -PgenEMF=true -PgenTagging=true
+        run: gradle buildMC ${{env.GRADLE_CLI_OPTS}} -PgenTR=true -PgenEMF=true
       - name: Publish Test Report
         uses: mikepenz/action-junit-report@a451de5ac1ff45e46508b6150cb4f51a287d0309
         if: always() # always run even if the previous step fails

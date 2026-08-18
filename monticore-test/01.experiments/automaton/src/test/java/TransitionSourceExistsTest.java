@@ -10,7 +10,6 @@ import de.monticore.ast.ASTNode;
 import de.monticore.io.paths.MCPath;
 import de.monticore.runtime.junit.MCAssertions;
 import de.monticore.runtime.junit.TestWithMCLanguage;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -32,7 +31,6 @@ public class TransitionSourceExistsTest {
     assertEquals("Simple", ast.getName());
     List<ASTState> st = ast.getStateList();
     assertEquals(2, st.size());
-    MCAssertions.assertNoFindings();
   }
 
 

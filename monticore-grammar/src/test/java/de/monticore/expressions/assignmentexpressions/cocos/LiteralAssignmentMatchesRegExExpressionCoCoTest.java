@@ -6,94 +6,88 @@ import de.monticore.expressions.combineexpressionswithliterals.CombineExpression
 import de.monticore.expressions.combineexpressionswithliterals._ast.ASTFoo;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsArtifactScope;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.runtime.junit.MCAssertions;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types3.Type4Ast;
 import de.monticore.types3.TypeCheck3;
 import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserFactory;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@TestWithMCLanguage(CombineExpressionsWithLiteralsMill.class)
 public class LiteralAssignmentMatchesRegExExpressionCoCoTest {
 
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-    CombineExpressionsWithLiteralsMill.reset();
-    CombineExpressionsWithLiteralsMill.init();
-    CombineExpressionsWithLiteralsTypeTraverserFactory.initTypeCheck3();
+  static Stream<Arguments> testValidArgs() {
+    return Stream.of(Arguments.of("R\"hello\"", "t = \"hello\""),
+    Arguments.of("R\"a|b\" ", "t =  \"a\""),
+    Arguments.of("R\"a|b\" ", "t =  \"b\""),
+    Arguments.of("R\"a[b]\" ", "t =  \"ab\""),
+    Arguments.of("R\"a[bc]d\" ", "t =  \"abd\""),
+    Arguments.of("R\"a[bc]d\" ", "t =  \"acd\""),
+    Arguments.of("R\"a[b.c]\" ", "t =  \"a.\""),
+    Arguments.of("R\"a[b-c]\" ", "t =  \"ab\""),
+    Arguments.of("R\"a(?:bcd)e\" ", "t =  \"abcde\""),
+    Arguments.of("R\"a(b|c)\\1d\" ", "t =  \"abbd\""),
+    Arguments.of("R\"a(b|c)\\1d\" ", "t =  \"accd\""),
+    Arguments.of("R\"abZ\" ", "t =  \"abZ\""),
+    Arguments.of("R\"...\" ", "t =  \"abc\""),
+    Arguments.of("R\"...\" ", "t =  \"123\""),
+    Arguments.of("R\"...\" ", "t =  \"z9x\""),
+    Arguments.of("R\"0129\" ", "t =  \"0129\""),
+    Arguments.of("R\"^(b|c)d\" ", "t =  \"bd\""),
+    Arguments.of("R\"a(bc)*d\" ", "t =  \"abcbcbcd\""),
+    Arguments.of("R\"a(b|c){2,33}d\" ", "t =  \"abbbbbbcd\""),
+    Arguments.of("R\"a(b|c){4}d\" ", "t =  \"acbbcd\""),
+    Arguments.of("R\"a\\p{Lower}b\" ", "t =  \"azb\""),
+    Arguments.of("R\"a\\w\\Bc\" ", "t =  \"abc\""));
+  }
+  
+  static Stream<Arguments> testInvalidArgs() {
+    return Stream.of(Arguments.of("R\"hello\"", "t = \"hi\""),
+    Arguments.of("R\"a|b\" ", "t =  \"c\""),
+    Arguments.of("R\"a[b]\" ", "t =  \"aa\""),
+    Arguments.of("R\"a[bc]d\" ", "t =  \"adc\""),
+    Arguments.of("R\"a[bc]d\" ", "t =  \"ad\""),
+    Arguments.of("R\"a[b.c]\" ", "t =  \"a\""),
+    Arguments.of("R\"a[b-c]\" ", "t =  \"lol\""),
+    Arguments.of("R\"a(?:bcd)e\" ", "t =  \"ae\""),
+    Arguments.of("R\"a(b|c)\\1d\" ", "t =  \"test\""),
+    Arguments.of("R\"a(b|c)\\1d\" ", "t =  \"the\""),
+    Arguments.of("R\"abZ\" ", "t =  \"cake\""),
+    Arguments.of("R\"...\" ", "t =  \"is\""),
+    Arguments.of("R\"...\" ", "t =  \"a\""),
+    Arguments.of("R\"...\" ", "t =  \"liee\""),
+    Arguments.of("R\"0129\" ", "t =  \"\""),
+    Arguments.of("R\"^(b|c)d\" ", "t =  \"aaaaaaaaaa\""),
+    Arguments.of("R\"a(bc)*d\" ", "t =  \"baby\""),
+    Arguments.of("R\"a(b|c){2,33}d\" ", "t =  \"dont\""),
+    Arguments.of("R\"a(b|c){4}d\" ", "t =  \"hurt\""),
+    Arguments.of("R\"a\\p{Lower}b\" ", "t =  \"me\""),
+    Arguments.of("R\"a\\w\\Bc\" ", "t =  \"ende\""));
   }
 
-  @Test
-  public void testCorrectAssignments() throws IOException {
-    testValid("R\"hello\"", "t = \"hello\"");
-    testValid("R\"a|b\" ", "t =  \"a\"");
-    testValid("R\"a|b\" ", "t =  \"b\"");
-    testValid("R\"a[b]\" ", "t =  \"ab\"");
-    testValid("R\"a[bc]d\" ", "t =  \"abd\"");
-    testValid("R\"a[bc]d\" ", "t =  \"acd\"");
-    testValid("R\"a[b.c]\" ", "t =  \"a.\"");
-    testValid("R\"a[b-c]\" ", "t =  \"ab\"");
-    testValid("R\"a(?:bcd)e\" ", "t =  \"abcde\"");
-    testValid("R\"a(b|c)\\1d\" ", "t =  \"abbd\"");
-    testValid("R\"a(b|c)\\1d\" ", "t =  \"accd\"");
-    testValid("R\"abZ\" ", "t =  \"abZ\"");
-    testValid("R\"...\" ", "t =  \"abc\"");
-    testValid("R\"...\" ", "t =  \"123\"");
-    testValid("R\"...\" ", "t =  \"z9x\"");
-    testValid("R\"0129\" ", "t =  \"0129\"");
-    testValid("R\"^(b|c)d\" ", "t =  \"bd\"");
-    testValid("R\"a(bc)*d\" ", "t =  \"abcbcbcd\"");
-    testValid("R\"a(b|c){2,33}d\" ", "t =  \"abbbbbbcd\"");
-    testValid("R\"a(b|c){4}d\" ", "t =  \"acbbcd\"");
-    testValid("R\"a\\p{Lower}b\" ", "t =  \"azb\"");
-    testValid("R\"a\\w\\Bc\" ", "t =  \"abc\"");
-  }
-
-  @Test
-  public void testIncorrectAssignments() throws IOException {
-    testInvalid("R\"hello\"", "t = \"hi\"");
-    testInvalid("R\"a|b\" ", "t =  \"c\"");
-    testInvalid("R\"a[b]\" ", "t =  \"aa\"");
-    testInvalid("R\"a[bc]d\" ", "t =  \"adc\"");
-    testInvalid("R\"a[bc]d\" ", "t =  \"ad\"");
-    testInvalid("R\"a[b.c]\" ", "t =  \"a\"");
-    testInvalid("R\"a[b-c]\" ", "t =  \"lol\"");
-    testInvalid("R\"a(?:bcd)e\" ", "t =  \"ae\"");
-    testInvalid("R\"a(b|c)\\1d\" ", "t =  \"test\"");
-    testInvalid("R\"a(b|c)\\1d\" ", "t =  \"the\"");
-    testInvalid("R\"abZ\" ", "t =  \"cake\"");
-    testInvalid("R\"...\" ", "t =  \"is\"");
-    testInvalid("R\"...\" ", "t =  \"a\"");
-    testInvalid("R\"...\" ", "t =  \"liee\"");
-    testInvalid("R\"0129\" ", "t =  \"\"");
-    testInvalid("R\"^(b|c)d\" ", "t =  \"aaaaaaaaaa\"");
-    testInvalid("R\"a(bc)*d\" ", "t =  \"baby\"");
-    testInvalid("R\"a(b|c){2,33}d\" ", "t =  \"dont\"");
-    testInvalid("R\"a(b|c){4}d\" ", "t =  \"hurt\"");
-    testInvalid("R\"a\\p{Lower}b\" ", "t =  \"me\"");
-    testInvalid("R\"a\\w\\Bc\" ", "t =  \"ende\"");
-  }
-
-  protected void testValid(String type, String exprStr) throws IOException {
+  @ParameterizedTest
+  @MethodSource("testValidArgs")
+  public void testValid(String type, String exprStr) throws IOException {
     check(type, exprStr);
-    assertTrue(Log.getFindings().isEmpty());
-    Log.clearFindings();
   }
-
-  protected void testInvalid(String type, String exprStr) throws IOException {
+  
+  @ParameterizedTest
+  @MethodSource("testInvalidArgs")
+  public void testInvalid(String type, String exprStr) throws IOException {
     check(type, exprStr);
-    assertEquals(1, Log.getFindings().size());
-    assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xFD724"));
-    Log.clearFindings();
+    MCAssertions.assertHasFindingStartingWith("0xFD724");
   }
 
   protected void check(String type, String exprStr) throws IOException {

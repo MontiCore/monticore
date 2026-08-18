@@ -17,8 +17,6 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Created by Alexander Wilts on 16.01.2017.
- * <p>
  * This visitor inserts isPresent()-checks into expressions that contain optional variables.
  * <p>
  * Let $O be an optional variable in this expression: isValid($O).

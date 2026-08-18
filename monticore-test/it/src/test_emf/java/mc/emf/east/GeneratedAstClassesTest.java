@@ -2,14 +2,15 @@
 
 package mc.emf.east;
 
-import mc.GeneratorIntegrationsTest;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import mc.feature.hwc.statechartdsl._ast.ASTState;
 import mc.feature.hwc.statechartdsl.StatechartDSLMill;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class GeneratedAstClassesTest extends GeneratorIntegrationsTest {
+@TestWithMCLanguage(StatechartDSLMill.class)
+public class GeneratedAstClassesTest {
   
   @Test
   public void testErrorsIfNullByAstNodes() {
@@ -18,5 +19,4 @@ public class GeneratedAstClassesTest extends GeneratorIntegrationsTest {
     // NullPointerException is thrown
     assertThrows(NullPointerException.class, () -> b.setTransitionsList(null));
   }
-
 }

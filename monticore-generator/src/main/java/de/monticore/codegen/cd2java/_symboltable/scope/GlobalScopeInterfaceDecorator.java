@@ -456,7 +456,7 @@ public class GlobalScopeInterfaceDecorator
       String methodName = String.format(GETSYMBOLDESER, simpleName);
 
       ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), ISymbolDeSer.class, methodName);
-      String hook = String.format("return getSymbolDeSer(\"" + className + "\");");
+      String hook = String.format("return getSymbolDeSer(\"%s\");", className);
       this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint(hook));
 
       deSerMethods.add(method);
@@ -469,7 +469,7 @@ public class GlobalScopeInterfaceDecorator
         String methodName = String.format(GETSYMBOLDESER, simpleName);
 
         ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), ISymbolDeSer.class, methodName);
-        String hook = String.format("return getSymbolDeSer(\"" + className + "\");");
+        String hook = String.format("return getSymbolDeSer(\"%s\");", className);
         this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint(hook));
 
         deSerMethods.add(method);

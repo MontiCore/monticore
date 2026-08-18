@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.symbols.compsymbols._symboltable;
 
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.compsymbols.CompSymbolsMill;
@@ -22,6 +23,7 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 /**
  * Holds tests for the handwritten methods of {@link ComponentTypeSymbolBuilder}.
  */
+@TestWithMCLanguage(CompSymbolsMill.class)
 class ComponentTypeSymbolBuilderTest {
 
   @Test

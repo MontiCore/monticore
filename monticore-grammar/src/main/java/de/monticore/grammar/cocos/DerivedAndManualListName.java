@@ -5,12 +5,10 @@ import de.monticore.grammar.grammar._ast.ASTNonTerminal;
 import de.monticore.grammar.grammar._ast.ASTProd;
 import de.monticore.grammar.grammar._cocos.GrammarASTProdCoCo;
 import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
-import de.monticore.grammar.grammar._symboltable.RuleComponentSymbolTOP;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * checks that one NonTerminal does not define a component with the same derived and a manual name at the same time
@@ -34,8 +32,8 @@ public class DerivedAndManualListName implements GrammarASTProdCoCo {
   public void check(ASTProd node) {
     if (node.isPresentSymbol()) {
       List<RuleComponentSymbol> listComponents = node.getSymbol().getProdComponents().stream()
-          .filter(RuleComponentSymbolTOP::isIsList)
-          .collect(Collectors.toList());
+          .filter(RuleComponentSymbol::isIsList)
+          .toList();
       for (int i = 0; i < listComponents.size(); i++) {
         for (int j = i + 1; j < listComponents.size(); j++) {
           if ((listComponents.get(i).isIsNonterminal() && listComponents.get(j).isIsNonterminal()) ||

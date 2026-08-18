@@ -166,7 +166,7 @@ public class ODRuleCodeGenerator {
     ASTPatternBuilder patternBuilder = ODRuleGenerationMill.patternBuilder();
 
     if (!ast.getPackageList().isEmpty()) {
-      tsBuilder.setPackage(Names.getQualifiedName(ast.getPackageList()));
+      tsBuilder.setPackage(Names.constructQualifiedName(ast.getPackageList()));
     } else {
       tsBuilder.setPackage("de.monticore.tf");
     }
@@ -383,13 +383,12 @@ public class ODRuleCodeGenerator {
   /**
    * Iterates over all conjugated boolean expressions and calculates ODSbuConstraints for each.
    *
-   * @return the set of all ODSubConstraints calculated in this process..
+   * @return the list of all ODSubConstraints calculated in this process..
    */
   protected List<ODSubConstraint> findSubConstraints(ASTExpression constrExpr) {
     List<ODSubConstraint> subConstraints = new ArrayList<>();
 
-    if (constrExpr instanceof ASTBooleanAndOpExpression) {
-      ASTBooleanAndOpExpression booleanAndOp = (ASTBooleanAndOpExpression) constrExpr;
+    if (constrExpr instanceof ASTBooleanAndOpExpression booleanAndOp) {
       subConstraints.addAll(findSubConstraints(booleanAndOp.getLeft()));
       subConstraints.addAll(findSubConstraints(booleanAndOp.getRight()));
     } else if (constrExpr instanceof ASTBracketExpression) {
@@ -559,7 +558,7 @@ public class ODRuleCodeGenerator {
 
 
       // get the names of all inner links
-      List<String> innerLinkObjectNamesList = new ArrayList<String>();
+      List<String> innerLinkObjectNamesList = new ArrayList<>();
       for (ASTODInnerLink link : obj.getInnerLinksList()) {
         if (link.getODObject().isPresentName()) {
           innerLinkObjectNamesList.add(link.getODObject().getName());
@@ -632,9 +631,8 @@ public class ODRuleCodeGenerator {
     List<ASTAssociation> associations = new ArrayList<>();
 
     List<String> types = new ArrayList<>();
-
-    List<ASTODLink> astLinks = new LinkedList<>();
-    astLinks.addAll(dslRoot.getLhs().getODLinkList());
+    
+    List<ASTODLink> astLinks = new LinkedList<>(dslRoot.getLhs().getODLinkList());
     if (dslRoot.isPresentRhs()) {
       astLinks.addAll(dslRoot.getRhs().getODLinkList());
     }
@@ -719,7 +717,7 @@ public class ODRuleCodeGenerator {
   protected Collection<ASTVariable> generateVariables(
           ASTArrayInit list,
           Collection<String> collectedNames) {
-    Collection result = new ArrayList<>();
+    Collection<ASTVariable> result = new ArrayList<>();
     for (ASTVariableInit initializer : list.getVariableInitList()) {
       String init = new TFExpressionFullPrettyPrinter(new IndentPrinter()).prettyprint(initializer);
       if (init.startsWith("\"$")) {
@@ -772,10 +770,10 @@ public class ODRuleCodeGenerator {
   }
 
   protected LinkedHashMap<String, List<String>> generateFoldingHash(ASTODRule ast) {
-    LinkedHashMap<String, List<String>> result = new LinkedHashMap<String, List<String>>();
+    LinkedHashMap<String, List<String>> result = new LinkedHashMap<>();
     // create an (initially empty) sequence for all objects
     for (ASTODObject odObject : Util.getAllODObjects(ast.getLhs())) {
-      result.put(odObject.getName(), new ArrayList<String>());
+      result.put(odObject.getName(), new ArrayList<>());
     }
     List<ASTFoldingSet> f = ast.getFoldingSetList();
     for (ASTFoldingSet t : f) {
@@ -793,7 +791,7 @@ public class ODRuleCodeGenerator {
 
   protected ASTReplacement generateReplacement(List<ASTChangeOperation> changes) {
     ASTReplacementBuilder replacement = ODRuleGenerationMill.replacementBuilder();
-    Map<String, String> requirementNames = new LinkedHashMap<String, String>();
+    Map<String, String> requirementNames = new LinkedHashMap<>();
     replacement.setRequirementsList(generateRequirements(changes, requirementNames));
     replacement.setChangesList(generateChanges(changes, requirementNames));
     replacement.setCreateObjectsList(generateCreateObjects(changes));
@@ -896,7 +894,7 @@ public class ODRuleCodeGenerator {
   }
 
   protected List<String> generateTypesList(ASTODRule ast) {
-    Set<String> types = new LinkedHashSet<String>();
+    Set<String> types = new LinkedHashSet<>();
 
     List<ASTODObject> astObjects = Util.getAllODObjects(ast.getLhs());
     for (ASTODObject obj : astObjects) {

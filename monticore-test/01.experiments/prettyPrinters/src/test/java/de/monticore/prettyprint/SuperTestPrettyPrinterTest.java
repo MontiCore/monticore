@@ -5,7 +5,6 @@ import de.monticore.ast.ASTNode;
 import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.supertestprettyprinters.SuperTestPrettyPrintersMill;
 import de.monticore.supertestprettyprinters._prettyprint.SuperTestPrettyPrintersFullPrettyPrinter;
-import org.junit.*;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -19,6 +18,11 @@ public class SuperTestPrettyPrinterTest extends PPTestClass {
   @Override
   protected String fullPrettyPrint(ASTNode node){
     return  (new SuperTestPrettyPrintersFullPrettyPrinter(new IndentPrinter())).prettyprint(node);
+  }
+
+  @Override
+  protected String fullPrettyPrintV2(ASTNode node) {
+    return new SuperTestPrettyPrintersFullPrettyPrinter(new FormattingPrinter(new IFormatter.DefaultIFormatter()), true).prettyprint(node);
   }
 
   @Test

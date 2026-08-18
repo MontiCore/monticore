@@ -31,8 +31,6 @@ import de.monticore.values.MCValueFactory;
 import de.monticore.values.MCValueObject;
 
 import javax.annotation.Nullable;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
@@ -197,13 +195,8 @@ public class MCCommonStatementsInterpreter
       MICalculationValue arrayCalc =
           iData.popCalculation().asCalculationValue();
       iterableCalc = frame -> {
-        Object arrayObj = arrayCalc.calculate(frame).asNativeObject();
-        final int length = Array.getLength(arrayObj);
-        List<Object> list = new ArrayList<>(length);
-        for (int i = 0; i < length; i++) {
-          list.add(Array.get(arrayObj, i));
-        }
-        return new MCValueObject(list);
+        final MCValueObject arrayObj = arrayCalc.calculate(frame).asObject();
+        return new MCValueObject(arrayObj.arrayToObjectList());
       };
     }
     else {
@@ -342,6 +335,8 @@ public class MCCommonStatementsInterpreter
           if (!Objects.equals(labelStr, signal.getLabel().orElse(null))) {
             throw signal;
           }
+          // explicit continue
+          //noinspection UnnecessaryContinue
           continue;
         }
       }

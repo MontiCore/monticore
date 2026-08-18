@@ -20,16 +20,8 @@ import java.util.Optional;
 
 import static de.monticore.types.check.SymTypeExpressionFactory.createFunction;
 import static de.monticore.types.check.SymTypeExpressionFactory.createTypeObject;
-import static de.monticore.types3.util.DefsTypesForTests._intSymType;
-import static de.monticore.types3.util.DefsTypesForTests._unboxedString;
-import static de.monticore.types3.util.DefsTypesForTests.field;
-import static de.monticore.types3.util.DefsTypesForTests.inScope;
-import static de.monticore.types3.util.DefsTypesForTests.method;
-import static de.monticore.types3.util.DefsTypesForTests.oOtype;
-import static de.monticore.types3.util.DefsTypesForTests.variable;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static de.monticore.types3.util.DefsTypesForTests.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class OOSymbolsSymTypeRelationsTest extends AbstractTypeVisitorTest {
 

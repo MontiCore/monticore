@@ -360,7 +360,7 @@ public abstract class SymTypeExpression
         methods.addAll(((IOOSymbolsScope) getTypeInfo()
             .getSpannedScope()).resolveFunctionMany(methodName, modifier)
             .stream().filter(f -> f instanceof MethodSymbol)
-            .collect(Collectors.toList()));
+            .toList());
       }
       if (outerIsType) {
         List<FunctionSymbol> methodsWithoutStatic = 
@@ -374,7 +374,7 @@ public abstract class SymTypeExpression
             ((IOOSymbolsScope) getTypeInfo().getSpannedScope())
               .getLocalMethodSymbols().stream()
               .filter(MethodSymbol::isIsStatic)
-              .collect(Collectors.toList());
+              .toList();
           methodsWithoutStatic.addAll(localStaticMethods);
         }
         return methodsWithoutStatic;
@@ -595,7 +595,7 @@ public abstract class SymTypeExpression
         fields.addAll((getTypeInfo().getSpannedScope())
             .resolveVariableMany(fieldName, modifier).stream()
             .filter(v -> v instanceof FieldSymbol)
-            .collect(Collectors.toList()));
+            .toList());
       }
       if (outerIsType) {
         List<VariableSymbol> fieldsWithoutStatic = 
@@ -608,7 +608,7 @@ public abstract class SymTypeExpression
             ((IOOSymbolsScope) getTypeInfo().getSpannedScope())
             .getLocalFieldSymbols().stream()
             .filter(FieldSymbol::isIsStatic)
-            .collect(Collectors.toList());
+            .toList();
           fieldsWithoutStatic.addAll(localStaticFields);
         }
         return fieldsWithoutStatic;

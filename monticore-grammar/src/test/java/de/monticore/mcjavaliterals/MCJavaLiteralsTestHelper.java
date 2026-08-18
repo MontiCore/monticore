@@ -3,10 +3,10 @@
 package de.monticore.mcjavaliterals;
 
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
+import de.monticore.literals.testmcjavaliterals.TestMCJavaLiteralsMill;
 import de.monticore.literals.testmcjavaliterals._parser.TestMCJavaLiteralsParser;
 
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -47,8 +47,8 @@ public class MCJavaLiteralsTestHelper {
    * @throws IOException
    */
   public ASTLiteral parseLiteral(String input) throws IOException {
-    TestMCJavaLiteralsParser parser = new TestMCJavaLiteralsParser();
-    Optional<ASTLiteral> res = parser.parseLiteral(new StringReader(input));
+    TestMCJavaLiteralsParser parser = TestMCJavaLiteralsMill.parser();
+    Optional<ASTLiteral> res = parser.parse_StringLiteral(input);
     assertTrue(res.isPresent());
     return res.get();
   }

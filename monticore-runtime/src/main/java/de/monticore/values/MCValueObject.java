@@ -3,6 +3,10 @@ package de.monticore.values;
 
 import com.google.common.base.Preconditions;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * A value that is a Java Object.
  * <p>
@@ -167,9 +171,28 @@ public class MCValueObject implements MCValue {
     return value instanceof String;
   }
 
+  public boolean isArray() {
+    return value.getClass().isArray();
+  }
+
+  /**
+   * Converts the array value to a list of {@link Object}.
+   * S.a. {@link #isArray()}
+   *
+   * @return the list of objects.
+   */
+  public List<Object> arrayToObjectList() {
+    final int length = Array.getLength(value);
+    List<Object> list = new ArrayList<>(length);
+    for (int i = 0; i < length; i++) {
+      list.add(Array.get(value, i));
+    }
+    return list;
+  }
+
   @Override
   public boolean checkEqualityOperator(MCValue other) {
-    return other.isObjectOfJava() && value == other.asObject().value;
+    return other.isObject() && value == other.asObject().value;
   }
 
   @Override

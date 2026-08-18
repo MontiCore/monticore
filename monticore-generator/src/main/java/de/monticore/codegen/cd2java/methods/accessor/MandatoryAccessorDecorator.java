@@ -10,7 +10,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
@@ -29,7 +29,7 @@ public class MandatoryAccessorDecorator extends AbstractCreator<ASTCDAttribute, 
 
   @Override
   public List<ASTCDMethod> decorate(final ASTCDAttribute ast) {
-    return new ArrayList<>(Arrays.asList(createGetter(ast)));
+    return new ArrayList<>(Collections.singletonList(createGetter(ast)));
   }
 
   protected ASTCDMethod createGetter(final ASTCDAttribute ast) {

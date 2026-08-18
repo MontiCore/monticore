@@ -21,6 +21,7 @@ import de.monticore.types3.util.MapBasedTypeCheck3;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.Slf4jLog;
 import org.apache.commons.cli.*;
+import org.apache.commons.cli.help.HelpFormatter;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.LoggerFactory;
@@ -152,9 +153,13 @@ public class MontiCoreTool {
    * @param options The input parameters and options.
    */
   protected void printHelp(Options options) {
-    HelpFormatter formatter = new HelpFormatter();
-    formatter.setWidth(80);
-    formatter.printHelp("MontiCoreCLI", options);
+    HelpFormatter formatter = HelpFormatter.builder().setShowSince(false).get();
+    try {
+      formatter.printHelp("MontiCoreCLI", "", options, "", true);
+    }
+    catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
   
   /**
@@ -231,8 +236,7 @@ public class MontiCoreTool {
    */
   protected final void useLogbackConfiguration(InputStream config) throws JoranException {
     ILoggerFactory lf = LoggerFactory.getILoggerFactory();
-    if(lf instanceof LoggerContext) {
-      LoggerContext context = (LoggerContext) lf;
+    if(lf instanceof LoggerContext context) {
       JoranConfigurator configurator = new JoranConfigurator();
       configurator.setContext(context);
   
@@ -320,7 +324,7 @@ public class MontiCoreTool {
         .argName("filelist")
         .hasArgs()
         .desc("Processes the source grammars (mandatory) and triggers the MontiCore generation.")
-        .build());
+        .get());
     
     // specify custom output directory
     options.addOption(Option.builder(OUT)
@@ -328,7 +332,7 @@ public class MontiCoreTool {
         .argName("path")
         .hasArg()
         .desc("Optional output directory for all generated artifacts.")
-        .build());
+        .get());
 
     // specify the tool jar's name
     options.addOption(Option.builder(TOOL_JAR_NAME)
@@ -336,7 +340,7 @@ public class MontiCoreTool {
         .argName("name")
         .hasArg()
         .desc("Optional tool jar name used in generated launch scripts.")
-        .build());
+        .get());
 
     // specify model path
     options.addOption(Option.builder(MODELPATH)
@@ -344,7 +348,7 @@ public class MontiCoreTool {
         .argName("pathlist")
         .hasArgs()
         .desc("Optional list of directories or files to be included for importing other grammars.")
-        .build());
+        .get());
     
     // specify hand-written artifacts
     options.addOption(Option.builder(HANDCODEDPATH)
@@ -352,7 +356,7 @@ public class MontiCoreTool {
         .argName("pathlist")
         .hasArgs()
         .desc("Optional list of directories to look for handwritten code to integrate.")
-        .build());
+        .get());
 
     // specify hand-written model path
     options.addOption(Option.builder(HANDCODEDMODELPATH)
@@ -360,7 +364,7 @@ public class MontiCoreTool {
             .argName("pathlist")
             .hasArgs()
             .desc("Optional list of directories or files to be included for importing other TR grammars.")
-            .build());
+            .get());
     
     // specify custom output
     options.addOption(Option.builder(SCRIPT)
@@ -368,7 +372,7 @@ public class MontiCoreTool {
         .argName("file.groovy")
         .hasArg()
         .desc("Optional Groovy script to control the generation workflow.")
-        .build());
+        .get());
 
     // specify custom script for hook point one
     options.addOption(Option.builder(GROOVYHOOK1)
@@ -376,7 +380,7 @@ public class MontiCoreTool {
         .argName("file.groovy")
         .hasArg()
         .desc("Optional Groovy script that is hooked into the workflow of the standard script at hook point one.")
-        .build());
+        .get());
 
     // specify custom script for hook point two
     options.addOption(Option.builder(GROOVYHOOK2)
@@ -384,7 +388,7 @@ public class MontiCoreTool {
         .argName("file.groovy")
         .hasArg()
         .desc("Optional Groovy script that is hooked into the workflow of the standard script at hook point two.")
-        .build());
+        .get());
 
     // specify template path
     options.addOption(Option.builder(TEMPLATEPATH)
@@ -392,7 +396,7 @@ public class MontiCoreTool {
         .argName("pathlist")
         .hasArgs()
         .desc("Optional list of directories to look for handwritten templates to integrate.")
-        .build());
+        .get());
 
     // specify template config
     options.addOption(Option.builder(CONFIGTEMPLATE)
@@ -400,13 +404,13 @@ public class MontiCoreTool {
         .argName("config.ftl")
         .hasArg()
         .desc("Optional template to configure the integration of handwritten templates.")
-        .build());
+        .get());
     
     // developer level logging
     options.addOption(Option.builder(DEV)
         .longOpt(DEV_LONG)
         .desc("Specifies whether developer level logging should be used (default is false)")
-        .build());
+        .get());
     
     // change logback conf
     options.addOption(Option.builder(CUSTOMLOG)
@@ -414,7 +418,7 @@ public class MontiCoreTool {
         .argName("file.xml")
         .hasArg()
         .desc("Changes the logback configuration to a customized file.")
-        .build());
+        .get());
     
     // specify report path
     options.addOption(Option.builder(REPORT)
@@ -422,7 +426,7 @@ public class MontiCoreTool {
         .argName("path")
         .hasArg(true)
         .desc("Specifies the directory for printing reports based on the given MontiCore grammars.")
-        .build());
+        .get());
 
     // Base Path for Relative Reporter Output
     options.addOption(Option.builder(REPORT_BASE)
@@ -430,27 +434,20 @@ public class MontiCoreTool {
         .argName("path")
         .hasArg(true)
         .desc("Base path for paths printed in the Reports.")
-        .build());
+        .get());
 
     // toggle dstl generation
     options.addOption(Option.builder(GENDST_LONG)
             .argName("boolean")
             .hasArg(true)
             .desc("Specifies if transformation infrastructure should be generated for the given TR grammar.")
-            .build());
+            .get());
 
-    // toggle tagging generation
-    options.addOption(Option.builder(GENTAG_LONG)
-            .argName("boolean")
-            .hasArg(true)
-            .desc("Specifies if tagging infrastructure should be generated for the given tagging grammar.")
-            .build());
-    
     // help dialog
     options.addOption(Option.builder(HELP)
         .longOpt(HELP_LONG)
         .desc("Prints this help dialog")
-        .build());
+        .get());
     
     return options;
   }

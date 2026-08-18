@@ -2,6 +2,7 @@ package de.monticore.expressions.bitexpressions.codegen.javagen;/* (c) https://g
 
 import com.google.common.base.Preconditions;
 import de.monticore.codegen.javagen.JavaGenVisitorState;
+import de.monticore.codegen.javagen.JavaOperationPrinter;
 import de.monticore.expressions.bitexpressions._ast.ASTBinaryAndExpression;
 import de.monticore.expressions.bitexpressions._ast.ASTBinaryOrOpExpression;
 import de.monticore.expressions.bitexpressions._ast.ASTBinaryXorExpression;
@@ -33,40 +34,71 @@ public class BitExpressionsJavaGenVisitor
     SymTypeExpression resulType = normalize(typeOf(node));
     SymTypeExpression leftType = normalize(typeOf(node.getLeft()));
     SymTypeExpression rightType = normalize(typeOf(node.getRight()));
-    // missing: create correct method and replace here
-    //JavaOperationPrinter.printLessEqual(
-    //    getPrinter(), resulType, leftType, rightType,
-    //    p -> node.getLeft().accept(getTraverser()),
-    //    p -> node.getRight().accept(getTraverser())
-    //);
-    state._willBeRemoved_logUnimplemented(node);
+    JavaOperationPrinter.printLeftShift(
+        getPrinter(), resulType, leftType, rightType,
+        p -> node.getLeft().accept(getTraverser()),
+        p -> node.getRight().accept(getTraverser())
+    );
   }
-
-  // todo fill in the rest
 
   @Override
   public void traverse(ASTRightShiftExpression node) {
-    state._willBeRemoved_logUnimplemented(node);
+    SymTypeExpression resulType = normalize(typeOf(node));
+    SymTypeExpression leftType = normalize(typeOf(node.getLeft()));
+    SymTypeExpression rightType = normalize(typeOf(node.getRight()));
+    JavaOperationPrinter.printRightShiftSigned(
+        getPrinter(), resulType, leftType, rightType,
+        p -> node.getLeft().accept(getTraverser()),
+        p -> node.getRight().accept(getTraverser())
+    );
   }
 
   @Override
   public void traverse(ASTLogicalRightShiftExpression node) {
-    state._willBeRemoved_logUnimplemented(node);
+    SymTypeExpression resulType = normalize(typeOf(node));
+    SymTypeExpression leftType = normalize(typeOf(node.getLeft()));
+    SymTypeExpression rightType = normalize(typeOf(node.getRight()));
+    JavaOperationPrinter.printRightShiftUnsigned(
+        getPrinter(), resulType, leftType, rightType,
+        p -> node.getLeft().accept(getTraverser()),
+        p -> node.getRight().accept(getTraverser())
+    );
   }
 
   @Override
   public void traverse(ASTBinaryAndExpression node) {
-    state._willBeRemoved_logUnimplemented(node);
+    SymTypeExpression resulType = normalize(typeOf(node));
+    SymTypeExpression leftType = normalize(typeOf(node.getLeft()));
+    SymTypeExpression rightType = normalize(typeOf(node.getRight()));
+    JavaOperationPrinter.printBitwiseAnd(
+        getPrinter(), resulType, leftType, rightType,
+        p -> node.getLeft().accept(getTraverser()),
+        p -> node.getRight().accept(getTraverser())
+    );
   }
 
   @Override
   public void traverse(ASTBinaryXorExpression node) {
-    state._willBeRemoved_logUnimplemented(node);
+    SymTypeExpression resulType = normalize(typeOf(node));
+    SymTypeExpression leftType = normalize(typeOf(node.getLeft()));
+    SymTypeExpression rightType = normalize(typeOf(node.getRight()));
+    JavaOperationPrinter.printBitwiseXor(
+        getPrinter(), resulType, leftType, rightType,
+        p -> node.getLeft().accept(getTraverser()),
+        p -> node.getRight().accept(getTraverser())
+    );
   }
 
   @Override
   public void traverse(ASTBinaryOrOpExpression node) {
-    state._willBeRemoved_logUnimplemented(node);
+    SymTypeExpression resulType = normalize(typeOf(node));
+    SymTypeExpression leftType = normalize(typeOf(node.getLeft()));
+    SymTypeExpression rightType = normalize(typeOf(node.getRight()));
+    JavaOperationPrinter.printBitwiseOr(
+        getPrinter(), resulType, leftType, rightType,
+        p -> node.getLeft().accept(getTraverser()),
+        p -> node.getRight().accept(getTraverser())
+    );
   }
 
 }

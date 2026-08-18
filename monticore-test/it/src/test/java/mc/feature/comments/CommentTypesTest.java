@@ -2,27 +2,18 @@
 
 package mc.feature.comments;
 
-import java.io.IOException;
-import java.io.StringReader;
-
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.BeforeEach;
+import de.monticore.runtime.junit.TestWithMCLanguage;
+import mc.feature.comments.commenttypestest.CommentTypesTestMill;
+import mc.feature.comments.commenttypestest._parser.CommentTypesTestParser;
 import org.junit.jupiter.api.Test;
 
-import mc.GeneratorIntegrationsTest;
-import mc.feature.comments.commenttypestest._parser.CommentTypesTestParser;
+import java.io.IOException;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
-public class CommentTypesTest extends GeneratorIntegrationsTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
+@TestWithMCLanguage(CommentTypesTestMill.class)
+public class CommentTypesTest {
+
   /**
    * This Test tests if xml comments are parsed correctly.
    * 
@@ -30,13 +21,10 @@ public class CommentTypesTest extends GeneratorIntegrationsTest {
    */
   @Test
   public void testXMLComment() throws IOException  {
-    StringReader r = new StringReader("start <!-- comment \n --> marita");
-    
-    CommentTypesTestParser p = new CommentTypesTestParser();    
-    p.parseCStart(r);
+    CommentTypesTestParser p = CommentTypesTestMill.parser();
+    p.parse_StringCStart("start <!-- comment \n --> marita");
     
     assertFalse(p.hasErrors());
-    assertTrue(Log.getFindings().isEmpty());
   }
   
   /**
@@ -45,13 +33,10 @@ public class CommentTypesTest extends GeneratorIntegrationsTest {
    */
   @Test
   public void testCComment_With__() throws IOException  {
-    StringReader r = new StringReader("start <!-- -- --> marita");
-    
-    CommentTypesTestParser p = new CommentTypesTestParser();    
-    p.parseCStart(r);
+    CommentTypesTestParser p = CommentTypesTestMill.parser();
+    p.parse_StringCStart("start <!-- -- --> marita");
     
     assertFalse(p.hasErrors());
-    assertTrue(Log.getFindings().isEmpty());
   }
   
   /**
@@ -60,13 +45,10 @@ public class CommentTypesTest extends GeneratorIntegrationsTest {
    */
   @Test
   public void testTexComment() throws IOException {
-    StringReader r = new StringReader("start % comment\n  marita");
-    
-    CommentTypesTestParser p = new CommentTypesTestParser();    
-    p.parseCStart(r);
+    CommentTypesTestParser p = CommentTypesTestMill.parser();
+    p.parse_StringCStart("start % comment\n  marita");
     
     assertFalse(p.hasErrors());
-    assertTrue(Log.getFindings().isEmpty());
   }
   
   /**
@@ -75,13 +57,10 @@ public class CommentTypesTest extends GeneratorIntegrationsTest {
    */
   @Test
   public void testFreeMarkerComment() throws IOException {
-    StringReader r = new StringReader("start <#-- comment \n --> marita");
-    
-    CommentTypesTestParser p = new CommentTypesTestParser();    
-    p.parseCStart(r);
+    CommentTypesTestParser p = CommentTypesTestMill.parser();
+    p.parse_StringCStart("start <#-- comment \n --> marita");
     
     assertFalse(p.hasErrors());
-    assertTrue(Log.getFindings().isEmpty());
   }
   
   /**
@@ -90,13 +69,10 @@ public class CommentTypesTest extends GeneratorIntegrationsTest {
    */
   @Test
   public void testHashComment() throws IOException {
-    StringReader r = new StringReader("start # comment \n marita");
-    
-    CommentTypesTestParser p = new CommentTypesTestParser();    
-    p.parseCStart(r);
+    CommentTypesTestParser p = CommentTypesTestMill.parser();
+    p.parse_StringCStart("start # comment \n marita");
     
     assertFalse(p.hasErrors());
-    assertTrue(Log.getFindings().isEmpty());
   }
   
 }

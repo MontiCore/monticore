@@ -2,10 +2,10 @@
 package de.monticore.types.mccollectiontypes.types3.util;
 
 import de.monticore.runtime.junit.AbstractMCTest;
-import de.monticore.types3.util.DefsTypesForTests;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.mccollectiontypes.types3.MCCollectionSymTypeRelations;
+import de.monticore.types3.util.DefsTypesForTests;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -13,17 +13,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static de.monticore.runtime.junit.MCAssertions.assertHasFindingStartingWith;
-import static de.monticore.types3.util.DefsTypesForTests._boxedListSymType;
-import static de.monticore.types3.util.DefsTypesForTests._boxedMapSymType;
-import static de.monticore.types3.util.DefsTypesForTests._boxedOptionalSymType;
-import static de.monticore.types3.util.DefsTypesForTests._boxedSetSymType;
-import static de.monticore.types3.util.DefsTypesForTests._intSymType;
-import static de.monticore.types3.util.DefsTypesForTests._personSymType;
-import static de.monticore.types3.util.DefsTypesForTests._unboxedListSymType;
-import static de.monticore.types3.util.DefsTypesForTests._unboxedMapSymType;
-import static de.monticore.types3.util.DefsTypesForTests._unboxedOptionalSymType;
-import static de.monticore.types3.util.DefsTypesForTests._unboxedSetSymType;
-import static de.monticore.types3.util.DefsTypesForTests._unboxedString;
+import static de.monticore.types3.util.DefsTypesForTests.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MCCollectionTypeRelationsTest extends AbstractMCTest {

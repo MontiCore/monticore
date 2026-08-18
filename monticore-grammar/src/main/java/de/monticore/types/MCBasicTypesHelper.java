@@ -17,26 +17,17 @@ public class MCBasicTypesHelper {
     if (null == typeName || typeName.isEmpty()) {
       return -1;
     }
-    switch (typeName) {
-    case "boolean":
-      return ASTConstantsMCBasicTypes.BOOLEAN;
-    case "float":
-      return ASTConstantsMCBasicTypes.FLOAT;
-    case "byte":
-      return ASTConstantsMCBasicTypes.BYTE;
-    case "char":
-      return ASTConstantsMCBasicTypes.CHAR;
-    case "double":
-      return ASTConstantsMCBasicTypes.DOUBLE;
-    case "int":
-      return ASTConstantsMCBasicTypes.INT;
-    case "short":
-      return ASTConstantsMCBasicTypes.SHORT;
-    case "long":
-      return ASTConstantsMCBasicTypes.LONG;
-    default:
-      return -1;
-    }
+    return switch (typeName) {
+      case "boolean" -> ASTConstantsMCBasicTypes.BOOLEAN;
+      case "float" -> ASTConstantsMCBasicTypes.FLOAT;
+      case "byte" -> ASTConstantsMCBasicTypes.BYTE;
+      case "char" -> ASTConstantsMCBasicTypes.CHAR;
+      case "double" -> ASTConstantsMCBasicTypes.DOUBLE;
+      case "int" -> ASTConstantsMCBasicTypes.INT;
+      case "short" -> ASTConstantsMCBasicTypes.SHORT;
+      case "long" -> ASTConstantsMCBasicTypes.LONG;
+      default -> -1;
+    };
   }
   
   /**
@@ -47,26 +38,17 @@ public class MCBasicTypesHelper {
    * @return
    */
   public static String primitiveConst2Name(int typeConstant) {
-    switch (typeConstant) {
-      case ASTConstantsMCBasicTypes.BOOLEAN:
-        return "boolean";
-      case ASTConstantsMCBasicTypes.BYTE:
-        return "byte";
-      case ASTConstantsMCBasicTypes.CHAR:
-        return "char";
-      case ASTConstantsMCBasicTypes.SHORT:
-        return "short";
-      case ASTConstantsMCBasicTypes.INT:
-        return "int";
-      case ASTConstantsMCBasicTypes.FLOAT:
-        return "float";
-      case ASTConstantsMCBasicTypes.LONG:
-        return "long";
-      case ASTConstantsMCBasicTypes.DOUBLE:
-        return "double";
-      default:
-        return "unknownType";
-    }
+    return switch (typeConstant) {
+      case ASTConstantsMCBasicTypes.BOOLEAN -> "boolean";
+      case ASTConstantsMCBasicTypes.BYTE -> "byte";
+      case ASTConstantsMCBasicTypes.CHAR -> "char";
+      case ASTConstantsMCBasicTypes.SHORT -> "short";
+      case ASTConstantsMCBasicTypes.INT -> "int";
+      case ASTConstantsMCBasicTypes.FLOAT -> "float";
+      case ASTConstantsMCBasicTypes.LONG -> "long";
+      case ASTConstantsMCBasicTypes.DOUBLE -> "double";
+      default -> "unknownType";
+    };
   }
   
 }

@@ -7,32 +7,24 @@ import de.monticore.literals.mccommonliterals.cocos.NoLineBreaksInStringLiteralC
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.literals.testmccommonliterals.TestMCCommonLiteralsMill;
 import de.monticore.literals.testmccommonliterals._parser.TestMCCommonLiteralsParser;
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import de.monticore.runtime.junit.MCAssertions;
+import de.monticore.runtime.junit.TestWithMCLanguage;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.Optional;
 
 import static de.monticore.literals.mccommonliterals.cocos.NoLineBreaksInStringLiteralCoCo.ERROR_CODE;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@TestWithMCLanguage(TestMCCommonLiteralsMill.class)
 public class NoLineBreaksInStringLiteralTest {
-
-  @BeforeEach
-  public void init() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-    TestMCCommonLiteralsMill.reset();
-    TestMCCommonLiteralsMill.init();
-  }
 
   private void checkStringLiteral(String s) throws IOException {
     // Parsing
-    TestMCCommonLiteralsParser parser = new TestMCCommonLiteralsParser();
-    Optional<ASTLiteral> lit = parser.parseLiteral(new StringReader(s));
+    TestMCCommonLiteralsParser parser = TestMCCommonLiteralsMill.parser();
+    Optional<ASTLiteral> lit = parser.parse_StringLiteral(s);
     assertTrue(lit.isPresent());
 
     // check CoCo
@@ -40,29 +32,18 @@ public class NoLineBreaksInStringLiteralTest {
     checker.addCoCo(new NoLineBreaksInStringLiteralCoCo());
     checker.checkAll(lit.get());
   }
-
-  @Test
-  public void testStringLiterals() {
-    try {
-      checkStringLiteral("\"okay\"");
-    }
-    catch (IOException e) {
-      fail(e.getMessage());
-    }
-    assertTrue(Log.getFindings().isEmpty());
+  
+  @ParameterizedTest
+  @ValueSource(strings = { "\"okay\"" })
+  public void testStringLiterals(String val) throws IOException {
+    checkStringLiteral(val);
   }
-
-  @Test
-  public void testFalseStringLiterals() {
-    try {
-      checkStringLiteral("\"okay\n or not\"");
-      checkStringLiteral("\"okay\r or not\"");
-    }
-    catch (IOException e) {
-      fail(e.getMessage());
-    }
-    assertEquals(2, Log.getFindings().size());
-    assertTrue(Log.getFindings().get(0).getMsg().startsWith(ERROR_CODE));
-    assertTrue(Log.getFindings().get(1).getMsg().startsWith(ERROR_CODE));
+  
+  @ParameterizedTest
+  @ValueSource(strings = { "\"okay\n or not\"", "\"okay\r or not\"" })
+  public void testFalseStringLiterals(String val) throws IOException {
+    checkStringLiteral(val);
+    
+    MCAssertions.assertHasFindingStartingWith(ERROR_CODE);
   }
 }

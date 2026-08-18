@@ -1,14 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.symbols.basicsymbols._symboltable;
 
-
 import com.google.common.collect.Lists;
 import de.monticore.runtime.junit.MCAssertions;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -16,18 +14,14 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@TestWithMCLanguage(BasicSymbolsMill.class)
 public class BasicSymbolsSymbols2JsonTest {
 
   private IBasicSymbolsArtifactScope scope;
   
   @BeforeEach
   public void init() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-
     //initialize scope, add some TypeSymbols, TypeVarSymbols, VariableSymbols and FunctionSymbols
-    BasicSymbolsMill.reset();
-    BasicSymbolsMill.init();
     BasicSymbolsMill.initializePrimitives();
 
     scope = BasicSymbolsMill.artifactScope();
@@ -100,8 +94,6 @@ public class BasicSymbolsSymbols2JsonTest {
   @Test
   public void testDeSer(){
     performRoundTripSerialization(scope);
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   public void performRoundTripSerialization(IBasicSymbolsArtifactScope scope){
@@ -163,15 +155,12 @@ public class BasicSymbolsSymbols2JsonTest {
     assertTrue(deserializedFunction.isPresent());
     assertEquals("int", function.get().getType().print());
     assertEquals("int", deserializedFunction.get().getType().print());
-
-    MCAssertions.assertNoFindings();
   }
 
   @Test
   public void testSerializedUnknownKind() {
     BasicSymbolsSymbols2Json symbols2Json = new BasicSymbolsSymbols2Json();
     symbols2Json.deserialize("{\"symbols\": [{\"kind\":\"unknown\", \"name\":\"test\"}]}");
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -182,13 +171,13 @@ public class BasicSymbolsSymbols2JsonTest {
 
     BasicSymbolsSymbols2Json symbols2Json = new BasicSymbolsSymbols2Json();
     symbols2Json.deserialize(invalidJsonForSerializing);
-    assertTrue(Log.getFindings().get(0).getMsg().startsWith("0xA1238"));
+    MCAssertions.assertHasFindingStartingWith("0xA1238");
 
     symbols2Json.deserialize(invalidJsonForSerializing2);
-    assertTrue(Log.getFindings().get(1).getMsg().startsWith("0xA1233"));
+    MCAssertions.assertHasFindingStartingWith("0xA1233");
 
     symbols2Json.deserialize(invalidJsonForSerializing3);
-    assertTrue(Log.getFindings().get(2).getMsg().startsWith("0xA0572"));
+    MCAssertions.assertHasFindingStartingWith("0xA0572");
   }
 
 

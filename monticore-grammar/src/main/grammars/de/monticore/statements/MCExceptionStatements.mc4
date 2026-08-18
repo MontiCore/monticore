@@ -51,10 +51,10 @@ TryStatement3 implements MCStatement
         ("finally" finally:MCJavaBlock)? ;
 
 TryLocalVariableDeclaration
-    = JavaModifier* MCType DeclaratorId "=" Expression ;
+    = MCModifier* MCType DeclaratorId "=" Expression ;
 
 CatchClause
-    = "catch" "(" JavaModifier* CatchTypeList Name ")" MCJavaBlock ;
+    = "catch" "(" MCModifier* CatchTypeList Name ")" MCJavaBlock ;
 
 CatchTypeList
     = (MCQualifiedName || "|")+ ;
