@@ -58,17 +58,12 @@ public class ASTDETime extends ASTDETimeTOP {
   }
   
   /**
-   * Checks whether the specified temporal field is supported by this time.
-   * <p>
-   * Supported fields are:
-   * <ul>
-   *   <li>{@link ChronoField#HOUR_OF_DAY} (always supported)</li>
-   *   <li>{@link ChronoField#MINUTE_OF_HOUR} (if a minute is present)</li>
-   *   <li>{@link ChronoField#SECOND_OF_MINUTE} (if a second is present)</li>
-   * </ul>
+   * Returns the value of the specified temporal field.
    *
-   * @param field the temporal field to check
-   * @return {@code true} if the field is supported, otherwise {@code false}
+   * @param field the temporal field to query
+   * @return the value of the requested field
+   * @throws UnsupportedTemporalTypeException if the field is not supported by
+   * this date
    */
   @Override
   public long getLong(TemporalField field) {
