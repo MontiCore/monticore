@@ -7,10 +7,7 @@ import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
 import de.monticore.symboltable.ISymbol;
 
-/**
- * todo remove this after
- * <a href="https://git.rwth-aachen.de/monticore/monticore/-/work_items/5031">monticore#5031</a>
- */
+@Deprecated(forRemoval = true)
 public class TypeDispatcherHotfix {
 
   public static boolean isFunctionSymbol(ISymbol symbol) {

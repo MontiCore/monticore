@@ -45,21 +45,20 @@ public class LiteralAssignmentMatchesRegExExpressionCoCo implements
       }
     }
 
-      if (leftType.isRegExType() &&
-          node.getRight() instanceof ASTLiteralExpression literalExpression) {
-        if (literalExpression.getLiteral() instanceof ASTStringLiteral stringLiteral) {
-          String s = stringLiteral.getSource();
-          String regex = leftType.asRegExType().getRegExString();
+    if (leftType.isRegExType() &&
+        node.getRight() instanceof ASTLiteralExpression literalExpression &&
+        literalExpression.getLiteral() instanceof ASTStringLiteral stringLiteral) {
+      String s = stringLiteral.getSource();
+      String regex = leftType.asRegExType().getRegExString();
 
-          if (!s.matches(regex)) {
-            Log.error("0xFD724 incompatible String literal \""
-                    + s + "\" is assigned to a regex instance "
-                    + leftType.printFullName(),
-                node.get_SourcePositionStart(),
-                node.get_SourcePositionEnd());
-          }
-        }
+      if (!s.matches(regex)) {
+        Log.error(
+            "0xFD724 incompatible String literal \"" + s + "\" is assigned to a regex instance "
+                + leftType.printFullName(),
+            node.get_SourcePositionStart(),
+            node.get_SourcePositionEnd());
       }
+    }
   }
 
 }

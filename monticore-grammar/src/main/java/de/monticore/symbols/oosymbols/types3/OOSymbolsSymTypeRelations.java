@@ -103,7 +103,8 @@ public class OOSymbolsSymTypeRelations {
               .toList();
       List<SymTypeOfFunction> abstractMethods = methods.stream()
           .filter(
-              m -> m.getSymbol() instanceof MethodSymbol methodSymbol && methodSymbol.isIsAbstract()
+              m -> m.getSymbol() instanceof MethodSymbol methodSymbol &&
+                  methodSymbol.isIsAbstract()
           )
           .toList();
       if (abstractMethods.size() == 1) {
