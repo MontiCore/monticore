@@ -2,7 +2,6 @@
 package de.monticore.types.check;
 
 import com.google.common.base.Preconditions;
-import de.se_rwth.commons.logging.Log;
 
 public class SIUnitBasic {
 

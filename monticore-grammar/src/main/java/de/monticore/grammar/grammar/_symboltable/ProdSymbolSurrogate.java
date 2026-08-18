@@ -11,13 +11,11 @@ public   class ProdSymbolSurrogate extends ProdSymbolSurrogateTOP  {
   }
 
   public boolean isSymbolPresent() {
-    if(!delegate.isPresent()){
+    if(delegate.isEmpty()){
 
       Optional<ProdSymbol> resolvedSymbol = enclosingScope.resolveProd(name);
-
-      if (resolvedSymbol.isPresent()) {
-         delegate = Optional.of(resolvedSymbol.get());
-       }
+      
+      resolvedSymbol.ifPresent(prodSymbol -> delegate = Optional.of(prodSymbol));
     }
     return delegate.isPresent();
   }

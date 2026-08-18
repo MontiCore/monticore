@@ -50,11 +50,11 @@ public class ConservativeExtensionCheck implements GrammarASTMCGrammarCoCo {
       if (prodComponents.isEmpty()) {
         Log.warn(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName(), superp.getFullName(), comp.getName()),
             p.getSourcePosition());
-      }else if (prodComponents.get(0).isIsTerminal() != comp.isIsTerminal() ||
-          prodComponents.get(0).isIsNonterminal() != comp.isIsNonterminal() ||
-          prodComponents.get(0).isIsList() != comp.isIsList() ||
-          prodComponents.get(0).isIsOptional() != comp.isIsOptional() ||
-          !prodComponents.get(0).getName().equals(comp.getName())) {
+      }else if (prodComponents.getFirst().isIsTerminal() != comp.isIsTerminal() ||
+          prodComponents.getFirst().isIsNonterminal() != comp.isIsNonterminal() ||
+          prodComponents.getFirst().isIsList() != comp.isIsList() ||
+          prodComponents.getFirst().isIsOptional() != comp.isIsOptional() ||
+          !prodComponents.getFirst().getName().equals(comp.getName())) {
         Log.warn(String.format(ERROR_CODE + ERROR_MSG_FORMAT, p.getName(), superp.getFullName(), comp.getName()),
             p.getSourcePosition());
       }

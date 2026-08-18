@@ -2,108 +2,94 @@
 
 package mc.feature.classgenwithingrammar;
 
-import java.io.IOException;
-import java.io.StringReader;
-
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import mc.GeneratorIntegrationsTest;
+import de.monticore.runtime.junit.MCAssertions;
+import de.monticore.runtime.junit.TestWithMCLanguage;
+import mc.feature.classgenwithingrammar.type.TypeMill;
 import mc.feature.classgenwithingrammar.type._parser.TypeParser;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
+
+import java.io.IOException;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ParserTest extends GeneratorIntegrationsTest {
+@TestWithMCLanguage(TypeMill.class)
+public class ParserTest {
   
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
-  // Test that one Welt is too much
-  @Test
-  public void test() throws IOException {
-        
-    boolean hasError = parse("Hallo Hallo Hallo Welt ");
-    assertTrue(hasError);
-  }
-  
-  // Test that the last Hallo is too much
-  @Test
-  public void test2() throws IOException {
-        
-    boolean hasError = parse("Hallo Hallo Hallo Hallo ");
-    assertTrue(hasError);
-  }
-  
-  // Tests that String is ok
-  @Test
-  public void test3() throws IOException {
-        
-    boolean hasError = parse("Hallo Hallo Hallo ");
-    
+  @ParameterizedTest
+  @ValueSource(strings = {
+      // Tests that String is ok
+      "Hallo Hallo Hallo "
+  })
+  public void testTypeValid(String value) throws IOException {
+    boolean hasError = parse(value);
     assertFalse(hasError);
-  
-    assertTrue(Log.getFindings().isEmpty());
-  }
-
-  // Tests that one hallo is issing
-  @Test
-  public void test4() throws IOException {
-
-    boolean hasError = parse("Hallo ");
-
-    assertTrue(hasError);
-  }
-
-  // Test that one Welt is too much
-  @Test
-  public void testl() throws IOException {
-        
-    boolean hasError = parse2("Hall Hall Hall \"Wel\" ");
-    
-    assertTrue(hasError);
   }
   
-  // Test that too many Hallo and Welt are detected in one go
-  @Test
-  public void testl2() throws IOException {
-        
-    boolean hasError = parse2("Hall Hall Hall Hall \"Wel\" ");
-    
-    assertTrue(hasError);
+  static Stream<Arguments> testTypeInvalidArgs() {
+    return Stream.of(
+        // Test that one Welt is too much
+        Arguments.of("Hallo Hallo Hallo Welt ", "Expected EOF but found token"),
+        // Test that the last Hallo is too much
+        Arguments.of("Hallo Hallo Hallo Hallo ",
+            "0xA7018x298 Invalid maximal occurence for sub in rule Type : Should be 3 but is 4!"),
+        // Tests that one hallo is missing
+        Arguments.of("Hallo ",
+            "0xA7017x298 Invalid minimal occurence for sub in rule Type : Should be 2 but is 1!")
+    );
   }
   
-  // Tests that String is ok
-  @Test
-  public void testl3() throws IOException {
-        
-    boolean hasError = parse2("Hall Hall Hall ");
-    
+  @ParameterizedTest
+  @MethodSource("testTypeInvalidArgs")
+  public void testTypeInvalid(String value, String expectedError) throws IOException {
+    boolean hasError = parse(value);
+    assertTrue(hasError);
+    MCAssertions.assertHasFindingStartingWith(expectedError);
+  }
+  
+  @ParameterizedTest
+  @ValueSource(strings = {
+      // Tests that String is ok
+      "Hall Hall Hall "
+  })
+  public void testType2Valid(String value) throws IOException {
+    boolean hasError = parse2(value);
     assertFalse(hasError);
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
   
-  private boolean parse( String input) throws IOException {
-    StringReader s = new StringReader(input);    
-    TypeParser parser = new TypeParser();
+  static Stream<Arguments> testType2InvalidArgs() {
+    return Stream.of(
+        // Test that one Welt is too much
+        Arguments.of("Hall Hall Hall \"Wel\" ", "Expected EOF but found token"),
+        // Test that too many Hallo and Welt are detected in one go
+        Arguments.of("Hall Hall Hall Hall \"Wel\" ",
+            "0xA7018x288 Invalid maximal occurence for name in rule Type2 : Should be 3 but is 4!")
+    );
+  }
+  
+  @ParameterizedTest
+  @MethodSource("testType2InvalidArgs")
+  public void testType2Invalid(String value, String expectedError) throws IOException {
+    boolean hasError = parse2(value);
+    assertTrue(hasError);
+    MCAssertions.assertHasFindingStartingWith(expectedError);
+  }
+
+  private boolean parse(String input) throws IOException {
+    TypeParser parser = TypeMill.parser();
             
-    parser.parseType(s);
+    parser.parse_StringType(input);
     return parser.hasErrors();
   }
   
   private boolean parse2(String input) throws IOException {
-    StringReader s = new StringReader(input);
+    TypeParser parser = TypeMill.parser();
     
-    TypeParser parser = new TypeParser();
-    
-    parser.parseType2(s);
+    parser.parse_StringType2(input);
     return parser.hasErrors();
-
   }
 }

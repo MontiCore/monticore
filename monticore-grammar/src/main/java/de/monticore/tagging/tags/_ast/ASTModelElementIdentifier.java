@@ -2,7 +2,6 @@
 package de.monticore.tagging.tags._ast;
 
 import de.monticore.ast.ASTNode;
-import de.se_rwth.commons.logging.Log;
 
 public interface ASTModelElementIdentifier extends ASTModelElementIdentifierTOP {
   /**

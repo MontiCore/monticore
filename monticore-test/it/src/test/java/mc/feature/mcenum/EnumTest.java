@@ -2,70 +2,59 @@
 
 package mc.feature.mcenum;
 
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import mc.GeneratorIntegrationsTest;
+import de.monticore.runtime.junit.TestWithMCLanguage;
+import mc.feature.mcenum.enums.EnumsMill;
 import mc.feature.mcenum.enums._ast.*;
 import mc.feature.mcenum.enums._parser.EnumsParser;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class EnumTest extends GeneratorIntegrationsTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
+@TestWithMCLanguage(EnumsMill.class)
+public class EnumTest {
   
   @Test
   public void testa() throws IOException {
     
-    EnumsParser p = new EnumsParser();
+    EnumsParser p = EnumsMill.parser();
     
-    Optional<ASTA> optAst = p.parse(new StringReader("++++WORD"));
+    Optional<ASTA> optAst = p.parse_String("++++WORD");
     assertTrue(optAst.isPresent());
     ASTA ast = optAst.get();
-    assertEquals(true, ast.isA());
-    assertEquals(true, ast.getE() == ASTE.PLUS);
-    assertEquals(true, ast.getG() == ASTG.PLUS);
-    assertEquals(true, ast.getF() == ASTF.PLUS);
-    assertEquals(true, ast.getF().getIntValue() == ASTConstantsEnums.PLUS);
-    assertEquals(true, ast.getF().ordinal() == 0);
-    assertEquals(true, ast.getF().name() == "PLUS");
-    assertTrue(Log.getFindings().isEmpty());
+    assertTrue(ast.isA());
+    assertSame(ASTE.PLUS, ast.getE());
+    assertSame(ASTG.PLUS, ast.getG());
+    assertSame(ASTF.PLUS, ast.getF());
+    assertEquals(ASTConstantsEnums.PLUS, ast.getF().getIntValue());
+    assertEquals(0, ast.getF().ordinal());
+    assertSame("PLUS", ast.getF().name());
   }
   
   @Test
   public void testB() throws IOException {
     
-    EnumsParser p = new EnumsParser();
+    EnumsParser p = EnumsMill.parser();
     
-    Optional<ASTB> optAst = p.parseB(new StringReader("++,++"));
+    Optional<ASTB> optAst = p.parse_StringB("++,++");
     assertTrue(optAst.isPresent());
     ASTB ast = optAst.get();
-    assertEquals(true, ast.getE(0) == ASTE.PLUS);
-    assertEquals(true, ast.getE(0).getIntValue() == ASTConstantsEnums.PLUS);
+    assertSame(ASTE.PLUS, ast.getE(0));
+    assertEquals(ASTConstantsEnums.PLUS, ast.getE(0).getIntValue());
     assertEquals(2, ast.sizeEs());
-    assertEquals(true, ast.getF(0) == ASTF.PLUS);
-    assertEquals(true, ast.getF(0).getIntValue() == ASTConstantsEnums.PLUS);
+    assertSame(ASTF.PLUS, ast.getF(0));
+    assertEquals(ASTConstantsEnums.PLUS, ast.getF(0).getIntValue());
     assertEquals(2, ast.sizeFs());
-    
-    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
   public void testB2() throws IOException {
     
-    EnumsParser p = new EnumsParser();
+    EnumsParser p = EnumsMill.parser();
     
-    Optional<ASTB> optAst = p.parseB(new StringReader("++,#+"));
+    Optional<ASTB> optAst = p.parse_StringB("++,#+");
     assertTrue(optAst.isPresent());
     ASTB ast = optAst.get();
     
@@ -75,16 +64,14 @@ public class EnumTest extends GeneratorIntegrationsTest {
     assertEquals(2, ast.sizeFs());
     assertEquals(ast.getF(0), ast.getF(1));
     assertSame(ASTF.PLUS, ast.getF(0));
-    
-    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
   public void testB3() throws IOException {
     
-    EnumsParser p = new EnumsParser();
+    EnumsParser p = EnumsMill.parser();
     
-    Optional<ASTB> optAst = p.parseB(new StringReader("++,#-"));
+    Optional<ASTB> optAst = p.parse_StringB("++,#-");
     assertTrue(optAst.isPresent());
     ASTB ast = optAst.get();
     
@@ -95,7 +82,5 @@ public class EnumTest extends GeneratorIntegrationsTest {
     assertEquals(2, ast.sizeFs());
     assertSame(ASTF.PLUS, ast.getF(0));
     assertSame(ASTF.MINUS, ast.getF(1));
-    
-    assertTrue(Log.getFindings().isEmpty());
   }
 }

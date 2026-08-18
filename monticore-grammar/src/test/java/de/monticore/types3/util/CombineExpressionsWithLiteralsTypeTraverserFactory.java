@@ -7,11 +7,9 @@ import de.monticore.expressions.bitexpressions.types3.BitExpressionsTypeVisitor;
 import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
 import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
 import de.monticore.expressions.commonexpressions.types3.CommonExpressionsCTTIVisitor;
-import de.monticore.expressions.commonexpressions.types3.CommonExpressionsTypeIdAsConstructorCTTIVisitor;
 import de.monticore.expressions.commonexpressions.types3.CommonExpressionsTypeVisitor;
 import de.monticore.expressions.commonexpressions.types3.util.CommonExpressionsLValueRelations;
 import de.monticore.expressions.expressionsbasis.types3.ExpressionBasisCTTIVisitor;
-import de.monticore.expressions.expressionsbasis.types3.ExpressionBasisTypeIdAsConstructorCTTIVisitor;
 import de.monticore.expressions.expressionsbasis.types3.ExpressionBasisTypeVisitor;
 import de.monticore.expressions.javaclassexpressions.types3.JavaClassExpressionsTypeVisitor;
 import de.monticore.expressions.lambdaexpressions.types3.LambdaExpressionsTypeVisitor;
@@ -111,41 +109,6 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     InferenceContext4Ast ctx4Ast = new InferenceContext4Ast();
     ITraverser traverser = new CombineExpressionsWithLiteralsTypeTraverserFactory()
         .createTraverserForOO(type4Ast, ctx4Ast);
-    // sets itself as delegate
-    return new TypeCheck3Impl(traverser, type4Ast, ctx4Ast);
-  }
-
-  /**
-   * @deprecated use version with InferenceContext4Ast
-   */
-  @Deprecated
-  public CombineExpressionsWithLiteralsTraverser createTraverserForOOWithConstructors(
-      Type4Ast type4Ast
-  ) {
-    return createTraverserForOOWithConstructors(type4Ast, new InferenceContext4Ast());
-  }
-
-  public CombineExpressionsWithLiteralsTraverser createTraverserForOOWithConstructors(
-      Type4Ast type4Ast, InferenceContext4Ast ctx4Ast
-  ) {
-    CombineExpressionsWithLiteralsTraverser traverser =
-        CombineExpressionsWithLiteralsMill.inheritanceTraverser();
-    VisitorList visitors = constructVisitorsForOOWithConstructors();
-    setType4Ast(visitors, type4Ast);
-    setContext4Ast(visitors, ctx4Ast);
-    populateTraverser(visitors, traverser);
-    return traverser;
-  }
-
-  public static MapBasedTypeCheck3 initTypeCheck3ForOOWithConstructors() {
-    OOWithinScopeBasicSymbolsResolver.init();
-    OOWithinTypeBasicSymbolsResolver.init();
-    TypeVisitorOperatorCalculator.init();
-    TypeContextCalculator.init();
-    Type4Ast type4Ast = new Type4Ast();
-    InferenceContext4Ast ctx4Ast = new InferenceContext4Ast();
-    ITraverser traverser = new CombineExpressionsWithLiteralsTypeTraverserFactory()
-        .createTraverserForOOWithConstructors(type4Ast, ctx4Ast);
     // sets itself as delegate
     return new TypeCheck3Impl(traverser, type4Ast, ctx4Ast);
   }
@@ -341,21 +304,6 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
   protected VisitorList constructVisitorsForOO() {
     VisitorList visitors = constructVisitorsCTTI();
     // as of 7.7.0, no special visitors are required
-    return visitors;
-  }
-
-  /**
-   * initializes additional logic for languages that have access to OO Symbols,
-   * in addition to being able to search for constructors
-   */
-  protected VisitorList constructVisitorsForOOWithConstructors() {
-    VisitorList visitors = constructVisitorsForOO();
-    visitors.derCommonExpressions = null;
-    visitors.cTTICommonExpressions =
-        new CommonExpressionsTypeIdAsConstructorCTTIVisitor();
-    visitors.derExpressionBasis = null;
-    visitors.cTTIExpressionBasis =
-        new ExpressionBasisTypeIdAsConstructorCTTIVisitor();
     return visitors;
   }
 

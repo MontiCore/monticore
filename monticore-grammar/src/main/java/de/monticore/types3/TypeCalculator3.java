@@ -12,12 +12,11 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._ast.ASTMCVoidType;
 import de.monticore.types3.generics.context.InferenceContext4Ast;
 import de.monticore.visitor.ITraverser;
-import de.se_rwth.commons.logging.Log;
 
 /**
  * Temporary(!) interface implementation for the temporary(!) usage of TC3.
  * This is temporary as the interface had not been discussed yet.
- * s. https://git.rwth-aachen.de/monticore/monticore/-/issues/3420
+ * s. <a href="https://git.rwth-aachen.de/monticore/monticore/-/issues/3420">monticore#3420</a>
  * @deprecated use {@link TypeCheck3}
  */
 @Deprecated

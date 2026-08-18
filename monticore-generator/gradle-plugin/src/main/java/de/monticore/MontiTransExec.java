@@ -80,7 +80,7 @@ public abstract class MontiTransExec extends DefaultTask {
       urls[i++] = f.toURI().toURL();
 
     // Construct a new classloader without a delegated-parent and with the configured classpath
-    ClassLoader newCL = new URLClassLoader(urls, (ClassLoader) null);
+    ClassLoader newCL = new URLClassLoader(urls, null);
     return newCL.loadClass(getTFGenTool().get()) // Load the TFGenClass
             .getMethod("main", String[].class); // and return the main method
   }

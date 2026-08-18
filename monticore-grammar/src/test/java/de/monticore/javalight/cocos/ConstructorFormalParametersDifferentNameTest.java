@@ -2,9 +2,8 @@
 package de.monticore.javalight.cocos;
 
 import de.monticore.javalight._cocos.JavaLightCoCoChecker;
-import org.junit.jupiter.api.BeforeEach;
-
 import de.se_rwth.commons.logging.Log;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;

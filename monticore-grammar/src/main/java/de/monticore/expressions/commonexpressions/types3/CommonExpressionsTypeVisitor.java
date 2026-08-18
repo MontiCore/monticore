@@ -752,10 +752,9 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
       // here there is no need for type inference
       getType4Ast().setTypeOfExpression(expr, nameAsExprType.get());
     }
-    else if (nameAsTypeIdType.isPresent()) {
-      getType4Ast().setTypeOfTypeIdentifierForName(
-          expr,
-          nameAsTypeIdType.get()
+    else {
+      nameAsTypeIdType.ifPresent(symTypeExpression ->
+          getType4Ast().setTypeOfTypeIdentifierForName(expr, symTypeExpression)
       );
     }
   }
@@ -923,6 +922,14 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
             v -> true,
             f -> true
         );
+        if (type.isEmpty() && !resultsAreOptional) {
+          type = WithinTypeBasicSymbolsResolver.resolveTypeAsExpression(
+              innerAsTypeIdType,
+              name,
+              modifier,
+              t -> true
+          );
+        }
         // Log remark about access modifier,
         // if access modifier is the reason it has not been resolved
         if (type.isEmpty() && !resultsAreOptional) {
@@ -1078,6 +1085,13 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     else {
       type = Optional.empty();
     }
+    if (type.isEmpty() && !resultsAreOptional) {
+      type = WithinScopeBasicSymbolsResolver
+          .resolveTypeAsExpression(
+              getAsBasicSymbolsScope(expr.getEnclosingScope()),
+              nameOpt.get()
+          );
+    }
     return type;
   }
 
@@ -1144,9 +1158,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
             modifier,
             varPredicate
         );
-    if (variable.isPresent()) {
-      types.add(variable.get());
-    }
+    variable.ifPresent(types::add);
     Collection<SymTypeOfFunction> functions =
         WithinTypeBasicSymbolsResolver.resolveFunctions(
             innerAsExprType,
@@ -1175,13 +1187,10 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
    * e.g., {@code class C<T>{T t;} C<Float>.t = 3.2;}
    */
   protected Optional<String> getExprAsQName(ASTExpression expr) {
-    if (expr instanceof ASTNameExpression) {
-      ASTNameExpression nameExpr = (ASTNameExpression) expr;
+    if (expr instanceof ASTNameExpression nameExpr) {
       return Optional.of(nameExpr.getName());
     }
-    else if (expr instanceof ASTFieldAccessExpression) {
-      ASTFieldAccessExpression fieldAccessExpression =
-          (ASTFieldAccessExpression) expr;
+    else if (expr instanceof ASTFieldAccessExpression fieldAccessExpression) {
       return getExprAsQName(fieldAccessExpression.getExpression())
           .map(qualifier ->
               Names.getQualifiedName(qualifier, fieldAccessExpression.getName())

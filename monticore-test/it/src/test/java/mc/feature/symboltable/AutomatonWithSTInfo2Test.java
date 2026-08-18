@@ -2,25 +2,18 @@
 
 package mc.feature.symboltable;
 
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.symboltable.IScopeSpanningSymbol;
-import de.se_rwth.commons.logging.LogStub;
-import mc.GeneratorIntegrationsTest;
+import mc.feature.symboltable.automatonwithstinfo2.AutomatonWithSTInfo2Mill;
 import mc.feature.symboltable.automatonwithstinfo2._symboltable.*;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import de.se_rwth.commons.logging.Log;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
-import static org.junit.jupiter.api.Assertions.*;
+@TestWithMCLanguage(AutomatonWithSTInfo2Mill.class)
+public class AutomatonWithSTInfo2Test {
 
-public class AutomatonWithSTInfo2Test extends GeneratorIntegrationsTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
   /**
    * This test ensures that all expected classes are generated. Otherwise, the test will not compile
    */
@@ -35,7 +28,5 @@ public class AutomatonWithSTInfo2Test extends GeneratorIntegrationsTest {
 //    Collection<AutomatonElementSymbol> automatonElementSymbols = automatonSymbol.getAutomatonElements();
     AutomatonSymbolSurrogate automatonSymbolSurrogate;
     AutomatonWithSTInfo2ScopesGenitorDelegator automatonWithSTInfo2SymbolTableCreator;
-    assertTrue(Log.getFindings().isEmpty());
   }
-
 }

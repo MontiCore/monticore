@@ -15,151 +15,142 @@ import java.util.Optional;
 
 public interface IReportEventHandler {
 
-  public void reportModelStart(ASTNode ast, String modelName, String fileName);
+  void reportModelStart(ASTNode ast, String modelName, String fileName);
 
-  public void reportTemplateStart(String templatename, ASTNode ast);
+  void reportTemplateStart(String templatename, ASTNode ast);
 
-  public void reportExecuteStandardTemplate(String templatename, ASTNode ast);
+  void reportExecuteStandardTemplate(String templatename, ASTNode ast);
 
-  public void reportFileCreation(String templatename,
-      String qualifiedfilename, String fileextension, ASTNode ast);
+  void reportFileCreation(String templatename, String qualifiedfilename, String fileextension,
+      ASTNode ast);
 
-  public void reportFileCreation(Path parentPath, Path file);
+  void reportFileCreation(Path parentPath, Path file);
 
-  public void reportFileFinalization(String templatename,
-      String qualifiedfilename, String fileextension, ASTNode ast);
+  void reportFileFinalization(String templatename, String qualifiedfilename, String fileextension,
+      ASTNode ast);
 
   /**
    * @param templatename
    * @param ast
    */
-  public void reportTemplateEnd(String templatename, ASTNode ast);
+  void reportTemplateEnd(String templatename, ASTNode ast);
 
   /**
    * @param modelname
    * @param filename
    */
-  public void reportModelEnd(String modelname, String filename);
+  void reportModelEnd(String modelname, String filename);
 
   /**
    * @param qualifiedName
    */
-  public void reportModelLoad(String qualifiedName);
+  void reportModelLoad(String qualifiedName);
 
   /**
    * @param name
    * @param value
    */
-  public void reportSetValue(String name, Object value);
+  void reportSetValue(String name, Object value);
 
   /**
    * @param name
    * @param value
    * @param size
    */
-  public void reportAddValue(String name, Object value, int size);
+  void reportAddValue(String name, Object value, int size);
 
   /**
    * @param className
    * @param params
    */
-  public void reportInstantiate(String className, List<Object> params);
+  void reportInstantiate(String className, List<Object> params);
 
   /**
    * @param templateName
    * @param ast
    */
-  public void reportTemplateInclude(String templateName, ASTNode ast);
+  void reportTemplateInclude(String templateName, ASTNode ast);
 
   /**
    * @param templateName
    * @param ast
    */
-  public void reportTemplateWrite(String templateName, ASTNode ast);
+  void reportTemplateWrite(String templateName, ASTNode ast);
 
   /**
    * @param hookName
    * @param hp
    */
-  public void reportSetHookPoint(String hookName, HookPoint hp);
+  void reportSetHookPoint(String hookName, HookPoint hp);
 
   /**
    * @param hookName
    * @param hp
    * @param ast
    */
-  public void reportCallHookPointStart(String hookName, HookPoint hp,
-      ASTNode ast);
+  void reportCallHookPointStart(String hookName, HookPoint hp, ASTNode ast);
 
   /**
    * @param hookName
    */
-  public void reportCallHookPointEnd(String hookName);
+  void reportCallHookPointEnd(String hookName);
 
   /**
    * @param oldTemplate
    * @param node
    * @param newHp
    */
-  public void reportASTSpecificTemplateReplacement(String oldTemplate,
-      ASTNode node, HookPoint newHp);
+  void reportASTSpecificTemplateReplacement(String oldTemplate, ASTNode node, HookPoint newHp);
 
   /**
    * @param oldTemplate
    * @param hps
    * @param ast
    */
-
-  public void reportCallSpecificReplacementHookPoint(String oldTemplate,
-      List<HookPoint> hps, ASTNode ast);
+  
+  void reportCallSpecificReplacementHookPoint(String oldTemplate, List<HookPoint> hps, ASTNode ast);
 
   /**
    * @param oldTemplate
    * @param hps
    * @param ast
    */
-
-  public void reportCallReplacementHookPoint(String oldTemplate,
-      List<HookPoint> hps, ASTNode ast);
+  
+  void reportCallReplacementHookPoint(String oldTemplate, List<HookPoint> hps, ASTNode ast);
 
   /**
    * @param oldTemplate
    * @param beforeHPs
    * @param ast
    */
-
-  public void reportCallBeforeHookPoint(String oldTemplate,
-      Collection<HookPoint> beforeHPs, ASTNode ast);
+  
+  void reportCallBeforeHookPoint(String oldTemplate, Collection<HookPoint> beforeHPs, ASTNode ast);
 
   /**
    * @param oldTemplate
    * @param afterHPs
    * @param ast
    */
-  public void reportCallAfterHookPoint(String oldTemplate,
-      Collection<HookPoint> afterHPs, ASTNode ast);
+  void reportCallAfterHookPoint(String oldTemplate, Collection<HookPoint> afterHPs, ASTNode ast);
 
   /**
    * @param oldTemplate
    * @param newHps
    */
-  public void reportTemplateReplacement(String oldTemplate,
-      List<? extends HookPoint> newHps);
+  void reportTemplateReplacement(String oldTemplate, List<? extends HookPoint> newHps);
 
   /**
    * @param template
    * @param beforeHps
    */
-  public void reportSetBeforeTemplate(String template,
-      Optional<ASTNode> ast,
+  void reportSetBeforeTemplate(String template, Optional<ASTNode> ast,
       List<? extends HookPoint> beforeHps);
 
   /**
    * @param template
    * @param afterHps
    */
-  public void reportSetAfterTemplate(String template,
-      Optional<ASTNode> ast,
+  void reportSetAfterTemplate(String template, Optional<ASTNode> ast,
       List<? extends HookPoint> afterHps);
 
   /**
@@ -167,113 +158,109 @@ public interface IReportEventHandler {
    * @param ast
    * @param afterHps
    */
-  public void reportAddAfterTemplate(String template,
-                                     Optional<ASTNode> ast,
-                                     List<? extends HookPoint> afterHps);
+  void reportAddAfterTemplate(String template, Optional<ASTNode> ast,
+      List<? extends HookPoint> afterHps);
 
   /**
    * @param template
    * @param ast
    * @param beforeHps
    */
-  public void reportAddBeforeTemplate(String template,
-                                     Optional<ASTNode> ast,
-                                     List<? extends HookPoint> beforeHps);
+  void reportAddBeforeTemplate(String template, Optional<ASTNode> ast,
+      List<? extends HookPoint> beforeHps);
 
   /**
    * @param transformationName
    */
-  public void reportTransformationStart(String transformationName);
+  void reportTransformationStart(String transformationName);
 
-  public abstract void flush(ASTNode ast);
-
-  /**
-   * @param fileName
-   */
-  public void reportUseHandwrittenCodeFile(Path parentDir, Path fileName);
-
-  public void reportHWCExistenceCheck(MCPath mcp, Path fileName, Optional<URL> exists);
+  void flush(ASTNode ast);
 
   /**
    * @param fileName
    */
-  public void reportUserSpecificTemplate(Path parentDir, Path fileName);
+  void reportUseHandwrittenCodeFile(Path parentDir, Path fileName);
+
+  void reportHWCExistenceCheck(MCPath mcp, Path fileName, Optional<URL> exists);
+
+  /**
+   * @param fileName
+   */
+  void reportUserSpecificTemplate(Path parentDir, Path fileName);
 
   /**
    * @param message
    */
-  public void reportWarning(String message);
+  void reportWarning(String message);
 
   /**
    * @param message
    */
-  public void reportUserWarning(String message);
+  void reportUserWarning(String message);
 
   /**
    * @param message
    */
-  public void reportError(String message);
+  void reportError(String message);
 
   /**
    * @param message
    */
-  public void reportErrorUser(String message);
+  void reportErrorUser(String message);
 
   /**
    * @param message
    */
-  public void reportErrorInternal(String message);
+  void reportErrorInternal(String message);
 
   /**
    * @param transformationName
    * @param attributeName
    */
-  public void reportTransformationObjectChange(String transformationName,
-      ASTNode ast, String attributeName);
+  void reportTransformationObjectChange(String transformationName, ASTNode ast,
+      String attributeName);
 
   /**
    * @param transformationName
    */
-  public void reportTransformationObjectCreation(String transformationName,
-      ASTNode ast);
+  void reportTransformationObjectCreation(String transformationName, ASTNode ast);
 
   /**
    * @param transformationName
    * @param ast
    */
-  public void reportTransformationObjectDeletion(String transformationName,
-      ASTNode ast);
+  void reportTransformationObjectDeletion(String transformationName, ASTNode ast);
 
-  public void reportDetailed(String value);
+  void reportDetailed(String value);
 
-  public void reportOpenInputFile(Optional<Path> parentPath, Path file);
+  void reportOpenInputFile(Optional<Path> parentPath, Path file);
 
   void reportParseInputFile(Path inputFilePath, String modelName);
 
   /**
    * @param scope
    */
-  public void reportSymbolTableScope(IScope scope);
+  void reportSymbolTableScope(IScope scope);
   /**
    * @param className
    * @param methodName
    * @param params
    */
-  public void reportMethodCall(String className, String methodName, List<Object> params);
+  void reportMethodCall(String className, String methodName, List<Object> params);
 
-  public void reportTransformationObjectMatch(String transformationName, ASTNode ast);
+  void reportTransformationObjectMatch(String transformationName, ASTNode ast);
 
-  public void reportTransformationOldValue(String transformationName, ASTNode ast);
+  void reportTransformationOldValue(String transformationName, ASTNode ast);
 
-  public void reportTransformationNewValue(String transformationName, ASTNode ast);
+  void reportTransformationNewValue(String transformationName, ASTNode ast);
 
-  public void reportTransformationOldValue(String transformationName, String value);
+  void reportTransformationOldValue(String transformationName, String value);
 
-  public void reportTransformationNewValue(String transformationName, String value);
+  void reportTransformationNewValue(String transformationName, String value);
 
-  public void reportTransformationOldValue(String transformationName, boolean value);
+  void reportTransformationOldValue(String transformationName, boolean value);
 
-  public void reportTransformationNewValue(String transformationName, boolean value);
+  void reportTransformationNewValue(String transformationName, boolean value);
 
   void reportFileCreation(String fileName);
 

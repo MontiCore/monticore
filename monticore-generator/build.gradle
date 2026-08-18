@@ -41,9 +41,9 @@ allprojects {
 
 dependencies {
     implementation "de.monticore:monticore-grammar:$previous_mc_version"
-    implementation "de.se_rwth.commons:se-commons-groovy:$se_commons_version"
-    implementation "de.se_rwth.commons:se-commons-logging:$se_commons_version"
-    implementation "de.se_rwth.commons:se-commons-gradle:$se_gradle_version"
+    implementation "de.se_rwth.commons:se-commons-groovy:$previous_se_commons_version"
+    implementation "de.se_rwth.commons:se-commons-logging:$previous_se_commons_version"
+    implementation "de.se_rwth.commons:se-commons-gradle:$se_commons_version" // use the current version here
 
     implementation "org.apache.commons:commons-lang3:$commons_lang3_version"
     implementation "org.freemarker:freemarker:$freemarker_version"
@@ -54,7 +54,7 @@ dependencies {
     implementation 'ch.qos.logback:logback-classic:[1.2.9,1.3.0)' // we appear to be incompatible with logback >= 1.3.0
     implementation 'ch.qos.logback:logback-core:[1.2.9,1.3.0)'
 
-    implementation "de.monticore.lang:cd4analysis:$cd4a_version"
+    implementation "de.monticore.lang:cd4analysis:$previous_cd4a_version"
     implementation "org.antlr:antlr4:$antlr_version"
     implementation "org.apache.groovy:groovy:$groovy_version"
     implementation "com.google.guava:guava:$guava_version"
@@ -130,28 +130,6 @@ allprojects {
     }
 
     publishing {
-        // The gradle-plugin plugin deploys automatically a pluginMaven publication (from the main component)
-        repositories {
-            maven {
-                name = "SE-Nexus"
-                credentials.username = mavenUser
-                credentials.password = mavenPassword
-                def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-releases/"
-                def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-snapshots/"
-                url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
-            }
-            // Also publish to the github repository, if run on a github action
-            if (System.getenv("GITHUB_REPOSITORY") != null) {
-                maven {
-                    name = "GitHubPackages"
-                    url = "https://maven.pkg.github.com/" + System.getenv("GITHUB_REPOSITORY")
-                    credentials {
-                        username = System.getenv("GITHUB_ACTOR")
-                        password = System.getenv("GITHUB_TOKEN")
-                    }
-                }
-            }
-        }
         // Add the license information to the publication
         publications.configureEach {
             pom {
@@ -163,17 +141,38 @@ allprojects {
                 }
             }
         }
-
     }
 }
+
 publishing {
-  publications {
-    "maven"(MavenPublication) {
-      // the gradle plugin is published implicitly via the java-gradle-plugin plugin
-      // but the generator has to be published explicitly
-      from components.java
+    repositories {
+        maven {
+            name = "SE-Nexus"
+            credentials.username = mavenUser
+            credentials.password = mavenPassword
+            def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-releases/"
+            def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-snapshots/"
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+        }
+        // Also publish to the github repository, if run on a github action
+        if (System.getenv("GITHUB_REPOSITORY") != null) {
+            maven {
+                name = "GitHubPackages"
+                url = "https://maven.pkg.github.com/" + System.getenv("GITHUB_REPOSITORY")
+                credentials {
+                    username = System.getenv("GITHUB_ACTOR")
+                    password = System.getenv("GITHUB_TOKEN")
+                }
+            }
+        }
     }
-  }
+    publications {
+        "maven"(MavenPublication) {
+            // the gradle plugin is published implicitly via the java-gradle-plugin plugin
+            // but the generator has to be published explicitly
+            from components.java
+        }
+    }
 }
 
 tasks.named("shadowJar") { // all in one jar

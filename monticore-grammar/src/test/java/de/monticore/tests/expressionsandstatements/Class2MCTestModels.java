@@ -35,6 +35,7 @@ public class Class2MCTestModels {
   static public Stream<Arguments> getClass2MCCases() {
     return Stream.of(
         getAClassCases(),
+        getEnumCases(),
         getNativeJavaCases(),
         getInstanceOfCases(),
         getCreatorExpressionCases(),
@@ -148,6 +149,15 @@ public class Class2MCTestModels {
     );
   }
 
+  static protected Stream<Arguments> getEnumCases() {
+    return Stream.of(
+        Arguments.of("Color.GREEN == Color.GREEN", true),
+        Arguments.of("Color.GREEN == Color.RED", false),
+        Arguments.of("Color.GREEN.equals(Color.GREEN)", true),
+        Arguments.of("Color.GREEN.equals(Color.RED)", false)
+    );
+  }
+
   static protected Stream<Arguments> getNativeJavaCases() {
     return Stream.of(
         Arguments.of("java.lang.Integer.MAX_VALUE", Integer.MAX_VALUE),
@@ -203,7 +213,11 @@ public class Class2MCTestModels {
         Arguments.of("(Comparable<Boolean>)(Boolean)true", true),
         Arguments.of("(Comparable<Integer>)(Integer)4", 4),
         Arguments.of("(Object)\"a\"", "a"),
-        Arguments.of("(R\"a\")((Object)\"a\")", "a")
+        Arguments.of("(R\"a\")((Object)\"a\")", "a"),
+        Arguments.of("(Comparable<Integer>)(Integer)4", 4),
+        Arguments.of("((Integer | Double)Integer.valueOf(4)).equals(4.0)", true)
+        // no support yet
+        //Arguments.of("((Comparable<Integer> & Number)Integer.valueOf(4)).equals(4)", true)
     );
   }
 

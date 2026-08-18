@@ -2,6 +2,7 @@
 package de.monticore.symbols.compsymbols._symboltable;
 
 import com.google.common.base.Preconditions;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.compsymbols.CompSymbolsMill;
 import de.monticore.symboltable.modifiers.BasicAccessModifier;
@@ -14,12 +15,11 @@ import org.junit.jupiter.params.provider.CsvSource;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@TestWithMCLanguage(CompSymbolsMill.class)
 public class Port2VariableAdapterTest {
 
   @BeforeEach
   public void setup() {
-    CompSymbolsMill.reset();
-    CompSymbolsMill.init();
     BasicSymbolsMill.initializePrimitives();
   }
 

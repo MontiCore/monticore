@@ -16,7 +16,7 @@ public enum ProductionType {
       this.nameString = name;
     }
 
-    protected String getNameString() {
+    String getNameString() {
       return this.nameString;
     }
 }

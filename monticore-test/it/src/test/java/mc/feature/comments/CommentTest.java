@@ -2,40 +2,30 @@
 
 package mc.feature.comments;
 
-import java.io.IOException;
-import java.io.StringReader;
-
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.BeforeEach;
-
-import mc.GeneratorIntegrationsTest;
-import mc.feature.featuredsl._ast.ASTAutomaton;
-import mc.feature.featuredsl._ast.ASTConstants;
-import mc.feature.featuredsl._ast.ASTConstantsFeatureDSL;
-import mc.feature.featuredsl._ast.ASTSpices1;
-import mc.feature.featuredsl._ast.ASTSpices2;
+import de.monticore.runtime.junit.TestWithMCLanguage;
+import mc.feature.featuredsl.FeatureDSLMill;
+import mc.feature.featuredsl._ast.*;
 import mc.feature.featuredsl._parser.FeatureDSLParser;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+
 import static org.junit.jupiter.api.Assertions.*;
 
-public class CommentTest extends GeneratorIntegrationsTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
+@TestWithMCLanguage(FeatureDSLMill.class)
+public class CommentTest {
+
   @Test
   public void testConstants() throws IOException  {
-    StringReader s = new StringReader(
-        "// Test \n /*Second*/ automaton a { // First Constant 1\n constants public ;// First Constant 2\n /*Second Constant*/ constants +; constants private; spices1 garlic pepper;	spices2 none;}");
-        
-    FeatureDSLParser cp = new FeatureDSLParser();
+    FeatureDSLParser cp = FeatureDSLMill.parser();
     
-    java.util.Optional<ASTAutomaton> optAst = cp.parseAutomaton(s);
+    java.util.Optional<ASTAutomaton> optAst = cp.parse_StringAutomaton("""
+        // Test
+        /*Second*/ automaton a { // First Constant 1
+        constants public ;// First Constant 2
+        /*Second Constant*/ constants +; constants private; spices1 garlic pepper;	spices2 none;}
+        """);
+    assertTrue(optAst.isPresent());
     ASTAutomaton ast = optAst.get();
     
     // Parsing
@@ -56,13 +46,11 @@ public class CommentTest extends GeneratorIntegrationsTest {
     
     assertEquals(ASTConstantsFeatureDSL.NONE, ((ASTSpices2) ((ASTAutomaton) ast).getWiredList().get(4)).getSpicelevel());
     
-    assertEquals("// Test ", ast.get_PreCommentList().get(0).getText());
+    assertEquals("// Test", ast.get_PreCommentList().get(0).getText());
     assertEquals("/*Second*/", ast.get_PreCommentList().get(1).getText());
-    assertEquals("// First Constant 1", ast.getWiredList().get(0).get_PreCommentList().get(0).getText());
-    assertEquals("// First Constant 2", ast.getWiredList().get(0).get_PostCommentList().get(0).getText());
-    assertEquals("/*Second Constant*/", ast.getWiredList().get(1).get_PreCommentList().get(0).getText());
-  
-    assertTrue(Log.getFindings().isEmpty());
+    assertEquals("// First Constant 1", ast.getWiredList().get(0).get_PreCommentList().getFirst().getText());
+    assertEquals("// First Constant 2", ast.getWiredList().get(0).get_PostCommentList().getFirst().getText());
+    assertEquals("/*Second Constant*/", ast.getWiredList().get(1).get_PreCommentList().getFirst().getText());
   }
   
 }

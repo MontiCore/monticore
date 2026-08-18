@@ -16,9 +16,9 @@ import de.monticore.generating.templateengine.reporting.artifacts.model.RootPkg;
 
 public class GMLFormatter extends AFormatter {
   
-  protected Map<Element, Integer> elementIds = new LinkedHashMap<Element, Integer>();
+  protected Map<Element, Integer> elementIds = new LinkedHashMap<>();
   
-  protected Map<APkg, Integer> packageIds = new LinkedHashMap<APkg, Integer>();
+  protected Map<APkg, Integer> packageIds = new LinkedHashMap<>();
   
   protected int nodeIdCounter = 0;
   
@@ -35,7 +35,7 @@ public class GMLFormatter extends AFormatter {
   public List<String> getContent(RootPkg rootPkg) {
     List<String> lines = Lists.newArrayList();
     calculateMaxEdgeCalls(rootPkg);    
-    edgeSizeRange = maxEdgeCalls / 7;
+    edgeSizeRange = (double) maxEdgeCalls / 7;
     
     addLine(lines, "graph [");       
     indent();
@@ -178,16 +178,12 @@ public class GMLFormatter extends AFormatter {
    * @return
    */
   protected String getShape(ElementType type) {
-    switch (type) {
-      case HELPER:
-        return "diamond";
-      case MODEL:
-        return "hexagon";
-      case TEMPLATE:
-        return "ellipse";
-      default:
-        return "octagon";
-    }
+    return switch (type) {
+      case HELPER -> "diamond";
+      case MODEL -> "hexagon";
+      case TEMPLATE -> "ellipse";
+      default -> "octagon";
+    };
   }
   
   /**

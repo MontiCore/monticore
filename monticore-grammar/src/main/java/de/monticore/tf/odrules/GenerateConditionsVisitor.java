@@ -449,7 +449,7 @@ public class GenerateConditionsVisitor implements
   }
   protected String createPresentCheckStatement(String getter) {
     List<String> splits = new ArrayList<>(Splitters.DOT.splitToList(getter));
-    splits.set(splits.size() - 1, splits.get(splits.size() - 1).replace("get", "isPresent"));
+    splits.set(splits.size() - 1, splits.getLast().replace("get", "isPresent"));
 
     return Joiners.DOT.join(splits);
   }

@@ -1,8 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.io.paths;
 
-import de.se_rwth.commons.Joiners;
-import de.se_rwth.commons.StringMatchers;
 import de.se_rwth.commons.logging.Log;
 
 import java.io.File;
@@ -46,7 +44,7 @@ public class GlobExpressionEvaluator extends SimpleFileVisitor<Path> {
       URI uri = path.toUri();
       // this takes care of white spaces in files, especially jars, if they are double encoded
       if (uri.toString().contains("%2520")) {
-        uri = URI.create(uri.toString().replaceAll("%2520", "%20"));
+        uri = URI.create(uri.toString().replace("%2520", "%20"));
       }
       result.add(uri);
     }
@@ -67,7 +65,6 @@ public class GlobExpressionEvaluator extends SimpleFileVisitor<Path> {
     }
     catch (IOException e) {
       Log.error("0x1C193 Error while traversing the file system!", e);
-      e.printStackTrace();
       return null;
     }
     return getResult();

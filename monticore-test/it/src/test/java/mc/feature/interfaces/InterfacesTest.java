@@ -2,39 +2,30 @@
 
 package mc.feature.interfaces;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.Optional;
-
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.BeforeEach;
-
-import mc.GeneratorIntegrationsTest;
+import de.monticore.runtime.junit.TestWithMCLanguage;
+import mc.feature.interfaces.sub.SubMill;
 import mc.feature.interfaces.sub._ast.ASTA;
 import mc.feature.interfaces.sub._parser.SubParser;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 
-public class InterfacesTest extends GeneratorIntegrationsTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
+@TestWithMCLanguage(SubMill.class)
+public class InterfacesTest {
+
   @Test
   public void test1a() throws IOException {
     
-    SubParser parser = new SubParser();    
-    Optional<mc.feature.interfaces.sub._ast.ASTA> ast = parser.parseA(new StringReader("Hello Otto Mustermann"));
+    SubParser parser = SubMill.parser();
+    Optional<mc.feature.interfaces.sub._ast.ASTA> ast = parser.parse_StringA("Hello Otto Mustermann");
     
+    assertTrue(ast.isPresent());
     assertInstanceOf(ASTA.class, ast.get());
     ASTA astA = ast.get();
     assertNotNull(astA.getB());
-    assertTrue(Log.getFindings().isEmpty());
   }
   
 }

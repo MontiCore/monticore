@@ -111,7 +111,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
             .stream()
             .map(ASTCDClass::getCDAttributeList)
             .flatMap(List::stream)
-            .map(a -> a.deepClone())
+            .map(ASTCDAttribute::deepClone)
             .collect(Collectors.toList());
     scopeRuleAttrList.forEach(a -> getDecorationHelper().addAttributeDefaultValues(a, this.glex));
 
@@ -341,7 +341,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
     }
     //sort the map based on the alphabetical order of keys, to always generate the same order of methods
     return symbolMap.entrySet().stream()
-        .sorted(Ordering.natural().onResultOf(a -> a.getKey())).collect(Collectors
+        .sorted(Ordering.natural().onResultOf(Map.Entry::getKey)).collect(Collectors
             .toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2, LinkedHashMap::new));
   }
 

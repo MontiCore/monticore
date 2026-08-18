@@ -33,15 +33,14 @@ public class NTAndASTRuleExtendType implements GrammarASTMCGrammarCoCo {
                     && (!((ASTClassProd) ruleSymbol.get().getAstNode()).getASTSuperClassList().isEmpty()
                     || !((ASTClassProd) ruleSymbol.get().getAstNode()).getSuperRuleList().isEmpty())) {
               Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, rule.getType(),
-                      MCSimpleGenericTypesMill.prettyPrint(rule.getASTSuperClassList().get(0), false).trim()),
+                      MCSimpleGenericTypesMill.prettyPrint(rule.getASTSuperClassList().getFirst(), false).trim()),
                       rule.get_SourcePositionStart());
             }
           } else if (ruleSymbol.get().isPresentAstNode()
-                  && ruleSymbol.get().getAstNode() instanceof ASTAbstractProd) {
-            ASTAbstractProd prod = (ASTAbstractProd) ruleSymbol.get().getAstNode();
+                  && ruleSymbol.get().getAstNode() instanceof ASTAbstractProd prod) {
             if (!prod.getASTSuperClassList().isEmpty() || !prod.getSuperRuleList().isEmpty()) {
               Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, rule.getType(),
-                      MCSimpleGenericTypesMill.prettyPrint(rule.getASTSuperClassList().get(0), false).trim()),
+                      MCSimpleGenericTypesMill.prettyPrint(rule.getASTSuperClassList().getFirst(), false).trim()),
                       rule.get_SourcePositionStart());
             }
           }

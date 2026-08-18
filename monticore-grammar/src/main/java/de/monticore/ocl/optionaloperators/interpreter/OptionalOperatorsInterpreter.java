@@ -258,7 +258,7 @@ public class OptionalOperatorsInterpreter
                 return optValue.isPresent();
               },
               frame -> {
-                @SuppressWarnings("unchecked") final Optional<?> optValue =
+                final Optional<?> optValue =
                     (Optional<?>) leftOptCalc.calculate(frame).asNativeObject();
                 optValue.ifPresent(v ->
                     MCValueStorage[0] = MCValueFactory.createMIValueOfNativeObject(v)
