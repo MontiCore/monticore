@@ -67,8 +67,7 @@ public class SymbolAccessHandler {
   ) {
     MICalculation getter;
     Optional<MISetter> setter = Optional.empty();
-    if (TypeDispatcherHotfix.isVariableSymbol(exprSourceSym)) {
-      VariableSymbol varSym = (VariableSymbol) exprSourceSym;
+    if (exprSourceSym instanceof VariableSymbol varSym) {
       if (isNativeJavaVariable(varSym)) {
         FieldSymbol fieldSym = (FieldSymbol) exprSourceSym;
         getter = createJavaFieldGetterOfStatic(fieldSym);
@@ -79,11 +78,9 @@ public class SymbolAccessHandler {
         setter = Optional.of(frameLayout.getVariableSetter(varSym));
       }
     }
-    else if (TypeDispatcherHotfix.isFunctionSymbol(exprSourceSym)) {
-      FunctionSymbol funcSym = (FunctionSymbol) exprSourceSym;
+    else if (exprSourceSym instanceof FunctionSymbol funcSym) {
       if (isNativeJavaFunction(funcSym)) {
-        if (TypeDispatcherHotfix.isMethodSymbol(funcSym)) {
-          MethodSymbol methodSym = (MethodSymbol) funcSym;
+        if (funcSym instanceof MethodSymbol methodSym) {
           final MethodHandle methodHandle = getHandleOfSymbol(methodSym);
           final MCValueFunctionOfMethodHandle staticMethodHandle =
               new MCValueFunctionOfMethodHandle(methodHandle);
@@ -116,13 +113,11 @@ public class SymbolAccessHandler {
     Optional<MISetter> setter = Optional.empty();
     if (objType.isObjectType() || objType.isGenericType()) {
       if (isNativeJavaType(objType.getTypeInfo())) {
-        if (TypeDispatcherHotfix.isFieldSymbol(exprSourceSym)) {
-          FieldSymbol fieldSym = (FieldSymbol) exprSourceSym;
+        if (exprSourceSym instanceof FieldSymbol fieldSym) {
           getter = createJavaFieldGetter(fieldSym, objCalc);
           setter = createJavaFieldSetter(fieldSym, objCalc);
         }
-        else if (TypeDispatcherHotfix.isMethodSymbol(exprSourceSym)) {
-          MethodSymbol methodSym = (MethodSymbol) exprSourceSym;
+        else if (exprSourceSym instanceof MethodSymbol methodSym) {
           MethodHandle methodHandle = getHandleOfSymbol(methodSym);
           final MCValueFunctionOfMethodHandle unboundMethod =
               new MCValueFunctionOfMethodHandle(methodHandle);
