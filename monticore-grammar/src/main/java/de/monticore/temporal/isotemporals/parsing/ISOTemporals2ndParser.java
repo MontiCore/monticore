@@ -118,17 +118,17 @@ public class ISOTemporals2ndParser implements ISOTemporalsVisitor2 {
     }
     if (parsed.isPresentTimeShift()) {
       if (parsed.getTimeShift().isUtc()) {
-        node.setTimeShift(0);
+        node.setTimeShiftHour(0);
+        node.setTimeShiftMinute(0);
       } else {
-        if (parsed.getTimeShift().isPresentMinute() && parsed.getTimeShift().getMinute().getValue() != 0) {
-          Log.error("The minute component of time shift has to be '00' or absent!", node.get_SourcePositionStart(), node.get_SourcePositionEnd());
-        }
-        
-        int timeShift = parsed.getTimeShift().getHour().getValue();
+        int timeShiftHour = parsed.getTimeShift().getHour().getValue();
         if (parsed.getTimeShift().getSign() == ASTSign4P.MINUS) {
-          timeShift = -timeShift;
+          timeShiftHour = -timeShiftHour;
         }
-        node.setTimeShift(timeShift);
+        node.setTimeShiftHour(timeShiftHour);
+        
+        int timeShiftMinute = parsed.getTimeShift().getMinute().getValue();
+        node.setTimeShiftMinute(timeShiftMinute);
       }
     }
   }

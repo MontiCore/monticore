@@ -108,8 +108,7 @@ public class ASTISOTime extends ASTISOTimeTOP {
    */
   @Override
   public long getLong(TemporalField field) {
-    if (field instanceof ChronoField) {
-      ChronoField f = (ChronoField) field;
+    if (field instanceof ChronoField f) {
       switch (f) {
         case HOUR_OF_DAY:
           return getHour();
@@ -120,9 +119,14 @@ public class ASTISOTime extends ASTISOTimeTOP {
         case NANO_OF_SECOND:
           return getNanoOfSecond();
         case OFFSET_SECONDS:
-          return 3600L * getTimeShift();  // Time shift is in hours but result has to be in seconds
+          // Time shift is in hours but result has to be in seconds
+          return 3600L * getTimeShiftHour() + 60L * getTimeShiftMinute();
       }
     }
     throw new UnsupportedTemporalTypeException(field.toString());
+  }
+  
+  public boolean isPresentTimeShift() {
+    return this.timeShiftHour.isPresent() || this.timeShiftMinute.isPresent();
   }
 }

@@ -3,6 +3,10 @@ package de.monticore.temporal.isotemporals._ast;
 
 public class ASTTimeShift extends ASTTimeShiftTOP {
   
+  /**
+   * @return a string representing the TimeShift that can be processed by the second parser.
+   * Methods with this purpose are uniformly called <code>toRawString</code>.
+   */
   public String toRawString() {
     StringBuilder result = new StringBuilder();
     if (isPresentSign()) {
@@ -11,10 +15,10 @@ public class ASTTimeShift extends ASTTimeShiftTOP {
       } else {
         result.append("-");
       }
-      result.append(getPre());
-      if (isPresentPost()) {
+      result.append(getHour());
+      if (isPresentMinute()) {
         result.append(":");
-        result.append(getPost());
+        result.append(getMinute());
       }
     } else {
       result.append("Z");

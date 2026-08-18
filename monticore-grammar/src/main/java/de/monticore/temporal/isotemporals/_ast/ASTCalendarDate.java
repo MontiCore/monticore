@@ -7,6 +7,10 @@ import java.time.temporal.UnsupportedTemporalTypeException;
 
 public class ASTCalendarDate extends ASTCalendarDateTOP {
   
+  /**
+   * @return a string representing the CalendarDate that can be processed by the second parser.
+   * Methods with this purpose are uniformly called <code>toRawString</code>.
+   */
   public String toRawString() {
     StringBuilder result = new StringBuilder();
     if (isPresentSign()) {
@@ -65,8 +69,7 @@ public class ASTCalendarDate extends ASTCalendarDateTOP {
    */
   @Override
   public long getLong(TemporalField field) {
-    if (field instanceof ChronoField) {
-      ChronoField f = (ChronoField) field;
+    if (field instanceof ChronoField f) {
       switch (f) {
         case YEAR:
           return getYear();

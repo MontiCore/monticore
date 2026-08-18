@@ -7,7 +7,6 @@ import java.time.temporal.Temporal;
 import java.time.temporal.TemporalField;
 import java.time.temporal.UnsupportedTemporalTypeException;
 
-@SuppressWarnings("unused") // This interface is part of the public-facing API
 public interface ASTDateTime extends ASTDateTimeTOP {
   
   ASTDate getDate();

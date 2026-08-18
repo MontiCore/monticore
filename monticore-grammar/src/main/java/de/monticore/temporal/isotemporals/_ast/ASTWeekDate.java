@@ -52,8 +52,7 @@ public interface ASTWeekDate extends ASTWeekDateTOP {
    */
   @Override
   default long getLong(TemporalField field) {
-    if (field instanceof ChronoField) {
-      ChronoField f = (ChronoField) field;
+    if (field instanceof ChronoField f) {
       switch (f) {
         case YEAR:
           return getYear();

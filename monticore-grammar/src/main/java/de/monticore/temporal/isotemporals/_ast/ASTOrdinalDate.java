@@ -7,6 +7,10 @@ import java.time.temporal.UnsupportedTemporalTypeException;
 
 public class ASTOrdinalDate extends ASTOrdinalDateTOP {
   
+  /**
+   * @return a string representing the OrdinalDate that can be processed by the second parser.
+   * Methods with this purpose are uniformly called <code>toRawString</code>.
+   */
   public String toRawString() {
     StringBuilder result = new StringBuilder();
     if (isPresentSign()) {

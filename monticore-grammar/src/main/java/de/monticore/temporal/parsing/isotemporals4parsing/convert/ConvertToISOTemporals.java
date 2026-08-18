@@ -217,7 +217,7 @@ public class ConvertToISOTemporals implements ISOTemporals4ParsingVisitor2,
       if (node.isPresentMinute()) {
         pre += node.getMinute().getSource();
       }
-      builder.setPre(pre);
+      builder.setHour(pre);
     }
     result = builder.build();
   }
@@ -231,9 +231,9 @@ public class ConvertToISOTemporals implements ISOTemporals4ParsingVisitor2,
       } else {
         builder.setSign(ASTSign.MINUS);
       }
-      builder.setPre(node.getHour().getSource());
+      builder.setHour(node.getHour().getSource());
       if (node.isPresentMinute()) {
-        builder.setPost(node.getMinute().getSource());
+        builder.setMinute(node.getMinute().getSource());
       }
     }
     result = builder.build();

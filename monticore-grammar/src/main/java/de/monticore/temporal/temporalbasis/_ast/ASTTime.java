@@ -9,7 +9,6 @@ import java.time.temporal.UnsupportedTemporalTypeException;
 
 import static java.time.temporal.ChronoField.*;
 
-@SuppressWarnings("unused") // This interface is part of the public-facing API
 public interface ASTTime extends ASTTimeTOP {
   
   /**

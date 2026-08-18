@@ -44,8 +44,7 @@ public class ASTDETime extends ASTDETimeTOP {
    */
   @Override
   public boolean isSupported(TemporalField field) {
-    if (field instanceof ChronoField) {
-      ChronoField f = (ChronoField) field;
+    if (field instanceof ChronoField f) {
       switch (f) {
         case HOUR_OF_DAY:
           return true;
@@ -73,8 +72,7 @@ public class ASTDETime extends ASTDETimeTOP {
    */
   @Override
   public long getLong(TemporalField field) {
-    if (field instanceof ChronoField) {
-      ChronoField f = (ChronoField) field;
+    if (field instanceof ChronoField f) {
       switch (f) {
         case HOUR_OF_DAY:
           return getHour();

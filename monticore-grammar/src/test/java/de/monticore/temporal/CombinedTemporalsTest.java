@@ -90,7 +90,7 @@ public class CombinedTemporalsTest {
     Assertions.assertEquals(minute, realAst.isPresentMinute() ? realAst.getMinute() : -1);
     Assertions.assertEquals(second, realAst.isPresentSecond() ? realAst.getSecond() : -1);
     Assertions.assertEquals(decimalDigits, realAst.isPresentDecimalDigits() ? realAst.getDecimalDigits() : "");
-    Assertions.assertEquals(timeShift, realAst.isPresentTimeShift() ? Optional.of(realAst.getTimeShift()) : Optional.empty());
+    Assertions.assertEquals(timeShift, realAst.isPresentTimeShiftHour() ? Optional.of(realAst.getTimeShiftHour()) : Optional.empty());
   }
   
   @DisplayName("Calendar DateTime Parsing")
@@ -117,7 +117,7 @@ public class CombinedTemporalsTest {
     Assertions.assertEquals(minute, time.isPresentMinute() ? time.getMinute() : -1);
     Assertions.assertEquals(second, time.isPresentSecond() ? time.getSecond() : -1);
     Assertions.assertEquals(decimalDigits, time.isPresentDecimalDigits() ? time.getDecimalDigits() : "");
-    Assertions.assertEquals(timeShift, time.isPresentTimeShift() ? Optional.of(time.getTimeShift()) : Optional.empty());
+    Assertions.assertEquals(timeShift, time.isPresentTimeShiftHour() ? Optional.of(time.getTimeShiftHour()) : Optional.empty());
   }
   
   @DisplayName("Ordinal DateTime Parsing")
@@ -143,7 +143,7 @@ public class CombinedTemporalsTest {
     Assertions.assertEquals(minute, time.isPresentMinute() ? time.getMinute() : -1);
     Assertions.assertEquals(second, time.isPresentSecond() ? time.getSecond() : -1);
     Assertions.assertEquals(decimalDigits, time.isPresentDecimalDigits() ? time.getDecimalDigits() : "");
-    Assertions.assertEquals(timeShift, time.isPresentTimeShift() ? Optional.of(time.getTimeShift()) : Optional.empty());
+    Assertions.assertEquals(timeShift, time.isPresentTimeShiftHour() ? Optional.of(time.getTimeShiftHour()) : Optional.empty());
   }
   
   @DisplayName("Week DateTime Parsing")
@@ -170,7 +170,7 @@ public class CombinedTemporalsTest {
     Assertions.assertEquals(minute, time.isPresentMinute() ? time.getMinute() : -1);
     Assertions.assertEquals(second, time.isPresentSecond() ? time.getSecond() : -1);
     Assertions.assertEquals(decimalDigits, time.isPresentDecimalDigits() ? time.getDecimalDigits() : "");
-    Assertions.assertEquals(timeShift, time.isPresentTimeShift() ? Optional.of(time.getTimeShift()) : Optional.empty());
+    Assertions.assertEquals(timeShift, time.isPresentTimeShiftHour() ? Optional.of(time.getTimeShiftHour()) : Optional.empty());
   }
   
   @DisplayName("Full Period Parsing")
