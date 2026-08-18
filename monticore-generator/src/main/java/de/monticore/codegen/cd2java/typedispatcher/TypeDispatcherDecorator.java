@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static de.monticore.cd.codegen.CD2JavaTemplates.ANNOTATIONS;
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
@@ -65,6 +66,8 @@ public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUni
         .build();
 
     addGettersAndSetters(optAttributes, dispatcher);
+
+    this.replaceTemplate(ANNOTATIONS, dispatcher, new StringHookPoint("@Deprecated(forRemoval = true)"));
 
     return dispatcher;
   }
