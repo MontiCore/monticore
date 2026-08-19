@@ -9,6 +9,8 @@ public final class VisitorConstants {
 
   public static final String INHERITANCE_SUFFIX = "Inheritance";
 
+  public static final String SINGLE_STEP_SUFFIX = "SingleStep";
+
   public static final String TRAVERSER_SUFFIX = "Traverser";
   
   public static final String TRAVERSER_CLASS_SUFFIX = "TraverserImplementation";
@@ -22,6 +24,8 @@ public final class VisitorConstants {
   public static final String TRAVERSER = "traverser";
 
   public static final String INHERITANCE_TRAVERSER = "inheritanceTraverser";
+
+  public static final String SINGLE_STEP_TRAVERSER = "singleStepTraverser";
 
   public static final String GET_TRAVERSER = "getTraverser";
 
