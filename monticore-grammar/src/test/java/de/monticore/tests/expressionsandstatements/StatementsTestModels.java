@@ -111,6 +111,7 @@ public class StatementsTestModels {
   static protected Stream<Arguments> getAssignmentCases() {
     return Stream.of(
         Arguments.of("int x = 1; x = 2; x", 2),
+        Arguments.of("double x = 1; x = 2; x", 2.0),
         Arguments.of("int x = 1; x += 2; x", 3),
         Arguments.of("int x = 2; x -= 2; x", 0),
         Arguments.of("int x = 3; x *= 2; x", 6),
