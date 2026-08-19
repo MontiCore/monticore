@@ -197,6 +197,10 @@ public class Visitor2Decorator extends AbstractCreator<ASTCDCompilationUnit, AST
       visitorMethodList.add(visitorService.getVisitorMethod(VISIT, symbolType));
       visitorMethodList.add(visitorService.getVisitorMethod(END_VISIT, symbolType));
     }
+    ASTMCQualifiedType commonSymbolType =
+        getMCTypeFacade().createQualifiedType(symbolTableService.getCommonSymbolInterfaceFullName());
+    visitorMethodList.add(visitorService.getVisitorMethod(VISIT , commonSymbolType));
+    visitorMethodList.add(visitorService.getVisitorMethod(END_VISIT , commonSymbolType));
     return visitorMethodList;
   }
 
