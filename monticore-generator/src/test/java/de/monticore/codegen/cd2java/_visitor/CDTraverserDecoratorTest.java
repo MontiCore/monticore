@@ -52,7 +52,7 @@ public class CDTraverserDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testClassCount() {
-    assertEquals(2, decoratedCompilationUnit.getCDDefinition().getCDClassesList().size());
+    assertEquals(3, decoratedCompilationUnit.getCDDefinition().getCDClassesList().size());
   
     assertTrue(Log.getFindings().isEmpty());
   }
