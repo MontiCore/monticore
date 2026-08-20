@@ -37,6 +37,7 @@ packages under the `monticore-grammar/src/main/grammars/` folder hierarchy:
 * `de.monticore.siunit`
 * `de.monticore.statements`
 * `de.monticore.symbols`
+* `de.monticore.temporal`
 * `de.monticore.types`
 
 Additionally, the documentation presents some expression/type related language
@@ -156,6 +157,26 @@ like `[km/h]<.>`, are used as generic type constructor that may take a number ty
 such as `int`, `long`, `double`, `float` as argument.
 
 * Example type definitions: `[km/h]<long>`
+
+### [ISOTemporals.mc4](temporal/ISOTemporals.mc4) for ISO 8601 Temporal Values
+
+Date, time, date-time, and period values based on ISO 8601 can be used as
+structured temporal values. The grammar supports basic and extended notation,
+e.g., `20150401` and `2015-04-01`, as well as calendar dates, ordinal dates,
+week dates, times with optional fractions and UTC offsets, combined date-time
+values, and periods such as `P2Y5M3D` or `PT6H30M`.
+
+* Example temporal values: `2015-04-01T12:30:15Z`, `2015-W14-3`, `P2W`
+
+### [DETemporals.mc4](temporal/DETemporals.mc4) for German Date and Time Formats
+
+Date and time values in formats common in German-speaking regions can be used
+as structured temporal values. This includes numeric dates such as
+`01.04.2015`, alphanumeric dates with German month names such as
+`1. April 2015`, times such as `12:30 Uhr`, and combined date-time values such
+as `01.04.2015 12:30 Uhr`.
+
+* Example temporal values: `01.04.2015`, `1. April 2015`, `12:30 Uhr`
 
 ### [RegExType.mc4](regex/RegExType.mc4) (stable)
 
