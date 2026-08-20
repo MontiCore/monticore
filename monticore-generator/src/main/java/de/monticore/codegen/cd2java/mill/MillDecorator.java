@@ -370,12 +370,16 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
     this.replaceTemplate(EMPTY_BODY, staticGetter,
         new TemplateHookPoint("mill.BuilderMethod",
             "typeDispatcher"));
+    this.replaceTemplate(ANNOTATIONS, staticGetter,
+        new StringHookPoint("@Deprecated(forRemoval = true)"));
     typeDispatcherMembers.add(staticGetter);
 
     ASTCDMethod protectedGetter = this.getCDMethodFacade().createMethod(PROTECTED.build(), typeDispatcherType, "_typeDispatcher");
     this.replaceTemplate(EMPTY_BODY, protectedGetter,
         new TemplateHookPoint("mill.TypeDispatcherGetter",
             packageName + "." + typeDispatcherName));
+    this.replaceTemplate(ANNOTATIONS, protectedGetter,
+        new StringHookPoint("@Deprecated(forRemoval = true)"));
     typeDispatcherMembers.add(protectedGetter);
 
     return typeDispatcherMembers;
