@@ -127,7 +127,13 @@ public class ISOTemporals2ndParser implements ISOTemporalsVisitor2 {
         }
         node.setTimeShiftHour(timeShiftHour);
         
-        int timeShiftMinute = parsed.getTimeShift().getMinute().getValue();
+        int timeShiftMinute;
+        if (parsed.getTimeShift().isPresentMinute()) {
+          timeShiftMinute = parsed.getTimeShift().getMinute().getValue();
+        }
+        else {
+          timeShiftMinute = 0;
+        }
         node.setTimeShiftMinute(timeShiftMinute);
       }
     }
