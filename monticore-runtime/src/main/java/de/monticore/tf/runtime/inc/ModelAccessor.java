@@ -83,9 +83,25 @@ public class ModelAccessor implements IModelAccessor {
     this.customIndices = new HashMap<>(customIndices);
     this.listeners = listeners;
     
+    initialize(traverser, roots);
+  }
+
+  /**
+   * Initializes the managed indices by traversing all given root nodes and
+   * finalizing the initialization afterwards.
+   *
+   * <p>A {@link ModelInitializationMessenger} is used to replay the initial
+   * model structure as a sequence of creation and attach events so that all
+   * indices and listeners are brought into a consistent state before any
+   * transformation is applied.</p>
+   *
+   * @param traverser supplier for the traverser used during initialization
+   * @param roots the root nodes whose subtrees are traversed for initialization
+   */
+  protected void initialize(Supplier<ITraverser> traverser, List<ASTNode> roots) {
     ModelInitializationMessenger initializationMessenger = new ModelInitializationMessenger(this, traverser);
     roots.forEach(initializationMessenger::initialize);
-    
+
     finalizeInitialization();
   }
   
