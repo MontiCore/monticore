@@ -12,7 +12,8 @@ public class ASTISOTimeBuilder extends ASTISOTimeBuilderTOP {
     minute = Optional.empty();
     second = Optional.empty();
     decimalDigits = Optional.empty();
-    timeShift = Optional.empty();
+    timeShiftHour = Optional.empty();
+    timeShiftMinute = Optional.empty();
   }
   
   @Override
