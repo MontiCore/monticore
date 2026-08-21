@@ -1,0 +1,8 @@
+package de.monticore.temporal;
+
+grammar CombinedTemporalsTest extends de.monticore.temporal.DETemporals,
+                                      de.monticore.temporal.ISOTemporals {
+
+  Temporal = Instant | Period;
+
+}

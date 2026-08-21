@@ -1,0 +1,225 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.temporal.parsing;
+
+/* Alpha-version: This is intended to become a MontiCore stable grammar. */
+
+/**
+ * The ISOTemporals4Parsing language realizes date and time representation as
+ * specified by ISO 8601-1. This grammar is used during the second parsing round
+ * to extract time component data.
+ *
+ * WARNING: THIS GRAMMAR IS INCOMPATIBLE WITH MCBASICS AND SHOULD NOT BE USED DIRECTLY.
+ */
+grammar ISOTemporals4Parsing {
+
+  interface ISOTemporal4P;
+
+  ISODateTime4P implements ISOTemporal4P = date:ISODate4P time:TimeOfDate;
+
+  /* ======================================================================= */
+  /* ================================ Date ================================= */
+  /* ======================================================================= */
+
+  interface ISODate4P extends ISOTemporal4P;
+
+  /**
+   * Calendar date defined by [5.2.2] containing the time scale components:
+   *
+   * [4.3.2 a)]: year, 0000-9999
+   * [4.3.3 a)]: month , 01-12
+   * [4.3.5 a)]: day of month, 01-31
+   * [4.3.11 a)]: decade, 000-999
+   * [4.3.12 a)]: century, 00-99
+   */
+  CalendarDate4P implements ISODate4P =
+      DateExtension? (
+          (year:Digit4 month:Digit2? day:Digit2?)
+        | (year:Digit4 x:"-" month:Digit2 (x:"-" day:Digit2)?)
+        | decade:Digit3
+        | century:Digit2
+      );
+
+  /**
+   * Ordinal date defined by [5.2.3] containing the time scale components:
+   *
+   * [4.3.2 a)]: year, 0000-9999
+   * [4.3.7 a)]: day of year, 001-365
+   */
+  OrdinalDate4P implements ISODate4P =
+      DateExtension? (
+          (year:Digit4 dayOfYear:Digit3)
+        | (year:Digit4 x:"-" dayOfYear:Digit3)
+      );
+
+  /**
+   * Week date as defined by [5.2.4] containing the time scale components:
+   *
+   * [4.3.2 a)]: year, 0000-9999
+   * [4.3.4 a)]: week, 01-53
+   * [4.3.6 a)]: day of week, 1-7
+   */
+  WeekDate4P implements ISODate4P =
+      DateExtension? (
+          (year:Digit4 WeekDesignator week:Digit2 dayOfWeek:Digit1?)
+        | (year:Digit4 x:"-" WeekDesignator week:Digit2 (x:"-" dayOfWeek:Digit1)?)
+      );
+
+  DateExtension = sign:Sign4P leadingDigits:Digit2;
+
+  /* ======================================================================= */
+  /* ================================ Time ================================= */
+  /* ======================================================================= */
+
+  /**
+   * Design note: The TimeOnly and TimeOfDate productions are pretty similar.
+   * They differ in the use and optionally of the time designator 'TimeDesignator', as
+   * defined by the ISO standard.
+   *
+   * A clock segment has an ordinal numbers for representing
+   * - a clock hour [4.3.8 a)] (range 00-23),
+   * - a clock minute [4.3.9 a)] (range 00-59),
+   * - and a clock second [4.3.10 a)] (range 00-60, 60 representing a leap
+   * second).
+   */
+  abstract ISOTime4P implements ISOTemporal4P =
+      TimeDesignator?
+      hour:Digit2 minute:Digit2? second:Digit2?
+      fraction:Fraction4P? (basicTimeShift:BasicTimeShift4P | extendedTimeShift:ExtendedTimeShift4P)?;
+
+  astrule ISOTime4P =
+      method public boolean isPresentTimeShift() {
+        return isPresentBasicTimeShift() || isPresentExtendedTimeShift();
+      }
+
+      method public ASTTimeShift4P getTimeShift() {
+        if (isPresentBasicTimeShift()) {
+          return getBasicTimeShift();
+        } else {
+          return getExtendedTimeShift();
+        }
+      };
+
+  TimeOnly extends ISOTime4P =
+        // basic format
+        (TimeDesignator hour:Digit2 minute:Digit2? second:Digit2? fraction:Fraction4P? basicTimeShift:BasicTimeShift4P?)
+
+        // extended format
+      | (TimeDesignator? hour:Digit2 (x:":" minute:Digit2)? (x:":" second:Digit2)?
+         fraction:Fraction4P? extendedTimeShift:ExtendedTimeShift4P?);
+
+  /**
+   * Local time of day as defined by [5.3.1].
+   */
+  TimeOfDate extends ISOTime4P =
+      TimeDesignator (
+        // basic format
+        (hour:Digit2 minute:Digit2? second:Digit2? fraction:Fraction4P? basicTimeShift:BasicTimeShift4P?)
+
+        // extended format
+      | (hour:Digit2 (x:":" minute:Digit2)? (x:":" second:Digit2)?
+         fraction:Fraction4P? extendedTimeShift:ExtendedTimeShift4P?)
+      );
+
+
+  /**
+   * A time shift [4.3.13] represents the local standard time against UTC.
+   *
+   * - Z represents no time shift from UTC
+   */
+
+  abstract TimeShift4P = utc:UtcDesignator | sign:Sign4P hour:Digit2 minute:Digit2?;
+
+  BasicTimeShift4P extends TimeShift4P = utc:UtcDesignator | sign:Sign4P hour:Digit2 minute:Digit2?;
+
+  ExtendedTimeShift4P extends TimeShift4P = utc:UtcDesignator | sign:Sign4P hour:Digit2 (":" minute:Digit2)?;
+
+  /* ======================================================================= */
+  /* =============================== Period ================================ */
+  /* ======================================================================= */
+
+  interface ISOPeriod4P extends ISOTemporal4P;
+
+  FullPeriod4P implements ISOPeriod4P = PeriodDesignator
+      (years:DigitVar YearDesignator)? (months:DigitVar MonthDesignator)?
+      (days:DigitVar DayDesignator)? TimeDesignator?
+      (hours:DigitVar fraction:Fraction4P? HourDesignator)? (minutes:DigitVar fraction:Fraction4P? (MonthDesignator | MinuteDesignator))?
+      (seconds:DigitVar fraction:Fraction4P? SecondDesignator)?;
+
+  WeekPeriod4P implements ISOPeriod4P = PeriodDesignator weeks:DigitVar WeekDesignator;
+
+  /* ======================================================================= */
+  /* ============================ Miscellaneous ============================ */
+  /* ======================================================================= */
+
+  /**
+   * Variants of the clock segments to realize clock hours, minutes, or
+   * seconds with decimal fraction [5.3.1.4].
+   */
+
+  Fraction4P = (period:"." | comma:",") DigitVar;
+
+  enum Sign4P = plus:"+" | minus:"-";
+
+  /* ======================================================================= */
+  /* =============================== Digits ================================ */
+  /* ======================================================================= */
+
+  /**
+   * Instead of using a token that consumes all digits greedily, like Digits = Digit* defined
+   * in MCCommonLiterals, we instead use Digit directly, so that the parser is able to "count"
+   * the number of digits. This is necessary, as ISO basic formats demand a certain
+   * number of digits and in extreme cases (compare for example ISO Calendar Date and ISO Ordinal Date)
+   * the number of digits is the only information which can be used to differentiate between similar
+   * formats.
+   */
+  token Digit = '0'..'9';
+
+  /**
+   * An interface for the following non-terminals describing sequences of digits of fixed length.
+   */
+  interface Digits;
+
+  astrule Digits =
+    method public String getSource() {
+      return "";
+    }
+
+    method public int getValue() {
+      return Integer.parseInt(getSource());
+    }
+  ;
+
+  Digit1 implements Digits = Digit;
+
+  Digit2 implements Digits = Digit Digit;
+
+  Digit3 implements Digits = Digit Digit Digit;
+
+  Digit4 implements Digits = Digit Digit Digit Digit;
+
+  DigitVar implements Digits = Digit*;
+
+  /* ======================================================================= */
+  /* ===================== [3.2.5] Designators Symbols ===================== */
+  /* ======================================================================= */
+
+  token TimeDesignator = 'T': x -> boolean : { return true; };
+
+  token WeekDesignator = 'W': x -> boolean : { return true; };
+
+  token UtcDesignator = 'Z': x -> boolean : { return true; };
+
+  token PeriodDesignator = 'P': x -> boolean : { return true; };
+
+  token YearDesignator = 'Y': x -> boolean : { return true; };
+
+  token MonthDesignator = 'M': x -> boolean : { return true; };
+
+  token DayDesignator = 'D': x -> boolean : { return true; };
+
+  token HourDesignator = 'H' | 'h': x -> boolean : { return true; };
+
+  token MinuteDesignator = 'm': x -> boolean : { return true; };
+
+  token SecondDesignator = 'S' | 's': x -> boolean : { return true; };
+}
