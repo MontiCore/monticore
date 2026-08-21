@@ -35,17 +35,6 @@ public class ModelAccessor implements IModelAccessor {
   }
   
   /**
-   * Creates a model accessor with the given custom indices and root nodes.
-   *
-   * @param traverser the traverser used to initialize the indices
-   * @param customIndices the custom indices to register by name
-   * @param roots the root nodes used for initialization
-   */
-  public ModelAccessor(Supplier<ITraverser> traverser, Map<String, IModelIndex> customIndices, ASTNode... roots) {
-    this(traverser, Arrays.stream(roots).toList(), customIndices);
-  }
-  
-  /**
    * Creates a model accessor with the default indices and the given root nodes.
    *
    * @param traverser the traverser used to initialize the indices
@@ -53,17 +42,6 @@ public class ModelAccessor implements IModelAccessor {
    */
   public ModelAccessor(Supplier<ITraverser> traverser, List<ASTNode> roots) {
     this(traverser, roots, new HashMap<>(), new HashSet<>());
-  }
-  
-  /**
-   * Creates a model accessor with the given custom indices and root nodes.
-   *
-   * @param traverser the traverser used to initialize the indices
-   * @param roots the root nodes used for initialization
-   * @param customIndices the custom indices to register by name
-   */
-  public ModelAccessor(Supplier<ITraverser> traverser, List<ASTNode> roots, Map<String, IModelIndex> customIndices) {
-    this(traverser, roots, customIndices, new HashSet<>());
   }
   
   /**
