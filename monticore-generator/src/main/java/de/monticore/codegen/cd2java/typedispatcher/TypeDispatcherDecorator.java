@@ -22,7 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static de.monticore.cd.codegen.CD2JavaTemplates.ANNOTATIONS;
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
+import static de.monticore.cd.codegen.CD2JavaTemplates.JAVADOC;
 import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.codegen.cd2java.typedispatcher.TypeDispatcherConstants.*;
@@ -65,6 +67,21 @@ public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUni
         .build();
 
     addGettersAndSetters(optAttributes, dispatcher);
+
+    replaceTemplate(ANNOTATIONS, dispatcher,
+        new StringHookPoint("@Deprecated(forRemoval = true)"));
+
+    replaceTemplate(JAVADOC, dispatcher,
+        new StringHookPoint("""
+            /**
+             * @deprecated This class is intended for removal. It was meant to provide an
+             * extensible double-dispatch alternative to {@code instanceof} and casting.
+             * However, the current implementation only performs single dispatch, making it
+             * a slower, more verbose, and less extensible variant of {@code instanceof}.
+             * For closed component hierarchies, use pattern matching for {@code instanceof}
+             * instead. For extensible components, use {@link %sMill#singleStepTraverser()}.
+             */
+            """.formatted(visitorService.getCDName())));
 
     return dispatcher;
   }
@@ -221,6 +238,9 @@ public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUni
       replaceTemplate(EMPTY_BODY, isMethod, new TemplateHookPoint(
           "dispatcher.IsMethod", name.simpleName, name.parameterName));
 
+      replaceTemplate(ANNOTATIONS, isMethod,
+          new StringHookPoint("@Deprecated(forRemoval = true)"));
+
       methods.add(isMethod);
 
       ASTCDMethod asMethod = cdMethodFacade.createMethod(
@@ -231,6 +251,9 @@ public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUni
 
       replaceTemplate(EMPTY_BODY, asMethod, new TemplateHookPoint(
           "dispatcher.AsMethod", name.simpleName, name.parameterName));
+
+      replaceTemplate(ANNOTATIONS, asMethod,
+          new StringHookPoint("@Deprecated(forRemoval = true)"));
 
       methods.add(asMethod);
     }
