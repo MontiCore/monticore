@@ -1,7 +1,11 @@
 site_name: MontiCore
 theme:
   name: 'material'
-  favicon: 'img/favicon.ico'
+  pallete:
+    primary: custom
+    accent: custom
+  favicon: img/Icon.png
+  logo: img/Icon-Mono.png
   custom_dir: docs/overrides
   hide:
     - navigation
@@ -12,8 +16,6 @@ theme:
     - content.tabs.link
     - content.code.copy
     - navigation.instant # search index survives navigation
-  icon:
-    logo: 'fontawesome/solid/desktop'
 
 site_url: https://monticore.github.io/monticore/
 repo_url: https://github.com/MontiCore/monticore/
@@ -22,7 +24,7 @@ edit_uri: ""
 extra_css:
   - 'stylesheets/extra.css'
 
-copyright: '(c) https://github.com/MontiCore/monticore'
+copyright: '&copy; https://github.com/MontiCore/monticore'
 
 markdown_extensions:
   - admonition
@@ -47,7 +49,7 @@ plugins:
 nav:
   - Home: 'README.md'
   - 'Getting Started': 'docs/GettingStarted.md'
-  - Core Grammars:
+  - Grammar Libraries:
       - 'Overview': 'monticore-grammar/src/main/grammars/de/monticore/Grammars.md'
       - 'Expressions': 'monticore-grammar/src/main/grammars/de/monticore/expressions/Expressions.md'
       - 'Literals': 'monticore-grammar/src/main/grammars/de/monticore/literals/Literals.md'
