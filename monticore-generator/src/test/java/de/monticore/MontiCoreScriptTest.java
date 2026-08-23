@@ -4,6 +4,7 @@ package de.monticore;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import de.monticore.ast.ASTCNode;
 import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd4analysis._symboltable.ICD4AnalysisGlobalScope;
@@ -660,7 +661,10 @@ public class MontiCoreScriptTest {
     Optional<ASTCDPackage> millPackage = decoratedCompilationUnit.getCDDefinition().getPackageWithName("de.monticore.statechart.statechart");
     assertTrue(millPackage.isPresent());
     assertEquals("Statechart", decoratedCompilationUnit.getCDDefinition().getName());
-    assertEquals(1, millPackage.get().getCDElementList().size());
+    //we expect two classes in the mill package: StatechartMill and StatechartMillState
+    assertEquals(2, millPackage.get().getCDElementList().size());
+    assertEquals("StatechartMill",((ASTCDClass) millPackage.get().getCDElementList().get(0)).getName());
+    assertEquals("StatechartMillState", ((ASTCDClass) millPackage.get().getCDElementList().get(1)).getName());
 
     MCAssertions.assertNoFindings();
   }
