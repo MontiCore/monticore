@@ -5,6 +5,7 @@ package de.monticore.expressions;
  * Adaptations -- if any -- are conservative. */
 
 import de.monticore.expressions.*;
+import de.monticore.types.MCBasicTypes;
 
 /**
  * This grammar defines a typical standard set of operations for
@@ -31,7 +32,8 @@ import de.monticore.expressions.*;
 */
 
 component grammar CommonExpressions
-          extends ExpressionsBasis {
+          extends ExpressionsBasis,
+                  MCBasicTypes {
 
   /*=================================================================*/
 
@@ -55,16 +57,34 @@ component grammar CommonExpressions
 
   /*=================================================================*/
 
+  /**
+   * Qualified name: e.g., a.package.var
+   * As this is syntactically similar to field access,
+   * they might be parsed here.
+   * E.g., "myPerson.name", even though it is a field access.
+   * This is to be resolved via SymbolTable.
+   * When resolved, the AST should be restructured
+   * directly after the type-checking.
+   */
+  QualifiedNameExpression implements Expression <355> =
+    Name "." (Name || ".")+;
+
   /** Field access: e.g. obj.attr or also (b ? getobject() : obj).attr
-   *  This is syntactically similar to package names:
+   *  This is syntactically similar to qualified names:
    *  So when the language shall also allow QualifiedNames as Expressions,
-   *  they might be parsed here. E.g. in "x.y.Person", "x" is 
-   *  parsed as NameExpression, even though it is a package name.
-   *  This is to be resolved via SymbolTable.
-   *  When resolved, the AST should be restructured directly after the parsing.
+   *  they might be parsed there.
    */
   FieldAccessExpression implements Expression <290> =
     Expression "." Name;
+
+  /** Static field access: e.g. Class.staticAttr
+   * This is syntactically similar to qualified names:
+   * As such it is parsed there and afterwards, the AST is restructured.
+   */
+  StaticFieldAccessExpression implements Expression =
+    MCShallNotBeParsed
+    MCType "." Name
+  ;
 
   /*=================================================================*/
 
