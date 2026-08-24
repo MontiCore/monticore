@@ -1,9 +1,12 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.expressions.commonexpressions.types3.util;
 
-import de.monticore.expressions.commonexpressions.CommonExpressionsMill;
-import de.monticore.expressions.commonexpressions._util.ICommonExpressionsTypeDispatcher;
+import de.monticore.expressions.commonexpressions._ast.ASTArrayAccessExpression;
+import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
+import de.monticore.expressions.commonexpressions._ast.ASTQualifiedNameExpression;
+import de.monticore.expressions.commonexpressions._ast.ASTStaticFieldAccessExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.types3.util.LValueRelations;
 import de.se_rwth.commons.logging.Log;
 
@@ -17,22 +20,14 @@ public class CommonExpressionsLValueRelations
    */
   @Override
   protected boolean _isLValue(ASTExpression expression) {
-    ICommonExpressionsTypeDispatcher dispatcher =
-        CommonExpressionsMill.typeDispatcher();
-    boolean result;
-    if (dispatcher.isExpressionsBasisASTNameExpression(expression)) {
-      result = true;
-    }
-    else if (dispatcher.isCommonExpressionsASTFieldAccessExpression(expression)) {
-      result = true;
-    }
-    else if (dispatcher.isCommonExpressionsASTArrayAccessExpression(expression)) {
-      result = true;
-    }
-    else {
-      result = false;
-    }
-    return result;
+    return switch (expression) {
+      case ASTArrayAccessExpression e -> true;
+      case ASTFieldAccessExpression e -> true;
+      case ASTQualifiedNameExpression e -> true;
+      case ASTNameExpression e -> true;
+      case ASTStaticFieldAccessExpression e -> true;
+      default -> false;
+    };
   }
 
   // static delegate
