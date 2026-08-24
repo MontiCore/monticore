@@ -144,6 +144,10 @@ public class Type4Ast {
     return internal_hasTypeOfTypeIdentifier((ASTNode) mcTypeArg);
   }
 
+  /**
+   * @deprecated not needed anymore due to ast restructuring
+   */
+  @Deprecated(forRemoval = true)
   public boolean hasTypeOfTypeIdentifierForName(ASTExpression nameExpr) {
     if (!isQNameExpr(nameExpr)) {
       Log.error("0xFD4B4 internal error: "
@@ -183,6 +187,10 @@ public class Type4Ast {
     return internal_hasPartialTypeOfTypeIdentifier((ASTNode) mcTypeArg);
   }
 
+  /**
+   * @deprecated not needed anymore due to ast restructuring
+   */
+  @Deprecated(forRemoval = true)
   public boolean hasPartialTypeOfTypeIdentifierForName(ASTExpression nameExpr) {
     if (!isQNameExpr(nameExpr)) {
       Log.error("0xFD4B6 internal error: "
@@ -320,7 +328,7 @@ public class Type4Ast {
   /**
    * @deprecated do not use, only here until fix in grammar
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public SymTypeExpression internal_getPartialTypeOfTypeId2(ASTNode node) {
     return internal_getPartialTypeOfTypeId(node);
   }
@@ -421,7 +429,10 @@ public class Type4Ast {
    * a special case of the MCQualifiedName
    * s. {@link Type4Ast#setTypeOfTypeIdentifierForName(
    *ASTNameExpression, SymTypeExpression)}
+   *
+   * @deprecated not needed anymore due to ast restructuring
    */
+  @Deprecated(forRemoval = true)
   public void setTypeOfTypeIdentifierForName(
       ASTFieldAccessExpression qName,
       SymTypeExpression type) {
@@ -446,7 +457,10 @@ public class Type4Ast {
    * note that (technically) not even ASTExpression applicable enough,
    * due to some grammar extension points
    * The getter is {@link Type4Ast#getPartialTypeOfTypeIdForName(ASTExpression)}
+   *
+   * @deprecated not needed anymore due to ast restructuring
    */
+  @Deprecated(forRemoval = true)
   public void setTypeOfTypeIdentifierForName(
       ASTNameExpression name,
       SymTypeExpression type) {
@@ -462,7 +476,7 @@ public class Type4Ast {
   /**
    * @deprecated do not use, remove after fix of grammars
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public void internal_setTypeOfTypeIdentifier2(
       ASTNode node,
       SymTypeExpression type) {
@@ -555,7 +569,10 @@ public class Type4Ast {
 
   /**
    * whether the expression represents a qualified name
+   *
+   * @deprecated not needed anymore due to ast restructuring
    */
+  @Deprecated(forRemoval = true)
   protected boolean isQNameExpr(ASTExpression expr) {
     ICommonExpressionsTypeDispatcher typeDispatcher =
         CommonExpressionsMill.typeDispatcher();
