@@ -561,7 +561,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     if (getType4Ast().hasPartialTypeOfExpression(expr)) {
       return;
     }
-    List<String> nameParts = expr.getNameList();
+    List<String> nameParts = expr.getMCQualifiedName().getPartsList();
     // per default, the separator is "."
     List<String> separators = Collections.nCopies(nameParts.size() - 1, ".");
 
@@ -584,7 +584,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
       TypeCheck3NameHandler.TypeCheck3NameHandlerResult nameTyping
   ) {
     ASTExpression replacement = storeReplacementExpression(
-        expr.getNameList(), expr.getEnclosingScope(), nameTyping
+        expr.getMCQualifiedName().getPartsList(), expr.getEnclosingScope(), nameTyping
     );
     PostTypeCheckNodeReplacer.addReplacement(expr, replacement);
   }
