@@ -10,6 +10,8 @@ import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisInheri
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
+import de.monticore.symboltable.IArtifactScope;
+import de.monticore.symboltable.IScope;
 import de.monticore.symboltable.IScopeSpanningSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfFunction;
@@ -89,13 +91,28 @@ public class ExpressionsBasisJavaGenVisitor
         }
       }
       else {
+        String javaFuncFullName;
         String funcFullName = funcType.getSymbol().getFullName();
-        // assumed to always have a "."
-        String javaFuncName =
-            funcName.substring(0, funcFullName.lastIndexOf("."))
-                + "::"
-                + funcName.substring(funcFullName.lastIndexOf(".") + 1);
-        getPrinter().print(javaFuncName);
+        // rough temporary estimate how to handle these
+        if (funcFullName.contains(".")) {
+          javaFuncFullName =
+              funcName.substring(0, funcFullName.lastIndexOf("."))
+                  + "::"
+                  + funcName.substring(funcFullName.lastIndexOf(".") + 1);
+        }
+        else {
+          IScope scope = funcType.getSymbol().getEnclosingScope();
+          while (true) {
+            if (scope instanceof IArtifactScope) {
+              // missing intersection types
+              javaFuncFullName = scope.getName() + "::" + funcFullName;
+              break;
+            }
+            scope = scope.getEnclosingScope();
+            Preconditions.checkNotNull(scope);
+          }
+        }
+        getPrinter().print(javaFuncFullName);
       }
       getPrinter().print(")");
     }

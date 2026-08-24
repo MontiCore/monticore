@@ -20,11 +20,14 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfFunction;
 import de.monticore.types3.SymTypeRelations;
 import de.monticore.types3.TypeCheck3;
+import de.monticore.types3.util.FunctionRelations;
 import de.monticore.types3.util.TypeContextCalculator;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static de.monticore.codegen.CodeGenSymTypeExpressionConverter.printConverted;
 import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getBoxedJavaTypePrint;
@@ -305,23 +308,53 @@ public class CommonExpressionsJavaGenVisitor
 
     Preconditions.checkNotNull(node);
     SymTypeExpression innerType = normalize(typeOf(node.getExpression()));
+    List<SymTypeExpression> argTypes = node.getArguments().streamExpressions()
+        .map(TypeCheck3::typeOf)
+        .map(SymTypeRelations::normalize)
+        .toList();
+    SymTypeOfFunction funcType;
 
-    // multiple function types?
-    // Java has its limits due to type erasure;
-    // we cannot distinguish them
     if (innerType.isUnionType()) {
-      Log.error("0xFD224 Cannot generate code for call expression "
-              + "with multiple function types due to Java type erasure."
-              + " Please simplify the expression."
-              + " Type: " + innerType.printFullName(),
+      Set<SymTypeOfFunction> callableFuncs = innerType.asUnionType()
+          .getUnionizedTypeSet().stream()
+          .filter(SymTypeExpression::isFunctionType)
+          .map(SymTypeExpression::asFunctionType)
+          .filter(f -> FunctionRelations.canBeCalledWith(f, argTypes))
+          .map(f -> f.getWithFixedArity(argTypes.size()))
+          .collect(Collectors.toSet());
+      var mostSpecificFunction =
+          FunctionRelations.getMostSpecificFunctionOrLogError(callableFuncs);
+      if (mostSpecificFunction.isEmpty()) {
+        if (printCallWithRawArguments(node)) {
+          return;
+        }
+        Log.error("0xFD224 Cannot generate code for call expression "
+                + "with multiple function types due to Java type erasure."
+                + " Please simplify the expression."
+                + " Type: " + innerType.printFullName(),
+            node.get_SourcePositionStart(),
+            node.get_SourcePositionEnd()
+        );
+        return;
+      }
+      funcType = mostSpecificFunction.get();
+    }
+    else if (innerType.isFunctionType()) {
+      funcType = innerType.asFunctionType();
+    }
+    else {
+      Log.error("0xFD226 internal error: "
+              + "Cannot generate code for call expression "
+              + "with non-function type. Type: " + innerType.printFullName(),
           node.get_SourcePositionStart(),
           node.get_SourcePositionEnd()
       );
+      return;
     }
-    else if (innerType.isFunctionType()) {
-      SymTypeOfFunction funcType = innerType.asFunctionType();
+
+    {
       List<SymTypeExpression> typeArgs = funcType.getTypeArguments();
-      boolean didPrintSpecialCase;
+      boolean didPrintSpecialCase = false;
 
       // peephole optimization, this is not (strictly) required
       if (funcType.hasSymbol()) {
@@ -363,16 +396,17 @@ public class CommonExpressionsJavaGenVisitor
             getPrinter().print(fieldAccessExpr.getName());
             didPrintSpecialCase = true;
           }
-          else {
-            didPrintSpecialCase = false;
+          else if (node.getExpression()
+              instanceof ASTStaticFieldAccessExpression) {
+            String qualifier = Names.getQualifier(methodSym.getFullName());
+            String simpleName = Names.getSimpleName(methodSym.getFullName());
+            getPrinter().print(qualifier);
+            getPrinter().print(".");
+            printTypeArguments(typeArgs);
+            getPrinter().print(simpleName);
+            didPrintSpecialCase = true;
           }
         }
-        else {
-          didPrintSpecialCase = false;
-        }
-      }
-      else {
-        didPrintSpecialCase = false;
       }
       if (!didPrintSpecialCase) {
         state.startParentheses();
@@ -381,11 +415,6 @@ public class CommonExpressionsJavaGenVisitor
         getPrinter().print(".apply");
       }
 
-      // arguments
-      List<SymTypeExpression> argTypes = node.getArguments().streamExpressions()
-          .map(TypeCheck3::typeOf)
-          .map(SymTypeRelations::normalize)
-          .toList();
       state.startParentheses();
       for (int i = 0; i < node.getArguments().sizeExpressions(); i++) {
         ASTExpression argExpr = node.getArguments().getExpression(i);
@@ -400,14 +429,33 @@ public class CommonExpressionsJavaGenVisitor
       }
       state.endParentheses();
     }
-    else {
-      Log.error("0xFD226 internal error: "
-              + "Cannot generate code for call expression "
-              + "with non-function type. Type: " + innerType.printFullName(),
-          node.get_SourcePositionStart(),
-          node.get_SourcePositionEnd()
-      );
+  }
+
+  protected boolean printCallWithRawArguments(ASTCallExpression node) {
+    if (node.getExpression() instanceof ASTFieldAccessExpression fieldAccess) {
+      state.startParentheses();
+      fieldAccess.getExpression().accept(getTraverser());
+      state.endParentheses();
+      getPrinter().print(".");
+      getPrinter().print(fieldAccess.getName());
     }
+    else if (node.getExpression() instanceof ASTStaticFieldAccessExpression staticAccess) {
+      staticAccess.getMCType().accept(getTraverser());
+      getPrinter().print(".");
+      getPrinter().print(staticAccess.getName());
+    }
+    else {
+      return false;
+    }
+    state.startParentheses();
+    for (int i = 0; i < node.getArguments().sizeExpressions(); i++) {
+      if (i > 0) {
+        getPrinter().print(", ");
+      }
+      node.getArguments().getExpression(i).accept(getTraverser());
+    }
+    state.endParentheses();
+    return true;
   }
 
   protected void printTypeArguments(List<? extends SymTypeExpression> typeArgs) {
@@ -486,6 +534,34 @@ public class CommonExpressionsJavaGenVisitor
     else {
       Log.error("0xFD228 internal error: "
               + "unimplemented case for field access expression. Type of expression: "
+              + exprSourceSym.getFullName(),
+          node.get_SourcePositionStart(),
+          node.get_SourcePositionEnd()
+      );
+    }
+  }
+
+  @Override
+  public void traverse(ASTStaticFieldAccessExpression node) {
+    SymTypeExpression exprType = normalize(typeOf(node));
+    Preconditions.checkState(exprType.getSourceInfo().getSourceSymbol().isPresent());
+    ISymbol exprSourceSym = exprType.getSourceInfo().getSourceSymbol().get();
+
+    if (exprSourceSym instanceof VariableSymbol) {
+      String fullName = exprSourceSym.getFullName();
+      getPrinter().print(fullName.substring(0, fullName.lastIndexOf('.')));
+      getPrinter().print(".");
+      getPrinter().print(node.getName());
+    }
+    else if (exprSourceSym instanceof MethodSymbol) {
+      String fullName = exprSourceSym.getFullName();
+      getPrinter().print(fullName.substring(0, fullName.lastIndexOf('.')));
+      getPrinter().print("::");
+      getPrinter().print(node.getName());
+    }
+    else {
+      Log.error("0xFD22A internal error: "
+              + "unimplemented case for static field access expression. Type of expression: "
               + exprSourceSym.getFullName(),
           node.get_SourcePositionStart(),
           node.get_SourcePositionEnd()

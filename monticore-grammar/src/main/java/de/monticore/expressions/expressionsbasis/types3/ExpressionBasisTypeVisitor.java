@@ -1,27 +1,35 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions.expressionsbasis.types3;
 
+import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
+import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisHandler;
+import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisTraverser;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisitor2;
-import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types3.AbstractTypeVisitor;
-import de.monticore.types3.util.WithinScopeBasicSymbolsResolver;
-import de.se_rwth.commons.logging.Log;
+import de.monticore.types3.util.TypeCheck3NameHandler;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 public class ExpressionBasisTypeVisitor extends AbstractTypeVisitor
-    implements ExpressionsBasisVisitor2 {
+    implements ExpressionsBasisVisitor2,
+    ExpressionsBasisHandler {
 
-  /**
-   * @deprecated is now a static delegate
-   */
-  @Deprecated(forRemoval = true)
-  public void setWithinScopeResolver(
-      WithinScopeBasicSymbolsResolver withinScopeResolver) {
+  protected ExpressionsBasisTraverser traverser;
+
+  @Override
+  public ExpressionsBasisTraverser getTraverser() {
+    return traverser;
+  }
+
+  @Override
+  public void setTraverser(ExpressionsBasisTraverser traverser) {
+    this.traverser = traverser;
   }
 
   /**
@@ -33,56 +41,41 @@ public class ExpressionBasisTypeVisitor extends AbstractTypeVisitor
    * Thus, here an expression type has to be calculated.
    */
   @Override
-  public void endVisit(ASTNameExpression expr) {
+  public void handle(ASTNameExpression expr) {
     // check if inference already calculated something
     if (getType4Ast().hasPartialTypeOfExpression(expr)) {
       return;
     }
-    Optional<SymTypeExpression> wholeResult =
+    Optional<SymTypeExpression> resolved =
         calculateNameExpressionOrLogError(expr);
-    if (wholeResult.isPresent()) {
-      getType4Ast().setTypeOfExpression(expr, wholeResult.get());
-    }
-    else {
-      getType4Ast().setTypeOfExpression(expr, SymTypeExpressionFactory.createObscureType());
-    }
+    handleResolvedType(
+        expr,
+        resolved.orElseGet(SymTypeExpressionFactory::createObscureType)
+    );
   }
 
   protected Optional<SymTypeExpression> calculateNameExpressionOrLogError(
       ASTNameExpression expr
   ) {
-    Optional<SymTypeExpression> wholeResult = calculateNameExpression(expr);
-    if (wholeResult.isEmpty()) {
-      Log.error("0xFD118 could not find symbol for expression \""
-              + expr.getName() + "\"",
-          expr.get_SourcePositionStart(),
-          expr.get_SourcePositionEnd()
-      );
-    }
-    return wholeResult;
+    TypeCheck3NameHandler.TypeCheck3NameHandlerResult result =
+        TypeCheck3NameHandler.handleName(
+            List.of(expr.getName()),
+            Collections.emptyList(),
+            getAsBasicSymbolsScope(expr.getEnclosingScope()),
+            expr.get_SourcePositionStart(),
+            expr.get_SourcePositionEnd()
+        );
+    return result.getExprTypeOfLastNamePart();
   }
 
-  protected Optional<SymTypeExpression> calculateNameExpression(
-      ASTNameExpression expr) {
-    if (expr.getEnclosingScope() == null) {
-      Log.error("0xFD161 internal error: "
-              + "enclosing scope of expression expected",
-          expr.get_SourcePositionStart(),
-          expr.get_SourcePositionEnd()
-      );
-      return Optional.empty();
-    }
-
-    final String name = expr.getName();
-    IBasicSymbolsScope enclosingScope =
-        getAsBasicSymbolsScope(expr.getEnclosingScope());
-    Optional<SymTypeExpression> exprType = WithinScopeBasicSymbolsResolver
-        .resolveNameAsExpr(enclosingScope, name);
-    if (exprType.isEmpty()) {
-      exprType = WithinScopeBasicSymbolsResolver
-          .resolveTypeAsExpression(enclosingScope, name);
-    }
-    return exprType;
+  /**
+   * generics hookpoint
+   */
+  protected void handleResolvedType(
+      ASTExpression expr,
+      SymTypeExpression resolvedType
+  ) {
+    getType4Ast().setTypeOfExpression(expr, resolvedType);
   }
 
   @Override

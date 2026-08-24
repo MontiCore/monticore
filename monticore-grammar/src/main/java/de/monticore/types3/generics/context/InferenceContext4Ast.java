@@ -13,6 +13,8 @@ import org.apache.commons.io.FilenameUtils;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
+import java.util.function.Supplier;
 
 /**
  * Stores context information for expressions and type identifiers,
@@ -136,6 +138,25 @@ public class InferenceContext4Ast {
 
   public SymTypeExpression getResolvedOfExpression(ASTExpression astExpr) {
     return expr2resolved.get(astExpr).deepClone();
+  }
+
+  /**
+   * QOL method: returns the resolved type,
+   * but calculates it if required.
+   */
+  public Optional<SymTypeExpression> getResolvedOfExpression(
+      ASTExpression astExpr,
+      Supplier<Optional<SymTypeExpression>> resolving
+  ) {
+    if (!hasResolvedOfExpression(astExpr)) {
+      Optional<SymTypeExpression> resolved = resolving.get();
+      if (resolved.isPresent()) {
+        setResolvedOfExpression(astExpr, resolved.get());
+      }
+    }
+    return hasResolvedOfExpression(astExpr)
+        ? Optional.of(getResolvedOfExpression(astExpr))
+        : Optional.empty();
   }
 
   // Helper
