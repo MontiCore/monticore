@@ -300,6 +300,18 @@ public class CommonExpressionsInterpreter
     resSetterOpt.ifPresent(miSetter -> iData.putSetter(miSetter));
   }
 
+  @Override
+  public void traverse(ASTStaticFieldAccessExpression node) {
+    SymTypeExpression exprType = normalize(typeOf(node));
+    Preconditions.checkState(exprType.getSourceInfo().getSourceSymbol().isPresent());
+    ISymbol exprSourceSym = exprType.getSourceInfo().getSourceSymbol().get();
+
+    SymbolAccessHandler.SymbolAccess symbolAccess = symbolAccessHandler
+        .getSymbolAccess(exprSourceSym, iData.getFrameLayoutStack().peek(), iData);
+    iData.putCalculation(symbolAccess.getter());
+    symbolAccess.setter().ifPresent(iData::putSetter);
+  }
+
   // Stack Segmentation ~ Dark Magic, only touch with care!
 
   // For context: REPL test without stack segmentation:
