@@ -66,8 +66,7 @@ component grammar CommonExpressions
    * When resolved, the AST should be restructured
    * directly after the type-checking.
    */
-  QualifiedNameExpression implements Expression <355> =
-    Name "." (Name || ".")+;
+  QualifiedNameExpression implements Expression <355> = MCQualifiedName;
 
   /** Field access: e.g. obj.attr or also (b ? getobject() : obj).attr
    *  This is syntactically similar to qualified names:

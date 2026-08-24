@@ -89,9 +89,10 @@ public class MCBasicTypesTypeVisitor extends AbstractTypeVisitor
   }
 
   @Override
-  public void endVisit(ASTMCQualifiedName qName) {
+  public void endVisit(ASTMCQualifiedType mcQType) {
     IBasicSymbolsScope enclosingScope =
-        getAsBasicSymbolsScope(qName.getEnclosingScope());
+        getAsBasicSymbolsScope(mcQType.getEnclosingScope());
+    ASTMCQualifiedName qName = mcQType.getMCQualifiedName();
     // Note: As the qualified name is a List of Names,
     // There is no ASTNode representing each prefix with a type,
     // e.g., Assume a.b.c with a being a qualifier, a.b being a type
@@ -161,14 +162,6 @@ public class MCBasicTypesTypeVisitor extends AbstractTypeVisitor
       type = Optional.of(SymTypeExpressionFactory.createObscureType());
     }
 
-    getType4Ast().setTypeOfTypeIdentifier(qName, type.get());
-  }
-
-  @Override
-  public void endVisit(ASTMCQualifiedType mcQType) {
-    getType4Ast().setTypeOfTypeIdentifier(
-        mcQType,
-        getType4Ast().getPartialTypeOfTypeId(mcQType.getMCQualifiedName())
-    );
+    getType4Ast().setTypeOfTypeIdentifier(mcQType, type.get());
   }
 }

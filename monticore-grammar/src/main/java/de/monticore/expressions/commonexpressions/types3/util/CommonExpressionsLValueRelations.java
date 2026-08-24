@@ -3,6 +3,8 @@ package de.monticore.expressions.commonexpressions.types3.util;
 
 import de.monticore.expressions.commonexpressions._ast.ASTArrayAccessExpression;
 import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
+import de.monticore.expressions.commonexpressions._ast.ASTQualifiedNameExpression;
+import de.monticore.expressions.commonexpressions._ast.ASTStaticFieldAccessExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.types3.util.LValueRelations;
@@ -18,20 +20,14 @@ public class CommonExpressionsLValueRelations
    */
   @Override
   protected boolean _isLValue(ASTExpression expression) {
-    boolean result;
-    if (expression instanceof ASTNameExpression) {
-      result = true;
-    }
-    else if (expression instanceof ASTFieldAccessExpression) {
-      result = true;
-    }
-    else if (expression instanceof ASTArrayAccessExpression) {
-      result = true;
-    }
-    else {
-      result = false;
-    }
-    return result;
+    return switch (expression) {
+      case ASTArrayAccessExpression e -> true;
+      case ASTFieldAccessExpression e -> true;
+      case ASTQualifiedNameExpression e -> true;
+      case ASTNameExpression e -> true;
+      case ASTStaticFieldAccessExpression e -> true;
+      default -> false;
+    };
   }
 
   // static delegate
