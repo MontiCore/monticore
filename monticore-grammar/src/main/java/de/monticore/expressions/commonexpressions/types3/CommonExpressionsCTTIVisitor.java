@@ -4,7 +4,7 @@ package de.monticore.expressions.commonexpressions.types3;
 import de.monticore.expressions.commonexpressions._ast.ASTBracketExpression;
 import de.monticore.expressions.commonexpressions._ast.ASTCallExpression;
 import de.monticore.expressions.commonexpressions._ast.ASTConditionalExpression;
-import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
+import de.monticore.expressions.commonexpressions._ast.ASTQualifiedNameExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfFunction;
@@ -13,6 +13,8 @@ import de.monticore.types3.generics.TypeParameterRelations;
 import de.monticore.types3.generics.context.InferenceContext;
 import de.monticore.types3.generics.context.InferenceVisitorMode;
 import de.monticore.types3.generics.util.CompileTimeTypeCalculator;
+import de.monticore.types3.util.PostTypeCheckNodeReplacer;
+import de.monticore.types3.util.TypeCheck3NameHandler;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.List;
@@ -52,6 +54,9 @@ public class CommonExpressionsCTTIVisitor
 
   @Override
   public void handle(ASTCallExpression expr) {
+    if (getType4Ast().hasPartialTypeOfExpression(expr)) {
+      return;
+    }
     InferenceContext callCtx = getInferenceContext4Ast()
         .getContextOfExpression(expr);
     boolean hasTargetType = callCtx.hasTargetType();
@@ -99,6 +104,7 @@ public class CommonExpressionsCTTIVisitor
       funcCtx.getPartialFunctionInfo().setReturnTargetType(callCtx.getTargetType());
     }
     getType4Ast().reset(funcExpr);
+    PostTypeCheckNodeReplacer.reset(funcExpr);
     getInferenceContext4Ast().resetContexts(funcExpr);
     getInferenceContext4Ast().setContextOfExpression(funcExpr, funcCtx);
     funcExpr.accept(getTraverser());
@@ -111,6 +117,7 @@ public class CommonExpressionsCTTIVisitor
         infRes.getLastInferenceMode() == InferenceVisitorMode.TYPE_CHECKING
     )) {
       getType4Ast().reset(funcExpr);
+      PostTypeCheckNodeReplacer.reset(funcExpr);
     }
     else {
       getInferenceContext4Ast().resetContexts(funcExpr);
@@ -118,8 +125,8 @@ public class CommonExpressionsCTTIVisitor
   }
 
   @Override
-  protected void handleFieldAccessResolvedType(
-      ASTFieldAccessExpression expr,
+  protected void handleResolvedType(
+      ASTExpression expr,
       SymTypeExpression resolvedType
   ) {
     SymTypeExpression resolved;
@@ -127,10 +134,12 @@ public class CommonExpressionsCTTIVisitor
         getInferenceContext4Ast().hasResolvedOfExpression(expr)
     ) {
       resolved = getInferenceContext4Ast().getResolvedOfExpression(expr);
-      Log.trace("FieldAccessExpression - deliberately ignoring"
+      Log.trace("deliberately ignoring"
               + " resolved type " + resolvedType.printFullName()
               + " (using " + resolved.printFullName() + " instead)"
-              + " to use the same inference variables as last time.",
+              + " to use the same inference variables as last time."
+              + System.lineSeparator() + expr.get_SourcePositionStart()
+              + "–" + expr.get_SourcePositionEnd(),
           LOG_NAME
       );
     }
@@ -141,6 +150,23 @@ public class CommonExpressionsCTTIVisitor
         expr, resolved,
         getTraverser(), getType4Ast(), getInferenceContext4Ast()
     );
+  }
+
+  @Override
+  protected void storeReplacementExpression(
+      ASTQualifiedNameExpression expr,
+      TypeCheck3NameHandler.TypeCheck3NameHandlerResult nameTyping
+  ) {
+    ASTExpression replacement = storeReplacementExpression(
+        expr.getNameList(), expr.getEnclosingScope(), nameTyping
+    );
+    if (getType4Ast().hasPartialTypeOfExpression(expr)) {
+      getType4Ast().setTypeOfExpression(
+          replacement,
+          getType4Ast().getPartialTypeOfExpr(expr)
+      );
+    }
+    PostTypeCheckNodeReplacer.addReplacement(expr, replacement);
   }
 
 }
