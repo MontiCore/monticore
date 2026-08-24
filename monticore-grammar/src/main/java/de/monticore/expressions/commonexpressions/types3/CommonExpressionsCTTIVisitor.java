@@ -158,7 +158,9 @@ public class CommonExpressionsCTTIVisitor
       TypeCheck3NameHandler.TypeCheck3NameHandlerResult nameTyping
   ) {
     ASTExpression replacement = storeReplacementExpression(
-        expr.getNameList(), expr.getEnclosingScope(), nameTyping
+        expr.getMCQualifiedName().getPartsList(),
+        expr.getEnclosingScope(),
+        nameTyping
     );
     if (getType4Ast().hasPartialTypeOfExpression(expr)) {
       getType4Ast().setTypeOfExpression(
