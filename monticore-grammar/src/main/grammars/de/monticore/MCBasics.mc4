@@ -47,4 +47,12 @@ component grammar MCBasics {
   token ML_COMMENT =
     "/*" .*? "*/" : -> channel(HIDDEN);
 
+  /*=================================================================*/
+
+  /** Used for non-terminals that are not to get parsed.
+      Useful to define non-terminals that are only created post-parsing.
+   */
+  token MCShallNotBeParsed =
+    "§[=!_0_internal_shall_not_be_parsed";
+
 }
