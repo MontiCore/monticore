@@ -7,6 +7,7 @@ import de.monticore.expressions.commonexpressions.types3.CommonExpressionsCTTIVi
 import de.monticore.expressions.commonexpressions.types3.util.CommonExpressionsLValueRelations;
 import de.monticore.expressions.expressionsbasis.types3.ExpressionBasisCTTIVisitor;
 import de.monticore.expressions.lambdaexpressions.types3.LambdaExpressionsTypeVisitor;
+import de.monticore.expressions.streamexpressions.types3.StreamExpressionsTypeVisitor;
 import de.monticore.expressions.tupleexpressions.types3.TupleExpressionsCTTIVisitor;
 import de.monticore.expressions.uglyexpressions.types3.UglyExpressionsCTTIVisitor;
 import de.monticore.literals.mccommonliterals.types3.MCCommonLiteralsTypeVisitor;
@@ -122,6 +123,10 @@ public class ExpressionsAndStatementsTypeCheck3 extends MapBasedTypeCheck3 {
     visUglyExpressions.setContext4Ast(ctx4Ast);
     traverser.add4UglyExpressions(visUglyExpressions);
     traverser.setUglyExpressionsHandler(visUglyExpressions);
+
+    StreamExpressionsTypeVisitor visStreamExpressions = new StreamExpressionsTypeVisitor();
+    visStreamExpressions.setType4Ast(type4Ast);
+    traverser.add4StreamExpressions(visStreamExpressions);
 
     // MCTypes
 

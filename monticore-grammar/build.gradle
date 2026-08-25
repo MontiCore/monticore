@@ -78,6 +78,7 @@ dependencies {
   testRuntimeOnly "org.junit.platform:junit-platform-launcher:$junit_version"
   testImplementation project(":monticore-libraries:javagen-runtime")
   testImplementation "de.monticore:class2mc:$previous_mc_version"
+  testRuntimeOnly project(":monticore-libraries:stream-symbols")
   // grammar test fixtures includes runtime test dependencies
   testFixturesApi testFixtures(project(":monticore-runtime"))
   testFixturesImplementation "de.monticore:class2mc:$previous_mc_version"
