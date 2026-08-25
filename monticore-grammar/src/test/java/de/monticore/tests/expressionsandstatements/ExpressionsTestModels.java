@@ -264,7 +264,9 @@ public class ExpressionsTestModels {
 
   static protected Stream<Arguments> getStreamExpressionsCases() {
     return Stream.of(
-        Arguments.of("#<1, 2, 3>", 3)
+        Arguments.of("#<1, 2, 3>", 3),
+        Arguments.of("#(<1, 2> ^^ (1:<>))", 3),
+        Arguments.of("#(<1, 2> ^^ (Tick:<>))", 2)
     );
   }
 
