@@ -197,7 +197,7 @@ public interface Stream<T> {
   boolean hasInfiniteLen();
 
   /**
-   * Whether the stream is drained (i.e., if {@link Stream#head()} will fail next)
+   * Whether the stream is drained (i.e., if {@link Stream#first()} will fail next)
    */
   boolean isEmpty();
 

@@ -264,9 +264,11 @@ public class ExpressionsTestModels {
 
   static protected Stream<Arguments> getStreamExpressionsCases() {
     return Stream.of(
-        Arguments.of("#<1, 2, 3>", 3),
-        Arguments.of("#(<1, 2> ^^ (1:<>))", 3),
-        Arguments.of("#(<1, 2> ^^ (Tick:<>))", 2)
+        Arguments.of("#Sync<1, 2, 3>", 3L),
+        Arguments.of("#<1, 2, 3>", 3L),
+        Arguments.of("#(Sync<1, 2> ^^ (1:Sync<int><>))", 3L),
+        Arguments.of("#(Sync<1, 2> ^^ (1:Sync<int><2>))", 4L),
+        Arguments.of("#(Event<1, 2> ^^ (Tick:Event<int><>))", 2L)
     );
   }
 
