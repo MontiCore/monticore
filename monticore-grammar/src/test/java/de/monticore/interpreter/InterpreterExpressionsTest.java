@@ -48,6 +48,9 @@ public class InterpreterExpressionsTest extends AbstractInterpreterTest {
     assumeFalse(exprStr.contains("} intersect {"));
     assumeFalse(exprStr.contains("} \\ {"));
     assumeFalse(exprStr.contains("[z | x in "));
+    // StreamExpressions not supported
+    assumeFalse(exprStr.startsWith("#<"));
+    assumeFalse(exprStr.startsWith("#("));
   }
 
 }

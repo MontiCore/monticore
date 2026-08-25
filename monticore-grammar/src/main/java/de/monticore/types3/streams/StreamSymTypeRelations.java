@@ -14,11 +14,11 @@ import de.se_rwth.commons.logging.Log;
  */
 public class StreamSymTypeRelations {
 
-  public static final String STREAM = "Stream.Stream";
-  public static final String EVENT_STREAM = "EventStream.EventStream";
-  public static final String SYNC_STREAM = "SyncStream.SyncStream";
-  public static final String TOPT_STREAM = "ToptStream.ToptStream";
-  public static final String UNTIMED_STREAM = "UntimedStream.UntimedStream";
+  public static final String STREAM = "Stream";
+  public static final String EVENT_STREAM = "EventStream";
+  public static final String SYNC_STREAM = "SyncStream";
+  public static final String TOPT_STREAM = "ToptStream";
+  public static final String UNTIMED_STREAM = "UntimedStream";
 
   protected static StreamSymTypeRelations delegate;
 

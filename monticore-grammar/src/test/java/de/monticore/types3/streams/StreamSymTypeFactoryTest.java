@@ -101,7 +101,7 @@ public class StreamSymTypeFactoryTest extends AbstractMCTest {
     SymTypeExpression intSymTypeExpression = SymTypeExpressionFactory.createPrimitive("int");
 
     // When
-    SymTypeOfGenerics intStream = StreamSymTypeFactory.createToptStream(intSymTypeExpression);
+    SymTypeOfGenerics intStream = StreamSymTypeFactory.createSyncStream(intSymTypeExpression);
 
     // Then
     assertTrue(intStream.hasTypeInfo());
