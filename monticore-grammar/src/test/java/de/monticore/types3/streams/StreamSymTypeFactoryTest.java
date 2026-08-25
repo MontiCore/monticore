@@ -38,7 +38,7 @@ public class StreamSymTypeFactoryTest extends AbstractMCTest {
     // Then
     assertTrue(intStream.hasTypeInfo());
     assertSame(gs.resolveType("Stream").orElseThrow(), intStream.getTypeInfo());
-    assertEquals("Stream", intStream.getTypeConstructorFullName());
+    assertEquals("Stream.Stream", intStream.getTypeConstructorFullName());
     assertEquals(1, intStream.sizeArguments());
     assertTrue(intSymTypeExpression.deepEquals(intStream.getArgument(0)));
   }
@@ -55,7 +55,7 @@ public class StreamSymTypeFactoryTest extends AbstractMCTest {
     // Then
     assertTrue(intStream.hasTypeInfo());
     assertSame(gs.resolveType("EventStream").orElseThrow(), intStream.getTypeInfo());
-    assertEquals("EventStream", intStream.getTypeConstructorFullName());
+    assertEquals("EventStream.EventStream", intStream.getTypeConstructorFullName());
     assertEquals(1, intStream.sizeArguments());
     assertTrue(intSymTypeExpression.deepEquals(intStream.getArgument(0)));
   }
@@ -72,7 +72,7 @@ public class StreamSymTypeFactoryTest extends AbstractMCTest {
     // Then
     assertTrue(intStream.hasTypeInfo());
     assertSame(gs.resolveType("UntimedStream").orElseThrow(), intStream.getTypeInfo());
-    assertEquals("UntimedStream", intStream.getTypeConstructorFullName());
+    assertEquals("UntimedStream.UntimedStream", intStream.getTypeConstructorFullName());
     assertEquals(1, intStream.sizeArguments());
     assertTrue(intSymTypeExpression.deepEquals(intStream.getArgument(0)));
   }
@@ -89,7 +89,7 @@ public class StreamSymTypeFactoryTest extends AbstractMCTest {
     // Then
     assertTrue(intStream.hasTypeInfo());
     assertSame(gs.resolveType("ToptStream").orElseThrow(), intStream.getTypeInfo());
-    assertEquals("ToptStream", intStream.getTypeConstructorFullName());
+    assertEquals("ToptStream.ToptStream", intStream.getTypeConstructorFullName());
     assertEquals(1, intStream.sizeArguments());
     assertTrue(intSymTypeExpression.deepEquals(intStream.getArgument(0)));
   }
@@ -106,7 +106,7 @@ public class StreamSymTypeFactoryTest extends AbstractMCTest {
     // Then
     assertTrue(intStream.hasTypeInfo());
     assertSame(gs.resolveType("SyncStream").orElseThrow(), intStream.getTypeInfo());
-    assertEquals("SyncStream", intStream.getTypeConstructorFullName());
+    assertEquals("SyncStream.SyncStream", intStream.getTypeConstructorFullName());
     assertEquals(1, intStream.sizeArguments());
     assertTrue(intSymTypeExpression.deepEquals(intStream.getArgument(0)));
   }
