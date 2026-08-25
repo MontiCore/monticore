@@ -41,13 +41,6 @@ public class MethodSymbol extends MethodSymbolTOP {
   }
 
   @Override
-  public List<VariableSymbol> getParameterList() {
-    List<VariableSymbol> params = super.getParameterList();
-    params.addAll(getSpannedScope().getLocalFieldSymbols());
-    return params;
-  }
-
-  @Override
   public AccessModifier getAccessModifier() {
     List<AccessModifier> modifiers = new ArrayList<>();
     if(isIsPublic()){
