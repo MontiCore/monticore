@@ -113,7 +113,7 @@ import de.monticore.gradle.gen.MCGenTask;
 if (("true").equals(getProperty('genTR'))) {
   // Further exclude the grammar and basic tf grammars from being included in the TR grammar input set
   extractTRGrammars {
-    exclude(["**/de/monticore/tf/*", "**/de/monticore/grammar/*",  "**/de/monticore/siunit/*"])
+    exclude(["**/de/monticore/tf/*", "**/de/monticore/grammar/*",  "**/de/monticore/siunit/*",  "**/de/monticore/temporal/*"])
   }
 }
 
@@ -125,6 +125,7 @@ def grammarDependencies = ext {
   Completeness = []
   MCStatementsBasis = []
   Antlr = []
+  ISOTemporals4Parsing = []
 
   // one dependency
   MCSynchronizedStatements = ["MCCommonStatements"]
@@ -153,6 +154,10 @@ def grammarDependencies = ext {
   RegularExpressions = ["MCCommonLiterals"]
   SIUnits = ["MCCommonLiterals"]
   TupleExpressions = ["ExpressionsBasis"]
+  TemporalBasis = ["MCCommonLiterals"]
+  ISOTemporals = ["TemporalBasis"]
+  EscapedTemporalLiterals = ["TemporalBasis"]
+  DETemporals = ["TemporalBasis"]
 
   // two dependencies
   Cardinality = ["MCBasics", "MCCommonLiterals"]
