@@ -80,7 +80,7 @@ public abstract class MyDSLCompileTask extends MC_SeeAbove_Task implements ICach
     // Use the improved shared-isolated-work-queue of se-commons
     // (this avoids a bunch of otherwise required boilerplate code)
     this.workQueue = doGetSharedQueueService().newWorkQueue(getWorkerExecutor(),
-            getExtraClasspathElements());
+            getServiceRegistry(), getExtraClasspathElements());
   }
 
 }
