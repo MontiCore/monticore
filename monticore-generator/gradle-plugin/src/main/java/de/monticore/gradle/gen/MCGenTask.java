@@ -304,6 +304,6 @@ public abstract class MCGenTask extends MCSingleFileTask implements ICachedQueue
   @Override
   protected void prepareWorkQueue() {
     // Use the improved shared-isolated-work-queue of se-commons
-    this.workQueue = doGetSharedQueueService().newWorkQueue(getWorkerExecutor(), getExtraClasspathElements());
+    this.workQueue = doGetSharedQueueService().newWorkQueue(getWorkerExecutor(), getServiceRegistry(), getExtraClasspathElements());
   }
 }
