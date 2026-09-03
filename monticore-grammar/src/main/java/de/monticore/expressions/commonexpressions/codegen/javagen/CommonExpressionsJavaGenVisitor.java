@@ -440,7 +440,7 @@ public class CommonExpressionsJavaGenVisitor
       getPrinter().print(fieldAccess.getName());
     }
     else if (node.getExpression() instanceof ASTStaticFieldAccessExpression staticAccess) {
-      staticAccess.getMCType().accept(getTraverser());
+      staticAccess.getType().accept(getTraverser());
       getPrinter().print(".");
       getPrinter().print(staticAccess.getName());
     }

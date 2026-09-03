@@ -615,9 +615,8 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
       ASTMCQualifiedType innerMCType =
           storeReplacementMCQualifiedType(innerNameParts, enclosingScope, innerNameTyping);
       result = CommonExpressionsMill.staticFieldAccessExpressionBuilder()
-          .setMCType(innerMCType)
+          .setType(innerMCType)
           .setName(nameParts.getLast())
-          .setMCShallNotBeParsed("")
           .build();
       result.setEnclosingScope(enclosingScope);
     }

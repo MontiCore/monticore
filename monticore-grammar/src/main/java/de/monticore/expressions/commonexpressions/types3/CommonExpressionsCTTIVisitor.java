@@ -162,12 +162,20 @@ public class CommonExpressionsCTTIVisitor
         expr.getEnclosingScope(),
         nameTyping
     );
+
+    // copy typing information to the replacement
     if (getType4Ast().hasPartialTypeOfExpression(expr)) {
       getType4Ast().setTypeOfExpression(
           replacement,
           getType4Ast().getPartialTypeOfExpr(expr)
       );
     }
+    getInferenceContext4Ast().setContextOfExpression(
+        replacement,
+        getInferenceContext4Ast().getContextOfExpression(expr)
+    );
+
+    // register the replacement to actually replace the old expression
     PostTypeCheckNodeReplacer.addReplacement(expr, replacement);
   }
 
