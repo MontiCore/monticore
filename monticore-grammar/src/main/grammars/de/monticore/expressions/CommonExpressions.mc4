@@ -80,9 +80,8 @@ component grammar CommonExpressions
    * This is syntactically similar to qualified names:
    * As such it is parsed there and afterwards, the AST is restructured.
    */
-  StaticFieldAccessExpression implements Expression =
-    MCShallNotBeParsed
-    MCType "." Name
+  StaticFieldAccessExpression implements Expression <0> =
+    type:MCQualifiedType "." Name
   ;
 
   /*=================================================================*/
