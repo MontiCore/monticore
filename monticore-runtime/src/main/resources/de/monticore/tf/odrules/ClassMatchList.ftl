@@ -70,6 +70,10 @@ public static class Match${list.getObjectName()}{
     }
     return last;
   }
+
+  protected int size() {
+    return this.items.size();
+  }
 }
 
   //Method for checking if the given object is already matched by the list
