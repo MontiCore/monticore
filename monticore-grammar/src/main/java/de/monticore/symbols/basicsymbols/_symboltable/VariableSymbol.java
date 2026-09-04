@@ -22,8 +22,9 @@ public class VariableSymbol extends VariableSymbolTOP {
     if(isPresentAstNode()) {
       clone.setAstNode(this.getAstNode());
     }
-    if(type!=null){
-      clone.setType(type.deepClone());
+    SymTypeExpression t = getType();
+    if(t!=null){
+      clone.setType(t.deepClone());
     }
     return clone;
   }
