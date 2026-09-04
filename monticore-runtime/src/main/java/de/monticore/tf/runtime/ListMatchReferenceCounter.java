@@ -40,13 +40,17 @@ public class ListMatchReferenceCounter {
   }
 
   public void inc(ASTNode node) {
-    Preconditions.checkNotNull(node);
+    if (node == null) {
+      return;
+    }
     refs.putIfAbsent(node, new MutableInt(0));
     refs.get(node).inc();
   }
 
   public void dec(ASTNode node) {
-    Preconditions.checkNotNull(node);
+    if (node == null) {
+      return;
+    }
     MutableInt referenceCount = this.refs.get(node);
     if (referenceCount != null) {
       referenceCount.dec();
