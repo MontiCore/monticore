@@ -7,6 +7,7 @@ import de.monticore.visitor.ITraverser;
 
 import javax.annotation.Nonnull;
 import java.util.*;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -27,6 +28,8 @@ public class ModelAccessorBuilder {
   protected final Map<String, IModelIndex> customIndices = new HashMap<>();
 
   protected final Set<IIncrementalListener> listeners = new HashSet<>();
+
+  protected RelationshipGraph relationshipGraph;
 
   /**
    * Creates a new builder with required traverser and root nodes.
@@ -132,6 +135,31 @@ public class ModelAccessorBuilder {
   }
 
   /**
+   * Enables relationship tracking for the accessor to be built.
+   *
+   * <p>This method creates a new {@link RelationshipGraph} initialized with the
+   * configured root nodes, creates a corresponding
+   * {@link RelationshipGraphChangeProcessor} via the given factory, and registers
+   * that processor as an incremental listener so the graph stays in sync with
+   * model change events.</p>
+   *
+   * <p>If called multiple times, the latest call replaces the stored
+   * relationship graph reference and adds the newly created processor listener.</p>
+   *
+   * @param changeProcessor factory function that receives the created
+   *     {@link RelationshipGraph} and returns the listener responsible for
+   *     processing graph updates
+   * @return this builder for fluent chaining
+   */
+  public ModelAccessorBuilder withRelationshipGraph(Function<RelationshipGraph, RelationshipGraphChangeProcessor> changeProcessor) {
+    RelationshipGraph rg = new RelationshipGraph(new HashSet<>(this.roots));
+    RelationshipGraphChangeProcessor changeProcessorInstance = changeProcessor.apply(rg);
+    this.listeners.add(changeProcessorInstance);
+    this.relationshipGraph = rg;
+    return this;
+  }
+
+  /**
    * Creates a fully initialized {@link ModelAccessor} from the collected configuration.
    *
    * <p>The resulting instance receives defensive copies of custom indices and listeners
@@ -140,7 +168,8 @@ public class ModelAccessorBuilder {
    * @return a new configured and initialized model accessor
    */
   public ModelAccessor build() {
-    return new ModelAccessor(this.traverser, this.roots, new HashMap<>(this.customIndices), new HashSet<>(this.listeners));
+    return new ModelAccessor(this.traverser, this.roots, new HashMap<>(this.customIndices),
+        new HashSet<>(this.listeners), this.relationshipGraph);
   }
 
   protected static void validateCustomIndices(Map<String, IModelIndex> customIndices) {

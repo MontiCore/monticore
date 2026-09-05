@@ -2,7 +2,6 @@
 package de.monticore.tf.runtime.inc;
 
 import de.monticore.ast.ASTNode;
-import de.monticore.visitor.ITraverser;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -97,6 +96,17 @@ public interface IModelAccessor {
    * @return the parent index
    */
   ParentIndex getParentIndex();
+
+  /**
+   * Returns the optional relationship graph used by this accessor.
+   *
+   * <p>The returned optional is empty when relationship tracking has not been
+   * configured for the accessor.</p>
+   *
+   * @return an {@link Optional} containing the relationship graph if available,
+   *     otherwise an empty {@link Optional}
+   */
+  Optional<RelationshipGraph> getRelationshipGraph();
   
   /**
    * Checks whether a custom index with the given name exists.

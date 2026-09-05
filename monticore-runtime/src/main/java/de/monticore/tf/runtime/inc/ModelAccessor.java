@@ -19,6 +19,8 @@ public class ModelAccessor implements IModelAccessor {
   private final ParentIndex parentIndex;
   
   private final CandidateIndex candidateIndex;
+
+  private final RelationshipGraph relationshipGraph;
   
   private final Map<String, IModelIndex> customIndices;
   
@@ -41,7 +43,7 @@ public class ModelAccessor implements IModelAccessor {
    * @param roots the root nodes used for initialization
    */
   public ModelAccessor(Supplier<ITraverser> traverser, List<ASTNode> roots) {
-    this(traverser, roots, new HashMap<>(), new HashSet<>());
+    this(traverser, roots, new HashMap<>(), new HashSet<>(), null);
   }
   
   /**
@@ -54,12 +56,19 @@ public class ModelAccessor implements IModelAccessor {
    * @param roots the root nodes used for initialization
    * @param customIndices the custom indices to register by name
    * @param listeners listeners that should receive incremental model events
+   * @param relationshipGraph the relationship graph for managing relationships
    */
-  protected ModelAccessor(Supplier<ITraverser> traverser, List<ASTNode> roots, Map<String, IModelIndex> customIndices, Set<IIncrementalListener> listeners) {
+  protected ModelAccessor(
+      Supplier<ITraverser> traverser,
+      List<ASTNode> roots,
+      Map<String, IModelIndex> customIndices,
+      Set<IIncrementalListener> listeners,
+      @Nullable RelationshipGraph relationshipGraph) {
     this.parentIndex = new ParentIndex();
     this.candidateIndex = new CandidateIndex(traverser);
     this.customIndices = new HashMap<>(customIndices);
     this.listeners = listeners;
+    this.relationshipGraph = relationshipGraph;
     
     initialize(traverser, roots);
   }
@@ -239,6 +248,19 @@ public class ModelAccessor implements IModelAccessor {
    */
   public ParentIndex getParentIndex() {
     return parentIndex;
+  }
+
+  /**
+   * Returns the optional relationship graph managed by this accessor.
+   *
+   * <p>The relationship graph may be absent when the accessor was created
+   * without relationship tracking support.</p>
+   *
+   * @return an {@link Optional} containing the relationship graph if configured,
+   *     otherwise an empty {@link Optional}
+   */
+  public Optional<RelationshipGraph> getRelationshipGraph() {
+    return Optional.ofNullable(this.relationshipGraph);
   }
   
   /**
