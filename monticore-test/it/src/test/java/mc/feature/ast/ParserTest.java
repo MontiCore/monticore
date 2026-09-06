@@ -50,7 +50,7 @@ public class ParserTest {
     p.parse_StringAutomaton("automaton a { spices2 ;}");
     
     assertTrue(p.hasErrors());
-    MCAssertions.assertHasFindingStartingWith("mismatched input ';' expecting {'garlic', 'pepper', 'none', '%'}");
+    MCAssertions.assertHasFindingStartingWith("mismatched input ';', expecting {'garlic', 'pepper', 'none', '%'}");
   }
   
   /*  Grammar:  B: A:A (B:A)*; 
@@ -92,7 +92,7 @@ public class ParserTest {
     Optional<ASTComplexname> ast = p.parse_StringComplexname("private / private / private /");
     
     assertFalse(ast.isPresent());
-    MCAssertions.assertHasFindingStartingWith("mismatched input 'private' expecting '.'");
+    MCAssertions.assertHasFindingStartingWith("mismatched input 'private', expecting '.'");
   }
   
 }

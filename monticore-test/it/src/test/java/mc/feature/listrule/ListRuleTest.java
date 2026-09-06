@@ -27,7 +27,7 @@ public class ListRuleTest {
     p.parse_String("");
     
     assertTrue(p.hasErrors());
-    MCAssertions.assertHasFindingStartingWith("mismatched input '<EOF>' expecting 'P1'");
+    MCAssertions.assertHasFindingStartingWith("mismatched input '<EOF>', expecting 'P1'");
   }
 
   @Test
