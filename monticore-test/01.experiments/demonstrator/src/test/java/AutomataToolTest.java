@@ -2,20 +2,23 @@
 
 import automata.AutomataMill;
 import automata.AutomataTool;
+import de.monticore.runtime.junit.MCAssertions;
 import org.junit.*;
 import de.se_rwth.commons.logging.Log;
 import java.util.*;
 import java.util.regex.Pattern;
 
 import de.se_rwth.commons.logging.LogStub;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 public class AutomataToolTest {
   
-  @Before
+  @BeforeEach
   public void init(){
     LogStub.init();// replace log by a sideffect free variant
     Log.enableFailQuick(false);
@@ -28,29 +31,29 @@ public class AutomataToolTest {
    */
   @Test
   public void testPingPong(){
-    AutomataTool.main(new String[] { "-i", "src/test/resources/example/PingPong.aut",
+    new AutomataTool().run(new String[] { "-i", "src/test/resources/example/PingPong.aut",
                                      "-path", "target/PingPong.autsym",
                                      "-hw", "src/product/java",
                                      "-o", "target/statepattern",
                                       "-s", "target/example/PingPong.autsym"});
     assertEquals(0, Log.getErrorCount());
-    assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
   
   @Test
   public void testSimple12(){
-    AutomataTool.main(new String[] { "-i", "src/test/resources/example/Simple12.aut",
+    new AutomataTool().run(new String[] { "-i", "src/test/resources/example/Simple12.aut",
                                      "-path", "target/Simple12.autsym",
                                      "-hw", "src/product/java",
                                      "-o", "target/statepattern",
                                      "-s", "target/example/Simple12.autsym"});
     assertEquals(0, Log.getErrorCount());
-    assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
   
   @Test
   public void testWrongArguments(){
-    AutomataTool.main(new String[] {  });
+    new AutomataTool().run(new String[] {  });
     assertEquals(1, Log.getErrorCount());
     assertEquals("0xA5C02 Must specify an Input file."
           , Log.getFindings().get(0).buildMsg());

@@ -51,8 +51,7 @@ public class LexNTsNotEmpty implements GrammarASTLexProdCoCo {
           else if (rc instanceof ASTLexNonTerminal
               || rc instanceof ASTLexString
               || rc instanceof ASTLexChar
-              || rc instanceof ASTLexCharRange
-              || rc instanceof ASTLexString) {
+              || rc instanceof ASTLexCharRange) {
             return;
           }
         }

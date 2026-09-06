@@ -1,117 +1,170 @@
-/* (c) https://github.com/MontiCore/monticore */
+/* (c) [https://github.com/MontiCore/monticore](https://github.com/MontiCore/monticore) */
 package de.monticore.statements.cocos;
 
+import de.monticore.runtime.junit.MCAssertions;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.statements.mccommonstatements._symboltable.IMCCommonStatementsArtifactScope;
 import de.monticore.statements.mccommonstatements._symboltable.MCCommonStatementsSymbols2Json;
 import de.monticore.statements.mccommonstatements.cocos.SwitchStatementValid;
 import de.monticore.statements.mcstatementsbasis._ast.ASTMCBlockStatement;
 import de.monticore.statements.testmccommonstatements.TestMCCommonStatementsMill;
 import de.monticore.statements.testmccommonstatements._cocos.TestMCCommonStatementsCoCoChecker;
-import de.monticore.statements.testmccommonstatements._parser.TestMCCommonStatementsParser;
 import de.monticore.statements.testmccommonstatements._visitor.TestMCCommonStatementsTraverser;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.types.check.FlatExpressionScopeSetter;
-import de.monticore.types.check.FullDeriveFromCombineExpressionsWithLiterals;
 import de.monticore.types.check.SymTypeExpressionFactory;
-import de.monticore.types.check.TypeCalculator;
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
+import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.IOException;
-import java.util.Optional;
+import java.util.stream.Stream;
 
-public class SwitchStatementValidTest {
-  
-  protected TestMCCommonStatementsCoCoChecker checker;
-  
+import static de.monticore.statements.testmccommonstatements.TestMCCommonStatementsMill.parser;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
+
+@TestWithMCLanguage(TestMCCommonStatementsMill.class)
+class SwitchStatementValidTest {
+
   @BeforeEach
-  public void init() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-    TestMCCommonStatementsMill.reset();
-    TestMCCommonStatementsMill.init();
+  void init() {
+    CombineExpressionsWithLiteralsTypeTraverserFactory.initTypeCheck3();
     BasicSymbolsMill.initializePrimitives();
-    checker = new TestMCCommonStatementsCoCoChecker();
-    checker.addCoCo(new SwitchStatementValid(new TypeCalculator(null,new FullDeriveFromCombineExpressionsWithLiterals())));
-  }
-  
-  public void checkValid(String expressionString) throws IOException {
-    TestMCCommonStatementsParser parser = new TestMCCommonStatementsParser();
-    Optional<ASTMCBlockStatement> optAST = parser.parse_StringMCBlockStatement(expressionString);
-    Assertions.assertTrue(optAST.isPresent());
-    Log.getFindings().clear();
-    checker.checkAll(optAST.get());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
-  }
-  
-  public void checkInvalid(String expressionString) throws IOException {
-    TestMCCommonStatementsParser parser = new TestMCCommonStatementsParser();
-    Optional<ASTMCBlockStatement> optAST = parser.parse_StringMCBlockStatement(expressionString);
-    Assertions.assertTrue(optAST.isPresent());
-    Log.getFindings().clear();
-    checker.checkAll(optAST.get());
-    Assertions.assertFalse(Log.getFindings().isEmpty());
-  }
-  
-  @Test
-  public void testValid() throws IOException {
-    checkValid("switch(5){}");
-    checkValid("switch('c'){}");
-  }
-  
-  @Test
-  public void testInvalid() throws IOException {
-    checkInvalid("switch(5.5){}");
-    checkInvalid("switch(5.5F){}");
-    checkInvalid("switch(false){}");
   }
 
-  @Test
-  public void testSwitchEnumConstants() throws IOException {
-    IMCCommonStatementsArtifactScope imported
-        = new MCCommonStatementsSymbols2Json().load("src/test/resources/de/monticore/statements/Enum.sym");
+  @ParameterizedTest
+  @ValueSource(strings = {
+    "switch(5){}",
+    "switch('c'){}",
+    "switch(5){case 1:}"
+  })
+  void testValidSwitchExpressions(String expr) throws IOException {
+    // Given
+    TestMCCommonStatementsCoCoChecker checker = new TestMCCommonStatementsCoCoChecker();
+    checker.addCoCo(new SwitchStatementValid());
 
-    TestMCCommonStatementsMill
-        .globalScope()
-        .addSubScope(imported);
+    ASTMCBlockStatement ast = parser().parse_StringMCBlockStatement(expr).orElseThrow();
 
-    VariableSymbol variable1 = TestMCCommonStatementsMill.variableSymbolBuilder()
-        .setName("c")
-        .setType(SymTypeExpressionFactory.createTypeObject(imported.resolveOOType("A").get()))
-        .build();
-    TestMCCommonStatementsMill.globalScope().getVariableSymbols().put(variable1.getName() , variable1);
+    // When
+    checker.checkAll(ast);
+  }
 
-    VariableSymbol variable2 = TestMCCommonStatementsMill.variableSymbolBuilder()
-        .setName("d")
-        .setType(SymTypeExpressionFactory.createTypeObject(imported.resolveOOType("B").get()))
-        .build();
-    TestMCCommonStatementsMill.globalScope().getVariableSymbols().put(variable2.getName() , variable2);
+  @ParameterizedTest
+  @MethodSource("invalidSwitchExpressionsProvider")
+  void testInvalidSwitchExpressions(String expr) throws IOException {
+    // Given
+    TestMCCommonStatementsCoCoChecker checker = new TestMCCommonStatementsCoCoChecker();
+    checker.addCoCo(new SwitchStatementValid());
 
-    TestMCCommonStatementsParser parser = TestMCCommonStatementsMill.parser();
-    Optional<ASTMCBlockStatement> optAST1 = parser.parse_StringMCBlockStatement("switch(c){}");
-    Assertions.assertTrue(optAST1.isPresent());
-    ASTMCBlockStatement ast1 = optAST1.get();
+    ASTMCBlockStatement ast = parser().parse_StringMCBlockStatement(expr).orElseThrow();
+
+    // When
+    checker.checkAll(ast);
+
+    // Then
+    MCAssertions.assertHasFindingStartingWith(SwitchStatementValid.ERROR_CODE);
+  }
+
+  static Stream<Arguments> invalidSwitchExpressionsProvider() {
+    return Stream.of(
+      arguments("switch(5.5){}"),
+      arguments("switch(5.5F){}"),
+      arguments("switch(false){}")
+    );
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"switch(c){}", "switch(c){case Foo:}"})
+  void testSwitchEnumConstantsValid(String expr) throws IOException {
+    // Given
+    IMCCommonStatementsArtifactScope imported =
+      new MCCommonStatementsSymbols2Json().load("target/resources/test/de/monticore/statements/Enum.sym");
+    TestMCCommonStatementsMill.globalScope().addSubScope(imported);
+
+    VariableSymbol variable = TestMCCommonStatementsMill.variableSymbolBuilder()
+      .setName("c")
+      .setType(SymTypeExpressionFactory.createTypeObject(imported.resolveOOType("A").orElseThrow()))
+      .build();
+
+    TestMCCommonStatementsMill.globalScope().add(variable);
+
+    TestMCCommonStatementsCoCoChecker checker = new TestMCCommonStatementsCoCoChecker();
+    checker.addCoCo(new SwitchStatementValid());
+
+    ASTMCBlockStatement ast = parser().parse_StringMCBlockStatement(expr).orElseThrow();
 
     TestMCCommonStatementsTraverser traverser = TestMCCommonStatementsMill.traverser();
     traverser.add4ExpressionsBasis(new FlatExpressionScopeSetter(TestMCCommonStatementsMill.globalScope()));
-    ast1.accept(traverser);
+    ast.accept(traverser);
 
-    Log.getFindings().clear();
-    checker.checkAll(ast1);
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    // When
+    checker.checkAll(ast);
+  }
 
-    Optional<ASTMCBlockStatement> optAST2 = parser.parse_StringMCBlockStatement("switch(d){}");
-    Assertions.assertTrue(optAST2.isPresent());
-    ASTMCBlockStatement ast2 = optAST2.get();
+  @Test
+  void testSwitchEnumConstantsInvalidSwitchType() throws IOException {
+    // Given
+    IMCCommonStatementsArtifactScope imported =
+      new MCCommonStatementsSymbols2Json().load("target/resources/test/de/monticore/statements/Enum.sym");
+    TestMCCommonStatementsMill.globalScope().addSubScope(imported);
 
-    ast2.accept(traverser);
+    VariableSymbol variable = TestMCCommonStatementsMill.variableSymbolBuilder()
+      .setName("d")
+      .setType(SymTypeExpressionFactory.createTypeObject(imported.resolveOOType("B").orElseThrow()))
+      .build();
 
-    checker.checkAll(ast2);
-    Assertions.assertEquals(1, Log.getFindings().size());
-    Assertions.assertTrue(Log.getFindings().get(0).getMsg().startsWith(SwitchStatementValid.ERROR_CODE));
+    TestMCCommonStatementsMill.globalScope().add(variable);
+
+    TestMCCommonStatementsCoCoChecker checker = new TestMCCommonStatementsCoCoChecker();
+    checker.addCoCo(new SwitchStatementValid());
+
+    ASTMCBlockStatement ast = parser().parse_StringMCBlockStatement("switch(d){}").orElseThrow();
+
+    TestMCCommonStatementsTraverser traverser = TestMCCommonStatementsMill.traverser();
+    traverser.add4ExpressionsBasis(new FlatExpressionScopeSetter(TestMCCommonStatementsMill.globalScope()));
+    ast.accept(traverser);
+
+    // When
+    checker.checkAll(ast);
+
+    // Then
+    MCAssertions.assertHasFindingStartingWith(SwitchStatementValid.ERROR_CODE);
+    
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {
+    "switch(5){ case 1: switch('c'){} }",
+    "switch(5){ case 1: switch(2){ case 1: } }"
+  })
+  void testNestedSwitchStatementsValid(String expr) throws IOException {
+    // Given
+    TestMCCommonStatementsCoCoChecker checker = new TestMCCommonStatementsCoCoChecker();
+    checker.addCoCo(new SwitchStatementValid());
+
+    ASTMCBlockStatement ast = parser().parse_StringMCBlockStatement(expr).orElseThrow();
+
+    // When
+    checker.checkAll(ast);
+  }
+
+  @Test
+  void testNestedSwitchInvalidInner() throws IOException {
+    // Given
+    TestMCCommonStatementsCoCoChecker checker = new TestMCCommonStatementsCoCoChecker();
+    checker.addCoCo(new SwitchStatementValid());
+
+    ASTMCBlockStatement ast = parser().parse_StringMCBlockStatement("switch(5){ case 1: switch(5.5){} }").orElseThrow();
+
+    // When
+    checker.checkAll(ast);
+
+    // Then
+    MCAssertions.assertHasFindingStartingWith(SwitchStatementValid.ERROR_CODE);
   }
 }

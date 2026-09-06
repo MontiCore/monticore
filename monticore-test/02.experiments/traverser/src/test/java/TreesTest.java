@@ -1,15 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
 import java.util.Optional;
 
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 
 import org.junit.jupiter.api.Test;
@@ -20,6 +15,8 @@ import trees.TreesMill;
 import trees._ast.ASTRoot;
 import trees._parser.TreesParser;
 import trees._visitor.TreesTraverser;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TreesTest {
   
@@ -36,12 +33,12 @@ public class TreesTest {
     TreesParser parser = new TreesParser();
     
     Optional<ASTRoot> tree = parser.parse(model);
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(tree.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(tree.isPresent());
     
     // compute and check result
-    Assertions.assertEquals(3, leafCount(tree.get()));
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertEquals(3, leafCount(tree.get()));
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -51,12 +48,12 @@ public class TreesTest {
     SubTreesParser parser = new SubTreesParser();
     
     Optional<ASTRoot> tree = parser.parse(model);
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(tree.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(tree.isPresent());
     
     // compute and check result
-    Assertions.assertEquals(6, leafCount(tree.get()));
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertEquals(6, leafCount(tree.get()));
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   /**

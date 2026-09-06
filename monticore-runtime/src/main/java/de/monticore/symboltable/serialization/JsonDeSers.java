@@ -31,6 +31,10 @@ public class JsonDeSers {
 
   public static final String SPANNED_SCOPE = "spannedScope";
 
+  public static final String STEREO_INFO = "stereoinfo";
+
+  public static final String SYMBOL_HIERARCHY = "symbolHierarchy";
+
   /**
    * This method deserializes a stored package. If no package is stored, the default
    * empty package ("") is returned.
@@ -65,7 +69,7 @@ public class JsonDeSers {
   public static String getKind(JsonObject symbol) {
     Optional<String> kind = getKindOpt(symbol);
 
-    if (!kind.isPresent()) {
+    if (kind.isEmpty()) {
       Log.error("0xA1235 Serialized object does not have a kind attribute: '" + symbol + "'.");
       return "error";
     }
@@ -84,7 +88,6 @@ public class JsonDeSers {
    *
    * @param deSerKind
    * @param serializedElement
-   * @return
    */
   public static void checkCorrectDeSerForKind(String deSerKind, JsonElement serializedElement) {
     if (!serializedElement.isJsonObject()) {

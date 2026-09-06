@@ -29,15 +29,14 @@ import de.monticore.codegen.cd2java.data.InterfaceDecorator;
 import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.se_rwth.commons.logging.Log;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
-import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CDAuxiliaryDecoratorTest extends DecoratorTestCase {
 
@@ -45,7 +44,7 @@ public class CDAuxiliaryDecoratorTest extends DecoratorTestCase {
 
   private ASTCDCompilationUnit decoratedCompilationUnit;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     originalCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "Automaton");
 
@@ -90,7 +89,7 @@ public class CDAuxiliaryDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testPackageName() {
-    Assert.assertTrue (decoratedCompilationUnit.getCDDefinition().getPackageWithName("de.monticore.codegen.symboltable.automaton._auxiliary").isPresent());
+    assertTrue (decoratedCompilationUnit.getCDDefinition().getPackageWithName("de.monticore.codegen.symboltable.automaton._auxiliary").isPresent());
 
     assertTrue(Log.getFindings().isEmpty());
   }

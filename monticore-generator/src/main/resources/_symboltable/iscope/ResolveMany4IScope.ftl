@@ -10,18 +10,18 @@ ${tc.signature("simpleName", "symbolFullName")}
   // to prevent resolving cycles caused by cyclic symbol adapters
   set${simpleName}SymbolsAlreadyResolved(true);
   final List<${symbolFullName}> resolvedSymbols = this.resolve${simpleName}LocallyMany(foundSymbols, name, modifier, predicate);
-  foundSymbols = foundSymbols | resolvedSymbols.size() > 0;
+  foundSymbols = foundSymbols | !resolvedSymbols.isEmpty();
   set${simpleName}SymbolsAlreadyResolved(false);
 
   final String resolveCall = "resolveMany(\"" + name + "\", \"" + "${simpleName}Symbol"
   + "\") in scope \"" + (isPresentName() ? getName() : "") + "\"";
-  Log.trace("START " + resolveCall + ". Found #" + resolvedSymbols.size() + " (local)", "");
+  Log.trace("START " + resolveCall + ". Found #" + resolvedSymbols.size() + " (local)", "Resolving");
 
   // (2) continue with enclosingScope, if either no symbol has been found yet or this scope is non-shadowing
   final List<${symbolFullName}> resolvedFromEnclosing = continue${simpleName}WithEnclosingScope(foundSymbols, name, modifier, predicate);
 
   // (3) unify results
   resolvedSymbols.addAll(resolvedFromEnclosing);
-  Log.trace("END " + resolveCall + ". Found #" + resolvedSymbols.size(), "");
+  Log.trace("END " + resolveCall + ". Found #" + resolvedSymbols.size(), "Resolving");
 
   return resolvedSymbols;

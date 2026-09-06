@@ -9,6 +9,8 @@ import de.se_rwth.commons.logging.Log;
 
 import java.util.List;
 
+import static de.monticore.types.check.SymTypeExpressionFactory.createStringType;
+
 /**
  * relations for built-in SymTypes
  * these are the primitives, boxed primitives and String
@@ -164,6 +166,13 @@ public class BuiltInTypeRelations {
     else {
       return false;
     }
+  }
+
+  public boolean isStringOrSubType(SymTypeExpression type) {
+    // slightly unintuitive due to boxing;
+    // can be boxed, unboxed, or a subtype.
+    return isString(type) ||
+        SymTypeRelations.isSubTypeOf(type, createStringType());
   }
 
   public boolean isTop(SymTypeExpression type) {

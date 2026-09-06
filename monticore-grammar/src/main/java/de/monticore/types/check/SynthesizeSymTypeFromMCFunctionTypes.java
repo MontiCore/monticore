@@ -17,7 +17,10 @@ import java.util.List;
  * Visitor for Derivation of SymType from MCFunctionTypes
  * i.e. for
  * types/MCFunctionTypes.mc4
+ * @deprecated part of typecheck1,
+ * use {@link de.monticore.types3.TypeCheck3} instead.
  */
+@Deprecated
 public class SynthesizeSymTypeFromMCFunctionTypes extends AbstractSynthesizeFromType
     implements MCFunctionTypesVisitor2, MCFunctionTypesHandler {
 
@@ -37,7 +40,7 @@ public class SynthesizeSymTypeFromMCFunctionTypes extends AbstractSynthesizeFrom
   public void handle(ASTMCFunctionType functionType) {
     SymTypeExpression symType;
 
-    List<SymTypeExpression> arguments = new LinkedList<SymTypeExpression>();
+    List<SymTypeExpression> arguments = new LinkedList<>();
     for (int i = 0; i<functionType.getMCFunctionParTypes().sizeMCTypes(); i++) {
       ASTMCType arg = functionType.getMCFunctionParTypes().getMCType(i);
       getTypeCheckResult().reset();

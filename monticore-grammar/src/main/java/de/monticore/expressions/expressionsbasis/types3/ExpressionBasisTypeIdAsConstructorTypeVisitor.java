@@ -16,7 +16,10 @@ import java.util.Optional;
 
 /**
  * s. {@link de.monticore.expressions.commonexpressions.types3.CommonExpressionsTypeIdAsConstructorTypeVisitor}
+ *
+ * @deprecated use {@link ExpressionBasisTypeIdAsConstructorCTTIVisitor}
  */
+@Deprecated
 public class ExpressionBasisTypeIdAsConstructorTypeVisitor
     extends ExpressionBasisTypeVisitor {
 
@@ -52,7 +55,7 @@ public class ExpressionBasisTypeIdAsConstructorTypeVisitor
                 c -> true
             );
         if (constructors.size() == 1) {
-          exprType = Optional.of(constructors.get(0));
+          exprType = Optional.of(constructors.getFirst());
         }
         else if (constructors.size() > 1) {
           exprType = Optional.of(SymTypeExpressionFactory.createIntersection(constructors));

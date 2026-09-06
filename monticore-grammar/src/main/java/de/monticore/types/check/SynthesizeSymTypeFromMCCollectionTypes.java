@@ -15,7 +15,10 @@ import java.util.List;
  * Visitor for Derivation of SymType from MCBasicTypes
  * i.e. for
  * types/MCBasicTypes.mc4
+ * @deprecated part of typecheck1,
+ * use {@link de.monticore.types3.TypeCheck3} instead.
  */
+@Deprecated
 public class SynthesizeSymTypeFromMCCollectionTypes extends AbstractSynthesizeFromType implements MCCollectionTypesVisitor2, MCCollectionTypesHandler {
 
 
@@ -65,7 +68,7 @@ public class SynthesizeSymTypeFromMCCollectionTypes extends AbstractSynthesizeFr
         // Argument type has been processed and stored in result
         if (symbols.size() == 1) {
           SymTypeExpression typeArg = getTypeCheckResult().getResult();
-          SymTypeExpression typeExpression = SymTypeExpressionFactory.createGenerics(symbols.get(0), typeArg);
+          SymTypeExpression typeExpression = SymTypeExpressionFactory.createGenerics(symbols.getFirst(), typeArg);
           getTypeCheckResult().setResult(typeExpression);
           type.setDefiningSymbol(typeExpression.getTypeInfo());
         } else {
@@ -119,7 +122,7 @@ public class SynthesizeSymTypeFromMCCollectionTypes extends AbstractSynthesizeFr
           SymTypeExpression keyTypeExpr = keyTypeResult.getResult();
           SymTypeExpression valueTypeExpr = valueTypeResult.getResult();
           SymTypeExpression typeExpression =
-            SymTypeExpressionFactory.createGenerics(mapSyms.get(0), keyTypeExpr, valueTypeExpr);
+            SymTypeExpressionFactory.createGenerics(mapSyms.getFirst(), keyTypeExpr, valueTypeExpr);
           getTypeCheckResult().setResult(typeExpression);
           node.setDefiningSymbol(typeExpression.getTypeInfo());
         } else {

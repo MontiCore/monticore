@@ -1,7 +1,7 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.types.check;
 
-import de.se_rwth.commons.logging.Log;
+import com.google.common.base.Preconditions;
 
 public class SIUnitBasic {
 
@@ -16,8 +16,8 @@ public class SIUnitBasic {
       String prefix,
       int exponent
   ) {
-    this.dimension = Log.errorIfNull(dimension);
-    this.prefix = Log.errorIfNull(prefix);
+    this.dimension = Preconditions.checkNotNull(dimension);
+    this.prefix = Preconditions.checkNotNull(prefix);
     this.exponent = exponent;
   }
 

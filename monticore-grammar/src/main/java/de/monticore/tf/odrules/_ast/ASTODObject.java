@@ -105,7 +105,7 @@ public class ASTODObject extends ASTODObjectTOP {
 
   public String printQualifiedType() {
     if (sQualifiedType == null) {
-      if (type != null) {
+      if (type.isPresent()) {
         sQualifiedType = printType();
       }
     }

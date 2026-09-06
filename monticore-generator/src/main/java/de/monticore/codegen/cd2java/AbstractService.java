@@ -13,22 +13,23 @@ import de.monticore.cdbasis._ast.*;
 import de.monticore.cdbasis._symboltable.CDPackageSymbol;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.cdbasis._symboltable.ICDBasisArtifactScope;
-import de.monticore.cdbasis._symboltable.ICDBasisScope;
 import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.cd2java.exception.DecorateException;
 import de.monticore.codegen.cd2java.exception.DecoratorErrorCode;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
+import de.monticore.symboltable.ImportStatement;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
-import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import de.monticore.umlmodifier._ast.ASTModifier;
 import de.monticore.umlstereotype._ast.ASTStereoValue;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
+import org.apache.commons.text.StringEscapeUtils;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -90,7 +91,7 @@ public class AbstractService<T extends AbstractService> {
   public Collection<DiagramSymbol> getSuperCDsDirect(DiagramSymbol cdSymbol) {
     // get direct parent CDSymbols
     List<DiagramSymbol> superCDs = ((ICDBasisArtifactScope) cdSymbol.getEnclosingScope()).getImportsList().stream()
-        .map(i -> i.getStatement())
+        .map(ImportStatement::getStatement)
         .map(this::resolveCD)
         .collect(Collectors.toList());
     return superCDs;
@@ -102,7 +103,8 @@ public class AbstractService<T extends AbstractService> {
 
   protected final LoadingCache<DiagramSymbol, List<DiagramSymbol>> superCDsTransitiveCache = CacheBuilder.newBuilder()
           .maximumSize(10000)
-          .build(new CacheLoader<DiagramSymbol, List<DiagramSymbol>>() {
+          .build(new CacheLoader<>() {
+            
             @Override
             public List<DiagramSymbol> load(@Nonnull DiagramSymbol cdSymbol) {
               return getSuperCDsTransitiveUncached(cdSymbol);
@@ -113,10 +115,10 @@ public class AbstractService<T extends AbstractService> {
   protected List<DiagramSymbol> getSuperCDsTransitiveUncached(DiagramSymbol cdSymbol) {
     // get direct parent CDSymbols
     List<DiagramSymbol> directSuperCdSymbols = ((ICDBasisArtifactScope) cdSymbol.getEnclosingScope()).getImportsList().stream()
-            .map(i -> i.getStatement())
+            .map(ImportStatement::getStatement)
             .filter(i -> !isJava(i))
             .map(AbstractService.this::resolveCD)
-            .collect(Collectors.toList());
+            .toList();
     // search for super Cds in super Cds
     List<DiagramSymbol> resolvedCds = new ArrayList<>(directSuperCdSymbols);
     for (DiagramSymbol superSymbol : directSuperCdSymbols) {
@@ -141,7 +143,7 @@ public class AbstractService<T extends AbstractService> {
   }
 
   public List<CDTypeSymbol> getAllCDTypes(DiagramSymbol cdSymbol) {
-    List<CDPackageSymbol> directPackages = ((ICDBasisArtifactScope) cdSymbol.getEnclosingScope()).getLocalCDPackageSymbols().stream().collect(Collectors.toList());
+    List<CDPackageSymbol> directPackages = ((ICDBasisArtifactScope) cdSymbol.getEnclosingScope()).getLocalCDPackageSymbols().stream().toList();
     List<CDTypeSymbol> types = Lists.newArrayList();
     directPackages.forEach(p -> types.addAll(p.getSpannedScope().getLocalCDTypeSymbols()));
     types.addAll(((ICDBasisArtifactScope) cdSymbol.getEnclosingScope()).getLocalCDTypeSymbols());
@@ -150,16 +152,22 @@ public class AbstractService<T extends AbstractService> {
 
   /**
    * methods for super CDTypes (CDClass and CDInterface)
+   * @param astcdType a <code>ASTCDType</code> which supertypes should be found
+   * @return a list of all super types including CDClass and CDInterface
    */
+  public List<TypeSymbol> getAllSuperClassesTransitive(ASTCDType astcdType) {
+    return new ArrayList<>(getAllSuperClassesTransitive(astcdType.getSymbol()));
+  }
+
   public List<String> getAllSuperClassesTransitive(ASTCDClass astcdClass) {
     return getAllSuperClassesTransitive(astcdClass.getSymbol())
         .stream()
-        .map(s -> createASTFullName(s))
+        .map(this::createASTFullName)
         .collect(Collectors.toList());
   }
 
-  protected List<CDTypeSymbol> getAllSuperClassesTransitive(CDTypeSymbol cdTypeSymbol) {
-    List<CDTypeSymbol> superSymbolList = new ArrayList<>();
+  protected List<TypeSymbol> getAllSuperClassesTransitive(TypeSymbol cdTypeSymbol) {
+    List<TypeSymbol> superSymbolList = new ArrayList<>();
     if (cdTypeSymbol.isPresentSuperClass()) {
       TypeSymbol superSymbol = cdTypeSymbol.getSuperClass().getTypeInfo();
       if (superSymbol instanceof TypeSymbolSurrogate) {
@@ -169,13 +177,13 @@ public class AbstractService<T extends AbstractService> {
         superSymbol = ((TypeSymbolSurrogate) superSymbol).lazyLoadDelegate();
       }
 
-      superSymbolList.add((CDTypeSymbol) superSymbol);
-      superSymbolList.addAll(getAllSuperClassesTransitive((CDTypeSymbol) superSymbol));
+      superSymbolList.add(superSymbol);
+      superSymbolList.addAll(getAllSuperClassesTransitive(superSymbol));
     }
     return superSymbolList;
   }
 
-  public List<String> getAllSuperInterfacesTransitive(CDTypeSymbol cdTypeSymbol) {
+  public List<String> getAllSuperInterfacesTransitive(TypeSymbol cdTypeSymbol) {
     List<String> superSymbolList = new ArrayList<>();
         List<CDTypeSymbol> localSuperInterfaces = Lists.newArrayList();
         cdTypeSymbol.getSuperTypesList().stream()
@@ -269,12 +277,26 @@ public class AbstractService<T extends AbstractService> {
       modifier.getStereotype().getValuesList().stream()
           .filter(value -> value.getName().equals(stereotype.toString()))
           .filter(ASTStereoValue::isPresentText)
-          .forEach(value -> values.add(value.getValue()));
+          .forEach(value -> values.add(getStereoValueValueFix(value))); // TODO: Replace with value.getValue() after 7.8.0-RELEASE
     }
     return values;
   }
 
-  /**
+  // TODO: Remove me after 7.8.0-RELEASE
+  protected String getStereoValueValueFix(ASTStereoValue stereoValue) {
+    // The ASTStereoValue#getValue() fails with strings
+    if (stereoValue.getContent() == null) {
+      if (stereoValue.isPresentText()) {
+        stereoValue.setContent(StringEscapeUtils.unescapeJava(stereoValue.getText().getValue()));
+      } else {
+        stereoValue.setContent("");
+      }
+    }
+
+    return stereoValue.getContent();
+  }
+
+  /*
    * methods for determination and access to special stereotypes
    */
 
@@ -311,8 +333,13 @@ public class AbstractService<T extends AbstractService> {
   }
 
   public String getInheritedGrammarName(ASTCDAttribute attribute) {
-    return getStereotypeValues(attribute.getModifier(), MC2CDStereotypes.INHERITED).get(0);
+    return getStereotypeValues(attribute.getModifier(), MC2CDStereotypes.INHERITED).getFirst();
   }
+
+  public List<String> getTerminalDefaultValues(ASTCDAttribute attribute) {
+    return getStereotypeValues(attribute.getModifier(), MC2CDStereotypes.TERMINAL_DEFAULT_VALUE);
+  }
+
 
   public boolean hasDeprecatedStereotype(ASTModifier modifier) {
     return hasStereotype(modifier, MC2CDStereotypes.DEPRECATED);
@@ -397,7 +424,7 @@ public class AbstractService<T extends AbstractService> {
   public Optional<String> getStartProdValue(ASTModifier modifier) {
     List<String> stereotypeValues = getStereotypeValues(modifier, MC2CDStereotypes.START_PROD);
     if (!stereotypeValues.isEmpty()) {
-      return Optional.ofNullable(stereotypeValues.get(0));
+      return Optional.ofNullable(stereotypeValues.getFirst());
     }
     return Optional.empty();
   }
@@ -408,8 +435,8 @@ public class AbstractService<T extends AbstractService> {
 
   public Optional<String> getDeprecatedStereotypeValue(ASTModifier modifier) {
     List<String> stereotypeValues = getStereotypeValues(modifier, MC2CDStereotypes.DEPRECATED);
-    if (stereotypeValues.size() >= 1) {
-      return Optional.of(stereotypeValues.get(0));
+    if (!stereotypeValues.isEmpty()) {
+      return Optional.of(stereotypeValues.getFirst());
     } else {
       return Optional.empty();
     }
@@ -423,10 +450,7 @@ public class AbstractService<T extends AbstractService> {
         .getValuesList();
     ASTStereoValue stereoValue = CD4AnalysisMill.stereoValueBuilder()
             .setName(MC2CDStereotypes.DEPRECATED.toString()).uncheckedBuild();
-    if (deprecatedValue.isPresent()) {
-      stereoValue.setText(
-              CD4AnalysisMill.stringLiteralBuilder().setSource(deprecatedValue.get()).build());
-    }
+    deprecatedValue.ifPresent(stereoValue::setContent);
     stereoValueList.add(stereoValue);
   }
 
@@ -475,11 +499,10 @@ public class AbstractService<T extends AbstractService> {
 
   public List<ASTCDMethod> getMethodListWithoutDuplicates(List<ASTCDMethod> astRuleMethods, List<ASTCDMethod> attributeMethods) {
     List<ASTCDMethod> methodList = new ArrayList<>(attributeMethods);
-    for (int i = 0; i < astRuleMethods.size(); i++) {
-      ASTCDMethod cdMethod = astRuleMethods.get(i);
-      for (int j = 0; j < attributeMethods.size(); j++) {
-        if (isSameMethodSignature(cdMethod, attributeMethods.get(j))) {
-          methodList.remove(attributeMethods.get(j));
+    for (ASTCDMethod cdMethod : astRuleMethods) {
+      for (ASTCDMethod attributeMethod : attributeMethods) {
+        if (isSameMethodSignature(cdMethod, attributeMethod)) {
+          methodList.remove(attributeMethod);
         }
       }
     }
@@ -540,14 +563,15 @@ public class AbstractService<T extends AbstractService> {
   /**
    * adds the '_ast' package to a fullName to create an valid AST-package
    */
-  public String createASTFullName(CDTypeSymbol typeSymbol) {
-    ICDBasisScope scope = typeSymbol.getEnclosingScope();
+  public String createASTFullName(TypeSymbol typeSymbol) {
+    IBasicSymbolsScope scope = typeSymbol.getEnclosingScope();
     List<DiagramSymbol> diagramSymbols = scope.getLocalDiagramSymbols();
+    Objects.nonNull(diagramSymbols);
     while (diagramSymbols.isEmpty()) {
       scope = scope.getEnclosingScope();
       diagramSymbols = scope.getLocalDiagramSymbols();
     }
-    return Joiners.DOT.join(getASTPackage(diagramSymbols.get(0)), typeSymbol.getName());
+    return Joiners.DOT.join(getASTPackage(diagramSymbols.getFirst()), typeSymbol.getName());
   }
 
   public String getGeneratedErrorCode(String name) {

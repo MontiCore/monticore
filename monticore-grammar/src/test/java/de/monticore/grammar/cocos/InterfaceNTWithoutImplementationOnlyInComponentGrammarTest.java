@@ -3,13 +3,12 @@
 package de.monticore.grammar.cocos;
 
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
+import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static de.monticore.grammar.cocos.InterfaceNTWithoutImplementationOnlyInComponentGrammar.ERROR_CODE;
-
-import de.se_rwth.commons.logging.Log;
 
 public class InterfaceNTWithoutImplementationOnlyInComponentGrammarTest extends CocoTest {
 

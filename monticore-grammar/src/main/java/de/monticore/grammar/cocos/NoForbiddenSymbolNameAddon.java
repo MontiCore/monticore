@@ -55,11 +55,11 @@ public class NoForbiddenSymbolNameAddon implements GrammarASTMCGrammarCoCo {
     }
     List<ProdSymbol> forbidden = potentialSymbolProds.stream()
         .filter(p -> p.getName().equals(prodNameWithoutAddon))
-        .collect(Collectors.toList());
+        .toList();
 
     if(!forbidden.isEmpty()){
       for(ProdSymbol prod: forbidden){
-        Log.error(ERROR_CODE + String.format(ERROR_MSG_FORMAT, prodName, grammarName, prod.getName()));
+        Log.error(ERROR_CODE + String.format(ERROR_MSG_FORMAT, prodName, grammarName, prod.getName()), prod.getSourcePosition());
       }
     }
   }

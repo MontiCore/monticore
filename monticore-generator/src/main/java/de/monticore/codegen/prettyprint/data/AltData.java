@@ -1,6 +1,7 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.codegen.prettyprint.data;
 
+import de.monticore.ast.ASTNode;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.expressions.commonexpressions.CommonExpressionsMill;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
@@ -9,7 +10,9 @@ import de.monticore.literals.mccommonliterals._ast.ASTConstantsMCCommonLiterals;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 public class AltData implements Comparable<AltData> {
 
@@ -43,6 +46,15 @@ public class AltData implements Comparable<AltData> {
    */
   protected List<Integer> noSpaceTokens = new ArrayList<>();
 
+  /**
+   * For tracing: The AST node causing this alt
+   */
+  protected ASTNode node;
+
+  public AltData(ASTNode node) {
+    this.node = node;
+  }
+
   public List<PPGuardComponent> getComponentList() {
     return componentList;
   }
@@ -71,6 +83,22 @@ public class AltData implements Comparable<AltData> {
     this.optional = optional;
   }
 
+  // To add negations
+  protected final Set<String> optionalSet = new LinkedHashSet<>(), requiredSet = new LinkedHashSet<>();
+
+  /**
+   * @return set of optionally used AST-elements
+   */
+  public Set<String> getOptionalSet() {
+    return optionalSet;
+  }
+
+  /**
+   * @return set of required AST-elements to print this alt
+   */
+  public Set<String> getRequiredSet() {
+    return requiredSet;
+  }
 
   /**
    * Returns the expressions for this Alt in conjunction
@@ -106,6 +134,7 @@ public class AltData implements Comparable<AltData> {
             ", optional=" + optional +
             ", isListReady=" + isListReady +
             ", #expressionList=" + expressionList.size() +
+            ", node=[" + node.get_SourcePositionStart() + "-" + node.get_SourcePositionEnd() + "]" +
             '}';
   }
 
@@ -127,21 +156,25 @@ public class AltData implements Comparable<AltData> {
                   ASTConstantsMCCommonLiterals.FALSE).build()).build();
 
 
+  // The AND(A, OR(B, C)) expression is printed as OR( AND(A, B), C) which is
+  // why we add extra brackets
   public static ASTExpression reduceToAnd(Collection<ASTExpression> expressions) {
     return expressions.stream().reduce(TRUE_EXPRESSION, (expression, expression2) ->
             expression == TRUE_EXPRESSION ? expression2 :
                     (expression2 == TRUE_EXPRESSION ? expression :
-                            CommonExpressionsMill.booleanAndOpExpressionBuilder().setLeft(expression).setRight(expression2)
-                                    .setOperator("&&")
-                                    .build()));
+                            CommonExpressionsMill.bracketExpressionBuilder().setExpression(
+                                    CommonExpressionsMill.booleanAndOpExpressionBuilder().setLeft(expression).setRight(expression2)
+                                            .setOperator("&&")
+                                            .build()).build()));
   }
 
   public static ASTExpression reduceToOr(Collection<ASTExpression> expressions) {
     return expressions.stream().reduce(FALSE_EXPRESSION, (expression, expression2) ->
             expression == FALSE_EXPRESSION ? expression2 :
                     (expression2 == FALSE_EXPRESSION ? expression :
-                            CommonExpressionsMill.booleanOrOpExpressionBuilder().setLeft(expression).setRight(expression2)
-                                    .setOperator("||")
-                                    .build()));
+                            CommonExpressionsMill.bracketExpressionBuilder().setExpression(
+                                    CommonExpressionsMill.booleanOrOpExpressionBuilder().setLeft(expression).setRight(expression2)
+                                            .setOperator("||")
+                                            .build()).build()));
   }
 }

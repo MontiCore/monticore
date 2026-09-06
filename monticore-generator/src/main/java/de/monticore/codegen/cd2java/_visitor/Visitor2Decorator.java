@@ -197,6 +197,10 @@ public class Visitor2Decorator extends AbstractCreator<ASTCDCompilationUnit, AST
       visitorMethodList.add(visitorService.getVisitorMethod(VISIT, symbolType));
       visitorMethodList.add(visitorService.getVisitorMethod(END_VISIT, symbolType));
     }
+    ASTMCQualifiedType commonSymbolType =
+        getMCTypeFacade().createQualifiedType(symbolTableService.getCommonSymbolInterfaceFullName());
+    visitorMethodList.add(visitorService.getVisitorMethod(VISIT , commonSymbolType));
+    visitorMethodList.add(visitorService.getVisitorMethod(END_VISIT , commonSymbolType));
     return visitorMethodList;
   }
 
@@ -256,9 +260,9 @@ public class Visitor2Decorator extends AbstractCreator<ASTCDCompilationUnit, AST
    * @return The set of all qualified symbol names
    */
   protected Set<String> getSymbolsTransitive() {
-    Set<String> superSymbolNames = new LinkedHashSet<>();
-    // add local symbols
-    superSymbolNames.addAll(symbolTableService.retrieveSymbolNamesFromCD(visitorService.getCDSymbol()));
+    // initialize with local symbols
+    Set<String> superSymbolNames = new LinkedHashSet<>(
+        symbolTableService.retrieveSymbolNamesFromCD(visitorService.getCDSymbol()));
 
     // add symbols of super CDs
     List<DiagramSymbol> superCDsTransitive = visitorService.getSuperCDsTransitive();

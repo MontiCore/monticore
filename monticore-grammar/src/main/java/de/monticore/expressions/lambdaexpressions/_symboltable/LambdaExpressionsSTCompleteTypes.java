@@ -9,6 +9,10 @@ import de.monticore.types.check.SymTypeOfNull;
 import de.monticore.types.check.TypeCheckResult;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
+/**
+ * @deprecated use {@link LambdaExpressionsSTCompleteTypes2}
+ */
+@Deprecated(forRemoval = true)
 public class LambdaExpressionsSTCompleteTypes implements LambdaExpressionsVisitor2 {
 
   ISynthesize synthesize;

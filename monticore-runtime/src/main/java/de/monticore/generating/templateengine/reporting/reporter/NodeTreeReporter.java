@@ -93,7 +93,7 @@ public class NodeTreeReporter extends AReporter {
   public void reportCallAfterHookPoint(String oldTemplate, Collection<HookPoint> afterHPs,
       ASTNode ast) {
     for (HookPoint hp : afterHPs) {
-      if (hp != null && hp instanceof TemplateHookPoint) {
+      if (hp instanceof TemplateHookPoint) {
         String aident = compactStr(ast);
         nodeVisits.merge(aident, 1, Integer::sum);
       }
@@ -108,7 +108,7 @@ public class NodeTreeReporter extends AReporter {
   public void reportCallBeforeHookPoint(String oldTemplate, Collection<HookPoint> beforeHPs,
       ASTNode ast) {
     for (HookPoint hp : beforeHPs) {
-      if (hp != null && hp instanceof TemplateHookPoint) {
+      if (hp instanceof TemplateHookPoint) {
         String aident = compactStr(ast);
         nodeVisits.merge(aident, 1, Integer::sum);
       }
@@ -122,7 +122,7 @@ public class NodeTreeReporter extends AReporter {
   @Override
   public void reportCallReplacementHookPoint(String oldTemplate, List<HookPoint> hps, ASTNode ast) {
     for (HookPoint hp : hps) {
-      if (hp != null && hp instanceof TemplateHookPoint) {
+      if (hp instanceof TemplateHookPoint) {
         String aident = compactStr(ast);
         nodeVisits.merge(aident, 1, Integer::sum);
       }
@@ -137,7 +137,7 @@ public class NodeTreeReporter extends AReporter {
   public void reportCallSpecificReplacementHookPoint(String oldTemplate, List<HookPoint> hps,
       ASTNode ast) {
     for (HookPoint hp : hps) {
-      if (hp != null && hp instanceof TemplateHookPoint) {
+      if (hp instanceof TemplateHookPoint) {
         String aident = compactStr(ast);
         nodeVisits.merge(aident, 1, Integer::sum);
       }
@@ -150,7 +150,7 @@ public class NodeTreeReporter extends AReporter {
    */
   @Override
   public void reportCallHookPointStart(String hookName, HookPoint hp, ASTNode ast) {
-    if (hp != null && hp instanceof TemplateHookPoint) {
+    if (hp instanceof TemplateHookPoint) {
       String aident = compactStr(ast);
       nodeVisits.merge(aident, 1, Integer::sum);
     }
@@ -182,7 +182,6 @@ public class NodeTreeReporter extends AReporter {
    * coming from
    * 
    * @param ast
-   * @return
    */
   protected void deriveTreeStructureAST(ASTNode ast) {
     

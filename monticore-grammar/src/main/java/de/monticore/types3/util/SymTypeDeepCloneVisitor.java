@@ -7,7 +7,7 @@ import de.monticore.types3.ISymTypeVisitor;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.Stack;
@@ -266,7 +266,7 @@ public class SymTypeDeepCloneVisitor implements ISymTypeVisitor {
 
   protected Set<SymTypeExpression> applyToCollection(
       Set<SymTypeExpression> symTypes) {
-    Set<SymTypeExpression> transformedTypes = new HashSet<>();
+    Set<SymTypeExpression> transformedTypes = new LinkedHashSet<>();
     for (SymTypeExpression type : symTypes) {
       type.accept(this);
       transformedTypes.add(popTransformedSubSymType());

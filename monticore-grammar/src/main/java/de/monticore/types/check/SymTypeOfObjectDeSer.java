@@ -20,7 +20,7 @@ public class SymTypeOfObjectDeSer {
     JsonPrinter jp = new JsonPrinter();
     jp.beginObject();
     jp.member(JsonDeSers.KIND, SERIALIZED_KIND);
-    jp.member(SERIALIZED_OBJNAME, toSerialize.getObjName());
+    jp.member(SERIALIZED_OBJNAME, toSerialize.printFullName());
     jp.endObject();
     return jp.getContent();
   }

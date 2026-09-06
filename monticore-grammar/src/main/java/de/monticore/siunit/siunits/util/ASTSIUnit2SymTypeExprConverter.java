@@ -127,7 +127,7 @@ public class ASTSIUnit2SymTypeExprConverter {
 
   protected static SIUnitBasic createSIUnit(ASTSIUnitDimensionless ast) {
     if (!ast.isPresentUnit()) {
-      return SymTypeExpressionFactory.createSIUnitBasic("º");
+      return SymTypeExpressionFactory.createSIUnitBasic("°");
     }
     else {
       return SymTypeExpressionFactory.createSIUnitBasic(ast.getUnit());
@@ -135,7 +135,7 @@ public class ASTSIUnit2SymTypeExprConverter {
   }
 
   protected static SIUnitBasic createSIUnit(ASTCelsiusFahrenheit ast) {
-    return SymTypeExpressionFactory.createSIUnitBasic("º" + ast.getUnit());
+    return SymTypeExpressionFactory.createSIUnitBasic("°" + ast.getUnit());
   }
 
   protected static List<SIUnitBasic> createSIUnit(ASTSIUnitKindGroupWithExponent ast) {
@@ -144,7 +144,7 @@ public class ASTSIUnit2SymTypeExprConverter {
       result.addAll(createSIUnit(ast.getSIUnitGroupPrimitive(i)));
       // the last one is the one that the exponent applies to
       int exp = getValue(ast.getExponent(i));
-      result.get(result.size() - 1).setExponent(exp);
+      result.getLast().setExponent(exp);
     }
     if (ast.sizeSIUnitGroupPrimitives() > ast.sizeExponent()) {
       int lastIndex = ast.sizeSIUnitGroupPrimitives() - 1;
@@ -211,9 +211,7 @@ public class ASTSIUnit2SymTypeExprConverter {
       // construct the SIUnitBasic using the extracted (prefix +) unit
       SIUnitBasic siUnitBasic =
           SymTypeExpressionFactory.createSIUnitBasic(unit);
-      if (prefix.isPresent()) {
-        siUnitBasic.setPrefix(prefix.get());
-      }
+      prefix.ifPresent(siUnitBasic::setPrefix);
       result.add(siUnitBasic);
     }
     return result;
@@ -240,55 +238,43 @@ public class ASTSIUnit2SymTypeExprConverter {
   }
 
   // Helper/Cache - Compiled Patterns:
-  // these will be initialized during get() and then cached,
-  // as in most cases, they are not used at all.
   // we have prefixes and units in a list,
   // they need to be split
   // "^" to match only start of String
   // "(?!ol|in)" to avoid issues with "lmin/lmol" having "lm" matched
 
-  protected static Pattern prefixPat;
+  protected static final Pattern prefixPat =
+      Pattern.compile("^" + PREFIX_PATTERN + "(?!ol|in)");
 
-  protected static Pattern unitWithPrefixPat;
+  protected static final Pattern unitWithPrefixPat =
+      Pattern.compile("^" + PREFIX_UNIT_PATTERN + "(?!ol|in)");
 
-  protected static Pattern unitWithoutPrefixPat;
+  protected static final Pattern unitWithoutPrefixPat =
+      Pattern.compile("^" + NO_PREFIX_UNIT_PATTERN + "(?!ol|in)");
 
-  protected static Pattern unitWithoutPrefixPrefPat;
+  protected static final Pattern unitWithoutPrefixPrefPat =
+      Pattern.compile("^" + NO_PREFIX_PREFERED_UNIT_PATTERN + "(?!ol|in)");
 
-  protected static Pattern groupPat;
+  protected static final Pattern groupPat =
+      Pattern.compile(GROUP_PATTERN);
 
   protected static Pattern getPrefixPattern() {
-    if (prefixPat == null) {
-      prefixPat = Pattern.compile("^" + PREFIX_PATTERN + "(?!ol|in)");
-    }
     return prefixPat;
   }
 
   protected static Pattern getUnitWithPrefixPattern() {
-    if (unitWithPrefixPat == null) {
-      unitWithPrefixPat = Pattern.compile("^" + PREFIX_UNIT_PATTERN + "(?!ol|in)");
-    }
     return unitWithPrefixPat;
   }
 
   protected static Pattern getUnitWithoutPrefixPattern() {
-    if (unitWithoutPrefixPat == null) {
-      unitWithoutPrefixPat = Pattern.compile("^" + NO_PREFIX_UNIT_PATTERN + "(?!ol|in)");
-    }
     return unitWithoutPrefixPat;
   }
 
   protected static Pattern getUnitWithoutPrefixPrefPattern() {
-    if (unitWithoutPrefixPrefPat == null) {
-      unitWithoutPrefixPrefPat = Pattern.compile("^" + NO_PREFIX_PREFERED_UNIT_PATTERN + "(?!ol|in)");
-    }
     return unitWithoutPrefixPrefPat;
   }
 
   protected static Pattern getGroupPattern() {
-    if (groupPat == null) {
-      groupPat = Pattern.compile(GROUP_PATTERN);
-    }
     return groupPat;
   }
 

@@ -3,7 +3,7 @@
 buildDir = file("$projectDir/target-emf")
 ext.outDir = "$buildDir/generated-sources/monticore/sourcecode"
 
-generateMCGrammars {
+tasks.named('generateMCGrammars') {
   outputDir = file outDir
   handcodedPath "$projectDir/src/main/java"
   modelPath "$projectDir/$grammarDir"

@@ -3,12 +3,10 @@ package de.monticore.tf.odrules.subConstraints;
 
 import de.monticore.tf.odrulegeneration._ast.ASTMatchingObject;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
- * Created by Alexander Wilts on 10.11.2016.
- *
  * Objects of type ODSubConstraint represent modules of constraints that can be checked independently.
  */
 public class ODSubConstraint {
@@ -33,12 +31,8 @@ public class ODSubConstraint {
     }
 
     public boolean isDependendOn(ASTMatchingObject object){
-        boolean dependsOnObject = dependVars.stream().anyMatch(astMatchingObject -> astMatchingObject.getObjectName() == object.getObjectName());
-        if(dependsOnObject){
-            return true;
-        }else {
-            return false;
-        }
+      return dependVars.stream().anyMatch(astMatchingObject -> astMatchingObject.getObjectName()
+          .equals(object.getObjectName()));
     }
 
     public String getConstrExpr(){
@@ -50,6 +44,6 @@ public class ODSubConstraint {
     }
 
     public ODSubConstraint() {
-        dependVars = new HashSet<>();
+        dependVars = new LinkedHashSet<>();
     }
 }

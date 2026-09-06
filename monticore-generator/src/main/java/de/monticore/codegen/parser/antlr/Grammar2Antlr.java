@@ -23,6 +23,7 @@ import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static de.monticore.codegen.mc2cd.TransformationHelper.getQualifiedName;
 import static de.monticore.codegen.parser.ParserGeneratorHelper.getDefaultValue;
@@ -49,7 +50,9 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
 
   protected boolean embeddedJavaCode;
 
-  protected Map<ASTProd, Map<ASTNode, String>> tmpNameDict = new LinkedHashMap<>();
+  protected Map<ASTProd, ProdInfo> prodInfoMap = new LinkedHashMap<>();
+
+  protected Grammar2AntlrTransformationHelper grammarTransformationMethods = new Grammar2AntlrTransformationHelper();
 
   public Grammar2Antlr(
       ParserGeneratorHelper parserGeneratorHelper,
@@ -246,7 +249,11 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
 
     addToCodeSection("(");
     String del = "";
-    String tmpName = parserHelper.getTmpVarName(ast);
+    String tmpName = null; // will be replaced for both values of `iterated` but the java parser can not automatically prove it
+    if(!iterated){
+      tmpName = parserHelper.getTmpVarName(ast);
+    }
+
     String label = "=";
 
     for (ASTConstant x: ast.getConstantList()) {
@@ -569,7 +576,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
   @Override
   public void visit(ASTNonTerminal ast) {
     Optional<ProdSymbol> prod = grammarEntry.getProdWithInherited(ast.getName());
-    if (!prod.isPresent()) {
+    if (prod.isEmpty()) {
       Log.error("0xA2201 Production symbol for " + ast.getName() + " couldn't be resolved.",
           ast.get_SourcePositionStart());
     }
@@ -606,7 +613,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
   @Override
   public void endVisit(ASTAlt alt) {
     if (!altList.isEmpty()) {
-      altList.remove(altList.size() - 1);
+      altList.removeLast();
     }
   }
 
@@ -621,38 +628,8 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
     clearAntlrCode();
     parserHelper.resetTmpVarNames();
     ast.accept(getTraverser());
-    tmpNameDict.put(ast, new LinkedHashMap<>(parserHelper.getTmpVariables()));
+    prodInfoMap.computeIfAbsent(ast, ProdInfo::new).tmpNames.putAll(parserHelper.getTmpVariables());
     return getAntlrCode();
-  }
-
-  class NodePair {
-    ASTGrammarNode alternative;
-    PredicatePair pp;
-
-    /**
-     * Constructor for de.monticore.codegen.parser.antlr.NodePair.
-     *
-     * @param alternative
-     * @param pp
-     */
-    public NodePair(ASTGrammarNode alternative, PredicatePair pp) {
-      this.alternative = alternative;
-      this.pp = pp;
-    }
-
-    /**
-     * @return the alternative
-     */
-    public ASTGrammarNode getAlternative() {
-      return this.alternative;
-    }
-
-    /**
-     * @return the ruleReference
-     */
-    public PredicatePair getPredicatePair() {
-      return this.pp;
-    }
   }
 
   /**
@@ -660,7 +637,6 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
    * C = zz ; results in an extra rule C : A | B;
    */
   public List<String> createAntlrCodeForInterface(ProdSymbol interfaceRule) {
-
     clearAntlrCode();
     parserHelper.resetTmpVarNames();
 
@@ -669,18 +645,55 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
     addToCodeSection("\n// ASTInterface ", interfaceRule.getName(), "\n");
     addToCodeSection(getRuleNameForAntlr(interfacename), ":", "\n");
 
-    List<NodePair> alts = new ArrayList<>();
     String del = "";
-    // Get all implementing/extending interfaces
-    boolean left = addAlternatives(interfaceRule, alts);
+    // Get all implementing/extending interfaces (ensure each rule is unique)
+    Map<PredicatePair, Integer> implementing = new LinkedHashMap<>();
+    grammarTransformationMethods.addImplementers(interfaceRule, implementing, grammarInfo);
 
-    // Append sorted alternatives
-    Collections.sort(alts, (p2, p1) ->
-        Integer.valueOf(p1.getPredicatePair().getRuleReference().isPresentPrio() ? p1.getPredicatePair().getRuleReference().getPrio() : "0").compareTo(
-            Integer.valueOf(p2.getPredicatePair().getRuleReference().isPresentPrio() ? p2.getPredicatePair().getRuleReference().getPrio() : "0")));
+    // sort the implementing rules by their priority
+    List<PredicatePair> sortedImplementers = implementing.entrySet().stream()
+            .sorted((o1, o2) -> o2.getValue().compareTo(o1.getValue()))
+            .map(Map.Entry::getKey).toList();
 
-    for (NodePair entry : alts) {
+    // Finally, expand left-recursive rules by inlining their ASTAlts
+    List<InterfaceInliningAlt> alts = new ArrayList<>();
+    boolean left = grammarTransformationMethods.expandAlternatives(sortedImplementers, alts, grammarInfo);
+
+
+    // By first collecting and sorting, then expanding, we are able to avoid duplicates due to multiple inheritance:
+    // Reduce P implements A, InterfaceRule<100>; interface A extends InterfaceRule<999>
+    // to P implements InterfaceRule<100> (priorities are apparently not transitive)
+
+
+    int lastLeftRec = grammarTransformationMethods.countLastLeftRecursive(alts, interfaceRule);
+    // Setup for rule splitting
+    int nThSplit = 1;
+    int splitCount = grammarTransformationMethods.splitCountHeuristic(lastLeftRec, alts.size());
+    int splitCounter = splitCount;
+
+    // Append all alts to the rule
+    for (InterfaceInliningAlt entry : alts) {
+
+      if (splitCounter-- == 0) {
+        // A split occurs (and no left-rec is following):
+        // (we use splits to reduce the size of a method)
+        String name = getRuleNameForAntlr(interfacename) + "__nthsplit_" + nThSplit++;
+        // add an alt to the split-rule
+        addToCodeSection(" | mc_internal_split_next=" + name + ";\n");
+        addToCodeSection("\n// ");
+        // and define new rule
+        addToCodeSection("\n// split of ASTInterface ", interfaceRule.getName(),  "(Due to a large count of implementing productions/alts. lastLeftRec=", Integer.toString(lastLeftRec),") \n");
+        addToCodeSection(name, ":", "\n");
+        del = "";
+        splitCounter = splitCount - 1;
+      }
+
+      parserHelper.setCurInterfaceInliningAlt(entry);
       addToCodeSection(del);
+      String prio = entry.getPredicatePair().getRuleReference().isPresentPrio()
+              ?entry.getPredicatePair().getRuleReference().getPrio() : "a";
+      prio += "(max=" +  implementing.get(entry.getPredicatePair()) + ")";
+      addToCodeSection("/* from rule " + entry.getOriginalName() + " <" + prio + ">*/ ");
 
       // Append semantic predicates for rules
       if (entry.getPredicatePair().getRuleReference().isPresentSemanticpredicateOrAction()) {
@@ -690,14 +703,12 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
         }
       }
 
-      if (entry.getAlternative() instanceof ASTAlt) {
+      if (entry.getAlternative() instanceof ASTAlt alt) {
         // Left recursive rule
-        ASTAlt alt = (ASTAlt) entry.getAlternative();
-
         alt.accept(getTraverser());
       } else {
         if (left && entry.getAlternative() instanceof ASTClassProd && ((ASTClassProd) entry.getAlternative()).getAltList().size() == 1) {
-          ASTAlt alt = ((ASTClassProd) entry.getAlternative()).getAltList().get(0);
+          ASTAlt alt = ((ASTClassProd) entry.getAlternative()).getAltList().getFirst();
           alt.accept(getTraverser());
         } else {
           // normal rule
@@ -709,49 +720,20 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
 
       del = " |\n";
     }
+    parserHelper.setCurInterfaceInliningAlt(null);
 
     addDummyRules(interfacename);
 
     addToCodeSection(";\n");
 
-    tmpNameDict.put(interfaceRule.getAstNode(), new LinkedHashMap<>(parserHelper.getTmpVariables()));
+    ASTProd ast = interfaceRule.getAstNode();
+    ProdInfo prodInfo = prodInfoMap.computeIfAbsent(ast, ProdInfo::new);
+    prodInfo.tmpNames.putAll(parserHelper.getTmpVariables());
+    prodInfo.alternativeToNames.putAll(parserHelper.getInterfaceInliningAltToTmpNames());
 
     return getAntlrCode();
   }
 
-  /**
-   * @param prodSymbol
-   * @param alts
-   */
-  protected boolean addAlternatives(ProdSymbol prodSymbol, List<NodePair> alts) {
-    boolean isLeft = false;
-    List<PredicatePair> interfaces = grammarInfo.getSubRulesForParsing(prodSymbol.getName());
-    for (PredicatePair interf : interfaces) {
-      Optional<ProdSymbol> symbol = grammarEntry.getSpannedScope().resolveProd(interf.getClassname());
-      if (!symbol.isPresent()) {
-        continue;
-      }
-      ProdSymbol superSymbol = symbol.get();
-      if (!prodSymbol.isPresentAstNode()) {
-        continue;
-      }
-      ASTGrammarNode astNode = superSymbol.getAstNode();
-      if (superSymbol.isIsIndirectLeftRecursive()) {
-        isLeft = true;
-        if (superSymbol.isClass()) {
-          List<ASTAlt> localAlts = ((ASTClassProd) astNode).getAltList();
-          for (ASTAlt alt : localAlts) {
-            alts.add(new NodePair(alt, interf));
-          }
-        } else if (prodSymbol.isIsInterface()) {
-          addAlternatives(superSymbol, alts);
-        }
-      } else {
-        alts.add(new NodePair( astNode, interf));
-      }
-    }
-    return isLeft;
-  }
 
   public List<String> getHWParserJavaCode() {
     return grammarInfo.getAdditionalParserJavaCode();
@@ -762,7 +744,11 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
   }
 
   public Map<ASTProd, Map<ASTNode, String>> getTmpNameDict() {
-    return tmpNameDict;
+    return prodInfoMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().tmpNames));
+  }
+
+  public Map<ASTProd, ProdInfo> getProdInfoMap(){
+    return prodInfoMap;
   }
 
   // ----------------------------------------------------------------------------------------------
@@ -815,10 +801,10 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
           Optional<ProdSymbol> rule = MCGrammarSymbolTableHelper
                   .getEnclosingRule(componentSymbol);
           term.setUsageName(ParserGeneratorHelper.getUsageName(ast));
-
-          if (rule.isPresent()) {
-            addActionForKeyword(term, rule.get(), componentSymbol.isIsList(), tmpName + (isRuleIterated?"+=":"="));
-          }
+          
+          rule.ifPresent(
+              prodSymbol -> addActionForKeyword(term, prodSymbol, componentSymbol.isIsList(),
+                  tmpName + (isRuleIterated ? "+=" : "=")));
         }
       }
     }
@@ -838,7 +824,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
    */
   protected void addCodeForRuleReference(ASTNonTerminal ast) {
     Optional<ProdSymbol> scope = MCGrammarSymbolTableHelper.getEnclosingRule(ast);
-    if (!scope.isPresent()) {
+    if (scope.isEmpty()) {
       return;
     }
 
@@ -899,7 +885,7 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
 
   protected void addDummyRules(String rulenameInternal) {
     Optional<ASTAlt> follow2 = parserHelper.getAlternativeForFollowOption(rulenameInternal);
-    if (!follow2.isPresent()) {
+    if (follow2.isEmpty()) {
       return;
     }
     follow2.get().accept(getTraverser());

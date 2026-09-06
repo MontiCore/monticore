@@ -10,7 +10,6 @@ import de.monticore.io.FileReaderWriterMock;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -18,8 +17,8 @@ import java.io.File;
 import java.util.ArrayList;
 
 import static de.monticore.generating.templateengine.TestConstants.TEMPLATE_PACKAGE;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests for {@link GlobalExtensionManagement}.
@@ -47,7 +46,7 @@ public class GlobalExtensionManagementGlobalVarsTest {
     config.setOutputDirectory(new File("dummy"));
     config.setTracing(false);
     tc = new TemplateControllerMock(config, "");
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @AfterAll
@@ -61,19 +60,19 @@ public class GlobalExtensionManagementGlobalVarsTest {
     glex.defineGlobalVar("asd", new String("asd"));
 
     StringBuilder output = tc.include(TEMPLATE_PACKAGE + "GlobalVars");
-    Assertions.assertEquals("testasd", output.toString().replaceAll("\\s+", ""));
+    assertEquals("testasd", output.toString().replaceAll("\\s+", ""));
 
     glex.changeGlobalVar("asd", new String("aaa"));
     output = tc.include(TEMPLATE_PACKAGE + "GlobalVars");
-    Assertions.assertEquals("testaaa", output.toString().replaceAll("\\s+", ""));
+    assertEquals("testaaa", output.toString().replaceAll("\\s+", ""));
 
     glex.defineGlobalVar("liste", new ArrayList<>());
     glex.addToGlobalVar("liste", new String("a"));
     glex.addToGlobalVar("liste", new String("b"));
     glex.addToGlobalVar("liste", new String("c"));
     output = tc.include(TEMPLATE_PACKAGE + "GlobalListVars");
-    Assertions.assertEquals("abc", output.toString().replaceAll("\\s+", ""));
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertEquals("abc", output.toString().replaceAll("\\s+", ""));
+    assertTrue(Log.getFindings().isEmpty());
   }
   
 
@@ -87,8 +86,8 @@ public class GlobalExtensionManagementGlobalVarsTest {
     // override same variable
     String res = ge.generate(TEMPLATE_PACKAGE + "TestVariables4", ast).toString();
 
-    Assertions.assertEquals("A:16B:38C:555", res.replaceAll("\\r\\n|\\r|\\n", ""));
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertEquals("A:16B:38C:555", res.replaceAll("\\r\\n|\\r|\\n", ""));
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

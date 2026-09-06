@@ -37,6 +37,7 @@ packages under the `monticore-grammar/src/main/grammars/` folder hierarchy:
 * `de.monticore.siunit`
 * `de.monticore.statements`
 * `de.monticore.symbols`
+* `de.monticore.temporal`
 * `de.monticore.types`
 
 Additionally, the documentation presents some expression/type related language
@@ -157,6 +158,26 @@ such as `int`, `long`, `double`, `float` as argument.
 
 * Example type definitions: `[km/h]<long>`
 
+### [ISOTemporals.mc4](temporal/ISOTemporals.mc4) for ISO 8601 Temporal Values
+
+Date, time, date-time, and period values based on ISO 8601 can be used as
+structured temporal values. The grammar supports basic and extended notation,
+e.g., `20150401` and `2015-04-01`, as well as calendar dates, ordinal dates,
+week dates, times with optional fractions and UTC offsets, combined date-time
+values, and periods such as `P2Y5M3D` or `PT6H30M`.
+
+* Example temporal values: `2015-04-01T12:30:15Z`, `2015-W14-3`, `P2W`
+
+### [DETemporals.mc4](temporal/DETemporals.mc4) for German Date and Time Formats
+
+Date and time values in formats common in German-speaking regions can be used
+as structured temporal values. This includes numeric dates such as
+`01.04.2015`, alphanumeric dates with German month names such as
+`1. April 2015`, times such as `12:30 Uhr`, and combined date-time values such
+as `01.04.2015 12:30 Uhr`.
+
+* Example temporal values: `01.04.2015`, `1. April 2015`, `12:30 Uhr`
+
 ### [RegExType.mc4](regex/RegExType.mc4) (stable)
 
 * If a variable should not use all kinds of `String`s, its is possible 
@@ -197,14 +218,13 @@ allowing to use the type `List<int>`.
 
 ## Symbols: List of Grammars in package `de.monticore.symbols`
 
-These two grammars do not provide syntax themselves, but 
-characterize important forms of symbols, that will be used
-in the type and the expression grammars to define shared 
-kinds of symbols. 
+These grammars do not provide syntax themselves, but characterize important
+forms of symbols. Especially _BasicSymbols_ and _OOSymbols_ will be used in the
+type and the expression grammars to define shared kinds of symbols. 
 
 ### [BasicSymbols.mc4](symbols/BasicSymbols.mc4) (stable)
 * This grammar defines symbols for *Types* (of all kinds), *Functions*, 
-  *Variables* and *TypeVariables*.
+  *Variables*, *TypeVariables*, and *Stereotypes*.
 * The defined symbols are of general form and can be used in functional, OO
   and other contexts. They do not preculde a concrete syntax and do not yet 
   embody OO specifics.
@@ -221,8 +241,6 @@ kinds of symbols.
 * Remark: This grammar is not intended to define concrete or 
   abstract syntax, but the
   infrastructure for symbols in objectoriented context. 
-
-
 
 ## Expressions: List of Grammars in package `de.monticore.expressions`
 
@@ -244,6 +262,7 @@ Some snipets for operators defined in expressions:
                    Set{.|.}
     SetExp:        .isin.  .in.  union  intersect  setand  setor
                    { item | specifier }
+    StreamExp:     <.>  .:.  Tick:.  Abs:.
     OptionalOps:   ?:  ?<=  ?>=  ?<  ?>  ?==  ?!=  ?~~   ?!~ 
     LambdaExp:     i->2*i   (a,b)->a+b
     TupleExp:      (.,.)  (.,.,.,.)
@@ -299,6 +318,11 @@ as they allow math oriented style of specification.
   so it might be interesting to include them in a high level programming 
   language (see e.g. Haskell)
 
+### [StreamExpressions.mc4](expressions/StreamExpressions.mc4) (stable)
+* This grammar defines stream expressions like to create and concat streams,
+  as well as append elements to the front of the stream.
+* Further operations on streams are offered by inclusion of
+  corresponding symbols.
 
 ### [OptionalOperators.mc4](ocl/OptionalOperators.mc4) (stable)
 * This grammar defines nine operators dealing with optional values, e.g.
@@ -547,8 +571,8 @@ grammars:
 
 * [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
 * [MontiCore documentation](https://www.monticore.de/)
-* [**List of languages**](https://github.com/MontiCore/monticore/blob/opendev/docs/Languages.md)
-* [**MontiCore Core Grammar Library**](https://github.com/MontiCore/monticore/blob/opendev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
-* [Best Practices](https://github.com/MontiCore/monticore/blob/opendev/docs/BestPractices.md)
+* [**List of languages**](../../../../../../docs/Languages.md)
+* [**MontiCore Core Grammar Library**](Grammars.md)
+* [Best Practices](../../../../../../docs/BestPractices.md)
 * [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
 * [Licence definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)

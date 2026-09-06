@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+description = 'Experiments: runtimeOnly'
+
+dependencies {
+  implementation project(path: ':monticore-runtime')
+}
+
+/*
+ * This test project builds a grammar only using the runtime.
+ * This ensures that the generator does not require an implicit grammar dependency
+ */

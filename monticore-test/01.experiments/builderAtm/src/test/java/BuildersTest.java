@@ -2,26 +2,22 @@
 
 import automata.AutomataMill;
 import automata._ast.*;
+import de.monticore.runtime.junit.MCAssertions;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.antlr.v4.runtime.RecognitionException;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@TestWithMCLanguage(AutomataMill.class)
 public class BuildersTest {
 
-  @Before
-  public void setUp() throws RecognitionException, IOException {
-    LogStub.init();
-    Log.enableFailQuick(false);
-    Log.getFindings().clear();
-  }
 
   // tests whether handcoded subclass of Builder is used
   // (which should be included upon generation)
@@ -33,7 +29,7 @@ public class BuildersTest {
         .setInput("xxxx")
         .setTo("setByGenBuilder").build();
     assertEquals("xxxxSuf2", transition.getInput());
-    assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
 
   // tests whether handcoded subclass of Builder is used
@@ -51,7 +47,7 @@ public class BuildersTest {
     ASTActTransition transition = b.build();
     assertEquals("xxxx", transition.getInput());
     assertEquals("Boom", transition.getAction());
-    assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
 
   @Test
@@ -60,7 +56,7 @@ public class BuildersTest {
         .automatonBuilder()
         .setName("setByGeneratedBuilder").build();
     assertEquals("setByGeneratedBuilder", aut.getName());
-    assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
 
   // tests whether handcoded subclass of Builder is used
@@ -73,7 +69,7 @@ public class BuildersTest {
         .setFinal(true)
         .setName("state1").build();
     assertEquals(state.getName(), "state1Suf1");
-    assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
 
   // tests whether handcoded subclass of Builder is used
@@ -87,10 +83,10 @@ public class BuildersTest {
     b.setEntry("Blubb");
     b.setName("state1");
     ASTActState state = b.build();
-    assertEquals(state.isFinal(), true);
+    assertTrue(state.isFinal());
     assertEquals(state.getName(), "state1Suf1");
     assertEquals(state.getEntry(), "Blubb");
-    assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
 
   @Test
@@ -100,9 +96,9 @@ public class BuildersTest {
         .setName("x2")
         .setFinal(true)
         .setName("state1");
-    assertEquals(sb.isFinal(), true);
+    assertTrue(sb.isFinal());
     assertEquals(sb.getName(), "state1Suf1");
-    assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
 
 }

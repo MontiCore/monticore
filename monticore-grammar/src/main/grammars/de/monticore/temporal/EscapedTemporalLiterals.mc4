@@ -1,0 +1,22 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.temporal;
+
+/* Alpha-version: This is intended to become a MontiCore stable grammar. */
+
+/**
+ * This grammar makes arbitrary temporal values usable in expressions by defining an escaping rule.
+ *
+ * In short, any temporal value t can be turned into an EscapedTemporalLiteral by writing d"t".
+ */
+component grammar EscapedTemporalLiterals extends de.monticore.temporal.TemporalBasis {
+
+  /**
+   * The only production of EscapedTemporalLiterals, making it possible to use any Instant or Period
+   * as a Literal (and thus within a Expression via LiteralExpression).
+   *
+   * Normally, we would split this production into multiple ones to avoid the explicit optional.
+   * However, that would cause ambiguity during the parse.
+   */
+  EscapedTemporalLiteral implements Literal = "d\"" (Instant | Period) "\"";
+
+}

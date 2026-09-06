@@ -9,7 +9,7 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
@@ -25,7 +25,7 @@ public class MandatoryMutatorDecorator extends AbstractCreator<ASTCDAttribute, L
 
   @Override
   public List<ASTCDMethod> decorate(final ASTCDAttribute ast) {
-    return new ArrayList<>(Arrays.asList(createSetter(ast)));
+    return new ArrayList<>(Collections.singletonList(createSetter(ast)));
   }
 
   protected ASTCDMethod createSetter(final ASTCDAttribute ast) {

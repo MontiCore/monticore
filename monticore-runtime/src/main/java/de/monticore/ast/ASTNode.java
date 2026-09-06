@@ -2,8 +2,6 @@
 
 package de.monticore.ast;
 
-import de.monticore.interpreter.ModelInterpreter;
-import de.monticore.interpreter.Value;
 import de.monticore.symboltable.IScope;
 import de.monticore.visitor.ITraverser;
 import de.se_rwth.commons.SourcePosition;
@@ -21,7 +19,7 @@ public interface ASTNode {
 
   IScope getEnclosingScope();
 
-  default public boolean equalAttributes(Object o) {
+  default boolean equalAttributes(Object o) {
     if (o == null) {
       return false;
     }
@@ -30,7 +28,7 @@ public interface ASTNode {
             + o.getClass().getName());
   }
   
-  default public boolean equalsWithComments(Object o) {
+  default boolean equalsWithComments(Object o) {
     if (o == null) {
       return false;
     }
@@ -41,10 +39,9 @@ public interface ASTNode {
   
   /**
    * Compare this object to another Object. Do not take comments into account. This method returns
-   * the same value as <tt>deepEquals(Object o, boolean
-   * forceSameOrder)</tt> method when using the default value for forceSameOrder of each Node.
+   * the same value as {@link ASTNode#deepEquals(Object, boolean)} method when using the default value for forceSameOrder of each Node.
    */
-  default public boolean deepEquals(Object o) {
+  default boolean deepEquals(Object o) {
     if (o == null) {
       return false;
     }
@@ -57,9 +54,9 @@ public interface ASTNode {
    * Compare this object to another Object. Take comments into account.
    *
    * @param o the object to compare this node to
-   * stereotype <tt>&lt;&lt;unordered&gt;&gt;</tt> in the grammar.
+   * @return whether both objects deep-equal with comments
    */
-  default public boolean deepEqualsWithComments(Object o) {
+  default boolean deepEqualsWithComments(Object o) {
     throw new CompareNotSupportedException(
         "0xA4044 Method deepEqualsWithComments is not implemented properly in class: "
             + o.getClass().getName());
@@ -70,9 +67,10 @@ public interface ASTNode {
    *
    * @param o the object to compare this node to
    * @param forceSameOrder consider the order in ancestor lists, even if these lists are of
-   * stereotype <tt>&lt;&lt;unordered&gt;&gt;</tt> in the grammar.
+   * stereotype unordered in the grammar.
+   * @return whether both objects deep-equal
    */
-  default public boolean deepEquals(Object o, boolean forceSameOrder) {
+  default boolean deepEquals(Object o, boolean forceSameOrder) {
     if (o == null) {
       return false;
     }
@@ -83,10 +81,10 @@ public interface ASTNode {
   
   /**
    * Compare this object to another Object. Take comments into account. This method returns the same
-   * value as <tt>deepEqualsWithComment(Object o, boolean forceSameOrder)</tt> method when using the
+   * value as {@link ASTNode#deepEqualsWithComments(Object, boolean)} method when using the
    * default value for forceSameOrder of each Node.
    */
-  default public boolean deepEqualsWithComments(Object o, boolean forceSameOrder) {
+  default boolean deepEqualsWithComments(Object o, boolean forceSameOrder) {
     if (o == null) {
       return false;
     }
@@ -101,7 +99,29 @@ public interface ASTNode {
    * @return Clone of current ASTNode with a parent which is equal to null
    */
   ASTNode deepClone();
-  
+
+  /**
+   * Replace each (direct) child with its replacement.
+   * <p>
+   * The child nodes are compared using object identity.
+   * If the same child node instance has multiple occurrences,
+   * all are replaced.
+   * <p>
+   * It is the callers responsibility to ensure that the replacement node
+   * is of a compatible type.
+   *
+   * @param currentChild the child node to be replaced
+   * @param replacement  the node to replace the current node with
+   */
+  default void replaceChild(ASTNode currentChild, ASTNode replacement) {
+    // only have a default implementation to support legacy versions
+    // It is expected that this method
+    // is overridden in the generated subclasses
+    throw new IllegalStateException(
+        "Expected a (generated) implementation for replaceChild()"
+    );
+  }
+
   /**
    * Returns the end position of this ASTNode
    *
@@ -200,7 +220,7 @@ public interface ASTNode {
   /**
    * Returns the Iterator for the preComment list
    *
-   * @return Iterator<Comment> to iterate over the preComment list
+   * @return Iterator of comments to iterate over the preComment list
    */
   Iterator<Comment> iterator_PreComments();
   
@@ -254,21 +274,21 @@ public interface ASTNode {
   /**
    * Returns the Spliterator of the preComment list
    *
-   * @return Spliterator<Comment> of the preComment list
+   * @return Spliterator of the preComment list
    */
   Spliterator<Comment> spliterator_PreComments();
   
   /**
    * Returns the Steam of the preComment list
    *
-   * @return Steam<Comment> of the preComment list
+   * @return Steam of the preComment list
    */
   Stream<Comment> stream_PreComments();
   
   /**
    * Returns the parallel Steam of the preComment list
    *
-   * @return Steam<Comment> parallel Stream of the preComment list
+   * @return parallel Stream of the preComment list
    */
   Stream<Comment> parallelStream_PreComments();
   
@@ -338,7 +358,7 @@ public interface ASTNode {
   /**
    * Returns the ListIterator of the preComment list
    *
-   * @return ListIterator<Comment> which iterates over the list of preComments
+   * @return ListIterator which iterates over the list of preComments
    */
   ListIterator<Comment> listIterator_PreComments();
   
@@ -346,7 +366,7 @@ public interface ASTNode {
    * Returns the new preComment list without the removed element at the given index
    *
    * @param index where the element should be removed
-   * @return List<Comment> where the comment at the index is removed
+   * @return the Comment previously at the specified position
    */
   Comment remove_PreComment(int index);
   
@@ -355,7 +375,7 @@ public interface ASTNode {
    *
    * @param start index of the sublist
    * @param end index of the sublist
-   * @return ListIterator<Comment> which iterates over the list of preComments
+   * @return ListIterator which iterates over the list of preComments
    */
   List<Comment> subList_PreComments(int start, int end);
   
@@ -384,7 +404,7 @@ public interface ASTNode {
   /**
    * returns the complete preComments list
    *
-   * @return List<Comment> that is contained in the preComment list at the moment
+   * @return List that is contained in the preComment list at the moment
    */
   List<Comment> get_PreCommentList();
   
@@ -392,7 +412,7 @@ public interface ASTNode {
    * returns a ListIterator of the type Comment for the preComment list
    *
    * @param index of the iterator
-   * @return ListIterator<Comment> of a special index
+   * @return ListIterator of a special index
    */
   ListIterator<Comment> listIterator_PreComments(int index);
   
@@ -463,7 +483,7 @@ public interface ASTNode {
   /**
    * Returns the Iterator for the postComment list
    *
-   * @return Iterator<Comment> to iterate over the postComment list
+   * @return Iterator to iterate over the postComment list
    */
   Iterator<Comment> iterator_PostComments();
   
@@ -517,21 +537,21 @@ public interface ASTNode {
   /**
    * Returns the Spliterator of the postComment list
    *
-   * @return Spliterator<Comment> of the postComment list
+   * @return Spliterator of the postComment list
    */
   Spliterator<Comment> spliterator_PostComments();
   
   /**
    * Returns the Steam of the postComment list
    *
-   * @return Steam<Comment> of the postComment list
+   * @return Steam of the postComment list
    */
   Stream<Comment> stream_PostComments();
   
   /**
    * Returns the parallel Steam of the postComment list
    *
-   * @return Steam<Comment> parallel Stream of the postComment list
+   * @return Steam parallel Stream of the postComment list
    */
   Stream<Comment> parallelStream_PostComments();
   
@@ -601,7 +621,7 @@ public interface ASTNode {
   /**
    * Returns the ListIterator of the postComment list
    *
-   * @return ListIterator<Comment> which iterates over the list of postComments
+   * @return ListIterator which iterates over the list of postComments
    */
   ListIterator<Comment> listIterator_PostComments();
   
@@ -609,7 +629,7 @@ public interface ASTNode {
    * Returns the new postComment list without the removed element at the given index
    *
    * @param index where the element should be removed
-   * @return List<Comment> where the comment at the index is removed
+   * @return List where the comment at the index is removed
    */
   Comment remove_PostComment(int index);
   
@@ -618,7 +638,7 @@ public interface ASTNode {
    *
    * @param start index of the sublist
    * @param end index of the sublist
-   * @return ListIterator<Comment> which iterates over the list of postComments
+   * @return ListIterator which iterates over the list of postComments
    */
   List<Comment> subList_PostComments(int start, int end);
   
@@ -647,7 +667,7 @@ public interface ASTNode {
   /**
    * returns the complete postComments list
    *
-   * @return List<Comment> that is contained in the postComment list at the moment
+   * @return List that is contained in the postComment list at the moment
    */
   List<Comment> get_PostCommentList();
   
@@ -655,7 +675,7 @@ public interface ASTNode {
    * returns a ListIterator of the type Comment for the postComment list
    *
    * @param index of the iterator
-   * @return ListIterator<Comment> of a special index
+   * @return ListIterator of a special index
    */
   ListIterator<Comment> listIterator_PostComments(int index);
   
@@ -679,7 +699,4 @@ public interface ASTNode {
     visitor.handle(this);
   }
 
-  default Value evaluate(ModelInterpreter interpreter) {
-    return interpreter.interpret(this);
-  }
 }

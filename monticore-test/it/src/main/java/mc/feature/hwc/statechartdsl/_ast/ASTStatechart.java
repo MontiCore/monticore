@@ -2,12 +2,6 @@
 
 package mc.feature.hwc.statechartdsl._ast;
 
-import java.util.List;
-
-import mc.feature.hwc.statechartdsl._ast.ASTCode;
-import mc.feature.hwc.statechartdsl._ast.ASTState;
-import mc.feature.hwc.statechartdsl._ast.ASTTransition;
-
 public class ASTStatechart extends mc.feature.hwc.statechartdsl._ast.ASTStatechartTOP {
   
   protected ASTStatechart()

@@ -1,10 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.Test;
 
-import static org.junit.Assert.*;
-import de.se_rwth.commons.logging.Log;
+import de.monticore.runtime.junit.MCAssertions;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class PingPongTest {
   
@@ -16,56 +16,56 @@ public class PingPongTest {
     PingPong pingpong = new PingPong();
     
     // assert we are in the initial state
-    assertTrue(String.format(message,"NoGame"),pingpong.currentState instanceof NoGameState);
+    assertInstanceOf(NoGameState.class, pingpong.currentState, String.format(message, "NoGame"));
     
     // trigger startGame
     pingpong.startGame();
     
     // assert NoGame handled 1 event
-    assertEquals(String.format(messageHandle,"NoGame"),1, PingPong.getNoGameState().count);
+    assertEquals(1, PingPong.getNoGameState().count, String.format(messageHandle,"NoGame"));
     
     // assert we are in state Ping
-    assertTrue(String.format(message,"Ping"), pingpong.currentState instanceof PingState);
+    assertInstanceOf(PingState.class, pingpong.currentState, String.format(message, "Ping"));
     
     // trigger returnBall
     pingpong.returnBall();
   
     // assert Ping handled 1 event
-    assertEquals(String.format(messageHandle,"Ping"),1, PingPong.getPingState().count);
+    assertEquals(1, PingPong.getPingState().count, String.format(messageHandle,"Ping"));
     
     // assert we are in state Pong
-    assertTrue(String.format(message,"Pong"), pingpong.currentState instanceof PongState);
+    assertInstanceOf(PongState.class, pingpong.currentState, String.format(message, "Pong"));
     
     // trigger returnBall
     pingpong.returnBall();
   
     // assert Pong handled 1 event
-    assertEquals(String.format(messageHandle,"Pong"),1, PingPong.getPongState().count);
+    assertEquals(1, PingPong.getPongState().count, String.format(messageHandle,"Pong"));
     
     // assert we are in state Ping again
-    assertTrue(String.format(message,"Ping"), pingpong.currentState instanceof PingState);
+    assertInstanceOf(PingState.class, pingpong.currentState, String.format(message, "Ping"));
     
     // trigger startGame
     pingpong.startGame();
   
     // assert stimulus was ignored
-    assertEquals(String.format(messageHandle,"Ping"),1, PingPong.getPingState().count);
-    assertEquals(String.format(messageHandle,"Pong"),1, PingPong.getPongState().count);
-    assertEquals(String.format(messageHandle,"NoGame"),1, PingPong.getNoGameState().count);
+    assertEquals(1, PingPong.getPingState().count, String.format(messageHandle,"Ping"));
+    assertEquals(1, PingPong.getPongState().count, String.format(messageHandle,"Pong"));
+    assertEquals(1, PingPong.getNoGameState().count, String.format(messageHandle,"NoGame"));
     
     // assert we are still in state Ping (wrong input should be ignored)
-    assertTrue(String.format(message,"Ping"), pingpong.currentState instanceof PingState);
+    assertInstanceOf(PingState.class, pingpong.currentState, String.format(message, "Ping"));
     
     // trigger stopGame
     pingpong.stopGame();
   
     // assert Ping handled 2 events
-    assertEquals(String.format(messageHandle,"Ping"),2, PingPong.getPingState().count);
+    assertEquals(2, PingPong.getPingState().count, String.format(messageHandle,"Ping"));
     
     // assert we are in state NoGame
-    assertTrue(String.format(message,"NoGame"), pingpong.currentState instanceof NoGameState);
+    assertInstanceOf(NoGameState.class, pingpong.currentState, String.format(message, "NoGame"));
   
-    assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
   
 }

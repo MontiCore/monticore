@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types3.generics.util;
 
 import com.google.common.collect.Maps;
@@ -9,7 +10,6 @@ import de.monticore.types.check.SymTypeOfFunction;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types.check.SymTypeOfWildcard;
 import de.monticore.types.check.SymTypeVariable;
-import de.monticore.types3.SymTypeRelations;
 import de.monticore.types3.generics.TypeParameterRelations;
 import de.se_rwth.commons.logging.Log;
 
@@ -79,7 +79,7 @@ public class WildcardCapturer {
    * as they have no symbols to get type parameters from.
    * E.g.,
    * {@code List<? extends Person> -> Person f = (xs) -> xs.get(0);}
-   * the lambda function "is declared with the type" T -> R,
+   * the lambda function "is declared with the type" {@code T -> R},
    * there T and R are type parameters,
    * and, according to Java Spec 20 15.27.3 the ground target type of
    * {@code List<Person> -> Person}
@@ -97,14 +97,14 @@ public class WildcardCapturer {
     if (func.hasSymbol()) {
       result = SymTypeExpressionFactory.createFunction(
           func.getSymbol(),
-          capturedTypes.get(0),
+          capturedTypes.getFirst(),
           capturedTypes.subList(1, capturedTypes.size()),
           false
       );
     }
     else {
       result = SymTypeExpressionFactory.createFunction(
-          capturedTypes.get(0),
+          capturedTypes.getFirst(),
           capturedTypes.subList(1, capturedTypes.size())
       );
     }
@@ -192,7 +192,7 @@ public class WildcardCapturer {
             typeArgNoWCs.stream(),
             Maps::immutableEntry
         )
-        .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue()));
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     List<SymTypeExpression> typeArgNoParamRef = typeArgNoWCs.stream()
         .map(t -> TypeParameterRelations.replaceTypeVariables(t, replaceMap))
         .collect(Collectors.toList());
@@ -202,7 +202,7 @@ public class WildcardCapturer {
 
   protected List<SymTypeVariable> getTypeParameters(SymTypeOfGenerics gen) {
     SymTypeOfGenerics declaredType =
-        SymTypeExpressionFactory.createGenerics(gen.getTypeInfo());
+        SymTypeExpressionFactory.createGenericsDeclaredType(gen.getTypeInfo());
     List<SymTypeVariable> typeParameters = declaredType.getArgumentList()
         .stream().map(SymTypeExpression::asTypeVariable)
         .collect(Collectors.toList());

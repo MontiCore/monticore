@@ -1,11 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.testcases.automaton.transformation.rule.translation;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 public class AutomatonRule2ODToolTest {
 
-  @Before
+  @BeforeEach
   public void setUp() {
 
   }

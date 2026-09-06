@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+grammar ReplaceChildTest extends de.monticore.MCBasics {
+
+  A = B C? D* end:B;
+  B = "B";
+  C = "C";
+  D = "D";
+
+}

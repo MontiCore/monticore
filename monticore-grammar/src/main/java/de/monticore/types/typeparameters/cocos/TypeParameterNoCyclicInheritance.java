@@ -15,7 +15,7 @@ import static de.monticore.types.check.SymTypeExpressionFactory.createTypeVariab
 
 /**
  * Finds instances of circular inheritance,
- * e.g., <T extends U, U extends Person & T>
+ * e.g., {@code <T extends U, U extends Person & T>}
  */
 public class TypeParameterNoCyclicInheritance
     implements TypeParametersASTTypeParameterCoCo {
@@ -31,7 +31,7 @@ public class TypeParameterNoCyclicInheritance
       ASTTypeParameter node
   ) {
     List<SymTypeExpression> superTypes = SymTypeRelations.getNominalSuperTypes(
-        currentInheritanceList.get(currentInheritanceList.size() - 1)
+        currentInheritanceList.getLast()
     );
     for (SymTypeExpression superType : superTypes) {
       if (currentInheritanceList.stream().anyMatch(superType::deepEquals)) {
@@ -45,8 +45,7 @@ public class TypeParameterNoCyclicInheritance
         return false;
       }
       else {
-        List<SymTypeExpression> nextInheritanceList = new ArrayList<>();
-        nextInheritanceList.addAll(currentInheritanceList);
+        List<SymTypeExpression> nextInheritanceList = new ArrayList<>(currentInheritanceList);
         nextInheritanceList.add(superType);
         if (!checkForCircularInheritance(nextInheritanceList, node)) {
           return false;

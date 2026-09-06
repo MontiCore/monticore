@@ -4,16 +4,16 @@ package de.monticore.tf.odrules;
 import de.monticore.tf.odrules._ast.ASTODLink;
 import de.monticore.tf.odrules._ast.ASTODObject;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 
 public class ODBuildOrder {
 
-    public class ObjectTrees {
-        private HashMap<String, ObjectNode> nodes = new HashMap<>();
+    public static class ObjectTrees {
+        private LinkedHashMap<String, ObjectNode> nodes = new LinkedHashMap<>();
 
-        public class ObjectNode {
+        public static class ObjectNode {
             private ObjectNode parent;
             private List<ObjectNode> childs = new LinkedList<>();
             private ASTODObject object;
@@ -64,8 +64,8 @@ public class ODBuildOrder {
         calculateBuildOrder();
     }
 
-    public HashMap<ASTODObject, List<ASTODLink>> getBuildAttrs() {
-        HashMap<ASTODObject, List<ASTODLink>> buildAttrs = new HashMap<>();
+    public LinkedHashMap<ASTODObject, List<ASTODLink>> getBuildAttrs() {
+        LinkedHashMap<ASTODObject, List<ASTODLink>> buildAttrs = new LinkedHashMap<>();
 
         for(ASTODObject o : buildOrder) {
             buildAttrs.put(o, trees.nodes.get(o.getName()).attrs);

@@ -5,21 +5,19 @@ import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import mc.testcases.automaton._ast.ASTAutomaton;
 import mc.testcases.automaton._parser.AutomatonParser;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MoveSubstateTest {
   
   ASTAutomaton aut;
 
-  @Before
+  @BeforeEach
   public void setUp() throws IOException {
     String inputFile = "src/main/models/automaton/AutomatonTwoStatesAndSubstate.aut";
     AutomatonParser parser = new AutomatonParser();

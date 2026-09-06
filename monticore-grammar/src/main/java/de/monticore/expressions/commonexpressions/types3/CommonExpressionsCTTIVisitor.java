@@ -8,15 +8,13 @@ import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfFunction;
+import de.monticore.types3.SymTypeRelations;
 import de.monticore.types3.generics.TypeParameterRelations;
 import de.monticore.types3.generics.context.InferenceContext;
-import de.monticore.types3.generics.context.InferenceResult;
 import de.monticore.types3.generics.context.InferenceVisitorMode;
 import de.monticore.types3.generics.util.CompileTimeTypeCalculator;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,72 +26,34 @@ public class CommonExpressionsCTTIVisitor
 
   @Override
   public void handle(ASTConditionalExpression expr) {
-    InferenceContext infCtx =
-        getInferenceContext4Ast().getContextOfExpression(expr);
-    getInferenceContext4Ast().setContextOfExpression(
-        expr.getTrueExpression(), infCtx.deepClone()
+    CompileTimeTypeCalculator.handlePassThroughExpression(expr,
+        List.of(expr.getTrueExpression(), expr.getFalseExpression()),
+        () -> {
+          visit(expr);
+          traverse(expr);
+          endVisit(expr);
+        },
+        getTraverser(), getType4Ast(), getInferenceContext4Ast()
     );
-    getInferenceContext4Ast().setContextOfExpression(
-        expr.getFalseExpression(), infCtx.deepClone()
-    );
-
-    List<InferenceResult> infRess = new ArrayList<>();
-    if (getInferenceContext4Ast().getContextOfExpression(expr)
-        .getVisitorMode() != InferenceVisitorMode.TYPE_CHECKING
-    ) {
-      expr.getTrueExpression().accept(getTraverser());
-      expr.getFalseExpression().accept(getTraverser());
-      infRess.addAll(getInferenceContext4Ast()
-          .getContextOfExpression(expr.getTrueExpression())
-          .getInferenceResults()
-      );
-      infRess.addAll(getInferenceContext4Ast()
-          .getContextOfExpression(expr.getFalseExpression())
-          .getInferenceResults()
-      );
-    }
-
-    if (infRess.isEmpty()) {
-      visit(expr);
-      traverse(expr);
-      endVisit(expr);
-    }
-    else {
-      getInferenceContext4Ast().getContextOfExpression(expr)
-          .setInferredTypes(infRess);
-    }
   }
 
   @Override
   public void handle(ASTBracketExpression expr) {
-    InferenceContext infCtx = getInferenceContext4Ast().getContextOfExpression(expr);
-    getInferenceContext4Ast().setContextOfExpression(
-        expr.getExpression(), infCtx
+    CompileTimeTypeCalculator.handlePassThroughExpression(expr,
+        List.of(expr.getExpression()),
+        () -> {
+          visit(expr);
+          traverse(expr);
+          endVisit(expr);
+        },
+        getTraverser(), getType4Ast(), getInferenceContext4Ast()
     );
-
-    List<InferenceResult> infRess = Collections.emptyList();
-    if (infCtx.getVisitorMode() != InferenceVisitorMode.TYPE_CHECKING) {
-      expr.getExpression().accept(getTraverser());
-      infRess = getInferenceContext4Ast()
-          .getContextOfExpression(expr.getExpression()).getInferenceResults();
-    }
-
-    if (infRess.isEmpty()) {
-      visit(expr);
-      traverse(expr);
-      endVisit(expr);
-    }
-    else {
-      getInferenceContext4Ast().getContextOfExpression(expr)
-          .setInferredTypes(infRess);
-    }
   }
 
   @Override
   public void handle(ASTCallExpression expr) {
     InferenceContext callCtx = getInferenceContext4Ast()
         .getContextOfExpression(expr);
-    InferenceVisitorMode mode = callCtx.getVisitorMode();
     boolean hasTargetType = callCtx.hasTargetType();
     // edge case: function returning another function: getFunc()(1);
     if (!hasTargetType) {
@@ -103,17 +63,20 @@ public class CommonExpressionsCTTIVisitor
       Optional<SymTypeOfFunction> targetFunc = callCtx
           .getPartialFunctionInfo()
           .getAsFunctionIfComplete();
-      if (targetFunc.isPresent()) {
-        getInferenceContext4Ast().getContextOfExpression(expr)
-            .setTargetType(targetFunc.get());
-      }
+      targetFunc.ifPresent(symTypeOfFunction ->
+          getInferenceContext4Ast().getContextOfExpression(expr)
+              .setTargetType(symTypeOfFunction)
+      );
     }
 
     visitForInference(expr);
     CompileTimeTypeCalculator.handleCall(expr, expr.getExpression(),
         expr.getArguments().getExpressionList(),
         getTraverser(), getType4Ast(), getInferenceContext4Ast());
-    if (getType4Ast().hasPartialTypeOfExpression(expr)) {
+    if (getType4Ast().hasPartialTypeOfExpression(expr) &&
+        !SymTypeRelations.normalize(getType4Ast().getPartialTypeOfExpr(expr))
+            .isObscureType()
+    ) {
       endVisit(expr);
     }
   }

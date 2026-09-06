@@ -1,8 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -11,9 +8,10 @@ import automata._ast.ASTAutomaton;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Main class for the some Demonstration to Parse
@@ -44,18 +42,18 @@ public class CustomTemplateTest {
     // expecting two warnings of the same type, once for instantiating the mill
     // and once for instantiating the ASTAutomaton node
     List<Finding> findings = Log.getFindings();
-    Assertions.assertEquals(2, findings.size());
-    Assertions.assertEquals(MSG, findings.get(0).getMsg());
-    Assertions.assertEquals(MSG, findings.get(1).getMsg());
+    assertEquals(2, findings.size());
+    assertEquals(MSG, findings.get(0).getMsg());
+    assertEquals(MSG, findings.get(1).getMsg());
 
     // the config template additionally configures overriding the specific
     // "sizeStates" method of the automaton to always return 10.
     // Thus, we expect the corresponding method to return 10, while the
     // actual state list is empty
-    Assertions.assertEquals(0, aut.getStateList().size()); // actual state list size
-    Assertions.assertEquals(10, aut.sizeStates());         // modified state list size
+    assertEquals(0, aut.getStateList().size()); // actual state list size
+    assertEquals(10, aut.sizeStates());         // modified state list size
 
-    Assertions.assertEquals(0, aut.count());
+    assertEquals(0, aut.count());
   }
 
 }

@@ -1,16 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
-
 package de.monticore.codegen.cd2java._symboltable.scopesgenitor;
 
 import com.google.common.collect.Lists;
+import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDConstructor;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
-import de.monticore.cdbasis._ast.ASTCDAttribute;
-import de.monticore.cdbasis._ast.ASTCDClass;
-import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.cdbasis._ast.ASTCDType;
+import de.monticore.cdbasis._ast.*;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
@@ -19,6 +16,7 @@ import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardTypeArgument;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
@@ -27,7 +25,6 @@ import de.se_rwth.commons.Names;
 
 import java.util.*;
 import java.util.stream.Collectors;
-
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 import static de.monticore.cd.codegen.CD2JavaTemplates.VALUE;
 import static de.monticore.cd.facade.CDModifier.*;
@@ -104,6 +101,9 @@ public class ScopesGenitorDecorator extends AbstractCreator<ASTCDCompilationUnit
           .addAllCDMembers(createScopeClassMethods(onlyScopeProds, scopeInterface))
           .addCDMember(createAddToScopeStackMethod())
           .build();
+
+      // monticore-generator/src/main/java/de/monticore/codegen/cd2java/_symboltable/scopesgenitor/ScopesGenitorDecorator.java
+      CD4C.getInstance().addImport(scopesGenitor, "com.google.common.base.Preconditions");
       return Optional.ofNullable(scopesGenitor);
     }
     return Optional.empty();
@@ -168,7 +168,7 @@ public class ScopesGenitorDecorator extends AbstractCreator<ASTCDCompilationUnit
     ASTCDMethod createFromAST = getCDMethodFacade().createMethod(PUBLIC.build(),
         "setScopeStack", dequeParam);
     this.replaceTemplate(EMPTY_BODY, createFromAST, new StringHookPoint(
-        "this." + SCOPE_STACK_VAR + " = Log.errorIfNull(("
+        "this." + SCOPE_STACK_VAR + " = Preconditions.checkNotNull(("
       + CD4CodeMill.prettyPrint(dequeType, false) + ")" + SCOPE_STACK_VAR + ");"));
     return createFromAST;
   }
@@ -208,7 +208,7 @@ public class ScopesGenitorDecorator extends AbstractCreator<ASTCDCompilationUnit
     Optional<ASTCDAttribute> attr = symbolClass.getCDAttributeList().stream().filter(a -> NAME_VAR.equals(a.getName())).findFirst();
     boolean hasOptionalName = attr.isPresent() && DecorationHelper.getInstance().isOptional(attr.get().getMCType());
     // visit method
-    methodList.add(createSymbolVisitMethod(astFullName, symbolFullName, simpleName, hasOptionalName, symbolClass.getModifier()));
+    methodList.add(createSymbolVisitMethod(astFullName, symbolFullName, simpleName, hasOptionalName, symbolClass));
 
     // endVisit method
     methodList.add(createSymbolEndVisitMethod(astFullName, symbolClass, simpleName, symbolFullName, hasOptionalName));
@@ -218,11 +218,14 @@ public class ScopesGenitorDecorator extends AbstractCreator<ASTCDCompilationUnit
 
 
   protected ASTCDMethod createSymbolVisitMethod(String astFullName, String symbolFullName, String simpleName,
-                                                boolean hasOptionalName, ASTModifier symbolModifier) {
+                                                boolean hasOptionalName, ASTCDType symbolClass ) {
+    ASTModifier symbolModifier = symbolClass.getModifier();
+    ResolveUpperArtifactAttributes upperAttributes = resolveUpperArtifactAttributes(symbolClass);
+
     boolean isSpanningSymbol = symbolTableService.hasScopeStereotype(symbolModifier) || symbolTableService.hasInheritedScopeStereotype(symbolModifier);
-    boolean isOrdered = symbolTableService.hasOrderedStereotype(symbolModifier);
-    boolean isShadowing = symbolTableService.hasShadowingStereotype(symbolModifier);
-    boolean isNonExporting = symbolTableService.hasNonExportingStereotype(symbolModifier);
+    boolean isOrdered = symbolTableService.hasOrderedStereotype(symbolModifier) || upperAttributes.ordered;
+    boolean isShadowing = symbolTableService.hasShadowingStereotype(symbolModifier) || upperAttributes.shadowing;
+    boolean isNonExporting = symbolTableService.hasNonExportingStereotype(symbolModifier) || upperAttributes.nonExporting;
     String scopeInterface = symbolTableService.getScopeInterfaceFullName();
     String errorCode = symbolTableService.getGeneratedErrorCode(symbolFullName + VISIT);
     String millFullName = symbolTableService.getMillFullName();
@@ -232,6 +235,22 @@ public class ScopesGenitorDecorator extends AbstractCreator<ASTCDCompilationUnit
         TEMPLATE_PATH + "Visit4SSC", symbolFullName, simpleSymbolName, simpleName, scopeInterface, hasOptionalName,
             isSpanningSymbol, isShadowing, isNonExporting, isOrdered, errorCode, millFullName));
     return visitMethod;
+  }
+
+  protected ResolveUpperArtifactAttributes resolveUpperArtifactAttributes(ASTCDType symbolClass) {
+      boolean shadowing = false;
+      boolean nonExporting = false;
+      boolean ordered = false;
+      List<TypeSymbol> superCDsTransitive = symbolTableService.getAllSuperClassesTransitive(symbolClass);
+      for (TypeSymbol typeSymbol : superCDsTransitive) {
+          if (typeSymbol != null && typeSymbol.isPresentAstNode()) {
+              ASTCDType astcdType = (ASTCDType) typeSymbol.getAstNode();
+              shadowing = shadowing || symbolTableService.hasShadowingStereotype(astcdType.getModifier());
+              nonExporting = nonExporting || symbolTableService.hasNonExportingStereotype(astcdType.getModifier());
+              ordered = ordered || symbolTableService.hasOrderedStereotype(astcdType.getModifier());
+          }
+      }
+      return new ResolveUpperArtifactAttributes(shadowing, nonExporting, ordered);
   }
 
   protected ASTCDMethod createSymbolEndVisitMethod(String astFullName, ASTCDType symbolClass, String simpleName, String symbolFullName, boolean hasOptionalName) {
@@ -318,7 +337,7 @@ public class ScopesGenitorDecorator extends AbstractCreator<ASTCDCompilationUnit
             .filter(e -> !symbolTableService.hasSymbolStereotype(e.getKey()))
             .map(Map.Entry::getValue)
             .filter(e -> !uniqueSymbols.contains(e))
-            .forEach(e -> uniqueSymbols.add(e));
+            .forEach(uniqueSymbols::add);
     for(String symbol: uniqueSymbols) {
       String symbolName = symbolTableService.removeSymbolSuffix(Names.getSimpleName(symbol));
       ASTCDParameter symbolParam = getCDParameterFacade().createParameter(symbol, "symbol");
@@ -328,5 +347,17 @@ public class ScopesGenitorDecorator extends AbstractCreator<ASTCDCompilationUnit
       methods.add(initSymbolHP2Method);
     }
     return methods;
+  }
+
+  protected static class ResolveUpperArtifactAttributes {
+      boolean shadowing = false;
+      boolean nonExporting = false;
+      boolean ordered = false;
+
+      public ResolveUpperArtifactAttributes(boolean shadowing, boolean nonExporting, boolean ordered) {
+          this.shadowing = shadowing;
+          this.nonExporting = nonExporting;
+          this.ordered = ordered;
+      }
   }
 }

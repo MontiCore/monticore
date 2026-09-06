@@ -28,7 +28,7 @@ public class NTForASTRuleExists implements GrammarASTMCGrammarCoCo {
     MCGrammarSymbol grammarSymbol = a.getSymbol();
     boolean prodFound = false;
     for(ASTASTRule astrule : a.getASTRuleList()){
-      if(!grammarSymbol.getProdWithInherited(astrule.getType()).isPresent()){
+      if(grammarSymbol.getProdWithInherited(astrule.getType()).isEmpty()){
         for(Map.Entry<String, ProdSymbol> entry : grammarSymbol.getProdsWithInherited().entrySet()){
           ProdSymbol rs = (ProdSymbol) entry.getValue();
             if (astrule.getType().equals(rs.getName())) {

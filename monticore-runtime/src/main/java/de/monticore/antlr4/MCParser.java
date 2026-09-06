@@ -17,7 +17,7 @@ import java.util.ListIterator;
 
 public abstract class MCParser extends Parser {
 
-  protected List<Comment> comments = new ArrayList<Comment>();
+  protected List<Comment> comments = new ArrayList<>();
 
   protected ASTNodeBuilder<?> activeBuilder;
 
@@ -69,7 +69,7 @@ public abstract class MCParser extends Parser {
     else if ("\n".equals(text)) {
       column += text.length();
     }
-    else if (text.indexOf("\n") == -1) {
+    else if (!text.contains("\n")) {
       column += text.length();
     }
     else {
@@ -199,8 +199,8 @@ public abstract class MCParser extends Parser {
       return false;
     }
     org.antlr.v4.runtime.Token t1 = _input.LT(-1);
-    for (int i = 0; i < str.length; i++) {
-      if (t1.getText().equals(str[i])) {
+    for (String s : str) {
+      if (t1.getText().equals(s)) {
         return true;
       }
     }
@@ -215,8 +215,8 @@ public abstract class MCParser extends Parser {
       return false;
     }
     org.antlr.v4.runtime.Token t1 = _input.LT(1);
-    for (int i = 0; i < str.length; i++) {
-      if (t1.getText().equals(str[i])) {
+    for (String s : str) {
+      if (t1.getText().equals(s)) {
         return true;
       }
     }

@@ -4,6 +4,7 @@ package de.monticore.grammar.cocos;
 
 import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.ASTClassProd;
+import de.monticore.grammar.grammar._ast.ASTGrammarAnnotation;
 import de.monticore.grammar.grammar._cocos.GrammarASTClassProdCoCo;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.se_rwth.commons.logging.Log;
@@ -22,11 +23,11 @@ public class NoOverridingNTHasAnnotation implements GrammarASTClassProdCoCo {
 
   @Override
   public void check(ASTClassProd a) {
-    if (a.getGrammarAnnotationList().stream().anyMatch(s -> s.isOverride())) {
+    if (a.getGrammarAnnotationList().stream().anyMatch(ASTGrammarAnnotation::isOverride)) {
       Optional<MCGrammarSymbol> grammarSymbol = MCGrammarSymbolTableHelper
               .getMCGrammarSymbol(a.getEnclosingScope());
 
-      if (!grammarSymbol.get().getInheritedProd(a.getName()).isPresent()) {
+      if (grammarSymbol.get().getInheritedProd(a.getName()).isEmpty()) {
         Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, a.getName()),
                 a.get_SourcePositionStart());
       }

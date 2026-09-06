@@ -9,12 +9,13 @@ import de.monticore.types.mcsimplegenerictypestest.MCSimpleGenericTypesTestMill;
 import de.monticore.types.mcsimplegenerictypestest._parser.MCSimpleGenericTypesTestParser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MCSimpleGenericsTypesTest {
 
@@ -36,99 +37,99 @@ public class MCSimpleGenericsTypesTest {
 
       Optional<ASTMCType> type = mcBasicTypesParser.parse_StringMCType(testType);
 
-      Assertions.assertNotNull(type);
-      Assertions.assertTrue(type.isPresent());
-      Assertions.assertTrue(type.get() instanceof ASTMCObjectType);
+      assertNotNull(type);
+      assertTrue(type.isPresent());
+      assertInstanceOf(ASTMCObjectType.class, type.get());
       System.out.println(type.get().getClass());
 
       ASTMCObjectType t = (ASTMCObjectType) type.get();
     }
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMCListTypeValid() throws IOException {
     MCSimpleGenericTypesTestParser parser = new MCSimpleGenericTypesTestParser();
     Optional<ASTMCGenericType> type = parser.parse_StringMCGenericType("List<Integer>");
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertNotNull(type);
-    Assertions.assertTrue(type.isPresent());
-    Assertions.assertTrue(type.get() instanceof ASTMCListType);
+    assertFalse(parser.hasErrors());
+    assertNotNull(type);
+    assertTrue(type.isPresent());
+    assertInstanceOf(ASTMCListType.class, type.get());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMCListTypeValid2() throws IOException {
     MCSimpleGenericTypesTestParser parser = new MCSimpleGenericTypesTestParser();
     Optional<ASTMCGenericType> type = parser.parse_StringMCGenericType("java.util.List<String>");
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertNotNull(type);
-    Assertions.assertTrue(type.isPresent());
-    Assertions.assertTrue(type.get() instanceof ASTMCBasicGenericType);
+    assertFalse(parser.hasErrors());
+    assertNotNull(type);
+    assertTrue(type.isPresent());
+    assertInstanceOf(ASTMCBasicGenericType.class, type.get());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMCMapTypeValid() throws IOException {
     MCSimpleGenericTypesTestParser parser = new MCSimpleGenericTypesTestParser();
     Optional<ASTMCGenericType> type = parser.parse_StringMCGenericType("Map<Integer, String>");
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertNotNull(type);
-    Assertions.assertTrue(type.isPresent());
-    Assertions.assertTrue(type.get() instanceof ASTMCMapType);
+    assertFalse(parser.hasErrors());
+    assertNotNull(type);
+    assertTrue(type.isPresent());
+    assertInstanceOf(ASTMCMapType.class, type.get());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMCMapTypeValid2() throws IOException {
     MCSimpleGenericTypesTestParser parser = new MCSimpleGenericTypesTestParser();
     Optional<ASTMCGenericType> type = parser.parse_StringMCGenericType("java.util.Map<java.util.List<Integer>, String>");
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertNotNull(type);
-    Assertions.assertTrue(type.isPresent());
-    Assertions.assertTrue(type.get() instanceof ASTMCBasicGenericType);
+    assertFalse(parser.hasErrors());
+    assertNotNull(type);
+    assertTrue(type.isPresent());
+    assertInstanceOf(ASTMCBasicGenericType.class, type.get());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMCMapTypeValid3() throws IOException {
     MCSimpleGenericTypesTestParser parser = new MCSimpleGenericTypesTestParser();
     Optional<ASTMCGenericType> type = parser.parse_StringMCGenericType("java.util.HashMap<String,java.util.List<String>>");
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertNotNull(type);
-    Assertions.assertTrue(type.isPresent());
-    Assertions.assertTrue(type.get() instanceof ASTMCBasicGenericType);
+    assertFalse(parser.hasErrors());
+    assertNotNull(type);
+    assertTrue(type.isPresent());
+    assertInstanceOf(ASTMCBasicGenericType.class, type.get());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMCOptionalTypeValid() throws IOException {
     MCSimpleGenericTypesTestParser parser = new MCSimpleGenericTypesTestParser();
     Optional<ASTMCGenericType> type = parser.parse_StringMCGenericType("Optional<String>");
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertNotNull(type);
-    Assertions.assertTrue(type.isPresent());
-    Assertions.assertTrue(type.get() instanceof ASTMCOptionalType);
+    assertFalse(parser.hasErrors());
+    assertNotNull(type);
+    assertTrue(type.isPresent());
+    assertInstanceOf(ASTMCOptionalType.class, type.get());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMCOptionalTypeValid2() throws IOException {
     MCSimpleGenericTypesTestParser parser = new MCSimpleGenericTypesTestParser();
     Optional<ASTMCGenericType> type = parser.parse_StringMCGenericType("java.util.Optional<Set<String>>");
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertNotNull(type);
-    Assertions.assertTrue(type.isPresent());
-    Assertions.assertTrue(type.get() instanceof ASTMCBasicGenericType);
+    assertFalse(parser.hasErrors());
+    assertNotNull(type);
+    assertTrue(type.isPresent());
+    assertInstanceOf(ASTMCBasicGenericType.class, type.get());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -136,48 +137,48 @@ public class MCSimpleGenericsTypesTest {
   public void testMCSetTypeValid() throws IOException {
     MCSimpleGenericTypesTestParser parser = new MCSimpleGenericTypesTestParser();
     Optional<ASTMCGenericType> type = parser.parse_StringMCGenericType("Set<String>");
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertNotNull(type);
-    Assertions.assertTrue(type.isPresent());
-    Assertions.assertTrue(type.get() instanceof ASTMCSetType);
+    assertFalse(parser.hasErrors());
+    assertNotNull(type);
+    assertTrue(type.isPresent());
+    assertInstanceOf(ASTMCSetType.class, type.get());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMCSetTypeValid2() throws IOException {
     MCSimpleGenericTypesTestParser parser = new MCSimpleGenericTypesTestParser();
     Optional<ASTMCGenericType> type = parser.parse_StringMCGenericType("java.util.Set<List<String>>");
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertNotNull(type);
-    Assertions.assertTrue(type.isPresent());
-    Assertions.assertTrue(type.get() instanceof ASTMCBasicGenericType);
+    assertFalse(parser.hasErrors());
+    assertNotNull(type);
+    assertTrue(type.isPresent());
+    assertInstanceOf(ASTMCBasicGenericType.class, type.get());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMCTypeArgumentValid() throws IOException {
     MCSimpleGenericTypesTestParser parser = new MCSimpleGenericTypesTestParser();
     Optional<ASTMCTypeArgument> type = parser.parse_StringMCTypeArgument("a.b.c");
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertNotNull(type);
-    Assertions.assertTrue(type.isPresent());
-    Assertions.assertTrue(type.get() instanceof ASTMCBasicTypeArgument);
+    assertFalse(parser.hasErrors());
+    assertNotNull(type);
+    assertTrue(type.isPresent());
+    assertInstanceOf(ASTMCBasicTypeArgument.class, type.get());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMCTypeArgumentValid2() throws IOException {
     MCSimpleGenericTypesTestParser parser = new MCSimpleGenericTypesTestParser();
     Optional<ASTMCGenericType> type = parser.parse_StringMCGenericType("List<A>");
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertNotNull(type);
-    Assertions.assertTrue(type.isPresent());
-    Assertions.assertTrue(type.get() instanceof ASTMCListType);
+    assertFalse(parser.hasErrors());
+    assertNotNull(type);
+    assertTrue(type.isPresent());
+    assertInstanceOf(ASTMCListType.class, type.get());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -185,8 +186,8 @@ public class MCSimpleGenericsTypesTest {
     //not defined in that grammar, only in MCGenericsTypes
     MCSimpleGenericTypesTestParser parser = new MCSimpleGenericTypesTestParser();
     Optional<ASTMCType> type = parser.parse_StringMCType("java.util.List<A>.Set<C>.some.Collection<B>");
-    Assertions.assertTrue(parser.hasErrors());
-    Assertions.assertFalse(type.isPresent());
+    assertTrue(parser.hasErrors());
+    assertFalse(type.isPresent());
   }
 
   @Test
@@ -194,12 +195,12 @@ public class MCSimpleGenericsTypesTest {
     MCSimpleGenericTypesTestParser parser = new MCSimpleGenericTypesTestParser();
     Optional<ASTMCBasicGenericType> basicGenericType = parser.parse_StringMCBasicGenericType("a.B<C, D>");
     Optional<ASTMCGenericType> genericType = parser.parse_StringMCGenericType("a.B<C, D>");
-    Assertions.assertTrue(genericType.isPresent());
-    Assertions.assertTrue(basicGenericType.isPresent());
-    Assertions.assertEquals("a.B", basicGenericType.get().printWithoutTypeArguments());
-    Assertions.assertEquals("a.B", genericType.get().printWithoutTypeArguments());
-    Assertions.assertFalse(parser.hasErrors());
+    assertTrue(genericType.isPresent());
+    assertTrue(basicGenericType.isPresent());
+    assertEquals("a.B", basicGenericType.get().printWithoutTypeArguments());
+    assertEquals("a.B", genericType.get().printWithoutTypeArguments());
+    assertFalse(parser.hasErrors());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

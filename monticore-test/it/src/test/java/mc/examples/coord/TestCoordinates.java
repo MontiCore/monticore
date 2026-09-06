@@ -2,22 +2,8 @@
 
 package mc.examples.coord;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.Optional;
-
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import de.monticore.prettyprint.IndentPrinter;
-import mc.GeneratorIntegrationsTest;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import mc.examples.cartesian.coordcartesian.CoordcartesianMill;
 import mc.examples.cartesian.coordcartesian._ast.ASTCoordinateFile;
 import mc.examples.cartesian.coordcartesian._parser.CoordcartesianParser;
@@ -29,39 +15,39 @@ import mc.examples.coord.transform.Mirror;
 import mc.examples.polar.coordpolar.CoordpolarMill;
 import mc.examples.polar.coordpolar._parser.CoordpolarParser;
 import mc.examples.polar.coordpolar._visitor.CoordpolarTraverser;
+import org.junit.jupiter.api.Test;
 
-public class TestCoordinates extends GeneratorIntegrationsTest {
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+@TestWithMCLanguage(CoordcartesianMill.class)
+public class TestCoordinates {
   
   private static final double DELTA = 1e-5;
   
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
   @Test
   public void testCoordcartesianParser() throws IOException {
-    CoordcartesianParser parser = new CoordcartesianParser();
+    CoordcartesianParser parser = CoordcartesianMill.parser();
     Optional<ASTCoordinateFile> astCartesian = parser
         .parseCoordinateFile("src/test/resources/examples/coord/coordinates.cart"); // (2,4)
                                                                       // (5,2)
                                                                       // (1,7)
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(astCartesian.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(astCartesian.isPresent());
     
-    Assertions.assertEquals(astCartesian.get().getCoordinateList().size(), 3);
+    assertEquals(3, astCartesian.get().getCoordinateList().size());
     
-    Assertions.assertEquals(astCartesian.get().getCoordinateList().get(0).getX(), 2);
-    Assertions.assertEquals(astCartesian.get().getCoordinateList().get(0).getY(), 4);
+    assertEquals(2, astCartesian.get().getCoordinateList().get(0).getX());
+    assertEquals(4, astCartesian.get().getCoordinateList().get(0).getY());
     
-    Assertions.assertEquals(astCartesian.get().getCoordinateList().get(1).getX(), 5);
-    Assertions.assertEquals(astCartesian.get().getCoordinateList().get(1).getY(), 2);
+    assertEquals(5, astCartesian.get().getCoordinateList().get(1).getX());
+    assertEquals(2, astCartesian.get().getCoordinateList().get(1).getY());
     
-    Assertions.assertEquals(astCartesian.get().getCoordinateList().get(2).getX(), 1);
-    Assertions.assertEquals(astCartesian.get().getCoordinateList().get(2).getY(), 7);
-  
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertEquals(1, astCartesian.get().getCoordinateList().get(2).getX());
+    assertEquals(7, astCartesian.get().getCoordinateList().get(2).getY());
   }
   
   @Test
@@ -72,31 +58,30 @@ public class TestCoordinates extends GeneratorIntegrationsTest {
     // [1,0;0,5]
     // [2,5;1,3]
     // [47,11;0,815]
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(astPolar.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(astPolar.isPresent());
     
-    Assertions.assertEquals(astPolar.get().getCoordinateList().size(), 3);
+    assertEquals(3, astPolar.get().getCoordinateList().size());
     
 
     
-    Assertions.assertEquals(astPolar.get().getCoordinateList().get(0).getD(), 1.0, DELTA);
-    Assertions.assertEquals(astPolar.get().getCoordinateList().get(0).getPhi(), 0.5, DELTA);
+    assertEquals(1.0, astPolar.get().getCoordinateList().get(0).getD(), DELTA);
+    assertEquals(0.5, astPolar.get().getCoordinateList().get(0).getPhi(), DELTA);
     
-    Assertions.assertEquals(astPolar.get().getCoordinateList().get(1).getD(), 2.5, DELTA);
-    Assertions.assertEquals(astPolar.get().getCoordinateList().get(1).getPhi(), 1.3, DELTA);
+    assertEquals(2.5, astPolar.get().getCoordinateList().get(1).getD(), DELTA);
+    assertEquals(1.3, astPolar.get().getCoordinateList().get(1).getPhi(), DELTA);
     
-    Assertions.assertEquals(astPolar.get().getCoordinateList().get(2).getD(), 47.11, DELTA);
-    Assertions.assertEquals(astPolar.get().getCoordinateList().get(2).getPhi(), 0.815, DELTA);
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertEquals(47.11, astPolar.get().getCoordinateList().get(2).getD(), DELTA);
+    assertEquals(0.815, astPolar.get().getCoordinateList().get(2).getPhi(), DELTA);
   }
   
   @Test
   public void cartesian2Polar() throws IOException {
-    CoordcartesianParser parser = new CoordcartesianParser();
+    CoordcartesianParser parser = CoordcartesianMill.parser();
     Optional<ASTCoordinateFile> astCartesian = parser
         .parseCoordinateFile("src/test/resources/examples/coord/coordinates.cart");
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(astCartesian.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(astCartesian.isPresent());
     
     // Transform cartesian to polar coordinates
     CoordcartesianTraverser t1 = CoordcartesianMill.traverser();
@@ -116,41 +101,39 @@ public class TestCoordinates extends GeneratorIntegrationsTest {
     mc.examples.polar.coordpolar._parser.CoordpolarParser polarParser = new CoordpolarParser();
     Optional<mc.examples.polar.coordpolar._ast.ASTCoordinateFile> astPolar = polarParser
         .parseCoordinateFile(new StringReader(ip.getContent()));
-    Assertions.assertFalse(polarParser.hasErrors());
-    Assertions.assertTrue(astPolar.isPresent());
+    assertFalse(polarParser.hasErrors());
+    assertTrue(astPolar.isPresent());
     
-    Assertions.assertEquals(astPolar.get().getCoordinateList().size(), 3);
+    assertEquals(3, astPolar.get().getCoordinateList().size());
     
-    Assertions.assertEquals(astPolar.get().getCoordinateList().get(0).getD(), 4.47213, DELTA);
-    Assertions.assertEquals(astPolar.get().getCoordinateList().get(0).getPhi(), 1.10714, DELTA);
+    assertEquals(4.47213, astPolar.get().getCoordinateList().get(0).getD(), DELTA);
+    assertEquals(1.10714, astPolar.get().getCoordinateList().get(0).getPhi(), DELTA);
     
-    Assertions.assertEquals(astPolar.get().getCoordinateList().get(1).getD(), 5.38516, DELTA);
-    Assertions.assertEquals(astPolar.get().getCoordinateList().get(1).getPhi(), 0.380506, DELTA);
+    assertEquals(5.38516, astPolar.get().getCoordinateList().get(1).getD(), DELTA);
+    assertEquals(0.380506, astPolar.get().getCoordinateList().get(1).getPhi(), DELTA);
     
-    Assertions.assertEquals(astPolar.get().getCoordinateList().get(2).getD(), 7.07106, DELTA);
-    Assertions.assertEquals(astPolar.get().getCoordinateList().get(2).getPhi(), 1.428899, DELTA);
-  
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertEquals(7.07106, astPolar.get().getCoordinateList().get(2).getD(), DELTA);
+    assertEquals(1.428899, astPolar.get().getCoordinateList().get(2).getPhi(), DELTA);
   }
   
   @Test
   public void mirrorTransformation() throws IOException {
-    CoordcartesianParser parser = new CoordcartesianParser();
+    CoordcartesianParser parser = CoordcartesianMill.parser();
     Optional<ASTCoordinateFile> astCartesian = parser
         .parseCoordinateFile("src/test/resources/examples/coord/coordinates.cart");
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(astCartesian.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(astCartesian.isPresent());
     
-    Assertions.assertEquals(astCartesian.get().getCoordinateList().size(), 3);
+    assertEquals(3, astCartesian.get().getCoordinateList().size());
     
-    Assertions.assertEquals(astCartesian.get().getCoordinateList().get(0).getX(), 2);
-    Assertions.assertEquals(astCartesian.get().getCoordinateList().get(0).getY(), 4);
+    assertEquals(2, astCartesian.get().getCoordinateList().get(0).getX());
+    assertEquals(4, astCartesian.get().getCoordinateList().get(0).getY());
     
-    Assertions.assertEquals(astCartesian.get().getCoordinateList().get(1).getX(), 5);
-    Assertions.assertEquals(astCartesian.get().getCoordinateList().get(1).getY(), 2);
+    assertEquals(5, astCartesian.get().getCoordinateList().get(1).getX());
+    assertEquals(2, astCartesian.get().getCoordinateList().get(1).getY());
     
-    Assertions.assertEquals(astCartesian.get().getCoordinateList().get(2).getX(), 1);
-    Assertions.assertEquals(astCartesian.get().getCoordinateList().get(2).getY(), 7);
+    assertEquals(1, astCartesian.get().getCoordinateList().get(2).getX());
+    assertEquals(7, astCartesian.get().getCoordinateList().get(2).getY());
     
     // Transform cartesian to polar coordinates
     CoordcartesianTraverser t1 = CoordcartesianMill.traverser();
@@ -168,21 +151,19 @@ public class TestCoordinates extends GeneratorIntegrationsTest {
     astCartesian.get().accept(t2);
     
     Optional<ASTCoordinateFile> astTransformed = parser.parseCoordinateFile(new StringReader(ip.getContent()));
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(astTransformed.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(astTransformed.isPresent());
     
-    Assertions.assertEquals(astTransformed.get().getCoordinateList().size(), 3);
+    assertEquals(3, astTransformed.get().getCoordinateList().size());
     
-    Assertions.assertEquals(astTransformed.get().getCoordinateList().get(0).getX(), 4);
-    Assertions.assertEquals(astTransformed.get().getCoordinateList().get(0).getY(), 2);
+    assertEquals(4, astTransformed.get().getCoordinateList().get(0).getX());
+    assertEquals(2, astTransformed.get().getCoordinateList().get(0).getY());
     
-    Assertions.assertEquals(astTransformed.get().getCoordinateList().get(1).getX(), 2);
-    Assertions.assertEquals(astTransformed.get().getCoordinateList().get(1).getY(), 5);
+    assertEquals(2, astTransformed.get().getCoordinateList().get(1).getX());
+    assertEquals(5, astTransformed.get().getCoordinateList().get(1).getY());
     
-    Assertions.assertEquals(astTransformed.get().getCoordinateList().get(2).getX(), 7);
-    Assertions.assertEquals(astTransformed.get().getCoordinateList().get(2).getY(), 1);
-  
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertEquals(7, astTransformed.get().getCoordinateList().get(2).getX());
+    assertEquals(1, astTransformed.get().getCoordinateList().get(2).getY());
   }
   
 }

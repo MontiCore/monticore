@@ -15,15 +15,6 @@ import java.util.function.Predicate;
 public class OOWithinScopeBasicSymbolsResolver
     extends WithinScopeBasicSymbolsResolver {
 
-  public static void init() {
-    Log.trace("init OOWithinScopeBasicSymbolsResolver", "TypeCheck setup");
-    setDelegate(new OOWithinScopeBasicSymbolsResolver());
-  }
-
-  public static void reset() {
-    WithinScopeBasicSymbolsResolver.reset();
-  }
-
   /**
    * filter out any constructors
    */
@@ -44,6 +35,13 @@ public class OOWithinScopeBasicSymbolsResolver
       }
       return false;
     };
+  }
+
+  // static delegate
+
+  public static void init() {
+    Log.trace("init OOWithinScopeBasicSymbolsResolver", "TypeCheck setup");
+    setDelegate(new OOWithinScopeBasicSymbolsResolver());
   }
 
 }

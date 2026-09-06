@@ -2,92 +2,71 @@
 
 package mc.feature.interfaces;
 
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
+import de.monticore.runtime.junit.TestWithMCLanguage;
+import mc.feature.interfaces.methodinterface.MethodInterfaceMill;
 import mc.feature.interfaces.methodinterface._ast.*;
 import mc.feature.interfaces.methodinterface._parser.MethodInterfaceParser;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
+@TestWithMCLanguage(MethodInterfaceMill.class)
 public class MethodInterfaceTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
 
   @Test
   public void testInterfaceDefaultA() throws IOException {
-    MethodInterfaceParser parser = new MethodInterfaceParser();
+    MethodInterfaceParser parser = MethodInterfaceMill.parser();
     Optional<ASTInterfaceDefault> ast = parser.parse_StringInterfaceDefault("Hello3");
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(ast.isPresent());
-    Assertions.assertEquals("test", ast.get().getTest());
-  
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertEquals("test", ast.get().getTest());
   }
 
   @Test
   public void testInterfaceDefaultA1() throws IOException {
-    MethodInterfaceParser parser = new MethodInterfaceParser();
+    MethodInterfaceParser parser = MethodInterfaceMill.parser();
     Optional<ASTInterfaceDefaultA> ast = parser.parse_StringInterfaceDefaultA("Hello");
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(ast.isPresent());
-    Assertions.assertEquals("A", ast.get().getTest());
-  
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertEquals("A", ast.get().getTest());
   }
 
   @Test
   public void testInterfaceDefaultA2() throws IOException {
-    MethodInterfaceParser parser = new MethodInterfaceParser();
+    MethodInterfaceParser parser = MethodInterfaceMill.parser();
     Optional<ASTA> ast = parser.parse_StringA("Hello");
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(ast.isPresent());
-    Assertions.assertEquals("A", ast.get().getTest());
-  
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertEquals("A", ast.get().getTest());
   }
 
   @Test
   public void testInterfaceAbstract() throws IOException {
-    MethodInterfaceParser parser = new MethodInterfaceParser();
+    MethodInterfaceParser parser = MethodInterfaceMill.parser();
     Optional<ASTInterfaceAbstract> ast = parser.parse_StringInterfaceAbstract("Hello2");
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(ast.isPresent());
-    Assertions.assertEquals("B", ast.get().getTest2());
-  
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertEquals("B", ast.get().getTest2());
   }
 
   @Test
   public void testInterfaceAbstractB() throws IOException {
-    MethodInterfaceParser parser = new MethodInterfaceParser();
+    MethodInterfaceParser parser = MethodInterfaceMill.parser();
     Optional<ASTB> ast = parser.parse_StringB("Hello2");
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(ast.isPresent());
-    Assertions.assertEquals("B", ast.get().getTest2());
-  
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertEquals("B", ast.get().getTest2());
   }
 
   @Test
   public void testClassMethod() throws IOException {
-    MethodInterfaceParser parser = new MethodInterfaceParser();
+    MethodInterfaceParser parser = MethodInterfaceMill.parser();
     Optional<ASTClassMethod> ast = parser.parse_StringClassMethod("Name C");
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(ast.isPresent());
-    Assertions.assertEquals("ABC", ast.get().getTest3());
-  
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertEquals("ABC", ast.get().getTest3());
   }
 }

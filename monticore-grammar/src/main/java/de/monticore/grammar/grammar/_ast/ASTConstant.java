@@ -34,7 +34,7 @@ public class ASTConstant extends ASTConstantTOP {
   }
 
   protected boolean matchesJavaIdentifier(String checkedString) {
-    if (checkedString == null || checkedString.length() == 0) {
+    if (checkedString == null || checkedString.isEmpty()) {
       return false;
     }
     char[] stringAsChars = checkedString.toCharArray();

@@ -19,7 +19,7 @@ import mc.testcd4analysis._symboltable.CDTypeSymbol;
 import mc.testcd4analysis._symboltable.CDTypeSymbolSurrogate;
 import mc.typescalculator.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -29,13 +29,13 @@ public class CD2EHelper {
 
   private IOOSymbolsScope iOOSymbolsScope;
 
-  private Map<String, SymTypeExpression> symTypeExpressionMap = new HashMap<>();
+  private Map<String, SymTypeExpression> symTypeExpressionMap = new LinkedHashMap<>();
 
-  private Map<String, OOTypeSymbol> typeSymbolMap = new HashMap<>();
+  private Map<String, OOTypeSymbol> typeSymbolMap = new LinkedHashMap<>();
 
-  private Map<String, FieldSymbol> fieldSymbolMap = new HashMap<>();
+  private Map<String, FieldSymbol> fieldSymbolMap = new LinkedHashMap<>();
 
-  private Map<String, MethodSymbol> methodSymbolMap = new HashMap<>();
+  private Map<String, MethodSymbol> methodSymbolMap = new LinkedHashMap<>();
 
   public CD2EHelper() {
     this.iOOSymbolsScope = OOSymbolsMill.scope();

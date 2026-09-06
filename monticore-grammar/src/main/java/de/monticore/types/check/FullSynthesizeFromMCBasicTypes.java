@@ -2,13 +2,13 @@
 package de.monticore.types.check;
 
 import de.monticore.types.mcbasictypes.MCBasicTypesMill;
-import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
-import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
-import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser;
 
-import java.util.Optional;
-
+/**
+ * @deprecated part of typecheck1,
+ * use {@link de.monticore.types3.TypeCheck3} instead.
+ */
+@Deprecated
 public class FullSynthesizeFromMCBasicTypes extends AbstractSynthesize {
 
   public FullSynthesizeFromMCBasicTypes(){

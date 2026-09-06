@@ -21,6 +21,7 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.grammar.LexNamer;
 import de.monticore.grammar.Multiplicity;
 import de.monticore.grammar.grammar._ast.*;
+import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
 import de.monticore.grammar.grammar._visitor.GrammarVisitor2;
@@ -43,7 +44,7 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
   protected static final String ITERATOR_PREFIX = "iter_";
 
   // data from the first phase
-  protected final Map<String, NonTermAccessorVisitor.ClassProdNonTermPrettyPrintData> classProds;
+  protected final Map<String, NonTermAccessorVisitorHandler.ClassProdNonTermPrettyPrintData> classProds;
 
   protected final ASTCDClass ppClass;
 
@@ -52,17 +53,16 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
   // In case generation is not possible
   protected String failureMessage;
 
-
   // Stacks
   protected final Stack<BlockData> blockDataStack = new Stack<>();
-
   protected final Stack<AltData> altDataStack = new Stack<>();
 
   // Changing attributes
   protected ASTClassProd currentClassProd;
-  protected NonTermAccessorVisitor.ClassProdNonTermPrettyPrintData currentClassProdData;
+  protected NonTermAccessorVisitorHandler.ClassProdNonTermPrettyPrintData currentClassProdData;
 
   protected String grammarName;
+  protected MCGrammarSymbol grammarSymbol;
   protected Map<String, Collection<String>> replacedKeywords;
 
   protected boolean isMCCommonLiteralsSuper;
@@ -70,7 +70,10 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
   protected NoSpacePredicateVisitor noSpacePredicateVisitor = new NoSpacePredicateVisitor();
   protected Grammar_WithConceptsTraverser noSpacePredicateTraverser;
 
-  public PrettyPrinterGenerationVisitor(GlobalExtensionManagement glex, ASTCDClass ppClass, Map<String, NonTermAccessorVisitor.ClassProdNonTermPrettyPrintData> classProds) {
+  protected LexNamer lexNamer = new LexNamer(); // Consider replacing me with a MCGrammarInfo?
+
+
+  public PrettyPrinterGenerationVisitor(GlobalExtensionManagement glex, ASTCDClass ppClass, Map<String, NonTermAccessorVisitorHandler.ClassProdNonTermPrettyPrintData> classProds) {
     this.glex = glex;
     this.ppClass = ppClass;
     this.classProds = classProds;
@@ -85,6 +88,7 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
   @Override
   public void visit(ASTMCGrammar node) {
     this.grammarName = node.getName();
+    this.grammarSymbol = node.getSymbol();
     this.replacedKeywords = node.getSymbol().getReplacedKeywordsWithInherited();
     this.isMCCommonLiteralsSuper = node.getSymbol().getAllSuperGrammars().stream().anyMatch(x->x.getFullName().equals("de.monticore.literals.MCCommonLiterals"));
   }
@@ -107,7 +111,7 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
     blockData.getAltDataList().sort(Collections.reverseOrder());
 
     // Prepare iterators (used instead of direct lists access)
-    Map<String, IteratorData> iterators = new HashMap<>();
+    Map<String, IteratorData> iterators = new LinkedHashMap<>();
     for (String refName : currentClassProdData.getNonTerminals().keySet()) {
       if (!currentClassProdData.isIteratorNeeded(refName)) continue;
       ASTRuleComponent itNode = currentClassProdData.getNonTerminalNodes().get(refName);
@@ -118,7 +122,7 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
       String type;
       if (itNode.getSymbol().isIsTerminal()) {
         type = "String";
-      }else {
+      } else {
         // Resolve the production to derive the concrete type
         Optional<ProdSymbol> refProd = node.getSymbol().getEnclosingScope().resolveProd(itNode.getSymbol().getReferencedType());
 
@@ -138,7 +142,6 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
             sTypes.add(refProd.get().getPackageName());
 
           sTypes.add(refProd.get().getEnclosingScope().getName().toLowerCase());
-
           sTypes.add(ASTConstants.AST_PACKAGE);
           String refProdName = StringTransformations.capitalize(refProd.get().getName());
           if (refProd.get().isIsExternal())
@@ -155,6 +158,13 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
 
 
       iterators.put(refName, new IteratorData(getter, type));
+    }
+
+    this.addNegatedOptsFromOtherAlts(blockData);
+
+    // Assign indices starting at 0 for every top-level alternative
+    for (AltData alt : blockData.getAltDataList()) {
+      assignIndices(alt, 0);
     }
 
     if (!currentClassProdData.getErroringNonTerminals().isEmpty())
@@ -178,7 +188,7 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
       }
       if (hookPoint == null) {
         // Add the handle(node) method of the pretty printer with the collected BlockData
-        hookPoint = new TemplateHookPoint("_prettyprinter.pp.HandleMethod", blockData,
+        hookPoint = new TemplateHookPoint(getHandleMethodTemplate(), blockData,
                 node.getName(), node.getEnclosingScope().getName(), Joiners.DOT.join(astPackage), iterators.entrySet());
       }
     } else {
@@ -191,11 +201,48 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
     this.currentClassProdData = null;
   }
 
+  protected String getHandleMethodTemplate() {
+    return "_prettyprinter.pp.HandleMethod";
+  }
+
+  /**
+   * The ordering of alts may be more complex:
+   * <code>A | (A|B)</code>
+   * the first alternative has to be added with the !isPresentB() guard
+   * @param blockData the block to work on
+   */
+  protected void addNegatedOptsFromOtherAlts (BlockData blockData) {
+    // For each alt
+    for (var alt : blockData.getAltDataList()) {
+      // collect all opts from the other alts
+      var optsFromOtherAlts = new LinkedHashSet<String>();
+      for (var otherAlt : blockData.getAltDataList()) {
+        if (otherAlt == alt) continue;
+        optsFromOtherAlts.addAll(otherAlt.getOptionalSet());
+      }
+      // and remove the optionals & required ones from this alt
+      optsFromOtherAlts.removeAll(alt.getOptionalSet());
+      optsFromOtherAlts.removeAll(alt.getRequiredSet());
+
+      if (optsFromOtherAlts.isEmpty()) continue;
+
+      // optsFromOtherAlts now contains all used elements, that are not used in this alt
+      // Construct the expression from the given refname
+      List<ASTExpression> optsFromOtherAltsExpr = new ArrayList<>();
+      for (var refName : optsFromOtherAlts) {
+        Multiplicity multiplicityOfNT = currentClassProdData.getMultiplicity(StringTransformations.uncapitalize(refName));
+        optsFromOtherAltsExpr.add(getExp(refName, refName, multiplicityOfNT));
+      }
+      // and finally, add a !(usedInAlt1 || .. || usedInAltN) to this alt's constraint
+      var andExr = AltData.reduceToOr(optsFromOtherAltsExpr);
+      alt.getExpressionList().add(CommonExpressionsMill.logicalNotExpressionBuilder().setExpression(andExr).build());
+    }
+  }
 
   @Override
   public void visit(ASTAlt node) {
     if (blockDataStack.isEmpty()) return; // Only visit in CPs
-    AltData altData = new AltData();
+    AltData altData = new AltData(node);
     blockDataStack.peek().getAltDataList().add(altData);
     altDataStack.push(altData);
   }
@@ -209,6 +256,8 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
       for (int i : altData.getNoSpaceTokens())
         markNoSpaceToken(altData, i);
     }
+    blockDataStack.peek().getOptionalSet().addAll(altData.getOptionalSet());
+    blockDataStack.peek().getOptionalSet().addAll(altData.getRequiredSet());
   }
 
   /**
@@ -223,7 +272,7 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
           this.failureMessage = "Unable to handle noSpace control directive for block of non-default iteration";
           return -1;
         }else if (component.getBlockData().getAltDataList().size() != 1) {
-          int ret_index0 = markNoSpaceToken(component.getBlockData().getAltDataList().get(0), index);
+          int ret_index0 = markNoSpaceToken(component.getBlockData().getAltDataList().getFirst(), index);
           for (int ia = 1; ia < component.getBlockData().getAltDataList().size(); ia++) {
             int ret_index = markNoSpaceToken(component.getBlockData().getAltDataList().get(ia), index);
             if (ret_index != ret_index0) {
@@ -233,7 +282,7 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
           }
           index = ret_index0;
         } else {
-          index = markNoSpaceToken(component.getBlockData().getAltDataList().get(0), index);
+          index = markNoSpaceToken(component.getBlockData().getAltDataList().getFirst(), index);
         }
       } else if (index-- == 0) {
         component.setHasNoSpace(true);
@@ -261,7 +310,7 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
     AltData altData = altDataStack.peek();
 
     if (node.getSymbol().getReferencedProd().get().isIsEnum()) {
-      this.failureMessage = "EnumProd references are not yet implemented";
+      this.failureMessage = "EnumProd references are not yet supported by the generated pretty printer";
       return;
     }
     String refName = node.isPresentUsageName() ? node.getUsageName() : node.getName();
@@ -283,16 +332,27 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
 
     int iteration = node.getIteration();
 
+    if (iteration == ASTConstantsGrammar.PLUS || iteration == ASTConstantsGrammar.DEFAULT) {
+      altData.getRequiredSet().add(refName);
+    } else {
+      altData.getOptionalSet().add(refName);
+    }
+
     if (multiplicity == Multiplicity.STANDARD && (iteration == ASTConstantsGrammar.PLUS || iteration == ASTConstantsGrammar.STAR))
       iteration = ASTConstantsGrammar.DEFAULT; // Force overwrite in case of ASTRule shenanigans
     if (multiplicity == Multiplicity.OPTIONAL && (iteration == ASTConstantsGrammar.PLUS || iteration == ASTConstantsGrammar.STAR))
       iteration = ASTConstantsGrammar.QUESTION; // Force overwrite in case of ASTRule shenanigans
 
+    boolean isLex = isLexType(node);
+
     if (multiplicity == Multiplicity.LIST && node.getIteration() == ASTConstantsGrammar.DEFAULT && !isIteratorUsed) {
-      PPGuardComponent component = PPGuardComponent.forNTSingle(isLexType(node) ? substituteLexProdType(node.getName()) : node.getName(),
-              refName,
-              iteration,
-              isMCCommonLiteralsSuper
+      PPGuardComponent component = PPGuardComponent.forNTSingle(isLex ? substituteLexProdType(node.getName()) : node.getName(),
+          refName,
+          iteration,
+          isMCCommonLiteralsSuper,
+          node,
+          isLex,
+          "placeholder1" // These placeholders should be replaced with the token type (if required)
       );
 
       altData.getComponentList().add(component);
@@ -323,11 +383,14 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
       altData.markListReady();
     }
 
-    PPGuardComponent component = PPGuardComponent.forNT(isLexType(node) ? substituteLexProdType(node.getName()) : node.getName(),
-            refName,
-            iteration,
-            isIteratorUsed,
-            isMCCommonLiteralsSuper
+    PPGuardComponent component = PPGuardComponent.forNT(isLex ? substituteLexProdType(node.getName()) : node.getName(),
+        refName,
+        iteration,
+        isIteratorUsed,
+        isMCCommonLiteralsSuper,
+        node,
+        isLex,
+        isLex ? substituteLexProdType(node.getName()) : node.getName()
     );
 
     altData.getComponentList().add(component);
@@ -373,17 +436,24 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
       if (currentClassProdData.isIteratorNeeded(usageName)) {
         // In case an iterator is required and the terminal is named, we can handle it like a lexed NonTerminal
         // replacekeyword directive can be ignored here (as the parser handles it with an action)
-        altData.getComponentList().add(PPGuardComponent.forNT("Name", usageName, nodeIteration, true, isMCCommonLiteralsSuper));
+        // explicitly pass true for the isLexical flag here
+        altData.getComponentList().add(PPGuardComponent.forNT("Name", usageName, nodeIteration, true, isMCCommonLiteralsSuper, node, true, "placeholder3"));
         blockDataStack.peek().markListReady(); // Mark that an iterator was used => while can be used
         altData.markListReady();
       } else {
-        altData.getComponentList().add(PPGuardComponent.forT(node.getName(), usageName, nodeIteration));
+        altData.getComponentList().add(PPGuardComponent.forT(node.getName(), usageName, nodeIteration, node, "placeholder4"));
       }
 
 
       int iteration = getEffectiveIteration(blockDataStack.peek().getInheritedIteration(), nodeIteration);
 
       Multiplicity multiplicity = currentClassProdData.getMultiplicity(StringTransformations.uncapitalize(usageName));
+
+      if (iteration == ASTConstantsGrammar.PLUS || iteration == ASTConstantsGrammar.DEFAULT) {
+        altData.getRequiredSet().add(usageName);
+      } else {
+        altData.getOptionalSet().add(usageName);
+      }
 
       if (nodeIteration == ASTConstantsGrammar.DEFAULT || iteration == ASTConstantsGrammar.PLUS) {
         if (nodeIteration == ASTConstantsGrammar.PLUS)
@@ -402,7 +472,7 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
       }
     }else {
       // Always use default iteration 0, as we have no control otherwise
-      PPGuardComponent component = PPGuardComponent.forT(string);
+      PPGuardComponent component = PPGuardComponent.forT(string, node, lexNamer.getOrComputeLexName(grammarSymbol,string));
 
       altData.getComponentList().add(component);
       altData.getExpressionList().add(AltData.TRUE_EXPRESSION); // Push a true condition
@@ -416,7 +486,7 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
     AltData altData = altDataStack.peek();
     BlockData blockData = new BlockData(false, node.getIteration(), getEffectiveIteration(outerBlock.getInheritedIteration(), node.getIteration()), node);
     blockDataStack.push(blockData);
-    altData.getComponentList().add(PPGuardComponent.forBlock(blockData, node.getIteration()));
+    altData.getComponentList().add(PPGuardComponent.forBlock(blockData, node.getIteration(), node, "placeholder6"));
   }
 
   @Override
@@ -428,6 +498,8 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
     }
     List<ASTExpression> allAltExpressions = new ArrayList<>();
 
+    this.addNegatedOptsFromOtherAlts(blockData);
+
     if (!altDataStack.isEmpty()) {
       AltData altData = altDataStack.peek();
 
@@ -435,6 +507,13 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
       int maxReq = altData.getRequired();
 
       boolean isOpt = node.getIteration() == ASTConstantsGrammar.STAR || node.getIteration() == ASTConstantsGrammar.QUESTION;
+
+      altData.getOptionalSet().addAll(blockData.getOptionalSet());
+      if (isOpt) {
+        altData.getOptionalSet().addAll(blockData.getRequiredSet());
+      } else {
+        altData.getRequiredSet().addAll(blockData.getRequiredSet());
+      }
 
       boolean isAnyListReady = false;
       boolean areAllListReady = true;
@@ -457,7 +536,7 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
       altData.setOptional(maxOpt);
       altData.setRequired(maxReq);
 
-      if (!allAltExpressions.isEmpty())
+      if (!allAltExpressions.isEmpty()) // might contain true || true
         altData.getExpressionList().add(AltData.reduceToOr(allAltExpressions));
 
       // Prevent e.g. (Decimal | ",")* => while (hasDecimal() || true) { ... } endless loops
@@ -471,11 +550,8 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
           this.failureMessage = "Contains a block without condition which is looped: " + pp;
         }
       }
-
     }
-
     blockData.getAltDataList().sort(Collections.reverseOrder());
-
   }
 
   @Override
@@ -497,7 +573,7 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
         this.failureMessage = "Unable to handle ConstantGroup with size of 1, but multiple elements named " + humanName + " present";
     }
 
-    Set<Map.Entry<String, String>> constants = new HashSet<>();
+    Set<Map.Entry<String, String>> constants = new LinkedHashSet<>();
     for (ASTConstant constant : node.getConstantList()) {
       constants.add(new AbstractMap.SimpleEntry<>(constant.getHumanName(), constant.getName()));
       if (!onlyOneConstant && LexNamer.createGoodName(constant.getHumanName()).isEmpty()) // The constant will be named CONSTANT{num} instead
@@ -509,7 +585,7 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
       constants = constants.stream().limit(1).collect(Collectors.toSet());
     }
 
-    PPGuardComponent component = PPGuardComponent.forCG(getter, constants);
+    PPGuardComponent component = PPGuardComponent.forCG(getter, constants, node, getter);
 
     AltData altData;
     Optional<BlockData> blockDataOpt = Optional.empty();
@@ -517,9 +593,9 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
       // Add a new block with alt for this ConstantGroup
       BlockData outerBlock = blockDataStack.peek();
       blockDataOpt = Optional.of(new BlockData(false, node.getIteration(), getEffectiveIteration(outerBlock.getInheritedIteration(), node.getIteration()), null));
-      altDataStack.peek().getComponentList().add(PPGuardComponent.forBlock(blockDataOpt.get(), node.getIteration()));
+      altDataStack.peek().getComponentList().add(PPGuardComponent.forBlock(blockDataOpt.get(), node.getIteration(), node, "placeholder8"));
       // And add one alt (without using the stack, as we will only use it in this method)
-      altData = new AltData();
+      altData = new AltData(node);
       blockDataOpt.get().getAltDataList().add(altData);
     }else {
       // If this is not an optional CG, skip the extra block
@@ -579,7 +655,6 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
 
       if (!allAltExpressions.isEmpty())
         outerAltData.getExpressionList().add(AltData.reduceToOr(allAltExpressions));
-
     }
   }
 
@@ -657,9 +732,8 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
     } else if (multiplicity == Multiplicity.LIST) {
       String getter = getPlainGetterSymbol(refName, multiplicity);
       ASTExpression getList = getNodeCallExp(getter);
-      return negate(getCallExp(getFieldExp(getList, "isEmpty"))); //s
+      return negate(getCallExp(getFieldExp(getList, "isEmpty")));
     }
-
     return null;
   }
 
@@ -724,6 +798,35 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
     return self;
   }
 
+  // Indices are used by the formatting printer
+  protected int assignIndices(AltData altData, int index) {
+    for (PPGuardComponent component : altData.getComponentList()) {
+      // Assign an index to this component (whether it's a Terminal, NT, or a Block wrapper)
+      if (component.getNameOrIndex() == null) {
+        component.setNameOrIndex(String.valueOf(index));
+      }
+      index++;
+
+      // If this component wraps a block, recurse into its alternatives
+      if (component.getType() == PPGuardComponent.PPGuardType.BLOCK) {
+        BlockData block = component.getBlockData();
+        if (block.getAltDataList().isEmpty()) continue;
+
+        // Trust the first alt to dictate the index progression
+        int nextIndex = assignIndices(block.getAltDataList().get(0), index);
+
+        // Process sibling alternatives. Because they are mutually exclusive,
+        // they should all conceptually start at the same base index.
+        for (int i = 1; i < block.getAltDataList().size(); i++) {
+          assignIndices(block.getAltDataList().get(i), index);
+        }
+
+        // Advance the outer index counter by however many slots the first alt consumed
+        index = nextIndex;
+      }
+    }
+    return index;
+  }
 
   /**
    * Data/Record class for Iterators

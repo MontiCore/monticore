@@ -49,7 +49,7 @@ public class FunctionCallArgumentsMatchesRegExCoCo implements
             .stream()
             .filter(SymTypeExpression::isFunctionType)
             .map(SymTypeExpression::asFunctionType)
-            .collect(Collectors.toList()));
+            .toList());
       }
 
       List<SymTypeExpression> arguments = node.getArguments().getExpressionList()

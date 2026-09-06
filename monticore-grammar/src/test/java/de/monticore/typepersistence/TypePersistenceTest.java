@@ -10,14 +10,13 @@ import de.monticore.typepersistence.variable._symboltable.IVariableScope;
 import de.monticore.typepersistence.variable._symboltable.VariableScopesGenitorDelegator;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TypePersistenceTest {
   
@@ -52,8 +51,8 @@ public class TypePersistenceTest {
     Optional<ASTVar> varModel = blahParser.parse_String("var String a");
     VariableScopesGenitorDelegator varSymbolTableCreator = VariableMill.scopesGenitorDelegator();
     IVariableScope blahSymbolTable = varSymbolTableCreator.createFromAST(varModel.get());
-    Assertions.assertTrue(varModel.isPresent());
+    assertTrue(varModel.isPresent());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

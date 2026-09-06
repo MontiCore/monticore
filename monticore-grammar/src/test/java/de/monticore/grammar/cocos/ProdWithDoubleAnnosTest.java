@@ -4,10 +4,9 @@ package de.monticore.grammar.cocos;
 
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static java.lang.String.format;
-
-import org.junit.jupiter.api.Test;
 
 public class ProdWithDoubleAnnosTest extends CocoTest {
   private final String grammar = "de.monticore.grammar.cocos.invalid.A4119.A4119";

@@ -13,7 +13,7 @@ public class ASTMCQualifiedName extends ASTMCQualifiedNameTOP {
   }
 
   public String getBaseName() {
-    return getPartsList().get(getPartsList().size()-1);
+    return getPartsList().getLast();
   }
 
   public String getQName() {

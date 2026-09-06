@@ -1,12 +1,12 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${signature("isOptional")}
+${signature("isOptional", "parentObject")}
 
 <#assign notObject = ast>
-if (nextNode.equals("${notObject.getObjectName()}")) {
+case "${notObject.getObjectName()}" -> {
   // this is a negative object, reset candidates list
   if (!isBacktracking) {
     if (!isBacktrackingNegative) {
-      ${notObject.getObjectName()}_candidates_temp = new ArrayList<>(${notObject.getObjectName()}_candidates);
+      ((FastLookupList<?>)${notObject.getObjectName()}_candidates_temp).reset();
     }
     // try to find a match
     ${notObject.getObjectName()}_cand = match_${notObject.getObjectName()}();
@@ -15,9 +15,7 @@ if (nextNode.equals("${notObject.getObjectName()}")) {
       // if no object ist found, test if backtracking stack is empty
       if (backtrackingNegative.isEmpty()) {
         // no match of negative elements can be found go on with lists
-        <#if !isOptional>
         foundMatch = true;
-        </#if>
         isBacktrackingNegative = false;
         backtracking.push(nextNode);
         while (!searchPlan.isEmpty() && !searchPlan.peek().endsWith("_$List")) {
@@ -31,9 +29,10 @@ if (nextNode.equals("${notObject.getObjectName()}")) {
         // put the first object of the backtracking stack
         searchPlan.push(backtrackingNegative.pop());
         // reset candidates list
-        ${notObject.getObjectName()}_candidates_temp = new ArrayList<>(${notObject.getObjectName()}_candidates);
+        ((FastLookupList<?>)${notObject.getObjectName()}_candidates_temp).reset();
       }
     } else {
+      // TODO: We are most likely missing a reset of optionals here (when using NOT in OPT)
       // update candidates for next object to match
       if(!searchPlan.isEmpty()) {
         // put object on backtracking stack
@@ -53,7 +52,7 @@ if (nextNode.equals("${notObject.getObjectName()}")) {
           searchPlan.push(backtracking.pop());
         }
         // reset candidates list
-        ${notObject.getObjectName()}_candidates_temp = new ArrayList<>(${notObject.getObjectName()}_candidates);
+        ((FastLookupList<?>)${notObject.getObjectName()}_candidates_temp).reset();
       }
     }
   } else {

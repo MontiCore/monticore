@@ -53,7 +53,7 @@ public class MontiCoreNodeIdentifierHelper extends MCSimpleGenericTypesNodeIdent
   }
   
   public String getIdent(ASTMCBasicGenericType ast) {
-    return format(Names.getQualifiedName(ast.getNameList()), nodeName(ast));
+    return format(Names.constructQualifiedName(ast.getNameList()), nodeName(ast));
   }
   
   public String getIdent(ASTGrammarReference ast) {
@@ -182,12 +182,7 @@ public class MontiCoreNodeIdentifierHelper extends MCSimpleGenericTypesNodeIdent
     for (int i = 0; i < x.length(); i++) {
       
       String substring = x.substring(i, i + 1);
-      if (LexNamer.getGoodNames().containsKey(substring)) {
-        ret.append(LexNamer.getGoodNames().get(substring));
-      }
-      else {
-        ret.append(substring);
-      }
+      ret.append(LexNamer.getGoodNames().getOrDefault(substring, substring));
     }
     
     return ret.toString();

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.typeparameters.cocos;
 
 import de.monticore.types.typeparameters.TypeParametersMill;
@@ -16,13 +17,14 @@ import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserFacto
 import de.monticore.visitor.ITraverser;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.IOException;
 import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TypeParametersNoCyclicInheritanceTest {
 
@@ -47,7 +49,7 @@ public class TypeParametersNoCyclicInheritanceTest {
   public void testValid(String model) throws IOException {
     ASTTypeParameters params = parseAndCreateSymTab(model);
     checker.checkAll(params);
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @ParameterizedTest
@@ -58,8 +60,8 @@ public class TypeParametersNoCyclicInheritanceTest {
   public void testInvalid(String model) throws IOException {
     ASTTypeParameters params = parseAndCreateSymTab(model);
     checker.checkAll(params);
-    Assertions.assertFalse(Log.getFindings().isEmpty());
-    Assertions.assertEquals(
+    assertFalse(Log.getFindings().isEmpty());
+    assertEquals(
         "0xFDC12",
         Log.getFindings().get(0).getMsg().substring(0, 7)
     );
@@ -70,20 +72,20 @@ public class TypeParametersNoCyclicInheritanceTest {
     TypeParametersTestParser parser = TypeParametersTestMill.parser();
     Optional<ASTTypeParameters> astOpt =
         parser.parse_StringTypeParameters(model);
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(astOpt.isPresent());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertFalse(parser.hasErrors());
+    assertTrue(astOpt.isPresent());
+    assertTrue(Log.getFindings().isEmpty());
     ITypeParametersArtifactScope artifactScope = TypeParametersMill
         .scopesGenitorDelegator().createFromAST(astOpt.get());
     artifactScope.setName("aName");
     TypeParametersTestTraverser stCompleter =
         TypeParametersTestMill.traverser();
-    ITypeCalculator tc = getTypeCalculator();
-    stCompleter.add4TypeParameters(new TypeParametersSTCompleteTypes(tc));
+    stCompleter.add4TypeParameters(new TypeParametersSTCompleteTypes());
     astOpt.get().accept(stCompleter);
     return astOpt.get();
   }
 
+  @Deprecated
   protected ITypeCalculator getTypeCalculator() {
     Type4Ast type4Ast = new Type4Ast();
     InferenceContext4Ast infCtx4Ast = new InferenceContext4Ast();

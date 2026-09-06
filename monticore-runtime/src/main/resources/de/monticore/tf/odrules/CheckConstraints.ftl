@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-private boolean checkConstraints() {
+protected boolean checkConstraints() {
 
   boolean result = true;
 <#if subConstraints??>

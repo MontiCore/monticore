@@ -4,7 +4,9 @@ package de.monticore.types.check;
 /**
  * This class is intended to provide typeChecking functionality
  * with regard to relations of types
+ * @deprecated use {@link de.monticore.types3.SymTypeRelations}
  */
+@Deprecated
 public interface ITypeRelations {
 
   /**
@@ -19,10 +21,10 @@ public interface ITypeRelations {
    * compatible("Person", "Student") (uni-directional)
    * <p>
    * Incompatible:
-   * !compatible("double", "int")   (in all directions)
+   * {@code !compatible("double", "int")}   (in all directions)
    * <p>
    * The concrete Typechecker has to decide on further issues, like
-   * !compatible("List<double>", "List<int>")
+   * {@code !compatible("List<double>", "List<int>")}
    * where e.g. Java and OCL/P differ in their answers
    *
    * @param left  Super-Type
@@ -41,7 +43,7 @@ public interface ITypeRelations {
 
   /**
    * calculate the minimum inheritance distance from the specific type to the general type
-   * e.g. C extends B extends A => object of type C has distance of 2 to object of type A
+   * e.g. C extends B extends A: object of type C has distance of 2 to object of type A
    * object of type B has distance of 1 to object of type A
    * object of type A has distance of 0 to object of type A
    *

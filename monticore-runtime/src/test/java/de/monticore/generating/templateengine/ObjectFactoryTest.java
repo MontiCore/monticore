@@ -7,9 +7,10 @@ import java.util.List;
 
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ObjectFactoryTest {
   
@@ -22,9 +23,9 @@ public class ObjectFactoryTest {
   @Test
   public void testInstanciationWithDefaultConstructor() {
     Object obj = ObjectFactory.createObject("java.lang.String");
-    Assertions.assertNotNull(obj);
-    Assertions.assertEquals(String.class, obj.getClass());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertNotNull(obj);
+    assertEquals(String.class, obj.getClass());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -32,10 +33,10 @@ public class ObjectFactoryTest {
     List<Object> params = new ArrayList<Object>();
     params.add("myContent");
     Object obj = ObjectFactory.createObject("java.lang.String", params);
-    Assertions.assertNotNull(obj);
-    Assertions.assertEquals(String.class, obj.getClass());
-    Assertions.assertEquals(obj, "myContent");
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertNotNull(obj);
+    assertEquals(String.class, obj.getClass());
+    assertEquals(obj, "myContent");
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
@@ -51,10 +52,10 @@ public class ObjectFactoryTest {
     params.add(3);
     
     Object obj = ObjectFactory.createObject("java.lang.String", paramTypes, params);
-    Assertions.assertNotNull(obj);
-    Assertions.assertEquals(obj.getClass(), (new String()).getClass());
-    Assertions.assertEquals(obj, "yes");
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertNotNull(obj);
+    assertEquals(obj.getClass(), (new String()).getClass());
+    assertEquals(obj, "yes");
+    assertTrue(Log.getFindings().isEmpty());
   }
   
 }

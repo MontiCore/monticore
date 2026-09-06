@@ -43,19 +43,21 @@ plugins {
 }
 
 java {
-  // Configure the java toolchain to use Java 11 (overriding the locally installed JDK)
+  // Configure the java toolchain to use Java 21 (overriding the locally installed JDK)
   // https://docs.gradle.org/current/userguide/toolchains.html
   toolchain {
-    languageVersion = JavaLanguageVersion.of(11)
+    languageVersion = JavaLanguageVersion.of(21)
   }
 }
 
 dependencies {
-  // Depend on the MontiCore language library (which in term depends on the runtime)
+  // Depend on the MontiCore language library (which in turn depends on the runtime)
   grammar "de.monticore:monticore-grammar:$mc_version"
   // and depend on the junit dependencies
   testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
   testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
+  // and add the test fixtures (used to set-up tests)
+  testImplementation testFixtures("de.monticore:monticore-grammar:$mc_version")
 }
 
 // Where can we find the dependencies?
@@ -93,7 +95,7 @@ which can be modified via the build file.
 For example, the following build file snippet changes the output directory:
 
 ```gradle
-generateMCGrammars {
+tasks.named('generateMCGrammars') {
     // manually change the output directory
     outputDir = project.layout.buildDirectory.dir("mc")
 }
@@ -106,7 +108,7 @@ The following table shows the main configuration options
 | grammar (, input)                          | The grammar files                                                                                                                                                 | [ConfigurableFileCollection](https://docs.gradle.org/current/javadoc/org/gradle/api/file/ConfigurableFileCollection.html) | `src/${sourceSet}/grammars`                                     |
 | handWrittenCodeDir (, hwc, handcodedPath ) | Directories for detecting hand-written code that needs to be integrated.                                                                                          | [ConfigurableFileCollection](https://docs.gradle.org/current/javadoc/org/gradle/api/file/ConfigurableFileCollection.html) | `src/${sourceSet}/java`                                         |
 | handWrittenGrammarDir (, hwg)              | Directories for detecting hand-written grammar modifications that need to be integrated.                                                                          | [ConfigurableFileCollection](https://docs.gradle.org/current/javadoc/org/gradle/api/file/ConfigurableFileCollection.html) | `src/${sourceSet}/grammarsHC`                                   |
-| templatePath (, tmplDir)                   | Directories for detecting hand-written templates to integrate.                                                                                                    | [ConfigurableFileCollection](https://docs.gradle.org/current/javadoc/org/gradle/api/file/ConfigurableFileCollection.html) | `src/${sourceSet}/resources`                                    |
+| templatePath (, tmplDir)                   | Directories for detecting hand-written templates to integrate.                                                                                                    | [ConfigurableFileCollection](https://docs.gradle.org/current/javadoc/org/gradle/api/file/ConfigurableFileCollection.html) | `src/${sourceSet}/configtemplates`                              |
 | configTemplate                             | template to configure the integration of hand-written templates. Thus, it can only be used in conjunction with a valid templatePath.                              | String                                                                                                                    | absent                                                          |
 | script                                     | Groovy script to control the generation workflow.                                                                                                                 | String                                                                                                                    | `monticore_standard.groovy`                                     |
 | modelPath                                  | Directories in which symbols or grammars are searched.                                                                                                            | [ConfigurableFileCollection](https://docs.gradle.org/current/javadoc/org/gradle/api/file/ConfigurableFileCollection.html) | absent                                                          |
@@ -146,7 +148,7 @@ The following snippets show examples, in which the default configuration is modi
 ### Different ModelPath
 
 ```build.gradle
-generateMCGrammars {
+tasks.named('generateMCGrammars') {
     modelPath("$projectDir/src/main/grammars", "$projectDir/src/notquitemain/grammars")
 }
 ```
@@ -159,7 +161,7 @@ The legacy usage now aborts with a descriptive error.
 ### Different workflow script
 
 ```build.gradle
-generateMCGrammars {
+tasks.named('generateMCGrammars') {
     script = "de/monticore/monticore_noreports.groovy"
 }
 ```
@@ -167,7 +169,7 @@ generateMCGrammars {
 ### Specify Groovy Hooks
 
 ```build.gradle
-generateMCGrammars {
+tasks.named('generateMCGrammars') {
     groovyHook1 = file "$projectDir/gs1.groovy"
     groovyHook2 = file "$projectDir/gs2.groovy"
 }
@@ -176,7 +178,7 @@ generateMCGrammars {
 ### ConfigTemplate
 
 ```build.gradle
-generateMCGrammars {
+tasks.named('generateMCGrammars') {
   configTemplate = "ct.ftl"
   templatePath "$projectDir/src/main/tpl"
 }
@@ -195,7 +197,7 @@ To further exclude grammars, you can filter on the `extractTRGrammars` task:
 ```groovy
 if (("true").equals(getProperty('genTR'))) {
   // Further exclude the grammar and basic tf grammars from being included in the TR grammar input set
-  extractTRGrammars {
+  tasks.named('extractTRGrammars') {
     exclude(["**/de/monticore/tf/*", "**/de/monticore/grammar/*", "**/de/monticore/siunit/*"])
   }
 }
@@ -305,6 +307,35 @@ This might be fixed by [8078641](https://github.com/openjdk/jdk/commit/21012f2bb
 * Ensure the generation target is NOT added to the java sources (otherwise the TOP mechanism will fail)
 * Ensure no resources.srcDirs += grammarOutDir is used (otherwise your build will depend on itself)
 
+### Root-Warning
+
+Only applies if you see the following warning:
+> WARNING: The se-commons cached work queue is setup multiple times.  
+> Reporting, log prefixes, and performance might be incorrect.  
+> Please add the (possibly MontiCore Generator) plugin to your root plugin (possible with apply false).  
+
+Gradle separates the plugins of subprojects against the plugins of other subprojects.
+As MontiCore (and other generation plugins) schedules its work,
+ this separation may leads to issues.
+While the plugin tries to work around the separation,
+ the performance decreases, the log prefixes might be missing,
+ and the `reportCachedQueueService` task does not contain the tasknames.
+
+You can solve this problem by adding the offending plugin in the (shared) root project
+ of your subprojects:
+
+```gradle
+//build.gradle
+plugins {
+    id 'de.monticore.generator' version "$mc_version" apply false // see https://monticore.github.io/monticore/docs/Gradle/#root-warning
+}
+//subproject/build.gradle
+plugins {
+    id 'de.monticore.generator' // plugin's version is specified in the root project
+}
+```
+
+
 ### Using legacy-dependencies with the new plugin
 
 Due to the diverging capabilities/variants of the new plugin,
@@ -320,7 +351,7 @@ dependencies {
   // we also have to add the implementation/java classes
   implementation "de.monticore.languages:myolddsl:7.7.0"
 }
-tasks.generateMCGrammars.configure {
+tasks.named('generateMCGrammars') {
   // Add the legacy-grammars to the symbol/model path of the generation
   symbolPathConfiguration.from(configurations.legacyGrammar)
 }

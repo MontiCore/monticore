@@ -2,39 +2,29 @@
 
 package mc.feature.constantsshortform;
 
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import mc.GeneratorIntegrationsTest;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import mc.feature.constantsshortform.constantsshortform.ConstantsShortFormMill;
 import mc.feature.constantsshortform.constantsshortform._ast.ASTA;
 import mc.feature.constantsshortform.constantsshortform._ast.ASTB;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ConstantsShortFormTest extends GeneratorIntegrationsTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
+@TestWithMCLanguage(ConstantsShortFormMill.class)
+public class ConstantsShortFormTest {
+
   @Test
   public void test() {
     ASTA a = ConstantsShortFormMill.aBuilder().build();
-    Assertions.assertEquals(a.isMyConst(), false);
+    assertFalse(a.isMyConst());
     a.setMyConst(true);
-    Assertions.assertEquals(a.isMyConst(), true);
+    assertTrue(a.isMyConst());
     
     ASTB b = ConstantsShortFormMill.bBuilder().build();
-    Assertions.assertEquals(b.isConst(), false);
+    assertFalse(b.isConst());
     b.setConst(true);
-    Assertions.assertEquals(b.isConst(), true);
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(b.isConst());
   }
   
 }

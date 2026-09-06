@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions.bitexpressions.types3;
 
 import com.google.common.base.Preconditions;

@@ -2,48 +2,33 @@
 
 package mc.feature.followoption;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.io.IOException;
-import java.io.StringReader;
-
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-
-import mc.GeneratorIntegrationsTest;
+import de.monticore.runtime.junit.MCAssertions;
+import de.monticore.runtime.junit.TestWithMCLanguage;
+import mc.feature.followoption.followoption.FollowOptionMill;
 import mc.feature.followoption.followoption._parser.FollowOptionParser;
 import org.junit.jupiter.api.Test;
 
-public class FollowOptionTest extends GeneratorIntegrationsTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
+import java.io.IOException;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+@TestWithMCLanguage(FollowOptionMill.class)
+public class FollowOptionTest {
+
   @Test
   public void test1() throws IOException {
-    
-    //-- extractfile gen/FollowOptionTest.x
-    FollowOptionParser simpleAParser = new FollowOptionParser();
-    simpleAParser.parseA(new StringReader("test ,"));
-    Assertions.assertEquals(false, simpleAParser.hasErrors());
-    //-- endfile gen/FollowOptionTest.x
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    FollowOptionParser simpleAParser = FollowOptionMill.parser();
+    simpleAParser.parse_StringA("test ,");
+    assertFalse(simpleAParser.hasErrors());
   }
     
   @Test
-  public void test2() throws IOException {    
-    //-- extractfile gen/FollowOptionTest.x
-
-    FollowOptionParser simpleBParser = new FollowOptionParser();
-    simpleBParser.parseB(new StringReader("test ,"));
-    Assertions.assertEquals(true, simpleBParser.hasErrors());
-    //-- endfile gen/FollowOptionTest.x
+  public void test2() throws IOException {
+    FollowOptionParser simpleBParser = FollowOptionMill.parser();
+    simpleBParser.parse_StringB("test ,");
+    assertTrue(simpleBParser.hasErrors());
+    MCAssertions.assertHasFindingStartingWith("Expected EOF but found token");
   }
   
   /**
@@ -53,19 +38,19 @@ public class FollowOptionTest extends GeneratorIntegrationsTest {
    */
   @Test
   public void test3() throws IOException {
+    FollowOptionParser simpleParser = FollowOptionMill.parser();
+    simpleParser.parse_StringB(",");
     
-    FollowOptionParser simpleParser = new FollowOptionParser();
-    simpleParser.parseB(new StringReader(","));
-    
-    Assertions.assertEquals(true, simpleParser.hasErrors());
+    assertTrue(simpleParser.hasErrors());
+    MCAssertions.assertHasFindingStartingWith("Expected EOF but found token");
   }
 
   @Test
   public void test4() throws IOException {
+    FollowOptionParser simpleAParser = FollowOptionMill.parser();
+    simpleAParser.parse_StringA("test .");
     
-    FollowOptionParser simpleAParser = new FollowOptionParser();
-    simpleAParser.parseA(new StringReader("test ."));
-
-    Assertions.assertEquals(true, simpleAParser.hasErrors());
+    assertTrue(simpleAParser.hasErrors());
+    MCAssertions.assertHasFindingStartingWith("mismatched input '.' expecting ','");
   }
 }

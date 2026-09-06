@@ -36,7 +36,9 @@ public class AttributeCardinalityConstraint {
       String usageName = att.getName();
       if (TransformationHelper.getMax(att).isPresent()
           || MCGrammarSymbolTableHelper.getMin(att).isPresent()) {
-        ret.append("int " + getCounterName(usageName) + "=0;\n");
+        ret.append("int ");
+        ret.append(getCounterName(usageName));
+        ret.append(" = 0;\n");
       }
     }
     return ret.toString();
@@ -69,7 +71,8 @@ public class AttributeCardinalityConstraint {
               + runtimemessage
               + ";\n"
               + "de.se_rwth.commons.logging.Log.error(message);\nsetErrors(true);}\n";
-          ret.append("\n" + message);
+          ret.append("\n");
+          ret.append(message);
         }
 
         if (max.isPresent() && max.get() != TransformationHelper.STAR) {
@@ -91,7 +94,8 @@ public class AttributeCardinalityConstraint {
               + runtimemessage
               + ";\n"
               + "de.se_rwth.commons.logging.Log.error(message);setErrors(true);}\n";
-          ret.append("\n" + message);
+          ret.append("\n");
+          ret.append(message);
         }
       }
     }
@@ -102,17 +106,18 @@ public class AttributeCardinalityConstraint {
   public String addActionForNonTerminal(ASTNonTerminal ast) {
     StringBuilder ret = new StringBuilder();
 
-    String usageName = parserGenHelper.getUsageName(ast);
+    String usageName = ParserGeneratorHelper.getUsageName(ast);
 
     Optional<ProdSymbol> rule = MCGrammarSymbolTableHelper.getEnclosingRule(ast);
-    if (!rule.isPresent()) {
+    if (rule.isEmpty()) {
       return ret.toString();
     }
 
     Optional<AdditionalAttributeSymbol> att = rule.get().getSpannedScope().resolveAdditionalAttributeLocally(usageName);
     if (att.isPresent() && (TransformationHelper.getMax(att.get()).isPresent()
         || MCGrammarSymbolTableHelper.getMin(att.get()).isPresent())) {
-      ret.append(getCounterName(usageName) + "++;\n");
+      ret.append(getCounterName(usageName));
+      ret.append("++;\n");
     }
     return ret.toString();
   }

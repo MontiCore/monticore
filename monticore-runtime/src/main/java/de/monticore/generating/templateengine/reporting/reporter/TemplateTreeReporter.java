@@ -68,11 +68,7 @@ public class TemplateTreeReporter extends AReporter {
   }
   
   protected String getIndent() {
-    String ret = "";
-    for (int i = 0; i < currentIndentLevel; i++) {
-      ret += INDENTATION;
-    }
-    return ret;
+    return INDENTATION.repeat(currentIndentLevel);
   }
   
   @Override
@@ -172,20 +168,24 @@ public class TemplateTreeReporter extends AReporter {
   protected void callSpecificHP(HookPoint hp) {
     if (hp != null) {
       String line = getIndent();
-      if (hp instanceof StringHookPoint) {
-        line += SPECIFIC_STRING_HOOKPOINT;
-        line += ": " + getHookPointValue(hp);
-        writeLine(line);
-      }
-      else if (hp instanceof TemplateHookPoint) {
-        line += SPECIFIC_TEMPLATE_HOOKPOINT;
-        line += ": " + getHookPointValue(hp);
-        writeLine(line);
-      }
-      else if (hp instanceof CodeHookPoint) {
-        line += SPECIFIC_CODE_HOOKPOINT;
-        line += ": " + getHookPointValue(hp);
-        writeLine(line);
+      switch (hp) {
+        case StringHookPoint h -> {
+          line += SPECIFIC_STRING_HOOKPOINT;
+          line += ": " + getHookPointValue(hp);
+          writeLine(line);
+        }
+        case TemplateHookPoint h -> {
+          line += SPECIFIC_TEMPLATE_HOOKPOINT;
+          line += ": " + getHookPointValue(hp);
+          writeLine(line);
+        }
+        case CodeHookPoint h -> {
+          line += SPECIFIC_CODE_HOOKPOINT;
+          line += ": " + getHookPointValue(hp);
+          writeLine(line);
+        }
+        default -> {
+        }
       }
     }
   }
@@ -199,20 +199,24 @@ public class TemplateTreeReporter extends AReporter {
   protected void callHP(HookPoint hp) {
     if (hp != null) {
       String line = getIndent();
-      if (hp instanceof StringHookPoint) {
-        line += STRING_HOOKPOINT;
-        line += ": " + getHookPointValue(hp);
-        writeLine(line);
-      }
-      else if (hp instanceof TemplateHookPoint) {
-        line += TEMPLATE_HOOKPOINT;
-        line += ": " + getHookPointValue(hp);
-        writeLine(line);
-      }
-      else if (hp instanceof CodeHookPoint) {
-        line += CODE_HOOKPOINT;
-        line += ": " + getHookPointValue(hp);
-        writeLine(line);
+      switch (hp) {
+        case StringHookPoint h -> {
+          line += STRING_HOOKPOINT;
+          line += ": " + getHookPointValue(hp);
+          writeLine(line);
+        }
+        case TemplateHookPoint h -> {
+          line += TEMPLATE_HOOKPOINT;
+          line += ": " + getHookPointValue(hp);
+          writeLine(line);
+        }
+        case CodeHookPoint h -> {
+          line += CODE_HOOKPOINT;
+          line += ": " + getHookPointValue(hp);
+          writeLine(line);
+        }
+        default -> {
+        }
       }
     }
   }
@@ -223,16 +227,16 @@ public class TemplateTreeReporter extends AReporter {
   
   protected String getHookPointValue(HookPoint hp) {
     String value = null;
-    if (hp != null && hp instanceof TemplateHookPoint) {
+    if (hp instanceof TemplateHookPoint) {
       value = ((TemplateHookPoint) hp).getTemplateName();
       value = ReportingHelper.getTemplateName(value);
     }
-    else if (hp != null && hp instanceof StringHookPoint) {
+    else if (hp instanceof StringHookPoint) {
       value = ((StringHookPoint) hp).getValue();
       value = ReportingHelper.formatStringToReportingString(value,
           ReportingConstants.REPORTING_ROW_LENGTH - ReportingConstants.FORMAT_LENGTH_2);
     }
-    else if (hp != null && hp instanceof CodeHookPoint) {
+    else if (hp instanceof CodeHookPoint) {
       value = ((CodeHookPoint) hp).getClass().getName();
       value = Names.getSimpleName(value);
     }

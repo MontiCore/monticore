@@ -32,7 +32,7 @@ public class Pkg extends APkg {
   }
 
   /**
-   * @see visualization.model.APkg#resolveAncestorWithElements()
+   * visualization.model.APkg#resolveAncestorWithElements()
    */
   @Override
   public APkg resolveAncestorWithElements() {

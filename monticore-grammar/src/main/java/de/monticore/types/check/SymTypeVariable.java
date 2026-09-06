@@ -1,15 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import com.google.common.base.Preconditions;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.types3.ISymTypeVisitor;
-import de.monticore.types3.SymTypeRelations;
 import de.se_rwth.commons.logging.Log;
-
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
 
 public class SymTypeVariable extends SymTypeExpression {
 
@@ -18,10 +14,10 @@ public class SymTypeVariable extends SymTypeExpression {
   protected TypeVarSymbol typeVarSymbol;
 
   public SymTypeVariable(TypeVarSymbol typeSymbol) {
-    this.typeVarSymbol = Log.errorIfNull(typeSymbol);
+    this.typeVarSymbol = Preconditions.checkNotNull(typeSymbol);
   }
 
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public SymTypeVariable(TypeSymbol typeSymbol) {
     this.typeSymbol = typeSymbol;
     if (typeSymbol instanceof TypeVarSymbol) {
@@ -32,7 +28,7 @@ public class SymTypeVariable extends SymTypeExpression {
   /**
    * @deprecated (should) return true
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public boolean hasTypeVarSymbol() {
     return typeVarSymbol != null;
   }
@@ -151,7 +147,9 @@ public class SymTypeVariable extends SymTypeExpression {
    * Similar to deepEquals, but only checks
    * whether the variables are supposed to be the same variable.
    * E.g., bounds are ignored
+   * @deprecated leftover of old version, simply use deepEquals() instead.
    */
+  @Deprecated(forRemoval = true)
   public boolean denotesSameVar(SymTypeExpression other) {
     if (!other.isTypeVariable()) {
       return false;
@@ -179,11 +177,10 @@ public class SymTypeVariable extends SymTypeExpression {
   public boolean deepEquals(SymTypeExpression sym) {
     //support deprecated code:
     if (typeSymbol != null) {
-      if (!(sym instanceof SymTypeVariable)) {
+      if (!(sym instanceof SymTypeVariable symVar)) {
         return false;
       }
-      SymTypeVariable symVar = (SymTypeVariable) sym;
-      if (this.typeSymbol == null || symVar.typeSymbol == null) {
+      if (symVar.typeSymbol == null) {
         return false;
       }
       if (!this.typeSymbol.getEnclosingScope().equals(symVar.typeSymbol.getEnclosingScope())) {
@@ -201,7 +198,7 @@ public class SymTypeVariable extends SymTypeExpression {
       return true;
     }
     SymTypeVariable symVar = (SymTypeVariable) sym;
-    if (!denotesSameVar(symVar)) {
+    if (!getTypeVarSymbol().equals(symVar.getTypeVarSymbol())) {
       return false;
     }
     return true;

@@ -10,18 +10,18 @@ import basiccd._ast.ASTClassDiagram;
 import basiccd._parser.BasicCDParser;
 import cdandaut.CDClass2StimulusAdapter;
 import cdandaut.CDClass2StimulusResolver;
+import de.monticore.runtime.junit.MCAssertions;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Optional;
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertTrue;
 import de.se_rwth.commons.logging.Log;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class CDAndAutTest {
 
@@ -29,7 +29,7 @@ public class CDAndAutTest {
 
   Automata7Parser autParser = new Automata7Parser();
 
-  @BeforeClass
+  @BeforeAll
   public static void setUpLogger() {
     BasicCDMill.reset();
     Automata7Mill.reset();
@@ -37,7 +37,7 @@ public class CDAndAutTest {
     Automata7Mill.init();
   }
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -66,7 +66,7 @@ public class CDAndAutTest {
 
     assertTrue(s.isPresent());
     assertEquals("Bla", s.get().getName());
-    assertTrue(s.get() instanceof CDClass2StimulusAdapter); //assure that an adapter was found
-    Assert.assertTrue(Log.getFindings().isEmpty());
+    assertInstanceOf(CDClass2StimulusAdapter.class, s.get()); //assure that an adapter was found
+    MCAssertions.assertNoFindings();
   }
 }

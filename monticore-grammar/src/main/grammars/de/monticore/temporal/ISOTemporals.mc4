@@ -1,0 +1,152 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.temporal;
+
+/* Alpha-version: This is intended to become a MontiCore stable grammar. */
+
+/**
+ * This grammar realizes the core interfaces defined in TemporalBasis with the ISO 8601-1 standard.
+ *
+ * These date/time-formats are suitable for use in international communication.
+ */
+component grammar ISOTemporals extends de.monticore.temporal.TemporalBasis {
+
+  interface ISOInstant extends Instant <110>;
+
+  /* ======================================================================== */
+  /* ================================= Date ================================= */
+  /* ======================================================================== */
+
+  interface ISODate extends ISOInstant, Date;
+
+  CalendarDate implements ISODate = { !isOrdinalDate() }? Sign? pre:Digits ("-" mid:Digits)? ("-" post:Digits)?;
+
+  astrule CalendarDate =
+      century: java.util.Optional<Integer>
+      decade: java.util.Optional<Integer>
+      year: java.util.Optional<Integer>
+      month: java.util.Optional<Integer>
+      day: java.util.Optional<Integer>;
+
+  OrdinalDate implements ISODate = { isOrdinalDate() }? Sign? pre:Digits ("-" post:Digits)?;
+
+  astrule OrdinalDate =
+      year: int
+      dayOfYear: int;
+
+  interface WeekDate extends ISODate;
+
+  BasicWeekDate implements WeekDate, Literal = source:BasicWeekDateToken;
+
+  ExtendedWeekDate implements WeekDate = Sign? yearSource:Digits "-" weekSource:WDigits ("-" dayOfWeekSource:Digits)?;
+
+  astrule BasicWeekDate =
+    year: int
+    week: int
+    dayOfWeekInternal: java.util.Optional<Integer>;
+
+  // A 'W' followed by any number of digits ('0'-'9'). Only used above for the WeekDate rule
+  // to work around the fact such strings are tokenized as Names.
+  WDigits = { cmpTokenRegEx(1, "W\\d+") }? source:Name;
+
+  enum Sign = plus:"+" | minus:"-";
+
+  /* ======================================================================== */
+  /* ================================= Time ================================= */
+  /* ======================================================================== */
+
+  ISOTime implements ISOInstant, Time =
+    // Basic format
+      (preWithT:TDigits Fraction? timeShiftSource:TimeShift?)
+    // Extended format
+    | ((pre:Digits | preWithT:TDigits) ":" mid:Digits (":" post:Digits)?
+       Fraction? timeShiftSource:TimeShift?);
+
+  astrule ISOTime =
+    hour: int
+    minute: java.util.Optional<Integer>
+    second: java.util.Optional<Integer>
+    decimalDigits: java.util.Optional<String>
+    timeShiftHour: java.util.Optional<Integer>
+    timeShiftMinute: java.util.Optional<Integer>;
+
+  // A 'T' followed by any number of digits ('0'-'9') and possibly a 'Z' as the last character.
+  // Only used above, to work around the fact that strings such as "T123001Z" will be tokenized
+  // as a single Name token.
+  TDigits = { cmpTokenRegEx(1, "T\\d+Z?") }? source:Name;
+
+  Fraction = (period:"." | comma:",") Digits;
+
+  TimeShift = "Z" | Sign hour:Digits (":" minute:Digits)?;
+
+  /* ======================================================================== */
+  /* =============================== DateTime =============================== */
+  /* ======================================================================== */
+
+  ISODateTime implements ISOInstant, Literal, DateTime = source:ISODateTimeToken;
+
+  astrule ISODateTime =
+    date: ISODate
+    time: ISOTime;
+
+  /* ======================================================================== */
+  /* ================================ Period ================================ */
+  /* ======================================================================== */
+
+  interface ISOPeriod extends Period;
+
+  FullPeriod implements ISOPeriod = pre:PeriodBegin (Fraction post:PeriodEnd)?;
+
+  PeriodBegin = { cmpTokenRegEx(1, "P(\\d+Y)?(\\d+M)?(\\d+D)?T?(\\d+[hH])?(\\d+[mM])?(\\d+[sS])?\\d*") }? source:Name;
+
+  PeriodEnd = { cmpTokenRegEx(1, "[hHmMsS]") }? source:Name;
+
+  astrule FullPeriod =
+    years: java.util.Optional<Integer>
+    months: java.util.Optional<Integer>
+    days: java.util.Optional<Integer>
+    hours: java.util.Optional<Integer>
+    minutes: java.util.Optional<Integer>
+    seconds: java.util.Optional<Integer>
+    decimalDigits: java.util.Optional<String>;
+
+  WeekPeriod implements ISOPeriod = { cmpTokenRegEx(1, "P[0-9]+W") }? source:Name;
+
+  astrule WeekPeriod =
+    weeks: int;
+
+  /* ======================================================================== */
+  /* ================================ Tokens ================================ */
+  /* ======================================================================== */
+
+  fragment token SignToken = '+' | '-';
+
+  fragment token BasicTime = 'T' Digits;
+
+  fragment token ExtendedTime = 'T'? Digits ':' Digits (':' Digits)?;
+
+  fragment token FractionToken = ('.' | ',') Digits;
+
+  fragment token TimeShiftToken = 'Z' | SignToken Digits (':' Digits)?;
+
+  fragment token ISOTimeToken = (BasicTime | ExtendedTime) FractionToken? TimeShiftToken?;
+
+  token BasicWeekDateToken = SignToken? Digits 'W' Digits;
+
+  token ISODateTimeToken = SignToken? Digits '-'? 'W'? Digits ('-' Digits)? ISOTimeToken;
+
+  concept antlr {
+    parserjava {
+      public boolean isOrdinalDate() {
+        int extraDigits = 0;
+        int tokenIndex = 1;
+        if (cmpToken(tokenIndex, "+", "-")) {
+          tokenIndex++;
+          extraDigits = 2;
+        }
+
+        return getToken(tokenIndex).length() == 7 + extraDigits
+          || (cmpToken(tokenIndex + 1, "-") && getToken(tokenIndex + 2).length() == 3);
+      }
+    }
+  }
+}

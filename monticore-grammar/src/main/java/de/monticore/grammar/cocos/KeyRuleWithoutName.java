@@ -19,7 +19,7 @@ public class KeyRuleWithoutName implements GrammarASTMCGrammarCoCo {
   @Override
   public void check(ASTMCGrammar gr) {
     MCGrammarSymbol grSymbol = gr.getSymbol();
-    if (!gr.isComponent() && !grSymbol.getProdWithInherited("Name").isPresent()) {
+    if (!gr.isComponent() && grSymbol.getProdWithInherited("Name").isEmpty()) {
       if (!grSymbol.getKeywordRulesWithInherited().isEmpty()) {
         Log.error(ERROR_CODE + ERROR_MSG_FORMAT, gr.get_SourcePositionStart());
       }

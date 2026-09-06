@@ -84,26 +84,17 @@ public class MultiplicityTranslation implements
   }
 
   protected static String changePrimitiveType(int primType) {
-    switch (primType) {
-      case ASTConstantsMCBasicTypes.INT:
-        return "Integer";
-      case ASTConstantsMCBasicTypes.BOOLEAN:
-        return "Boolean";
-      case ASTConstantsMCBasicTypes.DOUBLE:
-        return "Double";
-      case ASTConstantsMCBasicTypes.FLOAT:
-        return "Float";
-      case ASTConstantsMCBasicTypes.CHAR:
-        return "Char";
-      case ASTConstantsMCBasicTypes.BYTE:
-        return "Byte";
-      case ASTConstantsMCBasicTypes.SHORT:
-        return "Short";
-      case ASTConstantsMCBasicTypes.LONG:
-        return "Long";
-      default:
-        return "Object";
-    }
+    return switch (primType) {
+      case ASTConstantsMCBasicTypes.INT -> "Integer";
+      case ASTConstantsMCBasicTypes.BOOLEAN -> "Boolean";
+      case ASTConstantsMCBasicTypes.DOUBLE -> "Double";
+      case ASTConstantsMCBasicTypes.FLOAT -> "Float";
+      case ASTConstantsMCBasicTypes.CHAR -> "Char";
+      case ASTConstantsMCBasicTypes.BYTE -> "Byte";
+      case ASTConstantsMCBasicTypes.SHORT -> "Short";
+      case ASTConstantsMCBasicTypes.LONG -> "Long";
+      default -> "Object";
+    };
   }
 
 }

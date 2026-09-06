@@ -10,8 +10,9 @@ import de.monticore.*;
  * The grammar introduces reusable symbols for
  *      Types (of all kinds), 
  *      Functions, 
- *      Variables and 
- *      TypeVariables
+ *      Variables,
+ *      TypeVariables, and
+ *      Stereotypes
  *
  * The symbols are of general nature and do not precluse (and thus also
  * not assist) static, private or other specialities.
@@ -91,5 +92,13 @@ component grammar BasicSymbols extends de.monticore.MCBasics {
   symbolrule Function =
     isElliptic: boolean
     type: de.monticore.types.check.SymTypeExpression ;
+
+  /**
+   * A stereotype that model elements may obtain.
+   */
+  interface symbol MCStereotype = Name;
+
+  symbolrule MCStereotype
+    implements de.monticore.symboltable.stereotypes.IStereotypeSymbol;
 
 }

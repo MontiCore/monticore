@@ -1,152 +1,140 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions.prettyprint;
 
-import de.monticore.expressions.bitexpressions._prettyprint.BitExpressionsFullPrettyPrinter;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.testbitexpressions.TestBitExpressionsMill;
 import de.monticore.expressions.testbitexpressions._parser.TestBitExpressionsParser;
-import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+@TestWithMCLanguage(TestBitExpressionsMill.class)
 public class BitExpressionsPrettyPrinterTest {
   protected TestBitExpressionsParser parser;
-  protected BitExpressionsFullPrettyPrinter prettyPrinter;
   
   @BeforeEach
   public void init() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-    TestBitExpressionsMill.reset();
-    TestBitExpressionsMill.init();
-    parser = new TestBitExpressionsParser();
-    prettyPrinter = new BitExpressionsFullPrettyPrinter(new IndentPrinter());
-    prettyPrinter.getPrinter().clearBuffer();
+    parser = TestBitExpressionsMill.parser();
   }
 
   @Test
   public void testLeftShiftExpression() throws IOException {
     Optional<ASTExpression> result = parser.parse_StringExpression("a<<b");
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(result.isPresent());
-    Assertions.assertTrue(result.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
 
     ASTExpression ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestBitExpressionsMill.prettyPrint(ast, false);
 
     result = parser.parse_StringExpression(output);
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(result.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
 
-    Assertions.assertTrue(ast.deepEquals(result.get()));
+    assertTrue(ast.deepEquals(result.get()));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testRightShiftExpression() throws IOException {
     Optional<ASTExpression> result = parser.parse_StringExpression("a>>b");
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(result.isPresent());
-    Assertions.assertTrue(result.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
 
     ASTExpression ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestBitExpressionsMill.prettyPrint(ast, false);
 
     result = parser.parse_StringExpression(output);
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(result.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
 
-    Assertions.assertTrue(ast.deepEquals(result.get()));
+    assertTrue(ast.deepEquals(result.get()));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testLogicalRightShiftExpression() throws IOException {
     Optional<ASTExpression> result = parser.parse_StringExpression("a>>>b");
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(result.isPresent());
-    Assertions.assertTrue(result.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
 
     ASTExpression ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestBitExpressionsMill.prettyPrint(ast, false);
 
     result = parser.parse_StringExpression(output);
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(result.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
 
-    Assertions.assertTrue(ast.deepEquals(result.get()));
+    assertTrue(ast.deepEquals(result.get()));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testBinaryOrOpExpression() throws IOException {
     Optional<ASTExpression> result = parser.parse_StringExpression("a|b");
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(result.isPresent());
-    Assertions.assertTrue(result.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
 
     ASTExpression ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestBitExpressionsMill.prettyPrint(ast, false);
 
     result = parser.parse_StringExpression(output);
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(result.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
 
-    Assertions.assertTrue(ast.deepEquals(result.get()));
+    assertTrue(ast.deepEquals(result.get()));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testBinaryXorExpression() throws IOException {
     Optional<ASTExpression> result = parser.parse_StringExpression("a^b");
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(result.isPresent());
-    Assertions.assertTrue(result.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
 
     ASTExpression ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestBitExpressionsMill.prettyPrint(ast, false);
 
     result = parser.parse_StringExpression(output);
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(result.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
 
-    Assertions.assertTrue(ast.deepEquals(result.get()));
+    assertTrue(ast.deepEquals(result.get()));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testBinaryAndExpression() throws IOException {
     Optional<ASTExpression> result = parser.parse_StringExpression("a&b");
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(result.isPresent());
-    Assertions.assertTrue(result.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
 
     ASTExpression ast = result.get();
 
-    String output = prettyPrinter.prettyprint(ast);
+    String output = TestBitExpressionsMill.prettyPrint(ast, false);
 
     result = parser.parse_StringExpression(output);
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(result.isPresent());
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
 
-    Assertions.assertTrue(ast.deepEquals(result.get()));
+    assertTrue(ast.deepEquals(result.get()));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

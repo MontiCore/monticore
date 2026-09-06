@@ -2,11 +2,7 @@
 package de.monticore.types3;
 
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
-import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
-import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsGlobalScope;
-import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
-import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
-import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -17,25 +13,10 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static de.monticore.types.check.SymTypeExpressionFactory.createFunction;
-import static de.monticore.types.check.SymTypeExpressionFactory.createGenerics;
-import static de.monticore.types.check.SymTypeExpressionFactory.createTypeObject;
-import static de.monticore.types.check.SymTypeExpressionFactory.createTypeVariable;
-import static de.monticore.types.check.SymTypeExpressionFactory.createWildcard;
+import static de.monticore.runtime.junit.MCAssertions.assertNoFindings;
+import static de.monticore.types.check.SymTypeExpressionFactory.*;
 import static de.monticore.types.mccollectiontypes.types3.util.MCCollectionSymTypeFactory.createList;
-import static de.monticore.types3.util.DefsTypesForTests._IntegerSymType;
-import static de.monticore.types3.util.DefsTypesForTests._carSymType;
-import static de.monticore.types3.util.DefsTypesForTests._floatSymType;
-import static de.monticore.types3.util.DefsTypesForTests._intSymType;
-import static de.monticore.types3.util.DefsTypesForTests._linkedListSymType;
-import static de.monticore.types3.util.DefsTypesForTests._personSymType;
-import static de.monticore.types3.util.DefsTypesForTests._unboxedString;
-import static de.monticore.types3.util.DefsTypesForTests._voidSymType;
-import static de.monticore.types3.util.DefsTypesForTests.function;
-import static de.monticore.types3.util.DefsTypesForTests.inScope;
-import static de.monticore.types3.util.DefsTypesForTests.type;
-import static de.monticore.types3.util.DefsTypesForTests.typeVariable;
-import static de.monticore.types3.util.DefsTypesForTests.variable;
+import static de.monticore.types3.util.DefsTypesForTests.*;
 import static de.monticore.types3.util.DefsVariablesForTests._carVarSym;
 import static de.monticore.types3.util.DefsVariablesForTests._personVarSym;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
@@ -181,6 +162,8 @@ public class CallGenericFunctionsTest
     checkExpr("getTarget", "() -> int", "() -> int");
     checkExpr("getTarget()", "int", "int");
     checkExpr("getTarget()", "List<int>", "List<int>");
+    // Variant: provide the target type in the model itself by cast-Expression
+    checkExpr("(int)getTarget()", "int");
     // note: this may seem unintuitive
     // (getting wildcards for getTarget but not for getTargetList)
     // but this aligns with the behavior of the Oracle JDK 11.0.12
@@ -434,7 +417,7 @@ public class CallGenericFunctionsTest
     // in Java, this would be Object, not "?"
     // or a free type variable due to capture conversion
     checkExpr("box.get()", "?");
-    checkErrorExpr("box.put(box.get())", "0xFD444");
+    checkErrorExpr("box.put(box.get())", "0xFD44E");
     checkExpr("reboxHelper(box)", "void");
     checkExpr("strBox = make()", "Box<String>");
     checkExpr("box = make()", "Box<?>");

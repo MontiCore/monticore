@@ -1,6 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.grammar.grammar_withconcepts._symboltable;
 
+import de.monticore.grammar.concepts.antlr.antlr._ast.ASTConceptAntlr;
+import de.monticore.grammar.concepts.antlr.antlr._visitor.AntlrHandler;
+import de.monticore.grammar.concepts.antlr.antlr._visitor.AntlrTraverser;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._symboltable.GrammarSTCompleteTypes;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
@@ -29,6 +32,7 @@ public class Grammar_WithConceptsPhasedSTC {
     traverser.add4JavaLight(new JavaLightSTCompleteTypes());
     traverser.add4MCCommonStatements(new MCCommonStatementsSTCompleteTypes());
     traverser.add4MCVarDeclarationStatements(new MCVarDeclarationStatementsSTCompleteTypes());
+    traverser.setAntlrHandler(new DoNotTCJavaCode());
     priorityList.add(traverser);
   }
 
@@ -38,4 +42,24 @@ public class Grammar_WithConceptsPhasedSTC {
     return as;
   }
 
+  // Explicitly do not check the JavaCode of ConceptAntlr (as we can't TC it without knowing the java classpath)
+  // required since the 7.7.0 -> 7.8.0 update
+  // https://git.rwth-aachen.de/monticore/monticore/-/issues/4842
+  protected static class DoNotTCJavaCode implements AntlrHandler {
+    protected AntlrTraverser realThis;
+    @Override
+    public AntlrTraverser getTraverser() {
+      return realThis;
+    }
+
+    @Override
+    public void setTraverser(AntlrTraverser traverser) {
+      this.realThis = traverser;
+    }
+
+    @Override
+    public void traverse(ASTConceptAntlr node) {
+      // do nothing!
+    }
+  }
 }

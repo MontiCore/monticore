@@ -65,7 +65,7 @@ Throws
     =   (MCQualifiedName || ",")+;
 
 LastFormalParameter
-    =   JavaModifier*  MCType "..." DeclaratorId;
+    =   MCModifier*  MCType "..." DeclaratorId;
 
 FormalParameterListing
     =   (FormalParameter || ",")+ ("," LastFormalParameter)?

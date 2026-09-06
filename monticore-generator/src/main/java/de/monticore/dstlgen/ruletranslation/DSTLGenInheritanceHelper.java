@@ -6,6 +6,7 @@ import com.google.common.collect.Sets;
 import de.monticore.grammar.grammar.GrammarMill;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
+import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.se_rwth.commons.Names;
 
 import java.util.Collections;
@@ -13,7 +14,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.Optional;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 
 public class DSTLGenInheritanceHelper {
 
@@ -36,11 +37,11 @@ public class DSTLGenInheritanceHelper {
    * The names of all lexical productions known to TFCommons.
    * Required, as the transformation languages are all extending TFCommons
    */
-  protected final Collection<String> tfCommonLexProds = new HashSet<>();
+  protected final Collection<String> tfCommonLexProds = new LinkedHashSet<>();
   /**
    * FQN of TFCommons and all its super grammars
    */
-  protected final Collection<String> tfCommonSuperFQNs = new HashSet<>();
+  protected final Collection<String> tfCommonSuperFQNs = new LinkedHashSet<>();
 
   /**
    * Constructor for de.monticore.tf.ruletranslation.InheritanceHelper
@@ -51,10 +52,12 @@ public class DSTLGenInheritanceHelper {
     if (tfCommonsGrammarSymbol.isPresent()) {
       // modelPath appears to not contain TFCommons (e.g. when using the script tests)
       // Thus, we do not have the problem of potentially overlapping tokens (and instead are unable to run monticore on the generated TR grammar)
-      tfCommonsGrammarSymbol.get().getSpannedScope().getLocalProdSymbols().stream().filter(ps -> ps.isIsLexerProd()).forEach(ps -> tfCommonLexProds.add(ps.getName()));
+      tfCommonsGrammarSymbol.get().getSpannedScope().getLocalProdSymbols().stream().filter(
+          ProdSymbol::isIsLexerProd).forEach(ps -> tfCommonLexProds.add(ps.getName()));
       tfCommonSuperFQNs.add(tfCommonsGrammarSymbol.get().getFullName());
       for (MCGrammarSymbol superGrammar : tfCommonsGrammarSymbol.get().getAllSuperGrammars()) {
-        superGrammar.getSpannedScope().getLocalProdSymbols().stream().filter(ps -> ps.isIsLexerProd()).forEach(ps -> tfCommonLexProds.add(ps.getName()));
+        superGrammar.getSpannedScope().getLocalProdSymbols().stream().filter(
+            ProdSymbol::isIsLexerProd).forEach(ps -> tfCommonLexProds.add(ps.getName()));
         tfCommonSuperFQNs.add(superGrammar.getFullName());
       }
     }
@@ -69,7 +72,7 @@ public class DSTLGenInheritanceHelper {
       List<String> p = ast.getSupergrammarList().stream()
                                             .filter(s -> !isCommonSuperGrammar(s.getNameList()))
                                             .findFirst().get().getNameList();
-      return Names.getQualifiedName(p.subList(0,p.size()-1));
+      return Names.constructQualifiedName(p.subList(0,p.size()-1));
     }
     return "";
   }

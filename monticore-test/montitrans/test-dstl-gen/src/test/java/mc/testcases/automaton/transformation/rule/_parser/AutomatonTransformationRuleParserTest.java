@@ -3,21 +3,21 @@ package mc.testcases.automaton.transformation.rule._parser;
 
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
+import mc.testcases.automaton.tr.automatontr.AutomatonTRMill;
 import mc.testcases.automaton.tr.automatontr._ast.*;
 import mc.testcases.automaton.tr.automatontr._parser.AutomatonTRParser;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class AutomatonTransformationRuleParserTest  {
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -63,7 +63,8 @@ public class AutomatonTransformationRuleParserTest  {
     assertTrue(Log.getFindings().isEmpty());
   }
 
-  @Test @Ignore
+  @Test
+  @Disabled
   public void testIsIdentifierFix() throws IOException {
     String inputFile = "src/test/resources/IsIdentifierFix.mtr";
     AutomatonTRParser parser = new AutomatonTRParser();
@@ -151,6 +152,24 @@ public class AutomatonTransformationRuleParserTest  {
     assertNotNull(b);
     assertEquals("$b", b.getName().getIdentifier());
   
+    assertTrue(Log.getFindings().isEmpty());
+  }
+
+  @Test
+  public void testRulePresence() throws  IOException {
+    AutomatonTRParser parser = new AutomatonTRParser();
+    Optional<ASTAutomatonTFRule> astA = parser.parse_String("automaton MyAut {}");
+    assertFalse(parser.hasErrors());
+    assertTrue(astA.isPresent());
+
+    Optional<ASTAutomatonTFRule> astB = parser.parse_String("Automaton [[ automaton MyAut {} ]]");
+    assertFalse(parser.hasErrors());
+    assertTrue(astB.isPresent());
+
+    // The existence of the rule name might be relevant, e.g.
+    // "Expression [[ a+b ]]" vs "PlusExpression [[ a+b ]]"
+    assertFalse(astA.get().deepEquals(astB.get()));
+
     assertTrue(Log.getFindings().isEmpty());
   }
 }

@@ -8,22 +8,7 @@ import de.monticore.types.check.SymTypeExpressionDeSer;
 import java.util.List;
 
 public class JavaMethodSymbolDeSer extends JavaMethodSymbolDeSerTOP {
-
-  @Override
-  protected void serializeExceptions(List<SymTypeExpression> exceptions, JavaLightSymbols2Json s2j) {
-    SymTypeExpressionDeSer.serializeMember(s2j.getJsonPrinter(), "exceptions", exceptions);
-  }
-
-  @Override
-  protected void serializeAnnotations(List<SymTypeExpression> annotations, JavaLightSymbols2Json s2j) {
-    SymTypeExpressionDeSer.serializeMember(s2j.getJsonPrinter(), "annotations", annotations);
-  }
-
-  @Override
-  protected void serializeType(SymTypeExpression type, JavaLightSymbols2Json s2j) {
-    SymTypeExpressionDeSer.serializeMember(s2j.getJsonPrinter(), "type", type);
-  }
-
+  
   @Override
   protected List<SymTypeExpression> deserializeExceptions(JsonObject symbolJson) {
     return SymTypeExpressionDeSer.deserializeListMember("exceptions", symbolJson);

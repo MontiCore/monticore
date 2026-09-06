@@ -1,7 +1,7 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.mcbasictypes.cocos;
 
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
-import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolTOP;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
@@ -40,7 +40,7 @@ public class QualifiedTypeHasNoTypeParameters
           Log.error("0xFD123 encountered usage of generic type "
                   + node.printType() + " without type arguments."
                   + " Please provide type arguments for the parameters: "
-                  + params.stream().map(TypeSymbolTOP::getName)
+                  + params.stream().map(TypeSymbol::getName)
                   .collect(Collectors.joining(", ")),
               node.get_SourcePositionStart(),
               node.get_SourcePositionEnd()

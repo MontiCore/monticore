@@ -8,6 +8,8 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.cdinterfaceandenum._ast.ASTCDEnum;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
+import de.monticore.codegen.mc2cd.MC2CDStereotypes;
+import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.LexNamer;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
@@ -68,22 +70,24 @@ public class NameTranslation implements
         for (Link<ASTNonTerminal, ASTCDAttribute> link : rootLink.getLinks(ASTNonTerminal.class,
                 ASTCDAttribute.class)) {
             Optional<String> usageName = getUsageName(rootLink.source(), link.source());
-            String nameToUse = usageName.isPresent() ? usageName.get() : StringTransformations.uncapitalize(link.source().getName());
+            String nameToUse = usageName.orElseGet(
+                () -> StringTransformations.uncapitalize(link.source().getName()));
             link.target().setName(nameToUse);
         }
 
         for (Link<ASTITerminal, ASTCDAttribute> link : rootLink.getLinks(ASTITerminal.class,
                 ASTCDAttribute.class)) {
             Optional<String> usageName = getUsageName(rootLink.source(), link.source());
-            String nameToUse = usageName.isPresent() ? usageName.get() : link.source().getName();
+            String nameToUse = usageName.orElseGet(() -> link.source().getName());
             link.target().setName(nameToUse);
+            TransformationHelper.addStereotypeValue(link.target().getModifier(), MC2CDStereotypes.TERMINAL_DEFAULT_VALUE.toString(), link.source().getName());
         }
 
         for (Link<ASTConstantGroup, ASTCDAttribute> link : rootLink.getLinks(ASTConstantGroup.class,
             ASTCDAttribute.class)) {
             Optional<String> usageName = getUsageName(rootLink.source(), link.source());
-            String nameToUse = usageName.isPresent() ? usageName.get() :
-                getConstantName(link.source().getSymbol());
+            String nameToUse =
+                usageName.orElseGet(() -> getConstantName(link.source().getSymbol()));
             link.target().setName(nameToUse);
         }
 
@@ -99,8 +103,8 @@ public class NameTranslation implements
                 ASTCDAttribute.class)) {
             Optional<String> usageName = getUsageName(rootLink.source(), link.source());
             // The semicolons surrounding string productions are being kept by the parser
-            String nameToUse = usageName.isPresent() ? usageName.get() : link.source().getName()
-                    .replaceAll("\"", "");
+            String nameToUse =
+                usageName.orElseGet(() -> link.source().getName().replace("\"", ""));
             link.target().setName(nameToUse);
         }
 
@@ -140,7 +144,7 @@ public class NameTranslation implements
   }
   
   protected boolean matchesJavaIdentifier(String checkedString) {
-    if (checkedString == null || checkedString.length() == 0) {
+    if (checkedString == null || checkedString.isEmpty()) {
       return false;
     }
     char[] stringAsChars = checkedString.toCharArray();

@@ -1,6 +1,7 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.types3.generics.util;
 
+import com.google.common.base.Preconditions;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeInferenceVariable;
@@ -12,13 +13,12 @@ import de.monticore.types3.generics.bounds.SubTypingBound;
 import de.monticore.types3.generics.bounds.TypeCompatibilityBound;
 import de.monticore.types3.generics.bounds.TypeEqualityBound;
 import de.monticore.types3.generics.constraints.Constraint;
-import de.monticore.types3.util.SymTypeExpressionComparator;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -41,17 +41,7 @@ public class BoundResolution {
 
   protected static BoundResolution delegate;
 
-  public static void init() {
-    Log.trace("init default BoundResolution", "TypeCheck setup");
-    BoundResolution.delegate = new BoundResolution();
-  }
-
-  protected static BoundResolution getDelegate() {
-    if (delegate == null) {
-      init();
-    }
-    return delegate;
-  }
+  // methods
 
   /**
    * Aims to find instantiations for inference variables
@@ -84,24 +74,65 @@ public class BoundResolution {
       List<Bound> oldBounds,
       List<SymTypeInferenceVariable> toBeResolved
   ) {
-    return getDelegate().calculateResolve(
-        newBounds, oldBounds, toBeResolved, Collections.emptySet()
+    return getDelegate()._resolve(
+        newBounds, oldBounds, toBeResolved
+    );
+  }
+
+  protected Optional<Map<SymTypeInferenceVariable, SymTypeExpression>> _resolve(
+      List<Bound> newBounds,
+      List<Bound> oldBounds,
+      List<SymTypeInferenceVariable> toBeResolved
+  ) {
+    return recursiveResolve(
+        newBounds, oldBounds, toBeResolved, new TreeSet<>(), false
     );
   }
 
   /**
-   * @param lastSetOfUninstantiated used to stop infinite recursion
+   * @param tmpInfVars                used to stop infinite recursion
+   * @param createdTempInfVarsLastTry used to stop infinite recursion
    */
-  protected Optional<Map<SymTypeInferenceVariable, SymTypeExpression>> calculateResolve(
+  protected Optional<Map<SymTypeInferenceVariable, SymTypeExpression>> recursiveResolve(
       List<Bound> newBounds,
       List<Bound> oldBounds,
       List<SymTypeInferenceVariable> toBeResolved,
-      Collection<SymTypeInferenceVariable> lastSetOfUninstantiated
+      Collection<SymTypeInferenceVariable> tmpInfVars,
+      boolean createdTempInfVarsLastTry
   ) {
     // shortcut reducing log
     if (newBounds.isEmpty() && oldBounds.isEmpty()) {
-      return Optional.of(new HashMap<>());
+      return Optional.of(new LinkedHashMap<>());
     }
+    Log.trace("START resolving bounds;"
+            + System.lineSeparator() + " * "
+            + (newBounds.isEmpty()
+            ? "no new bounds"
+            : "new bounds:" + System.lineSeparator() + printBounds(newBounds))
+            + System.lineSeparator() + " * "
+            + (oldBounds.isEmpty()
+            ? "no old bounds"
+            : "old bounds:" + System.lineSeparator() + printBounds(oldBounds))
+            + System.lineSeparator() + " * to be resolved are:"
+            + (toBeResolved.isEmpty() ? " all inference variables"
+            : System.lineSeparator() +
+            toBeResolved.stream()
+                .map(SymTypeExpression::printFullName)
+                .collect(Collectors.joining(System.lineSeparator())))
+            + (createdTempInfVarsLastTry
+            ? System.lineSeparator() + " * temporary inference variables"
+            + " have been created since last instantiation"
+            + " of a non-temporary inference variable"
+            : "")
+            + (!tmpInfVars.isEmpty()
+            ? System.lineSeparator() + " * temporary inference variables:"
+            + System.lineSeparator() + tmpInfVars.stream()
+            .map(SymTypeExpression::printFullName)
+            .collect(Collectors.joining(System.lineSeparator()))
+            : "")
+        ,
+        LOG_NAME
+    );
     Optional<Map<SymTypeInferenceVariable, SymTypeExpression>> result = Optional.empty();
 
     // get all relevant bounds: reduced bounds
@@ -161,15 +192,15 @@ public class BoundResolution {
           var2Equal.get(typeEqualityBound.getFirstType())
               .add(typeEqualityBound.getSecondType());
           Optional<TypeEqualityBound> flipped = typeEqualityBound.getFlipped();
-          if (flipped.isPresent()) {
-            var2Equal.get(flipped.get().getFirstType())
-                .add(flipped.get().getSecondType());
-          }
+          flipped.ifPresent(equalityBound ->
+              var2Equal.get(equalityBound.getFirstType()).add(equalityBound.getSecondType())
+          );
         }
         else if (bound.isCaptureBound()) {
           if (var2CaptureBound.containsKey(varBounds.getKey())) {
-            Log.error("0xFD211 internal error: multiple capture bound "
-                + "left hand sides for same variable encountered..."
+            throw new IllegalArgumentException(
+                "0xFD211 internal error: multiple capture bound "
+                    + "left hand sides for same variable encountered..."
             );
           }
           var2CaptureBound.put(varBounds.getKey(), (CaptureBound) bound);
@@ -210,14 +241,9 @@ public class BoundResolution {
         );
       }
     }
-    // remove skolem variables
-    for (SymTypeInferenceVariable var : varInterDependencies.keySet()) {
-      List<SymTypeInferenceVariable> dependencies = varInterDependencies.get(var);
-      varInterDependencies.put(var, dependencies);
-    }
 
     // get current instantiations
-    List<SymTypeInferenceVariable> varsWithoutInstantiation = new ArrayList<>();
+    Set<SymTypeInferenceVariable> varsWithoutInstantiation = new TreeSet<>();
     Map<SymTypeInferenceVariable, SymTypeExpression> varInstantiations = createSymTypeExprMap();
     for (SymTypeInferenceVariable var : varInterDependencies.keySet()) {
       Optional<SymTypeExpression> instantiation = Optional.empty();
@@ -237,22 +263,12 @@ public class BoundResolution {
       }
     }
 
-    // stop infinite recursion after an attempt of JLS 21 18.4, lower part.
-    // s.a. org.eclipse.jdt.internal.compiler.lookup.InferenceContext18
-    // ::resolve
-    if (!lastSetOfUninstantiated.isEmpty()) {
-      if (varsWithoutInstantiation.containsAll(lastSetOfUninstantiated)) {
-        // no progress, give up.
-        return Optional.empty();
-      }
-    }
-
     // find variables to resolve next
     // based on JLS 21 18.4
     // s.a. org.eclipse.jdt.internal.compiler.lookupInferenceContext18
     // ::getSmallestVariableSet
-    List<SymTypeInferenceVariable> varsToResolveNext;
-    List<SymTypeInferenceVariable> varsToResolveNextNotFinal;
+    Set<SymTypeInferenceVariable> varsToResolveNext;
+    Set<SymTypeInferenceVariable> varsToResolveNextNotFinal;
     // do not consider vars that should not be instantiated (yet)
     if (toBeResolved.isEmpty()) {
       varsToResolveNextNotFinal = varsWithoutInstantiation;
@@ -260,43 +276,81 @@ public class BoundResolution {
     else {
       varsToResolveNextNotFinal = varsWithoutInstantiation.stream()
           .filter(toBeResolved::contains)
-          .collect(Collectors.toList());
+          .collect(Collectors.toCollection(TreeSet::new));
     }
     for (SymTypeInferenceVariable var : varsWithoutInstantiation) {
-      Set<SymTypeInferenceVariable> deps =
-          new TreeSet<>(new SymTypeExpressionComparator());
-      deps.add(var);// should not be necessary, just in case
-      deps.addAll(varInterDependencies.get(var));
-      if (deps.size() < varsToResolveNextNotFinal.size()) {
-        varsToResolveNextNotFinal = new ArrayList<>(deps);
+      // the variable and its dependencies
+      // (excluding variables that already have an instantiation)
+      // In JLS 21 18.4 this set is V
+      Set<SymTypeInferenceVariable> varAndDeps = new TreeSet<>();
+      varAndDeps.add(var);
+      varAndDeps.addAll(
+          varInterDependencies.get(var).stream()
+              .filter(varsWithoutInstantiation::contains)
+              .collect(Collectors.toSet())
+      );
+      if (varAndDeps.size() < varsToResolveNextNotFinal.size()) {
+        varsToResolveNextNotFinal = varAndDeps;
       }
     }
     if (varsToResolveNextNotFinal.isEmpty() &&
         !varsWithoutInstantiation.isEmpty()) {
-      Log.error("0xFD318 internal error: "
+      // not expected to happen, sanity check
+      throw new IllegalStateException("0xFD318 internal error: "
           + "found no set of vars to resolve next?"
           + System.lineSeparator() + printBounds(reducedBounds)
       );
-      return Optional.empty();
     }
     varsToResolveNext = varsToResolveNextNotFinal;
 
     // find a new instantiation
     if (!varsToResolveNext.isEmpty()) {
+
       // Simple method based on LuBs/GlBs
       if (varsToResolveNext.stream().noneMatch(var2CaptureBound::containsKey)) {
         List<TypeEqualityBound> newEqualityBounds = findInstantiationsSimple(
-            varsToResolveNext, var2LowerBounds, var2UpperBounds, var2SourceBounds, var2TargetBounds
+            new ArrayList<>(varsToResolveNext),
+            var2LowerBounds, var2UpperBounds, var2SourceBounds, var2TargetBounds
         );
-        // use the new-found instantiations to reiterate
-        result = calculateResolve(
-            new ArrayList<>(newEqualityBounds), reducedBounds, toBeResolved,
-            varsWithoutInstantiation
-        );
+        Set<SymTypeInferenceVariable> newlyInstantiated =
+            newEqualityBounds.stream()
+                .map(TypeEqualityBound::getFirstType)
+                .collect(Collectors.toSet());
+        // note: for efficiency reason, one could consider
+        // replacing the variables here already
+        // and removing some(/all?) old bounds that had been replaced.
+        // cf. expression [[1],[2.f]] without target type
+        boolean hasNotFoundRelevantInstantiation =
+            tmpInfVars.containsAll(newlyInstantiated);
+        if (createdTempInfVarsLastTry && hasNotFoundRelevantInstantiation) {
+          // stop infinite recursion after an attempt of JLS 21 18.4, lower part.
+          // s.a. org.eclipse.jdt.internal.compiler.lookup.InferenceContext18
+          // ::resolve
+          Log.trace("END resolving bounds; no new bounds have been found"
+                  + " and creation of additional temporary inference variables"
+                  + " led to no results.",
+              LOG_NAME);
+          return Optional.empty();
+        }
+        else if (!newEqualityBounds.isEmpty()) {
+          // use the new-found instantiations to reiterate
+          result = recursiveResolve(
+              new ArrayList<>(newEqualityBounds), reducedBounds, toBeResolved,
+              tmpInfVars,
+              // if we found an instantiation of an original (non-temp)
+              // variable, we allow creation of temp variables again
+              // (otherwise, we wound risk endless loops)
+              hasNotFoundRelevantInstantiation && createdTempInfVarsLastTry
+          );
+        }
+        else {
+          // continue with complex method
+        }
       }
+
       // Complex method involving the creation of new inference variables
       // (s. JLS 21 18.4, lower part)
-      if (result.isEmpty()) {
+      if (result.isEmpty() && !createdTempInfVarsLastTry) {
         List<SymTypeInferenceVariable> newInfVars = new ArrayList<>();
         List<Bound> newInfVarsBounds = new ArrayList<>();
         Map<SymTypeInferenceVariable, SymTypeInferenceVariable> origVar2NewInfVar =
@@ -307,28 +361,36 @@ public class BoundResolution {
           newInfVars.add(newInfVar);
           origVar2NewInfVar.put(var, newInfVar);
         }
-        for (int i = 0; i < newInfVars.size(); i++) {
-          SymTypeInferenceVariable newInfVar = newInfVars.get(i);
-          SymTypeInferenceVariable origVar = varsToResolveNext.get(i);
+        Log.trace("created new inference variables as replacements:"
+                + System.lineSeparator() + origVar2NewInfVar.entrySet().stream()
+                .map(e -> e.getKey().printFullName()
+                    + " := " + e.getValue().printFullName()
+                )
+                .collect(Collectors.joining(System.lineSeparator())),
+            LOG_NAME
+        );
+
+        for (SymTypeInferenceVariable origVar : origVar2NewInfVar.keySet()) {
+          SymTypeInferenceVariable newInfVar = origVar2NewInfVar.get(origVar);
           Optional<SymTypeExpression> lowerBound =
               getLubOfProperLowerBounds(var2LowerBounds.get(origVar));
-          if (lowerBound.isPresent()) {
-            newInfVarsBounds.add(new SubTypingBound(lowerBound.get(), newInfVar));
-          }
+          lowerBound.ifPresent(symTypeExpression ->
+              newInfVarsBounds.add(new SubTypingBound(symTypeExpression, newInfVar))
+          );
           List<SymTypeExpression> replacedUpperBounds =
               var2UpperBounds.get(origVar).stream()
                   .map(t -> TypeParameterRelations.replaceInferenceVariables(t, origVar2NewInfVar))
                   .collect(Collectors.toList());
           Optional<SymTypeExpression> upperBound =
               getGlbOfProperUpperBounds(replacedUpperBounds);
-          if (upperBound.isPresent()) {
-            newInfVarsBounds.add(new SubTypingBound(newInfVar, upperBound.get()));
-          }
+          upperBound.ifPresent(symTypeExpression ->
+              newInfVarsBounds.add(new SubTypingBound(newInfVar, symTypeExpression))
+          );
           Optional<SymTypeExpression> sourceBound =
               getLubOfProperLowerBounds(var2SourceBounds.get(origVar));
-          if (sourceBound.isPresent()) {
-            newInfVarsBounds.add(new TypeCompatibilityBound(sourceBound.get(), newInfVar));
-          }
+          sourceBound.ifPresent(symTypeExpression ->
+              newInfVarsBounds.add(new TypeCompatibilityBound(symTypeExpression, newInfVar))
+          );
           // FDr: need to check if this replacement is fine
           // currently no reason to assume otherwise
           List<SymTypeExpression> replacedTargetBounds =
@@ -337,13 +399,14 @@ public class BoundResolution {
                   .collect(Collectors.toList());
           Optional<SymTypeExpression> targetBound =
               getGlbOfProperUpperBounds(replacedTargetBounds);
-          if (targetBound.isPresent()) {
-            newInfVarsBounds.add(new TypeCompatibilityBound(newInfVar, targetBound.get()));
-          }
+          targetBound.ifPresent(symTypeExpression ->
+              newInfVarsBounds.add(new TypeCompatibilityBound(newInfVar, symTypeExpression))
+          );
           // check for bound consistency
           if (lowerBound.isPresent() && upperBound.isPresent()) {
             if (!isSubTypeOf(lowerBound.get(), upperBound.get())) {
-              Log.info("inconsistent bounds for fresh inference variable: "
+              Log.info("END resolving bounds; "
+                      + "inconsistent bounds for fresh inference variable: "
                       + lowerBound.get().printFullName() + " is not a subtype of "
                       + upperBound.get().printFullName() + "."
                       + " Will stop resolution."
@@ -369,12 +432,17 @@ public class BoundResolution {
             }
           }
         }
+        Collection<SymTypeInferenceVariable> newAndOldTempInfVars =
+            new TreeSet<>();
+        newAndOldTempInfVars.addAll(tmpInfVars);
+        newAndOldTempInfVars.addAll(newInfVars);
         Optional<Map<SymTypeInferenceVariable, SymTypeExpression>> potentialResult =
-            calculateResolve(
+            recursiveResolve(
                 new ArrayList<>(newInfVarsBounds),
                 reducedBoundsFiltered,
                 toBeResolved,
-                varsWithoutInstantiation
+                newAndOldTempInfVars,
+                true
             );
         // remove the temporary inference variables from the result
         if (potentialResult.isPresent()) {
@@ -400,20 +468,21 @@ public class BoundResolution {
           }
         }
         if (instantiations.isEmpty()) {
-          Log.error("0xFD410 internal error: "
+          // not expected to happen, sanity check
+          throw new IllegalStateException("0xFD410 internal error: "
               + "expected to find instantiation for " + var.printFullName()
               + " within bounds" + System.lineSeparator()
               + printBounds(reducedBounds)
           );
-          return Optional.empty();
         }
         // any instantiation is OK, as at this point the constraints hold
         // that all the instantiations are pairwise equal.
         else {
-          var2Instantiation.put(var, instantiations.get(0));
+          var2Instantiation.put(var, instantiations.getFirst());
         }
       }
-      Log.trace("resolution finished with instantiations:"
+      Log.trace("END resolving bounds; "
+              + "resolution finished with instantiations:"
               + var2Instantiation.keySet().stream()
               .map(k -> System.lineSeparator() + k.printFullName()
                   + " = " + varInstantiations.get(k).printFullName()
@@ -500,10 +569,10 @@ public class BoundResolution {
 
       List<SymTypeExpression> properSources = var2SourceBounds.get(var).stream()
           .filter(Predicate.not(TypeParameterRelations::hasInferenceVariables))
-          .collect(Collectors.toList());
+          .toList();
       List<SymTypeExpression> properTargets = var2TargetBounds.get(var).stream()
           .filter(Predicate.not(TypeParameterRelations::hasInferenceVariables))
-          .collect(Collectors.toList());
+          .toList();
 
       // search for better lower bound in the source bounds
       List<SymTypeExpression> sourcesThatAreInSubTypingRelation = new ArrayList<>();
@@ -549,6 +618,7 @@ public class BoundResolution {
                 LOG_NAME
             );
             lubSubtyping = Optional.empty();
+            break;
           }
         }
       }
@@ -587,6 +657,7 @@ public class BoundResolution {
                 LOG_NAME
             );
             glbSubtyping = Optional.empty();
+            break;
           }
         }
       }
@@ -646,7 +717,7 @@ public class BoundResolution {
   /**
    * to be used after incorporation/reduction.
    * Does only include top-most inference variables,
-   * e.g., List<a1> <: a2, with a1,a2 being inference variables, returns a2.
+   * e.g., {@code List<a1> <: a2}, with a1,a2 being inference variables, returns a2.
    */
   protected List<SymTypeInferenceVariable> getInferenceVariablesOfBounds(List<Bound> bounds) {
     List<SymTypeInferenceVariable> inferenceVariables = new ArrayList<>();
@@ -674,9 +745,9 @@ public class BoundResolution {
         TypeEqualityBound typeEqualityBound = (TypeEqualityBound) bound;
         varsToBeAdded.add(typeEqualityBound.getFirstType());
         Optional<TypeEqualityBound> flipped = typeEqualityBound.getFlipped();
-        if (flipped.isPresent()) {
-          varsToBeAdded.add(flipped.get().getFirstType());
-        }
+        flipped.ifPresent(equalityBound ->
+            varsToBeAdded.add(equalityBound.getFirstType())
+        );
       }
       else if (bound.isCaptureBound()) {
         CaptureBound captureBound = (CaptureBound) bound;
@@ -733,10 +804,9 @@ public class BoundResolution {
         dependencies.get(typeEqualityBound.getFirstType())
             .add(typeEqualityBound);
         Optional<TypeEqualityBound> flipped = typeEqualityBound.getFlipped();
-        if (flipped.isPresent()) {
-          dependencies.get(flipped.get().getFirstType())
-              .add(typeEqualityBound);
-        }
+        flipped.ifPresent(equalityBound ->
+                dependencies.get(equalityBound.getFirstType()).add(typeEqualityBound)
+        );
       }
       else if (bound.isCaptureBound()) {
         CaptureBound captureBound = (CaptureBound) bound;
@@ -751,26 +821,22 @@ public class BoundResolution {
   /**
    * fills the dependency matrix.
    * any inferenceVariable, which does not have a bound yet,
-   * has the bound added: TV <: #Top
+   * has the bound added: {@code TV <: #Top}
    */
   protected Map<SymTypeInferenceVariable, List<Bound>> completeVarBoundDependencies(
       Map<SymTypeInferenceVariable, List<Bound>> varBoundDependencies
   ) {
     Map<SymTypeInferenceVariable, List<Bound>> completeDependencies =
-        new TreeMap<>(new SymTypeExpressionComparator());
-    completeDependencies.putAll(varBoundDependencies);
+        new TreeMap<>(varBoundDependencies);
     List<SymTypeExpression> includedTypes = new ArrayList<>();
     for (List<Bound> bounds : varBoundDependencies.values()) {
       for (Bound bound : bounds) {
         includedTypes.addAll(bound.getIncludedTypes());
       }
     }
-    Set<SymTypeInferenceVariable> includedVariables =
-        new TreeSet<>(new SymTypeExpressionComparator());
-    includedVariables.addAll(includedTypes.stream().flatMap(t ->
-            TypeParameterRelations.getIncludedInferenceVariables(t).stream()
-        ).collect(Collectors.toList())
-    );
+    Set<SymTypeInferenceVariable> includedVariables = includedTypes.stream()
+        .flatMap(t -> TypeParameterRelations.getIncludedInferenceVariables(t).stream())
+        .collect(Collectors.toCollection(TreeSet::new));
     for (SymTypeInferenceVariable var : includedVariables) {
       List<Bound> bounds = completeDependencies
           .getOrDefault(var, Collections.emptyList());
@@ -836,10 +902,13 @@ public class BoundResolution {
   /**
    * returns a map that does not rely on hashes
    * (which does not work well with SymTypeExpressions)
+   *
+   * @deprecated simply use a {@link TreeMap}
    */
+  @Deprecated(forRemoval = true)
   protected <S extends SymTypeExpression, T>
   Map<S, T> createSymTypeExprMap() {
-    return new TreeMap<>(new SymTypeExpressionComparator());
+    return new TreeMap<>();
   }
 
   /**
@@ -860,7 +929,31 @@ public class BoundResolution {
 
   protected String printBounds(List<? extends Bound> constraints) {
     return constraints.stream()
+        .sorted()
         .map(Bound::print)
         .collect(Collectors.joining(System.lineSeparator()));
   }
+
+  // static delegate
+
+  public static void init() {
+    Log.trace("init default BoundResolution", "TypeCheck setup");
+    setDelegate(new BoundResolution());
+  }
+
+  public static void reset() {
+    BoundResolution.delegate = null;
+  }
+
+  protected static void setDelegate(BoundResolution newDelegate) {
+    BoundResolution.delegate = Preconditions.checkNotNull(newDelegate);
+  }
+
+  protected static BoundResolution getDelegate() {
+    if (BoundResolution.delegate == null) {
+      init();
+    }
+    return BoundResolution.delegate;
+  }
+
 }

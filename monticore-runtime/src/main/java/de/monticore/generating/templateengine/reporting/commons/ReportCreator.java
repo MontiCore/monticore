@@ -6,7 +6,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -27,7 +27,7 @@ public class ReportCreator {
 	 */
 	public ReportCreator(String outputDir) {
 		this.outputDir = outputDir;
-		writers = new HashMap<File, BufferedWriter>();
+		writers = new LinkedHashMap<>();
 		File dir = new File(outputDir);
 		if (!dir.isDirectory()) {
 			dir.mkdirs();
@@ -57,7 +57,6 @@ public class ReportCreator {
 	 * Opens a file
 	 * 
 	 * @param file
-	 * @return
 	 * @throws IOException
 	 */
 	public void openFile(File file) throws IOException {
@@ -77,7 +76,7 @@ public class ReportCreator {
 	 */
 	public void writeLineToFile(File file, String content) throws IOException {
 		BufferedWriter writer = writers.get(file);
-		writer.append(content + "\n");
+		writer.append(content).append("\n");
 	}
 
 	/**
@@ -107,7 +106,8 @@ public class ReportCreator {
 	/**
 	 * Removes the file with the given name and extension
 	 * 
-	 * @param detailedFileName
+	 * @param fileName
+	 * @param fileextension
 	 * @return true if file has been deleted, false if file could not be deleted
 	 *         or does not exists
 	 */

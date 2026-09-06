@@ -1,0 +1,13 @@
+/* (c) https://github.com/MontiCore/monticore */
+package a.b;
+
+// This grammar MUST be compiled with only the monticore-runtime present
+grammar XY {
+  Ax = a1:Name a2:Name? ;
+  By = "B" i1:I* "i" i2:I i3:I?;
+  interface I;
+  symbol MySymbol = "symbol" Name;
+  symbol scope MyScopedSymbol implements I = "scopedsymbol" Name;
+
+  token Name = "NAME";
+}

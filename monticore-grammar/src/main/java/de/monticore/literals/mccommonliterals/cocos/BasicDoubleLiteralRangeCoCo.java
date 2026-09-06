@@ -30,7 +30,9 @@ public class BasicDoubleLiteralRangeCoCo implements MCCommonLiteralsASTBasicDoub
   public void check(ASTBasicDoubleLiteral node) {
     BigDecimal nodeValue = new BigDecimal(node.getSource());
     if(nodeValue.compareTo(this.min) < 0 || nodeValue.compareTo(this.max) > 0) {
-      Log.error(String.format(ERROR_CODE + ERROR_MSG, nodeValue, min, max));
+      Log.error(String.format(ERROR_CODE + ERROR_MSG, nodeValue, min, max),
+        node.get_SourcePositionStart(),
+        node.get_SourcePositionEnd());
     }
   }
 

@@ -108,9 +108,15 @@ To this end, MontiCore provides a type inference algorithm.
     * [ExpressionsBasisCTTIVisitor](../../expressions/expressionsbasis/types3/ExpressionBasisCTTIVisitor.java)
       (calculates the SymTypeExpressions for the expressions
       in the grammar ExpressionBasis)
+    * [OCLExpressionsCTTIVisitor](../../ocl/oclexpressions/types3/OCLExpressionsCTTIVisitor.java)
+      (calculates the SymTypeExpressions for the expressions
+      in the grammar OCLExpressions)
     * [SetExpressionsCTTIVisitor](../../ocl/setexpressions/types3/SetExpressionsCTTIVisitor.java)
       (calculates the SymTypeExpressions for the expressions
       in the grammar SetExpressions)
+    * [TupleExpressionsCTTIVisitor](../../expressions/tupleexpressions/types3/TupleExpressionsCTTIVisitor.java)
+      (calculates the SymTypeExpressions for the expressions
+      in the grammar TupleExpressions)
     * [UglyExpressionsCTTIVisitor](../../expressions/uglyexpressions/types3/UglyExpressionsCTTIVisitor.java)
       (calculates the SymTypeExpressions for the expressions
       in the grammar UglyExpressions)
@@ -153,6 +159,7 @@ The return type of `f` in the statement `f();` has no bounds,
 it can be any type. As such, `#TOP` is used to represent this.
 More often than not, a type of `#TOP` suggests that a type/function
 has not been used "to their full potential":
+
 * some information goes unused (for `f` it is the return value), or
 * e.g., in the comparison of an empty List and Set `[] == {}`
   the potential to store values in the collections goes unused.
@@ -167,7 +174,7 @@ Inference variables are never instantiated to `#BOTTOM`.
 ## How to get the type of an ASTNode with generics?
 
 Note: This is an extension of the
-[general documentation](../TypeSystem3.md#how-to-get-the-type-of-an-astnode),
+[general documentation](../TypeSystem3.md#how-to-use-the-type-system-implementation),
 which you should read first.
 
 When calculating types in a language with support for generics,
@@ -205,7 +212,17 @@ new MapBasedTypeCheck3(traverser, type4Ast, ctx4Ast)
     .setThisAsDelegate();
 ```
 
-Again, after initializing the TypeCheck3 delegate,
+Furthermore, the set of typing rules is extended,
+thus, further static delegates exist
+which can be extended if required;
+
+* [TypeParameterRelations](TypeParameterRelations.java)
+* [CompileTimeTypeCalculator](util/CompileTimeTypeCalculator.java)
+* [ConstraintReduction](util/ConstraintReduction.java)
+* [BoundIncorporation](util/BoundIncorporation.java)
+* [BoundResolution](util/BoundResolution.java)
+
+Again, after initializing the TypeCheck3 delegates,
 TypeCheck3 can be used to query SymTypeExpressions of expressions
 `TypeCheck3.typeOf(expr)`,
 as well as MCTypes
@@ -222,6 +239,7 @@ This data is stored, as there are circumstances there the target type
 information is not available (e.g., inside some CoCos).
 
 It holds that
+
 * Each ASTExpression has exactly one target type
 * Each ASTExpression has exactly one type.
   In the case of a language with variability, special care has to be taken to

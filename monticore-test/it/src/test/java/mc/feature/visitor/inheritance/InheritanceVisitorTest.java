@@ -1,26 +1,27 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.feature.visitor.inheritance;
 
+import de.monticore.runtime.junit.TestWithMCLanguage;
+import mc.feature.visitors.a._symboltable.IAArtifactScope;
+import mc.feature.visitors.a._symboltable.IAGlobalScope;
+import mc.feature.visitors.a._symboltable.IAScope;
 import mc.feature.visitors.a._visitor.AVisitor2;
+import mc.feature.visitors.b._symboltable.IBArtifactScope;
+import mc.feature.visitors.b._symboltable.IBGlobalScope;
+import mc.feature.visitors.b._symboltable.IBScope;
 import mc.feature.visitors.b._visitor.BVisitor2;
 import mc.feature.visitors.c.CMill;
 import mc.feature.visitors.c._symboltable.ICArtifactScope;
 import mc.feature.visitors.c._symboltable.ICGlobalScope;
 import mc.feature.visitors.c._symboltable.ICScope;
-import mc.feature.visitors.b._symboltable.IBArtifactScope;
-import mc.feature.visitors.b._symboltable.IBGlobalScope;
-import mc.feature.visitors.b._symboltable.IBScope;
-import mc.feature.visitors.a._symboltable.IAArtifactScope;
-import mc.feature.visitors.a._symboltable.IAGlobalScope;
-import mc.feature.visitors.a._symboltable.IAScope;
 import mc.feature.visitors.c._visitor.CInheritanceHandler;
 import mc.feature.visitors.c._visitor.CTraverser;
 import mc.feature.visitors.c._visitor.CVisitor2;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@TestWithMCLanguage(CMill.class)
 public class InheritanceVisitorTest {
 
   private StringBuilder sb;
@@ -39,21 +40,21 @@ public class InheritanceVisitorTest {
     ICScope scope = CMill.scope();
     scope.accept(traverser);
 
-    Assertions.assertEquals("ASBSCS", sb.toString());
+    assertEquals("ASBSCS", sb.toString());
 
     sb = new StringBuilder();
 
     ICGlobalScope globalScope = CMill.globalScope();
     globalScope.accept(traverser);
 
-    Assertions.assertEquals("AGSASBGSBSCSCGS", sb.toString());
+    assertEquals("AGSASBGSBSCSCGS", sb.toString());
 
     sb = new StringBuilder();
 
     ICArtifactScope artifactScope = CMill.artifactScope();
     artifactScope.accept(traverser);
 
-    Assertions.assertEquals("AASASBASBSCSCAS", sb.toString());
+    assertEquals("AASASBASBSCSCAS", sb.toString());
   }
 
 

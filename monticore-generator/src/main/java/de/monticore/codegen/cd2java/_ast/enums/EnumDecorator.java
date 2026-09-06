@@ -25,8 +25,7 @@ import java.io.IOException;
 import java.util.List;
 
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
-import static de.monticore.cd.facade.CDModifier.PRIVATE;
-import static de.monticore.cd.facade.CDModifier.PROTECTED;
+import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.INT_VALUE;
 
 /**
@@ -76,7 +75,7 @@ public class EnumDecorator extends AbstractCreator<ASTCDEnum, ASTCDEnum> {
 
   protected ASTCDAttribute getIntValueAttribute() {
     ASTMCType intType = getMCTypeFacade().createIntType();
-    return getCDAttributeFacade().createAttribute(PROTECTED.build(), intType, INT_VALUE);
+    return getCDAttributeFacade().createAttribute(PRIVATE_FINAL.build(), intType, INT_VALUE);
   }
 
   protected ASTCDConstructor getLiteralsConstructor(String enumName) {

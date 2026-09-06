@@ -7,14 +7,13 @@ import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsTraverser;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
-import de.monticore.types.mcsimplegenerictypes.MCSimpleGenericTypesMill;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
@@ -36,10 +35,10 @@ public class GrammarTransformer {
 
   /**
    * The shortcut NonTerminalSeparator is replaced by the detailed description.
-   * Example: List(Element || ',')* ==> (List:Element (',' List:Element)+)
+   * Example: {@code List(Element || ',')* ==> (List:Element (',' List:Element)+)}
    */
   public static void removeNonTerminalSeparators(ASTMCGrammar grammar) {
-    Map<ASTNonTerminalSeparator, ASTAlt> map = new HashMap<ASTNonTerminalSeparator, ASTAlt>();
+    Map<ASTNonTerminalSeparator, ASTAlt> map = new LinkedHashMap<>();
     RuleComponentListFinder componentListTransformer = new RuleComponentListFinder(map);
 
     Grammar_WithConceptsTraverser traverser = Grammar_WithConceptsMill.traverser();
@@ -69,12 +68,10 @@ public class GrammarTransformer {
   /**
    * Append suffix "List" to the names of multi-valued att * Append suffix "List" to
    * the names of multi-valued attributes (NonTerminals and attributesinAst) if
-   * no usage names were set. Examples: Name ("." Name&)* ==> names:Name ("."
-   * names:Name&)* (State | Transition)* ==> (states:State |
-   * transitions:Transition)*
+   * no usage names were set. Examples: {@code Name ("." Name&)* ==> names:Name ("." names:Name&)* (State | Transition)* ==> (states:State | transitions:Transition)*}
    */
   public static void uncapitalizeMultivaluedAttributes(ASTMCGrammar grammar) {
-    grammar.getASTRuleList().forEach(c -> transformAttributesInAST(c));
+    grammar.getASTRuleList().forEach(GrammarTransformer::transformAttributesInAST);
   }
 
   protected static String simpleName(ASTMCType type) {
@@ -124,7 +121,7 @@ public class GrammarTransformer {
     extendedList = extendedList.replaceAll("%iterator%", iteration);
 
     Grammar_WithConceptsParser parser = Grammar_WithConceptsMill.parser();
-    Optional<ASTBlock> block = null;
+    Optional<ASTBlock> block = Optional.empty();
     try {
       Log.debug("Create ast for " + extendedList, GrammarTransformer.class.getName());
       block = parser.parseBlock(new StringReader(extendedList));

@@ -2,11 +2,9 @@
 
 package de.monticore;
 
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.testoverridemcbasics.TestOverrideMCBasicsMill;
 import de.monticore.testoverridemcbasics._ast.ASTFoo;
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -15,16 +13,9 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@TestWithMCLanguage(TestOverrideMCBasicsMill.class)
 public class OverrideMCBasicsTest {
   
-  @BeforeEach
-  public void initLog() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-    TestOverrideMCBasicsMill.reset();
-    TestOverrideMCBasicsMill.init();
-  }
-
   @Test
   public void testName() throws IOException {
     Optional<ASTFoo> ast = TestOverrideMCBasicsMill.parser().parse_StringFoo("Meier");

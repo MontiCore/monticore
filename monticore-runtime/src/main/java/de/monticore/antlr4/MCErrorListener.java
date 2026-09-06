@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 public class MCErrorListener extends BaseErrorListener {
 
-  protected MCParser parser = null;
+  protected MCParser parser;
 
   /**
    * This character (NO-BREAK SPACE) separates the error message
@@ -78,8 +78,8 @@ public class MCErrorListener extends BaseErrorListener {
         // (*): The name might actually be a nokeyword production, i.e., with a semantic predicate
 
         // Check for the rules which the ATN would change into using epsilon transitions (to find nokeywor rules)
-        Set<Map.Entry<Integer, String>> epsilonRules = new HashSet<>();
-        getExpectedRulesWithTokens(recognizer.getATN(), recognizer.getState(), recognizer.getVocabulary(), new HashMap<>(), epsilonRules);
+        Set<Map.Entry<Integer, String>> epsilonRules = new LinkedHashSet<>();
+        getExpectedRulesWithTokens(recognizer.getATN(), recognizer.getState(), recognizer.getVocabulary(), new LinkedHashMap<>(), epsilonRules);
 
         List<String> noKeywordRules = extractNoKeywordTokens(recognizer, epsilonRules);
 
@@ -92,7 +92,7 @@ public class MCErrorListener extends BaseErrorListener {
           // Join as [a.b.c.d] as a, b, c or d
           msg += String.join(" or ",
                                        String.join(", ", noKeywordRules.subList(0, noKeywordRules.size() - 1)),
-                                       noKeywordRules.get(noKeywordRules.size() - 1)
+                                       noKeywordRules.getLast()
                                       );
         }
       } else if (e instanceof NoViableAltException) {
@@ -101,8 +101,8 @@ public class MCErrorListener extends BaseErrorListener {
         String expectedTokens = getExpectedTokensWithoutNoKeywords(recognizer, e.getExpectedTokens(), List.of("Name"));
 
         // Check for the rules which the ATN would change into using epsilon transitions
-        Set<Map.Entry<Integer, String>> epsilonRules = new HashSet<>();
-        getExpectedRulesWithTokens(recognizer.getATN(), e.getOffendingState(), recognizer.getVocabulary(), new HashMap<>(), epsilonRules);
+        Set<Map.Entry<Integer, String>> epsilonRules = new LinkedHashSet<>();
+        getExpectedRulesWithTokens(recognizer.getATN(), e.getOffendingState(), recognizer.getVocabulary(), new LinkedHashMap<>(), epsilonRules);
 
         List<String> noKeywordRules = extractNoKeywordTokens(recognizer, epsilonRules);
 
@@ -110,7 +110,7 @@ public class MCErrorListener extends BaseErrorListener {
           // Join as [a.b.c.d] as a, b, c or d
           expectedTokens = String.join(" or ",
                                        String.join(", ", noKeywordRules.subList(0, noKeywordRules.size() - 1)),
-                                       noKeywordRules.get(noKeywordRules.size() - 1)
+                                       noKeywordRules.getLast()
                                       );
         }
         msg += ", expecting " + expectedTokens;
@@ -152,7 +152,7 @@ public class MCErrorListener extends BaseErrorListener {
     return toOutput.toString(recognizer.getVocabulary());
   }
 
-  private static List<String> extractNoKeywordTokens(Recognizer<?, ?> recognizer, Set<Map.Entry<Integer, String>> epsilonRules) {
+  protected static List<String> extractNoKeywordTokens(Recognizer<?, ?> recognizer, Set<Map.Entry<Integer, String>> epsilonRules) {
     // Turn the next expected rules into a human readable format:
     List<String> noKeywordRules = epsilonRules.stream().map(r -> {
       // r.key = ruleIndex, r.value=next tokens of the transition(s)
@@ -215,7 +215,11 @@ public class MCErrorListener extends BaseErrorListener {
    * Similiar to {@link ATN#getExpectedTokens(int, RuleContext)},
    * but we also return the rule numbers.
    * We also only return the "Name" transition of the all name-including-no-keywords states
-   * @param expected a set of ruleIndex -> expected token(s) entries
+   * @param atn the atn
+   * @param stateNumber the current state
+   * @param vocabulary {@link Vocabulary}
+   * @param visitedStates the already visited states
+   * @param expected a set of ruleIndex to expected token(s) entries
    * @return whether an empty input is accepted
    */
   public boolean getExpectedRulesWithTokens(ATN atn, int stateNumber, Vocabulary vocabulary, Map<Integer, Boolean> visitedStates, Set<Map.Entry<Integer, String>> expected) {

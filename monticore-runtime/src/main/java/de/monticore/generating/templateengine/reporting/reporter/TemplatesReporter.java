@@ -17,9 +17,9 @@ public class TemplatesReporter extends AReporter {
   
   static final String INDENT = Layouter.getSpaceString(10);
   
-  protected SortedMap<String, Integer> templateCount = new TreeMap<String, Integer>();
+  protected SortedMap<String, Integer> templateCount = new TreeMap<>();
   
-  protected SortedMap<String, Integer> hwTemplateCount = new TreeMap<String, Integer>();
+  protected SortedMap<String, Integer> hwTemplateCount = new TreeMap<>();
   
   protected Set<String> realTemplateNames = new LinkedHashSet<>();
   
@@ -65,8 +65,7 @@ public class TemplatesReporter extends AReporter {
   
   protected void writeUnusedUSTemplates() {
     writeLine("========================================================== Unused USTemplates");
-    SortedSet<String> unusedHWTemplateNames = new TreeSet<String>(
-        repository.getAllHWTemplateNames());
+    SortedSet<String> unusedHWTemplateNames = new TreeSet<>(repository.getAllHWTemplateNames());
     unusedHWTemplateNames.removeAll(realHWTemplateNames);
     for (String t : unusedHWTemplateNames) {
       writeLine(t);
@@ -98,32 +97,17 @@ public class TemplatesReporter extends AReporter {
   public void reportTemplateStart(String templatename, ASTNode ast) {
     Set<String> hwTemplates = repository.getAllHWTemplateNames();
     // if template is handwritten
-    if (hwTemplates.contains(templatename.replaceAll("\\.", "/").concat(".")
-        .concat(ReportingConstants.TEMPLATE_FILE_EXTENSION))) {
-      realHWTemplateNames.add(templatename.replaceAll("\\.", "/").concat(".")
-          .concat(ReportingConstants.TEMPLATE_FILE_EXTENSION));
+    String templateNameSanitized = templatename.replaceAll("\\.", "/").concat(".")
+            .concat(ReportingConstants.TEMPLATE_FILE_EXTENSION);
+    if (hwTemplates.contains(templateNameSanitized)) {
+      realHWTemplateNames.add(templateNameSanitized);
       templatename = ReportingHelper.getTemplateName(templatename);
-      
-      if (hwTemplateCount.containsKey(templatename)) {
-        Integer actualCount = hwTemplateCount.get(templatename);
-        hwTemplateCount.put(templatename, actualCount + 1);
-      }
-      else {
-        hwTemplateCount.put(templatename, 1);
-      }
+      hwTemplateCount.merge(templatename, 1, Integer::sum);
     }
     else {
-      realTemplateNames.add(templatename.replaceAll("\\.", "/").concat(".")
-          .concat(ReportingConstants.TEMPLATE_FILE_EXTENSION));
+      realTemplateNames.add(templateNameSanitized);
       templatename = ReportingHelper.getTemplateName(templatename);
-      
-      if (templateCount.containsKey(templatename)) {
-        Integer actualCount = templateCount.get(templatename);
-        templateCount.put(templatename, actualCount + 1);
-      }
-      else {
-        templateCount.put(templatename, 1);
-      }
+      templateCount.merge(templatename, 1, Integer::sum);
     }
   }
   

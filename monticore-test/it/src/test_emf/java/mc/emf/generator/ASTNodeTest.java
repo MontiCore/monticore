@@ -4,36 +4,20 @@ package mc.emf.generator;
 
 import de.monticore.emf._ast.ASTENodePackage;
 import de.monticore.emf.util.AST2ModelFiles;
+import de.monticore.runtime.junit.AbstractMCTest;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
-public class ASTNodeTest {
+public class ASTNodeTest extends AbstractMCTest {
 
-    @BeforeClass
-    public static void setup() {
-      LogStub.init();
-      Log.enableFailQuick(false);
-    }
-
-    /**
-     *
-     * @param args
-     */
     @Test
-    public void testSerializing() {
-
-      try {
+    public void testSerializing() throws IOException {
         AST2ModelFiles.get().serializeAST(ASTENodePackage.eINSTANCE);
-      }
-      catch (IOException e) {
-        fail("Should not reach this, but: " + e);
-      }
-
     }
 }

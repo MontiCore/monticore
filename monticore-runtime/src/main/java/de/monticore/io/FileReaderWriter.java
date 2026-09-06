@@ -3,6 +3,7 @@
 package de.monticore.io;
 
 import com.google.common.base.Charsets;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import de.monticore.AmbiguityException;
 import de.monticore.generating.templateengine.reporting.Reporting;
@@ -127,7 +128,7 @@ public class FileReaderWriter {
       Log.debug("IOException while trying to read the content of " + sourcePath
         + ".", e, this.getClass().getName());
     }
-    Log.errorIfNull(content);
+    Preconditions.checkNotNull(content);
     return content;
   }
 
@@ -156,7 +157,7 @@ public class FileReaderWriter {
           openedJarFiles.add(new SharedCloseable<>(((JarURLConnection) conn).getJarFile()));
         }
       }
-      Reader reader = new InputStreamReader(conn.getInputStream(), charset.name());
+      Reader reader = new InputStreamReader(conn.getInputStream(), charset);
       content = _readFromFile(reader);
       reader.close();
     }
@@ -165,7 +166,7 @@ public class FileReaderWriter {
       Log.debug("IOException while trying to read the content of " + sourcePath
         + ".", e, this.getClass().getName());
     }
-    Log.errorIfNull(content);
+    Preconditions.checkNotNull(content);
     return content;
   }
 
@@ -176,7 +177,7 @@ public class FileReaderWriter {
   protected String _readFromFile(Reader reader) {
     BufferedReader buffer = new BufferedReader(reader);
     String content = buffer.lines().collect(Collectors.joining());
-    Log.errorIfNull(content);
+    Preconditions.checkNotNull(content);
     return content;
   }
 
@@ -198,14 +199,14 @@ public class FileReaderWriter {
       ArrayList<URL> results = Collections.list(classLoader.getResources(name));
       if (results.size() > 1) {
         throw new AmbiguityException("0xA4092 Multiple models were found with name '"
-          + name + "':" + results.toString());
+          + name + "':" + results);
       }
-      else if (results.size() < 1) {
+      else if (results.isEmpty()) {
         Reporting.reportFileExistenceChecking(Lists.newArrayList(), Paths.get(name));
       }
       else {
-        Reporting.reportOpenInputFile(results.get(0).getFile());
-        return Optional.ofNullable(results.get(0));
+        Reporting.reportOpenInputFile(results.getFirst().getFile());
+        return Optional.ofNullable(results.getFirst());
       }
     }
     catch (IOException e) {
@@ -229,7 +230,7 @@ public class FileReaderWriter {
    * Saves all {@link JarFile}s opened by {@link FileReaderWriter#getReader(URL)} if the protocol "jar:" is used.
    * These files must be closed at the end of programm via {@link FileReaderWriter#closeOpenedJarFiles()}.
    */
-  protected static Set<SharedCloseable<JarFile>> openedJarFiles = new HashSet<>();
+  protected static Set<SharedCloseable<JarFile>> openedJarFiles = new LinkedHashSet<>();
 
   /**
    * Obtains the reader for a passed model coordinate. The resulting reader
@@ -247,11 +248,8 @@ public class FileReaderWriter {
         Path p = Paths.get(location.toURI());
         Reporting.reportOpenInputFile(Optional.of(p.getParent()),
           p.getParent().relativize(p));
-        if (location.getFile().charAt(2) == ':') {
-          String filename = URLDecoder.decode(location.getFile(), "UTF-8");
-          return new FileReader(filename.substring(1));
-        }
-        return new FileReader(location.getFile());
+        // Note: URL#getFile() might be unexpectedly encoded
+        return new FileReader(new File(location.toURI()));
       }
       String[] parts = location.toURI().toString().split("!");
       Path p = Paths.get(parts[1].substring(1));
@@ -268,7 +266,7 @@ public class FileReaderWriter {
           openedJarFiles.add(new SharedCloseable<>(((JarURLConnection) conn).getJarFile()));
         }
       }
-      return new InputStreamReader(conn.getInputStream(), Charsets.UTF_8.name());
+      return new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8);
     }
     catch (IOException | URISyntaxException e) {
       Log.error("0xA6104 Exception occurred while reading the file at '" + location + "':", e);

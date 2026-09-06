@@ -20,6 +20,7 @@ import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.io.paths.MCPath;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
+import de.monticore.symboltable.serialization.ISymbolDeSer;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.se_rwth.commons.StringTransformations;
 
@@ -45,6 +46,8 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
   public static final String DESERIALIZE_IS_TEMPL = "_symboltable.serialization.scopeDeSer.DeserializeIScope";
 
   public static final String DESERIALIZE_SYMBOLS_TEMPL = "_symboltable.serialization.scopeDeSer.DeserializeSymbols";
+
+  public static final String GET_DESER = "_symboltable.serialization.scopeDeSer.GetDeser";
 
   public static final String SERIALIZES2J_TEMPL = "_symboltable.serialization.scopeDeSer.SerializeS2J4ScopeDeSer";
 
@@ -108,7 +111,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
             .stream()
             .map(ASTCDClass::getCDAttributeList)
             .flatMap(List::stream)
-            .map(a -> a.deepClone())
+            .map(ASTCDAttribute::deepClone)
             .collect(Collectors.toList());
     scopeRuleAttrList.forEach(a -> getDecorationHelper().addAttributeDefaultValues(a, this.glex));
 
@@ -134,6 +137,10 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
             scopeRuleAttrList))
         .addCDMember(
             createDeserializeSymbolsMethods(scopeVarParam, scopeJsonParam, symbolMap, millName, scopeDeSerName, scopeInterfaceName))
+        .addCDMember(
+            createGetDeserMethod(millName, scopeDeSerName))
+        .addCDMember(
+            getCDAttributeFacade().createAttribute(PROTECTED.build(), getMCTypeFacade().createOptionalTypeOf(JSON_OBJECT), "symbolHierarchiesJsonObjectOpt"))
         .addAllCDMembers(createDeserializeAttrMethods(scopeRuleAttrList, enclosingScopeParam, scopeJsonParam))
         .addAllCDMembers(createDeserializeAddonsMethods(scopeVarParam, scopeJsonParam))
         .build();
@@ -238,6 +245,20 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
     return method;
   }
 
+  protected ASTCDMethod createGetDeserMethod(String millName,
+                                             String scopeDeSerName) {
+    // Method that tries to find a deSer (walks up the symbol hierarchy as a fallback)
+    ASTCDParameter kindParam = getCDParameterFacade()
+            .createParameter(getMCTypeFacade().createStringType(), "kind");
+    ASTCDMethod method = getCDMethodFacade()
+            .createMethod(PROTECTED.build(), getMCTypeFacade().createQualifiedType(ISymbolDeSer.class),
+                          "getDeser", kindParam);
+    String errorCode = symbolTableService.getGeneratedErrorCode("getDeser"+millName);
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(
+            GET_DESER, millName, errorCode, scopeDeSerName));
+    return method;
+  }
+
   protected List<ASTCDMethod> createDeserializeAttrMethods(
       List<ASTCDAttribute> attributeList, ASTCDParameter scopeParam, ASTCDParameter scopeJsonParam) {
     List<ASTCDMethod> methodList = new ArrayList<>();
@@ -320,7 +341,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
     }
     //sort the map based on the alphabetical order of keys, to always generate the same order of methods
     return symbolMap.entrySet().stream()
-        .sorted(Ordering.natural().onResultOf(a -> a.getKey())).collect(Collectors
+        .sorted(Ordering.natural().onResultOf(Map.Entry::getKey)).collect(Collectors
             .toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2, LinkedHashMap::new));
   }
 

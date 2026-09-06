@@ -1,5 +1,7 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types3;
 
+import com.google.common.base.Preconditions;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.types.check.SymTypeExpression;
@@ -95,13 +97,13 @@ public abstract class TypeCheck3 {
    * Derives the type of the expression,
    * using the expected target type as additional information.
    * <p>
-   * E.g.: List<int> myList = []; // [] returns an empty list
+   * E.g.: {@code List<int> myList = [];} // [] returns an empty list
    * Here, the type of [] is to be calculated.
    * Without target type, it is known that a List is returned.
    * However, the type argument of List is unknown.
-   * Using the target type List<int> as additional information,
+   * Using the target type {@code List<int>} as additional information,
    * allows to additionally derive the type argument int,
-   * resulting in deriving List<int> to be the expression []'s type.
+   * resulting in deriving {@code List<int>} to be the expression []'s type.
    * <p>
    * Note: it is up to the concrete implementation,
    * whether the target type is used.
@@ -155,7 +157,7 @@ public abstract class TypeCheck3 {
   );
 
   protected static void setDelegate(TypeCheck3 delegate) {
-    TypeCheck3.delegate = Log.errorIfNull(delegate);
+    TypeCheck3.delegate = Preconditions.checkNotNull(delegate);
   }
 
   protected static void resetDelegate() {

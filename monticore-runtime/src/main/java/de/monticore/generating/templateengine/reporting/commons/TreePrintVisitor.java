@@ -93,7 +93,7 @@ public class TreePrintVisitor implements IVisitor {
    */
   public TreePrintVisitor() {
     this.treeResult = Lists.newArrayList();
-    indents = new Stack<String>();
+    indents = new Stack<>();
     indents.add(INITALINDENT);
   }
   
@@ -109,7 +109,7 @@ public class TreePrintVisitor implements IVisitor {
     this.treeResult = Lists.newArrayList();
     this.endLineDecoration = endLineDecoration;
     this.astNodeExtraInfos = astNodeExtraInfos;
-    indents = new Stack<String>();
+    indents = new Stack<>();
     indents.add(INITALINDENT); 
   }
   

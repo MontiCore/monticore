@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.ocl.setexpressions.types3;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
@@ -10,6 +11,7 @@ import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.mccollectiontypes.types3.MCCollectionSymTypeRelations;
 import de.monticore.types.mccollectiontypes.types3.util.MCCollectionSymTypeFactory;
 import de.monticore.types3.AbstractTypeVisitor;
+import de.monticore.types3.SymTypeRelations;
 import de.monticore.types3.util.TypeVisitorLifting;
 import de.se_rwth.commons.logging.Log;
 
@@ -58,8 +60,8 @@ public class SetExpressionsTypeVisitor extends AbstractTypeVisitor
       SymTypeExpression setElemType = MCCollectionSymTypeRelations.getCollectionElementType(setResult);
       // it does not make any sense to ask if it is in the set
       // if it cannot be in the set
-      if (MCCollectionSymTypeRelations.isSubTypeOf(elemResult, setElemType)
-          || MCCollectionSymTypeRelations.isSubTypeOf(setElemType, elemResult)) {
+      if (SymTypeRelations.isSubTypeOf(elemResult, setElemType)
+          || SymTypeRelations.isSubTypeOf(setElemType, elemResult)) {
         result = SymTypeExpressionFactory.createPrimitive(BasicSymbolsMill.BOOLEAN);
       }
       else {
@@ -109,7 +111,7 @@ public class SetExpressionsTypeVisitor extends AbstractTypeVisitor
     if (isSetOrListCollection(leftResult)
         && isSetOrListCollection(rightResult)) {
       Optional<SymTypeExpression> lub =
-          MCCollectionSymTypeRelations.leastUpperBound(leftResult, rightResult);
+          SymTypeRelations.leastUpperBound(leftResult, rightResult);
       if (lub.isPresent() && !lub.get().isObscureType()) {
         result = lub.get();
       }
@@ -166,7 +168,7 @@ public class SetExpressionsTypeVisitor extends AbstractTypeVisitor
     if (MCCollectionSymTypeRelations.isSet(leftResult)
         && MCCollectionSymTypeRelations.isSet(rightResult)) {
       Optional<SymTypeExpression> lub =
-          MCCollectionSymTypeRelations.leastUpperBound(leftResult, rightResult);
+          SymTypeRelations.leastUpperBound(leftResult, rightResult);
       if (lub.isPresent() && !lub.get().isObscureType()) {
         result = lub.get();
       }
@@ -283,7 +285,7 @@ public class SetExpressionsTypeVisitor extends AbstractTypeVisitor
       ASTExpression expr, SymTypeExpression setType) {
     SymTypeExpression result;
     if (isSetOrListCollection(setType)
-        && MCCollectionSymTypeRelations.isBoolean(
+        && SymTypeRelations.isBoolean(
         MCCollectionSymTypeRelations.getCollectionElementType(setType))) {
       result = createPrimitive(BasicSymbolsMill.BOOLEAN);
     }
@@ -312,7 +314,7 @@ public class SetExpressionsTypeVisitor extends AbstractTypeVisitor
         if (boolExprType.isObscureType()) {
           isObscure = true;
         }
-        else if (!MCCollectionSymTypeRelations.isBoolean(boolExprType)) {
+        else if (!SymTypeRelations.isBoolean(boolExprType)) {
           Log.error(
               "0xFD554 filter expression in set comprehension "
                   + "need to be Boolean expressions, but got "
@@ -421,7 +423,7 @@ public class SetExpressionsTypeVisitor extends AbstractTypeVisitor
       assigneeType =
           SymTypeExpressionFactory.createTypeArray(mCType, varDecl.sizeDim());
     }
-    if (!MCCollectionSymTypeRelations.isCompatible(assigneeType, exprType)) {
+    if (!SymTypeRelations.isCompatible(assigneeType, exprType)) {
       Log.error(
           "0xFD547 cannot assign"
               + exprType.printFullName()
@@ -455,7 +457,7 @@ public class SetExpressionsTypeVisitor extends AbstractTypeVisitor
       SymTypeExpression mCType =
           getType4Ast().getPartialTypeOfTypeId(genDecl.getMCType());
       if (!mCType.isObscureType() &&
-          !MCCollectionSymTypeRelations.isCompatible(mCType, elementType)) {
+          !SymTypeRelations.isCompatible(mCType, elementType)) {
         Log.error(
             "0xFD549 cannot assign elements of collection of type "
                 + exprType.printFullName()
@@ -497,21 +499,7 @@ public class SetExpressionsTypeVisitor extends AbstractTypeVisitor
 
   @Override
   public void endVisit(ASTSetValueRange expr) {
-    SymTypeExpression leftResult = getType4Ast().getPartialTypeOfExpr(expr.getLowerBound());
-    SymTypeExpression rightResult = getType4Ast().getPartialTypeOfExpr(expr.getUpperBound());
-    if (!leftResult.isObscureType() && !rightResult.isObscureType()) {
-      if (!isIntegralType(normalize(leftResult))
-          || !isIntegralType(normalize(rightResult))) {
-        Log.error(
-            "0xFD217 bounds in SetValueRange "
-                + "are not integral types, but have to be, got "
-                + leftResult.printFullName()
-                + " and "
-                + rightResult.printFullName(),
-            expr.get_SourcePositionStart(),
-            expr.get_SourcePositionEnd());
-      }
-    }
+    assertRangeContainsIntegrals(expr);
   }
 
   // hook points
@@ -529,7 +517,7 @@ public class SetExpressionsTypeVisitor extends AbstractTypeVisitor
 
   /**
    * Get all expressions within the set enumeration.
-   * E.g.: "{1, 2..4}" -> "1","2","4"
+   * E.g.: {@code "{1, 2..4}" -> "1","2","4"}
    * Returns empty on error (will have been logged)
    */
   protected Optional<List<ASTExpression>> getContainedExpressions(ASTSetEnumeration expr) {
@@ -561,7 +549,7 @@ public class SetExpressionsTypeVisitor extends AbstractTypeVisitor
   /**
    * Get all expressions' types within the set enumeration.
    * They need to be stored in Type4Ast before calling this.
-   * E.g.: "{1, 2..4}" -> int, int, int
+   * E.g.: {@code "{1, 2..4}" -> int, int, int}
    * May contain Obscure (error will have been logged).
    */
   protected List<SymTypeExpression> getContainedExpressionTypes(ASTSetEnumeration expr) {

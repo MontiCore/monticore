@@ -2,21 +2,20 @@
 
 import coloredgraph.ColoredGraphTool;
 import coloredgraph._symboltable.*;
+import de.monticore.runtime.junit.MCAssertions;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.awt.*;
 import java.io.File;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ColoredGraphToolTest {
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -31,10 +30,10 @@ public class ColoredGraphToolTest {
   public void testTrafficLight() {
     LogStub.init();
     //    Log.enableFailQuick(false);
-    ColoredGraphTool.main(new String[] { "-i", "src/test/resources/TrafficLight.cg" });
+    new ColoredGraphTool().run(new String[] { "-i", "src/test/resources/TrafficLight.cg" });
     File stFile = new File("target/src/test/resources/TrafficLight.cgsym");
     assertTrue(stFile.exists());
-    assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
 
   @Test
@@ -43,7 +42,7 @@ public class ColoredGraphToolTest {
     //    Log.enableFailQuick(false);
 
     // store scope and check that file exists
-    ColoredGraphTool.main(new String[] { "-i", "src/test/resources/Blinker.cg" });
+    new ColoredGraphTool().run(new String[] { "-i", "src/test/resources/Blinker.cg" });
     File stFile = new File("target/src/test/resources/Blinker.cgsym");
     assertTrue(stFile.exists());
 
@@ -66,13 +65,13 @@ public class ColoredGraphToolTest {
     VertexSymbol offSymbol = graphScope.getLocalVertexSymbols().get(0);
     assertEquals("Off", offSymbol.getName());
     assertEquals(new Color(0, 0, 0), offSymbol.getColor());
-    assertEquals(true, offSymbol.isInitial());
+    assertTrue(offSymbol.isInitial());
 
     VertexSymbol blinkSymbol = graphScope.getLocalVertexSymbols().get(1);
     assertEquals("BlinkBlue", blinkSymbol.getName());
     assertEquals(new Color(0, 0, 204), blinkSymbol.getColor());
-    assertEquals(false, blinkSymbol.isInitial());
-    assertTrue(Log.getFindings().isEmpty());
+    assertFalse(blinkSymbol.isInitial());
+    MCAssertions.assertNoFindings();
   }
 
 }

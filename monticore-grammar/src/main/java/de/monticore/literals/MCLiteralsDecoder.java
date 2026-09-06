@@ -3,6 +3,7 @@
 package de.monticore.literals;
 
 import de.se_rwth.commons.logging.Log;
+import org.apache.commons.text.StringEscapeUtils;
 
 /**
  * This class provides methods for converting literals. The LiteralsHelper is a singleton.
@@ -57,26 +58,7 @@ public class MCLiteralsDecoder {
    * @return decoded string
    */
   public static String decodeString(String s) {
-    StringBuilder ret = new StringBuilder();
-    String in = s;
-    
-    while (in.length() != 0) {
-      if (in.charAt(0) == '\\') {
-        if (in.charAt(1) == 'u') { // unicode
-          ret.append(decodeChar(in.substring(0, 6)));
-          in = in.substring(6);
-        }
-        else { // escape sequence
-          ret.append(decodeChar(in.substring(0, 2)));
-          in = in.substring(2);
-        }
-      }
-      else { // single char
-        ret.append(in.charAt(0));
-        in = in.substring(1);
-      }
-    }
-    return ret.toString();
+    return StringEscapeUtils.unescapeJava(s);
   }
   
   /**
@@ -150,7 +132,7 @@ public class MCLiteralsDecoder {
     s = s.substring(0, s.length() - 1);
     s = removeUnderscores(s);
     if (s.startsWith("0x") || s.startsWith("0X")) {
-      return Float.valueOf(s);
+      return Float.parseFloat(s);
     }
     // workaround as parseFloat() does not parse 0xp1F correctly
     if (s.toLowerCase().startsWith("0xp")) {
@@ -171,7 +153,7 @@ public class MCLiteralsDecoder {
     }
     s = removeUnderscores(s);
     if (s.startsWith("0x") || s.startsWith("0X")) {
-      return Double.valueOf(s);
+      return Double.parseDouble(s);
     }
     // workaround as parseDouble() does not parse 0xp1 correctly
     if (s.toLowerCase().startsWith("0xp")) {
@@ -210,7 +192,7 @@ public class MCLiteralsDecoder {
       if (s.endsWith("_")) {
         Log.error("0xA4081 Do not put underscores at the end of the Number " + s);
       }
-      s = s.replaceAll("_", "");
+      s = s.replace("_", "");
     }
     
     return s;

@@ -2,7 +2,9 @@
 package de.monticore.types.check;
 
 import de.monticore.types3.ISymTypeVisitor;
-import de.se_rwth.commons.logging.Log;
+import com.google.common.base.Preconditions;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class SymTypeInferenceVariable extends SymTypeExpression {
 
@@ -29,9 +31,9 @@ public class SymTypeInferenceVariable extends SymTypeExpression {
       SymTypeExpression upperBound
   ) {
     this.id = getUniqueID();
-    this.idStr = Log.errorIfNull(idStr);
-    this.lowerBound = Log.errorIfNull(lowerBound);
-    this.upperBound = Log.errorIfNull(upperBound);
+    this.idStr = Preconditions.checkNotNull(idStr);
+    this.lowerBound = Preconditions.checkNotNull(lowerBound);
+    this.upperBound = Preconditions.checkNotNull(upperBound);
   }
 
   /**
@@ -44,9 +46,9 @@ public class SymTypeInferenceVariable extends SymTypeExpression {
       SymTypeExpression upperBound
   ) {
     this.id = id;
-    this.idStr = Log.errorIfNull(idStr);
-    this.lowerBound = Log.errorIfNull(lowerBound);
-    this.upperBound = Log.errorIfNull(upperBound);
+    this.idStr = Preconditions.checkNotNull(idStr);
+    this.lowerBound = Preconditions.checkNotNull(lowerBound);
+    this.upperBound = Preconditions.checkNotNull(upperBound);
   }
 
   public SymTypeExpression getLowerBound() {
@@ -145,8 +147,8 @@ public class SymTypeInferenceVariable extends SymTypeExpression {
   protected static int getUniqueID() {
     // naming inspired by JDK
     // s.a. https://git.rwth-aachen.de/monticore/monticore/-/issues/4296
-    return typeInfIDCounter++;
+    return typeInfIDCounter.getAndAdd(1);
   }
 
-  protected static int typeInfIDCounter = 0;
+  protected static AtomicInteger typeInfIDCounter = new AtomicInteger(0);
 }

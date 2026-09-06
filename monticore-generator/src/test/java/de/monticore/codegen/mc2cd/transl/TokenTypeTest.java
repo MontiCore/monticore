@@ -9,12 +9,14 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.codegen.mc2cd.TranslationTestCase;
 import de.se_rwth.commons.logging.Log;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Paths;
 import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TokenTypeTest extends TranslationTestCase {
 
@@ -36,88 +38,88 @@ public class TokenTypeTest extends TranslationTestCase {
   @Test
   public void testNumber() {
     ASTCDAttribute cdAttribute = getCDAttributeByName("a").get();
-    Assertions.assertEquals("int", CD4CodeMill.prettyPrint(cdAttribute.getMCType(), false));
+    assertEquals("int", CD4CodeMill.prettyPrint(cdAttribute.getMCType(), false));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testBoolean() {
     ASTCDAttribute cdAttribute = getCDAttributeByName("b").get();
-    Assertions.assertEquals("boolean", CD4CodeMill.prettyPrint(cdAttribute.getMCType(), false));
+    assertEquals("boolean", CD4CodeMill.prettyPrint(cdAttribute.getMCType(), false));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testChar() {
     ASTCDAttribute cdAttribute = getCDAttributeByName("c").get();
-    Assertions.assertEquals("char", CD4CodeMill.prettyPrint(cdAttribute.getMCType(), false));
+    assertEquals("char", CD4CodeMill.prettyPrint(cdAttribute.getMCType(), false));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testInt() {
     ASTCDAttribute cdAttribute = getCDAttributeByName("d").get();
-    Assertions.assertEquals("int", CD4CodeMill.prettyPrint(cdAttribute.getMCType(), false));
+    assertEquals("int", CD4CodeMill.prettyPrint(cdAttribute.getMCType(), false));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testFloat() {
     ASTCDAttribute cdAttribute = getCDAttributeByName("e").get();
-    Assertions.assertEquals("float", CD4CodeMill.prettyPrint(cdAttribute.getMCType(), false));
+    assertEquals("float", CD4CodeMill.prettyPrint(cdAttribute.getMCType(), false));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testDouble() {
     ASTCDAttribute cdAttribute = getCDAttributeByName("f").get();
-    Assertions.assertEquals("double", CD4CodeMill.prettyPrint(cdAttribute.getMCType(), false));
+    assertEquals("double", CD4CodeMill.prettyPrint(cdAttribute.getMCType(), false));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testLong() {
     ASTCDAttribute cdAttribute = getCDAttributeByName("g").get();
-    Assertions.assertEquals("long", CD4CodeMill.prettyPrint(cdAttribute.getMCType(), false));
+    assertEquals("long", CD4CodeMill.prettyPrint(cdAttribute.getMCType(), false));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testCard() {
     ASTCDAttribute cdAttribute = getCDAttributeByName("h").get();
-    Assertions.assertEquals("int", CD4CodeMill.prettyPrint(cdAttribute.getMCType(), false));
+    assertEquals("int", CD4CodeMill.prettyPrint(cdAttribute.getMCType(), false));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testShort() {
     ASTCDAttribute cdAttribute = getCDAttributeByName("i").get();
-    Assertions.assertEquals("short", CD4CodeMill.prettyPrint(cdAttribute.getMCType(), false));
+    assertEquals("short", CD4CodeMill.prettyPrint(cdAttribute.getMCType(), false));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testByte() {
     ASTCDAttribute cdAttribute = getCDAttributeByName("j").get();
-    Assertions.assertEquals("byte", CD4CodeMill.prettyPrint(cdAttribute.getMCType(), false));
+    assertEquals("byte", CD4CodeMill.prettyPrint(cdAttribute.getMCType(), false));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testByte2() {
     ASTCDAttribute cdAttribute = getCDAttributeByName("k").get();
-    Assertions.assertEquals("byte", CD4CodeMill.prettyPrint(cdAttribute.getMCType(), false));
+    assertEquals("byte", CD4CodeMill.prettyPrint(cdAttribute.getMCType(), false));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

@@ -1,5 +1,7 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types3;
 
+import com.google.common.base.Preconditions;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.types.check.SymTypeExpression;
@@ -10,12 +12,11 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._ast.ASTMCVoidType;
 import de.monticore.types3.generics.context.InferenceContext4Ast;
 import de.monticore.visitor.ITraverser;
-import de.se_rwth.commons.logging.Log;
 
 /**
  * Temporary(!) interface implementation for the temporary(!) usage of TC3.
  * This is temporary as the interface had not been discussed yet.
- * s. https://git.rwth-aachen.de/monticore/monticore/-/issues/3420
+ * s. <a href="https://git.rwth-aachen.de/monticore/monticore/-/issues/3420">monticore#3420</a>
  * @deprecated use {@link TypeCheck3}
  */
 @Deprecated
@@ -37,9 +38,9 @@ public class TypeCalculator3 implements ITypeCalculator {
       Type4Ast type4Ast,
       InferenceContext4Ast ctx4Ast
   ) {
-    this.typeTraverser = Log.errorIfNull(typeTraverser);
-    this.type4Ast = Log.errorIfNull(type4Ast);
-    this.ctx4Ast = Log.errorIfNull(ctx4Ast);
+    this.typeTraverser = Preconditions.checkNotNull(typeTraverser);
+    this.type4Ast = Preconditions.checkNotNull(type4Ast);
+    this.ctx4Ast = Preconditions.checkNotNull(ctx4Ast);
   }
 
   public ITraverser getTypeTraverser() {

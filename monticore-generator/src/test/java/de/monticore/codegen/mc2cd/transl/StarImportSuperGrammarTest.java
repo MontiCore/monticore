@@ -7,14 +7,13 @@ import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.codegen.mc2cd.TranslationTestCase;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.se_rwth.commons.logging.Log;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Paths;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class StarImportSuperGrammarTest extends TranslationTestCase {
   
@@ -29,9 +28,9 @@ public class StarImportSuperGrammarTest extends TranslationTestCase {
   @Test
   public void testStarImport() {
     ASTMCImportStatement importStatement = cdCompilationUnit.getMCImportStatementList().get(0);
-    Assertions.assertTrue(importStatement.isStar());
-    Assertions.assertEquals("mc2cdtransformation.Supergrammar", importStatement.getQName());
+    assertTrue(importStatement.isStar());
+    assertEquals("mc2cdtransformation.Supergrammar", importStatement.getQName());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

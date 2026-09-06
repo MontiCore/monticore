@@ -5,7 +5,7 @@ import de.monticore.ast.ASTNode;
 import de.se_rwth.commons.StringTransformations;
 import de.monticore.tf.ast.*;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -14,8 +14,8 @@ import java.util.Map;
  */
 public class ODRuleNameGenerator {
 
-  private Map<ITFObject, String> generatedNames = new HashMap<>();
-  private Map<Class<? extends ASTNode>, Integer> numberOfElements = new HashMap<>();
+  private Map<ITFObject, String> generatedNames = new LinkedHashMap<>();
+  private Map<Class<? extends ASTNode>, Integer> numberOfElements = new LinkedHashMap<>();
 
   public String getNameForElement(ITFObject element, Map<ASTNode,ASTNode> parents) {
     ASTNode parent = parents.get(element);
@@ -87,7 +87,7 @@ public class ODRuleNameGenerator {
       else {
         prefix = StringTransformations.uncapitalize(elementType.getSimpleName().substring(3));
       }
-      String name = StringTransformations.uncapitalize(prefix + "_" + Integer.toString(nextNumber));
+      String name = StringTransformations.uncapitalize(prefix + "_" + nextNumber);
       generatedNames.put(element, name);
     }
     return generatedNames.get(element);

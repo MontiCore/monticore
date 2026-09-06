@@ -6,15 +6,14 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.codegen.mc2cd.TranslationTestCase;
 import de.se_rwth.commons.logging.Log;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Paths;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class EnumProdTest extends TranslationTestCase {
 
@@ -29,8 +28,8 @@ public class EnumProdTest extends TranslationTestCase {
 
   @Test
   public void testExist() {
-    Assertions.assertEquals(4, cdCompilationUnit.getCDDefinition().getCDEnumsList().size());
+    assertEquals(4, cdCompilationUnit.getCDDefinition().getCDEnumsList().size());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

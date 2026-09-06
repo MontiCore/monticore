@@ -8,7 +8,6 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.codegen.mc2cd.TranslationTestCase;
 import de.se_rwth.commons.logging.Log;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -17,8 +16,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static de.monticore.codegen.mc2cd.TransformationHelper.typeToString;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TokenMultiplicityTest extends TranslationTestCase {
 
@@ -35,8 +34,8 @@ public class TokenMultiplicityTest extends TranslationTestCase {
   public void testTokenStar() {
     List<ASTCDAttribute> attributes = testListClass.getCDAttributeList();
     String name = typeToString(attributes.get(0).getMCType());
-    Assertions.assertEquals("java.util.List", name);
+    assertEquals("java.util.List", name);
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

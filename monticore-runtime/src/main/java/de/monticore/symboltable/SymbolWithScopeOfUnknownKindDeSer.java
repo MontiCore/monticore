@@ -17,8 +17,8 @@ import de.se_rwth.commons.logging.Log;
  */
 public class SymbolWithScopeOfUnknownKindDeSer implements ISymbolDeSer<SymbolWithScopeOfUnknownKind, Object> {
 
-  private final IDeSer<?, ?, ?> parent;
-  private final Supplier<IScope> scopeFactory;
+  protected final IDeSer<?, ?, ?> parent;
+  protected final Supplier<IScope> scopeFactory;
 
   /**
    * Creates a new {@code SymbolWithScopeOfUnknownKindDeSer}.

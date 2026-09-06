@@ -28,8 +28,8 @@ import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.types.MCTypeFacade;
 import de.se_rwth.commons.logging.Log;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Optional;
@@ -37,9 +37,7 @@ import java.util.Optional;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getEnumBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getInterfaceBy;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class
 DeprecatedTest extends DecoratorTestCase {
@@ -63,7 +61,7 @@ DeprecatedTest extends DecoratorTestCase {
 
   private ASTCDCompilationUnit compilationUnit;
 
-  @Before
+  @BeforeEach
   public void setup() {
     compilationUnit = this.parse("de", "monticore", "codegen", "deprecated", "DeprecatedProds");
 

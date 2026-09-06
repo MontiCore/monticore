@@ -40,9 +40,10 @@ public class SimpleSymbolTagger extends AbstractTagger implements ISymbolTagger 
     this.backingTagUnits = tagUnitsSupplier;
     this.tagUnitMapping = CacheBuilder.newBuilder()
             .weakValues() // when TagUnits are unloaded from the backing supplier, do not hold onto them
-            .build(new CacheLoader<ASTTagUnit, TagFQNMapping>() {
+            .build(new CacheLoader<>() {
+              
               @Override
-              public TagFQNMapping load(ASTTagUnit tagUnit) throws Exception {
+              public TagFQNMapping load(ASTTagUnit tagUnit) {
                 // When required, compute the FQNMapping
                 return computeFQNMapping(tagUnit);
               }
@@ -75,11 +76,7 @@ public class SimpleSymbolTagger extends AbstractTagger implements ISymbolTagger 
     TagFQNMapping unitMapping = tagUnitMapping.getUnchecked(tagUnit);
     // and add all found ASTTargetElements to the buffer
     List<ASTTargetElement> foundTags = unitMapping.mapping.get(fqn);
-    if (foundTags == null) {
-      return Collections.emptyList();
-    } else {
-      return foundTags;
-    }
+    return Objects.requireNonNullElse(foundTags, Collections.emptyList());
   }
 
 
@@ -95,8 +92,8 @@ public class SimpleSymbolTagger extends AbstractTagger implements ISymbolTagger 
     String fqn = symbol.getFullName();
 
     // We return (the stream of) an iterator
-    Iterator<ASTTargetElement> iterator = new ProgressiveIterator<ASTTargetElement, ASTTagUnit>
-            (backingTagUnits.get().iterator()) {
+    Iterator<ASTTargetElement> iterator = new ProgressiveIterator<>(backingTagUnits.get().iterator()) {
+      
       @Override
       @Nonnull
       protected Collection<? extends ASTTargetElement> doWork(ASTTagUnit tagUnit) {
@@ -152,7 +149,7 @@ public class SimpleSymbolTagger extends AbstractTagger implements ISymbolTagger 
   }
 
   /**
-   * Computes a (new) FQN->[ASTTargetElement] mapping of an ASTTagUnit
+   * Computes a (new) {@code FQN->[ASTTargetElement]} mapping of an ASTTagUnit
    */
   protected TagFQNMapping computeFQNMapping(ASTTagUnit tagUnit) {
     Map<String, List<ASTTargetElement>> fqnMapping = new LinkedHashMap<>();
@@ -201,7 +198,7 @@ public class SimpleSymbolTagger extends AbstractTagger implements ISymbolTagger 
 
   /**
    * Buffering iterator of type A with an element of flattening.
-   * calls {@link #doWork(B)} when demanded and iterates on the doWorks return value.
+   * calls  ProgressiveIterator#doWork(B) when demanded and iterates on the doWorks return value.
    */
   protected abstract static class ProgressiveIterator<A, B> implements Iterator<A> {
     // With a buffer of target elements

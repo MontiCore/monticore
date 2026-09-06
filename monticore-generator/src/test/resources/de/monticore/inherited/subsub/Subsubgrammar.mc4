@@ -12,5 +12,9 @@ grammar Subsubgrammar extends de.monticore.inherited.sub.Subgrammar {
   S = X*;
   
 //  X = Y "HH" J D;
+
+
+  @Override
+  ODName_Rep = "world"  ;
  
 }

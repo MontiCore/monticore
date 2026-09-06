@@ -8,7 +8,6 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.codegen.mc2cd.TranslationTestCase;
 import de.se_rwth.commons.logging.Log;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -16,8 +15,8 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import static de.monticore.codegen.mc2cd.TransformationHelper.typeToString;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Test for the proper transformation of AttributeInASTs to corresponding
@@ -48,10 +47,10 @@ public class AttributeInASTMultiplicityTest extends TranslationTestCase {
   @Test
   public void testStarMultiplicity() {
     List<ASTCDAttribute> attributes = astA.getCDAttributeList();
-    Assertions.assertTrue(TestHelper.isListOfType(attributes.get(0).getMCType(),
+    assertTrue(TestHelper.isListOfType(attributes.get(0).getMCType(),
         "mc2cdtransformation.AttributeInASTMultiplicityGrammar.ASTX"));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   /**
@@ -62,17 +61,17 @@ public class AttributeInASTMultiplicityTest extends TranslationTestCase {
   public void testOptionalCardinality() {
     List<ASTCDAttribute> attributes = astB.getCDAttributeList();
     String name = typeToString(attributes.get(0).getMCType());
-    Assertions.assertEquals("Optional", name);
+    assertEquals("Optional", name);
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
   public void testOneCardinality() {
     List<ASTCDAttribute> attributes = astC.getCDAttributeList();
     String name = typeToString(attributes.get(0).getMCType());
-    Assertions.assertEquals("mc2cdtransformation.AttributeInASTMultiplicityGrammar.ASTZ", name);
+    assertEquals("mc2cdtransformation.AttributeInASTMultiplicityGrammar.ASTZ", name);
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

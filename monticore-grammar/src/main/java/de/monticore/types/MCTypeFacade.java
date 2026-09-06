@@ -99,7 +99,7 @@ public class MCTypeFacade {
   }
 
   public ASTMCOptionalType createOptionalTypeOf(final ASTMCTypeArgument type) {
-    if (!type.getMCTypeOpt().isPresent()) {
+    if (type.getMCTypeOpt().isEmpty()) {
       return  createOptionalTypeOf("?");
     }
     return createOptionalTypeOf(type.getMCTypeOpt().get().printType());
@@ -124,7 +124,7 @@ public class MCTypeFacade {
   }
 
   public ASTMCListType createListTypeOf(final ASTMCTypeArgument type) {
-    if (!type.getMCTypeOpt().isPresent()) {
+    if (type.getMCTypeOpt().isEmpty()) {
       return  createListTypeOf("?");
     }
     return createListTypeOf(type.getMCTypeOpt().get());
@@ -149,7 +149,7 @@ public class MCTypeFacade {
   }
 
   public ASTMCSetType createSetTypeOf(final ASTMCTypeArgument type) {
-    if (!type.getMCTypeOpt().isPresent()) {
+    if (type.getMCTypeOpt().isEmpty()) {
       return  createSetTypeOf("?");
     }
     return createSetTypeOf(type.getMCTypeOpt().get().printType());

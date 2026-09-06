@@ -3,6 +3,7 @@ ${tc.signature("symbolReferenceName", "attributeList")}
 <#assign genHelper = glex.getGlobalVar("astHelper")>
   ${symbolReferenceName} symbolReference = new ${symbolReferenceName}(name);
   symbolReference.setEnclosingScope(enclosingScope);
+  symbolReference.getStereoinfo().putAll(this.stereoinfo);
 <#list attributeList as attribute>
   <#assign methName = genHelper.getNativeAttributeName(attribute.getName())?cap_first>
   <#if genHelper.isListType(attribute.printType())>

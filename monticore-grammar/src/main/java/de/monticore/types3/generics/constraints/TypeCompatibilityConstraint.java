@@ -54,6 +54,11 @@ public class TypeCompatibilityConstraint extends Constraint {
   }
 
   @Override
+  public TypeCompatibilityConstraint asTypeCompatibilityConstraint() {
+    return this;
+  }
+
+  @Override
   public boolean deepEquals(Constraint other) {
     if (this == other) {
       return true;

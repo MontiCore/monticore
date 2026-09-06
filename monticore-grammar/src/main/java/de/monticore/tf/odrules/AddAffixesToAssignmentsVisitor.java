@@ -12,8 +12,6 @@ import de.monticore.tf.odrulegeneration._ast.ASTMatchingObject;
 import java.util.List;
 
 /**
- * Created by Alexander Wilts on 16.01.2017.
- * <p>
  * This visitor adds prefix "m." to normal nodes in assignments.
  */
 public class AddAffixesToAssignmentsVisitor implements

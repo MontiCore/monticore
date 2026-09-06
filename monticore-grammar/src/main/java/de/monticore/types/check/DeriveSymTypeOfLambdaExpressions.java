@@ -15,7 +15,10 @@ import java.util.List;
 /**
  * This Visitor can calculate a SymTypeExpression (type) for the expressions in LambdaExpressions
  * It can be combined with other expressions in your language by creating a DelegatorVisitor
+ * @deprecated part of typecheck1,
+ * use {@link de.monticore.types3.TypeCheck3} instead.
  */
+@Deprecated
 public class DeriveSymTypeOfLambdaExpressions extends AbstractDeriveFromExpression
     implements LambdaExpressionsVisitor2, LambdaExpressionsHandler {
 

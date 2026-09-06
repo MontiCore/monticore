@@ -12,10 +12,9 @@ import de.monticore.visitor.ITraverser;
 import de.se_rwth.commons.Splitters;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.google.common.collect.FluentIterable.from;
-import static de.se_rwth.commons.Joiners.DOT;
-import static java.util.stream.Collectors.toSet;
 
 public interface IScope {
 
@@ -102,13 +101,13 @@ public interface IScope {
       final List<String> nameParts = getNameParts(symbolName).toList();
 
       if (nameParts.size() > 1) {
-        final String firstNamePart = nameParts.get(0);
+        final String firstNamePart = nameParts.getFirst();
         // A scope that exports symbols usually has a name.
         if (this.isPresentName()) {
           return symbolName.startsWith(getName());
         }
         else {
-          return firstNamePart.equals("");
+          return firstNamePart.isEmpty();
         }
       }
     }
@@ -117,21 +116,19 @@ public interface IScope {
   }
 
   default <T extends ISymbol> Optional<T> getResolvedOrThrowException(final Collection<T> resolved) {
-    Set<T> resolvedSet = new HashSet<>(resolved);
-
-    if (resolvedSet.size() == 1) {
-      return Optional.of(resolvedSet.iterator().next());
-    } else if (resolvedSet.size() > 1) {
-      throw new ResolvedSeveralEntriesForSymbolException("0xA4095 Found " + resolvedSet.size()
-          + " symbols: " + resolvedSet.iterator().next().getFullName(),
-          resolvedSet);
+    if (resolved.size() == 1) {
+      return Optional.of(resolved.iterator().next());
+    } else if (resolved.size() > 1) {
+      throw new ResolvedSeveralEntriesForSymbolException("0xA4095 Found " + resolved.size()
+          + " symbols: " + resolved.iterator().next().getFullName(),
+              resolved);
     }
 
     return Optional.empty();
   }
 
   default <T extends ISymbol> List<T> filterSymbolsByAccessModifier(AccessModifier modifier, Collection<T> resolvedUnfiltered) {
-    return new ArrayList<>(resolvedUnfiltered.stream().filter(new IncludesAccessModifierSymbolPredicate(modifier)).collect(toSet()));
+    return resolvedUnfiltered.stream().filter(new IncludesAccessModifierSymbolPredicate(modifier)).distinct().collect(Collectors.toList());
   }
 
   default LinkedListMultimap<String, SymbolWithScopeOfUnknownKind> getUnknownSymbols() {

@@ -7,13 +7,15 @@ import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCoChecker;
 import de.monticore.grammar.grammar_withconcepts._symboltable.Grammar_WithConceptsGlobalScope;
-import de.se_rwth.commons.logging.Finding;
+import de.monticore.runtime.junit.AbstractMCTest;
+import de.monticore.runtime.junit.MCAssertions;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 
-public abstract class CocoTest {
+import static org.junit.jupiter.api.Assertions.*;
+
+public abstract class CocoTest extends AbstractMCTest {
 
   protected Grammar_WithConceptsCoCoChecker checker;
 
@@ -32,13 +34,10 @@ public abstract class CocoTest {
     final MCGrammarSymbol grammarSymbol = globalScope
         .resolveMCGrammar(grammar)
         .orElse(null);
-    Assertions.assertNotNull(grammarSymbol);
-    Assertions.assertTrue(grammarSymbol.getAstGrammar().isPresent());
-    
-    Log.getFindings().clear();
+    assertNotNull(grammarSymbol);
+    assertTrue(grammarSymbol.getAstGrammar().isPresent());
+
     checker.checkAll(grammarSymbol.getAstGrammar().get());
-    
-    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
   
   protected void testInvalidGrammar(String grammar, String code, String message,
@@ -54,34 +53,14 @@ public abstract class CocoTest {
     final MCGrammarSymbol grammarSymbol = globalScope
         .resolveMCGrammar(grammar)
         .orElse(null);
-    Assertions.assertNotNull(grammarSymbol);
-    Assertions.assertTrue(grammarSymbol.getAstGrammar().isPresent());
+    assertNotNull(grammarSymbol);
+    assertTrue(grammarSymbol.getAstGrammar().isPresent());
     
     Log.getFindings().clear();
     checker.checkAll(grammarSymbol.getAstGrammar().get());
     
-    Assertions.assertFalse(Log.getFindings().isEmpty());
-    Assertions.assertEquals(numberOfFindings, Log.getFindings().size());
-    for (Finding f : Log.getFindings()) {
-      Assertions.assertEquals(code + message, f.getMsg());
-    }
-  }
-  
-  protected void testInvalidGrammarKeepFindings(String grammar, String code, String message,
-      Grammar_WithConceptsCoCoChecker checker) {
-    final Grammar_WithConceptsGlobalScope globalScope = GrammarGlobalScopeTestFactory.create();
-    
-    // test grammar symbol
-    final MCGrammarSymbol grammarSymbol = globalScope
-        .resolveMCGrammar(grammar)
-        .orElse(null);
-    Assertions.assertNotNull(grammarSymbol);
-    Assertions.assertTrue(grammarSymbol.getAstGrammar().isPresent());
-    checker.checkAll(grammarSymbol.getAstGrammar().get());
-    Assertions.assertFalse(Log.getFindings().isEmpty());
-    Assertions.assertEquals(1, Log.getFindings().size());
-    for (Finding f : Log.getFindings()) {
-      Assertions.assertEquals(code + message, f.getMsg());
-    }
+    assertEquals(numberOfFindings, Log.getFindings().size());
+
+    MCAssertions.assertHasFindingsStartingWith(code + message);
   }
 }

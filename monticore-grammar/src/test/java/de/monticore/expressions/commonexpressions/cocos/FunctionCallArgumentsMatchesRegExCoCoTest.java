@@ -6,8 +6,8 @@ import de.monticore.expressions.combineexpressionswithliterals._ast.ASTFoo;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsArtifactScope;
 import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
 import de.monticore.expressions.commonexpressions._cocos.CommonExpressionsCoCoChecker;
-import de.monticore.expressions.commonexpressions.types3.util.CommonExpressionsLValueRelations;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.IDerive;
 import de.monticore.types.check.SymTypeExpression;
@@ -18,8 +18,6 @@ import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserFacto
 import de.monticore.types3.util.DefsTypesForTests;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -29,17 +27,16 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static junit.framework.TestCase.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@TestWithMCLanguage(CombineExpressionsWithLiteralsMill.class)
 public class FunctionCallArgumentsMatchesRegExCoCoTest {
 
   @BeforeEach
   public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-    CombineExpressionsWithLiteralsMill.reset();
-    CombineExpressionsWithLiteralsMill.init();
+    new CombineExpressionsWithLiteralsTypeTraverserFactory().initTypeCheck3();
     DefsTypesForTests.setup();
+    CombineExpressionsWithLiteralsTypeTraverserFactory.initTypeCheck3();
   }
 
   @Test
@@ -142,15 +139,15 @@ public class FunctionCallArgumentsMatchesRegExCoCoTest {
 
   protected void testValid(String expression, List<List<String>> functions, boolean varArgs) throws IOException {
     check(expression, functions, varArgs);
-    Assertions.assertTrue(Log.getFindings().isEmpty(), Log.getFindings().stream()
-            .map(Finding::buildMsg)
-            .collect(Collectors.joining(System.lineSeparator())));
+    assertTrue(Log.getFindings().isEmpty(), Log.getFindings().stream()
+        .map(Finding::buildMsg)
+        .collect(Collectors.joining(System.lineSeparator())));
     Log.clearFindings();
   }
 
   protected void testInvalid(String expression, List<List<String>> functions, boolean varArgs) throws IOException {
     check(expression, functions, varArgs);
-    Assertions.assertTrue(Log.getFindings().stream().anyMatch(
+    assertTrue(Log.getFindings().stream().anyMatch(
         f -> f.getMsg().startsWith("0xFD725")
     ));
     Log.clearFindings();
@@ -166,7 +163,7 @@ public class FunctionCallArgumentsMatchesRegExCoCoTest {
     CombineExpressionsWithLiteralsTraverser traverser =
         factory.createTraverser(type4Ast);
     TypeCheck3AsIDerive derive = new TypeCheck3AsIDerive(
-        traverser, type4Ast, new CommonExpressionsLValueRelations());
+    );
 
     functions.forEach(parameters -> {
       List<SymTypeExpression> parameterList = parameters.stream()
@@ -180,11 +177,11 @@ public class FunctionCallArgumentsMatchesRegExCoCoTest {
 
     Optional<ASTExpression> optExpr = CombineExpressionsWithLiteralsMill
         .parser().parse_StringExpression(expression);
-    Assertions.assertTrue(optExpr.isPresent());
+    assertTrue(optExpr.isPresent());
 
     ASTExpression expr = optExpr.get();
     generateScopes(expr);
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
     getChecker(derive).checkAll(expr);
   }
 

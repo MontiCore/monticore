@@ -4,6 +4,7 @@ package de.monticore.symboltable.resolving;
 
 import de.monticore.symboltable.ISymbol;
 
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -11,9 +12,10 @@ import static com.google.common.collect.ImmutableList.copyOf;
 
 public class ResolvedSeveralEntriesForSymbolException extends RuntimeException {
 
+  @Serial
   private static final long serialVersionUID = 931330102959575779L;
 
-  protected Collection<? extends ISymbol> symbols = new ArrayList<>();
+  protected Collection<? extends ISymbol> symbols;
 
   public ResolvedSeveralEntriesForSymbolException(String message, Collection<? extends ISymbol> symbols) {
     super(message);

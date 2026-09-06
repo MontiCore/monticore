@@ -11,7 +11,7 @@ import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.io.FilenameUtils;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -56,8 +56,8 @@ public class InferenceContext4Ast {
   }
 
   public void reset() {
-    expr2ctx = new HashMap<>();
-    expr2resolved = new HashMap<>();
+    expr2ctx = new LinkedHashMap<>();
+    expr2resolved = new LinkedHashMap<>();
   }
 
   /**
@@ -158,9 +158,17 @@ public class InferenceContext4Ast {
         result.append(FilenameUtils.getName(startPos.getFileName().get()));
         result.append(":");
       }
-      result.append("<" + startPos.getLine() + "," + startPos.getColumn() + ">");
+      result.append("<");
+      result.append(startPos.getLine());
+      result.append(",");
+      result.append(startPos.getColumn());
+      result.append(">");
       result.append("-");
-      result.append("<" + endPos.getLine() + "," + endPos.getColumn() + ">");
+      result.append("<");
+      result.append(endPos.getLine());
+      result.append(",");
+      result.append(endPos.getColumn());
+      result.append(">");
     }
     else {
       result.append("unknown position");

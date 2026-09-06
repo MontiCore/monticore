@@ -21,12 +21,7 @@ import de.monticore.codegen.cd2java._symboltable.scopesgenitor.ScopesGenitorDele
 import de.monticore.codegen.cd2java._symboltable.serialization.ScopeDeSerDecorator;
 import de.monticore.codegen.cd2java._symboltable.serialization.SymbolDeSerDecorator;
 import de.monticore.codegen.cd2java._symboltable.serialization.Symbols2JsonDecorator;
-import de.monticore.codegen.cd2java._symboltable.symbol.CommonSymbolInterfaceDecorator;
-import de.monticore.codegen.cd2java._symboltable.symbol.SymbolBuilderDecorator;
-import de.monticore.codegen.cd2java._symboltable.symbol.SymbolDecorator;
-import de.monticore.codegen.cd2java._symboltable.symbol.SymbolResolverInterfaceDecorator;
-import de.monticore.codegen.cd2java._symboltable.symbol.SymbolSurrogateBuilderDecorator;
-import de.monticore.codegen.cd2java._symboltable.symbol.SymbolSurrogateDecorator;
+import de.monticore.codegen.cd2java._symboltable.symbol.*;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.Joiners;
@@ -53,6 +48,8 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
   protected final SymbolSurrogateDecorator symbolReferenceDecorator;
 
   protected final SymbolSurrogateBuilderDecorator symbolReferenceBuilderDecorator;
+
+  protected final SymbolSupplierDecorator symbolSupplierDecorator;
 
   protected final SymbolTableService symbolTableService;
 
@@ -91,6 +88,7 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
                                 final SymbolBuilderDecorator symbolBuilderDecorator,
                                 final SymbolSurrogateDecorator symbolReferenceDecorator,
                                 final SymbolSurrogateBuilderDecorator symbolReferenceBuilderDecorator,
+                                final SymbolSupplierDecorator symbolSupplierDecorator,
                                 final ScopeInterfaceDecorator scopeInterfaceDecorator,
                                 final ScopeClassDecorator scopeClassDecorator,
                                 final GlobalScopeInterfaceDecorator globalScopeInterfaceDecorator,
@@ -108,6 +106,7 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
     this.symbolDecorator = symbolDecorator;
     this.symbolBuilderDecorator = symbolBuilderDecorator;
     this.symbolReferenceDecorator = symbolReferenceDecorator;
+    this.symbolSupplierDecorator = symbolSupplierDecorator;
     this.symbolTableService = symbolTableService;
     this.scopeInterfaceDecorator = scopeInterfaceDecorator;
     this.scopeClassDecorator = scopeClassDecorator;
@@ -148,6 +147,7 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
     symbolTablePackage.addCDElement(createScopeInterface(scopeCD, symbolCD));
     symbolTablePackage.addAllCDElements(createSymbolReferenceClasses(symbolCD.getCDDefinition().getCDClassesList()));
     symbolTablePackage.addAllCDElements(createSymbolReferenceBuilderClasses(symbolCD.getCDDefinition().getCDClassesList()));
+    symbolTablePackage.addAllCDElements(createSymbolSupplierClasses(symbolCD.getCDDefinition().getCDClassesList()));
     symbolTablePackage.addAllCDElements(symbolDeSerList);
     symbolTablePackage.addCDElement(symbolTablePrinterClass);
     symbolTablePackage.addCDElement(createICommonSymbol(astCD));
@@ -227,6 +227,13 @@ public class SymbolTableCDDecorator extends AbstractDecorator {
         .stream()
         .map(symbolReferenceBuilderDecorator::decorate)
         .collect(Collectors.toList());
+  }
+
+  protected List<ASTCDClass> createSymbolSupplierClasses(List<ASTCDClass> symbolClasses) {
+    return symbolClasses
+            .stream()
+            .map(symbolSupplierDecorator::decorate)
+            .collect(Collectors.toList());
   }
 
   protected List<ASTCDInterface> createSymbolResolverInterfaces(List<? extends ASTCDType> astcdTypeList) {

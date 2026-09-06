@@ -12,8 +12,10 @@ import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisTraver
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
-import de.monticore.symbols.oosymbols._symboltable.*;
-import org.junit.jupiter.api.Assertions;
+import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
+import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsArtifactScope;
+import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
+import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -21,6 +23,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 import static de.monticore.types.check.DefsTypeBasic.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class DeriveSymTypeOfJavaClassExpressionsTest extends DeriveSymTypeAbstractTest {
 
@@ -61,10 +64,10 @@ public class DeriveSymTypeOfJavaClassExpressionsTest extends DeriveSymTypeAbstra
     add2scope(scope,p);
     OOTypeSymbol s = new OOTypeSymbol("Student");
     add2scope(scope,s);
-    s.setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Person", scope)));
+    s.setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObjectViaSurrogate("Person", scope)));
     OOTypeSymbol f = new OOTypeSymbol("FirstSemesterStudent");
     add2scope(scope,f);
-    f.setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student", scope)));
+    f.setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObjectViaSurrogate("Student", scope)));
     add2scope(scope, field("foo", _intSymType));
     add2scope(scope, field("bar2", _booleanSymType));
     add2scope(scope, field("vardouble", _doubleSymType));
@@ -72,12 +75,12 @@ public class DeriveSymTypeOfJavaClassExpressionsTest extends DeriveSymTypeAbstra
     add2scope(scope, field("varfloat", _floatSymType));
     add2scope(scope, field("varlong", _longSymType));
     add2scope(scope, field("varint", _intSymType));
-    add2scope(scope, field("varString", SymTypeExpressionFactory.createTypeObject("String", scope)));
-    add2scope(scope, field("person1", SymTypeExpressionFactory.createTypeObject("Person", scope)));
-    add2scope(scope, field("person2", SymTypeExpressionFactory.createTypeObject("Person", scope)));
-    add2scope(scope, field("student1", SymTypeExpressionFactory.createTypeObject("Student", scope)));
-    add2scope(scope, field("student2", SymTypeExpressionFactory.createTypeObject("Student", scope)));
-    add2scope(scope, field("firstsemester", SymTypeExpressionFactory.createTypeObject("FirstSemesterStudent", scope)));
+    add2scope(scope, field("varString", SymTypeExpressionFactory.createTypeObjectViaSurrogate("String", scope)));
+    add2scope(scope, field("person1", SymTypeExpressionFactory.createTypeObjectViaSurrogate("Person", scope)));
+    add2scope(scope, field("person2", SymTypeExpressionFactory.createTypeObjectViaSurrogate("Person", scope)));
+    add2scope(scope, field("student1", SymTypeExpressionFactory.createTypeObjectViaSurrogate("Student", scope)));
+    add2scope(scope, field("student2", SymTypeExpressionFactory.createTypeObjectViaSurrogate("Student", scope)));
+    add2scope(scope, field("firstsemester", SymTypeExpressionFactory.createTypeObjectViaSurrogate("FirstSemesterStudent", scope)));
     setFlatExpressionScopeSetter(scope);
   }
 
@@ -114,7 +117,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest extends DeriveSymTypeAbstra
         .setName("A")
         .setEnclosingScope(scope)
         .build();
-    SymTypeExpression sup = SymTypeExpressionFactory.createTypeObject("A",scope);
+    SymTypeExpression sup = SymTypeExpressionFactory.createTypeObjectViaSurrogate("A",scope);
     supType.setIsClass(true);
     add2scope(scope,supType);
 
@@ -362,10 +365,10 @@ public class DeriveSymTypeOfJavaClassExpressionsTest extends DeriveSymTypeAbstra
     //test that types must have a name
     Optional<ASTExpression> class1 = p.parse_StringExpression("3.class");
 
-    Assertions.assertFalse(class1.isPresent());
+    assertFalse(class1.isPresent());
 
     Optional<ASTExpression> class2 = p.parse_StringExpression("\"Hallo\".class");
-    Assertions.assertFalse(class2.isPresent());
+    assertFalse(class2.isPresent());
   }
 
   @Test
@@ -455,7 +458,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest extends DeriveSymTypeAbstra
     superOuter.getSpannedScope().setEnclosingScope(superOuter.getEnclosingScope());
     test.getSpannedScope().setEnclosingScope(superOuter.getSpannedScope());
     superOuter.setIsClass(true);
-    SymTypeExpression superOuterType = SymTypeExpressionFactory.createTypeObject("SuperOuter",scope);
+    SymTypeExpression superOuterType = SymTypeExpressionFactory.createTypeObjectViaSurrogate("SuperOuter",scope);
     add2scope(scope,superOuter);
 
     //class Outer
@@ -549,7 +552,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest extends DeriveSymTypeAbstra
     superOuter.getSpannedScope().setEnclosingScope(superOuter.getEnclosingScope());
     test.getSpannedScope().setEnclosingScope(superOuter.getSpannedScope());
     superOuter.setIsClass(true);
-    SymTypeExpression superOuterType = SymTypeExpressionFactory.createTypeObject("SuperOuter",scope);
+    SymTypeExpression superOuterType = SymTypeExpressionFactory.createTypeObjectViaSurrogate("SuperOuter",scope);
     add2scope(scope,superOuter);
 
     //second super type
@@ -560,7 +563,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest extends DeriveSymTypeAbstra
         .build();
     superOuterTwo.getSpannedScope().setEnclosingScope(superOuterTwo.getEnclosingScope());
     superOuterTwo.setIsClass(true);
-    SymTypeExpression superOuterTwoType = SymTypeExpressionFactory.createTypeObject("SuperOuterTwo",scope);
+    SymTypeExpression superOuterTwoType = SymTypeExpressionFactory.createTypeObjectViaSurrogate("SuperOuterTwo",scope);
     add2scope(scope,superOuterTwo);
 
     //class Outer
@@ -643,7 +646,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest extends DeriveSymTypeAbstra
     superOuter.getSpannedScope().setEnclosingScope(superOuter.getEnclosingScope());
     test.getSpannedScope().setEnclosingScope(superOuter.getSpannedScope());
     superOuter.setIsClass(true);
-    SymTypeExpression superOuterType = SymTypeExpressionFactory.createTypeObject("SuperOuter",scope);
+    SymTypeExpression superOuterType = SymTypeExpressionFactory.createTypeObjectViaSurrogate("SuperOuter",scope);
     add2scope(scope,superOuter);
 
     //class Outer
@@ -687,7 +690,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest extends DeriveSymTypeAbstra
     aSuper.setIsClass(true);
     aSuper.getSpannedScope().setEnclosingScope(aSuper.getEnclosingScope());
     asuperconstr.getSpannedScope().setEnclosingScope(aSuper.getSpannedScope());
-    SymTypeExpression aSuperType = SymTypeExpressionFactory.createTypeObject("ASuper",scope);
+    SymTypeExpression aSuperType = SymTypeExpressionFactory.createTypeObjectViaSurrogate("ASuper",scope);
     asuperconstr.setType(aSuperType);
     add2scope(scope,aSuper);
 
@@ -733,7 +736,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest extends DeriveSymTypeAbstra
     get.getSpannedScope().setEnclosingScope(a.getSpannedScope());
     aconstr.getSpannedScope().setEnclosingScope(a.getSpannedScope());
     set.getSpannedScope().setEnclosingScope(a.getSpannedScope());
-    SymTypeExpression aType = SymTypeExpressionFactory.createTypeObject("A",scope);
+    SymTypeExpression aType = SymTypeExpressionFactory.createTypeObjectViaSurrogate("A",scope);
     aconstr.setType(aType);
     add2scope(scope, a);
 
@@ -775,7 +778,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest extends DeriveSymTypeAbstra
     sup.getSpannedScope().setEnclosingScope(sup.getEnclosingScope());
     help.getSpannedScope().setEnclosingScope(sup.getSpannedScope());
     add2scope(scope,sup);
-    SymTypeExpression supType = SymTypeExpressionFactory.createTypeObject("Sup",scope);
+    SymTypeExpression supType = SymTypeExpressionFactory.createTypeObjectViaSurrogate("Sup",scope);
     OOTypeSymbol sub = OOSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(CombineExpressionsWithLiteralsMill.scope())
         .setName("Sub")
@@ -810,7 +813,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest extends DeriveSymTypeAbstra
     sup.getSpannedScope().setEnclosingScope(sup.getEnclosingScope());
     help.getSpannedScope().setEnclosingScope(sup.getSpannedScope());
     add2scope(scope,sup);
-    SymTypeExpression supType = SymTypeExpressionFactory.createTypeObject("Sup",scope);
+    SymTypeExpression supType = SymTypeExpressionFactory.createTypeObjectViaSurrogate("Sup",scope);
     OOTypeSymbol sub = OOSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(CombineExpressionsWithLiteralsMill.scope())
         .setName("Sub")
@@ -837,7 +840,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest extends DeriveSymTypeAbstra
     sup.setIsClass(true);
     sup.getSpannedScope().setEnclosingScope(sup.getEnclosingScope());
     add2scope(scope,sup);
-    SymTypeExpression supType = SymTypeExpressionFactory.createTypeObject("Sup",scope);
+    SymTypeExpression supType = SymTypeExpressionFactory.createTypeObjectViaSurrogate("Sup",scope);
     OOTypeSymbol sub = OOSymbolsMill.oOTypeSymbolBuilder()
         .setSpannedScope(CombineExpressionsWithLiteralsMill.scope())
         .setName("Sub")
@@ -870,7 +873,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest extends DeriveSymTypeAbstra
     a.addMethodSymbol(test);
     a.getSpannedScope().setEnclosingScope(a.getEnclosingScope());
     test.getSpannedScope().setEnclosingScope(a.getSpannedScope());
-    SymTypeExpression aType = SymTypeExpressionFactory.createTypeObject("A",scope);
+    SymTypeExpression aType = SymTypeExpressionFactory.createTypeObjectViaSurrogate("A",scope);
     FieldSymbol aField = field("a",aType);
     add2scope(scope,aField);
     add2scope(scope,a);
@@ -897,7 +900,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest extends DeriveSymTypeAbstra
     a.addMethodSymbol(constr);
     a.getSpannedScope().setEnclosingScope(a.getEnclosingScope());
     constr.getSpannedScope().setEnclosingScope(a.getSpannedScope());
-    SymTypeExpression aType = SymTypeExpressionFactory.createTypeObject("A",scope);
+    SymTypeExpression aType = SymTypeExpressionFactory.createTypeObjectViaSurrogate("A",scope);
     constr.setType(aType);
     FieldSymbol aField = field("a",aType);
     add2scope(scope,aField);
@@ -925,7 +928,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest extends DeriveSymTypeAbstra
     aSuper.addMethodSymbol(constr);
     aSuper.getSpannedScope().setEnclosingScope(aSuper.getEnclosingScope());
     constr.getSpannedScope().setEnclosingScope(aSuper.getSpannedScope());
-    SymTypeExpression asupertype = SymTypeExpressionFactory.createTypeObject("ASuper",scope);
+    SymTypeExpression asupertype = SymTypeExpressionFactory.createTypeObjectViaSurrogate("ASuper",scope);
     constr.setType(asupertype);
     add2scope(scope,aSuper);
     OOTypeSymbol a = OOSymbolsMill.oOTypeSymbolBuilder()
@@ -934,7 +937,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest extends DeriveSymTypeAbstra
         .setEnclosingScope(scope)
         .build();
     a.getSpannedScope().setEnclosingScope(a.getEnclosingScope());
-    SymTypeExpression aType = SymTypeExpressionFactory.createTypeObject("A",scope);
+    SymTypeExpression aType = SymTypeExpressionFactory.createTypeObjectViaSurrogate("A",scope);
     FieldSymbol aField = field("a",aType);
     add2scope(scope,aField);
     add2scope(scope,a);
@@ -1027,7 +1030,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest extends DeriveSymTypeAbstra
         .build();
     bsp2.addMethodSymbol(bsp2constr);
 
-    SymTypeExpression bsp2Sym = SymTypeExpressionFactory.createTypeObject("Bsp2",scope);
+    SymTypeExpression bsp2Sym = SymTypeExpressionFactory.createTypeObjectViaSurrogate("Bsp2",scope);
     bsp2constr.setType(bsp2Sym);
 
     bsp2constr.setEnclosingScope(bsp2.getSpannedScope());
@@ -1070,7 +1073,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest extends DeriveSymTypeAbstra
         .build();
     bsp3.addMethodSymbol(bsp3constr2);
 
-    SymTypeExpression bsp3Sym = SymTypeExpressionFactory.createTypeObject("Bsp3", scope);
+    SymTypeExpression bsp3Sym = SymTypeExpressionFactory.createTypeObjectViaSurrogate("Bsp3", scope);
     bsp3constr.setType(bsp3Sym);
     bsp3constr2.setType(bsp3Sym);
 
@@ -1138,7 +1141,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest extends DeriveSymTypeAbstra
         .build();
     bsp3.addMethodSymbol(bsp3constr);
 
-    SymTypeExpression bsp3Sym = SymTypeExpressionFactory.createTypeObject("Bsp3", scope);
+    SymTypeExpression bsp3Sym = SymTypeExpressionFactory.createTypeObjectViaSurrogate("Bsp3", scope);
     bsp3constr.setType(bsp3Sym);
 
     bsp3constr.setEnclosingScope(bsp3.getSpannedScope());
@@ -1180,7 +1183,7 @@ public class DeriveSymTypeOfJavaClassExpressionsTest extends DeriveSymTypeAbstra
     bsp4constr.setSpannedScope(CombineExpressionsWithLiteralsMill.scope());
     add2scope(bsp4constr.getSpannedScope(),field1);
     add2scope(bsp4constr.getSpannedScope(),field2);
-    SymTypeExpression bsp4Sym = SymTypeExpressionFactory.createTypeObject("Bsp4",scope);
+    SymTypeExpression bsp4Sym = SymTypeExpressionFactory.createTypeObjectViaSurrogate("Bsp4",scope);
     bsp4constr.setType(bsp4Sym);
     add2scope(bsp4.getSpannedScope(), bsp4constr);
     add2scope(scope,bsp4);

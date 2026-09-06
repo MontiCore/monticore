@@ -27,9 +27,9 @@ import java.util.List;
 import java.util.Set;
 
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
+import static de.monticore.cd.codegen.CD2JavaTemplates.JAVADOC;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
-import static de.monticore.codegen.CD2JavaTemplatesFix.JAVADOC;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.*;
 
 /**
@@ -348,9 +348,9 @@ public class HandlerDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
    * @return The set of all qualified symbol names
    */
   protected Set<String> getSymbolsTransitive() {
-    Set<String> superSymbolNames = new LinkedHashSet<>();
-    // add local symbols
-    superSymbolNames.addAll(symbolTableService.retrieveSymbolNamesFromCD(visitorService.getCDSymbol()));
+    // initialize with local symbols
+    Set<String> superSymbolNames = new LinkedHashSet<>(
+        symbolTableService.retrieveSymbolNamesFromCD(visitorService.getCDSymbol()));
     
     // add symbols of super CDs
     List<DiagramSymbol> superCDsTransitive = visitorService.getSuperCDsTransitive();

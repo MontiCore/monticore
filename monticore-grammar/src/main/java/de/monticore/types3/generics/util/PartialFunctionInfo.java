@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types3.generics.util;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
@@ -6,11 +7,10 @@ import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfFunction;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
 
 /**
  * describes partial SymTypeOfFunction information,
@@ -22,9 +22,9 @@ public class PartialFunctionInfo {
 
   Optional<Integer> parameterCount = Optional.empty();
 
-  Map<Integer, ASTExpression> argumentExprs = new HashMap<>();
+  Map<Integer, ASTExpression> argumentExprs = new LinkedHashMap<>();
 
-  Map<Integer, SymTypeExpression> argumentTypes = new HashMap<>();
+  Map<Integer, SymTypeExpression> argumentTypes = new LinkedHashMap<>();
 
   public PartialFunctionInfo() {
   }
@@ -149,9 +149,9 @@ public class PartialFunctionInfo {
   public PartialFunctionInfo deepClone() {
     PartialFunctionInfo clone = new PartialFunctionInfo();
     clone.returnTargetType = returnTargetType.map(SymTypeExpression::deepClone);
-    clone.parameterCount = parameterCount.map(Function.identity());
-    clone.argumentExprs = new HashMap<>(argumentExprs);
-    clone.argumentTypes = new HashMap<>(argumentTypes);
+    clone.parameterCount = parameterCount;
+    clone.argumentExprs = new LinkedHashMap<>(argumentExprs);
+    clone.argumentTypes = new LinkedHashMap<>(argumentTypes);
     return clone;
   }
 

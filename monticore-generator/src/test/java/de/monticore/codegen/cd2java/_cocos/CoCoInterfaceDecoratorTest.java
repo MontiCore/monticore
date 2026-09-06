@@ -16,22 +16,22 @@ import de.monticore.codegen.cd2java._ast.ast_class.ASTService;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.se_rwth.commons.logging.Log;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CoCoInterfaceDecoratorTest extends DecoratorTestCase {
 
   private List<ASTCDInterface> interfaces;
 
-  @Before
+  @BeforeEach
   public void setup() {
     ASTCDCompilationUnit ast = parse("de", "monticore", "codegen", "cocos", "CoCos");
     this.glex.setGlobalValue("service", new AbstractService(ast));
@@ -154,7 +154,7 @@ public class CoCoInterfaceDecoratorTest extends DecoratorTestCase {
       // test parsing
       ParserConfiguration configuration = new ParserConfiguration();
       JavaParser parser = new JavaParser(configuration);
-      ParseResult parseResult = parser.parse(sb.toString());
+      ParseResult<?> parseResult = parser.parse(sb.toString());
       assertTrue(parseResult.isSuccessful());
     }
   

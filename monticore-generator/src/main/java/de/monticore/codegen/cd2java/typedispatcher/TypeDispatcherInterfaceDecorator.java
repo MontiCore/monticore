@@ -150,8 +150,8 @@ public class TypeDispatcherInterfaceDecorator extends AbstractCreator<ASTCDCompi
                   symbol.getFullName().toLowerCase() + "." + UTILS_PACKAGE,
                   getTypeDispatcherInterfaceName(symbol.getName()))));
     }
-    superTypes.add(typeFacade.createQualifiedType(visitorService.getHandlerFullName()));
-
+    // We do not add the handler interfaces to the ITypeDispatcher,
+    // as the handlers are unly used within the implementation
     return CDExtendUsageFacade.getInstance().createCDExtendUsage(
         superTypes);
   }

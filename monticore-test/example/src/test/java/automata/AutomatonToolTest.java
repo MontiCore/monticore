@@ -16,7 +16,7 @@ public class AutomatonToolTest {
   
   @Test
   public void executeMain() {
-    AutomataTool.main(new String[] { "src/main/resources/example/PingPong.aut" });
+    new AutomataTool().run(new String[] { "src/main/resources/example/PingPong.aut" });
     
     assertTrue(!false);
   }

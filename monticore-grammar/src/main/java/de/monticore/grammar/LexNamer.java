@@ -2,7 +2,7 @@
 
 package de.monticore.grammar;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -24,15 +24,15 @@ public class LexNamer {
 
   protected int lexCounter = 0;
   
-  protected Map<String, String> usedLex = new HashMap<String, String>();
+  protected Map<String, String> usedLex = new LinkedHashMap<>();
   
-  protected Map<String, String> usedConstants = new HashMap<String, String>();
+  protected Map<String, String> usedConstants = new LinkedHashMap<>();
   
   protected static Map<String, String> goodNames = null;
   
   public static Map<String, String> getGoodNames() {
     if (goodNames == null) {
-      goodNames = new HashMap<String, String>();
+      goodNames = new LinkedHashMap<>();
       // Put all common names here, one character only, since all others are
       // concatanation of these
       goodNames.put(";", "SEMI");
@@ -189,8 +189,8 @@ public class LexNamer {
   }
 
   protected String convertKeyword(String key)  {
-    key = StringUtils.replace(key, "\\\"", "\"");
-    key = StringUtils.replace(key, "'", "\\'");
+    key = key.replace("\\\"", "\"");
+    key = key.replace("'", "\\'");
     return key;
   }
 

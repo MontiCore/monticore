@@ -10,7 +10,7 @@ try{
     //help: when --help
     if(cmd.hasOption("h")){
         printHelp(options);
-    //do not continue, when help is printed.
+        // then help is printed, do not continue.
         return;
     }
     //version: when --version
@@ -19,6 +19,12 @@ try{
         //do not continue when help is printed
         return;
     }
+
+    // set up the log
+    setupLog(cmd);
+
+    // do run the tool (easily overridable method)
+    doRun(cmd);
 
 }catch (org.apache.commons.cli.ParseException e) {
    // e.getMessage displays the incorrect input-parameters

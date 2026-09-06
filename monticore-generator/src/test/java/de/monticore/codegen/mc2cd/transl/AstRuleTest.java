@@ -8,7 +8,6 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.codegen.mc2cd.TranslationTestCase;
 import de.se_rwth.commons.logging.Log;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -17,8 +16,8 @@ import java.nio.file.Paths;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertInt;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * this test checks the addition of attributes with astrules
@@ -39,17 +38,17 @@ public final class AstRuleTest extends TranslationTestCase {
 
   @Test
   public void testAstRuleAddedAttribute() {
-    Assertions.assertEquals(1, astC.getCDAttributeList().size());
-    Assertions.assertEquals("dimensions", astC.getCDAttributeList().get(0).getName());
+    assertEquals(1, astC.getCDAttributeList().size());
+    assertEquals("dimensions", astC.getCDAttributeList().get(0).getName());
     assertInt(astC.getCDAttributeList().get(0).getMCType());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testAstRuleDoubleInheritance() {
     // attributes from super interfaces are inherited
-    Assertions.assertEquals(2, impl.getCDAttributeList().size());
+    assertEquals(2, impl.getCDAttributeList().size());
 
     ASTCDAttribute varName = getAttributeBy("varName", impl);
     assertDeepEquals("varType", varName.getMCType());
@@ -57,7 +56,7 @@ public final class AstRuleTest extends TranslationTestCase {
     ASTCDAttribute varName2 = getAttributeBy("varName2", impl);
     assertDeepEquals("varType2", varName2.getMCType());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

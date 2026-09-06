@@ -22,7 +22,7 @@ public interface ISymbolTagger {
   /**
    * Removes a tag from a symbol
    *
-   * @param symbol the sybmol
+   * @param symbol the symbol
    * @param tag    the tag
    * @return whether a tag was removed
    */

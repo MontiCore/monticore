@@ -8,7 +8,7 @@ public class ASTMCReturnType extends ASTMCReturnTypeTOP {
   }
 
   /**
-   * Conversion to a compact string, such as "int", "Person", "List< A >"
+   * Conversion to a compact string, such as {@code "int"}, {@code "Person"}, {@code "List< A >"}
    */
   public String printType() {
     return MCBasicTypesMill.prettyPrint(this, false);

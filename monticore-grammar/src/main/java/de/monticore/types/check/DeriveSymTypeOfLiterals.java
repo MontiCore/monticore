@@ -5,7 +5,6 @@ import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.literals.mcliteralsbasis._symboltable.IMCLiteralsBasisScope;
 import de.monticore.literals.mcliteralsbasis._visitor.MCLiteralsBasisVisitor2;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
-import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -13,7 +12,10 @@ import de.se_rwth.commons.logging.Log;
  * (Function 2b)
  * i.e. for
  *    literals/MCLiteralsBasis.mc4
+ * @deprecated part of typecheck1,
+ * use {@link de.monticore.types3.TypeCheck3} instead.
  */
+@Deprecated
 public class DeriveSymTypeOfLiterals implements MCLiteralsBasisVisitor2 {
 
   public IBasicSymbolsScope getScope (IMCLiteralsBasisScope mcLiteralsBasisScope){

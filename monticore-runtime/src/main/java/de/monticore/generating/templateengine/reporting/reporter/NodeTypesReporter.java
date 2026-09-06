@@ -80,23 +80,12 @@ public class NodeTypesReporter extends AReporter {
       Map<String, Integer> nodetypeCountPos2) {
     Map<String, Integer> dif = Maps.newTreeMap();
     // merging keys of objects and visits
-    Set<String> allKeys = new TreeSet<String>();
+    Set<String> allKeys = new TreeSet<>();
     allKeys.addAll(nodetypeCountPos2.keySet());
     allKeys.addAll(nodeTypeCount2.keySet());
     for (String key : allKeys) {
-      int val1, val2;
-      if (nodeTypeCount2.containsKey(key)) {
-        val1 = nodeTypeCount2.get(key);
-      }
-      else {
-        val1 = 0;
-      }
-      if (nodetypeCountPos2.containsKey(key)) {
-        val2 = nodetypeCountPos2.get(key);
-      }
-      else {
-        val2 = 0;
-      }
+      int val1 = nodeTypeCount2.getOrDefault(key, 0);
+      int val2 = nodetypeCountPos2.getOrDefault(key, 0);
       dif.put(key, val1 - val2);
     }
     return dif;
@@ -110,7 +99,7 @@ public class NodeTypesReporter extends AReporter {
    */
   protected void writeMaps(Map<String, Integer> nodeTypeCount2, Map<String, Integer> type2count) {
     // merging keys of objects and visits
-    Set<String> allKeys = new TreeSet<String>();
+    Set<String> allKeys = new TreeSet<>();
     allKeys.addAll(type2count.keySet());
     allKeys.addAll(nodeTypeCount2.keySet());
     

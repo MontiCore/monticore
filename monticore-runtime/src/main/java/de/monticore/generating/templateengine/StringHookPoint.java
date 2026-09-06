@@ -8,7 +8,7 @@ import java.util.List;
 
 /**
  * Represents a String hook point.
- * 
+ * <p>
  * The string will be copied as result of the hook without further change.
  *
  */

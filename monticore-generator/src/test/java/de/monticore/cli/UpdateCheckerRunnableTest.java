@@ -5,11 +5,10 @@ import de.monticore.cli.updateChecker.HttpGetter;
 import de.monticore.cli.updateChecker.UpdateCheckerRunnable;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -43,9 +42,9 @@ public class UpdateCheckerRunnableTest {
 
   @Test
   public void testFindLocalPropertiesFile() {
-    Assertions.assertNotNull(updateCheckerRunnable.getLocalVersion());
+    assertNotNull(updateCheckerRunnable.getLocalVersion());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 
@@ -53,28 +52,28 @@ public class UpdateCheckerRunnableTest {
   public void testNewVersionAvailable() {
     when(httpGetter.getResponse()).thenReturn(NEW_VERSION_AVAILABLE);
 
-    Assertions.assertTrue(updateCheckerRunnable.newVersionAvailable());
-    Assertions.assertEquals(NEW_VERSION, updateCheckerRunnable.getNewVersion());
+    assertTrue(updateCheckerRunnable.newVersionAvailable());
+    assertEquals(NEW_VERSION, updateCheckerRunnable.getNewVersion());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testNoNewVersionAvailable() {
     when(httpGetter.getResponse()).thenReturn(NO_NEW_VERSION_AVAILABLE);
 
-    Assertions.assertFalse(updateCheckerRunnable.newVersionAvailable());
+    assertFalse(updateCheckerRunnable.newVersionAvailable());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testNoResponse() {
     when(httpGetter.getResponse()).thenReturn(NO_RESPONSE);
 
-    Assertions.assertFalse(updateCheckerRunnable.newVersionAvailable());
+    assertFalse(updateCheckerRunnable.newVersionAvailable());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -83,8 +82,8 @@ public class UpdateCheckerRunnableTest {
 
     updateCheckerRunnable.run();
 
-    Assertions.assertEquals(NEW_VERSION, updateCheckerRunnable.getNewVersion());
+    assertEquals(NEW_VERSION, updateCheckerRunnable.getNewVersion());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

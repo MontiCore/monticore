@@ -2,8 +2,6 @@
 
 package mc.feature.hwc.tagging2._ast;
 
-import java.util.Optional;
-
 import mc.feature.hwc.tagging2._ast.ASTTagElementTOP;
 
 public class ASTTagElement extends ASTTagElementTOP {

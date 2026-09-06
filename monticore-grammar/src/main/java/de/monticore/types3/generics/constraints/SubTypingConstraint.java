@@ -32,6 +32,11 @@ public class SubTypingConstraint extends Constraint {
   }
 
   @Override
+  public SubTypingConstraint asSubTypingConstraint() {
+    return this;
+  }
+
+  @Override
   public boolean deepEquals(Constraint other) {
     if (this == other) {
       return true;

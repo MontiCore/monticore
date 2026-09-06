@@ -10,17 +10,15 @@ import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.types.MCTypeFacade;
 import de.se_rwth.commons.logging.Log;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertBoolean;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SymbolResolverInterfaceDecoratorTest extends DecoratorTestCase {
 
@@ -38,7 +36,7 @@ public class SymbolResolverInterfaceDecoratorTest extends DecoratorTestCase {
 
   private static final String ACCESS_MODIFIER = "de.monticore.symboltable.modifiers.AccessModifier";
 
-  @Before
+  @BeforeEach
   public void setUp() {
     this.mcTypeFacade = MCTypeFacade.getInstance();
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");

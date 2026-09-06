@@ -9,15 +9,13 @@ import de.monticore.types.mcarraytypestest._parser.MCArrayTypesTestParser;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MCArrayTypesNodeIdentHelperTest {
   
@@ -36,12 +34,12 @@ public class MCArrayTypesNodeIdentHelperTest {
 
     Optional<ASTMCType> astmcArrayType = p.parse_StringMCType("A[]");
 
-    Assertions.assertTrue(astmcArrayType.isPresent());
-    Assertions.assertTrue(astmcArrayType.get() instanceof ASTMCArrayType);
+    assertTrue(astmcArrayType.isPresent());
+    assertInstanceOf(ASTMCArrayType.class, astmcArrayType.get());
 
-    Assertions.assertEquals("@A!MCArrayType", identHelper.getIdent((ASTMCArrayType)astmcArrayType.get()));
+    assertEquals("@A!MCArrayType", identHelper.getIdent((ASTMCArrayType)astmcArrayType.get()));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

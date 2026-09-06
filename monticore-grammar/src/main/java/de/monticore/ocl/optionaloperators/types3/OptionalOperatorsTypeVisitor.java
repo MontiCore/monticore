@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.ocl.optionaloperators.types3;
 
 import de.monticore.expressions.commonexpressions._ast.ASTInfixExpression;
@@ -17,6 +18,7 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.mccollectiontypes.types3.MCCollectionSymTypeRelations;
 import de.monticore.types3.AbstractTypeVisitor;
+import de.monticore.types3.SymTypeRelations;
 import de.monticore.types3.util.TypeVisitorLifting;
 import de.monticore.types3.util.TypeVisitorOperatorCalculator;
 import de.se_rwth.commons.logging.Log;
@@ -227,7 +229,7 @@ public class OptionalOperatorsTypeVisitor extends AbstractTypeVisitor
     if (optOfNumType.isObscureType()) {
       result = createObscureType();
     }
-    if (MCCollectionSymTypeRelations.isNumericType(numType)) {
+    if (SymTypeRelations.isNumericType(numType)) {
       return numType;
     }
     Log.error(

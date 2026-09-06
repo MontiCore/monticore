@@ -17,7 +17,10 @@ import java.util.Optional;
  * This visitor allows the use of type identifiers "as" the types constructors,
  * e.g., pack.age.Foo(1) is accepted if the constructor
  * pack.age.Foo::Foo(int) exists.
+ *
+ * @deprecated use {@link CommonExpressionsTypeIdAsConstructorCTTIVisitor}
  */
+@Deprecated
 public class CommonExpressionsTypeIdAsConstructorTypeVisitor extends
     CommonExpressionsTypeVisitor {
 
@@ -74,7 +77,7 @@ public class CommonExpressionsTypeIdAsConstructorTypeVisitor extends
       return Optional.empty();
     }
     else if (constructors.size() == 1) {
-      return Optional.of(constructors.get(0));
+      return Optional.of(constructors.getFirst());
     }
     else {
       return Optional.of(

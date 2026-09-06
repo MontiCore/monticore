@@ -44,7 +44,7 @@ public class GrammarSTCompleteTypes implements GrammarVisitor2 {
 
     computeStartParserProd(ast);
 
-    ast.getClassProdList().forEach(p -> setIfProdIsLeftRecursive(p));
+    ast.getClassProdList().forEach(this::setIfProdIsLeftRecursive);
   }
 
   @Override
@@ -276,7 +276,7 @@ public class GrammarSTCompleteTypes implements GrammarVisitor2 {
     if (astGrammar.isPresentStartRule()) {
       String name = astGrammar.getStartRule().getName();
       Optional<ProdSymbol> prod = astGrammar.getSymbol().getProdWithInherited(name);
-      if (!prod.isPresent()) {
+      if (prod.isEmpty()) {
         error("0xA0243 Rule " + name + " couldn't be found!");
       } else {
         prod.get().setIsStartProd(true);
@@ -287,13 +287,13 @@ public class GrammarSTCompleteTypes implements GrammarVisitor2 {
       // The start rule for parsing is the first occurring Interface-, Abstract-
       // or Class-Production in this grammar
       if (!astGrammar.getClassProdList().isEmpty()) {
-        firstProductions.add(astGrammar.getClassProdList().get(0));
+        firstProductions.add(astGrammar.getClassProdList().getFirst());
       }
       if (!astGrammar.getInterfaceProdList().isEmpty()) {
-        firstProductions.add(astGrammar.getInterfaceProdList().get(0));
+        firstProductions.add(astGrammar.getInterfaceProdList().getFirst());
       }
       if (!astGrammar.getAbstractProdList().isEmpty()) {
-        firstProductions.add(astGrammar.getAbstractProdList().get(0));
+        firstProductions.add(astGrammar.getAbstractProdList().getFirst());
       }
       setStartProd(astGrammar, firstProductions);
     }

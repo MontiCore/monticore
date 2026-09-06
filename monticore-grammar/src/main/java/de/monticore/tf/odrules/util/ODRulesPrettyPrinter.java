@@ -1,13 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.tf.odrules.util;
 
-import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor2;
-import de.monticore.types.mcbasictypes._prettyprint.MCBasicTypesFullPrettyPrinter;
 import de.monticore.types.mcsimplegenerictypes.MCSimpleGenericTypesMill;
-import de.monticore.types.mcsimplegenerictypes._prettyprint.MCSimpleGenericTypesFullPrettyPrinter;
 import de.monticore.umlstereotype._ast.ASTStereoValue;
 import de.monticore.umlstereotype._ast.ASTStereotype;
 import de.monticore.umlstereotype._visitor.UMLStereotypeVisitor2;
@@ -59,7 +56,7 @@ public class ODRulesPrettyPrinter  implements ODRulesVisitor2,
     }
     if (node.isPresentConstraint()){
       printer.append("where { \n");
-      printer.append("  " + Util.printExpression(node.getConstraint()) + "\n");
+      printer.append("  ").append(Util.printExpression(node.getConstraint())).append("\n");
       printer.append("}");
     }
     if(!node.getAssignmentList().isEmpty()){
@@ -71,7 +68,7 @@ public class ODRulesPrettyPrinter  implements ODRulesVisitor2,
 
     }
     if (node.isPresentDoBlock()){
-        printer.append("do  " + Util.print(node.getDoBlock()) +"\n");
+        printer.append("do  ").append(Util.print(node.getDoBlock())).append("\n");
     }
     if(!node.getFoldingSetList().isEmpty()){
       printer.append("folding {\n");
@@ -91,7 +88,7 @@ public class ODRulesPrettyPrinter  implements ODRulesVisitor2,
   public void traverse(ASTODDefinition node) {
     // print stereotype
     // print object diagram name and parameters
-    printer.append("objectdiagram " + node.getName() +  "{\n");
+    printer.append("objectdiagram ").append(node.getName()).append("{\n");
     // print body
     for(ASTODObject o: node.getODObjectList()) {
       o.accept(getTraverser());
@@ -116,7 +113,7 @@ public class ODRulesPrettyPrinter  implements ODRulesVisitor2,
     }
     // print object name and type
     if (node.isPresentName()) {
-      printer.append("  " + node.getName());
+      printer.append("  ").append(node.getName());
     }
     if (node.isPresentType()) {
       printer.append(":")
@@ -208,7 +205,7 @@ public class ODRulesPrettyPrinter  implements ODRulesVisitor2,
       printer.append("/");
     }*/
     if (node.isPresentName()) {
-      printer.append(node.getName() + " ");
+      printer.append(node.getName()).append(" ");
     }
     // print left modifier
     /*if(node.getLeftModifier().isPresent())
@@ -265,7 +262,7 @@ public class ODRulesPrettyPrinter  implements ODRulesVisitor2,
 
   @Override
   public void visit(ASTAssignment node) {
-    printer.append("  " + node.getLhs());
+    printer.append("  ").append(node.getLhs());
     printer.append(" = ");
     printer.append(Util.printExpression(node.getRhs()));
     printer.append(";\n");
@@ -329,7 +326,7 @@ public class ODRulesPrettyPrinter  implements ODRulesVisitor2,
     String sep = "";
     while (iter.hasNext()) {
       printer.append(sep);
-      printer.append(Names.getQualifiedName(iter.next().getPartsList())); // visit
+      printer.append(Names.constructQualifiedName(iter.next().getPartsList())); // visit
       // item
       sep = seperator;
     }

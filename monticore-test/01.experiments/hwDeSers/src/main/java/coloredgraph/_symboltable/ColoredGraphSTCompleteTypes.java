@@ -8,7 +8,7 @@ import coloredgraph._ast.ASTVertex;
 import coloredgraph._visitor.ColoredGraphVisitor2;
 
 import java.awt.*;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -24,7 +24,7 @@ public class ColoredGraphSTCompleteTypes implements ColoredGraphVisitor2 {
     protected Set<Color> allColors;
 
     public ColoredGraphSTCompleteTypes(){
-        allColors = new HashSet<>();
+        allColors = new LinkedHashSet<>();
     }
 
     /****************************************************

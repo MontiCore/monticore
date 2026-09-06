@@ -9,22 +9,14 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisTraverser;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
+import de.monticore.types3.util.DefsTypesForTests;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
 
-import static de.monticore.types.check.DefsTypeBasic._booleanSymType;
-import static de.monticore.types.check.DefsTypeBasic._byteSymType;
-import static de.monticore.types.check.DefsTypeBasic._charSymType;
-import static de.monticore.types.check.DefsTypeBasic._doubleSymType;
-import static de.monticore.types.check.DefsTypeBasic._floatSymType;
-import static de.monticore.types.check.DefsTypeBasic._intSymType;
-import static de.monticore.types.check.DefsTypeBasic._longSymType;
-import static de.monticore.types.check.DefsTypeBasic._shortSymType;
-import static de.monticore.types.check.DefsTypeBasic.add2scope;
-import static de.monticore.types.check.DefsTypeBasic.field;
+import static de.monticore.types.check.DefsTypeBasic.*;
 
 public class DeriveSymTypeOfAssignmentExpressionTest extends DeriveSymTypeAbstractTest {
 
@@ -75,14 +67,14 @@ public class DeriveSymTypeOfAssignmentExpressionTest extends DeriveSymTypeAbstra
     add2scope(scope, DefsTypeBasic._String);
 
     // some FieldSymbols (ie. Variables, Attributes)
-    OOTypeSymbol p = new OOTypeSymbol("Person");
+    OOTypeSymbol p = DefsTypesForTests.oOtype("Person");
     add2scope(scope, p);
-    OOTypeSymbol s = new OOTypeSymbol("Student");
+    OOTypeSymbol s = DefsTypesForTests.oOtype("Student");
     add2scope(scope, s);
-    s.setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Person", scope)));
-    OOTypeSymbol f = new OOTypeSymbol("FirstSemesterStudent");
+    s.setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObjectViaSurrogate("Person", scope)));
+    OOTypeSymbol f = DefsTypesForTests.oOtype("FirstSemesterStudent");
     add2scope(scope, f);
-    f.setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student", scope)));
+    f.setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObjectViaSurrogate("Student", scope)));
     add2scope(scope, field("varboolean", _booleanSymType));
     add2scope(scope, field("varbyte", _byteSymType));
     add2scope(scope, field("varchar", _charSymType));
@@ -91,12 +83,12 @@ public class DeriveSymTypeOfAssignmentExpressionTest extends DeriveSymTypeAbstra
     add2scope(scope, field("varlong", _longSymType));
     add2scope(scope, field("varfloat", _floatSymType));
     add2scope(scope, field("vardouble", _doubleSymType));
-    add2scope(scope, field("varString", SymTypeExpressionFactory.createTypeObject("String", scope)));
-    add2scope(scope, field("person1", SymTypeExpressionFactory.createTypeObject("Person", scope)));
-    add2scope(scope, field("person2", SymTypeExpressionFactory.createTypeObject("Person", scope)));
-    add2scope(scope, field("student1", SymTypeExpressionFactory.createTypeObject("Student", scope)));
-    add2scope(scope, field("student2", SymTypeExpressionFactory.createTypeObject("Student", scope)));
-    add2scope(scope, field("firstsemester", SymTypeExpressionFactory.createTypeObject("FirstSemesterStudent", scope)));
+    add2scope(scope, field("varString", SymTypeExpressionFactory.createTypeObjectViaSurrogate("String", scope)));
+    add2scope(scope, field("person1", SymTypeExpressionFactory.createTypeObjectViaSurrogate("Person", scope)));
+    add2scope(scope, field("person2", SymTypeExpressionFactory.createTypeObjectViaSurrogate("Person", scope)));
+    add2scope(scope, field("student1", SymTypeExpressionFactory.createTypeObjectViaSurrogate("Student", scope)));
+    add2scope(scope, field("student2", SymTypeExpressionFactory.createTypeObjectViaSurrogate("Student", scope)));
+    add2scope(scope, field("firstsemester", SymTypeExpressionFactory.createTypeObjectViaSurrogate("FirstSemesterStudent", scope)));
     setFlatExpressionScopeSetter(scope);
   }
 
@@ -272,8 +264,8 @@ public class DeriveSymTypeOfAssignmentExpressionTest extends DeriveSymTypeAbstra
     check("varint+=7", "int");
     //example with long - double
     check("varlong+=5.6", "long");
-    //example with String - Person
-    check("varString+=person1", "String");
+    //example with String - Number
+    check("varString+=2", "String");
   }
 
   @Test

@@ -21,14 +21,16 @@ import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static de.monticore.types.check.TypeCheck.compatible;
 
 /**
  * This Visitor can calculate a SymTypeExpression (type) for the expressions in JavaClassExpressions
  * It can be combined with other expressions in your language by creating a DelegatorVisitor
+ * @deprecated part of typecheck1,
+ * use {@link de.monticore.types3.TypeCheck3} instead.
  */
+@Deprecated
 public class DeriveSymTypeOfUglyExpressions
     extends AbstractDeriveFromExpression
     implements UglyExpressionsVisitor2, UglyExpressionsHandler {
@@ -206,8 +208,7 @@ public class DeriveSymTypeOfUglyExpressions
     if (!extTypeResult.isObscureType()) {
       //the definition of the Arrays are based on the assumption that MCType is not an array
       if (!extTypeResult.isArrayType()) {
-        if (creator.getArrayDimensionSpecifier() instanceof ASTArrayDimensionByExpression) {
-          ASTArrayDimensionByExpression arrayInitializer = (ASTArrayDimensionByExpression) creator.getArrayDimensionSpecifier();
+        if (creator.getArrayDimensionSpecifier() instanceof ASTArrayDimensionByExpression arrayInitializer) {
           int dim = arrayInitializer.getDimList().size() + arrayInitializer.getExpressionList().size();
           //teste dass alle Expressions integer-zahl sind
           for (ASTExpression expr : arrayInitializer.getExpressionList()) {
@@ -270,7 +271,7 @@ public class DeriveSymTypeOfUglyExpressions
     for (FunctionSymbol constructor : constructors) {
       if (constructor.getParameterList().size() == symTypeOfArguments.size()) {
         //get the types of the constructor arguments
-        List<SymTypeExpression> constructorArguments = constructor.getParameterList().stream().map(VariableSymbol::getType).collect(Collectors.toList());
+        List<SymTypeExpression> constructorArguments = constructor.getParameterList().stream().map(VariableSymbol::getType).toList();
         for (int i = 0; i < constructorArguments.size(); i++) {
           if (!compatible(constructorArguments.get(i), symTypeOfArguments.get(i))) {
             //wrong constructor, argument is not compatible to constructor definition

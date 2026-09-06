@@ -9,7 +9,6 @@ import de.monticore.types.check.SynthesizeSymTypeFromMCSimpleGenericTypes;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 
 import java.util.List;
-import java.util.Optional;
 
 public class SynthesizeFromMCSGT4Grammar extends SynthesizeSymTypeFromMCSimpleGenericTypes {
 

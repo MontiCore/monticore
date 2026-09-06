@@ -21,8 +21,8 @@ import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.se_rwth.commons.logging.Log;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
@@ -32,9 +32,7 @@ import static de.monticore.codegen.cd2java.DecoratorAssert.assertInt;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ASTEmfDecoratorTest extends DecoratorTestCase {
 
@@ -42,7 +40,7 @@ public class ASTEmfDecoratorTest extends DecoratorTestCase {
 
   private ASTCDClass emfTransitionClass;
 
-  @Before
+  @BeforeEach
   public void setup() {
     ASTCDCompilationUnit ast = this.parse("de", "monticore", "codegen", "_ast_emf", "Automata");
 
@@ -216,9 +214,9 @@ public class ASTEmfDecoratorTest extends DecoratorTestCase {
    * ASTTransitionWithAction already has a toString method in the classdiagramm
    * tests that no toString method is separately generated
    */
-  @Test (expected = AssertionError.class)
+  @Test
   public void testToStringASTTransitionWithAction() {
-    getMethodBy("toString", emfTransitionClass);
+    assertThrows(AssertionError.class, () -> getMethodBy("toString", emfTransitionClass));
   
     assertTrue(Log.getFindings().isEmpty());
   }
@@ -243,7 +241,7 @@ public class ASTEmfDecoratorTest extends DecoratorTestCase {
     // test parsing
     ParserConfiguration configuration = new ParserConfiguration();
     JavaParser parser = new JavaParser(configuration);
-    ParseResult parseResult = parser.parse(sb.toString());
+    ParseResult<?> parseResult = parser.parse(sb.toString());
     assertTrue(parseResult.isSuccessful());
   
     assertTrue(Log.getFindings().isEmpty());

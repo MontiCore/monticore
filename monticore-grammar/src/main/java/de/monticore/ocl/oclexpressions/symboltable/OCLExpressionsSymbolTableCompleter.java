@@ -87,7 +87,7 @@ public class OCLExpressionsSymbolTableCompleter
     // get the shadowing variable that has been added in OCLExpressionsScopesGenitor
     VariableSymbol shadowedSymbol = node.getNameSymbol();
     VariableSymbol shadowingSymbol =
-        node.getThenExpression().getSpannedScope().getLocalVariableSymbols().get(0);
+        node.getThenExpression().getSpannedScope().getLocalVariableSymbols().getFirst();
     SymTypeExpression shadowedSymbolType = shadowedSymbol.getType();
     SymTypeExpression additionalType = synth(node.getMCType());
 
@@ -96,7 +96,7 @@ public class OCLExpressionsSymbolTableCompleter
   }
 
   @Override
-  public void visit(ASTInDeclaration ast) {
+  public void endVisit(ASTInDeclaration ast) {
     for (ASTInDeclarationVariable node : ast.getInDeclarationVariableList()) {
       VariableSymbol symbol = node.getSymbol();
       symbol.setIsReadOnly(false);
@@ -129,7 +129,7 @@ public class OCLExpressionsSymbolTableCompleter
   }
 
   @Override
-  public void visit(ASTOCLVariableDeclaration ast) {
+  public void endVisit(ASTOCLVariableDeclaration ast) {
     VariableSymbol symbol = ast.getSymbol();
     symbol.setIsReadOnly(false);
     if (ast.isPresentMCType()) {

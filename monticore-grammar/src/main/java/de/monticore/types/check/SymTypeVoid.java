@@ -15,7 +15,7 @@ public class SymTypeVoid extends SymTypeExpression {
   @Deprecated
   public SymTypeVoid() {
     typeSymbol = new TypeSymbolSurrogate(BasicSymbolsMill.VOID);
-    typeSymbol.setEnclosingScope(BasicSymbolsMill.scope());
+    typeSymbol.setEnclosingScope(BasicSymbolsMill.globalScope());
   }
   
   @Override

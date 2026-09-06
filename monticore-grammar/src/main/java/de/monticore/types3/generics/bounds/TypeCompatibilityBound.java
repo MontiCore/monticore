@@ -2,7 +2,6 @@
 package de.monticore.types3.generics.bounds;
 
 import de.monticore.types.check.SymTypeExpression;
-import de.monticore.types3.generics.TypeParameterRelations;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.List;
@@ -63,6 +62,11 @@ public class TypeCompatibilityBound extends Bound {
   @Override
   public boolean isTypeCompatibilityBound() {
     return true;
+  }
+
+  @Override
+  public TypeCompatibilityBound asTypeCompatibilityBound() {
+    return this;
   }
 
   @Override

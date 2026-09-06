@@ -42,12 +42,7 @@ import de.monticore.codegen.cd2java._symboltable.scopesgenitor.ScopesGenitorDele
 import de.monticore.codegen.cd2java._symboltable.serialization.ScopeDeSerDecorator;
 import de.monticore.codegen.cd2java._symboltable.serialization.SymbolDeSerDecorator;
 import de.monticore.codegen.cd2java._symboltable.serialization.Symbols2JsonDecorator;
-import de.monticore.codegen.cd2java._symboltable.symbol.CommonSymbolInterfaceDecorator;
-import de.monticore.codegen.cd2java._symboltable.symbol.SymbolBuilderDecorator;
-import de.monticore.codegen.cd2java._symboltable.symbol.SymbolDecorator;
-import de.monticore.codegen.cd2java._symboltable.symbol.SymbolResolverInterfaceDecorator;
-import de.monticore.codegen.cd2java._symboltable.symbol.SymbolSurrogateBuilderDecorator;
-import de.monticore.codegen.cd2java._symboltable.symbol.SymbolSurrogateDecorator;
+import de.monticore.codegen.cd2java._symboltable.symbol.*;
 import de.monticore.codegen.cd2java._symboltable.symbol.symbolsurrogatemutator.MandatoryMutatorSymbolSurrogateDecorator;
 import de.monticore.codegen.cd2java._visitor.CDTraverserDecorator;
 import de.monticore.codegen.cd2java._visitor.HandlerDecorator;
@@ -66,8 +61,8 @@ import de.monticore.generating.GeneratorSetup;
 import de.monticore.io.paths.MCPath;
 import de.monticore.umlmodifier._ast.ASTModifier;
 import de.se_rwth.commons.logging.Log;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.util.ArrayList;
@@ -82,8 +77,8 @@ import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PACKAGE;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SYMBOL_TABLE_PACKAGE;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISITOR_PACKAGE;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MillDecoratorTest extends DecoratorTestCase {
 
@@ -99,7 +94,7 @@ public class MillDecoratorTest extends DecoratorTestCase {
   private ASTCDCompilationUnit clonedCD;
 
 
-  @Before
+  @BeforeEach
   public void setUp() {
     originalCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "Automaton");
     originalScopeCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "AutomatonScopeCD");
@@ -187,6 +182,7 @@ public class MillDecoratorTest extends DecoratorTestCase {
     ArtifactScopeClassDecorator artifactScopeDecorator = new ArtifactScopeClassDecorator(glex, symbolTableService, visitorService, methodDecorator);
     SymbolSurrogateDecorator symbolReferenceDecorator = new SymbolSurrogateDecorator(glex, symbolTableService, visitorService, methodDecorator, new MandatoryMutatorSymbolSurrogateDecorator(glex));
     SymbolSurrogateBuilderDecorator symbolReferenceBuilderDecorator = new SymbolSurrogateBuilderDecorator(glex, symbolTableService, accessorDecorator);
+    SymbolSupplierDecorator symbolSupplierDecorator = new SymbolSupplierDecorator(glex, symbolTableService);
     CommonSymbolInterfaceDecorator commonSymbolInterfaceDecorator = new CommonSymbolInterfaceDecorator(glex, symbolTableService, visitorService, methodDecorator);
     SymbolResolverInterfaceDecorator symbolResolverInterfaceDecorator = new SymbolResolverInterfaceDecorator(glex, symbolTableService);
     SymbolDeSerDecorator symbolDeSerDecorator = new SymbolDeSerDecorator(glex, symbolTableService, new MCPath());
@@ -199,6 +195,7 @@ public class MillDecoratorTest extends DecoratorTestCase {
 
     SymbolTableCDDecorator symbolTableCDDecorator = new SymbolTableCDDecorator(glex, targetPath, symbolTableService, symbolDecorator,
         symbolBuilderDecorator, symbolReferenceDecorator, symbolReferenceBuilderDecorator,
+        symbolSupplierDecorator,
         scopeInterfaceDecorator, scopeClassDecorator,
         globalScopeInterfaceDecorator, globalScopeClassDecorator,
         artifactScopeInterfaceDecorator, artifactScopeDecorator,
@@ -227,7 +224,7 @@ public class MillDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeSize() {
-    assertEquals(23, millClass.getCDAttributeList().size());
+    assertEquals(2, millClass.getCDAttributeList().size());
   
     assertTrue(Log.getFindings().isEmpty());
   }
@@ -236,30 +233,9 @@ public class MillDecoratorTest extends DecoratorTestCase {
   public void testAttributeName() {
     // ast
     getAttributeBy("mill", millClass);
-    getAttributeBy("millASTAutomatonBuilder", millClass);
-    getAttributeBy("millASTStateBuilder", millClass);
-    getAttributeBy("millASTTransitionBuilder", millClass);
-    getAttributeBy("millASTScopeBuilder", millClass);
-    getAttributeBy("millASTInheritedSymbolClassBuilder", millClass);
-    //symboltable
-    getAttributeBy("millAutomatonSymbolBuilder", millClass);
-    getAttributeBy("millStateSymbolBuilder", millClass);
-    getAttributeBy("millFooSymbolBuilder", millClass);
-    getAttributeBy("millAutomatonScope", millClass);
-    getAttributeBy("millAutomatonSymbolSurrogateBuilder", millClass);
-    getAttributeBy("millStateSymbolSurrogateBuilder", millClass);
-    getAttributeBy("millFooSymbolSurrogateBuilder", millClass);
-    getAttributeBy("millAutomatonGlobalScope", millClass);
-    getAttributeBy("millAutomatonArtifactScope", millClass);
 
     getAttributeBy("automatonGlobalScope", millClass);
 
-    getAttributeBy("millAutomatonTraverserImplementation", millClass);
-    getAttributeBy("millAutomatonInheritanceHandler", millClass);
-
-    getAttributeBy("millAutomatonScopesGenitor", millClass);
-    getAttributeBy("millAutomatonScopesGenitorDelegator", millClass);
-  
     assertTrue(Log.getFindings().isEmpty());
   }
 

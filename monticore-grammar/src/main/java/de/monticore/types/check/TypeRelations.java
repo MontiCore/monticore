@@ -4,13 +4,14 @@ package de.monticore.types.check;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static de.monticore.types.check.SymTypePrimitive.unbox;
 
 /**
  * This Class provides the default implementation of {@link ITypeRelations}
+ * @deprecated use {@link de.monticore.types3.SymTypeRelations}
  */
+@Deprecated
 public class TypeRelations implements ITypeRelations {
 
   @Override
@@ -106,8 +107,8 @@ public class TypeRelations implements ITypeRelations {
         if (type.isGenericType() && superType.isGenericType()) {
           SymTypeOfGenerics typeGen = (SymTypeOfGenerics) type;
           SymTypeOfGenerics supTypeGen = (SymTypeOfGenerics) superType;
-          if (typeGen.printTypeWithoutTypeArgument()
-              .equals(supTypeGen.printTypeWithoutTypeArgument())
+          if (typeGen.getTypeConstructorFullName()
+              .equals(supTypeGen.getTypeConstructorFullName())
               && typeGen.sizeArguments() == supTypeGen.sizeArguments()) {
             boolean success = true;
             for (int i = 0; i < typeGen.sizeArguments(); i++) {
@@ -149,7 +150,7 @@ public class TypeRelations implements ITypeRelations {
     else {
       List<SymTypeExpression> superTypes = specific.getTypeInfo().getSuperTypesList();
       List<Integer> superTypesSpecificity = superTypes.stream()
-          .map(s -> calculateInheritanceDistance(s, general)).collect(Collectors.toList());
+          .map(s -> calculateInheritanceDistance(s, general)).toList();
       int min = -1;
       for (int specificity : superTypesSpecificity) {
         if (min != -1 && specificity != -1 && specificity < min) {

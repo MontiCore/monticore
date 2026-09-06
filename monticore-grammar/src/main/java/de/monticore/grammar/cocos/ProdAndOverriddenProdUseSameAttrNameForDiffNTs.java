@@ -38,29 +38,29 @@ public class ProdAndOverriddenProdUseSameAttrNameForDiffNTs implements GrammarAS
           List<RuleComponentSymbol> rcs = ruleSymbol.get().getSpannedScope()
                   .resolveRuleComponentMany(attributename);
           if (!rcs.isEmpty()) {
-            if (rcs.get(0).isIsTerminal()) {
+            if (rcs.getFirst().isIsTerminal()) {
               logError(rule.get(), attributename, componentSymbol, "production of a terminal", a);
-            } else if (rcs.get(0).isIsConstantGroup()) {
+            } else if (rcs.getFirst().isIsConstantGroup()) {
               logError(rule.get(), attributename, componentSymbol, "production of a constant group", a);
-            } else if (rcs.get(0).isIsConstant()) {
+            } else if (rcs.getFirst().isIsConstant()) {
               logError(rule.get(), attributename, componentSymbol, "production of a constant", a);
-            } else if (rcs.get(0).isIsLexerNonterminal()) {
+            } else if (rcs.getFirst().isIsLexerNonterminal()) {
               logError(rule.get(), attributename, componentSymbol, "production of a lexer nonterminal", a);
-            } else if (rcs.get(0).isIsNonterminal() && rcs.get(0).getReferencedProd().isPresent()
-                    && (rcs.get(0).getReferencedProd().get().isIsLexerProd() && componentSymbol.getReferencedProd().get().isIsLexerProd()) || !rcs.get(0).getReferencedProd().get().getName().equals(componentSymbol.getReferencedProd().get().getName())) {
-              if (!(rcs.get(0).getReferencedProd().get().isIsLexerProd() && componentSymbol.getReferencedProd().get().isIsLexerProd())) {
-                logError(rule.get(), attributename, componentSymbol, "nonterminal " + rcs.get(0).getReferencedProd().get().getName(), a);
+            } else if (rcs.getFirst().isIsNonterminal() && rcs.getFirst().getReferencedProd().isPresent()
+                    && (rcs.getFirst().getReferencedProd().get().isIsLexerProd() && componentSymbol.getReferencedProd().get().isIsLexerProd()) || !rcs.getFirst().getReferencedProd().get().getName().equals(componentSymbol.getReferencedProd().get().getName())) {
+              if (!(rcs.getFirst().getReferencedProd().get().isIsLexerProd() && componentSymbol.getReferencedProd().get().isIsLexerProd())) {
+                logError(rule.get(), attributename, componentSymbol, "nonterminal " + rcs.getFirst().getReferencedProd().get().getName(), a);
               }
             }
           } else {
             //try to find NonTerminal with same Name, but with capitalised start -> will both become the same attribute
             rcs = ruleSymbol.get().getSpannedScope().resolveRuleComponentDownMany(StringTransformations.capitalize(attributename));
-            if (!rcs.isEmpty() && rcs.get(0).isIsNonterminal() && rcs.get(0).getReferencedProd().isPresent()
-                    && !rcs.get(0).getReferencedProd().get().getName().equals(componentSymbol.getReferencedProd().get().getName())) {
+            if (!rcs.isEmpty() && rcs.getFirst().isIsNonterminal() && rcs.getFirst().getReferencedProd().isPresent()
+                    && !rcs.getFirst().getReferencedProd().get().getName().equals(componentSymbol.getReferencedProd().get().getName())) {
               // logs error when e.g. State = F; A extends State = f:R;
               // because F form State will evaluate to attributeName with small f
               logError(ruleSymbol.get(), attributename,
-                      componentSymbol, "nonterminal " + rcs.get(0).getReferencedProd().get().getName(), a);
+                      componentSymbol, "nonterminal " + rcs.getFirst().getReferencedProd().get().getName(), a);
             }
           }
         }

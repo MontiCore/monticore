@@ -1,16 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
+import de.monticore.runtime.junit.MCAssertions;
 import g1.G1Mill;
 import g3.G3Mill;
 import org.antlr.v4.runtime.RecognitionException;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 import de.monticore.ast.Comment;
 import de.se_rwth.commons.logging.Log;
@@ -18,12 +13,16 @@ import de.se_rwth.commons.logging.LogStub;
 import g1._ast.ASTT;
 import g1._ast.ASTTBuilder;
 import g2.G2Mill;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class BuildersG1G2Test {
 
   ASTT t7,t8,t9,t10;
 
-  @Before
+  @BeforeEach
   public void setUp() throws RecognitionException, IOException {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -43,7 +42,7 @@ public class BuildersG1G2Test {
                 .add_PreComment(new Comment("blubb2"));
     assertEquals(2, tb.size_PreComments());
     assertEquals("blubb2", tb.get_PreComment(1).getText());
-    assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
 
   // tests whether inherited attributes are set through builder
@@ -55,7 +54,7 @@ public class BuildersG1G2Test {
 		.build();
     assertEquals(2, t.size_PreComments());
     assertEquals("blubb2", t.get_PreComment(1).getText());
-    assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
 
   // tests whether generated build-setters work
@@ -66,10 +65,10 @@ public class BuildersG1G2Test {
     		.setA(t7)
     		.setA(t8)
 		.build();
-    assertTrue(t8 == s.getA());
-    assertTrue(!(t7 == s.getA()));
+    assertSame(t8, s.getA());
+    assertFalse(t7 == s.getA());
     assertEquals(g1._ast.ASTS.class, s.getClass());
-    assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
   
   // tests whether generated build-setters work in G2
@@ -81,12 +80,12 @@ public class BuildersG1G2Test {
                 .addC(t9)
                 .addC(t10)
                 .build();
-    assertTrue(t7 == s.getA());
-    assertTrue(t8 == s.getB());
+    assertSame(t7, s.getA());
+    assertSame(t8, s.getB());
     assertEquals(5, s.sizeC());
-    assertTrue(t10 == s.getC(4));
+    assertSame(t10, s.getC(4));
     assertEquals(g2._ast.ASTS.class, s.getClass());
-    assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
 
   // tests whether generated build-setters work in G2
@@ -111,9 +110,9 @@ public class BuildersG1G2Test {
     g1._ast.ASTS s =  G1Mill.sBuilder()
                 .setA(t7)
                 .build();
-    assertTrue(t7 == s.getA());
+    assertSame(t7, s.getA());
     assertEquals(g2._ast.ASTS.class, s.getClass());
-    assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
 
   // tests: Builder from G3 derived through G1
@@ -123,21 +122,21 @@ public class BuildersG1G2Test {
     g1._ast.ASTS s =  G1Mill.sBuilder()
                 .setA(t7)
                 .build();
-    assertTrue(t7 == s.getA());
+    assertSame(t7, s.getA());
     assertEquals(g3._ast.ASTS.class, s.getClass());
 
     g2._ast.ASTS s2 =  G2Mill.sBuilder()
                 .setA(t7)
                 .build();
-    assertTrue(t7 == s2.getA());
+    assertSame(t7, s2.getA());
     assertEquals(g3._ast.ASTS.class, s2.getClass());
 
     g3._ast.ASTS s3 =  G3Mill.sBuilder()
                 .setA(t7)
                 .build();
-    assertTrue(t7 == s3.getA());
+    assertSame(t7, s3.getA());
     assertEquals(g3._ast.ASTS.class, s3.getClass());
-    assertTrue(Log.getFindings().isEmpty());
+    MCAssertions.assertNoFindings();
   }
 
 

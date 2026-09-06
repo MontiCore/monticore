@@ -2,8 +2,6 @@
 
 package mc.feature.visitor.inheritance.delegator;
 
-import mc.feature.visitor.inheritance.a._ast.ASTXA;
-import mc.feature.visitor.inheritance.a._visitor.ATraverser;
 import mc.feature.visitor.inheritance.b._ast.ASTXB;
 import mc.feature.visitor.inheritance.b._ast.ASTYB;
 import mc.feature.visitor.inheritance.b._ast.ASTZB;

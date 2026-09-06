@@ -1,76 +1,73 @@
-/* (c) https://github.com/MontiCore/monticore */
+/* (c) [https://github.com/MontiCore/monticore](https://github.com/MontiCore/monticore) */
 package de.monticore.statements.cocos;
 
+import de.monticore.runtime.junit.MCAssertions;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.statements.mccommonstatements.cocos.ForConditionHasBooleanType;
 import de.monticore.statements.mcstatementsbasis._ast.ASTMCBlockStatement;
 import de.monticore.statements.testmccommonstatements.TestMCCommonStatementsMill;
 import de.monticore.statements.testmccommonstatements._cocos.TestMCCommonStatementsCoCoChecker;
-import de.monticore.statements.testmccommonstatements._parser.TestMCCommonStatementsParser;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
-import de.monticore.types.check.FullDeriveFromCombineExpressionsWithLiterals;
-import de.monticore.types.check.TypeCalculator;
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
+import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserFactory;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.IOException;
-import java.util.Optional;
+import java.util.stream.Stream;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static de.monticore.statements.testmccommonstatements.TestMCCommonStatementsMill.parser;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
-public class ForConditionHasBooleanTypeTest {
-  
-  protected TestMCCommonStatementsCoCoChecker checker;
-  
+@TestWithMCLanguage(TestMCCommonStatementsMill.class)
+class ForConditionHasBooleanTypeTest {
+
   @BeforeEach
-  public void init() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-    TestMCCommonStatementsMill.reset();
-    TestMCCommonStatementsMill.init();
+  void init() {
+    CombineExpressionsWithLiteralsTypeTraverserFactory.initTypeCheck3();
     BasicSymbolsMill.initializePrimitives();
-    checker = new TestMCCommonStatementsCoCoChecker();
-    checker.addCoCo(new ForConditionHasBooleanType(new TypeCalculator(null,new FullDeriveFromCombineExpressionsWithLiterals())));
   }
 
-  public void checkValid(String expressionString) throws IOException {
-    
-    TestMCCommonStatementsParser parser = new TestMCCommonStatementsParser();
-    Optional<ASTMCBlockStatement> optAST = parser.parse_StringMCBlockStatement(expressionString);
-    Assertions.assertTrue(optAST.isPresent());
-    Log.getFindings().clear();
-    checker.checkAll(optAST.get());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
-    
+  @ParameterizedTest
+  @ValueSource(strings = {
+    "for(5; true; 5+1){}",
+    "for(5; 5<6; 5+1){}",
+    "for(5; !(false || true) && (6==7); 5+1){}",
+    "for(;;){}"
+  })
+  void testValid(String expr) throws IOException {
+    // Given
+    TestMCCommonStatementsCoCoChecker checker = new TestMCCommonStatementsCoCoChecker();
+    checker.addCoCo(new ForConditionHasBooleanType());
+
+    ASTMCBlockStatement ast = parser().parse_StringMCBlockStatement(expr).orElseThrow();
+
+    // When
+    checker.checkAll(ast);
   }
-  
-  public void checkInvalid(String expressionString) throws IOException {
+
+  @ParameterizedTest
+  @MethodSource("exprAndErrorProvider")
+  void testInvalid(String expr, String error) throws IOException {
+    // Given
+    TestMCCommonStatementsCoCoChecker checker = new TestMCCommonStatementsCoCoChecker();
+    checker.addCoCo(new ForConditionHasBooleanType());
+
+    ASTMCBlockStatement ast = parser().parse_StringMCBlockStatement(expr).orElseThrow();
+
+    // When
+    checker.checkAll(ast);
     
-    TestMCCommonStatementsParser parser = new TestMCCommonStatementsParser();
-    Optional<ASTMCBlockStatement> optAST = parser.parse_StringMCBlockStatement(expressionString);
-    Assertions.assertTrue(optAST.isPresent());
-    Log.getFindings().clear();
-    checker.checkAll(optAST.get());
-    Assertions.assertFalse(Log.getFindings().isEmpty());
-    
+    // Then
+    MCAssertions.assertHasFindingStartingWith(error);
   }
-  
-  @Test
-  public void testValid() throws IOException {
-    
-    checkValid("for(5; true;5+1){}");
-    checkValid("for(5; 5<6;5+1){}");
-    checkValid("for(5; !(false || true) && (6==7);5+1){}");
-    
-  }
-  
-  @Test
-  public void testInvalid() throws IOException {
-  
-    checkInvalid("for(1+1;2+2;'x'){}");
-  
+
+  static Stream<Arguments> exprAndErrorProvider() {
+    return Stream.of(
+      arguments("for(i = 0; 2 + 2; i++){}", ForConditionHasBooleanType.ERROR_CODE),
+      arguments("for(i = 0; true + 1; i++){}", "0xB0163")
+    );
   }
 }

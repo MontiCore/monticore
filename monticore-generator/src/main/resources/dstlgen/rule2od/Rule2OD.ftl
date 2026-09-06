@@ -48,8 +48,9 @@ ${className}Visitor thisV = new ${className}Visitor(state);
     traverser.add4${ast.getName()}TR(thisV);
     traverser.set${ast.getName()}TRHandler(thisV);
     <#list inheritanceHelper.getSuperGrammars(ast) as super>
+        <#assign superPackagePrefix = (super.getPackageName() == "")?then("", super.getPackageName() + ".")>
       {
-        ${super.getPackageName()}.tr.translation.${super.getName()}Rule2ODVisitor v = new ${super.getPackageName()}.tr.translation.${super.getName()}Rule2ODVisitor(state);
+        ${superPackagePrefix}tr.translation.${super.getName()}Rule2ODVisitor v = new ${superPackagePrefix}tr.translation.${super.getName()}Rule2ODVisitor(state);
         traverser.add4${super.getName()}TR(v);
         traverser.set${super.getName()}TRHandler(v);
       }

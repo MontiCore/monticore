@@ -22,9 +22,8 @@ import de.monticore.generating.GeneratorSetup;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.logging.Log;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
@@ -34,9 +33,7 @@ import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodsBy;
-import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class CoCoCheckerDecoratorTest extends DecoratorTestCase {
 
@@ -64,7 +61,7 @@ public class CoCoCheckerDecoratorTest extends DecoratorTestCase {
 
   private static final String LEXICALS_NODE = "de.monticore.codegen.ast.lexicals._ast.ASTLexicalsNode";
 
-  @Before
+  @BeforeEach
   public void setup() {
     ASTCDCompilationUnit ast = parse("de", "monticore", "codegen", "ast", "Automaton");
     ICD4CodeGlobalScope gs = CD4CodeMill.globalScope();
@@ -85,7 +82,7 @@ public class CoCoCheckerDecoratorTest extends DecoratorTestCase {
     // test parsing
     ParserConfiguration configuration = new ParserConfiguration();
     JavaParser parser = new JavaParser(configuration);
-    ParseResult parseResult = parser.parse(sb.toString());
+    ParseResult<?> parseResult = parser.parse(sb.toString());
     assertTrue(parseResult.isSuccessful());
     
     assertTrue(Log.getFindings().isEmpty());
@@ -203,7 +200,7 @@ public class CoCoCheckerDecoratorTest extends DecoratorTestCase {
     assertEquals("coco", method.getCDParameter(0).getName());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
   
-    Assert.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test

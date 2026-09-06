@@ -13,12 +13,12 @@ import java.util.List;
 import static de.monticore.grammar.grammar._ast.ASTConstantsGrammar.*;
 
 /**
- * CoCo that checks if in a additional attribute of a astrule, symbolrule or scoperule a generic type does not contain a MCCustomTypeArgument
+ * CoCo that checks if in a additional attribute of an astrule, symbolrule or scoperule a generic type does not contain a MCCustomTypeArgument
  * with the *,+,? and min, max notation this can be created in different ways
  * these cases are covered e.g.:
- * A<B<C>>
- * A<B>*, A<B>+, A<B>?
- * A<B> min = 0, A<B> max = 5, A<B> max = *
+ * {@code A<B<C>>}
+ * {@code A<B>*, A<B>+, A<B>?}
+ * {@code A<B> min = 0, A<B> max = 5, A<B> max = *}
  * because these cases cannot be handled in the generator so far and will generate the wrong type
  */
 public class NoNestedGenericsInAdditionalAttributes implements GrammarASTMCGrammarCoCo {
@@ -68,7 +68,7 @@ public class NoNestedGenericsInAdditionalAttributes implements GrammarASTMCGramm
   }
 
   /**
-   * for e.g. A<B<C>>
+   * for e.g. {@code A<B<C>>}
    */
   protected boolean hasNestedGeneric(ASTMCType mcType){
     return((ASTMCGenericType) mcType).getMCTypeArgumentList()
@@ -78,7 +78,7 @@ public class NoNestedGenericsInAdditionalAttributes implements GrammarASTMCGramm
   }
 
   /**
-   * for e.g. A<B>*, A<B>+, A<B>?
+   * for e.g. {@code A<B>*}, {@code A<B>+}, {@code A<B>?}
    */
   protected boolean hasGenericIteration(ASTAdditionalAttribute astAdditionalAttribute){
     return astAdditionalAttribute.getCard().getIteration() == STAR || astAdditionalAttribute.getCard().getIteration() == PLUS ||
@@ -86,7 +86,7 @@ public class NoNestedGenericsInAdditionalAttributes implements GrammarASTMCGramm
   }
 
   /**
-   * for e.g. A<B> min=0, A<B> max=2, A<B> max=*
+   * for e.g. {@code A<B> min=0}, {@code A<B> max=2}, {@code A<B> max=*}
    */
   protected boolean hasGenericMaxValue(ASTAdditionalAttribute astAdditionalAttribute){
     return (astAdditionalAttribute.getCard().isPresentMax() && ("*".equals(astAdditionalAttribute.getCard().getMax()) ||
@@ -96,7 +96,9 @@ public class NoNestedGenericsInAdditionalAttributes implements GrammarASTMCGramm
 
   protected void logError(String ruleName, String grammarName, String prodName, ASTAdditionalAttribute astAdditionalAttribute) {
     Log.error(ERROR_CODE + String.format(ERROR_MSG_FORMAT, ruleName, grammarName, prodName,
-        printASTAdditionalAttribute(astAdditionalAttribute)));
+        printASTAdditionalAttribute(astAdditionalAttribute)),
+      astAdditionalAttribute.get_SourcePositionStart(),
+      astAdditionalAttribute.get_SourcePositionEnd());
   }
 
   protected String printASTAdditionalAttribute(ASTAdditionalAttribute astAdditionalAttribute) {

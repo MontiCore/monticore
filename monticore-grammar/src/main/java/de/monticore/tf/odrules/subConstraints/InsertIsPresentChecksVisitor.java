@@ -17,8 +17,6 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Created by Alexander Wilts on 16.01.2017.
- * <p>
  * This visitor inserts isPresent()-checks into expressions that contain optional variables.
  * <p>
  * Let $O be an optional variable in this expression: isValid($O).
@@ -31,8 +29,8 @@ import java.util.Set;
  * <p>
  * Examples for normal variable $A and optional variable $O:
  * <p>
- * $A && $O results in $A && (!$O.isPresent || isValid($O))
- * $A || $O results in $A || ($O.isPresent && isValid($O))
+ * {@code $A && $O} results in {@code $A && (!$O.isPresent || isValid($O))}
+ * {@code $A} || $O results in {@code $A || ($O.isPresent && isValid($O))}
  */
 public class InsertIsPresentChecksVisitor implements CommonExpressionsVisitor2 {
 

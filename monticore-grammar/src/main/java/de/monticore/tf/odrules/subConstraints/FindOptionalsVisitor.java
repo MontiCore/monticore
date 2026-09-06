@@ -6,14 +6,13 @@ import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisito
 import de.monticore.tf.odrulegeneration._ast.ASTMatchingObject;
 import de.monticore.tf.odrules.HierarchyHelper;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
 /**
- * Created by Alexander Wilts on 16.01.2017.
- *
- * This visitor calculates if there are any elements with stereotype 'optional' or 'null' contained in the given expression.
+ * This visitor calculates if there are any elements with
+ * stereotype 'optional' or 'null' contained in the given expression.
  */
 public class FindOptionalsVisitor implements
         ExpressionsBasisVisitor2 {
@@ -26,7 +25,7 @@ public class FindOptionalsVisitor implements
     super();
     this.hierarchyHelper = hierarchyHelper;
     this.lhsObjects = lhsObjects;
-    optVars = new HashSet<>();
+    optVars = new LinkedHashSet<>();
   }
 
   @Override

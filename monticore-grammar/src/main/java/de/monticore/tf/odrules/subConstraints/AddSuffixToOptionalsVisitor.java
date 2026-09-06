@@ -13,13 +13,11 @@ import de.monticore.tf.odrulegeneration._ast.ASTMatchingObject;
 import de.monticore.tf.odrules.HierarchyHelper;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
 /**
- * Created by Alexander Wilts on 16.01.2017.
- * <p>
  * This visitor replaces elements with stereotype 'not' or 'optional' with a new variable with suffix '_candAsOptional'.
  * Additionally the visitor adds a '.get()' call behind that variable.
  */
@@ -34,16 +32,15 @@ public class AddSuffixToOptionalsVisitor implements
         super();
         this.hierarchyHelper = hierarchyHelper;
         this.lhsObjects = lhsObjects;
-        handledNodes = new HashSet<>();
+        handledNodes = new LinkedHashSet<>();
     }
 
     @Override
     public void visit(ASTArguments node) {
         List<ASTExpression> newExpressions = new ArrayList<>();
         for(ASTExpression expr : node.getExpressionList()) {
-            if(expr instanceof ASTNameExpression) {
-                ASTNameExpression nameExpr = (ASTNameExpression) expr;
-                newExpressions.add(replaceNode(nameExpr));
+            if(expr instanceof ASTNameExpression nameExpr) {
+              newExpressions.add(replaceNode(nameExpr));
             } else {
                 newExpressions.add(expr);
             }

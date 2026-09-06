@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types3.generics.context;
 
 import de.monticore.types.check.SymTypeExpression;

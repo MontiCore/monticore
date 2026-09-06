@@ -22,6 +22,8 @@ with common expressions like `+` and `-`.
 with bit expressions like `&` or `<<`.
 * [SetExpressions](../ocl/SetExpressions.mc4): Extends `ExpressionBasis`
 with set expressions like `{a * a | a in b, a < 10}`.
+* [StreamExpressions](../expressions/StreamExpressions.mc4):
+Extends `CommonExpressions` with stream expressions like `1:Abs:<2,~,3>`.
 * [LambdaExpressions](LambdaExpressions.mc4): Extends `ExpressionBasis` 
 with lambda expressions like `a -> a + 2`.
 * [TupleExpressions](TupleExpressions.mc4): Extends `ExpressionBasis`
@@ -62,9 +64,9 @@ for an example.
 
 * [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
 * [MontiCore documentation](https://www.monticore.de/)
-* [**List of languages**](https://github.com/MontiCore/monticore/blob/opendev/docs/Languages.md)
-* [**MontiCore Core Grammar Library**](https://github.com/MontiCore/monticore/blob/opendev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
-* [Best Practices](https://github.com/MontiCore/monticore/blob/opendev/docs/BestPractices.md)
+* [**List of languages**](../../../../../../../docs/Languages.md)
+* [**MontiCore Core Grammar Library**](../Grammars.md)
+* [Best Practices](../../../../../../../docs/BestPractices.md)
 * [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
 * [Licence definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)
 

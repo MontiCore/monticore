@@ -1,6 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 @SuppressWarnings("unused")
-public class ${ast.getClassname()} extends ODRule {
+public class ${ast.getJavaClassName()} extends ODRule {
 
   ${tc.include("de.monticore.tf.odrules.ClassMatch")}
 
@@ -24,6 +24,8 @@ public class ${ast.getClassname()} extends ODRule {
 
   ${tc.include("de.monticore.tf.odrules.DoPatternMatchingList")}
 
+  ${tc.include("de.monticore.tf.odrules.ResetOptionals")}
+
   ${tc.include("de.monticore.tf.odrules.CheckConstraints")}
 
   ${tc.include("de.monticore.tf.odrules.CheckSubConstraints")}
@@ -34,7 +36,11 @@ public class ${ast.getClassname()} extends ODRule {
 
   ${tc.include("de.monticore.tf.odrules.FindSearchPlan")}
 
+  ${tc.include("de.monticore.tf.odrules.OptimizeSearchPlan")}
+
   ${tc.include("de.monticore.tf.odrules.SplitSearchplan")}
+
+  ${tc.include("de.monticore.tf.odrules.FastLookupList")}
 
   ${tc.include("de.monticore.tf.odrules.FindCandidates")}
 

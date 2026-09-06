@@ -48,7 +48,7 @@ public class Layouter {
 	/**
 	 * Formats the source position of an ASTnode
 	 * 
-	 * @param a
+	 * @param sp
 	 */
 	public static String sourcePos(SourcePosition sp) {
 		if (sp != null) {
@@ -73,7 +73,7 @@ public class Layouter {
 	 * Provides the Name of the Nonterminal of the AST (no qualifier, no "AST"
 	 * at the beginning)
 	 * 
-	 * @param ast
+	 * @param s
 	 * @return Nonterminalname
 	 */
 	public static String unqualName(String s) {
@@ -97,7 +97,7 @@ public class Layouter {
 		String node = "Unknown!E534";
 		if (c.length >= 2) {
 			node = c[c.length - 2] + "." + c[c.length - 1];
-		} else if (c.length >= 1) {
+		} else if (c.length == 1) {
 			node = c[c.length - 1];
 		}
 		return node;
@@ -129,11 +129,11 @@ public class Layouter {
 			String clazzn = className(value);
 			// Sonderbehandlung mancher Typen
 			if ("String".equals(clazzn)) {
-				out = "\"" + value.toString() + "\"";
+				out = "\"" + value + "\"";
 			} else if ("Integer".equals(clazzn) || "Boolean".equals(clazzn)) {
 				out = value.toString();
 			} else {
-				out = "(" + clazzn + ")" + value.toString();
+				out = "(" + clazzn + ")" + value;
 			}
 		}
 		int l = out.length();
@@ -149,7 +149,8 @@ public class Layouter {
 	 * Provides the name of the Nonterminal of the AST (no qualifier, no "AST"
 	 * at the beginning)
 	 * 
-	 * @param ast
+	 * @param s
+	 * @param l
 	 * @return Nonterminalname
 	 */
 	public static String unqualNamePadleft(String s, int l) {
@@ -160,11 +161,7 @@ public class Layouter {
 		if (length < 0) {
 			return " ";
 		}
-		StringBuilder b = new StringBuilder("");
-		for (int i = 0; i < length; i++) {
-			b.append(" ");
-		}
-		return b.toString();
+    return " ".repeat(length);
 	}
 
 }

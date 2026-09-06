@@ -9,15 +9,14 @@ import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.codegen.mc2cd.TranslationTestCase;
 import de.se_rwth.commons.logging.Log;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Paths;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests that attributes that are redefined in ASTRules correctly override their counterparts in the
@@ -36,23 +35,23 @@ public class AttributeInASTOverridingTest extends TranslationTestCase {
     astA = TestHelper.getCDClass(cdCompilationUnit, "ASTA").get();
     astB = TestHelper.getCDClass(cdCompilationUnit, "ASTB").get();
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testAttributeOverridden() {
     List<ASTCDAttribute> attributes = astA.getCDAttributeList();
-    Assertions.assertEquals(1, attributes.size());
-    Assertions.assertEquals("mc2cdtransformation.AttributeInASTOverridingGrammar.ASTY", TransformationHelper.typeToString(attributes.get(0).getMCType()));
+    assertEquals(1, attributes.size());
+    assertEquals("mc2cdtransformation.AttributeInASTOverridingGrammar.ASTY", TransformationHelper.typeToString(attributes.get(0).getMCType()));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
   public void testAttributeNotOverridden() {
     List<ASTCDAttribute> attributes = astB.getCDAttributeList();
-    Assertions.assertEquals(2, attributes.size());
+    assertEquals(2, attributes.size());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

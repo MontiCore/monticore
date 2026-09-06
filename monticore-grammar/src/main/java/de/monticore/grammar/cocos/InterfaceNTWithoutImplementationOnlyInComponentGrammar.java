@@ -2,12 +2,10 @@
 
 package de.monticore.grammar.cocos;
 
-import com.google.common.collect.Lists;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._cocos.GrammarASTMCGrammarCoCo;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
-import de.monticore.grammar.grammar._symboltable.ProdSymbolSurrogate;
 import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
 import de.se_rwth.commons.logging.Log;
 
@@ -47,7 +45,7 @@ public class InterfaceNTWithoutImplementationOnlyInComponentGrammar implements G
 
       // for every interface production we get all other interfaces implementing it and save it to map of all interface
       // productions mapping to all their subinterfaces
-      Map<String, List<ProdSymbol>> subSymbols = new HashMap<>();
+      Map<String, List<ProdSymbol>> subSymbols = new LinkedHashMap<>();
       for (ProdSymbol interfaceProd : interfaceProds) {
         for (ProdSymbol superInterface : interfaceProd.getSuperInterfaceProds()) {
           if (!subSymbols.containsKey(superInterface.getName())) {

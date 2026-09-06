@@ -7,9 +7,13 @@ import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._ast.ASTMCVoidType;
-import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import de.se_rwth.commons.logging.Log;
 
+/**
+ * @deprecated use  {@link de.monticore.types3.TypeCheck3} and
+ * {@link de.monticore.types3.SymTypeRelations}
+ */
+@Deprecated
 public class TypeCalculator implements ITypeRelations {
 
   /**
@@ -63,7 +67,7 @@ public class TypeCalculator implements ITypeRelations {
   /**
    * Function 1: extracting the SymTypeExpression from an AST Type
    * The SymTypeExpression is independent of the AST and can be stored in the SymTab etc.
-   *
+   * <p>
    * Tests for this Function are combined in the Visitor tests
    * (SynthesizeSymType.*Types.*Test)
    */
@@ -91,7 +95,7 @@ public class TypeCalculator implements ITypeRelations {
   /**
    * Function 1c: extracting the SymTypeExpression from the AST MCReturnType
    * (MCReturnType is not in the ASTMCType hierarchy, while it is included in the SymTypeExpressions)
-   *
+   * <p>
    * Tests for this Function are combined in the Visitor tests
    * (SynthesizeSymType.*Types.*Test)
    */
@@ -109,7 +113,7 @@ public class TypeCalculator implements ITypeRelations {
 
   /**
    * Function 1d: extracting the SymTypeExpression from the AST MCQualifiedName
-   *
+   * <p>
    * Tests for this Function are combined in the Visitor tests
    * (SynthesizeSymType.*Types.*Test)
    */
@@ -150,7 +154,7 @@ public class TypeCalculator implements ITypeRelations {
    * Function 2b: Derive the SymTypeExpression of a Literal
    * This defines the Type that a Literal has and will be used to
    * determine the Type of Expressions.
-   *
+   * <p>
    * Tests for this Function are combined in the Visitor tests
    * (DeriveSymType.*Literals.*Test)
    */

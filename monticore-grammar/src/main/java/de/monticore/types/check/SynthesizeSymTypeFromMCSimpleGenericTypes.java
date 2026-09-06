@@ -6,7 +6,6 @@ import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
-import de.monticore.types.mcsimplegenerictypes.MCSimpleGenericTypesMill;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesHandler;
 import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesTraverser;
@@ -21,7 +20,10 @@ import java.util.Optional;
  * Visitor for Derivation of SymType from MCSimpleGenericTypes
  * i.e. for
  * types/MCSimpleGenericTypes.mc4
+ * @deprecated part of typecheck1,
+ * use {@link de.monticore.types3.TypeCheck3} instead.
  */
+@Deprecated
 public class SynthesizeSymTypeFromMCSimpleGenericTypes extends AbstractSynthesizeFromType
     implements MCSimpleGenericTypesVisitor2, MCSimpleGenericTypesHandler {
 
@@ -52,7 +54,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypes extends AbstractSynthesiz
   public void traverse(ASTMCBasicGenericType genericType) {
 
     SymTypeExpression symType = null;
-    List<SymTypeExpression> arguments = new LinkedList<SymTypeExpression>();
+    List<SymTypeExpression> arguments = new LinkedList<>();
     for (int i = 0; i<genericType.sizeMCTypeArguments(); i++) {
       ASTMCTypeArgument arg = genericType.getMCTypeArgument(i);
       if (null != arg) {

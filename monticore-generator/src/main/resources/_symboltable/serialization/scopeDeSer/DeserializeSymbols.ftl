@@ -5,12 +5,12 @@ ${tc.signature("symbolMap", "mill", "errorCode", "scopeDeserName", "scopeInterfa
       de.monticore.symboltable.serialization.JsonDeSers.getSymbols(scopeJson)) {
     Optional${"<"}String${">"} kind = de.monticore.symboltable.serialization.JsonDeSers.getKindOpt(symbol);
 
-    if (!kind.isPresent()) {
+    if (kind.isEmpty()) {
       Log.error("0xA1238 Serialized object does not have a kind attribute: '" + symbol + "'.");
       continue;
     }
 
-    de.monticore.symboltable.serialization.ISymbolDeSer deSer = ${mill}.globalScope().getSymbolDeSer(kind.get());
+    de.monticore.symboltable.serialization.ISymbolDeSer deSer = this.getDeser(kind.get());
 
     if (null == deSer) {
       Log.debug(
@@ -26,7 +26,7 @@ ${tc.signature("symbolMap", "mill", "errorCode", "scopeDeserName", "scopeInterfa
     }
 <#assign count=0>
 <#list symbolMap?keys as kind>
-  else if ("${kind}".equals(kind)
+  else if ("${kind}".equals(kind.get())
         || "${kind}".equals(deSer.getSerializedKind())) {
       ${kind} s${count} = (${kind}) deSer.deserialize(scope, symbol);
       scope.add(s${count});

@@ -11,12 +11,12 @@ import de.monticore.types.check.DeriveSymTypeOfCommonExpressions;
 /**
  * The usage of this class is to collect information about a call expression
  * so that it is easier to resolve in the TypeCheck
- *
+ * <p>
  * We take the call expression, and split it into a qualified name and an expression having a type
  * such that type.qualifiedName(args) has the type of the call expression
  * if no type can be found, the expression is set to the inner expression for compatibility reasons
  * This makes it far easier to calculate the type of call expressions.
- *
+ * <p>
  * To use this class:
  * <ol>
  *   <li>Create an inheritance traverser</li>
@@ -25,7 +25,7 @@ import de.monticore.types.check.DeriveSymTypeOfCommonExpressions;
  *   <li>Register the instance of this class to be a visitor for ExpressionsBasis and CommonExpressions in the
  *   traverser.</li>
  * </ol>,
- *
+ * <p>
  * This class is used in {@link DeriveSymTypeOfCommonExpressions}.
  */
 

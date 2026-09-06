@@ -18,24 +18,29 @@ import java.util.stream.Collectors;
  * It is the OO extension of the class {@link de.monticore.types.check.DeriveSymTypeOfBSCommonExpressions} and adds OO
  * functionalities like modifiers to the derivation of a SymTypeExpression.
  * It can be combined with other expressions in your language by creating a DelegatorVisitor
+ * @deprecated part of typecheck1,
+ * use {@link de.monticore.types3.TypeCheck3} instead.
  */
+@Deprecated
 public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfBSCommonExpressions {
 
   @Override
   protected List<VariableSymbol> filterModifiersVariables(List<VariableSymbol> variableSymbols) {
-    return variableSymbols.stream().filter(f -> f instanceof FieldSymbol ? ((FieldSymbol) f).isIsStatic() : false).collect(Collectors.toList());
+    return variableSymbols.stream().filter(f -> f instanceof FieldSymbol
+        && ((FieldSymbol) f).isIsStatic()).collect(Collectors.toList());
   }
 
   @Override
   protected List<FunctionSymbol> filterModifiersFunctions(List<FunctionSymbol> functionSymbols) {
-    return functionSymbols.stream().filter(m -> m instanceof MethodSymbol ? ((MethodSymbol) m).isIsStatic() : true).collect(Collectors.toList());
+    return functionSymbols.stream().filter(m -> !(m instanceof MethodSymbol)
+        || ((MethodSymbol) m).isIsStatic()).collect(Collectors.toList());
   }
 
   @Override
   protected boolean checkModifierType(TypeSymbol typeSymbol) {
     //if the last result is a type and the type is not static then it is not accessible
     if (getTypeCheckResult().isType()) {
-      return typeSymbol instanceof OOTypeSymbol ? ((OOTypeSymbol) typeSymbol).isIsStatic() : true;
+      return !(typeSymbol instanceof OOTypeSymbol) || ((OOTypeSymbol) typeSymbol).isIsStatic();
     }
     return true;
   }

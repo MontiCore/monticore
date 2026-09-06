@@ -16,12 +16,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.io.IOException;
 import java.util.stream.Stream;
 
-import static de.monticore.types3.util.DefsTypesForTests._BooleanSymType;
-import static de.monticore.types3.util.DefsTypesForTests._booleanSymType;
-import static de.monticore.types3.util.DefsTypesForTests._unboxedListSymType;
-import static de.monticore.types3.util.DefsTypesForTests._unboxedSetSymType;
-import static de.monticore.types3.util.DefsTypesForTests.inScope;
-import static de.monticore.types3.util.DefsTypesForTests.variable;
+import static de.monticore.types3.util.DefsTypesForTests.*;
 import static de.monticore.types3.util.DefsVariablesForTests._intUnboxedListVarSym;
 import static de.monticore.types3.util.DefsVariablesForTests._intUnboxedSetVarSym;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
@@ -277,7 +272,7 @@ public class SetExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
             + "y in [\"zeug\", \"platz\"],"
             + "String z = x + y, "
             + "z != \"Feuerplatz\"]",
-        "List<String>"
+        "List<R\"(.*)(?)\">"
     );
 
   }
@@ -335,10 +330,12 @@ public class SetExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
         arguments("{(char)1, (byte)1, (short)1, (int)1, (float)1}", "Set<float>"),
         arguments("[(char)1, (byte)1, (short)1, (int)1, (float)1]", "List<float>"),
         // examples combining non-numeric types
-        arguments("{\"1\", 1}", "Set<(String | int)>"),
-        arguments("{\"1\", varPerson}", "Set<(Person | String)>"),
+        arguments("{\"1\", 1}", "Set<(R\"1\" | int)>"),
+        arguments("{\"1\", varPerson}", "Set<(Person | R\"1\")>"),
         // complex
         arguments("{{1}}", "Set<Set<int>>")
+        // too hard to solve due to union
+        //arguments("{{1}, {1.0}}", "Set<Set<int> | Set<double>>")
     );
   }
 
@@ -374,6 +371,13 @@ public class SetExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
         "Set<List<List<Set<double>>>>"
     );
     checkExpr("[[],[1,2]]", "List<List<int>>", "List<List<int>>");
+  }
+
+  @Test
+  public void deriveFormSetEnumerationWithBoxingCTTI() throws IOException {
+    // with values
+    checkExpr("{1}", "Set<java.lang.Integer>", "Set<java.lang.Integer>");
+    checkExpr("{1}", "Set<java.lang.Float>", "Set<java.lang.Float>");
   }
 
   @ParameterizedTest

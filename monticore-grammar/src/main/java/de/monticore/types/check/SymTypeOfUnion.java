@@ -1,18 +1,18 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
+import com.google.common.base.Preconditions;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.types3.ISymTypeVisitor;
 
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.Spliterator;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class SymTypeOfUnion extends SymTypeExpression {
@@ -25,16 +25,12 @@ public class SymTypeOfUnion extends SymTypeExpression {
   protected Set<SymTypeExpression> unionizedTypes;
 
   public SymTypeOfUnion(Collection<? extends SymTypeExpression> types) {
+    Preconditions.checkNotNull(types);
     super.typeSymbol = new TypeSymbol(DEFAULT_TYPESYMBOL_NAME);
     super.typeSymbol.setEnclosingScope(BasicSymbolsMill.globalScope());
     super.typeSymbol.setSpannedScope(BasicSymbolsMill.scope());
-    this.unionizedTypes = new HashSet<>();
+    this.unionizedTypes = new LinkedHashSet<>();
     this.unionizedTypes.addAll(types);
-  }
-
-  @Override
-  public boolean isValidType() {
-    return streamUnionizedTypes().allMatch(SymTypeExpression::isValidType);
   }
 
   @Override
@@ -57,7 +53,7 @@ public class SymTypeOfUnion extends SymTypeExpression {
       return false;
     }
     for (SymTypeExpression ownExpr : this.getUnionizedTypeSet()) {
-      if (!other.parallelStreamUnionizedTypes().anyMatch(ownExpr::deepEquals)) {
+      if (other.parallelStreamUnionizedTypes().noneMatch(ownExpr::deepEquals)) {
         return false;
       }
     }

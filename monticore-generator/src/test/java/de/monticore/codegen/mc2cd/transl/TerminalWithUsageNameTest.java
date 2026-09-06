@@ -10,14 +10,13 @@ import de.monticore.codegen.mc2cd.TestHelper;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.codegen.mc2cd.TranslationTestCase;
 import de.se_rwth.commons.logging.Log;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Paths;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TerminalWithUsageNameTest extends TranslationTestCase {
   
@@ -38,9 +37,9 @@ public class TerminalWithUsageNameTest extends TranslationTestCase {
   public void testTerminalUsageName() {
     ASTCDAttribute cdAttribute = Iterables.getOnlyElement(astA.getCDAttributeList());
     
-    Assertions.assertEquals("testname", cdAttribute.getName());
-    Assertions.assertEquals("String", TransformationHelper.typeToString(cdAttribute.getMCType()));
+    assertEquals("testname", cdAttribute.getName());
+    assertEquals("String", TransformationHelper.typeToString(cdAttribute.getMCType()));
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

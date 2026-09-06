@@ -8,7 +8,7 @@ package de.monticore.generating.templateengine.reporting.artifacts.model;
 public class RootPkg extends APkg {
   
   /**
-   * @see visualization.model.APkg#getQualifiedName()
+   * visualization.model.APkg#getQualifiedName()
    */
   @Override
   public String getQualifiedName() {
@@ -29,7 +29,7 @@ public class RootPkg extends APkg {
   }
   
   /**
-   * @see visualization.model.APkg#resolveAncestorWithElements()
+   * visualization.model.APkg#resolveAncestorWithElements()
    */
   @Override
   public APkg resolveAncestorWithElements() {

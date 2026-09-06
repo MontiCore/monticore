@@ -114,7 +114,7 @@ public class NodeTreeDecoratedReporter extends AReporter {
   public void reportTemplateStart(String templatename, ASTNode ast) {
     String aident = compactStr(ast);
     nodeVisits.merge(aident, 1 , Integer::sum);
-    astNodeExtraInfos.computeIfAbsent(aident,k->new ArrayList<String>()).add(USED_TEMPLATE + " "
+    astNodeExtraInfos.computeIfAbsent(aident,k-> new ArrayList<>()).add(USED_TEMPLATE + " "
         + ReportingHelper.getTemplateName(templatename));
   }
   
@@ -126,7 +126,7 @@ public class NodeTreeDecoratedReporter extends AReporter {
       qualifiedfilename = Names.getSimpleName(qualifiedfilename);
     }
     nodeVisits.merge(aident, 1, Integer::sum);
-    astNodeExtraInfos.computeIfAbsent(aident,k->new ArrayList<String>()).add(GENERATES_FILE + " \""
+    astNodeExtraInfos.computeIfAbsent(aident,k-> new ArrayList<>()).add(GENERATES_FILE + " \""
         + qualifiedfilename + "." + fileextension + "\"");
   }
   
@@ -185,7 +185,6 @@ public class NodeTreeDecoratedReporter extends AReporter {
    * coming from
    * 
    * @param ast
-   * @return
    */
   protected void deriveTreeStructureAST(ASTNode ast) {
     
@@ -224,7 +223,7 @@ public class NodeTreeDecoratedReporter extends AReporter {
       if (hp instanceof TemplateHookPoint) {
         String aident = compactStr(ast);
         nodeVisits.merge(aident, 1, Integer::sum);
-        astNodeExtraInfos.computeIfAbsent(aident, k->new ArrayList<String>()).add(SPECIFIC_TEMPLATE_HOOKPOINT + " "
+        astNodeExtraInfos.computeIfAbsent(aident, k-> new ArrayList<>()).add(SPECIFIC_TEMPLATE_HOOKPOINT + " "
                 + getHookPointValue(hp));
       }
     }
@@ -241,7 +240,7 @@ public class NodeTreeDecoratedReporter extends AReporter {
         if (hp instanceof TemplateHookPoint) {
           String aident = compactStr(ast);
           nodeVisits.merge(aident, 1, Integer::sum);
-          astNodeExtraInfos.computeIfAbsent(aident,k->new ArrayList<String>()).add(TEMPLATE_HOOKPOINT + " "
+          astNodeExtraInfos.computeIfAbsent(aident,k-> new ArrayList<>()).add(TEMPLATE_HOOKPOINT + " "
               + getHookPointValue(hp));
         }
       }
@@ -250,15 +249,15 @@ public class NodeTreeDecoratedReporter extends AReporter {
   
   protected String getHookPointValue(HookPoint hp) {
     String value = null;
-    if (hp != null && hp instanceof TemplateHookPoint) {
+    if (hp instanceof TemplateHookPoint) {
       value = ((TemplateHookPoint) hp).getTemplateName();
       value = ReportingHelper.getTemplateName(value);
     }
-    else if (hp != null && hp instanceof StringHookPoint) {
+    else if (hp instanceof StringHookPoint) {
       value = ((StringHookPoint) hp).getValue();
       value = ReportingHelper.formatStringToReportingString(value, 50);
     }
-    else if (hp != null && hp instanceof CodeHookPoint) {
+    else if (hp instanceof CodeHookPoint) {
       value = ((CodeHookPoint) hp).getClass().getName();
       value = Names.getSimpleName(value);
     }

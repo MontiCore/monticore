@@ -10,7 +10,6 @@ version = '1.0.0-SNAPSHOT'
 
 buildDir = file("$projectDir/target")
 def mcversion  = '7.1.0'
-def se_commons_version = '7.1.1-SNAPSHOT'
 def grammarName = 'Automata'
 def outDir = "$buildDir/generated-sources/"
 
@@ -18,7 +17,6 @@ dependencies {
   implementation "de.monticore:monticore-runtime:$mcversion"
   implementation "de.monticore:monticore-grammar:$mcversion"
   grammar "de.monticore:monticore-grammar:$mcversion:grammars"
-  implementation "de.se_rwth.commons:se-commons-utilities:$se_commons_version"
   testImplementation "junit:junit:4.13.1"
 }
 

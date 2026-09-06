@@ -1,40 +1,24 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import automata7.Automata7Mill;
-import automata7._symboltable.Automata7ArtifactScope;
 import automata7._symboltable.IAutomata7ArtifactScope;
 import automata7._symboltable.StimulusSymbol;
-import basiccd.BasicCDMill;
 import de.monticore.io.paths.MCPath;
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
+import de.monticore.runtime.junit.MCAssertions;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import javaandaut.Class2StimulusAdapter;
 import javaandaut.JavaAndAutTool;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
 import java.util.Optional;
 
 import java.nio.file.Paths;
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
+@TestWithMCLanguage(Automata7Mill.class)
 public class BasicJavaToolTest {
 
-  @BeforeClass
-  public static void setUpLogger(){
-    Automata7Mill.reset();
-    Automata7Mill.init();
-  }
-  
-  @Before
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
   @Test
   public void testPingPong(){
     MCPath symbolPath = new MCPath(Paths.get("src/test/resources/example"));
@@ -44,8 +28,8 @@ public class BasicJavaToolTest {
     Optional<StimulusSymbol> hit = symTab.resolveStimulus("Hit");
     assertTrue(hit.isPresent());
     assertEquals("Hit", hit.get().getName());
-    assertTrue(hit.get() instanceof Class2StimulusAdapter); //assure that an adapter was found
-    Assert.assertTrue(Log.getFindings().isEmpty());
+    assertInstanceOf(Class2StimulusAdapter.class, hit.get()); //assure that an adapter was found
+    MCAssertions.assertNoFindings();
   }
 
 

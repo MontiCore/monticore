@@ -12,6 +12,7 @@ import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
+import de.monticore.types3.util.DefsTypesForTests;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -19,7 +20,6 @@ import java.io.IOException;
 import java.util.Optional;
 
 import static de.monticore.types.check.DefsTypeBasic.*;
-import static org.junit.Assert.assertEquals;
 
 public class DeriveSymTypeOfExpressionTest extends DeriveSymTypeAbstractTest {
   
@@ -45,21 +45,21 @@ public class DeriveSymTypeOfExpressionTest extends DeriveSymTypeAbstractTest {
     add2scope(scope, DefsTypeBasic._String);
 
     // some FieldSymbols (ie. Variables, Attributes)
-    OOTypeSymbol p = new OOTypeSymbol("Person");
+    OOTypeSymbol p = DefsTypesForTests.oOtype("Person");
     add2scope(scope,p);
-    OOTypeSymbol s = new OOTypeSymbol("Student");
+    OOTypeSymbol s = DefsTypesForTests.oOtype("Student");
     add2scope(scope,s);
-    s.setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Person", scope)));
-    OOTypeSymbol f = new OOTypeSymbol("FirstSemesterStudent");
+    s.setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObjectViaSurrogate("Person", scope)));
+    OOTypeSymbol f = DefsTypesForTests.oOtype("FirstSemesterStudent");
     add2scope(scope,f);
-    f.setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObject("Student", scope)));
+    f.setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeObjectViaSurrogate("Student", scope)));
     add2scope(scope, field("foo", _intSymType));
     add2scope(scope, field("bar2", _booleanSymType));
-    add2scope(scope, field("person1",SymTypeExpressionFactory.createTypeObject("Person",scope)));
-    add2scope(scope, field("person2",SymTypeExpressionFactory.createTypeObject("Person",scope)));
-    add2scope(scope, field("student1",SymTypeExpressionFactory.createTypeObject("Student",scope)));
-    add2scope(scope,field("student2",SymTypeExpressionFactory.createTypeObject("Student",scope)));
-    add2scope(scope,field("firstsemester",SymTypeExpressionFactory.createTypeObject("FirstSemesterStudent",scope)));
+    add2scope(scope, field("person1",SymTypeExpressionFactory.createTypeObjectViaSurrogate("Person",scope)));
+    add2scope(scope, field("person2",SymTypeExpressionFactory.createTypeObjectViaSurrogate("Person",scope)));
+    add2scope(scope, field("student1",SymTypeExpressionFactory.createTypeObjectViaSurrogate("Student",scope)));
+    add2scope(scope,field("student2",SymTypeExpressionFactory.createTypeObjectViaSurrogate("Student",scope)));
+    add2scope(scope,field("firstsemester",SymTypeExpressionFactory.createTypeObjectViaSurrogate("FirstSemesterStudent",scope)));
 
     //testing for generics
     TypeVarSymbol genArgs = typeVariable("GenArg");

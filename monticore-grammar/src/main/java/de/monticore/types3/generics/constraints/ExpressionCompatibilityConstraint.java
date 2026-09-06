@@ -1,10 +1,9 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.types3.generics.constraints;
 
+import com.google.common.base.Preconditions;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.types.check.SymTypeExpression;
-import de.se_rwth.commons.logging.Log;
-
 import java.util.List;
 
 public class ExpressionCompatibilityConstraint extends Constraint {
@@ -16,8 +15,8 @@ public class ExpressionCompatibilityConstraint extends Constraint {
       ASTExpression expr,
       SymTypeExpression targetType
   ) {
-    this.expr = Log.errorIfNull(expr);
-    this.targetType = Log.errorIfNull(targetType);
+    this.expr = Preconditions.checkNotNull(expr);
+    this.targetType = Preconditions.checkNotNull(targetType);
   }
 
   public ASTExpression getExpr() {
@@ -31,6 +30,11 @@ public class ExpressionCompatibilityConstraint extends Constraint {
   @Override
   public boolean isExpressionCompatibilityConstraint() {
     return true;
+  }
+
+  @Override
+  public ExpressionCompatibilityConstraint asExpressionCompatibilityConstraint() {
+    return this;
   }
 
   @Override

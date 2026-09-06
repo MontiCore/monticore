@@ -9,7 +9,6 @@ import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -19,12 +18,13 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
 import static de.monticore.MontiCoreConfiguration.*;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * A collection of exemplary use cases for the CLI arguments. These unit tests
@@ -122,63 +122,63 @@ public class MontiCoreToolTest {
   public void testMontiCoreCLI() {
     new MontiCoreTool().run(simpleArgs);
     
-    Assertions.assertTrue(!false);
+    assertFalse(false);
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
   public void testMontiCoreDevLogCLI() {
     new MontiCoreTool().run(devLogArgs);
     
-    Assertions.assertTrue(!false);
+    assertFalse(false);
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
   public void testMontiCoreCustomLogCLI() {
     new MontiCoreTool().run(customLogArgs);
     
-    Assertions.assertTrue(!false);
+    assertFalse(false);
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMontiCoreCustomScriptCLI() {
     new MontiCoreTool().run(customScriptArgs);
     
-    Assertions.assertTrue(!false);
+    assertFalse(false);
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMontiCoreCustomEmfScriptCLI() {
     new MontiCoreTool().run(customEmfScriptArgs);
     
-    Assertions.assertTrue(!false);
+    assertFalse(false);
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @Test
   public void testHelp() {
     new MontiCoreTool().run(help);
-
-    Assertions.assertTrue(!false);
+    
+    assertFalse(false);
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
 }
   @Disabled // It's not possible to switch off fail quick (Logger in CLI)
   @Test
   public void testArgsWithNoGrammars() {
     new MontiCoreTool().run(argsWithNoGrammars);
     
-    Assertions.assertTrue(!false);
+    assertFalse(false);
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   /**
@@ -203,7 +203,7 @@ public class MontiCoreToolTest {
     File reproOutDir1 = Paths.get("target/test-run-repo/repo1/").toFile();
     File reproOutDir2 = Paths.get("target/test-run-repo/repo2/").toFile();
 
-    Set<Path> allowedDirtyFiles = new HashSet<>();
+    Set<Path> allowedDirtyFiles = new LinkedHashSet<>();
     allowedDirtyFiles.add(path);
       // "20_Statistics" contains the execution duration, which varies between runs
 
@@ -234,7 +234,7 @@ public class MontiCoreToolTest {
           diff.add(relPath1.toString());
         }
 
-        Assertions.assertTrue(f2.isFile(), "File does not exist \n\t" + f2.getAbsolutePath());
+        assertTrue(f2.isFile(), "File does not exist \n\t" + f2.getAbsolutePath());
         /*assertTrue("Different output generating twice! \n" +
               "\t" + f1.getAbsolutePath() + "\n" +
               "\t" + f2.getAbsolutePath() + "\n",
@@ -243,9 +243,9 @@ public class MontiCoreToolTest {
       }
     }
     diff.forEach(s -> System.err.println("\t " + s));
-    Assertions.assertTrue(diff.isEmpty());
+    assertTrue(diff.isEmpty());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   @AfterEach

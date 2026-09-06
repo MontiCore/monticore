@@ -27,23 +27,23 @@ public class CollectGrammarInformationVisitor implements
   
   private final MCGrammarSymbol grammarSymbol;
   
-  private Map<String, List<ASTNonTerminal>> stringAttrs = new HashMap<>();
+  private Map<String, List<ASTNonTerminal>> stringAttrs = new LinkedHashMap<>();
   
-  private Map<String, List<ASTNonTerminal>> stringListAttrs = new HashMap<>();
+  private Map<String, List<ASTNonTerminal>> stringListAttrs = new LinkedHashMap<>();
   
-  private Map<String, List<ASTConstantGroup>> booleanAltAttrs = new HashMap<>();
+  private Map<String, List<ASTConstantGroup>> booleanAltAttrs = new LinkedHashMap<>();
 
-  private Map<String, List<ASTConstantGroup>> booleanAttrs = new HashMap<>();
+  private Map<String, List<ASTConstantGroup>> booleanAttrs = new LinkedHashMap<>();
   
-  private Map<String, List<ASTConstantGroup>> booleanListAttrs = new HashMap<>();
+  private Map<String, List<ASTConstantGroup>> booleanListAttrs = new LinkedHashMap<>();
 
-  private Map<String, List<String>> booleanAttrNames = new HashMap<>();
+  private Map<String, List<String>> booleanAttrNames = new LinkedHashMap<>();
   
-  private Map<String, List<String>> booleanListAttrNames = new HashMap<>();
+  private Map<String, List<String>> booleanListAttrNames = new LinkedHashMap<>();
   
-  private Map<String, List<ASTNonTerminal>> componentLists = new HashMap<>();
+  private Map<String, List<ASTNonTerminal>> componentLists = new LinkedHashMap<>();
   
-  private Map<String, List<ASTNonTerminal>> componentNodes = new HashMap<>();
+  private Map<String, List<ASTNonTerminal>> componentNodes = new LinkedHashMap<>();
   
   private List<RuleComponentSymbol> knownAttributes = Lists.newArrayList();
   
@@ -104,8 +104,8 @@ public class CollectGrammarInformationVisitor implements
       List<RuleComponentSymbol> prods = type.getProdComponents();
       Optional<RuleComponentSymbol> att = prods.stream().filter(
               c -> c.getName().equals(attrName) || c.getName().equals(StringTransformations.uncapitalize(attrName))).findFirst();
-      if (!att.isPresent()) {
-        Log.warn("Missing " + classprod.getName() + "." + attrName + " in \n" + type.toString());
+      if (att.isEmpty()) {
+        Log.warn("Missing " + classprod.getName() + "." + attrName + " in \n" + type);
       } else if (node.getName().equals("Name") || (prodSymbol.isPresent() && prodSymbol.get().isIsLexerProd())) { // handle all lexical productions like Names/Strings
         if (!knownAttributes.contains(att.get())) {
           if (!att.get().isIsList()) {

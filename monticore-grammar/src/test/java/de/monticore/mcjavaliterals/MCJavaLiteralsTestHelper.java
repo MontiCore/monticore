@@ -3,12 +3,13 @@
 package de.monticore.mcjavaliterals;
 
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
+import de.monticore.literals.testmcjavaliterals.TestMCJavaLiteralsMill;
 import de.monticore.literals.testmcjavaliterals._parser.TestMCJavaLiteralsParser;
-import junit.framework.TestCase;
 
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * This class provides two methods that allow testing type grammar. The test
@@ -46,9 +47,9 @@ public class MCJavaLiteralsTestHelper {
    * @throws IOException
    */
   public ASTLiteral parseLiteral(String input) throws IOException {
-    TestMCJavaLiteralsParser parser = new TestMCJavaLiteralsParser();
-    Optional<ASTLiteral> res = parser.parseLiteral(new StringReader(input));
-    TestCase.assertTrue(res.isPresent());
+    TestMCJavaLiteralsParser parser = TestMCJavaLiteralsMill.parser();
+    Optional<ASTLiteral> res = parser.parse_StringLiteral(input);
+    assertTrue(res.isPresent());
     return res.get();
   }
   
