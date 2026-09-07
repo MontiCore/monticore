@@ -74,13 +74,12 @@ dependencies {
   testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
   testImplementation "org.junit.jupiter:junit-jupiter-params:$junit_version"
   testImplementation "org.junit.jupiter:junit-jupiter-engine:$junit_version"
-  testImplementation "de.monticore:class2mc:$previous_mc_version"
+  testImplementation "de.monticore:class2mc:$previous_class2mc_version"
   testRuntimeOnly "org.junit.platform:junit-platform-launcher:$junit_version"
   testImplementation project(":monticore-libraries:javagen-runtime")
-  testImplementation "de.monticore:class2mc:$previous_mc_version"
   // grammar test fixtures includes runtime test dependencies
   testFixturesApi testFixtures(project(":monticore-runtime"))
-  testFixturesImplementation "de.monticore:class2mc:$previous_mc_version"
+  testFixturesImplementation "de.monticore:class2mc:$previous_class2mc_version"
 }
 
 test {
