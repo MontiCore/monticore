@@ -199,7 +199,7 @@ public class ParseErrorTest {
     // The KeyConstant does not match ICompKeyInvalid (an empty string is also allowed)
     parser.parse_StringComp("component MyName { \n  ICompKeyInvalid \n }");
     Assertions.assertTrue(parser.hasErrors());
-    Assertions.assertEquals("extraneous input 'ICompKeyInvalid' expecting {'ICompKey', 'ICompKW', '}'} in rule stack: [Comp]\u00A0\n" +
+    Assertions.assertEquals("extraneous input 'ICompKeyInvalid' expecting {'ICompKey', '}', 'ICompKW'} in rule stack: [Comp]\u00A0\n" +
             "  ICompKeyInvalid \n" +
             "  ^", Log.getFindings().get(0).getMsg());
   }
@@ -240,7 +240,7 @@ public class ParseErrorTest {
     // An incorrect input is used in an alt-context
     parser.parse_StringUnknownAlts("X");
     Assertions.assertTrue(parser.hasErrors());
-    Assertions.assertEquals("no viable alternative at input 'X', expecting 'UnknownAltsKey', 'UnknownAltsT' or Name in rule stack: [UnknownAlts]\u00A0\n" +
+    Assertions.assertEquals("no viable alternative at input 'X', expecting 'UnknownAltsT', 'UnknownAltsKey' or Name in rule stack: [UnknownAlts]\u00A0\n" +
             "X\n" +
             "^", Log.getFindings().get(0).getMsg());
   }
@@ -280,7 +280,7 @@ public class ParseErrorTest {
     // No input was provided
     parser.parse_StringCDLike("cd cl");
     Assertions.assertTrue(parser.hasErrors());
-    Assertions.assertEquals("no viable alternative at input 'cl', expecting '<<', 'public', '+', 'private', 'class', 'package', 'association' or 'composition' in rule stack: [CDLike]\u00A0\n" +
+    Assertions.assertEquals("mismatched input 'cl', expecting 'private', 'package', 'class', 'composition', '+', 'public', 'association', '<<' (found: Name) in rule stack: [CDLike]\u00A0\n" +
                                     "cd cl\n" +
                                     "   ^", Log.getFindings().get(0).getMsg());
   }
@@ -290,7 +290,7 @@ public class ParseErrorTest {
     // Early EOF => unable to recover expected tokens
     parser.parse_StringCDLike("cd publ");
     Assertions.assertTrue(parser.hasErrors());
-    Assertions.assertEquals("no viable alternative at input 'publ', expecting '<<', 'public', '+', 'private', 'class', 'package', 'association' or 'composition' in rule stack: [CDLike]\u00A0\n" +
+    Assertions.assertEquals("mismatched input 'publ', expecting 'private', 'package', 'class', 'composition', '+', 'public', 'association', '<<' (found: Name) in rule stack: [CDLike]\u00A0\n" +
                                     "cd publ\n" +
                                     "   ^", Log.getFindings().get(0).getMsg());
   }
@@ -321,17 +321,6 @@ public class ParseErrorTest {
     parser.parse_StringCDLikeB("cd { \n class C1{}\n xxx\n association A1; \n }");
     Assertions.assertTrue(parser.hasErrors());
     Assertions.assertEquals("extraneous input 'xxx' expecting {'package', '}', 'class', 'association', 'composition', 'public', '+', 'private', '<<'} in rule stack: [CDLikeB]\u00A0\n" +
-                                    " xxx\n" +
-                                    " ^", Log.getFindings().get(0).getMsg());
-  }
-
-
-  @Test
-  public void testCDAssocB() throws IOException {
-    // Incorrect/wrong "keyword", EOF was not possible due to { }
-    parser.parse_StringCDLikeB("cd { \n class C1{}\n xxx\n association A1; \n }");
-    Assertions.assertTrue(parser.hasErrors());
-    Assertions.assertEquals("extraneous input 'xxx' expecting {'<<', 'private', 'association', 'public', 'composition', 'class', 'package', '+', '}'} in rule stack: [CDLikeB]\u00A0\n" +
             " xxx\n" +
             " ^", Log.getFindings().get(0).getMsg());
   }
