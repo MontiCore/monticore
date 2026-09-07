@@ -132,7 +132,7 @@ public class FunctionRelations {
     }
     List<SymTypeOfFunction> potentialFuncs = getMostSpecificFunctions(funcs);
     return potentialFuncs.size() == 1 ?
-        Optional.of(potentialFuncs.get(0)) :
+        Optional.of(potentialFuncs.getFirst()) :
         Optional.empty();
   }
 

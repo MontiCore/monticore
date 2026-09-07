@@ -4,11 +4,10 @@ package de.monticore.javalight.cocos;
 
 import de.monticore.javalight._cocos.JavaLightCoCoChecker;
 import de.se_rwth.commons.logging.Log;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MethodFormalParametersDifferentNameTest extends JavaLightCocoTest {
   private final String fileName = "de.monticore.javalight.cocos.invalid.A0812.A0812";
@@ -35,7 +34,7 @@ public class MethodFormalParametersDifferentNameTest extends JavaLightCocoTest {
   public void testCorrect() {
     testValid("de.monticore.javalight.cocos.valid.MethodDecl", "meth1", checker);
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

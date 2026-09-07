@@ -124,7 +124,7 @@
             attr_${name}.setAttributeCardinality(cardinality);
             List<String> attr_${name}_value_string = Arrays.asList(attr_${name}_rhs_variable_name);
             ASTStringLiteral value = ODRulesMill.stringLiteralBuilder().uncheckedBuild();
-            value.setSource(Names.getQualifiedName(attr_${name}_value_string));
+            value.setSource(Names.constructQualifiedName(attr_${name}_value_string));
             ASTLiteralExpression literalExpression = ODRulesMill.literalExpressionBuilder().setLiteral(value).build();
             ASTVariableInit expression = ODRulesMill.simpleInitBuilder()
                     .setExpression(literalExpression).build();

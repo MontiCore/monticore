@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types3.generics.util;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
@@ -10,7 +11,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
 
 /**
  * describes partial SymTypeOfFunction information,
@@ -149,7 +149,7 @@ public class PartialFunctionInfo {
   public PartialFunctionInfo deepClone() {
     PartialFunctionInfo clone = new PartialFunctionInfo();
     clone.returnTargetType = returnTargetType.map(SymTypeExpression::deepClone);
-    clone.parameterCount = parameterCount.map(Function.identity());
+    clone.parameterCount = parameterCount;
     clone.argumentExprs = new LinkedHashMap<>(argumentExprs);
     clone.argumentTypes = new LinkedHashMap<>(argumentTypes);
     return clone;

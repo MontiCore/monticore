@@ -1,76 +1,62 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.feature.interfaces;
 
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import mc.feature.interfaces.listgeneration._ast.*;
+import de.monticore.runtime.junit.TestWithMCLanguage;
+import mc.feature.interfaces.listgeneration.ListGenerationMill;
+import mc.feature.interfaces.listgeneration._ast.ASTListPlus;
+import mc.feature.interfaces.listgeneration._ast.ASTListStar;
+import mc.feature.interfaces.listgeneration._ast.ASTTokenPlus;
+import mc.feature.interfaces.listgeneration._ast.ASTTokenStar;
 import mc.feature.interfaces.listgeneration._parser.ListGenerationParser;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
+@TestWithMCLanguage(ListGenerationMill.class)
 public class ListInterfaceTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
 
   @Test
   public void testMethodExistenceTokenPlus() throws IOException{
-    ListGenerationParser parser = new ListGenerationParser();
+    ListGenerationParser parser = ListGenerationMill.parser();
     Optional<ASTTokenPlus> ast = parser.parse_StringTokenPlus("+ Name, name");
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(ast.isPresent());
-    Assertions.assertEquals(2, ast.get().getNameList().size());
-    Assertions.assertFalse(ast.get().isEmptyNames());
-    Assertions.assertEquals(0, ast.get().indexOfName("Name"));
-    
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertEquals(2, ast.get().getNameList().size());
+    assertFalse(ast.get().isEmptyNames());
+    assertEquals(0, ast.get().indexOfName("Name"));
   }
 
   @Test
   public void testMethodExistenceTokenStar() throws IOException{
-    ListGenerationParser parser = new ListGenerationParser();
+    ListGenerationParser parser = ListGenerationMill.parser();
     Optional<ASTTokenStar> ast = parser.parse_StringTokenStar("something * Name name");
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(ast.isPresent());
-    Assertions.assertEquals(2, ast.get().getNameList().size());
-    Assertions.assertFalse(ast.get().isEmptyNames());
-    Assertions.assertEquals(0, ast.get().indexOfName("Name"));
-  
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertEquals(2, ast.get().getNameList().size());
+    assertFalse(ast.get().isEmptyNames());
+    assertEquals(0, ast.get().indexOfName("Name"));
   }
 
   @Test
   public void testMethodExistenceListPlus() throws IOException{
-    ListGenerationParser parser = new ListGenerationParser();
+    ListGenerationParser parser = ListGenerationMill.parser();
     Optional<ASTListPlus> ast = parser.parse_StringListPlus("something Abc Dec");
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(ast.isPresent());
-    Assertions.assertEquals(2, ast.get().getTestList().size());
-    Assertions.assertFalse(ast.get().isEmptyTest());
-  
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertEquals(2, ast.get().getTestList().size());
+    assertFalse(ast.get().isEmptyTest());
   }
 
   @Test
   public void testMethodExistenceListStar() throws IOException{
-    ListGenerationParser parser = new ListGenerationParser();
+    ListGenerationParser parser = ListGenerationMill.parser();
     Optional<ASTListStar> ast = parser.parse_StringListStar("Abc Dec Abc word");
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(ast.isPresent());
-    Assertions.assertEquals(3, ast.get().getTestList().size());
-    Assertions.assertFalse(ast.get().isEmptyTest());
-  
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertEquals(3, ast.get().getTestList().size());
+    assertFalse(ast.get().isEmptyTest());
   }
 }

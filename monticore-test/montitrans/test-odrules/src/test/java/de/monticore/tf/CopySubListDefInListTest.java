@@ -6,15 +6,15 @@ import de.se_rwth.commons.logging.LogStub;
 import mc.testcases.misc.MiscMill;
 import mc.testcases.misc._ast.ASTDef;
 import mc.testcases.misc._ast.ASTSub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CopySubListDefInListTest {
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -23,7 +23,7 @@ public class CopySubListDefInListTest {
   ASTDef def, def2, def3, def4;
   ASTSub sub, sub2;
 
-  @Before
+  @BeforeEach
   public void setUp()  {
     def = MiscMill.defBuilder().uncheckedBuild();
     def2 = MiscMill.defBuilder().uncheckedBuild();

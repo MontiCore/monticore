@@ -76,7 +76,7 @@ public interface IArtifactScope {
         }
       }
     }
-    trace("Potential qualified names for \"" + name + "\": " + potentialSymbolNames.toString(),
+    trace("Potential qualified names for \"" + name + "\": " + potentialSymbolNames,
         "IArtifactScope");
 
     return potentialSymbolNames;

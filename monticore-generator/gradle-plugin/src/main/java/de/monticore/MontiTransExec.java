@@ -9,6 +9,7 @@ import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.*;
+import org.gradle.work.DisableCachingByDefault;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,19 +17,26 @@ import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
  * This task enables the calling of MontiTrans TFGenTools
  * in a subsequent matter, reducing the class loading by reusing a classloader,
  * while still enabling gradle to control individual files.
- *
+ * <p>
  * Current JVM implementations are slow at loading MontiCore Mill classes,
  * for example loading the CD4CodeTRMill requires ~30seconds on a decent computer.
- *
+ * <p>
  * It behaves similar to the JavaExec task, but does not fork the JVM.
+ * <p>
+ * Known issues:
+ *  - task is not cached
+ *  - stale outputs are not removed
  */
+@DisableCachingByDefault
 public abstract class MontiTransExec extends DefaultTask {
 
   @Input
@@ -38,12 +46,20 @@ public abstract class MontiTransExec extends DefaultTask {
   public abstract ConfigurableFileCollection getClassPath();
 
   @InputFile
+  @PathSensitive(PathSensitivity.RELATIVE)
   public abstract RegularFileProperty getInput();
 
   @OutputDirectory
   public abstract DirectoryProperty getOutputDir();
 
-  @Input@Optional
+  @InputFiles
+  @Optional
+  @PathSensitive(PathSensitivity.RELATIVE)
+  @IgnoreEmptyDirectories
+  public abstract ConfigurableFileCollection getHandWrittenCodeDir();
+
+  @Optional
+  @Input
   public abstract Property<Boolean> getUseCache();
 
   // We use static by design here to cache the TFGenTools main method
@@ -64,7 +80,7 @@ public abstract class MontiTransExec extends DefaultTask {
       urls[i++] = f.toURI().toURL();
 
     // Construct a new classloader without a delegated-parent and with the configured classpath
-    ClassLoader newCL = new URLClassLoader(urls, (ClassLoader) null);
+    ClassLoader newCL = new URLClassLoader(urls, null);
     return newCL.loadClass(getTFGenTool().get()) // Load the TFGenClass
             .getMethod("main", String[].class); // and return the main method
   }
@@ -117,10 +133,19 @@ public abstract class MontiTransExec extends DefaultTask {
     }
 
     // Arguments for the TFGen CLI
-    String[] args = {"-i", getInput().get().toString(),
-            "-o", getOutputDir().getAsFile().get().toPath().toString()};
+    List<String> args = new ArrayList<>();
+    args.add("-i");
+    args.add(getInput().get().toString());
+    args.add("-o");
+    args.add(getOutputDir().getAsFile().get().toPath().toString());
 
-    Object[] arg = {args};
+    if (!getHandWrittenCodeDir().isEmpty()) {
+      args.add("-hwc");
+      getHandWrittenCodeDir().forEach(x -> args.add(x.toPath().toString()));
+    }
+
+
+    Object[] arg = {args.toArray(new String[0])};
     // Finally, invoke the static TFGen CLIs main method
     m.invoke(null, arg);
   }

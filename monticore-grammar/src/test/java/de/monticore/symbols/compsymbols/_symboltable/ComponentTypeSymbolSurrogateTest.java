@@ -2,6 +2,7 @@
 package de.monticore.symbols.compsymbols._symboltable;
 
 import com.google.common.base.Preconditions;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.compsymbols.CompSymbolsMill;
@@ -10,15 +11,13 @@ import de.monticore.types.check.CompKindExpression;
 import de.monticore.types.check.CompKindOfComponentType;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+@TestWithMCLanguage(CompSymbolsMill.class)
 public class ComponentTypeSymbolSurrogateTest {
 
   @Test
@@ -34,7 +33,7 @@ public class ComponentTypeSymbolSurrogateTest {
     surrogate.setSpannedScope(scopeToSet);
 
     // Then
-    Assertions.assertSame(scopeToSet, comp.getSpannedScope());
+    assertSame(scopeToSet, comp.getSpannedScope());
   }
 
   @Test
@@ -48,7 +47,7 @@ public class ComponentTypeSymbolSurrogateTest {
     ICompSymbolsScope scope = surrogate.getSpannedScope();
 
     // Then
-    Assertions.assertSame(comp.getSpannedScope(), scope);
+    assertSame(comp.getSpannedScope(), scope);
   }
 
   @Test
@@ -64,7 +63,7 @@ public class ComponentTypeSymbolSurrogateTest {
     List<PortSymbol> ports = surrogate.getPorts();
 
     // Then
-    Assertions.assertArrayEquals(new PortSymbol[]{port}, ports.toArray());
+    assertArrayEquals(new PortSymbol[]{port}, ports.toArray());
   }
 
   @Test
@@ -80,8 +79,8 @@ public class ComponentTypeSymbolSurrogateTest {
     Optional<PortSymbol> portOpt = surrogate.getPort("myPort");
 
     // Then
-    Assertions.assertTrue(portOpt.isPresent(), "Port is not present");
-    Assertions.assertSame(port, portOpt.get());
+    assertTrue(portOpt.isPresent(), "Port is not present");
+    assertSame(port, portOpt.get());
   }
 
   @Test
@@ -103,8 +102,8 @@ public class ComponentTypeSymbolSurrogateTest {
     Optional<PortSymbol> portOpt = surrogate.getPort("parentPort", true);
 
     // Then
-    Assertions.assertTrue(portOpt.isPresent(), "Port is not present");
-    Assertions.assertSame(port, portOpt.get());
+    assertTrue(portOpt.isPresent(), "Port is not present");
+    assertSame(port, portOpt.get());
   }
 
   @Test
@@ -120,7 +119,7 @@ public class ComponentTypeSymbolSurrogateTest {
     List<PortSymbol> ports = surrogate.getIncomingPorts();
 
     // Then
-    Assertions.assertArrayEquals(new PortSymbol[]{port}, ports.toArray());
+    assertArrayEquals(new PortSymbol[]{port}, ports.toArray());
   }
 
   @Test
@@ -136,8 +135,8 @@ public class ComponentTypeSymbolSurrogateTest {
     Optional<PortSymbol> portOpt = surrogate.getIncomingPort("myPort");
 
     // Then
-    Assertions.assertTrue(portOpt.isPresent(), "Port is not present");
-    Assertions.assertSame(port, portOpt.get());
+    assertTrue(portOpt.isPresent(), "Port is not present");
+    assertSame(port, portOpt.get());
   }
 
   @Test
@@ -156,8 +155,8 @@ public class ComponentTypeSymbolSurrogateTest {
     Optional<PortSymbol> portOpt = surrogate.getIncomingPort("parentPort", true);
 
     // Then
-    Assertions.assertTrue(portOpt.isPresent(), "Port is not present");
-    Assertions.assertSame(port, portOpt.get());
+    assertTrue(portOpt.isPresent(), "Port is not present");
+    assertSame(port, portOpt.get());
   }
 
   @Test
@@ -174,7 +173,7 @@ public class ComponentTypeSymbolSurrogateTest {
     boolean parentIsPresent = !surrogate.isEmptySuperComponents();
 
     // Then
-    Assertions.assertTrue(parentIsPresent, "No parent present");
+    assertTrue(parentIsPresent, "No parent present");
   }
 
 
@@ -193,7 +192,7 @@ public class ComponentTypeSymbolSurrogateTest {
     CompKindExpression parentCalculated = surrogate.getSuperComponents(0);
 
     // Then
-    Assertions.assertSame(parentExpr, parentCalculated);
+    assertSame(parentExpr, parentCalculated);
   }
 
 
@@ -211,7 +210,7 @@ public class ComponentTypeSymbolSurrogateTest {
     surrogate.setSuperComponentsList(Collections.singletonList(parentExpr));
 
     // Then
-    Assertions.assertSame(parentExpr, comp.getSuperComponents(0));
+    assertSame(parentExpr, comp.getSuperComponents(0));
   }
 
   @Test
@@ -229,7 +228,7 @@ public class ComponentTypeSymbolSurrogateTest {
     boolean refinedCompIsPresent = !surrogate.isEmptyRefinements();
 
     // Then
-    Assertions.assertTrue(refinedCompIsPresent, "No refined component present");
+    assertTrue(refinedCompIsPresent, "No refined component present");
   }
 
 
@@ -248,7 +247,7 @@ public class ComponentTypeSymbolSurrogateTest {
     CompKindExpression parentCalculated = surrogate.getRefinements(0);
 
     // Then
-    Assertions.assertSame(abstractionExpr, parentCalculated);
+    assertSame(abstractionExpr, parentCalculated);
   }
 
 
@@ -266,7 +265,7 @@ public class ComponentTypeSymbolSurrogateTest {
     surrogate.setRefinementsList(Collections.singletonList(abstractionExpr));
 
     // Then
-    Assertions.assertSame(abstractionExpr, comp.getRefinements(0));
+    assertSame(abstractionExpr, comp.getRefinements(0));
   }
 
   @Test
@@ -282,7 +281,7 @@ public class ComponentTypeSymbolSurrogateTest {
     List<VariableSymbol> params = surrogate.getParameterList();
 
     // Then
-    Assertions.assertArrayEquals(new VariableSymbol[]{param}, params.toArray());
+    assertArrayEquals(new VariableSymbol[]{param}, params.toArray());
   }
 
   @Test
@@ -298,8 +297,8 @@ public class ComponentTypeSymbolSurrogateTest {
     Optional<VariableSymbol> paramOpt = surrogate.getParameter("myParam");
 
     // Then
-    Assertions.assertTrue(paramOpt.isPresent(), "No parameter");
-    Assertions.assertSame(param, paramOpt.get());
+    assertTrue(paramOpt.isPresent(), "No parameter");
+    assertSame(param, paramOpt.get());
   }
 
   @Test
@@ -320,7 +319,7 @@ public class ComponentTypeSymbolSurrogateTest {
     surrogate.addParameter(param);
 
     // Then
-    Assertions.assertArrayEquals(new VariableSymbol[]{param}, comp.getParameterList().toArray());
+    assertArrayEquals(new VariableSymbol[]{param}, comp.getParameterList().toArray());
   }
 
 
@@ -342,7 +341,7 @@ public class ComponentTypeSymbolSurrogateTest {
     surrogate.addAllParameter(Collections.singletonList(param));
 
     // Then
-    Assertions.assertArrayEquals(new VariableSymbol[]{param}, comp.getParameterList().toArray());
+    assertArrayEquals(new VariableSymbol[]{param}, comp.getParameterList().toArray());
   }
 
   @Test
@@ -358,7 +357,7 @@ public class ComponentTypeSymbolSurrogateTest {
     boolean hasParameters = surrogate.hasParameters();
 
     // Then
-    Assertions.assertTrue(hasParameters, "No parameters found");
+    assertTrue(hasParameters, "No parameters found");
   }
 
   @Test
@@ -374,7 +373,7 @@ public class ComponentTypeSymbolSurrogateTest {
     List<TypeVarSymbol> typeParams = surrogate.getTypeParameters();
 
     // Then
-    Assertions.assertArrayEquals(new TypeVarSymbol[]{typeParam}, typeParams.toArray());
+    assertArrayEquals(new TypeVarSymbol[]{typeParam}, typeParams.toArray());
   }
 
   @Test
@@ -390,7 +389,7 @@ public class ComponentTypeSymbolSurrogateTest {
     boolean hasTypeParams = surrogate.hasTypeParameter();
 
     // then
-    Assertions.assertTrue(hasTypeParams, "No type parameters found");
+    assertTrue(hasTypeParams, "No type parameters found");
   }
 
   @Test
@@ -406,7 +405,7 @@ public class ComponentTypeSymbolSurrogateTest {
     List<VariableSymbol> fields = surrogate.getFields();
 
     // Then
-    Assertions.assertArrayEquals(new VariableSymbol[]{field}, fields.toArray());
+    assertArrayEquals(new VariableSymbol[]{field}, fields.toArray());
   }
 
   @Test
@@ -423,8 +422,8 @@ public class ComponentTypeSymbolSurrogateTest {
 
 
     // Then
-    Assertions.assertTrue(fieldOpt.isPresent(), "No field");
-    Assertions.assertSame(field, fieldOpt.get());
+    assertTrue(fieldOpt.isPresent(), "No field");
+    assertSame(field, fieldOpt.get());
   }
 
   @Test
@@ -440,7 +439,7 @@ public class ComponentTypeSymbolSurrogateTest {
     List<PortSymbol> ports = surrogate.getOutgoingPorts();
 
     // Then
-    Assertions.assertArrayEquals(new PortSymbol[]{port}, ports.toArray());
+    assertArrayEquals(new PortSymbol[]{port}, ports.toArray());
   }
 
   @Test
@@ -456,8 +455,8 @@ public class ComponentTypeSymbolSurrogateTest {
     Optional<PortSymbol> portOpt = surrogate.getOutgoingPort("myPort");
 
     // Then
-    Assertions.assertTrue(portOpt.isPresent(), "Port is not present");
-    Assertions.assertSame(port, portOpt.get());
+    assertTrue(portOpt.isPresent(), "Port is not present");
+    assertSame(port, portOpt.get());
   }
 
   @Test
@@ -477,8 +476,8 @@ public class ComponentTypeSymbolSurrogateTest {
     Optional<PortSymbol> portOpt = surrogate.getOutgoingPort("myPort", true);
 
     // Then
-    Assertions.assertTrue(portOpt.isPresent(), "Port is not present");
-    Assertions.assertSame(port, portOpt.get());
+    assertTrue(portOpt.isPresent(), "Port is not present");
+    assertSame(port, portOpt.get());
   }
 
   @Test
@@ -495,7 +494,7 @@ public class ComponentTypeSymbolSurrogateTest {
     List<PortSymbol> ports = surrogate.getPorts(true, false);
 
     // Then
-    Assertions.assertArrayEquals(new PortSymbol[]{port}, ports.toArray());
+    assertArrayEquals(new PortSymbol[]{port}, ports.toArray());
   }
 
   @Test
@@ -511,7 +510,7 @@ public class ComponentTypeSymbolSurrogateTest {
     Set<PortSymbol> ports = surrogate.getAllIncomingPorts();
 
     // Then
-    Assertions.assertArrayEquals(new PortSymbol[]{port}, ports.toArray());
+    assertArrayEquals(new PortSymbol[]{port}, ports.toArray());
   }
 
   @Test
@@ -527,7 +526,7 @@ public class ComponentTypeSymbolSurrogateTest {
     List<PortSymbol> ports = surrogate.getOutgoingPorts();
 
     // Then
-    Assertions.assertArrayEquals(new PortSymbol[]{port}, ports.toArray());
+    assertArrayEquals(new PortSymbol[]{port}, ports.toArray());
   }
 
   @Test
@@ -543,7 +542,7 @@ public class ComponentTypeSymbolSurrogateTest {
     Set<PortSymbol> ports = surrogate.getAllPorts(true, false);
 
     // Then
-    Assertions.assertArrayEquals(new PortSymbol[]{port}, ports.toArray());
+    assertArrayEquals(new PortSymbol[]{port}, ports.toArray());
   }
 
   @Test
@@ -559,7 +558,7 @@ public class ComponentTypeSymbolSurrogateTest {
     Set<PortSymbol> ports = surrogate.getAllPorts();
 
     // Then
-    Assertions.assertArrayEquals(new PortSymbol[]{port}, ports.toArray());
+    assertArrayEquals(new PortSymbol[]{port}, ports.toArray());
   }
 
   @Test
@@ -575,7 +574,7 @@ public class ComponentTypeSymbolSurrogateTest {
     List<SubcomponentSymbol> subs = surrogate.getSubcomponents();
 
     // Then
-    Assertions.assertArrayEquals(new SubcomponentSymbol[]{sub}, subs.toArray());
+    assertArrayEquals(new SubcomponentSymbol[]{sub}, subs.toArray());
   }
 
   @Test
@@ -591,8 +590,8 @@ public class ComponentTypeSymbolSurrogateTest {
     Optional<SubcomponentSymbol> subOpt = surrogate.getSubcomponents("mySub");
 
     // Then
-    Assertions.assertTrue(subOpt.isPresent(), "Sub component is not present");
-    Assertions.assertSame(sub, subOpt.get());
+    assertTrue(subOpt.isPresent(), "Sub component is not present");
+    assertSame(sub, subOpt.get());
   }
 
 
@@ -609,7 +608,7 @@ public class ComponentTypeSymbolSurrogateTest {
     boolean isDecomposed = surrogate.isDecomposed();
 
     // Then
-    Assertions.assertTrue(isDecomposed, "Should be decomposed");
+    assertTrue(isDecomposed, "Should be decomposed");
   }
 
   @Test
@@ -625,7 +624,7 @@ public class ComponentTypeSymbolSurrogateTest {
     boolean isAtomic = surrogate.isAtomic();
 
     // Then
-    Assertions.assertFalse(isAtomic, "Should not be atomic");
+    assertFalse(isAtomic, "Should not be atomic");
   }
 
   /**

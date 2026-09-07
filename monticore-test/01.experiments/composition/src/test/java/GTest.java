@@ -1,14 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 import de.monticore.runtime.junit.TestWithMCLanguage;
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import g.GMill;
 import g._ast.ASTA;
 import g._ast.ASTB;
 import g._ast.ASTC;
 import g._parser.GParser;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;

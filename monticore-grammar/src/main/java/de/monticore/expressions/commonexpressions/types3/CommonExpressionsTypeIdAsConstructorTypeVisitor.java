@@ -77,7 +77,7 @@ public class CommonExpressionsTypeIdAsConstructorTypeVisitor extends
       return Optional.empty();
     }
     else if (constructors.size() == 1) {
-      return Optional.of(constructors.get(0));
+      return Optional.of(constructors.getFirst());
     }
     else {
       return Optional.of(

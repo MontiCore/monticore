@@ -69,7 +69,7 @@ public class DataDecorator extends AbstractTransformer<ASTCDClass> {
     List<ASTCDAttribute> ownAttributes = originalClass.getCDAttributeList()
             .stream()
             .filter(a -> !service.isInheritedAttribute(a))
-            .map(a -> a.deepClone())
+            .map(ASTCDAttribute::deepClone)
             .collect(Collectors.toList());
 
     changedClass.addAllCDMembers(getAllDataMethods(originalClass, originalClass.getCDAttributeList()));
@@ -141,6 +141,11 @@ public class DataDecorator extends AbstractTransformer<ASTCDClass> {
     ASTCDMethod deepClone = dataDecoratorUtil.createDeepClone(astcdClass);
     this.replaceTemplate(EMPTY_BODY, deepClone, new StringHookPoint("    return deepClone(_construct());"));
     methods.add(deepClone);
+
+    ASTCDMethod replaceChild = dataDecoratorUtil.createReplaceChildMethod();
+    this.replaceTemplate(EMPTY_BODY, replaceChild, new TemplateHookPoint("data.ReplaceChild", attributeList));
+    methods.add(replaceChild);
+
     return methods;
   }
 

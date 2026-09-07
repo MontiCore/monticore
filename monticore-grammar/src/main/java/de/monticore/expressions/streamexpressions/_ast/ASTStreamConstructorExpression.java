@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions.streamexpressions._ast;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
@@ -53,11 +54,11 @@ public class ASTStreamConstructorExpression
       return Collections.emptyList();
     }
     List<List<ASTExpression>> result = new ArrayList<>();
-    List<ASTExpression> currentTimeSlice = new ArrayList();
+    List<ASTExpression> currentTimeSlice = new ArrayList<>();
     for (ASTStreamConstructorElement elem : getStreamConstructorElementList()) {
       if (elem.isPresentTick()) {
         result.add(currentTimeSlice);
-        currentTimeSlice = new ArrayList();
+        currentTimeSlice = new ArrayList<>();
       }
       else {
         currentTimeSlice.add(elem.getExpression());

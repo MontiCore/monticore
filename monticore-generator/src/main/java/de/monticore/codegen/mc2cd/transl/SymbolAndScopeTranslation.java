@@ -55,7 +55,8 @@ public class SymbolAndScopeTranslation implements
     for (ASTSymbolDefinition symbolDefinition : grammarProd.getSymbolDefinitionList()) {
       if (symbolDefinition.isGenSymbol()) {
           TransformationHelper.addStereoType(cdType,
-              MC2CDStereotypes.SYMBOL.toString());
+              MC2CDStereotypes.SYMBOL.toString(),
+              getSymbolName(grammarProd.getSymbol()));
       }
     }
   }

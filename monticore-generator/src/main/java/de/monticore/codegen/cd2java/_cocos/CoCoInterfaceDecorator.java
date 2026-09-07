@@ -19,7 +19,6 @@ import de.monticore.umlmodifier._ast.ASTModifier;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
@@ -46,11 +45,11 @@ public class CoCoInterfaceDecorator extends AbstractCreator<ASTCDDefinition, Lis
     String visitorName = new VisitorService(astService.getCDSymbol()).getVisitor2FullName();
     cocoInterfaces.addAll(definition.getCDClassesList().stream()
         .map(c -> createCoCoInterface(c, visitorName))
-        .collect(Collectors.toList()));
+        .toList());
 
     cocoInterfaces.addAll(definition.getCDInterfacesList().stream()
         .map(i -> createCoCoInterface(i, visitorName))
-        .collect(Collectors.toList()));
+        .toList());
 
     return cocoInterfaces;
   }

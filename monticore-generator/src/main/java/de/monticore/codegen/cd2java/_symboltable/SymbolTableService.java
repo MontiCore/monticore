@@ -8,6 +8,9 @@ import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
+import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
+import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
@@ -238,6 +241,13 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
 
   public String getSymbolSurrogateBuilderFullName(ASTCDType astcdType) {
     return getSymbolSurrogateBuilderFullName(astcdType, getCDSymbol());
+  }
+
+  /**
+   * symbol supplier class name, e.g. AutomatonSymbolSupplier
+   */
+  public String getSymbolSupplierSimpleName(ASTCDType astcdType) {
+    return getSymbolSimpleName(astcdType) + SUPPLIER_SUFFIX;
   }
 
   /**
@@ -483,7 +493,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   public String getSymbolSimpleName(ASTCDType clazz) {
     // if in grammar other symbol Name is defined e.g. 'symbol (MCType) MCQualifiedType implements MCObjectType = MCQualifiedName;'
     // this will evaluate to MCTypeSymbol
-    if (!hasSymbolStereotype(clazz.getModifier())) {
+    if (hasSymbolStereotype(clazz.getModifier()) || hasInheritedSymbolStereotype(clazz.getModifier())) {
       Optional<String> symbolTypeValue = getSymbolTypeValue(clazz.getModifier());
       if (symbolTypeValue.isPresent()) {
         return getSimpleName(symbolTypeValue.get());
@@ -499,7 +509,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
 
   public String getSymbolFullName(ASTCDType clazz, DiagramSymbol cdDefinitionSymbol) {
     //if in grammar other symbol Name is defined e.g. 'symbol (MCType) MCQualifiedType implements MCObjectType = MCQualifiedName;'
-    if (!hasSymbolStereotype(clazz.getModifier())) {
+    if (hasSymbolStereotype(clazz.getModifier()) || hasInheritedSymbolStereotype(clazz.getModifier())) {
       Optional<String> symbolTypeValue = getSymbolTypeValue(clazz.getModifier());
       if (symbolTypeValue.isPresent()) {
         return symbolTypeValue.get();
@@ -594,7 +604,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   }
 
   public String getReferencedSymbolTypeName(ASTCDAttribute attribute) {
-    return getStereotypeValues(attribute, MC2CDStereotypes.REFERENCED_SYMBOL.toString()).get(0);
+    return getStereotypeValues(attribute, MC2CDStereotypes.REFERENCED_SYMBOL.toString()).getFirst();
   }
 
   public boolean isReferencedSymbol(ASTCDAttribute attribute) {
@@ -608,11 +618,11 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   public Optional<String> getSymbolTypeValue(ASTModifier modifier) {
     List<String> symbolStereotypeValues = getStereotypeValues(modifier, MC2CDStereotypes.SYMBOL);
     if (!symbolStereotypeValues.isEmpty()) {
-      return Optional.ofNullable(symbolStereotypeValues.get(0));
+      return Optional.ofNullable(symbolStereotypeValues.getFirst());
     } else {
       List<String> inheritedStereotypeValues = getStereotypeValues(modifier, MC2CDStereotypes.INHERITED_SYMBOL);
       if (!inheritedStereotypeValues.isEmpty()) {
-        return Optional.ofNullable(inheritedStereotypeValues.get(0));
+        return Optional.ofNullable(inheritedStereotypeValues.getFirst());
       }
     }
     return Optional.empty();
@@ -627,11 +637,11 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     }
 
     List<CDTypeSymbol> superInterfaces = type.getSymbol().getSuperTypesList().stream()
-            .map(ste -> ste.getTypeInfo())
-            .map(ti -> ti.getName())
-            .map(n -> resolveCDType(n))
-            .filter(st -> st.isIsInterface())
-            .collect(Collectors.toList());
+            .map(SymTypeExpression::getTypeInfo)
+            .map(TypeSymbol::getName)
+            .map(this::resolveCDType)
+            .filter(OOTypeSymbol::isIsInterface)
+            .toList();
 
     for (CDTypeSymbol superType : superInterfaces) {
       Optional<ASTCDType> result = getTypeWithSymbolInfo(superType.getAstNode());
@@ -735,7 +745,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     if (hasInheritedSymbolStereotype(astcdClass.getModifier())) {
       List<String> stereotypeValues = getStereotypeValues(astcdClass.getModifier(), MC2CDStereotypes.INHERITED_SYMBOL);
       if (!stereotypeValues.isEmpty()) {
-        return stereotypeValues.get(0);
+        return stereotypeValues.getFirst();
       }
     }
     return "";
@@ -793,7 +803,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
     if (astcdDefinition.getCDInterfacesList().size() != 1) {
       return true;
     }
-    String interfaceName = astcdDefinition.getCDInterfacesList().get(0).getName();
+    String interfaceName = astcdDefinition.getCDInterfacesList().getFirst().getName();
     // check unqualified interface name
     if (interfaceName.equals(getSimpleLanguageInterfaceName())) {
       return false;
@@ -835,11 +845,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   public boolean hasInheritedScopeStereotype(ASTModifier modifier) {
     return hasStereotype(modifier, MC2CDStereotypes.INHERITED_SCOPE);
   }
-
-  public boolean hasComponentStereotype(ASTModifier modifier) {
-    return hasStereotype(modifier, MC2CDStereotypes.COMPONENT);
-  }
-
+  
   public boolean hasShadowingStereotype(ASTModifier modifier) {
     return hasStereotype(modifier, MC2CDStereotypes.SHADOWING);
   }
@@ -853,8 +859,7 @@ public class SymbolTableService extends AbstractService<SymbolTableService> {
   }
 
   public String determineReturnType(ASTMCType type) {
-    if (type instanceof ASTMCPrimitiveType) {
-      ASTMCPrimitiveType primitiveType = (ASTMCPrimitiveType) type;
+    if (type instanceof ASTMCPrimitiveType primitiveType) {
       if (primitiveType.isBoolean()) {
         return "false";
       } else {

@@ -13,25 +13,17 @@ public enum Languages {
   ;
 
   public static String getFileEnding(Languages l){
-      switch (l){
-        case JAVA:
-          return "java";
-        case PYTHON_2:
-        case PYTHON_3:
-          return "py";
-        case JAVASCRIPT:
-          return "js";
-        case GO:
-          return "go";
-        case CPP:
-          return "cpp";
-        case SWIFT:
-          return "swift";
-      }
-    return null;
+    return switch (l) {
+      case JAVA -> "java";
+      case PYTHON_2, PYTHON_3 -> "py";
+      case JAVASCRIPT -> "js";
+      case GO -> "go";
+      case CPP -> "cpp";
+      case SWIFT -> "swift";
+    };
   }
 
-  protected String language;
+  private final String language;
 
   Languages(String language) {
     this.language = language;

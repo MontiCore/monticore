@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.typeparameters._symboltable;
 
 import de.monticore.types.check.SymTypeExpression;

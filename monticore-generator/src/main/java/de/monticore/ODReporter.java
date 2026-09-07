@@ -53,8 +53,7 @@ public class ODReporter extends AReporter {
    * @param ast
    */
   protected void writeContent(ASTNode ast) {
-    if (ast instanceof ASTGrammarNode) {
-      ASTGrammarNode mcNode = (ASTGrammarNode) ast;
+    if (ast instanceof ASTGrammarNode mcNode) {
       IndentPrinter pp = new IndentPrinter();
       GrammarWithConcepts2OD odPrinter = new GrammarWithConcepts2OD(pp, reporting);
       odPrinter.printObjectDiagram(Names.getSimpleName(modelName) + "_AST", mcNode);

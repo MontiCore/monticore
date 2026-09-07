@@ -19,6 +19,7 @@ import de.monticore.tf.rule2od.Variable2AttributeMap;
 import de.monticore.tf.ruletranslation.Rule2ODState;
 import de.monticore.tf.runtime.matching.ModelTraversal;
 import de.monticore.tf.runtime.matching.ModelTraversalFactory;
+import de.monticore.generating.GeneratorSetup;
 
 import ${package}.${dstlName?lower_case}.${dstlName}Mill;
 import ${package}.${dstlName?lower_case}._ast.AST${grammarName}TFRule;
@@ -80,8 +81,14 @@ public class ${className} {
   
       //create od rule
       odrule = createODRule(rule);
+      // setup generator
+      final GeneratorSetup setup = new GeneratorSetup();
+      setup.setOutputDirectory(Paths.get(cmd.getOptionValue("o", "out")).toFile());
+      if (cmd.hasOption("hwc")) {
+        setup.setHandcodedPath(new MCPath(Paths.get(cmd.getOptionValue("hwc"))));
+      }
       // generate
-      generate(odrule, Paths.get(cmd.getOptionValue("o", "out")).toFile());
+      generate(odrule, setup);
     } catch ( ParseException e) {
         // an unexpected error from the Apache CLI parser:
         Log.error("0xA6153${service.getGeneratedErrorCode(classname)} Could not process CLI parameters: " + e.getMessage());
@@ -157,10 +164,16 @@ public class ${className} {
     
     return astod;
   }
-  
+
+  @Deprecated
   public void generate(ASTODRule ast, File outputDirectory) {
     Log.debug("Generate Transformation for " + ast.getName(), LOG_ID);
     ODRuleCodeGenerator.generate(ast, outputDirectory);
+  }
+
+  public void generate(ASTODRule ast, GeneratorSetup setup) {
+    Log.debug("Generate Transformation for " + ast.getName(), LOG_ID);
+    ODRuleCodeGenerator.generate(ast, setup);
   }
   
     /**
@@ -186,7 +199,15 @@ public class ${className} {
           .hasArg()
           .desc("Output directory for all generated artifacts.")
           .build());
-  
+
+      // hwc
+      options.addOption(Option.builder("hwc")
+          .longOpt("handwrittencode")
+          .argName("hwcpath")
+          .hasArgs()
+          .desc("Where handwritten classes are located.")
+          .build());
+
       // help dialog
       options.addOption(Option.builder("h")
           .longOpt("help")

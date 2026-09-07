@@ -7,10 +7,7 @@ import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
-import de.monticore.cdbasis._ast.ASTCDAttribute;
-import de.monticore.cdbasis._ast.ASTCDClass;
-import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.cdbasis._ast.ASTCDType;
+import de.monticore.cdbasis._ast.*;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.cd2java.AbstractDecorator;
@@ -30,7 +27,6 @@ import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
-
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -96,14 +92,14 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
             .stream()
             .map(ASTCDClass::getCDAttributeList)
             .flatMap(List::stream)
-            .map(a -> a.deepClone())
-            .collect(Collectors.toList());
+            .map(ASTCDAttribute::deepClone)
+            .toList();
 
     List<ASTCDMethod> scopeRuleMethodList = scopeInput.deepClone().getCDDefinition().getCDClassesList()
             .stream()
             .map(ASTCDClass::getCDMethodList)
             .flatMap(List::stream)
-            .map(a -> a.deepClone())
+            .map(ASTCDMethod::deepClone)
             .collect(Collectors.toList());
     scopeRuleMethodList.forEach(m -> m.getModifier().setAbstract(true));
 
@@ -127,7 +123,7 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
             .stream()
             .map(ASTCDClass::getInterfaceList)
             .flatMap(List::stream)
-            .map(a -> a.deepClone())
+            .map(ASTMCObjectType::deepClone)
             .collect(Collectors.toList());
 
     Set<String> symbolAttributes = createSymbolAttributesNames(symbolInput.getCDDefinition().getCDClassesList(), symbolTableService.getCDSymbol());
@@ -258,6 +254,10 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
       //getSymbols method
       String getSymbolsMethodName = "get" + className + "Symbols";
       resolveMethods.add(createGetSymbolsMethod(getSymbolsMethodName, symbolFullTypeName));
+
+      //getSymbolsWithSubKinds method
+      String getSymbolsWithSubKindsMethodName = "get" + className + "SymbolsWithSubKinds";
+      resolveMethods.add(createGetSymbolsWithSubKindsMethod(getSymbolsWithSubKindsMethodName, symbolFullTypeName, symbolProd.getSymbol()));
 
       //getLocalSymbols method
       String getLocalSymbolsMethodName = "getLocal" + className + "Symbols";
@@ -516,6 +516,12 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
     return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT.build(), symbolsMap, methodName);
   }
 
+  protected ASTCDMethod createGetSymbolsWithSubKindsMethod(String methodName, String fullSymbolName, CDTypeSymbol type) {
+    ASTMCType symbolsMap = getMCTypeFacade().createBasicGenericTypeOf(SYMBOL_MULTI_MAP, "String", fullSymbolName);
+
+    return getCDMethodFacade().createMethod(PUBLIC_ABSTRACT.build(), symbolsMap, methodName);
+  }
+
   protected ASTCDMethod createGetLocalSymbolsMethod(String methodName, String className, ASTMCType returnType) {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), returnType, methodName);
     this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint("return get" + className + "Symbols().values();"));
@@ -583,7 +589,7 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
       for (CDTypeSymbol type : symbolTableService.getAllCDTypes(cdDefinitionSymbol)) {
         if (type.isPresentAstNode() && symbolTableService.hasSymbolStereotype(type.getAstNode().getModifier())) {
           Optional<String> symbolAttribute = createSymbolAttributeName(type.getAstNode());
-          symbolAttribute.ifPresent(attrName -> symbolAttributes.add(attrName));
+          symbolAttribute.ifPresent(symbolAttributes::add);
         }
       }
     }
@@ -594,7 +600,7 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
     Set<String> symbolAttributeList = new LinkedHashSet<>();
     for (ASTCDType astcdClass : symbolClassList) {
       Optional<String> attributeNames = createSymbolAttributeName(astcdClass);
-      attributeNames.ifPresent(attrName -> symbolAttributeList.add(attrName));
+      attributeNames.ifPresent(symbolAttributeList::add);
     }
     return symbolAttributeList;
   }

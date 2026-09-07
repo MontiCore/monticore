@@ -15,7 +15,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Checks that the productions, which implement an interface, use the
@@ -59,7 +58,7 @@ public class SubrulesUseInterfaceNTs implements GrammarASTMCGrammarCoCo {
         .map(MCGrammarSymbol::getProds)
         .flatMap(Collection::stream)
         .filter(x -> x.getName().equals(prodSymbol.getName()))
-        .collect(Collectors.toList());
+        .toList();
     if (overwrittenProds.isEmpty()) {
       logError(prodSymbol, interfaceSymbol, interfaceSymbol.getProdComponents().stream().findFirst().get());
     }

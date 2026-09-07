@@ -17,7 +17,7 @@ import java.util.*;
 
 /**
  * Class for managing hook points, features and (global) variables in templates.
- *
+ * <p>
  * Order of template replacement:
  *   - specific before hook points
  *   - general before hook points
@@ -52,13 +52,13 @@ public class GlobalExtensionManagement {
 
   /**
    * Map of all hook points
-   *
+   * <p>
    * for explicitely define hook points (which are internally managed
    * to be disjoint from the template hook points)
    * This also means explicitely define hook points cannot be decorated
    * with "before" or "after" and they also do not contain a list, but only
    * a single realization.
-   *
+   * <p>
    * This could be harmonized with the replace hook points
    * (by simple integration with replacements, before and after structure)
    */
@@ -253,8 +253,8 @@ public class GlobalExtensionManagement {
    * @param names list of variable names
    */
   public void requiredGlobalVars(String... names) {
-    for (int i = 0; i < names.length; i++){
-      requiredGlobalVar(names[i]);
+    for (String name : names) {
+      requiredGlobalVar(name);
     }
   }
 
@@ -309,7 +309,8 @@ public class GlobalExtensionManagement {
    */
   public String defineHookPoint(TemplateController controller, String hookName, ASTNode ast) {
 
-    StringBuffer result = new StringBuffer(controller.getGeneratorSetup().isTracing()?"/* Hookpoint: " + hookName + " */":"");
+    StringBuilder
+        result = new StringBuilder(controller.getGeneratorSetup().isTracing() ? "/* Hookpoint: " + hookName + " */" : "");
 
     // Before replacement
     List<HookPoint> beforeHooks = getBeforeTemplates(hookName, ast);
@@ -351,7 +352,7 @@ public class GlobalExtensionManagement {
    */
   public String defineHookPoint(TemplateController controller, String hookName, ASTNode ast, Object... args) {
 
-    StringBuffer result = new StringBuffer();
+    StringBuilder result = new StringBuilder();
 
     // Before replacement
     List<HookPoint> beforeHooks = getBeforeTemplates(hookName, ast);
@@ -392,7 +393,7 @@ public class GlobalExtensionManagement {
    */
   public String defineHookPoint(TemplateController controller, String hookName, Object... args) {
 
-    StringBuffer result = new StringBuffer();
+    StringBuilder result = new StringBuilder();
 
     // Before replacement
     List<HookPoint> beforeHooks = getBeforeTemplates(hookName, controller.getAST());
@@ -660,7 +661,7 @@ public class GlobalExtensionManagement {
    * {@link TemplateController#include(String, ASTNode)}),
    * the 'HookPoint' 'afterHp' will
    * be included after it.
-   *
+   * <p>
    * Care: This overrides any effect that previous calls of 'addAfterTemplate'
    * and 'setAfterTemplate' on the same template have.
    *
@@ -675,7 +676,7 @@ public class GlobalExtensionManagement {
    * Everytime 'template' is included directly (e.g. by
    * {@link TemplateController#include(String, ASTNode)}), the 'HookPoints' in
    * 'afterHps' will be included after it.
-   *
+   * <p>
    * Care: This overrides any effect that previous calls of 'addAfterTemplate'
    * and 'setAfterTemplate' on the same template have.
    *
@@ -697,7 +698,7 @@ public class GlobalExtensionManagement {
    * {@link TemplateController#include(String, ASTNode)}),
    * the 'HookPoint' 'afterHp' will
    * be included after it.
-   *
+   * <p>
    * Care: This overrides any effect that previous calls of 'addAfterTemplate'
    * and 'setAfterTemplate' on the same template have.
    *
@@ -716,7 +717,7 @@ public class GlobalExtensionManagement {
    * {@link TemplateController#include(String, ASTNode)}),
    * the 'HookPoint' 'afterHp' will
    * be included after it.
-   *
+   * <p>
    * Care: This overrides any effect that previous calls of 'addAfterTemplate'
    * and 'setAfterTemplate' on the same template have.
    *
@@ -734,7 +735,7 @@ public class GlobalExtensionManagement {
    * Everytime 'template' is included directly (e.g. by
    * {@link TemplateController#include(String, ASTNode)}), the template in
    * 'afterHp' will be included after it.
-   *
+   * <p>
    * Multiple additions are possible. 'setAfterTemplate' overrides all additions.
    *
    * @param template qualified name of the template
@@ -750,7 +751,7 @@ public class GlobalExtensionManagement {
    * Everytime 'template' is included directly for node 'ast' (e.g. by
    * {@link TemplateController#include(String, ASTNode)}), the template in
    * 'afterHp' will be included after it.
-   *
+   * <p>
    * Multiple additions are possible. 'setAfterTemplate' overrides all additions.
    *
    * @param template qualified name of the template
@@ -774,7 +775,7 @@ public class GlobalExtensionManagement {
    * 'beforHp' will be included before it.
    * The points are added in the order in which they are called up, i.e.
    * hookpoint 1 comes first, then hookpoint 2 and so on.
-   *
+   * <p>
    * Multiple additions are possible. 'setBeforeTemplate' overrides all additions.
    *
    * @param template qualified name of the template
@@ -792,7 +793,7 @@ public class GlobalExtensionManagement {
    * 'beforeHp' will be included before it.
    * The points are added in the order in which they are called up, i.e.
    * hookpoint 1 comes first, then hookpoint 2 and so on.
-   *
+   * <p>
    * Multiple additions are possible. 'setBeforeTemplate' overrides all additions.
    *
    * @param template qualified name of the template

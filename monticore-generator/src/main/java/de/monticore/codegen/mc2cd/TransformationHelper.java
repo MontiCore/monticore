@@ -37,7 +37,6 @@ import de.se_rwth.commons.logging.Log;
 import java.io.IOException;
 import java.util.*;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public final class TransformationHelper {
 
@@ -50,7 +49,7 @@ public final class TransformationHelper {
   @Deprecated // Use LexNamer.NAME_PATTERN after release 7.7.0
   public static final Pattern NAME_PATTERN = Pattern.compile("([a-z]|[A-Z]|[_]|[$])([a-z]|[A-Z]|[_]|[0-9]|[$])*");
 
-  protected static List<String> reservedCdNames = Arrays.asList(
+  private static List<String> reservedCdNames = Arrays.asList(
       // CD4A
       "derived",
       "association",
@@ -146,7 +145,7 @@ public final class TransformationHelper {
   public static ASTMCGenericType createType(
       String typeName, String generics) {
     CD4CodeParser parser = CD4CodeMill.parser();
-    Optional<ASTMCGenericType> optType = null;
+    Optional<ASTMCGenericType> optType = Optional.empty();
     try {
       optType = parser.parse_StringMCGenericType(typeName + "<" + generics + ">");
     } catch (IOException e) {
@@ -157,7 +156,7 @@ public final class TransformationHelper {
 
   public static ASTMCType createType(String typeName) {
     CD4CodeParser parser = CD4CodeMill.parser();
-    Optional<ASTMCType> optType = null;
+    Optional<ASTMCType> optType = Optional.empty();
     try {
       optType = parser.parse_StringMCType(typeName);
     } catch (IOException e) {
@@ -168,7 +167,7 @@ public final class TransformationHelper {
 
   public static ASTMCReturnType createReturnType(String typeName) {
     CD4CodeParser parser = CD4CodeMill.parser();
-    Optional<ASTMCReturnType> optType = null;
+    Optional<ASTMCReturnType> optType = Optional.empty();
     try {
       optType = parser.parse_StringMCReturnType(typeName);
     } catch (IOException e) {
@@ -179,7 +178,7 @@ public final class TransformationHelper {
 
   public static ASTMCObjectType createObjectType(String typeName) {
     CD4CodeParser parser = CD4CodeMill.parser();
-    Optional<ASTMCObjectType> optType = null;
+    Optional<ASTMCObjectType> optType = Optional.empty();
     try {
       optType = parser.parse_StringMCObjectType(typeName);
     } catch (IOException e) {
@@ -212,7 +211,7 @@ public final class TransformationHelper {
     }
     // specific function
     else {
-      return Names.getQualifiedName(a.getTypeList());
+      return Names.constructQualifiedName(a.getTypeList());
     }
   }
 
@@ -224,7 +223,7 @@ public final class TransformationHelper {
   public static String getPackageName(
       ASTCDCompilationUnit cdCompilationUnit) {
     String packageName = Names
-        .getQualifiedName(cdCompilationUnit.getCDPackageList());
+        .constructQualifiedName(cdCompilationUnit.getCDPackageList());
     if (!packageName.isEmpty()) {
       packageName = packageName + ".";
     }
@@ -236,7 +235,7 @@ public final class TransformationHelper {
     MCGrammarSymbol grammarSymbol = grammar.getSymbol();
     Preconditions.checkState(grammarSymbol != null);
     for (RuleComponentSymbol component : grammarSymbol.getProds().stream()
-        .flatMap(p -> p.getProdComponents().stream()).collect(Collectors.toList())) {
+        .flatMap(p -> p.getProdComponents().stream()).toList()) {
       if (component.isIsConstantGroup()) {
         constants.addAll(component.getSubProdsList());
       }
@@ -277,7 +276,7 @@ public final class TransformationHelper {
    */
   public static Optional<ASTCDCompilationUnit> getCDforGrammar(ICD4AnalysisGlobalScope globalScope,
                                                                ASTMCGrammar ast, String nameSuffix) {
-    final String qualifiedCDName = Names.getQualifiedName(ast.getPackageList(), ast.getName() + nameSuffix);
+    final String qualifiedCDName = Names.constructQualifiedName(ast.getPackageList(), ast.getName() + nameSuffix);
 
     Optional<DiagramSymbol> cdSymbol = globalScope.resolveDiagramDown(
         qualifiedCDName);
@@ -300,7 +299,7 @@ public final class TransformationHelper {
     String qualifiedRuleName = getQualifiedAstName(
         typeSymbol, ruleReference);
 
-    if (!typeSymbol.isPresent()) {
+    if (typeSymbol.isEmpty()) {
       addStereoType(cdType,
           MC2CDStereotypes.EXTERNAL_TYPE.toString(), qualifiedRuleName);
     }
@@ -316,10 +315,7 @@ public final class TransformationHelper {
     Optional<ProdSymbol> ruleSymbol = MCGrammarSymbolTableHelper.resolveRule(node,
         simpleName
             .substring(AST_PREFIX.length()));
-    if (ruleSymbol.isPresent()) {
-      return ruleSymbol;
-    }
-    return Optional.empty();
+    return ruleSymbol;
   }
 
 
@@ -332,11 +328,10 @@ public final class TransformationHelper {
   }
 
   public static String getQualifiedAstName(Optional<ProdSymbol> typeSymbol, ASTMCType type) {
-    if (typeSymbol.isPresent()) {
-      return Names.getQualifier(typeSymbol.get().getFullName()) + "." + AST_PREFIX + typeSymbol.get().getName();
-    } else {
-      return Grammar_WithConceptsMill.prettyPrint(type, false);
-    }
+    return typeSymbol.map(
+            prodSymbol -> Names.getQualifier(prodSymbol.getFullName()) + "." + AST_PREFIX
+                + prodSymbol.getName())
+        .orElseGet(() -> Grammar_WithConceptsMill.prettyPrint(type, false));
   }
 
   public static void addStereoType(ASTCDType type, String stereotypeName,
@@ -410,10 +405,9 @@ public final class TransformationHelper {
    */
   public static boolean isCollectionType(ASTCDAttribute attribute) {
     String type = attribute.printType();
-    if (type.startsWith("Collection<") || type.startsWith("List<") || type.startsWith("Set<") || type.startsWith("java.util.Collection<") || type.startsWith("java.util.List<") || type.startsWith("java.util.Set<")) {
-      return true;
-    }
-    return false;
+    return type.startsWith("Collection<") || type.startsWith("List<") || type.startsWith("Set<")
+        || type.startsWith("java.util.Collection<") || type.startsWith("java.util.List<")
+        || type.startsWith("java.util.Set<");
   }
 
   /**
@@ -552,9 +546,9 @@ public final class TransformationHelper {
   
   public static boolean isConstGroupIterated(RuleComponentSymbol prodComponent) {
     Preconditions.checkArgument(prodComponent.isIsConstantGroup());
-    Collection<String> set = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+    Collection<String> set = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
     for (RuleComponentSymbol comp: prodComponent.getEnclosingScope().resolveRuleComponentDownMany(prodComponent.getName())) {
-      comp.getSubProdsList().stream().forEach((p -> set.add(p)));
+      comp.getSubProdsList().forEach((set::add));
     }
     return set.size() > 1;
   }
@@ -566,13 +560,10 @@ public final class TransformationHelper {
     if (symbol.isIsLexerProd()) {
       return getLexType(symbol.getAstNode());
     }
-    if (symbol.isIsEnum()) {
-      return MCGrammarSymbolTableHelper.getQualifiedName(symbol.getAstNode(), symbol, "AST", "");
-    }
     return MCGrammarSymbolTableHelper.getQualifiedName(symbol.getAstNode(), symbol, "AST", "");
   }
   
-  protected static String getLexType(ASTNode node) {
+  private static String getLexType(ASTNode node) {
     if (node instanceof ASTLexProd) {
       return createConvertType((ASTLexProd) node);
     }

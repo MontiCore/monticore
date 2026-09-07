@@ -43,8 +43,7 @@ public class TypeCheckTestScope extends TypeCheckTestScopeTOP {
     if(this.isPresentSpanningSymbol()){
       IScopeSpanningSymbol spanningSymbol = getSpanningSymbol();
       //if the methodsymbol is in the spanned scope of a typesymbol then look for method in super types too
-      if(spanningSymbol instanceof TypeSymbol){
-        TypeSymbol typeSymbol = ((TypeSymbol) spanningSymbol);
+      if(spanningSymbol instanceof TypeSymbol typeSymbol){
         for(SymTypeExpression t : typeSymbol.getSuperTypesList()){
           set.addAll(t.getMethodList(name, false, modifier));
         }
@@ -66,8 +65,7 @@ public class TypeCheckTestScope extends TypeCheckTestScopeTOP {
     if(this.isPresentSpanningSymbol()){
       IScopeSpanningSymbol spanningSymbol = getSpanningSymbol();
       //if the fieldsymbol is in the spanned scope of a typesymbol then look for method in super types too
-      if(spanningSymbol instanceof TypeSymbol){
-        TypeSymbol typeSymbol = (TypeSymbol) spanningSymbol;
+      if(spanningSymbol instanceof TypeSymbol typeSymbol){
         for(SymTypeExpression superType : typeSymbol.getSuperTypesList()){
           result.addAll(superType.getFieldList(name, false, modifier));
         }

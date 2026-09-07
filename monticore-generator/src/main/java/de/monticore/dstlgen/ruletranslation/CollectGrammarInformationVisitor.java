@@ -104,8 +104,8 @@ public class CollectGrammarInformationVisitor implements
       List<RuleComponentSymbol> prods = type.getProdComponents();
       Optional<RuleComponentSymbol> att = prods.stream().filter(
               c -> c.getName().equals(attrName) || c.getName().equals(StringTransformations.uncapitalize(attrName))).findFirst();
-      if (!att.isPresent()) {
-        Log.warn("Missing " + classprod.getName() + "." + attrName + " in \n" + type.toString());
+      if (att.isEmpty()) {
+        Log.warn("Missing " + classprod.getName() + "." + attrName + " in \n" + type);
       } else if (node.getName().equals("Name") || (prodSymbol.isPresent() && prodSymbol.get().isIsLexerProd())) { // handle all lexical productions like Names/Strings
         if (!knownAttributes.contains(att.get())) {
           if (!att.get().isIsList()) {

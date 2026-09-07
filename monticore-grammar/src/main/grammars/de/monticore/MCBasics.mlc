@@ -39,6 +39,7 @@ mlc MCBasics {
     include "$mp/de/se_rwth/commons/**";
     include "$mp/org/antlr/v4/runtime/**";
     include "$mp/com/google/common/collect/**";
+    include "$mp/com/google/common/base/**";
   }
 
 }

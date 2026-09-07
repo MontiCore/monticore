@@ -54,7 +54,7 @@ public class Variable2AttributeMap {
     return v2a.get(variableName).isListValued();
   }
 
-  class AttributeEntry {
+  static class AttributeEntry {
     AttributeEntry(ITFObject object, String attributeName) {
       super();
       checkNotNull(object);

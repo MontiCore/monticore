@@ -2,30 +2,14 @@
 package de.monticore.types3.util;
 
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
-import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
-import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsGlobalScope;
-import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
-import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
-import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
-import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.*;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
 import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.monticore.symboltable.modifiers.AccessModifier;
-import de.monticore.types.check.SIUnitBasic;
-import de.monticore.types.check.SymTypeExpression;
-import de.monticore.types.check.SymTypeExpressionFactory;
-import de.monticore.types.check.SymTypeObscure;
-import de.monticore.types.check.SymTypeOfGenerics;
-import de.monticore.types.check.SymTypeOfNull;
-import de.monticore.types.check.SymTypeOfNumericWithSIUnit;
-import de.monticore.types.check.SymTypeOfObject;
-import de.monticore.types.check.SymTypeOfSIUnit;
-import de.monticore.types.check.SymTypePrimitive;
-import de.monticore.types.check.SymTypeVariable;
-import de.monticore.types.check.SymTypeVoid;
+import de.monticore.types.check.*;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -33,16 +17,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static de.monticore.types.check.SymTypeExpressionFactory.createBottomType;
-import static de.monticore.types.check.SymTypeExpressionFactory.createGenerics;
-import static de.monticore.types.check.SymTypeExpressionFactory.createGenericsDeclaredType;
-import static de.monticore.types.check.SymTypeExpressionFactory.createNumericWithSIUnit;
-import static de.monticore.types.check.SymTypeExpressionFactory.createPrimitive;
-import static de.monticore.types.check.SymTypeExpressionFactory.createSIUnit;
-import static de.monticore.types.check.SymTypeExpressionFactory.createSIUnitBasic;
-import static de.monticore.types.check.SymTypeExpressionFactory.createTopType;
-import static de.monticore.types.check.SymTypeExpressionFactory.createTypeObject;
-import static de.monticore.types.check.SymTypeExpressionFactory.createTypeVariable;
+import static de.monticore.types.check.SymTypeExpressionFactory.*;
 
 /**
  * offers one Symbol-Infrastructure

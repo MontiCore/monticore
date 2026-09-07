@@ -11,8 +11,8 @@ public class CollectCoCoInformationState {
 
     private int parentNest = 0;
     private boolean rhs = false;
-    private Set<String> varsOnLHS = new LinkedHashSet();
-    private Set<String> varsOnRHS = new LinkedHashSet();
+    private Set<String> varsOnLHS = new LinkedHashSet<>();
+    private Set<String> varsOnRHS = new LinkedHashSet<>();
     private int repElements = 0;
     private int negElements = 0;
 

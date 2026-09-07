@@ -1,23 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.tfcs.ast;
 
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import mc.GeneratorIntegrationsTest;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import mc.feature.featuredsl.FeatureDSLMill;
 import mc.feature.featuredsl._ast.ASTAutomaton;
 import mc.feature.featuredsl._visitor.FeatureDSLTraverser;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class ConcreteVisitorTest extends GeneratorIntegrationsTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
+@TestWithMCLanguage(FeatureDSLMill.class)
+public class ConcreteVisitorTest {
   
   @Test
   public void testA() {
@@ -34,6 +25,5 @@ public class ConcreteVisitorTest extends GeneratorIntegrationsTest {
     traverser.setFeatureDSLHandler(h);
     
     a.accept(traverser);
-    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 }

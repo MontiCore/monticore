@@ -2,7 +2,7 @@
 <#list hierarchyHelper.getMandatoryMatchObjects(ast.getPattern().getMatchingObjectsList()) as object>
   <#if !object.isListObject()>
 
-private List<ASTNode> find_${object.getObjectName()}_candidates(){
+protected List<ASTNode> find_${object.getObjectName()}_candidates(){
   <#--This can only be applied on non not-objects-->
     <#if !object.isNotObject()>
   // test if object is set fix

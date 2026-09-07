@@ -175,7 +175,7 @@ public class TraverserClassDecorator extends AbstractCreator<ASTCDCompilationUni
       ASTMCQualifiedType type = visitorService.getVisitor2Type(cd);
       ASTCDAttribute visitorAttribute = getCDAttributeFacade().createAttribute(PROTECTED.build(), getMCTypeFacade().createListTypeOf(type),
           StringTransformations.uncapitalize(simpleName));
-      this.replaceTemplate(VALUE, visitorAttribute, new StringHookPoint("= new ArrayList<>();"));
+      this.replaceTemplate(VALUE, visitorAttribute, new StringHookPoint("= new ArrayList<>()"));
       attributeList.add(visitorAttribute);
     }
     return attributeList;

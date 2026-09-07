@@ -1,12 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions.streamexpressions.parser;
 
-import de.monticore.expressions.commonexpressions._ast.ASTCallExpression;
-import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
-import de.monticore.expressions.commonexpressions._ast.ASTGreaterThanExpression;
-import de.monticore.expressions.commonexpressions._ast.ASTLessEqualExpression;
-import de.monticore.expressions.commonexpressions._ast.ASTLessThanExpression;
-import de.monticore.expressions.commonexpressions._ast.ASTPlusExpression;
+import de.monticore.expressions.commonexpressions._ast.*;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.expressions.javaclassexpressions._ast.ASTPrimaryGenericInvocationExpression;
@@ -15,12 +10,10 @@ import de.monticore.expressions.streamexpressions._ast.ASTAppendAbsentStreamExpr
 import de.monticore.expressions.streamexpressions._ast.ASTAppendTickStreamExpression;
 import de.monticore.expressions.streamexpressions._ast.ASTStreamConstructorExpression;
 import de.monticore.expressions.teststreamexpressions.TestStreamExpressionsMill;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -31,21 +24,14 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * This test checks for parser clashes of stream expressions with the expression universe. Additionally, it checks if
  * parsed expressions are conforming to the priorities set by the grammar
  */
+@TestWithMCLanguage(TestStreamExpressionsMill.class)
 public class CombinedStreamsExpressionsParserTest {
-
-  @BeforeEach
-  public void setup() {
-    LogStub.init();
-    TestStreamExpressionsMill.init();
-  }
 
   @ParameterizedTest
   @MethodSource
@@ -248,7 +234,7 @@ public class CombinedStreamsExpressionsParserTest {
   // Helpers, could in part be generalized?
 
   protected static void assertNoFindings() {
-    Assertions.assertTrue(Log.getFindings().isEmpty(), "Expected no Log findings, but got:"
+    assertTrue(Log.getFindings().isEmpty(), "Expected no Log findings, but got:"
         + System.lineSeparator() + getAllFindingsAsString());
   }
 

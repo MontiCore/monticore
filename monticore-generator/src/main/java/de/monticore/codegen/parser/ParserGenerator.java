@@ -121,7 +121,7 @@ public class ParserGenerator {
         ? astGrammar.getName()
         : Joiner.on('.').join(Names.getQualifiedName(astGrammar.getPackageList()),
         astGrammar.getName());
-    MCGrammarSymbol grammarSymbol = symbolTable.<MCGrammarSymbol> resolveMCGrammar(
+    MCGrammarSymbol grammarSymbol = symbolTable.resolveMCGrammar(
         qualifiedGrammarName).orElse(null);
     Preconditions.checkNotNull(grammarSymbol, "0xA4034 Grammar " + qualifiedGrammarName
         + " can't be resolved in the scope " + symbolTable);
@@ -233,7 +233,7 @@ public class ParserGenerator {
 
     if (parseVisitorClass != null) {
       // add the ASTBuilder class if exists
-      decoratedCD.getCDDefinition().getCDPackagesList().iterator().next().addCDElement(parseVisitorClass);
+      decoratedCD.getCDDefinition().getCDPackagesList().getFirst().addCDElement(parseVisitorClass);
     }
 
     TopDecorator topDecorator = new TopDecorator(handcodedPath);
@@ -286,7 +286,7 @@ public class ParserGenerator {
     }
 
     // Replace Comment
-    assert lines.get(0).startsWith("// Generated from");
+    assert lines.getFirst().startsWith("// Generated from");
     lines.set(0, "// Generated with ANTLR");
 
 

@@ -92,6 +92,11 @@ public class TypeEqualityBound extends Bound {
   }
 
   @Override
+  public TypeEqualityBound asTypeEqualityBound() {
+    return this;
+  }
+
+  @Override
   public boolean deepEquals(Bound other) {
     if (this == other) {
       return true;

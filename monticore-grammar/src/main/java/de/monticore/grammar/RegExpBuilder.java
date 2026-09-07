@@ -82,8 +82,8 @@ public class RegExpBuilder implements GrammarVisitor2, GrammarHandler {
     }
     b.append(a.getLowerChar());
     b.append("-");
-    b.append(a.getUpperChar() + "]");
-
+    b.append(a.getUpperChar());
+    b.append("]");
   }
 
   @Override
@@ -94,7 +94,8 @@ public class RegExpBuilder implements GrammarVisitor2, GrammarHandler {
       if (a.isNegate()) {
         b.append("^");
       }
-      b.append(a.getChar() + ")");
+      b.append(a.getChar());
+      b.append(")");
     }
     else {
 
@@ -111,7 +112,8 @@ public class RegExpBuilder implements GrammarVisitor2, GrammarHandler {
         if (a.isNegate()) {
           b.append("^");
         }
-        b.append(a.getChar() + "]");
+        b.append(a.getChar());
+        b.append("]");
       }
     }
   }
@@ -124,14 +126,18 @@ public class RegExpBuilder implements GrammarVisitor2, GrammarHandler {
       String x = a.getString().substring(i, i + 1);
       if (x.startsWith("\\")) {
 
-        b.append("(" + a.getString().substring(i, i + 2) + ")");
+        b.append("(");
+        b.append(a.getString(), i, i + 2);
+        b.append(")");
         i++;
       }
       else {
         if (needsEscapeChar(x)) {
           x = "\\".concat(x);
         }
-        b.append("[" + x + "]");
+        b.append("[");
+        b.append(x);
+        b.append("]");
       }
     }
 
@@ -149,15 +155,11 @@ public class RegExpBuilder implements GrammarVisitor2, GrammarHandler {
   }
 
   protected String printIteration(int i) {
-    switch (i) {
-      case ASTConstantsGrammar.PLUS:
-        return "+";
-      case ASTConstantsGrammar.STAR:
-        return "*";
-      case ASTConstantsGrammar.QUESTION:
-        return "?";
-      default:
-        return "";
-    }
+    return switch (i) {
+      case ASTConstantsGrammar.PLUS -> "+";
+      case ASTConstantsGrammar.STAR -> "*";
+      case ASTConstantsGrammar.QUESTION -> "?";
+      default -> "";
+    };
   }
 }

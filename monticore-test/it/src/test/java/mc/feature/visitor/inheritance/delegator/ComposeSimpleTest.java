@@ -2,14 +2,6 @@
 
 package mc.feature.visitor.inheritance.delegator;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import mc.feature.visitor.inheritance.a.AMill;
 import mc.feature.visitor.inheritance.a._ast.ASTXA;
 import mc.feature.visitor.inheritance.a._visitor.AHandler;
@@ -24,7 +16,10 @@ import mc.feature.visitor.inheritance.c._ast.ASTYC;
 import mc.feature.visitor.inheritance.c._visitor.CHandler;
 import mc.feature.visitor.inheritance.c._visitor.CTraverser;
 import mc.feature.visitor.inheritance.c._visitor.CVisitor2;
-import de.se_rwth.commons.logging.Log;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Tests composing simple visiors using the traverser visitor. The
@@ -32,13 +27,7 @@ import de.se_rwth.commons.logging.Log;
  * them is called.
  */
 public class ComposeSimpleTest extends CommonVisitorTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
+
   // the composer
   private CTraverser traverser = CMill.traverser();
   
@@ -70,22 +59,19 @@ public class ComposeSimpleTest extends CommonVisitorTest {
   @Test
   public void testSimpleComposed() {
     traverser.handle(AMill.xABuilder().build());
-    Assertions.assertEquals("SimpleAVisitor.hXASimpleAVisitor.vXASimpleAVisitor.tXASimpleAVisitor.eXA", run.toString());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertEquals("SimpleAVisitor.hXASimpleAVisitor.vXASimpleAVisitor.tXASimpleAVisitor.eXA", run.toString());
   }
   
   @Test
   public void testSimpleComposed2() {
     traverser.handle(BMill.xBBuilder().build());
-    Assertions.assertEquals("SimpleBVisitor.hXBSimpleBVisitor.vXBSimpleBVisitor.tXBSimpleBVisitor.eXB", run.toString());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertEquals("SimpleBVisitor.hXBSimpleBVisitor.vXBSimpleBVisitor.tXBSimpleBVisitor.eXB", run.toString());
   }
   
   @Test
   public void testSimpleComposed3() {
     traverser.handle(mc.feature.visitor.inheritance.c.CMill.xCBuilder().build());
-    Assertions.assertEquals("SimpleCVisitor.hXCSimpleCVisitor.vXCSimpleCVisitor.tXCSimpleCVisitor.eXC", run.toString());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertEquals("SimpleCVisitor.hXCSimpleCVisitor.vXCSimpleCVisitor.tXCSimpleCVisitor.eXC", run.toString());
   }
   
   @Test
@@ -101,8 +87,7 @@ public class ComposeSimpleTest extends CommonVisitorTest {
     expectedRun.append("SimpleBVisitor.hYBSimpleBVisitor.vYBSimpleBVisitor.tYBSimpleBVisitor.eYB");
     // rest of yc
     expectedRun.append("SimpleCVisitor.eYC");
-    Assertions.assertEquals(expectedRun.toString(), run.toString());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertEquals(expectedRun.toString(), run.toString());
   }
   
   @Test
@@ -123,8 +108,7 @@ public class ComposeSimpleTest extends CommonVisitorTest {
     expectedRun.append("SimpleBVisitor.hYBSimpleBVisitor.vYBSimpleBVisitor.tYBSimpleBVisitor.eYB");
     // rest of zb
     expectedRun.append("SimpleBVisitor.eZB");
-    Assertions.assertEquals(expectedRun.toString(), run.toString());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertEquals(expectedRun.toString(), run.toString());
   }
 
 }

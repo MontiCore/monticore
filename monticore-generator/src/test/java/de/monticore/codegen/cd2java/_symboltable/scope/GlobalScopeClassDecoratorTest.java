@@ -20,8 +20,8 @@ import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.types.MCTypeFacade;
 import de.se_rwth.commons.logging.Log;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
@@ -29,7 +29,7 @@ import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertVoid;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
 
@@ -45,7 +45,7 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
 
   private static final String AUTOMATON_SCOPE = "de.monticore.codegen.ast.automaton._symboltable.AutomatonScope";
 
-  @Before
+  @BeforeEach
   public void setUp() {
     this.mcTypeFacade = MCTypeFacade.getInstance();
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
@@ -332,7 +332,7 @@ public class GlobalScopeClassDecoratorTest extends DecoratorTestCase {
     // test parsing
     ParserConfiguration configuration = new ParserConfiguration();
     JavaParser parser = new JavaParser(configuration);
-    ParseResult parseResult = parser.parse(sb.toString());
+    ParseResult<?> parseResult = parser.parse(sb.toString());
     assertTrue(parseResult.isSuccessful());
   
     assertTrue(Log.getFindings().isEmpty());

@@ -1,20 +1,18 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.symboltable.serialization;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import de.monticore.symboltable.serialization.json.JsonArray;
 import de.monticore.symboltable.serialization.json.JsonObject;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * This test checks whether injection of objects into serialization and deserialization is avoided
@@ -55,33 +53,33 @@ public class JsonPrinterSecurityTest {
     String s = printFoo(bar);
     JsonObject o = JsonParser.parseJsonObject(s);
     
-    Assertions.assertEquals("Bar", getName(o));
-    Assertions.assertEquals(2, getChildren(o).size());
+    assertEquals("Bar", getName(o));
+    assertEquals(2, getChildren(o).size());
     
     JsonObject b1 = getChildren(o).get(0).getAsJsonObject();
-    Assertions.assertEquals("Bar1", getName(b1));
-    Assertions.assertEquals(1, getChildren(b1).size());
+    assertEquals("Bar1", getName(b1));
+    assertEquals(1, getChildren(b1).size());
     
     JsonObject b11 = getChildren(b1).get(0).getAsJsonObject();
-    Assertions.assertEquals("Bar1.1", getName(b11));
-    Assertions.assertEquals(false, b11.hasMember("children"));
+    assertEquals("Bar1.1", getName(b11));
+    assertFalse(b11.hasMember("children"));
     
     JsonObject b2 = getChildren(o).get(1).getAsJsonObject();
-    Assertions.assertTrue(getName(b2).startsWith("Bar2"));
+    assertTrue(getName(b2).startsWith("Bar2"));
     // without escaping, Bar2 would contain the injected child Bar2.1
-    Assertions.assertEquals(false, b2.hasMember("children"));
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertFalse(b2.hasMember("children"));
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   protected JsonArray getChildren(JsonObject foo) {
-    Assertions.assertEquals(true, foo.hasMember("children"));
-    Assertions.assertEquals(true, foo.getMember("children").isJsonArray());
+    assertTrue(foo.hasMember("children"));
+    assertTrue(foo.getMember("children").isJsonArray());
     return foo.getMember("children").getAsJsonArray();
   }
   
   protected String getName(JsonObject foo) {
-    Assertions.assertEquals(true, foo.hasMember("name"));
-    Assertions.assertEquals(true, foo.getMember("name").isJsonString());
+    assertTrue(foo.hasMember("name"));
+    assertTrue(foo.getMember("name").isJsonString());
     return foo.getMember("name").getAsJsonString().getValue();
   }
   

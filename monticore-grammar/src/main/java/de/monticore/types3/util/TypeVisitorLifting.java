@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types3.util;
 
 import com.google.common.base.Preconditions;
@@ -149,9 +150,7 @@ public class TypeVisitorLifting {
 
   protected Function<SymTypeExpression, SymTypeExpression> _liftForNonNormalized(
       Function<SymTypeExpression, SymTypeExpression> func) {
-    return (SymTypeExpression symType) -> {
-      return func.apply(SymTypeRelations.normalize(symType));
-    };
+    return (SymTypeExpression symType) -> func.apply(SymTypeRelations.normalize(symType));
   }
 
   public static BiFunction<SymTypeExpression, SymTypeExpression, SymTypeExpression> liftForNonNormalized(
@@ -161,9 +160,8 @@ public class TypeVisitorLifting {
 
   protected BiFunction<SymTypeExpression, SymTypeExpression, SymTypeExpression> _liftForNonNormalized(
       BiFunction<SymTypeExpression, SymTypeExpression, SymTypeExpression> func) {
-    return (SymTypeExpression symType1, SymTypeExpression symType2) -> {
-      return func.apply(SymTypeRelations.normalize(symType1), SymTypeRelations.normalize(symType2));
-    };
+    return (SymTypeExpression symType1, SymTypeExpression symType2) ->
+        func.apply(SymTypeRelations.normalize(symType1), SymTypeRelations.normalize(symType2));
   }
 
   // Helper

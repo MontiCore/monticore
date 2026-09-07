@@ -67,7 +67,7 @@ public class ASTConstantsDecorator extends AbstractCreator<ASTCDCompilationUnit,
       for (ASTCDEnum astcdEnum : input.getCDDefinition().getCDEnumsList()) {
         enumConstants.addAll(astcdEnum.getCDEnumConstantList().stream()
             .map(ASTCDEnumConstant::deepClone)
-            .collect(Collectors.toList()));
+            .toList());
       }
     }
     List<DiagramSymbol> superSymbolList = service.getSuperCDsTransitive();
@@ -100,7 +100,7 @@ public class ASTConstantsDecorator extends AbstractCreator<ASTCDCompilationUnit,
   }
 
   protected ASTCDAttribute getSuperGrammarsAttribute(Collection<DiagramSymbol> superSymbolList) {
-    List<String> superGrammarNames = superSymbolList.stream().map(DiagramSymbol::getFullName).map(x -> "\"" + x + "\"").collect(Collectors.toList());
+    List<String> superGrammarNames = superSymbolList.stream().map(DiagramSymbol::getFullName).map(x -> "\"" + x + "\"").toList();
     ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PUBLIC_STATIC.build(), getMCTypeFacade().createArrayType(String.class, 1), SUPER_GRAMMARS);
     if (!superSymbolList.isEmpty()) {
       String s = superGrammarNames.stream().reduce((a, b) -> a + ", " + b).get();

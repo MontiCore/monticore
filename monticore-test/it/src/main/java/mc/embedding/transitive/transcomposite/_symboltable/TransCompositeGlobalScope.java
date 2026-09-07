@@ -10,7 +10,6 @@ import mc.embedding.transitive.transcomposite.TransCompositeMill;
 import mc.embedding.transitive.transcomposite._parser.TransCompositeParser;
 import mc.embedding.transitive.transhost._ast.ASTTransStart;
 
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.net.URL;

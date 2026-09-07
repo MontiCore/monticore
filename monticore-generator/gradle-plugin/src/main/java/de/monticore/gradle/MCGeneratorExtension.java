@@ -24,6 +24,7 @@ public interface MCGeneratorExtension {
 
   /**
    * Publish additional grammars of a source set
+   * The published artifact is suffixed with "-${sourceSetName}"
    *
    * @param sourceSet the source set whose grammars should be published
    */
@@ -33,9 +34,9 @@ public interface MCGeneratorExtension {
 
   class DefaultMCGeneratorExtension implements MCGeneratorExtension {
 
-    private final DomainObjectCollection publishedSourceSets;
+    private final DomainObjectCollection<SourceSet> publishedSourceSets;
 
-    public DefaultMCGeneratorExtension(DomainObjectCollection publishedSourceSets) {
+    public DefaultMCGeneratorExtension(DomainObjectCollection<SourceSet> publishedSourceSets) {
       this.publishedSourceSets = publishedSourceSets;
     }
 

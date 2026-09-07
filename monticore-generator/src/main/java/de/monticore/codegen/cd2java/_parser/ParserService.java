@@ -1,24 +1,18 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java._parser;
 
-import com.google.common.collect.Lists;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
-import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.se_rwth.commons.JavaNamesHelper;
 import de.se_rwth.commons.StringTransformations;
 
-import javax.print.DocFlavor;
-
-import java.util.List;
 import java.util.Optional;
 
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
 import static de.monticore.codegen.cd2java._parser.ParserConstants.*;
-import static de.monticore.codegen.cd2java._parser.ParserConstants.ANTLR_SUFFIX;
 
 public class ParserService extends AbstractService<ParserService> {
 

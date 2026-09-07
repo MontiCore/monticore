@@ -11,7 +11,6 @@ import de.monticore.symbols.compsymbols._symboltable.ComponentTypeSymbol;
 import de.monticore.symbols.compsymbols._symboltable.ComponentTypeSymbolSurrogate;
 import de.monticore.symbols.compsymbols._symboltable.PortSymbol;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Named;
 import org.junit.jupiter.api.Test;
@@ -24,6 +23,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Holds test for {@link CompKindOfGenericComponentType}
@@ -50,13 +51,13 @@ public class CompKindOfGenericComponentTypeTest {
     CompKindOfGenericComponentType clone = comp.deepClone().asGenericComponentType();
 
     // Then
-    Assertions.assertEquals(comp.getTypeInfo(), clone.getTypeInfo());
-    Assertions.assertNotSame(comp.getArguments(), clone.getArguments());
-    Assertions.assertIterableEquals(comp.getArguments(), clone.getArguments());
-    Assertions.assertNotSame(comp.getParamBindings(), clone.getParamBindings());
-    Assertions.assertIterableEquals(comp.getParamBindingsAsList(), clone.getParamBindingsAsList());
-    Assertions.assertEquals(comp.getSourceNode().isPresent(), clone.getSourceNode().isPresent());
-    Assertions.assertNotSame(comp.getTypeBindingsAsList(), clone.getTypeBindingsAsList());
+    assertEquals(comp.getTypeInfo(), clone.getTypeInfo());
+    assertNotSame(comp.getArguments(), clone.getArguments());
+    assertIterableEquals(comp.getArguments(), clone.getArguments());
+    assertNotSame(comp.getParamBindings(), clone.getParamBindings());
+    assertIterableEquals(comp.getParamBindingsAsList(), clone.getParamBindingsAsList());
+    assertEquals(comp.getSourceNode().isPresent(), clone.getSourceNode().isPresent());
+    assertNotSame(comp.getTypeBindingsAsList(), clone.getTypeBindingsAsList());
   }
 
   @Test
@@ -76,8 +77,8 @@ public class CompKindOfGenericComponentTypeTest {
     CompKindOfComponentType compTypeExpr = new CompKindOfComponentType(component);
 
     // When && Then
-    Assertions.assertFalse(compTypeExpr.getSuperComponents().isEmpty());
-    Assertions.assertEquals(parentTypeExpr, compTypeExpr.getSuperComponents().get(0));
+    assertFalse(compTypeExpr.getSuperComponents().isEmpty());
+    assertEquals(parentTypeExpr, compTypeExpr.getSuperComponents().get(0));
   }
 
   @Test
@@ -96,10 +97,10 @@ public class CompKindOfGenericComponentTypeTest {
     CompKindOfGenericComponentType bParent = ((CompKindOfGenericComponentType) bChild.getSuperComponents().get(0));
 
     // Then
-    Assertions.assertSame(parent, bParent.getTypeInfo());
-    Assertions.assertInstanceOf(CompKindOfGenericComponentType.class, bParent);
-    Assertions.assertTrue(bParent.getTypeBindingFor(parent.getTypeParameters().get(0)).isPresent());
-    Assertions.assertEquals(typeArg, bParent.getTypeBindingFor(parent.getTypeParameters().get(0)).get());
+    assertSame(parent, bParent.getTypeInfo());
+    assertInstanceOf(CompKindOfGenericComponentType.class, bParent);
+    assertTrue(bParent.getTypeBindingFor(parent.getTypeParameters().get(0)).isPresent());
+    assertEquals(typeArg, bParent.getTypeBindingFor(parent.getTypeParameters().get(0)).get());
   }
 
   @Test
@@ -123,10 +124,10 @@ public class CompKindOfGenericComponentTypeTest {
     CompKindOfGenericComponentType bParent = ((CompKindOfGenericComponentType) bChild.getSuperComponents().get(0));
 
     // Then
-    Assertions.assertSame(parent, bParent.getTypeInfo());
-    Assertions.assertInstanceOf(CompKindOfGenericComponentType.class, bParent);
-    Assertions.assertTrue(bParent.getTypeBindingFor(parent.getTypeParameters().get(0)).isPresent());
-    Assertions.assertEquals(typeArg, bParent.getTypeBindingFor(parent.getTypeParameters().get(0)).get());
+    assertSame(parent, bParent.getTypeInfo());
+    assertInstanceOf(CompKindOfGenericComponentType.class, bParent);
+    assertTrue(bParent.getTypeBindingFor(parent.getTypeParameters().get(0)).isPresent());
+    assertEquals(typeArg, bParent.getTypeBindingFor(parent.getTypeParameters().get(0)).get());
   }
 
   @Test
@@ -155,12 +156,12 @@ public class CompKindOfGenericComponentTypeTest {
     CompKindOfGenericComponentType bParent = ((CompKindOfGenericComponentType) bChild.getSuperComponents().get(0));
 
     // Then
-    Assertions.assertSame(parent, bParent.getTypeInfo());
-    Assertions.assertInstanceOf(CompKindOfGenericComponentType.class, bParent);
-    Assertions.assertTrue(bParent.getTypeBindingFor(parent.getTypeParameters().get(0)).isPresent());
-    Assertions.assertEquals(typeArg1, bParent.getTypeBindingFor(parent.getTypeParameters().get(0)).get());
-    Assertions.assertTrue(bParent.getTypeBindingFor(parent.getTypeParameters().get(1)).isPresent());
-    Assertions.assertEquals(typeArg2, bParent.getTypeBindingFor(parent.getTypeParameters().get(1)).get());
+    assertSame(parent, bParent.getTypeInfo());
+    assertInstanceOf(CompKindOfGenericComponentType.class, bParent);
+    assertTrue(bParent.getTypeBindingFor(parent.getTypeParameters().get(0)).isPresent());
+    assertEquals(typeArg1, bParent.getTypeBindingFor(parent.getTypeParameters().get(0)).get());
+    assertTrue(bParent.getTypeBindingFor(parent.getTypeParameters().get(1)).isPresent());
+    assertEquals(typeArg2, bParent.getTypeBindingFor(parent.getTypeParameters().get(1)).get());
   }
 
   @Test
@@ -180,10 +181,10 @@ public class CompKindOfGenericComponentTypeTest {
     CompKindOfGenericComponentType bParent = ((CompKindOfGenericComponentType) bChild.getSuperComponents().get(0));
 
     // Then
-    Assertions.assertSame(parent, bParent.getTypeInfo());
-    Assertions.assertInstanceOf(CompKindOfGenericComponentType.class, bParent);
-    Assertions.assertTrue(bParent.getTypeBindingFor(parent.getTypeParameters().get(0)).isPresent());
-    Assertions.assertEquals(typeArg, bParent.getTypeBindingFor(parent.getTypeParameters().get(0)).get());
+    assertSame(parent, bParent.getTypeInfo());
+    assertInstanceOf(CompKindOfGenericComponentType.class, bParent);
+    assertTrue(bParent.getTypeBindingFor(parent.getTypeParameters().get(0)).isPresent());
+    assertEquals(typeArg, bParent.getTypeBindingFor(parent.getTypeParameters().get(0)).get());
   }
 
   protected static Stream<Arguments> compWithTypeParamAndOptionallySurrogateProvider() {
@@ -237,9 +238,9 @@ public class CompKindOfGenericComponentTypeTest {
     Optional<SymTypeExpression> portsType = boundCompTypeExpr.getTypeOfPort(portName);
 
     // Then
-    Assertions.assertTrue(portsType.isPresent(), "Port missing");
-    Assertions.assertInstanceOf(SymTypePrimitive.class, portsType.get());
-    Assertions.assertEquals(BasicSymbolsMill.INT, portsType.get().print());
+    assertTrue(portsType.isPresent(), "Port missing");
+    assertInstanceOf(SymTypePrimitive.class, portsType.get());
+    assertEquals(BasicSymbolsMill.INT, portsType.get().print());
   }
 
   @Test
@@ -272,9 +273,9 @@ public class CompKindOfGenericComponentTypeTest {
     Optional<SymTypeExpression> portsType = boundCompTypeExpr.getTypeOfPort(portName);
 
     // Then
-    Assertions.assertTrue(portsType.isPresent());
-    Assertions.assertTrue(portsType.get() instanceof SymTypePrimitive);
-    Assertions.assertEquals(BasicSymbolsMill.INT, portsType.get().print());
+    assertTrue(portsType.isPresent());
+    assertTrue(portsType.get() instanceof SymTypePrimitive);
+    assertEquals(BasicSymbolsMill.INT, portsType.get().print());
   }
 
   /**
@@ -312,9 +313,9 @@ public class CompKindOfGenericComponentTypeTest {
     Optional<SymTypeExpression> paramTypeExpr = boundCompTypeExpr.getTypeOfParameter(paramName);
 
     // Then
-    Assertions.assertTrue(paramTypeExpr.isPresent(), "param missing");
-    Assertions.assertInstanceOf(SymTypePrimitive.class, paramTypeExpr.get());
-    Assertions.assertEquals(BasicSymbolsMill.INT, paramTypeExpr.get().print());
+    assertTrue(paramTypeExpr.isPresent(), "param missing");
+    assertInstanceOf(SymTypePrimitive.class, paramTypeExpr.get());
+    assertEquals(BasicSymbolsMill.INT, paramTypeExpr.get().print());
   }
 
   @Test
@@ -353,9 +354,9 @@ public class CompKindOfGenericComponentTypeTest {
     Optional<SymTypeExpression> paramTypeExpr = boundCompTypeExpr.getTypeOfParameter(name);
 
     // Then
-    Assertions.assertTrue(paramTypeExpr.isPresent());
-    Assertions.assertTrue(paramTypeExpr.get() instanceof SymTypePrimitive);
-    Assertions.assertEquals(BasicSymbolsMill.INT, paramTypeExpr.get().print());
+    assertTrue(paramTypeExpr.isPresent());
+    assertTrue(paramTypeExpr.get() instanceof SymTypePrimitive);
+    assertEquals(BasicSymbolsMill.INT, paramTypeExpr.get().print());
   }
 
   @Test
@@ -373,7 +374,7 @@ public class CompKindOfGenericComponentTypeTest {
 
     // Then
     List<SymTypeExpression> returnedBindings = compTypeExpr.getTypeBindingsAsList();
-    Assertions.assertEquals(typeExprList, returnedBindings);
+    assertEquals(typeExprList, returnedBindings);
   }
 
   @Test
@@ -397,11 +398,11 @@ public class CompKindOfGenericComponentTypeTest {
     CompKindOfGenericComponentType compTypeExpr = new CompKindOfGenericComponentType(compSurrogate, typeExprList);
 
     // Then
-    Assertions.assertAll(
-        () -> Assertions.assertEquals(floatTypeExpr, compTypeExpr.getTypeBindingFor("A").orElseThrow()),
-        () -> Assertions.assertEquals(intTypeExpr, compTypeExpr.getTypeBindingFor("B").orElseThrow()),
-        () -> Assertions.assertEquals(boolTypeExpr, compTypeExpr.getTypeBindingFor("C").orElseThrow()),
-        () -> Assertions.assertEquals(3, compTypeExpr.getTypeVarBindings().size())
+    assertAll(
+        () -> assertEquals(floatTypeExpr, compTypeExpr.getTypeBindingFor("A").orElseThrow()),
+        () -> assertEquals(intTypeExpr, compTypeExpr.getTypeBindingFor("B").orElseThrow()),
+        () -> assertEquals(boolTypeExpr, compTypeExpr.getTypeBindingFor("C").orElseThrow()),
+        () -> assertEquals(3, compTypeExpr.getTypeVarBindings().size())
     );
 
   }

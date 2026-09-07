@@ -49,11 +49,9 @@ public class IncGenGradleReporter extends IncGenReporter {
     openFile();
 
     for (Path lateOne : filesThatMatterButAreNotThereInTime) {
-      if (modelToArtifactMap.keySet().contains(lateOne)) {
+      if (modelToArtifactMap.containsKey(lateOne)) {
         Path toAdd = Paths.get(modelToArtifactMap.get(lateOne).toString(), lateOne.toString());
-        if (!modelFiles.contains(toAdd)) {
-          modelFiles.add(toAdd);
-        }
+        modelFiles.add(toAdd);
       }
     }
 

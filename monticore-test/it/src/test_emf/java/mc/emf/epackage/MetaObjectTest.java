@@ -2,27 +2,24 @@
 
 package mc.emf.epackage;
 
-import mc.GeneratorIntegrationsTest;
+import de.monticore.runtime.junit.TestWithMCLanguage;
+import mc.feature.fautomaton.action.expression.ExpressionMill;
 import mc.feature.fautomaton.action.expression._ast.ASTAssignment;
 import mc.feature.fautomaton.action.expression._ast.ExpressionPackage;
 import mc.feature.fautomaton.automaton.flatautomaton._ast.ASTAutomaton;
 import mc.feature.fautomaton.automaton.flatautomaton._ast.FlatAutomatonPackage;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.*;
-import org.junit.Test;
-import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class MetaObjectTest extends GeneratorIntegrationsTest {
-
-  public void setup() {
-
-  }
+@TestWithMCLanguage(ExpressionMill.class)
+public class MetaObjectTest {
+  
   @Test
-  @Ignore
+  @Disabled
   public void testSuperTypes() {
     EClass compAssig = ExpressionPackage.eINSTANCE.getASTComplexAssigment();
     
@@ -33,6 +30,7 @@ public class MetaObjectTest extends GeneratorIntegrationsTest {
     assertTrue(supertypes.contains(ExpressionPackage.eINSTANCE.getASTExpression()));
   }
 
+  @Test
   public void testEClass() {
     EClass exp = ExpressionPackage.eINSTANCE.getASTExpression();
     EClass incExp = (EClass) ExpressionPackage.eINSTANCE
@@ -63,8 +61,7 @@ public class MetaObjectTest extends GeneratorIntegrationsTest {
   public void testEAttribute() {
     EAttribute varName = ExpressionPackage.eINSTANCE.getASTExpression_Varname();
     
-    assertEquals(varName.getFeatureID(),
-        ExpressionPackage.ASTExpression_Varname);
+    assertEquals(ExpressionPackage.ASTExpression_Varname, varName.getFeatureID());
     assertEquals(EcorePackage.Literals.ESTRING, varName.getEType());
     assertEquals("Varname", varName.getName());
   }
@@ -74,8 +71,7 @@ public class MetaObjectTest extends GeneratorIntegrationsTest {
     EReference state = FlatAutomatonPackage.eINSTANCE.getASTAutomaton_States();
     
     // check feature ids
-    assertEquals(state.getFeatureID(),
-        FlatAutomatonPackage.ASTAutomaton_States);
+    assertEquals(FlatAutomatonPackage.ASTAutomaton_States, state.getFeatureID());
         
     assertEquals(FlatAutomatonPackage.eINSTANCE.getASTState(), state
         .getEReferenceType());

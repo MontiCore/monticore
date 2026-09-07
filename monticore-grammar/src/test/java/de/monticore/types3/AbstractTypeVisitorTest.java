@@ -21,17 +21,10 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserFactory;
-import de.monticore.types3.util.DefsTypesForTests;
-import de.monticore.types3.util.DefsVariablesForTests;
-import de.monticore.types3.util.MapBasedTypeCheck3;
-import de.monticore.types3.util.TypeVisitorOperatorCalculator;
-import de.monticore.types3.util.WithinScopeBasicSymbolsResolver;
-import de.monticore.types3.util.WithinTypeBasicSymbolsResolver;
+import de.monticore.types3.util.*;
 import de.monticore.visitor.ITraverser;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.io.IOException;
@@ -40,20 +33,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static de.monticore.runtime.junit.MCAssertions.assertNoFindings;
-import static de.monticore.types3.util.DefsTypesForTests._booleanSymType;
-import static de.monticore.types3.util.DefsTypesForTests._boxedListSymType;
-import static de.monticore.types3.util.DefsTypesForTests._csStudentSymType;
-import static de.monticore.types3.util.DefsTypesForTests._intSymType;
-import static de.monticore.types3.util.DefsTypesForTests._linkedListSymType;
-import static de.monticore.types3.util.DefsTypesForTests._personSymType;
-import static de.monticore.types3.util.DefsTypesForTests._studentSymType;
-import static de.monticore.types3.util.DefsTypesForTests._voidSymType;
-import static de.monticore.types3.util.DefsTypesForTests.function;
-import static de.monticore.types3.util.DefsTypesForTests.inScope;
-import static de.monticore.types3.util.DefsTypesForTests.typeVariable;
-import static de.monticore.types3.util.DefsTypesForTests.variable;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static de.monticore.types3.util.DefsTypesForTests.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * used to provide facilities to test type derivers.
@@ -178,7 +159,7 @@ public class AbstractTypeVisitorTest extends AbstractMCTest {
       return parser.parse_StringExpression(exprStr);
     }
     catch (IOException e) {
-      return Assertions.fail(e);
+      return fail(e);
     }
   }
 
@@ -188,7 +169,7 @@ public class AbstractTypeVisitorTest extends AbstractMCTest {
       return parser.parse_StringMCType(mcTypeStr);
     }
     catch (IOException e) {
-      return Assertions.fail(e);
+      return fail(e);
     }
   }
 
@@ -250,14 +231,14 @@ public class AbstractTypeVisitorTest extends AbstractMCTest {
   protected ASTExpression parseExpr(String exprStr) {
     Optional<ASTExpression> astExpression = parseStringExpr(exprStr);
     assertNoFindings();
-    Assertions.assertTrue(astExpression.isPresent());
+    assertTrue(astExpression.isPresent());
     return astExpression.get();
   }
 
   protected ASTMCType parseMCType(String typeStr) {
     Optional<ASTMCType> mcType = parseStringMCType(typeStr);
     assertNoFindings();
-    Assertions.assertTrue(mcType.isPresent());
+    assertTrue(mcType.isPresent());
     return mcType.get();
   }
 
@@ -293,7 +274,7 @@ public class AbstractTypeVisitorTest extends AbstractMCTest {
     boolean equalsNormalized =
         expectedType.equals(typeNormalized.printFullName());
     if (!allowNormalization || !equalsNormalized) {
-      Assertions.assertEquals(expectedType, type.printFullName(), "Wrong type for expression " + exprStr);
+      assertEquals(expectedType, type.printFullName(), "Wrong type for expression " + exprStr);
     }
   }
 
@@ -306,7 +287,7 @@ public class AbstractTypeVisitorTest extends AbstractMCTest {
     generateScopes(astType);
     SymTypeExpression type = TypeCheck3.symTypeFromAST(astType);
     assertNoFindings();
-    Assertions.assertEquals(expectedType, type.printFullName(),
+    assertEquals(expectedType, type.printFullName(),
         "Wrong type for type identifier "
             + MCBasicTypesMill.prettyPrint(astType, false)
     );
@@ -345,7 +326,7 @@ public class AbstractTypeVisitorTest extends AbstractMCTest {
         "\" but got " + type.printFullName());
     // check that the typecheck did something;
     // if not correctly configured, this will not hold true
-    Assertions.assertTrue(getType4Ast().hasPartialTypeOfExpression(astExpr));
+    assertTrue(getType4Ast().hasPartialTypeOfExpression(astExpr));
     assertHasErrorCode(expectedError);
     Log.getFindings().clear();
   }
@@ -360,7 +341,7 @@ public class AbstractTypeVisitorTest extends AbstractMCTest {
         + "\" but got " + type.printFullName());
     // check that the typecheck did something;
     // if not correctly configured, this will not hold true
-    Assertions.assertTrue(getType4Ast().hasPartialTypeOfTypeIdentifier(astType));
+    assertTrue(getType4Ast().hasPartialTypeOfTypeIdentifier(astType));
     assertHasErrorCode(expectedError);
   }
 

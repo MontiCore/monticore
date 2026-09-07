@@ -1,31 +1,28 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.symbols.compsymbols._symboltable;
 
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.compsymbols.CompSymbolsMill;
 import de.monticore.types.check.CompKindOfComponentType;
 import de.monticore.types.check.SymTypeExpressionFactory;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 /**
  * Holds tests for the handwritten methods of {@link ComponentTypeSymbol}.
  */
+@TestWithMCLanguage(CompSymbolsMill.class)
 public class ComponentTypeSymbolTest {
 
   @Test
@@ -52,7 +49,7 @@ public class ComponentTypeSymbolTest {
     Set<PortSymbol> ports = sut.getAllPorts();
 
     // Then
-    Assertions.assertIterableEquals(List.of(p1, p2), ports);
+    assertIterableEquals(List.of(p1, p2), ports);
   }
 
   @Test
@@ -73,9 +70,9 @@ public class ComponentTypeSymbolTest {
     compWithParameters.addAllParameter(params);
 
     // Then
-    Assertions.assertFalse(compWithoutParameters.hasParameters());
-    Assertions.assertTrue(compWithParameters.hasParameters());
-    Assertions.assertEquals(3, compWithParameters.getParameterList().size());
+    assertFalse(compWithoutParameters.hasParameters());
+    assertTrue(compWithParameters.hasParameters());
+    assertEquals(3, compWithParameters.getParameterList().size());
   }
 
   @Test
@@ -97,8 +94,8 @@ public class ComponentTypeSymbolTest {
 
     // Then
     for (VariableSymbol param : params) {
-      Assertions.assertTrue(compWithParameters.getParameter(param.getName()).isPresent());
-      Assertions.assertFalse(compWithoutParameters.getParameter(param.getName()).isPresent());
+      assertTrue(compWithParameters.getParameter(param.getName()).isPresent());
+      assertFalse(compWithoutParameters.getParameter(param.getName()).isPresent());
     }
   }
 
@@ -117,15 +114,15 @@ public class ComponentTypeSymbolTest {
     typeParams.forEach(compWithTypeParameters.getSpannedScope()::add);
 
     // When & Then
-    Assertions.assertFalse(compWithoutTypeParameters.hasTypeParameter());
-    Assertions.assertTrue(compWithTypeParameters.hasTypeParameter());
+    assertFalse(compWithoutTypeParameters.hasTypeParameter());
+    assertTrue(compWithTypeParameters.hasTypeParameter());
   }
 
   @ParameterizedTest
   @MethodSource("portNameAndDirectionProvider")
   public void shouldReturnIncomingPortsOnly(Map<String, Boolean> ports) {
     ComponentTypeSymbol symbol = buildTestComponentWithPorts(ports);
-    Assertions.assertIterableEquals(ports.entrySet().stream()
+    assertIterableEquals(ports.entrySet().stream()
             .filter(p -> p.getValue().equals(true)).map(Map.Entry::getKey).collect(Collectors.toList()),
         symbol.getIncomingPorts().stream().map(PortSymbol::getName).collect(Collectors.toList()));
   }
@@ -134,7 +131,7 @@ public class ComponentTypeSymbolTest {
   @MethodSource("portNameAndDirectionProvider")
   public void shouldReturnOutgoingPortsOnly(Map<String, Boolean> ports) {
     ComponentTypeSymbol symbol = buildTestComponentWithPorts(ports);
-    Assertions.assertIterableEquals(ports.entrySet().stream()
+    assertIterableEquals(ports.entrySet().stream()
             .filter(p -> p.getValue().equals(false)).map(Map.Entry::getKey).collect(Collectors.toList()),
         symbol.getOutgoingPorts().stream().map(PortSymbol::getName).collect(Collectors.toList()));
   }
@@ -145,11 +142,11 @@ public class ComponentTypeSymbolTest {
     ComponentTypeSymbol symbol = buildTestComponentWithPorts(ports);
     for (String port : ports.keySet()) {
       if (ports.get(port)) {
-        Assertions.assertTrue(symbol.getIncomingPort(port).isPresent());
-        Assertions.assertFalse(symbol.getOutgoingPort(port).isPresent());
+        assertTrue(symbol.getIncomingPort(port).isPresent());
+        assertFalse(symbol.getOutgoingPort(port).isPresent());
       } else {
-        Assertions.assertFalse(symbol.getIncomingPort(port).isPresent());
-        Assertions.assertTrue(symbol.getOutgoingPort(port).isPresent());
+        assertFalse(symbol.getIncomingPort(port).isPresent());
+        assertTrue(symbol.getOutgoingPort(port).isPresent());
       }
     }
   }
@@ -159,9 +156,9 @@ public class ComponentTypeSymbolTest {
   public void shouldStateCorrectlyIFHasPorts(Map<String, Boolean> ports) {
     ComponentTypeSymbol symbol = buildTestComponentWithPorts(ports);
     if (ports.isEmpty()) {
-      Assertions.assertFalse(symbol.hasPorts());
+      assertFalse(symbol.hasPorts());
     } else {
-      Assertions.assertTrue(symbol.hasPorts());
+      assertTrue(symbol.hasPorts());
     }
   }
 
@@ -196,8 +193,8 @@ public class ComponentTypeSymbolTest {
   @MethodSource("instanceNamesProvider")
   public void shouldFindSubComponents(List<String> instances) {
     ComponentTypeSymbol symbol = builtTestComponentWithInstances(instances);
-    Assertions.assertEquals(symbol.getSubcomponents().size(), instances.size());
-    Assertions.assertIterableEquals(symbol.getSubcomponents()
+    assertEquals(symbol.getSubcomponents().size(), instances.size());
+    assertIterableEquals(symbol.getSubcomponents()
         .stream().map(SubcomponentSymbol::getName).collect(Collectors.toList()), instances);
   }
 
@@ -212,8 +209,8 @@ public class ComponentTypeSymbolTest {
     List<String> instances = Arrays.asList("sub1", "sub2", "sub3");
     ComponentTypeSymbol symbol = this.builtTestComponentWithInstances(instances);
     for (String instance : instances) {
-      Assertions.assertTrue(symbol.getSubcomponents(instance).isPresent());
-      Assertions.assertEquals(symbol.getSubcomponents(instance).get().getName(), instance);
+      assertTrue(symbol.getSubcomponents(instance).isPresent());
+      assertEquals(symbol.getSubcomponents(instance).get().getName(), instance);
     }
   }
 
@@ -222,8 +219,8 @@ public class ComponentTypeSymbolTest {
     ComponentTypeSymbol symbol1 = this.builtTestComponentWithInstances(Collections.emptyList());
     ComponentTypeSymbol symbol2 = this.builtTestComponentWithInstances(
         Arrays.asList("sub1", "sub2", "sub3"));
-    Assertions.assertFalse(symbol1.getSubcomponents("sub4").isPresent());
-    Assertions.assertFalse(symbol2.getSubcomponents("sub4").isPresent());
+    assertFalse(symbol1.getSubcomponents("sub4").isPresent());
+    assertFalse(symbol2.getSubcomponents("sub4").isPresent());
   }
 
   @Test
@@ -232,10 +229,10 @@ public class ComponentTypeSymbolTest {
         builtTestComponentWithInstances(Arrays.asList("a", "b", "c"));
     ComponentTypeSymbol atomicComponent =
         builtTestComponentWithInstances(Collections.emptyList());
-    Assertions.assertTrue(composedComponent.isDecomposed());
-    Assertions.assertFalse(composedComponent.isAtomic());
-    Assertions.assertFalse(atomicComponent.isDecomposed());
-    Assertions.assertTrue(atomicComponent.isAtomic());
+    assertTrue(composedComponent.isDecomposed());
+    assertFalse(composedComponent.isAtomic());
+    assertFalse(atomicComponent.isDecomposed());
+    assertTrue(atomicComponent.isAtomic());
   }
 
   private ComponentTypeSymbol builtTestComponentWithInstances(List<String> instances) {

@@ -34,12 +34,7 @@ import de.monticore.codegen.cd2java._symboltable.scopesgenitor.ScopesGenitorDele
 import de.monticore.codegen.cd2java._symboltable.serialization.ScopeDeSerDecorator;
 import de.monticore.codegen.cd2java._symboltable.serialization.SymbolDeSerDecorator;
 import de.monticore.codegen.cd2java._symboltable.serialization.Symbols2JsonDecorator;
-import de.monticore.codegen.cd2java._symboltable.symbol.CommonSymbolInterfaceDecorator;
-import de.monticore.codegen.cd2java._symboltable.symbol.SymbolBuilderDecorator;
-import de.monticore.codegen.cd2java._symboltable.symbol.SymbolDecorator;
-import de.monticore.codegen.cd2java._symboltable.symbol.SymbolResolverInterfaceDecorator;
-import de.monticore.codegen.cd2java._symboltable.symbol.SymbolSurrogateBuilderDecorator;
-import de.monticore.codegen.cd2java._symboltable.symbol.SymbolSurrogateDecorator;
+import de.monticore.codegen.cd2java._symboltable.symbol.*;
 import de.monticore.codegen.cd2java._symboltable.symbol.symbolsurrogatemutator.MandatoryMutatorSymbolSurrogateDecorator;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.data.DataDecorator;
@@ -49,17 +44,16 @@ import de.monticore.codegen.cd2java.methods.AccessorDecorator;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.logging.Log;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.util.Optional;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
-import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CDMillDecoratorTest extends DecoratorTestCase {
   private ASTCDCompilationUnit originalCompilationUnit;
@@ -72,7 +66,7 @@ public class CDMillDecoratorTest extends DecoratorTestCase {
 
   private ASTCDCompilationUnit clonedCD;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     originalCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "Automaton");
     scopeCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "AutomatonScopeCD");
@@ -137,6 +131,7 @@ public class CDMillDecoratorTest extends DecoratorTestCase {
     ArtifactScopeClassDecorator artifactScopeDecorator = new ArtifactScopeClassDecorator(glex, symbolTableService, visitorService, methodDecorator);
     SymbolSurrogateDecorator symbolReferenceDecorator = new SymbolSurrogateDecorator(glex, symbolTableService, visitorService, methodDecorator, new MandatoryMutatorSymbolSurrogateDecorator(glex));
     SymbolSurrogateBuilderDecorator symbolReferenceBuilderDecorator = new SymbolSurrogateBuilderDecorator(glex, symbolTableService, accessorDecorator);
+    SymbolSupplierDecorator symbolSupplierDecorator = new SymbolSupplierDecorator(glex, symbolTableService);
     CommonSymbolInterfaceDecorator commonSymbolInterfaceDecorator = new CommonSymbolInterfaceDecorator(glex, symbolTableService, visitorService, methodDecorator);
     SymbolResolverInterfaceDecorator symbolResolverInterfaceDecorator = new SymbolResolverInterfaceDecorator(glex, symbolTableService);
     SymbolDeSerDecorator symbolDeSerDecorator = new SymbolDeSerDecorator(glex, symbolTableService, new MCPath());
@@ -149,6 +144,7 @@ public class CDMillDecoratorTest extends DecoratorTestCase {
 
     SymbolTableCDDecorator symbolTableCDDecorator = new SymbolTableCDDecorator(glex, targetPath, symbolTableService, symbolDecorator,
         symbolBuilderDecorator, symbolReferenceDecorator, symbolReferenceBuilderDecorator,
+        symbolSupplierDecorator,
         scopeInterfaceDecorator, scopeClassDecorator,
         globalScopeInterfaceDecorator, globalScopeClassDecorator,
         artifactScopeInterfaceDecorator, artifactScopeDecorator,
@@ -168,7 +164,7 @@ public class CDMillDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testPackageName() {
-    Assert.assertTrue (decoratedCompilationUnit.getCDDefinition().getPackageWithName("de.monticore.codegen.symboltable.automaton").isPresent());
+    assertTrue (decoratedCompilationUnit.getCDDefinition().getPackageWithName("de.monticore.codegen.symboltable.automaton").isPresent());
 
     assertTrue(Log.getFindings().isEmpty());
   }

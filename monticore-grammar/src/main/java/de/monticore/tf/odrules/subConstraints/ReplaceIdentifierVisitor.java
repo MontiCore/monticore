@@ -14,10 +14,8 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * Created by Alexander Wilts on 16.01.2017.
- *
  * This visitor replaces identifier variables with a call to their real variables.
- *
+ * <p>
  * An identifier variable is a short way to reference the name of an element in a transformation.
  * This identifier does not have any value before it is assigned in later stages of the transformation.
  * In order to read the identifier variable early on in the transformation we have to replace it.
@@ -38,9 +36,7 @@ public class ReplaceIdentifierVisitor implements
   public void visit(ASTFieldAccessExpression node) {
     if (node.getExpression() instanceof ASTNameExpression) {
       Optional<ASTAssignment> assignment = checkAssignment((ASTNameExpression)node.getExpression());
-      if(assignment.isPresent()) {
-        node.setExpression(assignment.get().getRhs());
-      }
+      assignment.ifPresent(astAssignment -> node.setExpression(astAssignment.getRhs()));
     }
   }
 
@@ -48,9 +44,7 @@ public class ReplaceIdentifierVisitor implements
   public void visit(ASTBooleanNotExpression node) {
     if (node.getExpression() instanceof ASTNameExpression) {
       Optional<ASTAssignment> assignment = checkAssignment((ASTNameExpression)node.getExpression());
-      if(assignment.isPresent()) {
-        node.setExpression(assignment.get().getRhs());
-      }
+      assignment.ifPresent(astAssignment -> node.setExpression(astAssignment.getRhs()));
     }
   }
 
@@ -59,9 +53,7 @@ public class ReplaceIdentifierVisitor implements
   public void visit(ASTLogicalNotExpression node) {
     if (node.getExpression() instanceof ASTNameExpression) {
       Optional<ASTAssignment> assignment = checkAssignment((ASTNameExpression)node.getExpression());
-      if(assignment.isPresent()) {
-        node.setExpression(assignment.get().getRhs());
-      }
+      assignment.ifPresent(astAssignment -> node.setExpression(astAssignment.getRhs()));
     }
   }
 
@@ -69,15 +61,11 @@ public class ReplaceIdentifierVisitor implements
   public void visit(ASTEqualsExpression node) {
     if (node.getLeft() instanceof ASTNameExpression) {
       Optional<ASTAssignment> assignment = checkAssignment((ASTNameExpression)node.getLeft());
-      if(assignment.isPresent()) {
-        node.setLeft(assignment.get().getRhs());
-      }
+      assignment.ifPresent(astAssignment -> node.setLeft(astAssignment.getRhs()));
     }
     if (node.getRight() instanceof ASTNameExpression) {
       Optional<ASTAssignment> assignment = checkAssignment((ASTNameExpression)node.getRight());
-      if(assignment.isPresent()) {
-        node.setRight(assignment.get().getRhs());
-      }
+      assignment.ifPresent(astAssignment -> node.setRight(astAssignment.getRhs()));
     }
   }
 
@@ -85,15 +73,11 @@ public class ReplaceIdentifierVisitor implements
   public void visit(ASTBooleanAndOpExpression node) {
     if (node.getLeft() instanceof ASTNameExpression) {
       Optional<ASTAssignment> assignment = checkAssignment((ASTNameExpression)node.getLeft());
-      if(assignment.isPresent()) {
-        node.setLeft(assignment.get().getRhs());
-      }
+      assignment.ifPresent(astAssignment -> node.setLeft(astAssignment.getRhs()));
     }
     if (node.getRight() instanceof ASTNameExpression) {
       Optional<ASTAssignment> assignment = checkAssignment((ASTNameExpression)node.getRight());
-      if(assignment.isPresent()) {
-        node.setRight(assignment.get().getRhs());
-      }
+      assignment.ifPresent(astAssignment -> node.setRight(astAssignment.getRhs()));
     }
   }
 
@@ -101,15 +85,11 @@ public class ReplaceIdentifierVisitor implements
   public void visit(ASTBooleanOrOpExpression node) {
     if (node.getLeft() instanceof ASTNameExpression) {
       Optional<ASTAssignment> assignment = checkAssignment((ASTNameExpression)node.getLeft());
-      if(assignment.isPresent()) {
-        node.setLeft(assignment.get().getRhs());
-      }
+      assignment.ifPresent(astAssignment -> node.setLeft(astAssignment.getRhs()));
     }
     if (node.getRight() instanceof ASTNameExpression) {
       Optional<ASTAssignment> assignment = checkAssignment((ASTNameExpression)node.getRight());
-      if(assignment.isPresent()) {
-        node.setRight(assignment.get().getRhs());
-      }
+      assignment.ifPresent(astAssignment -> node.setRight(astAssignment.getRhs()));
     }
   }
 
@@ -117,15 +97,11 @@ public class ReplaceIdentifierVisitor implements
   public void visit(ASTPlusExpression node) {
     if (node.getLeft() instanceof ASTNameExpression) {
       Optional<ASTAssignment> assignment = checkAssignment((ASTNameExpression)node.getLeft());
-      if(assignment.isPresent()) {
-        node.setLeft(assignment.get().getRhs());
-      }
+      assignment.ifPresent(astAssignment -> node.setLeft(astAssignment.getRhs()));
     }
     if (node.getRight() instanceof ASTNameExpression) {
       Optional<ASTAssignment> assignment = checkAssignment((ASTNameExpression)node.getRight());
-      if(assignment.isPresent()) {
-        node.setRight(assignment.get().getRhs());
-      }
+      assignment.ifPresent(astAssignment -> node.setRight(astAssignment.getRhs()));
     }
   }
 
@@ -133,9 +109,7 @@ public class ReplaceIdentifierVisitor implements
   public void visit(ASTBracketExpression node) {
     if (node.getExpression() instanceof ASTNameExpression) {
       Optional<ASTAssignment> assignment = checkAssignment((ASTNameExpression)node.getExpression());
-      if(assignment.isPresent()) {
-        node.setExpression(assignment.get().getRhs());
-      }
+      assignment.ifPresent(astAssignment -> node.setExpression(astAssignment.getRhs()));
     }
   }
 
@@ -143,9 +117,7 @@ public class ReplaceIdentifierVisitor implements
   public void visit(ASTCallExpression node) {
     if (node.getExpression() instanceof ASTNameExpression) {
       Optional<ASTAssignment> assignment = checkAssignment((ASTNameExpression)node.getExpression());
-      if(assignment.isPresent()) {
-        node.setExpression(assignment.get().getRhs());
-      }
+      assignment.ifPresent(astAssignment -> node.setExpression(astAssignment.getRhs()));
     }
   }
 

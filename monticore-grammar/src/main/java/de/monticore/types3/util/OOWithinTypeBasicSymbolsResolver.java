@@ -9,13 +9,18 @@ import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.modifiers.StaticAccessModifier;
 import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeInferenceVariable;
 import de.monticore.types.check.SymTypeOfFunction;
 import de.monticore.types.check.SymTypeVariable;
 import de.monticore.types3.generics.TypeParameterRelations;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -83,12 +88,12 @@ public class OOWithinTypeBasicSymbolsResolver
     }
 
     // do not search super types for constructors
-    
+
     List<SymTypeOfFunction> symTypesFreeVarsReplaced = resolvedSymTypes.stream()
         .map(this::replaceFreeConstructorTypeVariables)
         .map(SymTypeExpression::asFunctionType)
         .collect(Collectors.toList());
-    
+
     return symTypesFreeVarsReplaced;
   }
 
@@ -140,7 +145,7 @@ public class OOWithinTypeBasicSymbolsResolver
 
     return typeVarsReplaced;
   }
-  
+
   protected boolean isConstructor(FunctionSymbol func) {
     if (OOSymbolsMill.typeDispatcher().isOOSymbolsMethod(func)) {
       MethodSymbol method = OOSymbolsMill.typeDispatcher().asOOSymbolsMethod(func);
@@ -159,6 +164,36 @@ public class OOWithinTypeBasicSymbolsResolver
     Map<String, AccessModifier> map = newModifier.getDimensionToModifierMap();
     map.remove(StaticAccessModifier.DIMENSION);
     return newModifier;
+  }
+
+  /**
+   * Allows the use of types as its constructor, e.g.,
+   * {@code Person("Riley", 26)}.
+   *
+   * @param typeIdType     the type identifier
+   * @param accessModifier the access modifier used to access the type
+   * @return The intersection of the constructors
+   */
+  @Override
+  protected Optional<SymTypeExpression> _getTypeAsExpression(
+      SymTypeExpression typeIdType,
+      AccessModifier accessModifier
+  ) {
+    Optional<SymTypeExpression> exprType;
+    List<SymTypeOfFunction> constructors = resolveConstructors(
+        typeIdType,
+        accessModifier,
+        c -> true
+    );
+    if (constructors.isEmpty()) {
+      exprType = Optional.empty();
+    }
+    else {
+      exprType = Optional.of(SymTypeExpressionFactory.createIntersectionOrDefault(
+          SymTypeExpressionFactory.createObscureType(), constructors
+      ));
+    }
+    return exprType;
   }
 
   // static delegate

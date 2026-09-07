@@ -83,7 +83,7 @@ public class ReferenceTypeTranslation implements
                                                         ASTMCGrammar astMCGrammar) {
     Optional<ProdSymbol> ruleSymbol = TransformationHelper
         .resolveAstRuleType(astMCGrammar, astGenericType);
-    if (!ruleSymbol.isPresent()) {
+    if (ruleSymbol.isEmpty()) {
       return determineTypeToSet(astGenericType, astMCGrammar);
     } else if (ruleSymbol.get().isIsExternal()) {
       return createType(astGenericType + "Ext");
@@ -99,7 +99,7 @@ public class ReferenceTypeTranslation implements
     Optional<ASTMCType> byReference = MCGrammarSymbolTableHelper
         .resolveRule(astMCGrammar, typeName)
         .map(ruleSymbol -> ruleSymbolToType(ruleSymbol, typeName));
-    if (!byReference.isPresent() && typeName.startsWith("AST")) {
+    if (byReference.isEmpty() && typeName.startsWith("AST")) {
       String typeNameWithoutAST = typeName.replaceFirst("AST", "");
       byReference = MCGrammarSymbolTableHelper
           .resolveRule(astMCGrammar, typeNameWithoutAST)
@@ -120,26 +120,17 @@ public class ReferenceTypeTranslation implements
   }
 
   protected Optional<Integer> determineConstantsType(String typeName) {
-    switch (typeName) {
-      case "int":
-        return Optional.of(ASTConstantsMCBasicTypes.INT);
-      case "boolean":
-        return Optional.of(ASTConstantsMCBasicTypes.BOOLEAN);
-      case "double":
-        return Optional.of(ASTConstantsMCBasicTypes.DOUBLE);
-      case "float":
-        return Optional.of(ASTConstantsMCBasicTypes.FLOAT);
-      case "char":
-        return Optional.of(ASTConstantsMCBasicTypes.CHAR);
-      case "byte":
-        return Optional.of(ASTConstantsMCBasicTypes.BYTE);
-      case "short":
-        return Optional.of(ASTConstantsMCBasicTypes.SHORT);
-      case "long":
-        return Optional.of(ASTConstantsMCBasicTypes.LONG);
-      default:
-        return Optional.empty();
-    }
+    return switch (typeName) {
+      case "int" -> Optional.of(ASTConstantsMCBasicTypes.INT);
+      case "boolean" -> Optional.of(ASTConstantsMCBasicTypes.BOOLEAN);
+      case "double" -> Optional.of(ASTConstantsMCBasicTypes.DOUBLE);
+      case "float" -> Optional.of(ASTConstantsMCBasicTypes.FLOAT);
+      case "char" -> Optional.of(ASTConstantsMCBasicTypes.CHAR);
+      case "byte" -> Optional.of(ASTConstantsMCBasicTypes.BYTE);
+      case "short" -> Optional.of(ASTConstantsMCBasicTypes.SHORT);
+      case "long" -> Optional.of(ASTConstantsMCBasicTypes.LONG);
+      default -> Optional.empty();
+    };
   }
 
   protected void addStereotypeForASTTypes(ASTNonTerminal nonTerminal, ASTCDAttribute attribute, ASTMCGrammar astmcGrammar) {

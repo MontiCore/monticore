@@ -122,7 +122,7 @@ public class SummaryReporter extends AReporter {
   
   protected int numCallsUnsetHookpoints;
 
-  protected Set<String> variableNames = new LinkedHashSet<String>();
+  protected Set<String> variableNames = new LinkedHashSet<>();
   
   protected Set<String> usedTemplates = Sets.newLinkedHashSet();
   

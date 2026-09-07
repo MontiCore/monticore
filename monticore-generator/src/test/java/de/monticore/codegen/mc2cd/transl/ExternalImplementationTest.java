@@ -9,14 +9,12 @@ import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.codegen.mc2cd.TranslationTestCase;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.se_rwth.commons.logging.Log;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Paths;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ExternalImplementationTest extends TranslationTestCase {
 
@@ -32,10 +30,10 @@ public class ExternalImplementationTest extends TranslationTestCase {
   @Test
   public void testExternalImplementation() {
     ASTMCObjectType cdInterface = astZ.getInterfaceList().get(0);
-    Assertions.assertTrue(cdInterface != null);
+    assertNotNull(cdInterface);
     String name = TransformationHelper.typeToString(cdInterface);
-    Assertions.assertEquals("mc2cdtransformation.Supergrammar.ASTZExt", name);
+    assertEquals("mc2cdtransformation.Supergrammar.ASTZExt", name);
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

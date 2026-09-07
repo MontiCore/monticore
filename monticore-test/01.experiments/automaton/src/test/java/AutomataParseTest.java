@@ -30,9 +30,10 @@ public class AutomataParseTest {
     assertTrue(at.isPresent());
     
     // parse from a Reader object
-    String aut = "automaton PingPong {"
-        + "state Ping;"
-        + "}";
+    String aut = """
+        automaton PingPong {\
+          state Ping;\
+        }""";
     at = p.parse(new StringReader(aut));
     assertTrue(at.isPresent());
     

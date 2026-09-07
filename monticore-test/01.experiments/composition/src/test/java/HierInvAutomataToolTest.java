@@ -25,7 +25,7 @@ public class HierInvAutomataToolTest {
   
   @Test
   public void executePingPong() throws IOException {
-    HierInvAutomataTool.main(new String[] { "-i", "src/test/resources/example/PingPongInv.aut" });
+    new HierInvAutomataTool().run(new String[] { "-i", "src/test/resources/example/PingPongInv.aut" });
     Log.printFindings();
     assertEquals(0, Log.getFindings().size());
     // LogStub.printPrints();  // for manual testing purpose only
@@ -48,7 +48,7 @@ public class HierInvAutomataToolTest {
   
   @Test
   public void executeSimple12() throws IOException {
-    HierInvAutomataTool.main(new String[] { "-i", "src/test/resources/example/Simple12Inv.aut" });
+    new HierInvAutomataTool().run(new String[] { "-i", "src/test/resources/example/Simple12Inv.aut" });
     Log.printFindings();
     assertEquals(0, Log.getFindings().size());
     // LogStub.printPrints();
@@ -58,7 +58,7 @@ public class HierInvAutomataToolTest {
   
   @Test
   public void executeHierarchyPingPong() throws IOException {
-    HierInvAutomataTool.main(new String[] { "-i", "src/test/resources/example/Hierarchy12Inv.aut" });
+    new HierInvAutomataTool().run(new String[] { "-i", "src/test/resources/example/Hierarchy12Inv.aut" });
     Log.printFindings();
     assertEquals(0, Log.getFindings().size());
     // LogStub.printPrints();

@@ -9,9 +9,10 @@ import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.symboltable.ISymbol;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DefiningSymbolSetter4CommonExpressionsTest {
 
@@ -42,8 +43,8 @@ public class DefiningSymbolSetter4CommonExpressionsTest {
     definingSymbolSetter.setDefiningSymbol((ASTExpression) expr, symbol);
 
     // Then
-    Assertions.assertTrue(expr.getDefiningSymbol().isPresent());
-    Assertions.assertSame(symbol, expr.getDefiningSymbol().get());
+    assertTrue(expr.getDefiningSymbol().isPresent());
+    assertSame(symbol, expr.getDefiningSymbol().get());
 
   }
 
@@ -71,10 +72,10 @@ public class DefiningSymbolSetter4CommonExpressionsTest {
     definingSymbolSetter.setDefiningSymbol((ASTExpression) fieldAccessExpr, symbol);
 
     // Then
-    Assertions.assertTrue(fieldAccessExpr.getDefiningSymbol().isPresent());
-    Assertions.assertSame(symbol, fieldAccessExpr.getDefiningSymbol().get());
+    assertTrue(fieldAccessExpr.getDefiningSymbol().isPresent());
+    assertSame(symbol, fieldAccessExpr.getDefiningSymbol().get());
 
-    Assertions.assertFalse(qualExpr.getDefiningSymbol().isPresent());
+    assertFalse(qualExpr.getDefiningSymbol().isPresent());
   }
 
   @Test
@@ -99,10 +100,10 @@ public class DefiningSymbolSetter4CommonExpressionsTest {
     definingSymbolSetter.setDefiningSymbol((ASTExpression) callExpr, symbol);
 
     // Then
-    Assertions.assertTrue(callExpr.getDefiningSymbol().isPresent());
-    Assertions.assertSame(symbol, callExpr.getDefiningSymbol().get());
+    assertTrue(callExpr.getDefiningSymbol().isPresent());
+    assertSame(symbol, callExpr.getDefiningSymbol().get());
 
-    Assertions.assertFalse(methodNameExpr.getDefiningSymbol().isPresent());
+    assertFalse(methodNameExpr.getDefiningSymbol().isPresent());
   }
 }
 

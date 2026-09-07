@@ -4,11 +4,11 @@ grammar Automata2 extends InvAutomata {
   
   start Automaton;
 
-  // use this production as Invariant in Automata
-  @Override
-  Invariant = LogicExpr | ["-"] ;
+  // add this production as Invariant in Automata
+  None implements Invariant = ["-"] ;
 
-  interface LogicExpr;
+  // bind LogicExpr to be usable as Invariant in Automata
+  interface LogicExpr extends Invariant;
   Truth implements LogicExpr = tt:["true"] | ff:["false"] ;
   And   implements LogicExpr = LogicExpr "&&" LogicExpr ;
   Not   implements LogicExpr = "!" LogicExpr ;

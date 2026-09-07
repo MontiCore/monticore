@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package automata3;
-import automata3._ast.ASTInvariant;
+import automata3._ast.ASTLogicInv;
 import automata3._visitor.Automata3Visitor2;
 import de.monticore.prettyprint.IndentPrinter;
 
@@ -22,12 +22,12 @@ public class Automata3SublangPP implements Automata3Visitor2 {
   // Typical visit/endvist methods:
 
   @Override
-  public void visit(ASTInvariant node) {
+  public void visit(ASTLogicInv node) {
     out.print("/*[*/ ");
   }
 
   @Override
-  public void endVisit(ASTInvariant node) {
+  public void endVisit(ASTLogicInv node) {
     out.print("/*]*/ ");
   }
 

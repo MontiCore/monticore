@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 public class MCErrorListener extends BaseErrorListener {
 
-  protected MCParser parser = null;
+  protected MCParser parser;
 
   /**
    * This character (NO-BREAK SPACE) separates the error message
@@ -92,7 +92,7 @@ public class MCErrorListener extends BaseErrorListener {
           // Join as [a.b.c.d] as a, b, c or d
           msg += String.join(" or ",
                                        String.join(", ", noKeywordRules.subList(0, noKeywordRules.size() - 1)),
-                                       noKeywordRules.get(noKeywordRules.size() - 1)
+                                       noKeywordRules.getLast()
                                       );
         }
       } else if (e instanceof NoViableAltException) {
@@ -110,7 +110,7 @@ public class MCErrorListener extends BaseErrorListener {
           // Join as [a.b.c.d] as a, b, c or d
           expectedTokens = String.join(" or ",
                                        String.join(", ", noKeywordRules.subList(0, noKeywordRules.size() - 1)),
-                                       noKeywordRules.get(noKeywordRules.size() - 1)
+                                       noKeywordRules.getLast()
                                       );
         }
         msg += ", expecting " + expectedTokens;
@@ -152,7 +152,7 @@ public class MCErrorListener extends BaseErrorListener {
     return toOutput.toString(recognizer.getVocabulary());
   }
 
-  private static List<String> extractNoKeywordTokens(Recognizer<?, ?> recognizer, Set<Map.Entry<Integer, String>> epsilonRules) {
+  protected static List<String> extractNoKeywordTokens(Recognizer<?, ?> recognizer, Set<Map.Entry<Integer, String>> epsilonRules) {
     // Turn the next expected rules into a human readable format:
     List<String> noKeywordRules = epsilonRules.stream().map(r -> {
       // r.key = ruleIndex, r.value=next tokens of the transition(s)
@@ -219,7 +219,7 @@ public class MCErrorListener extends BaseErrorListener {
    * @param stateNumber the current state
    * @param vocabulary {@link Vocabulary}
    * @param visitedStates the already visited states
-   * @param expected a set of ruleIndex -to- expected token(s) entries
+   * @param expected a set of ruleIndex to expected token(s) entries
    * @return whether an empty input is accepted
    */
   public boolean getExpectedRulesWithTokens(ATN atn, int stateNumber, Vocabulary vocabulary, Map<Integer, Boolean> visitedStates, Set<Map.Entry<Integer, String>> expected) {

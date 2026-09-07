@@ -5,14 +5,18 @@ import de.monticore.MontiCoreConfiguration;
 import de.monticore.gradle.AMontiCoreConfiguration;
 import de.monticore.gradle.common.AToolAction;
 import de.monticore.gradle.common.MCSingleFileTask;
+import de.monticore.gradle.queue.ICachedQueueTask;
 import org.gradle.api.file.ConfigurableFileCollection;
+import org.gradle.api.file.FileCollection;
 import org.gradle.api.file.FileTree;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.*;
+import org.gradle.work.Incremental;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -25,7 +29,7 @@ import java.util.function.Function;
  *
  */
 @CacheableTask // this task produces reproducible and relocatable output
-public abstract class MCGenTask extends MCSingleFileTask {
+public abstract class MCGenTask extends MCSingleFileTask implements ICachedQueueTask {
 
 
   public MCGenTask() {
@@ -60,14 +64,6 @@ public abstract class MCGenTask extends MCSingleFileTask {
 
   @Input
   @Optional
-  public abstract Property<Boolean> getGenTag();
-  
-  @Input
-  @Optional
-  public abstract Property<Boolean> getGenINT();
-
-  @Input
-  @Optional
   public abstract Property<String> getCustomLog();
 
   /**
@@ -97,18 +93,15 @@ public abstract class MCGenTask extends MCSingleFileTask {
   protected List<String> createArgList(Path filePath, Function<Path, String> handlePath) {
     List<String> args = super.createArgList(filePath, handlePath);
 
+    // hcg / handcodedModelPath
+    if(!getHandWrittenGrammarDir().isEmpty()) {
+      args.add("-" + MontiCoreConfiguration.HANDCODEDMODELPATH);
+      getHandWrittenGrammarDir().forEach(x -> args.add(handlePath.apply(x.toPath())));
+    }
+
     // genDST
     args.add("-" + MontiCoreConfiguration.GENDST_LONG);
     args.add(Boolean.toString(getGenDST().getOrElse(false)));
-
-    // genTag
-    args.add("-" + MontiCoreConfiguration.GENTAG_LONG);
-    args.add(Boolean.toString(getGenTag().getOrElse(false)));
-    
-    // genINT
-    if (this.getGenINT().isPresent() && this.getGenINT().get() == true) {
-      args.add("-" + MontiCoreConfiguration.GENINT);
-    }
 
     if (getCustomLog().isPresent()) {
       args.add("-" + MontiCoreConfiguration.CUSTOMLOG);
@@ -193,24 +186,6 @@ public abstract class MCGenTask extends MCSingleFileTask {
             .matching(patternFilterable -> patternFilterable.include( "**/*TR.mc4"));
   }
 
-  /**
-   * Utility shortcut to access the generated TagDefinition grammars
-   */
-  @Internal
-  public FileTree getTagDefOutput() {
-    return this.getOutputs().getFiles().getAsFileTree()
-            .matching(patternFilterable -> patternFilterable.include( "**/*TagDefinition.mc4"));
-  }
-
-  /**
-   * Utility shortcut to access the generated TagSchema grammars
-   */
-  @Internal
-  public FileTree getTagSchemaOutput() {
-    return this.getOutputs().getFiles().getAsFileTree()
-            .matching(patternFilterable -> patternFilterable.include( "**/*TagSchema.mc4"));
-  }
-
   // Alias for the MC Generator: The inputs are also known as grammars
   @Internal
   public ConfigurableFileCollection getGrammar() {
@@ -289,4 +264,46 @@ public abstract class MCGenTask extends MCSingleFileTask {
     this.getTmplDir().set(getProject().file(path));
   }
 
+  @InputFiles
+  @Optional
+  @PathSensitive(PathSensitivity.RELATIVE)
+  @Incremental
+  // No full rebuild, when only HWG-Directory is changed. Requires logic in Task Execution!
+  @IgnoreEmptyDirectories
+  public abstract ConfigurableFileCollection getHandWrittenGrammarDir();
+
+
+  @Deprecated
+  public void setHwgDir(File f){
+    this.getHandWrittenGrammarDir().setFrom(f);
+  }
+
+  @Deprecated
+  public void setHwgDir(Iterable<File> f){
+    this.getHandWrittenGrammarDir().setFrom(f);
+  }
+
+  @Deprecated
+  @Internal
+  public ConfigurableFileCollection getHwgDir(){
+    return this.getHandWrittenGrammarDir();
+  }
+
+  @Input
+  @Optional
+  public abstract Property<String> getScript();
+
+  @Internal
+  public Set<FileCollection> getOtherInputFileCollections() {
+    HashSet<FileCollection> set = new HashSet<>(super.getOtherInputFileCollections());
+    set.add(getHandWrittenGrammarDir());
+    return set;
+  }
+
+
+  @Override
+  protected void prepareWorkQueue() {
+    // Use the improved shared-isolated-work-queue of se-commons
+    this.workQueue = doGetSharedQueueService().newWorkQueue(getWorkerExecutor(), getExtraClasspathElements());
+  }
 }

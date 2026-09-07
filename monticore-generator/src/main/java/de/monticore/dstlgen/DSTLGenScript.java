@@ -18,6 +18,7 @@ import de.monticore.expressions.uglyexpressions._prettyprint.UglyExpressionsPret
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.grammar.concepts.antlr.antlr._prettyprint.AntlrPrettyPrinter;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
 import de.monticore.grammar.grammar._ast.ASTProd;
@@ -51,8 +52,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-
 
 /**
  * This class contains the remnants of the DSTLGenCLI,
@@ -109,12 +108,9 @@ public class DSTLGenScript {
     trGrammarNames.add("tr");
     trGrammarNames.add(grammar.getName() + "TRHC.mc4");
 
-    Path trGrammarPath = Paths.get(trGrammarNames.stream().collect(Collectors.joining(File.separator)));
+    Path trGrammarPath = Paths.get(String.join(File.separator, trGrammarNames));
     Optional<URL> hwGrammar = paths.find(trGrammarPath.toString());
-    if (hwGrammar.isPresent()) {
-      return Optional.of(parseGrammar(MCPath.toPath(hwGrammar.get()).get().toString()));
-    }
-    return Optional.empty();
+    return hwGrammar.map(url -> parseGrammar(MCPath.toPath(url).get().toString()));
   }
 
   public GlobalExtensionManagement initGlex(ASTMCGrammar grammar){
@@ -229,7 +225,9 @@ public class DSTLGenScript {
 
     try {
       Files.createDirectories(Paths.get(directories));
-      Files.write(Paths.get(directories + "/" + tfLanguage.getName() + ".mc4"), output.getBytes());
+      Path dstlGrammarPath = Paths.get(directories + "/" + tfLanguage.getName() + ".mc4");
+      Files.write(dstlGrammarPath, output.getBytes());
+      Reporting.reportFileCreation(dstlGrammarPath.toString());
     } catch (IOException e) {
       throw new RuntimeException(
               "0xF2000 Cannot write grammar to " + directories + "/" + tfLanguage.getName() + ".mc4");

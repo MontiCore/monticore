@@ -3,18 +3,18 @@ package mc.testcases.automaton.transformation.rule._parser;
 
 import de.se_rwth.commons.logging.LogStub;
 import mc.testcases.automaton.tr.automatontr._parser.AutomatonTRParser;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 import java.io.IOException;
 
-import static org.junit.Assert.*;
 import de.se_rwth.commons.logging.Log;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class AutomatonTransformationRuleTransitionMCConcreteParserTest {
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);

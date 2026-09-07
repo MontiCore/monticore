@@ -2,26 +2,29 @@
 
 package mc.emf.emethods;
 
-import static org.junit.Assert.assertEquals;
-
-import org.junit.Before;
-import org.junit.Test;
-
-import mc.GeneratorIntegrationsTest;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import mc.feature.fautomaton.action.expression._ast.ASTComplexAssigment;
 import mc.feature.fautomaton.action.expression._ast.ASTValue;
 import mc.feature.fautomaton.action.expression.ExpressionMill;
 import mc.feature.fautomaton.action.expression._ast.ExpressionPackage;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class FeatureIDConversionTest extends GeneratorIntegrationsTest {
+@Disabled
+@TestWithMCLanguage(ExpressionMill.class)
+public class FeatureIDConversionTest {
   
   ASTComplexAssigment ast;
   
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     ast = ExpressionMill.complexAssigmentBuilder().uncheckedBuild();
   }
+  
+  @Test
   public void testDerivedFeatureID() {
     int derivedID = ast.eDerivedStructuralFeatureID(ExpressionPackage.ASTValue, ASTValue.class);
     
@@ -30,6 +33,7 @@ public class FeatureIDConversionTest extends GeneratorIntegrationsTest {
     assertEquals(expectedDerivedID, derivedID);
   }
   
+  @Test
   public void testBaseFeatureID() {
     int baseID = ast.eBaseStructuralFeatureID(
         ExpressionPackage.ASTComplexAssigment_A, ASTValue.class);

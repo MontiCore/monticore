@@ -12,11 +12,7 @@ import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsGlobalScope;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
-import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
-import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
-import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
-import de.monticore.symbols.oosymbols._symboltable.MethodSymbolTOP;
-import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
+import de.monticore.symbols.oosymbols._symboltable.*;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.modifiers.BasicAccessModifier;
 import de.monticore.types.check.SymTypeExpression;
@@ -24,7 +20,6 @@ import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfFunction;
 import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserFactory;
 import de.monticore.types3.util.OOWithinTypeBasicSymbolsResolver;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -35,11 +30,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static de.monticore.runtime.junit.MCAssertions.assertNoFindings;
-import static de.monticore.types3.util.DefsTypesForTests._intSymType;
-import static de.monticore.types3.util.DefsTypesForTests.field;
-import static de.monticore.types3.util.DefsTypesForTests.inScope;
-import static de.monticore.types3.util.DefsTypesForTests.method;
-import static de.monticore.types3.util.DefsTypesForTests.oOtype;
+import static de.monticore.types3.util.DefsTypesForTests.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * tests whether we can resolve correctly constructors within a type.
@@ -85,15 +77,15 @@ public class ResolveWithinOOTypeTest extends AbstractTypeVisitorTest {
 
     SymTypeExpression type =
         calculateTypeWithinScope("t", oOType.getSpannedScope());
-    Assertions.assertEquals("() -> int", type.printFullName());
-    Assertions.assertSame(method, ((SymTypeOfFunction) type).getSymbol());
+    assertEquals("() -> int", type.printFullName());
+    assertSame(method, ((SymTypeOfFunction) type).getSymbol());
 
     List<MethodSymbol> constructors = calculateConstructorWithinScope(
         oOType.getSpannedScope(), "t", BasicAccessModifier.PRIVATE
     );
-    Assertions.assertEquals(2, constructors.size());
-    Assertions.assertTrue(constructors.contains(constructor));
-    Assertions.assertTrue(constructors.contains(constructor2));
+    assertEquals(2, constructors.size());
+    assertTrue(constructors.contains(constructor));
+    assertTrue(constructors.contains(constructor2));
   }
 
   // class t {
@@ -129,15 +121,15 @@ public class ResolveWithinOOTypeTest extends AbstractTypeVisitorTest {
     List<MethodSymbol> constructors = calculateConstructorWithinScope(
         oOType.getSpannedScope(), "t", BasicAccessModifier.PRIVATE
     );
-    Assertions.assertEquals(2, constructors.size());
-    Assertions.assertTrue(constructors.contains(constructor));
-    Assertions.assertTrue(constructors.contains(constructor2));
+    assertEquals(2, constructors.size());
+    assertTrue(constructors.contains(constructor));
+    assertTrue(constructors.contains(constructor2));
 
     constructors = calculateConstructorWithinScope(
         oOType.getSpannedScope(), "t", BasicAccessModifier.PUBLIC
     );
-    Assertions.assertEquals(1, constructors.size());
-    Assertions.assertTrue(constructors.contains(constructor2));
+    assertEquals(1, constructors.size());
+    assertTrue(constructors.contains(constructor2));
   }
 
   // test if we get a list of all resolvable elements
@@ -194,7 +186,7 @@ public class ResolveWithinOOTypeTest extends AbstractTypeVisitorTest {
             BasicAccessModifier.PUBLIC,
             t -> true
         );
-    Assertions.assertEquals(Set.of("v", "u"), allTypes.keySet());
+    assertEquals(Set.of("v", "u"), allTypes.keySet());
 
     Map<String, List<SymTypeOfFunction>> allFunctions =
         OOWithinTypeBasicSymbolsResolver.getAllFunctions(
@@ -203,9 +195,9 @@ public class ResolveWithinOOTypeTest extends AbstractTypeVisitorTest {
             f -> true
         );
     // may not contain constructor
-    Assertions.assertEquals(Set.of("s", "u"), allFunctions.keySet());
-    Assertions.assertEquals(1, allFunctions.get("s").size());
-    Assertions.assertEquals(2, allFunctions.get("u").size());
+    assertEquals(Set.of("s", "u"), allFunctions.keySet());
+    assertEquals(1, allFunctions.get("s").size());
+    assertEquals(2, allFunctions.get("u").size());
 
     Map<String, SymTypeExpression> allFields =
         OOWithinTypeBasicSymbolsResolver.getAllVariables(
@@ -214,7 +206,7 @@ public class ResolveWithinOOTypeTest extends AbstractTypeVisitorTest {
             v -> true
         );
     // may not contain the private w
-    Assertions.assertEquals(Set.of("s", "v"), allFields.keySet());
+    assertEquals(Set.of("s", "v"), allFields.keySet());
   }
 
   // Helper
@@ -248,11 +240,11 @@ public class ResolveWithinOOTypeTest extends AbstractTypeVisitorTest {
             scope, name, accessModifier, c -> true
         );
     assertNoFindings();
-    Assertions.assertTrue(functions.stream().allMatch(f -> f instanceof MethodSymbol));
+    assertTrue(functions.stream().allMatch(f -> f instanceof MethodSymbol));
     List<MethodSymbol> constructors = functions.stream()
         .map(f -> (MethodSymbol) f)
         .collect(Collectors.toList());
-    Assertions.assertTrue(constructors.stream().allMatch(MethodSymbolTOP::isIsConstructor));
+    assertTrue(constructors.stream().allMatch(MethodSymbol::isIsConstructor));
     return constructors;
   }
 

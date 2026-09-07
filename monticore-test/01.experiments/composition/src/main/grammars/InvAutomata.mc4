@@ -6,7 +6,7 @@ component grammar InvAutomata
   Automaton =
     "automaton" Name "{" (State | Transition)* "}" ;
 
-  external Invariant;
+  interface Invariant;
 
   State = "state" Name
           Invariant

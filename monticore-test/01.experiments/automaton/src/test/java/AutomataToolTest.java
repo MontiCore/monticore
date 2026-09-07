@@ -6,11 +6,7 @@ import de.monticore.runtime.junit.MCAssertions;
 import org.junit.*;
 import de.se_rwth.commons.logging.Log;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintStream;
 import java.util.*;
-import java.util.regex.Pattern;
 
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,7 +28,7 @@ public class AutomataToolTest {
   
   @Test
   public void executePingPong() {
-    AutomataTool.main(new String[] { "-i", "src/test/resources/example/PingPong.aut", "-s", "target/PingPong.autsym" });
+    new AutomataTool().run(new String[] { "-i", "src/test/resources/example/PingPong.aut", "-s", "target/PingPong.autsym" });
     Log.printFindings();
     assertEquals(0, Log.getFindings().size());
     // LogStub.printPrints();  // for manual testing purpose only
@@ -54,7 +50,7 @@ public class AutomataToolTest {
   
   @Test
   public void executeSimple12() {
-    AutomataTool.main(new String[] { "-i", "src/test/resources/example/Simple12.aut", "-s", "target/Simple12.autsym" });
+    new AutomataTool().run(new String[] { "-i", "src/test/resources/example/Simple12.aut", "-s", "target/Simple12.autsym" });
     Log.printFindings();
     assertEquals(0, Log.getFindings().size());
     // LogStub.printPrints();
@@ -65,7 +61,7 @@ public class AutomataToolTest {
   
   @Test
   public void executeHierarchyPingPong() {
-    AutomataTool.main(new String[] { "-i", "src/test/resources/example/HierarchyPingPong.aut", "-s", "target/very/very/very/deep/HierarchyPingPong.autsym" });
+    new AutomataTool().run(new String[] { "-i", "src/test/resources/example/HierarchyPingPong.aut", "-s", "target/very/very/very/deep/HierarchyPingPong.autsym" });
     Log.printFindings();
     assertEquals(0, Log.getFindings().size());
     // LogStub.printPrints();
@@ -76,9 +72,7 @@ public class AutomataToolTest {
 
   @Test
   public void testPrintVersion() {
-
-
-    AutomataTool.main(new String[] {"-v"});
+   new AutomataTool().run(new String[] {"-v"});
     MCAssertions.assertNoFindings();
   }
 

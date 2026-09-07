@@ -12,6 +12,7 @@ import de.monticore.types.check.SymTypeOfRegEx;
 import de.monticore.types.check.SymTypeOfSIUnit;
 import de.monticore.types.check.SymTypeOfTuple;
 import de.monticore.types.check.SymTypeOfUnion;
+import de.monticore.types.check.SymTypeSourceInfo;
 import de.monticore.types.check.SymTypeVariable;
 import de.monticore.types3.SymTypeRelations;
 import de.se_rwth.commons.logging.Log;
@@ -22,6 +23,7 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.Stack;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -299,7 +301,7 @@ public class SymTypeNormalizeVisitor extends SymTypeDeepCloneVisitor {
               uniqueInfVars
           )
           .map(Set::size)
-          .reduce(0, (a, b) -> a + b)
+          .reduce(0, Integer::sum)
           + (hasNull ? 1 : 0)
           != uniqueTypes.size()
       ) {
@@ -506,7 +508,7 @@ public class SymTypeNormalizeVisitor extends SymTypeDeepCloneVisitor {
     else {
       List<SymTypeOfFunction> functionsFixedArity = functions.stream()
           .map(f -> f.getWithFixedArity(maxArgSize))
-          .collect(Collectors.toList());
+          .toList();
       // reuse tuple implementation for arguments
       List<SymTypeOfTuple> argsAsTuples = functionsFixedArity.stream()
           .map(f -> createTuple(f.getArgumentTypeList()))
@@ -627,7 +629,7 @@ public class SymTypeNormalizeVisitor extends SymTypeDeepCloneVisitor {
     }
     // (A) -> A
     else if (innerTypes.size() == 1) {
-      normalized = innerTypes.get(0);
+      normalized = innerTypes.getFirst();
     }
     // (..., Obscure, ...) -> Obscure
     else if (innerTypes.stream().anyMatch(SymTypeExpression::isObscureType)) {
@@ -700,6 +702,22 @@ public class SymTypeNormalizeVisitor extends SymTypeDeepCloneVisitor {
     pushTransformedSymType(normalized);
   }
 
+  @Override
+  public SymTypeExpression calculate(SymTypeExpression symType) {
+    // as normalization is never used
+    // "to change the source" of the SymTypeExpression,
+    // we can copy the sourceInfo over.
+    // However, this can only be done for the topmost STE,
+    // not for any below, as those may have changed by the normalization.
+    Stack<SymTypeExpression> oldStack = this.transformedSymTypes;
+    reset();
+    SymTypeSourceInfo sourceInfo = symType.getSourceInfo();
+    symType.accept(this);
+    SymTypeExpression result = getTransformedSymType();
+    result._internal_setSourceInfo(sourceInfo);
+    this.transformedSymTypes = oldStack;
+    return result;
+  }
   // Helpers
 
   /**

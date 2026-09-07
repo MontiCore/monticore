@@ -7,6 +7,7 @@ import de.monticore.symboltable.IScopeSpanningSymbol;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.modifiers.StaticAccessModifier;
 import de.monticore.types.check.SymTypeExpression;
+import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,14 +28,21 @@ public  interface IOOSymbolsScope extends IOOSymbolsScopeTOP  {
     //resolve methods by using overridden method
     List<MethodSymbol> set = IOOSymbolsScopeTOP.super.resolveMethodLocallyMany(foundSymbols,name,modifier,predicate);
     if(this.isPresentSpanningSymbol()){
+      try {
+      // unsupported legacy implementation based on TC1 (to be replaced)
       IScopeSpanningSymbol spanningSymbol = getSpanningSymbol();
       //if the methodsymbol is in the spanned scope of a typesymbol then look for method in super types too
-      if(spanningSymbol instanceof OOTypeSymbol){
-        OOTypeSymbol typeSymbol = (OOTypeSymbol) spanningSymbol;
+      if(spanningSymbol instanceof OOTypeSymbol typeSymbol){
         for(SymTypeExpression t : typeSymbol.getSuperTypesList()){
           t.getMethodList(name, false, modifier).stream().
                   filter(m -> m instanceof MethodSymbol).forEach(m -> set.add((MethodSymbol) m));
         }
+      }
+      } catch(UnsupportedOperationException e) {
+        Log.info("Legacy implementation run into an exception." +
+            "As it is not supported anymore, it is ignored",
+            e, "Resolving"
+        );
       }
     }
     return set;
@@ -51,15 +59,22 @@ public  interface IOOSymbolsScope extends IOOSymbolsScopeTOP  {
     //resolve methods by using overridden method
     List<FieldSymbol> result = IOOSymbolsScopeTOP.super.resolveFieldLocallyMany(foundSymbols,name,modifier,predicate);
     if(this.isPresentSpanningSymbol() && modifier.includes(StaticAccessModifier.NON_STATIC)){
+      try {
+      // unsupported legacy implementation based on TC1 (to be replaced)
       IScopeSpanningSymbol spanningSymbol = getSpanningSymbol();
       //if the fieldsymbol is in the spanned scope of a typesymbol then look for method in super types too
-      if(spanningSymbol instanceof OOTypeSymbol){
-        OOTypeSymbol typeSymbol = (OOTypeSymbol) spanningSymbol;
+      if(spanningSymbol instanceof OOTypeSymbol typeSymbol){
         for(SymTypeExpression superType : typeSymbol.getSuperTypesList()){
          superType.getFieldList(name, false, modifier).stream().
                  filter(f -> f instanceof FieldSymbol).forEach(f -> result.add((FieldSymbol) f));
         }
       }
+    } catch(UnsupportedOperationException e) {
+      Log.info("Legacy implementation run into an exception." +
+              "As it is not supported anymore, it is ignored",
+          e, "Resolving"
+      );
+    }
     }
     return result;
   }
@@ -76,9 +91,7 @@ public  interface IOOSymbolsScope extends IOOSymbolsScopeTOP  {
 
     try {
       Optional<VariableSymbol> resolvedSymbol = filterVariable(name, getVariableSymbols());
-      if (resolvedSymbol.isPresent()) {
-        resolvedSymbols.add(resolvedSymbol.get());
-      }
+      resolvedSymbol.ifPresent(resolvedSymbols::add);
     } catch (de.monticore.symboltable.resolving.ResolvedSeveralEntriesForSymbolException e) {
       resolvedSymbols.addAll(e.getSymbols());
     }
@@ -88,12 +101,14 @@ public  interface IOOSymbolsScope extends IOOSymbolsScopeTOP  {
 
     // filter out symbols that are not included within the access modifier
     List<de.monticore.symbols.basicsymbols._symboltable.VariableSymbol> filteredSymbols = filterSymbolsByAccessModifier(modifier, resolvedSymbols);
-    filteredSymbols = new ArrayList<>(filteredSymbols.stream().filter(predicate).collect(java.util.stream.Collectors.toList()));
+    filteredSymbols =
+        filteredSymbols.stream().filter(predicate).collect(java.util.stream.Collectors.toList());
 
     //try to find adapted one
     filteredSymbols.addAll(resolveAdaptedVariableLocallyMany(foundSymbols, name, modifier, predicate));
     filteredSymbols = filterSymbolsByAccessModifier(modifier, filteredSymbols);
-    filteredSymbols = new ArrayList<>(filteredSymbols.stream().filter(predicate).collect(java.util.stream.Collectors.toList()));
+    filteredSymbols =
+        filteredSymbols.stream().filter(predicate).collect(java.util.stream.Collectors.toList());
 
     return filteredSymbols;
   }
@@ -104,9 +119,7 @@ public  interface IOOSymbolsScope extends IOOSymbolsScopeTOP  {
 
     try {
       Optional<de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol> resolvedSymbol = filterFunction(name, getFunctionSymbols());
-      if (resolvedSymbol.isPresent()) {
-        resolvedSymbols.add(resolvedSymbol.get());
-      }
+      resolvedSymbol.ifPresent(resolvedSymbols::add);
     } catch (de.monticore.symboltable.resolving.ResolvedSeveralEntriesForSymbolException e) {
       resolvedSymbols.addAll(e.getSymbols());
     }
@@ -116,12 +129,14 @@ public  interface IOOSymbolsScope extends IOOSymbolsScopeTOP  {
 
     // filter out symbols that are not included within the access modifier
     List<de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol> filteredSymbols = filterSymbolsByAccessModifier(modifier, resolvedSymbols);
-    filteredSymbols = new ArrayList<>(filteredSymbols.stream().filter(predicate).collect(java.util.stream.Collectors.toList()));
+    filteredSymbols =
+        filteredSymbols.stream().filter(predicate).collect(java.util.stream.Collectors.toList());
 
     //try to find adapted one
     filteredSymbols.addAll(resolveAdaptedFunctionLocallyMany(foundSymbols, name, modifier, predicate));
     filteredSymbols = filterSymbolsByAccessModifier(modifier, filteredSymbols);
-    filteredSymbols = new ArrayList<>(filteredSymbols.stream().filter(predicate).collect(java.util.stream.Collectors.toList()));
+    filteredSymbols =
+        filteredSymbols.stream().filter(predicate).collect(java.util.stream.Collectors.toList());
 
     return filteredSymbols;
   }

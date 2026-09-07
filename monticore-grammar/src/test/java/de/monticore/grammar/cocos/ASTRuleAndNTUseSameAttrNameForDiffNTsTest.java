@@ -6,7 +6,7 @@ import de.monticore.grammar.grammar_withconcepts._cocos.Grammar_WithConceptsCoCo
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class ASTRuleAndNTUseSameAttrNameForDiffNTsTest extends CocoTest{
+public class ASTRuleAndNTUseSameAttrNameForDiffNTsTest extends CocoTest {
   private final String grammar = "de.monticore.grammar.cocos.invalid.A4028.A4028";
 
   @BeforeEach

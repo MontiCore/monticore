@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.mcbasictypeswithbasicsymbolstest.types3;
 
 import de.monticore.types.mcbasictypes.types3.MCBasicTypesTypeVisitor;

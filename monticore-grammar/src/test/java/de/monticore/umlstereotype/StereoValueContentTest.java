@@ -2,33 +2,22 @@
 package de.monticore.umlstereotype;
 
 import de.monticore.literals.mccommonliterals.MCCommonLiteralsMill;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.testmccommon.TestMCCommonMill;
-import de.se_rwth.commons.logging.LogStub;
 import org.apache.commons.lang3.StringEscapeUtils;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class StereoValueContentTest {
-  @BeforeEach
-  public void init() {
-    LogStub.initPlusLog();
-    LogStub.clearFindings();
-    TestMCCommonMill.init();
-  }
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-  @AfterEach
-  public void postCheck() {
-    Assertions.assertTrue(LogStub.getFindings().isEmpty());
-  }
+@TestWithMCLanguage(TestMCCommonMill.class)
+public class StereoValueContentTest {
 
   @Test
   public void testSimpleBuilder() {
     String input = "Hello world";
     var sv = TestMCCommonMill.stereoValueBuilder().setName("Stereo")
             .setContent(input).build();
-    Assertions.assertEquals(input, sv.getContent());
+    assertEquals(input, sv.getContent());
   }
 
   @Test
@@ -36,7 +25,7 @@ public class StereoValueContentTest {
     String input = "Hello world";
     var sv = TestMCCommonMill.stereoValueBuilder().setName("Stereo").build();
     sv.setContent(input);
-    Assertions.assertEquals(input, sv.getContent());
+    assertEquals(input, sv.getContent());
   }
 
   @Test
@@ -44,7 +33,7 @@ public class StereoValueContentTest {
     String input = "Hello \"world\"";
     var sv = TestMCCommonMill.stereoValueBuilder().setName("Stereo")
             .setContent(input).build();
-    Assertions.assertEquals(input, sv.getContent());
+    assertEquals(input, sv.getContent());
   }
 
   @Test
@@ -52,7 +41,7 @@ public class StereoValueContentTest {
     String input = "Hello \"world\"";
     var sv = TestMCCommonMill.stereoValueBuilder().setName("Stereo").build();
     sv.setContent(input);
-    Assertions.assertEquals(input, sv.getContent());
+    assertEquals(input, sv.getContent());
   }
 
   @Test
@@ -60,7 +49,7 @@ public class StereoValueContentTest {
     String input = "Hello \\ world,\n hello\\people";
     var sv = TestMCCommonMill.stereoValueBuilder().setName("Stereo")
             .setContent(input).build();
-    Assertions.assertEquals(input, sv.getContent());
+    assertEquals(input, sv.getContent());
   }
 
   @Test
@@ -68,7 +57,7 @@ public class StereoValueContentTest {
     String input = "Hello \\ world,\n hello\\people";
     var sv = TestMCCommonMill.stereoValueBuilder().setName("Stereo").build();
     sv.setContent(input);
-    Assertions.assertEquals(input, sv.getContent());
+    assertEquals(input, sv.getContent());
   }
 
 
@@ -79,7 +68,7 @@ public class StereoValueContentTest {
             .setText(MCCommonLiteralsMill.stringLiteralBuilder()
                     .setSource(StringEscapeUtils.escapeJava(input)).build())
             .build();
-    Assertions.assertEquals(input, sv.getContent());
+    assertEquals(input, sv.getContent());
   }
 
 }

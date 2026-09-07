@@ -23,7 +23,7 @@ public class ArtifactReporter extends AReporter {
 
   ElementFactory factory = new ElementFactory();
   
-  Stack<Element> elementStack = new Stack<Element>();
+  Stack<Element> elementStack = new Stack<>();
   
   /**
    * Base of the generated dependency graph
@@ -34,7 +34,7 @@ public class ArtifactReporter extends AReporter {
   protected AFormatter formatter;
   
   // Filters to use
-  protected List<ElementType> filters = new ArrayList<ElementType>();
+  protected List<ElementType> filters = new ArrayList<>();
   
   final static String SIMPLE_FILE_NAME = "Artifacts";  
   

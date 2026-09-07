@@ -10,7 +10,6 @@ import mc.embedding.host.HostMill;
 import mc.embedding.host._parser.HostParser;
 import mc.embedding.host._ast.ASTHost;
 
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.net.URL;

@@ -10,8 +10,6 @@ import de.monticore.testprettyprinters._ast.ASTProdNamedTerminal;
 import de.monticore.testprettyprinters._ast.ASTToBeReplacedKeyword;
 import de.monticore.testprettyprinters._parser.TestPrettyPrintersParser;
 import de.monticore.testprettyprinters._prettyprint.TestPrettyPrintersFullPrettyPrinter;
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
@@ -31,6 +29,11 @@ public class TestPrettyPrinterTest extends PPTestClass {
   @Override
   protected String fullPrettyPrint(ASTNode astNode){
     return  TestPrettyPrintersMill.prettyPrint(astNode, true);
+  }
+
+  @Override
+  protected String fullPrettyPrintV2(ASTNode node) {
+    return new TestPrettyPrintersFullPrettyPrinter(new FormattingPrinter(new IFormatter.DefaultIFormatter()), true).prettyprint(node);
   }
 
   @Test
@@ -579,7 +582,6 @@ public class TestPrettyPrinterTest extends PPTestClass {
     } catch (IllegalStateException expected) {
       Assertions.assertEquals("Unable to handle noSpace control directive for block of non-default iteration", expected.getMessage());
       MCAssertions.assertHasFinding(f -> f.getMsg().contains("Unable to handle noSpace control directive for block of non-default iteration"));
-      MCAssertions.assertNoFindings();
     }
     try {
       testPP("n1+", TestPrettyPrintersMill.parser()::parse_StringNoSpaceAltsOpt);
@@ -719,7 +721,7 @@ public class TestPrettyPrinterTest extends PPTestClass {
     TestPrettyPrintersParser parser = TestPrettyPrintersMill.parser();
     Optional<ASTToBeReplacedKeyword> astOpt = parser.parse_StringToBeReplacedKeyword("ReplacedKeyword");
     Assertions.assertTrue(astOpt.isEmpty());
-    MCAssertions.assertHasFinding(f -> f.getMsg().contains("mismatched input 'ReplacedKeyword' expecting 'ActuallyReplacedKeyword'"));
+    MCAssertions.assertHasFinding(f -> f.getMsg().contains("mismatched input 'ReplacedKeyword', expecting 'ActuallyReplacedKeyword'"));
   }
 
   @Test

@@ -14,12 +14,8 @@ subprojects {
   dependencies {
     implementation "de.se_rwth.commons:se-commons-utilities:$se_commons_version"
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
-  }
-
-  tasks.named('generateMCGrammars') {
-    genINT = true
-    // created by the de.monticore.generator plugin
+    testImplementation "org.junit.jupiter:junit-jupiter-engine:$junit_version"
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher:$junit_version"
   }
 
 }
@@ -38,6 +34,8 @@ configure(subprojects.findAll {it.name != 'forParser' && it.name != 'runtimeOnly
     }
     testImplementation testFixtures(project(":monticore-runtime"))
   }
+
+  test {useJUnitPlatform()}
 }
 
 clean.dependsOn(subprojects.collect{it.getTasksByName("clean", false)})

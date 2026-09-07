@@ -70,6 +70,14 @@ public class WithinTypeBasicSymbolsResolver {
       String name,
       AccessModifier accessModifier,
       Predicate<VariableSymbol> predicate) {
+    return resolveVariableRecursive(thisType, name, accessModifier, predicate);
+  }
+
+  protected Optional<SymTypeExpression> resolveVariableRecursive(
+      SymTypeExpression thisType,
+      String name,
+      AccessModifier accessModifier,
+      Predicate<VariableSymbol> predicate) {
     Optional<SymTypeExpression> resolvedSymType;
     Optional<IBasicSymbolsScope> spannedScopeOpt = getSpannedScope(thisType);
     if (spannedScopeOpt.isEmpty()) {
@@ -103,11 +111,16 @@ public class WithinTypeBasicSymbolsResolver {
       resolvedSymType = Optional.empty();
       for (SymTypeExpression superType : superTypes) {
         Optional<SymTypeExpression> resolvedInSuper =
-            resolveVariable(superType, name, superModifier, predicate);
+            resolveVariableRecursive(superType, name, superModifier, predicate);
         if (resolvedSymType.isPresent() && resolvedInSuper.isPresent()) {
           Log.error("0xFD222 found variables with name \""
-              + name + "\" in multiple super types of \""
-              + thisType.printFullName() + "\"");
+                  + name + "\" in multiple super types of \""
+                  + thisType.printFullName() + "\"."
+                  + " Nominal super types:"
+                  + superTypes.stream().map(st ->
+                  System.lineSeparator() + st.printFullName()
+              )
+          );
         }
         else if (resolvedSymType.isEmpty() && resolvedInSuper.isPresent()) {
           resolvedSymType = resolvedInSuper;
@@ -152,9 +165,9 @@ public class WithinTypeBasicSymbolsResolver {
     for (String name : names) {
       Optional<SymTypeExpression> varOpt =
           resolveVariable(thisType, name, accessModifier, predicate);
-      if (varOpt.isPresent()) {
-        allVariables.put(name, varOpt.get());
-      }
+      varOpt.ifPresent(symTypeExpression ->
+          allVariables.put(name, symTypeExpression)
+      );
     }
     return allVariables;
   }
@@ -178,12 +191,20 @@ public class WithinTypeBasicSymbolsResolver {
       AccessModifier accessModifier,
       Predicate<FunctionSymbol> predicate
   ) {
-    List<SymTypeOfFunction> resolvedSymTypes = new ArrayList<>();
+    return resolveFunctionsRecursive(thisType, name, accessModifier, predicate);
+  }
+
+  protected List<SymTypeOfFunction> resolveFunctionsRecursive(
+      SymTypeExpression thisType,
+      String name,
+      AccessModifier accessModifier,
+      Predicate<FunctionSymbol> predicate
+  ) {
     List<SymTypeOfFunction> resolvedInThis =
         resolveFunctionsInThisType(
             thisType, name, accessModifier, predicate
         );
-    resolvedSymTypes.addAll(resolvedInThis);
+    List<SymTypeOfFunction> resolvedSymTypes = new ArrayList<>(resolvedInThis);
     // search in super types
     List<SymTypeOfFunction> resolvedInSuper =
         resolvedFunctionsInSuperTypes(
@@ -254,7 +275,7 @@ public class WithinTypeBasicSymbolsResolver {
     List<SymTypeOfFunction> superFuncs = new ArrayList<>();
     for (SymTypeExpression superType : superTypes) {
       List<SymTypeOfFunction> resolvedInSuper =
-          resolveFunctions(superType, name, superModifier, predicate);
+          resolveFunctionsRecursive(superType, name, superModifier, predicate);
       superFuncs.addAll(resolvedInSuper);
     }
     // filter based on being inherited twice (diamond pattern)
@@ -321,6 +342,14 @@ public class WithinTypeBasicSymbolsResolver {
       String name,
       AccessModifier accessModifier,
       Predicate<TypeSymbol> predicate) {
+    return resolveTypeRecursive(thisType, name, accessModifier, predicate);
+  }
+
+  protected Optional<SymTypeExpression> resolveTypeRecursive(
+      SymTypeExpression thisType,
+      String name,
+      AccessModifier accessModifier,
+      Predicate<TypeSymbol> predicate) {
     Optional<SymTypeExpression> resolvedSymType;
     Optional<IBasicSymbolsScope> spannedScopeOpt = getSpannedScope(thisType);
     if (spannedScopeOpt.isEmpty()) {
@@ -354,11 +383,16 @@ public class WithinTypeBasicSymbolsResolver {
       resolvedSymType = Optional.empty();
       for (SymTypeExpression superType : superTypes) {
         Optional<SymTypeExpression> resolvedInSuper =
-            resolveType(superType, name, superModifier, predicate);
+            resolveTypeRecursive(superType, name, superModifier, predicate);
         if (resolvedSymType.isPresent() && resolvedInSuper.isPresent()) {
           Log.error("0xFD224 found type with name \""
-              + name + "\" in multiple super types of \""
-              + thisType.printFullName() + "\"");
+                  + name + "\" in multiple super types of \""
+                  + thisType.printFullName() + "\"."
+                  + " Nominal super types:"
+                  + superTypes.stream().map(st ->
+                  System.lineSeparator() + st.printFullName()
+              )
+          );
         }
         resolvedSymType = resolvedInSuper;
       }
@@ -524,13 +558,78 @@ public class WithinTypeBasicSymbolsResolver {
             .and(getIsNotTypeVarSymbolPredicate())
             .and(getIsLocalSymbolPredicate(scope))
         )
-        .collect(Collectors.toList());
+        .toList();
     // todo remove as soon as resolveTypeLocally is used
     if (resolved.size() > 1) {
       Log.error("0xFD221 resolved multiple types \""
           + name + "\" (locally in the same scope)");
     }
     return resolved.stream().findAny();
+  }
+
+  /**
+   * Resolves a type identifier as an expression,
+   * delegates to
+   * {@link #getTypeAsExpression(SymTypeExpression, AccessModifier)}.
+   */
+  public static Optional<SymTypeExpression> resolveTypeAsExpression(
+      SymTypeExpression thisType,
+      String name,
+      AccessModifier accessModifier,
+      Predicate<TypeSymbol> predicate
+  ) {
+    return getDelegate()
+        ._resolveTypeAsExpression(thisType, name, accessModifier, predicate);
+  }
+
+  protected Optional<SymTypeExpression> _resolveTypeAsExpression(
+      SymTypeExpression thisType,
+      String name,
+      AccessModifier accessModifier,
+      Predicate<TypeSymbol> predicate) {
+    Optional<SymTypeExpression> typeIdType =
+        resolveType(thisType, name, accessModifier, predicate);
+    Optional<SymTypeExpression> typeIdAsExprType = typeIdType.flatMap(t ->
+        WithinTypeBasicSymbolsResolver.getTypeAsExpression(t, accessModifier)
+    );
+    return typeIdAsExprType;
+  }
+
+  /**
+   * Takes a type identifier,
+   * but returns the type of the corresponding expression.
+   * This is used whenever an expression is required,
+   * but the name cannot be resolved to an expression.
+   * If the name refers to a type,
+   * the type identifier can be interpreted as an expression,
+   * depending on the language.
+   * <p>
+   * Example: {@code Person("Riley", 26);}
+   * is used by a greater subset of MontiCore languages
+   * as the object construction of a {@code Person},
+   * even though {@code Person} is not an expression
+   * but a type identifier.
+   * <p>
+   * {@link WithinScopeBasicSymbolsResolver#resolveNameAsExpr(IBasicSymbolsScope, String)}
+   * and similar should always have the higher priority!
+   *
+   * @param thisType       the type resolved
+   * @param accessModifier the modifier used to access the type identifier
+   * @return the type of the expression
+   *     which is based on the resolved type
+   */
+  protected static Optional<SymTypeExpression> getTypeAsExpression(
+      SymTypeExpression thisType,
+      AccessModifier accessModifier
+  ) {
+    return getDelegate()._getTypeAsExpression(thisType, accessModifier);
+  }
+
+  protected Optional<SymTypeExpression> _getTypeAsExpression(
+      SymTypeExpression thisType,
+      AccessModifier accessModifier
+  ) {
+    return Optional.empty();
   }
 
   // Helper
@@ -615,7 +714,7 @@ public class WithinTypeBasicSymbolsResolver {
           ((SymTypeOfUnion) type).getUnionizedTypeSet();
       Optional<SymTypeExpression> lubOpt =
           SymTypeRelations.leastUpperBound(unionizedTypes);
-      spannedScope = lubOpt.flatMap(lub -> getSpannedScope(lub));
+      spannedScope = lubOpt.flatMap(this::getSpannedScope);
     }
     else if (type.isRegExType()) {
       // considered empty, String is the (direct) nominal supertype,
@@ -770,7 +869,7 @@ public class WithinTypeBasicSymbolsResolver {
           .getSpannedScope().getLocalTypeVarSymbols();
       List<SymTypeVariable> includedVars = includedVarSyms.stream()
           .map(SymTypeExpressionFactory::createTypeVariable)
-          .collect(Collectors.toList());
+          .toList();
       if (freeTypeVars.stream().anyMatch(
           ftv -> includedVars.stream().noneMatch(ftv::deepEquals))
       ) {

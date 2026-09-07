@@ -10,12 +10,11 @@ import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.*;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.types3.ISymTypeVisitor;
-import de.monticore.types3.util.SymTypeDeepCloneVisitor;
-import de.monticore.types3.util.SymTypePrintFullNameVisitor;
-import de.monticore.types3.util.SymTypePrintVisitor;
+import de.monticore.types3.util.*;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -24,7 +23,8 @@ import java.util.stream.Collectors;
  * It shares common functionality
  * (such as comparison, printing)
  */
-public abstract class SymTypeExpression {
+public abstract class SymTypeExpression
+    implements Comparable<SymTypeExpression> {
 
   protected static final String LOG_NAME = "SymTypeExpression";
 
@@ -291,13 +291,22 @@ public abstract class SymTypeExpression {
 
   public abstract boolean deepEquals(SymTypeExpression sym);
 
+  @Override
+  public int compareTo(SymTypeExpression o) {
+    return SymTypeExpressionComparator.compareSymTypeExpressions(this, o);
+  }
+
   @Deprecated(forRemoval = true)
   protected List<FunctionSymbol> functionList = new ArrayList<>();
 
-@Deprecated(forRemoval = true)
-public List<FunctionSymbol> getMethodList(String methodName, boolean abstractTc) {
-  return getMethodList(methodName, abstractTc, AccessModifier.ALL_INCLUSION);
-}
+  /**
+   * @deprecated use {@link de.monticore.types3.util.WithinTypeBasicSymbolsResolver}
+   *             or {@link de.monticore.types3.util.WithinScopeBasicSymbolsResolver}
+   */
+  @Deprecated(forRemoval = true)
+  public List<FunctionSymbol> getMethodList(String methodName, boolean abstractTc) {
+    return getMethodList(methodName, abstractTc, AccessModifier.ALL_INCLUSION);
+  }
 
   /**
    * returns the list of methods the SymTypeExpression can access and 
@@ -314,10 +323,14 @@ public List<FunctionSymbol> getMethodList(String methodName, boolean abstractTc)
     return transformMethodList(methodname,methods);
   }
 
-@Deprecated(forRemoval = true)
-public List<FunctionSymbol> getCorrectMethods(String methodName, boolean outerIsType, boolean abstractTc) {
-  return getCorrectMethods(methodName, outerIsType, abstractTc, AccessModifier.ALL_INCLUSION);
-}
+  /**
+   * @deprecated use {@link de.monticore.types3.util.WithinTypeBasicSymbolsResolver}
+   *             or {@link de.monticore.types3.util.WithinScopeBasicSymbolsResolver}
+   */
+  @Deprecated(forRemoval = true)
+  public List<FunctionSymbol> getCorrectMethods(String methodName, boolean outerIsType, boolean abstractTc) {
+    return getCorrectMethods(methodName, outerIsType, abstractTc, AccessModifier.ALL_INCLUSION);
+  }
 
   /**
    * return the correct methods for the two situations:
@@ -347,7 +360,7 @@ public List<FunctionSymbol> getCorrectMethods(String methodName, boolean outerIs
         methods.addAll(((IOOSymbolsScope) getTypeInfo()
             .getSpannedScope()).resolveFunctionMany(methodName, modifier)
             .stream().filter(f -> f instanceof MethodSymbol)
-            .collect(Collectors.toList()));
+            .toList());
       }
       if (outerIsType) {
         List<FunctionSymbol> methodsWithoutStatic = 
@@ -361,7 +374,7 @@ public List<FunctionSymbol> getCorrectMethods(String methodName, boolean outerIs
             ((IOOSymbolsScope) getTypeInfo().getSpannedScope())
               .getLocalMethodSymbols().stream()
               .filter(MethodSymbol::isIsStatic)
-              .collect(Collectors.toList());
+              .toList();
           methodsWithoutStatic.addAll(localStaticMethods);
         }
         return methodsWithoutStatic;
@@ -471,10 +484,14 @@ public List<FunctionSymbol> getCorrectMethods(String methodName, boolean outerIs
     //empty so it only needs to be overridden by some SymTypeExpressions
   }
 
-@Deprecated(forRemoval = true)
-public List<FunctionSymbol> getMethodList(String methodName, boolean outerIsType, boolean abstractTc) {
-  return getMethodList(methodName, outerIsType, abstractTc, AccessModifier.ALL_INCLUSION);
-}
+  /**
+   * @deprecated use {@link de.monticore.types3.util.WithinTypeBasicSymbolsResolver}
+   *             or {@link de.monticore.types3.util.WithinScopeBasicSymbolsResolver}
+   */
+  @Deprecated(forRemoval = true)
+  public List<FunctionSymbol> getMethodList(String methodName, boolean outerIsType, boolean abstractTc) {
+    return getMethodList(methodName, outerIsType, abstractTc, AccessModifier.ALL_INCLUSION);
+  }
 
   /**
    * returns the correct methods in both cases: 
@@ -495,11 +512,13 @@ public List<FunctionSymbol> getMethodList(String methodName, boolean outerIsType
         getCorrectMethods(methodName,outerIsType, abstractTc, modifier);
     return transformMethodList(methodName,methods);
   }
-
-@Deprecated(forRemoval = true)
-public List<VariableSymbol> getFieldList(String fieldName, boolean abstractTc){
-  return getFieldList(fieldName, abstractTc, AccessModifier.ALL_INCLUSION);
-}
+  /**
+   * Use {@link OOWithinTypeBasicSymbolsResolver#resolveFunctions(SymTypeExpression, String, AccessModifier, Predicate)} instead.
+   */
+  @Deprecated(forRemoval = true)
+  public List<VariableSymbol> getFieldList(String fieldName, boolean abstractTc){
+    return getFieldList(fieldName, abstractTc, AccessModifier.ALL_INCLUSION);
+  }
 
   /**
    * returns the list of fields the SymTypeExpression can access 
@@ -514,10 +533,13 @@ public List<VariableSymbol> getFieldList(String fieldName, boolean abstractTc){
     return transformFieldList(fieldName,fields);
   }
 
-@Deprecated(forRemoval = true)
-public List<VariableSymbol> getFieldList(String fieldName, boolean outerIsType, boolean abstractTc){
-  return getFieldList(fieldName, outerIsType, abstractTc, AccessModifier.ALL_INCLUSION);
-}
+  /**
+   * Use {@link OOWithinTypeBasicSymbolsResolver#resolveFunctions(SymTypeExpression, String, AccessModifier, Predicate)} instead.
+   */
+  @Deprecated(forRemoval = true)
+  public List<VariableSymbol> getFieldList(String fieldName, boolean outerIsType, boolean abstractTc){
+    return getFieldList(fieldName, outerIsType, abstractTc, AccessModifier.ALL_INCLUSION);
+  }
 
   /**
    * returns the correct fields in both cases: 
@@ -538,10 +560,13 @@ public List<VariableSymbol> getFieldList(String fieldName, boolean outerIsType, 
     return transformFieldList(fieldName,fields);
   }
 
+  /**
+   * Use {@link OOWithinTypeBasicSymbolsResolver#resolveFunctions(SymTypeExpression, String, AccessModifier, Predicate)} instead.
+   */
   @Deprecated(forRemoval = true)
-public List<VariableSymbol> getCorrectFields(String fieldName, boolean outerIsType, boolean abstractTc){
-  return getCorrectFields(fieldName, outerIsType, abstractTc, AccessModifier.ALL_INCLUSION);
-}
+  public List<VariableSymbol> getCorrectFields(String fieldName, boolean outerIsType, boolean abstractTc){
+    return getCorrectFields(fieldName, outerIsType, abstractTc, AccessModifier.ALL_INCLUSION);
+  }
 
   /**
    * return the correct fields for the two situations:
@@ -570,7 +595,7 @@ public List<VariableSymbol> getCorrectFields(String fieldName, boolean outerIsTy
         fields.addAll((getTypeInfo().getSpannedScope())
             .resolveVariableMany(fieldName, modifier).stream()
             .filter(v -> v instanceof FieldSymbol)
-            .collect(Collectors.toList()));
+            .toList());
       }
       if (outerIsType) {
         List<VariableSymbol> fieldsWithoutStatic = 
@@ -583,7 +608,7 @@ public List<VariableSymbol> getCorrectFields(String fieldName, boolean outerIsTy
             ((IOOSymbolsScope) getTypeInfo().getSpannedScope())
             .getLocalFieldSymbols().stream()
             .filter(FieldSymbol::isIsStatic)
-            .collect(Collectors.toList());
+            .toList();
           fieldsWithoutStatic.addAll(localStaticFields);
         }
         return fieldsWithoutStatic;

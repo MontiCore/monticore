@@ -4,7 +4,6 @@ package de.monticore.types.check;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static de.monticore.types.check.SymTypePrimitive.unbox;
 
@@ -151,7 +150,7 @@ public class TypeRelations implements ITypeRelations {
     else {
       List<SymTypeExpression> superTypes = specific.getTypeInfo().getSuperTypesList();
       List<Integer> superTypesSpecificity = superTypes.stream()
-          .map(s -> calculateInheritanceDistance(s, general)).collect(Collectors.toList());
+          .map(s -> calculateInheritanceDistance(s, general)).toList();
       int min = -1;
       for (int specificity : superTypesSpecificity) {
         if (min != -1 && specificity != -1 && specificity < min) {

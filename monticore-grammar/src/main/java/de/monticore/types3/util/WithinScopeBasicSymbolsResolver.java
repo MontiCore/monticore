@@ -21,7 +21,6 @@ import de.se_rwth.commons.logging.Log;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -428,6 +427,44 @@ public class WithinScopeBasicSymbolsResolver {
     return resolverHotfix(() ->
         enclosingScope.resolveTypeVar(name, accessModifier, predicate)
     );
+  }
+
+  /**
+   * Resolves for a type, but returns the type of an expression;
+   * delegates to
+   * {@link WithinTypeBasicSymbolsResolver#getTypeAsExpression(SymTypeExpression, AccessModifier)}.
+   *
+   * @param enclosingScope the scope to resolve in
+   * @param name           the name of the (potential) type to resolve
+   * @return the type of the expression
+   *     which is based on the resolved type
+   */
+  public static Optional<SymTypeExpression> resolveTypeAsExpression(
+      IBasicSymbolsScope enclosingScope,
+      String name) {
+    return getDelegate()._resolveTypeAsExpression(enclosingScope, name);
+  }
+
+  protected Optional<SymTypeExpression> _resolveTypeAsExpression(
+      IBasicSymbolsScope enclosingScope,
+      String name
+  ) {
+    Optional<SymTypeExpression> typeIdAsExprType;
+    Optional<SymTypeExpression> typeIdType = resolveType(enclosingScope, name);
+    if (typeIdType.isPresent()) {
+      AccessModifier accessModifier = TypeContextCalculator.getAccessModifier(
+          typeIdType.get().getTypeInfo(),
+          enclosingScope,
+          true
+      );
+      typeIdAsExprType = WithinTypeBasicSymbolsResolver.getTypeAsExpression(
+          typeIdType.get(), accessModifier
+      );
+    }
+    else {
+      typeIdAsExprType = Optional.empty();
+    }
+    return typeIdAsExprType;
   }
 
   // Helper

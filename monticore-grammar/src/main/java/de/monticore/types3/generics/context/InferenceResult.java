@@ -1,9 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types3.generics.context;
 
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeInferenceVariable;
 import de.monticore.types.check.SymTypeOfFunction;
-import de.monticore.types.check.SymTypeVariable;
 import de.monticore.types3.generics.TypeParameterRelations;
 import de.monticore.types3.generics.bounds.Bound;
 import de.monticore.types3.generics.constraints.ExpressionCompatibilityConstraint;

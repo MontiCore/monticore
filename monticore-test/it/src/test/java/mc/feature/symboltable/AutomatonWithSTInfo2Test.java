@@ -2,26 +2,18 @@
 
 package mc.feature.symboltable;
 
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.symboltable.IScopeSpanningSymbol;
-import de.se_rwth.commons.logging.LogStub;
-import mc.GeneratorIntegrationsTest;
+import mc.feature.symboltable.automatonwithstinfo2.AutomatonWithSTInfo2Mill;
 import mc.feature.symboltable.automatonwithstinfo2._symboltable.*;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import de.se_rwth.commons.logging.Log;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
-public class AutomatonWithSTInfo2Test extends GeneratorIntegrationsTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
+@TestWithMCLanguage(AutomatonWithSTInfo2Mill.class)
+public class AutomatonWithSTInfo2Test {
+
   /**
    * This test ensures that all expected classes are generated. Otherwise, the test will not compile
    */
@@ -29,14 +21,12 @@ public class AutomatonWithSTInfo2Test extends GeneratorIntegrationsTest {
   @Test
   public void test() {
     AutomatonElementSymbol automatonElementSymbol = new AutomatonElementSymbol("A");
-    Assertions.assertFalse(automatonElementSymbol instanceof IScopeSpanningSymbol);
+    assertFalse(automatonElementSymbol instanceof IScopeSpanningSymbol);
     AutomatonWithSTInfo2Scope automatonScope;
     AutomatonSymbol automatonSymbol = new AutomatonSymbol("A");
-    Assertions.assertTrue(automatonSymbol instanceof IScopeSpanningSymbol);
+    assertInstanceOf(IScopeSpanningSymbol.class, automatonSymbol);
 //    Collection<AutomatonElementSymbol> automatonElementSymbols = automatonSymbol.getAutomatonElements();
     AutomatonSymbolSurrogate automatonSymbolSurrogate;
     AutomatonWithSTInfo2ScopesGenitorDelegator automatonWithSTInfo2SymbolTableCreator;
-    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
-
 }

@@ -20,8 +20,8 @@ public class DefineHookPointAlias extends GlexAlias {
       exactArguments(arguments, 2);
     }
     // First argument of defineHookPoint is always tc
-    ArrayList args = new ArrayList(arguments);
-    args.add(0, Environment.getCurrentEnvironment().getVariable("tc"));
+    ArrayList<Object> args = new ArrayList<>(arguments);
+    args.addFirst(Environment.getCurrentEnvironment().getVariable("tc"));
     return super.exec(args);
   }
 }

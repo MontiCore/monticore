@@ -11,7 +11,7 @@ ${tc.signature("symTabMill", "symbolFullName", "symbolSimpleName","symbolRuleAtt
   }
   if (symbolJson.hasArrayMember(de.monticore.symboltable.serialization.JsonDeSers.STEREO_INFO)) {
     for (de.monticore.symboltable.serialization.json.JsonElement stereoinfoJson : symbolJson.getArrayMember(de.monticore.symboltable.serialization.JsonDeSers.STEREO_INFO)) {
-      java.util.Map.Entry<de.monticore.symboltable.stereotypes.IStereotypeReference, java.util.Optional<de.monticore.interpreter.Value>> stereoinfo = de.monticore.symboltable.stereotypes.StereoinfoDeSer.deserialize(stereoinfoJson, scope);
+      java.util.Map.Entry<de.monticore.symboltable.stereotypes.IStereotypeReference, java.util.Optional<de.monticore.values.MCValue>> stereoinfo = de.monticore.symboltable.stereotypes.StereoinfoDeSer.deserialize(stereoinfoJson, scope);
       if (stereoinfo.getValue().isPresent()) {
         builder.addStereoinfo(stereoinfo.getKey(), stereoinfo.getValue().get());
       } else {

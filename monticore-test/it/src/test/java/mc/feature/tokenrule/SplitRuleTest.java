@@ -2,47 +2,43 @@
 
 package mc.feature.tokenrule;
 
-import de.se_rwth.commons.logging.LogStub;
-import mc.GeneratorIntegrationsTest;
+import de.monticore.runtime.junit.MCAssertions;
+import de.monticore.runtime.junit.TestWithMCLanguage;
+import mc.feature.tokenrule.splitrule.SplitRuleMill;
 import mc.feature.tokenrule.splitrule._ast.ASTD;
 import mc.feature.tokenrule.splitrule._ast.ASTF;
 import mc.feature.tokenrule.splitrule._parser.SplitRuleParser;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
 
-import de.se_rwth.commons.logging.Log;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class SplitRuleTest extends GeneratorIntegrationsTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
+@TestWithMCLanguage(SplitRuleMill.class)
+public class SplitRuleTest {
   
   @Test
   public void test() throws IOException {
-    SplitRuleParser parser = new SplitRuleParser();
+    SplitRuleParser parser = SplitRuleMill.parser();
     parser.parse_StringA("::: Foo");
-    Assertions.assertFalse(parser.hasErrors());
+    assertFalse(parser.hasErrors());
     parser.parse_StringA(": :: Foo");
-    Assertions.assertTrue(parser.hasErrors());
+    assertTrue(parser.hasErrors());
+    MCAssertions.assertHasFindingStartingWith("rule coloncoloncolon failed predicate: {noSpace(2, 3)}?");
     parser.parse_StringA(": Foo");
-    Assertions.assertTrue(parser.hasErrors());
+    assertTrue(parser.hasErrors());
+    MCAssertions.assertHasFindingStartingWith("rule coloncoloncolon failed predicate: {noSpace(2, 3)}?");
     parser.parse_StringB("::: ::: Foo");
-    Assertions.assertFalse(parser.hasErrors());
+    assertFalse(parser.hasErrors());
     Optional<ASTD> ast = parser.parse_StringD(":::");
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(ast.isPresent());
-    Assertions.assertEquals(":::", ast.get().getFoo());
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertEquals(":::", ast.get().getFoo());
     Optional<ASTF> astg = parser.parse_StringF(":::");
-    Assertions.assertFalse(parser.hasErrors());
-    Assertions.assertTrue(astg.isPresent());
-    Assertions.assertTrue(astg.get().isFoo());
+    assertFalse(parser.hasErrors());
+    assertTrue(astg.isPresent());
+    assertTrue(astg.get().isFoo());
   }
   
 }

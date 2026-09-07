@@ -5,8 +5,6 @@ import com.google.common.collect.Lists;
 import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.cdbasis._symboltable.ICDBasisScope;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
-import de.monticore.symboltable.IScope;
-import de.monticore.symboltable.ISymbol;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._visitor.MCBasicTypesVisitor2;
 
@@ -43,7 +41,7 @@ public class TypeCD2JavaVisitor implements MCBasicTypesVisitor2 {
         node.getMCQualifiedName().setPartsList(l);
       }
       if (node.getNameList().size() <= 1) {
-        node.getMCQualifiedName().setPartsList(new ArrayList<>(Arrays.asList(node.getNameList().get(0).split(PACKAGE_SEPARATOR))));
+        node.getMCQualifiedName().setPartsList(new ArrayList<>(Arrays.asList(node.getNameList().getFirst().split(PACKAGE_SEPARATOR))));
       }
     }
   }

@@ -7,10 +7,8 @@ import de.monticore.javalight._cocos.JavaLightASTMethodDeclarationCoCo;
 import de.monticore.statements.mccommonstatements._ast.ASTFormalParameter;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
-import java.util.List;
 
 public class MethodFormalParametersDifferentName implements JavaLightASTMethodDeclarationCoCo {
 

@@ -7,13 +7,14 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.se_rwth.commons.logging.Log;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ListSuffixDecoratorTest extends DecoratorTestCase {
 
@@ -21,7 +22,7 @@ public class ListSuffixDecoratorTest extends DecoratorTestCase {
 
   private ASTCDClass originalClass;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     ASTCDCompilationUnit cd = this.parse("de", "monticore", "codegen", "data", "Data");
 
@@ -43,9 +44,9 @@ public class ListSuffixDecoratorTest extends DecoratorTestCase {
     assertTrue(Log.getFindings().isEmpty());
   }
 
-  @Test(expected = AssertionError.class)
+  @Test
   public void testWithSSBefore() {
-    getAttributeBy("lists", originalClass);
+    assertThrows(AssertionError.class, () -> getAttributeBy("lists", originalClass));
   
     assertTrue(Log.getFindings().isEmpty());
   }
@@ -59,9 +60,9 @@ public class ListSuffixDecoratorTest extends DecoratorTestCase {
     assertTrue(Log.getFindings().isEmpty());
   }
 
-  @Test(expected = AssertionError.class)
+  @Test
   public void testNoSAfter() {
-    getAttributeBy("list", classWithS);
+    assertThrows(AssertionError.class, () -> getAttributeBy("list", classWithS));
   
     assertTrue(Log.getFindings().isEmpty());
   }

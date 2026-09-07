@@ -31,7 +31,7 @@ public class AutomataToolTest {
    */
   @Test
   public void testPingPong(){
-    AutomataTool.main(new String[] { "-i", "src/test/resources/example/PingPong.aut",
+    new AutomataTool().run(new String[] { "-i", "src/test/resources/example/PingPong.aut",
                                      "-path", "target/PingPong.autsym",
                                      "-hw", "src/product/java",
                                      "-o", "target/statepattern",
@@ -42,7 +42,7 @@ public class AutomataToolTest {
   
   @Test
   public void testSimple12(){
-    AutomataTool.main(new String[] { "-i", "src/test/resources/example/Simple12.aut",
+    new AutomataTool().run(new String[] { "-i", "src/test/resources/example/Simple12.aut",
                                      "-path", "target/Simple12.autsym",
                                      "-hw", "src/product/java",
                                      "-o", "target/statepattern",
@@ -53,7 +53,7 @@ public class AutomataToolTest {
   
   @Test
   public void testWrongArguments(){
-    AutomataTool.main(new String[] {  });
+    new AutomataTool().run(new String[] {  });
     assertEquals(1, Log.getErrorCount());
     assertEquals("0xA5C02 Must specify an Input file."
           , Log.getFindings().get(0).buildMsg());

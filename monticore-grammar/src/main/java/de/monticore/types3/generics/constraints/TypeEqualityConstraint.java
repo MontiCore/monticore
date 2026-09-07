@@ -32,6 +32,11 @@ public class TypeEqualityConstraint extends Constraint {
   }
 
   @Override
+  public TypeEqualityConstraint asTypeEqualityConstraint() {
+    return this;
+  }
+
+  @Override
   public boolean deepEquals(Constraint other) {
     if (this == other) {
       return true;

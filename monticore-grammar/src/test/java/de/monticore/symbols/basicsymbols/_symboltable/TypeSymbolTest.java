@@ -1,18 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.symbols.basicsymbols._symboltable;
 
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class TypeSymbolTest {
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-  @BeforeEach
-  void setUp() {
-    LogStub.init();
-    BasicSymbolsMill.init();
-  }
+@TestWithMCLanguage(BasicSymbolsMill.class)
+public class TypeSymbolTest {
 
   @Test @SuppressWarnings({"EqualsWithItself", "ConstantConditions"})
   void equalsShouldEqualSame() {
@@ -26,7 +23,7 @@ public class TypeSymbolTest {
     boolean result = symbol.equals(symbol);
 
     // Then
-    Assertions.assertTrue(result);
+    assertTrue(result);
   }
 
   @Test
@@ -46,7 +43,7 @@ public class TypeSymbolTest {
     boolean result = symbol1.equals(symbol2);
 
     // Then
-    Assertions.assertFalse(result);
+    assertFalse(result);
   }
 
   @Test
@@ -70,7 +67,7 @@ public class TypeSymbolTest {
     boolean result = symbol.equals(surrogate);
 
     // Then
-    Assertions.assertTrue(result);
+    assertTrue(result);
   }
 
   @Test
@@ -94,6 +91,6 @@ public class TypeSymbolTest {
     boolean result = symbol.equals(surrogate);
 
     // Then
-    Assertions.assertFalse(result);
+    assertFalse(result);
   }
 }

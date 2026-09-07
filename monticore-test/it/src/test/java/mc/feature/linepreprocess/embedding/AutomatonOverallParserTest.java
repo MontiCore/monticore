@@ -2,38 +2,28 @@
 
 package mc.feature.linepreprocess.embedding;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.io.IOException;
-import java.io.StringReader;
-
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
+import de.monticore.runtime.junit.TestWithMCLanguage;
+import mc.feature.linepreprocess.embedding.automaton._ast.ASTAutomaton;
+import mc.feature.linepreprocess.embedding.automatonwithaction.AutomatonWithActionMill;
+import mc.feature.linepreprocess.embedding.automatonwithaction._parser.AutomatonWithActionParser;
 import org.junit.jupiter.api.Test;
 
-import mc.GeneratorIntegrationsTest;
-import mc.feature.linepreprocess.embedding.automaton._ast.ASTAutomaton;
-import mc.feature.linepreprocess.embedding.automatonwithaction._parser.AutomatonWithActionParser;
+import java.io.IOException;
+import java.util.Optional;
 
-public class AutomatonOverallParserTest extends GeneratorIntegrationsTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+@TestWithMCLanguage(AutomatonWithActionMill.class)
+public class AutomatonOverallParserTest {
+
   @Test
   public void testRun() throws IOException {
-    StringReader s = new StringReader("automaton foo { a-e>b / { DUMMY_ACTION } ; } ");
-    AutomatonWithActionParser p = new  AutomatonWithActionParser();
-    java.util.Optional<ASTAutomaton> ast = p.parseAutomaton(s);
-    Assertions.assertFalse(p.hasErrors());
-    Assertions.assertTrue(ast.isPresent());
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    AutomatonWithActionParser p = AutomatonWithActionMill.parser();
+    Optional<ASTAutomaton> ast =
+        p.parse_StringAutomaton("automaton foo { a-e>b / { DUMMY_ACTION } ; } ");
+    assertFalse(p.hasErrors());
+    assertTrue(ast.isPresent());
   }
   
 }

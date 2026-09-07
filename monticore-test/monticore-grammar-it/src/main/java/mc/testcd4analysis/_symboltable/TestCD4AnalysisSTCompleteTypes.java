@@ -1,11 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.testcd4analysis._symboltable;
 
-import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
-import de.monticore.types.mccollectiontypes._prettyprint.MCCollectionTypesFullPrettyPrinter;
 import mc.testcd4analysis._ast.*;
 import mc.testcd4analysis._visitor.TestCD4AnalysisVisitor2;
 

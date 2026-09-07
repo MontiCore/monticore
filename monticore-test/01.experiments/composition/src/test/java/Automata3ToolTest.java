@@ -26,7 +26,7 @@ public class Automata3ToolTest {
   
   @Test
   public void executePingPong() throws IOException {
-    Automata3Tool.main(new String[] { "-i", "src/test/resources/example/PingPongInv.aut" });
+    new Automata3Tool().run(new String[] { "-i", "src/test/resources/example/PingPongInv.aut" });
     Log.printFindings();
     assertEquals(0, Log.getFindings().size());
     // LogStub.printPrints();  // for manual testing purpose only
@@ -48,7 +48,7 @@ public class Automata3ToolTest {
   
   @Test
   public void executeSimple12() throws IOException {
-    Automata3Tool.main(new String[] { "-i", "src/test/resources/example/Simple12Inv.aut" });
+    new Automata3Tool().run(new String[] { "-i", "src/test/resources/example/Simple12Inv.aut" });
     Log.printFindings();
     assertEquals(0, Log.getFindings().size());
     // LogStub.printPrints();

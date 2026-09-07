@@ -68,11 +68,7 @@ public class TemplateTreeReporter extends AReporter {
   }
   
   protected String getIndent() {
-    String ret = "";
-    for (int i = 0; i < currentIndentLevel; i++) {
-      ret += INDENTATION;
-    }
-    return ret;
+    return INDENTATION.repeat(currentIndentLevel);
   }
   
   @Override
@@ -172,20 +168,24 @@ public class TemplateTreeReporter extends AReporter {
   protected void callSpecificHP(HookPoint hp) {
     if (hp != null) {
       String line = getIndent();
-      if (hp instanceof StringHookPoint) {
-        line += SPECIFIC_STRING_HOOKPOINT;
-        line += ": " + getHookPointValue(hp);
-        writeLine(line);
-      }
-      else if (hp instanceof TemplateHookPoint) {
-        line += SPECIFIC_TEMPLATE_HOOKPOINT;
-        line += ": " + getHookPointValue(hp);
-        writeLine(line);
-      }
-      else if (hp instanceof CodeHookPoint) {
-        line += SPECIFIC_CODE_HOOKPOINT;
-        line += ": " + getHookPointValue(hp);
-        writeLine(line);
+      switch (hp) {
+        case StringHookPoint h -> {
+          line += SPECIFIC_STRING_HOOKPOINT;
+          line += ": " + getHookPointValue(hp);
+          writeLine(line);
+        }
+        case TemplateHookPoint h -> {
+          line += SPECIFIC_TEMPLATE_HOOKPOINT;
+          line += ": " + getHookPointValue(hp);
+          writeLine(line);
+        }
+        case CodeHookPoint h -> {
+          line += SPECIFIC_CODE_HOOKPOINT;
+          line += ": " + getHookPointValue(hp);
+          writeLine(line);
+        }
+        default -> {
+        }
       }
     }
   }
@@ -199,20 +199,24 @@ public class TemplateTreeReporter extends AReporter {
   protected void callHP(HookPoint hp) {
     if (hp != null) {
       String line = getIndent();
-      if (hp instanceof StringHookPoint) {
-        line += STRING_HOOKPOINT;
-        line += ": " + getHookPointValue(hp);
-        writeLine(line);
-      }
-      else if (hp instanceof TemplateHookPoint) {
-        line += TEMPLATE_HOOKPOINT;
-        line += ": " + getHookPointValue(hp);
-        writeLine(line);
-      }
-      else if (hp instanceof CodeHookPoint) {
-        line += CODE_HOOKPOINT;
-        line += ": " + getHookPointValue(hp);
-        writeLine(line);
+      switch (hp) {
+        case StringHookPoint h -> {
+          line += STRING_HOOKPOINT;
+          line += ": " + getHookPointValue(hp);
+          writeLine(line);
+        }
+        case TemplateHookPoint h -> {
+          line += TEMPLATE_HOOKPOINT;
+          line += ": " + getHookPointValue(hp);
+          writeLine(line);
+        }
+        case CodeHookPoint h -> {
+          line += CODE_HOOKPOINT;
+          line += ": " + getHookPointValue(hp);
+          writeLine(line);
+        }
+        default -> {
+        }
       }
     }
   }

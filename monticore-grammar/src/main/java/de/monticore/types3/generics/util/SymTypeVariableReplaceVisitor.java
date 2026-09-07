@@ -4,7 +4,6 @@ package de.monticore.types3.generics.util;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeVariable;
 import de.monticore.types3.util.SymTypeDeepCloneVisitor;
-import de.monticore.types3.util.SymTypeExpressionComparator;
 
 import java.util.Collections;
 import java.util.Map;
@@ -56,9 +55,7 @@ public class SymTypeVariableReplaceVisitor extends SymTypeDeepCloneVisitor {
   ) {
     Map<SymTypeVariable, SymTypeExpression> oldMap = this.replaceMap;
     // assure that the map used does not rely on hashes
-    Map<SymTypeVariable, SymTypeExpression> newMap =
-        new TreeMap<>(new SymTypeExpressionComparator());
-    newMap.putAll(replaceMap);
+    Map<SymTypeVariable, SymTypeExpression> newMap = new TreeMap<>(replaceMap);
     setReplaceMap(newMap);
     SymTypeExpression result = calculate(symType);
     setReplaceMap(oldMap);

@@ -2,7 +2,7 @@
 <#-- for each object a checkConditions method is created -->
 <#list hierarchyHelper.getMandatoryMatchObjects(ast.getPattern().getLHSObjectsList()) as object>
   <#if !object.isListObject()>
-    private boolean checkConditions_${object.getObjectName()}(${object.getType()} cand){
+    protected boolean checkConditions_${object.getObjectName()}(${object.getType()} cand){
       // if there are dependency objects and they are not null and the condition does not hold return false
     <#list ast.getPattern().getObjectConditionsList() as condition>
     <#-- test if the condition concerns the object the method is created for-->

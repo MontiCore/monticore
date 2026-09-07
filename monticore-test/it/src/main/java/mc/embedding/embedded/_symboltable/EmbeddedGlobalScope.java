@@ -10,7 +10,6 @@ import mc.embedding.embedded.EmbeddedMill;
 import mc.embedding.embedded._ast.ASTText;
 import mc.embedding.embedded._parser.EmbeddedParser;
 
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.net.URL;

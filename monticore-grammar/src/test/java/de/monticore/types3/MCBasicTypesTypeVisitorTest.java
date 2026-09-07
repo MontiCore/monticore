@@ -5,11 +5,13 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.logging.Log;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MCBasicTypesTypeVisitorTest
     extends AbstractTypeVisitorTest {
@@ -44,7 +46,7 @@ public class MCBasicTypesTypeVisitorTest
     }
     else {
       // if it can be parsed, we expect an error
-      Assertions.assertTrue(typeOpt.isPresent());
+      assertTrue(typeOpt.isPresent());
       generateScopes(typeOpt.get());
       checkType(typeOpt.get(), "void");
     }
@@ -54,20 +56,20 @@ public class MCBasicTypesTypeVisitorTest
   public void symTypeFromAST_ReturnTest() throws IOException {
     Optional<ASTMCReturnType> typeOpt =
         parser.parse_StringMCReturnType("void");
-    Assertions.assertTrue(typeOpt.isPresent());
+    assertTrue(typeOpt.isPresent());
     SymTypeExpression type = TypeCheck3.symTypeFromAST(typeOpt.get());
-    Assertions.assertEquals("void", type.printFullName());
+    assertEquals("void", type.printFullName());
   }
 
   @Test
   public void symTypeFromAST_ReturnTest2() throws IOException {
     Optional<ASTMCReturnType> typeOpt =
         parser.parse_StringMCReturnType("Person");
-    Assertions.assertTrue(typeOpt.isPresent());
-    Assertions.assertTrue(typeOpt.get().isPresentMCType());
+    assertTrue(typeOpt.isPresent());
+    assertTrue(typeOpt.get().isPresentMCType());
     generateScopes(typeOpt.get().getMCType());
     SymTypeExpression type = TypeCheck3.symTypeFromAST(typeOpt.get());
-    Assertions.assertEquals("Person", type.printFullName());
+    assertEquals("Person", type.printFullName());
   }
 
 }

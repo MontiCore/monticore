@@ -29,7 +29,8 @@ public class HttpGetter {
       String inputLine;
       StringBuilder content = new StringBuilder();
       while ((inputLine = in.readLine()) != null) {
-        content.append(inputLine + "\n");
+        content.append(inputLine);
+        content.append("\n");
       }
       in.close();
 

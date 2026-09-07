@@ -16,7 +16,7 @@ public class IncludeArgsAlias extends TcAlias {
     atLeastArguments(arguments, 1);
 
     return super.exec(Arrays.asList(
-        arguments.get(0),
+        arguments.getFirst(),
         convertVarargsToCollectionModel(arguments, 1)
     ));
   }

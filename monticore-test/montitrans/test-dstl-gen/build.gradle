@@ -15,18 +15,3 @@ configurations {
 tasks.named('testClasses') {
   dependsOn tasks.named('trafoClasses')
 }
-
-// Expose the trafo sources
-
-configurations {
-  trafoOut {
-    extendsFrom(trafoImplementation)
-  }
-}
-tasks.register("trafoJar", Jar) {
-  archiveClassifier = "trafo"
-  from sourceSets.trafo.output
-}
-artifacts {
-  trafoOut trafoJar
-}

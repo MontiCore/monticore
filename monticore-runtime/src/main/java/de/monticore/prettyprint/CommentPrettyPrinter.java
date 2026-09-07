@@ -16,7 +16,7 @@ public  class CommentPrettyPrinter {
    */
   public static void printPreComments(ASTNode a, IndentPrinter p) {
     
-    if (a.get_PreCommentList() != null && a.get_PreCommentList().size() > 0) {
+    if (a.get_PreCommentList() != null && !a.get_PreCommentList().isEmpty()) {
       
       // Additional line break for comments if necessary (that means if
       // already text exists in current line)
@@ -39,7 +39,7 @@ public  class CommentPrettyPrinter {
    */
   public static void printPostComments(ASTNode a, IndentPrinter p) {
     
-    if (a.get_PostCommentList() != null && a.get_PostCommentList().size() > 0) {
+    if (a.get_PostCommentList() != null && !a.get_PostCommentList().isEmpty()) {
       
       // Additional line break for comments if necessary (that means if
       // already text exists in current line)

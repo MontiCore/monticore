@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.parser.antlr;
 
 import de.monticore.ast.ASTNode;

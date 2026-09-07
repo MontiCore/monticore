@@ -24,5 +24,5 @@ public final class NoAccessModifier implements AccessModifier {
     return Map.of(DIMENSION, this);
   }
 
-  protected final static String DIMENSION = "All";
+  private final static String DIMENSION = "All";
 }

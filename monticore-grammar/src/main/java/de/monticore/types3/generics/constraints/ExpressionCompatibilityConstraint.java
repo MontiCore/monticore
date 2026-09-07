@@ -33,6 +33,11 @@ public class ExpressionCompatibilityConstraint extends Constraint {
   }
 
   @Override
+  public ExpressionCompatibilityConstraint asExpressionCompatibilityConstraint() {
+    return this;
+  }
+
+  @Override
   public boolean deepEquals(Constraint other) {
     if (this == other) {
       return true;

@@ -3,24 +3,25 @@
 package mc.emf.modularity;
 
 import com.google.common.collect.Lists;
-import mc.GeneratorIntegrationsTest;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import mc.feature.fautomaton.automaton.flatautomaton._ast.FlatAutomatonPackage;
 import mc.feature.fautomaton.automatonwithaction.actionautomaton._ast.ASTAutomaton;
 import mc.feature.fautomaton.automatonwithaction.actionautomaton._ast.ASTCounter;
 import mc.feature.fautomaton.automatonwithaction.actionautomaton.ActionAutomatonMill;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EReference;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ExternalTest extends GeneratorIntegrationsTest {
+@TestWithMCLanguage(ActionAutomatonMill.class)
+public class ExternalTest {
   
   private ASTAutomaton aut;
   
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     aut = ActionAutomatonMill.automatonBuilder().uncheckedBuild();
   }

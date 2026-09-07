@@ -2,154 +2,58 @@
 
 package mc.feature.expression;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import de.monticore.runtime.junit.TestWithMCLanguage;
+import mc.feature.expression.expression4.Expression4Mill;
+import mc.feature.expression.expression4._ast.*;
+import mc.feature.expression.expression4._parser.Expression4Parser;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.Optional;
+import java.util.stream.Stream;
 
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
-import de.se_rwth.commons.logging.Log;
-import mc.GeneratorIntegrationsTest;
-import mc.feature.expression.expression4._ast.ASTAddExpr;
-import mc.feature.expression.expression4._ast.ASTBracketExpr;
-import mc.feature.expression.expression4._ast.ASTExpr;
-import mc.feature.expression.expression4._ast.ASTMultExpr;
-import mc.feature.expression.expression4._ast.ASTPowerExpr;
-import mc.feature.expression.expression4._ast.ASTPrimaryExpr;
-import mc.feature.expression.expression4._parser.Expression4Parser;
+@TestWithMCLanguage(Expression4Mill.class)
+public class Expression4Test {
 
-public class Expression4Test extends GeneratorIntegrationsTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
   public Optional<ASTExpr> parse(String input) throws IOException {
-    Expression4Parser parser = new Expression4Parser();
-    Optional<ASTExpr> res = parser.parseExpr(new StringReader(input));
-    return res;
+    Expression4Parser parser = Expression4Mill.parser();
+    return parser.parse_StringExpr(input);
   }
   
-  @Test
-  public void testPlus() {
-    try {
-      Optional<ASTExpr> res = parse("1+2");
-      Assertions.assertTrue(res.isPresent());
-      ASTExpr ast = res.get();
-      Assertions.assertTrue(ast instanceof ASTAddExpr);
-    }
-    catch (Exception e) {
-      Assertions.fail(e.getMessage());
-    }
-    Assertions.assertTrue(Log.getFindings().isEmpty());
-  }
-  
-  @Test
-  public void testLiteral() {
-    try {
-      Optional<ASTExpr> res = parse("1");
-      Assertions.assertTrue(res.isPresent());
-      ASTExpr ast = res.get();
-      Assertions.assertTrue(ast instanceof ASTPrimaryExpr);
-
-      Assertions.assertEquals("1", ((ASTPrimaryExpr) ast).getNumericLiteral());
-    }
-    catch (Exception e) {
-      Assertions.fail(e.getMessage());
-    }
-    Assertions.assertTrue(Log.getFindings().isEmpty());
-  }
-  
-  @Test
-  public void testStar() {
-    try {
-      Optional<ASTExpr> res = parse("1*2");
-      Assertions.assertTrue(res.isPresent());
-      ASTExpr ast = res.get();
-      Assertions.assertTrue(ast instanceof ASTMultExpr);
-    }
-    catch (Exception e) {
-      Assertions.fail(e.getMessage());
-    }
-    Assertions.assertTrue(Log.getFindings().isEmpty());
-  }
-  
-  @Test
-  public void testBracket() {
-    try {
-      Optional<ASTExpr> res = parse("(1*2)");
-      Assertions.assertTrue(res.isPresent());
-      ASTExpr ast = res.get();
-      Assertions.assertTrue(ast instanceof ASTBracketExpr);
-    }
-    catch (Exception e) {
-      Assertions.fail(e.getMessage());
-    }
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+  static Stream<Arguments> testArgs() {
+    return Stream.of(
+        Arguments.of("1+2", ASTAddExpr.class),
+        Arguments.of("1*2", ASTMultExpr.class),
+        Arguments.of("(1*2)", ASTBracketExpr.class),
+        Arguments.of("1*2+3", ASTAddExpr.class),
+        Arguments.of("1+2*3", ASTAddExpr.class),
+        Arguments.of("1-2-3", ASTAddExpr.class),
+        Arguments.of("2^3^4", ASTPowerExpr.class)
+    );
   }
 
-  @Test
-  public void testExpr1() {
-    try {
-      Optional<ASTExpr> res = parse("1*2+3");
-      Assertions.assertTrue(res.isPresent());
-      ASTExpr ast = res.get();
-      Assertions.assertTrue(ast instanceof ASTAddExpr);
-    }
-    catch (Exception e) {
-      Assertions.fail(e.getMessage());
-    }
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+  @ParameterizedTest
+  @MethodSource("testArgs")
+  public void testPlus(String input, Class<?> clazz) throws IOException {
+    Optional<ASTExpr> res = parse(input);
+    assertTrue(res.isPresent());
+    ASTExpr ast = res.get();
+    assertInstanceOf(clazz, ast);
   }
   
   @Test
-  public void testExpr2() {
-    try {
-      Optional<ASTExpr> res = parse("1+2*3");
-      Assertions.assertTrue(res.isPresent());
-      ASTExpr ast = res.get();
-      Assertions.assertTrue(ast instanceof ASTAddExpr);
-    }
-    catch (Exception e) {
-      Assertions.fail(e.getMessage());
-    }
-    Assertions.assertTrue(Log.getFindings().isEmpty());
-  }
-  
-  @Test
-  public void testExpr3() {
-    try {
-      Optional<ASTExpr> res = parse("1-2-3");
-      Assertions.assertTrue(res.isPresent());
-      ASTExpr ast = res.get();
-      Assertions.assertTrue(ast instanceof ASTAddExpr);
-    }
-    catch (Exception e) {
-      Assertions.fail(e.getMessage());
-    }
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+  public void testLiteral() throws IOException {
+    Optional<ASTExpr> res = parse("1");
+    assertTrue(res.isPresent());
+    ASTExpr ast = res.get();
+    assertInstanceOf(ASTPrimaryExpr.class, ast);
+    
+    assertEquals("1", ((ASTPrimaryExpr) ast).getNumericLiteral());
   }
 
-  @Test
-  public void testPowerWithRightAssoc() {
-    try {
-      Optional<ASTExpr> res = parse("2^3^4");
-      Assertions.assertTrue(res.isPresent());
-      Assertions.assertTrue(res.get()instanceof ASTPowerExpr);
-    }
-    catch (Exception e) {
-      Assertions.fail(e.getMessage());
-    }
-    Assertions.assertTrue(Log.getFindings().isEmpty());
-  }
-  
 }

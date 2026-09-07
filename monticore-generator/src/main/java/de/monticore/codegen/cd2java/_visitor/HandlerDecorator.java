@@ -348,9 +348,9 @@ public class HandlerDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTC
    * @return The set of all qualified symbol names
    */
   protected Set<String> getSymbolsTransitive() {
-    Set<String> superSymbolNames = new LinkedHashSet<>();
-    // add local symbols
-    superSymbolNames.addAll(symbolTableService.retrieveSymbolNamesFromCD(visitorService.getCDSymbol()));
+    // initialize with local symbols
+    Set<String> superSymbolNames = new LinkedHashSet<>(
+        symbolTableService.retrieveSymbolNamesFromCD(visitorService.getCDSymbol()));
     
     // add symbols of super CDs
     List<DiagramSymbol> superCDsTransitive = visitorService.getSuperCDsTransitive();

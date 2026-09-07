@@ -134,7 +134,7 @@ public class DSTLPrettyPrinter extends GrammarPrettyPrinter {
         getPrinter().print(a.getVariable());
         if (!a.getTypeList().isEmpty()) {
           getPrinter().print("->");
-          getPrinter().print(Names.getQualifiedName(a.getTypeList()));
+          getPrinter().print(Names.constructQualifiedName(a.getTypeList()));
           if (a.isPresentBlock() || a.isPresentEndAction()) {
             getPrinter().print(":");
             if (a.isPresentEndAction()) {

@@ -2,26 +2,27 @@
 
 package mc.emf.emethods;
 
-import mc.GeneratorIntegrationsTest;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import mc.feature.fautomaton.action.expression._ast.ASTAssignment;
 import mc.feature.fautomaton.action.expression.ExpressionMill;
 import mc.feature.fautomaton.action.expression._ast.ExpressionPackage;
 import mc.feature.fautomaton.automaton.flatautomaton._ast.*;
 import mc.feature.fautomaton.automaton.flatautomaton.*;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class EGeterSeterTest extends GeneratorIntegrationsTest {
+@TestWithMCLanguage(FlatAutomatonMill.class)
+public class EGeterSeterTest {
   
   private ASTAutomaton aut;
   private ASTTransition transition;
   private ASTAssignment assign;
   
-  @Before
+  @BeforeEach
   public void setUp() {
     aut = FlatAutomatonMill.automatonBuilder().uncheckedBuild();
     aut.setName("aut1");

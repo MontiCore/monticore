@@ -14,7 +14,6 @@ import mc.typescalculator.myownlanguage.MyOwnLanguageMill;
 import mc.typescalculator.myownlanguage._parser.MyOwnLanguageParser;
 import mc.typescalculator.myownlanguage._symboltable.IMyOwnLanguageGlobalScope;
 import mc.typescalculator.unittypes._ast.ASTMinuteType;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -22,8 +21,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SynthesizeSymTypeFromMyOwnLanguageTest {
 
@@ -79,19 +78,19 @@ public class SynthesizeSymTypeFromMyOwnLanguageTest {
   @Test
   public void testMCCollectionTypes() throws IOException {
     Optional<ASTMCType> type = parser.parse_StringMCType("List<int>");
-    Assertions.assertTrue(type.isPresent());
+    assertTrue(type.isPresent());
     type.get().setEnclosingScope(MyOwnLanguageMill.globalScope());
     ((ASTMCListType)(type.get())).getMCTypeArgument().getMCTypeOpt().get().setEnclosingScope(MyOwnLanguageMill.globalScope());
-    Assertions.assertEquals("List<int>", tc.symTypeFromAST(type.get()).printFullName());
+    assertEquals("List<int>", tc.symTypeFromAST(type.get()).printFullName());
   }
 
   @Test
   public void testUnitTypes() throws IOException {
     Optional<ASTMinuteType> type = parser.parse_StringMinuteType("min");
-    Assertions.assertTrue(type.isPresent());
+    assertTrue(type.isPresent());
     // pretend to use the scope genitor
     type.get().setEnclosingScope(MyOwnLanguageMill.globalScope());
-    Assertions.assertEquals("min", tc.symTypeFromAST(type.get()).print());
+    assertEquals("min", tc.symTypeFromAST(type.get()).print());
   }
 
 

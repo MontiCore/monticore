@@ -54,7 +54,6 @@ public class CommonExpressionsCTTIVisitor
   public void handle(ASTCallExpression expr) {
     InferenceContext callCtx = getInferenceContext4Ast()
         .getContextOfExpression(expr);
-    InferenceVisitorMode mode = callCtx.getVisitorMode();
     boolean hasTargetType = callCtx.hasTargetType();
     // edge case: function returning another function: getFunc()(1);
     if (!hasTargetType) {
@@ -64,10 +63,10 @@ public class CommonExpressionsCTTIVisitor
       Optional<SymTypeOfFunction> targetFunc = callCtx
           .getPartialFunctionInfo()
           .getAsFunctionIfComplete();
-      if (targetFunc.isPresent()) {
-        getInferenceContext4Ast().getContextOfExpression(expr)
-            .setTargetType(targetFunc.get());
-      }
+      targetFunc.ifPresent(symTypeOfFunction ->
+          getInferenceContext4Ast().getContextOfExpression(expr)
+              .setTargetType(symTypeOfFunction)
+      );
     }
 
     visitForInference(expr);

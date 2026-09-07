@@ -5,7 +5,6 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisTraverser;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
-import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Log;
@@ -13,10 +12,7 @@ import de.se_rwth.commons.logging.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-import static de.monticore.types.check.SymTypePrimitive.unbox;
 import static de.monticore.types.check.TypeCheck.isFloat;
-import static de.monticore.types.check.TypeCheck.isDouble;
-import static de.monticore.types.check.TypeCheck.isLong;
 
 /**
  * @deprecated part of typecheck1,

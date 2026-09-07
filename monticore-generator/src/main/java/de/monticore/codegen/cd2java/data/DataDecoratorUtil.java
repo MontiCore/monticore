@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java.data;
 
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis._ast.ASTCDType;
@@ -79,6 +80,28 @@ public class DataDecoratorUtil extends AbstractCreator<ASTCDType, List<ASTCDMeth
     // deep clone without parameters
     ASTMCType type = getMCTypeFacade().createQualifiedType(getSimpleName(cdType));
     return getCDMethodFacade().createMethod(PUBLIC.build(), type, DEEP_CLONE_METHOD);
+  }
+
+  public ASTCDMethod createReplaceChildMethod() {
+    ASTCDParameter currentChildParameter =
+        getCDParameterFacade().createParameter(
+            getMCTypeFacade().createQualifiedType("de.monticore.ast.ASTNode"),
+            "currentChild"
+        );
+    ASTCDParameter replacementParameter =
+        getCDParameterFacade().createParameter(
+            getMCTypeFacade().createQualifiedType("de.monticore.ast.ASTNode"),
+            "replacement"
+        );
+    return getCDMethodFacade().createMethod(
+        PUBLIC.build(),
+        CD4CodeMill.mCReturnTypeBuilder().setMCVoidType(
+            getMCTypeFacade().createVoidType()
+        ).build(),
+        "replaceChild",
+        currentChildParameter,
+        replacementParameter
+    );
   }
 
   protected String getSimpleName(ASTCDType astcdType) {

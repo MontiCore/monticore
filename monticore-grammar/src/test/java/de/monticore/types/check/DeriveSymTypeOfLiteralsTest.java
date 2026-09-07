@@ -7,12 +7,11 @@ import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DeriveSymTypeOfLiteralsTest {
   
@@ -45,9 +44,9 @@ public class DeriveSymTypeOfLiteralsTest {
   @Test
   public void deriveTFromLiteral1(){
     ASTLiteral lit = MCCommonLiteralsMill.natLiteralBuilder().setDigits("17").build();
-    Assertions.assertEquals("int", tc.typeOf(lit).print());
+    assertEquals("int", tc.typeOf(lit).print());
   
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty());
   }
   
   

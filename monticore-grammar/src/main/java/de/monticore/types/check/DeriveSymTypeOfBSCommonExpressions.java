@@ -665,7 +665,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
         }
       }
       if (!fieldSymbols.isEmpty()) {
-        VariableSymbol var = fieldSymbols.get(0);
+        VariableSymbol var = fieldSymbols.getFirst();
         expr.setDefiningSymbol(var);
         SymTypeExpression type = var.getType();
         getTypeCheckResult().setField();
@@ -742,7 +742,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
   protected void calculatedQualifiedEntity(List<ExprToNamePair> nameParts) {
     List<String> namePartStrings = nameParts.stream().map(ExprToNamePair::getName).collect(Collectors.toList());
     String qualName = String.join(".", namePartStrings);
-    ASTExpression lastExpr = nameParts.get(nameParts.size() - 1).getExpression();
+    ASTExpression lastExpr = nameParts.getLast().getExpression();
 
     List<VariableSymbol> fieldSymbols = getScope(lastExpr.getEnclosingScope()).resolveVariableMany(qualName);
     Optional<TypeSymbol> typeSymbolOpt = getScope(lastExpr.getEnclosingScope()).resolveType(qualName);
@@ -754,7 +754,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
         getTypeCheckResult().reset();
         getTypeCheckResult().setResult(SymTypeExpressionFactory.createObscureType());
       } else {
-        VariableSymbol var = fieldSymbols.get(0);
+        VariableSymbol var = fieldSymbols.getFirst();
         definingSymbolSetter.setDefiningSymbol(lastExpr, var);
         SymTypeExpression type = var.getType();
         getTypeCheckResult().setField();
@@ -810,10 +810,10 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
   protected void calculateNamingChainCallExpression(ASTCallExpression expr,
                                                     List<ExprToNamePair> nameParts,
                                                     List<SymTypeExpression> argTypes) {
-    List<ASTExpression> astNameParts = nameParts.stream().map(ExprToNamePair::getExpression).collect(Collectors.toList());
+    List<ASTExpression> astNameParts = nameParts.stream().map(ExprToNamePair::getExpression).toList();
     List<String> stringNameParts = nameParts.stream().map(ExprToNamePair::getName).collect(Collectors.toList());
 
-    String methodName = stringNameParts.get(stringNameParts.size() - 1);
+    String methodName = stringNameParts.getLast();
 
     // We will incrementally try to build our result:
     // We will start with the first name part and check whether it resolves to an entity.
@@ -1009,10 +1009,10 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
       if (mostSpecific.size() > 1) {
         checkForReturnType(mostSpecific, callExpr);
       }
-      if(definingSymbols.containsKey(mostSpecific.get(0))){
-        callExpr.setDefiningSymbol(definingSymbols.get(mostSpecific.get(0)));
+      if(definingSymbols.containsKey(mostSpecific.getFirst())){
+        callExpr.setDefiningSymbol(definingSymbols.get(mostSpecific.getFirst()));
       }
-      SymTypeExpression wholeResult = mostSpecific.get(0).getType();
+      SymTypeExpression wholeResult = mostSpecific.getFirst().getType();
       getTypeCheckResult().setMethod();
       getTypeCheckResult().setResult(wholeResult);
     } else {
@@ -1071,7 +1071,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
   }
 
   protected void checkForReturnType(List<SymTypeOfFunction> fittingFunctions, ASTCallExpression expr) {
-    SymTypeExpression returnType = fittingFunctions.get(0).getType();
+    SymTypeExpression returnType = fittingFunctions.getFirst().getType();
     for (SymTypeOfFunction function: fittingFunctions) {
       if (!returnType.deepEquals(function.getType())) {
         getTypeCheckResult().reset();
@@ -1125,18 +1125,18 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
     }
     boolean ambiguous = false;
     Map<SymTypeOfFunction, int[]> specificityMap = new LinkedHashMap<>();
-    List<SymTypeOfFunction> mostSpecific = Lists.newArrayList(candidates.get(0));
+    List<SymTypeOfFunction> mostSpecific = Lists.newArrayList(candidates.getFirst());
     for(SymTypeOfFunction function: candidates) {
       int[] specificity = new int[args.size()];
       for(int i = 0; i<args.size(); i++){
         specificity[i] = TypeCheck.calculateInheritanceDistance(args.get(i), function.getArgumentType(i));
       }
       specificityMap.put(function, specificity);
-      if(!function.equals(mostSpecific.get(0))) {
+      if(!function.equals(mostSpecific.getFirst())) {
         // compare their specificity
-        int[] mostSpecificSpecificity = specificityMap.get(mostSpecific.get(0));
-        SymTypeOfFunction res1 = determineMoreSpecific(function, specificity, mostSpecific.get(0), mostSpecificSpecificity);
-        SymTypeOfFunction res2 = determineMoreSpecific(mostSpecific.get(0), mostSpecificSpecificity, function, specificity);
+        int[] mostSpecificSpecificity = specificityMap.get(mostSpecific.getFirst());
+        SymTypeOfFunction res1 = determineMoreSpecific(function, specificity, mostSpecific.getFirst(), mostSpecificSpecificity);
+        SymTypeOfFunction res2 = determineMoreSpecific(mostSpecific.getFirst(), mostSpecificSpecificity, function, specificity);
         if(!res1.equals(res2)){
           boolean equalArgs = true;
           for(int i = 0; i< Integer.max(res1.sizeArgumentTypes(), res2.sizeArgumentTypes()); i++) {
@@ -1285,8 +1285,7 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
   protected SymTypeExpression calculateArrayExpression(ASTArrayAccessExpression node, SymTypeExpression arrayTypeResult, SymTypeExpression indexResult) {
     SymTypeExpression wholeResult = SymTypeExpressionFactory.createObscureType();
     //the type of the index has to be an integral type
-    if (indexResult.isPrimitive() && ((SymTypePrimitive) indexResult).isIntegralType() && arrayTypeResult instanceof SymTypeArray) {
-      SymTypeArray arrayResult = (SymTypeArray) arrayTypeResult;
+    if (indexResult.isPrimitive() && ((SymTypePrimitive) indexResult).isIntegralType() && arrayTypeResult instanceof SymTypeArray arrayResult) {
       wholeResult = getCorrectResultArrayExpression(node.getEnclosingScope(), indexResult, arrayTypeResult, arrayResult);
     }
     return wholeResult;

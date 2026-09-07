@@ -3,15 +3,14 @@ package de.monticore.ast;
 
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class CommentBuilderTest {
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -23,11 +22,12 @@ public class CommentBuilderTest {
     assertTrue(Log.getFindings().isEmpty());
   }
 
-  @Test(expected=IllegalStateException.class)
+  @Test
   public void negativeTest() {
     final CommentBuilder commentBuilder = new CommentBuilder();
     assertFalse(commentBuilder.isValid());
-    commentBuilder.build();
-    assertTrue(Log.getFindings().isEmpty());
+    assertThrows(IllegalStateException.class, commentBuilder::build);
+    assertEquals(1L, Log.getFindingsCount());
+    assertEquals("0xA4322 text of type String must not be null", Log.getFindings().get(0).getMsg());
   }
 }

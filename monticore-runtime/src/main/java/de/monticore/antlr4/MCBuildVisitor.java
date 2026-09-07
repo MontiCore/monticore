@@ -70,7 +70,7 @@ public abstract class MCBuildVisitor {
       throw new IllegalArgumentException("0xA0709 text was null!");
     } else if ("\n".equals(text)) {
       column += text.length();
-    } else if (text.indexOf("\n") == -1) {
+    } else if (!text.contains("\n")) {
       column += text.length();
     } else {
       String[] splitted = text.split("\n", -1);

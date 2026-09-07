@@ -1,8 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.feature.scopes;
 
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import mc.feature.scopes.supautomaton.SupAutomatonMill;
 import mc.feature.scopes.supautomaton._ast.ASTSup;
 import mc.feature.scopes.supautomaton._parser.SupAutomatonParser;
@@ -11,7 +10,6 @@ import mc.feature.scopes.supautomaton._symboltable.SupAutomatonScope;
 import mc.feature.scopes.supautomaton._symboltable.SupAutomatonScopesGenitorDelegator;
 import mc.feature.scopes.superautomaton._symboltable.AutomatonSymbol;
 import mc.feature.scopes.superautomaton._symboltable.StateSymbol;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -19,29 +17,22 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Optional;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@TestWithMCLanguage(SupAutomatonMill.class)
 public class ScopesTest {
 
   private ASTSup astSup;
   private SupAutomatonScopesGenitorDelegator symbolTableCreator;
   private ISupAutomatonGlobalScope globalScope;
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
+
   @BeforeEach
   public void setUp() throws IOException {
-    SupAutomatonMill.reset();
-    SupAutomatonMill.init();
-    SupAutomatonParser supAutomatonParser = new SupAutomatonParser();
+    SupAutomatonParser supAutomatonParser = SupAutomatonMill.parser();
     Optional<ASTSup> astSup = supAutomatonParser.parse("src/test/resources/mc/feature/scopes/SupAutomatonModel.aut");
-    Assertions.assertFalse(supAutomatonParser.hasErrors());
-    Assertions.assertTrue(astSup.isPresent());
+    assertFalse(supAutomatonParser.hasErrors());
+    assertTrue(astSup.isPresent());
 
     ISupAutomatonGlobalScope globalScope = SupAutomatonMill.globalScope();
     globalScope.setFileExt("aut");
@@ -50,7 +41,6 @@ public class ScopesTest {
 
     this.astSup = astSup.get();
     this.globalScope = globalScope;
-    this.symbolTableCreator = symbolTableCreator;
   }
 
   @Test
@@ -71,13 +61,11 @@ public class ScopesTest {
     //findet also voll qualifiziert auch vom global aus
     Optional<StateSymbol> pingStateSymbolGlobal = globalScope.resolveState("TopPingPong.PingPong.Ping");
 
-    Assertions.assertTrue(pingPongAutomatonSymbolLokal.isPresent());
-    Assertions.assertTrue(pingPongAutomatonSymbolGlobal.isPresent());
-    Assertions.assertTrue(pingStateSymbol.isPresent());
-    Assertions.assertTrue(pongStateSymbol.isPresent());
-    Assertions.assertTrue(noGameStateSymbol.isPresent());
-    Assertions.assertTrue(pingStateSymbolGlobal.isPresent());
-  
-    Assertions.assertTrue(Log.getFindings().isEmpty());
+    assertTrue(pingPongAutomatonSymbolLokal.isPresent());
+    assertTrue(pingPongAutomatonSymbolGlobal.isPresent());
+    assertTrue(pingStateSymbol.isPresent());
+    assertTrue(pongStateSymbol.isPresent());
+    assertTrue(noGameStateSymbol.isPresent());
+    assertTrue(pingStateSymbolGlobal.isPresent());
   }
 }

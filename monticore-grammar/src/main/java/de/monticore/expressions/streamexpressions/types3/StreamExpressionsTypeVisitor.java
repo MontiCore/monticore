@@ -21,7 +21,6 @@ import de.se_rwth.commons.logging.Log;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static de.monticore.types.check.SymTypeExpressionFactory.createObscureType;
 import static de.monticore.types.check.SymTypeExpressionFactory.createUnion;
@@ -71,7 +70,7 @@ public class StreamExpressionsTypeVisitor extends AbstractTypeVisitor
     SymTypeExpression result;
     List<SymTypeExpression> containedExprTypes = expr.getExpressionList().stream()
         .map(e -> getType4Ast().getPartialTypeOfExpr(e))
-        .collect(Collectors.toList());
+        .toList();
     Optional<SymTypeExpression> givenElementType =
         expr.isPresentMCTypeArgument() ?
             Optional.of(getType4Ast().getPartialTypeOfTypeId(expr.getMCTypeArgument())) :

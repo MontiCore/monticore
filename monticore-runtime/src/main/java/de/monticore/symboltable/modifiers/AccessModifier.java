@@ -3,7 +3,6 @@
 package de.monticore.symboltable.modifiers;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 public interface AccessModifier extends Modifier {
@@ -26,7 +25,7 @@ public interface AccessModifier extends Modifier {
 
   final class AllInclusionAccessModifier implements AccessModifier {
 
-    protected static final String DIMENSION = "All";
+    private static final String DIMENSION = "All";
 
     @Override
     public boolean includes(AccessModifier modifier) {

@@ -51,12 +51,13 @@ public final class HierarchyHelper {
     }
 
     listChildPairsWithOptionals = getListChildPairsWithOptionals(lhs.getODObjectList());
-    Map<String, List<String>> rhsListChildPairs = rhs.isPresent() ?
-            getListChildPairs(rhs.get().getODObjectList()) : new LinkedHashMap<>();
+    Map<String, List<String>> rhsListChildPairs =
+        rhs.map(astodDefinition -> getListChildPairs(astodDefinition.getODObjectList()))
+            .orElseGet(LinkedHashMap::new);
     for (String key : rhsListChildPairs.keySet()) {
       // Every list on the lhs is also on the rhs
       // If there are objects to create in a list put them to the Map
-      if (!listChildPairs.get(key).containsAll(rhsListChildPairs.get(key))) {
+      if (!new HashSet<>(listChildPairs.get(key)).containsAll(rhsListChildPairs.get(key))) {
         List<String> temporary = rhsListChildPairs.get(key);
         // No duplicates
         temporary.removeAll(listChildPairs.get(key));
@@ -213,9 +214,7 @@ public final class HierarchyHelper {
 
       Optional<ASTMatchingObject> innerLinkObject = allMatches.stream()
               .filter(m -> m.getObjectName().equals(innerObjectName)).findAny();
-      if (innerLinkObject.isPresent()) {
-        innerObjects.add(innerLinkObject.get());
-      }
+      innerLinkObject.ifPresent(innerObjects::add);
     }
 
     return innerObjects;
@@ -275,7 +274,7 @@ public final class HierarchyHelper {
    */
   public List<ASTMatchingObject> getListObjects(List<ASTMatchingObject> allObjects) {
     ArrayList<ASTMatchingObject> mandatoryObjects = allObjects.stream()
-            .filter(c -> c.isListObject()).collect(Collectors.toCollection(ArrayList::new));
+            .filter(ASTMatchingObject::isListObject).collect(Collectors.toCollection(ArrayList::new));
     return mandatoryObjects;
   }
 
@@ -326,12 +325,8 @@ public final class HierarchyHelper {
           int index = allMatches.indexOf(object);
           if (allMatches.get(index + i).isOptObject() || allMatches.get(index + i).getType().endsWith("IOptional")) {
             for (String innerLinkName : allMatches.get(index + i).getInnerLinkObjectNamesList()) {
-              for (Iterator<ASTMatchingObject> it = mandatoryObjects.iterator(); it.hasNext(); ) {
-                ASTMatchingObject mandatoryObject = it.next();
-                if (mandatoryObject.getObjectName().equals(innerLinkName)) {
-                  it.remove();
-                }
-              }
+              mandatoryObjects.removeIf(
+                  mandatoryObject -> mandatoryObject.getObjectName().equals(innerLinkName));
             }
           }
         }
@@ -341,12 +336,8 @@ public final class HierarchyHelper {
           int index = allMatches.indexOf(object);
           if (allMatches.get(index + i).isListObject() || allMatches.get(index + i).getType().endsWith("IList")) {
             for (String innerLinkName : allMatches.get(index + i).getInnerLinkObjectNamesList()) {
-              for (Iterator<ASTMatchingObject> it = mandatoryObjects.iterator(); it.hasNext(); ) {
-                ASTMatchingObject mandatoryObject = it.next();
-                if (mandatoryObject.getObjectName().equals(innerLinkName)) {
-                  it.remove();
-                }
-              }
+              mandatoryObjects.removeIf(
+                  mandatoryObject -> mandatoryObject.getObjectName().equals(innerLinkName));
             }
           }
         }

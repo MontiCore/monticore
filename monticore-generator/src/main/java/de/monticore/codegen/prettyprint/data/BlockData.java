@@ -22,6 +22,9 @@ public class BlockData {
   // If Iterators were used for NonTerminals in this block
   protected boolean isListReady = false;
 
+  protected final Set<String> optionalSet = new LinkedHashSet<>(),
+          requiredSet = new LinkedHashSet<>();
+
   public BlockData(boolean isClassProd, int iteration, int inheritedIteration, ASTBlock block) {
     this.isClassProd = isClassProd;
     this.iteration = iteration;
@@ -65,8 +68,6 @@ public class BlockData {
   public boolean isListReady() {
     return isListReady;
   }
-
-  protected final Set<String> optionalSet = new LinkedHashSet<>(), requiredSet = new LinkedHashSet<>();
 
   /**
    * @return set of optionally used AST-elements

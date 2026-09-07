@@ -15,3 +15,8 @@ sourcesJar {
   // exclude generated files
   exclude("*.symtabdefinitionsym")
 }
+
+dependencies {
+  stdefTool("de.monticore.lang:cd4analysis:$previous_mc_version") // TODO: backport this fix into the CD4A plugin
+  stdefTool("de.monticore.lang.cd4analysis:stdefgradle:$previous_mc_version") // TODO: backport this fix into the CD4A plugin
+}

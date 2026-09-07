@@ -11,15 +11,15 @@ public interface ReportingConstants {
 
 	String REPORT_FILE_EXTENSION = "txt";
 
-	public final int REPORTING_ROW_LENGTH = 82;
+	int REPORTING_ROW_LENGTH = 82;
 
-	public static final int FORMAT_LENGTH_1 = 6;
+	int FORMAT_LENGTH_1 = 6;
 
-	public static final int FORMAT_LENGTH_2 = 11;
+	int FORMAT_LENGTH_2 = 11;
 
-	public static final int COLUMN = 35;
+	int COLUMN = 35;
 
-	public static final String TEMPLATE_FILE_EXTENSION = "ftl";
+	String TEMPLATE_FILE_EXTENSION = "ftl";
 	
-	public final String OD_FILE_EXTENSION = "od";
+	String OD_FILE_EXTENSION = "od";
 }

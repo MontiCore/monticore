@@ -3,12 +3,10 @@ package de.monticore.types3;
 
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-
 public class TupleExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
 
   @Test
-  public void deriveFromTupleExpressionTest() throws IOException {
+  public void deriveFromTupleExpressionTest() {
     // simple
     checkExpr("(1,1)", "(int, int)");
     checkExpr("(1, 1)", "(int, int)");
@@ -23,7 +21,13 @@ public class TupleExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
   }
 
   @Test
-  public void bracketExpressionIsNotATupleTest() throws IOException {
+  public void deriveFromTupleExpressionCTTITest() {
+    checkExpr("([], [1])", "(List<int>, List<float>)", "(List<int>, List<float>)");
+    checkExpr("(([], [1]), 1)", "((List<int>, List<float>), int)", "((List<int>, List<float>), int)");
+  }
+
+  @Test
+  public void bracketExpressionIsNotATupleTest() {
     checkExpr("(1)", "int");
     checkExpr("((1,1))", "(int, int)");
   }

@@ -2,13 +2,13 @@
 
 package mc.feature.visitor.inheritance.delegator;
 
-import mc.GeneratorIntegrationsTest;
+import de.monticore.runtime.junit.AbstractMCTest;
 
 /**
  * Common infrastructure for visitor tests.
  *
  */
-public class CommonVisitorTest extends GeneratorIntegrationsTest {
+public class CommonVisitorTest extends AbstractMCTest {
   // run traces the actual visiting which later is assert to match the
   // expectations.
   protected StringBuilder run = new StringBuilder();

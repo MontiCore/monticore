@@ -6,13 +6,14 @@ import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.compsymbols.CompSymbolsMill;
 import de.monticore.symbols.compsymbols._symboltable.ComponentTypeSymbol;
 import de.monticore.symbols.compsymbols._symboltable.PortSymbol;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Holds test for {@link CompKindOfComponentType}
@@ -38,12 +39,12 @@ public class CompKindOfComponentTypeTest {
     CompKindOfComponentType clone = comp.deepClone().asComponentType();
 
     // Then
-    Assertions.assertEquals(comp.getTypeInfo(), clone.getTypeInfo());
-    Assertions.assertNotSame(comp.getArguments(), clone.getArguments());
-    Assertions.assertIterableEquals(comp.getArguments(), clone.getArguments());
-    Assertions.assertNotSame(comp.getParamBindings(), clone.getParamBindings());
-    Assertions.assertIterableEquals(comp.getParamBindingsAsList(), clone.getParamBindingsAsList());
-    Assertions.assertEquals(comp.getSourceNode().isPresent(), clone.getSourceNode().isPresent());
+    assertEquals(comp.getTypeInfo(), clone.getTypeInfo());
+    assertNotSame(comp.getArguments(), clone.getArguments());
+    assertIterableEquals(comp.getArguments(), clone.getArguments());
+    assertNotSame(comp.getParamBindings(), clone.getParamBindings());
+    assertIterableEquals(comp.getParamBindingsAsList(), clone.getParamBindingsAsList());
+    assertEquals(comp.getSourceNode().isPresent(), clone.getSourceNode().isPresent());
   }
 
   /**
@@ -80,8 +81,8 @@ public class CompKindOfComponentTypeTest {
     List<CompKindExpression> parentOfTypeExpr = compTypeExpr.getSuperComponents();
 
     // Then
-    Assertions.assertFalse(parentOfTypeExpr.isEmpty(), "Parent not present.");
-    Assertions.assertEquals(parentTypeExpr, parentOfTypeExpr.get(0));
+    assertFalse(parentOfTypeExpr.isEmpty(), "Parent not present.");
+    assertEquals(parentTypeExpr, parentOfTypeExpr.get(0));
   }
 
   /**
@@ -100,7 +101,7 @@ public class CompKindOfComponentTypeTest {
     List<CompKindExpression> parentOfTypeExpr = compTypeExpr.getSuperComponents();
 
     // Then
-    Assertions.assertTrue(parentOfTypeExpr.isEmpty());
+    assertTrue(parentOfTypeExpr.isEmpty());
   }
 
   @Test
@@ -135,9 +136,9 @@ public class CompKindOfComponentTypeTest {
     Optional<SymTypeExpression> portsType = compTypeExpr.getTypeOfPort(portName);
 
     // Then
-    Assertions.assertTrue(portsType.isPresent(), "Port not present");
-    Assertions.assertInstanceOf(SymTypePrimitive.class, portsType.get());
-    Assertions.assertEquals(BasicSymbolsMill.INT, portsType.get().print());
+    assertTrue(portsType.isPresent(), "Port not present");
+    assertInstanceOf(SymTypePrimitive.class, portsType.get());
+    assertEquals(BasicSymbolsMill.INT, portsType.get().print());
   }
 
   @Test
@@ -167,9 +168,9 @@ public class CompKindOfComponentTypeTest {
     Optional<SymTypeExpression> portsType = compTypeExpr.getTypeOfPort(portName);
 
     // Then
-    Assertions.assertTrue(portsType.isPresent());
-    Assertions.assertTrue(portsType.get() instanceof SymTypePrimitive);
-    Assertions.assertEquals(BasicSymbolsMill.INT, portsType.get().print());
+    assertTrue(portsType.isPresent());
+    assertTrue(portsType.get() instanceof SymTypePrimitive);
+    assertEquals(BasicSymbolsMill.INT, portsType.get().print());
   }
 
   @Test
@@ -204,8 +205,8 @@ public class CompKindOfComponentTypeTest {
     Optional<SymTypeExpression> paramType = compTypeExpr.getTypeOfParameter(paramName);
 
     // Then
-    Assertions.assertTrue(paramType.isPresent(), "Param not present");
-    Assertions.assertInstanceOf(SymTypePrimitive.class, paramType.get());
-    Assertions.assertEquals(BasicSymbolsMill.INT, paramType.get().print());
+    assertTrue(paramType.isPresent(), "Param not present");
+    assertInstanceOf(SymTypePrimitive.class, paramType.get());
+    assertEquals(BasicSymbolsMill.INT, paramType.get().print());
   }
 }

@@ -6,11 +6,8 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.grammar.grammar._ast.*;
-import de.monticore.grammar.grammar._symboltable.AdditionalAttributeSymbol;
 import de.monticore.utils.Link;
 
-import java.util.Collection;
-import java.util.Map;
 import java.util.Set;
 import java.util.function.UnaryOperator;
 

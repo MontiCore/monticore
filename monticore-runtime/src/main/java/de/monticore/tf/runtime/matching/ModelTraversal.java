@@ -13,7 +13,7 @@ public class ModelTraversal<E extends ITraverser> {
   protected Map<ASTNode, ASTNode> parents= new LinkedHashMap<>();
   protected Stack<ASTNode> currentparents = new Stack<>();
 
-  private final E traverser;
+  protected final E traverser;
 
   protected ModelTraversal(E traverser) {
     this.traverser = traverser;
@@ -38,6 +38,13 @@ public class ModelTraversal<E extends ITraverser> {
     return parents.get(node);
   }
 
+  public void reset() {
+    this.cName2instances.clear();
+    this.all.clear();
+    this.parents.clear();
+    this.currentparents.clear();
+    this.getTraverser().clearTraversedElements();
+  }
 
   public Map<ASTNode, ASTNode> getParents(){
     return parents;

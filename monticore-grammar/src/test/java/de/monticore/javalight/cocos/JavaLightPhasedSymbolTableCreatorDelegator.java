@@ -2,7 +2,6 @@
 package de.monticore.javalight.cocos;
 
 import de.monticore.javalight._ast.ASTJavaMethod;
-import de.monticore.javalight._visitor.JavaLightTraverser;
 import de.monticore.testjavalight.TestJavaLightMill;
 import de.monticore.testjavalight._symboltable.ITestJavaLightArtifactScope;
 import de.monticore.testjavalight._symboltable.ITestJavaLightGlobalScope;

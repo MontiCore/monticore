@@ -16,16 +16,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.util.Optional;
 
-import static de.monticore.types.check.DefsTypeBasic._booleanSymType;
-import static de.monticore.types.check.DefsTypeBasic._byteSymType;
-import static de.monticore.types.check.DefsTypeBasic._charSymType;
-import static de.monticore.types.check.DefsTypeBasic._doubleSymType;
-import static de.monticore.types.check.DefsTypeBasic._floatSymType;
-import static de.monticore.types.check.DefsTypeBasic._intSymType;
-import static de.monticore.types.check.DefsTypeBasic._longSymType;
-import static de.monticore.types.check.DefsTypeBasic._shortSymType;
-import static de.monticore.types.check.DefsTypeBasic.add2scope;
-import static de.monticore.types.check.DefsTypeBasic.field;
+import static de.monticore.types.check.DefsTypeBasic.*;
 
 public class DeriveSymTypeOfAssignmentExpressionTest extends DeriveSymTypeAbstractTest {
 

@@ -6,20 +6,18 @@ import de.se_rwth.commons.logging.LogStub;
 import mc.testcases.automaton._ast.ASTAutomaton;
 import mc.testcases.automaton._ast.ASTState;
 import mc.testcases.automaton._parser.AutomatonParser;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
-import org.junit.Ignore;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ListStateTest {
   
-  @Before
+  @BeforeEach
   public void before() {
     LogStub.init();
     Log.enableFailQuick(false);
@@ -44,7 +42,7 @@ public class ListStateTest {
     List<ASTState> list_state_1 = rule.get_list_1_state_1();
     assertEquals(2, list_state_1.size());
     for (ASTState s : list_state_1) {
-      assertTrue(s.getName() + "is not initial", s.isInitial());
+      assertTrue(s.isInitial(), s.getName() + "is not initial");
     }
   
     assertTrue(Log.getFindings().isEmpty());

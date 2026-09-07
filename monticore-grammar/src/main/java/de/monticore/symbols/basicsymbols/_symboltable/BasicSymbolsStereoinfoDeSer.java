@@ -1,11 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.symbols.basicsymbols._symboltable;
 
-import de.monticore.interpreter.Value;
 import de.monticore.symboltable.IScope;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.stereotypes.IStereotypeReference;
 import de.monticore.symboltable.stereotypes.StereoinfoDeSer;
+import de.monticore.values.MCValue;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Map;
@@ -22,8 +22,9 @@ public class BasicSymbolsStereoinfoDeSer extends StereoinfoDeSer {
   }
 
   @Override
-  protected Map.Entry<IStereotypeReference, Optional<Value>> doDeserialize(JsonElement json,
-                                                                           IScope enclosingScope) {
+  protected Map.Entry<IStereotypeReference, Optional<MCValue>> doDeserialize(
+      JsonElement json,
+      IScope enclosingScope) {
     if (json.getAsJsonObject().hasMember(STEREO_VALUE)) {
       Log.errorInternal(
         "0x82403 Internal error: The serialization of values for symbolic stereotypes is not yet " +
@@ -31,7 +32,7 @@ public class BasicSymbolsStereoinfoDeSer extends StereoinfoDeSer {
       );
     }
 
-    if (!(enclosingScope instanceof IBasicSymbolsScope)) {
+    if (!(enclosingScope instanceof IBasicSymbolsScope stereoScope)) {
       Log.error(
         "0x82404 StereotypeSymbolsStereoinfoDeSer#deserialize expected an enclosing scope of " +
           "type de.monticore.symbols.stereotypesymbols._symboltable.IStereotypeSymbolsScope, but " +
@@ -41,8 +42,7 @@ public class BasicSymbolsStereoinfoDeSer extends StereoinfoDeSer {
     }
 
     String stereotypeName = json.getAsJsonObject().getStringMember(STEREO_TYPE);
-    IBasicSymbolsScope stereoScope = ((IBasicSymbolsScope) enclosingScope);
-
+    
     return Map.entry(
       new BasicSymbolsStereotypeReference(stereotypeName, stereoScope),
       Optional.empty()

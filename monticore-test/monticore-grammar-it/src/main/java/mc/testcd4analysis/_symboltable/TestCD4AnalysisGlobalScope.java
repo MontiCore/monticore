@@ -8,11 +8,9 @@ import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.Splitters;
 import de.se_rwth.commons.logging.Log;
-import mc.testcd4analysis.TestCD4AnalysisMill;
 import mc.testcd4analysis._ast.ASTCDCompilationUnit;
 import mc.testcd4analysis._parser.TestCD4AnalysisParser;
 
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.net.URL;

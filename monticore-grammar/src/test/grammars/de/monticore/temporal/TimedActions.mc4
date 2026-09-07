@@ -1,0 +1,14 @@
+package de.monticore.temporal;
+
+grammar TimedActions extends de.monticore.temporal.ISOTemporals,
+        de.monticore.temporal.DETemporals,
+        de.monticore.temporal.EscapedTemporalLiterals, de.monticore.expressions.CommonExpressions,
+        de.monticore.statements.MCCommonStatements {
+
+  ActionSequence = TimedAction* ;
+
+  TimedAction = "on" Instant Action ;
+
+  Action = "do" MCStatement ;
+
+}

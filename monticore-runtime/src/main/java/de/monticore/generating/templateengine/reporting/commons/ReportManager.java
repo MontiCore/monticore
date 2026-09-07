@@ -8,7 +8,6 @@ import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.reporting.artifacts.ReportingNameHelper;
 import de.monticore.io.paths.MCPath;
 import de.monticore.symboltable.IScope;
-import de.se_rwth.commons.logging.Log;
 
 import java.net.URL;
 import java.nio.file.Path;
@@ -16,7 +15,7 @@ import java.util.*;
 
 public class ReportManager implements IReportEventHandler {
 
-  protected Set<IReportEventHandler> reportEventHandlers = new LinkedHashSet<IReportEventHandler>();
+  protected Set<IReportEventHandler> reportEventHandlers = new LinkedHashSet<>();
 
   protected String outputDir;
 
@@ -454,7 +453,7 @@ public class ReportManager implements IReportEventHandler {
    * A factory for providing tool specific report managers.
    *
    */
-  public static interface ReportManagerFactory {
+  public interface ReportManagerFactory {
 
     /**
      * Implementations of this method are responsible for providing an

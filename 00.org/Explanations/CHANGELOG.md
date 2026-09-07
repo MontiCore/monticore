@@ -2,8 +2,109 @@
 
 # Release Notes
 
+## MontiCore 7.9.0
+release: 04. August 2026
+
+## Additions
+* Add Stream.isEmpty() SymTabDef [#202](https://github.com/MontiCore/monticore/pull/202)
+* MontiTrans:
+  * Add TOP mechanism to TFGen [#267](https://github.com/MontiCore/monticore/pull/267)
+  * Add trafo optimization [#201](https://github.com/MontiCore/monticore/pull/201)
+
+* Add SymbolSupplier as a replacement to SymbolSurrogates [#273](https://github.com/MontiCore/monticore/pull/273)
+* Interpreter [#288](https://github.com/MontiCore/monticore/pull/288)
+* ASTNode#replaceChild [#343](https://github.com/MontiCore/monticore/pull/343)
+* JavaGen-Library [#247](https://github.com/MontiCore/monticore/pull/247)
+* Javagen generator [#248](https://github.com/MontiCore/monticore/pull/248)
+* Add methods for getting all symbols and subSymbols of a scope [#192](https://github.com/MontiCore/monticore/pull/192)
+* Symbol Adaption via super types is not implicit [#285](https://github.com/MontiCore/monticore/pull/285)
+* Add symtype relations of iterables, fix for-each is valid [#244](https://github.com/MontiCore/monticore/pull/244)
+* Implement Switch case statements validation [#276](https://github.com/MontiCore/monticore/pull/276)
+* Added Effect Chains field to ComponentType [#330](https://github.com/MontiCore/monticore/pull/330)
+
+
+## Changes:
+* Update to Java 21 and Gradle 8 [#252](https://github.com/MontiCore/monticore/pull/252)
+* Gradle:
+  * Slim gradle plugin [#194](https://github.com/MontiCore/monticore/pull/194)
+  * Cleanup Gradle: use Cached Isolator Queue [#230](https://github.com/MontiCore/monticore/pull/230)
+  * Gradle 9 compatibility [#299](https://github.com/MontiCore/monticore/pull/299)
+  * Gradle documentation & move mc-specific properties [#319](https://github.com/MontiCore/monticore/pull/319)
+  * Improve Gradle Setup for trafos [#302](https://github.com/MontiCore/monticore/pull/302)
+  * Log mc_version of the mctool dependencies plugin [#344](https://github.com/MontiCore/monticore/pull/344)
+
+* Refactor JavaModifiers [#181](https://github.com/MontiCore/monticore/pull/181)
+* WithinScopeResolving -> cleaner hookpoints [#215](https://github.com/MontiCore/monticore/pull/215)
+* Migrate all tests to JUnit5 [#232](https://github.com/MontiCore/monticore/pull/232)
+* Update GettingStarted.md [#239](https://github.com/MontiCore/monticore/pull/239)
+* Use MCModifier instead of JavaModifier in non-terminals [#348](https://github.com/MontiCore/monticore/pull/348)
+* Logging:
+  * Catch exceptions in main [#222](https://github.com/MontiCore/monticore/pull/222)
+  * Stacktraces have to be enabled via a stacktrace CLI argument / loghook (see se-commons Changelog)
+  * Add setupLog Method [#331](https://github.com/MontiCore/monticore/pull/331)
+* Refactor error message in ForEachIsValid [#240](https://github.com/MontiCore/monticore/pull/240)
+* Test/assertions no more removing [#286](https://github.com/MontiCore/monticore/pull/286)
+* Dependency updates [#258](https://github.com/MontiCore/monticore/pull/258)
+* Remove duplicate alts in ANTLR parser [#289](https://github.com/MontiCore/monticore/pull/289)
+* Do not capture errors from FTL  [#308](https://github.com/MontiCore/monticore/pull/308)
+* Lower spotbugs version to avoid junit dependency bug [#269](https://github.com/MontiCore/monticore/pull/269)
+* #4835 improve error handling guava [#200](https://github.com/MontiCore/monticore/pull/200)
+* make usable SymbolAccess methods public [#301](https://github.com/MontiCore/monticore/pull/301)
+
+
+## Removals:
+* Remove domain-specific tagging [#346](https://github.com/MontiCore/monticore/pull/346)
+* Deprecate Surrogates [#270](https://github.com/MontiCore/monticore/pull/270)
+  * Use SymbolSuppliers instead
+* Deprecate setDim method in SymTypeArray [#243](https://github.com/MontiCore/monticore/pull/243)
+* remove legacy interpreter [#304](https://github.com/MontiCore/monticore/pull/304)
+
+## Fixes:
+* Add Source Positions to CoCos [#197](https://github.com/MontiCore/monticore/pull/197)
+* Performance improvements (FreeMarker+Reporting) [#205](https://github.com/MontiCore/monticore/pull/205)
+* MontiTrans:
+  * Add missing presence of a production's name (Pattern-alt 1&3) to the AST [#196](https://github.com/MontiCore/monticore/pull/196)
+  * Fix support for DSTL patterns with the generated pretty printers [#204](https://github.com/MontiCore/monticore/pull/204)
+  * Add missing explicit MontiTransExec gradle dependencies [#221](https://github.com/MontiCore/monticore/pull/221)
+  * TR-Backtracking between matches [#275](https://github.com/MontiCore/monticore/pull/275)
+  * Tr/reduce memory footprint [#277](https://github.com/MontiCore/monticore/pull/277)
+  * Tr/add modeltraverser reset [#279](https://github.com/MontiCore/monticore/pull/279)
+  * Tr/reduce list contains [#280](https://github.com/MontiCore/monticore/pull/280)
+  * Fix trafo generation for grammars without package [#251](https://github.com/MontiCore/monticore/pull/251)
+  * Fix for list in opt [#297](https://github.com/MontiCore/monticore/pull/297)
+  * Add (preliminary) support for schema variables within lists [#298](https://github.com/MontiCore/monticore/pull/298)
+  * Fix generated DSTL supergrammars for super languages without package [#323](https://github.com/MontiCore/monticore/pull/323)
+  * Fix: Add support for keyword directives for DSTLs [#158](https://github.com/MontiCore/monticore/pull/158)
+  * Report DSTL file creation [#291](https://github.com/MontiCore/monticore/pull/291)
+  * monticore/monticore#4994: fix missing constraint for schema variables within same object [#265](https://github.com/MontiCore/monticore/pull/265)
+
+* Implement symbol surrogate equals to delegate to lazy load equals [#220](https://github.com/MontiCore/monticore/pull/220)
+* 4859 grammars with the symbol I [#211](https://github.com/MontiCore/monticore/pull/211)
+* 4729 monticore scope properties are not inherited [#210](https://github.com/MontiCore/monticore/pull/210)
+* Fix symbol surrogate equals [#212](https://github.com/MontiCore/monticore/pull/212)
+* Deterministic Builds:
+  * Fix non-determinism, remove hashset [#214](https://github.com/MontiCore/monticore/pull/214)
+  * Fix non-determinism, remove to set, use distinct list [#216](https://github.com/MontiCore/monticore/pull/216)
+  * decrease non-determinism* [#217](https://github.com/MontiCore/monticore/pull/217)
+
+* Make UpdateChecker version parsing more robust [#257](https://github.com/MontiCore/monticore/pull/257)
+* TypeCheck:
+  * Random Assortment of TC Extensions and fixes [#237](https://github.com/MontiCore/monticore/pull/237)
+  * delegate equality workaround [#238](https://github.com/MontiCore/monticore/pull/238)
+  * Fix equals between incompatible types [#227](https://github.com/MontiCore/monticore/pull/227)
+  * Fix for loop control condition is boolean coco [#241](https://github.com/MontiCore/monticore/pull/241)
+  * Error logging if subcomponent is of primitive type [#203](https://github.com/MontiCore/monticore/pull/203)
+  * Fix SynthesizeComponent error message [#231](https://github.com/MontiCore/monticore/pull/231)
+  * Normalize for FieldAccessExpressions [#234](https://github.com/MontiCore/monticore/pull/234)
+* Set init value for access modifiers in symbol builders correctly [#131](https://github.com/MontiCore/monticore/pull/131)
+* fix compsymbols deser with FQN in generated classes [#341](https://github.com/MontiCore/monticore/pull/341)
+* Improve VarDeclarationNameAlreadyDefinedInScope [#340](https://github.com/MontiCore/monticore/pull/340)
+* retain source information during normalization [#342](https://github.com/MontiCore/monticore/pull/342)
+* Fix degree symbol in SI unit conversion [#325](https://github.com/MontiCore/monticore/pull/325)
+
+
 ## MontiCore 7.8.0
-released: TBD
+released: 23. October 2025
 
 ### Additions:
 

@@ -73,11 +73,7 @@ public class SetExpressionsSymbolTableCompleter implements
       subscope.accept(this.getTraverser());
     }
   }
-
-  @Override
-  public void visit(ASTSetVariableDeclaration node) {
-  }
-
+  
   @Override
   public void endVisit(ASTSetVariableDeclaration node) {
     initialize_SetVariableDeclaration(node.getSymbol(), node);

@@ -2,24 +2,16 @@
 
 package mc.feature.symboltable;
 
-import de.se_rwth.commons.logging.LogStub;
-import mc.GeneratorIntegrationsTest;
+import de.monticore.runtime.junit.TestWithMCLanguage;
+import mc.feature.symboltable.automatonwithstinfo1.AutomatonWithSTInfo1Mill;
 import mc.feature.symboltable.automatonwithstinfo1._symboltable.*;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 
-import static org.junit.Assert.assertTrue;
-import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.Test;
 
-public class AutomatonWithSTInfo1Test extends GeneratorIntegrationsTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+
+@TestWithMCLanguage(AutomatonWithSTInfo1Mill.class)
+public class AutomatonWithSTInfo1Test {
   /**
    * This test ensures that all expected classes are generated. Otherwise, the test will not compile
    */
@@ -32,11 +24,10 @@ public class AutomatonWithSTInfo1Test extends GeneratorIntegrationsTest {
     AutomatonSymbolSurrogate automatonSymbolSurrogate;
     AutomatonWithSTInfo1ScopesGenitorDelegator automatonWithSTInfo1SymbolTableCreator;
     StateSymbol stateSymbol = new StateSymbol("S");
-    Assertions.assertTrue(stateSymbol instanceof StateSymbol);
+    assertInstanceOf(StateSymbol.class, stateSymbol);
 //    Collection<StateSymbol> stateSymbols2 = stateSymbol.getStates();
 
     StateSymbolSurrogate stateSymbolReference;
-    Assertions.assertTrue(Log.getFindings().isEmpty());
   }
 
 }
