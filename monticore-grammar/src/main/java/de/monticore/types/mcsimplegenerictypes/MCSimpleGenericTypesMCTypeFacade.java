@@ -9,7 +9,7 @@ import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 
 /**
  * facade for creation of ASTMCTypes when simple generic types are supported.
- * Replaces al printType() using methods to use MCCustomTypeArguments instead
+ * Replaces all printType() using methods to use MCCustomTypeArguments instead
  */
 public class MCSimpleGenericTypesMCTypeFacade extends MCTypeFacade {
 

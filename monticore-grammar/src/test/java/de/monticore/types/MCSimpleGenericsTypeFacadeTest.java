@@ -43,6 +43,5 @@ public class MCSimpleGenericsTypeFacadeTest extends MCTypeFacadeTest {
     Assertions.assertTrue(myType.deepEquals(((ASTMCBasicGenericType) collection).getMCTypeArgument(0).getMCTypeOpt().get()));
   }
 
-
   // Other tests are extended from the MCTypeFacadeTest
 }
