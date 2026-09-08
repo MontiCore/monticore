@@ -252,9 +252,9 @@ class ForEachIsValidTest {
       arguments("int i : a1Booleans", new String[]{FOR_EACH_TYPE_MISMATCH_ERROR_CODE}),
       arguments("A2 a : a1ArrayBooleans1", new String[]{FOR_EACH_TYPE_MISMATCH_ERROR_CODE}),
       arguments("A2[] a : a1ArrayBooleans2", new String[]{FOR_EACH_TYPE_MISMATCH_ERROR_CODE}),
-      arguments("boolean b : missing", new String[]{"0xFD118"}),
+      arguments("boolean b : missing", new String[]{"0xF735F"}),
       arguments("Missing m : a1Booleans", new String[]{"0xA0324"}),
-      arguments("Missing m : missing", new String[]{"0xA0324", "0xFD118"})
+      arguments("Missing m : missing", new String[]{"0xA0324", "0xF735F"})
     );
   }
 }

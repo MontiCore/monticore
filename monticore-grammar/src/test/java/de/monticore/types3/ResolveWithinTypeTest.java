@@ -291,10 +291,10 @@ public class ResolveWithinTypeTest extends AbstractTypeVisitorTest {
 
     inScope(oOType1.getSpannedScope(), typeVariable("t"));
 
-    calculateTypeIDWithinScopeError("t.t", oOType1.getSpannedScope(), "0xFDAE3");
+    calculateTypeIDWithinScopeError("t.t", oOType1.getSpannedScope(), "0xFDA3E");
     // ignore legacy error codes explicitly
     Log.clearFindings();
-    calculateTypeIDWithinScopeError("t.t", oOType1.getEnclosingScope(), "0xFDAE3");
+    calculateTypeIDWithinScopeError("t.t", oOType1.getEnclosingScope(), "0xFDA3E");
     Log.clearFindings();
   }
 
