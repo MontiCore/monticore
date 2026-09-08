@@ -41,6 +41,7 @@ public class MySTLangTest {
     Assertions.assertTrue(opt.isPresent());
 
     var s1 = MySTLangMill.scopesGenitorDelegator().createFromAST(opt.get());
+    opt.get().setEnclosingScope(MySTLangMill.globalScope());
 
     // Initialize TC3
     MySTLangTraverser traverser = MySTLangMill.traverser();
@@ -83,7 +84,9 @@ public class MySTLangTest {
   }
 
   protected void initType(FunctionSymbol f) {
-    f.setType(TypeCheck3.typeOf(MySTLangMill.nameExpressionBuilder().setName("int").build()));
+    var intExpr = MySTLangMill.nameExpressionBuilder().setName("int").build();
+    intExpr.setEnclosingScope(f.getSpannedScope());
+    f.setType(TypeCheck3.typeOf(intExpr));
   }
   
   

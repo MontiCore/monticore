@@ -5,8 +5,7 @@ import com.google.common.collect.Lists;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
-import de.monticore.types.check.TypeCalculator;
-import de.monticore.types.check.TypeCheck;
+import de.monticore.types3.TypeCheck3;
 import de.se_rwth.commons.logging.Log;
 import mc.typechecktest._ast.ASTTCArtifact;
 import mc.typechecktest._ast.ASTTCMethod;
@@ -17,16 +16,13 @@ import java.util.Optional;
 
 public class TypeCheckTestSTCompleteTypes implements TypeCheckTestVisitor2 {
 
-  protected TypeCalculator tc;
-
-  public TypeCheckTestSTCompleteTypes(TypeCalculator tc){
-    this.tc = tc;
+  public TypeCheckTestSTCompleteTypes(){
   }
 
   @Override
   public void visit(ASTTCMethod node) {
     TCMethodSymbol symbol = node.getSymbol();
-    SymTypeExpression symType = tc.symTypeFromAST(node.getMCReturnType());
+    SymTypeExpression symType = TypeCheck3.symTypeFromAST(node.getMCReturnType());
     TypeSymbol type;
     if(symType.isVoidType()){
       type = symType.getTypeInfo();
@@ -35,22 +31,24 @@ public class TypeCheckTestSTCompleteTypes implements TypeCheckTestVisitor2 {
     }
     symbol.setType(SymTypeExpressionFactory.createTypeExpression(type));
     symbol.setIsStatic(node.isStatic());
+    symbol.setIsPublic(true);
   }
 
   @Override
   public void visit(ASTTCVarDecl node) {
     TCVarDeclSymbol symbol = node.getSymbol();
-    SymTypeExpression symType = tc.symTypeFromAST(node.getMCType());
+    SymTypeExpression symType = TypeCheck3.symTypeFromAST(node.getMCType());
     TypeSymbol type = replaceSurrogate(symType.getTypeInfo());
     symbol.setType(SymTypeExpressionFactory.createTypeExpression(type));
     symbol.setIsStatic(node.isStatic());
+    symbol.setIsPublic(true);
   }
 
   @Override
   public void visit(ASTTCArtifact node) {
     TCArtifactSymbol symbol = node.getSymbol();
     if(node.isPresentSuperType()) {
-      SymTypeExpression superType = tc.symTypeFromAST(node.getSuperType());
+      SymTypeExpression superType = TypeCheck3.symTypeFromAST(node.getSuperType());
       TypeSymbol type = replaceSurrogate(superType.getTypeInfo());
       symbol.setSuperTypesList(Lists.newArrayList(SymTypeExpressionFactory.createTypeExpression(type)));
     }

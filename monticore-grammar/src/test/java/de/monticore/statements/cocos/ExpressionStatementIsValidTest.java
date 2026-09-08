@@ -55,8 +55,10 @@ class ExpressionStatementIsValidTest {
 
     ASTMCBlockStatement ast = parser().parse_StringMCBlockStatement(expr).orElseThrow();
 
+    FlatExpressionScopeSetter scopeSetter = new FlatExpressionScopeSetter(globalScope());
     TestMCCommonStatementsTraverser traverser = inheritanceTraverser();
-    traverser.add4ExpressionsBasis(new FlatExpressionScopeSetter(globalScope()));
+    traverser.add4ExpressionsBasis(scopeSetter);
+    traverser.add4CommonExpressions(scopeSetter);
     ast.accept(traverser);
 
     // When
@@ -72,8 +74,10 @@ class ExpressionStatementIsValidTest {
 
     ASTMCBlockStatement ast = parser().parse_StringMCBlockStatement(expr).orElseThrow();
 
+    FlatExpressionScopeSetter scopeSetter = new FlatExpressionScopeSetter(globalScope());
     TestMCCommonStatementsTraverser traverser = inheritanceTraverser();
-    traverser.add4ExpressionsBasis(new FlatExpressionScopeSetter(globalScope()));
+    traverser.add4ExpressionsBasis(scopeSetter);
+    traverser.add4CommonExpressions(scopeSetter);
     ast.accept(traverser);
 
     // When

@@ -28,6 +28,7 @@ import de.monticore.tests.expressionsandstatements._visitor.ExpressionsAndStatem
 import de.monticore.tests.expressionsandstatements.codegen.javagen.ExpressionsAndStatementsJavaGenerator;
 import de.monticore.tests.expressionsandstatements.interpreter.ExpressionsAndStatementsInterpreter;
 import de.monticore.tests.expressionsandstatements.types3.ExpressionsAndStatementsTypeCheck3;
+import de.monticore.types3.util.PostTypeCheckNodeReplacer;
 import de.monticore.values.MCValue;
 
 import java.io.File;
@@ -128,6 +129,8 @@ public class TestExpressionsAndStatementsTool
   @Override
   protected void _runPost_completeSymbolTable(ASTBehaviorInput ast) {
     new ExpressionsAndStatementsTool().runDefaultCoCos(ast);
+    PostTypeCheckNodeReplacer
+        .replace(ExpressionsAndStatementsMill::inheritanceTraverser, ast);
   }
 
   // JavaGen
