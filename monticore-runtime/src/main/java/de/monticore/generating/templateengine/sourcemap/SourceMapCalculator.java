@@ -17,14 +17,14 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class SourceMapCalculator {
-  protected static ThreadLocal<Stack<Template>> templates = ThreadLocal.withInitial(() -> new Stack<>());
+  private static ThreadLocal<Stack<Template>> templates = ThreadLocal.withInitial(() -> new Stack<>());
 
   // We need this for nested template evaluations
-  protected static ThreadLocal<Stack<Pair<Integer, Integer>>> curAbsolutePos = ThreadLocal.withInitial(() -> new Stack<>());
+  private static ThreadLocal<Stack<Pair<Integer, Integer>>> curAbsolutePos = ThreadLocal.withInitial(() -> new Stack<>());
 
-  public static ThreadLocal<List<SimpleSourceMapping>> mappings = ThreadLocal.withInitial(ArrayList::new);
-  public static ThreadLocal<List<SimpleSourceMapping>> astMappings = ThreadLocal.withInitial(ArrayList::new);
-  public static ThreadLocal<AtomicInteger> pairId = ThreadLocal.withInitial(AtomicInteger::new);
+  private static ThreadLocal<List<SimpleSourceMapping>> mappings = ThreadLocal.withInitial(ArrayList::new);
+  private static ThreadLocal<List<SimpleSourceMapping>> astMappings = ThreadLocal.withInitial(ArrayList::new);
+  private static ThreadLocal<Integer> baseLineOffset = ThreadLocal.withInitial(() -> 0);
 
   public static void pushTemplate(Template template) {
     // Do not push config-templates as they should not be reported
@@ -62,37 +62,68 @@ public class SourceMapCalculator {
     }
   }
 
-  public static List<DecodedMapping> calculateMappings(List<SimpleSourceMapping> simpleMappings) {
-    Map<Integer, SimpleSourceMapping> opendIds = new HashMap<>();
-    List<SimpleSourceMapping> validMappings = new ArrayList<>();
+  public static void setBaseLineOffset(int offset){
+    baseLineOffset.set(offset);
+  }
 
+  public static int getBaseLineOffset(){
+    return baseLineOffset.get();
+  }
+
+  public static List<DecodedMapping> calculateMappings(List<SimpleSourceMapping> simpleMappings) {
+    Map<Integer, SimpleSourceMapping> openSpans = new HashMap<>();
+
+    List<MappingSpan> completedSpans = new ArrayList<>();
     for(SimpleSourceMapping mapping : simpleMappings) {
       if(mapping.sourcePosition.getLine() < 0 || mapping.targetPosition.getLine() < 0){
         Log.warn("Negative lines detected in mapping, ignoring...");
         continue;
       }
+
       int id = mapping.pairId;
-      if(opendIds.containsKey(id)){
-        SimpleSourceMapping start = opendIds.remove(id);
-        validMappings.add(start);
-        validMappings.add(mapping);
-      } else {
-        opendIds.put(id, mapping);
+      if(openSpans.containsKey(id)) {
+        SimpleSourceMapping start = openSpans.remove(id);
+        completedSpans.add(new MappingSpan(id, start, mapping));
+      }else{
+        openSpans.put(id, mapping);
       }
     }
 
-    // Sort by generated position first, then original position to prevent VLQ line deltas from jumping
-    // out of order across generated lines
+    // Filter out zero-width generated spans (directives that did not emit any code)
+    List<SimpleSourceMapping> validMappings = new ArrayList<>();
+    for(MappingSpan span : completedSpans) {
+      if(span.isZeroWidthGenerated()) {
+        continue;
+      }
+      validMappings.add(span.start);
+    }
+
+    // Sort by generated coordinates (for VLQ deltas)
     validMappings.sort(
             Comparator.comparingInt((SimpleSourceMapping m) -> m.targetPosition.getLine())
                     .thenComparing(m -> m.targetPosition.getColumn())
                     .thenComparing(m -> m.sourcePosition.getLine())
                     .thenComparing(m -> m.sourcePosition.getColumn())
-
     );
+
+    // Deduplicate: If multiple mappings land on the same (generatedLine/Column), keep only the
+    // last. This corresponds to the most inner one in nested templates
+    List<SimpleSourceMapping> deduplicatedMappings = new ArrayList<>();
+    for(SimpleSourceMapping current : validMappings){
+      if(!deduplicatedMappings.isEmpty()){
+        SimpleSourceMapping last = deduplicatedMappings.getLast();
+        if(last.targetPosition.getLine() == current.targetPosition.getLine()
+                && last.targetPosition.getColumn() == current.targetPosition.getColumn()){
+          deduplicatedMappings.set(deduplicatedMappings.size() - 1, current);
+          continue;
+        }
+      }
+      deduplicatedMappings.add(current);
+    }
+
     // Convert to decoded mappings
-    List<DecodedMapping> res = new ArrayList<>(validMappings.size());
-    for(SimpleSourceMapping mapping : validMappings) {
+    List<DecodedMapping> res = new ArrayList<>(deduplicatedMappings.size());
+    for(SimpleSourceMapping mapping : deduplicatedMappings) {
       URL urlToSource = createSourceURL(mapping.sourcePosition.getFileName());
       res.add(new DecodedMapping(
           new DecodedSource(urlToSource),
@@ -131,7 +162,7 @@ public class SourceMapCalculator {
 
     String content = sw.getCurrentContent();
 
-    int numberOfLinesInContent = numberOfNewLines(content);
+    int numberOfLinesInContent = numberOfNewLines(content) + getBaseLineOffset();
     int curGeneratedColPos = getColumnOfLastLine(content);
 
     // Update absolute position stack so line numbering stays in sync
@@ -151,7 +182,7 @@ public class SourceMapCalculator {
 
     String content = sw.getCurrentContent();
 
-    int numberOfLinesInContent = numberOfNewLines(content);
+    int numberOfLinesInContent = numberOfNewLines(content) + getBaseLineOffset();
     int curGeneratedColPos = getColumnOfLastLine(content);
 
     // Update absolute position stack so line numbering stays in sync
@@ -290,5 +321,24 @@ public class SourceMapCalculator {
     mappings.remove();
     astMappings.get().clear();
     astMappings.remove();
+    baseLineOffset.remove();
+  }
+
+
+  private static class MappingSpan{
+    final int pairId;
+    final SimpleSourceMapping start;
+    final SimpleSourceMapping end;
+
+    MappingSpan(int pairId, SimpleSourceMapping start, SimpleSourceMapping end) {
+      this.pairId = pairId;
+      this.start = start;
+      this.end = end;
+    }
+
+    boolean isZeroWidthGenerated(){
+      return start.targetPosition.getLine() == end.targetPosition.getLine()
+              && start.targetPosition.getColumn() == end.targetPosition.getColumn();
+    }
   }
 }
