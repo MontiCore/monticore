@@ -434,6 +434,12 @@ public class TemplateController {
     List<HookPoint> templateForwardings =
         config.getGlex().getTemplateForwardings(templateName, ast);
     for (HookPoint tn : templateForwardings) {
+      if(Reporting.isTemplateSourceMappingEnabled()){
+        // Check if there is already something appended to content up to this point
+        // to ensure correct offset
+        int currentOffset = (int) (content.toString() + " ").lines().count() - 1;
+        SourceMapCalculator.setBaseLineOffset(currentOffset);
+      }
       content.append(tn.processValue(this, ast, templateArguments));
     }
 
