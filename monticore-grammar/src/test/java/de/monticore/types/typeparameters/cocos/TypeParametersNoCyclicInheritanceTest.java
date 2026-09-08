@@ -36,6 +36,7 @@ public class TypeParametersNoCyclicInheritanceTest {
     Log.enableFailQuick(false);
     TypeParametersTestMill.reset();
     TypeParametersTestMill.init();
+    CombineExpressionsWithLiteralsTypeTraverserFactory.initTypeCheck3();
     checker = new TypeParametersTestCoCoChecker();
     checker.setTraverser(TypeParametersTestMill.traverser());
     checker.addCoCo(new TypeParameterNoCyclicInheritance());

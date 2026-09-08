@@ -129,7 +129,7 @@ public class AssignmentExpressionTypeVisitorTest extends AbstractTypeVisitorTest
 
   @Test
   public void testInvalidMinusPrefixExpression() throws IOException {
-    checkErrorExpr("-aBoolean", "0xFD118"); // - not applicable to boolean
+    checkErrorExpr("-aBoolean", "0xF735F"); // - not applicable to boolean
     checkErrorExpr("-\"Hello\"", "0xA017D"); //only possible with numeric types
   }
 

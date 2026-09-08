@@ -72,8 +72,8 @@ public class CombinedStreamsExpressionsParserTest {
         Arguments.of("Event < A > 1", ASTGreaterThanExpression.class),
         Arguments.of("Event< A > 1", ASTGreaterThanExpression.class),
         Arguments.of("1: c + 3", ASTPlusExpression.class),
-        Arguments.of("Tick", ASTNameExpression.class),
-        Arguments.of("Abs", ASTNameExpression.class),
+        Arguments.of("Tick", ASTQualifiedNameExpression.class),
+        Arguments.of("Abs", ASTQualifiedNameExpression.class),
         Arguments.of("Tick : a", ASTAppendTickStreamExpression.class),
         Arguments.of("Abs : a", ASTAppendAbsentStreamExpression.class)
     );

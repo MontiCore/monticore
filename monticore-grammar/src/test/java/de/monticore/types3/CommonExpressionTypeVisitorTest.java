@@ -3,10 +3,12 @@ package de.monticore.types3;
 
 import com.google.common.collect.Lists;
 import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
+import de.monticore.expressions.combineexpressionswithliterals._ast.ASTFoo;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsArtifactScope;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsGlobalScope;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsScope;
 import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
+import de.monticore.expressions.commonexpressions._ast.ASTStaticFieldAccessExpression;
 import de.monticore.expressions.expressionsbasis.ExpressionsBasisMill;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
@@ -18,6 +20,9 @@ import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.*;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
+import de.monticore.types.mcfullgenerictypes._ast.ASTMCMultipleGenericType;
+import de.monticore.types3.util.PostTypeCheckNodeReplacer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -1145,7 +1150,7 @@ public class CommonExpressionTypeVisitorTest
 
   @Test
   public void testInvalidBracketExpression() throws IOException {
-    checkErrorExpr("(a)", "0xFD118"); // a cannot be resolved -> a has no type
+    checkErrorExpr("(a)", "0xF735F"); // a cannot be resolved -> a has no type
   }
 
   @Test
@@ -1511,7 +1516,7 @@ public class CommonExpressionTypeVisitorTest
 
   @Test
   public void testInvalidConditionalExpression() throws IOException {
-    checkErrorExpr("3?true:fvarlse", "0xFD118");
+    checkErrorExpr("3?true:fvarlse", "0xF735F");
     checkErrorExpr("varbyte ? 0 : 1", "0xB0165"); // ? not applicable to byte
     checkErrorExpr("varshort ? 0 : 1", "0xB0165"); // ? not applicable to short
     checkErrorExpr("varchar ? 0 : 1", "0xB0165"); // ? not applicable to char
@@ -1882,6 +1887,43 @@ public class CommonExpressionTypeVisitorTest
 
     //test for type with more than one package
     checkType("types3.types2.Test", "types3.types2.Test");
+
+    // test for an inner type behind package qualifiers
+    checkType(
+        "types3.types2.Test.TestInnerType",
+        "types3.types2.Test.TestInnerType"
+    );
+  }
+
+  @Test
+  public void restructureStaticFieldAccessTypeWithInnerType() {
+    init_advanced();
+    ASTExpression expr =
+        parseExpr("types3.types2.Test.TestInnerType.testVariable");
+    ASTFoo rootNode = CombineExpressionsWithLiteralsMill.fooBuilder()
+        .setExpression(expr)
+        .build();
+    ICombineExpressionsWithLiteralsArtifactScope rootScope =
+        CombineExpressionsWithLiteralsMill.scopesGenitorDelegator()
+            .createFromAST(rootNode);
+    rootScope.setName("fooRoot");
+    expr.accept(getSymbolTableCompleter());
+    TypeCheck3.typeOf(expr);
+    assertNoFindings();
+    PostTypeCheckNodeReplacer.replace(
+        CombineExpressionsWithLiteralsMill::inheritanceTraverser,
+        rootNode
+    );
+    ASTFieldAccessExpression replacedExpr =
+        (ASTFieldAccessExpression) rootNode.getExpression();
+    ASTStaticFieldAccessExpression innerExpr =
+        (ASTStaticFieldAccessExpression) replacedExpr.getExpression();
+    ASTMCQualifiedType replacedType = innerExpr.getType();
+    assertEquals(
+        List.of("types3", "types2", "Test"),
+        replacedType.getMCQualifiedName().getPartsList()
+    );
+    assertEquals("TestInnerType", replacedType.toString());
   }
 
   @Test

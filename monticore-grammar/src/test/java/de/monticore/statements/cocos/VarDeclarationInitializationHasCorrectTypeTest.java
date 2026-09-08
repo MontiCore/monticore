@@ -104,7 +104,7 @@ class VarDeclarationInitializationHasCorrectTypeTest {
       ),
       arguments(
         "int a = 3, b, c = MyType, d = \"no no no\";",
-        List.of("0xFD118", VarDeclarationInitializationHasCorrectType.ERROR_CODE)
+        List.of("0xF735F", VarDeclarationInitializationHasCorrectType.ERROR_CODE)
       )
     );
   }
