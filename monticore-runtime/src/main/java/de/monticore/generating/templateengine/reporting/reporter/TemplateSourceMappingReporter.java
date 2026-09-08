@@ -32,6 +32,7 @@ public class TemplateSourceMappingReporter extends DefaultReportEventHandler {
   protected String currentGeneratedFile;
   protected File currentTemplateMappingFile;
   protected File currentASTMappingFile;
+  protected File dbgMappingFile;
 
   public TemplateSourceMappingReporter(String path, String qualifiedFileName, String fileExtension) {
     reportingHelper = new ReportCreator(path);
@@ -57,6 +58,7 @@ public class TemplateSourceMappingReporter extends DefaultReportEventHandler {
     currentGeneratedFile = path;
     currentTemplateMappingFile = new File(path.replace("." + fileExtension, "")+"_"+TEMPLATE_MAPPING+"."+this.fileextension);
     currentASTMappingFile = new File(path.replace("." + fileExtension, "")+"_"+AST_MAPPING+"."+this.fileextension);
+    dbgMappingFile = new File(path.replace("." + fileExtension, "")+"_DEBUG."+this.fileextension);
   }
 
   @Override
@@ -73,6 +75,20 @@ public class TemplateSourceMappingReporter extends DefaultReportEventHandler {
   protected void writeContent(String fileName) {
     writeLine(currentTemplateMappingFile, getEncodeSourceMap(new DecodedSourceMap(fileName, this.templateMappings)));
     writeLine(currentASTMappingFile, getEncodeSourceMap(new DecodedSourceMap(fileName, this.astMappings)));
+
+    // Temp: Write the not encoded source-map for the template for debugging
+    StringBuilder dbgBuilder = new StringBuilder();
+    for(DecodedMapping mapping : this.templateMappings) {
+      dbgBuilder
+              .append("generatedLine: [").append(mapping.generatedLine)
+              .append("] generatedColumn: [").append(mapping.generatedColumn)
+              .append("] source: [").append(mapping.originalSource.url.toString())
+              .append("] originalLine: [").append(mapping.originalLine)
+              .append("] originalColumn: [").append(mapping.originalColumn)
+              .append("]\n");
+    }
+    writeLine(dbgMappingFile, dbgBuilder.toString());
+
   }
 
   /**
