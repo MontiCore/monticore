@@ -11,22 +11,25 @@ import freemarker.template.Template;
 
 import javax.swing.tree.TreeNode;
 import java.io.IOException;
+import java.io.Reader;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
-import static de.monticore.generating.templateengine.sourcemap.SourceMapCalculator.pairId;
-
 public class TemplateAdaptionForSourcePositionReporting {
+
+  private static AtomicInteger pairId = new AtomicInteger(0);
 
   public static Template adaptTemplateWithPositionMarkers(Template result, Configuration configuration) throws IOException {
     List<TemplateElement> tes = new ArrayList<>();
     TemplateElement rootTreeNode = result.getRootTreeNode();
     inorderTraversal(rootTreeNode, tn -> tes.add((TemplateElement) tn));
 
-    String canonicalForm = rootTreeNode.toString();
-    StringBuilder sb = new StringBuilder(canonicalForm);
+    String rawSource = getRawTemplateSource(result, configuration);
+    StringBuilder sb = new StringBuilder(rawSource);
 
     Comparator<TemplateElement> firstComp = Comparator.comparingInt(TemplateObject::getEndLine);
     Comparator<TemplateElement> c = firstComp
@@ -36,13 +39,13 @@ public class TemplateAdaptionForSourcePositionReporting {
             .thenComparing(t -> t.getClass().getName()); // Deterministic fallback to ensure always same order
     tes.stream().sorted(c.reversed()).forEach(t -> {
       if (t.getClass().getName().contains("DollarVariable")) {
-        addSourcePositionReport(t, sb, canonicalForm, configuration,true);
+        addSourcePositionReport(t, sb, rawSource, configuration,true);
       }
       if (t instanceof TextBlock) {
         if (!t.getCanonicalForm().isBlank()) {
           // No AST Reporting since this is only text from the template
           // to discuss: Through freemarker-ifs this might still be dependent on the AST variable
-          addSourcePositionReport(t, sb, canonicalForm, configuration, false);
+          addSourcePositionReport(t, sb, rawSource, configuration, false);
         }
       }
     });
@@ -53,7 +56,7 @@ public class TemplateAdaptionForSourcePositionReporting {
   private static void addSourcePositionReport(TemplateElement t, StringBuilder sb, String canonicalForm, Configuration configuration, boolean reportAstMapping) {
 
     // The Freemarker Engine uses Source Positions starting at line and column 1, but we report them zero based
-    int curPairId = pairId.get().getAndIncrement();
+    int curPairId = pairId.getAndIncrement();
     String endPos;
     String startPos;
 
@@ -127,5 +130,14 @@ public class TemplateAdaptionForSourcePositionReporting {
     }
 
     c.accept(node);
+  }
+
+  private static String getRawTemplateSource(Template template, Configuration config) throws IOException{
+    Object templateSource = config.getTemplateLoader().findTemplateSource(template.getName());
+    try (Reader reader = config.getTemplateLoader().getReader(templateSource, config.getDefaultEncoding())) {
+      StringWriter writer = new StringWriter();
+      reader.transferTo(writer);
+      return writer.toString();
+    }
   }
 }
