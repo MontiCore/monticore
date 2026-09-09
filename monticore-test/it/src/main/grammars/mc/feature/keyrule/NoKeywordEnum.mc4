@@ -9,7 +9,7 @@ package mc.feature.keyrule;
  */
 grammar NoKeywordEnum extends mc.common.Basics {
 
-  A = (("add" Name | "modifier" OperationKind Name) ";")*;
+  A = "(" "keyword" "add" ")" "(" "OperationKind" kind:OperationKind ")" "(" "Name" id:Name ")";
 
   enum OperationKind = "add" | "delete";
 
