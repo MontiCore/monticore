@@ -62,8 +62,8 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypes extends AbstractSynthesiz
       }
 
       if (!getTypeCheckResult().isPresentResult()) {
-        Log.error("0xE9CDB The type argument number " + i+1 + " of the generic type " +
-          "could not be synthesized.", genericType.get_SourcePositionStart());
+        Log.error("0xE9CDB The type argument number " + (i + 1) + " of the generic type " +
+          " could not be synthesized.", genericType.get_SourcePositionStart());
         getTypeCheckResult().reset();
         return;
       }
@@ -86,7 +86,9 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypes extends AbstractSynthesiz
       }
       if (null != symType) {
         getTypeCheckResult().setResult(symType);
-        genericType.setDefiningSymbol(symType.getTypeInfo());
+        if (symType.hasTypeInfo()) {
+          genericType.setDefiningSymbol(symType.getTypeInfo());
+        }
       }
     }else{
       // one of the type arguments could not be synthesized => the generic type itself cannot be synthesized correctly
