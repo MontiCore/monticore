@@ -83,10 +83,9 @@ public class SymTypeCompatibilityCalculator {
   public List<Bound> constrainCompatible(
       SymTypeExpression target,
       SymTypeExpression source) {
-    return constrainCompatiblePreNormalized(
-        SymTypeRelations.normalize(target),
-        SymTypeRelations.normalize(source)
-    );
+    SymTypeExpression targetNormalized = SymTypeRelations.normalize(target);
+    SymTypeExpression sourceNormalized = SymTypeRelations.normalize(source);
+    return constrainCompatiblePreNormalized(targetNormalized, sourceNormalized);
   }
 
   protected List<Bound> constrainCompatiblePreNormalized(
