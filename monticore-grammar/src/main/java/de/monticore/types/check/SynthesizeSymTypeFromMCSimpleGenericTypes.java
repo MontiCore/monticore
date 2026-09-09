@@ -86,7 +86,9 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypes extends AbstractSynthesiz
       }
       if (null != symType) {
         getTypeCheckResult().setResult(symType);
-        genericType.setDefiningSymbol(symType.getTypeInfo());
+        if (symType.hasTypeInfo()) {
+          genericType.setDefiningSymbol(symType.getTypeInfo());
+        }
       }
     }else{
       // one of the type arguments could not be synthesized => the generic type itself cannot be synthesized correctly
