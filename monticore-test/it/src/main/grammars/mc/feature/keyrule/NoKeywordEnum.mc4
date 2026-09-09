@@ -1,0 +1,17 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package mc.feature.keyrule;
+
+/**
+ * Tests the interaction of nokeyword and enum productions:
+ * The keyword "add" is used both as a terminal within a production
+ * and as a constant of an enum production, while being a nokeyword.
+ */
+grammar NoKeywordEnum extends mc.common.Basics {
+
+  A = (("add" Name | "modifier" OperationKind Name) ";")*;
+
+  enum OperationKind = "add" | "delete";
+
+  nokeyword "add";
+}
