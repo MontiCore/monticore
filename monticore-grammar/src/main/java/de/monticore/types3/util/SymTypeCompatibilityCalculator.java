@@ -1482,7 +1482,8 @@ public class SymTypeCompatibilityCalculator {
   }
 
   // only for constrainContainsPreNormalized
-  int constraintContainsDepth = 0;
+  // used to limit the amount of bounds returned
+  protected int constraintContainsDepth = 0;
 
   /**
    * Reduces a constraint {@code <a = b>} to the constraints {@code <a <: b>, <b <: a>}.
