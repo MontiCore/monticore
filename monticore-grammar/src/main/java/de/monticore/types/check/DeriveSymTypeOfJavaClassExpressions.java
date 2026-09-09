@@ -165,7 +165,9 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
     if (superSuffix.isPresentArguments()) {
       //case 1 -> Expression.super.<TypeArgument>Method(Args)
       List<SymTypeExpression> typeArgsList = calculateTypeArguments(superSuffix.getMCTypeArgumentList());
-      List<FunctionSymbol> methods = superClass.getMethodList(superSuffix.getName(), false, AccessModifier.ALL_INCLUSION);
+      List<FunctionSymbol> methods =
+          TypeCheck1Deprecations.getMethodList(superClass,
+              superSuffix.getName(), false, AccessModifier.ALL_INCLUSION);
       if (!methods.isEmpty() && null != superSuffix.getArguments()) {
         //check if the methods fit and return the right returntype
         ASTArguments args = superSuffix.getArguments();
@@ -174,7 +176,9 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
     }
     else {
       //case 2 -> Expression.super.Field
-      List<VariableSymbol> fields = superClass.getFieldList(superSuffix.getName(), false, AccessModifier.ALL_INCLUSION);
+      List<VariableSymbol> fields =
+          TypeCheck1Deprecations.getFieldList(superClass,
+              superSuffix.getName(), false, AccessModifier.ALL_INCLUSION);
       if (fields.size()==1) {
         return fields.getFirst().getType();
       }else{
@@ -303,7 +307,11 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
 
     //search in the scope of the type that before the "." for a method that has the right name
     if(node.getPrimaryGenericInvocationExpression().getGenericInvocationSuffix().isPresentName()) {
-      List<FunctionSymbol> methods = expressionResult.getMethodList(node.getPrimaryGenericInvocationExpression().getGenericInvocationSuffix().getName(),isType,false, AccessModifier.ALL_INCLUSION);
+      List<FunctionSymbol> methods =
+          TypeCheck1Deprecations.getMethodList(expressionResult,
+              node.getPrimaryGenericInvocationExpression()
+                  .getGenericInvocationSuffix().getName(),
+              isType, false, AccessModifier.ALL_INCLUSION);
       //if the last result is a type then the method has to be static to be accessible
       if(isType){
         methods = filterStaticMethodSymbols(methods);
@@ -457,7 +465,10 @@ public class DeriveSymTypeOfJavaClassExpressions extends AbstractDeriveFromExpre
         //get the superclass of this typesymbol and search for its fitting constructor
         if(subType.isPresent() &&subType.get().getSuperClassesOnly().size()==1){
           SymTypeExpression superClass = subType.get().getSuperClassesOnly().getFirst();
-          List<FunctionSymbol> methods = superClass.getMethodList(superClass.getTypeInfo().getName(), false, AccessModifier.ALL_INCLUSION);
+          List<FunctionSymbol> methods =
+              TypeCheck1Deprecations.getMethodList(superClass,
+                  superClass.getTypeInfo().getName(), false,
+                  AccessModifier.ALL_INCLUSION);
           if(!methods.isEmpty() && superSuffix.isPresentArguments()){
             //check if the constructors fit and return the right returntype
             ASTArguments args = superSuffix.getArguments();
