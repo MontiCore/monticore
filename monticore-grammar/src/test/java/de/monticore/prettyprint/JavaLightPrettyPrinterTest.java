@@ -2,9 +2,11 @@
 package de.monticore.prettyprint;
 
 import de.monticore.javalight._ast.*;
-import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.testjavalight.TestJavaLightMill;
 import de.monticore.testjavalight._parser.TestJavaLightParser;
+import de.monticore.javalight._prettyprint.JavaLightFullPrettyPrinter;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -14,19 +16,42 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@TestWithMCLanguage(TestJavaLightMill.class)
 public class JavaLightPrettyPrinterTest {
 
-  private TestJavaLightParser parser;
+  private TestJavaLightParser parser = new TestJavaLightParser();
+
+  private JavaLightFullPrettyPrinter prettyPrinter = new JavaLightFullPrettyPrinter(new IndentPrinter());
 
   @BeforeEach
   public void init() {
-    parser = TestJavaLightMill.parser();
+    LogStub.initPlusLog();
+    Log.enableFailQuick(false);
+    TestJavaLightMill.reset();
+    TestJavaLightMill.init();
+    prettyPrinter.getPrinter().clearBuffer();
   }
   
   @Test
   public void testMethodDeclaration() throws IOException {
     Optional<ASTMethodDeclaration> result = parser.parse_StringMethodDeclaration("private static final int foo(String s[], boolean b)[][][] throws e.Exception { private Integer foo = a; }");
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
+    ASTMethodDeclaration ast = result.get();
+
+    String output = prettyPrinter.prettyprint(ast);
+
+    result = parser.parse_StringMethodDeclaration(output);
+    assertFalse(parser.hasErrors());
+    assertTrue(result.isPresent());
+
+    assertTrue(ast.deepEquals(result.get()));
+
+    assertTrue(Log.getFindings().isEmpty());
+  }
+
+  @Test
+  public void testCollectionTypesSpace() throws IOException {
+    Optional<ASTMethodDeclaration> result = parser.parse_StringMethodDeclaration("public List<List<String>> myMethod(Map<List<String>, Integer> a) {}");
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
     ASTMethodDeclaration ast = result.get();

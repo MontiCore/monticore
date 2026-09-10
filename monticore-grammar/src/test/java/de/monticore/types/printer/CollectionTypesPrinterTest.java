@@ -48,7 +48,7 @@ public class CollectionTypesPrinterTest {
     assertEquals("List<java.lang.String>", MCCollectionTypesMill.prettyPrint(astmcListType.get(), true));
     assertEquals("Set<int>", MCCollectionTypesMill.prettyPrint(astmcSetType.get(), true));
     assertEquals("Optional<Character>", MCCollectionTypesMill.prettyPrint(astmcOptionalType.get(), true));
-    assertEquals("Map<String,String>", MCCollectionTypesMill.prettyPrint(astmcMapType.get(), true));
+    assertEquals("Map<String, String>", MCCollectionTypesMill.prettyPrint(astmcMapType.get(), true));
 
     assertTrue(Log.getFindings().isEmpty());
   }

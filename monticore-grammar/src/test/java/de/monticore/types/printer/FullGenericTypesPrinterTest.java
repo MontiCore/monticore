@@ -47,7 +47,7 @@ public class FullGenericTypesPrinterTest {
     assertEquals("?", MCFullGenericTypesMill.prettyPrint(astmcWildcardTypeArgument.get(), true));
     assertEquals("? extends List", MCFullGenericTypesMill.prettyPrint(astmcWildcardTypeArgument1.get(), true));
     assertEquals("? super Stream", MCFullGenericTypesMill.prettyPrint(astmcWildcardTypeArgument2.get(), true));
-    assertEquals("java.util.List<List<String>>.c.d<e,f,g,h>", MCFullGenericTypesMill.prettyPrint(astmcMultipleGenericType.get(), true));
+    assertEquals("java.util.List<List<String>>.c.d<e, f, g, h>", MCFullGenericTypesMill.prettyPrint(astmcMultipleGenericType.get(), true));
 //    assertEquals("<a extends b &c &d, e extends f &g>", FullGenericTypesPrinter.printType(astmcTypeParameters.get()));
 //    assertEquals("a extends b &c &d", FullGenericTypesPrinter.printType(astmcTypeVariableDeclaration.get()));
   
