@@ -1,6 +1,7 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.types3;
 
+import com.google.common.base.Preconditions;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symboltable.IScope;
 import de.monticore.types3.generics.context.InferenceContext4Ast;
@@ -73,6 +74,9 @@ public abstract class AbstractTypeVisitor {
   }
 
   protected IBasicSymbolsScope getAsBasicSymbolsScope(IScope scope) {
+    Preconditions.checkNotNull(scope,
+        "0xA2309 given scope was null, this is unexpected"
+    );
     // is accepted only here, decided on 07.04.2020
     if (!(scope instanceof IBasicSymbolsScope)) {
       Log.error("0xA2307 the enclosing scope of the expression"

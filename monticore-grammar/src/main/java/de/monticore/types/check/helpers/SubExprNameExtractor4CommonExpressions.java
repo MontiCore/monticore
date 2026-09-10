@@ -8,7 +8,9 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 /**
  * Provides a complete traverser for CommonExpressions and ExpressionBasis, using
  * {@link SubExprNameExtractionVisitor} as a visitor.
+ * @deprecated part of TC1, not needed
  */
+@Deprecated(forRemoval = true)
 public class SubExprNameExtractor4CommonExpressions implements SubExprNameExtractor {
 
   /**

@@ -217,9 +217,20 @@ public class MapBasedTypeCheck3 extends TypeCheck3 {
     return getType4Ast().getPartialTypeOfExpr(lit);
   }
 
+  /**
+   * Needed (only!) for Post-TypeCheck Trafos.
+   * After the AST is transformed,
+   * direct access to Type4AST should not be required.
+   *
+   * @return Type4AST
+   */
+  public static Type4Ast __internal_getType4AST() {
+    return ((MapBasedTypeCheck3) getDelegate()).getType4Ast();
+  }
+
   @Deprecated(forRemoval = true)
-  public static Type4Ast internal_hacky_do_not_use_getType4Ast(){
-    return ((MapBasedTypeCheck3)getDelegate()).getType4Ast();
+  public static Type4Ast internal_hacky_do_not_use_getType4Ast() {
+    return __internal_getType4AST();
   }
 
   @Deprecated(forRemoval = true)

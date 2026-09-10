@@ -271,6 +271,11 @@ public class FlatExpressionScopeSetter implements AssignmentExpressionsVisitor2,
     expr.setEnclosingScope((IExpressionsBasisScope) scope);
   }
 
+  @Override
+  public void visit(ASTQualifiedNameExpression expr) {
+    expr.setEnclosingScope((IExpressionsBasisScope) scope);
+  }
+
   /*************************************************JAVA CLASS EXPRESSIONS****************************************************/
 
   @Override
