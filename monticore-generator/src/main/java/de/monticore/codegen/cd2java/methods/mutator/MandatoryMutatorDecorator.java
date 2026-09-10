@@ -34,7 +34,7 @@ public class MandatoryMutatorDecorator extends AbstractCreator<ASTCDAttribute, L
     if (getDecorationHelper().isSupplier(ast.getMCType())) {
       // expose the unwrapped type (Supplier<X> -> X) in the setter parameter; the Supplier stays hidden
       attribute = ast.deepClone();
-      attribute.setMCType(getDecorationHelper().getReferenceTypeFromSupply(attribute.getMCType()).getMCTypeOpt().get());
+      attribute.setMCType(getDecorationHelper().getReferenceTypeOfSupplier(attribute.getMCType()).getMCTypeOpt().get());
       templateName = "methods.SupplierSet";
     }
 

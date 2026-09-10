@@ -43,7 +43,7 @@ public class ReferencedDefinitionOptAccessorDecorator extends OptionalAccessorDe
   @Override
   protected ASTCDMethod createGetMethod(final ASTCDAttribute ast) {
     String name = String.format(GET, StringUtils.capitalize(naiveAttributeName));
-    ASTMCType type = getDecorationHelper().getReferenceTypeFromOptional(ast.getMCType().deepClone()).getMCTypeOpt().get();
+    ASTMCType type = getDecorationHelper().getReferenceTypeOfOptional(ast.getMCType().deepClone()).getMCTypeOpt().get();
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), type, name);
     String referencedSymbolType = symbolTableService.getReferencedSymbolTypeName(ast);
     String attributeName = this.getDecorationHelper().getNativeAttributeName(ast.getName());

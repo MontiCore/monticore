@@ -9,6 +9,7 @@ import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mccollectiontypes._ast.*;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardTypeArgument;
+import de.monticore.types.mcsimplegenerictypes.MCSimpleGenericTypesMill;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 
 import java.util.ArrayList;
@@ -246,6 +247,29 @@ public class MCTypeFacade {
 
   public ASTMCArrayType createArrayType(final String name, int dimension) {
     return createArrayType(this.createQualifiedType(name), dimension);
+  }
+
+  /**
+   * {@code java.util.function.Supplier<inner>} types
+   */
+
+  public ASTMCBasicGenericType createSupplierTypeOf(final ASTMCTypeArgument inner) {
+    return createBasicGenericTypeOf("java.util.function.Supplier", inner);
+  }
+
+  public ASTMCBasicGenericType createSupplierTypeOf(final ASTMCType inner) {
+    ASTMCTypeArgument arg = MCSimpleGenericTypesMill.mCCustomTypeArgumentBuilder()
+        .setMCType(inner.deepClone())
+        .build();
+    return createSupplierTypeOf(arg);
+  }
+
+  public ASTMCBasicGenericType createSupplierTypeOf(final String name) {
+    return createSupplierTypeOf(createBasicTypeArgumentOf(name));
+  }
+
+  public ASTMCBasicGenericType createSupplierTypeOf(final Class<?> clazz) {
+    return createSupplierTypeOf(clazz.getName());
   }
 
   /**
