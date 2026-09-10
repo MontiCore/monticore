@@ -1,0 +1,39 @@
+/* (c) https://github.com/MontiCore/monticore */
+plugins {
+  id "de.rwth.se.symtabdefinition" version "$previous_mc_version"
+  // use previous_mc_version to avoid bootstrapping issue
+  id "maven-publish"
+}
+
+description = 'MontiCore: Default Type Symbols'
+
+sourcesJar {
+  enabled = false
+}
+
+dependencies {
+  stdefTool("de.monticore.lang:cd4analysis:$previous_mc_version") // TODO: backport this fix into the CD4A plugin
+  stdefTool("de.monticore.lang.cd4analysis:stdefgradle:$previous_mc_version") // TODO: backport this fix into the CD4A plugin
+}
+
+// Collect the name of all symtabdefinition files
+var symTabFiles = file('src/main/symtabdefinition').listFiles()
+        .findAll { it.name.endsWith('.symtabdefinition') }
+        .collect { it.name - '.symtabdefinition' }
+
+// And publish the symtabdefinitionsym files (using their classifier)
+// They can resolved using:
+// myConfiguration "de.monticore:default-type-symbols:$mc_version:List@symtabdefinitionsym"
+publishing {
+  publications {
+    symtabDef(MavenPublication) {
+      symTabFiles.each { name ->
+        artifact(tasks.generateSymbolTables.outputDir.map { it.file(name + ".symtabdefinitionsym") }) {
+          classifier = name
+          extension = "symtabdefinitionsym"
+          builtBy(tasks.generateSymbolTables)
+        }
+      }
+    }
+  }
+}
