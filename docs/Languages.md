@@ -1,45 +1,4 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
-
-# Join the MontiCore Community!
-
-Stay connected, exchange ideas, share your experience, and help shape the future of MontiCore.
-
-**Join the MontiCore community mailing list now:**
-<form action="https://ml.kundenserver.de/cgi-bin/mailinglist.cgi" method="POST" target="_blank">
-  <input checked name="subscribe_r" type="radio" value="subscribe">
-  Subscribe to community@monticore.de.
-  <br />
-  <input name="subscribe_r" type="radio" value="unsubscribe">
-  Unsubscribe from community@monticore.de.
-  <br />
-  Please enter your E-Mail-addresse:
-  <br />
-  <input maxlength="51" name="mailaccount_r" size="51" type="text">
-  <br />
-  Please repeat your E-Mail-addresse:
-  <br />
-  <input maxlength="51" name="mailaccount2_r" size="51" type="text">
-  <br />
-  <input type="SUBMIT" value="Submit">
-  <br />
-  <input type="RESET" value="Reset">
-  <hr />
-  <input name="FBMLNAME" type="hidden" value="community@monticore.de">
-  <br />
-  <input name="FBLANG" type="hidden" value="de">
-  <br />
-  <input name="FBURLERROR_L" type="hidden" value="https://ml.kundenserver.de/mailinglist/error.de.html">
-  <br />
-  <input name="FBURLSUBSCRIBE_L" type="hidden" value="https://ml.kundenserver.de/mailinglist/subscribe.de.html">
-  <br />
-  <input name="FBURLUNSUBSCRIBE_L" type="hidden" value="https://ml.kundenserver.de/mailinglist/unsubscribe.de.html">
-  <br />
-  <input name="FBURLINVALID_L" type="hidden" value="https://ml.kundenserver.de/mailinglist/invalid.de.html">
-</form>
-    
-
-
-
 # MontiCore Languages of Level II - an Overview
 
 [MontiCore](https://www.monticore.de) is a language workbench
