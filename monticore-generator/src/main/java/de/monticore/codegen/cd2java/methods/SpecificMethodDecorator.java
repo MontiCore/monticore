@@ -51,7 +51,7 @@ abstract class SpecificMethodDecorator extends AbstractCreator<ASTCDAttribute, L
     // If the type is wrapped (supplier<X>), unwrap for determination
     ASTMCType type = ast.getMCType();
     if (getDecorationHelper().isSupplier(type)) {
-      type = getDecorationHelper().getReferenceTypeFromSupply(type).getMCTypeOpt().get();
+      type = getDecorationHelper().getReferenceTypeOfSupplier(type).getMCTypeOpt().get();
     }
 
     if (getMCTypeFacade().isBooleanType(type)) {
