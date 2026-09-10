@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("attribute")}
 ${defineHookPoint("Setter:Before")}
-this.${attribute.getName()} = () -> Optional.empty();
+this.${attribute.getName()} = new de.monticore.symboltable.__internal__Supplier<>(() -> Optional.empty());
 ${defineHookPoint("Setter:After")}

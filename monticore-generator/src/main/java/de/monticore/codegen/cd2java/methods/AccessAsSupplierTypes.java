@@ -15,7 +15,7 @@ public class AccessAsSupplierTypes {
   /**
    * Fully qualified name of the wrapper type used for lazily resolved attributes.
    */
-  public static final String SUPPLIER_TYPE = "java.util.function.Supplier";
+  public static final String SUPPLIER_TYPE = "de.monticore.symboltable.__internal__Supplier";
 
   private static final String[] SUPPLYLIST = {
       "de.monticore.types.check.SymTypeExpression",
