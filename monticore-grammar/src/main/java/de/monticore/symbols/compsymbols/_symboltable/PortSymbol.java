@@ -34,7 +34,8 @@ public class PortSymbol extends PortSymbolTOP {
   }
 
   public boolean isTypePresent() {
-    return this.type != null;
+    // type is not an optional, so we resolve it here to check if it is null
+    return super.type.get() != null;
   }
 
   public SymTypeExpression getType() {
