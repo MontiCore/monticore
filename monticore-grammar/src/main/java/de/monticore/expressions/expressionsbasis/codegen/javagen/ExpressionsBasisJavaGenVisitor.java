@@ -8,7 +8,7 @@ import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisInheritanceHandler;
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.symbols.oosymbols.OOSymbolsMill;
+import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
 import de.monticore.symboltable.IScopeSpanningSymbol;
 import de.monticore.types.check.SymTypeExpression;
@@ -48,9 +48,9 @@ public class ExpressionsBasisJavaGenVisitor
 
     // static field
     if (exprType.getSourceInfo().getSourceSymbol().isPresent()
-        && OOSymbolsMill.typeDispatcher().isOOSymbolsField(exprType.getSourceInfo().getSourceSymbol().get())
-        && OOSymbolsMill.typeDispatcher().asOOSymbolsField(exprType.getSourceInfo().getSourceSymbol().get()).isIsStatic()) {
-      getPrinter().print(OOSymbolsMill.typeDispatcher().asOOSymbolsField(exprType.getSourceInfo().getSourceSymbol().get()).getFullName());
+        && exprType.getSourceInfo().getSourceSymbol().get() instanceof FieldSymbol fieldSymbol
+        && fieldSymbol.isIsStatic()) {
+      getPrinter().print(fieldSymbol.getFullName());
     }
 
     // function references

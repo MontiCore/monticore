@@ -4,7 +4,7 @@ package de.monticore.statements.mccommonstatements.cocos;
 import com.google.common.base.Preconditions;
 import de.monticore.statements.mccommonstatements._ast.ASTSwitchStatement;
 import de.monticore.statements.mccommonstatements._cocos.MCCommonStatementsASTSwitchStatementCoCo;
-import de.monticore.symbols.oosymbols.OOSymbolsMill;
+import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types3.SymTypeRelations;
 import de.monticore.types3.TypeCheck3;
@@ -41,8 +41,8 @@ public class SwitchStatementValid implements MCCommonStatementsASTSwitchStatemen
 
   protected boolean isEnumMember(SymTypeExpression ste) {
     if (ste.hasTypeInfo()) {
-      if (OOSymbolsMill.typeDispatcher().isOOSymbolsOOType(ste.getTypeInfo())) {
-        return OOSymbolsMill.typeDispatcher().asOOSymbolsOOType(ste.getTypeInfo()).isIsEnum();
+      if (ste.getTypeInfo() instanceof OOTypeSymbol ooTypeSymbol) {
+        return ooTypeSymbol.isIsEnum();
       }
     }
     return false;

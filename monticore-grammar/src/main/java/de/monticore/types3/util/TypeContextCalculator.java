@@ -2,9 +2,8 @@
 package de.monticore.types3.util;
 
 import com.google.common.base.Preconditions;
-import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
-import de.monticore.symbols.basicsymbols._util.IBasicSymbolsTypeDispatcher;
 import de.monticore.symboltable.IScope;
 import de.monticore.symboltable.ISymbol;
 import de.monticore.symboltable.modifiers.AccessModifier;
@@ -87,16 +86,13 @@ public class TypeContextCalculator {
       if (scope.isPresentSpanningSymbol()) {
         ISymbol spanningSymbol = scope.getSpanningSymbol();
         // static function?
-        if (getTypeDispatcher().isBasicSymbolsFunction(spanningSymbol) &&
-            getTypeDispatcher().asBasicSymbolsFunction(spanningSymbol)
-                .getAccessModifier().getDimensionToModifierMap()
+        if (spanningSymbol instanceof FunctionSymbol functionSymbol &&
+            functionSymbol.getAccessModifier()
+                .getDimensionToModifierMap()
                 .getOrDefault(StaticAccessModifier.DIMENSION, null)
                 == StaticAccessModifier.STATIC) {
           accessIsStaticIfInType = true;
         }
-        // todo reactivate after typedispatcher fix
-        //else if (getTypeDispatcher().isType(spanningSymbol)) {
-        //  TypeSymbol typeSymbol = getTypeDispatcher().asType(spanningSymbol);
         else if (spanningSymbol instanceof TypeSymbol typeSymbol) {
           if (typeSymbol == type) {
             exprIsInType = true;
@@ -125,12 +121,6 @@ public class TypeContextCalculator {
       modifiers.add(StaticAccessModifier.STATIC);
     }
     return new CompoundAccessModifier(modifiers);
-  }
-
-  // Helper
-
-  protected IBasicSymbolsTypeDispatcher getTypeDispatcher() {
-    return BasicSymbolsMill.typeDispatcher();
   }
 
   // static delegate

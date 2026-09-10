@@ -2,7 +2,6 @@
 package de.monticore.statements.mcvardeclarationstatements._cocos;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.statements.mcvardeclarationstatements.MCVarDeclarationStatementsMill;
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTSimpleInit;
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTVariableDeclarator;
 import de.monticore.types.check.SymTypeExpression;
@@ -37,9 +36,7 @@ public class VarDeclarationInitializationHasCorrectType implements MCVarDeclarat
     } else { // Proceed with checking the coco
       SymTypeExpression varType = node.getDeclarator().getSymbol().getType();
 
-      ASTExpression initExpr = MCVarDeclarationStatementsMill.typeDispatcher()
-        .asMCVarDeclarationStatementsASTSimpleInit(node.getVariableInit())
-        .getExpression();
+      ASTExpression initExpr = ((ASTSimpleInit) node.getVariableInit()).getExpression();
       SymTypeExpression initType = TypeCheck3.typeOf(initExpr, varType);
 
       if (initType.isObscureType()) {
