@@ -169,7 +169,10 @@ public class DeriveSymTypeOfUglyExpressions
 
       if (!extType.isPrimitive()) {
         //see if there is a constructor fitting for the arguments
-        List<FunctionSymbol> constructors = extType.getMethodList(extType.getTypeInfo().getName(), false, AccessModifier.ALL_INCLUSION);
+        List<FunctionSymbol> constructors =
+            TypeCheck1Deprecations.getMethodList(extType,
+                extType.getTypeInfo().getName(), false,
+                AccessModifier.ALL_INCLUSION);
         if (!constructors.isEmpty()) {
           if (testForCorrectArguments(constructors, creator.getArguments())) {
             wholeResult = extType;
