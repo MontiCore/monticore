@@ -12,27 +12,38 @@ import de.se_rwth.commons.logging.Log;
 import java.util.List;
 
 public class ConstructorNoAccessModifierPair implements JavaLightASTConstructorDeclarationCoCo {
-
+  
   public static final String ERROR_CODE = "0xA0809";
-
-  public static final String ERROR_MSG_FORMAT = " Invalid modifiers are mentioned in constructor's '%s' declaration at %s.";
-
-  // JLS3 8.8.3-2
+  
+  public static final String ERROR_MSG_FORMAT =
+      " Conflicting access modifiers are mentioned in constructor's '%s' declaration at %s.";
+  
+  protected boolean isAccessModifier(ASTJavaModifier modifier) {
+    return modifier.getModifier() == ASTConstantsMCCommonStatements.PUBLIC
+        || modifier.getModifier() == ASTConstantsMCCommonStatements.PROTECTED
+        || modifier.getModifier() == ASTConstantsMCCommonStatements.PRIVATE;
+  }
+  
+  // JLS17 8.8.3-2
   @Override
   public void check(ASTConstructorDeclaration node) {
+    boolean hasAccessModifier = false;
     List<ASTMCModifier> modifiers = node.getMCModifierList();
-
-    int mod = 0;
-
+    
     for (ASTMCModifier modifier : modifiers) {
-      ASTJavaModifier javaModifier = JavaLightMill.typeDispatcher().asMCCommonStatementsASTJavaModifier(modifier);
-
-      if (javaModifier.getModifier() >= ASTConstantsMCCommonStatements.PRIVATE
-          && javaModifier.getModifier() <=  ASTConstantsMCCommonStatements.PUBLIC) {
-        if(mod != 0 && mod != javaModifier.getModifier()) {
-         Log.error(String.format(ERROR_CODE+ERROR_MSG_FORMAT, node.getName(),node.get_SourcePositionStart()));
+      if (JavaLightMill.typeDispatcher().isMCCommonStatementsASTJavaModifier(modifier)) {
+        ASTJavaModifier javaModifier =
+            JavaLightMill.typeDispatcher().asMCCommonStatementsASTJavaModifier(modifier);
+        if (isAccessModifier(javaModifier)) {
+          if (hasAccessModifier) {
+            Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, node.getName(),
+                node.get_SourcePositionStart()));
+            break;
+          }
+          else {
+            hasAccessModifier = true;
+          }
         }
-        mod = javaModifier.getModifier();
       }
     }
   }
