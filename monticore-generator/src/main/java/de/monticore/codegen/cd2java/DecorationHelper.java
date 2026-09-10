@@ -105,12 +105,15 @@ public class DecorationHelper extends MCBasicTypesHelper {
     return "Optional".equals(Names.getSimpleName(type));
   }
 
+    /**
+     * Checks whether the type is wrapped by the internal supplier type
+     */
   public boolean isSupplier(String type) {
     int index = type.indexOf('<');
     if (index != -1) {
       type = type.substring(0, index);
     }
-    return "Supplier".equals(Names.getSimpleName(type));
+    return Names.getSimpleName(SUPPLIER_TYPE).equals(Names.getSimpleName(type));
   }
 
   // The ASTMCType overloads intentionally delegate to the String checks above instead of using
@@ -196,12 +199,12 @@ public class DecorationHelper extends MCBasicTypesHelper {
     // the initialization expression that is placed after the '=' of the field declaration
     String defaultValue;
     if (!isSupplier) {
-        defaultValue = inner;
+      defaultValue = inner;
     } else if (isList) {
       // A list must expose a stable instance, otherwise we would create a new one every get and entries would be lost.
-        defaultValue = "com.google.common.base.Suppliers.memoize(() -> " + inner + ")";
+      defaultValue = "new " + SUPPLIER_TYPE + "<>(com.google.common.base.Suppliers.memoize(() -> " + inner + "))";
     } else {
-        defaultValue = "() -> " + inner;
+      defaultValue = "new " + SUPPLIER_TYPE + "<>(() -> " + inner + ")";
     }
     glex.replaceTemplate(VALUE, attribute, new StringHookPoint("= " + defaultValue));
   }
@@ -229,7 +232,7 @@ public class DecorationHelper extends MCBasicTypesHelper {
   }
 
   /**
-   * Wraps {@code inner} into {@code Supplier<inner>}
+   * Wraps {@code inner} into the internal supplier type {@code __internal__Supplier<inner>}
    *
    * A copy of this is already in the MCTypeFacade. This can be deleted, and references rerouted to MCTypeFacade after release ...
    */

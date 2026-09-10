@@ -250,11 +250,11 @@ public class MCTypeFacade {
   }
 
   /**
-   * {@code java.util.function.Supplier<inner>} types
+   * {@code de.monticore.symboltable.__internal__Supplier<inner>} types.
    */
 
   public ASTMCBasicGenericType createSupplierTypeOf(final ASTMCTypeArgument inner) {
-    return createBasicGenericTypeOf("java.util.function.Supplier", inner);
+    return createBasicGenericTypeOf("de.monticore.symboltable.__internal__Supplier", inner);
   }
 
   public ASTMCBasicGenericType createSupplierTypeOf(final ASTMCType inner) {
