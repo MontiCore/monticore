@@ -14,7 +14,7 @@ import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorConstants;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
-import de.monticore.codegen.cd2java.methods.AccessAsSupplierTyps;
+import de.monticore.codegen.cd2java.methods.AccessAsSupplierTypes;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
@@ -94,7 +94,7 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
 
     // Wrap selected symbolrule attribute types into Supplier<X> so their (possibly not-yet-resolvable) value can be computed later
     symbolRuleAttributes.stream()
-            .filter(a -> AccessAsSupplierTyps.shouldBeSupplied(a.getMCType().printType()))
+            .filter(a -> AccessAsSupplierTypes.shouldHaveSupplier(a.getMCType().printType()))
             .forEach(a -> a.setMCType(getDecorationHelper().createSupplierTypeOf(a.getMCType())));
 
     symbolRuleAttributes.forEach(a -> getDecorationHelper().addAttributeDefaultValues(a, this.glex));
