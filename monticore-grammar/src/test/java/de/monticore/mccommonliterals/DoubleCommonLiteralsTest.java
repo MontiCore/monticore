@@ -44,12 +44,12 @@ public class DoubleCommonLiteralsTest {
   
   static Stream<Arguments> checkFalseArgs() {
     return Stream.of(
-        Arguments.of(".0d", List.of("mismatched input 'd' expecting '.'", "extraneous input '.'")),
+        Arguments.of(".0d", List.of("mismatched input 'd', expecting '.'", "extraneous input '.'")),
         Arguments.of("0.d", List.of("mismatched input 'd'")),
         Arguments.of("5d", List.of("mismatched input 'd'")),
         Arguments.of("009e2d", List.of("mismatched input 'e2d'")),
         Arguments.of("0 .0", List.of("rule basicDoubleLiteral failed predicate")),
-        Arguments.of("0.0 d", List.of("Expected EOF but found token"))
+        Arguments.of("0.0 d", List.of("mismatched input 'd', expected EOF (found: Name)"))
     );
   }
 

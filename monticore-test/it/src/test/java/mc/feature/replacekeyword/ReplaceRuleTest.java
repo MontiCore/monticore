@@ -26,7 +26,7 @@ public class ReplaceRuleTest {
 
     parser.parse_StringA("A Foo");
     assertTrue(parser.hasErrors());
-    MCAssertions.assertHasFindingStartingWith("mismatched input 'A' expecting 'a1'");
+    MCAssertions.assertHasFindingStartingWith("mismatched input 'A', expecting 'a1'");
 
     // Add keyword in combination with nokeyword
     parser.parse_StringB("BLA Foo");
@@ -49,7 +49,7 @@ public class ReplaceRuleTest {
 
     parser.parse_StringD(">> Foo");
     assertTrue(parser.hasErrors());
-    MCAssertions.assertHasFindingStartingWith("mismatched input '>' expecting '}}'");
+    MCAssertions.assertHasFindingStartingWith("mismatched input '>', expecting '}}'");
 
     // Add keyword in combination with token
     parser.parse_StringE("{{ Foo");

@@ -121,6 +121,6 @@ public class LexerTest {
     LexerFormatParser p = LexerFormatMill.parser();
     Optional<ASTTest> ast = p.parse_StringTest("<<ddfd>>fd>>");
     assertTrue(p.hasErrors());
-    MCAssertions.assertHasFindingStartingWith("Expected EOF but found token");
+    MCAssertions.assertHasFindingStartingWith("mismatched input 'f', expected EOF");
   }
 }
