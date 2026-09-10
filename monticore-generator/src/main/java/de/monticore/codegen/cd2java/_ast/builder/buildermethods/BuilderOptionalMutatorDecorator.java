@@ -30,7 +30,7 @@ public class BuilderOptionalMutatorDecorator extends OptionalMutatorDecorator {
   @Override
   protected ASTCDMethod createSetMethod(final ASTCDAttribute attribute) {
     String name = String.format(SET, naiveAttributeName);
-    ASTMCType parameterType = getDecorationHelper().getReferenceTypeFromOptional(attribute.getMCType()).getMCTypeOpt().get().deepClone();
+    ASTMCType parameterType = getDecorationHelper().getReferenceTypeOfOptional(attribute.getMCType()).getMCTypeOpt().get().deepClone();
     ASTCDParameter parameter = this.getCDParameterFacade().createParameter(parameterType, attribute.getName());
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), name, parameter);
     ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(builderType).build();

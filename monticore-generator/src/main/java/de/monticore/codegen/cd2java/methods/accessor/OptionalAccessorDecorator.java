@@ -52,12 +52,12 @@ public class OptionalAccessorDecorator extends AbstractCreator<ASTCDAttribute, L
     String templateName;
     if (getDecorationHelper().isSupplier(type)){
       templateName = "methods.opt.SupplierGet4Opt";
-      type = getDecorationHelper().getReferenceTypeFromSupply(type).getMCTypeOpt().get();
+      type = getDecorationHelper().getReferenceTypeOfSupplier(type).getMCTypeOpt().get();
     } else {
       templateName = "methods.opt.Get4Opt";
     }
 
-    type = getDecorationHelper().getReferenceTypeFromOptional(type).getMCTypeOpt().get();
+    type = getDecorationHelper().getReferenceTypeOfOptional(type).getMCTypeOpt().get();
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), type, name);
     String generatedErrorCode = service.getGeneratedErrorCode(ast.getName() + ast.printType());
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(templateName, ast, naiveAttributeName, generatedErrorCode));

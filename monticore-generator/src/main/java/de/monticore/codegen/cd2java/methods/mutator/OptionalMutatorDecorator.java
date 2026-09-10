@@ -44,12 +44,12 @@ public class OptionalMutatorDecorator extends AbstractCreator<ASTCDAttribute, Li
     String templateName;
     if (getDecorationHelper().isSupplier(type)){
       templateName = "methods.opt.SupplierSet4Opt";
-      type = getDecorationHelper().getReferenceTypeFromSupply(type).getMCTypeOpt().get();
+      type = getDecorationHelper().getReferenceTypeOfSupplier(type).getMCTypeOpt().get();
     } else {
       templateName = "methods.opt.Set4Opt";
     }
 
-    type = getDecorationHelper().getReferenceTypeFromOptional(type).getMCTypeOpt().get().deepClone();
+    type = getDecorationHelper().getReferenceTypeOfOptional(type).getMCTypeOpt().get().deepClone();
     ASTCDParameter parameter = this.getCDParameterFacade().createParameter(type, ast.getName());
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), name, parameter);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(templateName, ast, naiveAttributeName));

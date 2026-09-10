@@ -87,7 +87,7 @@ public abstract class ListMethodDecorator extends AbstractCreator<ASTCDAttribute
 
     if (getDecorationHelper().isSupplier(type)) {
       // a wrapped list attribute has the shape Supplier<List<X>> -> unwrap to List<X> before extracting X
-      type = getDecorationHelper().getReferenceTypeFromSupply(type).getMCTypeOpt().get();
+      type = getDecorationHelper().getReferenceTypeOfSupplier(type).getMCTypeOpt().get();
     }
     return getTypeArgumentFromListType(type);
   }

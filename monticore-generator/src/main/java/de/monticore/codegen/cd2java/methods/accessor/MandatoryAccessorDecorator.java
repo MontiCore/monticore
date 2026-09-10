@@ -45,7 +45,7 @@ public class MandatoryAccessorDecorator extends AbstractCreator<ASTCDAttribute, 
     String templateName;
     if (getDecorationHelper().isSupplier(type)) {
       // The Supplier is hidden from the user. The getter has to expose the unwrapped type (Supplier<X> -> X)
-      type = getDecorationHelper().getReferenceTypeFromSupply(type).getMCTypeOpt().get();
+      type = getDecorationHelper().getReferenceTypeOfSupplier(type).getMCTypeOpt().get();
       templateName = "methods.SupplierGet";
     } else {
       templateName = "methods.Get";
