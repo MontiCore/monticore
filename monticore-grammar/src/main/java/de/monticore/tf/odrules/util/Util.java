@@ -50,7 +50,7 @@ public class Util {
     Optional<ODObjectSymbol> resultSymbol = getFirstSymbol(symb.getSpannedScope().resolveODObjectDownMany(attrName));
 
     if(resultSymbol.isPresent() && resultSymbol.get().isPresentAstNode()) {
-      return (ASTODObject) resultSymbol.get().getAstNode();
+      return resultSymbol.get().getAstNode();
     }
     else {
       // the object is not a direct child of the ODDefinition.
@@ -102,7 +102,10 @@ public class Util {
    * @return optional of the first symbol or empty optional if collection is null or empty
    */
   private static Optional<ODObjectSymbol> getFirstSymbol(Collection<ODObjectSymbol> symbols) {
-    if (symbols != null && !symbols.isEmpty()) {
+    if (symbols == null || symbols.isEmpty()) {
+      return Optional.empty();
+    }
+    else {
       for (ODObjectSymbol symb : symbols) {
         return Optional.of(symb);
       }
@@ -180,19 +183,9 @@ public class Util {
 
   public static boolean isBuiltInType(ASTODAttribute attribute) {
     String typename = attribute.printType();
-    if("boolean".equals(typename)
-            || "int".equals(typename)
-            || "float".equals(typename)
-            || "double".equals(typename)
-            || "char".equals(typename)
-            || "long".equals(typename)
-            || "byte".equals(typename)
-            || "short".equals(typename)
-            || "String".equals(typename)){
-      return true;
-
-    }
-    return false;
+    return "boolean".equals(typename) || "int".equals(typename) || "float".equals(typename)
+        || "double".equals(typename) || "char".equals(typename) || "long".equals(typename)
+        || "byte".equals(typename) || "short".equals(typename) || "String".equals(typename);
   }
 
   @Deprecated

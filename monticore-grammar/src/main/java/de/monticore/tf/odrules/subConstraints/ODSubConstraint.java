@@ -31,8 +31,7 @@ public class ODSubConstraint {
     }
 
     public boolean isDependendOn(ASTMatchingObject object){
-      return dependVars.stream().anyMatch(astMatchingObject -> astMatchingObject.getObjectName()
-          .equals(object.getObjectName()));
+      return dependVars.stream().anyMatch(astMatchingObject -> astMatchingObject.getObjectName().equals(object.getObjectName()));
     }
 
     public String getConstrExpr(){

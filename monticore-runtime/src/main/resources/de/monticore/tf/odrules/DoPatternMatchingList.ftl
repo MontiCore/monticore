@@ -22,11 +22,11 @@ public boolean doPatternMatching_${structure.getObjectName()}(boolean isParentBa
     Stack<String> backtracking = new Stack<String>();
     Stack<String> backtrackingNegative = new Stack<String>();
     Stack<String> searchPlan = new Stack<String>();
-    boolean foundmatch = true;
+    boolean foundMatch = true;
     String nextNode = null;
     if(is_${structure.getObjectName()}_fix) {
       // The List is given, just write it in the cand
-      foundmatch = false;
+      foundMatch = false;
     } else if (!isParentBacktracking) {
       // if the Parent is not Backtracking find a complete new List
       ${structure.getObjectName()}_candidates = new ArrayList<Match${structure.getObjectName()}>();
@@ -60,7 +60,7 @@ public boolean doPatternMatching_${structure.getObjectName()}(boolean isParentBa
     }
 
     boolean hasFoundAtLeastOneMatch = false;
-    while(foundmatch) {
+    while(foundMatch) {
       // If the parent was Backtracking don't load a new searchPlan
       if (!isBacktracking) {
         searchPlan = (Stack<String>) searchPlan_${structure.getObjectName()}.clone();
@@ -78,189 +78,14 @@ public boolean doPatternMatching_${structure.getObjectName()}(boolean isParentBa
     <#--creates an switch case for each object for matching the object-->
         <#list allObjects as object>
           <#if object.isListObject()>
-            case "${object.getObjectName()}_$List" -> {
-              // this is a list object
-              if(isBacktrackingNegative){
-                isBacktracking = true;
-                isBacktrackingNegative = false;
-                clear${structure.getObjectName()}NegativeObjects();
-              }
-              // Start ListMatching and test if match was found
-              if(!doPatternMatching_${object.getObjectName()}(isBacktracking)){
-                //if no object is found, test if backtracking stack is empty
-                if(backtracking.isEmpty()){
-                  //no match of the pattern can be found
-                  foundmatch = false;
-                  break mainLoop;
-                }else{
-                  // start backtracking
-                  isBacktracking = true;
-                  //put object back on stack
-                  searchPlan.push(nextNode);
-                  //put the first object of the backtracking stack
-                  searchPlan.push(backtracking.pop());
-                }
-              } else {
-                // Else stop backtracking
-                isBacktracking = false;
-                //put object on backtracking stack
-                backtracking.push(nextNode);
-                // update candidates for next object to match
-                if (!searchPlan.isEmpty()) {
-                  findActualCandidates(searchPlan.peek());
-                }
-              }
-
+              ${tc.includeArgs("de.monticore.tf.odrules.dopatternmatching.HandleListObject", object, [false, true, structure])}
           <#elseif object.isOptObject()>
-            case "${object.getObjectName()}" -> {
-              // this is an optional object
-              if(doPatternMatching_${object.getObjectName()}(isBacktracking, isBacktrackingNegative)) {
-
-              if(isBacktrackingNegative){
-                isBacktracking = true;
-                isBacktrackingNegative = false;
-                clear${structure.getObjectName()}NegativeObjects();
-                // put object back on stack
-                searchPlan.push(nextNode);
-                // put the first object of the backtracking stack
-                searchPlan.push(backtracking.pop());
-              }else{
-                isBacktracking = false;
-                backtracking.push(nextNode);
-              }
-
-                // update candidates for next object to match
-                if (!searchPlan.isEmpty()) {
-                  findActualCandidates(searchPlan.peek());
-                }
-              }
-              else {
-                // the pattern matching of an optional structure will always return true
-                // (even if no match was found), except in the case that we're
-                // backtracking because of negative nodes and have no more
-                // candidates to match
-
-                // if no object is found, test if backtracking stack is empty
-                if (backtracking.isEmpty()) {
-                  // no match of the pattern can be found
-                  foundmatch = false;
-                  // Note: We should/could also reset the optional candidates here?
-                  break mainLoop;
-                }
-                else {
-                  // start backtracking
-                  isBacktracking = true;
-                  // put object back on stack
-                  searchPlan.push(nextNode);
-                  // put the first object of the backtracking stack
-                  searchPlan.push(backtracking.pop());
-                  // reset the optional candidate
-                  reset_${object.getObjectName()}();
-                  this.opt_found_${object.getObjectName()} = false;
-                }
-              }
-
+              ${tc.includeArgs("de.monticore.tf.odrules.dopatternmatching.HandleOptObject", object, [false, true, structure])}
           <#elseif object.isNotObject()>
-            case "${object.getObjectName()}" -> {
-              // this is a negative object
-              // reset candidates list
-              if(!isBacktracking){
-                if (!isBacktrackingNegative) {
-                  ((FastLookupList<?>)${object.getObjectName()}_candidates_temp).reset();
-                }
-                //try to find a match
-                ${object.getObjectName()}_cand = match_${object.getObjectName()}();
-                //test if match does not exist
-                if(${object.getObjectName()}_cand == null){
-                  //if no object ist found, test if backtracking stack is empty
-                  if(backtrackingNegative.isEmpty()){
-                    //no match of negative elements can be found go on with lists
-                    foundmatch = true;
-                    isBacktrackingNegative = false;
-                    backtracking.push(nextNode);
-                    while (!searchPlan.isEmpty() && !searchPlan.peek().endsWith("_$List")) {
-                      backtracking.push(searchPlan.pop());
-                    }
-                  }else{
-                    // start backtracking
-                    isBacktrackingNegative = true;
-                    //put object back on stack
-                    searchPlan.push(nextNode);
-                    //put the first object of the backtracking stack
-                    searchPlan.push(backtrackingNegative.pop());
-                    //reset candidates list
-                    ((FastLookupList<?>)${object.getObjectName()}_candidates_temp).reset();
-                  }
-                }else{
-
-                  //update candidates for next object to match
-                  if(!searchPlan.isEmpty()){
-                    //put object on backtracking stack
-                    backtrackingNegative.push(nextNode);
-                    //set backtracking back to false
-                    isBacktrackingNegative = false;
-                    findActualCandidates(searchPlan.peek());
-                  } else {
-                    // start backtracking
-                    isBacktrackingNegative = true;
-                    //put object back on stack
-                    searchPlan.push(nextNode);
-                    while(!backtrackingNegative.empty()){
-                      searchPlan.push(backtrackingNegative.pop());
-                    }
-                    if(!backtracking.isEmpty()){
-                      searchPlan.push(backtracking.pop());
-                    }
-                    //reset candidates list
-                    ((FastLookupList<?>)${object.getObjectName()}_candidates_temp).reset();
-
-                  }
-                }
-              }else{
-                searchPlan.push(nextNode);
-                searchPlan.push(backtracking.pop());
-              }
+              ${tc.includeArgs("de.monticore.tf.odrules.dopatternmatching.HandleNotObject", object, [false, true, structure])}
           <#else><#-- normal object -->
-            case "${object.getObjectName()}" -> {
-              if(isBacktrackingNegative){
-                isBacktracking = true;
-                isBacktrackingNegative = false;
-                clear${structure.getObjectName()}NegativeObjects();
-              }
-              if (!isBacktracking) {
-                ((FastLookupList<?>)${object.getObjectName()}_candidates_temp).reset();
-              }
-              //try to find a match
-              ${object.getObjectName()}_cand = match_${object.getObjectName()}();
-              //test if match was found
-              if(${object.getObjectName()}_cand == null){
-                //if no object ist found, test if backtracking stack is empty
-                if(backtracking.isEmpty()){
-                  //no match of the pattern can be found
-                  foundmatch = false;
-                  break mainLoop;
-                }else{
-                  // start backtracking
-                  isBacktracking = true;
-                  //put object back on stack
-                  searchPlan.push(nextNode);
-                  //put the first object of the backtracking stack
-                  searchPlan.push(backtracking.pop());
-                  //reset candidates list
-                  ((FastLookupList<?>)${object.getObjectName()}_candidates_temp).reset();
-                }
-              }else{
-                // stop backtracking
-                isBacktracking = false;
-                //put object on backtracking stack
-                backtracking.push(nextNode);
-                //update candidates for next object to match
-                if(!searchPlan.isEmpty()){
-                  findActualCandidates(searchPlan.peek());
-                }
-              }
+              ${tc.includeArgs("de.monticore.tf.odrules.dopatternmatching.HandleNormalObject", object, [false, true, structure])}
           </#if>
-            }
         </#list>
         }
 
@@ -269,7 +94,7 @@ public boolean doPatternMatching_${structure.getObjectName()}(boolean isParentBa
             if(!checkConstraints()){
               if(backtracking.isEmpty()){
                 //no match of the pattern can be found
-                foundmatch = false;
+                foundMatch = false;
                 break;
               }else{
                 // start backtracking
@@ -288,7 +113,7 @@ public boolean doPatternMatching_${structure.getObjectName()}(boolean isParentBa
         }
       }
       //create a replacement candidate if a match was found
-      if(foundmatch) {
+      if(foundMatch) {
         Match${structure.getObjectName()} match = new Match${structure.getObjectName()}(<@commaSeperatedNames/>);
         match.backtracking = (Stack<String>) backtracking.clone();
         <#list mandatoryObjects as o>// save context of every object and then clear it

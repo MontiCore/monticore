@@ -5,6 +5,7 @@ import com.google.common.base.Strings;
 import de.monticore.ast.ASTNode;
 import de.monticore.expressions.tr.expressionsbasistr._ast.ASTExpression_Pat;
 import de.monticore.expressions.tr.expressionsbasistr._ast.ASTITFExpression;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.tf.*;
 import de.monticore.tf.complex.*;
 import de.monticore.tf.leftrecassignments.*;
@@ -28,19 +29,8 @@ import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@TestWithMCLanguage(ExpressionDSLMill.class)
 public class ExpressionDSLTest {
-
-  @BeforeEach
-  public void beforeEach() {
-    Log.clearFindings();
-  }
-
-  @BeforeAll
-  public static void beforeClass() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-    ExpressionDSLMill.init();
-  }
 
   @Test
   public void testExp01RenameLeftSide() throws IOException {

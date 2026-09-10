@@ -1,32 +1,25 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.tfcs;
 
-import de.se_rwth.commons.logging.LogStub;
-import mc.testcases.automaton.tr.automatontr._ast.ASTITFAutomaton;
+import de.monticore.runtime.junit.TestWithMCLanguage;
+import mc.testcases.automaton.tr.automatontr.AutomatonTRMill;
 import mc.testcases.automaton.tr.automatontr._ast.ASTAutomatonTFRule;
+import mc.testcases.automaton.tr.automatontr._ast.ASTITFAutomaton;
 import mc.testcases.automaton.tr.automatontr._parser.AutomatonTRParser;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;
 
-import de.se_rwth.commons.logging.Log;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
 
+@TestWithMCLanguage(AutomatonTRMill.class)
 public class TransformationRuleParserTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
+
   @Test
   public void testRule() throws  IOException {
     String inputFile = "src/test/resources/SimpleRule.mtr";
-    AutomatonTRParser parser = new AutomatonTRParser();
+    AutomatonTRParser parser = AutomatonTRMill.parser();
 
     Optional<ASTAutomatonTFRule> ast = parser.parse(inputFile);
 
@@ -39,7 +32,5 @@ public class TransformationRuleParserTest {
     ASTITFAutomaton a = (ASTITFAutomaton) o.getTFRule().getITFPartList().get(0);
 
     assertNotNull(a);
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 }

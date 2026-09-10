@@ -1,11 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.tf;
 
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
+import de.monticore.runtime.junit.TestWithMCLanguage;
+import mc.testcases.automaton.AutomatonMill;
 import mc.testcases.automaton._ast.ASTAutomaton;
 import mc.testcases.automaton._parser.AutomatonParser;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -13,20 +12,13 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@TestWithMCLanguage(AutomatonMill.class)
 public class ConstraintForOptionalTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
-  ASTAutomaton aut;
 
   @Test
   public void testEmptyAutomaton() throws IOException {
     String inputFile = "src/main/models/automaton/EmptyAutomaton.aut";
-    AutomatonParser parser = new AutomatonParser();
+    AutomatonParser parser = AutomatonMill.parser();
     Optional<ASTAutomaton> aut = parser.parse(inputFile);
 
     assertTrue(aut.isPresent());
@@ -37,14 +29,12 @@ public class ConstraintForOptionalTest {
 
     // should not match
     assertFalse(rule.doPatternMatching());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testAutomatonWithOneState() throws IOException {
     String inputFile = "src/main/models/automaton/AutomatonWithSingleState.aut";
-    AutomatonParser parser = new AutomatonParser();
+    AutomatonParser parser = AutomatonMill.parser();
     Optional<ASTAutomaton> aut = parser.parse(inputFile);
 
     assertTrue(aut.isPresent());
@@ -55,16 +45,14 @@ public class ConstraintForOptionalTest {
 
     // optional state is not present
     assertTrue(rule.doPatternMatching());
-    assertEquals(rule.get_$A().getName(), "a");
+    assertEquals("a", rule.get_$A().getName());
     assertFalse(rule.get_$C().isPresent());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testIncorrectName() throws IOException {
     String inputFile = "src/main/models/automaton/AutomatonSubstateWithSubstate.aut";
-    AutomatonParser parser = new AutomatonParser();
+    AutomatonParser parser = AutomatonMill.parser();
     Optional<ASTAutomaton> aut = parser.parse(inputFile);
 
     assertTrue(aut.isPresent());
@@ -77,16 +65,14 @@ public class ConstraintForOptionalTest {
 
     // substate has incorrect name, so it should not be matched
     assertTrue(rule.doPatternMatching());
-    assertEquals(rule.get_$A().getName(), "a");
+    assertEquals("a", rule.get_$A().getName());
     assertFalse(rule.get_$C().isPresent());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testCompleteMatch() throws IOException {
     String inputFile = "src/main/models/automaton/AutomatonTwoStatesAndSubstate.aut";
-    AutomatonParser parser = new AutomatonParser();
+    AutomatonParser parser = AutomatonMill.parser();
     Optional<ASTAutomaton> aut = parser.parse(inputFile);
 
     assertTrue(aut.isPresent());
@@ -98,10 +84,8 @@ public class ConstraintForOptionalTest {
 
     // everything matches
     assertTrue(rule.doPatternMatching());
-    assertEquals(rule.get_$A().getName(), "a");
+    assertEquals("a", rule.get_$A().getName());
     assertTrue(rule.get_$C().isPresent());
-    assertEquals(rule.get_$C().get().getName(), "c");
-  
-    assertTrue(Log.getFindings().isEmpty());
+    assertEquals("c", rule.get_$C().get().getName());
   }
 }

@@ -1,35 +1,33 @@
 /* (c) https://github.com/MontiCore/monticore */
 package trafo;
 
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.tf.EliminateDo;
-import de.se_rwth.commons.logging.LogStub;
+import mc.testcases.statechart.statechart.StatechartMill;
 import mc.testcases.statechart.statechart._ast.*;
 import mc.testcases.statechart.statechart._parser.StatechartParser;
 
 import java.io.IOException;
+import java.util.Optional;
+
 import de.se_rwth.commons.logging.Log;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@TestWithMCLanguage(StatechartMill.class)
 public class Test02_EliminateDoTest {
-    
-    @BeforeEach
-    public void before() {
-        LogStub.init();
-        Log.enableFailQuick(false);
-    }
     
     @Test
     public void testDoAll() throws IOException {
-        StatechartParser p = new StatechartParser();
+        StatechartParser p = StatechartMill.parser();
 
-        ASTStatechart sc = p.parse("src/test/resources/trafo/SC_withDo.sc").get();
+        Optional<ASTStatechart> scOpt = p.parse("src/test/resources/trafo/SC_withDo.sc");
 
-        if (p.hasErrors()) {
-            throw new RuntimeException("input file for test is corrupt");
-        }
+        assertTrue(scOpt.isPresent());
+        assertFalse(p.hasErrors());
+        
+        ASTStatechart sc = scOpt.get();
 
         EliminateDo testee = new EliminateDo(sc);
         testee.doAll();
@@ -57,7 +55,6 @@ public class Test02_EliminateDoTest {
         assertFalse(state.isPresentEntryAction());
         assertFalse(state.isPresentExitAction());
         assertTrue(state.isPresentDoAction());
-        assertTrue(Log.getFindings().isEmpty());
     }
 
 }

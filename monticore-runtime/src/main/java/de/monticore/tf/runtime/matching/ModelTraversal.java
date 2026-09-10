@@ -6,6 +6,11 @@ import de.monticore.visitor.ITraverser;
 
 import java.util.*;
 
+/**
+ * @deprecated This traversal should no longer be used. Pattern matching now relies on
+ * incremental indices instead of this traversal-based state.
+ */
+@Deprecated(since = "7.9.0")
 public class ModelTraversal<E extends ITraverser> {
 
   protected Map<String, Collection<ASTNode>> cName2instances = new LinkedHashMap<>();

@@ -16,9 +16,6 @@ import de.monticore.tf.odrules._visitor.ODRulesVisitor2;
 
 import java.util.Iterator;
 
-/**
- * Created by KH.
- */
 public class ODRulesPrettyPrinter  implements ODRulesVisitor2,
         ODRulesHandler, UMLStereotypeVisitor2,
         MCBasicTypesVisitor2 {
