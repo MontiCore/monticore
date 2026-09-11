@@ -4,8 +4,12 @@ package de.monticore.types.check;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
-import de.monticore.symbols.basicsymbols._symboltable.*;
-import de.monticore.symboltable.ISymbolSupplier;
+import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
+import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
+import de.monticore.symbols.basicsymbols._util.IBasicSymbolsTypeDispatcher;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -131,8 +135,15 @@ public class SymTypeExpressionFactory {
     return new SymTypeOfObject(typeSymbol);
   }
 
+  /**
+   * @deprecated did hide the usage of surrogate, and leads to questionable code
+   * consider using
+   * {@link de.monticore.types3.util.WithinScopeBasicSymbolsResolver#resolveType(IBasicSymbolsScope, String)},
+   * of creating a Surrogate explicitly (only if required)
+   */
+  @Deprecated(forRemoval = true)
   public static SymTypeOfObject createTypeObject(String name, IBasicSymbolsScope enclosingScope) {
-    return new SymTypeOfObject(ISymbolSupplier.memoize(new TypeSymbolSupplier(name, enclosingScope)));
+    return createTypeObjectViaSurrogate(name, enclosingScope);
   }
 
   /**
