@@ -3,9 +3,8 @@ package de.monticore.types.check;
 
 import com.google.common.base.Preconditions;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
-import de.monticore.symboltable.ISymbolSupplier;
-import de.monticore.symboltable.SimpleSymbolSupplier;
 import de.monticore.types3.ISymTypeVisitor;
+import de.se_rwth.commons.logging.Log;
 
 /**
  * An objectType is a full qualified class name.
@@ -14,7 +13,7 @@ import de.monticore.types3.ISymTypeVisitor;
  */
 public class SymTypeOfObject extends SymTypeExpression {
 
-  protected ISymbolSupplier<TypeSymbol> typeSymbol;
+  protected TypeSymbol typeSymbol;
 
   /**
    * Constructor: with a TypeSymbolSurrogate that contains the name and enclosingScope
@@ -22,23 +21,18 @@ public class SymTypeOfObject extends SymTypeExpression {
   public SymTypeOfObject(TypeSymbol typeSymbol)
   {
     Preconditions.checkNotNull(typeSymbol);
-    this.typeSymbol = new SimpleSymbolSupplier<>(typeSymbol);
-  }
-
-  public SymTypeOfObject(ISymbolSupplier<TypeSymbol> typeSymbol) {
-    Preconditions.checkNotNull(typeSymbol);
     this.typeSymbol = typeSymbol;
   }
 
   @Override
   public boolean hasTypeInfo() {
     // should allways be true
-    return typeSymbol.get().isPresent();
+    return typeSymbol != null;
   }
 
   @Override
   public TypeSymbol getTypeInfo() {
-    return typeSymbol.get().orElseThrow(() -> new IllegalStateException("Type info is not available of" + this.getClass().getName()));
+    return typeSymbol;
   }
 
   /**
@@ -48,7 +42,7 @@ public class SymTypeOfObject extends SymTypeExpression {
    */
   @Deprecated(forRemoval = true)
   public String getObjName() {
-    return typeSymbol.get().orElseThrow(() -> new IllegalStateException("Type info is not available of" + this.getClass().getName())).getFullName();
+    return typeSymbol.getFullName();
   }
 
   /**
@@ -56,7 +50,7 @@ public class SymTypeOfObject extends SymTypeExpression {
    */
   @Deprecated(forRemoval = true)
   public void setObjName(String objname) {
-    this.typeSymbol.get().orElseThrow(() -> new IllegalStateException("Type info is not available of" + this.getClass().getName())).setName(objname);
+    this.typeSymbol.setName(objname);
   }
   
   /**
