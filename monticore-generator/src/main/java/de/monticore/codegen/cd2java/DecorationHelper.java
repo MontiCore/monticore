@@ -231,6 +231,22 @@ public class DecorationHelper extends MCBasicTypesHelper {
     return ((ASTMCGenericType) type).getMCTypeArgumentList().get(0);
   }
 
+  public ASTMCTypeArgument getReferenceTypeOfSupplier(ASTMCType type) {
+    Preconditions.checkArgument(isSupplier(type));
+    return ((ASTMCGenericType) type).getMCTypeArgumentList().get(0);
+  }
+
+  /**
+   * Wraps {@code inner} into the internal supplier type {@code __internal__Supplier<inner>}
+   *
+   * A copy of this is already in the MCTypeFacade. This can be deleted, and references rerouted to MCTypeFacade after release ...
+   */
+  public ASTMCType createSupplierTypeOf(ASTMCType inner) {
+    ASTMCTypeArgument arg = MCSimpleGenericTypesMill
+        .mCCustomTypeArgumentBuilder().setMCType(inner.deepClone()).build();
+    return MCTypeFacade.getInstance().createBasicGenericTypeOf(SUPPLIER_TYPE, arg);
+  }
+
   /**
    * Wraps {@code inner} into the internal supplier type {@code __internal__Supplier<inner>}
    *
