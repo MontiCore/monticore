@@ -3,6 +3,8 @@ package de.monticore.types.check;
 
 import com.google.common.base.Preconditions;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
+import de.monticore.symboltable.ISymbolSupplier;
+import de.monticore.symboltable.SimpleSymbolSupplier;
 import de.monticore.types3.ISymTypeVisitor;
 
 /**
@@ -12,7 +14,7 @@ import de.monticore.types3.ISymTypeVisitor;
  */
 public class SymTypeOfObject extends SymTypeExpression {
 
-  protected TypeSymbol typeSymbol;
+  protected ISymbolSupplier<TypeSymbol> typeSymbol;
 
   /**
    * Constructor: with a TypeSymbolSurrogate that contains the name and enclosingScope
@@ -20,18 +22,23 @@ public class SymTypeOfObject extends SymTypeExpression {
   public SymTypeOfObject(TypeSymbol typeSymbol)
   {
     Preconditions.checkNotNull(typeSymbol);
+    this.typeSymbol = new SimpleSymbolSupplier<>(typeSymbol);
+  }
+
+  public SymTypeOfObject(ISymbolSupplier<TypeSymbol> typeSymbol) {
+    Preconditions.checkNotNull(typeSymbol);
     this.typeSymbol = typeSymbol;
   }
 
   @Override
   public boolean hasTypeInfo() {
     // should allways be true
-    return typeSymbol != null;
+    return typeSymbol.get().isPresent();
   }
 
   @Override
   public TypeSymbol getTypeInfo() {
-    return typeSymbol;
+    return typeSymbol.get().orElseThrow(() -> new IllegalStateException("Type info is not available of" + this.getClass().getName()));
   }
 
   /**
@@ -41,7 +48,7 @@ public class SymTypeOfObject extends SymTypeExpression {
    */
   @Deprecated(forRemoval = true)
   public String getObjName() {
-    return typeSymbol.getFullName();
+    return typeSymbol.get().orElseThrow(() -> new IllegalStateException("Type info is not available of" + this.getClass().getName())).getFullName();
   }
 
   /**
@@ -49,7 +56,7 @@ public class SymTypeOfObject extends SymTypeExpression {
    */
   @Deprecated(forRemoval = true)
   public void setObjName(String objname) {
-    this.typeSymbol.setName(objname);
+    this.typeSymbol.get().orElseThrow(() -> new IllegalStateException("Type info is not available of" + this.getClass().getName())).setName(objname);
   }
   
   /**
