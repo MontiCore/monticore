@@ -3,6 +3,5 @@ ${tc.signature("attribute", "naiveAttributeName", "generatedErrorCode")}
     if (isPresent${naiveAttributeName}()) {
         return this.${attribute.getName()}.get().get();
     }
-    Log.error("0xA7003${generatedErrorCode} get for ${naiveAttributeName} can't return a value. Attribute is empty.");
-    // Normally this statement is not reachable
-    throw new IllegalStateException();
+    Log.warn("0xA7003${generatedErrorCode} get for ${naiveAttributeName} can't return a value. Attribute is empty.");
+    return null;
