@@ -3,7 +3,6 @@ package de.monticore.types.check;
 
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
-import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
 import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.JsonPrinter;
@@ -43,9 +42,7 @@ public class SymTypeOfObjectDeSer {
         // support deprecated behavior
         enclosingScope = BasicSymbolsMill.globalScope();
       }
-      TypeSymbolSurrogate typeSym = new TypeSymbolSurrogate(objName);
-      typeSym.setEnclosingScope(enclosingScope);
-      return SymTypeExpressionFactory.createTypeObject(typeSym);
+      return SymTypeExpressionFactory.createTypeObject(objName, enclosingScope);
     }
     Log.error("0x823F4 Internal error: Cannot load \""
         + serialized + "\" as  SymTypeOfObject!");
