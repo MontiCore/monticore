@@ -5,6 +5,7 @@ import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
 import java.util.List;
 
@@ -47,11 +48,17 @@ abstract class SpecificMethodDecorator extends AbstractCreator<ASTCDAttribute, L
   }
 
   protected AbstractCreator<ASTCDAttribute, List<ASTCDMethod>> determineMethodDecoratorStrategy(final ASTCDAttribute ast) {
-    if (getMCTypeFacade().isBooleanType(ast.getMCType())) {
+    // If the type is wrapped (supplier<X>), unwrap for determination
+    ASTMCType type = ast.getMCType();
+    if (getDecorationHelper().isSupplier(type)) {
+      type = getDecorationHelper().getReferenceTypeOfSupplier(type).getMCTypeOpt().get();
+    }
+
+    if (getMCTypeFacade().isBooleanType(type)) {
       return mandatoryMethodDecorator;
-    } else if (getDecorationHelper().isListType(ast.printType())) {
+    } else if (getDecorationHelper().isList(type)) {
       return listMethodDecorator;
-    } else if (getDecorationHelper().isOptional(ast.getMCType())) {
+    } else if (getDecorationHelper().isOptional(type)) {
       return optionalMethodDecorator;
     }
     return mandatoryMethodDecorator;

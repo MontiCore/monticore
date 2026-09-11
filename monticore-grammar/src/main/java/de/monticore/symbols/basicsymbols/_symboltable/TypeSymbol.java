@@ -21,11 +21,11 @@ public class TypeSymbol extends TypeSymbolTOP {
   }
 
   public List<SymTypeExpression> getSuperClassesOnly(){
-    return superTypes;
+    return getSuperTypesList();
   }
 
   public List<SymTypeExpression> getInterfaceList(){
-    return superTypes;
+    return getSuperTypesList();
   }
 
   /**
