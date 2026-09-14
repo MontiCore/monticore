@@ -10,6 +10,7 @@ import de.monticore.visitor.ITraverser;
  * use {@link de.monticore.types3.TypeCheck3} instead.
  */
 @Deprecated
+@SuppressWarnings({"deprecation", "removal"})
 public abstract class AbstractDerive implements IDerive {
 
   protected ITraverser traverser;

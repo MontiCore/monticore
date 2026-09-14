@@ -14,6 +14,7 @@ import de.se_rwth.commons.logging.Log;
  * @deprecated integrated into MCCollectionSymTypesRelations
  */
 @Deprecated
+@SuppressWarnings({"deprecation", "removal"})
 public class MCCollectionTypeRelations implements IMCCollectionTypeRelations {
 
   /**
