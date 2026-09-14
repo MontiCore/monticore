@@ -16,6 +16,7 @@ import java.util.List;
  * @deprecated Use {@link MCVarDeclarationStatementsSymTabCompletion} instead
  */
 @Deprecated
+@SuppressWarnings({"deprecation", "removal"})
 public class MCVarDeclarationStatementsSTCompleteTypes implements MCVarDeclarationStatementsVisitor2 {
 
   protected ISynthesize typeSynthesizer;
