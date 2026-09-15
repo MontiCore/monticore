@@ -2,56 +2,47 @@
 package mc.testcases.transformation.rule.translation;
 
 import com.google.common.collect.Maps;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.statements.mcarraystatements._ast.ASTArrayInit;
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import mc.testcases.tr.dslwithotherpropertiesthanautomatontr.DSLWithOtherPropertiesThanAutomatonTRMill;
-import mc.testcases.tr.dslwithotherpropertiesthanautomatontr._ast.*;
-import mc.testcases.tr.dslwithotherpropertiesthanautomatontr._parser.DSLWithOtherPropertiesThanAutomatonTRParser;
-import mc.testcases.tr.translation.DSLWithOtherPropertiesThanAutomatonRule2OD;
-import mc.testcases.tr.translation.DSLWithOtherPropertiesThanAutomatonRule2ODVisitor;
 import de.monticore.tf.odrules.ODRulesMill;
-import de.monticore.tf.odrules._symboltable.ODRulesGlobalScope;
-import de.monticore.tf.odrules._symboltable.ODRulesScopesGenitorDelegator;
-import de.monticore.tf.odrules.util.ODRuleStereotypes;
 import de.monticore.tf.odrules._ast.ASTODAttribute;
 import de.monticore.tf.odrules._ast.ASTODDefinition;
 import de.monticore.tf.odrules._ast.ASTODObject;
 import de.monticore.tf.odrules._ast.ASTODRule;
+import de.monticore.tf.odrules._symboltable.ODRulesScopesGenitorDelegator;
+import de.monticore.tf.odrules.util.ODRuleStereotypes;
 import de.monticore.tf.rule2od.Variable2AttributeMap;
 import de.monticore.tf.ruletranslation.Rule2ODState;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
+import de.se_rwth.commons.logging.Log;
+import mc.testcases.tr.dslwithotherpropertiesthanautomatontr.DSLWithOtherPropertiesThanAutomatonTRMill;
+import mc.testcases.tr.dslwithotherpropertiesthanautomatontr._ast.*;
+import mc.testcases.tr.dslwithotherpropertiesthanautomatontr._parser.DSLWithOtherPropertiesThanAutomatonTRParser;
+import mc.testcases.tr.translation.DSLWithOtherPropertiesThanAutomatonRule2OD;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@TestWithMCLanguage(DSLWithOtherPropertiesThanAutomatonTRMill.class)
 public class DSLWithOtherPropertiesThanAutomatonRule2ODVisitorTest {
   private static void createSymboltable(ASTODRule od) {
     ODRulesScopesGenitorDelegator symbolTable = ODRulesMill.scopesGenitorDelegator();
     symbolTable.createFromAST(od);
-  }
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
-  @BeforeAll
-  public static void disableFailQuick() {
-    DSLWithOtherPropertiesThanAutomatonTRMill.init();
   }
 
   @Test
   public void testVisit_QualifiedName_Pat() throws IOException {
     // create input
     String pattern_String = "my.qualified.name";
-    DSLWithOtherPropertiesThanAutomatonTRParser parser = new DSLWithOtherPropertiesThanAutomatonTRParser();
-    ASTQualifiedName_Pat pattern = parser.parse_StringQualifiedName_Pat(pattern_String).get();
+    DSLWithOtherPropertiesThanAutomatonTRParser parser = DSLWithOtherPropertiesThanAutomatonTRMill.parser();
+    
+    Optional<ASTQualifiedName_Pat> patternOpt = parser.parse_StringQualifiedName_Pat(pattern_String);
+    assertTrue(patternOpt.isPresent());
     assertFalse(parser.hasErrors());
+    
+    ASTQualifiedName_Pat pattern = patternOpt.get();
 
     // run test
     Rule2ODState state = new Rule2ODState(new Variable2AttributeMap(), Maps.newHashMap());
@@ -81,18 +72,17 @@ public class DSLWithOtherPropertiesThanAutomatonRule2ODVisitorTest {
     ASTODObject rhsObject = de.monticore.tf.odrules.util.Util.getODObject(rhs, "qualifiedName_1");
     assertNotNull(rhsObject);
     assertEquals(0, rhsObject.getAttributesList().size());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testVisit_IFoo_Pat() throws IOException {
     // create input
     String pattern_String = "IFoo $IFOO";
-    DSLWithOtherPropertiesThanAutomatonTRParser parser = new DSLWithOtherPropertiesThanAutomatonTRParser();
-    ASTIFoo_Pat pattern = parser.parse_StringIFoo_Pat(pattern_String).orElse(null);
+    DSLWithOtherPropertiesThanAutomatonTRParser parser = DSLWithOtherPropertiesThanAutomatonTRMill.parser();
+    Optional<ASTIFoo_Pat> patternOpt = parser.parse_StringIFoo_Pat(pattern_String);
+    assertTrue(patternOpt.isPresent());
     assertFalse(parser.hasErrors());
-    assertNotNull(pattern);
+    ASTIFoo_Pat pattern = patternOpt.get();
 
     // run test
     Rule2ODState state = new Rule2ODState(new Variable2AttributeMap(), Maps.newHashMap());
@@ -123,9 +113,12 @@ public class DSLWithOtherPropertiesThanAutomatonRule2ODVisitorTest {
   public void testVisit_IFoo_Rep() throws IOException {
     // create input
     String replacement_String = "[[ IFoo $IFOO :- ]]";
-    DSLWithOtherPropertiesThanAutomatonTRParser parser = new DSLWithOtherPropertiesThanAutomatonTRParser();
-    ASTIFoo_Rep replacement = parser.parse_StringIFoo_Rep(replacement_String).get();
+    DSLWithOtherPropertiesThanAutomatonTRParser parser = DSLWithOtherPropertiesThanAutomatonTRMill.parser();
+    Optional<ASTIFoo_Rep> replacementOpt = parser.parse_StringIFoo_Rep(replacement_String);
+    assertTrue(replacementOpt.isPresent());
     assertFalse(parser.hasErrors());
+    
+    ASTIFoo_Rep replacement = replacementOpt.get();
 
     // run test
     Rule2ODState state = new Rule2ODState(new Variable2AttributeMap(), Maps.newHashMap());
@@ -152,9 +145,12 @@ public class DSLWithOtherPropertiesThanAutomatonRule2ODVisitorTest {
   public void testVisit_IFoo_Neg() throws IOException {
     // create input
     String negation_String = "not [[ IFoo $IFOO  ]]";
-    DSLWithOtherPropertiesThanAutomatonTRParser parser = new DSLWithOtherPropertiesThanAutomatonTRParser();
-    ASTIFoo_Neg negation = parser.parse_StringIFoo_Neg(negation_String).get();
+    DSLWithOtherPropertiesThanAutomatonTRParser parser = DSLWithOtherPropertiesThanAutomatonTRMill.parser();
+    Optional<ASTIFoo_Neg> negationOpt = parser.parse_StringIFoo_Neg(negation_String);
+    assertTrue(negationOpt.isPresent());
     assertFalse(parser.hasErrors());
+    
+    ASTIFoo_Neg negation = negationOpt.get();
 
     // run test
     Rule2ODState state = new Rule2ODState(new Variable2AttributeMap(), Maps.newHashMap());
@@ -181,9 +177,12 @@ public class DSLWithOtherPropertiesThanAutomatonRule2ODVisitorTest {
   public void testVisit_IFoo_List() throws IOException {
     // create input
     String list_String = "list [[ IFoo $IFOO ]]";
-    DSLWithOtherPropertiesThanAutomatonTRParser parser = new DSLWithOtherPropertiesThanAutomatonTRParser();
-    ASTIFoo_List list = parser.parse_StringIFoo_List(list_String).get();
+    DSLWithOtherPropertiesThanAutomatonTRParser parser = DSLWithOtherPropertiesThanAutomatonTRMill.parser();
+    Optional<ASTIFoo_List> listOpt = parser.parse_StringIFoo_List(list_String);
+    assertTrue(listOpt.isPresent());
     assertFalse(parser.hasErrors());
+    
+    ASTIFoo_List list = listOpt.get();
 
     // run test
     Rule2ODState state = new Rule2ODState(new Variable2AttributeMap(), Maps.newHashMap());
@@ -210,9 +209,12 @@ public class DSLWithOtherPropertiesThanAutomatonRule2ODVisitorTest {
   public void testVisit_IFoo_Opt() throws IOException {
     // create input
     String optional_String = "opt [[ IFoo $IFOO  ]]";
-    DSLWithOtherPropertiesThanAutomatonTRParser parser = new DSLWithOtherPropertiesThanAutomatonTRParser();
-    ASTIFoo_Opt optional = parser.parse_StringIFoo_Opt(optional_String).get();
+    DSLWithOtherPropertiesThanAutomatonTRParser parser = DSLWithOtherPropertiesThanAutomatonTRMill.parser();
+    Optional<ASTIFoo_Opt> optionalOpt = parser.parse_StringIFoo_Opt(optional_String);
+    assertTrue(optionalOpt.isPresent());
     assertFalse(parser.hasErrors());
+    
+    ASTIFoo_Opt optional = optionalOpt.get();
 
     // run test
     Rule2ODState state = new Rule2ODState(new Variable2AttributeMap(), Maps.newHashMap());

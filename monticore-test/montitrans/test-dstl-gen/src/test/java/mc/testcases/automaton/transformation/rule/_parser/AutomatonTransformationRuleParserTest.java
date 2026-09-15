@@ -1,12 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.testcases.automaton.transformation.rule._parser;
 
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import mc.testcases.automaton.tr.automatontr.AutomatonTRMill;
 import mc.testcases.automaton.tr.automatontr._ast.*;
 import mc.testcases.automaton.tr.automatontr._parser.AutomatonTRParser;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -15,18 +13,13 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@TestWithMCLanguage(AutomatonTRMill.class)
 public class AutomatonTransformationRuleParserTest  {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
+
   @Test
   public void testValidAutomatonRule() throws  IOException {
     String inputFile = "src/test/resources/ValidPattern.mtr";
-    AutomatonTRParser parser = new AutomatonTRParser();
+    AutomatonTRParser parser = AutomatonTRMill.parser();
     Optional<ASTAutomatonTFRule> ast = parser.parse(inputFile);
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
@@ -36,14 +29,12 @@ public class AutomatonTransformationRuleParserTest  {
     assertEquals(1, o.getTFRule().getITFPartList().size());
     ASTAutomaton_Pat a = (ASTAutomaton_Pat) o.getTFRule().getITFPartList().get(0);
     assertEquals(2, a.getStateList().size());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testForwardToInitialRule() throws IOException {
     String inputFile = "src/test/resources/ForwardToInitial.mtr";
-    AutomatonTRParser parser = new AutomatonTRParser();
+    AutomatonTRParser parser = AutomatonTRMill.parser();
     Optional<ASTAutomatonTFRule> ast = parser.parse(inputFile);
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
@@ -59,15 +50,13 @@ public class AutomatonTransformationRuleParserTest  {
     assertEquals(1, s2.getStateList().size());
 
     assertEquals(3, o.getTFRule().getITFPartList().size());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   @Disabled
   public void testIsIdentifierFix() throws IOException {
     String inputFile = "src/test/resources/IsIdentifierFix.mtr";
-    AutomatonTRParser parser = new AutomatonTRParser();
+    AutomatonTRParser parser = AutomatonTRMill.parser();
     Optional<ASTAutomatonTFRule> ast = parser.parse(inputFile);
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
@@ -86,14 +75,12 @@ public class AutomatonTransformationRuleParserTest  {
     assertFalse(s1.getName().isIdentifierFix());
     assertTrue(s2.getName().isIdentifierFix());
     assertTrue(s3.getName().isIdentifierFix());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testSchemaVar() throws  IOException {
     String inputFile = "src/test/resources/SchemaVar.mtr";
-    AutomatonTRParser parser = new AutomatonTRParser();
+    AutomatonTRParser parser = AutomatonTRMill.parser();
     Optional<ASTAutomatonTFRule> ast = parser.parse(inputFile);
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
@@ -106,14 +93,12 @@ public class AutomatonTransformationRuleParserTest  {
     assertNotNull(a);
 
     assertEquals(1, a.getStateList().size());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testRenameTransitionSource() throws IOException {
     String inputFile = "src/test/resources/RenameTransitionSource.mtr";
-    AutomatonTRParser parser = new AutomatonTRParser();
+    AutomatonTRParser parser = AutomatonTRMill.parser();
     Optional<ASTAutomatonTFRule> ast = parser.parse(inputFile);
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
@@ -126,14 +111,12 @@ public class AutomatonTransformationRuleParserTest  {
     assertNotNull(t);
     assertEquals("$foo", t.getFrom().getIdentifier());
     assertEquals("$bar", t.getFrom().getNewIdentifier());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testNameAsType() throws  IOException {
     String inputFile = "src/test/resources/NameAsType.mtr";
-    AutomatonTRParser parser = new AutomatonTRParser();
+    AutomatonTRParser parser = AutomatonTRMill.parser();
     Optional<ASTAutomatonTFRule> ast = parser.parse(inputFile);
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
@@ -151,13 +134,11 @@ public class AutomatonTransformationRuleParserTest  {
     ASTState_Pat b = (ASTState_Pat) o.getTFRule().getITFPartList().get(1);
     assertNotNull(b);
     assertEquals("$b", b.getName().getIdentifier());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testRulePresence() throws  IOException {
-    AutomatonTRParser parser = new AutomatonTRParser();
+    AutomatonTRParser parser = AutomatonTRMill.parser();
     Optional<ASTAutomatonTFRule> astA = parser.parse_String("automaton MyAut {}");
     assertFalse(parser.hasErrors());
     assertTrue(astA.isPresent());
@@ -169,7 +150,5 @@ public class AutomatonTransformationRuleParserTest  {
     // The existence of the rule name might be relevant, e.g.
     // "Expression [[ a+b ]]" vs "PlusExpression [[ a+b ]]"
     assertFalse(astA.get().deepEquals(astB.get()));
-
-    assertTrue(Log.getFindings().isEmpty());
   }
 }

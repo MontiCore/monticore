@@ -1,12 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.tf;
 
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
+import de.monticore.runtime.junit.TestWithMCLanguage;
+import mc.testcases.automaton.AutomatonMill;
 import mc.testcases.automaton._ast.ASTAutomaton;
 import mc.testcases.automaton._ast.ASTState;
 import mc.testcases.automaton._parser.AutomatonParser;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -16,18 +15,13 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@TestWithMCLanguage(AutomatonMill.class)
 public class ForwardTransitionRuleTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
+
   @Test
   public void testForwardTransition() throws IOException {
     String inputFile = "src/main/models/automaton/Testautomat.aut";
-    AutomatonParser parser = new AutomatonParser();
+    AutomatonParser parser = AutomatonMill.parser();
     Optional<ASTAutomaton> aut = parser.parse(inputFile);
 
     assertTrue(aut.isPresent());
@@ -46,15 +40,13 @@ public class ForwardTransitionRuleTest {
     assertEquals(4, hierarchicalState.getTransitionList().size());
 
     assertEquals("c", aut.get().getTransition(0).getTo());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
 
   @Test
   public void testGetReplacementCanditates() throws IOException {
     String inputFile = "src/main/models/automaton/Testautomat.aut";
-    AutomatonParser parser = new AutomatonParser();
+    AutomatonParser parser = AutomatonMill.parser();
     Optional<ASTAutomaton> aut = parser.parse(inputFile);
 
     assertTrue(aut.isPresent());
@@ -66,14 +58,12 @@ public class ForwardTransitionRuleTest {
 
     List<?> allChanges = ftr.getMatches();
     assertEquals(1, allChanges.size());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testDoPatternMatching() throws IOException {
     String inputFile = "src/main/models/automaton/Testautomat.aut";
-    AutomatonParser parser = new AutomatonParser();
+    AutomatonParser parser = AutomatonMill.parser();
     Optional<ASTAutomaton> aut = parser.parse(inputFile);
 
     assertTrue(aut.isPresent());
@@ -87,14 +77,12 @@ public class ForwardTransitionRuleTest {
     assertTrue(ftr.get_state_3().isInitial());
     assertEquals(ftr.get_transition_1().getFrom(), ftr.get_state_1().getName());
     assertEquals(ftr.get_transition_1().getTo(), ftr.get_state_2().getName());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testSet_state_2_1() throws IOException {
     String inputFile = "src/main/models/automaton/AutomatonWithTwoMatches.aut";
-    AutomatonParser parser = new AutomatonParser();
+    AutomatonParser parser = AutomatonMill.parser();
     Optional<ASTAutomaton> aut = parser.parse(inputFile);
 
     assertTrue(aut.isPresent());
@@ -106,14 +94,12 @@ public class ForwardTransitionRuleTest {
     ftr.doPatternMatching();
     assertEquals(1, ftr.getMatches().size());
     assertEquals(aut.get().getState(1), ftr.get_state_2());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testSet_state_2_2() throws IOException {
     String inputFile = "src/main/models/automaton/AutomatonWithTwoMatches.aut";
-    AutomatonParser parser = new AutomatonParser();
+    AutomatonParser parser = AutomatonMill.parser();
     Optional<ASTAutomaton> aut = parser.parse(inputFile);
 
     assertTrue(aut.isPresent());
@@ -125,8 +111,6 @@ public class ForwardTransitionRuleTest {
     ftr.doPatternMatching();
     assertEquals(1, ftr.getMatches().size());
     assertEquals(aut.get().getState(2), ftr.get_state_2());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

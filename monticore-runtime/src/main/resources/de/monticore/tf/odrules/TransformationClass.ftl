@@ -46,4 +46,6 @@ public class ${ast.getJavaClassName()} extends ODRule {
 
   ${tc.include("de.monticore.tf.odrules.FindActualCandidates")}
 
+  ${tc.include("de.monticore.tf.odrules.NotifyDeepClone")}
+
 }

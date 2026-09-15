@@ -109,27 +109,16 @@ public class ODRulesCLI {
     Options options = new Options();
     
     // parse input grammars
-    options.addOption(Option.builder("i")
-        .longOpt("input")
-        .argName("file")
-        .hasArg()
-        .desc("Processes the given model and triggers the transformation generation.")
-        .get());
+    options.addOption(Option.builder("i").longOpt("input").argName("file").hasArg()
+        .desc("Processes the given model and triggers the transformation generation.").get());
     
     // specify custom output directory
-    options.addOption(Option.builder("o")
-        .longOpt("out")
-        .argName("path")
-        .hasArg()
-        .desc("Output directory for all generated artifacts.")
-        .get());
+    options.addOption(Option.builder("o").longOpt("out").argName("path").hasArg()
+        .desc("Output directory for all generated artifacts.").get());
     
     
     // help dialog
-    options.addOption(Option.builder("h")
-        .longOpt("help")
-        .desc("Prints this help dialog")
-        .get());
+    options.addOption(Option.builder("h").longOpt("help").desc("Prints this help dialog").get());
     
     return options;
   }

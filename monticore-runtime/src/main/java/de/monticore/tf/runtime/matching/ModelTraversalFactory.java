@@ -3,6 +3,11 @@ package de.monticore.tf.runtime.matching;
 
 import de.monticore.visitor.ITraverser;
 
+/**
+ * @deprecated This factory should no longer be used. Pattern matching now relies on
+ * incremental indices instead of {@link ModelTraversal}.
+ */
+@Deprecated(since = "7.9.0")
 public class ModelTraversalFactory {
   
   private static ModelTraversalFactory instance;
