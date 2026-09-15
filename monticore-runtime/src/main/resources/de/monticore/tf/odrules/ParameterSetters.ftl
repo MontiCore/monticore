@@ -10,9 +10,9 @@
     }
   </#if>
   <#if object.isListObject() && !hierarchyHelper.isListChild(object)>
-    public void set_${object.getObjectName()}(List<Match${object.getObjectName()}> node) {
+    public void set_${object.getObjectName()}(Match${object.getObjectName()} node) {
       if (node != null) {
-        this.${object.getObjectName()}_candidates = new ArrayList<Match${object.getObjectName()}>(node);
+        this.${object.getObjectName()}_candidates = new Match${object.getObjectName()}(node);
         this.is_${object.getObjectName()}_fix = true;
       }
     }
