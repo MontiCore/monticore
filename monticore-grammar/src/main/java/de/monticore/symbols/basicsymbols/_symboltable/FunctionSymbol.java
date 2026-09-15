@@ -10,8 +10,6 @@ import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 public class FunctionSymbol extends FunctionSymbolTOP {
 
@@ -62,34 +60,6 @@ public class FunctionSymbol extends FunctionSymbolTOP {
   public List<VariableSymbol> getParameterList(){
     //TODO: how to filter for parameters?
     return Lists.newArrayList(getSpannedScope().getLocalVariableSymbols());
-  }
-
-  /**
-   * @deprecated use TypeParameterRelations
-   */
-  @Deprecated
-  public void replaceTypeVariables(Map<TypeVarSymbol, SymTypeExpression> replaceMap){
-    //return type
-    SymTypeExpression type = this.getType();
-    TypeSymbol realTypeInfo;
-    TypeSymbol typeInfo = type.isTypeVariable() ?
-        type.asTypeVariable().getTypeVarSymbol() :
-        type.getTypeInfo();
-    if(typeInfo instanceof TypeSymbolSurrogate){
-      realTypeInfo = ((TypeSymbolSurrogate) type.getTypeInfo()).lazyLoadDelegate();
-    }else{
-      realTypeInfo = typeInfo;
-    }
-    if(type.isTypeVariable() && realTypeInfo instanceof TypeVarSymbol){
-      Optional<TypeVarSymbol> typeVar =  replaceMap.keySet().stream().filter(t -> t.getName().equals(realTypeInfo.getName())).findAny();
-      typeVar.ifPresent(typeVarSymbol -> this.setType(replaceMap.get(typeVarSymbol)));
-    }else{
-      type.replaceTypeVariables(replaceMap);
-    }
-
-    for(VariableSymbol parameter: this.getParameterList()){
-      parameter.replaceTypeVariables(replaceMap);
-    }
   }
 
   /*

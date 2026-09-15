@@ -7,6 +7,7 @@ import de.monticore.symboltable.IScopeSpanningSymbol;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.modifiers.StaticAccessModifier;
 import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.check.TypeCheck1Deprecations;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -34,8 +35,11 @@ public  interface IOOSymbolsScope extends IOOSymbolsScopeTOP  {
       //if the methodsymbol is in the spanned scope of a typesymbol then look for method in super types too
       if(spanningSymbol instanceof OOTypeSymbol typeSymbol){
         for(SymTypeExpression t : typeSymbol.getSuperTypesList()){
-          t.getMethodList(name, false, modifier).stream().
-                  filter(m -> m instanceof MethodSymbol).forEach(m -> set.add((MethodSymbol) m));
+          TypeCheck1Deprecations.resolveSuperTypeFunctions(
+              t, name, modifier
+          ).stream()
+              .filter(m -> m instanceof MethodSymbol)
+              .forEach(m -> set.add((MethodSymbol) m));
         }
       }
       } catch(UnsupportedOperationException e) {
@@ -65,8 +69,11 @@ public  interface IOOSymbolsScope extends IOOSymbolsScopeTOP  {
       //if the fieldsymbol is in the spanned scope of a typesymbol then look for method in super types too
       if(spanningSymbol instanceof OOTypeSymbol typeSymbol){
         for(SymTypeExpression superType : typeSymbol.getSuperTypesList()){
-         superType.getFieldList(name, false, modifier).stream().
-                 filter(f -> f instanceof FieldSymbol).forEach(f -> result.add((FieldSymbol) f));
+          TypeCheck1Deprecations.resolveSuperTypeVariables(
+              superType, name, modifier
+          ).stream()
+              .filter(f -> f instanceof FieldSymbol)
+              .forEach(f -> result.add((FieldSymbol) f));
         }
       }
     } catch(UnsupportedOperationException e) {
