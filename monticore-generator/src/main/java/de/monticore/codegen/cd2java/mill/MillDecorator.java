@@ -651,7 +651,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
 
     ASTCDMethod snapshotMethod = this.getCDMethodFacade().createMethod(PUBLIC_STATIC.build(), stateType, "asNonStatic");
 
-    this.replaceTemplate(JAVADOC, snapshotMethod, JavaDoc.of("EXPERIMENTAL!", "Returns the mill as an attribute.")
+    this.replaceTemplate(JAVADOC, snapshotMethod, JavaDoc.of("EXPERIMENTAL!", "Returns the mill as an attribute (without static references required).")
             .block("return", "the mill state")
             .asHP());
     this.replaceTemplate(EMPTY_BODY, snapshotMethod, new TemplateHookPoint("mill.SnapshotMethod", stateClassName, superSymbolList));
@@ -665,7 +665,8 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
 
     ASTCDMethod loadMethod = this.getCDMethodFacade().createMethod(PUBLIC_STATIC.build(), "load", stateParam);
 
-    this.replaceTemplate(JAVADOC, loadMethod, JavaDoc.of("EXPERIMENTAL!", "Loads the mill state.")
+    this.replaceTemplate(JAVADOC, loadMethod, JavaDoc.of("EXPERIMENTAL!", "Loads the mill state into the static state.")
+            .param("state", "The non-static state, see #asNonStatic()")
             .asHP());
     this.replaceTemplate(EMPTY_BODY, loadMethod, new TemplateHookPoint("mill.LoadMethod", superSymbolList));
     return loadMethod;

@@ -6,6 +6,7 @@ import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.codegen.cd2java.AbstractCreator;
+import de.monticore.codegen.cd2java.JavaDoc;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
@@ -14,11 +15,12 @@ import de.se_rwth.commons.StringTransformations;
 
 import java.util.List;
 
+import static de.monticore.cd.codegen.CD2JavaTemplates.JAVADOC;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 
 /**
- * Creates the [Language]MillState class for a grammar to capture the 
- * static Mill instances of this language and all its super languages.
+ * Creates the ${DSL}MillState class for each grammar to capture the
+ * static Mill instances of this language and its super languages.
  */
 public class MillStateDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClass> {
 
@@ -35,9 +37,14 @@ public class MillStateDecorator extends AbstractCreator<List<ASTCDPackage>, ASTC
     String millStateClassName = symbolTableService.getCDName() + "MillState";
 
     ASTCDClass stateClass = CD4AnalysisMill.cDClassBuilder()
-        .setModifier(PUBLIC.build())
-        .setName(millStateClassName)
-        .build();
+            .setModifier(PUBLIC.build())
+            .setName(millStateClassName)
+            .build();
+    this.replaceTemplate(JAVADOC, stateClass,
+            JavaDoc.of("This class holds a reference to the mill without the use of a static state.",
+                            "It is NOT a snapshot, i.e., later calls to the static mill affect this class's state.",
+                            "Note: TypeCheck3 statics are not yet stored.")
+                    .asHP());
 
     String currentMillFullName = symbolTableService.getMillFullName();
     ASTMCType currentMillType = this.getMCTypeFacade().createQualifiedType(currentMillFullName);
