@@ -8,7 +8,6 @@ import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
-import de.monticore.symbols.basicsymbols._util.IBasicSymbolsTypeDispatcher;
 import de.monticore.symbols.basicsymbols._visitor.BasicSymbolsTraverser;
 import de.monticore.symbols.basicsymbols._visitor.BasicSymbolsVisitor2;
 import de.monticore.symboltable.IScope;
@@ -656,7 +655,7 @@ public class WithinTypeBasicSymbolsResolver {
 
   protected Predicate<TypeSymbol> getIsNotTypeVarSymbolPredicate() {
     return ts -> {
-      if (BasicSymbolsMill.typeDispatcher().isBasicSymbolsTypeVar(ts)) {
+      if (ts instanceof TypeVarSymbol) {
         Log.trace("filtered symbol '"
                 + ts.getFullName() + "' as it is a type variable"
                 + ", which are only resolved based on scopes" +
@@ -667,10 +666,6 @@ public class WithinTypeBasicSymbolsResolver {
       }
       return true;
     };
-  }
-
-  protected IBasicSymbolsTypeDispatcher getTypeDispatcher() {
-    return BasicSymbolsMill.typeDispatcher();
   }
 
   protected SymTypeExpression replaceVariablesIfNecessary(
