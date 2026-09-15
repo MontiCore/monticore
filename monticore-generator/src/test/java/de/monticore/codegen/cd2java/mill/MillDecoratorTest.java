@@ -44,13 +44,7 @@ import de.monticore.codegen.cd2java._symboltable.serialization.SymbolDeSerDecora
 import de.monticore.codegen.cd2java._symboltable.serialization.Symbols2JsonDecorator;
 import de.monticore.codegen.cd2java._symboltable.symbol.*;
 import de.monticore.codegen.cd2java._symboltable.symbol.symbolsurrogatemutator.MandatoryMutatorSymbolSurrogateDecorator;
-import de.monticore.codegen.cd2java._visitor.CDTraverserDecorator;
-import de.monticore.codegen.cd2java._visitor.HandlerDecorator;
-import de.monticore.codegen.cd2java._visitor.InheritanceHandlerDecorator;
-import de.monticore.codegen.cd2java._visitor.TraverserClassDecorator;
-import de.monticore.codegen.cd2java._visitor.TraverserInterfaceDecorator;
-import de.monticore.codegen.cd2java._visitor.Visitor2Decorator;
-import de.monticore.codegen.cd2java._visitor.VisitorService;
+import de.monticore.codegen.cd2java._visitor.*;
 import de.monticore.codegen.cd2java.data.DataDecorator;
 import de.monticore.codegen.cd2java.data.DataDecoratorUtil;
 import de.monticore.codegen.cd2java.data.InterfaceDecorator;
@@ -118,7 +112,7 @@ public class MillDecoratorTest extends DecoratorTestCase {
             .filter(p -> p.getName().endsWith(AST_PACKAGE)
                     || p.getName().endsWith(VISITOR_PACKAGE)
                     || p.getName().endsWith(SYMBOL_TABLE_PACKAGE))
-            .forEach(p -> packageList.add(p));
+            .forEach(packageList::add);
     return packageList;
   }
   protected ASTCDCompilationUnit getASTCD() {
@@ -159,9 +153,10 @@ public class MillDecoratorTest extends DecoratorTestCase {
     Visitor2Decorator visitor2Decorator = new Visitor2Decorator(glex, visitorService, symbolTableService);
     HandlerDecorator handlerDecorator = new HandlerDecorator(glex, visitorService, symbolTableService);
     InheritanceHandlerDecorator inheritanceHandlerDecorator = new InheritanceHandlerDecorator(glex, methodDecorator, visitorService, symbolTableService);
+    SingleStepHandlerDecorator singleStepHandlerDecorator = new SingleStepHandlerDecorator(glex, methodDecorator, visitorService, symbolTableService);
 
     CDTraverserDecorator decorator = new CDTraverserDecorator(this.glex, targetPath, visitorService, traverserInterfaceDecorator,
-        traverserClassDecorator, visitor2Decorator, handlerDecorator, inheritanceHandlerDecorator);
+        traverserClassDecorator, visitor2Decorator, handlerDecorator, inheritanceHandlerDecorator, singleStepHandlerDecorator);
     decorator.decorate(originalCompilationUnit, decoratedCompilationUnit);
   }
 
