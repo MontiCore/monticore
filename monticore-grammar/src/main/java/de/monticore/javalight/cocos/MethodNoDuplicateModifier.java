@@ -1,55 +1,35 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.javalight.cocos;
 
+import de.monticore.javalight.JavaLightMill;
 import de.monticore.javalight._ast.ASTMethodDeclaration;
 import de.monticore.javalight._cocos.JavaLightASTMethodDeclarationCoCo;
-import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.javalight._prettyprint.JavaLightFullPrettyPrinter;
 import de.monticore.statements.mcstatementsbasis._ast.ASTMCModifier;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 public class MethodNoDuplicateModifier implements JavaLightASTMethodDeclarationCoCo {
-
+  
   public static final String ERROR_CODE = "0xA0818";
-
-  public static final String ERROR_MSG_FORMAT = "modifier '%s' is declared more than once in method %s";
-
-  protected String prettyprint(ASTMCModifier a) {
-    JavaLightFullPrettyPrinter printer = new JavaLightFullPrettyPrinter(new IndentPrinter());
-    a.accept(printer.getTraverser());
-    return printer.getPrinter().getContent();
-  }
-
-  public Set<String> findDuplicates(List<String> listContainingDuplicates) {
-    final Set<String> setToReturn = new LinkedHashSet<>();
-    final Set<String> set1 = new LinkedHashSet<>();
-
-    for (String modifierName : listContainingDuplicates) {
-      if (!set1.add(modifierName)) {
-        setToReturn.add(modifierName);
-      }
-    }
-    return setToReturn;
-  }
-
+  
+  public static final String ERROR_MSG_FORMAT =
+      " Modifier '%s' is declared more than once in method %s";
+  
   //JLS3 8.4.3-1
   @Override
   public void check(ASTMethodDeclaration node) {
-  //print the modifier -> add to list
-    List<String> listModifier = new ArrayList<>();
-    for (ASTMCModifier modifier : node.getMCModifierList()) {
-      listModifier.add(prettyprint(modifier));
-    }
-    Set<String> duplicates = findDuplicates(listModifier);
-    for (String duplicate : duplicates) {
-      Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, duplicate, node.getName()),
-          node.get_SourcePositionStart());
+    List<ASTMCModifier> modifiers = node.getMCModifierList();
+    for (int i = 0; i < modifiers.size(); i++) {
+      ASTMCModifier modifier = modifiers.get(i);
+      for (int j = i + 1; j < modifiers.size(); j++) {
+        ASTMCModifier modifier2 = modifiers.get(j);
+        if (modifier2.deepEquals(modifier)) {
+          String modifierName = JavaLightMill.prettyPrint(modifier2, false);
+          Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, modifierName, node.getName()),
+              node.get_SourcePositionStart());
+        }
+      }
     }
   }
-
 }
