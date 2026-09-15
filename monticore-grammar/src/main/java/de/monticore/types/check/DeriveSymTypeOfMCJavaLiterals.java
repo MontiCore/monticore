@@ -13,6 +13,7 @@ import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
    * use {@link de.monticore.types3.TypeCheck3} instead.
    */
 @Deprecated
+@SuppressWarnings({"deprecation", "removal"})
 public class DeriveSymTypeOfMCJavaLiterals extends DeriveSymTypeOfMCCommonLiterals implements MCJavaLiteralsVisitor2 {
 
   protected TypeCheckResult typeCheckResult;

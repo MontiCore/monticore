@@ -10,6 +10,7 @@ import de.monticore.types.mccollectiontypes._visitor.MCCollectionTypesTraverser;
  * use {@link de.monticore.types3.TypeCheck3} instead.
  */
 @Deprecated
+@SuppressWarnings({"deprecation", "removal"})
 public class FullSynthesizeFromMCCollectionTypes extends AbstractSynthesize {
 
   public FullSynthesizeFromMCCollectionTypes(){

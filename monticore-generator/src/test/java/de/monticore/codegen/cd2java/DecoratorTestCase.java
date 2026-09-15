@@ -68,7 +68,7 @@ public abstract class DecoratorTestCase {
     } catch (IOException e) {
       fail(String.format("Failed to load model '%s'", qualifiedName));
     }
-    if (!ast.isPresent()) {
+    if (ast.isEmpty()) {
       fail(String.format("Failed to load model '%s'", qualifiedName));
     }
 

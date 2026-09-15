@@ -14,13 +14,15 @@ import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
-import de.monticore.types.MCTypeFacade;
 import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodsBy;
@@ -29,26 +31,37 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class Visitor2DecoratorTest extends DecoratorTestCase {
 
-  public static final String ASTAUTOMATON = "de.monticore.codegen.ast.automaton._ast.ASTAutomaton";
+  public static final String VISIT_METHOD = "visit";
+  public static final String END_VISIT_METHOD = "endVisit";
 
-  public static final String ASTAUTOMATONNODE = "de.monticore.codegen.ast.automaton._ast.ASTAutomatonNode";
-
-  public static final String STATESYMBOL = "de.monticore.codegen.ast.automaton._symboltable.StateSymbol";
-
-  public static final String ISYMBOL = "de.monticore.symboltable.ISymbol";
-
-  public static final String ISCOPE = "de.monticore.symboltable.IScope";
-
-  public static final String AUTOMATONSCOPE = "de.monticore.codegen.ast.automaton._symboltable.IAutomatonScope";
-
-  public static final String AUTOMATONARTIFACTSCOPE = "de.monticore.codegen.ast.automaton._symboltable.IAutomatonArtifactScope";
+  public static final String AUTOMATON_NODE =
+      "de.monticore.codegen.ast.automaton._ast.ASTAutomatonNode";
+  public static final String ABSTRACT_CLASS =
+      "de.monticore.codegen.ast.automaton._ast.ASTAbstractClass";
+  public static final String AUTOMATON =
+      "de.monticore.codegen.ast.automaton._ast.ASTAutomaton";
+  public static final String STATE =
+      "de.monticore.codegen.ast.automaton._ast.ASTState";
+  public static final String TRANSITION =
+      "de.monticore.codegen.ast.automaton._ast.ASTTransition";
+  public static final String STATE_SYMBOL =
+      "de.monticore.codegen.ast.automaton._symboltable.StateSymbol";
+  public static final String AUTOMATON_SYMBOL =
+      "de.monticore.codegen.ast.automaton._symboltable.AutomatonSymbol";
+  public static final String COMMON_AUTOMATON_SYMBOL =
+      "de.monticore.codegen.ast.automaton._symboltable.ICommonAutomatonSymbol";
+  public static final String AUTOMATON_SCOPE =
+      "de.monticore.codegen.ast.automaton._symboltable.IAutomatonScope";
+  public static final String AUT_ARTIFACT_SCOPE =
+      "de.monticore.codegen.ast.automaton._symboltable.IAutomatonArtifactScope";
+  public static final String AUT_GLOBAL_SCOPE =
+      "de.monticore.codegen.ast.automaton._symboltable.IAutomatonGlobalScope";
 
   public static final String ASTNODE = "de.monticore.ast.ASTNode";
+  public static final String ISYMBOL = "de.monticore.symboltable.ISymbol";
+  public static final String ISCOPE = "de.monticore.symboltable.IScope";
 
-
-  private MCTypeFacade mcTypeFacade;
-
-  private ASTCDInterface visitor2;
+  private static ASTCDInterface decoratedInterface;
 
   private ASTCDCompilationUnit originalCompilationUnit;
 
@@ -57,8 +70,6 @@ public class Visitor2DecoratorTest extends DecoratorTestCase {
 
   @BeforeEach
   public void setUp() {
-    this.mcTypeFacade = MCTypeFacade.getInstance();
-
     decoratedCompilationUnit = this.parse("de", "monticore", "codegen", "ast", "Automaton");
     originalCompilationUnit = decoratedCompilationUnit.deepClone();
 
@@ -66,8 +77,8 @@ public class Visitor2DecoratorTest extends DecoratorTestCase {
     VisitorService visitorService = new VisitorService(decoratedCompilationUnit);
     SymbolTableService symbolTableService = new SymbolTableService(decoratedCompilationUnit);
 
-    Visitor2Decorator visitor2Decorator = new Visitor2Decorator(this.glex, visitorService, symbolTableService);
-    this.visitor2 = visitor2Decorator.decorate(decoratedCompilationUnit);
+    Visitor2Decorator decoratedCDDecorator = new Visitor2Decorator(this.glex, visitorService, symbolTableService);
+    decoratedInterface = decoratedCDDecorator.decorate(decoratedCompilationUnit);
   }
 
   @Test
@@ -79,169 +90,106 @@ public class Visitor2DecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testVisitorName() {
-    assertEquals("AutomatonVisitor2", visitor2.getName());
+    assertEquals("AutomatonVisitor2", decoratedInterface.getName());
   
     assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testAttributeCount() {
-    assertEquals(0, visitor2.getCDAttributeList().size());
+    assertEquals(0, decoratedInterface.getCDAttributeList().size());
   
     assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMethodCount() {
-    assertEquals(20, visitor2.getCDMethodList().size());
+    assertEquals(22, decoratedInterface.getCDMethodList().size());
   
     assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testInterfaceCount() {
-    assertEquals(1, visitor2.getInterfaceList().size());
+    assertEquals(1, decoratedInterface.getInterfaceList().size());
   
     assertTrue(Log.getFindings().isEmpty());
   }
 
-  @Test
-  public void testVisitASTAutomaton() {
-    List<ASTCDMethod> list = getMethodsBy("visit", 1, visitor2);
+  static Stream<Arguments> testVisitorMethodsArgs() {
+    return Stream.of(
+        Arguments.of(VISIT_METHOD, AUTOMATON_NODE, "node", decoratedInterface),
+        Arguments.of(END_VISIT_METHOD, AUTOMATON_NODE, "node", decoratedInterface),
+
+        Arguments.of(VISIT_METHOD, ABSTRACT_CLASS, "node", decoratedInterface),
+        Arguments.of(END_VISIT_METHOD, ABSTRACT_CLASS, "node", decoratedInterface),
+
+        Arguments.of(VISIT_METHOD, AUTOMATON, "node", decoratedInterface),
+        Arguments.of(END_VISIT_METHOD, AUTOMATON, "node", decoratedInterface),
+
+        Arguments.of(VISIT_METHOD, STATE, "node", decoratedInterface),
+        Arguments.of(END_VISIT_METHOD, STATE, "node", decoratedInterface),
+
+        Arguments.of(VISIT_METHOD, TRANSITION, "node", decoratedInterface),
+        Arguments.of(END_VISIT_METHOD, TRANSITION, "node", decoratedInterface),
+
+        Arguments.of(VISIT_METHOD, STATE_SYMBOL, "node", decoratedInterface),
+        Arguments.of(END_VISIT_METHOD, STATE_SYMBOL, "node", decoratedInterface),
+
+        Arguments.of(VISIT_METHOD, AUTOMATON_SYMBOL, "node", decoratedInterface),
+        Arguments.of(END_VISIT_METHOD, AUTOMATON_SYMBOL, "node", decoratedInterface),
+
+        Arguments.of(VISIT_METHOD, COMMON_AUTOMATON_SYMBOL, "node", decoratedInterface),
+        Arguments.of(END_VISIT_METHOD, COMMON_AUTOMATON_SYMBOL, "node", decoratedInterface),
+
+        Arguments.of(VISIT_METHOD, AUTOMATON_SCOPE, "node", decoratedInterface),
+        Arguments.of(END_VISIT_METHOD, AUTOMATON_SCOPE, "node", decoratedInterface),
+
+        Arguments.of(VISIT_METHOD, AUT_ARTIFACT_SCOPE, "node", decoratedInterface),
+        Arguments.of(END_VISIT_METHOD, AUT_ARTIFACT_SCOPE, "node", decoratedInterface),
+
+        Arguments.of(VISIT_METHOD, AUT_GLOBAL_SCOPE, "node", decoratedInterface),
+        Arguments.of(END_VISIT_METHOD, AUT_GLOBAL_SCOPE, "node", decoratedInterface)
+    );
+  }
+
+  @ParameterizedTest
+  @MethodSource("testVisitorMethodsArgs")
+  public void testVisitorMethods(String methodName, String parameterType, String parameterName, ASTCDInterface visitor) {
+    List<ASTCDMethod> list = getMethodsBy(methodName, 1, visitor);
     List<ASTCDMethod> methods = list.stream()
-        .filter(m -> CD4CodeMill.prettyPrint(m.getCDParameter(0).getMCType(), false).equals(ASTAUTOMATON))
-        .collect(Collectors.toList());
+        .filter(m -> CD4CodeMill.prettyPrint(m.getCDParameter(0).getMCType(), false).equals(parameterType))
+        .toList();
     assertEquals(1, methods.size());
-    ASTCDMethod method = methods.get(0);
-    assertEquals("node", method.getCDParameter(0).getName());
+    ASTCDMethod method = methods.getFirst();
+    assertEquals(parameterName, method.getCDParameter(0).getName());
     assertTrue(method.getMCReturnType().isPresentMCVoidType());
-  
+
     assertTrue(Log.getFindings().isEmpty());
   }
 
-  @Test
-  public void testEndVisitASTAutomaton() {
-    List<ASTCDMethod> list = getMethodsBy("endVisit", 1, visitor2);
-    List<ASTCDMethod> methods = list.stream()
-        .filter(m -> CD4CodeMill.prettyPrint(m.getCDParameter(0).getMCType(), false).equals(ASTAUTOMATON))
-        .collect(Collectors.toList());
-    assertEquals(1, methods.size());
-    ASTCDMethod method = methods.get(0);
-    assertEquals("node", method.getCDParameter(0).getName());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-  
-    assertTrue(Log.getFindings().isEmpty());
+  static Stream<Arguments> testUnwantedVisitorMethodsArgs() {
+    return Stream.of(
+        Arguments.of(VISIT_METHOD, ISYMBOL, decoratedInterface),
+        Arguments.of(END_VISIT_METHOD, ISYMBOL, decoratedInterface),
+
+        Arguments.of(VISIT_METHOD, ISCOPE, decoratedInterface),
+        Arguments.of(END_VISIT_METHOD, ISCOPE, decoratedInterface),
+
+        Arguments.of(VISIT_METHOD, ASTNODE, decoratedInterface),
+        Arguments.of(END_VISIT_METHOD, ASTNODE, decoratedInterface)
+    );
   }
 
-  @Test
-  public void testVisitASTAutomatonNode() {
-    List<ASTCDMethod> list = getMethodsBy("visit", 1, visitor2);
+  @ParameterizedTest
+  @MethodSource("testUnwantedVisitorMethodsArgs")
+  public void testUnwantedVisitorMethods(String methodName, String parameterType, ASTCDInterface visitor) {
+    List<ASTCDMethod> list = getMethodsBy(methodName, 1, visitor);
     List<ASTCDMethod> methods = list.stream()
-        .filter(m -> CD4CodeMill.prettyPrint(m.getCDParameter(0).getMCType(), false).equals(ASTAUTOMATONNODE))
-        .collect(Collectors.toList());
-    assertEquals(1, methods.size());
-    ASTCDMethod method = methods.get(0);
-    assertEquals("node", method.getCDParameter(0).getName());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-  
-    assertTrue(Log.getFindings().isEmpty());
-  }
+        .filter(m -> CD4CodeMill.prettyPrint(m.getCDParameter(0).getMCType(), false).equals(parameterType))
+        .toList();
+    assertEquals(0, methods.size());
 
-  @Test
-  public void testEndVisitASTAutomatonNode() {
-    List<ASTCDMethod> list = getMethodsBy("endVisit", 1, visitor2);
-    List<ASTCDMethod> methods = list.stream()
-        .filter(m -> CD4CodeMill.prettyPrint(m.getCDParameter(0).getMCType(), false).equals(ASTAUTOMATONNODE))
-        .collect(Collectors.toList());
-    assertEquals(1, methods.size());
-    ASTCDMethod method = methods.get(0);
-    assertEquals("node", method.getCDParameter(0).getName());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-  
-    assertTrue(Log.getFindings().isEmpty());
-  }
-
-  @Test
-  public void testVisitStateSymbol() {
-    List<ASTCDMethod> list = getMethodsBy("visit", 1, visitor2);
-    List<ASTCDMethod> methods = list.stream()
-        .filter(m -> CD4CodeMill.prettyPrint(m.getCDParameter(0).getMCType(), false).equals(STATESYMBOL))
-        .collect(Collectors.toList());
-    assertEquals(1, methods.size());
-    ASTCDMethod method = methods.get(0);
-    assertEquals("node", method.getCDParameter(0).getName());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-  
-    assertTrue(Log.getFindings().isEmpty());
-  }
-
-  @Test
-  public void testEndVisitStateSymbol() {
-    List<ASTCDMethod> list = getMethodsBy("endVisit", 1, visitor2);
-    List<ASTCDMethod> methods = list.stream()
-        .filter(m -> CD4CodeMill.prettyPrint(m.getCDParameter(0).getMCType(), false).equals(STATESYMBOL))
-        .collect(Collectors.toList());
-    assertEquals(1, methods.size());
-    ASTCDMethod method = methods.get(0);
-    assertEquals("node", method.getCDParameter(0).getName());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-  
-    assertTrue(Log.getFindings().isEmpty());
-  }
-
-  @Test
-  public void testVisitIAutomatonScope() {
-    List<ASTCDMethod> list = getMethodsBy("visit", 1, visitor2);
-    List<ASTCDMethod> methods = list.stream()
-        .filter(m -> CD4CodeMill.prettyPrint(m.getCDParameter(0).getMCType(), false).equals(AUTOMATONSCOPE))
-        .collect(Collectors.toList());
-    assertEquals(1, methods.size());
-    ASTCDMethod method = methods.get(0);
-    assertEquals("node", method.getCDParameter(0).getName());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-  
-    assertTrue(Log.getFindings().isEmpty());
-  }
-
-  @Test
-  public void testEndVisitIAutomatonScope() {
-    List<ASTCDMethod> list = getMethodsBy("endVisit", 1, visitor2);
-    List<ASTCDMethod> methods = list.stream()
-        .filter(m -> CD4CodeMill.prettyPrint(m.getCDParameter(0).getMCType(), false).equals(AUTOMATONSCOPE))
-        .collect(Collectors.toList());
-    assertEquals(1, methods.size());
-    ASTCDMethod method = methods.get(0);
-    assertEquals("node", method.getCDParameter(0).getName());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-  
-    assertTrue(Log.getFindings().isEmpty());
-  }
-
-  @Test
-  public void testVisitIAutomatonArtifactScope() {
-    List<ASTCDMethod> list = getMethodsBy("visit", 1, visitor2);
-    List<ASTCDMethod> methods = list.stream()
-        .filter(m -> CD4CodeMill.prettyPrint(m.getCDParameter(0).getMCType(), false).equals(AUTOMATONARTIFACTSCOPE))
-        .collect(Collectors.toList());
-    assertEquals(1, methods.size());
-    ASTCDMethod method = methods.get(0);
-    assertEquals("node", method.getCDParameter(0).getName());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-  
-    assertTrue(Log.getFindings().isEmpty());
-  }
-
-  @Test
-  public void testEndVisitIAutomatonArtifactScope() {
-    List<ASTCDMethod> list = getMethodsBy("endVisit", 1, visitor2);
-    List<ASTCDMethod> methods = list.stream()
-        .filter(m -> CD4CodeMill.prettyPrint(m.getCDParameter(0).getMCType(), false).equals(AUTOMATONARTIFACTSCOPE))
-        .collect(Collectors.toList());
-    assertEquals(1, methods.size());
-    ASTCDMethod method = methods.get(0);
-    assertEquals("node", method.getCDParameter(0).getName());
-    assertTrue(method.getMCReturnType().isPresentMCVoidType());
-  
     assertTrue(Log.getFindings().isEmpty());
   }
 
@@ -251,7 +199,7 @@ public class Visitor2DecoratorTest extends DecoratorTestCase {
     generatorSetup.setGlex(glex);
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     CD4C.init(generatorSetup);
-    StringBuilder sb = generatorEngine.generate(CD2JavaTemplates.INTERFACE, visitor2, packageDir);
+    StringBuilder sb = generatorEngine.generate(CD2JavaTemplates.INTERFACE, decoratedInterface, packageDir);
     // test parsing
     ParserConfiguration configuration = new ParserConfiguration();
     JavaParser parser = new JavaParser(configuration);
@@ -261,4 +209,3 @@ public class Visitor2DecoratorTest extends DecoratorTestCase {
     assertTrue(Log.getFindings().isEmpty());
   }
 }
-

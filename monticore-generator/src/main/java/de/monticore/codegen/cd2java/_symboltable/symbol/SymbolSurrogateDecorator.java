@@ -46,6 +46,7 @@ import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISITOR_PRE
  * creates a SymbolLoader class from a grammar
  */
 @Deprecated
+@SuppressWarnings({"deprecation", "removal"})
 public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
   
   protected static final String TEMPLATE_PATH = "_symboltable.symbolsurrogate.";
