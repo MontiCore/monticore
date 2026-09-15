@@ -138,6 +138,9 @@ public class CommonExpressionsPrettyPrinterTest {
     String output = TestCommonExpressionsMill.prettyPrint(result, false);
 
     assertEquals("a(b,c)", output);
+    assertEquals("a(b, c)", output);
+
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
