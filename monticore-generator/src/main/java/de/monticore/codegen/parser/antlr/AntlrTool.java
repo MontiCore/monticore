@@ -11,7 +11,6 @@ import de.se_rwth.commons.SourcePositionBuilder;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.Tool;
-import org.antlr.v4.runtime.atn.ATNState;
 import org.antlr.v4.tool.*;
 import org.stringtemplate.v4.ST;
 import org.stringtemplate.v4.misc.MultiMap;
@@ -27,6 +26,7 @@ public class AntlrTool extends Tool {
   protected MCGrammarSymbol grammarSymbol;
   protected Map<ASTProd, ProdInfo> prodInfo;
   protected Map<ASTNode, Set<Integer>> rhsNodeToParserStates = new LinkedHashMap<>();
+  protected Set<Integer> nameRulesParserStates = new LinkedHashSet<>();
 
   public AntlrTool(String[] args, MCGrammarSymbol grammarSymbol, Map<ASTProd, ProdInfo> prodInfo) {
     super(args);
@@ -36,6 +36,14 @@ public class AntlrTool extends Tool {
 
   public Map<ASTNode, Set<Integer>> getRhsNodeToParserStates() {
     return rhsNodeToParserStates;
+  }
+
+  /**
+   * all parser states of the "Name" rules
+   * @return the parser states
+   */
+  public Set<Integer> getInternalNameParserStates() {
+    return nameRulesParserStates;
   }
 
   @Override
@@ -119,6 +127,8 @@ public class AntlrTool extends Tool {
    */
   private void calculateStatesForNonTerminals(Grammar g) {
     if(g.isParser() || g.isCombined()){
+      nameRulesParserStates.addAll(calculateStateForTmpName(g, "name__mc_incl_nokeywords", "mc__internal__token"));
+      nameRulesParserStates.addAll(calculateStateForTmpName(g, "name__mc_plus_keywords", "mc__internal__token"));
       for (Map.Entry<ASTProd, ProdInfo> outer : prodInfo.entrySet()) {
         Map<ASTNode, String> names = outer.getValue().tmpNames;
 
@@ -193,5 +203,6 @@ public class AntlrTool extends Tool {
     this.grammarSymbol = null;
     this.prodInfo = null;
     this.rhsNodeToParserStates = null;
+    this.nameRulesParserStates = null;
   }
 }

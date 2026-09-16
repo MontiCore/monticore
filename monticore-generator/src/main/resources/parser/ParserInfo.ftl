@@ -91,6 +91,11 @@ public class ${ast.getName()}ParserInfo {
 
   </#list>
   <#list usageNameToStates as usageName, states>
+    /**
+    * @deprecated - names are no longer only one state!
+    // TODO: Discuss how to move this
+    */
+    @Deprecated
   public static boolean stateHasUsageName${usageName?cap_first}(int state){
     return getDelegate()._stateHasUsageName${usageName?cap_first}(state);
   }
