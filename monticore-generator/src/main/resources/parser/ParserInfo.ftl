@@ -169,7 +169,7 @@ public class ${ast.getName()}ParserInfo {
                 <#list states as state>
                   case ${state?c}:
                 </#list>
-                  return "${usageName}";
+                  return "${usageName?lower_case}";
               </#if>
             </#list>
         // TODO: Map production rules as well?
