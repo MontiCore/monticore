@@ -721,7 +721,7 @@ public class TestPrettyPrinterTest extends PPTestClass {
     TestPrettyPrintersParser parser = TestPrettyPrintersMill.parser();
     Optional<ASTToBeReplacedKeyword> astOpt = parser.parse_StringToBeReplacedKeyword("ReplacedKeyword");
     Assertions.assertTrue(astOpt.isEmpty());
-    MCAssertions.assertHasFinding(f -> f.getMsg().contains("mismatched input 'ReplacedKeyword' expecting 'ActuallyReplacedKeyword'"));
+    MCAssertions.assertHasFinding(f -> f.getMsg().contains("mismatched input 'ReplacedKeyword', expecting 'ActuallyReplacedKeyword'"));
   }
 
   @Test

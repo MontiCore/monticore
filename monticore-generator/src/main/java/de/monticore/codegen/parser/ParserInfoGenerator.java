@@ -61,7 +61,7 @@ public class ParserInfoGenerator {
     Map<ASTNode, Set<Integer>> nonTerminalToEmptyParserStates = collectNonTerminals(astGrammar)
         .stream()
         .collect(Collectors.toMap(nt -> nt, nt -> new LinkedHashSet<>(), (u,v) -> { throw new IllegalStateException(String.format("Duplicate key %s", u));}, LinkedHashMap::new));
-    generateParserInfo(astGrammar, setup, nonTerminalToEmptyParserStates, parserPackage, lang, prodInfoMap);
+    generateParserInfo(astGrammar, setup, nonTerminalToEmptyParserStates, new LinkedHashSet<>(), parserPackage, lang, prodInfoMap);
   }
 
   /**
@@ -80,6 +80,7 @@ public class ParserInfoGenerator {
       ASTMCGrammar astGrammar,
       GeneratorSetup setup,
       Map<ASTNode, Set<Integer>> rhsNodeToParserStates,
+      Set<Integer> internalNameParserStates,
       String parserPackage,
       Languages lang,
       Map<ASTProd, ProdInfo> prodInfoMap
@@ -93,7 +94,7 @@ public class ParserInfoGenerator {
 
     Map<String, Set<Integer>> referencedSymbolToStates = groupStatesByReferencedSymbol(rhsNodeToParserStates);
     Map<String, Set<Integer>> usageNameToStates = groupStatesByUsageName(rhsNodeToParserStates);
-    Set<Integer> nameDefiningStates = findNameDefiningStates(astGrammar, rhsNodeToParserStates);
+    Set<Integer> nameDefiningStates = findNameDefiningStates(astGrammar, rhsNodeToParserStates, internalNameParserStates);
 
     // Generate XParserInfo for this language
     final Path ParserInfoPath = Paths.get(Names.getPathFromPackage(parserPackage),
@@ -136,7 +137,7 @@ public class ParserInfoGenerator {
     }
   }
 
-  private static Set<Integer> findNameDefiningStates(ASTMCGrammar astGrammar, Map<ASTNode, Set<Integer>> nonTerminalToParserStates) {
+  private static Set<Integer> findNameDefiningStates(ASTMCGrammar astGrammar, Map<ASTNode, Set<Integer>> nonTerminalToParserStates, Set<Integer> internalNameParserStates) {
     Set<Integer> nameDefiningStates =
         astGrammar.getSymbol()
             .getProdsWithInherited()
@@ -171,6 +172,7 @@ public class ParserInfoGenerator {
             // don't fail if the nonTerminal is not found in Map, since it might be overridden and therefore have no parser state associated with it
             .flatMap(nonTerminal -> nonTerminalToParserStates.getOrDefault(nonTerminal, Collections.emptySet()).stream())
             .collect(Collectors.toCollection( LinkedHashSet::new ) );
+    nameDefiningStates.addAll(internalNameParserStates);
     return nameDefiningStates;
   }
 

@@ -128,7 +128,7 @@ public class InheritenceTest {
     parser.parse_StringXAO("q");
     assertTrue(parser.hasErrors());
     
-    MCAssertions.assertHasFindingStartingWith("mismatched input 'q' expecting 'p'");
+    MCAssertions.assertHasFindingStartingWith("mismatched input 'q', expecting 'p'");
   }
  
 }

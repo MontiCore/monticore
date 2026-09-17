@@ -1,5 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("grammarName","astClassName", "parseRuleNameJavaCompatible")}
+${tc.signature("grammarName", "astClassName", "parseRuleNameJavaCompatible")}
   ${grammarName}AntlrParser parser = create(reader);
   ${astClassName} astPV;
   var prc = parser.${parseRuleNameJavaCompatible}();
@@ -11,7 +11,8 @@ ${tc.signature("grammarName","astClassName", "parseRuleNameJavaCompatible")}
   org.antlr.v4.runtime.Token currentToken = parser.getCurrentToken();
   if (currentToken != null && currentToken.getType() != -1) {
     setError(true);
-    Log.error("Expected EOF but found token " + currentToken, parser.computeStartPosition(currentToken));
+    parser.setContext(prc); // revert context by one level (to indicate the used rule)
+    parser.notifyErrorListeners(parser.getCurrentToken(), "mismatched input '" + currentToken.getText() + "', expected EOF", new org.antlr.v4.runtime.InputMismatchException(parser));
     return Optional.empty();
   }
   // Build ast
