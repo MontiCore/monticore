@@ -253,23 +253,44 @@ public class MCTypeFacade {
    * {@code de.monticore.symboltable.__internal__Supplier<inner>} types.
    */
 
-  public ASTMCBasicGenericType createSupplierTypeOf(final ASTMCTypeArgument inner) {
+  public ASTMCBasicGenericType createInternalSupplierTypeOf(final ASTMCTypeArgument inner) {
     return createBasicGenericTypeOf("de.monticore.symboltable.__internal__Supplier", inner);
   }
 
-  public ASTMCBasicGenericType createSupplierTypeOf(final ASTMCType inner) {
+  public ASTMCBasicGenericType createInternalSupplierTypeOf(final ASTMCType inner) {
     ASTMCTypeArgument arg = MCSimpleGenericTypesMill.mCCustomTypeArgumentBuilder()
         .setMCType(inner.deepClone())
         .build();
-    return createSupplierTypeOf(arg);
+    return createInternalSupplierTypeOf(arg);
   }
 
-  public ASTMCBasicGenericType createSupplierTypeOf(final String name) {
-    return createSupplierTypeOf(createBasicTypeArgumentOf(name));
+  public ASTMCBasicGenericType createInternalSupplierTypeOf(final String name) {
+    return createInternalSupplierTypeOf(createBasicTypeArgumentOf(name));
   }
 
-  public ASTMCBasicGenericType createSupplierTypeOf(final Class<?> clazz) {
-    return createSupplierTypeOf(clazz.getName());
+  public ASTMCBasicGenericType createInternalSupplierTypeOf(final Class<?> clazz) {
+    return createInternalSupplierTypeOf(clazz.getName());
+  }
+
+  /**
+   * {@code java.util.function.Supplier<inner> } types.
+   */
+
+  public ASTMCBasicGenericType createStdSupplierTypeOf(final ASTMCTypeArgument inner) {
+    return createBasicGenericTypeOf("java.util.function.Supplier", inner);
+  }
+
+  public ASTMCBasicGenericType createStdSupplierTypeOf(ASTMCType inner) {
+    ASTMCTypeArgument arg = MCSimpleGenericTypesMill.mCCustomTypeArgumentBuilder().setMCType(inner.deepClone()).build();
+    return createStdSupplierTypeOf(arg);
+  }
+
+  public ASTMCBasicGenericType createStdSupplierTypeOf(final String name) {
+    return createStdSupplierTypeOf(createBasicTypeArgumentOf(name));
+  }
+
+  public ASTMCBasicGenericType createStdSupplierTypeOf(final Class<?> clazz) {
+    return createStdSupplierTypeOf(clazz.getName());
   }
 
   /**

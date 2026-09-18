@@ -211,12 +211,16 @@ public class SymbolDeSerDecorator extends AbstractCreator<ASTCDType, ASTCDClass>
     List<ASTCDMethod> methodList = new ArrayList<>();
     for (ASTCDAttribute attr : attributeList) {
       String methodName = DESERIALIZE + StringTransformations.capitalize(attr.getName());
+      // Deserializers for supplied attributes return a supplier of that type
+      ASTMCType returnType = getDecorationHelper().shouldHaveSupplier(attr)
+          ? getDecorationHelper().createStdSupplierTypeOf(attr.getMCType())
+          : attr.getMCType();
       ASTCDMethod method = getCDMethodFacade()
-          .createMethod(PROTECTED.build(), attr.getMCType(), methodName, scopeParam, scopeJsonParam);
+          .createMethod(PROTECTED.build(), returnType, methodName, scopeParam, scopeJsonParam);
       // create wrapper function offering the deprecated interface
       // this one does not take the enclosing scope
       ASTCDMethod wrapperMethod = getCDMethodFacade()
-          .createMethod(PROTECTED.build(), attr.getMCType(), methodName, scopeJsonParam);
+          .createMethod(PROTECTED.build(), returnType, methodName, scopeJsonParam);
 
       // Check whether built-in serialization exists. If yes, use it and otherwise make method abstract
       Optional<HookPoint> impl = bitser

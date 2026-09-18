@@ -30,16 +30,16 @@ public class SymTypeExpressionSerStrategy extends BITSerStrategy {
 
   @Override
   public HookPoint getDeserialHook(String jsonParam, String attrParam, String scopeName) {
-    return new StringHookPoint(String.format("return de.monticore.types.check.SymTypeExpressionDeSer.deserializeMember(\"%s\", %s, %s);", attrParam, jsonParam, scopeName));
+    return new StringHookPoint(String.format("return () -> de.monticore.types.check.SymTypeExpressionDeSer.deserializeMember(\"%s\", %s, %s);", attrParam, jsonParam, scopeName));
   }
 
   @Override
   public HookPoint getOptDeserialHook(String jsonParam, String attrParam, String scopeName) {
-    return new StringHookPoint(String.format("return de.monticore.types.check.SymTypeExpressionDeSer.deserializeOptionalMember(\"%s\", %s, %s);", attrParam, jsonParam, scopeName));
+    return new StringHookPoint(String.format("return () -> de.monticore.types.check.SymTypeExpressionDeSer.deserializeOptionalMember(\"%s\", %s, %s);", attrParam, jsonParam, scopeName));
   }
 
   @Override
   public HookPoint getListDeserialHook(String jsonParam, String attrParam, String scopeName) {
-    return new StringHookPoint(String.format("return de.monticore.types.check.SymTypeExpressionDeSer.deserializeListMember(\"%s\", %s, %s);", attrParam, jsonParam, scopeName));
+    return new StringHookPoint(String.format("return () -> de.monticore.types.check.SymTypeExpressionDeSer.deserializeListMember(\"%s\", %s, %s);", attrParam, jsonParam, scopeName));
   }
 }
