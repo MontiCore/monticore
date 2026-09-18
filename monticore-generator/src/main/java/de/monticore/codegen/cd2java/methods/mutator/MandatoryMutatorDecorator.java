@@ -6,6 +6,7 @@ import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -25,13 +26,39 @@ public class MandatoryMutatorDecorator extends AbstractCreator<ASTCDAttribute, L
 
   @Override
   public List<ASTCDMethod> decorate(final ASTCDAttribute ast) {
-    return new ArrayList<>(Collections.singletonList(createSetter(ast)));
+    List<ASTCDMethod> methods = new ArrayList<>(Collections.singletonList(createSetter(ast)));
+    if (getDecorationHelper().isSupplier(ast.getMCType())) {
+      methods.add(createSupplierSetter(ast));
+    }
+    return methods;
   }
 
   protected ASTCDMethod createSetter(final ASTCDAttribute ast) {
-    String name = String.format(SET, StringUtils.capitalize(getDecorationHelper().getNativeAttributeName(ast.getName())));
-    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), name, this.getCDParameterFacade().createParameters(ast));
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.Set", ast));
+    ASTCDAttribute attribute = ast;
+    String templateName = "methods.Set";
+    if (getDecorationHelper().isSupplier(ast.getMCType())) {
+      // expose the unwrapped type (Supplier<X> -> X) in the setter parameter; the Supplier stays hidden
+      attribute = ast.deepClone();
+      attribute.setMCType(getDecorationHelper().getReferenceTypeOfSupplier(attribute.getMCType()).getMCTypeOpt().get());
+      templateName = "methods.SupplierSet";
+    }
+
+    String name = String.format(SET, StringUtils.capitalize(getDecorationHelper().getNativeAttributeName(attribute.getName())));
+    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), name, this.getCDParameterFacade().createParameters(attribute));
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(templateName, ast));
+    return method;
+  }
+
+
+  protected ASTCDMethod createSupplierSetter(final ASTCDAttribute ast) {
+    ASTCDAttribute attribute = ast.deepClone();
+    ASTMCType supplierType = getMCTypeFacade().createBasicGenericTypeOf(
+        "java.util.function.Supplier", getDecorationHelper().getReferenceTypeOfSupplier(ast.getMCType()));
+    attribute.setMCType(supplierType);
+
+    String name = String.format(SET, StringUtils.capitalize(getDecorationHelper().getNativeAttributeName(attribute.getName()))) + "Supplier";
+    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), name, this.getCDParameterFacade().createParameters(attribute));
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.SupplierSetRaw", ast));
     return method;
   }
 }

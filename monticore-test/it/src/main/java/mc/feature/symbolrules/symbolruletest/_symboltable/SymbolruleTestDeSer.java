@@ -1,16 +1,18 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.feature.symbolrules.symbolruletest._symboltable;
 
+import de.monticore.symboltable.serialization.json.JsonObject;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionDeSer;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 public class SymbolruleTestDeSer extends SymbolruleTestDeSerTOP {
 
   @Override
-  public java.util.Optional<de.monticore.types.check.SymTypeExpression> deserializeSymType (de.monticore.symboltable.serialization.json.JsonObject symbolJson)  {
-    return SymTypeExpressionDeSer.deserializeOptionalMember("symType", symbolJson);
+  public Supplier<Optional<SymTypeExpression>> deserializeSymType (JsonObject symbolJson)  {
+    return () -> SymTypeExpressionDeSer.deserializeOptionalMember("symType", symbolJson);
   }
 
   @Override

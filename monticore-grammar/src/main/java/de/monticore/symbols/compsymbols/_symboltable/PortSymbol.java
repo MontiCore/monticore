@@ -27,24 +27,26 @@ public class PortSymbol extends PortSymbolTOP {
                        SymTypeExpression type,
                        Timing timing) {
     super(name);
-    this.type = type;
+    setType(type);
     this.timing = timing;
     this.incoming = incoming;
     this.outgoing = outgoing;
   }
 
   public boolean isTypePresent() {
-    return this.type != null;
+    // type is not an optional, so we resolve it here to check if it is null
+    return super.type.get() != null;
   }
 
   public SymTypeExpression getType() {
-    Preconditions.checkState(this.type != null);
-    return this.type;
+    SymTypeExpression t = super.getType();
+    Preconditions.checkState(t != null);
+    return t;
   }
 
   public void setType(@NonNull SymTypeExpression type) {
     Preconditions.checkNotNull(type);
-    this.type = type;
+    super.setType(type);
   }
 
   public TypeSymbol getTypeInfo() {

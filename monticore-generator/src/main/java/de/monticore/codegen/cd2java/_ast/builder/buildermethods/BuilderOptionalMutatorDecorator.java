@@ -30,12 +30,35 @@ public class BuilderOptionalMutatorDecorator extends OptionalMutatorDecorator {
   @Override
   protected ASTCDMethod createSetMethod(final ASTCDAttribute attribute) {
     String name = String.format(SET, naiveAttributeName);
-    ASTMCType parameterType = getDecorationHelper().getReferenceTypeFromOptional(attribute.getMCType()).getMCTypeOpt().get().deepClone();
+
+    ASTMCType type = attribute.getMCType().deepClone();
+    String templateName;
+    if (getDecorationHelper().isSupplier(type)) {
+      templateName = "_ast.builder.opt.SupplierSet4ASTBuilderOpt";
+      type = getDecorationHelper().getReferenceTypeOfSupplier(type).getMCTypeOpt().get();
+    } else {
+      templateName = "_ast.builder.opt.Set4ASTBuilderOpt";
+    }
+
+    ASTMCType parameterType = getDecorationHelper().getReferenceTypeOfOptional(type).getMCTypeOpt().get().deepClone();
     ASTCDParameter parameter = this.getCDParameterFacade().createParameter(parameterType, attribute.getName());
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), name, parameter);
     ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(builderType).build();
     method.setMCReturnType(returnType);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.builder.opt.Set4ASTBuilderOpt", attribute));
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(templateName, attribute));
+    return method;
+  }
+
+  @Override
+  protected ASTCDMethod createSupplierSetMethod(final ASTCDAttribute ast) {
+    String name = String.format(SET, naiveAttributeName) + "Supplier";
+    ASTMCType supplierType = getMCTypeFacade().createBasicGenericTypeOf(
+        "java.util.function.Supplier", getDecorationHelper().getReferenceTypeOfSupplier(ast.getMCType()));
+    ASTCDParameter parameter = this.getCDParameterFacade().createParameter(supplierType, ast.getName());
+    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), name, parameter);
+    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(builderType).build();
+    method.setMCReturnType(returnType);
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.builder.SupplierSetRaw4ASTBuilder", ast));
     return method;
   }
 
@@ -45,7 +68,12 @@ public class BuilderOptionalMutatorDecorator extends OptionalMutatorDecorator {
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), name);
     ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(builderType).build();
     method.setMCReturnType(returnType);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.builder.opt.SetAbsent4ASTBuilderOpt", attribute));
+
+    String templateName = getDecorationHelper().isSupplier(attribute.getMCType())
+            ? "_ast.builder.opt.SupplierSetAbsent4ASTBuilderOpt"
+            : "_ast.builder.opt.SetAbsent4ASTBuilderOpt";
+
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(templateName, attribute));
     return method;
   }
 }

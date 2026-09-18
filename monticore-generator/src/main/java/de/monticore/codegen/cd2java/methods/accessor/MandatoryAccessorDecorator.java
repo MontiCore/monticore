@@ -29,7 +29,12 @@ public class MandatoryAccessorDecorator extends AbstractCreator<ASTCDAttribute, 
 
   @Override
   public List<ASTCDMethod> decorate(final ASTCDAttribute ast) {
-    return new ArrayList<>(Collections.singletonList(createGetter(ast)));
+    List<ASTCDMethod> methods = new ArrayList<>();
+    methods.add(createGetter(ast));
+    if (getDecorationHelper().isSupplier(ast.getMCType())) {
+      methods.add(createSupplierGetter(ast));
+    }
+    return methods;
   }
 
   protected ASTCDMethod createGetter(final ASTCDAttribute ast) {
@@ -41,8 +46,28 @@ public class MandatoryAccessorDecorator extends AbstractCreator<ASTCDAttribute, 
     }
     String name = String.format(getterPrefix, StringUtils.capitalize(getDecorationHelper().getNativeAttributeName(ast.getName())));
     ASTMCType type = ast.getMCType().deepClone();
+
+    String templateName;
+    if (getDecorationHelper().isSupplier(type)) {
+      // The Supplier is hidden from the user. The getter has to expose the unwrapped type (Supplier<X> -> X)
+      type = getDecorationHelper().getReferenceTypeOfSupplier(type).getMCTypeOpt().get();
+      templateName = "methods.SupplierGet";
+    } else {
+      templateName = "methods.Get";
+    }
+
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), type, name);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.Get", ast));
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(templateName, ast));
+    return method;
+  }
+
+  protected ASTCDMethod createSupplierGetter(final ASTCDAttribute ast) {
+    String name = String.format(GET, StringUtils.capitalize(getDecorationHelper().getNativeAttributeName(ast.getName()))) + "Supplier";
+    ASTMCType supplierType = getMCTypeFacade().createBasicGenericTypeOf(
+        "java.util.function.Supplier", getDecorationHelper().getReferenceTypeOfSupplier(ast.getMCType()));
+
+    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), supplierType, name);
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.SupplierGetRaw", ast));
     return method;
   }
 }
