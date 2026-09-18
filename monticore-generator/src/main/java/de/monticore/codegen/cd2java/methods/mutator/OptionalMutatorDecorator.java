@@ -34,6 +34,9 @@ public class OptionalMutatorDecorator extends AbstractCreator<ASTCDAttribute, Li
     naiveAttributeName = StringUtils.capitalize(getDecorationHelper().getNativeAttributeName(ast.getName()));
     methodList.add(createSetMethod(ast));
     methodList.add(createSetAbsentMethod(ast));
+    if (getDecorationHelper().isSupplier(ast.getMCType())) {
+      methodList.add(createSupplierSetMethod(ast));
+    }
     return methodList;
   }
 
@@ -53,6 +56,16 @@ public class OptionalMutatorDecorator extends AbstractCreator<ASTCDAttribute, Li
     ASTCDParameter parameter = this.getCDParameterFacade().createParameter(type, ast.getName());
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), name, parameter);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(templateName, ast, naiveAttributeName));
+    return method;
+  }
+
+  protected ASTCDMethod createSupplierSetMethod(final ASTCDAttribute ast) {
+    String name = String.format(SET, naiveAttributeName) + "Supplier";
+    ASTMCType supplierType = getMCTypeFacade().createBasicGenericTypeOf(
+        "java.util.function.Supplier", getDecorationHelper().getReferenceTypeOfSupplier(ast.getMCType()));
+    ASTCDParameter parameter = this.getCDParameterFacade().createParameter(supplierType, ast.getName());
+    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), name, parameter);
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.SupplierSetRaw", ast));
     return method;
   }
 

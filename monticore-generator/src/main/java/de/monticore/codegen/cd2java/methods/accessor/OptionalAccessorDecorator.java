@@ -36,9 +36,13 @@ public class OptionalAccessorDecorator extends AbstractCreator<ASTCDAttribute, L
   @Override
   public List<ASTCDMethod> decorate(final ASTCDAttribute ast) {
     naiveAttributeName = getNaiveAttributeName(ast);
-    ASTCDMethod get = createGetMethod(ast);
-    ASTCDMethod isPresent = createIsPresentMethod(ast);
-    return new ArrayList<>(Arrays.asList(get, isPresent));
+    List<ASTCDMethod> methods = new ArrayList<>();
+    methods.add(createGetMethod(ast));
+    methods.add(createIsPresentMethod(ast));
+    if (getDecorationHelper().isSupplier(ast.getMCType())) {
+      methods.add(createSupplierGetMethod(ast));
+    }
+    return methods;
   }
 
   protected String getNaiveAttributeName(ASTCDAttribute astcdAttribute) {
@@ -61,6 +65,15 @@ public class OptionalAccessorDecorator extends AbstractCreator<ASTCDAttribute, L
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), type, name);
     String generatedErrorCode = service.getGeneratedErrorCode(ast.getName() + ast.printType());
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(templateName, ast, naiveAttributeName, generatedErrorCode));
+    return method;
+  }
+
+  protected ASTCDMethod createSupplierGetMethod(final ASTCDAttribute ast) {
+    String name = String.format(GET, naiveAttributeName) + "Supplier";
+    ASTMCType supplierType = getMCTypeFacade().createBasicGenericTypeOf(
+        "java.util.function.Supplier", getDecorationHelper().getReferenceTypeOfSupplier(ast.getMCType()));
+    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), supplierType, name);
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.SupplierGetRaw", ast));
     return method;
   }
 

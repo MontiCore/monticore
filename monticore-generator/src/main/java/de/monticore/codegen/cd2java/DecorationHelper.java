@@ -130,6 +130,9 @@ public class DecorationHelper extends MCBasicTypesHelper {
     return isSupplier(type.printType());
   }
 
+  public boolean shouldHaveSupplier(ASTCDAttribute attribute) {
+    return de.monticore.codegen.cd2java.methods.AccessAsSupplierTypes.shouldHaveSupplier(attribute);
+  }
 
   public boolean isString(String type) {
     return "String".equals(type) || "java.lang.String".equals(type);
@@ -231,31 +234,26 @@ public class DecorationHelper extends MCBasicTypesHelper {
     return ((ASTMCGenericType) type).getMCTypeArgumentList().get(0);
   }
 
-  public ASTMCTypeArgument getReferenceTypeOfSupplier(ASTMCType type) {
-    Preconditions.checkArgument(isSupplier(type));
-    return ((ASTMCGenericType) type).getMCTypeArgumentList().get(0);
-  }
-
   /**
    * Wraps {@code inner} into the internal supplier type {@code __internal__Supplier<inner>}
    *
    * A copy of this is already in the MCTypeFacade. This can be deleted, and references rerouted to MCTypeFacade after release ...
    */
-  public ASTMCType createSupplierTypeOf(ASTMCType inner) {
+  public ASTMCType createInternalSupplierTypeOf(ASTMCType inner) {
     ASTMCTypeArgument arg = MCSimpleGenericTypesMill
         .mCCustomTypeArgumentBuilder().setMCType(inner.deepClone()).build();
     return MCTypeFacade.getInstance().createBasicGenericTypeOf(SUPPLIER_TYPE, arg);
   }
 
   /**
-   * Wraps {@code inner} into the internal supplier type {@code __internal__Supplier<inner>}
+   * Wraps {@code inner} into the public {@code java.util.function.Supplier<inner>} type.
    *
    * A copy of this is already in the MCTypeFacade. This can be deleted, and references rerouted to MCTypeFacade after release ...
    */
-  public ASTMCType createSupplierTypeOf(ASTMCType inner) {
+  public ASTMCType createStdSupplierTypeOf(ASTMCType inner) {
     ASTMCTypeArgument arg = MCSimpleGenericTypesMill
         .mCCustomTypeArgumentBuilder().setMCType(inner.deepClone()).build();
-    return MCTypeFacade.getInstance().createBasicGenericTypeOf(SUPPLIER_TYPE, arg);
+    return MCTypeFacade.getInstance().createBasicGenericTypeOf("java.util.function.Supplier", arg);
   }
 
   /**
