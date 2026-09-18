@@ -12,6 +12,7 @@ import de.monticore.codegen.cd2java._ast.builder.BuilderConstants;
 import de.monticore.codegen.cd2java._ast.builder.BuilderDecorator;
 import de.monticore.codegen.cd2java._ast.builder.buildermethods.BuilderMutatorMethodDecorator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
+import de.monticore.codegen.cd2java.methods.AccessAsSupplierTypes;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.StringHookPoint;
@@ -74,6 +75,10 @@ public class SymbolBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDCla
         defaultAttrs.add(spannedScopeAttr);
       }
     }
+
+   decoratedSymbolClass.getCDAttributeList().stream()
+        .filter(AccessAsSupplierTypes::shouldHaveSupplier)
+        .forEach(a -> a.setMCType(getDecorationHelper().createInternalSupplierTypeOf(a.getMCType())));
 
     builderDecorator.setPrintBuildMethodTemplate(false);
     ASTCDClass symbolBuilder = builderDecorator.decorate(decoratedSymbolClass);
