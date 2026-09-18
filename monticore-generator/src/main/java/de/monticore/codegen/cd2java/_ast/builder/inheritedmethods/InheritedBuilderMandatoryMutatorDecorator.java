@@ -24,9 +24,27 @@ public class InheritedBuilderMandatoryMutatorDecorator extends BuilderMandatoryM
 
   @Override
   protected ASTCDMethod createSetter(final ASTCDAttribute ast) {
-    String name = String.format(SET, StringUtils.capitalize(getDecorationHelper().getNativeAttributeName(ast.getName())));
-    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), builderType, name, this.getCDParameterFacade().createParameters(ast));
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.builder.SetInherited", ast, name));
+    ASTCDAttribute attribute = ast;
+    if (getDecorationHelper().isSupplier(ast.getMCType())) {
+      attribute = ast.deepClone();
+      attribute.setMCType(getDecorationHelper().getReferenceTypeOfSupplier(attribute.getMCType()).getMCTypeOpt().get());
+    }
+    String name = String.format(SET, StringUtils.capitalize(getDecorationHelper().getNativeAttributeName(attribute.getName())));
+    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), builderType, name, this.getCDParameterFacade().createParameters(attribute));
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.builder.SetInherited", attribute, name));
+    return method;
+  }
+
+  @Override
+  protected ASTCDMethod createSupplierSetter(final ASTCDAttribute ast) {
+    ASTCDAttribute attribute = ast.deepClone();
+    ASTMCType supplierType = getMCTypeFacade().createBasicGenericTypeOf(
+        "java.util.function.Supplier", getDecorationHelper().getReferenceTypeOfSupplier(ast.getMCType()));
+    attribute.setMCType(supplierType);
+
+    String name = String.format(SET, StringUtils.capitalize(getDecorationHelper().getNativeAttributeName(attribute.getName()))) + "Supplier";
+    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), builderType, name, this.getCDParameterFacade().createParameters(attribute));
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.builder.SetInherited", attribute, name));
     return method;
   }
 }

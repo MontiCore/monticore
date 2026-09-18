@@ -26,9 +26,30 @@ public class BuilderMandatoryMutatorDecorator extends MandatoryMutatorDecorator 
 
   @Override
   protected ASTCDMethod createSetter(final ASTCDAttribute ast) {
-    String name = String.format(SET, StringUtils.capitalize(getDecorationHelper().getNativeAttributeName(ast.getName())));
-    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), builderType, name, this.getCDParameterFacade().createParameters(ast));
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.builder.Set4ASTBuilder", ast));
+    ASTCDAttribute attribute = ast;
+    String templateName = "_ast.builder.Set4ASTBuilder";
+    if (getDecorationHelper().isSupplier(ast.getMCType())) {
+      attribute = ast.deepClone();
+      attribute.setMCType(getDecorationHelper().getReferenceTypeOfSupplier(attribute.getMCType()).getMCTypeOpt().get());
+      templateName = "_ast.builder.SupplierSet4ASTBuilder";
+    }
+
+    String name = String.format(SET, StringUtils.capitalize(getDecorationHelper().getNativeAttributeName(attribute.getName())));
+    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), builderType, name, this.getCDParameterFacade().createParameters(attribute));
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(templateName, ast));
+    return method;
+  }
+
+  @Override
+  protected ASTCDMethod createSupplierSetter(final ASTCDAttribute ast) {
+    ASTCDAttribute attribute = ast.deepClone();
+    ASTMCType supplierType = getMCTypeFacade().createBasicGenericTypeOf(
+        "java.util.function.Supplier", getDecorationHelper().getReferenceTypeOfSupplier(ast.getMCType()));
+    attribute.setMCType(supplierType);
+
+    String name = String.format(SET, StringUtils.capitalize(getDecorationHelper().getNativeAttributeName(attribute.getName()))) + "Supplier";
+    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), builderType, name, this.getCDParameterFacade().createParameters(attribute));
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.builder.SupplierSetRaw4ASTBuilder", ast));
     return method;
   }
 }

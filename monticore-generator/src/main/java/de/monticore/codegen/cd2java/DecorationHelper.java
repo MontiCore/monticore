@@ -292,11 +292,21 @@ public class DecorationHelper extends MCBasicTypesHelper {
   }
 
   /**
+   * unwraps the internal supplier type (Supplier&lt;X&gt; -&gt; X); returns the type unchanged if it is not wrapped
+   */
+  public ASTMCType unwrapSupplier(ASTMCType type) {
+    if (isSupplier(type)) {
+      return getReferenceTypeOfSupplier(type).getMCTypeOpt().get();
+    }
+    return type;
+  }
+
+  /**
    * methods return correct getters or setters for a special attribut
    * needed in templates
    */
   public String getPlainGetter(ASTCDAttribute ast) {
-    String astType = CD4CodeMill.prettyPrint(ast.getMCType(), false);
+    String astType = CD4CodeMill.prettyPrint(unwrapSupplier(ast.getMCType()), false);
     StringBuilder sb = new StringBuilder();
     // Do not use CDTypes.isBoolean() because only primitive boolean uses GET_PREFIX_BOOLEAN
     if (astType.equals("boolean")) {
@@ -319,7 +329,7 @@ public class DecorationHelper extends MCBasicTypesHelper {
   public String getPlainSetter(ASTCDAttribute ast) {
     StringBuilder sb = new StringBuilder(SET_PREFIX).append(
         StringTransformations.capitalize(getNativeAttributeName(ast.getName())));
-    String astType = CD4CodeMill.prettyPrint(ast.getMCType(), false);
+    String astType = CD4CodeMill.prettyPrint(unwrapSupplier(ast.getMCType()), false);
     if (isListType(astType)) {
       if (hasDerivedAttributeName(ast) && ast.getName().endsWith(TransformationHelper.LIST_SUFFIX)) {
         sb.replace(sb.length() - TransformationHelper.LIST_SUFFIX.length(),

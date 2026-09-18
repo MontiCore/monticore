@@ -20,11 +20,18 @@ public class AccessAsSupplierTypes {
   private static final String[] SUPPLYLIST = {
       "de.monticore.types.check.SymTypeExpression",
       "java.util.List<de.monticore.types.check.SymTypeExpression>",
-      "java.util.Optional<de.monticore.types.check.SymTypeExpression>"
+      "java.util.Optional<de.monticore.types.check.SymTypeExpression>",
+      "List<de.monticore.types.check.SymTypeExpression>",
+      "Optional<de.monticore.types.check.SymTypeExpression>",
+      "SymTypeExpression",
+      "java.util.List<SymTypeExpression>",
+      "java.util.Optional<SymTypeExpression>",
+      "List<SymTypeExpression>",
+      "Optional<SymTypeExpression>"
   };
 
   /**
-   * @param type the fully qualified, printed attribute type
+   * @param type the printed attribute type
    * @return whether an attribute of this type should be wrapped in / accessed via a {@code Supplier}
    */
   public static boolean shouldHaveSupplier(String type) {
@@ -32,7 +39,7 @@ public class AccessAsSupplierTypes {
   }
 
   public static boolean shouldHaveSupplier(ASTCDAttribute attribute) {
-    return shouldHaveSupplier(attribute.getMCType().printType());
+    return shouldHaveSupplier(attribute.printType());
   }
 
 }

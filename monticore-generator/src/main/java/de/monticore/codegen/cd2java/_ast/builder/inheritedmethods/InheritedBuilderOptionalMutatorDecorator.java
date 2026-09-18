@@ -28,12 +28,26 @@ public class InheritedBuilderOptionalMutatorDecorator extends BuilderOptionalMut
   @Override
   protected ASTCDMethod createSetMethod(final ASTCDAttribute attribute) {
     String name = String.format(SET, naiveAttributeName);
-    ASTMCType parameterType = getDecorationHelper().getReferenceTypeOfOptional(attribute.getMCType()).getMCTypeOpt().get().deepClone();
+    ASTMCType type = getDecorationHelper().unwrapSupplier(attribute.getMCType());
+    ASTMCType parameterType = getDecorationHelper().getReferenceTypeOfOptional(type).getMCTypeOpt().get().deepClone();
     ASTCDParameter parameter = this.getCDParameterFacade().createParameter(parameterType, attribute.getName());
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), name, parameter);
     ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(builderType).build();
     method.setMCReturnType(returnType);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.builder.SetInherited", attribute, name));
+    return method;
+  }
+
+  @Override
+  protected ASTCDMethod createSupplierSetMethod(final ASTCDAttribute ast) {
+    String name = String.format(SET, naiveAttributeName) + "Supplier";
+    ASTMCType supplierType = getMCTypeFacade().createBasicGenericTypeOf(
+        "java.util.function.Supplier", getDecorationHelper().getReferenceTypeOfSupplier(ast.getMCType()));
+    ASTCDParameter parameter = this.getCDParameterFacade().createParameter(supplierType, ast.getName());
+    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), name, parameter);
+    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(builderType).build();
+    method.setMCReturnType(returnType);
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.builder.SetInherited", ast, name));
     return method;
   }
 

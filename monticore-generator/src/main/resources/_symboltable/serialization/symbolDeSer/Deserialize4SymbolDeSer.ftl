@@ -21,16 +21,16 @@ ${tc.signature("symTabMill", "symbolFullName", "symbolSimpleName","symbolRuleAtt
   }
 
   <#list symbolRuleAttribute as attr>
-  <#if !genHelper.shouldHaveSupplier(attr)>
-    <#if genHelper.isOptional(attr.getMCType())>
-      if (deserialize${attr.getName()?cap_first}(symbolJson).isPresent()) {
-        builder.${genHelper.getPlainSetter(attr)}(deserialize${attr.getName()?cap_first}(scope, symbolJson).get());
-      } else {
-        builder.${genHelper.getPlainSetter(attr)}Absent();
-      }
-    <#else>
-      builder.${genHelper.getPlainSetter(attr)}(deserialize${attr.getName()?cap_first}(scope, symbolJson));
-    </#if>
+  <#if genHelper.shouldHaveSupplier(attr)>
+    builder.${genHelper.getPlainSetter(attr)}Supplier(deserialize${attr.getName()?cap_first}(scope, symbolJson));
+  <#elseif genHelper.isOptional(attr.getMCType())>
+    if (deserialize${attr.getName()?cap_first}(symbolJson).isPresent()) {
+      builder.${genHelper.getPlainSetter(attr)}(deserialize${attr.getName()?cap_first}(scope, symbolJson).get());
+    } else {
+      builder.${genHelper.getPlainSetter(attr)}Absent();
+    }
+  <#else>
+    builder.${genHelper.getPlainSetter(attr)}(deserialize${attr.getName()?cap_first}(scope, symbolJson));
   </#if>
 </#list>
 
@@ -49,13 +49,6 @@ ${tc.signature("symTabMill", "symbolFullName", "symbolSimpleName","symbolRuleAtt
 </#if>
 
   ${symbolFullName} symbol = builder.build();
-
-  <#list symbolRuleAttribute as attr>
-    <#if genHelper.shouldHaveSupplier(attr)>
-      <#-- supplied attributes are not resolved immediately, so we store the supplied -->
-      symbol.${genHelper.getPlainSetter(attr)}Supplier(deserialize${attr.getName()?cap_first}(scope, symbolJson));
-    </#if>
-  </#list>
 
   deserializeAddons(symbol, symbolJson);
   return symbol;

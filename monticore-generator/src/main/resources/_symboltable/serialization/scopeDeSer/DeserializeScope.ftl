@@ -9,15 +9,18 @@ ${tc.signature("symTabMill", "scopeClass", "scopeRuleAttrList")}
   scope.setExportingSymbols(true);
 
 <#list scopeRuleAttrList as attr>
-  <#if genHelper.isOptional(attr.getMCType())>
+  <#assign setter = genHelper.getPlainSetter(attr)>
+  <#if genHelper.shouldHaveSupplier(attr)>
+    scope.${setter}Supplier(deserialize${attr.getName()?cap_first}(scope, scopeJson));
+  <#elseif genHelper.isOptional(attr.getMCType())>
   ${attr.printType()} _${attr.getName()} = deserialize${attr.getName()?cap_first}(scope, scopeJson);
   if (_${attr.getName()}.isPresent()) {
-    scope.${genHelper.getPlainSetter(attr)}(_${attr.getName()}.get());
+    scope.${setter}(_${attr.getName()}.get());
   } else {
-    scope.${genHelper.getPlainSetter(attr)}Absent();
+    scope.${setter}Absent();
   }
   <#else>
-    scope.${genHelper.getPlainSetter(attr)}(deserialize${attr.getName()?cap_first}(scope, scopeJson));
+    scope.${setter}(deserialize${attr.getName()?cap_first}(scope, scopeJson));
   </#if>
 </#list>
 

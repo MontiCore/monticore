@@ -22,6 +22,7 @@ import de.monticore.io.paths.MCPath;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.symboltable.serialization.ISymbolDeSer;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.StringTransformations;
 
 import java.util.*;
@@ -264,12 +265,16 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
     List<ASTCDMethod> methodList = new ArrayList<>();
     for (ASTCDAttribute attr : attributeList) {
       String methodName = DESERIALIZE + StringTransformations.capitalize(attr.getName());
+      // Deserializers for supplied attributes return a supplier of that type
+      ASTMCType returnType = getDecorationHelper().shouldHaveSupplier(attr)
+              ? getDecorationHelper().createStdSupplierTypeOf(attr.getMCType())
+              : attr.getMCType();
       ASTCDMethod method = getCDMethodFacade()
-          .createMethod(PROTECTED.build(), attr.getMCType(), methodName, scopeParam, scopeJsonParam);
+          .createMethod(PROTECTED.build(), returnType, methodName, scopeParam, scopeJsonParam);
       // create wrapper functions offering the deprecated interface
       // this one does not take the enclosing scope
       ASTCDMethod wrapperMethod = getCDMethodFacade()
-          .createMethod(PROTECTED.build(), attr.getMCType(), methodName, scopeJsonParam);
+          .createMethod(PROTECTED.build(), returnType, methodName, scopeJsonParam);
 
       // Check whether built-in serialization exists. If yes, use it and otherwise make method abstract
       Optional<HookPoint> impl = bitser
@@ -295,7 +300,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
       ASTCDParameter iScopeParam = getCDParameterFacade().createParameter(getMCTypeFacade()
           .createQualifiedType(I_SCOPE), scopeParam.getName());
       ASTCDMethod wrapperMethod2 = getCDMethodFacade()
-          .createMethod(PROTECTED.build(), attr.getMCType(), methodName, iScopeParam, scopeJsonParam);
+          .createMethod(PROTECTED.build(), returnType, methodName, iScopeParam, scopeJsonParam);
       String errorCode = symbolTableService.getGeneratedErrorCode(methodName);
       this.replaceTemplate(EMPTY_BODY, wrapperMethod2, new TemplateHookPoint(
           DESERIALIZE_IS_TEMPL, methodName, scopeParam.getMCType().printType(), errorCode));
