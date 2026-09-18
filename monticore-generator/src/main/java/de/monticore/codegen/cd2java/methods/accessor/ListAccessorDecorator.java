@@ -42,6 +42,9 @@ public class ListAccessorDecorator extends ListMethodDecorator {
   public List<ASTCDMethod> decorate(ASTCDAttribute ast) {
     List<ASTCDMethod> methods = super.decorate(ast);
     methods.add(createGetListMethod(ast));
+    if (getDecorationHelper().isSupplier(ast.getMCType())) {
+      methods.add(createGetListSupplierMethod(ast));
+    }
     return methods;
   }
 
@@ -59,6 +62,16 @@ public class ListAccessorDecorator extends ListMethodDecorator {
 
     this.replaceTemplate(EMPTY_BODY, getList, new TemplateHookPoint(templateName, ast));
     return getList;
+  }
+
+  protected ASTCDMethod createGetListSupplierMethod(ASTCDAttribute ast) {
+    String name = "get" + capitalizedAttributeNameWithOutS + "ListSupplier";
+    de.monticore.types.mcbasictypes._ast.ASTMCType supplierType = getMCTypeFacade().createBasicGenericTypeOf(
+        "java.util.function.Supplier", getDecorationHelper().getReferenceTypeOfSupplier(ast.getMCType()));
+    ASTCDMethod method = this.getCDMethodFacade().createMethod(
+        de.monticore.cd.facade.CDModifier.PUBLIC.build(), supplierType, name);
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.SupplierGetRaw", ast));
+    return method;
   }
 
   @Override

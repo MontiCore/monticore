@@ -38,6 +38,9 @@ public class ListMutatorDecorator extends ListMethodDecorator {
   public List<ASTCDMethod> decorate(ASTCDAttribute ast) {
     List<ASTCDMethod> methods = createSetter(ast);
     methods.add(createSetListMethod(ast));
+    if (getDecorationHelper().isSupplier(ast.getMCType())) {
+      methods.add(createSetListSupplierMethod(ast));
+    }
     return methods;
   }
 
@@ -54,6 +57,18 @@ public class ListMutatorDecorator extends ListMethodDecorator {
 
     this.replaceTemplate(EMPTY_BODY, getList, new TemplateHookPoint(templateName, ast));
     return getList;
+  }
+
+  protected ASTCDMethod createSetListSupplierMethod(ASTCDAttribute ast) {
+    String name = "set" + capitalizedAttributeNameWithOutS + "ListSupplier";
+    de.monticore.types.mcbasictypes._ast.ASTMCType supplierType = getMCTypeFacade().createBasicGenericTypeOf(
+        "java.util.function.Supplier", getDecorationHelper().getReferenceTypeOfSupplier(ast.getMCType()));
+    de.monticore.cd4codebasis._ast.ASTCDParameter parameter =
+        this.getCDParameterFacade().createParameter(supplierType, ast.getName());
+    ASTCDMethod method = this.getCDMethodFacade().createMethod(
+        de.monticore.cd.facade.CDModifier.PUBLIC.build(), name, parameter);
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.SupplierSetRaw", ast));
+    return method;
   }
 
   protected List<ASTCDMethod> createSetter(ASTCDAttribute ast){
