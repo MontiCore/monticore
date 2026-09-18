@@ -17,6 +17,7 @@ import de.monticore.codegen.cd2java._symboltable.SymbolKindHierarchies;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorConstants;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
+import de.monticore.codegen.cd2java.methods.AccessAsSupplierTypes;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
@@ -95,6 +96,9 @@ public class ScopeClassDecorator extends AbstractDecorator {
             .flatMap(List::stream)
             .map(ASTCDAttribute::deepClone)
             .collect(Collectors.toList());
+    scopeRuleAttributeList.stream()
+        .filter(AccessAsSupplierTypes::shouldHaveSupplier)
+        .forEach(a -> a.setMCType(getDecorationHelper().createInternalSupplierTypeOf(a.getMCType())));
     scopeRuleAttributeList
         .forEach(a -> getDecorationHelper().addAttributeDefaultValues(a, this.glex));
 

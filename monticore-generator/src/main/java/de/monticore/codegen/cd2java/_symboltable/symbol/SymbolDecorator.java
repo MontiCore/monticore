@@ -94,7 +94,7 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
 
     // Wrap selected symbolrule attribute types into Supplier<X> so their (possibly not-yet-resolvable) value can be computed later
     symbolRuleAttributes.stream()
-            .filter(a -> AccessAsSupplierTypes.shouldHaveSupplier(a.getMCType().printType()))
+            .filter(AccessAsSupplierTypes::shouldHaveSupplier)
             .forEach(a -> a.setMCType(getDecorationHelper().createInternalSupplierTypeOf(a.getMCType())));
 
     symbolRuleAttributes.forEach(a -> getDecorationHelper().addAttributeDefaultValues(a, this.glex));

@@ -3,6 +3,7 @@ package de.monticore.codegen.cd2java._ast.builder.inheritedmethods;
 
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
+import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.codegen.cd2java._ast.builder.buildermethods.BuilderListMutatorDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
@@ -11,6 +12,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
 
 /**
  * changes return type of builder setters for list attributes
@@ -28,6 +30,19 @@ public class InheritedBuilderListMutatorDecorator extends BuilderListMutatorDeco
     ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(builderType).build();
     method.setMCReturnType(returnType);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.builder.SetInherited", ast, "set" + capitalizedAttributeNameWithS + "List"));
+    return method;
+  }
+
+  @Override
+  protected ASTCDMethod createSetListSupplierMethod(ASTCDAttribute ast) {
+    String name = "set" + capitalizedAttributeNameWithOutS + "ListSupplier";
+    ASTMCType supplierType = getMCTypeFacade().createBasicGenericTypeOf(
+        "java.util.function.Supplier", getDecorationHelper().getReferenceTypeOfSupplier(ast.getMCType()));
+    ASTCDParameter parameter = this.getCDParameterFacade().createParameter(supplierType, ast.getName());
+    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), name, parameter);
+    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(builderType).build();
+    method.setMCReturnType(returnType);
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.builder.SetInherited", ast, name));
     return method;
   }
 }
