@@ -5,6 +5,7 @@ import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.generating.templateengine.reporting.artifacts.ReportingNameHelper;
+import de.monticore.generating.templateengine.sourcemap.IncludeSpan;
 import de.monticore.io.paths.MCPath;
 import de.monticore.sourcemap.DecodedMapping;
 import de.monticore.symboltable.IScope;
@@ -422,6 +423,11 @@ public class ReportLogHook implements ILogHook, IReportEventHandler {
   @Override
   public void reportASTSourceMapping(List<DecodedMapping> mapping) {
     this.getReportManager().reportASTSourceMapping(mapping);
+  }
+
+  @Override
+  public void reportTemplateIncludeSpan(List<IncludeSpan> span){
+    this.getReportManager().reportTemplateIncludeSpan(span);
   }
 
 }
