@@ -6,6 +6,7 @@ import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.TemplateController;
 import de.monticore.generating.templateengine.reporting.commons.ReportLogHook;
 import de.monticore.generating.templateengine.reporting.commons.ReportManager.ReportManagerFactory;
+import de.monticore.generating.templateengine.sourcemap.IncludeSpan;
 import de.monticore.io.paths.MCPath;
 import de.monticore.sourcemap.DecodedMapping;
 import de.monticore.symboltable.IScope;
@@ -146,6 +147,14 @@ public class Reporting extends Log {
     if (isEnabled()) {
       for (ReportLogHook hook : getReportHooks()) {
         hook.reportASTSourceMapping(mapping);
+      }
+    }
+  }
+
+  public static void reportTemplateIncludeSpan(List<IncludeSpan> span){
+    if(isEnabled()){
+      for(ReportLogHook hook : getReportHooks()){
+        hook.reportTemplateIncludeSpan(span);
       }
     }
   }

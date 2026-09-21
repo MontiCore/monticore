@@ -26,6 +26,7 @@ public class SourceMapCalculator {
 
   private static ThreadLocal<List<SimpleSourceMapping>> mappings = ThreadLocal.withInitial(ArrayList::new);
   private static ThreadLocal<List<SimpleSourceMapping>> astMappings = ThreadLocal.withInitial(ArrayList::new);
+  private static ThreadLocal<List<SimpleIncludeMapping>> includeMappings = ThreadLocal.withInitial(ArrayList::new);
   private static ThreadLocal<Integer> baseLineOffset = ThreadLocal.withInitial(() -> 0);
 
   public static void pushTemplate(Template template) {
@@ -70,6 +71,39 @@ public class SourceMapCalculator {
 
   public static int getBaseLineOffset(){
     return baseLineOffset.get();
+  }
+
+  private static List<IncludeSpan> calculateIncludeMappings(List<SimpleIncludeMapping> includeMappings){
+    Map<Integer, SimpleIncludeMapping> openMappings = new HashMap<>();
+    List<IncludeSpan> includes = new ArrayList<>();
+
+    for(SimpleIncludeMapping mapping : includeMappings){
+      if(mapping.sourcePosition.getLine() < 0 || mapping.sourcePosition.getColumn() < 0){
+        Log.warn("Negative lines detected in mapping, ignoring...");
+        continue;
+      }
+      int id = mapping.pairId;
+      if(openMappings.containsKey(id)){
+        SimpleIncludeMapping start = openMappings.remove(id);
+        if(!start.targetTemplate.equals(mapping.targetTemplate)) {
+          Log.warn("Inconsistent target templates in include mapping");
+          continue;
+        }
+        if(start.sourcePosition.getFileName().isEmpty() || mapping.sourcePosition.getFileName().isEmpty()){
+          Log.warn("No source file name given for include mapping.");
+          continue;
+        }
+        if(!start.sourcePosition.getFileName().get().equals(mapping.sourcePosition.getFileName().get())){
+          Log.warn("Inconsistent source file name given for include mapping.");
+          continue;
+        }
+        includes.add(new IncludeSpan(start.sourcePosition, mapping.sourcePosition, mapping.targetTemplate));
+      }else{
+        openMappings.put(id, mapping);
+      }
+    }
+
+    return includes;
   }
 
   public static List<DecodedMapping> calculateMappings(List<SimpleSourceMapping> simpleMappings) {
@@ -203,6 +237,26 @@ public class SourceMapCalculator {
     assert curAbsolutePos.get().size() == templates.get().size();
   }
 
+  public void reportInclude(int pairId, int lineInTemplate, int colInTemplate, String templateSource, String includedTemplate, ASTNode astNode, boolean isStart){
+    // Suppress recording if this is a config template
+    if(Reporting.isConfigTemplate(template.getName()))
+      return;
+
+    String content = sw.getCurrentContent();
+    int numberOfLinesInContent = numberOfNewLines(content);
+    int curGeneratedColPos = getColumnOfLastLine(content);
+
+    // Update absolute position stack so line numbering stays in sync
+    Pair<Integer,Integer> absPos = updateAndGetAbsolutePos(numberOfLinesInContent, curGeneratedColPos);
+
+    SourcePosition positionInGeneratedFile = new SourcePosition(absPos.getLeft(), absPos.getRight(), "GenOutput");
+    addASTMapping(astNode, isStart, positionInGeneratedFile, pairId);
+    addTemplateMapping(lineInTemplate, colInTemplate, templateSource, positionInGeneratedFile, pairId);
+    addIncludeMapping(lineInTemplate, colInTemplate, templateSource, includedTemplate, pairId);
+
+    assert curAbsolutePos.get().size() == templates.get().size();
+  }
+
   /**
    * This function does not add a new position state but updates the current one
    */
@@ -291,6 +345,29 @@ public class SourceMapCalculator {
 
   }
 
+  protected void addIncludeMapping(int lineInTemplate, int colInTemplate, String templateSource, String includedTemplate, int pairId) {
+    int line = Math.max(0, lineInTemplate);
+    int col = Math.max(0, colInTemplate);
+
+    Optional<SimpleIncludeMapping> startMappingOpt = includeMappings.get().stream()
+            .filter(m -> m.pairId == pairId)
+            .findFirst();
+
+    SourcePosition pos = new SourcePosition(line, col, templateSource);
+    if(startMappingOpt.isPresent()){
+      SimpleIncludeMapping startMapping = startMappingOpt.get();
+      // If nothing is between start and end of the include-statement (should never happen), drop to keep output clean
+      if(startMapping.sourcePosition.equals(pos)) {
+        includeMappings.get().remove(startMapping);
+      }else{
+        includeMappings.get().add(new SimpleIncludeMapping(pos, pairId, includedTemplate));
+      }
+    }else{
+      // Start mapping
+      includeMappings.get().add(new SimpleIncludeMapping(pos, pairId, includedTemplate));
+    }
+  }
+
   private static int numberOfNewLines(String wholeContent) {
     // Note the String::lines method does not recognize a new line if the String ends with it furthermore it returns 1 if the String is not empty
     return (int) (wholeContent+" ").lines().count() -1;
@@ -304,8 +381,10 @@ public class SourceMapCalculator {
   public static void flushMappings(){
     List<DecodedMapping> templateSourceMappings = calculateMappings(mappings.get());
     List<DecodedMapping> astSourceMappings = calculateMappings(astMappings.get());
+    List<IncludeSpan> includeSpans = calculateIncludeMappings(includeMappings.get());
     Reporting.reportASTSourceMapping(astSourceMappings);
     Reporting.reportTemplateSourceMapping(templateSourceMappings);
+    Reporting.reportTemplateIncludeSpan(includeSpans);
     clearMappings();
   }
 
@@ -314,17 +393,16 @@ public class SourceMapCalculator {
     mappings.remove();
     astMappings.get().clear();
     astMappings.remove();
+    includeMappings.get().clear();
+    includeMappings.remove();
   }
 
   public static void reset() {
+    clearMappings();
     templates.get().clear();
     templates.remove();
     curAbsolutePos.get().clear();
     curAbsolutePos.remove();
-    mappings.get().clear();
-    mappings.remove();
-    astMappings.get().clear();
-    astMappings.remove();
     baseLineOffset.remove();
   }
 
@@ -343,6 +421,22 @@ public class SourceMapCalculator {
     boolean isZeroWidthGenerated(){
       return start.targetPosition.getLine() == end.targetPosition.getLine()
               && start.targetPosition.getColumn() == end.targetPosition.getColumn();
+    }
+  }
+
+  private static class SimpleIncludeMapping {
+    final SourcePosition sourcePosition;
+    final int pairId;
+    final String targetTemplate;
+
+    SimpleIncludeMapping(SourcePosition sourcePosition, int pairId, String targetTemplate) {
+      this.sourcePosition = sourcePosition;
+      this.pairId = pairId;
+      this.targetTemplate = targetTemplate;
+    }
+
+    public String toString(){
+      return sourcePosition.toString() + " -> " + targetTemplate;
     }
   }
 }
