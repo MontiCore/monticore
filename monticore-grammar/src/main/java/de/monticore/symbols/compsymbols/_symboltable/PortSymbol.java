@@ -3,7 +3,6 @@ package de.monticore.symbols.compsymbols._symboltable;
 
 import com.google.common.base.Preconditions;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
-import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
 import de.monticore.types.check.SymTypeExpression;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -50,8 +49,7 @@ public class PortSymbol extends PortSymbolTOP {
   }
 
   public TypeSymbol getTypeInfo() {
-    return this.getType().getTypeInfo() instanceof TypeSymbolSurrogate ?
-        ((TypeSymbolSurrogate) this.getType().getTypeInfo()).lazyLoadDelegate() : this.getType().getTypeInfo();
+    return this.getType().getTypeInfo();
   }
 
   @Override
