@@ -36,15 +36,9 @@ public class VariableSymbol extends VariableSymbolTOP {
   public void replaceTypeVariables(Map<TypeVarSymbol, SymTypeExpression> replaceMap){
     //return type
     SymTypeExpression returnType = this.getType();
-    TypeSymbol realTypeInfo;
-    TypeSymbol typeInfo = returnType.isTypeVariable() ?
+    TypeSymbol realTypeInfo = returnType.isTypeVariable() ?
         returnType.asTypeVariable().getTypeVarSymbol() :
         returnType.getTypeInfo();
-    if(typeInfo instanceof TypeSymbolSurrogate){
-      realTypeInfo = ((TypeSymbolSurrogate) returnType.getTypeInfo()).lazyLoadDelegate();
-    }else{
-      realTypeInfo = typeInfo;
-    }
     if(returnType.isTypeVariable() && realTypeInfo instanceof TypeVarSymbol){
       Optional<TypeVarSymbol> typeVar =  replaceMap.keySet().stream().filter(t -> t.getName().equals(realTypeInfo.getName())).findAny();
       typeVar.ifPresent(typeVarSymbol -> this.setType(replaceMap.get(typeVarSymbol)));
