@@ -1,16 +1,19 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java.methods.mutator;
 
+import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.codegen.cd2java.methods.ListMethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
 import java.util.Arrays;
 import java.util.List;
 
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
 
 public class ListMutatorDecorator extends ListMethodDecorator {
 
@@ -61,12 +64,10 @@ public class ListMutatorDecorator extends ListMethodDecorator {
 
   protected ASTCDMethod createSetListSupplierMethod(ASTCDAttribute ast) {
     String name = "set" + capitalizedAttributeNameWithOutS + "ListSupplier";
-    de.monticore.types.mcbasictypes._ast.ASTMCType supplierType = getMCTypeFacade().createBasicGenericTypeOf(
-        "java.util.function.Supplier", getDecorationHelper().getReferenceTypeOfSupplier(ast.getMCType()));
-    de.monticore.cd4codebasis._ast.ASTCDParameter parameter =
+    ASTMCType supplierType = getDecorationHelper().toPublicSupplierType(ast.getMCType());
+    ASTCDParameter parameter =
         this.getCDParameterFacade().createParameter(supplierType, ast.getName());
-    ASTCDMethod method = this.getCDMethodFacade().createMethod(
-        de.monticore.cd.facade.CDModifier.PUBLIC.build(), name, parameter);
+    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), name, parameter);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.SupplierSetRaw", ast));
     return method;
   }

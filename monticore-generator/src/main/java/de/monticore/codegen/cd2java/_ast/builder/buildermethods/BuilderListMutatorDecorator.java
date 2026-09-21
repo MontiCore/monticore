@@ -70,8 +70,7 @@ public class BuilderListMutatorDecorator extends ListMutatorDecorator {
   @Override
   protected ASTCDMethod createSetListSupplierMethod(ASTCDAttribute ast) {
     String name = "set" + capitalizedAttributeNameWithOutS + "ListSupplier";
-    ASTMCType supplierType = getMCTypeFacade().createBasicGenericTypeOf(
-        "java.util.function.Supplier", getDecorationHelper().getReferenceTypeOfSupplier(ast.getMCType()));
+    ASTMCType supplierType = getDecorationHelper().toPublicSupplierType(ast.getMCType());
     ASTCDParameter parameter = this.getCDParameterFacade().createParameter(supplierType, ast.getName());
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), name, parameter);
     ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(builderType).build();

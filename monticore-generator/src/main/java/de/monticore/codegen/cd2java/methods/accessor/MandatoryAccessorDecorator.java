@@ -10,7 +10,6 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
@@ -50,7 +49,7 @@ public class MandatoryAccessorDecorator extends AbstractCreator<ASTCDAttribute, 
     String templateName;
     if (getDecorationHelper().isSupplier(type)) {
       // The Supplier is hidden from the user. The getter has to expose the unwrapped type (Supplier<X> -> X)
-      type = getDecorationHelper().getReferenceTypeOfSupplier(type).getMCTypeOpt().get();
+      type = getDecorationHelper().unwrapSupplier(type);
       templateName = "methods.SupplierGet";
     } else {
       templateName = "methods.Get";
@@ -63,8 +62,7 @@ public class MandatoryAccessorDecorator extends AbstractCreator<ASTCDAttribute, 
 
   protected ASTCDMethod createSupplierGetter(final ASTCDAttribute ast) {
     String name = String.format(GET, StringUtils.capitalize(getDecorationHelper().getNativeAttributeName(ast.getName()))) + "Supplier";
-    ASTMCType supplierType = getMCTypeFacade().createBasicGenericTypeOf(
-        "java.util.function.Supplier", getDecorationHelper().getReferenceTypeOfSupplier(ast.getMCType()));
+    ASTMCType supplierType = getDecorationHelper().toPublicSupplierType(ast.getMCType());
 
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), supplierType, name);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.SupplierGetRaw", ast));

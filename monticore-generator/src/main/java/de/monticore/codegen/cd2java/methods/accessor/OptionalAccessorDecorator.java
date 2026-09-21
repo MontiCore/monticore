@@ -11,7 +11,6 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
@@ -56,7 +55,7 @@ public class OptionalAccessorDecorator extends AbstractCreator<ASTCDAttribute, L
     String templateName;
     if (getDecorationHelper().isSupplier(type)){
       templateName = "methods.opt.SupplierGet4Opt";
-      type = getDecorationHelper().getReferenceTypeOfSupplier(type).getMCTypeOpt().get();
+      type = getDecorationHelper().unwrapSupplier(type);
     } else {
       templateName = "methods.opt.Get4Opt";
     }
@@ -70,8 +69,7 @@ public class OptionalAccessorDecorator extends AbstractCreator<ASTCDAttribute, L
 
   protected ASTCDMethod createSupplierGetMethod(final ASTCDAttribute ast) {
     String name = String.format(GET, naiveAttributeName) + "Supplier";
-    ASTMCType supplierType = getMCTypeFacade().createBasicGenericTypeOf(
-        "java.util.function.Supplier", getDecorationHelper().getReferenceTypeOfSupplier(ast.getMCType()));
+    ASTMCType supplierType = getDecorationHelper().toPublicSupplierType(ast.getMCType());
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), supplierType, name);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.SupplierGetRaw", ast));
     return method;
