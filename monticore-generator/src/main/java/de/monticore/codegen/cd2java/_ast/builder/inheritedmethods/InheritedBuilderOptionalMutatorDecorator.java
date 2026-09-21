@@ -41,8 +41,7 @@ public class InheritedBuilderOptionalMutatorDecorator extends BuilderOptionalMut
   @Override
   protected ASTCDMethod createSupplierSetMethod(final ASTCDAttribute ast) {
     String name = String.format(SET, naiveAttributeName) + "Supplier";
-    ASTMCType supplierType = getMCTypeFacade().createBasicGenericTypeOf(
-        "java.util.function.Supplier", getDecorationHelper().getReferenceTypeOfSupplier(ast.getMCType()));
+    ASTMCType supplierType = getDecorationHelper().toPublicSupplierType(ast.getMCType());
     ASTCDParameter parameter = this.getCDParameterFacade().createParameter(supplierType, ast.getName());
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), name, parameter);
     ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(builderType).build();

@@ -168,7 +168,7 @@ public class SymTypeExpressionFactory {
     if (resolved.isPresent()) {
       return resolved.get();
     }
-    Log.error("0x893F62 Internal error: cannot resolve the type \""
+    Log.error("0x893F63 Internal error: cannot resolve the type \""
         + name + "\" required by a SymTypeExpression!");
     TypeSymbol unresolved = new TypeSymbol(name);
     unresolved.setEnclosingScope(enclosingScope);
@@ -183,7 +183,7 @@ public class SymTypeExpressionFactory {
     if (resolved.isPresent()) {
       return resolved.get();
     }
-    Log.error("0x893F62 Internal error: cannot resolve the type variable \""
+    Log.error("0x893F64 Internal error: cannot resolve the type variable \""
         + name + "\" required by a SymTypeExpression!");
     TypeVarSymbol unresolved = new TypeVarSymbol(name);
     unresolved.setEnclosingScope(enclosingScope);

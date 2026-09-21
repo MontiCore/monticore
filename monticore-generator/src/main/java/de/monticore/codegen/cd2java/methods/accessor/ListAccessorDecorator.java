@@ -6,11 +6,13 @@ import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.codegen.cd2java.methods.ListMethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
 import java.util.Arrays;
 import java.util.List;
 
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
 
 public class ListAccessorDecorator extends ListMethodDecorator {
 
@@ -66,10 +68,9 @@ public class ListAccessorDecorator extends ListMethodDecorator {
 
   protected ASTCDMethod createGetListSupplierMethod(ASTCDAttribute ast) {
     String name = "get" + capitalizedAttributeNameWithOutS + "ListSupplier";
-    de.monticore.types.mcbasictypes._ast.ASTMCType supplierType = getMCTypeFacade().createBasicGenericTypeOf(
-        "java.util.function.Supplier", getDecorationHelper().getReferenceTypeOfSupplier(ast.getMCType()));
+    ASTMCType supplierType = getDecorationHelper().toPublicSupplierType(ast.getMCType());
     ASTCDMethod method = this.getCDMethodFacade().createMethod(
-        de.monticore.cd.facade.CDModifier.PUBLIC.build(), supplierType, name);
+        PUBLIC.build(), supplierType, name);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.SupplierGetRaw", ast));
     return method;
   }

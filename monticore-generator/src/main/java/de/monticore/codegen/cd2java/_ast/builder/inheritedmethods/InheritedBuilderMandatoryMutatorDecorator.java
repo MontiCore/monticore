@@ -27,7 +27,7 @@ public class InheritedBuilderMandatoryMutatorDecorator extends BuilderMandatoryM
     ASTCDAttribute attribute = ast;
     if (getDecorationHelper().isSupplier(ast.getMCType())) {
       attribute = ast.deepClone();
-      attribute.setMCType(getDecorationHelper().getReferenceTypeOfSupplier(attribute.getMCType()).getMCTypeOpt().get());
+      attribute.setMCType(getDecorationHelper().unwrapSupplier(attribute.getMCType()));
     }
     String name = String.format(SET, StringUtils.capitalize(getDecorationHelper().getNativeAttributeName(attribute.getName())));
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), builderType, name, this.getCDParameterFacade().createParameters(attribute));
@@ -38,9 +38,7 @@ public class InheritedBuilderMandatoryMutatorDecorator extends BuilderMandatoryM
   @Override
   protected ASTCDMethod createSupplierSetter(final ASTCDAttribute ast) {
     ASTCDAttribute attribute = ast.deepClone();
-    ASTMCType supplierType = getMCTypeFacade().createBasicGenericTypeOf(
-        "java.util.function.Supplier", getDecorationHelper().getReferenceTypeOfSupplier(ast.getMCType()));
-    attribute.setMCType(supplierType);
+    attribute.setMCType(getDecorationHelper().toPublicSupplierType(ast.getMCType()));
 
     String name = String.format(SET, StringUtils.capitalize(getDecorationHelper().getNativeAttributeName(attribute.getName()))) + "Supplier";
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), builderType, name, this.getCDParameterFacade().createParameters(attribute));

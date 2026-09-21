@@ -2,6 +2,7 @@
 package de.monticore.symbols.basicsymbols._symboltable;
 
 import com.google.common.collect.Lists;
+import de.monticore.symboltable.ClearingMemorizer;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
@@ -21,7 +22,8 @@ public class FunctionSymbol extends FunctionSymbolTOP {
 
   public FunctionSymbol deepClone(){
     FunctionSymbol clone = new FunctionSymbol(name);
-    clone.setType(this.getType().deepClone());
+    // keep the type lazy
+    clone.setTypeSupplier(ClearingMemorizer.map(getTypeSupplier(), SymTypeExpression::deepClone));
     clone.setIsElliptic(this.isIsElliptic());
     clone.setEnclosingScope(this.enclosingScope);
     clone.setFullName(this.fullName);

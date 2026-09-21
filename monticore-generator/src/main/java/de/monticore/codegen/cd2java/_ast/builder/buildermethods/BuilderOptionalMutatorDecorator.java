@@ -35,7 +35,7 @@ public class BuilderOptionalMutatorDecorator extends OptionalMutatorDecorator {
     String templateName;
     if (getDecorationHelper().isSupplier(type)) {
       templateName = "_ast.builder.opt.SupplierSet4ASTBuilderOpt";
-      type = getDecorationHelper().getReferenceTypeOfSupplier(type).getMCTypeOpt().get();
+      type = getDecorationHelper().unwrapSupplier(type);
     } else {
       templateName = "_ast.builder.opt.Set4ASTBuilderOpt";
     }
@@ -52,8 +52,7 @@ public class BuilderOptionalMutatorDecorator extends OptionalMutatorDecorator {
   @Override
   protected ASTCDMethod createSupplierSetMethod(final ASTCDAttribute ast) {
     String name = String.format(SET, naiveAttributeName) + "Supplier";
-    ASTMCType supplierType = getMCTypeFacade().createBasicGenericTypeOf(
-        "java.util.function.Supplier", getDecorationHelper().getReferenceTypeOfSupplier(ast.getMCType()));
+    ASTMCType supplierType = getDecorationHelper().toPublicSupplierType(ast.getMCType());
     ASTCDParameter parameter = this.getCDParameterFacade().createParameter(supplierType, ast.getName());
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), name, parameter);
     ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(builderType).build();
