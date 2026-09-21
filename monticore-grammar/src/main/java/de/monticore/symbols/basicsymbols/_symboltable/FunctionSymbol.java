@@ -71,15 +71,9 @@ public class FunctionSymbol extends FunctionSymbolTOP {
   public void replaceTypeVariables(Map<TypeVarSymbol, SymTypeExpression> replaceMap){
     //return type
     SymTypeExpression type = this.getType();
-    TypeSymbol realTypeInfo;
-    TypeSymbol typeInfo = type.isTypeVariable() ?
+    TypeSymbol realTypeInfo = type.isTypeVariable() ?
         type.asTypeVariable().getTypeVarSymbol() :
         type.getTypeInfo();
-    if(typeInfo instanceof TypeSymbolSurrogate){
-      realTypeInfo = ((TypeSymbolSurrogate) type.getTypeInfo()).lazyLoadDelegate();
-    }else{
-      realTypeInfo = typeInfo;
-    }
     if(type.isTypeVariable() && realTypeInfo instanceof TypeVarSymbol){
       Optional<TypeVarSymbol> typeVar =  replaceMap.keySet().stream().filter(t -> t.getName().equals(realTypeInfo.getName())).findAny();
       typeVar.ifPresent(typeVarSymbol -> this.setType(replaceMap.get(typeVarSymbol)));
