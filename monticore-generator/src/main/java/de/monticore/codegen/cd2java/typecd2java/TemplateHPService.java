@@ -9,6 +9,7 @@ import de.monticore.generating.templateengine.TemplateHookPoint;
  * @deprecated Methods have been moved to the {@link de.monticore.generating.templateengine.GlobalExtensionManagement}
  */
 @Deprecated
+@SuppressWarnings({"deprecation", "removal"})
 public class TemplateHPService {
 
   public HookPoint templateHP(String template) {

@@ -8,6 +8,7 @@ import java.util.Optional;
  * @deprecated of no use anymore, ISynthesize/IDerive are deprecated
  */
 @Deprecated
+@SuppressWarnings({"deprecation", "removal"})
 public class TypeCheckResult {
 
   protected Optional<SymTypeExpression> result;

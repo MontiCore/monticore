@@ -13,6 +13,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
  * @deprecated use {@link LambdaExpressionsSTCompleteTypes2}
  */
 @Deprecated(forRemoval = true)
+@SuppressWarnings({"deprecation", "removal"})
 public class LambdaExpressionsSTCompleteTypes implements LambdaExpressionsVisitor2 {
 
   ISynthesize synthesize;
