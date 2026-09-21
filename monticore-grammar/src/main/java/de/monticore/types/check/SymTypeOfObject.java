@@ -4,7 +4,6 @@ package de.monticore.types.check;
 import com.google.common.base.Preconditions;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.types3.ISymTypeVisitor;
-import de.se_rwth.commons.logging.Log;
 
 /**
  * An objectType is a full qualified class name.

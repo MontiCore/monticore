@@ -6,7 +6,6 @@ import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -39,7 +38,7 @@ public class MandatoryMutatorDecorator extends AbstractCreator<ASTCDAttribute, L
     if (getDecorationHelper().isSupplier(ast.getMCType())) {
       // expose the unwrapped type (Supplier<X> -> X) in the setter parameter; the Supplier stays hidden
       attribute = ast.deepClone();
-      attribute.setMCType(getDecorationHelper().getReferenceTypeOfSupplier(attribute.getMCType()).getMCTypeOpt().get());
+      attribute.setMCType(getDecorationHelper().unwrapSupplier(attribute.getMCType()));
       templateName = "methods.SupplierSet";
     }
 
@@ -52,9 +51,7 @@ public class MandatoryMutatorDecorator extends AbstractCreator<ASTCDAttribute, L
 
   protected ASTCDMethod createSupplierSetter(final ASTCDAttribute ast) {
     ASTCDAttribute attribute = ast.deepClone();
-    ASTMCType supplierType = getMCTypeFacade().createBasicGenericTypeOf(
-        "java.util.function.Supplier", getDecorationHelper().getReferenceTypeOfSupplier(ast.getMCType()));
-    attribute.setMCType(supplierType);
+    attribute.setMCType(getDecorationHelper().toPublicSupplierType(ast.getMCType()));
 
     String name = String.format(SET, StringUtils.capitalize(getDecorationHelper().getNativeAttributeName(attribute.getName()))) + "Supplier";
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), name, this.getCDParameterFacade().createParameters(attribute));

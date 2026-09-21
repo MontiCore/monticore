@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.symbols.basicsymbols._symboltable;
 
+import de.monticore.symboltable.ClearingMemorizer;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.types.check.SymTypeExpression;
 import de.se_rwth.commons.logging.Log;
@@ -22,10 +23,8 @@ public class VariableSymbol extends VariableSymbolTOP {
     if(isPresentAstNode()) {
       clone.setAstNode(this.getAstNode());
     }
-    SymTypeExpression t = getType();
-    if(t!=null){
-      clone.setType(t.deepClone());
-    }
+    // keep the type lazy
+    clone.setTypeSupplier(ClearingMemorizer.map(getTypeSupplier(), SymTypeExpression::deepClone));
     return clone;
   }
 

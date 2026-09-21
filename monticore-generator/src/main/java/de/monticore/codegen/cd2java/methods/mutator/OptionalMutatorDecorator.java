@@ -47,7 +47,7 @@ public class OptionalMutatorDecorator extends AbstractCreator<ASTCDAttribute, Li
     String templateName;
     if (getDecorationHelper().isSupplier(type)){
       templateName = "methods.opt.SupplierSet4Opt";
-      type = getDecorationHelper().getReferenceTypeOfSupplier(type).getMCTypeOpt().get();
+      type = getDecorationHelper().unwrapSupplier(type);
     } else {
       templateName = "methods.opt.Set4Opt";
     }
@@ -61,8 +61,7 @@ public class OptionalMutatorDecorator extends AbstractCreator<ASTCDAttribute, Li
 
   protected ASTCDMethod createSupplierSetMethod(final ASTCDAttribute ast) {
     String name = String.format(SET, naiveAttributeName) + "Supplier";
-    ASTMCType supplierType = getMCTypeFacade().createBasicGenericTypeOf(
-        "java.util.function.Supplier", getDecorationHelper().getReferenceTypeOfSupplier(ast.getMCType()));
+    ASTMCType supplierType = getDecorationHelper().toPublicSupplierType(ast.getMCType());
     ASTCDParameter parameter = this.getCDParameterFacade().createParameter(supplierType, ast.getName());
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), name, parameter);
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.SupplierSetRaw", ast));
