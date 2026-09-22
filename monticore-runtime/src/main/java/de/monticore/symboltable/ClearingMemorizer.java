@@ -20,14 +20,11 @@ public class ClearingMemorizer<T> implements Supplier<T> {
 
   /**
    * Lazily applies the mapper to the value of the source, evaluated at most once.
-   * A null value of the source stays null. Nothing is evaluated until the result is requested,
-   * e.g. to copy a not-yet-resolvable attribute of a symbol without forcing it.
+   * Nothing is evaluated until the result is requested, e.g. to copy a not-yet-resolvable
+   * attribute of a symbol without forcing it.
    */
   public static <T, R> Supplier<R> map(Supplier<T> source, Function<? super T, ? extends R> mapper) {
-    return new ClearingMemorizer<>(() -> {
-      T value = source.get();
-      return value == null ? null : mapper.apply(value);
-    });
+    return new ClearingMemorizer<>(() -> mapper.apply(source.get()));
   }
 
   @Override

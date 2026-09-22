@@ -28,7 +28,10 @@ public class InheritedBuilderOptionalMutatorDecorator extends BuilderOptionalMut
   @Override
   protected ASTCDMethod createSetMethod(final ASTCDAttribute attribute) {
     String name = String.format(SET, naiveAttributeName);
-    ASTMCType type = getDecorationHelper().unwrapSupplier(attribute.getMCType());
+    ASTMCType type = attribute.getMCType().deepClone();
+    if (getDecorationHelper().isSupplier(type)) {
+      type = getDecorationHelper().unwrapSupplier(type);
+    }
     ASTMCType parameterType = getDecorationHelper().getReferenceTypeOfOptional(type).getMCTypeOpt().get().deepClone();
     ASTCDParameter parameter = this.getCDParameterFacade().createParameter(parameterType, attribute.getName());
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), name, parameter);

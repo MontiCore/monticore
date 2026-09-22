@@ -55,11 +55,9 @@ public class ListAccessorDecorator extends ListMethodDecorator {
     String signature = String.format(GET_LIST, attributeType, capitalizedAttributeNameWithOutS);
     ASTCDMethod getList = this.getCDMethodFacade().createMethodByDefinition(signature);
 
-    String templateName;
+    String templateName = "methods.Get";
     if (getDecorationHelper().isSupplier(ast.getMCType())) {
       templateName = "methods.SupplierGet";
-    } else {
-      templateName = "methods.Get";
     }
 
     this.replaceTemplate(EMPTY_BODY, getList, new TemplateHookPoint(templateName, ast));

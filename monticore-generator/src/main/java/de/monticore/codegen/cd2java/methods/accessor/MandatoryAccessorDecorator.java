@@ -46,13 +46,11 @@ public class MandatoryAccessorDecorator extends AbstractCreator<ASTCDAttribute, 
     String name = String.format(getterPrefix, StringUtils.capitalize(getDecorationHelper().getNativeAttributeName(ast.getName())));
     ASTMCType type = ast.getMCType().deepClone();
 
-    String templateName;
+    String templateName = "methods.Get";
     if (getDecorationHelper().isSupplier(type)) {
       // The Supplier is hidden from the user. The getter has to expose the unwrapped type (Supplier<X> -> X)
       type = getDecorationHelper().unwrapSupplier(type);
       templateName = "methods.SupplierGet";
-    } else {
-      templateName = "methods.Get";
     }
 
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), type, name);

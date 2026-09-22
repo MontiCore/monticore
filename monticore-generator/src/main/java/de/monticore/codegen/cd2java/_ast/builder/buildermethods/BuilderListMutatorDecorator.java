@@ -60,9 +60,10 @@ public class BuilderListMutatorDecorator extends ListMutatorDecorator {
     ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(builderType).build();
     method.setMCReturnType(returnType);
 
-    String templateName = getDecorationHelper().isSupplier(ast.getMCType())
-        ? "_ast.builder.SupplierSet4ASTBuilder"
-        : "_ast.builder.Set4ASTBuilder";
+    String templateName = "_ast.builder.Set4ASTBuilder";
+    if (getDecorationHelper().isSupplier(ast.getMCType())) {
+      templateName = "_ast.builder.SupplierSet4ASTBuilder";
+    }
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(templateName, ast));
     return method;
   }
