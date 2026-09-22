@@ -52,12 +52,10 @@ public class OptionalAccessorDecorator extends AbstractCreator<ASTCDAttribute, L
     String name = String.format(GET, naiveAttributeName);
 
     ASTMCType type = ast.getMCType().deepClone();
-    String templateName;
-    if (getDecorationHelper().isSupplier(type)){
-      templateName = "methods.opt.SupplierGet4Opt";
+    String templateName = "methods.opt.Get4Opt";
+    if (getDecorationHelper().isSupplier(type)) {
       type = getDecorationHelper().unwrapSupplier(type);
-    } else {
-      templateName = "methods.opt.Get4Opt";
+      templateName = "methods.opt.SupplierGet4Opt";
     }
 
     type = getDecorationHelper().getReferenceTypeOfOptional(type).getMCTypeOpt().get();
@@ -79,11 +77,9 @@ public class OptionalAccessorDecorator extends AbstractCreator<ASTCDAttribute, L
     String name = String.format(IS_PRESENT, naiveAttributeName);
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), getMCTypeFacade().createBooleanType(), name);
 
-    String templateName;
-    if (getDecorationHelper().isSupplier(ast.getMCType())){
+    String templateName = "methods.opt.IsPresent4Opt";
+    if (getDecorationHelper().isSupplier(ast.getMCType())) {
       templateName = "methods.opt.SupplierIsPresent4Opt";
-    } else {
-      templateName = "methods.opt.IsPresent4Opt";
     }
 
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(templateName, ast));

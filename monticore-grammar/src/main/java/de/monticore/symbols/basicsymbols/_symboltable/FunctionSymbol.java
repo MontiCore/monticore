@@ -23,7 +23,7 @@ public class FunctionSymbol extends FunctionSymbolTOP {
   public FunctionSymbol deepClone(){
     FunctionSymbol clone = new FunctionSymbol(name);
     // keep the type lazy
-    clone.setTypeSupplier(ClearingMemorizer.map(getTypeSupplier(), SymTypeExpression::deepClone));
+    clone.setTypeSupplier(ClearingMemorizer.map(getTypeSupplier(), t -> t == null ? null : t.deepClone()));
     clone.setIsElliptic(this.isIsElliptic());
     clone.setEnclosingScope(this.enclosingScope);
     clone.setFullName(this.fullName);

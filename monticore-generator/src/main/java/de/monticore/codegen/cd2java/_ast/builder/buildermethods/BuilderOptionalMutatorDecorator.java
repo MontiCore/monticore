@@ -32,12 +32,10 @@ public class BuilderOptionalMutatorDecorator extends OptionalMutatorDecorator {
     String name = String.format(SET, naiveAttributeName);
 
     ASTMCType type = attribute.getMCType().deepClone();
-    String templateName;
+    String templateName = "_ast.builder.opt.Set4ASTBuilderOpt";
     if (getDecorationHelper().isSupplier(type)) {
-      templateName = "_ast.builder.opt.SupplierSet4ASTBuilderOpt";
       type = getDecorationHelper().unwrapSupplier(type);
-    } else {
-      templateName = "_ast.builder.opt.Set4ASTBuilderOpt";
+      templateName = "_ast.builder.opt.SupplierSet4ASTBuilderOpt";
     }
 
     ASTMCType parameterType = getDecorationHelper().getReferenceTypeOfOptional(type).getMCTypeOpt().get().deepClone();
@@ -68,9 +66,10 @@ public class BuilderOptionalMutatorDecorator extends OptionalMutatorDecorator {
     ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(builderType).build();
     method.setMCReturnType(returnType);
 
-    String templateName = getDecorationHelper().isSupplier(attribute.getMCType())
-            ? "_ast.builder.opt.SupplierSetAbsent4ASTBuilderOpt"
-            : "_ast.builder.opt.SetAbsent4ASTBuilderOpt";
+    String templateName = "_ast.builder.opt.SetAbsent4ASTBuilderOpt";
+    if (getDecorationHelper().isSupplier(attribute.getMCType())) {
+      templateName = "_ast.builder.opt.SupplierSetAbsent4ASTBuilderOpt";
+    }
 
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(templateName, attribute));
     return method;

@@ -51,11 +51,9 @@ public class ListMutatorDecorator extends ListMethodDecorator {
     String signature = String.format(SET_LIST, capitalizedAttributeNameWithOutS, attributeType, ast.getName());
     ASTCDMethod getList = this.getCDMethodFacade().createMethodByDefinition(signature);
 
-    String templateName;
+    String templateName = "methods.Set";
     if (getDecorationHelper().isSupplier(ast.getMCType())) {
       templateName = "methods.SupplierSet";
-    } else {
-      templateName = "methods.Set";
     }
 
     this.replaceTemplate(EMPTY_BODY, getList, new TemplateHookPoint(templateName, ast));

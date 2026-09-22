@@ -44,12 +44,10 @@ public class OptionalMutatorDecorator extends AbstractCreator<ASTCDAttribute, Li
     String name = String.format(SET, naiveAttributeName);
 
     ASTMCType type = ast.getMCType().deepClone();
-    String templateName;
-    if (getDecorationHelper().isSupplier(type)){
-      templateName = "methods.opt.SupplierSet4Opt";
+    String templateName = "methods.opt.Set4Opt";
+    if (getDecorationHelper().isSupplier(type)) {
       type = getDecorationHelper().unwrapSupplier(type);
-    } else {
-      templateName = "methods.opt.Set4Opt";
+      templateName = "methods.opt.SupplierSet4Opt";
     }
 
     type = getDecorationHelper().getReferenceTypeOfOptional(type).getMCTypeOpt().get().deepClone();
@@ -72,11 +70,9 @@ public class OptionalMutatorDecorator extends AbstractCreator<ASTCDAttribute, Li
     String name = String.format(SET_ABSENT, naiveAttributeName);
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), name);
 
-    String templateName;
-    if (getDecorationHelper().isSupplier(ast.getMCType())){
+    String templateName = "methods.opt.SetAbsent";
+    if (getDecorationHelper().isSupplier(ast.getMCType())) {
       templateName = "methods.opt.SupplierSetAbsent";
-    } else {
-      templateName = "methods.opt.SetAbsent";
     }
 
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(templateName, ast));

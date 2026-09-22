@@ -37,7 +37,7 @@ public class FieldSymbol extends FieldSymbolTOP {
       clone.setAstNode(this.getAstNode());
     }
     // keep the type lazy
-    clone.setTypeSupplier(ClearingMemorizer.map(getTypeSupplier(), SymTypeExpression::deepClone));
+    clone.setTypeSupplier(ClearingMemorizer.map(getTypeSupplier(), t -> t == null ? null : t.deepClone()));
     return clone;
   }
 
