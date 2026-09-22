@@ -13,12 +13,15 @@ import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.codegen.cd2java.AbstractService;
+import de.monticore.codegen.cd2java.DecorationHelper;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
+import de.monticore.codegen.cd2java.methods.AccessAsSupplierTypes;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,6 +38,7 @@ import static de.monticore.codegen.cd2java.DecoratorAssert.assertListOf;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertOptionalOf;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertVoid;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
+import static de.monticore.codegen.cd2java.DecoratorTestUtil.getClassBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodBy;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodsBy;
 import static org.junit.jupiter.api.Assertions.*;
@@ -43,7 +47,11 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
 
   private ASTCDClass scopeClass;
 
+  private ASTCDClass originalScopeRuleClass;
+
   private de.monticore.types.MCTypeFacade mcTypeFacade;
+
+  private static final String SYM_TYPE_EXPRESSION = "de.monticore.types.check.SymTypeExpression";
 
   private ASTCDCompilationUnit decoratedSymbolCompilationUnit;
 
@@ -87,6 +95,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     ASTCDCompilationUnit astcdCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "Automaton");
     decoratedSymbolCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "AutomatonSymbolCD");
     decoratedScopeCompilationUnit = this.parse("de", "monticore", "codegen", "symboltable", "AutomatonScopeCD");
+    originalScopeRuleClass = getClassBy("AutomatonScope", decoratedScopeCompilationUnit);
     originalCompilationUnit = decoratedSymbolCompilationUnit.deepClone();
     this.glex.setGlobalValue("service", new AbstractService(astcdCompilationUnit));
 
@@ -208,7 +217,7 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testAttributeCount() {
-    assertEquals(21, scopeClass.getCDAttributeList().size());
+    assertEquals(24, scopeClass.getCDAttributeList().size());
   }
 
   @Test
@@ -361,22 +370,163 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     ASTCDAttribute fooAttribute = getAttributeBy("foo", scopeClass);
     assertDeepEquals(PROTECTED, fooAttribute.getModifier());
     assertListOf(String.class, fooAttribute.getMCType());
+    assertFalse(AccessAsSupplierTypes.shouldHaveSupplier(fooAttribute));
 
     ASTCDAttribute blaAttribute = getAttributeBy("bla", scopeClass);
     assertDeepEquals(PROTECTED, blaAttribute.getModifier());
     assertOptionalOf(Integer.class, blaAttribute.getMCType());
+    assertFalse(AccessAsSupplierTypes.shouldHaveSupplier(blaAttribute));
 
     ASTCDAttribute extraAtt = getAttributeBy("extraAttribute", scopeClass);
     assertDeepEquals(PROTECTED, extraAtt.getModifier());
     assertBoolean(extraAtt.getMCType());
-  
+    assertFalse(AccessAsSupplierTypes.shouldHaveSupplier(extraAtt));
+
+    // symType, lSymType and oSymType are of the types listed in AccessAsSupplierTypes, so arewrapped int
+    // internal Supplier type.
+    ASTCDAttribute originalSymTypeAttribute = getAttributeBy("symType", originalScopeRuleClass);
+    assertTrue(AccessAsSupplierTypes.shouldHaveSupplier(originalSymTypeAttribute));
+    ASTCDAttribute symTypeAttribute = getAttributeBy("symType", scopeClass);
+    assertDeepEquals(PROTECTED, symTypeAttribute.getModifier());
+    assertDeepEquals(DecorationHelper.getInstance().createInternalSupplierTypeOf(originalSymTypeAttribute.getMCType()),
+        symTypeAttribute.getMCType());
+
+    ASTCDAttribute originalLSymTypeAttribute = getAttributeBy("lSymType", originalScopeRuleClass);
+    assertTrue(AccessAsSupplierTypes.shouldHaveSupplier(originalLSymTypeAttribute));
+    ASTCDAttribute lSymTypeAttribute = getAttributeBy("lSymType", scopeClass);
+    assertDeepEquals(PROTECTED, lSymTypeAttribute.getModifier());
+    assertDeepEquals(DecorationHelper.getInstance().createInternalSupplierTypeOf(originalLSymTypeAttribute.getMCType()),
+        lSymTypeAttribute.getMCType());
+
+    ASTCDAttribute originalOSymTypeAttribute = getAttributeBy("oSymType", originalScopeRuleClass);
+    assertTrue(AccessAsSupplierTypes.shouldHaveSupplier(originalOSymTypeAttribute));
+    ASTCDAttribute oSymTypeAttribute = getAttributeBy("oSymType", scopeClass);
+    assertDeepEquals(PROTECTED, oSymTypeAttribute.getModifier());
+    assertDeepEquals(DecorationHelper.getInstance().createInternalSupplierTypeOf(originalOSymTypeAttribute.getMCType()),
+        oSymTypeAttribute.getMCType());
+
+    assertTrue(Log.getFindings().isEmpty());
+  }
+
+
+  // getters/setters that have to be Supplier-wrapped (see AccessAsSupplierTypes)
+  // get additional fields, allowing to both set/get the Supplier itself and to set/get the value directly
+
+  @Test
+  public void testSymTypeScopeRuleMethods() {
+    ASTMCType symTypeType = getAttributeBy("symType", originalScopeRuleClass).getMCType();
+
+    ASTCDMethod getter = getMethodBy("getSymType", scopeClass);
+    assertDeepEquals(PUBLIC, getter.getModifier());
+    assertDeepEquals(symTypeType, getter.getMCReturnType().getMCType());
+    assertTrue(getter.isEmptyCDParameters());
+
+    ASTCDMethod setter = getMethodBy("setSymType", scopeClass);
+    assertDeepEquals(PUBLIC, setter.getModifier());
+    assertTrue(setter.getMCReturnType().isPresentMCVoidType());
+    assertEquals(1, setter.sizeCDParameters());
+    assertDeepEquals(symTypeType, setter.getCDParameter(0).getMCType());
+    assertEquals("symType", setter.getCDParameter(0).getName());
+
+    ASTCDMethod supplierGetter = getMethodBy("getSymTypeSupplier", scopeClass);
+    assertDeepEquals(PUBLIC, supplierGetter.getModifier());
+    assertDeepEquals(DecorationHelper.getInstance().createStdSupplierTypeOf(symTypeType), supplierGetter.getMCReturnType().getMCType());
+    assertTrue(supplierGetter.isEmptyCDParameters());
+
+    ASTCDMethod supplierSetter = getMethodBy("setSymTypeSupplier", scopeClass);
+    assertDeepEquals(PUBLIC, supplierSetter.getModifier());
+    assertTrue(supplierSetter.getMCReturnType().isPresentMCVoidType());
+    assertEquals(1, supplierSetter.sizeCDParameters());
+    assertDeepEquals(DecorationHelper.getInstance().createStdSupplierTypeOf(symTypeType), supplierSetter.getCDParameter(0).getMCType());
+    assertEquals("symType", supplierSetter.getCDParameter(0).getName());
+
+    assertTrue(Log.getFindings().isEmpty());
+  }
+
+  @Test
+  public void testLSymTypeScopeRuleMethods() {
+    ASTMCType lSymTypeType = getAttributeBy("lSymType", originalScopeRuleClass).getMCType();
+
+    ASTCDMethod getter = getMethodBy("getLSymTypeList", scopeClass);
+    assertDeepEquals(PUBLIC, getter.getModifier());
+    assertListOf(SYM_TYPE_EXPRESSION, getter.getMCReturnType().getMCType());
+    assertTrue(getter.isEmptyCDParameters());
+
+    ASTCDMethod setter = getMethodBy("setLSymTypeList", scopeClass);
+    assertDeepEquals(PUBLIC, setter.getModifier());
+    assertTrue(setter.getMCReturnType().isPresentMCVoidType());
+    assertEquals(1, setter.sizeCDParameters());
+    assertListOf(SYM_TYPE_EXPRESSION, setter.getCDParameter(0).getMCType());
+    assertEquals("lSymType", setter.getCDParameter(0).getName());
+
+    ASTCDMethod supplierGetter = getMethodBy("getLSymTypeListSupplier", scopeClass);
+    assertDeepEquals(PUBLIC, supplierGetter.getModifier());
+    assertDeepEquals(DecorationHelper.getInstance().createStdSupplierTypeOf(lSymTypeType), supplierGetter.getMCReturnType().getMCType());
+    assertTrue(supplierGetter.isEmptyCDParameters());
+
+    ASTCDMethod supplierSetter = getMethodBy("setLSymTypeListSupplier", scopeClass);
+    assertDeepEquals(PUBLIC, supplierSetter.getModifier());
+    assertTrue(supplierSetter.getMCReturnType().isPresentMCVoidType());
+    assertEquals(1, supplierSetter.sizeCDParameters());
+    assertDeepEquals(DecorationHelper.getInstance().createStdSupplierTypeOf(lSymTypeType), supplierSetter.getCDParameter(0).getMCType());
+    assertEquals("lSymType", supplierSetter.getCDParameter(0).getName());
+
+    assertTrue(Log.getFindings().isEmpty());
+  }
+
+  @Test
+  public void testOSymTypeScopeRuleMethods() {
+    ASTCDAttribute originalOSymTypeAttribute = getAttributeBy("oSymType", originalScopeRuleClass);
+    ASTMCType oSymTypeType = originalOSymTypeAttribute.getMCType();
+    ASTMCType innerType = DecorationHelper.getInstance().getReferenceTypeOfOptional(oSymTypeType).getMCTypeOpt().get();
+
+    ASTCDMethod getter = getMethodBy("getOSymType", scopeClass);
+    assertDeepEquals(PUBLIC, getter.getModifier());
+    assertDeepEquals(innerType, getter.getMCReturnType().getMCType());
+    assertTrue(getter.isEmptyCDParameters());
+
+    ASTCDMethod isPresent = getMethodBy("isPresentOSymType", scopeClass);
+    assertDeepEquals(PUBLIC, isPresent.getModifier());
+    assertBoolean(isPresent.getMCReturnType().getMCType());
+    assertTrue(isPresent.isEmptyCDParameters());
+
+    ASTCDMethod setter = getMethodBy("setOSymType", scopeClass);
+    assertDeepEquals(PUBLIC, setter.getModifier());
+    assertTrue(setter.getMCReturnType().isPresentMCVoidType());
+    assertEquals(1, setter.sizeCDParameters());
+    assertDeepEquals(innerType, setter.getCDParameter(0).getMCType());
+    assertEquals("oSymType", setter.getCDParameter(0).getName());
+
+    ASTCDMethod setAbsent = getMethodBy("setOSymTypeAbsent", scopeClass);
+    assertDeepEquals(PUBLIC, setAbsent.getModifier());
+    assertTrue(setAbsent.getMCReturnType().isPresentMCVoidType());
+    assertTrue(setAbsent.isEmptyCDParameters());
+
+    ASTCDMethod supplierGetter = getMethodBy("getOSymTypeSupplier", scopeClass);
+    assertDeepEquals(PUBLIC, supplierGetter.getModifier());
+    assertDeepEquals(DecorationHelper.getInstance().createStdSupplierTypeOf(oSymTypeType), supplierGetter.getMCReturnType().getMCType());
+    assertTrue(supplierGetter.isEmptyCDParameters());
+
+    ASTCDMethod supplierSetter = getMethodBy("setOSymTypeSupplier", scopeClass);
+    assertDeepEquals(PUBLIC, supplierSetter.getModifier());
+    assertTrue(supplierSetter.getMCReturnType().isPresentMCVoidType());
+    assertEquals(1, supplierSetter.sizeCDParameters());
+    assertDeepEquals(DecorationHelper.getInstance().createStdSupplierTypeOf(oSymTypeType), supplierSetter.getCDParameter(0).getMCType());
+    assertEquals("oSymType", supplierSetter.getCDParameter(0).getName());
+
     assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testMethodCount() {
-    assertEquals(104, scopeClass.getCDMethodList().size());
-  
+    //   previously here:                                                                =104
+    //   added because of supplied fields
+    //   symType   (mandatory): get+getSupplier, set+setSupplier                         =  4
+    //   lSymType  (list):      18 delegate + getList + getListSupplier                  = 20
+    //                          14 delegate + setList + setListSupplier                  = 16
+    //   oSymType  (optional):  get+isPresent+getSupplier, set+setAbsent+setSupplier     =  6
+    assertEquals(104 + 4 + 20 + 16 + 6, scopeClass.getCDMethodList().size());
+
     assertTrue(Log.getFindings().isEmpty());
   }
 
