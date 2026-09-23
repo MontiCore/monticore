@@ -11,7 +11,7 @@ digraph language_components {
   splines=polyline
   outputorder=edgesfirst
 
-  node [shape=box, fontname="Helvetica", fontsize=10, margin="0.15,0.08"]
+  node [shape=box, fontname="Helvetica", fontsize=10, margin="0.15,0.08", target="_top"]
   edge [arrowhead=none]
 
 

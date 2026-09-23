@@ -28,8 +28,8 @@ and template files.
 
 The following picture contains the reusable language components that can
 be used as features.
-Dotted lines are implicit requirements, e.g., certain expressions depend on features.
-
+Dotted lines are implicit requirements, e.g., 
+certain expressions depend on appropriate literals.
 <div style="width: 100%">
 <object type="image/svg+xml" data="../GrammarFeature.dot.svg" style="display:block; width: 100%;"></object>
 </div>
