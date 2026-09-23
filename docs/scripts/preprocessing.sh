@@ -85,6 +85,8 @@ for SOURCE_DIR in "00.org" "docs" "monticore-grammar/src" "monticore-libraries/j
     # turn dot files into svgs and include a zoom function
     dot -Tsvg "$filepath" | sed '/<\/svg>/{
                                 r docs/scripts/svgzoom.xml
+                                a <\/svg>
+                                d
                             }'  > "$target_file.svg"
   done
 done
