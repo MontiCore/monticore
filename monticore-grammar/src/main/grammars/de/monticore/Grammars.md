@@ -50,7 +50,7 @@ packages under the `monticore-grammar/src/main/grammars/` folder hierarchy:
 
 Additionally, the documentation presents some expression/type related language
 components in projects that extend MontiCore's core languages.
-For more languages and language components, follow
+For more languages and domain-specific language components, follow
 [this link](../../../../../../docs/Languages.md).
 
 ## General: List of Grammars in package `de.monticore`
