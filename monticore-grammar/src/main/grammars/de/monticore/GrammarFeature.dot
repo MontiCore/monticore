@@ -1,0 +1,177 @@
+# (c) https://github.com/MontiCore/monticore
+# This is a feature diagram view of the reusable language components of MC
+digraph language_components {
+  rankdir=TB
+  compound=true
+  newrank=true
+
+  nodesep=0.35
+  ranksep=0.65
+
+  splines=polyline
+  outputorder=edgesfirst
+
+  node [shape=box, fontname="Helvetica", fontsize=10, margin="0.15,0.08"]
+  edge [arrowhead=none]
+
+
+  subgraph types {
+    style=invis
+    node [fillcolor="#ffebcc",style=filled]
+    MCBasicTypes      [label="MCBasic\nTypes", URL="https://monticore.github.io/monticore/monticore-grammar/src/main/grammars/de/monticore/Grammars/#mcbasictypesmc4-stable"]
+    MCCollectionTypes [label="MCCollection\nTypes", URL="https://monticore.github.io/monticore/monticore-grammar/src/main/grammars/de/monticore/Grammars/#mccollectiontypesmc4-stable"]
+    RegExTypes        [label="RegEx\nTypes", URL="https://monticore.github.io/monticore/monticore-grammar/src/main/grammars/de/monticore/Grammars/#regextypemc4-stable"]
+    MCSimpleGenericTypes [label="MCSimple\nGenericTypes", URL="https://monticore.github.io/monticore/monticore-grammar/src/main/grammars/de/monticore/Grammars/#mcsimplegenerictypesmc4-stable"]
+    SIUnitTypes4Math  [label="SIUnitTypes\n4Math", URL="https://monticore.github.io/monticore/monticore-grammar/src/main/grammars/de/monticore/Grammars/#siunittypes4mathmc4-for-physical-si-units-stable"]
+    MCArrayTypes      [label="MCArray\nTypes", URL="https://monticore.github.io/monticore/monticore-grammar/src/main/grammars/de/monticore/Grammars/#mcarraytypesmc4-stable"]
+    MCFullGenericTypes   [label="MCFull\nGenericTypes", URL="https://monticore.github.io/monticore/monticore-grammar/src/main/grammars/de/monticore/Grammars/#mcfullgenerictypesmc4-stable"]
+    SIUnitTypes4Computing [label="SIUnitTypes\n4Computing", URL="https://monticore.github.io/monticore/monticore-grammar/src/main/grammars/de/monticore/Grammars/#siunittypes4computingmc4-for-physical-si-units-stable"]
+    MCFunctionTypes [label="MCFunction\nTypes", URL="https://monticore.github.io/monticore/monticore-grammar/src/main/grammars/de/monticore/Grammars/#mcfunctiontypesmc4-stable"]
+    MCStructuralTypes [label="MCStructural\nTypes", URL="https://monticore.github.io/monticore/monticore-grammar/src/main/grammars/de/monticore/Grammars/#mcstructuraltypesmc4-stable"]
+    TypeParameters [label="Type\nParameters", URL="https://monticore.github.io/monticore/monticore-grammar/src/main/grammars/de/monticore/Grammars/#typeparametersmc4-alpha"]
+
+
+    MCBasicTypes -> MCCollectionTypes [arrowhead=odot]
+    MCBasicTypes -> RegExTypes [arrowhead=odot]
+    MCCollectionTypes -> MCSimpleGenericTypes [arrowhead=odot]
+    RegExTypes -> SIUnitTypes4Math [arrowhead=odot]
+    MCBasicTypes -> MCArrayTypes [arrowhead=odot]
+    MCSimpleGenericTypes -> MCFullGenericTypes [arrowhead=odot]
+    SIUnitTypes4Math -> SIUnitTypes4Computing [arrowhead=odot]
+    MCBasicTypes -> MCFunctionTypes [arrowhead=odot]
+    MCBasicTypes -> MCStructuralTypes [arrowhead=odot]
+    MCBasicTypes -> TypeParameters [arrowhead=odot, samehead=mc]
+    BasicSymbols -> TypeParameters [arrowhead=none, samehead=mc, style=dotted, constraint=false]
+
+  }
+
+  subgraph statements {
+
+    style=invis
+    node [fillcolor="#e2d6ec",style=filled]
+    MCStatementsBasis  [label="MCStatements\nBasis", URL="https://monticore.github.io/monticore/monticore-grammar/src/main/grammars/de/monticore/Grammars/#mcstatementsbasismc4-stable"]
+    MCVarDeclarationStatements  [label="MCVarDecl\nStmts."]
+    MCReturnStatements [label="MCReturn\nStmts.", URL="https://monticore.github.io/monticore/monticore-grammar/src/main/grammars/de/monticore/Grammars/#mcreturnstatementsmc4-stable"]
+
+    MCCommonStatements   [label="MCCommon\nStmts.", URL="https://monticore.github.io/monticore/monticore-grammar/src/main/grammars/de/monticore/Grammars/#mccommonstatementsmc4-stable"]
+    MCAssertStatements    [label="MCAssert\nStmts.", URL="https://monticore.github.io/monticore/monticore-grammar/src/main/grammars/de/monticore/Grammars/#mcassertstatementsmc4-stable"]
+    MCExceptionStatements  [label="MCException\nStmts.", URL="https://monticore.github.io/monticore/monticore-grammar/src/main/grammars/de/monticore/Grammars/#mcexceptionstatementsmc4-stable"]
+    MCSynchronizedStatements [label="MCSynchronized\nStmts.", URL="https://monticore.github.io/monticore/monticore-grammar/src/main/grammars/de/monticore/Grammars/#mcsynchronizedstatementsmc4-stable"]
+    MCArrayStatements [label="MCArray\nStmts."]
+    MCLowLevelStatements [label="MCLowLevel\nStmts.", URL="https://monticore.github.io/monticore/monticore-grammar/src/main/grammars/de/monticore/Grammars/#mclowlevelstatementsmc4-stable"]
+
+    MCFullJavaStatements  [label="MCFullJava\nStmts.", URL="https://monticore.github.io/monticore/monticore-grammar/src/main/grammars/de/monticore/Grammars/#mcfulljavastatementsmc4-stable"]
+
+
+    MCStatementsBasis -> MCReturnStatements [arrowhead=odot,samehead=mc]
+    ExpressionsBasis   -> MCReturnStatements [arrowhead=none,samehead=mc, constraint=true,style=dotted]
+    MCStatementsBasis -> MCLowLevelStatements [arrowhead=odot]
+    MCAssertStatements -> MCFullJavaStatements   [arrowhead=odot, samehead=mcfjs]
+    MCExceptionStatements -> MCFullJavaStatements  [arrowhead=none, samehead=mcfjs]
+    MCLowLevelStatements -> MCFullJavaStatements  [arrowhead=none, samehead=mcfjs]
+    MCReturnStatements -> MCFullJavaStatements  [arrowhead=none, samehead=mcfjs]
+    MCSynchronizedStatements -> MCFullJavaStatements  [arrowhead=none, samehead=mcfjs]
+    MCArrayStatements  -> MCFullJavaStatements    [arrowhead=none, samehead=mcfjs]
+
+    MCCommonStatements -> MCExceptionStatements  [arrowhead=odot]
+
+    MCCommonStatements -> MCSynchronizedStatements   [arrowhead=odot]
+
+
+    MCVarDeclarationStatements  -> MCCommonStatements [arrowhead=odot]
+
+
+    MCStatementsBasis ->  MCAssertStatements  [arrowhead=odot, samehead=mcas]
+    ExpressionsBasis   ->  MCAssertStatements  [arrowhead=none, samehead=mcas, constraint=false,style=dotted]
+
+    MCVarDeclarationStatements -> MCArrayStatements [arrowhead=odot]
+
+    MCStatementsBasis -> MCVarDeclarationStatements   [arrowhead=odot, samehead=mcfjs]
+    MCBasicTypes -> MCVarDeclarationStatements  [arrowhead=none, samehead=mcfjs, constraint=false, style=dotted,style=dotted]
+    ExpressionsBasis -> MCVarDeclarationStatements  [arrowhead=none, samehead=mcfjs, constraint=false,style=dotted]
+    OOSymbols  -> MCVarDeclarationStatements  [arrowhead=none, samehead=mcfjs, constraint=false,style=dotted]
+
+  }
+
+  subgraph expressions {
+    style=invis
+    node [fillcolor="#dae3f3",style=filled]
+    ExpressionsBasis  [label="Expressions\nBasis", fillcolor="#dae3f3", URL="https://monticore.github.io/monticore/monticore-grammar/src/main/grammars/de/monticore/Grammars/#expressionsbasismc4-stable"]
+    CommonExpressions [label="Common\nExp.", URL="https://monticore.github.io/monticore/monticore-grammar/src/main/grammars/de/monticore/Grammars/#commonexpressionsmc4-stable"]
+    SetExp           [label="SetExp.", URL="https://monticore.github.io/monticore/monticore-grammar/src/main/grammars/de/monticore/Grammars/#setexpressionsmc4-stable"]
+    JavaClassExp     [label="JavaClass\nExp.", URL="https://monticore.github.io/monticore/monticore-grammar/src/main/grammars/de/monticore/Grammars/#javaclassexpressionsmc4-stable"]
+    AssignmentExp    [label="Assignment\nExp.", URL="https://monticore.github.io/monticore/monticore-grammar/src/main/grammars/de/monticore/Grammars/#assignmentexpressionsmc4-stable"]
+    BitExp           [label="Bit\nExp.", URL="https://monticore.github.io/monticore/monticore-grammar/src/main/grammars/de/monticore/Grammars/#bitexpressionsmc4-stable"]
+    OCLExpressions           [label="OCL\nExp.", URL="https://monticore.github.io/monticore/monticore-grammar/src/main/grammars/de/monticore/Grammars/#oclexpressionsmc4-stable"]
+    StreamExpressions        [label="Stream\nExp.", URL="https://monticore.github.io/monticore/monticore-grammar/src/main/grammars/de/monticore/Grammars/#streamexpressionsmc4-stable"]
+    OptionalOperators      [label="Optional\nOperators", URL="https://monticore.github.io/monticore/monticore-grammar/src/main/grammars/de/monticore/Grammars/#optionaloperatorsmc4-stable"]
+    LambdaExpressions        [label="Lambda\nExp.", URL="https://monticore.github.io/monticore/monticore-grammar/src/main/grammars/de/monticore/Grammars/#lambdaexpressionsmc4-stable"]
+    TupleExpressions         [label="Tuple\nExp.", URL="https://monticore.github.io/monticore/monticore-grammar/src/main/grammars/de/monticore/Grammars/#tupleexpressionsmc4-stable"]
+    UglyExpressions          [label="Ugly\nExp.", URL="https://monticore.github.io/monticore/monticore-grammar/src/main/grammars/de/monticore/Grammars/#uglyexpressionsmc4-stable"]
+
+
+
+    ExpressionsBasis -> CommonExpressions [arrowhead=odot]
+    ExpressionsBasis -> SetExp [arrowhead=odot]
+
+    ExpressionsBasis -> OCLExpressions [arrowhead=odot,samehead=mc]
+    MCBasicTypes -> OCLExpressions [arrowhead=none,samehead=mc, style=dotted, constraint=false]
+    BasicSymbols -> OCLExpressions [arrowhead=none,samehead=mc, style=dotted, constraint=false]
+
+    CommonExpressions -> StreamExpressions [arrowhead=odot,samehead=mc]
+    MCCollectionTypes  -> StreamExpressions [arrowhead=none,samehead=mc, style=dotted, constraint=false]
+
+
+
+    CommonExpressions -> OptionalOperators [arrowhead=odot]
+
+    ExpressionsBasis  -> LambdaExpressions [arrowhead=odot,samehead=mc]
+    BasicSymbols  -> LambdaExpressions [arrowhead=none,samehead=mc, style=dotted, constraint=false]
+    MCBasicTypes  -> LambdaExpressions [arrowhead=none,samehead=mc, style=dotted, constraint=false]
+
+    ExpressionsBasis -> TupleExpressions [arrowhead=odot]
+
+
+    CommonExpressions -> JavaClassExp [arrowhead=odot]
+    CommonExpressions -> AssignmentExp [arrowhead=odot]
+    SetExp -> BitExp [arrowhead=odot]
+
+    ExpressionsBasis -> UglyExpressions [arrowhead=odot, samehead=mc]
+    MCBasicTypes -> UglyExpressions [arrowhead=none,samehead=mc,constraint=false, style=dotted]
+
+  }
+
+  subgraph literals {
+          style=invis
+    node [fillcolor="#e2efda",style=filled]
+    MCLiteralsBasis  [label="MCLiterals\nBasis", URL="https://monticore.github.io/monticore/monticore-grammar/src/main/grammars/de/monticore/Grammars/#mcliteralsbasismc4-stable"]
+    MCCommonLiterals [label="MCCommon\nLiterals", URL="https://monticore.github.io/monticore/monticore-grammar/src/main/grammars/de/monticore/Grammars/#mccommonliteralsmc4-stable"]
+    MCJavaLiterals   [label="MCJava\nLiterals", URL="https://monticore.github.io/monticore/monticore-grammar/src/main/grammars/de/monticore/Grammars/#mcjavaliteralsmc4-stable"]
+
+    SIUnits         [label="SIUnits", URL="https://monticore.github.io/monticore/monticore-grammar/src/main/grammars/de/monticore/Grammars/#siunitsmc4-for-physical-si-units-stable"]
+
+
+    MCLiteralsBasis -> MCCommonLiterals [arrowhead=odot]
+    MCCommonLiterals -> MCJavaLiterals [arrowhead=odot]
+
+    MCLiteralsBasis -> ExpressionsBasis  [arrowhead=odot, constraint=false]
+    MCCommonLiterals -> SIUnits [arrowhead=odot,samehead=mc]
+
+  }
+
+
+  subgraph symbols {
+          style=invis
+          fillcolor="black"
+    node [fillcolor="#f0dbe3",style=filled]
+        BasicSymbols [label="MCBasic\nSymbols", fillcolor="#f0dbe3", URL="https://monticore.github.io/monticore/monticore-grammar/src/main/grammars/de/monticore/Grammars/#basicsymbolsmc4-stable"]
+        OOSymbols [label="OO\nSymbols", fillcolor="#f0dbe3", URL="https://monticore.github.io/monticore/monticore-grammar/src/main/grammars/de/monticore/Grammars/#oosymbolsmc4-stable"]
+        CompSymbols [label="Comp\nSymbols", fillcolor="#f0dbe3"]
+
+        BasicSymbols -> OOSymbols  [arrowhead=odot]
+        BasicSymbols -> CompSymbols  [arrowhead=odot]
+        #ExpressionBasis -> CompSymbols  [arrowhead=odot]
+
+    }
+
+}
