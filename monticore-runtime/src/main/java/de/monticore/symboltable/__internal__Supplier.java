@@ -17,18 +17,15 @@ public final class __internal__Supplier<T> implements Supplier<T> {
     this.supplier = supplier;
   }
 
-  /**
-   * Wraps the supplier, unless it already is wrapped (avoids double-wrapping).
-   */
-  public static <T> __internal__Supplier<T> of(Supplier<T> supplier) {
-    if (supplier instanceof __internal__Supplier<T> wrapped) {
-      return wrapped;
-    }
-    return new __internal__Supplier<>(supplier);
-  }
-
   @Override
   public T get() {
     return supplier.get();
+  }
+
+  /**
+   * Returns the supplier this instance wraps.
+   */
+  public Supplier<T> unwrap() {
+    return supplier;
   }
 }
