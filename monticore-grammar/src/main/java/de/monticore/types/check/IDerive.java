@@ -9,6 +9,7 @@ import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
  * @deprecated use {@link de.monticore.types3.TypeCheck3}
  */
 @Deprecated
+@SuppressWarnings({"deprecation", "removal"})
 public interface IDerive {
 
   TypeCheckResult deriveType(ASTExpression expr);

@@ -9,6 +9,7 @@ import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineE
  * @deprecated is empty and does not do anything
  */
 @Deprecated
+@SuppressWarnings({"deprecation", "removal"})
 public class DeriveSymTypeOfCombineExpressions extends AbstractDeriveFromExpression implements CombineExpressionsWithLiteralsVisitor2, CombineExpressionsWithLiteralsHandler {
 
   protected CombineExpressionsWithLiteralsTraverser traverser;

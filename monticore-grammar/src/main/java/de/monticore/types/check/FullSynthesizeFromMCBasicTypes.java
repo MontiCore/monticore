@@ -9,6 +9,7 @@ import de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser;
  * use {@link de.monticore.types3.TypeCheck3} instead.
  */
 @Deprecated
+@SuppressWarnings({"deprecation", "removal"})
 public class FullSynthesizeFromMCBasicTypes extends AbstractSynthesize {
 
   public FullSynthesizeFromMCBasicTypes(){
