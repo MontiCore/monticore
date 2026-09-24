@@ -29,7 +29,7 @@ public boolean doPatternMatching_${structure.getObjectName()}(boolean isParentBa
       foundmatch = false;
     } else if (!isParentBacktracking) {
       // if the Parent is not Backtracking find a complete new List
-      ${structure.getObjectName()}_candidates = new ArrayList<Match${structure.getObjectName()}>();
+      ${structure.getObjectName()}_candidates = new Match${structure.getObjectName()}();
     }
 
     // SetUp Last Matching Process if ParentIsBacktracking
@@ -39,8 +39,7 @@ public boolean doPatternMatching_${structure.getObjectName()}(boolean isParentBa
          return false;
       }
       // Get Last List Object
-      Match${structure.getObjectName()} match = ${structure.getObjectName()}_candidates.get(${structure.getObjectName()}_candidates.size()-1);
-      ${structure.getObjectName()}_candidates.remove(${structure.getObjectName()}_candidates.size()-1);
+      Match${structure.getObjectName()}.ListMatch match = ${structure.getObjectName()}_candidates.popLast();
       // Load the Objects and Their temp_candidates
       <#list mandatoryObjects as object>
         ${object.getObjectName()}_cand = match.${object.getObjectName()}<#if hierarchyHelper.isWithinOptionalStructure(object.getObjectName())>.orElse(null)</#if>;
@@ -289,7 +288,7 @@ public boolean doPatternMatching_${structure.getObjectName()}(boolean isParentBa
       }
       //create a replacement candidate if a match was found
       if(foundmatch) {
-        Match${structure.getObjectName()} match = new Match${structure.getObjectName()}(<@commaSeperatedNames/>);
+        Match${structure.getObjectName()}.ListMatch match = new Match${structure.getObjectName()}.ListMatch(<@commaSeperatedNames/>);
         match.backtracking = (Stack<String>) backtracking.clone();
         <#list mandatoryObjects as o>// save context of every object and then clear it
         match.${o.getObjectName()}_temp_candidates = ((FastLookupList<ASTNode>)${o.getObjectName()}_candidates_temp).matchCopy();
