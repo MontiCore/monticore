@@ -20,6 +20,7 @@ public class CDTraverserDecorator extends AbstractDecorator {
   protected final Visitor2Decorator visitor2Decorator;
   protected final HandlerDecorator handlerDecorator;
   protected final InheritanceHandlerDecorator inheritanceHandlerDecorator;
+  protected final SingleStepHandlerDecorator singleStepHandlerDecorator;
   protected final MCPath handCodedPath;
   protected final VisitorService visitorService;
 
@@ -30,7 +31,8 @@ public class CDTraverserDecorator extends AbstractDecorator {
                             final TraverserClassDecorator traverserDecorator,
                             final Visitor2Decorator visitor2Decorator,
                             final HandlerDecorator handlerDecorator,
-                            final InheritanceHandlerDecorator inheritanceHandlerDecorator) {
+                            final InheritanceHandlerDecorator inheritanceHandlerDecorator,
+                            final SingleStepHandlerDecorator singleStepHandlerDecorator) {
     super(glex);
     this.handCodedPath = handCodedPath;
     this.visitorService = visitorService;
@@ -39,6 +41,7 @@ public class CDTraverserDecorator extends AbstractDecorator {
     this.visitor2Decorator = visitor2Decorator;
     this.handlerDecorator = handlerDecorator;
     this.inheritanceHandlerDecorator = inheritanceHandlerDecorator;
+    this.singleStepHandlerDecorator = singleStepHandlerDecorator;
   }
 
   public void decorate(ASTCDCompilationUnit input, ASTCDCompilationUnit decoratedCD) {
@@ -52,12 +55,13 @@ public class CDTraverserDecorator extends AbstractDecorator {
     ASTCDInterface visitor2Interface = visitor2Decorator.decorate(input);
     ASTCDInterface handlerInterface = handlerDecorator.decorate(input);
     ASTCDClass inheritanceClass  = inheritanceHandlerDecorator.decorate(input);
-    
+    ASTCDClass singleStepClass = singleStepHandlerDecorator.decorate(input);
     visitorPackage.addCDElement(traverserInterface);
     visitorPackage.addCDElement(traverserClass);
     visitorPackage.addCDElement(visitor2Interface);
     visitorPackage.addCDElement(handlerInterface);
     visitorPackage.addCDElement(inheritanceClass);
+    visitorPackage.addCDElement(singleStepClass);
   }
 
   /**
