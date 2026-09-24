@@ -10,6 +10,7 @@ import de.monticore.sourcemap.convenience.PositionMapping;
 import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Log;
 import freemarker.template.Template;
+import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.IOException;
@@ -34,11 +35,24 @@ public class SourceMapCalculator {
     if(Reporting.isConfigTemplate(template.getName()))
       return;
 
+
+    // Check if there is a "parent" template to map the inclusion
+    if(templates.get().isEmpty() == false && mappings.get().isEmpty() == false) {
+      // The latest mapping-report must have triggered this include, store start and target,
+      // end is resolved via the same id
+      SimpleSourceMapping latestMapping = mappings.get().getLast();
+      if(latestMapping != null){
+        includeMappings.get().add(new SimpleIncludeMapping(latestMapping.sourcePosition, latestMapping.pairId,
+                template.getName()));
+      }
+    }
+
     templates.get().push(template);
 
     // Ask parent template for its known last absolute pos inside nested template evaluation
     int curLine = curAbsolutePos.get().isEmpty() ? getBaseLineOffset() : curAbsolutePos.get().peek().getLeft();
     int curColumn = curAbsolutePos.get().isEmpty() ? 0 : curAbsolutePos.get().peek().getRight();
+
     curAbsolutePos.get().push(Pair.of(curLine,curColumn));
 
     assert curAbsolutePos.get().size() == templates.get().size();
@@ -73,39 +87,6 @@ public class SourceMapCalculator {
     return baseLineOffset.get();
   }
 
-  private static List<IncludeSpan> calculateIncludeMappings(List<SimpleIncludeMapping> includeMappings){
-    Map<Integer, SimpleIncludeMapping> openMappings = new HashMap<>();
-    List<IncludeSpan> includes = new ArrayList<>();
-
-    for(SimpleIncludeMapping mapping : includeMappings){
-      if(mapping.sourcePosition.getLine() < 0 || mapping.sourcePosition.getColumn() < 0){
-        Log.warn("Negative lines detected in mapping, ignoring...");
-        continue;
-      }
-      int id = mapping.pairId;
-      if(openMappings.containsKey(id)){
-        SimpleIncludeMapping start = openMappings.remove(id);
-        if(!start.targetTemplate.equals(mapping.targetTemplate)) {
-          Log.warn("Inconsistent target templates in include mapping");
-          continue;
-        }
-        if(start.sourcePosition.getFileName().isEmpty() || mapping.sourcePosition.getFileName().isEmpty()){
-          Log.warn("No source file name given for include mapping.");
-          continue;
-        }
-        if(!start.sourcePosition.getFileName().get().equals(mapping.sourcePosition.getFileName().get())){
-          Log.warn("Inconsistent source file name given for include mapping.");
-          continue;
-        }
-        includes.add(new IncludeSpan(start.sourcePosition, mapping.sourcePosition, mapping.targetTemplate));
-      }else{
-        openMappings.put(id, mapping);
-      }
-    }
-
-    return includes;
-  }
-
   public static List<DecodedMapping> calculateMappings(List<SimpleSourceMapping> simpleMappings) {
     Map<Integer, SimpleSourceMapping> openSpans = new HashMap<>();
 
@@ -126,25 +107,21 @@ public class SourceMapCalculator {
     }
 
     // Filter out zero-width generated spans (directives that did not emit any code)
-    List<SimpleSourceMapping> validMappings = new ArrayList<>();
-    for(MappingSpan span : completedSpans) {
-      if(span.isZeroWidthGenerated()) {
-        continue;
-      }
-      validMappings.add(span.start);
-    }
+    completedSpans.removeIf(span -> span.isZeroWidthGenerated());
 
     // Deduplicate: If multiple mappings land on the same (generatedLine/Column), keep only the
     // first one. This corresponds to the most inner one in nested templates (as there the "end" is found first when
-    // the completed spans are searched
-    Map<String, SimpleSourceMapping> deduplicatedPairs = new LinkedHashMap<>();
-    for(SimpleSourceMapping current : validMappings) {
-      String key = current.targetPosition.getLine() + ":" + current.targetPosition.getColumn();
-      if(deduplicatedPairs.containsKey(key))
+    // the completed spans are searched)
+    Map<String, MappingSpan> deduplicatedPairs = new HashMap<>();
+    List<SimpleSourceMapping> deduplicatedMappings = new ArrayList<>();
+    for(MappingSpan current : completedSpans) {
+      String key = current.start.targetPosition.getLine() + ":" + current.start.targetPosition.getColumn();
+      if(deduplicatedPairs.containsKey(key)){
         continue;
+      }
+      deduplicatedMappings.add(current.start);
       deduplicatedPairs.put(key, current);
     }
-    List<SimpleSourceMapping> deduplicatedMappings = new ArrayList<>(deduplicatedPairs.values());
 
     // Sort by generated coordinates (for VLQ deltas)
     deduplicatedMappings.sort(
@@ -161,10 +138,37 @@ public class SourceMapCalculator {
       // debug:
       String content = readSourceContent(urlToSource);
       res.add(new DecodedMapping(
-          new DecodedSource(urlToSource, content),
-          new PositionMapping(urlToSource, mapping.sourcePosition, mapping.targetPosition)
+              new DecodedSource(urlToSource, content),
+              new PositionMapping(urlToSource, mapping.sourcePosition, mapping.targetPosition)
       ));
     }
+    return res;
+  }
+
+  public static List<IncludeSpan> calculateIncludeMappings(List<SimpleIncludeMapping> includes, List<SimpleSourceMapping> sourceMappings){
+    // Store source mappings in map for faster look-up
+    Map<Integer, Pair<SimpleSourceMapping, SimpleSourceMapping>> mappings = new HashMap<>();
+    for(SimpleSourceMapping mapping : sourceMappings){
+      if(mappings.containsKey(mapping.pairId)){
+        mappings.get(mapping.pairId).setValue(mapping);
+      }else{
+        mappings.put(mapping.pairId, new MutablePair<>(mapping, null));
+      }
+    }
+
+    List<IncludeSpan> res = new ArrayList<>();
+    for(SimpleIncludeMapping include : includes){
+      Pair<SimpleSourceMapping, SimpleSourceMapping> startEnd = mappings.get(include.pairId);
+      if(startEnd == null){
+        continue;
+      }
+      if(startEnd.getRight() == null){
+        Log.warn("Missing end for include: " + include.pairId);
+        continue;
+      }
+      res.add(new IncludeSpan(startEnd.getLeft().sourcePosition, startEnd.getRight().sourcePosition, include.targetTemplate));
+    }
+
     return res;
   }
 
@@ -233,26 +237,6 @@ public class SourceMapCalculator {
 
     SourcePosition positionInGeneratedFile = new SourcePosition(absPos.getLeft(), absPos.getRight(), "GenOutput");
     addTemplateMapping(lineInTemplate, colInTemplate, templateSource, positionInGeneratedFile, pairId);
-
-    assert curAbsolutePos.get().size() == templates.get().size();
-  }
-
-  public void reportInclude(int pairId, int lineInTemplate, int colInTemplate, String templateSource, String includedTemplate, ASTNode astNode, boolean isStart){
-    // Suppress recording if this is a config template
-    if(Reporting.isConfigTemplate(template.getName()))
-      return;
-
-    String content = sw.getCurrentContent();
-    int numberOfLinesInContent = numberOfNewLines(content);
-    int curGeneratedColPos = getColumnOfLastLine(content);
-
-    // Update absolute position stack so line numbering stays in sync
-    Pair<Integer,Integer> absPos = updateAndGetAbsolutePos(numberOfLinesInContent, curGeneratedColPos);
-
-    SourcePosition positionInGeneratedFile = new SourcePosition(absPos.getLeft(), absPos.getRight(), "GenOutput");
-    addASTMapping(astNode, isStart, positionInGeneratedFile, pairId);
-    addTemplateMapping(lineInTemplate, colInTemplate, templateSource, positionInGeneratedFile, pairId);
-    addIncludeMapping(lineInTemplate, colInTemplate, templateSource, includedTemplate, pairId);
 
     assert curAbsolutePos.get().size() == templates.get().size();
   }
@@ -381,7 +365,7 @@ public class SourceMapCalculator {
   public static void flushMappings(){
     List<DecodedMapping> templateSourceMappings = calculateMappings(mappings.get());
     List<DecodedMapping> astSourceMappings = calculateMappings(astMappings.get());
-    List<IncludeSpan> includeSpans = calculateIncludeMappings(includeMappings.get());
+    List<IncludeSpan> includeSpans = calculateIncludeMappings(includeMappings.get(), mappings.get());
     Reporting.reportASTSourceMapping(astSourceMappings);
     Reporting.reportTemplateSourceMapping(templateSourceMappings);
     Reporting.reportTemplateIncludeSpan(includeSpans);
@@ -439,4 +423,5 @@ public class SourceMapCalculator {
       return sourcePosition.toString() + " -> " + targetTemplate;
     }
   }
+
 }

@@ -1,7 +1,6 @@
 package de.monticore.generating.templateengine.sourcemap;
 
 import de.monticore.generating.templateengine.TemplateController;
-import de.monticore.generating.templateengine.reporting.Reporting;
 import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Log;
 import freemarker.core.TemplateElement;
@@ -39,22 +38,13 @@ public class TemplateAdaptionForSourcePositionReporting {
     tes.stream().sorted(c.reversed()).forEach(t -> {
       // DollarVariable is package-private, thus check via class-name
       if (t.getClass().getName().contains("DollarVariable")) {
-        // Check if this is an include-call, as we can not cast to internal representation, use string-representation!
-        String content = t.toString();
-        if(content.startsWith("${tc.include(\"")){
-          int start = content.indexOf('\"');
-          int end = content.indexOf('\"', start + 1);
-          String template = content.substring(start + 1, end);
-          addSourcePositionReport(t, sb, canonicalForm, configuration, ReportType.INCLUDE, template);
-        }else{
-          addSourcePositionReport(t, sb, canonicalForm, configuration, ReportType.AST);
-        }
+          addSourcePositionReport(t, sb, canonicalForm, configuration, true);
       }
       if (t instanceof TextBlock) {
         if (!t.getCanonicalForm().isBlank()) {
           // No AST Reporting since this is only text from the template
           // to discuss: Through freemarker-ifs this might still be dependent on the AST variable
-          addSourcePositionReport(t, sb, canonicalForm, configuration, ReportType.PLAIN);
+          addSourcePositionReport(t, sb, canonicalForm, configuration, false);
         }
       }
     });
@@ -62,11 +52,7 @@ public class TemplateAdaptionForSourcePositionReporting {
     return new Template(result.getName(), sb.toString(), configuration);
   }
 
-  private static void addSourcePositionReport(TemplateElement t, StringBuilder sb, String canonicalForm, Configuration configuration, ReportType type) {
-    addSourcePositionReport(t, sb, canonicalForm, configuration, type, "");
-  }
-
-  private static void addSourcePositionReport(TemplateElement t, StringBuilder sb, String canonicalForm, Configuration configuration, ReportType type, String template) {
+  private static void addSourcePositionReport(TemplateElement t, StringBuilder sb, String canonicalForm, Configuration configuration, boolean reportAstMapping) {
 
     // The Freemarker Engine uses Source Positions starting at line and column 1, but we report them zero based
     int curPairId = pairId.getAndIncrement();
@@ -85,12 +71,9 @@ public class TemplateAdaptionForSourcePositionReporting {
     int endLine = increasePositionIfNecessary(t.getEndLine());
     int endColumn = increasePositionIfNecessary(t.getEndColumn());
 
-    if(type == ReportType.AST) {
+    if(reportAstMapping) {
       endPos = buildReportTag(new SourcePosition(endLine-1, endColumn-1, templateSource), curPairId, true, false);
       startPos = buildReportTag(new SourcePosition(startLine-1, startColumn-1, templateSource), curPairId, true, true);
-    }else if(type == ReportType.INCLUDE){
-      endPos = buildReportIncludeTag(new SourcePosition(endLine-1, endColumn-1, templateSource), curPairId, template, false);
-      startPos = buildReportIncludeTag(new SourcePosition(startLine-1, startColumn-1, templateSource), curPairId, template, true);
     }else {
       endPos = buildReportTag(new SourcePosition(endLine-1, endColumn-1, templateSource), curPairId, false, false);
       startPos = buildReportTag(new SourcePosition(startLine-1, startColumn-1, templateSource), curPairId, false, false);
@@ -120,10 +103,6 @@ public class TemplateAdaptionForSourcePositionReporting {
     }
   }
 
-  private static String buildReportIncludeTag(SourcePosition p, int pairId, String template, boolean expressionStart){
-    return "${"+ TemplateController.SOURCE_MAP_CALCULATOR +".reportInclude(" + pairId + "," + p.getLine() + "," + p.getColumn() +",\""+p.getFileName().get()+ "\",\"" + template + "\", ast," + expressionStart +")}";
-  }
-
   private static int lineColumnToOffset(String input, int lineNumber, int columnNumber) {
     int currentLine = 1;
     int offset = 0;
@@ -150,12 +129,5 @@ public class TemplateAdaptionForSourcePositionReporting {
     }
 
     c.accept(node);
-  }
-
-
-  private enum ReportType{
-    AST,
-    PLAIN,
-    INCLUDE
   }
 }
