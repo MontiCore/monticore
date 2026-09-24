@@ -1,8 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.tf;
 
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import mc.testcases.misc.MiscMill;
 import mc.testcases.misc._ast.ASTDef;
 import mc.testcases.misc._ast.ASTSub;
@@ -12,14 +11,9 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@TestWithMCLanguage(MiscMill.class)
 public class MoveSubListTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
+
   ASTDef rootdef;
   ASTDef def1;
   ASTDef def2;
@@ -51,9 +45,5 @@ public class MoveSubListTest {
 
     assertTrue(def1.isPresentSub());
     assertFalse(def2.isPresentSub());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
-
-
 }

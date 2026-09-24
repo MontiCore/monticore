@@ -1,11 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.tf;
 
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
+import mc.testcases.automaton.AutomatonMill;
 import mc.testcases.automaton._ast.ASTAutomaton;
 import mc.testcases.automaton._parser.AutomatonParser;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -13,20 +13,13 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@TestWithMCLanguage(AutomatonMill.class)
 public class NotStateTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
-  ASTAutomaton aut;
 
   @Test
   public void testEmptyAutomat() throws IOException {
     String inputFile = "src/main/models/automaton/EmptyAutomaton.aut";
-    AutomatonParser parser = new AutomatonParser();
+    AutomatonParser parser = AutomatonMill.parser();
     Optional<ASTAutomaton> aut = parser.parse(inputFile);
 
     assertTrue(aut.isPresent());
@@ -47,7 +40,7 @@ public class NotStateTest {
   @Test
   public void testAutomatWithState() throws IOException {
     String inputFile = "src/main/models/automaton/AutomatonWithSingleState.aut";
-    AutomatonParser parser = new AutomatonParser();
+    AutomatonParser parser = AutomatonMill.parser();
     Optional<ASTAutomaton> aut = parser.parse(inputFile);
 
     assertTrue(aut.isPresent());

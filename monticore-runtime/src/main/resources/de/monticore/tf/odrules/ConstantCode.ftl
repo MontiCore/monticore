@@ -6,11 +6,9 @@
 
   public static boolean optimizeSP = true;
 
-  protected List<ASTNode> hostGraph;
-  protected GlobalExtensionManagement glex;
+  protected IModelAccessor modelAccessor;
   protected List<Match> allMatches;
   protected boolean doReplacementExecuted = false;
-  protected boolean isHostGraphDirty = true;
 
   protected Stack<String> backtracking = new Stack<>();
   protected Stack<String> backtrackingNegative = new Stack<>();
@@ -29,7 +27,6 @@
     protected List<${variable.getType()}> ${variable.getName()}_list; // used within list
   </#if>
   </#list>
-  protected ModelTraversal <?> t = CommentBasedModelTraversalFactory.getInstance().create((java.util.function.Supplier)${grammarName}Mill::inheritanceTraverser);
   <#list ast.getPattern().getAssocList() as association>
   protected mc.ast.MCAssociation ${association.getName()};
   </#list>
@@ -51,7 +48,7 @@
     ${tc.include("de.monticore.tf.odrules.constantcode.HandleDeleteObject", deleteObject)}
   </#list>-->
 
-  public void reportChange(ASTNode astNode, String attr, String from, String to) {
+<#--  public void reportChange(ASTNode astNode, String attr, String from, String to) {
     reportTransformationObjectChange("${ast.getClassname()}", astNode, attr);
     reportTransformationOldValue("${ast.getClassname()}", from);
     reportTransformationNewValue("${ast.getClassname()}", to);
@@ -67,33 +64,8 @@
 
   public void reportMatch(ASTNode astNode){
     reportTransformationObjectMatch("${ast.getClassname()}", astNode);
-  }
+  }-->
 
   public List<Match> getMatches(){
     return allMatches;
-  }
-
-  public void doAll(){
-    doPatternMatching();
-    doReplacement();
-  }
-
-  protected void loadIntoModelTraverser() {
-		t.reset(); // Invalidate previously loaded traverser state (as we are not incremental/collect too many candidates otherwise)
-    for (ASTNode astNode : Log.errorIfNull(hostGraph,
-            "0xE1200: Hostgraph is null, check constructor arguments!")) {
-      astNode.accept(t.getTraverser());
-    }
-
-    if (t instanceof CommentBasedModelTraversal) {
-      ((CommentBasedModelTraversal<?>) t).init();
-    }
-  }
-
-  /**
-  * Marks the original model as dirty, same as if {@link #doReplacement} was called and an element was added/removed.
-  * @see ${ast.getClassname()}#doReplacement()
-  */
-  public void markDirty() {
-    this.isHostGraphDirty = true;
   }

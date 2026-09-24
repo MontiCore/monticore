@@ -1,11 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.tf;
 
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
+import de.monticore.runtime.junit.TestWithMCLanguage;
+import mc.testcases.automaton.AutomatonMill;
 import mc.testcases.automaton._ast.ASTAutomaton;
 import mc.testcases.automaton._parser.AutomatonParser;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -13,20 +12,13 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@TestWithMCLanguage(AutomatonMill.class)
 public class OptInListTest {
-    
-    @BeforeEach
-    public void before() {
-        LogStub.init();
-        Log.enableFailQuick(false);
-    }
-    
-    ASTAutomaton aut;
 
     @Test
     public void testEmptyAutomat() throws IOException {
         String inputFile = "src/main/models/automaton/EmptyAutomaton.aut";
-        AutomatonParser parser = new AutomatonParser();
+        AutomatonParser parser = AutomatonMill.parser();
         Optional<ASTAutomaton> aut = parser.parse(inputFile);
 
         assertTrue(aut.isPresent());
@@ -37,14 +29,12 @@ public class OptInListTest {
 
         // no match found
         assertFalse(rule.doPatternMatching());
-    
-        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
     public void testStateWithoutSubstate() throws IOException {
         String inputFile = "src/main/models/automaton/AutomatonWithSingleState.aut";
-        AutomatonParser parser = new AutomatonParser();
+        AutomatonParser parser = AutomatonMill.parser();
         Optional<ASTAutomaton> aut = parser.parse(inputFile);
 
         assertTrue(aut.isPresent());
@@ -57,14 +47,12 @@ public class OptInListTest {
         assertTrue(rule.doPatternMatching());
 
         assertEquals(1, rule.get_list_1().size());
-    
-        assertTrue(Log.getFindings().isEmpty());
     }
 
     @Test
     public void testPosNegNegPos() throws IOException {
         String inputFile = "src/main/models/automaton/AutomatonSubstateList.aut";
-        AutomatonParser parser = new AutomatonParser();
+        AutomatonParser parser = AutomatonMill.parser();
         Optional<ASTAutomaton> aut = parser.parse(inputFile);
 
         assertTrue(aut.isPresent());
@@ -78,7 +66,5 @@ public class OptInListTest {
 
         assertEquals(4, rule.get_list_1().size());
         //assertTrue(rule.get_list_1().get(1).state_2.isPresent());
-    
-        assertTrue(Log.getFindings().isEmpty());
     }
 }
