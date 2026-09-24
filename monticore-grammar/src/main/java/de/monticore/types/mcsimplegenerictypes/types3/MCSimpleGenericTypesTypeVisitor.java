@@ -29,10 +29,10 @@ public class MCSimpleGenericTypesTypeVisitor extends AbstractTypeVisitor
     for (int i = 0; i < genericType.sizeMCTypeArguments(); i++) {
       ASTMCTypeArgument arg = genericType.getMCTypeArgument(i);
       if (!getType4Ast().hasTypeOfTypeIdentifier(arg)) {
-        Log.error("0xE9CDB The type argument " + i + 1
+        Log.error("0xE9CDB The type argument " + (i + 1)
                 + " of the generic type "
                 + genericType.printWithoutTypeArguments()
-                + "could not be synthesized.",
+                + " could not be synthesized.",
             genericType.get_SourcePositionStart(),
             genericType.get_SourcePositionEnd()
         );

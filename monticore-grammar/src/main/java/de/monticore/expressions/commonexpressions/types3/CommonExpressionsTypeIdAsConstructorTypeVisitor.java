@@ -21,6 +21,7 @@ import java.util.Optional;
  * @deprecated use {@link CommonExpressionsTypeIdAsConstructorCTTIVisitor}
  */
 @Deprecated
+@SuppressWarnings({"deprecation", "removal"})
 public class CommonExpressionsTypeIdAsConstructorTypeVisitor extends
     CommonExpressionsTypeVisitor {
 

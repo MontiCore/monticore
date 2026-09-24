@@ -9,6 +9,7 @@ import de.monticore.types.mcarraytypes._visitor.MCArrayTypesTraverser;
  * use {@link de.monticore.types3.TypeCheck3} instead.
  */
 @Deprecated
+@SuppressWarnings({"deprecation", "removal"})
 public class FullSynthesizeFromMCArrayTypes extends AbstractSynthesize {
 
   public FullSynthesizeFromMCArrayTypes(){

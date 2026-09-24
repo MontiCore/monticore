@@ -29,8 +29,8 @@ grammar ExpressionsAndStatements
             // Types
             MCArrayTypes,
             MCBasicTypes,
+            MCFullGenericTypes,
             MCFunctionTypes,
-            MCSimpleGenericTypes,
             MCStructuralTypes,
             RegExType,
             SIUnitTypes4Computing,
