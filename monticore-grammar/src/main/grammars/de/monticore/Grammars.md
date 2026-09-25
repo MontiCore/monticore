@@ -31,7 +31,9 @@ be used as features.
 Dotted lines are implicit requirements, e.g., 
 certain expressions depend on appropriate literals.
 <div style="width: 100%">
-<object type="image/svg+xml" data="../GrammarFeature.dot.svg" style="display:block; width: 100%;"></object>
+<object type="image/svg+xml" data="../GrammarFeature.dot.svg" style="display:block; width: 100%;">
+This picture is only visible on the hosted documentation at <a href="https://monticore.github.io/monticore/monticore-grammar/src/main/grammars/de/monticore/Grammars/">monticore.de</a>.
+</object>
 </div>
 
 The presented components are mainly based on the grammars in the
