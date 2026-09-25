@@ -28,7 +28,7 @@ public class KeyRuleTest {
     parser.parse_StringA("bla3 Foo");
     assertTrue(parser.hasErrors());
     MCAssertions.assertHasFindingStartingWith(
-        "no viable alternative at input 'bla3', expecting 'bla1' or 'bla2'");
+        "mismatched input 'bla3', expecting 'bla2', 'bla1'");
     Optional<ASTB> ast = parser.parse_StringB("bla1 Foo");
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());

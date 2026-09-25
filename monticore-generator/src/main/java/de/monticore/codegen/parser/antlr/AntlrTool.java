@@ -11,7 +11,6 @@ import de.se_rwth.commons.SourcePositionBuilder;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.Tool;
-import org.antlr.v4.runtime.atn.ATNState;
 import org.antlr.v4.tool.*;
 import org.stringtemplate.v4.ST;
 import org.stringtemplate.v4.misc.MultiMap;
@@ -27,6 +26,7 @@ public class AntlrTool extends Tool {
   protected MCGrammarSymbol grammarSymbol;
   protected Map<ASTProd, ProdInfo> prodInfo;
   protected Map<ASTNode, Set<Integer>> rhsNodeToParserStates = new LinkedHashMap<>();
+  protected Set<Integer> nameRulesParserStates = new LinkedHashSet<>();
 
   public AntlrTool(String[] args, MCGrammarSymbol grammarSymbol, Map<ASTProd, ProdInfo> prodInfo) {
     super(args);
@@ -36,6 +36,14 @@ public class AntlrTool extends Tool {
 
   public Map<ASTNode, Set<Integer>> getRhsNodeToParserStates() {
     return rhsNodeToParserStates;
+  }
+
+  /**
+   * all parser states of the "Name" rules
+   * @return the parser states
+   */
+  public Set<Integer> getInternalNameParserStates() {
+    return nameRulesParserStates;
   }
 
   @Override
@@ -119,6 +127,8 @@ public class AntlrTool extends Tool {
    */
   private void calculateStatesForNonTerminals(Grammar g) {
     if(g.isParser() || g.isCombined()){
+      nameRulesParserStates.addAll(calculateStateForTmpName(g, "name__mc_incl_nokeywords", "mc__internal__token"));
+      nameRulesParserStates.addAll(calculateStateForTmpName(g, "name__mc_plus_keywords", "mc__internal__token"));
       for (Map.Entry<ASTProd, ProdInfo> outer : prodInfo.entrySet()) {
         Map<ASTNode, String> names = outer.getValue().tmpNames;
 
@@ -159,14 +169,27 @@ public class AntlrTool extends Tool {
     Set<Integer> res = new LinkedHashSet<>();
 
     for (LabelElementPair pair : elementLabelDefs.get(tmpName)) {
-      ATNState atnState = pair.element.atnState;
-      if(atnState != null) {
-        int stateNumber = atnState.stateNumber;
-        res.add(stateNumber);
+      if (pair.type == LabelType.TOKEN_LABEL || pair.type == LabelType.TOKEN_LIST_LABEL) {
+        res.add(pair.element.atnState.stateNumber);
+      } else if ((pair.type == LabelType.RULE_LABEL || pair.type == LabelType.RULE_LIST_LABEL) && pair.element.token != null && isNoKeywordTokenSubstitute(
+              pair.element.token.getText())) {
+        // In case the token is actually substituted by a no-keyword rule (__mc_incl_nokeywords/__mc_plus_keywords)
+        res.add(pair.element.atnState.stateNumber);
       }
     }
 
     return res;
+  }
+
+  /**
+   * We might replace myname=name with myname=name__mc_incl_nokeywords and a rule
+   * name__mc_incl_nokeywords: name | "notakeyword" | ...
+   * @param ruleName the name of the referenced Rule
+   * @return true, if a token-rule-substitution occurred
+   */
+  protected boolean isNoKeywordTokenSubstitute(String ruleName) {
+    // For now, only the Name rule is supported
+    return "name__mc_incl_nokeywords".equals(ruleName) || "name__mc_plus_keywords".equals(ruleName);
   }
 
   /**
@@ -180,5 +203,6 @@ public class AntlrTool extends Tool {
     this.grammarSymbol = null;
     this.prodInfo = null;
     this.rhsNodeToParserStates = null;
+    this.nameRulesParserStates = null;
   }
 }

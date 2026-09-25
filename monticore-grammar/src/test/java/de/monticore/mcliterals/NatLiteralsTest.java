@@ -41,7 +41,7 @@ public class NatLiteralsTest {
   
   static Stream<Arguments> checkFailingNatLiteralArgs() {
     return Stream.of(
-        Arguments.of("0x5", "Expected EOF but found token"),
+        Arguments.of("0x5", "mismatched input 'x5', expected EOF (found: Name)"),
         Arguments.of("-5", "extraneous input '-'")
     );
   }

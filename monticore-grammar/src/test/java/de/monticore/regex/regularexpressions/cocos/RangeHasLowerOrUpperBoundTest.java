@@ -49,8 +49,7 @@ public class RangeHasLowerOrUpperBoundTest {
 
     checker.checkAll(optAST.get());
     
-    Log.getFindings()
-        .remove(MCAssertions.assertHasFindingStartingWith("0x2E20E"));
+    MCAssertions.assertHasFindingStartingWith("0x2E20E");
   }
 
 }

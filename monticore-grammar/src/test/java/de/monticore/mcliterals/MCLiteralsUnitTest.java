@@ -80,8 +80,7 @@ public class MCLiteralsUnitTest {
     Optional<ASTDecimal> os = parser.parse_StringDecimal( " 00 0 " );
     assertFalse(os.isPresent());
     
-    Log.getFindings()
-        .remove(MCAssertions.assertHasFindingStartingWith("Expected EOF but found token"));
+    MCAssertions.assertHasFindingStartingWith("mismatched input '0', expected EOF (found: DecimalToken) in rule stack: [Decimal]");
   }
   @Test
   public void testNat4() throws IOException {
@@ -106,8 +105,7 @@ public class MCLiteralsUnitTest {
     Optional<ASTDecimal> os = parser.parse_StringDecimal( " 0x23 " );
     assertFalse(os.isPresent());
     
-    Log.getFindings()
-        .remove(MCAssertions.assertHasFindingStartingWith("Expected EOF but found token"));
+    MCAssertions.assertHasFindingStartingWith("mismatched input 'x23', expected EOF (found: Name) in rule stack: [Decimal]");
   }
 
   // --------------------------------------------------------------------
@@ -193,9 +191,8 @@ public class MCLiteralsUnitTest {
   public void testIntNEG() throws IOException {
     Optional<ASTInteger> os = parser.parse_StringInteger( " 0x34 " );
     assertFalse(os.isPresent());
-    
-    Log.getFindings()
-        .remove(MCAssertions.assertHasFindingStartingWith("Expected EOF but found token"));
+
+    MCAssertions.assertHasFindingStartingWith("mismatched input 'x34', expected EOF (found: Name) in rule stack: [Integer]");
   }
 
   // --------------------------------------------------------------------

@@ -52,8 +52,7 @@ public class SignedNatLiteralsTest {
     parser.parse_StringSignedNatLiteral(s);
     assertTrue(parser.hasErrors());
     
-    Log.getFindings()
-        .remove(MCAssertions.assertHasFindingStartingWith("Expected EOF but found token"));
+    MCAssertions.assertHasFindingStartingWith("mismatched input 'x5', expected EOF");
   }
 
 }
