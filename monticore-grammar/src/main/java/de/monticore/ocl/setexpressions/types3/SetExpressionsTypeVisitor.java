@@ -2,7 +2,6 @@
 package de.monticore.ocl.setexpressions.types3;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.ocl.setexpressions.SetExpressionsMill;
 import de.monticore.ocl.setexpressions._ast.*;
 import de.monticore.ocl.setexpressions._visitor.SetExpressionsVisitor2;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
@@ -523,14 +522,10 @@ public class SetExpressionsTypeVisitor extends AbstractTypeVisitor
   protected Optional<List<ASTExpression>> getContainedExpressions(ASTSetEnumeration expr) {
     List<ASTExpression> containedExprs = new ArrayList<>();
     for (ASTSetCollectionItem cItem : expr.getSetCollectionItemList()) {
-      if (SetExpressionsMill.typeDispatcher().isSetExpressionsASTSetValueItem(cItem)) {
-        ASTSetValueItem setValueItem =
-            SetExpressionsMill.typeDispatcher().asSetExpressionsASTSetValueItem(cItem);
+      if (cItem instanceof ASTSetValueItem setValueItem) {
         containedExprs.add(setValueItem.getExpression());
       }
-      else if (SetExpressionsMill.typeDispatcher().isSetExpressionsASTSetValueRange(cItem)) {
-        ASTSetValueRange valueRange =
-            SetExpressionsMill.typeDispatcher().asSetExpressionsASTSetValueRange(cItem);
+      else if (cItem instanceof ASTSetValueRange valueRange) {
         containedExprs.add(valueRange.getLowerBound());
         containedExprs.add(valueRange.getUpperBound());
       }
@@ -571,11 +566,7 @@ public class SetExpressionsTypeVisitor extends AbstractTypeVisitor
    */
   protected boolean assertRangesContainIntegrals(ASTSetEnumeration expr) {
     for (ASTSetCollectionItem cItem : expr.getSetCollectionItemList()) {
-      if (SetExpressionsMill.typeDispatcher()
-          .isSetExpressionsASTSetValueRange(cItem)
-      ) {
-        ASTSetValueRange valueRange = SetExpressionsMill.typeDispatcher()
-            .asSetExpressionsASTSetValueRange(cItem);
+      if (cItem instanceof ASTSetValueRange valueRange) {
         if (!assertRangeContainsIntegrals(valueRange)) {
           return false;
         }

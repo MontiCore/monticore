@@ -2,7 +2,6 @@
 package de.monticore.expressions.uglyexpressions.types3;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.expressions.uglyexpressions.UglyExpressionsMill;
 import de.monticore.expressions.uglyexpressions._ast.ASTClassCreator;
 import de.monticore.expressions.uglyexpressions._ast.ASTCreatorExpression;
 import de.monticore.expressions.uglyexpressions._ast.ASTTypeCastExpression;
@@ -56,9 +55,7 @@ public class UglyExpressionsCTTIVisitor
   @Override
   public void handle(ASTCreatorExpression expr) {
     InferenceContext infCtx = getInferenceContext4Ast().getContextOfExpression(expr);
-    if (UglyExpressionsMill.typeDispatcher()
-        .isUglyExpressionsASTClassCreator(expr.getCreator())
-    ) {
+    if (expr.getCreator() instanceof ASTClassCreator) {
       handleClassCreatorExpr(expr, infCtx);
     }
     // no custom implementation
@@ -73,8 +70,7 @@ public class UglyExpressionsCTTIVisitor
       ASTCreatorExpression expr,
       InferenceContext infCtx
   ) {
-    ASTClassCreator creator = UglyExpressionsMill.typeDispatcher()
-        .asUglyExpressionsASTClassCreator(expr.getCreator());
+    ASTClassCreator creator = (ASTClassCreator) expr.getCreator();
     SymTypeExpression resolved;
     if (getInferenceContext4Ast().hasResolvedOfExpression(expr)) {
       resolved = getInferenceContext4Ast().getResolvedOfExpression(expr);

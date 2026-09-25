@@ -6,8 +6,8 @@ import de.monticore.codegen.CodeGenOperationPrinter;
 import de.monticore.codegen.javagen.JavaGenVisitorState;
 import de.monticore.expressions.commonexpressions._ast.*;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsInheritanceHandler;
-import de.monticore.expressions.expressionsbasis.ExpressionsBasisMill;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
@@ -70,7 +70,7 @@ public class CommonExpressionsJavaGenVisitor
     SymTypeExpression innerType = normalize(typeOf(expr.getExpression()));
     state.startParentheses();
     getPrinter().print("-");
-    if (ExpressionsBasisMill.typeDispatcher().isExpressionsBasisASTLiteralExpression(expr.getExpression())) {
+    if (expr.getExpression() instanceof ASTLiteralExpression) {
       expr.getExpression().accept(getTraverser());
     }
     else {
