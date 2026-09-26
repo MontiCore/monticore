@@ -2,11 +2,7 @@
 package de.monticore.symbols.basicsymbols._symboltable;
 
 import de.monticore.symboltable.modifiers.AccessModifier;
-import de.monticore.types.check.SymTypeExpression;
 import de.se_rwth.commons.logging.Log;
-
-import java.util.Map;
-import java.util.Optional;
 
 public class VariableSymbol extends VariableSymbolTOP {
 
@@ -26,30 +22,6 @@ public class VariableSymbol extends VariableSymbolTOP {
       clone.setType(type.deepClone());
     }
     return clone;
-  }
-
-  /**
-   * @deprecated use TypeParameterRelations
-   */
-  @Deprecated
-  public void replaceTypeVariables(Map<TypeVarSymbol, SymTypeExpression> replaceMap){
-    //return type
-    SymTypeExpression returnType = this.getType();
-    TypeSymbol realTypeInfo;
-    TypeSymbol typeInfo = returnType.isTypeVariable() ?
-        returnType.asTypeVariable().getTypeVarSymbol() :
-        returnType.getTypeInfo();
-    if(typeInfo instanceof TypeSymbolSurrogate){
-      realTypeInfo = ((TypeSymbolSurrogate) returnType.getTypeInfo()).lazyLoadDelegate();
-    }else{
-      realTypeInfo = typeInfo;
-    }
-    if(returnType.isTypeVariable() && realTypeInfo instanceof TypeVarSymbol){
-      Optional<TypeVarSymbol> typeVar =  replaceMap.keySet().stream().filter(t -> t.getName().equals(realTypeInfo.getName())).findAny();
-      typeVar.ifPresent(typeVarSymbol -> this.setType(replaceMap.get(typeVarSymbol)));
-    }else{
-      returnType.replaceTypeVariables(replaceMap);
-    }
   }
 
   @Override

@@ -67,11 +67,6 @@ public class SymTypeOfWildcard extends SymTypeExpression {
   }
 
   @Override
-  public boolean isValidType() {
-    return false;
-  }
-
-  @Override
   public boolean isWildcard() {
     return true;
   }
