@@ -133,7 +133,11 @@ public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
   }
 
   protected void addAttributeDefaultValues(ASTCDAttribute attribute) {
-    if (getDecorationHelper().isListType(CD4CodeMill.prettyPrint(attribute.getMCType(), false))) {
+    if (getDecorationHelper().isSupplier(attribute.getMCType())) {
+      // a supplier-wrapped attribute must have a non-null default supplier, otherwise build() would
+      // hand the symbol a null field where a Supplier is expected
+      getDecorationHelper().addAttributeDefaultValues(attribute, glex);
+    } else if (getDecorationHelper().isListType(CD4CodeMill.prettyPrint(attribute.getMCType(), false))) {
       this.replaceTemplate(VALUE, attribute, new StringHookPoint("= new java.util.ArrayList<>()"));
 
     } else if (getDecorationHelper().isOptional(CD4CodeMill.prettyPrint(attribute.getMCType(), false))) {

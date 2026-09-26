@@ -93,7 +93,8 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
             .map(ASTCDClass::getCDAttributeList)
             .flatMap(List::stream)
             .map(ASTCDAttribute::deepClone)
-            .toList();
+            .collect(Collectors.toList());
+    getDecorationHelper().wrapSuppliers(scopeRuleAttributes);
 
     List<ASTCDMethod> scopeRuleMethodList = scopeInput.deepClone().getCDDefinition().getCDClassesList()
             .stream()

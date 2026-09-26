@@ -9,15 +9,17 @@ import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.codegen.mc2cd.TransformationHelper;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.codegen.cd2java.methods.AccessAsSupplierTypes;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.symboltable.ISymbol;
 import de.monticore.types.MCBasicTypesHelper;
+import de.monticore.types.MCTypeFacade;
 import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
-import de.monticore.types.mccollectiontypes._ast.ASTMCOptionalType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
+import de.monticore.types.mcsimplegenerictypes.MCSimpleGenericTypesMill;
 import de.monticore.umlmodifier._ast.ASTModifier;
 import de.monticore.umlstereotype._ast.ASTStereoValue;
 import de.monticore.umlstereotype._ast.ASTStereotype;
@@ -26,11 +28,14 @@ import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
 import static de.monticore.cd.codegen.CD2JavaTemplates.VALUE;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
+import static de.monticore.codegen.cd2java.methods.AccessAsSupplierTypes.STD_SUPPLIER_TYPE;
+import static de.monticore.codegen.cd2java.methods.AccessAsSupplierTypes.SUPPLIER_TYPE;
 
 public class DecorationHelper extends MCBasicTypesHelper {
 
@@ -67,7 +72,7 @@ public class DecorationHelper extends MCBasicTypesHelper {
   }
 
   public boolean isSimpleAstNode(ASTCDAttribute attr) {
-    return !isOptional(attr.getMCType()) && !isListType(attr.printType()) && isAstNode(attr);
+    return !isOptional(attr.getMCType()) && !isList(attr.getMCType()) && isAstNode(attr);
   }
 
   public boolean isOptionalAstNode(ASTCDAttribute attr) {
@@ -75,7 +80,7 @@ public class DecorationHelper extends MCBasicTypesHelper {
   }
 
   public boolean isListAstNode(ASTCDAttribute attribute) {
-    return isListType(attribute.printType()) && isAstNode(attribute);
+    return isList(attribute.getMCType()) && isAstNode(attribute);
   }
 
   public boolean isListType(String type) {
@@ -100,17 +105,36 @@ public class DecorationHelper extends MCBasicTypesHelper {
     if (index != -1) {
       type = type.substring(0, index);
     }
-    return "Optional".equals(type) || "java.lang.Optional".equals(type);
+    return "Optional".equals(Names.getSimpleName(type));
   }
 
-  public boolean isOptional(ASTMCType type) {
-    if (type instanceof ASTMCOptionalType) {
-      return true;
-    } else if (type instanceof ASTMCGenericType) {
-      String simpleType = ((ASTMCGenericType) type).printWithoutTypeArguments();
-      return "Optional".equals(Names.getSimpleName(simpleType));
+  /**
+   * Checks whether the type is wrapped by the internal supplier type.
+   */
+  public boolean isSupplier(String type) {
+    int index = type.indexOf('<');
+    if (index != -1) {
+      type = type.substring(0, index);
     }
-    return false;
+    return SUPPLIER_TYPE.equals(type);
+  }
+
+  // The ASTMCType overloads intentionally delegate to the String checks above instead of using
+  // instanceof: a single implementation, and no reliance on the concrete AST node.
+  public boolean isOptional(ASTMCType type) {
+    return isOptional(type.printType());
+  }
+
+  public boolean isList(ASTMCType type) {
+    return isListType(type.printType());
+  }
+
+  public boolean isSupplier(ASTMCType type) {
+    return isSupplier(type.printType());
+  }
+
+  public boolean shouldHaveSupplier(ASTCDAttribute attribute) {
+    return AccessAsSupplierTypes.shouldHaveSupplier(attribute);
   }
 
   public boolean isString(String type) {
@@ -159,12 +183,33 @@ public class DecorationHelper extends MCBasicTypesHelper {
    * important for Optional and List types
    */
   public void addAttributeDefaultValues(ASTCDAttribute attribute, GlobalExtensionManagement glex) {
-    if (isListType(attribute.printType())) {
-      glex.replaceTemplate(VALUE, attribute, new StringHookPoint("= new java.util.ArrayList<>()"));
+    // For a wrapped attribute (Supplier<X>) the default is derived from the unwrapped type X.
+    boolean isSupplier = isSupplier(attribute.getMCType());
+    ASTMCType type = unwrapSupplier(attribute.getMCType());
 
-    } else if (isOptional(attribute.getMCType())) {
-      glex.replaceTemplate(VALUE, attribute, new StringHookPoint("= Optional.empty()"));
+    boolean isList = isList(type);
+    String inner;
+    if (isList) {
+      inner = "new java.util.ArrayList<>()";
+    } else if (isOptional(type)) {
+      inner = "Optional.empty()";
+    } else if (isSupplier) {
+      inner = "null";
+    } else {
+      return;
     }
+
+    // the initialization expression that is placed after the '=' of the field declaration
+    String defaultValue;
+    if (!isSupplier) {
+      defaultValue = inner;
+    } else if (isList) {
+      // A list must expose a stable instance, otherwise we would create a new one every get and entries would be lost.
+      defaultValue = "new " + SUPPLIER_TYPE + "<>(com.google.common.base.Suppliers.memoize(() -> " + inner + "))";
+    } else {
+      defaultValue = "new " + SUPPLIER_TYPE + "<>(() -> " + inner + ")";
+    }
+    glex.replaceTemplate(VALUE, attribute, new StringHookPoint("= " + defaultValue));
   }
 
   /**
@@ -179,9 +224,36 @@ public class DecorationHelper extends MCBasicTypesHelper {
     return attributeName.substring(JavaNamesHelper.PREFIX_WHEN_WORD_IS_RESERVED.length());
   }
 
-  public ASTMCTypeArgument getReferenceTypeFromOptional(ASTMCType type) {
+  public ASTMCTypeArgument getReferenceTypeOfOptional(ASTMCType type) {
     Preconditions.checkArgument(isOptional(type));
     return ((ASTMCGenericType) type).getMCTypeArgumentList().getFirst();
+  }
+
+  public ASTMCTypeArgument getReferenceTypeOfSupplier(ASTMCType type) {
+    Preconditions.checkArgument(isSupplier(type));
+    return ((ASTMCGenericType) type).getMCTypeArgumentList().getFirst();
+  }
+
+  /**
+   * Wraps {@code inner} into the internal supplier type {@code __internal__Supplier<inner>}
+   *
+   * A copy of this is already in the MCTypeFacade. This can be deleted, and references rerouted to MCTypeFacade after release ...
+   */
+  public ASTMCType createInternalSupplierTypeOf(ASTMCType inner) {
+    ASTMCTypeArgument arg = MCSimpleGenericTypesMill
+        .mCCustomTypeArgumentBuilder().setMCType(inner.deepClone()).build();
+    return MCTypeFacade.getInstance().createBasicGenericTypeOf(SUPPLIER_TYPE, arg);
+  }
+
+  /**
+   * Wraps {@code inner} into the public {@code java.util.function.Supplier<inner>} type.
+   *
+   * A copy of this is already in the MCTypeFacade. This can be deleted, and references rerouted to MCTypeFacade after release ...
+   */
+  public ASTMCType createStdSupplierTypeOf(ASTMCType inner) {
+    ASTMCTypeArgument arg = MCSimpleGenericTypesMill
+        .mCCustomTypeArgumentBuilder().setMCType(inner.deepClone()).build();
+    return MCTypeFacade.getInstance().createBasicGenericTypeOf(STD_SUPPLIER_TYPE, arg);
   }
 
   /**
@@ -220,11 +292,39 @@ public class DecorationHelper extends MCBasicTypesHelper {
   }
 
   /**
+   * unwraps the internal supplier type (Supplier&lt;X&gt; -&gt; X); returns the type unchanged if it is not wrapped
+   */
+  public ASTMCType unwrapSupplier(ASTMCType type) {
+    if (isSupplier(type)) {
+      return getReferenceTypeOfSupplier(type).getMCTypeOpt().get();
+    }
+    return type;
+  }
+
+  /**
+   * The type that generated code exposes for a supplied attribute:
+   * {@code __internal__Supplier<X>} (or an unwrapped X) becomes {@code java.util.function.Supplier<X>},
+   * so the internal wrapper never leaks into the public API.
+   */
+  public ASTMCType toPublicSupplierType(ASTMCType type) {
+    return createStdSupplierTypeOf(unwrapSupplier(type));
+  }
+
+  /**
+   * Wraps the type of every attribute that {@link #shouldHaveSupplier} selects into the internal supplier type.
+   */
+  public void wrapSuppliers(Collection<ASTCDAttribute> attributes) {
+    attributes.stream()
+        .filter(this::shouldHaveSupplier)
+        .forEach(a -> a.setMCType(createInternalSupplierTypeOf(a.getMCType())));
+  }
+
+  /**
    * methods return correct getters or setters for a special attribut
    * needed in templates
    */
   public String getPlainGetter(ASTCDAttribute ast) {
-    String astType = CD4CodeMill.prettyPrint(ast.getMCType(), false);
+    String astType = CD4CodeMill.prettyPrint(unwrapSupplier(ast.getMCType()), false);
     StringBuilder sb = new StringBuilder();
     // Do not use CDTypes.isBoolean() because only primitive boolean uses GET_PREFIX_BOOLEAN
     if (astType.equals("boolean")) {
@@ -247,7 +347,7 @@ public class DecorationHelper extends MCBasicTypesHelper {
   public String getPlainSetter(ASTCDAttribute ast) {
     StringBuilder sb = new StringBuilder(SET_PREFIX).append(
         StringTransformations.capitalize(getNativeAttributeName(ast.getName())));
-    String astType = CD4CodeMill.prettyPrint(ast.getMCType(), false);
+    String astType = CD4CodeMill.prettyPrint(unwrapSupplier(ast.getMCType()), false);
     if (isListType(astType)) {
       if (hasDerivedAttributeName(ast) && ast.getName().endsWith(TransformationHelper.LIST_SUFFIX)) {
         sb.replace(sb.length() - TransformationHelper.LIST_SUFFIX.length(),

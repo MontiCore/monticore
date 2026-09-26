@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
 
 /**
  * changes return type of builder setters for list attributes
@@ -58,7 +59,24 @@ public class BuilderListMutatorDecorator extends ListMutatorDecorator {
     ASTCDMethod method = this.getCDMethodFacade().createMethodByDefinition(signature);
     ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(builderType).build();
     method.setMCReturnType(returnType);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.builder.Set4ASTBuilder", ast));
+
+    String templateName = "_ast.builder.Set4ASTBuilder";
+    if (getDecorationHelper().isSupplier(ast.getMCType())) {
+      templateName = "_ast.builder.SupplierSet4ASTBuilder";
+    }
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(templateName, ast));
+    return method;
+  }
+
+  @Override
+  protected ASTCDMethod createSetListSupplierMethod(ASTCDAttribute ast) {
+    String name = "set" + capitalizedAttributeNameWithOutS + "ListSupplier";
+    ASTMCType supplierType = getDecorationHelper().toPublicSupplierType(ast.getMCType());
+    ASTCDParameter parameter = this.getCDParameterFacade().createParameter(supplierType, ast.getName());
+    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), name, parameter);
+    ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(builderType).build();
+    method.setMCReturnType(returnType);
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.builder.SupplierSetRaw4ASTBuilder", ast));
     return method;
   }
 }

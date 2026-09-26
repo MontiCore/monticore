@@ -15,11 +15,11 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
-import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
 import de.monticore.types.MCTypeFacade;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
@@ -254,8 +254,9 @@ public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUni
   protected List<String> getSuperTypes(CDTypeSymbol typeSymbol) {
     return typeSymbol.getSuperTypesList()
         .stream()
-        .filter(s -> ((TypeSymbolSurrogate) s.getTypeInfo()).checkLazyLoadDelegate())
-        .map(s -> ((TypeSymbolSurrogate) s.getTypeInfo()).lazyLoadDelegate())
+        .map(visitorService::resolveTypeInfo)
+        .filter(Optional::isPresent)
+        .map(Optional::get)
         .filter(t -> t instanceof CDTypeSymbol)
         .map(s -> visitorService.createASTFullName((CDTypeSymbol) s))
         .collect(Collectors.toList());

@@ -27,7 +27,7 @@ ${tc.signature("attributeList", "hasSuperClass")}
     <#elseif genHelper.isPrimitive(attrType)>
       result.set${methName}(${genHelper.getPlainGetter(attribute)}());
     <#elseif genHelper.isOptional(attribute.getMCType())>
-        <#assign reference = genHelper.getReferenceTypeFromOptional(attrType)>
+        <#assign reference = genHelper.getReferenceTypeOfOptional(attrType)>
     <#assign referenceName = typeName>
     <#if genHelper.isString(reference) || genHelper.isAttributeOfTypeEnum(attribute)>
     if (isPresent${methName}()) {

@@ -2,7 +2,7 @@
 package de.monticore.types.check;
 
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
-import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.types3.ISymTypeVisitor;
 
 public class SymTypeOfNull extends SymTypeExpression {
@@ -20,7 +20,7 @@ public class SymTypeOfNull extends SymTypeExpression {
    */
   @Deprecated
   public SymTypeOfNull() {
-    typeSymbol = new TypeSymbolSurrogate(BasicSymbolsMill.NULL);
+    typeSymbol = new TypeSymbol(BasicSymbolsMill.NULL);
     typeSymbol.setEnclosingScope(BasicSymbolsMill.scope());
   }
 

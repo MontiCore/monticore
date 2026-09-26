@@ -10,7 +10,6 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
@@ -29,7 +28,12 @@ public class MandatoryAccessorDecorator extends AbstractCreator<ASTCDAttribute, 
 
   @Override
   public List<ASTCDMethod> decorate(final ASTCDAttribute ast) {
-    return new ArrayList<>(Collections.singletonList(createGetter(ast)));
+    List<ASTCDMethod> methods = new ArrayList<>();
+    methods.add(createGetter(ast));
+    if (getDecorationHelper().isSupplier(ast.getMCType())) {
+      methods.add(createSupplierGetter(ast));
+    }
+    return methods;
   }
 
   protected ASTCDMethod createGetter(final ASTCDAttribute ast) {
@@ -41,8 +45,25 @@ public class MandatoryAccessorDecorator extends AbstractCreator<ASTCDAttribute, 
     }
     String name = String.format(getterPrefix, StringUtils.capitalize(getDecorationHelper().getNativeAttributeName(ast.getName())));
     ASTMCType type = ast.getMCType().deepClone();
+
+    String templateName = "methods.Get";
+    if (getDecorationHelper().isSupplier(type)) {
+      // The Supplier is hidden from the user. The getter has to expose the unwrapped type (Supplier<X> -> X)
+      type = getDecorationHelper().unwrapSupplier(type);
+      templateName = "methods.SupplierGet";
+    }
+
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), type, name);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.Get", ast));
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(templateName, ast));
+    return method;
+  }
+
+  protected ASTCDMethod createSupplierGetter(final ASTCDAttribute ast) {
+    String name = String.format(GET, StringUtils.capitalize(getDecorationHelper().getNativeAttributeName(ast.getName()))) + "Supplier";
+    ASTMCType supplierType = getDecorationHelper().toPublicSupplierType(ast.getMCType());
+
+    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), supplierType, name);
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.SupplierGetRaw", ast));
     return method;
   }
 }

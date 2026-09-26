@@ -3,7 +3,6 @@ package de.monticore.types.check;
 
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
-import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbolSurrogate;
 import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.JsonPrinter;
@@ -51,9 +50,8 @@ public class SymTypeVariableDeSer {
         // support deprecated behavior:
         enclosingScope = BasicSymbolsMill.globalScope();
       }
-      TypeVarSymbolSurrogate typeVarSym = new TypeVarSymbolSurrogate(varName);
-      typeVarSym.setEnclosingScope(enclosingScope);
-      return SymTypeExpressionFactory.createTypeVariable(typeVarSym);
+      return SymTypeExpressionFactory.createTypeVariable(SymTypeExpressionFactory
+          .resolveTypeVarSymbolOrLogError(varName, enclosingScope));
     }
     Log.error("0x823F5 Internal error: Cannot load \"" + serialized + "\" as  SymTypeVariable!");
     return null;

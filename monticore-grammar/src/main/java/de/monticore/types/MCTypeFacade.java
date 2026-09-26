@@ -9,6 +9,7 @@ import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mccollectiontypes._ast.*;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardTypeArgument;
+import de.monticore.types.mcsimplegenerictypes.MCSimpleGenericTypesMill;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 
 import java.util.ArrayList;
@@ -246,6 +247,50 @@ public class MCTypeFacade {
 
   public ASTMCArrayType createArrayType(final String name, int dimension) {
     return createArrayType(this.createQualifiedType(name), dimension);
+  }
+
+  /**
+   * {@code de.monticore.symboltable.__internal__Supplier<inner>} types.
+   */
+
+  public ASTMCBasicGenericType createInternalSupplierTypeOf(final ASTMCTypeArgument inner) {
+    return createBasicGenericTypeOf("de.monticore.symboltable.__internal__Supplier", inner);
+  }
+
+  public ASTMCBasicGenericType createInternalSupplierTypeOf(final ASTMCType inner) {
+    ASTMCTypeArgument arg = MCSimpleGenericTypesMill.mCCustomTypeArgumentBuilder()
+        .setMCType(inner.deepClone())
+        .build();
+    return createInternalSupplierTypeOf(arg);
+  }
+
+  public ASTMCBasicGenericType createInternalSupplierTypeOf(final String name) {
+    return createInternalSupplierTypeOf(createBasicTypeArgumentOf(name));
+  }
+
+  public ASTMCBasicGenericType createInternalSupplierTypeOf(final Class<?> clazz) {
+    return createInternalSupplierTypeOf(clazz.getName());
+  }
+
+  /**
+   * {@code java.util.function.Supplier<inner> } types.
+   */
+
+  public ASTMCBasicGenericType createStdSupplierTypeOf(final ASTMCTypeArgument inner) {
+    return createBasicGenericTypeOf("java.util.function.Supplier", inner);
+  }
+
+  public ASTMCBasicGenericType createStdSupplierTypeOf(ASTMCType inner) {
+    ASTMCTypeArgument arg = MCSimpleGenericTypesMill.mCCustomTypeArgumentBuilder().setMCType(inner.deepClone()).build();
+    return createStdSupplierTypeOf(arg);
+  }
+
+  public ASTMCBasicGenericType createStdSupplierTypeOf(final String name) {
+    return createStdSupplierTypeOf(createBasicTypeArgumentOf(name));
+  }
+
+  public ASTMCBasicGenericType createStdSupplierTypeOf(final Class<?> clazz) {
+    return createStdSupplierTypeOf(clazz.getName());
   }
 
   /**

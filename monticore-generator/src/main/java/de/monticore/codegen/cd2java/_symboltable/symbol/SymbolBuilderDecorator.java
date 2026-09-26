@@ -74,7 +74,8 @@ public class SymbolBuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDCla
         defaultAttrs.add(spannedScopeAttr);
       }
     }
-
+    // Wrap selected attribute types into Supplier<X> so their (possibly not-yet-resolvable) value can be computed later
+    getDecorationHelper().wrapSuppliers(decoratedSymbolClass.getCDAttributeList());
     builderDecorator.setPrintBuildMethodTemplate(false);
     ASTCDClass symbolBuilder = builderDecorator.decorate(decoratedSymbolClass);
     builderDecorator.setPrintBuildMethodTemplate(true);

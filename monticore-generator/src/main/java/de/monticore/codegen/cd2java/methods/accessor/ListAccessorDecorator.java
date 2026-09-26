@@ -6,11 +6,13 @@ import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.codegen.cd2java.methods.ListMethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
 import java.util.Arrays;
 import java.util.List;
 
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
 
 public class ListAccessorDecorator extends ListMethodDecorator {
 
@@ -42,6 +44,9 @@ public class ListAccessorDecorator extends ListMethodDecorator {
   public List<ASTCDMethod> decorate(ASTCDAttribute ast) {
     List<ASTCDMethod> methods = super.decorate(ast);
     methods.add(createGetListMethod(ast));
+    if (getDecorationHelper().isSupplier(ast.getMCType())) {
+      methods.add(createGetListSupplierMethod(ast));
+    }
     return methods;
   }
 
@@ -49,8 +54,23 @@ public class ListAccessorDecorator extends ListMethodDecorator {
   protected ASTCDMethod createGetListMethod(ASTCDAttribute ast) {
     String signature = String.format(GET_LIST, attributeType, capitalizedAttributeNameWithOutS);
     ASTCDMethod getList = this.getCDMethodFacade().createMethodByDefinition(signature);
-    this.replaceTemplate(EMPTY_BODY, getList, new TemplateHookPoint("methods.Get", ast));
+
+    String templateName = "methods.Get";
+    if (getDecorationHelper().isSupplier(ast.getMCType())) {
+      templateName = "methods.SupplierGet";
+    }
+
+    this.replaceTemplate(EMPTY_BODY, getList, new TemplateHookPoint(templateName, ast));
     return getList;
+  }
+
+  protected ASTCDMethod createGetListSupplierMethod(ASTCDAttribute ast) {
+    String name = "get" + capitalizedAttributeNameWithOutS + "ListSupplier";
+    ASTMCType supplierType = getDecorationHelper().toPublicSupplierType(ast.getMCType());
+    ASTCDMethod method = this.getCDMethodFacade().createMethod(
+        PUBLIC.build(), supplierType, name);
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.SupplierGetRaw", ast));
+    return method;
   }
 
   @Override

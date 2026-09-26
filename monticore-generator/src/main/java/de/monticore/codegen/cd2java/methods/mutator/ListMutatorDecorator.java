@@ -1,16 +1,19 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java.methods.mutator;
 
+import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.codegen.cd2java.methods.ListMethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
 
 import java.util.Arrays;
 import java.util.List;
 
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
+import static de.monticore.cd.facade.CDModifier.PUBLIC;
 
 public class ListMutatorDecorator extends ListMethodDecorator {
 
@@ -38,14 +41,33 @@ public class ListMutatorDecorator extends ListMethodDecorator {
   public List<ASTCDMethod> decorate(ASTCDAttribute ast) {
     List<ASTCDMethod> methods = createSetter(ast);
     methods.add(createSetListMethod(ast));
+    if (getDecorationHelper().isSupplier(ast.getMCType())) {
+      methods.add(createSetListSupplierMethod(ast));
+    }
     return methods;
   }
 
   protected ASTCDMethod createSetListMethod(ASTCDAttribute ast) {
     String signature = String.format(SET_LIST, capitalizedAttributeNameWithOutS, attributeType, ast.getName());
     ASTCDMethod getList = this.getCDMethodFacade().createMethodByDefinition(signature);
-    this.replaceTemplate(EMPTY_BODY, getList, new TemplateHookPoint("methods.Set", ast));
+
+    String templateName = "methods.Set";
+    if (getDecorationHelper().isSupplier(ast.getMCType())) {
+      templateName = "methods.SupplierSet";
+    }
+
+    this.replaceTemplate(EMPTY_BODY, getList, new TemplateHookPoint(templateName, ast));
     return getList;
+  }
+
+  protected ASTCDMethod createSetListSupplierMethod(ASTCDAttribute ast) {
+    String name = "set" + capitalizedAttributeNameWithOutS + "ListSupplier";
+    ASTMCType supplierType = getDecorationHelper().toPublicSupplierType(ast.getMCType());
+    ASTCDParameter parameter =
+        this.getCDParameterFacade().createParameter(supplierType, ast.getName());
+    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), name, parameter);
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.SupplierSetRaw", ast));
+    return method;
   }
 
   protected List<ASTCDMethod> createSetter(ASTCDAttribute ast){

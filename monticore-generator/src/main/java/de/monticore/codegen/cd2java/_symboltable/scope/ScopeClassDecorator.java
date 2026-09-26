@@ -95,6 +95,9 @@ public class ScopeClassDecorator extends AbstractDecorator {
             .flatMap(List::stream)
             .map(ASTCDAttribute::deepClone)
             .collect(Collectors.toList());
+
+    // Wrap selected scoperule attribute types into Supplier<X> so their (possibly not-yet-resolvable) value can be computed later
+    getDecorationHelper().wrapSuppliers(scopeRuleAttributeList);
     scopeRuleAttributeList
         .forEach(a -> getDecorationHelper().addAttributeDefaultValues(a, this.glex));
 
