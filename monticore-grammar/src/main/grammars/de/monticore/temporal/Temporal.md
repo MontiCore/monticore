@@ -39,13 +39,13 @@ DIN-style notation, or another future temporal notation.
 
 `TemporalBasis` extends `de.monticore.literals.MCCommonLiterals`
 
-It is the root temporal grammar for the other temporal grammars:
+It is the root temporal grammar extended by the other temporal grammars:
 
 ```text
-TemporalBasis
-├── EscapedTemporalLiterals
-├── ISOTemporals
-└── DETemporals
+TemporalBasis (grammar)
+├── EscapedTemporalLiterals (grammar)
+├── ISOTemporals (grammar)
+└── DETemporals (grammar)
 ```
 
 ### Central Nonterminals
@@ -55,7 +55,7 @@ TemporalBasis
 | `Instant`   | A point on the time scale.                                                 |                                               |
 | `Date`      | An `Instant` whose granularity ranges from centuries to days.              | `2015-04-01`, `01.04.2015`, `1. April 2015`   |
 | `Time`      | An `Instant` whose granularity ranges from hours to fractions of a second. | `12:30:15`, `12:30 Uhr`                       |
-| `DateTime`  | An `Instant` combining date and time components.                           | `2015-04-01T12:30:15`, `01.04.2015 12:30 Uhr` |
+| `DateTime`  | An `Instant` combining a date and a time component.                           | `2015-04-01T12:30:15`, `01.04.2015 12:30 Uhr` |
 | `Period`    | A length or duration of time.                                              | `P2Y5M3D`, `PT6H30M`, `P2W`                   |
 
 ---
@@ -71,13 +71,13 @@ literals. It introduces an escape syntax that wraps any temporal `Instant` or
 The escape form is useful because many temporal syntaxes may otherwise conflict
 with existing literals, identifiers, or operators of a host language.
 
-The basic idea is:
+The basic syntax is to enclose a temporal value like:
 
 ```text
 d"temporal-value"
 ```
 
-For example:
+Some examples are:
 
 ```text
 d"2015-04-01"
@@ -93,13 +93,19 @@ It uses the interfaces from `TemporalBasis` and introduces one concrete literal
 production:
 
 ```text
-TemporalBasis
-└── EscapedTemporalLiterals
-    └── EscapedTemporalLiteral implements Literal
+TemporalBasis (grammar)
+└── EscapedTemporalLiterals (grammar)
+    └── EscapedTemporalLiteral (nt) implements Literal
 ```
 
 Because `EscapedTemporalLiteral` implements `Literal`, it can be used in
 MontiCore expression languages that support literal expressions.
+
+For typed MontiCore languages however, there is also a type 
+definition necessary, which must not be provided by an explcit 
+grammar, but can be imported using standard symbol mechanisms.  E.g. 
+`Date`, `Time`, `TimePeriod` can be used, but more fine-grained 
+possibilities would also be allowed. 
 
 ### Central Nonterminal
 
@@ -127,7 +133,11 @@ d"1. April 2015"
 d"12:30 Uhr"
 ```
 
----
+Maybe some variants of the literals need explanation: `d"2015-W14-3"` 
+describes the 3rd day in the 14th week of 2015, `d"PT6.5H"` describes 
+6 days, and 5 hours and `d"P2W"` describes 2 weeks. 
+
+--- 
 
 ## Grammar [ISOTemporals.mc4](ISOTemporals.mc4)
 
