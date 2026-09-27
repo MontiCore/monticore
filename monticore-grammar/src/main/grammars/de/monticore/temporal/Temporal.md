@@ -1,9 +1,10 @@
-# MontiCore - Temporal
+# MontiCore - Temporal Literals 
 
 The MontiCore Temporal languages provide reusable grammar components for
 representing temporal values such as dates, times, combined date-times, and
 periods. They define a common abstraction for temporal concepts and provide
-concrete syntaxes for different standards and regional conventions.
+concrete syntaxes for several standards and also regional conventions 
+(in particular German).
 
 The temporal language family is organized around a small common basis:
 
@@ -172,21 +173,21 @@ expanded signed years, decimal fractions for times and periods, and UTC offsets.
 It realizes the temporal interfaces as follows:
 
 ```text
-TemporalBasis
-├── Instant
-│   └── ISOInstant
-│       ├── ISODate
-│       │   ├── CalendarDate
-│       │   ├── OrdinalDate
-│       │   └── WeekDate
-│       │       ├── BasicWeekDate
-│       │       └── ExtendedWeekDate
-│       ├── ISOTime
-│       └── ISODateTime
-└── Period
-    └── ISOPeriod
-        ├── FullPeriod
-        └── WeekPeriod
+TemporalBasis (grammar)
+├── Instant (nt)
+│   └── ISOInstant (nt)
+│       ├── ISODate (nt)
+│       │   ├── CalendarDate (nt)
+│       │   ├── OrdinalDate (nt)
+│       │   └── WeekDate (nt)
+│       │       ├── BasicWeekDate (nt)
+│       │       └── ExtendedWeekDate (nt)
+│       ├── ISOTime (nt)
+│       └── ISODateTime (nt)
+└── Period (nt)
+    └── ISOPeriod (nt)
+        ├── FullPeriod (nt)
+        └── WeekPeriod (nt)
 ```
 
 Some ISO temporal productions also implement `Literal`, allowing them to be used
