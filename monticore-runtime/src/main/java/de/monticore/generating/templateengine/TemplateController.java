@@ -10,6 +10,7 @@ import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.freemarker.SimpleHashFactory;
 import de.monticore.generating.templateengine.freemarker.alias.*;
 import de.monticore.generating.templateengine.reporting.Reporting;
+import de.monticore.generating.templateengine.sourcemap.SourceMapCalculator;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.generating.templateengine.sourcemap.SourceMapCalculator;
 import de.se_rwth.commons.Names;
