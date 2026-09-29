@@ -26,7 +26,6 @@ import java.util.Optional;
 public class Reporting extends Log {
 
   public static final String MC_REPORT_SOURCE_MAPPING = "MC_REPORT_SOURCE_MAPPING";
-  public static final String CONFIG_TEMPLATE = "CONFIG_TEMPLATE";
 
   /* whether reporting is enabled at the moment */
   protected static boolean enabled = false;

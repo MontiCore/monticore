@@ -21,9 +21,16 @@ public class TemplateAdaptionForSourcePositionReporting {
 
   private static AtomicInteger pairId = new AtomicInteger(0);
 
-  public static Template adaptTemplateWithPositionMarkers(Template result, Configuration configuration) throws IOException {
+  /**
+   * Traverses a FreeMarker template AST and injects position-reporting tags into variable expressions and text blocks.
+   * @param template The original FreeMarker template to adapt
+   * @param configuration FreeMarker configuration context
+   * @return A new template instance embedded with source position reporting markers
+   * @throws IOException if template loading or parsing fails
+   */
+  public static Template adaptTemplateWithPositionMarkers(Template template, Configuration configuration) throws IOException {
     List<TemplateElement> tes = new ArrayList<>();
-    TemplateElement rootTreeNode = result.getRootTreeNode();
+    TemplateElement rootTreeNode = template.getRootTreeNode();
     inorderTraversal(rootTreeNode, tn -> tes.add((TemplateElement) tn));
 
     String canonicalForm = rootTreeNode.toString();
@@ -49,9 +56,18 @@ public class TemplateAdaptionForSourcePositionReporting {
       }
     });
 
-    return new Template(result.getName(), sb.toString(), configuration);
+    return new Template(template.getName(), sb.toString(), configuration);
   }
 
+  /**
+   * Injects start and end position-reporting FreeMarker directives into the template string surrounding a specified
+   * template element.
+   * @param t The template element being wrapped.
+   * @param sb Mutable string builder containing the template
+   * @param canonicalForm Original string representation of the template
+   * @param configuration FreeMarker configuration context
+   * @param reportAstMapping true to include AST node mapping hooks, false for text-only blocks
+   */
   private static void addSourcePositionReport(TemplateElement t, StringBuilder sb, String canonicalForm, Configuration configuration, boolean reportAstMapping) {
 
     // The Freemarker Engine uses Source Positions starting at line and column 1, but we report them zero based
@@ -84,9 +100,10 @@ public class TemplateAdaptionForSourcePositionReporting {
     sb.insert(lineColumnToOffset(canonicalForm, t.getBeginLine(), t.getBeginColumn()), startPos);
   }
 
-  /* Freemarker uses Column position starting at 1, but there seems to exist a
-  * bug, when a Line ends with "sometext\n" where there suddenly is an end column
-  * position at 0 */
+  /** Normalizes FreeMarker line/column coordinates bugs where line-end positions might evaluate below 1.
+   * @param pos Raw position value from FreeMarker.
+   * @return Correct position value guaranteed to be at least 1.
+   */
   private static int increasePositionIfNecessary(int pos) {
     if(pos >= 1) {
       return pos;
@@ -95,6 +112,15 @@ public class TemplateAdaptionForSourcePositionReporting {
     }
   }
 
+  /**
+   * Constructs the executable FreeMarker interpolation string that invokes the source map calculator's reporting method
+   * during template evaluation.
+   * @param p The source position being reported.
+   * @param pairId Unique identifier linking the span pair.
+   * @param expression true if reporting an expression/AST node, false for standard text blocks
+   * @param expressionStart true if this tag represents the start boundary of an expression
+   * @return formatted FreeMarker string snippet executing the reporting call
+   */
   private static String buildReportTag(SourcePosition p, int pairId, boolean expression, boolean expressionStart){
     if(!expression)
       return "${"+ TemplateController.SOURCE_MAP_CALCULATOR +".report(" + pairId + "," + p.getLine() + "," + p.getColumn() +",\""+p.getFileName().get()+ "\")}";
@@ -103,6 +129,13 @@ public class TemplateAdaptionForSourcePositionReporting {
     }
   }
 
+  /**
+   * Converts 1-based line and column numbers into flat character offset index within a string.
+   * @param input The target string to search.
+   * @param lineNumber 1-based target line number.
+   * @param columnNumber 1-based target column number
+   * @return zero-based character offset, or -1 if coordinates are out of bounds.
+   */
   private static int lineColumnToOffset(String input, int lineNumber, int columnNumber) {
     int currentLine = 1;
     int offset = 0;

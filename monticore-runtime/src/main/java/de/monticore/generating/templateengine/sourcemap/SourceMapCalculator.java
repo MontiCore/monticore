@@ -20,6 +20,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class SourceMapCalculator {
+
   private static ThreadLocal<Stack<Template>> templates = ThreadLocal.withInitial(() -> new Stack<>());
 
   // We need this for nested template evaluations
@@ -30,6 +31,23 @@ public class SourceMapCalculator {
   private static ThreadLocal<List<SimpleIncludeMapping>> includeMappings = ThreadLocal.withInitial(ArrayList::new);
   private static ThreadLocal<Integer> baseLineOffset = ThreadLocal.withInitial(() -> 0);
 
+
+  private final FreeMarkerTemplateEngine.ContentWriter sw;
+  private final Template template;
+
+
+  // Everytime a template is executed it uses a new StringWriter instance
+  public SourceMapCalculator(FreeMarkerTemplateEngine.ContentWriter sw, Template template) {
+    this.sw = sw;
+    this.template = template;
+  }
+
+  /**
+   * Pushes a template onto the active evaluation stack, initializing the position tracking and recording an
+   * include mapping if triggered by a parent template.
+   *
+   * @param template The template being entered.
+   */
   public static void pushTemplate(Template template) {
     // Do not push config-templates as they should not be reported
     if(Reporting.isConfigTemplate(template.getName()))
@@ -58,7 +76,14 @@ public class SourceMapCalculator {
     assert curAbsolutePos.get().size() == templates.get().size();
   }
 
-  public static void popTemplate(Template template) {
+  /**
+   * Pops the current template from the stack, and flushes and resets mapping data if all nested templates
+   * have completed evaluation.
+   *
+   * @param template The template being exited.
+   * @throws IllegalStateException If the popped template does not match expectations or stack sizes desynchronize
+   */
+  public static void popTemplate(Template template){
     // Do not consider config-templates
     if(Reporting.isConfigTemplate(template.getName()))
       return;
@@ -87,7 +112,70 @@ public class SourceMapCalculator {
     return baseLineOffset.get();
   }
 
-  public static List<DecodedMapping> calculateMappings(List<SimpleSourceMapping> simpleMappings) {
+
+  /**
+   * Records a mapping position for both template source coordinates and an associated AST node,
+   * and updates the absolute generated file position.
+   * @param pairId unique identifier to link start and end mapping spans
+   * @param lineInTemplate line number within the template source
+   * @param colInTemplate column number within the template source
+   * @param templateSource identifier of template source
+   * @param astNode the AST-node tied to this output segment
+   * @param isStart true, if marking the beginning of the node span, false for the end
+   */
+  public void report(int pairId, int lineInTemplate, int colInTemplate, String templateSource, ASTNode astNode, boolean isStart) {
+    // Suppress recording if this is a config template
+    if(Reporting.isConfigTemplate(template.getName()))
+      return;
+
+    String content = sw.getCurrentContent();
+
+    int numberOfLinesInContent = numberOfNewLines(content);
+    int curGeneratedColPos = getColumnOfLastLine(content);
+
+    // Update absolute position stack so line numbering stays in sync
+    Pair<Integer,Integer> absPos = updateAndGetAbsolutePos(numberOfLinesInContent, curGeneratedColPos);
+
+    SourcePosition positionInGeneratedFile = new SourcePosition(absPos.getLeft(), absPos.getRight(), "GenOutput");
+    addASTMapping(astNode, isStart, positionInGeneratedFile, pairId);
+    addTemplateMapping(lineInTemplate, colInTemplate, templateSource, positionInGeneratedFile, pairId);
+
+    assert curAbsolutePos.get().size() == templates.get().size();
+  }
+
+  /**
+   * Records a mapping position for template source coordinates without an associated AST node.
+   * @param pairId unique identifier to link start and end mapping spans
+   * @param lineInTemplate line number within the template source
+   * @param colInTemplate column number within the template source
+   * @param templateSource identifier of template source
+   */
+  public void report(int pairId, int lineInTemplate, int colInTemplate, String templateSource) {
+    // Suppress recording if this is a config template
+    if(Reporting.isConfigTemplate(template.getName()))
+      return;
+
+    String content = sw.getCurrentContent();
+
+    int numberOfLinesInContent = numberOfNewLines(content);
+    int curGeneratedColPos = getColumnOfLastLine(content);
+
+    // Update absolute position stack so line numbering stays in sync
+    Pair<Integer,Integer> absPos = updateAndGetAbsolutePos(numberOfLinesInContent, curGeneratedColPos);
+
+    SourcePosition positionInGeneratedFile = new SourcePosition(absPos.getLeft(), absPos.getRight(), "GenOutput");
+    addTemplateMapping(lineInTemplate, colInTemplate, templateSource, positionInGeneratedFile, pairId);
+
+    assert curAbsolutePos.get().size() == templates.get().size();
+  }
+
+  /**
+   * Processes raw sources and AST mappings into decoded mapping spans, filters zero-width spans, deduplicates overlaps
+   * generated by includes, and sorts them for VLQ delta generation.
+   * @param simpleMappings List of raw source mappings collected during execution
+   * @return list of decoded mappings ready for source map generation
+   */
+  private static List<DecodedMapping> calculateMappings(List<SimpleSourceMapping> simpleMappings) {
     Map<Integer, SimpleSourceMapping> openSpans = new HashMap<>();
 
     List<MappingSpan> completedSpans = new ArrayList<>();
@@ -145,7 +233,14 @@ public class SourceMapCalculator {
     return res;
   }
 
-  public static List<IncludeSpan> calculateIncludeMappings(List<SimpleIncludeMapping> includes, List<SimpleSourceMapping> sourceMappings){
+  /**
+   * Correlates include statements with their corresponding source mapping spans to build
+   * template include tracking spans.
+   * @param includes List of recorded include mappings.
+   * @param sourceMappings List of general mappings used to resolve span boundaries
+   * @return List of structured include spans
+   */
+  private static List<IncludeSpan> calculateIncludeMappings(List<SimpleIncludeMapping> includes, List<SimpleSourceMapping> sourceMappings){
     // Store source mappings in map for faster look-up
     Map<Integer, Pair<SimpleSourceMapping, SimpleSourceMapping>> mappings = new HashMap<>();
     for(SimpleSourceMapping mapping : sourceMappings){
@@ -193,56 +288,14 @@ public class SourceMapCalculator {
     }
   }
 
-  final FreeMarkerTemplateEngine.ContentWriter sw;
-  final Template template;
 
-  // Everytime a template is executed it uses a new StringWriter instance
-  public SourceMapCalculator(FreeMarkerTemplateEngine.ContentWriter sw, Template template) {
-    this.sw = sw;
-    this.template = template;
-  }
-
-  public void report(int pairId, int lineInTemplate, int colInTemplate, String templateSource, ASTNode astNode, boolean isStart) {
-    // Suppress recording if this is a config template
-    if(Reporting.isConfigTemplate(template.getName()))
-      return;
-
-    String content = sw.getCurrentContent();
-
-    int numberOfLinesInContent = numberOfNewLines(content);
-    int curGeneratedColPos = getColumnOfLastLine(content);
-
-    // Update absolute position stack so line numbering stays in sync
-    Pair<Integer,Integer> absPos = updateAndGetAbsolutePos(numberOfLinesInContent, curGeneratedColPos);
-
-    SourcePosition positionInGeneratedFile = new SourcePosition(absPos.getLeft(), absPos.getRight(), "GenOutput");
-    addASTMapping(astNode, isStart, positionInGeneratedFile, pairId);
-    addTemplateMapping(lineInTemplate, colInTemplate, templateSource, positionInGeneratedFile, pairId);
-
-    assert curAbsolutePos.get().size() == templates.get().size();
-  }
-
-  public void report(int pairId, int lineInTemplate, int colInTemplate, String templateSource) {
-    // Suppress recording if this is a config template
-    if(Reporting.isConfigTemplate(template.getName()))
-      return;
-
-    String content = sw.getCurrentContent();
-
-    int numberOfLinesInContent = numberOfNewLines(content);
-    int curGeneratedColPos = getColumnOfLastLine(content);
-
-    // Update absolute position stack so line numbering stays in sync
-    Pair<Integer,Integer> absPos = updateAndGetAbsolutePos(numberOfLinesInContent, curGeneratedColPos);
-
-    SourcePosition positionInGeneratedFile = new SourcePosition(absPos.getLeft(), absPos.getRight(), "GenOutput");
-    addTemplateMapping(lineInTemplate, colInTemplate, templateSource, positionInGeneratedFile, pairId);
-
-    assert curAbsolutePos.get().size() == templates.get().size();
-  }
 
   /**
-   * This function does not add a new position state but updates the current one
+   * Updates the absolute generation coordinate stack using content line/column metrics and the parent
+   * template offsets, ensuring multi-template nestings stays synchronized.
+   * @param numberOfLinesInContent number of newlines found in the latest content chunk
+   * @param curGeneratedColPos column position within the last line of the content
+   * @return the newly absolut position in the generated file
    */
   private static Pair<Integer, Integer> updateAndGetAbsolutePos(int numberOfLinesInContent, int curGeneratedColPos) {
     // The stack is never empty when this is called for a report, due to the push/pop validation
@@ -266,14 +319,14 @@ public class SourceMapCalculator {
   }
 
   /**
-   * Experiments showed that MontiCore Parsers create SourcePositions that are one-based for line numbers and zero-based
-   * for column numbers
-   * @param astNode
-   * @param isStart
-   * @param positionInGeneratedFile
-   * @param pairId
+   * Adds an AST-linked position mapping, adjusting MontiCore's one-based line numbers to zero-based
+   * coordinates and filtering out redundant boundaries.
+   * @param astNode the AST node being mapped
+   * @param isStart true to extract the nodes start position, false for end position
+   * @param positionInGeneratedFile absolute position in the output file
+   * @param pairId unique identifier linking the span pair
    */
-  protected static void addASTMapping(ASTNode astNode, boolean isStart, SourcePosition positionInGeneratedFile, int pairId) {
+  protected void addASTMapping(ASTNode astNode, boolean isStart, SourcePosition positionInGeneratedFile, int pairId) {
     if(astNode!=null) {
       SourcePosition startOrEnd = null;
       if(isStart && astNode.isPresent_SourcePositionStart()) {
@@ -305,6 +358,14 @@ public class SourceMapCalculator {
     }
   }
 
+  /**
+   * Adds or cleans a template mapping, dropping zero-width spans where no content was generated between markers.
+   * @param lineInTemplate Line number in the template.
+   * @param colInTemplate Column number in the template.
+   * @param templateSource Source template identifier.
+   * @param positionInGeneratedFile Absolute position in the output file.
+   * @param pairId Unique identifier linking the span pair.
+   */
   protected void addTemplateMapping(int lineInTemplate, int colInTemplate, String templateSource, SourcePosition positionInGeneratedFile, int pairId) {
     int line = Math.max(0, lineInTemplate);
     int col = Math.max(0, colInTemplate);
@@ -329,29 +390,6 @@ public class SourceMapCalculator {
 
   }
 
-  protected void addIncludeMapping(int lineInTemplate, int colInTemplate, String templateSource, String includedTemplate, int pairId) {
-    int line = Math.max(0, lineInTemplate);
-    int col = Math.max(0, colInTemplate);
-
-    Optional<SimpleIncludeMapping> startMappingOpt = includeMappings.get().stream()
-            .filter(m -> m.pairId == pairId)
-            .findFirst();
-
-    SourcePosition pos = new SourcePosition(line, col, templateSource);
-    if(startMappingOpt.isPresent()){
-      SimpleIncludeMapping startMapping = startMappingOpt.get();
-      // If nothing is between start and end of the include-statement (should never happen), drop to keep output clean
-      if(startMapping.sourcePosition.equals(pos)) {
-        includeMappings.get().remove(startMapping);
-      }else{
-        includeMappings.get().add(new SimpleIncludeMapping(pos, pairId, includedTemplate));
-      }
-    }else{
-      // Start mapping
-      includeMappings.get().add(new SimpleIncludeMapping(pos, pairId, includedTemplate));
-    }
-  }
-
   private static int numberOfNewLines(String wholeContent) {
     // Note the String::lines method does not recognize a new line if the String ends with it furthermore it returns 1 if the String is not empty
     return (int) (wholeContent+" ").lines().count() -1;
@@ -362,6 +400,10 @@ public class SourceMapCalculator {
     return (wholeContent+" ").lines().reduce((first, second) -> second).orElse("").length() - 1;
   }
 
+  /**
+   * Compiles add buffered template mappings, AST mappings, and include spans, dispatches them to the reporting engine,
+   * and clears temporary buffers.
+   */
   public static void flushMappings(){
     List<DecodedMapping> templateSourceMappings = calculateMappings(mappings.get());
     List<DecodedMapping> astSourceMappings = calculateMappings(astMappings.get());
