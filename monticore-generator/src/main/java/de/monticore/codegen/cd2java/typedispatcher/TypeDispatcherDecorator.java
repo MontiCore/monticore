@@ -79,9 +79,9 @@ public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUni
              * However, the current implementation only performs single dispatch, making it
              * a slower, more verbose, and less extensible variant of {@code instanceof}.
              * For closed component hierarchies, use pattern matching for {@code instanceof}
-             * instead. For extensible components, use {@link %sMill#singleStepTraverser()}.
+             * instead. For extensible components, use {@link %s#singleStepTraverser()}.
              */
-            """.formatted(visitorService.getCDName())));
+            """.formatted(this.symbolTableService.getMillFullName())));
 
     return dispatcher;
   }
