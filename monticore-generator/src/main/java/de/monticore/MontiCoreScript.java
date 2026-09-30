@@ -786,8 +786,9 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     Visitor2Decorator visitor2Decorator = new Visitor2Decorator(glex, visitorService, symbolTableService);
     HandlerDecorator handlerDecorator = new HandlerDecorator(glex, visitorService, symbolTableService);
     InheritanceHandlerDecorator inheritanceHandlerDecorator = new InheritanceHandlerDecorator(glex, methodDecorator, visitorService, symbolTableService);
+    SingleStepHandlerDecorator singleStepHandlerDecorator = new SingleStepHandlerDecorator(glex, methodDecorator, visitorService, symbolTableService);
 
-    CDTraverserDecorator decorator = new CDTraverserDecorator(glex, handCodedPath, visitorService, iTraverserDecorator, traverserDecorator, visitor2Decorator, handlerDecorator, inheritanceHandlerDecorator);
+    CDTraverserDecorator decorator = new CDTraverserDecorator(glex, handCodedPath, visitorService, iTraverserDecorator, traverserDecorator, visitor2Decorator, handlerDecorator, inheritanceHandlerDecorator, singleStepHandlerDecorator);
     decorator.decorate(cd, decoratedCD);
 
   }

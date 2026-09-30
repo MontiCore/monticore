@@ -169,6 +169,11 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
         visitorService.getTraverserFullName(), INHERITANCE_TRAVERSER, visitorService.getTraverserInterfaceFullName());
     millClass.addAllCDMembers(traverserInheritanceMethods);
 
+    // decorate for traverser with SingleStepHandler
+    List<ASTCDMethod> traverserSingleStepMethods = getSingleStepTraverserMethods(visitorService.getInheritanceHandlerSimpleName(),
+        visitorService.getTraverserFullName(), SINGLE_STEP_TRAVERSER, visitorService.getTraverserInterfaceFullName());
+    millClass.addAllCDMembers(traverserSingleStepMethods);
+
     // decorate for global scope
     //globalScope
     String globalScopeAttributeName = StringTransformations.uncapitalize(symbolTableService.getGlobalScopeSimpleName());
@@ -599,6 +604,49 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
     ASTCDMethod protectedMethod = getCDMethodFacade().createMethod(PROTECTED.build(), returnType, protectedMethodName);
     this.replaceTemplate(EMPTY_BODY, protectedMethod,
         new TemplateHookPoint("mill.InheritanceHandlerMethod", attributeType,
+            visitorService.getAllCDs(), visitorService));
+
+    attributeMethods.add(protectedMethod);
+
+    return attributeMethods;
+  }
+
+  /**
+   * Creates the public accessor and protected internal method for a given
+   * attribute. The attribute is specified by its simple name, its qualified
+   * type, and the qualified return type of the methods. The return type of the
+   * method may be equal to the attribute type or a corresponding super type.
+   *
+   * @param attributeName The name of the attribute
+   * @param attributeType The qualified type of the attribute
+   * @param methodName    The name of the method
+   * @param methodType    The return type of the methods
+   * @return The accessor and corresponding internal method for the attribute
+   */
+  protected List<ASTCDMethod> getSingleStepTraverserMethods(String attributeName, String attributeType, String methodName, String methodType) {
+    List<ASTCDMethod> attributeMethods = Lists.newArrayList();
+
+    // method names and return type
+    String protectedMethodName = "_" + methodName;
+    ASTMCType returnType = getMCTypeFacade().createQualifiedType(methodType);
+
+    // static accessor method
+    ASTCDMethod staticMethod = getCDMethodFacade().createMethod(PUBLIC_STATIC.build(), returnType, methodName);
+    this.replaceTemplate(EMPTY_BODY, staticMethod, new TemplateHookPoint("mill.BuilderMethod", methodName));
+    this.replaceTemplate(JAVADOC, staticMethod, JavaDoc.of("A traverser is the conceptual entry point for every action within the visitor infrastructure.",
+            "Visitors may be added, which contain the implementations for the visit and endVisit methods.",
+            "Handlers may be added to modify the default traversal strategy.",
+            "Each traverser retains their traversed elements to avoid duplicate traversal, ",
+            "possibly requiring {@link de.monticore.visitor.ITraverser#clearTraversedElements()} to be called in case of re-use",
+            "Inheritance Traverser should be preferred over default ones, as they further enable language composition.")
+            .block("return", "a new instance of this language's inheritance traverser")
+            .asHP());
+    attributeMethods.add(staticMethod);
+
+    // protected internal method
+    ASTCDMethod protectedMethod = getCDMethodFacade().createMethod(PROTECTED.build(), returnType, protectedMethodName);
+    this.replaceTemplate(EMPTY_BODY, protectedMethod,
+        new TemplateHookPoint("mill.SingleStepHandlerMethod", attributeType,
             visitorService.getAllCDs(), visitorService));
 
     attributeMethods.add(protectedMethod);
