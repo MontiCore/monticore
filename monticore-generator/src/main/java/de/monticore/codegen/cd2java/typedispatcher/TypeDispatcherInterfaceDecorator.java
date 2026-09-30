@@ -16,6 +16,7 @@ import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
@@ -23,8 +24,8 @@ import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
 import java.util.ArrayList;
 import java.util.List;
 
-import static de.monticore.cd.facade.CDModifier.PUBLIC;
-import static de.monticore.cd.facade.CDModifier.PUBLIC_ABSTRACT;
+import static de.monticore.cd.codegen.CD2JavaTemplates.ANNOTATIONS;
+import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.codegen.cd2java.typedispatcher.TypeDispatcherConstants.*;
 
 public class TypeDispatcherInterfaceDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDInterface> {
@@ -65,7 +66,12 @@ public class TypeDispatcherInterfaceDecorator extends AbstractCreator<ASTCDCompi
       builder.setCDExtendUsage(extendUsage);
     }
 
-    return builder.build();
+    ASTCDInterface interfaceNode = builder.build();
+
+    replaceTemplate(ANNOTATIONS, interfaceNode,
+        new StringHookPoint("@Deprecated(forRemoval = true)"));
+
+    return interfaceNode;
   }
 
   public List<ASTCDMethod> methodsForAST() {
@@ -126,17 +132,27 @@ public class TypeDispatcherInterfaceDecorator extends AbstractCreator<ASTCDCompi
                             String fullName,
                             String parameterType,
                             String parameterName) {
-    methods.add(CDMethodFacade.getInstance().createMethod(
-        PUBLIC_ABSTRACT.build(),
+    ASTCDMethod isMethod = CDMethodFacade.getInstance().createMethod(
+        PACKAGE_PRIVATE_ABSTRACT.build(),
         MCTypeFacade.getInstance().createBooleanType(),
         String.format("is%s", name),
-        CDParameterFacade.getInstance().createParameter(parameterType, parameterName)));
+        CDParameterFacade.getInstance().createParameter(parameterType, parameterName));
 
-    methods.add(CDMethodFacade.getInstance().createMethod(
-        PUBLIC_ABSTRACT.build(),
+    replaceTemplate(ANNOTATIONS, isMethod,
+        new StringHookPoint("@Deprecated(forRemoval = true)"));
+
+    methods.add(isMethod);
+
+    ASTCDMethod asMethod = CDMethodFacade.getInstance().createMethod(
+        PACKAGE_PRIVATE_ABSTRACT.build(),
         MCTypeFacade.getInstance().createQualifiedType(fullName),
         String.format("as%s", name),
-        CDParameterFacade.getInstance().createParameter(parameterType, parameterName)));
+        CDParameterFacade.getInstance().createParameter(parameterType, parameterName));
+
+    replaceTemplate(ANNOTATIONS, asMethod,
+        new StringHookPoint("@Deprecated(forRemoval = true)"));
+
+    methods.add(asMethod);
   }
 
   public ASTCDExtendUsage getInterfaceExtendUsage() {

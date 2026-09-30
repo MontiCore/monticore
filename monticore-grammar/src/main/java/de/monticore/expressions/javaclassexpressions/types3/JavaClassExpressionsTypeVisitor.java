@@ -2,7 +2,6 @@
 package de.monticore.expressions.javaclassexpressions.types3;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.expressions.javaclassexpressions.JavaClassExpressionsMill;
 import de.monticore.expressions.javaclassexpressions._ast.ASTClassExpression;
 import de.monticore.expressions.javaclassexpressions._ast.ASTGenericInvocationExpression;
 import de.monticore.expressions.javaclassexpressions._ast.ASTInstanceofPatternExpression;
@@ -202,11 +201,7 @@ public class JavaClassExpressionsTypeVisitor extends AbstractTypeVisitor
 
   // not expecting an extension here anytime soon, thus simple
   protected SymTypeExpression getTypeOfPattern(ASTPattern pattern) {
-    if (JavaClassExpressionsMill.typeDispatcher()
-        .isJavaClassExpressionsASTTypePattern(pattern)
-    ) {
-      ASTTypePattern typePattern = JavaClassExpressionsMill.typeDispatcher()
-          .asJavaClassExpressionsASTTypePattern(pattern);
+    if (pattern instanceof ASTTypePattern typePattern) {
       ASTMCType mcType = typePattern.getLocalVariableDeclaration().getMCType();
       return getType4Ast().getPartialTypeOfTypeId(mcType);
     }
