@@ -31,7 +31,9 @@ be used as features.
 Dotted lines are implicit requirements, e.g., 
 certain expressions depend on appropriate literals.
 <div style="width: 100%">
-<object type="image/svg+xml" data="../GrammarFeature.dot.svg" style="display:block; width: 100%;"></object>
+<object type="image/svg+xml" data="../GrammarFeature.dot.svg" style="display:block; width: 100%;">
+This picture is only visible on the hosted documentation at <a href="https://monticore.github.io/monticore/monticore-grammar/src/main/grammars/de/monticore/Grammars/">monticore.de</a>.
+</object>
 </div>
 
 The presented components are mainly based on the grammars in the
@@ -64,7 +66,7 @@ Java-like comments being useful in many languages.
 These grammars generally deal with type definitions and build on each 
 other. Some snippets for type definitions:
 
-    grammars          some examples
+    grammar names     some examples
     MCBasicTypes      boolean  byte  short  int
                       long  char  float  double
                       void  Person  a.b.Person
@@ -82,6 +84,9 @@ other. Some snippets for type definitions:
                       (Foo, Bar)  (Foo)
     SI Unit types     [km/h]  [km/h]<long>
     RegExType         R"[a-z][0-9*]"
+    ISOTemporals      2015-04-01, 2015-04-01T12:30:15Z, 
+                      2015-W14-3, PT6H30M, ...
+    DETemporals       01.04.2015, 1. April 2015, 12:30 Uhr, ...
   
 
 ### [MCBasicTypes.mc4](types/MCBasicTypes.mc4) (stable)
