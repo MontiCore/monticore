@@ -25,16 +25,18 @@ public class MillCompositionStateTest extends AbstractMCTest {
 
     // Copy the "state" as a reference.
     // Later changes to the Mill are still reflected in this variable
-    AMillState aState = AMill.asNonStatic();
+    AMillState aState = AMill.getState();
 
     Assertions.assertEquals(aState.mill, AMill.getMill());
     // Test, that the path contains the one element
     Assertions.assertTrue(AMill.globalScope().getSymbolPath().getEntries().stream().anyMatch(p -> p.toString().endsWith("AExample")));
     Assertions.assertEquals(1, AMill.globalScope().getSymbolPath().getEntries().size());
 
+    // optionally, we can "reset" the A mill
+    AMill.reset();
     // Switch to Mill B (without cleaning any scopes)
     BMill.init(); // B extends A
-    BMillState bState = BMill.asNonStatic();
+    BMillState bState = BMill.getState();
 
     Assertions.assertNotEquals(aState.mill, AMill.getMill());
     Assertions.assertEquals(bState.mill, BMill.getMill());
@@ -50,7 +52,7 @@ public class MillCompositionStateTest extends AbstractMCTest {
 
 
     // Switch back to A's state
-    AMill.load(aState);
+    AMill.setState(aState);
 
     Assertions.assertEquals(aState.mill, AMill.getMill());
     Assertions.assertNotEquals(bState.mill, AMill.getMill());

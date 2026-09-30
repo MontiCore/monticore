@@ -43,7 +43,7 @@ public class MillStateDecorator extends AbstractCreator<List<ASTCDPackage>, ASTC
     this.replaceTemplate(JAVADOC, stateClass,
             JavaDoc.of("This class holds a reference to the mill without the use of a static state.",
                             "It is NOT a snapshot, i.e., later calls to the static mill affect this class's state.",
-                            "Note: TypeCheck3 statics are not yet stored.")
+                            "Note: Non-mill statics, such as from the TypeCheck3, are not yet stored.")
                     .asHP());
 
     String currentMillFullName = symbolTableService.getMillFullName();

@@ -31,7 +31,7 @@ public class CDMillDecorator extends AbstractDecorator {
     this.millDecorator = millDecorator;
   }
 
-  public void decorate(SymbolTableService symbolTableService, final ASTCDCompilationUnit inputCD, ASTCDCompilationUnit decoratedCD) {
+  public void decorate(final ASTCDCompilationUnit inputCD, ASTCDCompilationUnit decoratedCD, SymbolTableService symbolTableService) {
     // decorate for mill classes
     List<ASTCDPackage> packageList = Lists.newArrayList();
     packageList.add(getPackage(inputCD, decoratedCD, AST_PACKAGE));
