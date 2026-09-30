@@ -69,6 +69,8 @@ public class StatementsTestModels {
   static protected Stream<Arguments> getMCLowLevelStatementsCases() {
     return Stream.of(
         Arguments.of("int x = 0; l: while (true) {x++; break l;} x", 1),
+        Arguments.of("int x = 0; l: while (x < 5) {x++; break;} x", 1),
+        Arguments.of("int x = 0; l: for (int i = 0; i < 5; i++) {x++; break;} x", 1),
         Arguments.of("""
                 int x = 0, y = 0;
                 l: while (++x < 4) {
