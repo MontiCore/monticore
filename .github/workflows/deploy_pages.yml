@@ -28,6 +28,8 @@ jobs:
     steps:
       - name: Checkout project sources
         uses: actions/checkout@v4
+      - name: Install Graphviz
+        run: sudo apt update && sudo apt install -y graphviz
       - name: Download Javadoc artifact
         uses: dawidd6/action-download-artifact@ac66b43f0e6a346234dd65d4d0c8fbb31cb316e5
         continue-on-error: true # the javadocs are sometimes not present (e.g., when the artifact is expired)

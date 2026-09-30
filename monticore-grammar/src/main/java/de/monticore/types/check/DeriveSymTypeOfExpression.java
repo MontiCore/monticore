@@ -23,6 +23,7 @@ import static de.monticore.types.check.SymTypeExpressionFactory.*;
  * use {@link de.monticore.types3.TypeCheck3} instead.
  */
 @Deprecated
+@SuppressWarnings({"deprecation", "removal"})
 public class DeriveSymTypeOfExpression extends AbstractDeriveFromExpression implements ExpressionsBasisVisitor2, ExpressionsBasisHandler {
 
   public IBasicSymbolsScope getScope (IExpressionsBasisScope expressionsBasisScope){

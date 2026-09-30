@@ -43,15 +43,16 @@ public class CDTraverserDecoratorTest extends DecoratorTestCase {
     InheritanceHandlerDecorator inheritanceHandlerDecorator = new InheritanceHandlerDecorator(this.glex, methodDecorator, visitorService, symbolTableService);
     HandlerDecorator handlerDecorator = new HandlerDecorator(this.glex, visitorService, symbolTableService);
     Visitor2Decorator visitor2Decorator = new Visitor2Decorator(this.glex, visitorService, symbolTableService);
+    SingleStepHandlerDecorator singleStepHandlerDecorator = new SingleStepHandlerDecorator(this.glex, methodDecorator, visitorService, symbolTableService);
     CDTraverserDecorator decorator = new CDTraverserDecorator(this.glex, targetPath, visitorService,
-        traverserInterfaceDecorator, traverserClassDecorator, visitor2Decorator, handlerDecorator, inheritanceHandlerDecorator);
+        traverserInterfaceDecorator, traverserClassDecorator, visitor2Decorator, handlerDecorator, inheritanceHandlerDecorator, singleStepHandlerDecorator);
     this.decoratedCompilationUnit = createEmptyCompilationUnit(originalCompilationUnit);
     decorator.decorate(originalCompilationUnit, decoratedCompilationUnit);
   }
 
   @Test
   public void testClassCount() {
-    assertEquals(2, decoratedCompilationUnit.getCDDefinition().getCDClassesList().size());
+    assertEquals(3, decoratedCompilationUnit.getCDDefinition().getCDClassesList().size());
   
     assertTrue(Log.getFindings().isEmpty());
   }

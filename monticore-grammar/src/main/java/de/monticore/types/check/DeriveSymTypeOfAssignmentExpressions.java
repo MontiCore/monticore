@@ -27,6 +27,7 @@ import static de.monticore.types.check.TypeCheck.isString;
  * use {@link de.monticore.types3.TypeCheck3} instead.
  */
 @Deprecated
+@SuppressWarnings({"deprecation", "removal"})
 public class DeriveSymTypeOfAssignmentExpressions extends AbstractDeriveFromExpression
   implements AssignmentExpressionsVisitor2, AssignmentExpressionsHandler {
 

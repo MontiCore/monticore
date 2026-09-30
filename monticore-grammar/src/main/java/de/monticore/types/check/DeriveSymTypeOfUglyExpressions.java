@@ -31,6 +31,7 @@ import static de.monticore.types.check.TypeCheck.compatible;
  * use {@link de.monticore.types3.TypeCheck3} instead.
  */
 @Deprecated
+@SuppressWarnings({"deprecation", "removal"})
 public class DeriveSymTypeOfUglyExpressions
     extends AbstractDeriveFromExpression
     implements UglyExpressionsVisitor2, UglyExpressionsHandler {

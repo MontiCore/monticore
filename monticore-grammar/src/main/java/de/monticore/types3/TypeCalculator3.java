@@ -20,6 +20,7 @@ import de.monticore.visitor.ITraverser;
  * @deprecated use {@link TypeCheck3}
  */
 @Deprecated
+@SuppressWarnings({"deprecation", "removal"})
 public class TypeCalculator3 implements ITypeCalculator {
 
   protected ITraverser typeTraverser;

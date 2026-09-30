@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
  * no direct alternatives
  */
 @Deprecated
+@SuppressWarnings({"deprecation", "removal"})
 public class FunctionCallArgumentsMatchesRegExCoCo implements
     CommonExpressionsASTCallExpressionCoCo {
 

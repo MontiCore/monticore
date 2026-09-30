@@ -11,6 +11,7 @@ import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsGlobalScope;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
+import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
 import de.monticore.types.check.*;
 import de.monticore.types3.util.DefsTypesForTests;
 import org.junit.jupiter.api.BeforeEach;
@@ -760,4 +761,52 @@ public class SymTypeCompatibilityTest extends AbstractMCTest {
         createGenerics(_unboxedListSymType.getTypeInfo(), _intSymType)
     ));
   }
+
+  /**
+   * tests whether we run into an infinite recursion for certain cases
+   * {@code interface B<T> {}
+   * class A<T> implements B<B<? super A<A<T>>>> {}
+   * B<? super A<Long>> b = new A<Long>();
+   * }
+   * <p>
+   * based on unknown author.
+   * Breaks javac (tested with 21 and ECJ as well)
+   * (endless loop (stack overflow) during subtype checking),
+   * due to undecidability.
+   * <p>
+   * TypeCheck3 on the other hand states that the assignment is not valid.
+   * <p>
+   * Most likely (conceptually) based on
+   * "On Decidability of Nominal Subtyping with Variance"
+   */
+  @Test
+  public void doesNotStackOverflowDuringIsCompatibleCheck() {
+    IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();
+    TypeVarSymbol aVar = typeVariable("T");
+    TypeVarSymbol bVar = typeVariable("T");
+    TypeSymbol aSym = inScope(gs, type("A", List.of(), List.of(aVar)));
+    TypeSymbol bSym = inScope(gs, type("B", List.of(), List.of(bVar)));
+
+    MethodSymbol aCtor = method("A", _bottomType);
+    aCtor.setIsConstructor(true);
+    aSym.getSpannedScope().add(aCtor);
+
+    SymTypeOfGenerics aOfLong = createGenerics(aSym, _LongSymType);
+    SymTypeOfGenerics aOfT = createGenerics(aSym, createTypeVariable(aVar));
+    SymTypeOfGenerics bOfSuperA = createGenerics(
+        bSym,
+        createWildcard(false, aOfT)
+    );
+    aSym.setSuperTypesList(List.of(createGenerics(bSym, bOfSuperA)));
+
+    assertFalse(SymTypeRelations.isCompatible(aOfLong, bOfSuperA));
+    assertFalse(SymTypeRelations.isSubTypeOf(aOfLong, bOfSuperA));
+    // check that not all found cases are returned
+    // -> those are multiple hundreds, which is not helpful
+    // thus, in these specific cases, we only return the first found reasons.
+    assertTrue(SymTypeRelations.constrainCompatible(aOfLong, bOfSuperA).size() < 10);
+    assertTrue(SymTypeRelations.constrainSubTypeOf(bOfSuperA, aOfLong).size() < 10);
+    assertTrue(SymTypeRelations.constrainSameType(aOfLong, bOfSuperA).size() < 10);
+  }
+
 }

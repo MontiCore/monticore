@@ -1,0 +1,27 @@
+<script>
+    <![CDATA[
+    const svg = document.documentElement;
+    const originalViewBox = {
+    x: 0,
+    y: 0,
+    width: svg.viewBox.baseVal.width,
+    height: svg.viewBox.baseVal.height
+};
+    let zoom = 1;
+    svg.addEventListener("wheel", function (event) {
+    event.preventDefault();
+    const factor = event.deltaY < 0 ? 1.1 : 0.9;
+    zoom = Math.max(0.5, Math.min(5, zoom * factor));
+    const width = originalViewBox.width / zoom;
+    const height = originalViewBox.height / zoom;
+    const x = originalViewBox.x +
+    (originalViewBox.width - width) / 2;
+    const y = originalViewBox.y +
+    (originalViewBox.height - height) / 2;
+    svg.setAttribute(
+    "viewBox",
+    `${x} ${y} ${width} ${height}`
+    );
+}, { passive: false });
+]]>
+</script>

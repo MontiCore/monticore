@@ -26,6 +26,16 @@ information
 The components are mainly defined by a primary grammar plus associated Java
 and template files.
 
+The following picture contains the reusable language components that can
+be used as features.
+Dotted lines are implicit requirements, e.g., 
+certain expressions depend on appropriate literals.
+<div style="width: 100%">
+<object type="image/svg+xml" data="../GrammarFeature.dot.svg" style="display:block; width: 100%;">
+This picture is only visible on the hosted documentation at <a href="https://monticore.github.io/monticore/monticore-grammar/src/main/grammars/de/monticore/Grammars/">monticore.de</a>.
+</object>
+</div>
+
 The presented components are mainly based on the grammars in the
 `MontiCore/monticore` project. They are organized in the following
 packages under the `monticore-grammar/src/main/grammars/` folder hierarchy:
@@ -42,7 +52,7 @@ packages under the `monticore-grammar/src/main/grammars/` folder hierarchy:
 
 Additionally, the documentation presents some expression/type related language
 components in projects that extend MontiCore's core languages.
-For more languages and language components, follow
+For more languages and domain-specific language components, follow
 [this link](../../../../../../docs/Languages.md).
 
 ## General: List of Grammars in package `de.monticore`
@@ -54,9 +64,9 @@ Java-like comments being useful in many languages.
 ## Types: List of Grammars in package `de.monticore.types`
 
 These grammars generally deal with type definitions and build on each 
-other. Some snipets for type definitions:
+other. Some snippets for type definitions:
 
-    grammars          some examples
+    grammar names     some examples
     MCBasicTypes      boolean  byte  short  int
                       long  char  float  double
                       void  Person  a.b.Person
@@ -74,6 +84,9 @@ other. Some snipets for type definitions:
                       (Foo, Bar)  (Foo)
     SI Unit types     [km/h]  [km/h]<long>
     RegExType         R"[a-z][0-9*]"
+    ISOTemporals      2015-04-01, 2015-04-01T12:30:15Z, 
+                      2015-W14-3, PT6H30M, ...
+    DETemporals       01.04.2015, 1. April 2015, 12:30 Uhr, ...
   
 
 ### [MCBasicTypes.mc4](types/MCBasicTypes.mc4) (stable)
@@ -143,7 +156,7 @@ The known units `s, m, kg, A, K, mol, cd` from the international system of
 units (SI Units) and their combinations, such as `km/h` or `mg`, etc. can 
 be used as ordinary types (instead of only numbers). 
 The typecheck prevents e.g., assignment of a weight to a length 
-variable or to implicitely add appropriate conversion in the resulting program, 
+variable or to implicitly add appropriate conversion in the resulting program, 
 e.g., when a `km/h`-based velocity is stored in a `m/s`-based variable.
 
 * Example type definitions: `[km/h]`
@@ -191,7 +204,7 @@ codes.
   and both are possible uses in interpreters/generators: 
   1. A typecheck ensures that all assignments, parameters are correct
      in the types, or
-  2. no static typecheck, but a dynamig typecheck is executed 
+  2. no static typecheck, but a dynamic typecheck is executed 
      at runtime and e.g. issues an exception, if a type violation 
      occurs. 
 * The static typecheck is recommended when adding RegExTypes to a 
@@ -226,7 +239,7 @@ type and the expression grammars to define shared kinds of symbols.
 * This grammar defines symbols for *Types* (of all kinds), *Functions*, 
   *Variables*, *TypeVariables*, and *Stereotypes*.
 * The defined symbols are of general form and can be used in functional, OO
-  and other contexts. They do not preculde a concrete syntax and do not yet 
+  and other contexts. They do not preclude a concrete syntax and do not yet 
   embody OO specifics.
 * Remark: This grammar is not intended to define concrete or abstract 
   syntax, but the
@@ -237,7 +250,7 @@ type and the expression grammars to define shared kinds of symbols.
   *Fields* by mainly extending the symbols defined in `BasicTypeSymbols`.
 * The newly defined symbols extend the general ones by typical 
   objectoriented features, such as private, static, etc.
-  Again they do not preculde a concrete syntax.
+  Again they do not preclude a concrete syntax.
 * Remark: This grammar is not intended to define concrete or 
   abstract syntax, but the
   infrastructure for symbols in objectoriented context. 
@@ -251,7 +264,7 @@ infrastructure.
 
 This modularity of expressions and associated types greatly eases 
 the reuse of type structures in languages similar to Java.
-Some snipets for operators defined in expressions:
+Some snippets for operators defined in expressions:
 
     grammar        operators and examples in this grammar
     CommonExp:     /  %  +  -  <=  >=  ==  >  <  !=  ~.  !.  .?.:.
@@ -303,7 +316,7 @@ like <<, >>, >>>, &, ^ and |
 
 ### [OCLExpressions.mc4](ocl/OCLExpressions.mc4) (stable)
 * This grammar defines expressions typical to UMLs OCL .
-  OCL expressions can savely be composed if with other forms of expressions  
+  OCL expressions can safely be composed if with other forms of expressions  
   given in the MontiCore core project (i.e. as conservative extension).
 * It contains various logical operations, such as quantifiers, 
   the `let` and the `@pre` construct, and a transitive closure for 
@@ -376,7 +389,7 @@ modeling language.
 ## Literals: List of Grammars in package `de.monticore.literals`
 
 Literals are the basic elements of expressions, such as numbers, strings, 
-truth values. Some snipets:
+truth values. Some snippets:
 
     grammar           examples of this grammar
     MCCommonLit       3  -3  2.17  -4  true  false  'c' 
@@ -407,7 +420,7 @@ various forms of literals.
 * Please note that Java (and this grammar) 
   has an extended syntax e.g. for integers using underscores
   or other kinds of encodings. They parse e.g. 999_999, 0x3F2A, or 0b10100.
-* Like above `getValue()` and `getSource()` allow to retrive the content
+* Like above `getValue()` and `getSource()` allow to retrieve the content
   as value resp. as text string.
 
 ### [SIUnitLiterals.mc4](siunit/SIUnitLiterals.mc4) for Physical SI Units (stable)
@@ -488,9 +501,9 @@ several other grammars are also available:
 * The main nonterminal `RegularExpression` is not part of the expression
   hierarchy and 
   thus regular expressions are not used as ordinary values. Instead 
-  the nonterminal `RegularExpression` is can be used in aother places 
+  the nonterminal `RegularExpression` is can be used in another places 
   of a language e.g. we do that as additional 
-  restriction for String values in input/output channels in architectural langages.
+  restriction for String values in input/output channels in architectural languages.
 
 ### [Cardinality.mc4](Cardinality.mc4) (stable)
 * This grammar defines UML Cardinalities of forms ``*``, ``[n..m]`` or ``[n..*]``.

@@ -12,6 +12,7 @@ import static de.monticore.types.check.SymTypePrimitive.unbox;
  * @deprecated use {@link de.monticore.types3.SymTypeRelations}
  */
 @Deprecated
+@SuppressWarnings({"deprecation", "removal"})
 public class TypeRelations implements ITypeRelations {
 
   @Override

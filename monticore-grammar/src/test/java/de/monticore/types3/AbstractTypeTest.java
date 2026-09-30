@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
  * This class contains duplicate code from the AbstractMCTest, etc. to avoid breaking changes
  */
 @Deprecated(forRemoval = true)
+@SuppressWarnings({"deprecation", "removal"})
 public class AbstractTypeTest  {
 
   /**

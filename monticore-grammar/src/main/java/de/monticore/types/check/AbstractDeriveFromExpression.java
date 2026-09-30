@@ -19,6 +19,7 @@ import static de.monticore.types.check.TypeCheck.isFloat;
  * use {@link de.monticore.types3.TypeCheck3} instead.
  */
 @Deprecated
+@SuppressWarnings({"deprecation", "removal"})
 public abstract class AbstractDeriveFromExpression {
 
   public abstract ExpressionsBasisTraverser getTraverser();
