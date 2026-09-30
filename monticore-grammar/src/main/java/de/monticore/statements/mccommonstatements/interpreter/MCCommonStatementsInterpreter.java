@@ -29,7 +29,6 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
@@ -314,8 +313,7 @@ public class MCCommonStatementsInterpreter
       }
       catch (MCSignalBreak signal) {
         // an unlabeled break always ends the switch
-        if (signal.getLabel().isPresent() &&
-            !Objects.equals(labelStr, signal.getLabel().get())) {
+        if (signal.getLabel().map(l -> !l.equals(labelStr)).orElse(false)) {
           throw signal;
         }
       }
@@ -509,13 +507,13 @@ public class MCCommonStatementsInterpreter
           bodyCalc.calculate(frame);
         }
         catch (MCSignalBreak signal) {
-          if (!Objects.equals(labelStr, signal.getLabel().orElse(null))) {
+          if (signal.getLabel().map(l -> !l.equals(labelStr)).orElse(false)) {
             throw signal;
           }
           break;
         }
         catch (MCSignalContinue signal) {
-          if (!Objects.equals(labelStr, signal.getLabel().orElse(null))) {
+          if (signal.getLabel().map(l -> !l.equals(labelStr)).orElse(false)) {
             throw signal;
           }
           // explicit continue
