@@ -20,6 +20,7 @@ import java.util.Optional;
  * @deprecated use {@link ExpressionBasisTypeIdAsConstructorCTTIVisitor}
  */
 @Deprecated
+@SuppressWarnings({"deprecation", "removal"})
 public class ExpressionBasisTypeIdAsConstructorTypeVisitor
     extends ExpressionBasisTypeVisitor {
 

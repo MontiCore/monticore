@@ -19,6 +19,7 @@ import java.util.List;
  * use {@link de.monticore.types3.TypeCheck3} instead.
  */
 @Deprecated
+@SuppressWarnings({"deprecation", "removal"})
 public class SynthesizeSymTypeFromMCCollectionTypes extends AbstractSynthesizeFromType implements MCCollectionTypesVisitor2, MCCollectionTypesHandler {
 
 

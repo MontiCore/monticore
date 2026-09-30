@@ -11,6 +11,7 @@ import java.util.Objects;
 import java.util.concurrent.*;
 
 @Deprecated
+@SuppressWarnings({"deprecation", "removal"})
 public class StatisticsHandlerFix {
 
   protected static ExecutorService _reportSendingExecutorService;

@@ -9,6 +9,7 @@ package de.monticore.expressions.commonexpressions.types3;
  * @deprecated feature is now part of the super class (if enabled)
  */
 @Deprecated(forRemoval = true)
+@SuppressWarnings({"deprecation", "removal"})
 public class CommonExpressionsTypeIdAsConstructorCTTIVisitor extends
     CommonExpressionsCTTIVisitor {
 

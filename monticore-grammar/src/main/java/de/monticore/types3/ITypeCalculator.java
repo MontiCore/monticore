@@ -14,6 +14,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCVoidType;
  * @deprecated use {@link TypeCheck3}
  */
 @Deprecated
+@SuppressWarnings({"deprecation", "removal"})
 public interface ITypeCalculator {
 
   SymTypeExpression symTypeFromAST(ASTMCType mcType);

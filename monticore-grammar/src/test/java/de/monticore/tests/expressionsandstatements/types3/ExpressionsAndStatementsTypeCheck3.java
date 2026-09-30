@@ -23,6 +23,7 @@ import de.monticore.types.mcarraytypes.types3.MCArrayTypesTypeVisitor;
 import de.monticore.types.mcbasictypes.types3.MCBasicTypesTypeVisitor;
 import de.monticore.types.mccollectiontypes.types3.MCCollectionSymTypeRelations;
 import de.monticore.types.mccollectiontypes.types3.MCCollectionTypesTypeVisitor;
+import de.monticore.types.mcfullgenerictypes.types3.MCFullGenericTypesTypeVisitor;
 import de.monticore.types.mcfunctiontypes.types3.MCFunctionTypesTypeVisitor;
 import de.monticore.types.mcsimplegenerictypes.types3.MCSimpleGenericTypesTypeVisitor;
 import de.monticore.types.mcstructuraltypes.types3.MCStructuralTypesTypeVisitor;
@@ -136,6 +137,10 @@ public class ExpressionsAndStatementsTypeCheck3 extends MapBasedTypeCheck3 {
     MCCollectionTypesTypeVisitor visMCCollectionTypes = new MCCollectionTypesTypeVisitor();
     visMCCollectionTypes.setType4Ast(type4Ast);
     traverser.add4MCCollectionTypes(visMCCollectionTypes);
+
+    MCFullGenericTypesTypeVisitor visMCFullGenericTypes = new MCFullGenericTypesTypeVisitor();
+    visMCFullGenericTypes.setType4Ast(type4Ast);
+    traverser.add4MCFullGenericTypes(visMCFullGenericTypes);
 
     MCFunctionTypesTypeVisitor visMCFunctionTypes = new MCFunctionTypesTypeVisitor();
     visMCFunctionTypes.setType4Ast(type4Ast);

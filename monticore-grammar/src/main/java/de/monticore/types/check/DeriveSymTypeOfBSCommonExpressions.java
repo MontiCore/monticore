@@ -34,6 +34,7 @@ import static de.monticore.types.check.TypeCheck.*;
  * use {@link de.monticore.types3.TypeCheck3} instead.
  */
 @Deprecated
+@SuppressWarnings({"deprecation", "removal"})
 public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpression implements CommonExpressionsVisitor2, CommonExpressionsHandler {
 
   protected CommonExpressionsTraverser traverser;

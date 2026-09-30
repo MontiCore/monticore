@@ -11,6 +11,7 @@ import de.monticore.visitor.ITraverser;
  * use {@link de.monticore.types3.TypeCheck3} instead.
  */
 @Deprecated
+@SuppressWarnings({"deprecation", "removal"})
 public abstract class AbstractSynthesize implements ISynthesize {
 
   protected ITraverser traverser;
