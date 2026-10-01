@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.tf.runtime.FastLookupList;
+import de.monticore.tf.runtime.ListMatchReferenceCounter;
 import de.monticore.tf.runtime.ODRule;
 import de.monticore.tf.runtime.ValueComparator;
 import de.monticore.tf.runtime.matching.ModelTraversal;
