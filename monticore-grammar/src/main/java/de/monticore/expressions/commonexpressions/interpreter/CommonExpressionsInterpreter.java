@@ -17,7 +17,6 @@ import de.monticore.interpreter.signals.MCSignalReturn;
 import de.monticore.interpreter.util.InterpreterDataForBasicSymbols;
 import de.monticore.interpreter.util.InterpreterVisitorOperatorCalculator;
 import de.monticore.interpreter.util.SymbolAccessHandler;
-import de.monticore.interpreter.util.TypeDispatcherHotfix;
 import de.monticore.symbols.basicsymbols.interpreter.frames.MIFrameLayoutForBasicSymbols;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
@@ -250,8 +249,8 @@ public class CommonExpressionsInterpreter
         (MICalculationBoolean) frame -> recursableCallCalcValue.calculate(frame).asBoolean(),
         (MICalculationInt) frame -> recursableCallCalcValue.calculate(frame).asInt(),
         (MICalculationDouble) frame -> recursableCallCalcValue.calculate(frame).asDouble(),
-        (MICalculationValue) frame -> recursableCallCalcValue.calculate(frame),
-        (MICalculationVoid) frame -> recursableCallCalcValue.calculate(frame)
+        (MICalculationValue) recursableCallCalcValue::calculate,
+        (MICalculationVoid) recursableCallCalcValue::calculate
     );
     iData.putCalculation(callCalc);
   }
@@ -268,11 +267,11 @@ public class CommonExpressionsInterpreter
     // aka not static, but BasicSymbols count as non-relative,
     // even though they are technically not marked as static
     boolean isRelativToObject;
-    if (TypeDispatcherHotfix.isFieldSymbol(exprSourceSym)) {
-      isRelativToObject = !((FieldSymbol) exprSourceSym).isIsStatic();
+    if (exprSourceSym instanceof FieldSymbol fieldSym) {
+      isRelativToObject = !fieldSym.isIsStatic();
     }
-    else if (TypeDispatcherHotfix.isMethodSymbol(exprSourceSym)) {
-      isRelativToObject = !((MethodSymbol) exprSourceSym).isIsStatic();
+    else if (exprSourceSym instanceof MethodSymbol methodSym) {
+      isRelativToObject = !methodSym.isIsStatic();
     }
     else {
       isRelativToObject = false;
@@ -297,9 +296,7 @@ public class CommonExpressionsInterpreter
     }
 
     iData.putCalculation(resGetter);
-    if (resSetterOpt.isPresent()) {
-      iData.putSetter(resSetterOpt.get());
-    }
+    resSetterOpt.ifPresent(miSetter -> iData.putSetter(miSetter));
   }
 
   // Stack Segmentation ~ Dark Magic, only touch with care!

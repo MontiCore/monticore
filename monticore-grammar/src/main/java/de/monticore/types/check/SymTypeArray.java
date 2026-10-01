@@ -113,14 +113,13 @@ public class SymTypeArray extends SymTypeExpression {
   public boolean deepEquals(SymTypeExpression sym){
     //to support deprecated code:
     if(typeSymbol != null) {
-      if (!(sym instanceof SymTypeArray)) {
+      if (!(sym instanceof SymTypeArray symArr)) {
         return false;
       }
-      SymTypeArray symArr = (SymTypeArray) sym;
-      if(this.dim!=symArr.dim){
+      if(this.dim != symArr.dim){
         return false;
       }
-      if(this.typeSymbol == null ||symArr.typeSymbol ==null){
+      if(symArr.typeSymbol == null){
         return false;
       }
       if(!this.typeSymbol.getEnclosingScope().equals(symArr.typeSymbol.getEnclosingScope())){

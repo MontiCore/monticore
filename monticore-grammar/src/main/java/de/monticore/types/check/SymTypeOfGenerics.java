@@ -41,14 +41,14 @@ public class SymTypeOfGenerics extends SymTypeExpression {
    * initializing the maps
    */
   static {
-    Map<String, String> unboxMap_temp = new LinkedHashMap<String, String>();
+    Map<String, String> unboxMap_temp = new LinkedHashMap<>();
     unboxMap_temp.put("java.util.Optional", "Optional");
     unboxMap_temp.put("java.util.Set", "Set");
     unboxMap_temp.put("java.util.List", "List");
     unboxMap_temp.put("java.util.Map","Map");
     unboxMap = Collections.unmodifiableMap(unboxMap_temp);
 
-    Map<String, String> boxMap_temp = new LinkedHashMap<String, String>();
+    Map<String, String> boxMap_temp = new LinkedHashMap<>();
     boxMap_temp.put("Optional", "java.util.Optional");
     boxMap_temp.put("Set", "java.util.Set");
     boxMap_temp.put("List", "java.util.List");
@@ -80,10 +80,10 @@ public class SymTypeOfGenerics extends SymTypeExpression {
     }
     r.append(">");
     if (unboxMap.containsKey(type.getTypeConstructorFullName())) {
-      return unboxMap.get(type.getTypeConstructorFullName()) + r.toString();
+      return unboxMap.get(type.getTypeConstructorFullName()) + r;
     }
     else {
-      return type.getTypeConstructorFullName() + r.toString();
+      return type.getTypeConstructorFullName() + r;
     }
   }
 
@@ -112,10 +112,10 @@ public class SymTypeOfGenerics extends SymTypeExpression {
     }
     r.append(">");
     if (boxMap.containsKey(type.getTypeConstructorFullName())) {
-      return boxMap.get(type.getTypeConstructorFullName()) + r.toString();
+      return boxMap.get(type.getTypeConstructorFullName()) + r;
     }
     else {
-      return type.getTypeConstructorFullName() + r.toString();
+      return type.getTypeConstructorFullName() + r;
     }
   }
 
@@ -244,7 +244,7 @@ public class SymTypeOfGenerics extends SymTypeExpression {
     List<SymTypeExpression> arguments = getArgumentList();
     Map<SymTypeVariable, SymTypeExpression> replaceMap = new LinkedHashMap<>();
     // empty List, e.g. new LinkedHashMap<>();
-    if (arguments.size() == 0) {
+    if (arguments.isEmpty()) {
       // no-op
     }
     // otherwise, we expect the same amount of parameters as there are variables
@@ -315,7 +315,7 @@ public class SymTypeOfGenerics extends SymTypeExpression {
   }
 
   public  boolean containsAllArguments (Collection<?> collection)  {
-    return this.getArgumentList().containsAll(collection);
+    return new HashSet<>(this.getArgumentList()).containsAll(collection);
   }
 
   public  boolean isEmptyArguments ()  {

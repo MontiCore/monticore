@@ -21,8 +21,7 @@ public class JavaDoc {
    * @param descriptions the lines
    */
   public JavaDoc description(String... descriptions) {
-    for (String description : descriptions)
-      this.description.add(description);
+    this.description.addAll(Arrays.asList(descriptions));
     return this;
   }
 

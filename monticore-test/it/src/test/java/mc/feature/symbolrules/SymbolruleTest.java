@@ -108,7 +108,7 @@ public class SymbolruleTest {
     assertEquals("test", as.getModifiedName(2));
     assertTrue(SymTypeExpressionFactory.createPrimitive("int").deepEquals(as2.getSymType()));
     assertEquals(1, as2.getLocalFooSymbols().size());
-    ISymbolruleTestScope fooSpannedScope = as2.getLocalFooSymbols().get(0).getSpannedScope();
+    ISymbolruleTestScope fooSpannedScope = as2.getLocalFooSymbols().getFirst().getSpannedScope();
     assertEquals(2, fooSpannedScope.getLocalBarSymbols().size());
     assertEquals("Test1", fooSpannedScope.getLocalBarSymbols().get(0).getName());
     assertEquals("Test2", fooSpannedScope.getLocalBarSymbols().get(1).getName());
@@ -117,13 +117,13 @@ public class SymbolruleTest {
     assertEquals("symbol1", bar1SpannedScope.getLocalTest1Symbols().get(0).getName());
     assertEquals("symbol11", bar1SpannedScope.getLocalTest1Symbols().get(1).getName());
     assertEquals(1, bar1SpannedScope.getLocalTest2Symbols().size());
-    assertEquals("symbol2", bar1SpannedScope.getLocalTest2Symbols().get(0).getName());
+    assertEquals("symbol2", bar1SpannedScope.getLocalTest2Symbols().getFirst().getName());
     ISymbolruleTestScope bar2SpannedScope = fooSpannedScope.getLocalBarSymbols().get(1).getSpannedScope();
     assertEquals(2, bar2SpannedScope.getLocalTest1Symbols().size());
     assertEquals("symbol3", bar2SpannedScope.getLocalTest1Symbols().get(0).getName());
     assertEquals("symbol4", bar2SpannedScope.getLocalTest1Symbols().get(1).getName());
     assertEquals(1, bar2SpannedScope.getLocalTest2Symbols().size());
-    assertEquals("symbol22", bar2SpannedScope.getLocalTest2Symbols().get(0).getName());
+    assertEquals("symbol22", bar2SpannedScope.getLocalTest2Symbols().getFirst().getName());
   }
 
   @Test
@@ -147,7 +147,7 @@ public class SymbolruleTest {
     as.setNamesList(Lists.newArrayList("A", "B", "C"));
     as.setSymTypesList(Lists.newArrayList(SymTypeExpressionFactory.createPrimitive("int"), SymTypeExpressionFactory.createPrimitive("double")));
     as.setArePresentList(Lists.newArrayList(false, true, true, false));
-    as.setBigNumbersList(Lists.newArrayList(3l));
+    as.setBigNumbersList(Lists.newArrayList(3L));
     as.setDoubleFloatingPointsList(Lists.newArrayList(3.4,6.3,5.5));
     as.setFloatingPointsList(Lists.newArrayList(3.4f,32.4f,1.3f));
 

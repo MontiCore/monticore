@@ -7,7 +7,6 @@ import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsTraverser;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
-import de.monticore.types.mcsimplegenerictypes.MCSimpleGenericTypesMill;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
@@ -39,7 +38,7 @@ public class GrammarTransformer {
    * Example: {@code List(Element || ',')* ==> (List:Element (',' List:Element)+)}
    */
   public static void removeNonTerminalSeparators(ASTMCGrammar grammar) {
-    Map<ASTNonTerminalSeparator, ASTAlt> map = new LinkedHashMap<ASTNonTerminalSeparator, ASTAlt>();
+    Map<ASTNonTerminalSeparator, ASTAlt> map = new LinkedHashMap<>();
     RuleComponentListFinder componentListTransformer = new RuleComponentListFinder(map);
 
     Grammar_WithConceptsTraverser traverser = Grammar_WithConceptsMill.traverser();
@@ -72,7 +71,7 @@ public class GrammarTransformer {
    * no usage names were set. Examples: {@code Name ("." Name&)* ==> names:Name ("." names:Name&)* (State | Transition)* ==> (states:State | transitions:Transition)*}
    */
   public static void uncapitalizeMultivaluedAttributes(ASTMCGrammar grammar) {
-    grammar.getASTRuleList().forEach(c -> transformAttributesInAST(c));
+    grammar.getASTRuleList().forEach(GrammarTransformer::transformAttributesInAST);
   }
 
   protected static String simpleName(ASTMCType type) {
@@ -122,7 +121,7 @@ public class GrammarTransformer {
     extendedList = extendedList.replaceAll("%iterator%", iteration);
 
     Grammar_WithConceptsParser parser = Grammar_WithConceptsMill.parser();
-    Optional<ASTBlock> block = null;
+    Optional<ASTBlock> block = Optional.empty();
     try {
       Log.debug("Create ast for " + extendedList, GrammarTransformer.class.getName());
       block = parser.parseBlock(new StringReader(extendedList));

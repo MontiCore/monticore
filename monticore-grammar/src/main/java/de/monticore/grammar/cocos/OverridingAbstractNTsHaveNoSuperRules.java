@@ -33,11 +33,11 @@ public class OverridingAbstractNTsHaveNoSuperRules implements GrammarASTAbstract
     if (!a.getSuperRuleList().isEmpty() || !a.getASTSuperClassList().isEmpty()) {
       String extendedType;
       if (!a.getSuperRuleList().isEmpty()){
-        extendedType = a.getSuperRuleList().get(0).getName();
+        extendedType = a.getSuperRuleList().getFirst().getName();
       }
       else{
         extendedType = MCSimpleGenericTypesMill
-            .prettyPrint(a.getASTSuperClassList().get(0), false).trim();
+            .prettyPrint(a.getASTSuperClassList().getFirst(), false).trim();
       }
       
       for (MCGrammarSymbol s : grammarSymbols) {

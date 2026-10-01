@@ -52,7 +52,7 @@ public class SynthesizeCompKindFromMCBasicTypes implements MCBasicTypesHandler {
     if (comp.isEmpty()) {
       this.resultWrapper.setResultAbsent();
     } else {
-      CompKindExpression result = new CompKindOfComponentType(comp.get(0));
+      CompKindExpression result = new CompKindOfComponentType(comp.getFirst());
       result.setSourceNode(node);
       this.resultWrapper.setResult(result);
 

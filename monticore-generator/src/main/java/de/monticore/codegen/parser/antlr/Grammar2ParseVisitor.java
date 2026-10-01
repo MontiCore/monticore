@@ -496,7 +496,7 @@ public class Grammar2ParseVisitor implements GrammarVisitor2, GrammarHandler {
 
     alt.blockComponents.forEach(c -> alt.allOptConditions.addAll(c.allOptConditions));
 
-    List<ParseVisitorEntry> nonOptEntries = alt.blockComponents.stream().filter(e -> e.condition != null).filter(f -> !f.ruleOptional).collect(Collectors.toList());
+    List<ParseVisitorEntry> nonOptEntries = alt.blockComponents.stream().filter(e -> e.condition != null).filter(f -> !f.ruleOptional).toList();
     if (nonOptEntries.isEmpty()) {
       if (alt.allOptConditions.stream().noneMatch(Objects::nonNull))
         alt.condition = null;
@@ -549,7 +549,7 @@ public class Grammar2ParseVisitor implements GrammarVisitor2, GrammarHandler {
     }
 
     // A | B => A || B
-    List<ParseVisitorEntry> nonOptEntries = blockEntry.alternatives.stream().filter(e -> e.condition != null).filter(f -> !f.ruleOptional).collect(Collectors.toList());
+    List<ParseVisitorEntry> nonOptEntries = blockEntry.alternatives.stream().filter(e -> e.condition != null).filter(f -> !f.ruleOptional).toList();
     if (nonOptEntries.isEmpty()) {
       if (blockEntry.allOptConditions.stream().anyMatch(Objects::nonNull))
         blockEntry.condition = "/* block all opt */ (" + String.join("||", blockEntry.allOptConditions) + ")";
@@ -744,7 +744,7 @@ public class Grammar2ParseVisitor implements GrammarVisitor2, GrammarHandler {
     boolean iterated = TransformationHelper
             .isConstGroupIterated(node.getSymbol());
     if (!iterated) {
-      ASTConstant x = node.getConstantList().get(0);
+      ASTConstant x = node.getConstantList().getFirst();
 
       ParseVisitorEntry e = new ParseVisitorEntry();
       stack.peek().blockComponents.add(e);

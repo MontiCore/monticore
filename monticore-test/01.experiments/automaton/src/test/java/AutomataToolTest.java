@@ -6,11 +6,7 @@ import de.monticore.runtime.junit.MCAssertions;
 import org.junit.*;
 import de.se_rwth.commons.logging.Log;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintStream;
 import java.util.*;
-import java.util.regex.Pattern;
 
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.BeforeEach;

@@ -90,18 +90,18 @@ public class SymTypeLubCalculator {
     }
     // at least two different types, try (boxed) primitives first
     // lub of boolean
-    else if (typeSet.stream().allMatch(t -> SymTypeRelations.isBoolean(t))) {
+    else if (typeSet.stream().allMatch(SymTypeRelations::isBoolean)) {
       // note: at least one is not boxed, so unbox all
       lub = Optional.of(createPrimitive(BasicSymbolsMill.BOOLEAN));
     }
     // lub of number
     // based on Java Spec (20): Numeric Conditional Expressions
-    else if (typeSet.stream().allMatch(t -> SymTypeRelations.isNumericType(t))) {
+    else if (typeSet.stream().allMatch(SymTypeRelations::isNumericType)) {
       List<SymTypeExpression> numbers = typeSet.stream()
           .map(SymTypeRelations::unbox)
           .collect(Collectors.toList());
       // lub of byte
-      if (numbers.stream().allMatch(t -> SymTypeRelations.isByte(t))) {
+      if (numbers.stream().allMatch(SymTypeRelations::isByte)) {
         lub = Optional.of(createPrimitive(BasicSymbolsMill.BYTE));
       }
       // lub of byte|short

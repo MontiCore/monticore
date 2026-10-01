@@ -33,7 +33,7 @@ public class ReturnTypeAssignmentIsValid implements JavaLightASTMethodDeclaratio
   @Override
   public void check(ASTMethodDeclaration node) {
     Map<ASTNode, Optional<ASTExpression>> returnStatements = getReturnExpressions(node);
-    
+
     SymTypeExpression typeOfMethod = TypeCheck3.symTypeFromAST(node.getMCReturnType());
 
     // Check return-Statements

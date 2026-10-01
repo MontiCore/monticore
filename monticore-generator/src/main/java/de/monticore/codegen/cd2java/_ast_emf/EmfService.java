@@ -10,6 +10,7 @@ import de.monticore.cdinterfaceandenum._ast.ASTCDInterface;
 import de.monticore.codegen.cd2java.AbstractService;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
+import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.StringTransformations;
@@ -177,7 +178,7 @@ public class EmfService extends AbstractService<EmfService> {
   public List<CDTypeSymbol> retrieveSuperTypes(ASTCDClass c) {
     List<CDTypeSymbol> superTypes = Lists.newArrayList();
     c.getSymbol().getSuperTypesList().stream()
-            .map(s -> s.getTypeInfo())
+            .map(SymTypeExpression::getTypeInfo)
             .forEach(t -> {if(t instanceof CDTypeSymbol && ((CDTypeSymbol)t).isIsInterface()) superTypes.add((CDTypeSymbol) t);});
     return superTypes;
   }
@@ -242,25 +243,16 @@ public class EmfService extends AbstractService<EmfService> {
    * @return true if the input type is a java object type, false otherwise.
    */
   protected boolean isObjectType(ASTMCType type) {
-    switch (getDecorationHelper().getSimpleNativeType(type)) {
-      case "Boolean":
-      case "Short":
-      case "Integer":
-      case "Long":
-      case "Character":
-      case "Float":
-      case "Double":
-      case "java.lang.Boolean":
-      case "java.lang.Short":
-      case "java.lang.Integer":
-      case "java.lang.Long":
-      case "java.lang.Character":
-      case "java.lang.Float":
-      case "java.lang.Double":
-        return true;
-      default:
-        return false;
-    }
+    return switch (getDecorationHelper().getSimpleNativeType(type)) {
+      case "Boolean",   "java.lang.Boolean",
+           "Short",     "java.lang.Short",
+           "Integer",   "java.lang.Integer",
+           "Long",      "java.lang.Long",
+           "Character", "java.lang.Character",
+           "Float",     "java.lang.Float",
+           "Double",    "java.lang.Double" -> true;
+      default -> false;
+    };
   }
 
   public String getPackage(String typeName) {
@@ -278,23 +270,14 @@ public class EmfService extends AbstractService<EmfService> {
       return "Optional.empty()";
     }
     String typeName = CD4CodeMill.prettyPrint(attribute.getMCType(), false);
-    switch (typeName) {
-      case "boolean":
-        return "false";
-      case "int":
-        return "0";
-      case "short":
-        return "(short) 0";
-      case "long":
-        return "0";
-      case "float":
-        return "0.0f";
-      case "double":
-        return "0.0";
-      case "char":
-        return "'\u0000'";
-      default:
-        return "null";
-    }
+    return switch (typeName) {
+      case "boolean" -> "false";
+      case "int", "long" -> "0";
+      case "short" -> "(short) 0";
+      case "float" -> "0.0f";
+      case "double" -> "0.0";
+      case "char" -> "'\u0000'";
+      default -> "null";
+    };
   }
 }

@@ -1,6 +1,7 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.types3.util;
 
+import com.google.common.base.Preconditions;
 import de.monticore.types.check.SymTypeArray;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfFunction;
@@ -83,10 +84,9 @@ public class SymTypeCompatibilityCalculator {
   public List<Bound> constrainCompatible(
       SymTypeExpression target,
       SymTypeExpression source) {
-    return constrainCompatiblePreNormalized(
-        SymTypeRelations.normalize(target),
-        SymTypeRelations.normalize(source)
-    );
+    SymTypeExpression targetNormalized = SymTypeRelations.normalize(target);
+    SymTypeExpression sourceNormalized = SymTypeRelations.normalize(source);
+    return constrainCompatiblePreNormalized(targetNormalized, sourceNormalized);
   }
 
   protected List<Bound> constrainCompatiblePreNormalized(
@@ -488,7 +488,7 @@ public class SymTypeCompatibilityCalculator {
     List<Bound> result;
     List<List<Bound>> satisfiableResults = bounds.stream()
         .filter(r -> r.stream().noneMatch(Bound::isUnsatisfiableBound))
-        .collect(Collectors.toList());
+        .toList();
     if (satisfiableResults.stream().anyMatch(List::isEmpty)) {
       result = Collections.emptyList();
     }
@@ -498,7 +498,7 @@ public class SymTypeCompatibilityCalculator {
       );
     }
     else if (satisfiableResults.size() == 1) {
-      result = satisfiableResults.get(0);
+      result = satisfiableResults.getFirst();
     }
     else {
       // Warning: Heuristic! (potential false negatives)
@@ -1063,7 +1063,7 @@ public class SymTypeCompatibilityCalculator {
           result.addAll(superCheckBounds);
           isSatisfiable = true;
         }
-        else if (!superIsSatisfiable && !isSatisfiable) {
+        else if (!isSatisfiable) {
           unsatisfiableResult.addAll(superCheckBounds);
         }
       }
@@ -1237,9 +1237,9 @@ public class SymTypeCompatibilityCalculator {
   }
 
   protected List<Bound> functionConstrainSameType(SymTypeOfFunction funcA, SymTypeOfFunction funcB) {
-    List<Bound> result = new ArrayList<>();
-    // return type
-    result.addAll(internal_constrainSameTypePreNormalized(funcA.getType(), funcB.getType()));
+    // initialize with return type
+    List<Bound> result =
+        new ArrayList<>(internal_constrainSameTypePreNormalized(funcA.getType(), funcB.getType()));
     // either both are elliptic or none are
     if (funcA.isElliptic() != funcB.isElliptic()) {
       result.add(new UnsatisfiableBound(funcA.printFullName()
@@ -1395,57 +1395,95 @@ public class SymTypeCompatibilityCalculator {
     // as to reduce the number of constraints needed to be checked.
     else {
       SymTypeOfWildcard superSetWC = superSetType.asWildcard();
-      // <S <= ?>
-      if (!superSetWC.hasBound()) {
-        result = Collections.emptyList();
-      }
-      // <S <= ? extends T>
-      else if (superSetWC.isUpper()) {
-        if (!subSetType.isWildcard()) {
-          result = constrainSubTypeOf(subSetType, superSetWC.getBound());
+      try {
+        constraintContainsDepth++;
+        // <S <= ?>
+        if (!superSetWC.hasBound()) {
+          result = Collections.emptyList();
         }
-        else {
-          SymTypeOfWildcard subSetWC = subSetType.asWildcard();
-          // note: we once constrain with #TOP <: a
-          // and once with #TOP = a
-          // this aligns with Java Spec 21 18.2.3
-          // <? <= ? extends T>
-          if (!subSetWC.hasBound()) {
-            result = constrainSubTypeOf(createTopType(), superSetWC.getBound());
+        // <S <= ? extends T>
+        else if (superSetWC.isUpper()) {
+          if (!subSetType.isWildcard()) {
+            result = constrainSubTypeOf(subSetType, superSetWC.getBound());
           }
-          // <? extends S' <= ? extends T>
-          else if (subSetWC.isUpper()) {
-            result = constrainSubTypeOf(subSetWC.getBound(), superSetWC.getBound());
-          }
-          // <? super S' <= ? extends T>
           else {
-            result = constrainSameType(createTopType(), superSetWC.getBound());
+            SymTypeOfWildcard subSetWC = subSetType.asWildcard();
+            // note: we once constrain with #TOP <: a
+            // and once with #TOP = a
+            // this aligns with Java Spec 21 18.2.3
+            // <? <= ? extends T>
+            if (!subSetWC.hasBound()) {
+              result = constrainSubTypeOf(createTopType(), superSetWC.getBound());
+            }
+            // <? extends S' <= ? extends T>
+            else if (subSetWC.isUpper()) {
+              result = constrainSubTypeOf(subSetWC.getBound(), superSetWC.getBound());
+            }
+            // <? super S' <= ? extends T>
+            else {
+              result = constrainSameType(createTopType(), superSetWC.getBound());
+            }
+          }
+        }
+        // <S <= ? super T>
+        else {
+          // <S <= ? super T>
+          if (!subSetType.isWildcard()) {
+            result = constrainSubTypeOf(superSetWC.getBound(), subSetType);
+          }
+          // <? super S' <= ? super T>
+          else if (!subSetType.asWildcard().isUpper()) {
+            result = constrainSubTypeOf(
+                superSetWC.getBound(),
+                subSetType.asWildcard().getBound()
+            );
+          }
+          // <? extends S' <= ? super T>
+          else {
+            result = Collections.singletonList(
+                getUnsatisfiableBoundForContainment(subSetType, superSetType)
+            );
           }
         }
       }
-      // <S <= ? super T>
-      else {
-        // <S <= ? super T>
-        if (!subSetType.isWildcard()) {
-          result = constrainSubTypeOf(superSetWC.getBound(), subSetType);
+      // explanation in Bound below
+      catch (StackOverflowError e) {
+        // only handle this at the lowest point,
+        // to avoid hundreds of useless other bounds
+        if (constraintContainsDepth > 1) {
+          throw e;
         }
-        // <? super S' <= ? super T>
-        else if (!subSetType.asWildcard().isUpper()) {
-          result = constrainSubTypeOf(
-              superSetWC.getBound(),
-              subSetType.asWildcard().getBound()
-          );
-        }
-        // <? extends S' <= ? super T>
-        else {
-          result = Collections.singletonList(
-              getUnsatisfiableBoundForContainment(subSetType, superSetType)
-          );
-        }
+        Log.trace(
+            "constrainContainsPreNormalized:"
+                + " expected stack overflow occurred.",
+            LOG_NAME
+        );
+        result = List.of(new UnsatisfiableBound(
+            "Type argument " + subSetType.printFullName()
+                + " is assumed to not be contained in type argument "
+                + superSetType.printFullName() + "."
+                + " Complexity of involved types is too high for further analysis."
+                + System.lineSeparator()
+                + "Reason: Stack overflow error occurred."
+                + " This is intended behavior(!), as type checking wildcards"
+                + ", as they are defined in Java, are known to be turing complete."
+                + " Thus, it is not possible to check for these cases."
+                + " (Similarly, javac 21 tends to break in such cases.)"
+                + System.lineSeparator()
+                + "It is advised to review the complexity of your types in the model."
+        ));
+      }
+      finally {
+        constraintContainsDepth--;
+        Preconditions.checkState(constraintContainsDepth >= 0);
       }
     }
     return result;
   }
+
+  // only for constrainContainsPreNormalized
+  // used to limit the amount of bounds returned
+  protected int constraintContainsDepth = 0;
 
   /**
    * Reduces a constraint {@code <a = b>} to the constraints {@code <a <: b>, <b <: a>}.

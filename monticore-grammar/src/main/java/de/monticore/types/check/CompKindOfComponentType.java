@@ -3,7 +3,6 @@ package de.monticore.types.check;
 
 import com.google.common.base.Preconditions;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
-import de.monticore.symbols.basicsymbols._symboltable.VariableSymbolTOP;
 import de.monticore.symbols.compsymbols._symboltable.ComponentTypeSymbol;
 import de.monticore.symbols.compsymbols._symboltable.PortSymbol;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -55,7 +54,7 @@ public class CompKindOfComponentType extends CompKindExpression {
   @Override
   public Optional<SymTypeExpression> getTypeOfParameter(@NonNull String name) {
     Preconditions.checkNotNull(name);
-    return this.getTypeInfo().getParameter(name).map(VariableSymbolTOP::getType);
+    return this.getTypeInfo().getParameter(name).map(VariableSymbol::getType);
   }
 
   @Override

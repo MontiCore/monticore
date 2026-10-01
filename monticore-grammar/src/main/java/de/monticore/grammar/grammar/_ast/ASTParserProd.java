@@ -5,5 +5,5 @@ import java.util.List;
 
 public interface ASTParserProd extends ASTParserProdTOP {
 
-  public List<ASTRuleReference> getSuperInterfaceRuleList();
+  List<ASTRuleReference> getSuperInterfaceRuleList();
 }

@@ -78,7 +78,7 @@ public class ExpressionBasisTypeVisitor extends AbstractTypeVisitor
         getAsBasicSymbolsScope(expr.getEnclosingScope());
     Optional<SymTypeExpression> exprType = WithinScopeBasicSymbolsResolver
         .resolveNameAsExpr(enclosingScope, name);
-    if (!exprType.isPresent()) {
+    if (exprType.isEmpty()) {
       exprType = WithinScopeBasicSymbolsResolver
           .resolveTypeAsExpression(enclosingScope, name);
     }

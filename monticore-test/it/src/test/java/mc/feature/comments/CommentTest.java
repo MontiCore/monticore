@@ -48,9 +48,9 @@ public class CommentTest {
     
     assertEquals("// Test", ast.get_PreCommentList().get(0).getText());
     assertEquals("/*Second*/", ast.get_PreCommentList().get(1).getText());
-    assertEquals("// First Constant 1", ast.getWiredList().get(0).get_PreCommentList().get(0).getText());
-    assertEquals("// First Constant 2", ast.getWiredList().get(0).get_PostCommentList().get(0).getText());
-    assertEquals("/*Second Constant*/", ast.getWiredList().get(1).get_PreCommentList().get(0).getText());
+    assertEquals("// First Constant 1", ast.getWiredList().get(0).get_PreCommentList().getFirst().getText());
+    assertEquals("// First Constant 2", ast.getWiredList().get(0).get_PostCommentList().getFirst().getText());
+    assertEquals("/*Second Constant*/", ast.getWiredList().get(1).get_PreCommentList().getFirst().getText());
   }
   
 }

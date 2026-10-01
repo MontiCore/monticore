@@ -186,7 +186,7 @@ public class CoCoTests {
       //do nothing here, just catch the exception for further testing
     }
     assertTrue(Log.getFindingsCount()>=1);
-    assertTrue(Log.getFindings().get(0).getMsg().startsWith(errorCode));
+    assertTrue(Log.getFindings().getFirst().getMsg().startsWith(errorCode));
   }
 
   protected void testInvalidOO(String errorCode, ASTTCCompilationUnit comp){
@@ -198,7 +198,7 @@ public class CoCoTests {
       //do nothing here, just catch the exception for further testing
     }
     assertTrue(Log.getFindingsCount()>=1);
-    assertTrue(Log.getFindings().get(0).getMsg().startsWith(errorCode));
+    assertTrue(Log.getFindings().getFirst().getMsg().startsWith(errorCode));
   }
 
   protected void testValidAbstract(ASTTCCompilationUnit comp){

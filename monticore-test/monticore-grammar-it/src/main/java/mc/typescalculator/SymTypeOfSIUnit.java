@@ -43,10 +43,9 @@ public class SymTypeOfSIUnit extends SymTypeExpression {
 
   @Override
   public boolean deepEquals(SymTypeExpression sym) {
-    if(!(sym instanceof SymTypeOfSIUnit)){
+    if(!(sym instanceof SymTypeOfSIUnit symSi)){
       return false;
     }
-    SymTypeOfSIUnit symSi = (SymTypeOfSIUnit) sym;
     if(this.typeSymbol== null ||symSi.typeSymbol==null){
       return false;
     }

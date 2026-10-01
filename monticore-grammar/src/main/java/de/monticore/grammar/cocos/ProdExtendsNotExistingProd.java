@@ -16,13 +16,13 @@ public class ProdExtendsNotExistingProd implements GrammarASTProdCoCo {
   @Override
   public void check(ASTProd node) {
     for(ProdSymbolSurrogate loader: node.getSymbol().getSuperProds()){
-      if(!node.getEnclosingScope().resolveProd(loader.getName()).isPresent()){
+      if(node.getEnclosingScope().resolveProd(loader.getName()).isEmpty()){
         logError(node.getName(), loader.getName());
       }
     }
 
     for(ProdSymbolSurrogate loader: node.getSymbol().getSuperInterfaceProds()){
-      if(!node.getEnclosingScope().resolveProd(loader.getName()).isPresent()){
+      if(node.getEnclosingScope().resolveProd(loader.getName()).isEmpty()){
         logError(node.getName(), loader.getName());
       }
     }

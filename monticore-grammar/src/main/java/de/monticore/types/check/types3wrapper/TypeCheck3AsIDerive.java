@@ -10,7 +10,6 @@ import de.monticore.types3.Type4Ast;
 import de.monticore.types3.TypeCheck3;
 import de.monticore.types3.util.LValueRelations;
 import de.monticore.visitor.ITraverser;
-import de.se_rwth.commons.logging.Log;
 
 /**
  * IDerive using the TypeCheck3.

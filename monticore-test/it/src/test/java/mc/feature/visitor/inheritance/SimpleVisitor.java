@@ -34,23 +34,4 @@ public class SimpleVisitor implements AVisitor2, BVisitor2, CVisitor2 {
     run.append("C");
   }
   
-  public void endVisit(de.monticore.ast.ASTNode node) {
-  }
-  
-  public void visit(de.monticore.ast.ASTNode node) {
-  }
-  
-  public void endVisit(de.monticore.symboltable.IScope node) {
-  }
-  
-  public void visit(de.monticore.symboltable.IScope node) {
-  }
-  
-  public void endVisit(de.monticore.symboltable.ISymbol node) {
-  }
-  
-  public void visit(de.monticore.symboltable.ISymbol node) {
-  }
-  
-  
 }

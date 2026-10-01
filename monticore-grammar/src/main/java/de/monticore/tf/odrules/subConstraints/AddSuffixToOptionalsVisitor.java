@@ -18,8 +18,6 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Created by Alexander Wilts on 16.01.2017.
- * <p>
  * This visitor replaces elements with stereotype 'not' or 'optional' with a new variable with suffix '_candAsOptional'.
  * Additionally the visitor adds a '.get()' call behind that variable.
  */
@@ -41,9 +39,8 @@ public class AddSuffixToOptionalsVisitor implements
     public void visit(ASTArguments node) {
         List<ASTExpression> newExpressions = new ArrayList<>();
         for(ASTExpression expr : node.getExpressionList()) {
-            if(expr instanceof ASTNameExpression) {
-                ASTNameExpression nameExpr = (ASTNameExpression) expr;
-                newExpressions.add(replaceNode(nameExpr));
+            if(expr instanceof ASTNameExpression nameExpr) {
+              newExpressions.add(replaceNode(nameExpr));
             } else {
                 newExpressions.add(expr);
             }

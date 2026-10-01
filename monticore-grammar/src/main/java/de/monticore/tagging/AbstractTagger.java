@@ -18,7 +18,7 @@ public class AbstractTagger {
     List<String> scopeStack = new ArrayList<>();
     while (scope != target) {
       if (!scope.isPresentName()) break;
-      scopeStack.add(0, scope.getName());
+      scopeStack.addFirst(scope.getName());
       scope = scope.getEnclosingScope();
     }
     return scopeStack;

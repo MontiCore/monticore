@@ -27,7 +27,7 @@ public class SymTypeOfWildcard extends SymTypeExpression {
   }
 
   public boolean hasBound() {
-    return !bound.isEmpty();
+    return bound.isPresent();
   }
 
   public SymTypeExpression getBound() {
@@ -85,17 +85,16 @@ public class SymTypeOfWildcard extends SymTypeExpression {
   public boolean deepEquals(SymTypeExpression sym){
     //supporting deprecated code:
     if(typeSymbol != null) {
-    if(!(sym instanceof SymTypeOfWildcard)){
+    if(!(sym instanceof SymTypeOfWildcard symWil)){
       return false;
     }
-    SymTypeOfWildcard symWil = (SymTypeOfWildcard) sym;
-    if(this.isUpper()!=symWil.isUpper()){
+      if(this.isUpper()!=symWil.isUpper()){
       return false;
     }
-    if((this.getBound()==null && symWil.getBound()!=null) || (this.getBound()!=null && symWil.getBound()==null)){
+    if((this.getBound() == null && symWil.getBound() != null) || (this.getBound() != null && symWil.getBound() == null)){
       return false;
     }
-    if(this.getBound()!=null && symWil.getBound()!=null && !this.getBound().deepEquals(symWil.getBound())){
+    if(this.getBound() != null && symWil.getBound() != null && !this.getBound().deepEquals(symWil.getBound())){
       return false;
     }
     return this.print().equals(symWil.print());

@@ -5,7 +5,7 @@ ${tc.signature("symbolNameList")}
     topSymbolList.addAll(get${symbolName}Symbols().values());
   </#list>
   if (topSymbolList.size() == 1) {
-    return Optional.of(topSymbolList.get(0));
+    return Optional.of(topSymbolList.getFirst());
   }
   // there is no top level symbol, if more than one symbol exists.
   return Optional.empty();

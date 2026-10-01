@@ -73,8 +73,8 @@ final class RemoveRedundantAttributesManipulation implements UnaryOperator<ASTCD
    *
    * @return true if another attribute with the same variable name, the same original type exists
    */
-  protected static boolean isColliding(ASTCDAttribute inspectedAttribute,
-                                       ASTCDAttribute remainingAttribute) {
+  private static boolean isColliding(ASTCDAttribute inspectedAttribute,
+      ASTCDAttribute remainingAttribute) {
     String inspectedName = inspectedAttribute.getName();
     String inspectedType = getOriginalTypeName(inspectedAttribute);
 
@@ -91,8 +91,7 @@ final class RemoveRedundantAttributesManipulation implements UnaryOperator<ASTCD
    * - if the candidate has more stereotypes (in particular inherited)
    * @return true if the candAttr should be preferred over the existing one
    */
-  protected static boolean isAttrPreferred(ASTCDAttribute candAttr,
-                                           ASTCDAttribute existingAttr) {
+  private static boolean isAttrPreferred(ASTCDAttribute candAttr, ASTCDAttribute existingAttr) {
     // The reason behind this heuristic is documented in removeRedundantAttributes
 
     // First: check category
@@ -113,7 +112,7 @@ final class RemoveRedundantAttributesManipulation implements UnaryOperator<ASTCD
     // The fallback heuristic is to keep the first attribute
   }
 
-  protected static String getOriginalTypeName(ASTCDAttribute cdAttribute) {
+  private static String getOriginalTypeName(ASTCDAttribute cdAttribute) {
     AttributeCategory category = AttributeCategory.determineCategory(cdAttribute);
     if (category == AttributeCategory.GENERICLIST || category == AttributeCategory.OPTIONAL) {
       Optional<String> firstArgument = getFirstTypeArgument(cdAttribute);
@@ -124,12 +123,12 @@ final class RemoveRedundantAttributesManipulation implements UnaryOperator<ASTCD
     return TransformationHelper.typeToString(cdAttribute.getMCType());
   }
 
-  protected static Optional<String> getFirstTypeArgument(ASTCDAttribute cdAttribute) {
+  private static Optional<String> getFirstTypeArgument(ASTCDAttribute cdAttribute) {
     // the 'List' in 'List<String>'
     if (cdAttribute.getMCType() instanceof ASTMCGenericType) {
       List<ASTMCTypeArgument> argList = ((ASTMCGenericType) cdAttribute.getMCType()).getMCTypeArgumentList();
       if (!argList.isEmpty()) {
-        String simpleTypeName = CD4CodeMill.prettyPrint(argList.get(0).getMCTypeOpt().get(), false);
+        String simpleTypeName = CD4CodeMill.prettyPrint(argList.getFirst().getMCTypeOpt().get(), false);
         return Optional.of(simpleTypeName);
       }
     }

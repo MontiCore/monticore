@@ -335,6 +335,8 @@ public class MCCommonStatementsInterpreter
           if (!Objects.equals(labelStr, signal.getLabel().orElse(null))) {
             throw signal;
           }
+          // explicit continue
+          //noinspection UnnecessaryContinue
           continue;
         }
       }

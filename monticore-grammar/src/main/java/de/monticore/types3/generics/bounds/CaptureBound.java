@@ -131,7 +131,7 @@ public class CaptureBound extends Bound {
     List<SymTypeVariable> params = getTypeParameters();
     List<SymTypeExpression> upperBounds = params.stream()
         .map(SymTypeVariable::getUpperBound)
-        .collect(Collectors.toList());
+        .toList();
     List<SymTypeExpression> modifiedBounds = upperBounds.stream()
         .map(t -> TypeParameterRelations.replaceTypeVariables(
             t, getTypeParameter2InferenceVarMap()
@@ -153,7 +153,7 @@ public class CaptureBound extends Bound {
         toBeCaptured.asFunctionType().getDeclaredType();
     List<SymTypeVariable> typeParams = getTypeArguments(declType).stream()
         .map(SymTypeExpression::asTypeVariable)
-        .collect(Collectors.toList());
+        .toList();
     Map<SymTypeVariable, SymTypeInferenceVariable> param2InfVar = new TreeMap<>();
     for (int i = 0; i < typeParams.size(); i++) {
       param2InfVar.put(typeParams.get(i), infVars.get(i));
@@ -199,7 +199,7 @@ public class CaptureBound extends Bound {
       SymTypeOfFunction declType = typeFunc.getDeclaredType();
       List<SymTypeVariable> typeParams = declType.getTypeArguments()
           .stream().map(SymTypeExpression::asTypeVariable)
-          .collect(Collectors.toList());
+          .toList();
       Map<SymTypeVariable, SymTypeInferenceVariable> infVarReplaceMap =
           new TreeMap<>();
       for (SymTypeVariable typeParam : typeParams) {

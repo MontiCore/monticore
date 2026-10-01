@@ -157,7 +157,7 @@ public class FileReaderWriter {
           openedJarFiles.add(new SharedCloseable<>(((JarURLConnection) conn).getJarFile()));
         }
       }
-      Reader reader = new InputStreamReader(conn.getInputStream(), charset.name());
+      Reader reader = new InputStreamReader(conn.getInputStream(), charset);
       content = _readFromFile(reader);
       reader.close();
     }
@@ -199,14 +199,14 @@ public class FileReaderWriter {
       ArrayList<URL> results = Collections.list(classLoader.getResources(name));
       if (results.size() > 1) {
         throw new AmbiguityException("0xA4092 Multiple models were found with name '"
-          + name + "':" + results.toString());
+          + name + "':" + results);
       }
-      else if (results.size() < 1) {
+      else if (results.isEmpty()) {
         Reporting.reportFileExistenceChecking(Lists.newArrayList(), Paths.get(name));
       }
       else {
-        Reporting.reportOpenInputFile(results.get(0).getFile());
-        return Optional.ofNullable(results.get(0));
+        Reporting.reportOpenInputFile(results.getFirst().getFile());
+        return Optional.ofNullable(results.getFirst());
       }
     }
     catch (IOException e) {
@@ -266,7 +266,7 @@ public class FileReaderWriter {
           openedJarFiles.add(new SharedCloseable<>(((JarURLConnection) conn).getJarFile()));
         }
       }
-      return new InputStreamReader(conn.getInputStream(), Charsets.UTF_8.name());
+      return new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8);
     }
     catch (IOException | URISyntaxException e) {
       Log.error("0xA6104 Exception occurred while reading the file at '" + location + "':", e);

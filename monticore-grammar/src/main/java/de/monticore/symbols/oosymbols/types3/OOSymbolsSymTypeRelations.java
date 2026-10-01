@@ -4,7 +4,6 @@ package de.monticore.symbols.oosymbols.types3;
 import com.google.common.base.Preconditions;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
-import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
 import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
@@ -18,7 +17,6 @@ import de.se_rwth.commons.logging.Log;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * relations for SymTypes of wrt. OOSymbols,
@@ -102,17 +100,15 @@ public class OOSymbolsSymTypeRelations {
       List<SymTypeOfFunction> methods =
           name2AbstractMethods.values().stream()
               .flatMap(List::stream)
-              .collect(Collectors.toList());
+              .toList();
       List<SymTypeOfFunction> abstractMethods = methods.stream()
-          .filter(m -> OOSymbolsMill.typeDispatcher()
-              .isOOSymbolsMethod(m.getSymbol())
+          .filter(
+              m -> m.getSymbol() instanceof MethodSymbol methodSymbol &&
+                  methodSymbol.isIsAbstract()
           )
-          .filter(m -> OOSymbolsMill.typeDispatcher()
-              .asOOSymbolsMethod(m.getSymbol()).isIsAbstract()
-          )
-          .collect(Collectors.toList());
+          .toList();
       if (abstractMethods.size() == 1) {
-        res = Optional.of(abstractMethods.get(0));
+        res = Optional.of(abstractMethods.getFirst());
       }
       else {
         res = Optional.empty();
@@ -163,10 +159,8 @@ public class OOSymbolsSymTypeRelations {
     Optional<OOTypeSymbol> res;
     if (type.hasTypeInfo()) {
       TypeSymbol typeSymbol = type.getTypeInfo();
-      if (OOSymbolsMill.typeDispatcher().isOOSymbolsOOType(typeSymbol)) {
-        res = Optional.of(
-            OOSymbolsMill.typeDispatcher().asOOSymbolsOOType(typeSymbol)
-        );
+      if (typeSymbol instanceof OOTypeSymbol ooTypeSymbol) {
+        res = Optional.of(ooTypeSymbol);
       }
       else {
         res = Optional.empty();
@@ -186,10 +180,8 @@ public class OOSymbolsSymTypeRelations {
       SymTypeOfFunction func = type.asFunctionType();
       if (func.hasSymbol()) {
         FunctionSymbol funcSym = func.getSymbol();
-        if (OOSymbolsMill.typeDispatcher().isOOSymbolsMethod(funcSym)) {
-          res = Optional.of(
-              OOSymbolsMill.typeDispatcher().asOOSymbolsMethod(funcSym)
-          );
+        if (funcSym instanceof MethodSymbol methodSymbol) {
+          res = Optional.of(methodSymbol);
         }
         else {
           res = Optional.empty();
@@ -211,10 +203,8 @@ public class OOSymbolsSymTypeRelations {
     Optional<FieldSymbol> res;
     if (type.getSourceInfo().getSourceSymbol().isPresent()) {
       ISymbol sourceSymbol = type.getSourceInfo().getSourceSymbol().get();
-      if (OOSymbolsMill.typeDispatcher().isOOSymbolsField(sourceSymbol)) {
-        res = Optional.of(
-            OOSymbolsMill.typeDispatcher().asOOSymbolsField(sourceSymbol)
-        );
+      if (sourceSymbol instanceof FieldSymbol fieldSymbol) {
+        res = Optional.of(fieldSymbol);
       }
       else {
         res = Optional.empty();

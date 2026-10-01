@@ -168,7 +168,7 @@ public class GrammarsForTestsProvider {
     String[] asArray = content.split("\n");
     String ret = "";
     for (int i = 0; i < asArray.length; i++) {
-      ret += ("" + (i + 1) + ") " + asArray[i] + "\n");
+      ret += ((i + 1) + ") " + asArray[i] + "\n");
     }
     return ret;
   }

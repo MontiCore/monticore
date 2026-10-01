@@ -28,6 +28,7 @@ import static de.monticore.types3.util.DefsTypesForTests.*;
  * @deprecated Use the test fixtures instead
  */
 @Deprecated(forRemoval = true)
+@SuppressWarnings({"deprecation", "removal"})
 public class DefsVariablesForTests {
 
   /**

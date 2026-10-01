@@ -301,7 +301,7 @@ public class SymTypeNormalizeVisitor extends SymTypeDeepCloneVisitor {
               uniqueInfVars
           )
           .map(Set::size)
-          .reduce(0, (a, b) -> a + b)
+          .reduce(0, Integer::sum)
           + (hasNull ? 1 : 0)
           != uniqueTypes.size()
       ) {
@@ -508,7 +508,7 @@ public class SymTypeNormalizeVisitor extends SymTypeDeepCloneVisitor {
     else {
       List<SymTypeOfFunction> functionsFixedArity = functions.stream()
           .map(f -> f.getWithFixedArity(maxArgSize))
-          .collect(Collectors.toList());
+          .toList();
       // reuse tuple implementation for arguments
       List<SymTypeOfTuple> argsAsTuples = functionsFixedArity.stream()
           .map(f -> createTuple(f.getArgumentTypeList()))
@@ -629,7 +629,7 @@ public class SymTypeNormalizeVisitor extends SymTypeDeepCloneVisitor {
     }
     // (A) -> A
     else if (innerTypes.size() == 1) {
-      normalized = innerTypes.get(0);
+      normalized = innerTypes.getFirst();
     }
     // (..., Obscure, ...) -> Obscure
     else if (innerTypes.stream().anyMatch(SymTypeExpression::isObscureType)) {

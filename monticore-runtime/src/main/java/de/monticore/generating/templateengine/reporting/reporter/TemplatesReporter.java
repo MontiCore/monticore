@@ -17,9 +17,9 @@ public class TemplatesReporter extends AReporter {
   
   static final String INDENT = Layouter.getSpaceString(10);
   
-  protected SortedMap<String, Integer> templateCount = new TreeMap<String, Integer>();
+  protected SortedMap<String, Integer> templateCount = new TreeMap<>();
   
-  protected SortedMap<String, Integer> hwTemplateCount = new TreeMap<String, Integer>();
+  protected SortedMap<String, Integer> hwTemplateCount = new TreeMap<>();
   
   protected Set<String> realTemplateNames = new LinkedHashSet<>();
   
@@ -65,8 +65,7 @@ public class TemplatesReporter extends AReporter {
   
   protected void writeUnusedUSTemplates() {
     writeLine("========================================================== Unused USTemplates");
-    SortedSet<String> unusedHWTemplateNames = new TreeSet<String>(
-        repository.getAllHWTemplateNames());
+    SortedSet<String> unusedHWTemplateNames = new TreeSet<>(repository.getAllHWTemplateNames());
     unusedHWTemplateNames.removeAll(realHWTemplateNames);
     for (String t : unusedHWTemplateNames) {
       writeLine(t);

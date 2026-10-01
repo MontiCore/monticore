@@ -19,7 +19,7 @@ public interface ASTNode {
 
   IScope getEnclosingScope();
 
-  default public boolean equalAttributes(Object o) {
+  default boolean equalAttributes(Object o) {
     if (o == null) {
       return false;
     }
@@ -28,7 +28,7 @@ public interface ASTNode {
             + o.getClass().getName());
   }
   
-  default public boolean equalsWithComments(Object o) {
+  default boolean equalsWithComments(Object o) {
     if (o == null) {
       return false;
     }
@@ -41,7 +41,7 @@ public interface ASTNode {
    * Compare this object to another Object. Do not take comments into account. This method returns
    * the same value as {@link ASTNode#deepEquals(Object, boolean)} method when using the default value for forceSameOrder of each Node.
    */
-  default public boolean deepEquals(Object o) {
+  default boolean deepEquals(Object o) {
     if (o == null) {
       return false;
     }
@@ -56,7 +56,7 @@ public interface ASTNode {
    * @param o the object to compare this node to
    * @return whether both objects deep-equal with comments
    */
-  default public boolean deepEqualsWithComments(Object o) {
+  default boolean deepEqualsWithComments(Object o) {
     throw new CompareNotSupportedException(
         "0xA4044 Method deepEqualsWithComments is not implemented properly in class: "
             + o.getClass().getName());
@@ -70,7 +70,7 @@ public interface ASTNode {
    * stereotype unordered in the grammar.
    * @return whether both objects deep-equal
    */
-  default public boolean deepEquals(Object o, boolean forceSameOrder) {
+  default boolean deepEquals(Object o, boolean forceSameOrder) {
     if (o == null) {
       return false;
     }
@@ -84,7 +84,7 @@ public interface ASTNode {
    * value as {@link ASTNode#deepEqualsWithComments(Object, boolean)} method when using the
    * default value for forceSameOrder of each Node.
    */
-  default public boolean deepEqualsWithComments(Object o, boolean forceSameOrder) {
+  default boolean deepEqualsWithComments(Object o, boolean forceSameOrder) {
     if (o == null) {
       return false;
     }

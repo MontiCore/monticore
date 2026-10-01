@@ -97,19 +97,19 @@ public class PackageImplDecorator extends AbstractCreator<ASTCDCompilationUnit, 
     copiedDefinition.getCDClassesList()
         .stream()
         .map(emfService::removeInheritedAttributes)
-        .collect(Collectors.toList());
+        .toList();
 
     //remove ast node Interface e.g. ASTAutomataNode
     List<ASTCDInterface> astcdInterfaces = copiedDefinition.getCDInterfacesList()
         .stream()
         .filter(x -> !emfService.isASTNodeInterface(x, copiedDefinition))
-        .collect(Collectors.toList());
+        .toList();
 
     //remove inherited attributes
     astcdInterfaces
         .stream()
         .map(emfService::removeInheritedAttributes)
-        .collect(Collectors.toList());
+        .toList();
 
     return copiedDefinition;
   }
@@ -232,10 +232,9 @@ public class PackageImplDecorator extends AbstractCreator<ASTCDCompilationUnit, 
         .stream()
         .filter(x -> emfService.isLiteralsEnum(x, astcdDefinition.getName()))
         .findFirst();
-    if (literalsEnum.isPresent()) {
-      replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast_emf.emf_package.InitializePackageContents",
-          astcdDefinition, literalsEnum.get()));
-    }
+    literalsEnum.ifPresent(astcdEnum -> replaceTemplate(EMPTY_BODY, method,
+        new TemplateHookPoint("_ast_emf.emf_package.InitializePackageContents", astcdDefinition,
+            astcdEnum)));
     return method;
   }
 }

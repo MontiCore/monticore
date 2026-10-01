@@ -19,7 +19,7 @@ import static java.util.Optional.empty;
 public interface IGrammarScope extends IGrammarScopeTOP {
 
   // all resolveImported Methods for ProdSymbol
-  default public Optional<ProdSymbol> resolveProdImported(String name, AccessModifier modifier) {
+  default Optional<ProdSymbol> resolveProdImported(String name, AccessModifier modifier) {
     Optional<ProdSymbol> s = this.resolveProdLocally(name);
     if (s.isPresent()) {
       return s;
@@ -28,7 +28,8 @@ public interface IGrammarScope extends IGrammarScopeTOP {
   }
 
 
-  default public List<ProdSymbol> resolveProdMany(boolean foundSymbols, String name, AccessModifier modifier, Predicate<ProdSymbol> predicate)  {
+  default List<ProdSymbol> resolveProdMany(boolean foundSymbols, String name,
+      AccessModifier modifier, Predicate<ProdSymbol> predicate)  {
     if (!isProdSymbolsAlreadyResolved()) {
       setProdSymbolsAlreadyResolved(true);
     } else {
@@ -52,7 +53,8 @@ public interface IGrammarScope extends IGrammarScopeTOP {
       setProdSymbolsAlreadyResolved(false);
       return resolvedSymbols;
     }
-    final Collection<ProdSymbol> resolvedFromEnclosing = continueProdWithEnclosingScope((foundSymbols | !resolvedSymbols.isEmpty()), name, modifier, predicate);
+    final Collection<ProdSymbol> resolvedFromEnclosing =
+        continueProdWithEnclosingScope(foundSymbols, name, modifier, predicate);
     resolvedSymbols.addAll(resolvedFromEnclosing);
     setProdSymbolsAlreadyResolved(false);
     return resolvedSymbols;

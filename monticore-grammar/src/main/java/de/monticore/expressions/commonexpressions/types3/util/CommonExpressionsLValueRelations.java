@@ -1,9 +1,10 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.expressions.commonexpressions.types3.util;
 
-import de.monticore.expressions.commonexpressions.CommonExpressionsMill;
-import de.monticore.expressions.commonexpressions._util.ICommonExpressionsTypeDispatcher;
+import de.monticore.expressions.commonexpressions._ast.ASTArrayAccessExpression;
+import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.types3.util.LValueRelations;
 import de.se_rwth.commons.logging.Log;
 
@@ -17,16 +18,14 @@ public class CommonExpressionsLValueRelations
    */
   @Override
   protected boolean _isLValue(ASTExpression expression) {
-    ICommonExpressionsTypeDispatcher dispatcher =
-        CommonExpressionsMill.typeDispatcher();
     boolean result;
-    if (dispatcher.isExpressionsBasisASTNameExpression(expression)) {
+    if (expression instanceof ASTNameExpression) {
       result = true;
     }
-    else if (dispatcher.isCommonExpressionsASTFieldAccessExpression(expression)) {
+    else if (expression instanceof ASTFieldAccessExpression) {
       result = true;
     }
-    else if (dispatcher.isCommonExpressionsASTArrayAccessExpression(expression)) {
+    else if (expression instanceof ASTArrayAccessExpression) {
       result = true;
     }
     else {

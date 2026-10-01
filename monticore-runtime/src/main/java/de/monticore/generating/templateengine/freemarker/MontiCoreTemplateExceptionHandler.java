@@ -85,7 +85,9 @@ public class MontiCoreTemplateExceptionHandler implements TemplateExceptionHandl
       case LOG_AND_ABORT:
         Log.error("0xA0354 " + te.getMessage());
         try {
-          writer.append(COMMENT_START + te.getMessage() + COMMENT_END);
+          writer.append(COMMENT_START);
+          writer.append(te.getMessage());
+          writer.append(COMMENT_END);
         }
         catch (IOException e) {
           Log.info("IOException during appending a message", "MontiCoreTemplateExceptionHandler");
@@ -104,7 +106,9 @@ public class MontiCoreTemplateExceptionHandler implements TemplateExceptionHandl
       default: // includes LOG_AND_CONTINUE
         Log.error(te.getMessage());
         try {
-          writer.append(COMMENT_START + "0xA0357 " + te.getMessage() + COMMENT_END);
+          writer.append(COMMENT_START + "0xA0357 ");
+          writer.append(te.getMessage());
+          writer.append(COMMENT_END);
         }
         catch (IOException e) {
           Log.info("IOException during appending a message", "MontiCoreTemplateExceptionHandler");

@@ -85,15 +85,8 @@ public class IndentPrinter {
    * @param l number of spaces per level (default is 2)
    */
   public void setIndentLength(int l) {
-    sp = "";
-    for (int i = 0; i < l; i++) {
-      sp += " ";
-    }
-    
-    spacer = "";
-    for (int i = 0; i < indent; i++) {
-      spacer += sp;
-    }
+    sp = " ".repeat(l);
+    spacer = sp.repeat(indent);
   }
   
   /**
@@ -196,7 +189,7 @@ public class IndentPrinter {
     // linebuffer.setLength(i + 1);
     
     // indent nonempty buffers
-    if (linebuffer.length() != 0) {
+    if (!linebuffer.isEmpty()) {
       writtenbuffer.append(spacer);
       writtenbuffer.append(linebuffer);
     }
@@ -213,8 +206,7 @@ public class IndentPrinter {
   public void indent(int i) {
     if (i > 0) {
       indent += i;
-      for (int j = 0; j < i; j++)
-        spacer += sp;
+      spacer += sp.repeat(i);
     }
     else if (i < 0) {
       while (i < 0 && indent > 0) {
@@ -307,7 +299,7 @@ public class IndentPrinter {
    * @return true if current line is empty
    */
   public boolean isStartOfLine() {
-    return (linebuffer.length() == 0);
+    return linebuffer.isEmpty();
   }
   
   /**
@@ -390,7 +382,7 @@ public class IndentPrinter {
    * Removes all trailing {@linkplain Character#isWhitespace(int) white spaces} on the current line
    */
   public void stripTrailing() {
-    while (linebuffer.length() > 0 && Character.isWhitespace(linebuffer.charAt(linebuffer.length() - 1))) {
+    while (!linebuffer.isEmpty() && Character.isWhitespace(linebuffer.charAt(linebuffer.length() - 1))) {
       linebuffer.deleteCharAt(linebuffer.length() - 1);
     }
   }

@@ -698,7 +698,7 @@ public class CompileTimeTypeCalculator {
         infCtx.setVisitorMode(InferenceVisitorMode.APPLICABILITY_TEST);
         expr.accept(typeTraverser);
         infCtx = inferenceContext4Ast.getContextOfExpression(expr);
-        if (infCtx.getInferenceResults().size() >= 1) {
+        if (!infCtx.getInferenceResults().isEmpty()) {
           boolean hasResults = true;
           List<SymTypeExpression> instantiations = new ArrayList<>();
           for (InferenceResult infResult : infCtx.getInferenceResults()) {
@@ -1420,7 +1420,7 @@ public class CompileTimeTypeCalculator {
     List<SymTypeExpression> resolvedTypes =
         resolvedTypesNonNormalized.stream()
             .map(SymTypeRelations::normalize)
-            .collect(Collectors.toList());
+            .toList();
     List<SymTypeOfFunction> resolvedFuncs = resolvedTypes.stream()
         .filter(SymTypeExpression::isFunctionType)
         .map(SymTypeExpression::asFunctionType)
@@ -1441,7 +1441,7 @@ public class CompileTimeTypeCalculator {
     List<SymTypeExpression> resolvedTypesNormalized =
         resolvedTypesNonNormalized.stream()
             .map(SymTypeRelations::normalize)
-            .collect(Collectors.toList());
+            .toList();
     // more than 1 non-function type is in most languages not expected
     // if there are no non-functions, return the function(s),
     // this gets filtered outside of inference
@@ -1451,7 +1451,7 @@ public class CompileTimeTypeCalculator {
         nonFuncsNonNormalized.add(resolvedTypesNonNormalized.get(i));
       }
     }
-    if (nonFuncsNonNormalized.size() >= 1) {
+    if (!nonFuncsNonNormalized.isEmpty()) {
       nonFunctionType = Optional.of(SymTypeExpressionFactory
           .createIntersectionOrDefault(
               resolvedType, nonFuncsNonNormalized
@@ -1495,11 +1495,11 @@ public class CompileTimeTypeCalculator {
   ) {
     List<SymTypeInferenceVariable> infVars = func.getTypeArguments().stream()
         .map(SymTypeExpression::asInferenceVariable)
-        .collect(Collectors.toList());
+        .toList();
     SymTypeOfFunction declaredFunc = func.getDeclaredType();
     List<SymTypeVariable> typeParams = declaredFunc.getTypeArguments().stream()
         .map(SymTypeExpression::asTypeVariable)
-        .collect(Collectors.toList());
+        .toList();
     Map<SymTypeVariable, SymTypeInferenceVariable> typeParamReplaceMap =
         new TreeMap<>();
     for (int i = 0; i < typeParams.size(); i++) {

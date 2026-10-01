@@ -3,9 +3,7 @@ package de.monticore.grammar.cocos;
 
 import de.monticore.grammar.grammar._ast.ASTConstant;
 import de.monticore.grammar.grammar._ast.ASTMCGrammar;
-import de.monticore.grammar.grammar._ast.ASTTerminal;
 import de.monticore.grammar.grammar._cocos.GrammarASTConstantCoCo;
-import de.monticore.grammar.grammar._cocos.GrammarASTTerminalCoCo;
 import de.monticore.grammar.grammar._visitor.GrammarVisitor2;
 import de.se_rwth.commons.logging.Log;
 

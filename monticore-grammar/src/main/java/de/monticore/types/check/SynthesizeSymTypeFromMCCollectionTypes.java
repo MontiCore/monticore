@@ -19,6 +19,7 @@ import java.util.List;
  * use {@link de.monticore.types3.TypeCheck3} instead.
  */
 @Deprecated
+@SuppressWarnings({"deprecation", "removal"})
 public class SynthesizeSymTypeFromMCCollectionTypes extends AbstractSynthesizeFromType implements MCCollectionTypesVisitor2, MCCollectionTypesHandler {
 
 
@@ -68,7 +69,7 @@ public class SynthesizeSymTypeFromMCCollectionTypes extends AbstractSynthesizeFr
         // Argument type has been processed and stored in result
         if (symbols.size() == 1) {
           SymTypeExpression typeArg = getTypeCheckResult().getResult();
-          SymTypeExpression typeExpression = SymTypeExpressionFactory.createGenerics(symbols.get(0), typeArg);
+          SymTypeExpression typeExpression = SymTypeExpressionFactory.createGenerics(symbols.getFirst(), typeArg);
           getTypeCheckResult().setResult(typeExpression);
           type.setDefiningSymbol(typeExpression.getTypeInfo());
         } else {
@@ -122,7 +123,7 @@ public class SynthesizeSymTypeFromMCCollectionTypes extends AbstractSynthesizeFr
           SymTypeExpression keyTypeExpr = keyTypeResult.getResult();
           SymTypeExpression valueTypeExpr = valueTypeResult.getResult();
           SymTypeExpression typeExpression =
-            SymTypeExpressionFactory.createGenerics(mapSyms.get(0), keyTypeExpr, valueTypeExpr);
+            SymTypeExpressionFactory.createGenerics(mapSyms.getFirst(), keyTypeExpr, valueTypeExpr);
           getTypeCheckResult().setResult(typeExpression);
           node.setDefiningSymbol(typeExpression.getTypeInfo());
         } else {

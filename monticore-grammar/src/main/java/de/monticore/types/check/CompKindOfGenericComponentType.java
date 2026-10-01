@@ -212,11 +212,10 @@ public class CompKindOfGenericComponentType extends CompKindExpression {
   public boolean deepEquals(@NonNull CompKindExpression compSymType) {
     Preconditions.checkNotNull(compSymType);
 
-    if(!(compSymType instanceof CompKindOfGenericComponentType)) {
+    if(!(compSymType instanceof CompKindOfGenericComponentType otherCompExpr)) {
       return false;
     }
-    CompKindOfGenericComponentType otherCompExpr = (CompKindOfGenericComponentType) compSymType;
-
+    
     boolean equal = this.getTypeInfo().equals(compSymType.getTypeInfo());
     equal &= this.getTypeBindingsAsList().size() == otherCompExpr.getTypeBindingsAsList().size();
     for(int i = 0; i < this.getTypeBindingsAsList().size(); i++) {

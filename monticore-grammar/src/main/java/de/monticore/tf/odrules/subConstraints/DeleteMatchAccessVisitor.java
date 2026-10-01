@@ -9,8 +9,6 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 
 /**
- * Created by Alexander Wilts on 16.01.2017.
- *
  * This visitor cuts off the 'm.' prefix used for accessing elements in a given Match m.
  * In SubConstraints these elements are accessed by their original name.
  */
@@ -92,8 +90,7 @@ public class DeleteMatchAccessVisitor implements
 
   private ASTExpression replaceNode(ASTFieldAccessExpression node) {
     //Look for a child of a child that is a primary expression with name 'm'
-    if(node.getExpression() instanceof ASTNameExpression) {
-      ASTNameExpression nameExpression = (ASTNameExpression) node.getExpression();
+    if(node.getExpression() instanceof ASTNameExpression nameExpression) {
       if(nameExpression.getName().equals("m")) {
         return buildNode(node);
       }

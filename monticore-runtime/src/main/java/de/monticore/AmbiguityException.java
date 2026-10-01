@@ -2,6 +2,8 @@
 
 package de.monticore;
 
+import java.io.Serial;
+
 /**
  * This exception is thrown whenever a model or resource is ambiguously specified. Common examples
  * are two models in the modelpath sharing the same fully qualified name or two symbols in the
@@ -10,6 +12,7 @@ package de.monticore;
  */
 public class AmbiguityException extends RuntimeException {
   
+  @Serial
   private static final long serialVersionUID = 2754767948180345585L;
   
   protected String[] ambiguities = new String[] {};
@@ -26,7 +29,8 @@ public class AmbiguityException extends RuntimeException {
   public String getMessage() {
     StringBuilder builder = new StringBuilder("Ambiguities:\n");
     for (String ambiguity : ambiguities) {
-      builder.append(ambiguity + "\n");
+      builder.append(ambiguity);
+      builder.append("\n");
     }
     builder.append(super.getMessage());
     return builder.toString();

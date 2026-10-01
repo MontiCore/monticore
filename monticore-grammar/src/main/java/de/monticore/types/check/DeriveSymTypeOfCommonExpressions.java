@@ -22,23 +22,26 @@ import java.util.stream.Collectors;
  * use {@link de.monticore.types3.TypeCheck3} instead.
  */
 @Deprecated
+@SuppressWarnings({"deprecation", "removal"})
 public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfBSCommonExpressions {
 
   @Override
   protected List<VariableSymbol> filterModifiersVariables(List<VariableSymbol> variableSymbols) {
-    return variableSymbols.stream().filter(f -> f instanceof FieldSymbol ? ((FieldSymbol) f).isIsStatic() : false).collect(Collectors.toList());
+    return variableSymbols.stream().filter(f -> f instanceof FieldSymbol
+        && ((FieldSymbol) f).isIsStatic()).collect(Collectors.toList());
   }
 
   @Override
   protected List<FunctionSymbol> filterModifiersFunctions(List<FunctionSymbol> functionSymbols) {
-    return functionSymbols.stream().filter(m -> m instanceof MethodSymbol ? ((MethodSymbol) m).isIsStatic() : true).collect(Collectors.toList());
+    return functionSymbols.stream().filter(m -> !(m instanceof MethodSymbol)
+        || ((MethodSymbol) m).isIsStatic()).collect(Collectors.toList());
   }
 
   @Override
   protected boolean checkModifierType(TypeSymbol typeSymbol) {
     //if the last result is a type and the type is not static then it is not accessible
     if (getTypeCheckResult().isType()) {
-      return typeSymbol instanceof OOTypeSymbol ? ((OOTypeSymbol) typeSymbol).isIsStatic() : true;
+      return !(typeSymbol instanceof OOTypeSymbol) || ((OOTypeSymbol) typeSymbol).isIsStatic();
     }
     return true;
   }

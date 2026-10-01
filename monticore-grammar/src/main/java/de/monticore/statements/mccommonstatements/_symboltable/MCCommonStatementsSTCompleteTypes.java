@@ -14,6 +14,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
  * @deprecated Use {@link MCCommonStatementsSymTabCompletion} instead
  */
 @Deprecated
+@SuppressWarnings({"deprecation", "removal"})
 public class MCCommonStatementsSTCompleteTypes implements MCCommonStatementsVisitor2 {
 
   @Override

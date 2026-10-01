@@ -34,9 +34,9 @@ public interface MCGeneratorExtension {
 
   class DefaultMCGeneratorExtension implements MCGeneratorExtension {
 
-    private final DomainObjectCollection publishedSourceSets;
+    private final DomainObjectCollection<SourceSet> publishedSourceSets;
 
-    public DefaultMCGeneratorExtension(DomainObjectCollection publishedSourceSets) {
+    public DefaultMCGeneratorExtension(DomainObjectCollection<SourceSet> publishedSourceSets) {
       this.publishedSourceSets = publishedSourceSets;
     }
 

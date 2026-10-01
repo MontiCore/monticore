@@ -88,7 +88,7 @@ public interface ISymbol {
 
   static <T extends ISymbol> List<T> sortSymbolsByPosition(final Collection<T> unorderedSymbols) {
     final List<T> sortedSymbols = new ArrayList<>(unorderedSymbols);
-    Collections.sort(sortedSymbols, Comparator.comparing(ISymbol::getSourcePosition));
+    sortedSymbols.sort(Comparator.comparing(ISymbol::getSourcePosition));
     return ImmutableList.copyOf(sortedSymbols);
   }
 

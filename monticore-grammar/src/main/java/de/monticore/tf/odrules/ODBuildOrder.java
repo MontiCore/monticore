@@ -10,10 +10,10 @@ import java.util.List;
 
 public class ODBuildOrder {
 
-    public class ObjectTrees {
+    public static class ObjectTrees {
         private LinkedHashMap<String, ObjectNode> nodes = new LinkedHashMap<>();
 
-        public class ObjectNode {
+        public static class ObjectNode {
             private ObjectNode parent;
             private List<ObjectNode> childs = new LinkedList<>();
             private ASTODObject object;

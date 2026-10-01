@@ -25,8 +25,8 @@ public class ReferencedSymbolExists implements GrammarASTNonTerminalCoCo {
           grammarSymbol.get().getProdWithInherited(symbol).get().isIsSymbolDefinition()) {
         return;
       }
-      Log.error(String.format(ERROR_CODE + String.format(ERROR_MSG_FORMAT, symbol),
-          node.get_SourcePositionStart()));
+      Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, symbol),
+          node.get_SourcePositionStart());
     }
   }
 }

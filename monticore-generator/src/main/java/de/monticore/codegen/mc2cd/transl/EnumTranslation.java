@@ -32,8 +32,7 @@ public class EnumTranslation implements UnaryOperator<Link<ASTMCGrammar, ASTCDCo
         ASTCDEnumConstant enumConstant = CD4AnalysisMill.cDEnumConstantBuilder().
                 setName(goodName).uncheckedBuild();
         boolean constantAlreadyExists = link.target().getCDEnumConstantList().stream()
-            .filter(existing -> existing.getName().equals(goodName))
-            .findAny().isPresent();
+            .anyMatch(existing -> existing.getName().equals(goodName));
         if (!constantAlreadyExists) {
           link.target().getCDEnumConstantList().add(enumConstant);
         }

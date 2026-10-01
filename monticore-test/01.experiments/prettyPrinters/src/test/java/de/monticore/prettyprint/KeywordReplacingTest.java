@@ -2,12 +2,11 @@
 package de.monticore.prettyprint;
 
 import de.monticore.ast.ASTNode;
-import de.monticore.keywordreplacingtestprettyprinters._ast.ASTKeywordReplacingTestPrettyPrintersNode;
 import de.monticore.keywordreplacingtestprettyprinters.KeywordReplacingTestPrettyPrintersMill;
 import de.monticore.keywordreplacingtestprettyprinters._ast.ASTSomeProdWhichUsesReplacing;
+import de.monticore.keywordreplacingtestprettyprinters._prettyprint.KeywordReplacingTestPrettyPrintersFullPrettyPrinter;
 import de.monticore.runtime.junit.MCAssertions;
 import de.monticore.runtime.junit.TestWithMCLanguage;
-import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -28,5 +27,10 @@ public class KeywordReplacingTest extends PPTestClass {
   @Override
   protected String fullPrettyPrint(ASTNode node) {
     return KeywordReplacingTestPrettyPrintersMill.prettyPrint(node, true);
+  }
+
+  @Override
+  protected String fullPrettyPrintV2(ASTNode node) {
+    return new KeywordReplacingTestPrettyPrintersFullPrettyPrinter(new FormattingPrinter(new IFormatter.DefaultIFormatter()), true).prettyprint(node);
   }
 }

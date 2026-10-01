@@ -8,7 +8,6 @@ import de.monticore.ast.ASTNode;
 import de.monticore.symboltable.IScope;
 import de.monticore.symboltable.ISymbol;
 import de.se_rwth.commons.SourcePosition;
-import de.se_rwth.commons.logging.Log;
 
 import java.util.Map;
 import java.util.Set;
@@ -97,7 +96,7 @@ public class ReportingRepository {
   /**
    * Method that converts the ASTNode into a formatted string with a source position if this is
    * possible. The structure of the string is
-   *
+   * <p>
    * <code>@nodeName!nodeType(x,y)</code> or <code>@nodeName!nodeType(!ID)</code>.
    * @param a that should be converted into unique String
    * @return representation of the ASTNode that contains either the position or a unique
@@ -111,7 +110,7 @@ public class ReportingRepository {
   /**
    * Method that converts the Symbol into a formatted string with a source position if this is
    * possible. The structure of the string is
-   *
+   * <p>
    * <code>@symbolName!symbolType(x,y)</code> or <code>@symbolName!symbolType(!ID)</code>.
    * @param symbol The symbol that should be converted into unique String
    * @return representation of the ASTNode that contains either the position or a unique
@@ -125,7 +124,7 @@ public class ReportingRepository {
   /**
    * Method that converts the Symbol into a formatted string with a source position if this is
    * possible. The structure of the string is
-   *
+   * <p>
    * <code>@symbolName!symbolType(x,y)</code> or <code>@symbolName!symbolType(!ID)</code>.
    * @param scope The scope that should be converted into unique String
    * @return representation of the ASTNode that contains either the position or a unique

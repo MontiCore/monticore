@@ -15,12 +15,12 @@ public abstract class APkg {
   /**
    * Maps name of subpackage to subpackage
    */
-  protected Map<String, Pkg> subPkgs = new LinkedHashMap<String, Pkg>();
+  protected Map<String, Pkg> subPkgs = new LinkedHashMap<>();
   
   /**
    * Maps fullName of Element ({@link Element#getFullName()}) to Element
    */
-  protected Map<String, Element> elements = new LinkedHashMap<String, Element>();
+  protected Map<String, Element> elements = new LinkedHashMap<>();
   
   protected boolean containsNonFileElement = false;
   
@@ -52,7 +52,7 @@ public abstract class APkg {
    * @return
    */
   public List<Pkg> getSubPkgs() {
-    return new ArrayList<Pkg>(subPkgs.values());
+    return new ArrayList<>(subPkgs.values());
   }
   
   /**

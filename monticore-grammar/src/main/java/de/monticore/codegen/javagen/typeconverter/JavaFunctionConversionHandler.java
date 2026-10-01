@@ -75,9 +75,7 @@ public class JavaFunctionConversionHandler
             // (Person) arg0
             SymTypeExpression sourceParam = sourceFunc.getArgumentType(i);
             SymTypeExpression targetParam = targetFunc.getArgumentType(i);
-            printConverted(p2, sourceParam, targetParam, p3 -> {
-              p3.print(argName);
-            });
+            printConverted(p2, sourceParam, targetParam, p3 -> p3.print(argName));
           }
           p2.print(")");
         });

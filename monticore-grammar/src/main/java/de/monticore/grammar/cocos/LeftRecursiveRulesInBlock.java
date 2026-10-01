@@ -34,7 +34,7 @@ public class LeftRecursiveRulesInBlock implements GrammarASTClassProdCoCo {
     ArrayList<String> ruleNames = Lists.newArrayList(a.getName());
     MCGrammarSymbolTableHelper.getAllSuperProds(a.getSymbol()).forEach(p -> ruleNames.add(p.getName()));
     for (ASTAlt alt : a.getAltList()) {
-      if (!alt.getComponentList().isEmpty() && alt.getComponentList().get(0) instanceof ASTBlock) {
+      if (!alt.getComponentList().isEmpty() && alt.getComponentList().getFirst() instanceof ASTBlock) {
         if (detector.isAlternativeLeftRecursive(alt, ruleNames)) {
           Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, a.getSymbol().getName()),
               a.get_SourcePositionStart());

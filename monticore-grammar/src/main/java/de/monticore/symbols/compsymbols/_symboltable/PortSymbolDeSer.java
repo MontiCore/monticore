@@ -2,8 +2,6 @@
 package de.monticore.symbols.compsymbols._symboltable;
 
 import de.monticore.symboltable.serialization.json.JsonObject;
-import de.monticore.types.check.SymTypeExpression;
-import de.monticore.types.check.SymTypeExpressionDeSer;
 import de.se_rwth.commons.logging.Log;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
