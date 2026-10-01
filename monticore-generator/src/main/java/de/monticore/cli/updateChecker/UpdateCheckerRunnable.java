@@ -12,7 +12,6 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
-import java.util.Optional;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -83,6 +82,7 @@ public class UpdateCheckerRunnable implements Runnable {
       }
     }
     catch (IOException | InterruptedException e) {
+      // Best-effort update check: on exception we log and continue without affecting MontiCore.
       Log.warn("0xA9003 Could not retrieve remote properties file");
     }
 
@@ -97,20 +97,17 @@ public class UpdateCheckerRunnable implements Runnable {
   protected Properties getLocalProperties() {
     Properties properties = new Properties();
 
-    Optional<InputStream> localPropertiesStream = Optional.ofNullable(
-        this.getClass().getResourceAsStream(LOCAL_PROPERTIES_PATH));
-    
-    if (localPropertiesStream.isEmpty()) {
-      Log.warn("0xA9006 Could not retrieve local properties file");
+    try (InputStream in = this.getClass().getResourceAsStream(LOCAL_PROPERTIES_PATH)) {
+      if (in == null) {
+        Log.warn("0xA9006 Could not retrieve local properties file");
+      }
+      else {
+        properties.load(in);
+      }
     }
-    else {
-      try {
-        properties.load(localPropertiesStream.get());
-      }
-      catch (IOException e) {
-        Log.debug("0xA9004 Could not find local properties file",
-            UpdateCheckerRunnable.class.getName());
-      }
+    catch (IOException e) {
+      Log.debug("0xA9004 Could not find local properties file",
+          UpdateCheckerRunnable.class.getName());
     }
 
     return properties;
