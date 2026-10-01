@@ -1,13 +1,11 @@
 {
   "kind": "de.monticore.symbols.compsymbols._symboltable.ComponentTypeSymbol",
   "name": "Comp",
-  "fullName": "Comp",
   "spannedScope": {
     "symbols": [
       {
         "kind": "de.monticore.symbols.compsymbols._symboltable.PortSymbol",
         "name": "inc",
-        "fullName": "Comp.inc",
         "type": {
           "kind": "de.monticore.types.check.SymTypePrimitive",
           "primitiveName": "int"
@@ -18,7 +16,6 @@
       {
         "kind": "de.monticore.symbols.compsymbols._symboltable.PortSymbol",
         "name": "outg",
-        "fullName": "Comp.outg",
         "type": {
           "kind": "de.monticore.types.check.SymTypePrimitive",
           "primitiveName": "int"
