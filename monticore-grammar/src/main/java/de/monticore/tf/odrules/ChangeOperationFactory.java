@@ -40,7 +40,7 @@ public class ChangeOperationFactory {
     // this method does all the steps necessary to convert one Object to
     // another
     ASTChangeOperationBuilder builder = ODRuleGenerationMill.changeOperationBuilder();
-    List<ASTChange> setAttributeOperations = new ArrayList<ASTChange>();
+    List<ASTChange> setAttributeOperations = new ArrayList<>();
 
     for (ASTODAttribute right : to.getAttributesList()) {
       // search for matching types on the left
@@ -90,7 +90,7 @@ public class ChangeOperationFactory {
 
     ASTChangeOperationBuilder builder = ODRuleGenerationMill.changeOperationBuilder();
 
-    List<ASTDeleteOperation> deleteOperations = new ArrayList<ASTDeleteOperation>();
+    List<ASTDeleteOperation> deleteOperations = new ArrayList<>();
     deleteOperations.add(createDelete(type, variableName, obj.hasStereotype(ODRuleStereotypes.LIST)));
 
     builder.setDeleteOperationsList(deleteOperations);
@@ -120,7 +120,7 @@ public class ChangeOperationFactory {
   public ASTChangeOperation createCreateOperation(ASTODLink link) {
     ASTChangeOperationBuilder builder = ODRuleGenerationMill.changeOperationBuilder();
 
-    List<ASTChange> setOperations = new ArrayList<ASTChange>();
+    List<ASTChange> setOperations = new ArrayList<>();
     setOperations.add(createLinkCreation(link));
 
     builder.setSetAttributeOperationsList(setOperations);
@@ -140,7 +140,7 @@ public class ChangeOperationFactory {
   public ASTChangeOperation createDeleteOperation(ASTODLink link) {
     ASTChangeOperationBuilder builder = ODRuleGenerationMill.changeOperationBuilder();
 
-    List<ASTChange> setOperations = new ArrayList<ASTChange>();
+    List<ASTChange> setOperations = new ArrayList<>();
     setOperations.add(createLinkDeletion(link));
 
     builder.setSetAttributeOperationsList(setOperations);
@@ -166,22 +166,22 @@ public class ChangeOperationFactory {
         if(n.contains(".")) {
           List<String> parts = Lists.newArrayList(Splitter.on(".").split(n));
           if(hierarchyHelper.isWithinOptionalStructure(object.getName())) {
-            valuesList.append("m." + parts.get(0) + ".isPresent()?");
-            valuesList.append("m." + parts.get(0) + ".get()");
+            valuesList.append("m.").append(parts.get(0)).append(".isPresent()?");
+            valuesList.append("m.").append(parts.get(0)).append(".get()");
             valuesList.append(".get").append(StringTransformations.capitalize(parts.get(1))).append("()");
             if(parts.size()==3){
               valuesList.append(".").append(parts.get(2));
             }
             valuesList.append(":\"undef\"");
           } else {
-            valuesList.append("m." + parts.get(0));
+            valuesList.append("m.").append(parts.get(0));
             valuesList.append(".get").append(StringTransformations.capitalize(parts.get(1))).append("()");
             if(parts.size()==3){
               valuesList.append(".").append(parts.get(2));
             }
           }
         }else if(n.startsWith("\"$") && n.endsWith("\"")){
-          valuesList.append(n.substring(1,n.length()-1));
+          valuesList.append(n, 1, n.length()-1);
         } else {
           valuesList.append(n);
         }
@@ -190,7 +190,7 @@ public class ChangeOperationFactory {
         }
       }
 
-      return "Lists.newArrayList(" + valuesList.toString() + ")";
+      return "Lists.newArrayList(" + valuesList + ")";
     } else {
       TFExpressionFullPrettyPrinter printer = new TFExpressionFullPrettyPrinter(new IndentPrinter());
       return printer.prettyprint(attribute.getSingleValue());
@@ -262,7 +262,7 @@ public class ChangeOperationFactory {
     boolean objectWithinList = hierarchyHelper.isWithinListStructure(object.getName());
     builder.setObjectWithinOpt(objectWithinOpt);
     builder.setObjectWithinList(objectWithinList);
-    String objectGetter = "";
+    String objectGetter;
     if(objectWithinOpt && objectWithinList) {
       objectGetter = "get_" + object.getName() + "().get()";
     } else if(objectWithinOpt) {
@@ -385,7 +385,7 @@ public class ChangeOperationFactory {
     boolean objectWithinList = hierarchyHelper.isWithinListStructure(objectName);
     builder.setObjectWithinOpt(objectWithinOpt);
     builder.setObjectWithinList(objectWithinList);
-    String objectGetter = "";
+    String objectGetter;
     if(objectWithinOpt && objectWithinList) {
       objectGetter = "get_" + objectName + "().get()";
     } else if(objectWithinOpt) {
@@ -442,19 +442,16 @@ public class ChangeOperationFactory {
   private String createInsertPosition(ASTODLink link, ASTChangeBuilder builder) {
     String insertType = link.getStereotypeValue("insertType");
     String insertAt = link.getStereotypeValue("insertAt");
-    String insertPos = "";
-
-    if(insertType.equals("first")) {
-      insertPos = "0";
-    } else if(insertType.equals("last")) {
-      insertPos = "m."+ builder.getObjectName() + "." + builder.getGetter() + "().size()";
-    } else if(insertType.equals("inplace")) {
-      insertPos = "m."+ builder.getObjectName() + "_" + insertAt + "_before_pos";
-    } else if(insertType.equals("relative")) {
-      insertPos = "m."+ builder.getObjectName() + "." + builder.getGetter() + "().indexOf(" + "m." + insertAt + ") + 1";
-    }
-
-    return insertPos;
+    
+    return switch (insertType) {
+      case "first" -> "0";
+      case "last" -> "m." + builder.getObjectName() + "." + builder.getGetter() + "().size()";
+      case "inplace" -> "m." + builder.getObjectName() + "_" + insertAt + "_before_pos";
+      case "relative" ->
+          "m." + builder.getObjectName() + "." + builder.getGetter() + "().indexOf(" + "m."
+              + insertAt + ") + 1";
+      default -> "";
+    };
   }
 
     private ASTChange createLinkDeletion(ASTODLink link) {
@@ -531,7 +528,7 @@ public class ChangeOperationFactory {
     boolean objectWithinList = hierarchyHelper.isWithinListStructure(objectName);
     builder.setObjectWithinOpt(objectWithinOpt);
     builder.setObjectWithinList(objectWithinList);
-    String objectGetter = "";
+    String objectGetter;
     if(objectWithinOpt && objectWithinList) {
       objectGetter = "get_" + objectName + "().get()";
     } else if(objectWithinOpt) {
@@ -587,7 +584,7 @@ public class ChangeOperationFactory {
   private ASTDeleteOperation createDelete(ASTMCType type, String variableName, boolean isListObject) {
     String typeName = Util.printType(type);
     List<String> complexname = Splitters.DOT.splitToList(typeName);
-    String simpleType = complexname.get(complexname.size()-1);
+    String simpleType = complexname.getLast();
 
     ASTDeleteOperationBuilder builder = ODRuleGenerationMill.deleteOperationBuilder();
     builder.setName(variableName);
@@ -609,7 +606,7 @@ public class ChangeOperationFactory {
   private ASTCreateOperation createCreate(ASTMCType type, String variable, boolean isInterface) {
     String typeName = Util.printType(type);
     List<String> complexname = Splitters.DOT.splitToList(typeName);
-    String simpleType = complexname.get(complexname.size()-1);
+    String simpleType = complexname.getLast();
 
     ASTCreateOperationBuilder builder = ODRuleGenerationMill.createOperationBuilder();
     builder.setName(variable);

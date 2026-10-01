@@ -10,8 +10,6 @@ import de.monticore.testprettyprinters._ast.ASTProdNamedTerminal;
 import de.monticore.testprettyprinters._ast.ASTToBeReplacedKeyword;
 import de.monticore.testprettyprinters._parser.TestPrettyPrintersParser;
 import de.monticore.testprettyprinters._prettyprint.TestPrettyPrintersFullPrettyPrinter;
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
@@ -31,6 +29,11 @@ public class TestPrettyPrinterTest extends PPTestClass {
   @Override
   protected String fullPrettyPrint(ASTNode astNode){
     return  TestPrettyPrintersMill.prettyPrint(astNode, true);
+  }
+
+  @Override
+  protected String fullPrettyPrintV2(ASTNode node) {
+    return new TestPrettyPrintersFullPrettyPrinter(new FormattingPrinter(new IFormatter.DefaultIFormatter()), true).prettyprint(node);
   }
 
   @Test

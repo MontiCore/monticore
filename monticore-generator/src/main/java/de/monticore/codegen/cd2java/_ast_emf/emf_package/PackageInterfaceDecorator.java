@@ -19,7 +19,6 @@ import de.se_rwth.commons.StringTransformations;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static de.monticore.cd.facade.CDModifier.*;
 import static de.monticore.cd.codegen.CD2JavaTemplates.VALUE;
@@ -214,7 +213,7 @@ public class PackageInterfaceDecorator extends AbstractCreator<ASTCDCompilationU
     List<ASTCDClass> noInheritedAttributesClasses = astcdDefinition.getCDClassesList()
         .stream()
         .map(emfService::removeInheritedAttributes)
-        .collect(Collectors.toList());
+        .toList();
     // e.g. EAttribute getASTAutomaton_Name() ; EReference getASTAutomaton_States() ;
     for (ASTCDClass astcdClass : noInheritedAttributesClasses) {
       for (ASTCDAttribute astcdAttribute : astcdClass.getCDAttributeList()) {
@@ -227,7 +226,7 @@ public class PackageInterfaceDecorator extends AbstractCreator<ASTCDCompilationU
     List<ASTCDInterface> noInheritedAttributesInterfaces = astcdDefinition.getCDInterfacesList()
         .stream()
         .map(emfService::removeInheritedAttributes)
-        .collect(Collectors.toList());
+        .toList();
     // e.g. EAttribute getASTAutomaton_Name() ; EReference getASTAutomaton_States() ;
     for (ASTCDInterface astcdInterface : noInheritedAttributesInterfaces) {
       for (ASTCDAttribute astcdAttribute : astcdInterface.getCDAttributeList()) {

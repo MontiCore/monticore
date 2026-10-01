@@ -16,6 +16,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static java.lang.System.lineSeparator;
@@ -33,6 +35,14 @@ public class TestJavaCompiler implements AutoCloseable {
 
   static protected final Path DEFAULT_OUTPUT_PATH =
       Path.of("target", "codegen-test", "class");
+
+  /**
+   * Tries(!) to match a {@code package some.pkg;} declaration,
+   * capturing the package name.
+   */
+  static protected final Pattern PACKAGE_DECLARATION_PATTERN =
+      // (?m)^ is used to match the beginning of any line
+      Pattern.compile("(?m)^\\s*package\\s+([\\w.]+)\\s*;");
 
   /**
    * Caches the Java compiler for efficiency.
@@ -208,11 +218,17 @@ public class TestJavaCompiler implements AutoCloseable {
    * @return the class name
    */
   protected String getClassNameOfJavaFile(File javaFile) {
-    String fileName = javaFile.getName();
-    assertTrue(fileName.endsWith(".java"));
-    String className = fileName
-        .substring(0, fileName.length() - ".java".length());
-    return className;
+    // get the simple name
+    String javaFileName = javaFile.getName();
+    assertTrue(javaFileName.endsWith(".java"));
+    String simpleName = javaFileName
+        .substring(0, javaFileName.length() - ".java".length());
+
+    String source = readFile(javaFile);
+    Matcher packageMatcher = PACKAGE_DECLARATION_PATTERN.matcher(source);
+    String packagePrefix =
+        packageMatcher.find() ? packageMatcher.group(1) + "." : "";
+    return packagePrefix + simpleName;
   }
 
   /**

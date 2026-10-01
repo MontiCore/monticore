@@ -7,30 +7,22 @@ import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDConstructor;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
-import de.monticore.cdbasis._symboltable.CDTypeSymbol;
 import de.monticore.cdbasis._ast.*;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java.DecorationHelper;
-import de.monticore.codegen.cd2java._symboltable.SymbolKindHierarchies;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
 import de.monticore.codegen.cd2java._visitor.VisitorService;
 import de.monticore.codegen.cd2java.methods.MethodDecorator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
-import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
-import de.monticore.types.mcbasictypes._ast.ASTMCObjectType;
-import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedTypeTOP;
-import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
-import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcfullgenerictypes._ast.ASTMCWildcardTypeArgument;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.monticore.umlmodifier._ast.ASTModifier;
 import de.se_rwth.commons.Names;
-import java.lang.reflect.Type;
+
 import java.util.*;
 import java.util.stream.Collectors;
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
@@ -345,7 +337,7 @@ public class ScopesGenitorDecorator extends AbstractCreator<ASTCDCompilationUnit
             .filter(e -> !symbolTableService.hasSymbolStereotype(e.getKey()))
             .map(Map.Entry::getValue)
             .filter(e -> !uniqueSymbols.contains(e))
-            .forEach(e -> uniqueSymbols.add(e));
+            .forEach(uniqueSymbols::add);
     for(String symbol: uniqueSymbols) {
       String symbolName = symbolTableService.removeSymbolSuffix(Names.getSimpleName(symbol));
       ASTCDParameter symbolParam = getCDParameterFacade().createParameter(symbol, "symbol");

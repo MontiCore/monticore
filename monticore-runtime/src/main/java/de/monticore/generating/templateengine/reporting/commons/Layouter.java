@@ -97,7 +97,7 @@ public class Layouter {
 		String node = "Unknown!E534";
 		if (c.length >= 2) {
 			node = c[c.length - 2] + "." + c[c.length - 1];
-		} else if (c.length >= 1) {
+		} else if (c.length == 1) {
 			node = c[c.length - 1];
 		}
 		return node;
@@ -129,11 +129,11 @@ public class Layouter {
 			String clazzn = className(value);
 			// Sonderbehandlung mancher Typen
 			if ("String".equals(clazzn)) {
-				out = "\"" + value.toString() + "\"";
+				out = "\"" + value + "\"";
 			} else if ("Integer".equals(clazzn) || "Boolean".equals(clazzn)) {
 				out = value.toString();
 			} else {
-				out = "(" + clazzn + ")" + value.toString();
+				out = "(" + clazzn + ")" + value;
 			}
 		}
 		int l = out.length();
@@ -161,11 +161,7 @@ public class Layouter {
 		if (length < 0) {
 			return " ";
 		}
-		StringBuilder b = new StringBuilder("");
-		for (int i = 0; i < length; i++) {
-			b.append(" ");
-		}
-		return b.toString();
+    return " ".repeat(length);
 	}
 
 }

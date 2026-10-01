@@ -11,7 +11,6 @@ import mc.embedding.external.composite._parser.CompositeParser;
 import mc.embedding.external.embedded._symboltable.TextSymbol;
 import mc.embedding.external.host._ast.ASTHost;
 
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.net.URL;
@@ -39,7 +38,7 @@ public class CompositeGlobalScope extends CompositeGlobalScopeTOP {
   @Override public List<ContentSymbol> resolveAdaptedContent(boolean foundSymbols,
       String symbolName, AccessModifier modifier, Predicate<ContentSymbol> predicate) {
     Collection<TextSymbol> symbols = resolveTextMany(foundSymbols, symbolName, modifier, x -> true);
-    return symbols.stream().map(s -> new Text2ContentAdapter(s)).collect(Collectors.toList());
+    return symbols.stream().map(Text2ContentAdapter::new).collect(Collectors.toList());
   }
 
   @Override public CompositeGlobalScope getRealThis() {

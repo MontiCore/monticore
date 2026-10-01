@@ -25,12 +25,9 @@ public class DirectLeftRecursionDetector {
       return false;
     }
     
-    if (nodes.get(0) instanceof ASTNonTerminal) {
-      ASTNonTerminal leftmostNonterminal = (ASTNonTerminal) nodes.get(0);
-      if ((leftmostNonterminal == actualNonTerminal)
-          && leftmostNonterminal.getName().equals(classProductionName)) {
-        return true;
-      }
+    if (nodes.getFirst() instanceof ASTNonTerminal leftmostNonterminal) {
+      return (leftmostNonterminal == actualNonTerminal) && leftmostNonterminal.getName()
+          .equals(classProductionName);
     }
     
     return false;
@@ -44,8 +41,7 @@ public class DirectLeftRecursionDetector {
       return false;
     }
     
-    if (nodes.get(0) instanceof ASTNonTerminal) {
-      ASTNonTerminal leftmostNonterminal = (ASTNonTerminal) nodes.get(0);
+    if (nodes.getFirst() instanceof ASTNonTerminal leftmostNonterminal) {
       if (leftmostNonterminal.getName().equals(classProductionName)) {
         return true;
       }
@@ -62,11 +58,8 @@ public class DirectLeftRecursionDetector {
       return false;
     }
     
-    if (nodes.get(0) instanceof ASTNonTerminal) {
-      ASTNonTerminal leftmostNonterminal = (ASTNonTerminal) nodes.get(0);
-      if (names.contains(leftmostNonterminal.getName())) {
-        return true;
-      }
+    if (nodes.getFirst() instanceof ASTNonTerminal leftmostNonterminal) {
+      return names.contains(leftmostNonterminal.getName());
     }
     
     return false;

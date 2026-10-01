@@ -87,7 +87,7 @@ public class OCLExpressionsSymbolTableCompleter
     // get the shadowing variable that has been added in OCLExpressionsScopesGenitor
     VariableSymbol shadowedSymbol = node.getNameSymbol();
     VariableSymbol shadowingSymbol =
-        node.getThenExpression().getSpannedScope().getLocalVariableSymbols().get(0);
+        node.getThenExpression().getSpannedScope().getLocalVariableSymbols().getFirst();
     SymTypeExpression shadowedSymbolType = shadowedSymbol.getType();
     SymTypeExpression additionalType = synth(node.getMCType());
 

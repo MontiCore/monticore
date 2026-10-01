@@ -111,14 +111,14 @@ public class ODDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClas
 
   protected ASTCDAttribute createPrintEmptyOptionalAttribute() {
     ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PROTECTED.build(), getMCTypeFacade().createBooleanType(), "printEmptyOptional");
-    this.replaceTemplate(VALUE, attribute, new StringHookPoint("= false;"));
+    this.replaceTemplate(VALUE, attribute, new StringHookPoint("= false"));
     return attribute;
   }
 
 
   protected ASTCDAttribute createPrintEmptyListAttribute() {
     ASTCDAttribute attribute = getCDAttributeFacade().createAttribute(PROTECTED.build(), getMCTypeFacade().createBooleanType(), "printEmptyList");
-    this.replaceTemplate(VALUE, attribute, new StringHookPoint("= false;"));
+    this.replaceTemplate(VALUE, attribute, new StringHookPoint("= false"));
     return attribute;
   }
 

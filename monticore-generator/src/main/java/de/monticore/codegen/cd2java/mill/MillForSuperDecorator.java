@@ -25,6 +25,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
 import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
+import de.monticore.symboltable.ImportStatement;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.se_rwth.commons.StringTransformations;
@@ -159,7 +160,8 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
   // Cache CDTypeSymbol#resolveCDTypeDown
   protected final LoadingCache<Pair<ICDBasisScope, String>, Optional<CDTypeSymbol>> calcOCDCDTypeDownCache = CacheBuilder.newBuilder()
           .maximumSize(10000)
-          .build(new CacheLoader<Pair<ICDBasisScope, String>, Optional<CDTypeSymbol>>() {
+          .build(new CacheLoader<>() {
+            
             @Override
             public Optional<CDTypeSymbol> load(Pair<ICDBasisScope, String> key) {
               return key.getLeft().resolveCDTypeDown(key.getRight());
@@ -170,10 +172,10 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
       Collection<CDTypeSymbol>> overridden, Collection<CDTypeSymbol> firstClasses) {
     Map<String, CDTypeSymbol> l = Maps.newLinkedHashMap();
     Collection<DiagramSymbol> importedClasses = ((ICDBasisArtifactScope) cd.getEnclosingScope()).getImportsList().stream()
-        .map(i -> i.getStatement())
+        .map(ImportStatement::getStatement)
         .filter(i -> !service.isJava(i))
         .map(service::resolveCD)
-        .collect(Collectors.toList());
+        .toList();
     for (DiagramSymbol superCd : importedClasses) {
       Collection<CDTypeSymbol> overriddenSet = Sets.newHashSet();
       for (String className : nativeClasses) {

@@ -73,7 +73,7 @@ public class LiteralsEnumDecoratorTest extends DecoratorTestCase {
   public void testIntValueAttribute() {
     ASTCDAttribute intValueAttribute = cdEnum.getCDAttributeList().get(0);
     assertEquals("intValue", intValueAttribute.getName());
-    assertDeepEquals(CDModifier.PROTECTED, intValueAttribute.getModifier());
+    assertDeepEquals(CDModifier.PRIVATE_FINAL, intValueAttribute.getModifier());
     assertInt(intValueAttribute.getMCType());
   
     assertTrue(Log.getFindings().isEmpty());

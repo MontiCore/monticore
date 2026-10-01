@@ -67,7 +67,7 @@ public class HookPointReporter extends AReporter {
     else if (hp instanceof StringHookPoint) {
       firstline += "ASHP ";
     }
-    String secondLine = "";
+    String secondLine;
     firstline += simpleTemplate
         + Layouter.getSpaceString(ReportingConstants.COLUMN - simpleTemplate.length())
         + astName;
@@ -95,19 +95,17 @@ public class HookPointReporter extends AReporter {
     
     boolean isThp = false;
     boolean isShp = false;
-    if (hp instanceof TemplateHookPoint) {
-      firstline += "THP  ";
-      isThp = true;
-    }
-    else if (hp instanceof CodeHookPoint) {
-      firstline += "CHP  ";
-    }
-    else if (hp instanceof StringHookPoint) {
-      firstline += "SHP  ";
-      isShp = true;
-    }
-    else {
-      firstline += "EHP  ";
+    switch (hp) {
+      case TemplateHookPoint h -> {
+        firstline += "THP  ";
+        isThp = true;
+      }
+      case CodeHookPoint h -> firstline += "CHP  ";
+      case StringHookPoint h -> {
+        firstline += "SHP  ";
+        isShp = true;
+      }
+      case null, default -> firstline += "EHP  ";
     }
     firstline += ReportingHelper.getHookPointName(hookName);
     // hookpoint is null
@@ -333,7 +331,7 @@ public class HookPointReporter extends AReporter {
       firstline += "SHP  ";
       isShp = true;
     }
-    String secondLine = "";
+    String secondLine;
     if (isShp) {
       firstline += simpleTemplate;
       secondLine = Layouter.getSpaceString(ReportingConstants.FORMAT_LENGTH_2) + hpValue;
@@ -377,7 +375,7 @@ public class HookPointReporter extends AReporter {
     else if (hp instanceof StringHookPoint) {
       firstline += "ASHP ";
     }
-    String secondLine = "";
+    String secondLine;
     
     firstline += simpleTemplate
         + Layouter.getSpaceString(ReportingConstants.COLUMN - simpleTemplate.length())

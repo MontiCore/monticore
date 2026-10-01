@@ -15,11 +15,7 @@ import de.se_rwth.commons.Names;
  public  String getTypeName ()  {
       return printGenericType(this);
 }
-
- public  boolean isExternal ()  {
-      return true;
-}
-  
+   
    protected String printGenericType(ASTGenericType genericType) {
     
      StringBuilder b = new StringBuilder();
@@ -45,9 +41,7 @@ import de.se_rwth.commons.Names;
      }
     
      int dimension = genericType.getDimension();
-     for (int i = dimension; i > 0; i--) {
-       b.append("[]");
-     }
+     b.repeat("[]", Math.max(0, dimension));
     
      return b.toString();
    }

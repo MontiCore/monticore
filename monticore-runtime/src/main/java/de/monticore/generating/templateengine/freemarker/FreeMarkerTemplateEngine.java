@@ -91,7 +91,7 @@ public class FreeMarkerTemplateEngine {
       }
       MontiCoreFreeMarkerException mcFtlException = new MontiCoreFreeMarkerException("0xA0561 Unable to execute template " + template.getName() + " : " +
               e.getLocalizedMessage() +
-              seperator + "Exception-type: " + e.getCause() + causedExceptionInfo.toString() +
+              seperator + "Exception-type: " + e.getCause() + causedExceptionInfo +
               seperator + "Caused by " + seperator + e.getFTLInstructionStack(),
           e.getCause());
       if (e.getCause() instanceof Error) {

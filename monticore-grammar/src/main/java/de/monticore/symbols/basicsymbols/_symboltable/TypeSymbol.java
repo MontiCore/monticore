@@ -88,7 +88,7 @@ public class TypeSymbol extends TypeSymbolTOP {
 
   public SymTypeExpression getSuperClass() {
     if (isPresentSuperClass()) {
-      return getSuperClassesOnly().get(0);
+      return getSuperClassesOnly().getFirst();
     }
     Log.error("0xA1068 SuperClass does not exist");
     // Normally this statement is not reachable

@@ -74,26 +74,25 @@ public class MCPublishingPlugin extends APublishingPlugin implements Plugin<Proj
 
       // In case only alias publications are set-up, Gradle fails with a cryptic:
       // Failed to query the value of property 'dependencies'. java.util.NoSuchElementException (no error message)
-      project.getPluginManager().withPlugin("maven-publish", _p -> {
-        project.afterEvaluate(evaluatedProject -> {
-          // Thus, we throw a human comprehensible error that a default (non-alias) publication should be configured
-          if (!ext.getPublishedSourceSets().isEmpty()) { // but only if MC source sets should be published
-            @Nullable PublishingExtension publExt = project.getExtensions().findByType(PublishingExtension.class);
-            if (publExt == null) {
-              doError(evaluatedProject, "Publishing of grammars from source sets requires the maven-publish plugin to be applied first!");
-              return;
-            }
-
-            if (publExt.getPublications()
-                    .matching(publ -> (publ instanceof DefaultMavenPublication && !((DefaultMavenPublication) publ).isAlias()))
-                    .isEmpty()) {
-              doError(evaluatedProject, "Unable to publish from MC source sets "
-                      + ext.getPublishedSourceSets().stream().map(SourceSet::getName).toList()
-                      + " without a default publication (using the maven-publish plugin) being configured");
-            }
+      project.getPluginManager()
+          .withPlugin("maven-publish", _p -> project.afterEvaluate(evaluatedProject -> {
+        // Thus, we throw a human comprehensible error that a default (non-alias) publication should be configured
+        if (!ext.getPublishedSourceSets().isEmpty()) { // but only if MC source sets should be published
+          @Nullable PublishingExtension publExt = project.getExtensions().findByType(PublishingExtension.class);
+          if (publExt == null) {
+            doError(evaluatedProject, "Publishing of grammars from source sets requires the maven-publish plugin to be applied first!");
+            return;
           }
-        });
-      });
+
+          if (publExt.getPublications()
+                  .matching(publ -> (publ instanceof DefaultMavenPublication && !((DefaultMavenPublication) publ).isAlias()))
+                  .isEmpty()) {
+            doError(evaluatedProject, "Unable to publish from MC source sets "
+                    + ext.getPublishedSourceSets().stream().map(SourceSet::getName).toList()
+                    + " without a default publication (using the maven-publish plugin) being configured");
+          }
+        }
+      }));
 
       // Set-up publishing of additional source sets
       ext.getPublishedSourceSets().all(sourceSet -> {
@@ -134,9 +133,8 @@ public class MCPublishingPlugin extends APublishingPlugin implements Plugin<Proj
       // Add an extra attribute to the compile classpath configuration
       // to be able to differentiate between sourcesets.
       // Skip the main source set, as this is done by the java-library plugin
-      project.getConfigurations().getByName(sourceSet.getCompileClasspathConfigurationName()).attributes(it -> {
-        it.attribute(GRAMMAR_SOURCE_SET_ATTRIBUTE, sourceSet.getName());
-      });
+      project.getConfigurations().getByName(sourceSet.getCompileClasspathConfigurationName())
+          .attributes(it -> it.attribute(GRAMMAR_SOURCE_SET_ATTRIBUTE, sourceSet.getName()));
     }
   }
 
@@ -207,9 +205,9 @@ public class MCPublishingPlugin extends APublishingPlugin implements Plugin<Proj
     // Create (to-be consumed) configurations
     createElementsConfigurations(sourceSet, project, jarTask);
 
-    project.getPluginManager().withPlugin("maven-publish", p -> {
-      setupNonMainPublish(grammarsJarArtifact, project, sourceSet, component, jarArtifact, sourcesJarArtifact);
-    });
+    project.getPluginManager().withPlugin("maven-publish",
+        p -> setupNonMainPublish(grammarsJarArtifact, project, sourceSet, component, jarArtifact,
+            sourcesJarArtifact));
   }
 
   /*
@@ -222,24 +220,24 @@ public class MCPublishingPlugin extends APublishingPlugin implements Plugin<Proj
     // We have to use afterEvaluate due to accessing the Project#getGroup() value
     project.afterEvaluate(evalProj -> {
       // Only register the publication when the maven-publish plugin is loaded
-      evalProj.getPluginManager().withPlugin("maven-publish", mavenPublishPlugin -> {
-        evalProj.getExtensions().configure(PublishingExtension.class, publExt -> {
-          // Set up a Maven publication for non-main source sets
-          // First, check if the publication already exists
-          var pubOpt = publExt.getPublications()
-                  .matching(publication -> publication.getName().equals(sourceSet.getName())
-                          && publication instanceof MavenPublication).stream().findAny();
-          if (pubOpt.isPresent()) {
-            // If present, properly configure it
-            configureNonMainPublication(grammarsJarArtifact, sourceSet, component, evalProj, (MavenPublication) pubOpt.get(), jarArtifact, sourcesJarArtifact);
-          } else {
-            // Otherwise create it & configure it then
-            publExt.getPublications().create(sourceSet.getName(), MavenPublication.class, mavenPublication -> {
-              configureNonMainPublication(grammarsJarArtifact, sourceSet, component, evalProj, mavenPublication, jarArtifact, sourcesJarArtifact);
-            });
-          }
-        });
-      });
+      evalProj.getPluginManager().withPlugin("maven-publish",
+          mavenPublishPlugin -> evalProj.getExtensions()
+              .configure(PublishingExtension.class, publExt -> {
+        // Set up a Maven publication for non-main source sets
+        // First, check if the publication already exists
+        var pubOpt = publExt.getPublications()
+                .matching(publication -> publication.getName().equals(sourceSet.getName())
+                        && publication instanceof MavenPublication).stream().findAny();
+        if (pubOpt.isPresent()) {
+          // If present, properly configure it
+          configureNonMainPublication(grammarsJarArtifact, sourceSet, component, evalProj, (MavenPublication) pubOpt.get(), jarArtifact, sourcesJarArtifact);
+        } else {
+          // Otherwise create it & configure it then
+          publExt.getPublications().create(sourceSet.getName(), MavenPublication.class, mavenPublication -> {
+            configureNonMainPublication(grammarsJarArtifact, sourceSet, component, evalProj, mavenPublication, jarArtifact, sourcesJarArtifact);
+          });
+        }
+      }));
     });
 
     // Next, we add a runtime variant from the runtime classpath configuration (and add the jar Artifact)
@@ -293,9 +291,7 @@ public class MCPublishingPlugin extends APublishingPlugin implements Plugin<Proj
     // For non-main sourcesets, add an extra attribute to differentiate between them
     // (Consumable configurations with identical capabilities within a project (other than the default configuration) must have unique attributes)
     if (!SourceSet.isMain(sourceSet)) {
-      config.attributes(it -> {
-        it.attribute(GRAMMAR_SOURCE_SET_ATTRIBUTE, sourceSet.getName());
-      });
+      config.attributes(it -> it.attribute(GRAMMAR_SOURCE_SET_ATTRIBUTE, sourceSet.getName()));
     }
     return config;
   }
@@ -314,9 +310,7 @@ public class MCPublishingPlugin extends APublishingPlugin implements Plugin<Proj
 
   protected TaskProvider<Jar> createJarTask(SourceSet sourceSet, Project project) {
     return createJarTaskPartial(sourceSet, project, "Jar",
-            jar -> {
-              jar.from(sourceSet.getOutput());
-            });
+            jar -> jar.from(sourceSet.getOutput()));
 
   }
 
@@ -429,16 +423,14 @@ public class MCPublishingPlugin extends APublishingPlugin implements Plugin<Proj
       // Also register a variant for local builds without the jarTask
       outgoing.variants(configurationVariants -> {
         configurationVariants.create("classes", configurationVariant -> {
-          configurationVariant.artifact(sourceSet.getOutput().getClassesDirs().getSingleFile(), a -> {
-            a.builtBy(sourceSet.getClassesTaskName());
-          });
+          configurationVariant.artifact(sourceSet.getOutput().getClassesDirs().getSingleFile(),
+              a -> a.builtBy(sourceSet.getClassesTaskName()));
           configurationVariant.getAttributes().attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, objects.named(LibraryElements.class, LibraryElements.CLASSES));
         });
         if (sourceSet.getOutput().getResourcesDir() != null) {
           configurationVariants.create("resources", configurationVariant -> {
-            configurationVariant.artifact(sourceSet.getOutput().getResourcesDir(), a -> {
-              a.builtBy(sourceSet.getProcessResourcesTaskName());
-            });
+            configurationVariant.artifact(sourceSet.getOutput().getResourcesDir(),
+                a -> a.builtBy(sourceSet.getProcessResourcesTaskName()));
             configurationVariant.getAttributes().attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, objects.named(LibraryElements.class, LibraryElements.RESOURCES));
           });
         }

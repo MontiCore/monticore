@@ -6,7 +6,6 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.codegen.cd2java.AbstractDecorator;
-import de.monticore.codegen.prettyprint.PrettyPrinterConstants;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 
 import java.util.List;
@@ -14,7 +13,6 @@ import java.util.List;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PACKAGE;
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.SYMBOL_TABLE_PACKAGE;
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISITOR_PACKAGE;
-import static de.monticore.codegen.cd2java.typedispatcher.TypeDispatcherConstants.TYPE_DISPATCHER_SUFFIX;
 import static de.monticore.codegen.cd2java.typedispatcher.TypeDispatcherConstants.UTILS_PACKAGE;
 import static de.monticore.codegen.prettyprint.PrettyPrinterConstants.PRETTYPRINT_PACKAGE;
 

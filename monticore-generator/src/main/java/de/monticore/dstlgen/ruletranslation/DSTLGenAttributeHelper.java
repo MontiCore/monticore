@@ -87,7 +87,7 @@ public class DSTLGenAttributeHelper {
     if(grammars.isEmpty()) {
         return getSymbolGrammar(scope.getEnclosingScope(), prodName);
     }
-    return grammars.get(0).getName();
+    return grammars.getFirst().getName();
   }
 
   public boolean isAttributeOptional(ASTNonTerminal ast){

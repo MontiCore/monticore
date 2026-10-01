@@ -11,7 +11,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.Enumeration;
-import java.util.Objects;
 import java.util.stream.Stream;
 
 /**
@@ -32,6 +31,7 @@ import java.util.stream.Stream;
  * @deprecated Included with se-commons-groovy 7.8.0+
  */
 @Deprecated
+@SuppressWarnings({"deprecation", "removal"})
 public class DelegatingClassLoader extends ClassLoader implements Closeable {
   protected final WeakReference<ClassLoader> delegate;
   // The actual method is not stored as a reference as it otherwise might be unloaded prematurely

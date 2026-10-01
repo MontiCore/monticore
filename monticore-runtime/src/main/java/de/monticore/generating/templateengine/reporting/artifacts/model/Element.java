@@ -24,10 +24,10 @@ public class Element {
   protected APkg pkg;
   
   // List of links going from this element
-  protected Map<String, Element> links = new LinkedHashMap<String, Element>();
+  protected Map<String, Element> links = new LinkedHashMap<>();
   
   // Number of Link calls per Link
-  protected Map<String, Long> numberOfLinkCalls = new LinkedHashMap<String, Long>();
+  protected Map<String, Long> numberOfLinkCalls = new LinkedHashMap<>();
   
   protected boolean hasLinkToFile = false;
   
@@ -52,7 +52,7 @@ public class Element {
     String fqn = e.getFullQualifiedName();
     if (!links.containsKey(fqn)) {
       links.put(fqn, e);
-      numberOfLinkCalls.put(fqn, 0l);
+      numberOfLinkCalls.put(fqn, 0L);
       if (e.getType() == ElementType.FILE) {
         hasLinkToFile = true;
       }
@@ -152,7 +152,7 @@ public class Element {
   }
   
   public boolean hasLink(Element target) {
-    return links.values().contains(target);
+    return links.containsValue(target);
   }
   
   public void incLinkCalls(Element target) {

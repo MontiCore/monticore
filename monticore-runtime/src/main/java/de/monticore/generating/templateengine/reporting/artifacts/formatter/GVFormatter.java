@@ -16,7 +16,7 @@ import de.monticore.generating.templateengine.reporting.artifacts.model.RootPkg;
 
 public class GVFormatter extends AFormatter {
   
-  protected Map<ElementType, String> shapes = new LinkedHashMap<ElementType, String>();
+  protected Map<ElementType, String> shapes = new LinkedHashMap<>();
   
   public GVFormatter() {
     this.shapes.put(ElementType.HELPER, "cds");
@@ -58,7 +58,7 @@ public class GVFormatter extends AFormatter {
   
   protected String getUniqueName(Element e) {
     return e.getType().getName() + "_"
-        + e.getQualifiedName().replaceAll("[.]", "_").replaceAll("-", "_");
+        + e.getQualifiedName().replaceAll("[.]", "_").replace("-", "_");
   }
   
   /**
@@ -95,12 +95,7 @@ public class GVFormatter extends AFormatter {
    * Get the dotgraph shape of a type
    */
   public String getShape(ElementType type) {
-    if (this.shapes.containsKey(type)) {
-      return this.shapes.get(type);
-    }
-    else {
-      return "hexagon";
-    }
+    return this.shapes.getOrDefault(type, "hexagon");
   }
 
   /**

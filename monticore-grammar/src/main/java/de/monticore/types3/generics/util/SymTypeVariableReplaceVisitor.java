@@ -55,8 +55,7 @@ public class SymTypeVariableReplaceVisitor extends SymTypeDeepCloneVisitor {
   ) {
     Map<SymTypeVariable, SymTypeExpression> oldMap = this.replaceMap;
     // assure that the map used does not rely on hashes
-    Map<SymTypeVariable, SymTypeExpression> newMap = new TreeMap<>();
-    newMap.putAll(replaceMap);
+    Map<SymTypeVariable, SymTypeExpression> newMap = new TreeMap<>(replaceMap);
     setReplaceMap(newMap);
     SymTypeExpression result = calculate(symType);
     setReplaceMap(oldMap);

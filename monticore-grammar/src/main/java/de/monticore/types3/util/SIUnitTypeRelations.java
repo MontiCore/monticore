@@ -187,8 +187,7 @@ public class SIUnitTypeRelations {
 
   protected boolean _isOfDimensionOne(SymTypeOfSIUnit siUnit) {
     SymTypeOfSIUnit siUnitNormalized = internal_normalize(siUnit);
-    return siUnitNormalized.getNumerator().size() == 0 &&
-        siUnitNormalized.getDenominator().size() == 0;
+    return siUnitNormalized.getNumerator().isEmpty() && siUnitNormalized.getDenominator().isEmpty();
   }
 
   /**

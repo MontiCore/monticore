@@ -1,9 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.expressions.commonexpressions.types3;
 
-import de.monticore.expressions.commonexpressions.CommonExpressionsMill;
 import de.monticore.expressions.commonexpressions._ast.*;
-import de.monticore.expressions.commonexpressions._util.ICommonExpressionsTypeDispatcher;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsHandler;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsTraverser;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisitor2;
@@ -752,10 +750,9 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
       // here there is no need for type inference
       getType4Ast().setTypeOfExpression(expr, nameAsExprType.get());
     }
-    else if (nameAsTypeIdType.isPresent()) {
-      getType4Ast().setTypeOfTypeIdentifierForName(
-          expr,
-          nameAsTypeIdType.get()
+    else {
+      nameAsTypeIdType.ifPresent(symTypeExpression ->
+          getType4Ast().setTypeOfTypeIdentifierForName(expr, symTypeExpression)
       );
     }
   }
@@ -1159,9 +1156,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
             modifier,
             varPredicate
         );
-    if (variable.isPresent()) {
-      types.add(variable.get());
-    }
+    variable.ifPresent(types::add);
     Collection<SymTypeOfFunction> functions =
         WithinTypeBasicSymbolsResolver.resolveFunctions(
             innerAsExprType,
@@ -1190,13 +1185,10 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
    * e.g., {@code class C<T>{T t;} C<Float>.t = 3.2;}
    */
   protected Optional<String> getExprAsQName(ASTExpression expr) {
-    if (expr instanceof ASTNameExpression) {
-      ASTNameExpression nameExpr = (ASTNameExpression) expr;
+    if (expr instanceof ASTNameExpression nameExpr) {
       return Optional.of(nameExpr.getName());
     }
-    else if (expr instanceof ASTFieldAccessExpression) {
-      ASTFieldAccessExpression fieldAccessExpression =
-          (ASTFieldAccessExpression) expr;
+    else if (expr instanceof ASTFieldAccessExpression fieldAccessExpression) {
       return getExprAsQName(fieldAccessExpression.getExpression())
           .map(qualifier ->
               Names.getQualifiedName(qualifier, fieldAccessExpression.getName())
@@ -1267,10 +1259,6 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
       );
       return createObscureType();
     }
-  }
-
-  protected ICommonExpressionsTypeDispatcher getTypeDispatcher() {
-    return CommonExpressionsMill.typeDispatcher();
   }
 
   protected String printFunctionForLog(SymTypeOfFunction func) {

@@ -30,7 +30,7 @@ public class SetExpressionsPrettyPrinter extends SetExpressionsPrettyPrinterTOP 
     for (ASTSetComprehensionItem setComprehensionItem : node.getSetComprehensionItemList()) {
       setComprehensionItem.accept(getTraverser());
       if (!node.getSetComprehensionItemList()
-          .get(node.getSetComprehensionItemList().size() - 1)
+          .getLast()
           .equals(setComprehensionItem)) {
         getPrinter().print(", ");
       }
@@ -58,7 +58,7 @@ public class SetExpressionsPrettyPrinter extends SetExpressionsPrettyPrinterTOP 
     for (ASTSetCollectionItem setCollectionItem : node.getSetCollectionItemList()) {
       setCollectionItem.accept(getTraverser());
       if (!node.getSetCollectionItemList()
-          .get(node.getSetCollectionItemList().size() - 1)
+          .getLast()
           .equals(setCollectionItem)) {
         getPrinter().print(", ");
       }

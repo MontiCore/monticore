@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static de.monticore.cd.codegen.CD2JavaTemplates.ANNOTATIONS;
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
@@ -38,7 +37,7 @@ import static de.monticore.codegen.cd2java._visitor.VisitorConstants.HANDLE_SYMT
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.TRAVERSER;
 
 /**
- * creates a InheritanceVisitor class from a grammar
+ * creates an InheritanceHandler class from a grammar
  */
 public class InheritanceHandlerDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClass> {
 
@@ -47,9 +46,11 @@ public class InheritanceHandlerDecorator extends AbstractCreator<ASTCDCompilatio
   protected final SymbolTableService symbolTableService;
 
   protected final MethodDecorator methodDecorator;
-  public InheritanceHandlerDecorator(final GlobalExtensionManagement glex,  final MethodDecorator methodDecorator,
-                                     final VisitorService visitorService,
-                                     final SymbolTableService symbolTableService) {
+  public InheritanceHandlerDecorator(
+      final GlobalExtensionManagement glex,
+      final MethodDecorator methodDecorator,
+      final VisitorService visitorService,
+      final SymbolTableService symbolTableService) {
     super(glex);
     this.methodDecorator = methodDecorator;
     this.visitorService = visitorService;
@@ -88,13 +89,13 @@ public class InheritanceHandlerDecorator extends AbstractCreator<ASTCDCompilatio
     handleMethods.addAll(astcdDefinition.getCDClassesList()
         .stream()
         .map(c -> getASTHandleMethod(c, languageInterfaceName, handlerSimpleTypeName))
-        .collect(Collectors.toList()));
+        .toList());
 
     // generate handle(ASTX node) for all interfaces X
     handleMethods.addAll(astcdDefinition.getCDInterfacesList()
         .stream()
         .map(c -> getHandleASTMethod(c, languageInterfaceName, handlerSimpleTypeName))
-        .collect(Collectors.toList()));
+        .toList());
 
     return handleMethods;
   }
@@ -144,11 +145,11 @@ public class InheritanceHandlerDecorator extends AbstractCreator<ASTCDCompilatio
     }
 
     // remove last element as it is covered by the handle call of the original handler
-    superScopesTransitive.remove(superScopesTransitive.size() - 1);
+    superScopesTransitive.removeLast();
     superScopesTransitive.add(I_SCOPE);
 
-    superArtifactScopesTransitive.remove(superArtifactScopesTransitive.size() - 1);
-    superGlobalScopesTransitive.remove(superGlobalScopesTransitive.size() - 1);
+    superArtifactScopesTransitive.removeLast();
+    superGlobalScopesTransitive.removeLast();
 
     // handle language scope
     ASTCDMethod handleScopeMethod = visitorService.getVisitorMethod(HANDLE, symbolTableService.getScopeInterfaceType());
@@ -164,7 +165,7 @@ public class InheritanceHandlerDecorator extends AbstractCreator<ASTCDCompilatio
       superScopesTransitiveForAS.add(superScopesTransitive.get(i));
       superScopesTransitiveForAS.add(superArtifactScopesTransitive.get(i));
     }
-    superScopesTransitiveForAS.add(superScopesTransitive.get(superScopesTransitive.size() - 1));
+    superScopesTransitiveForAS.add(superScopesTransitive.getLast());
     ASTCDMethod handleArtifactScopeMethod = visitorService.getVisitorMethod(HANDLE, symbolTableService.getArtifactScopeInterfaceType());
     handleMethods.add(handleArtifactScopeMethod);
     replaceTemplate(EMPTY_BODY, handleArtifactScopeMethod,
@@ -178,7 +179,7 @@ public class InheritanceHandlerDecorator extends AbstractCreator<ASTCDCompilatio
       superScopesTransitiveForGS.add(superScopesTransitive.get(i));
       superScopesTransitiveForGS.add(superGlobalScopesTransitive.get(i));
     }
-    superScopesTransitiveForGS.add(superScopesTransitive.get(superScopesTransitive.size() - 1));
+    superScopesTransitiveForGS.add(superScopesTransitive.getLast());
     ASTCDMethod handleGlobalScopeMethod = visitorService.getVisitorMethod(HANDLE, symbolTableService.getGlobalScopeInterfaceType());
     handleMethods.add(handleGlobalScopeMethod);
     replaceTemplate(EMPTY_BODY, handleGlobalScopeMethod,
@@ -196,7 +197,7 @@ public class InheritanceHandlerDecorator extends AbstractCreator<ASTCDCompilatio
    * @return The corresponding handle methods for the symbols
    */
   protected List<ASTCDMethod> getSymbolHandleMethods(ASTCDDefinition cdDefinition, String handlerSimpleTypeName) {
-    List<ASTCDMethod> handleMethods = new ArrayList<ASTCDMethod>();
+    List<ASTCDMethod> handleMethods = new ArrayList<>();
     for (ASTCDType symbol : symbolTableService.getSymbolDefiningProds(cdDefinition)) {
       List<String> superList = new ArrayList<>();
       boolean hasScope = symbolTableService.hasScopeStereotype(symbol.getModifier());
@@ -205,9 +206,9 @@ public class InheritanceHandlerDecorator extends AbstractCreator<ASTCDCompilatio
       ASTCDMethod handleSymbolMethod = visitorService.getVisitorMethod(HANDLE, symbolTableService.getSymbolTypeFromAstType(symbol));
       handleMethods.add(handleSymbolMethod);
       if (hasInheritedSymbol) {
-        for (String superSymbol: symbolTableService.getInheritedSymbolPropertyTypes(Lists.newArrayList(symbol)).values()) {
-          superList.add(superSymbol);
-        }
+        superList.addAll(
+            symbolTableService.getInheritedSymbolPropertyTypes(Lists.newArrayList(symbol))
+                .values());
       }
       superList.add(symbolTableService.getCommonSymbolInterfaceFullName());
       if (hasScope || hasInheritedScope) {

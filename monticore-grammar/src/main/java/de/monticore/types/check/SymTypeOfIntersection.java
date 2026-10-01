@@ -46,7 +46,7 @@ public class SymTypeOfIntersection extends SymTypeExpression {
       return false;
     }
     for (SymTypeExpression ownExpr : this.getIntersectedTypeSet()) {
-      if (!other.parallelStreamIntersectedTypes().anyMatch(ownExpr::deepEquals)) {
+      if (other.parallelStreamIntersectedTypes().noneMatch(ownExpr::deepEquals)) {
         return false;
       }
     }

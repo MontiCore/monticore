@@ -67,7 +67,7 @@ public final class MontiCoreConfiguration extends AMontiCoreConfiguration implem
    * Stored in constants as they are used multiple times in MontiCore.
    */
 
-  protected final CommandLine cmdConfig;
+  private final CommandLine cmdConfig;
 
   /**
    * Factory method for {@link MontiCoreConfiguration}.
@@ -86,22 +86,22 @@ public final class MontiCoreConfiguration extends AMontiCoreConfiguration implem
   /**
    * Constructor for {@link MontiCoreConfiguration}
    */
-  protected MontiCoreConfiguration(Configuration internal) {
+  private MontiCoreConfiguration(Configuration internal) {
     this.cmdConfig = internal.getConfig();
   }
 
   /**
    * Constructor for {@link MontiCoreConfiguration}
    */
-  protected MontiCoreConfiguration(CommandLine cmdConfig) {
+  private MontiCoreConfiguration(CommandLine cmdConfig) {
     this.cmdConfig = cmdConfig;
   }
 
-  protected boolean checkPath(List<String> grammars) {
+  private boolean checkPath(List<String> grammars) {
     for (String g: grammars) {
       Path p = Paths.get(g);
       if (!Files.exists(p)) {
-        Log.error("0xA1019 The requested path " + p.toString() + " does not exist.");
+        Log.error("0xA1019 The requested path " + p + " does not exist.");
         return false;
       }
     }
@@ -149,11 +149,8 @@ public final class MontiCoreConfiguration extends AMontiCoreConfiguration implem
   public MCPath getModelPath() {
     Optional<MCPath> modelPath = getAsStrings(MODELPATH)
         .map(this::convertEntryNamesToMCPath);
-    if (modelPath.isPresent()) {
-      return modelPath.get();
-    }
-    // default model path is empty
-    return new MCPath();
+    // return empty default model path if modelPath not present
+    return modelPath.orElseGet(MCPath::new);
   }
 
   /**
@@ -165,14 +162,11 @@ public final class MontiCoreConfiguration extends AMontiCoreConfiguration implem
   public MCPath getHandcodedModelPath() {
     Optional<MCPath> modelPathHC = getAsStrings(HANDCODEDMODELPATH)
             .map(this::convertEntryNamesToMCPath);
-    if (modelPathHC.isPresent()) {
-      return modelPathHC.get();
-    }
-    // default model path is empty
-    return new MCPath();
+    // return empty default model path if modelPath not present
+    return modelPathHC.orElseGet(MCPath::new);
   }
 
-  protected MCPath convertEntryNamesToMCPath(List<String> modelPathEntryNames) {
+  private MCPath convertEntryNamesToMCPath(List<String> modelPathEntryNames) {
     List<Path> modelPathFiles = toFileList(modelPathEntryNames);
     List<Path> modelPathEntries = modelPathFiles.stream()
         .map(Path::toAbsolutePath)
@@ -205,11 +199,8 @@ public final class MontiCoreConfiguration extends AMontiCoreConfiguration implem
    */
   public File getOut() {
     Optional<String> out = getAsString(OUT);
-    if (out.isPresent()) {
-      return new File(out.get());
-    }
-    // fallback default is "out"
-    return new File(DEFAULT_OUTPUT_PATH);
+    // fallback to default "out" if not available
+    return out.map(File::new).orElseGet(() -> new File(DEFAULT_OUTPUT_PATH));
   }
 
   /**
@@ -229,11 +220,8 @@ public final class MontiCoreConfiguration extends AMontiCoreConfiguration implem
    */
   public File getReport() {
     Optional<String> report = getAsString(REPORT);
-    if (report.isPresent()) {
-      return new File(report.get());
-    }
-    // fallback default is "out/report"
-    return new File(getOut(), DEFAULT_REPORT_PATH);
+    // fallback to default "out/report" if not present
+    return report.map(File::new).orElseGet(() -> new File(getOut(), DEFAULT_REPORT_PATH));
   }
 
   /**
@@ -280,11 +268,8 @@ public final class MontiCoreConfiguration extends AMontiCoreConfiguration implem
    */
   public List<String> getHandcodedPathAsStrings() {
     Optional<List<String>> handcodedPath = getAsStrings(HANDCODEDPATH);
-    if (handcodedPath.isPresent()) {
-      return handcodedPath.get();
-    }
-    // default handcoded path is empty
-    return Collections.emptyList();
+    // return empty default handcoded path if handcodedPath not present
+    return handcodedPath.orElse(Collections.emptyList());
   }
 
   /**
@@ -315,11 +300,8 @@ public final class MontiCoreConfiguration extends AMontiCoreConfiguration implem
    */
   public List<String> getTemplatePathAsStrings() {
     Optional<List<String>> templatePath = getAsStrings(TEMPLATEPATH);
-    if (templatePath.isPresent()) {
-      return templatePath.get();
-    }
-    // default template path is empty
-    return Collections.emptyList();
+    // return empty default template path if templatePath not present
+    return templatePath.orElse(Collections.emptyList());
   }
 
   /**
@@ -362,9 +344,9 @@ public final class MontiCoreConfiguration extends AMontiCoreConfiguration implem
    * @param files as String names to convert
    * @return list of files by creating file objects from the Strings
    */
-  protected static List<Path> toFileList(List<String> files) {
-    return files.stream().collect(
-        Collectors.mapping(file -> new File(file).getAbsoluteFile().toPath(), Collectors.toList()));
+  private static List<Path> toFileList(List<String> files) {
+    return files.stream().map(file -> new File(file).getAbsoluteFile().toPath())
+        .collect(Collectors.toList());
   }
 
   /**

@@ -95,18 +95,12 @@ public class MCGeneratorPlugin implements Plugin<Project> {
      */
 
     // Generate MC must run before JavaCompile
-    project.getTasks().named(sourceSet.getCompileJavaTaskName()).configure(compile -> {
-      compile.dependsOn(mcGenTaskProvider);
-    });
+    project.getTasks().named(sourceSet.getCompileJavaTaskName()).configure(compile -> compile.dependsOn(mcGenTaskProvider));
     // Generate MC must run before the sources jar task (which may or may not be present)
     final String sourcesJarTaskName = sourceSet.getSourcesJarTaskName();
-    project.getTasks().matching(t->t.getName().equals(sourcesJarTaskName)).configureEach(sourcesJar -> {
-      sourcesJar.dependsOn(mcGenTaskProvider);
-    });
+    project.getTasks().matching(t->t.getName().equals(sourcesJarTaskName)).configureEach(sourcesJar -> sourcesJar.dependsOn(mcGenTaskProvider));
     // Generate MC must run before ProcessResources (e.g. for mc4 grammars)
-    project.getTasks().named(sourceSet.getProcessResourcesTaskName()).configure(processResources -> {
-      processResources.dependsOn(mcGenTaskProvider);
-    });
+    project.getTasks().named(sourceSet.getProcessResourcesTaskName()).configure(processResources -> processResources.dependsOn(mcGenTaskProvider));
 
     // Tell gradle that the MC source directory set is "compiled" by the MCGenTask
     MCGrammarsSourceDirectorySet.getGrammars(sourceSet).compiledBy(mcGenTaskProvider, MCGenTask::getOutputDir);
@@ -130,10 +124,8 @@ public class MCGeneratorPlugin implements Plugin<Project> {
 
       // testGrammar extendsFrom grammar
       project.getConfigurations().named(MCSourceSets.getDependencyDeclarationConfigName(test))
-              .configure(testGrammar -> {
-                testGrammar.extendsFrom(
-                        project.getConfigurations().getByName(MCSourceSets.getDependencyDeclarationConfigName(main)));
-              });
+              .configure(testGrammar -> testGrammar.extendsFrom(
+                      project.getConfigurations().getByName(MCSourceSets.getDependencyDeclarationConfigName(main))));
 
       // testGrammarSymbolDependencies dependency on files(main.grammars.srcDirs)
       project.getConfigurations().named(MCSourceSets.getSymbolDependencyConfigName(test))

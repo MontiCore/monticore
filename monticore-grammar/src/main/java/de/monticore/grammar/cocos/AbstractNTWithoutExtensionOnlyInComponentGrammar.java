@@ -83,7 +83,7 @@ public class AbstractNTWithoutExtensionOnlyInComponentGrammar implements Grammar
 
       for (ProdSymbol prodSymbol: abstractProds) {
         List<String> checkList = Lists.newArrayList(prodSymbol.getName());
-        prodSymbol.getSuperProds().stream().forEach(i -> checkList.add(i.getName()));
+        prodSymbol.getSuperProds().forEach(i -> checkList.add(i.getName()));
         for (ProdSymbol prod : prods) {
            for (String name: checkList) {
             if (!prod.getSpannedScope().resolveRuleComponentDownMany(StringTransformations.uncapitalize(name)).isEmpty()) {

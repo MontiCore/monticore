@@ -43,7 +43,7 @@ public class UniqueProdNamesForComp implements GrammarASTMCGrammarCoCo {
     for (Map.Entry<String, Set<MCGrammarSymbol>> e : symbolsInGrammars.entrySet()) {
       // Remove overriden production false-positives
       for (MCGrammarSymbol g : new LinkedHashSet<>(e.getValue())) {
-        e.getValue().removeAll(g.getAllSuperGrammars());
+        g.getAllSuperGrammars().forEach(e.getValue()::remove);
       }
     }
     // symbolsInGrammars should now contain the grammars that define a production

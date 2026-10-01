@@ -44,11 +44,11 @@ public class ParserInfoTest extends AbstractMCTest {
         List<Integer> states = IntStream.range(0, MAX_STATE_NUMBER)
                 .filter(ParserInfoTestParserInfo::stateHasUsageNameUsageName1)
                 .boxed()
-                .collect(Collectors.toList());
+                .toList();
 
         assertEquals(1, states.size());
 
-        int s = states.get(0);
+        int s = states.getFirst();
         assertFalse(ParserInfoTestParserInfo.stateReferencesElementASymbol(s));
         assertFalse(ParserInfoTestParserInfo.stateReferencesElementBSymbol(s));
     }
@@ -58,11 +58,11 @@ public class ParserInfoTest extends AbstractMCTest {
         List<Integer> states = IntStream.range(0, MAX_STATE_NUMBER)
                 .filter(ParserInfoTestParserInfo::stateHasUsageNameUsageName2)
                 .boxed()
-                .collect(Collectors.toList());
+                .toList();
 
         assertEquals(1, states.size());
 
-        int s = states.get(0);
+        int s = states.getFirst();
         assertTrue(ParserInfoTestParserInfo.stateReferencesElementASymbol(s));
         assertFalse(ParserInfoTestParserInfo.stateReferencesElementBSymbol(s));
     }
@@ -72,11 +72,11 @@ public class ParserInfoTest extends AbstractMCTest {
         List<Integer> states = IntStream.range(0, MAX_STATE_NUMBER)
                 .filter(ParserInfoTestParserInfo::stateHasUsageNameRefA)
                 .boxed()
-                .collect(Collectors.toList());
+                .toList();
 
         assertEquals(1, states.size());
 
-        int s = states.get(0);
+        int s = states.getFirst();
         assertTrue(ParserInfoTestParserInfo.stateReferencesElementASymbol(s));
         assertFalse(ParserInfoTestParserInfo.stateReferencesElementBSymbol(s));
     }
@@ -86,11 +86,11 @@ public class ParserInfoTest extends AbstractMCTest {
         List<Integer> states = IntStream.range(0, MAX_STATE_NUMBER)
                 .filter(ParserInfoTestParserInfo::stateHasUsageNameRefB)
                 .boxed()
-                .collect(Collectors.toList());
+                .toList();
 
         assertEquals(1, states.size());
 
-        int s = states.get(0);
+        int s = states.getFirst();
         assertFalse(ParserInfoTestParserInfo.stateReferencesElementASymbol(s));
         assertTrue(ParserInfoTestParserInfo.stateReferencesElementBSymbol(s));
     }
@@ -100,7 +100,7 @@ public class ParserInfoTest extends AbstractMCTest {
         List<Integer> states = IntStream.range(0, MAX_STATE_NUMBER)
                 .filter(ParserInfoTestParserInfo::stateHasUsageNameUsageNameForList1)
                 .boxed()
-                .collect(Collectors.toList());
+                .toList();
 
         // '(a || ",")+' is replaced with 'a ("," a)*'
         assertEquals(2, states.size());
@@ -116,7 +116,7 @@ public class ParserInfoTest extends AbstractMCTest {
         List<Integer> states = IntStream.range(0, MAX_STATE_NUMBER)
                 .filter(ParserInfoTestParserInfo::stateHasUsageNameUsageNameForList2)
                 .boxed()
-                .collect(Collectors.toList());
+                .toList();
 
         assertEquals(2, states.size());
 
@@ -132,7 +132,7 @@ public class ParserInfoTest extends AbstractMCTest {
             List<Integer> states = IntStream.range(0, MAX_STATE_NUMBER)
                     .filter(ParserInfoTestParserInfo::stateReferencesElementASymbol)
                     .boxed()
-                    .collect(Collectors.toList());
+                    .toList();
 
             assertFalse(states.isEmpty());
         }
@@ -148,7 +148,7 @@ public class ParserInfoTest extends AbstractMCTest {
             List<Integer> states = IntStream.range(0, MAX_STATE_NUMBER)
                     .filter(ParserInfoTestParserInfo::stateReferencesElementASymbol)
                     .boxed()
-                    .collect(Collectors.toList());
+                    .toList();
 
             assertTrue(states.isEmpty());
         }
@@ -159,7 +159,7 @@ public class ParserInfoTest extends AbstractMCTest {
         List<Integer> states = IntStream.range(0, MAX_STATE_NUMBER)
             .filter(ParserInfoTestParserInfo::stateDefinesName)
             .boxed()
-            .collect(Collectors.toList());
+            .toList();
 
         // ElementA to D are symbols and therefore define names
         assertEquals(4, states.size());

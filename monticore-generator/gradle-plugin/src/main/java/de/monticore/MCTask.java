@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.Permission;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -356,7 +355,7 @@ public abstract class MCTask extends DefaultTask {
     }
     if (toolName != null) {
       params.add("-tn");
-      params.add(toolName.toString());
+      params.add(toolName);
     }
     if (!handcodedPath.isEmpty()) {
       params.add("-hcp");
@@ -385,7 +384,7 @@ public abstract class MCTask extends DefaultTask {
     params.add("-genDST");
     params.add(Boolean.toString(isDSTL));
     if (configTemplate != null) {
-      String cfgTemplateStr = configTemplate.toString();
+      String cfgTemplateStr = configTemplate;
       params.add("-ct");
       if (cfgTemplateStr.endsWith(".ftl")){
         cfgTemplateStr = cfgTemplateStr.substring(0, cfgTemplateStr.length()-4);
@@ -395,15 +394,15 @@ public abstract class MCTask extends DefaultTask {
     }
     if (script != null) {
       params.add("-sc");
-      params.add(script.toString());
+      params.add(script);
     }
     if (groovyHook1 != null) {
       params.add("-gh1");
-      params.add(groovyHook1.toString());
+      params.add(groovyHook1);
     }
     if (groovyHook2 != null) {
       params.add("-gh2");
-      params.add(groovyHook2.toString());
+      params.add(groovyHook2);
     }
     if (dev) {
       params.add("-d");
@@ -432,7 +431,7 @@ public abstract class MCTask extends DefaultTask {
       // in case of failure print the error and fail
       String error = Log.getFindings().stream().
               filter(f -> f.getType().equals(Finding.Type.ERROR))
-              .map(f -> f.getMsg())
+              .map(Finding::getMsg)
               .collect(Collectors.joining("\n"));
       MCBasicsMill.globalScope().getSymbolPath().close();
     }

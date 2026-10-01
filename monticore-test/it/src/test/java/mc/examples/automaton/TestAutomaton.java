@@ -46,7 +46,7 @@ public class TestAutomaton {
     traverser.add4Automaton(odCreator);
     traverser.setAutomatonHandler(odCreator);
     odCreator.printObjectDiagram(symbolName, ast);
-    assertTrue(printer.getContent().length()>0);
+    assertFalse(printer.getContent().isEmpty());
     assertTrue(readFile("src/test/resources/examples/automaton/Output.od", StandardCharsets.UTF_8).endsWith(printer.getContent()));
   }
 

@@ -9,7 +9,6 @@ import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * checks whether a grammar contains two or more prods that have the same name.
@@ -29,7 +28,7 @@ public class UniqueProdNameInGrammar implements GrammarASTMCGrammarCoCo {
     List<String> prodNames = grammarSymbol.getProds()
         .stream()
         .map(ProdSymbol::getName)
-        .collect(Collectors.toList());
+        .toList();
     for (int i = 0; i < prodNames.size(); i++) {
       for (int j = i + 1; j < prodNames.size(); j++) {
         if (prodNames.get(i).equals(prodNames.get(j))) {

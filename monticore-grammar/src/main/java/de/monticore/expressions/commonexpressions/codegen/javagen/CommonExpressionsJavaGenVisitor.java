@@ -6,8 +6,8 @@ import de.monticore.codegen.CodeGenOperationPrinter;
 import de.monticore.codegen.javagen.JavaGenVisitorState;
 import de.monticore.expressions.commonexpressions._ast.*;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsInheritanceHandler;
-import de.monticore.expressions.expressionsbasis.ExpressionsBasisMill;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
@@ -25,7 +25,6 @@ import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static de.monticore.codegen.CodeGenSymTypeExpressionConverter.printConverted;
 import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getBoxedJavaTypePrint;
@@ -71,7 +70,7 @@ public class CommonExpressionsJavaGenVisitor
     SymTypeExpression innerType = normalize(typeOf(expr.getExpression()));
     state.startParentheses();
     getPrinter().print("-");
-    if (ExpressionsBasisMill.typeDispatcher().isExpressionsBasisASTLiteralExpression(expr.getExpression())) {
+    if (expr.getExpression() instanceof ASTLiteralExpression) {
       expr.getExpression().accept(getTraverser());
     }
     else {
@@ -327,8 +326,7 @@ public class CommonExpressionsJavaGenVisitor
       // peephole optimization, this is not (strictly) required
       if (funcType.hasSymbol()) {
         FunctionSymbol funcSym = funcType.getSymbol();
-        if (funcSym instanceof MethodSymbol) {
-          MethodSymbol methodSym = (MethodSymbol) funcSym;
+        if (funcSym instanceof MethodSymbol methodSym) {
           if (!methodSym.getSpannedScope().isPresentSpanningSymbol()) {
             Log.error("0xFD225 internal error: "
                     + "method symbol has no enclosing (OO)type: "
@@ -356,9 +354,7 @@ public class CommonExpressionsJavaGenVisitor
             didPrintSpecialCase = true;
           }
           // something .method(arguments)
-          else if (node.getExpression() instanceof ASTFieldAccessExpression) {
-            ASTFieldAccessExpression fieldAccessExpr =
-                (ASTFieldAccessExpression) node.getExpression();
+          else if (node.getExpression() instanceof ASTFieldAccessExpression fieldAccessExpr) {
             state.startParentheses();
             fieldAccessExpr.getExpression().accept(getTraverser());
             state.endParentheses();
@@ -389,7 +385,7 @@ public class CommonExpressionsJavaGenVisitor
       List<SymTypeExpression> argTypes = node.getArguments().streamExpressions()
           .map(TypeCheck3::typeOf)
           .map(SymTypeRelations::normalize)
-          .collect(Collectors.toList());
+          .toList();
       state.startParentheses();
       for (int i = 0; i < node.getArguments().sizeExpressions(); i++) {
         ASTExpression argExpr = node.getArguments().getExpression(i);

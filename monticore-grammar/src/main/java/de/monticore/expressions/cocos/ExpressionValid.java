@@ -50,7 +50,7 @@ public class ExpressionValid implements ExpressionsBasisASTExpressionCoCo {
 
   @Override
   public void check(ASTExpression expr) {
-    if (!checkingNode.isPresent()) {
+    if (checkingNode.isEmpty()) {
       // TypeCheck
       if (typeCheck != null) {
         typeCheck.typeOf(expr);

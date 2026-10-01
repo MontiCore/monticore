@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.codegen.cd2java.cli;
 
-import de.monticore.ast.CommentBuilder;
 import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;

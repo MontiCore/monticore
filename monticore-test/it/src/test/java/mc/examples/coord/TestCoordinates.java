@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TestCoordinates {
   
   private static final double DELTA = 1e-5;
-
+  
   @Test
   public void testCoordcartesianParser() throws IOException {
     CoordcartesianParser parser = CoordcartesianMill.parser();

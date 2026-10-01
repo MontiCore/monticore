@@ -6,7 +6,6 @@ import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
-import de.monticore.types.mcsimplegenerictypes.MCSimpleGenericTypesMill;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesHandler;
 import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesTraverser;
@@ -25,6 +24,7 @@ import java.util.Optional;
  * use {@link de.monticore.types3.TypeCheck3} instead.
  */
 @Deprecated
+@SuppressWarnings({"deprecation", "removal"})
 public class SynthesizeSymTypeFromMCSimpleGenericTypes extends AbstractSynthesizeFromType
     implements MCSimpleGenericTypesVisitor2, MCSimpleGenericTypesHandler {
 
@@ -55,7 +55,7 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypes extends AbstractSynthesiz
   public void traverse(ASTMCBasicGenericType genericType) {
 
     SymTypeExpression symType = null;
-    List<SymTypeExpression> arguments = new LinkedList<SymTypeExpression>();
+    List<SymTypeExpression> arguments = new LinkedList<>();
     for (int i = 0; i<genericType.sizeMCTypeArguments(); i++) {
       ASTMCTypeArgument arg = genericType.getMCTypeArgument(i);
       if (null != arg) {
@@ -63,8 +63,8 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypes extends AbstractSynthesiz
       }
 
       if (!getTypeCheckResult().isPresentResult()) {
-        Log.error("0xE9CDB The type argument number " + i+1 + " of the generic type " +
-          "could not be synthesized.", genericType.get_SourcePositionStart());
+        Log.error("0xE9CDB The type argument number " + (i + 1) + " of the generic type " +
+          " could not be synthesized.", genericType.get_SourcePositionStart());
         getTypeCheckResult().reset();
         return;
       }
@@ -87,7 +87,9 @@ public class SynthesizeSymTypeFromMCSimpleGenericTypes extends AbstractSynthesiz
       }
       if (null != symType) {
         getTypeCheckResult().setResult(symType);
-        genericType.setDefiningSymbol(symType.getTypeInfo());
+        if (symType.hasTypeInfo()) {
+          genericType.setDefiningSymbol(symType.getTypeInfo());
+        }
       }
     }else{
       // one of the type arguments could not be synthesized => the generic type itself cannot be synthesized correctly

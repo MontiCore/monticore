@@ -1,9 +1,17 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 <!-- NOTE: This readme will NOT be used when generating the monticore websites!-->
 <!-- Instead, the index in the docs folder will be used! -->
-<center>
-  <div style="text-align:center" ><img src="docs/img/mc-logo.png" alt="MontiCore logo" /></div>
-</center>
+<h1 align="center">
+  <picture>
+    <img width="400" src="docs/img/mc-logo.png" alt="MontiCore" />
+  </picture>
+</h1>
+
+<h4 align="center">
+  <a href="https://www.monticore.de/">Documentation</a> |
+  <a href="docs/GettingStarted.md">Getting Started</a> |
+  <a href="https://se-rwth.de/">Chair of Software Engineering</a>
+</h4>
 
 # MontiCore - Language Workbench and Development Tool Framework 
 

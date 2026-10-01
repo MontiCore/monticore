@@ -5,7 +5,6 @@ import com.google.common.base.Preconditions;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.types3.ISymTypeVisitor;
-import de.se_rwth.commons.logging.Log;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -14,7 +13,6 @@ import java.util.Set;
 import java.util.Spliterator;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class SymTypeOfUnion extends SymTypeExpression {
@@ -55,7 +53,7 @@ public class SymTypeOfUnion extends SymTypeExpression {
       return false;
     }
     for (SymTypeExpression ownExpr : this.getUnionizedTypeSet()) {
-      if (!other.parallelStreamUnionizedTypes().anyMatch(ownExpr::deepEquals)) {
+      if (other.parallelStreamUnionizedTypes().noneMatch(ownExpr::deepEquals)) {
         return false;
       }
     }

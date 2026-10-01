@@ -114,7 +114,7 @@ public abstract class IncGenReporter extends AReporter {
       modelToArtifactMap.put(file, parentPath.get());
     }
     else {
-      if (modelToArtifactMap.keySet().contains(file)) {
+      if (modelToArtifactMap.containsKey(file)) {
         toAdd = Paths.get(modelToArtifactMap.get(file).toString(),
             file.toString());
       }

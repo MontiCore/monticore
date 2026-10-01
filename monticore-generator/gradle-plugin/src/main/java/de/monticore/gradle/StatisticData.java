@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.gradle;
 
-import de.monticore.gradle.gen.MCToolAction;
 import de.monticore.symboltable.serialization.json.JsonArray;
 import de.monticore.symboltable.serialization.json.JsonBoolean;
 import de.monticore.symboltable.serialization.json.JsonElement;
@@ -150,19 +149,23 @@ public class StatisticData {
       data.putMember("Name", new UserJsonString(pathIndex >= 0 ? name.substring(pathIndex + 1) : name));
       data.putMember("Path", new UserJsonString(taskOpDesc.getTaskPath()));
       data.putMember("Duration", new JsonNumber("" + (result.getEndTime() - result.getStartTime())));
-      if (result instanceof TaskSuccessResult) {
-        data.putMember("UpToDate", new JsonBoolean(((TaskSuccessResult) result).isUpToDate()));
-        data.putMember("Cached", new JsonBoolean(((TaskSuccessResult) result).isFromCache()));
-        data.putMember("hasError", new JsonBoolean(false));
-      } else if (result instanceof TaskFailureResult) {
-        data.putMember("UpToDate", new JsonBoolean(false));
-        data.putMember("Cached", new JsonBoolean(false));
-        data.putMember("hasError", new JsonBoolean(true));
-      } else if (result instanceof TaskSkippedResult) {
-        data.putMember("Skipped", new JsonBoolean(true));
-      } else {
-        // Only warn about unexpected types
-        Log.warn("Unexpected result type during collection of statistics: " + result.getClass());
+      switch (result) {
+        case TaskSuccessResult taskSuccessResult -> {
+          data.putMember("UpToDate", new JsonBoolean(taskSuccessResult.isUpToDate()));
+          data.putMember("Cached", new JsonBoolean(taskSuccessResult.isFromCache()));
+          data.putMember("hasError", new JsonBoolean(false));
+        }
+        case TaskFailureResult taskFailureResult -> {
+          data.putMember("UpToDate", new JsonBoolean(false));
+          data.putMember("Cached", new JsonBoolean(false));
+          data.putMember("hasError", new JsonBoolean(true));
+        }
+        case TaskSkippedResult taskSkippedResult ->
+            data.putMember("Skipped", new JsonBoolean(true));
+        default ->
+          // Only warn about unexpected types
+            Log.warn(
+                "Unexpected result type during collection of statistics: " + result.getClass());
       }
 
       data.putMember("TaskStatistik", new JsonNull());

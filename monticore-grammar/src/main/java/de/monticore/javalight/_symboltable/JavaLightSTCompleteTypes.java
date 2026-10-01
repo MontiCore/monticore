@@ -1,17 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.javalight._symboltable;
 
-import de.monticore.grammar.grammar_withconcepts.FullSynthesizeFromMCSGT4Grammar;
 import de.monticore.javalight._ast.*;
 import de.monticore.javalight._visitor.JavaLightVisitor2;
 import de.monticore.statements.mccommonstatements._ast.ASTJavaModifier;
 import de.monticore.statements.mcstatementsbasis._ast.ASTMCModifier;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
-import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsScope;
 import de.monticore.types.check.SymTypeExpression;
-import de.monticore.types.check.SymTypeExpressionFactory;
-import de.monticore.types.check.SymTypeOfNull;
-import de.monticore.types.check.TypeCheckResult;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
@@ -93,8 +88,7 @@ public class JavaLightSTCompleteTypes implements JavaLightVisitor2 {
           default:
             break;
         }
-      } else if (modifier instanceof ASTAnnotation) {
-        ASTAnnotation astAnnotation = (ASTAnnotation) modifier;
+      } else if (modifier instanceof ASTAnnotation astAnnotation) {
         javaMethodSymbol.addAnnotations(createTypeLoader(astAnnotation.getAnnotationName()));
       }
     }

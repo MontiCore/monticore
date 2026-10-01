@@ -107,7 +107,7 @@ public class ParserClassDecorator extends AbstractDecorator {
     List<ASTCDMember> members = Lists.newArrayList();
 
     ASTCDAttribute modeAttribute = CDAttributeFacade.getInstance().createAttribute(PROTECTED.build(), "String", "lexerMode");
-    this.replaceTemplate(VALUE, modeAttribute, new StringHookPoint("= \"\";"));
+    this.replaceTemplate(VALUE, modeAttribute, new StringHookPoint("= \"\""));
     members.add(modeAttribute);
 
     MethodDecorator methodDecorator = new MethodDecorator(glex, service);

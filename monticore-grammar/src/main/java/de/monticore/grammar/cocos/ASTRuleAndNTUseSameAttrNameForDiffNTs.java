@@ -10,7 +10,6 @@ import de.monticore.grammar.grammar._symboltable.ProdSymbol;
 import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
 import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcsimplegenerictypes.MCSimpleGenericTypesMill;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.List;
@@ -34,7 +33,7 @@ public class ASTRuleAndNTUseSameAttrNameForDiffNTs implements GrammarASTASTRuleC
     for (AdditionalAttributeSymbol attr : prodSymbol.getSpannedScope().getLocalAdditionalAttributeSymbols()) {
       List<RuleComponentSymbol> rcs = prodSymbol.getSpannedScope().resolveRuleComponentDownMany(attr.getName());
       if (!rcs.isEmpty()) {
-        RuleComponentSymbol rc = rcs.get(0);
+        RuleComponentSymbol rc = rcs.getFirst();
         if (rc.isIsNonterminal()) {
           String typeName = attr.getAstNode().getMCType().printType();
           if (!typeName
@@ -44,14 +43,10 @@ public class ASTRuleAndNTUseSameAttrNameForDiffNTs implements GrammarASTASTRuleC
             Optional<ProdSymbol> compType = a.getEnclosingScope()
                     .resolveProd(rc.getReferencedProd().get().getName());
             if (attrType.isPresent() && compType.isPresent()) {
-              if (MCGrammarSymbolTableHelper.isSubtype(compType.get(), attrType.get())
-                      || isCorrespondingJavaTypeFromToken(attrType.get(), compType.get())) {
-                continue;
-              } else {
-                Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, a.getType(),
-                        attr.getName(), typeName,
-                        rc.getReferencedProd().get().getName()),
-                        a.get_SourcePositionStart());
+              if (!MCGrammarSymbolTableHelper.isSubtype(compType.get(), attrType.get())
+                  && !isCorrespondingJavaTypeFromToken(attrType.get(), compType.get())) {
+                Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, a.getType(), attr.getName(),
+                    typeName, rc.getReferencedProd().get().getName()), a.get_SourcePositionStart());
               }
             }
           }

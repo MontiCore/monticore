@@ -9,7 +9,6 @@ import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
-import de.monticore.symbols.basicsymbols._util.IBasicSymbolsTypeDispatcher;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -118,7 +117,7 @@ public class SymTypeExpressionFactory {
    */
   public static SymTypePrimitive createPrimitive(String name) {
     Optional<TypeSymbol> type = BasicSymbolsMill.globalScope().resolveTypeLocally(name);
-    if (!type.isPresent()) {
+    if (type.isEmpty()) {
       Log.error("0x893F62 Internal Error: Non primitive type " + name + " stored as constant.");
     }
     return createPrimitive(type.get());
@@ -331,7 +330,7 @@ public class SymTypeExpressionFactory {
   protected static List<String> iterateBrackets(String type, int start){
     List<String> list = new ArrayList<>();
     int depth = 0;
-    for(int i = 0; i < type.toCharArray().length; i++) {
+    for(int i = 0; i < type.length(); i++) {
       char c = type.toCharArray()[i];
       if(c == '<'){
         depth++;
@@ -357,7 +356,7 @@ public class SymTypeExpressionFactory {
   public static SymTypeOfGenerics createGenericsDeclaredType(TypeSymbol typeSymbol) {
     List<SymTypeExpression> parameters =
         typeSymbol.getTypeParameterList().stream()
-            .map(tp -> createTypeVariable(tp))
+            .map(SymTypeExpressionFactory::createTypeVariable)
             .collect(Collectors.toList());
     return createGenerics(typeSymbol, parameters);
   }

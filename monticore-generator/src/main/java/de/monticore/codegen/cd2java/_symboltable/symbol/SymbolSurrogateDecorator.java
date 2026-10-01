@@ -9,7 +9,6 @@ import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
-import de.monticore.cdbasis._ast.ASTCDClassBuilder;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.codegen.cd2java._ast.ast_class.ASTConstants;
 import de.monticore.codegen.cd2java._symboltable.SymbolTableService;
@@ -47,6 +46,7 @@ import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISITOR_PRE
  * creates a SymbolLoader class from a grammar
  */
 @Deprecated
+@SuppressWarnings({"deprecation", "removal"})
 public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
   
   protected static final String TEMPLATE_PATH = "_symboltable.symbolsurrogate.";
@@ -85,7 +85,7 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
       .stream()
       .map(methodDecorator.getAccessorDecorator()::decorate)
       .flatMap(List::stream)
-      .collect(Collectors.toList()));
+      .toList());
     //name and enclosing scope methods do not delegate to the symbol
     List<ASTCDMethod> delegateMethods = symbolRuleAttributeMethods.stream()
       .filter(m -> !m.getName().equals("setName"))
@@ -95,7 +95,7 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
       .collect(Collectors.toList());
     List<ASTCDMethod> delegateSymbolRuleAttributeMethods = createOverriddenMethodDelegates(delegateMethods);
     List<ASTCDMethod> symbolRuleMethods = symbolInput.getCDMethodList().stream()
-            .map(a -> a.deepClone())
+            .map(ASTCDMethod::deepClone)
             .collect(Collectors.toList());
     List<ASTCDMethod> delegateSymbolRuleMethods = createOverriddenMethodDelegates(symbolRuleMethods);
 
@@ -182,11 +182,12 @@ public class SymbolSurrogateDecorator extends AbstractCreator<ASTCDClass, ASTCDC
 
   protected ASTCDMethod createGetNameMethod() {
     ASTCDMethod method = getCDMethodFacade().createMethod(PUBLIC.build(), "String", "getName");
-    this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint(
-        "  if (!checkLazyLoadDelegate()) {\n" +
-            "    return name;\n" +
-            "  }\n" +
-            "  return lazyLoadDelegate().getName();"));
+    this.replaceTemplate(EMPTY_BODY, method, new StringHookPoint("""
+          if (!checkLazyLoadDelegate()) {
+            return name;
+          }
+          return lazyLoadDelegate().getName();\
+        """));
     return method;
   }
 

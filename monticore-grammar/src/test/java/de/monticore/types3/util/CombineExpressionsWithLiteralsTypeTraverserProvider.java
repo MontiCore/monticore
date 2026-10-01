@@ -20,6 +20,7 @@ import de.monticore.types3.Type4Ast;
  * @deprecated use {@link CombineExpressionsWithLiteralsTypeTraverserFactory}
  */
 @Deprecated(forRemoval = true)
+@SuppressWarnings({"deprecation", "removal"})
 public class CombineExpressionsWithLiteralsTypeTraverserProvider {
 
   // Expressions

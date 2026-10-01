@@ -3,10 +3,12 @@
 package de.monticore.generating.templateengine.reporting.artifacts.model;
 
 public enum ElementType {
-  FILE("File"), HELPER("Helper"), MODEL("Model"),
+  FILE("File"),
+  HELPER("Helper"),
+  MODEL("Model"),
   TEMPLATE("Template");
   
-  protected String name;
+  private String name;
   
   ElementType(String name) {
     this.name = name;

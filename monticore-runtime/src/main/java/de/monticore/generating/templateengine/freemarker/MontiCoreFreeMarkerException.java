@@ -2,8 +2,11 @@
 
 package de.monticore.generating.templateengine.freemarker;
 
+import java.io.Serial;
+
 public class MontiCoreFreeMarkerException extends RuntimeException {
   
+  @Serial
   private static final long serialVersionUID = -1596687416377465351L;
   
   protected String messageForProtocol;

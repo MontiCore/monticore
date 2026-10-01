@@ -1,0 +1,15 @@
+on 04.12.2017 12:30:00 Uhr do {
+  int Uhr = 0;
+  int Januar = 1;
+  int Februar = 2;
+  int April = 3;
+  int Mai = 4;
+  int Juni = 5;
+  int Juli = 6;
+  int August = 7;
+  int September = 8;
+  int Oktober = 9;
+  int November = 10;
+  int Dezember = 11;
+  print(Uhr + Januar + Februar + April + Mai + Juni + Juli + August + September + Oktober + November + Dezember);
+}

@@ -13,7 +13,7 @@ public interface ICompositeScope extends ICompositeScopeTOP {
   @Override default List<ContentSymbol> resolveAdaptedContentLocallyMany(boolean foundSymbols,
                                                                          String name, AccessModifier modifier, Predicate<ContentSymbol> predicate) {
     List<TextSymbol> symbols = resolveTextLocallyMany(foundSymbols, name, modifier, x -> true);
-    return symbols.stream().map(s -> new Text2ContentAdapter(s)).collect(Collectors.toList());
+    return symbols.stream().map(Text2ContentAdapter::new).collect(Collectors.toList());
   }
   
 }

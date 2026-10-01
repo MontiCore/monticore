@@ -56,7 +56,7 @@ public class RemoveOverriddenAttributesTranslation implements
   protected boolean isOverridden(Link<ASTNode, ASTCDAttribute> link, Link<?, ASTCDClass> classLink) {
     ASTNode source = link.source();
     Optional<String> usageName = getUsageName(classLink.source(), source);
-    if (!usageName.isPresent()) {
+    if (usageName.isEmpty()) {
       Optional<String> name = getName(source);
       if (name.isPresent()) {
         usageName = Optional.ofNullable(StringTransformations.uncapitalize(name.get()));
@@ -77,7 +77,7 @@ public class RemoveOverriddenAttributesTranslation implements
 
     boolean matchByUsageName = !attributes.isEmpty();
     boolean matchByTypeName = false;
-    if (!matchByUsageName && !usageName.isPresent()) {
+    if (!matchByUsageName && usageName.isEmpty()) {
       for (ASTAdditionalAttribute attributeInAST : attributesInASTLinkingToSameClass) {
         if (!attributeInAST.isPresentName()) {
           String name = Grammar_WithConceptsMill.prettyPrint(attributeInAST.getMCType(), false);

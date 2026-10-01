@@ -54,7 +54,7 @@ public class ConstraintReduction {
     while (!constraints.isEmpty()
         && bounds.stream().noneMatch(Bound::isUnsatisfiableBound)
     ) {
-      Constraint constraint = constraints.get(0);
+      Constraint constraint = constraints.getFirst();
       constraints.remove(constraint);
       List<Bound> newBounds;
       Log.trace("reducing: " + constraint.print(), LOG_NAME);

@@ -41,7 +41,6 @@ public class ScopesTest {
 
     this.astSup = astSup.get();
     this.globalScope = globalScope;
-    this.symbolTableCreator = symbolTableCreator;
   }
 
   @Test

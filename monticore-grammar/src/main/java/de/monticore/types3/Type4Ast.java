@@ -2,9 +2,7 @@
 package de.monticore.types3;
 
 import de.monticore.ast.ASTNode;
-import de.monticore.expressions.commonexpressions.CommonExpressionsMill;
 import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
-import de.monticore.expressions.commonexpressions._util.ICommonExpressionsTypeDispatcher;
 import de.monticore.expressions.expressionsbasis.ExpressionsBasisMill;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
@@ -557,15 +555,11 @@ public class Type4Ast {
    * whether the expression represents a qualified name
    */
   protected boolean isQNameExpr(ASTExpression expr) {
-    ICommonExpressionsTypeDispatcher typeDispatcher =
-        CommonExpressionsMill.typeDispatcher();
-    if (typeDispatcher.isExpressionsBasisASTNameExpression(expr)) {
+    if (expr instanceof ASTNameExpression) {
       return true;
     }
-    else if (typeDispatcher.isCommonExpressionsASTFieldAccessExpression(expr)) {
-      return isQNameExpr(
-          typeDispatcher.asCommonExpressionsASTFieldAccessExpression(expr).getExpression()
-      );
+    else if (expr instanceof ASTFieldAccessExpression fieldAccessExpression) {
+      return isQNameExpr(fieldAccessExpression.getExpression());
     }
     else {
       return false;
@@ -590,9 +584,17 @@ public class Type4Ast {
         result.append(FilenameUtils.getName(startPos.getFileName().get()));
         result.append(":");
       }
-      result.append("<" + startPos.getLine() + "," + startPos.getColumn() + ">");
+      result.append("<");
+      result.append(startPos.getLine());
+      result.append(",");
+      result.append(startPos.getColumn());
+      result.append(">");
       result.append("-");
-      result.append("<" + endPos.getLine() + "," + endPos.getColumn() + ">");
+      result.append("<");
+      result.append(endPos.getLine());
+      result.append(",");
+      result.append(endPos.getColumn());
+      result.append(">");
     }
     else {
       result.append("unknown position");

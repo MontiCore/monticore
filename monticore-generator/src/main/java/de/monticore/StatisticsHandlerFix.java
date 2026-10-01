@@ -11,6 +11,7 @@ import java.util.Objects;
 import java.util.concurrent.*;
 
 @Deprecated
+@SuppressWarnings({"deprecation", "removal"})
 public class StatisticsHandlerFix {
 
   protected static ExecutorService _reportSendingExecutorService;
@@ -24,7 +25,7 @@ public class StatisticsHandlerFix {
     return _reportSendingExecutorService;
   }
 
-  private static void sendRequest(URI url, String data, String type) throws IOException, InterruptedException {
+  private static void sendRequest(URI url, String data, String type) throws IOException {
     HttpURLConnection connection = (HttpURLConnection) url.toURL().openConnection();
     connection.setRequestMethod("POST");
     connection.setRequestProperty("STAT_TYPE", type);

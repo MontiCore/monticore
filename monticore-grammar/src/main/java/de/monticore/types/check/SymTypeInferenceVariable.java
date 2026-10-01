@@ -2,7 +2,6 @@
 package de.monticore.types.check;
 
 import de.monticore.types3.ISymTypeVisitor;
-import de.se_rwth.commons.logging.Log;
 import com.google.common.base.Preconditions;
 
 import java.util.concurrent.atomic.AtomicInteger;

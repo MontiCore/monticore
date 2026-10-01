@@ -85,7 +85,7 @@ public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
         .map(ASTCDAttribute::deepClone)
         .filter(a -> !a.getModifier().isFinal())
         .filter(service::isInheritedAttribute)
-        .collect(Collectors.toList());
+        .toList();
 
 
     ASTCDConstructor constructor = this.getCDConstructorFacade().createConstructor(PUBLIC.build(), builderClassName);
@@ -142,7 +142,7 @@ public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
       // This terminal has a default value -> use it for the builder
       List<String> terminalValues = service.getTerminalDefaultValues(attribute);
       if (terminalValues.size() == 1) {
-        this.replaceTemplate(VALUE, attribute, new StringHookPoint("= \"" + StringEscapeUtils.escapeJava(terminalValues.get(0)) + "\""));
+        this.replaceTemplate(VALUE, attribute, new StringHookPoint("= \"" + StringEscapeUtils.escapeJava(terminalValues.getFirst()) + "\""));
       }
     }
   }

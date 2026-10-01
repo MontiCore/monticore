@@ -52,8 +52,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-
 
 /**
  * This class contains the remnants of the DSTLGenCLI,
@@ -110,12 +108,9 @@ public class DSTLGenScript {
     trGrammarNames.add("tr");
     trGrammarNames.add(grammar.getName() + "TRHC.mc4");
 
-    Path trGrammarPath = Paths.get(trGrammarNames.stream().collect(Collectors.joining(File.separator)));
+    Path trGrammarPath = Paths.get(String.join(File.separator, trGrammarNames));
     Optional<URL> hwGrammar = paths.find(trGrammarPath.toString());
-    if (hwGrammar.isPresent()) {
-      return Optional.of(parseGrammar(MCPath.toPath(hwGrammar.get()).get().toString()));
-    }
-    return Optional.empty();
+    return hwGrammar.map(url -> parseGrammar(MCPath.toPath(url).get().toString()));
   }
 
   public GlobalExtensionManagement initGlex(ASTMCGrammar grammar){

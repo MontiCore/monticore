@@ -21,7 +21,7 @@ public interface ASTMCGenericType extends ASTMCGenericTypeTOP {
   }
 
   default boolean containsAllMCTypeArguments(Collection<?> collection) {
-    return getMCTypeArgumentList().containsAll(collection);
+    return new HashSet<>(getMCTypeArgumentList()).containsAll(collection);
   }
 
   default boolean isEmptyMCTypeArguments() {
@@ -95,7 +95,7 @@ public interface ASTMCGenericType extends ASTMCGenericTypeTOP {
   }
 
   default boolean containsAllNames(Collection<?> collection) {
-    return getNameList().containsAll(collection);
+    return new HashSet<>(getNameList()).containsAll(collection);
   }
 
   default boolean isEmptyNames() {

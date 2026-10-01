@@ -10,7 +10,6 @@ import de.monticore.grammar.grammar._visitor.GrammarTraverser;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class NoTokenDefined implements GrammarASTMCGrammarCoCo {
 
@@ -29,9 +28,9 @@ public class NoTokenDefined implements GrammarASTMCGrammarCoCo {
     if (node.isPresentSymbol() && !node.getSymbol().isIsComponent()) {
       MCGrammarSymbol symbol = node.getSymbol();
       List<ASTMCGrammar> superGrammars = symbol.getAllSuperGrammars().stream()
-          .filter(x -> x.isPresentAstNode())
+          .filter(MCGrammarSymbol::isPresentAstNode)
           .map(x -> (ASTMCGrammar) x.getAstNode())
-          .collect(Collectors.toList());
+          .toList();
       //check for own and super grammars tokens
       if (!hasTokenDefinition(node) && superGrammars.stream().noneMatch(this::hasTokenDefinition)) {
         Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, node.getName()),

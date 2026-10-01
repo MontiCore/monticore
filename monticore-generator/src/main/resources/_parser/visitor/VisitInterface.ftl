@@ -4,11 +4,11 @@
 <#-- @ftlvariable name="mill" type="java.lang.String" -->
 <#-- @ftlvariable name="alts" type="java.util.List<de.monticore.codegen.parser.antlr.Grammar2ParseVisitor.AltEntry>" -->
 ${tc.signature("prodname", "mill", "alts", "hasNext")}
-String prefix = com.google.common.base.Strings.repeat("| ", depth++);
-if (debug)
-System.err.println(prefix+"Visit expr ${prodname}");
-if (debug)
-System.err.println(prefix+ctx.start.getInputStream().getText(new org.antlr.v4.runtime.misc.Interval(ctx.start.getStartIndex(), ctx.stop.getStopIndex())));
+  String prefix = com.google.common.base.Strings.repeat("| ", depth++);
+  if (debug) {
+    System.err.println(prefix+"Visit expr ${prodname}");
+    System.err.println(prefix+ctx.start.getInputStream().getText(new org.antlr.v4.runtime.misc.Interval(ctx.start.getStartIndex(), ctx.stop.getStopIndex())));
+  }
 
 <#list alts>
     <#items as alt>
