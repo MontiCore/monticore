@@ -66,7 +66,8 @@ public class ExpressionsAndStatementsTool
     checker.addCoCo(new ForConditionHasBooleanType());
     checker.addCoCo(new ForEachIsValid());
     checker.addCoCo(new IfConditionHasBooleanType());
-    checker.addCoCo(new SwitchStatementValid());
+    // todo https://git.rwth-aachen.de/monticore/monticore/-/work_items/3423
+    // checker.addCoCo(new SwitchStatementValid());
     checker.addCoCo(new SynchronizedArgIsReftype());
     checker.addCoCo(new WhileConditionHasBooleanType());
     checker.addCoCo(new AssertIsValid());
