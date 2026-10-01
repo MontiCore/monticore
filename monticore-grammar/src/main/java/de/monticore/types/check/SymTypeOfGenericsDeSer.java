@@ -50,7 +50,7 @@ public class SymTypeOfGenericsDeSer {
       List<SymTypeExpression> arguments = SymTypeExpressionDeSer
           .deserializeListMember(SERIALIZED_ARGUMENTS, serialized, enclosingScope);
 
-      return SymTypeExpressionFactory.createGenerics(SymTypeExpressionFactory
+      return SymTypeExpressionFactory.createGenerics(SymTypeExpressionDeSer
           .resolveTypeSymbolOrLogError(typeConstructorFullName, enclosingScope), arguments);
     }
     Log.error(
