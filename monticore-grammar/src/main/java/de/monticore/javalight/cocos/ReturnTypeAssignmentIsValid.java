@@ -62,7 +62,23 @@ public class ReturnTypeAssignmentIsValid implements JavaLightASTMethodDeclaratio
       }
     }
   }
-  
+
+  /**
+   * Collects all return statements from the given AST node using a traverser.
+   * <p>
+   * This method extracts return statements and their associated expressions
+   * from the method body. It returns a map where each return statement node
+   * is mapped to an Optional containing either the return expression or an empty
+   * Optional for return statements without an expression.
+   * <p>
+   * <b>Note:</b> For languages with nested scopes that allow their own return statements
+   * (e.g., lambda expressions, anonymous classes, or inner class methods),
+   * this method may need to be overridden to handle scope boundaries correctly.
+   * See {@link ReturnStatementCollectionVisitor} for more information.
+   *
+   * @param node the AST node (typically a method declaration) to traverse for return statements
+   * @return a map associating each return statement with its optional expression
+   */
   protected Map<ASTNode, Optional<ASTExpression>> getReturnExpressions(ASTNode node) {
     JavaLightTraverser traverser = JavaLightMill.inheritanceTraverser();
     Map<ASTNode, Optional<ASTExpression>> returnExpressions = new HashMap<>();

@@ -8,6 +8,13 @@ import de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsVis
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * Basic visitor for collecting return statements and their associated expressions.
+ * <p>
+ * For languages with nested scopes that allow their own return statements
+ * (e.g., lambda expressions), this visitor may need to be extended to handle
+ * scope boundaries correctly.
+ */
 public class ReturnStatementCollectionVisitor
     implements MCReturnStatementsVisitor2 {
   
