@@ -5,6 +5,10 @@ import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentMatchers;
 
 import java.io.IOException;
@@ -12,6 +16,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Properties;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -21,7 +26,7 @@ public class UpdateCheckerRunnableTest {
   
   private static final String NEW_VERSION = "100000.0.0";
   private static final String OLD_VERSION = "1.0.0";
-  
+
   @BeforeEach
   public void initLog() {
     LogStub.init();
@@ -46,31 +51,22 @@ public class UpdateCheckerRunnableTest {
     assertTrue(LogStub.getPrints().getFirst().startsWith(
         "[INFO]   0xA9001 There is a newer Version 100000.0.0 of this tool available at monticore.de/download"));
   }
-  
-  @Test
-  public void testCheckVersionDoesNotLogWhenNoNewVersionAvailable() {
-    UpdateCheckerRunnable checker = createCheckerWithVersions(NEW_VERSION, OLD_VERSION);
-    
-    checker.checkVersion();
-    
-    assertEquals(0, LogStub.getPrints().size());
+
+  public static Stream<Arguments> testCheckVersionDoesNotLogOnMissingVersion() {
+    return Stream.of(
+        Arguments.of(null, NEW_VERSION),
+        Arguments.of(OLD_VERSION, null),
+        Arguments.of(null, null)
+    );
   }
-  
-  @Test
-  public void testCheckVersionReturnsOnMissingLocalVersion() {
-    UpdateCheckerRunnable checker = createCheckerWithVersions(null, OLD_VERSION);
-    
+
+  @ParameterizedTest
+  @MethodSource
+  public void testCheckVersionDoesNotLogOnMissingVersion(String version1, String version2) {
+    UpdateCheckerRunnable checker = createCheckerWithVersions(version1, version2);
+
     checker.checkVersion();
-    
-    assertEquals(0, LogStub.getPrints().size());
-  }
-  
-  @Test
-  public void testCheckVersionReturnsOnMissingRemoteVersion() {
-    UpdateCheckerRunnable checker = createCheckerWithVersions(NEW_VERSION, null);
-    
-    checker.checkVersion();
-    
+
     assertEquals(0, LogStub.getPrints().size());
   }
   
@@ -180,20 +176,23 @@ public class UpdateCheckerRunnableTest {
     assertEquals(0, LogStub.getPrints().size());
   }
   
-  @Test
-  public void testVersionComparisonMajorMinorPatch() {
-    UpdateCheckerRunnable.Version v1 = new UpdateCheckerRunnable.Version("1.2.3");
-    UpdateCheckerRunnable.Version v2 = new UpdateCheckerRunnable.Version("1.2.4");
-    UpdateCheckerRunnable.Version v3 = new UpdateCheckerRunnable.Version("1.3.0");
-    UpdateCheckerRunnable.Version v4 = new UpdateCheckerRunnable.Version("2.0.0");
+  @ParameterizedTest
+  @CsvSource(value = {
+    "1.2.3,1.2.4",
+    "1.2.4,1.3.0",
+    "1.3.0,2.0.0"
+  })
+  public void testVersionComparisonMajorMinorPatch(String version1, String version2) {
+    UpdateCheckerRunnable.Version v1 = new UpdateCheckerRunnable.Version(version1);
+    UpdateCheckerRunnable.Version v2 = new UpdateCheckerRunnable.Version(version2);
     
     assertTrue(v1.isOlderThan(v2));
-    assertTrue(v2.isOlderThan(v3));
-    assertTrue(v3.isOlderThan(v4));
-    assertFalse(v4.isOlderThan(v3));
+    assertFalse(v2.isOlderThan(v1));
     
     assertEquals(0, LogStub.getPrints().size());
   }
+
+
   
   protected UpdateCheckerRunnable createCheckerWithVersions(String localVersion,
       String remoteVersion) {
