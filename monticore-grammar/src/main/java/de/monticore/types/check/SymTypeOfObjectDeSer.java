@@ -42,7 +42,7 @@ public class SymTypeOfObjectDeSer {
         // support deprecated behavior
         enclosingScope = BasicSymbolsMill.globalScope();
       }
-      return SymTypeExpressionFactory.createTypeObject(SymTypeExpressionFactory
+      return SymTypeExpressionFactory.createTypeObject(SymTypeExpressionDeSer
           .resolveTypeSymbolOrLogError(objName, enclosingScope));
     }
     Log.error("0x823F4 Internal error: Cannot load \""
