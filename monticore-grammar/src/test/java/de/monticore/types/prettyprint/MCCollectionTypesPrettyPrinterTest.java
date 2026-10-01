@@ -127,4 +127,23 @@ public class MCCollectionTypesPrettyPrinterTest {
   
     assertTrue(Log.getFindings().isEmpty());
   }
+
+  @Test
+  public void testMCCollectionTypes() throws IOException {
+    MCCollectionTypesTestParser parser = new MCCollectionTypesTestParser();
+    String inputWithSpace = "Set<de.monticore.ASTFoo> ";
+    Optional<ASTMCSetType> ast = parser.parse_StringMCSetType(inputWithSpace);
+    assertTrue(ast.isPresent());
+    assertFalse(parser.hasErrors());
+    ASTMCSetType setType = ast.get();
+    MCCollectionTypesFullPrettyPrinter printer = new MCCollectionTypesFullPrettyPrinter(new IndentPrinter());
+    String output = printer.prettyprint(ast.get());
+    // assertTrue(inputWithSpace)
+    ast = parser.parse_StringMCSetType(output);
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
+    assertTrue(setType.deepEquals(ast.get()));
+
+    assertTrue(Log.getFindings().isEmpty());
+  }
 }

@@ -150,7 +150,7 @@ public class PrintTypeAstExtensionTests {
   @Test
   public void printTypeMethodTSimpleGenericsArrayTest() {
     MCFullGenericTypesTestParser parser= new MCFullGenericTypesTestParser();
-    String[] types = {"Person<Konto>","java.util.List<socnet.Person<Konto>,List<boolean>>"};
+    String[] types = {"Person<Konto>","java.util.List<socnet.Person<Konto>, List<boolean>>"};
     for(String simpleReference:types) {
       try {
         Optional<? extends ASTMCType> type = parser.parse_StringMCType(simpleReference);
@@ -171,7 +171,7 @@ public class PrintTypeAstExtensionTests {
   public void printTypeMethodCollectionTypesTest() {
     MCCollectionTypesTestParser parser= new MCCollectionTypesTestParser();
 
-    String[] collectionTypes = {"List<boolean>","Optional<a.b.cd.Person>","Map<boolean,a.P>","Set<Person>"};
+    String[] collectionTypes = {"List<boolean> ","Optional<a.b.cd.Person>","Map<boolean, a.P>","Set<Person>"};
     for(String simpleReference:collectionTypes) {
       try {
         Optional<? extends ASTMCType> type = parser.parse_StringMCType(simpleReference);
