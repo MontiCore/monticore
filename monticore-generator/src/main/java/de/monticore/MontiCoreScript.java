@@ -874,7 +874,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     MillDecorator millDecorator = new MillDecorator(glex, symbolTableService, visitorService, parserService);
     CDMillDecorator cdMillDecorator = new CDMillDecorator(glex, millDecorator);
 
-    cdMillDecorator.decorate(cd, decoratedCD);
+    cdMillDecorator.decorate(cd, decoratedCD, symbolTableService);
   }
 
   public void decorateCLI(GlobalExtensionManagement glex, ICD4AnalysisScope cdScope,

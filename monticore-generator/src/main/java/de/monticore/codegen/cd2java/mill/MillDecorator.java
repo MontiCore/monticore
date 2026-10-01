@@ -214,6 +214,13 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
     ASTCDMethod resetMethod = addResetMethod(superSymbolList);
     millClass.addCDMember(resetMethod);
 
+    // add snapshot and load method
+    ASTCDMethod snapshotMethod = addGetMillStateMethod(superSymbolList);
+    millClass.addCDMember(snapshotMethod);
+
+    ASTCDMethod loadMethod = addSetMillStateMethod(superSymbolList);
+    millClass.addCDMember(loadMethod);
+
     return millClass;
   }
 
@@ -688,6 +695,33 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
     attributeMethods.add(protectedMethod);
 
     return attributeMethods;
+  }
+
+  protected ASTCDMethod addGetMillStateMethod(List<DiagramSymbol> superSymbolList) {
+    String stateClassName = symbolTableService.getCDName() + "MillState";
+    ASTMCType stateType = this.getMCTypeFacade().createQualifiedType(stateClassName);
+
+    ASTCDMethod snapshotMethod = this.getCDMethodFacade().createMethod(PUBLIC_STATIC.build(), stateType, "getState");
+
+    this.replaceTemplate(JAVADOC, snapshotMethod, JavaDoc.of("EXPERIMENTAL!", "Returns the mill as an attribute (without static references required).")
+            .block("return", "the mill state")
+            .asHP());
+    this.replaceTemplate(EMPTY_BODY, snapshotMethod, new TemplateHookPoint("mill.SnapshotMethod", stateClassName, superSymbolList));
+    return snapshotMethod;
+  }
+
+  protected ASTCDMethod addSetMillStateMethod(List<DiagramSymbol> superSymbolList) {
+    String stateClassName = symbolTableService.getCDName() + "MillState";
+    ASTMCType stateType = this.getMCTypeFacade().createQualifiedType(stateClassName);
+    ASTCDParameter stateParam = this.getCDParameterFacade().createParameter(stateType, "state");
+
+    ASTCDMethod loadMethod = this.getCDMethodFacade().createMethod(PUBLIC_STATIC.build(), "setState", stateParam);
+
+    this.replaceTemplate(JAVADOC, loadMethod, JavaDoc.of("EXPERIMENTAL!", "Loads the mill state into the static state.")
+            .param("state", "The non-static state, see #getState()")
+            .asHP());
+    this.replaceTemplate(EMPTY_BODY, loadMethod, new TemplateHookPoint("mill.LoadMethod", superSymbolList));
+    return loadMethod;
   }
 
 }
