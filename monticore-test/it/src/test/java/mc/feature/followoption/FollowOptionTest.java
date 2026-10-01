@@ -28,7 +28,7 @@ public class FollowOptionTest {
     FollowOptionParser simpleBParser = FollowOptionMill.parser();
     simpleBParser.parse_StringB("test ,");
     assertTrue(simpleBParser.hasErrors());
-    MCAssertions.assertHasFindingStartingWith("Expected EOF but found token");
+    MCAssertions.assertHasFindingStartingWith("mismatched input ',', expected EOF");
   }
   
   /**
@@ -42,7 +42,7 @@ public class FollowOptionTest {
     simpleParser.parse_StringB(",");
     
     assertTrue(simpleParser.hasErrors());
-    MCAssertions.assertHasFindingStartingWith("Expected EOF but found token");
+    MCAssertions.assertHasFindingStartingWith("mismatched input ',', expected EOF");
   }
 
   @Test
@@ -51,6 +51,6 @@ public class FollowOptionTest {
     simpleAParser.parse_StringA("test .");
     
     assertTrue(simpleAParser.hasErrors());
-    MCAssertions.assertHasFindingStartingWith("mismatched input '.' expecting ','");
+    MCAssertions.assertHasFindingStartingWith("mismatched input '.', expecting ','");
   }
 }

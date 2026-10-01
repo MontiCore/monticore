@@ -112,6 +112,8 @@ public abstract class MCParser extends Parser {
     }
   }
 
+  protected abstract String[] getNoKeywordRuleNames();
+
   public void setActiveASTNode(ASTNode n) {
 
     ListIterator<Comment> listIterator = comments.listIterator();
