@@ -50,7 +50,7 @@ public class SymTypeVariableDeSer {
         // support deprecated behavior:
         enclosingScope = BasicSymbolsMill.globalScope();
       }
-      return SymTypeExpressionFactory.createTypeVariable(SymTypeExpressionFactory
+      return SymTypeExpressionFactory.createTypeVariable(SymTypeExpressionDeSer
           .resolveTypeVarSymbolOrLogError(varName, enclosingScope));
     }
     Log.error("0x823F5 Internal error: Cannot load \"" + serialized + "\" as  SymTypeVariable!");

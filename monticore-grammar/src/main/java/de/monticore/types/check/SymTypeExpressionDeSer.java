@@ -3,6 +3,8 @@ package de.monticore.types.check;
 
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.JsonPrinter;
@@ -136,6 +138,34 @@ public class SymTypeExpressionDeSer {
       }
     }
     return result;
+  }
+
+  public static TypeSymbol resolveTypeSymbolOrLogError(
+      String name, IBasicSymbolsScope enclosingScope) {
+    Optional<TypeSymbol> resolved = enclosingScope.resolveType(name);
+    if (resolved.isPresent()) {
+      return resolved.get();
+    }
+    Log.error("0x893F63 Internal error: cannot resolve the type \""
+        + name + "\" required by a SymTypeExpression!");
+    TypeSymbol unresolved = new TypeSymbol(name);
+    unresolved.setEnclosingScope(enclosingScope);
+    unresolved.setFullName(name);
+    return unresolved;
+  }
+
+  public static TypeVarSymbol resolveTypeVarSymbolOrLogError(
+      String name, IBasicSymbolsScope enclosingScope) {
+    Optional<TypeVarSymbol> resolved = enclosingScope.resolveTypeVar(name);
+    if (resolved.isPresent()) {
+      return resolved.get();
+    }
+    Log.error("0x893F64 Internal error: cannot resolve the type variable \""
+        + name + "\" required by a SymTypeExpression!");
+    TypeVarSymbol unresolved = new TypeVarSymbol(name);
+    unresolved.setEnclosingScope(enclosingScope);
+    unresolved.setFullName(name);
+    return unresolved;
   }
 
   public static SymTypeExpressionDeSer getInstance() {
