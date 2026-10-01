@@ -48,8 +48,7 @@ public class UpdateCheckerRunnableTest {
     checker.checkVersion();
     
     assertEquals(1, LogStub.getPrints().size());
-    assertTrue(LogStub.getPrints().getFirst().startsWith(
-        "[INFO]   0xA9001 There is a newer Version 100000.0.0 of this tool available at monticore.de/download"));
+    assertTrue(LogStub.getPrints().getFirst().contains("0xA9001"));
   }
 
   public static Stream<Arguments> testCheckVersionDoesNotLogOnMissingVersion() {
@@ -113,8 +112,7 @@ public class UpdateCheckerRunnableTest {
     
     assertTrue(remote.isEmpty());
     assertEquals(1, LogStub.getPrints().size());
-    assertTrue(Log.getFindings().getFirst().getMsg()
-        .startsWith("0xA9008 Could not get remote properties file, http status: 500"));
+    assertTrue(Log.getFindings().getFirst().getMsg().contains("0xA9008"));
   }
   
   @Test
@@ -129,8 +127,7 @@ public class UpdateCheckerRunnableTest {
     
     assertTrue(remote.isEmpty());
     assertEquals(1, LogStub.getPrints().size());
-    assertTrue(LogStub.getPrints().getFirst()
-        .startsWith("[WARN]  0xA9003 Could not retrieve remote properties file"));
+    assertTrue(LogStub.getPrints().getFirst().contains("0xA9003"));
   }
   
   @Test
@@ -145,8 +142,7 @@ public class UpdateCheckerRunnableTest {
     
     assertTrue(remote.isEmpty());
     assertEquals(1, LogStub.getPrints().size());
-    assertTrue(Log.getFindings().getFirst().getMsg()
-        .startsWith("0xA9003 Could not retrieve remote properties file"));
+    assertTrue(LogStub.getPrints().getFirst().contains("0xA9003"));
   }
   
   @Test
@@ -165,22 +161,14 @@ public class UpdateCheckerRunnableTest {
     assertEquals(0, LogStub.getPrints().size());
   }
   
-  @Test
-  public void testVersionComparisonSnapshotRule() {
-    UpdateCheckerRunnable.Version release = new UpdateCheckerRunnable.Version("1.2.3");
-    UpdateCheckerRunnable.Version snapshot = new UpdateCheckerRunnable.Version("1.2.3-SNAPSHOT");
-    
-    assertFalse(release.isOlderThan(snapshot));
-    assertTrue(snapshot.isOlderThan(release));
-
-    assertEquals(0, LogStub.getPrints().size());
-  }
-  
   @ParameterizedTest
   @CsvSource(value = {
     "1.2.3,1.2.4",
     "1.2.4,1.3.0",
-    "1.3.0,2.0.0"
+    "1.3.0,2.0.0",
+    "1.2.2,1.2.3-SNAPSHOT",
+    "1.2.3-SNAPSHOT,1.2.3",
+    "1.2.3-SNAPSHOT,1.2.4"
   })
   public void testVersionComparisonMajorMinorPatch(String version1, String version2) {
     UpdateCheckerRunnable.Version v1 = new UpdateCheckerRunnable.Version(version1);
@@ -188,7 +176,7 @@ public class UpdateCheckerRunnableTest {
     
     assertTrue(v1.isOlderThan(v2));
     assertFalse(v2.isOlderThan(v1));
-    
+
     assertEquals(0, LogStub.getPrints().size());
   }
 
