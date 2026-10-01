@@ -174,9 +174,9 @@ public class UpdateCheckerRunnableTest {
     UpdateCheckerRunnable.Version release = new UpdateCheckerRunnable.Version("1.2.3");
     UpdateCheckerRunnable.Version snapshot = new UpdateCheckerRunnable.Version("1.2.3-SNAPSHOT");
     
-    assertTrue(release.isOlderThan(snapshot));
-    assertFalse(snapshot.isOlderThan(release));
-    
+    assertFalse(release.isOlderThan(snapshot));
+    assertTrue(snapshot.isOlderThan(release));
+
     assertEquals(0, LogStub.getPrints().size());
   }
   

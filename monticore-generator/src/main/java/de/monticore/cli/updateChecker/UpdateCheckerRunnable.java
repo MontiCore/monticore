@@ -151,7 +151,7 @@ public class UpdateCheckerRunnable implements Runnable {
         }
       }
 
-      return !this.snapshot && other.snapshot;
+      return this.snapshot && !other.snapshot;
     }
 
     public String getString() {
