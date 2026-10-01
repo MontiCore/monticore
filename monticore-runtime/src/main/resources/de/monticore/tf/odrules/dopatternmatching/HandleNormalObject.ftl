@@ -1,12 +1,21 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${signature("isOptional", "parentObject")}
+${tc.signature("isOptional", "isList" "parentObject")}
+<#-- @ftlvariable name="tc" type="de.monticore.generating.templateengine.TemplateController" -->
+<#-- @ftlvariable name="glex" type="de.monticore.generating.templateengine.GlobalExtensionManagement" -->
+<#-- @ftlvariable name="isOptional" type="boolean" -->
+<#-- @ftlvariable name="isList" type="boolean" -->
+<#-- @ftlvariable name="parentObject" type="de.monticore.tf.odrulegeneration._ast.ASTMatchingObject" -->
 
 <#assign normalObject = ast>
 case "${normalObject.getObjectName()}" -> {
   if(isBacktrackingNegative) {
     isBacktracking = true;
     isBacktrackingNegative = false;
-    clearNegativeObjects();
+    <#if isList && parentObject?has_content>
+      clear${parentObject.getObjectName()}NegativeObjects();
+    <#else>
+      clearNegativeObjects();
+    </#if>
   }
   if (!isBacktracking) {
     ((FastLookupList<?>)${normalObject.getObjectName()}_candidates_temp).reset();

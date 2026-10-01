@@ -19,8 +19,6 @@ ${tc.include("de.monticore.tf.odrules.undoreplacement.ChangeAttributeValues")}
     // execute do statements
 ${ast.getUndoStatement()}
 
-    Reporting.flush(hostGraph.get(0));
-
     doReplacementExecuted = false;
 
     //undo only for the first match

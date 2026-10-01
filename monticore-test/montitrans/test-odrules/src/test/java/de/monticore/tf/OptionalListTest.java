@@ -1,11 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.tf;
 
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
+import de.monticore.runtime.junit.TestWithMCLanguage;
+import mc.testcases.automaton.AutomatonMill;
 import mc.testcases.automaton._ast.ASTAutomaton;
 import mc.testcases.automaton._parser.AutomatonParser;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -13,38 +12,29 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@TestWithMCLanguage(AutomatonMill.class)
 public class OptionalListTest {
 
-  private ASTAutomaton automaton;
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
-  private void setUp(String model) throws IOException {
+  private ASTAutomaton setUp(String model) throws IOException {
     String inputFile = "src/main/models/automaton/" + model;
-    AutomatonParser parser = new AutomatonParser();
+    AutomatonParser parser = AutomatonMill.parser();
     Optional<ASTAutomaton> aut = parser.parse(inputFile);
 
     assertTrue(aut.isPresent());
-    automaton = aut.get();
+    return aut.get();
   }
 
   @Test
   public void testEmptyAutomaton() throws IOException {
-    setUp("EmptyAutomaton.aut");
+    ASTAutomaton automaton = setUp("EmptyAutomaton.aut");
 
     OptionalList testee = new OptionalList(automaton);
     assertFalse(testee.doPatternMatching());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testSingleState() throws IOException {
-    setUp("AutomatonWithSingleState.aut");
+    ASTAutomaton automaton = setUp("AutomatonWithSingleState.aut");
 
     OptionalList testee = new OptionalList(automaton);
     assertTrue(testee.doPatternMatching());
@@ -52,34 +42,28 @@ public class OptionalListTest {
     if (testee.get_list_substate().isPresent()) {
       assertEquals(0, testee.get_list_substate().get().size());
     }
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testThreeSubstates() throws IOException {
-    setUp("AutomatonStateWithThreeSubstates.aut");
+    ASTAutomaton automaton = setUp("AutomatonStateWithThreeSubstates.aut");
 
     OptionalList testee = new OptionalList(automaton);
     assertTrue(testee.doPatternMatching());
     assertTrue(testee.get_list_substate().isPresent());
     assertEquals(3, testee.get_list_substate().get().size());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testNegativeCondition() throws IOException {
-    setUp("AutomatonStateWithInitialSubstate.aut");
+    ASTAutomaton automaton = setUp("AutomatonStateWithInitialSubstate.aut");
 
     OptionalList testee = new OptionalList(automaton);
     assertTrue(testee.doPatternMatching());
-    assertEquals(testee.get_state_1().getName(), "e");
+    assertEquals("e", testee.get_state_1().getName());
     assertTrue(testee.get_list_substate().isPresent());
-    assertEquals(testee.get_list_substate().get().size(), 2);
-    assertEquals(testee.get_list_substate().get().get(0).getName(), "f");
-    assertEquals(testee.get_list_substate().get().get(1).getName(), "g");
-  
-    assertTrue(Log.getFindings().isEmpty());
+    assertEquals(2, testee.get_list_substate().get().size());
+    assertEquals("f", testee.get_list_substate().get().get(0).getName());
+    assertEquals("g", testee.get_list_substate().get().get(1).getName());
   }
 }

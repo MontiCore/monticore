@@ -1,13 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mc.testcases.automaton.transformation.rule._cocos;
 
+import de.monticore.runtime.junit.MCAssertions;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import mc.testcases.automaton.tr.automatontr._ast.*;
+import mc.testcases.automaton.tr.automatontr.AutomatonTRMill;
+import mc.testcases.automaton.tr.automatontr._ast.ASTAutomatonTFRule;
 import mc.testcases.automaton.tr.automatontr._cocos.AutomatonTRCoCoChecker;
 import mc.testcases.automaton.tr.automatontr._cocos.NoOptOnRHSCoCo;
 import mc.testcases.automaton.tr.automatontr._parser.AutomatonTRParser;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -15,27 +16,14 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Created by DW
- */
+@TestWithMCLanguage(AutomatonTRMill.class)
 public class NoOptOnRHSCoCoTest {
-  
-  @BeforeEach
-  public void disableFailQuick() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-
-  @BeforeEach
-  public void setUp() {
-    Log.getFindings().clear();
-  }
 
   @Test
   public void testAutomatonNoOptOnRHS() throws IOException {
     // parse valid transformation
     String inputFile = "src/test/resources/OptNotOnRHS.mtr";
-    AutomatonTRParser parser = new AutomatonTRParser();
+    AutomatonTRParser parser = AutomatonTRMill.parser();
     Optional<ASTAutomatonTFRule> ast = parser.parse(inputFile);
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
@@ -45,16 +33,13 @@ public class NoOptOnRHSCoCoTest {
     AutomatonTRCoCoChecker cocoChecker = new AutomatonTRCoCoChecker();
     noOptOnRHSCoCo.addTo(cocoChecker);
     cocoChecker.checkAll(ast.get());
-
-    // should not result in any errors
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testAutomatonHasOptOnRHS() throws IOException {
     // parse invalid transformation
     String inputFile = "src/test/resources/OptOnRHS.mtr";
-    AutomatonTRParser parser = new AutomatonTRParser();
+    AutomatonTRParser parser = AutomatonTRMill.parser();
     Optional<ASTAutomatonTFRule> ast = parser.parse(inputFile);
     assertFalse(parser.hasErrors());
     assertTrue(ast.isPresent());
@@ -66,6 +51,9 @@ public class NoOptOnRHSCoCoTest {
     cocoChecker.checkAll(ast.get());
 
     // should result in four errors
-    assertEquals(4, Log.getFindings().size());
+    Log.getFindings().remove(MCAssertions.assertHasFindingStartingWith("0xF0C20x37578"));
+    Log.getFindings().remove(MCAssertions.assertHasFindingStartingWith("0xF0C20x08188"));
+    Log.getFindings().remove(MCAssertions.assertHasFindingStartingWith("0xF0C20x37578"));
+    Log.getFindings().remove(MCAssertions.assertHasFindingStartingWith("0xF0C20x08188"));
   }
 }

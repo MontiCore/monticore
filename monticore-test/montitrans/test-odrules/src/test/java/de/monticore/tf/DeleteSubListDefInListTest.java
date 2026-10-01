@@ -1,8 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.tf;
 
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import mc.testcases.misc.MiscMill;
 import mc.testcases.misc._ast.ASTDef;
 import mc.testcases.misc._ast.ASTSub;
@@ -12,14 +11,9 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@TestWithMCLanguage(MiscMill.class)
 public class DeleteSubListDefInListTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
+
   ASTDef def;
   ASTDef def2;
   ASTSub sub;
@@ -41,15 +35,11 @@ public class DeleteSubListDefInListTest {
     DeleteSubListDefInList testee = new DeleteSubListDefInList(def);
     assertTrue(testee.doPatternMatching());
     testee.doReplacement();
-
+    
     assertFalse(def.isPresentSub());
     assertFalse(def2.isPresentSub());
     testee.undoReplacement();
     assertTrue(def.isPresentSub());
     assertTrue(def2.isPresentSub());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
-
-
 }
