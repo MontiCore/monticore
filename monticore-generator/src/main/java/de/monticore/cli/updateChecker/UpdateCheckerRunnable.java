@@ -17,14 +17,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class UpdateCheckerRunnable implements Runnable {
-  
+
   final protected static String REMOTE_PROPERTIES_PATH =
       "https://raw.githubusercontent.com/MontiCore/monticore/HEAD/gradle.properties";
   final protected static String LOCAL_PROPERTIES_PATH = "/buildInfo.properties";
-  
+
   protected static final Duration CONNECT_TIMEOUT = Duration.ofSeconds(5);
   protected static final Duration REQUEST_TIMEOUT = Duration.ofSeconds(5);
-  
+
   @Override
   public void run() {
     checkVersion();
@@ -57,17 +57,14 @@ public class UpdateCheckerRunnable implements Runnable {
   protected Properties getRemoteProperties() {
     Properties properties = new Properties();
 
-    try(HttpClient client = createHttpClient()) {
+    try (HttpClient client = createHttpClient()) {
       HttpRequest request =
-          HttpRequest.newBuilder(URI.create(REMOTE_PROPERTIES_PATH))
-              .GET()
-              .timeout(REQUEST_TIMEOUT)
-              .header("Accept", "text/plain")
-              .build();
+          HttpRequest.newBuilder(URI.create(REMOTE_PROPERTIES_PATH)).GET().timeout(REQUEST_TIMEOUT)
+              .header("Accept", "text/plain").build();
 
       HttpResponse<String> response =
           client.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
-      
+
       if (response.statusCode() / 100 != 2) {
         Log.warn("0xA9008 Could not get remote properties file, http status: " + response.statusCode());
       }
@@ -115,40 +112,45 @@ public class UpdateCheckerRunnable implements Runnable {
 
   protected static class Version {
 
-    protected final boolean snapshot;
-    protected final int[] versionNumbers;
     protected final String versionString;
 
     public Version(String version) {
       this.versionString = version;
+    }
 
-      this.snapshot = version.contains("SNAPSHOT");
-
-      Pattern pattern = Pattern.compile("(\\d+)\\.(\\d+)\\.(\\d+)");
+    protected int[] getVersionNumbers() {
+      final Pattern pattern = Pattern.compile("(\\d+)\\.(\\d+)\\.(\\d+)");
       Matcher matcher = pattern.matcher(this.versionString);
-      
+
       if (matcher.find()) {
         int major = Integer.parseInt(matcher.group(1));
         int minor = Integer.parseInt(matcher.group(2));
         int patch = Integer.parseInt(matcher.group(3));
-        
-        this.versionNumbers = new int[] { major, minor, patch };
+
+        return new int[] { major, minor, patch };
       }
       else {
-        Log.warn("0xC4111: Could not parse version number: " + version);
-        this.versionNumbers = new int[] { 0, 0, 0 };
+        Log.warn("0xC4111: Could not parse version number: " + this.versionString);
+        return new int[] { 0, 0, 0 };
       }
     }
 
+    protected boolean isSnapshot() {
+      return this.versionString.contains("SNAPSHOT");
+    }
+
     public boolean isOlderThan(Version other) {
-      for (int i = 0; i < this.versionNumbers.length; i++) {
-        int comparison = Integer.compare(this.versionNumbers[i], other.versionNumbers[i]);
+      int[] thisVersionNumbers = this.getVersionNumbers();
+      int[] otherVersionNumbers = other.getVersionNumbers();
+
+      for (int i = 0; i < thisVersionNumbers.length; i++) {
+        int comparison = Integer.compare(thisVersionNumbers[i], otherVersionNumbers[i]);
         if (comparison != 0) {
           return comparison < 0;
         }
       }
 
-      return this.snapshot && !other.snapshot;
+      return this.isSnapshot() && !other.isSnapshot();
     }
 
     public String getString() {
