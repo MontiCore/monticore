@@ -39,9 +39,9 @@ public class TypeContextCalculator {
     for (IScope scope = enclosingScope;
          scope != null && enclosingType.isEmpty();
          scope = scope.getEnclosingScope()) {
-      //TODO: use TypeDispatcher as soon as it is fixed
-      if (scope.isPresentSpanningSymbol() && scope.getSpanningSymbol() instanceof TypeSymbol) {
-        enclosingType = Optional.of((TypeSymbol) scope.getSpanningSymbol());
+      if (scope.isPresentSpanningSymbol()
+          && scope.getSpanningSymbol() instanceof TypeSymbol typeSymbol) {
+        enclosingType = Optional.of(typeSymbol);
       }
     }
     return enclosingType;
