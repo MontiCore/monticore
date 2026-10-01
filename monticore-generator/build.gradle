@@ -39,6 +39,10 @@ allprojects {
   }
 }
 
+configurations {
+    mockitoAgent
+}
+
 dependencies {
     implementation "de.monticore:monticore-grammar:$previous_mc_version"
     implementation "de.se_rwth.commons:se-commons-groovy:$previous_se_commons_version"
@@ -61,7 +65,11 @@ dependencies {
     implementation "com.github.spotbugs:spotbugs-annotations:$spotbugs_annotations_version"
     implementation "org.apache.commons:commons-lang3:$commons_lang3_version"
     testImplementation 'com.github.javaparser:javaparser-symbol-solver-core:3.24.2'
+
     testImplementation "org.mockito:mockito-core:$mockito_version"
+    mockitoAgent("org.mockito:mockito-core:$mockito_version") {
+        transitive = false
+    }
 
 }
 allprojects {
@@ -182,6 +190,12 @@ tasks.named("shadowJar") { // all in one jar
     }
     archiveClassifier = "mc-tool"
     zip64 = true
+}
+
+tasks.withType(Test).configureEach {
+    // Starting from Java 21, the JDK restricts the ability
+    // of libraries to attach a Java agent to their own JVM.
+    jvmArgs += "-javaagent:${configurations.mockitoAgent.asPath}"
 }
 
 tasks.register("buildInfo", de.monticore.gradle.common.MCBuildInfoTask) {
