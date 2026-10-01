@@ -28,7 +28,7 @@ public class MethodExceptionThrows implements JavaLightASTMethodDeclarationCoCo 
         for (SymTypeExpression exception : node.getSymbol().getExceptionsList()) {
           if (!SymTypeRelations.isSubTypeOf(exception, throwable.get())) {
             Log.error(String.format(ERROR_CODE + ERROR_MSG_FORMAT, exception.print()),
-                node.get_SourcePositionStart());
+                node.get_SourcePositionStart(), node.get_SourcePositionEnd());
           }
         }
       }
