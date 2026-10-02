@@ -73,8 +73,8 @@ public class ReturnTypeAssignmentIsValid implements JavaLightASTMethodDeclaratio
    * <p>
    * <b>Note:</b> For languages with nested scopes that allow their own return statements
    * (e.g., lambda expressions, anonymous classes, or inner class methods),
-   * this method may need to be overridden to handle scope boundaries correctly.
-   * See {@link ReturnStatementCollectionVisitor} for more information.
+   * this method may need to be overridden to use an extended traverser that
+   * handles scope boundaries correctly.
    *
    * @param node the AST node (typically a method declaration) to traverse for return statements
    * @return a map associating each return statement with its optional expression
