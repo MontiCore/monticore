@@ -1,0 +1,62 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.temporal;
+
+component grammar TimeTriggerConditions extends de.monticore.siunit.SIUnitLiterals,
+    de.monticore.temporal.ISOTemporals {
+
+  interface TimeTriggerCondition;
+
+  interface AfterCondition extends TimeTriggerCondition;
+
+  /**
+   * Groups conditions that use WorkflowDSL's generic timer-condition bridge.
+   * {@code after} is deliberately excluded because WorkflowDSL already defines
+   * {@code AfterPeriodCondition}; {@code WorkflowWithTimer} overrides that
+   * existing production to retain host-language compatibility.
+   */
+  interface NonAfterTimeTriggerCondition extends TimeTriggerCondition;
+
+  AfterDurationCondition implements AfterCondition =
+    "after" duration:SIUnitLiteral;
+
+  AfterISOPeriodCondition implements AfterCondition =
+    "after" period:ISOPeriod;
+
+  OnCondition implements NonAfterTimeTriggerCondition =
+    "on" (isoDateTime:ISODateTime | dateOnly:CalendarDate | timeOnly:ISOTime);
+
+  EveryTimeCondition implements NonAfterTimeTriggerCondition =
+    "every" period:SIUnitLiteral (times:NatLiteral "times")?
+  | "from" start:ISODateTime "every" period:SIUnitLiteral
+      (times:NatLiteral "times")?;
+
+  CronCondition implements NonAfterTimeTriggerCondition =
+    "cron" "[" expression:CronExpression "]";
+
+  CronExpression =
+    minute:CronField
+    hour:CronField
+    dayOfMonth:CronField
+    month:CronField
+    dayOfWeek:CronField;
+
+  CronField =
+    elements:(CronElement || ",")+;
+
+  interface CronElement;
+
+  CronValue implements CronElement =
+    value:CronAtom ("/" step:NatLiteral)?;
+
+  CronRange implements CronElement =
+    start:CronAtom "-" end:CronAtom ("/" step:NatLiteral)?;
+
+  interface CronAtom;
+
+  CronWildcard implements CronAtom = "*";
+
+  CronNumber implements CronAtom = value:NatLiteral;
+
+  CronName implements CronAtom = value:Name;
+
+}
