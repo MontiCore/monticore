@@ -47,8 +47,8 @@ public class BuilderListMutatorDecorator extends ListMutatorDecorator {
       String parameterCall = m.getCDParameterList().stream()
           .map(ASTCDParameter::getName)
           .collect(Collectors.joining(", "));
-      this.replaceTemplate(EMPTY_BODY, m, new TemplateHookPoint("_ast.builder.MethodDelegate4ASTBuilder",
-          attribute, methodName, parameterCall));
+     this.replaceTemplate(EMPTY_BODY, m, new TemplateHookPoint("_ast.builder.MethodDelegate4ASTBuilder",
+          attribute.deepClone(), methodName, parameterCall));
     }
     return methods;
   }

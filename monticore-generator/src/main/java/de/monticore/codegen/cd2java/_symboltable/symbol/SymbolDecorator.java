@@ -92,7 +92,8 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
             .collect(Collectors.toList());
 
     // Wrap selected symbolrule attribute types into Supplier<X> so their (possibly not-yet-resolvable) value can be computed later
-    getDecorationHelper().wrapSuppliers(symbolRuleAttributes);
+    // Als mark them as special case supplier
+    getDecorationHelper().wrapAndMarkSuppliers(symbolRuleAttributes);
 
     symbolRuleAttributes.forEach(a -> getDecorationHelper().addAttributeDefaultValues(a, this.glex));
     List<ASTCDMethod> symbolRuleAttributeMethods = symbolRuleAttributes
@@ -100,6 +101,8 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
             .map(methodDecorator::decorate)
             .flatMap(List::stream)
             .collect(Collectors.toList());
+    // the marker type is not needed anymore: the fields store the plain Supplier
+    getDecorationHelper().unmarkSuppliers(symbolRuleAttributes);
     List<ASTCDMethod> symbolRuleMethods = symbolInput.getCDMethodList().stream()
             .map(ASTCDMethod::deepClone)
             .collect(Collectors.toList());
