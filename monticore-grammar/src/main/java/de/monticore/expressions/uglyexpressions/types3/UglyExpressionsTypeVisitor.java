@@ -149,13 +149,12 @@ public class UglyExpressionsTypeVisitor
    * thus we do not need to modify Type4Ast.
    */
   protected SymTypeExpression getCreatorType(ASTCreator creator) {
-    //todo use TypeDispatcher as soon as it is fixed
     SymTypeExpression creatorType;
-    if (creator instanceof ASTClassCreator) {
-      creatorType = getClassCreatorType((ASTClassCreator) creator);
+    if (creator instanceof ASTClassCreator classCreator) {
+      creatorType = getClassCreatorType(classCreator);
     }
-    else if (creator instanceof ASTArrayCreator) {
-      creatorType = getArrayCreatorType((ASTArrayCreator) creator);
+    else if (creator instanceof ASTArrayCreator arrayCreator) {
+      creatorType = getArrayCreatorType(arrayCreator);
     }
     else {
       // hint: if the other ASTCreators have been added in another class,
@@ -259,7 +258,6 @@ public class UglyExpressionsTypeVisitor
   protected Optional<Integer> getArrayDimensionSpecifierSize(
       ASTArrayDimensionSpecifier dimSpec) {
     Optional<Integer> dimensions;
-    // todo use typedispatcher as soon as it works
     if (dimSpec instanceof ASTArrayDimensionByExpression dims) {
       List<SymTypeExpression> expressions = dims.getExpressionList().stream()
           .map(e -> getType4Ast().getPartialTypeOfExpr(e))
