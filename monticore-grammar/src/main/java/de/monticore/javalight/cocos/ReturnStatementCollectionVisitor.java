@@ -1,0 +1,41 @@
+package de.monticore.javalight.cocos;
+
+import de.monticore.ast.ASTNode;
+import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.statements.mcreturnstatements._ast.ASTReturnStatement;
+import de.monticore.statements.mcreturnstatements._visitor.MCReturnStatementsVisitor2;
+
+import java.util.Map;
+import java.util.Optional;
+
+/**
+ * Basic visitor for collecting return statements and their associated expressions.
+ * <p>
+ * For languages with nested scopes that allow their own return statements
+ * (e.g., lambda expressions), the traverser may need to be extended to handle
+ * scope boundaries correctly.
+ */
+public class ReturnStatementCollectionVisitor
+    implements MCReturnStatementsVisitor2 {
+  
+  Map<ASTNode, Optional<ASTExpression>> returnExpressionMap;
+  
+  public ReturnStatementCollectionVisitor(
+      Map<ASTNode, Optional<ASTExpression>> returnExpressionList) {
+    this.returnExpressionMap = returnExpressionList;
+  }
+  
+  public Map<ASTNode, Optional<ASTExpression>> getReturnExpressions() {
+    return this.returnExpressionMap;
+  }
+  
+  @Override
+  public void visit(ASTReturnStatement node) {
+    if (node.isPresentExpression()) {
+      this.returnExpressionMap.put(node, Optional.of(node.getExpression()));
+    }
+    else {
+      this.returnExpressionMap.put(node, Optional.empty());
+    }
+  }
+}
