@@ -128,7 +128,7 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
 
     ASTCDAttribute attribute = getAttributeBy("symType", builderClass);
     assertDeepEquals(CDModifier.PROTECTED, attribute.getModifier());
-    assertDeepEquals(DecorationHelper.getInstance().createInternalSupplierTypeOf(symTypeType), attribute.getMCType());
+    assertDeepEquals(DecorationHelper.getInstance().createStdSupplierTypeOf(symTypeType), attribute.getMCType());
 
     ASTCDMethod getter = getMethodBy("getSymType", builderClass);
     assertDeepEquals(PUBLIC, getter.getModifier());
@@ -164,7 +164,7 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
 
     ASTCDAttribute attribute = getAttributeBy("lSymType", builderClass);
     assertDeepEquals(CDModifier.PROTECTED, attribute.getModifier());
-    assertDeepEquals(DecorationHelper.getInstance().createInternalSupplierTypeOf(lSymTypeType), attribute.getMCType());
+    assertDeepEquals(DecorationHelper.getInstance().createStdSupplierTypeOf(lSymTypeType), attribute.getMCType());
 
     ASTCDMethod getter = getMethodBy("getLSymTypeList", builderClass);
     assertDeepEquals(PUBLIC, getter.getModifier());
@@ -201,7 +201,7 @@ public class SymbolBuilderDecoratorTest extends DecoratorTestCase {
 
     ASTCDAttribute attribute = getAttributeBy("oSymType", builderClass);
     assertDeepEquals(CDModifier.PROTECTED, attribute.getModifier());
-    assertDeepEquals(DecorationHelper.getInstance().createInternalSupplierTypeOf(oSymTypeType), attribute.getMCType());
+    assertDeepEquals(DecorationHelper.getInstance().createStdSupplierTypeOf(oSymTypeType), attribute.getMCType());
 
     ASTCDMethod getter = getMethodBy("getOSymType", builderClass);
     assertDeepEquals(PUBLIC, getter.getModifier());

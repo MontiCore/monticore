@@ -250,29 +250,6 @@ public class MCTypeFacade {
   }
 
   /**
-   * {@code de.monticore.symboltable.__internal__Supplier<inner>} types.
-   */
-
-  public ASTMCBasicGenericType createInternalSupplierTypeOf(final ASTMCTypeArgument inner) {
-    return createBasicGenericTypeOf("de.monticore.symboltable.__internal__Supplier", inner);
-  }
-
-  public ASTMCBasicGenericType createInternalSupplierTypeOf(final ASTMCType inner) {
-    ASTMCTypeArgument arg = MCSimpleGenericTypesMill.mCCustomTypeArgumentBuilder()
-        .setMCType(inner.deepClone())
-        .build();
-    return createInternalSupplierTypeOf(arg);
-  }
-
-  public ASTMCBasicGenericType createInternalSupplierTypeOf(final String name) {
-    return createInternalSupplierTypeOf(createBasicTypeArgumentOf(name));
-  }
-
-  public ASTMCBasicGenericType createInternalSupplierTypeOf(final Class<?> clazz) {
-    return createInternalSupplierTypeOf(clazz.getName());
-  }
-
-  /**
    * {@code java.util.function.Supplier<inner> } types.
    */
 

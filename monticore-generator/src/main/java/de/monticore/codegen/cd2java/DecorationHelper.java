@@ -205,9 +205,9 @@ public class DecorationHelper extends MCBasicTypesHelper {
       defaultValue = inner;
     } else if (isList) {
       // A list must expose a stable instance, otherwise we would create a new one every get and entries would be lost.
-      defaultValue = "new " + SUPPLIER_TYPE + "<>(com.google.common.base.Suppliers.memoize(() -> " + inner + "))";
+      defaultValue = "com.google.common.base.Suppliers.memoize(() -> " + inner + ")";
     } else {
-      defaultValue = "new " + SUPPLIER_TYPE + "<>(() -> " + inner + ")";
+      defaultValue = "() -> " + inner;
     }
     glex.replaceTemplate(VALUE, attribute, new StringHookPoint("= " + defaultValue));
   }
@@ -311,9 +311,21 @@ public class DecorationHelper extends MCBasicTypesHelper {
   }
 
   /**
-   * Wraps the type of every attribute that {@link #shouldHaveSupplier} selects into the internal supplier type.
+   * Replaces the internal marker type of all wrapped attributes by the public {@code java.util.function.Supplier<X>}.
+   * Must be called after all decorators that rely on {@link #isSupplier} are done with the attributes, because
+   * afterwards the attributes are no longer recognized as supplied. The generated fields then store the plain supplier.
    */
-  public void wrapSuppliers(Collection<ASTCDAttribute> attributes) {
+  public void unmarkSuppliers(Collection<ASTCDAttribute> attributes) {
+    attributes.stream()
+        .filter(a -> isSupplier(a.getMCType()))
+        .forEach(a -> a.setMCType(toPublicSupplierType(a.getMCType())));
+  }
+
+  /**
+   * Wraps the type of every attribute that {@link #shouldHaveSupplier} selects into the internal supplier type.
+   * The internal type is only a generation-time marker, see {@link #unmarkSuppliers}.
+   */
+  public void wrapAndMarkSuppliers(Collection<ASTCDAttribute> attributes) {
     attributes.stream()
         .filter(this::shouldHaveSupplier)
         .forEach(a -> a.setMCType(createInternalSupplierTypeOf(a.getMCType())));
