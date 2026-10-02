@@ -13,7 +13,8 @@ import java.util.Set;
 public final class AccessAsSupplierTypes {
 
   /**
-   * Fully qualified name of the wrapper type used for lazily resolved attributes.
+   * Name of the marker type that tags lazily resolved attributes while the class diagram is decorated.
+   * There is no implementation. It is only present during decoration.
    */
   public static final String SUPPLIER_TYPE = "de.monticore.symboltable.__internal__Supplier";
 

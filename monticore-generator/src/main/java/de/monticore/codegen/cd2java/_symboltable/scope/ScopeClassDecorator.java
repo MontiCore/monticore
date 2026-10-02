@@ -96,8 +96,9 @@ public class ScopeClassDecorator extends AbstractDecorator {
             .map(ASTCDAttribute::deepClone)
             .collect(Collectors.toList());
 
-    // Wrap selected scoperule attribute types into Supplier<X> so their (possibly not-yet-resolvable) value can be computed later
-    getDecorationHelper().wrapSuppliers(scopeRuleAttributeList);
+    // Wrap selected scoperule attribute types into Supplier<X> so their (possibly not-yet-resolvable) value can be computed later.
+    // Als mark them as special case suppliers
+    getDecorationHelper().wrapAndMarkSuppliers(scopeRuleAttributeList);
     scopeRuleAttributeList
         .forEach(a -> getDecorationHelper().addAttributeDefaultValues(a, this.glex));
 
@@ -119,6 +120,8 @@ public class ScopeClassDecorator extends AbstractDecorator {
         .map(methodDecorator::decorate)
         .flatMap(List::stream)
         .collect(Collectors.toList());
+    // the marker is not needed anymore: the fields store the plain Supplier
+    getDecorationHelper().unmarkSuppliers(scopeRuleAttributeList);
 
     Map<String, ASTCDAttribute> symbolAttributes = createSymbolAttributes(
         symbolInput.getCDDefinition().getCDClassesList(), symbolTableService.getCDSymbol());

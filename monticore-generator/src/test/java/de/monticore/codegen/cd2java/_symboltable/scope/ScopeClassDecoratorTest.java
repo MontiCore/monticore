@@ -382,27 +382,27 @@ public class ScopeClassDecoratorTest extends DecoratorTestCase {
     assertBoolean(extraAtt.getMCType());
     assertFalse(AccessAsSupplierTypes.shouldHaveSupplier(extraAtt));
 
-    // symType, lSymType and oSymType are of the types listed in AccessAsSupplierTypes, so arewrapped int
-    // internal Supplier type.
+    // symType, lSymType and oSymType are of the types listed in AccessAsSupplierTypes, so they are stored as
+    // plain java.util.function.Supplier.
     ASTCDAttribute originalSymTypeAttribute = getAttributeBy("symType", originalScopeRuleClass);
     assertTrue(AccessAsSupplierTypes.shouldHaveSupplier(originalSymTypeAttribute));
     ASTCDAttribute symTypeAttribute = getAttributeBy("symType", scopeClass);
     assertDeepEquals(PROTECTED, symTypeAttribute.getModifier());
-    assertDeepEquals(DecorationHelper.getInstance().createInternalSupplierTypeOf(originalSymTypeAttribute.getMCType()),
+    assertDeepEquals(DecorationHelper.getInstance().createStdSupplierTypeOf(originalSymTypeAttribute.getMCType()),
         symTypeAttribute.getMCType());
 
     ASTCDAttribute originalLSymTypeAttribute = getAttributeBy("lSymType", originalScopeRuleClass);
     assertTrue(AccessAsSupplierTypes.shouldHaveSupplier(originalLSymTypeAttribute));
     ASTCDAttribute lSymTypeAttribute = getAttributeBy("lSymType", scopeClass);
     assertDeepEquals(PROTECTED, lSymTypeAttribute.getModifier());
-    assertDeepEquals(DecorationHelper.getInstance().createInternalSupplierTypeOf(originalLSymTypeAttribute.getMCType()),
+    assertDeepEquals(DecorationHelper.getInstance().createStdSupplierTypeOf(originalLSymTypeAttribute.getMCType()),
         lSymTypeAttribute.getMCType());
 
     ASTCDAttribute originalOSymTypeAttribute = getAttributeBy("oSymType", originalScopeRuleClass);
     assertTrue(AccessAsSupplierTypes.shouldHaveSupplier(originalOSymTypeAttribute));
     ASTCDAttribute oSymTypeAttribute = getAttributeBy("oSymType", scopeClass);
     assertDeepEquals(PROTECTED, oSymTypeAttribute.getModifier());
-    assertDeepEquals(DecorationHelper.getInstance().createInternalSupplierTypeOf(originalOSymTypeAttribute.getMCType()),
+    assertDeepEquals(DecorationHelper.getInstance().createStdSupplierTypeOf(originalOSymTypeAttribute.getMCType()),
         oSymTypeAttribute.getMCType());
 
     assertTrue(Log.getFindings().isEmpty());

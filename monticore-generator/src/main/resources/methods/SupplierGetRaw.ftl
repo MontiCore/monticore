@@ -1,3 +1,3 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("attribute")}
-return this.${attribute.getName()}.unwrap();
+return this.${attribute.getName()};
