@@ -119,8 +119,12 @@ public class ASTISOTime extends ASTISOTimeTOP {
         case NANO_OF_SECOND:
           return getNanoOfSecond();
         case OFFSET_SECONDS:
-          // Time shift is in hours but result has to be in seconds
-          return 3600L * getTimeShiftHour() + 60L * getTimeShiftMinute();
+          long offsetSeconds = 3600L * Math.abs(getTimeShiftHour()) + 60L * getTimeShiftMinute();
+          if (isPresentTimeShiftSource() && getTimeShiftSource().isPresentSign()
+              && getTimeShiftSource().getSign() == ASTSign.MINUS) {
+            return -offsetSeconds;
+          }
+          return offsetSeconds;
       }
     }
     throw new UnsupportedTemporalTypeException(field.toString());
