@@ -4,12 +4,20 @@ package de.monticore.generating.templateengine.freemarker;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
+
+import de.monticore.generating.templateengine.TemplateController;
+import de.monticore.generating.templateengine.reporting.Reporting;
+import de.monticore.generating.templateengine.sourcemap.SourceMapCalculator;
+import de.monticore.generating.templateengine.sourcemap.TemplateAdaptionForSourcePositionReporting;
+import de.se_rwth.commons.logging.Log;
 import com.google.common.base.Preconditions;
 import freemarker.log.Logger;
 import freemarker.template.Configuration;
+import freemarker.template.SimpleHash;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
@@ -45,6 +53,9 @@ public class FreeMarkerTemplateEngine {
     Template result;
     try {
       result = configuration.getTemplate(qualifiedTemplateName);
+      if(Reporting.isTemplateSourceMappingEnabled() && !Reporting.isConfigTemplate(qualifiedTemplateName)) {
+        result = TemplateAdaptionForSourcePositionReporting.adaptTemplateWithPositionMarkers(result, configuration);
+      }
     }
     catch (IOException e) {
       throw new MontiCoreFreeMarkerException("0xA0560 Unable to load template: " + e.getMessage());
@@ -64,15 +75,15 @@ public class FreeMarkerTemplateEngine {
     Preconditions.checkNotNull(template, "0xA0562 The given template must not be null");
     String seperator = System.getProperty("line.seperator");
 
-    Writer w = new Writer() {
-      public void write(char[] cbuf, int off, int len) {
-        buffer.append(cbuf, off, len);
-      }
-      public void flush() { }
-      public void close() { }
-    };
+    ContentWriter w = new ContentWriter(buffer);
 
     try {
+      if(Reporting.isTemplateSourceMappingEnabled()) {
+        if (data instanceof SimpleHash) {
+          SimpleHash asSimpleHash = (SimpleHash) data;
+          asSimpleHash.put(TemplateController.SOURCE_MAP_CALCULATOR, new SourceMapCalculator(w, template));
+        }
+      }
       template.process(data, w);
       w.flush();
     }
@@ -124,5 +135,24 @@ public class FreeMarkerTemplateEngine {
   public void loadAndRun(String qualifiedTemplateName, StringBuilder buffer, Object data) {
     Template t = loadTemplate(qualifiedTemplateName);
     run(buffer, data, t);
+  }
+
+  public static class ContentWriter extends Writer {
+
+    StringBuilder buffer;
+
+    public ContentWriter(StringBuilder buffer) {
+      this.buffer = buffer;
+    }
+
+    public void write(char[] cbuf, int off, int len) {
+      buffer.append(cbuf, off, len);
+    }
+    public void flush() { }
+    public void close() { }
+
+    public String getCurrentContent() {
+      return buffer.toString();
+    }
   }
 }

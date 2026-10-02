@@ -6,6 +6,8 @@ import com.google.common.base.Preconditions;
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.reporting.artifacts.ReportingNameHelper;
+import de.monticore.generating.templateengine.sourcemap.IncludeSpan;
+import de.monticore.sourcemap.DecodedMapping;
 import de.monticore.io.paths.MCPath;
 import de.monticore.symboltable.IScope;
 
@@ -57,6 +59,12 @@ public class ReportManager implements IReportEventHandler {
     }
   }
 
+  public void reportBeforeFileCreation(String templateName, Path path, ASTNode ast) {
+    String fileExtension = ReportingNameHelper.getFileextension(path);
+
+    this.reportBeforeFileCreation(templateName, path.toString(), fileExtension, ast);
+  }
+
   public void reportFileCreation(String templateName, Path path, ASTNode ast) {
     String qualifiedName = ReportingNameHelper.getQualifiedName(
         this.getOutputDir(), path);
@@ -80,6 +88,15 @@ public class ReportManager implements IReportEventHandler {
       String qualifiedFilename, String fileExtension, ASTNode ast) {
     for (IReportEventHandler handler : this.reportEventHandlers) {
       handler.reportFileCreation(templateName, qualifiedFilename,
+          fileExtension, ast);
+    }
+  }
+
+  @Override
+  public void reportBeforeFileCreation(String templateName,
+                                 String path, String fileExtension, ASTNode ast) {
+    for (IReportEventHandler handler : this.reportEventHandlers) {
+      handler.reportBeforeFileCreation(templateName, path,
           fileExtension, ast);
     }
   }
@@ -448,6 +465,28 @@ public class ReportManager implements IReportEventHandler {
       handler.reportSymbolTableScope(scope);
     }
   }
+
+  @Override
+  public void reportTemplateSourceMapping(List<DecodedMapping> mapping) {
+    for (IReportEventHandler handler : reportEventHandlers) {
+      handler.reportTemplateSourceMapping(mapping);
+    }
+  }
+
+  @Override
+  public void reportASTSourceMapping(List<DecodedMapping> mapping) {
+    for (IReportEventHandler handler : reportEventHandlers) {
+      handler.reportASTSourceMapping(mapping);
+    }
+  }
+
+  @Override
+  public void reportTemplateIncludeSpan(List<IncludeSpan> span) {
+    for (IReportEventHandler handler : reportEventHandlers) {
+      handler.reportTemplateIncludeSpan(span);
+    }
+  }
+
 
   /**
    * A factory for providing tool specific report managers.

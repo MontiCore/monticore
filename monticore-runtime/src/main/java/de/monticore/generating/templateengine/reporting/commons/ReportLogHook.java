@@ -5,7 +5,9 @@ import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.generating.templateengine.reporting.artifacts.ReportingNameHelper;
+import de.monticore.generating.templateengine.sourcemap.IncludeSpan;
 import de.monticore.io.paths.MCPath;
+import de.monticore.sourcemap.DecodedMapping;
 import de.monticore.symboltable.IScope;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.ILogHook;
@@ -134,6 +136,16 @@ public class ReportLogHook implements ILogHook, IReportEventHandler {
 
   public void reportFileCreation(String templateName, Path path, ASTNode ast) {
     this.getReportManager().reportFileCreation(templateName, path, ast);
+  }
+
+  @Override
+  public void reportBeforeFileCreation(String templateName, String qualifiedfilename,
+                                       String fileextension, ASTNode ast) {
+    this.getReportManager().reportBeforeFileCreation(templateName, qualifiedfilename, fileextension, ast);
+  }
+
+  public void reportBeforeFileCreation(String templateName, Path path, ASTNode ast) {
+    this.getReportManager().reportBeforeFileCreation(templateName, path, ast);
   }
 
   @Override
@@ -402,4 +414,20 @@ public class ReportLogHook implements ILogHook, IReportEventHandler {
   public void reportFileExistenceChecking(List<Path> parentPath, Path file) {
     this.getReportManager().reportFileExistenceChecking(parentPath, file);
   }
+
+  @Override
+  public void reportTemplateSourceMapping(List<DecodedMapping> mapping) {
+    this.getReportManager().reportTemplateSourceMapping(mapping);
+  }
+
+  @Override
+  public void reportASTSourceMapping(List<DecodedMapping> mapping) {
+    this.getReportManager().reportASTSourceMapping(mapping);
+  }
+
+  @Override
+  public void reportTemplateIncludeSpan(List<IncludeSpan> span){
+    this.getReportManager().reportTemplateIncludeSpan(span);
+  }
+
 }

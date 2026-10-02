@@ -6,7 +6,9 @@ import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.TemplateController;
 import de.monticore.generating.templateengine.reporting.commons.ReportLogHook;
 import de.monticore.generating.templateengine.reporting.commons.ReportManager.ReportManagerFactory;
+import de.monticore.generating.templateengine.sourcemap.IncludeSpan;
 import de.monticore.io.paths.MCPath;
+import de.monticore.sourcemap.DecodedMapping;
 import de.monticore.symboltable.IScope;
 import de.se_rwth.commons.logging.Log;
 
@@ -23,11 +25,15 @@ import java.util.Optional;
  */
 public class Reporting extends Log {
 
+  public static final String MC_REPORT_SOURCE_MAPPING = "MC_REPORT_SOURCE_MAPPING";
+
   /* whether reporting is enabled at the moment */
   protected static boolean enabled = false;
 
   /* the currently active model for which reporting takes place */
   protected static String currentModel;
+
+  protected static final ThreadLocal<String> currentConfigTemplate = new ThreadLocal<>();
 
   public static String getCurrentModel() {
     return currentModel;
@@ -109,6 +115,47 @@ public class Reporting extends Log {
    */
   public static void clearReportHooks() {
     reportHooks.clear();
+  }
+
+  public static boolean isTemplateSourceMappingEnabled(){
+    return isEnabled() && "true".equals(System.getProperty(MC_REPORT_SOURCE_MAPPING));
+  }
+
+  public static void setConfigTemplate(String templateName){
+    currentConfigTemplate.set(templateName);
+  }
+
+  public static void clearConfigTemplate(){
+    currentConfigTemplate.remove();
+  }
+
+  public static boolean isConfigTemplate(String templ){
+    String configTemplate = currentConfigTemplate.get();
+    return configTemplate != null && templ.equals(configTemplate);
+  }
+
+  public static void reportTemplateSourceMapping(List<DecodedMapping> mapping) {
+    if (isEnabled()) {
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportTemplateSourceMapping(mapping);
+      }
+    }
+  }
+
+  public static void reportASTSourceMapping(List<DecodedMapping> mapping) {
+    if (isEnabled()) {
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportASTSourceMapping(mapping);
+      }
+    }
+  }
+
+  public static void reportTemplateIncludeSpan(List<IncludeSpan> span){
+    if(isEnabled()){
+      for(ReportLogHook hook : getReportHooks()){
+        hook.reportTemplateIncludeSpan(span);
+      }
+    }
   }
 
   public static void reportTransformationStart(String transformationName) {
@@ -244,6 +291,22 @@ public class Reporting extends Log {
       }
     }
   }
+
+  /**
+   * Reports directly before a template based file creation via the
+   * {@link de.monticore.generating.templateengine.TemplateController#writeArgs(String, String, String, ASTNode, List)
+   * writeArgs} method of the
+   * {@link de.monticore.generating.templateengine.TemplateController
+   * TemplateController}.
+   */
+  public static void reportBeforeFileCreation(String templateName, Path path, ASTNode ast) {
+    if (isEnabled()) {
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportBeforeFileCreation(templateName, path, ast);
+      }
+    }
+  }
+
 
   /**
    * Reports a file creation
