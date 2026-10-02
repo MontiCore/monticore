@@ -20,7 +20,7 @@ public class ComponentType2TypeSymbolAdapter extends TypeSymbol {
     this.adaptee = adaptee;
     this.accessModifier = BasicAccessModifier.PUBLIC;
     this.spannedScope = adaptee.getSpannedScope();
-    this.superTypes = adaptee.getSuperComponentsList().stream().map(c -> {
+    setSuperTypesList(adaptee.getSuperComponentsList().stream().map(c -> {
       if (!c.isGenericComponentType()) {
         return SymTypeExpressionFactory.createTypeObject(new ComponentType2TypeSymbolAdapter(c.getTypeInfo()));
       } else {
@@ -28,7 +28,7 @@ public class ComponentType2TypeSymbolAdapter extends TypeSymbol {
             new ComponentType2TypeSymbolAdapter(c.getTypeInfo()), c.asGenericComponentType().getTypeBindingsAsList()
         );
       }
-    }).collect(Collectors.toList());
+    }).collect(Collectors.toList()));
   }
 
   public ComponentTypeSymbol getAdaptee() {

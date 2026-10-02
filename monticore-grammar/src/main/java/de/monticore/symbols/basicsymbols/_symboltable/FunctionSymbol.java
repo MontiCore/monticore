@@ -2,6 +2,7 @@
 package de.monticore.symbols.basicsymbols._symboltable;
 
 import com.google.common.collect.Lists;
+import de.monticore.symboltable.ClearingMemorizer;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
@@ -21,7 +22,8 @@ public class FunctionSymbol extends FunctionSymbolTOP {
 
   public FunctionSymbol deepClone(){
     FunctionSymbol clone = new FunctionSymbol(name);
-    clone.setType(this.getType().deepClone());
+    // keep the type lazy
+    clone.setTypeSupplier(ClearingMemorizer.map(getTypeSupplier(), t -> t == null ? null : t.deepClone()));
     clone.setIsElliptic(this.isIsElliptic());
     clone.setEnclosingScope(this.enclosingScope);
     clone.setFullName(this.fullName);
@@ -71,15 +73,9 @@ public class FunctionSymbol extends FunctionSymbolTOP {
   public void replaceTypeVariables(Map<TypeVarSymbol, SymTypeExpression> replaceMap){
     //return type
     SymTypeExpression type = this.getType();
-    TypeSymbol realTypeInfo;
-    TypeSymbol typeInfo = type.isTypeVariable() ?
+    TypeSymbol realTypeInfo = type.isTypeVariable() ?
         type.asTypeVariable().getTypeVarSymbol() :
         type.getTypeInfo();
-    if(typeInfo instanceof TypeSymbolSurrogate){
-      realTypeInfo = ((TypeSymbolSurrogate) type.getTypeInfo()).lazyLoadDelegate();
-    }else{
-      realTypeInfo = typeInfo;
-    }
     if(type.isTypeVariable() && realTypeInfo instanceof TypeVarSymbol){
       Optional<TypeVarSymbol> typeVar =  replaceMap.keySet().stream().filter(t -> t.getName().equals(realTypeInfo.getName())).findAny();
       typeVar.ifPresent(typeVarSymbol -> this.setType(replaceMap.get(typeVarSymbol)));

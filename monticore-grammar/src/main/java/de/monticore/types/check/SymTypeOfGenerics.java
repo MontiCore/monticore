@@ -3,7 +3,6 @@ package de.monticore.types.check;
 
 import com.google.common.base.Preconditions;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
-import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.types3.ISymTypeVisitor;
 import de.se_rwth.commons.logging.Log;
@@ -278,13 +277,7 @@ public class SymTypeOfGenerics extends SymTypeExpression {
   public void replaceTypeVariables(Map<TypeVarSymbol, SymTypeExpression> replaceMap) {
     for(int i = 0; i<this.getArgumentList().size(); i++){
       SymTypeExpression type = this.getArgument(i);
-      TypeSymbol realTypeInfo;
-      TypeSymbol typeInfo = type.getTypeInfo();
-      if(typeInfo instanceof TypeSymbolSurrogate){
-        realTypeInfo = ((TypeSymbolSurrogate) type.getTypeInfo()).lazyLoadDelegate();
-      }else{
-        realTypeInfo = typeInfo;
-      }
+      TypeSymbol realTypeInfo = type.getTypeInfo();
       if(type.isTypeVariable() && realTypeInfo instanceof TypeVarSymbol){
         Optional<TypeVarSymbol> typeVar =  replaceMap.keySet().stream().filter(t -> t.getName().equals(realTypeInfo.getName())).findAny();
         if(typeVar.isPresent()){

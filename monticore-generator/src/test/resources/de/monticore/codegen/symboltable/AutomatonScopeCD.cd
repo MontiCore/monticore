@@ -9,6 +9,9 @@ classdiagram AutomatonScopeCD {
       protected boolean extraAttribute;
       protected List<String> foo;
       protected Optional<Integer> bla;
+      protected de.monticore.types.check.SymTypeExpression symType;
+      protected java.util.List<de.monticore.types.check.SymTypeExpression> lSymType;
+      protected java.util.Optional<de.monticore.types.check.SymTypeExpression> oSymType;
       <<methodBody="return de.se_rwth.commons.Names.getQualifiedName(this.getPartList());">>public String toString();
     }
 }

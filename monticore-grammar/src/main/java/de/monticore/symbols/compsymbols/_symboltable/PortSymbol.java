@@ -3,7 +3,6 @@ package de.monticore.symbols.compsymbols._symboltable;
 
 import com.google.common.base.Preconditions;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
-import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
 import de.monticore.types.check.SymTypeExpression;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -27,29 +26,30 @@ public class PortSymbol extends PortSymbolTOP {
                        SymTypeExpression type,
                        Timing timing) {
     super(name);
-    this.type = type;
+    setType(type);
     this.timing = timing;
     this.incoming = incoming;
     this.outgoing = outgoing;
   }
 
   public boolean isTypePresent() {
-    return this.type != null;
+    // type is not an optional, so we resolve it here to check if it is null
+    return getTypeSupplier().get() != null;
   }
 
   public SymTypeExpression getType() {
-    Preconditions.checkState(this.type != null);
-    return this.type;
+    SymTypeExpression t = super.getType();
+    Preconditions.checkState(t != null);
+    return t;
   }
 
   public void setType(@NonNull SymTypeExpression type) {
     Preconditions.checkNotNull(type);
-    this.type = type;
+    super.setType(type);
   }
 
   public TypeSymbol getTypeInfo() {
-    return this.getType().getTypeInfo() instanceof TypeSymbolSurrogate ?
-        ((TypeSymbolSurrogate) this.getType().getTypeInfo()).lazyLoadDelegate() : this.getType().getTypeInfo();
+    return this.getType().getTypeInfo();
   }
 
   @Override

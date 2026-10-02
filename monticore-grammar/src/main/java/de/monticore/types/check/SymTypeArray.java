@@ -3,7 +3,6 @@ package de.monticore.types.check;
 
 import com.google.common.base.Preconditions;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
-import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
 import de.monticore.types3.ISymTypeVisitor;
 import de.se_rwth.commons.logging.Log;
 
@@ -98,11 +97,9 @@ public class SymTypeArray extends SymTypeExpression {
   @Override
   public SymTypeArray deepClone() {
     //to support deprecated code:
+    // (hasTypeInfo() is deliberately false for arrays, check the field)
     if(typeSymbol != null) {
-      TypeSymbol typeSymbol = new TypeSymbolSurrogate(this.typeSymbol.getName());
-      typeSymbol.setEnclosingScope(this.typeSymbol.getEnclosingScope());
-      return new SymTypeArray(typeSymbol,
-          this.dim, this.argument.deepClone());
+      return new SymTypeArray(this.typeSymbol, this.dim, this.argument.deepClone());
     }
     else {
       return new SymTypeArray(getArgument().deepClone(), getDim());
