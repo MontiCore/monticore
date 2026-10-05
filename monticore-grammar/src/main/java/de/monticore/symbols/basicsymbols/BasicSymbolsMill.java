@@ -5,9 +5,15 @@ import com.google.common.collect.Lists;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsGlobalScope;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symboltable.modifiers.AccessModifier;
+import de.se_rwth.commons.logging.Log;
 
+import java.io.IOException;
+import java.net.JarURLConnection;
+import java.net.URL;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Collections;
+import java.util.jar.JarFile;
 
 public class BasicSymbolsMill extends BasicSymbolsMillTOP {
 
@@ -103,6 +109,28 @@ public class BasicSymbolsMill extends BasicSymbolsMillTOP {
       .setAccessModifier(AccessModifier.ALL_INCLUSION)
       .build()
     );
+  }
+
+  public static void initializeStreams() {
+    getMill()._initializeStreams();
+  }
+
+  protected void _initializeStreams() {
+    IBasicSymbolsGlobalScope gs = globalScope();
+    URL streamURL = BasicSymbolsMill.class.getClassLoader().getResource("Stream.symtabdefinitionsym");
+    if (streamURL == null) {
+      Log.error("0xA7106 Resource Stream.symtabdefinitionsym not found");
+    }
+    else {
+      try {
+        JarURLConnection urlConnection = (JarURLConnection) streamURL.openConnection();
+        JarFile jar = urlConnection.getJarFile();
+        Path jarPath = Path.of(jar.getName());
+        gs.getSymbolPath().addEntry(jarPath);
+      } catch (IOException e) {
+        Log.error("0xA7107 Unable to read Stream.symtabdefinitionsym from disk", e);
+      }
+    }
   }
 
 }

@@ -11,6 +11,7 @@ import de.monticore.expressions.bitexpressions.codegen.javagen.BitExpressionsJav
 import de.monticore.expressions.commonexpressions.codegen.javagen.CommonExpressionsJavaGenVisitor;
 import de.monticore.expressions.expressionsbasis.codegen.javagen.ExpressionsBasisJavaGenVisitor;
 import de.monticore.expressions.lambdaexpressions.codegen.javagen.LambdaExpressionsJavaGenVisitor;
+import de.monticore.expressions.streamexpressions.codegen.javagen.StreamExpressionsJavaGenVisitor;
 import de.monticore.expressions.tupleexpressions.codegen.javagen.TupleExpressionsJavaGenVisitor;
 import de.monticore.expressions.uglyexpressions.codegen.javagen.UglyExpressionsJavaGenVisitor;
 import de.monticore.literals.mccommonliterals.codegen.javagen.MCCommonLiteralsJavaGenVisitor;
@@ -98,6 +99,10 @@ public class ExpressionsAndStatementsJavaGenerator
     UglyExpressionsJavaGenVisitor visUglyExpressions =
         new UglyExpressionsJavaGenVisitor(state);
     traverser.setUglyExpressionsHandler(visUglyExpressions);
+
+    StreamExpressionsJavaGenVisitor streamExpressions =
+        new StreamExpressionsJavaGenVisitor(state);
+    traverser.setStreamExpressionsHandler(streamExpressions);
 
     // Statements
 
