@@ -1,11 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.tf;
 
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
+import de.monticore.runtime.junit.TestWithMCLanguage;
+import mc.testcases.automaton.AutomatonMill;
 import mc.testcases.automaton._ast.ASTAutomaton;
 import mc.testcases.automaton._parser.AutomatonParser;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -13,19 +12,12 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@TestWithMCLanguage(AutomatonMill.class)
 public class NotStateWithConditionsTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
-  ASTAutomaton aut;
 
   @Test
   public void testAutomatWith1InitialAnd2OtherStates() throws IOException {
-    AutomatonParser parser = new AutomatonParser();
+    AutomatonParser parser = AutomatonMill.parser();
     Optional<ASTAutomaton> aut = parser.parse_StringAutomaton("automaton Automaton {state a; state b <<initial>>; state c;}");
 
     assertTrue(aut.isPresent());
@@ -36,13 +28,11 @@ public class NotStateWithConditionsTest {
 
     // assertions
     assertFalse(rule.doPatternMatching());
-    
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testAutomatWith3OtherStates() throws IOException {
-    AutomatonParser parser = new AutomatonParser();
+    AutomatonParser parser = AutomatonMill.parser();
     Optional<ASTAutomaton> aut = parser.parse_StringAutomaton("automaton Automaton {state a; state b; state c;}");
 
     assertTrue(aut.isPresent());
@@ -53,7 +43,5 @@ public class NotStateWithConditionsTest {
 
     // assertions
     rule.doPatternMatching();
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 }

@@ -5,7 +5,11 @@ package de.monticore.tf.odrules._ast;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.tf.odrules.util.TFExpressionFullPrettyPrinter;
 import de.monticore.types.mcsimplegenerictypes.MCSimpleGenericTypesMill;
+import javax.annotation.Nonnull;
 
+/**
+ * AST node for object diagram attributes used in transformation rules.
+ */
 public class ASTODAttribute extends ASTODAttributeTOP {
 
   protected  ASTODAttribute (){
@@ -30,7 +34,12 @@ public class ASTODAttribute extends ASTODAttributeTOP {
   private String sType;
   private String sValue;
 
-  public String printType() {
+  /**
+   * Returns the printable attribute type without redundant empty generic brackets ({@code <>}).
+   *
+   * @return printable type, or an empty string if no type is present
+   */
+  public @Nonnull String printType() {
     // lazy calculation from ast
     if (sType == null) {
       if (isPresentMCType()) {
@@ -46,12 +55,22 @@ public class ASTODAttribute extends ASTODAttributeTOP {
     return sType;
   }
 
-  public String printName() {
+  /**
+   * Returns the attribute name.
+   *
+   * @return attribute name, never {@code null}
+   */
+  public @Nonnull String printName() {
     // convenient method to get data in the same way in the templates
     return name;
   }
 
-  public String printValue() {
+  /**
+   * Returns the printable single value of this attribute.
+   *
+   * @return pretty-printed value, or an empty string if no single value exists
+   */
+  public @Nonnull String printValue() {
     // lazy calculation from ast
     if (sValue == null) {
       if (isPresentSingleValue()) {
@@ -71,7 +90,12 @@ public class ASTODAttribute extends ASTODAttributeTOP {
     return sValue;
   }
 
-  public String printList() {
+  /**
+   * Returns the printable list value of this attribute.
+   *
+   * @return pretty-printed list value, or an empty string if no list is present
+   */
+  public @Nonnull String printList() {
     String ret;
     if (isPresentList()) {
 
@@ -89,10 +113,20 @@ public class ASTODAttribute extends ASTODAttributeTOP {
   return ret;
   }
 
+  /**
+   * Checks whether the attribute cardinality allows multiple values.
+   *
+   * @return {@code true} for {@code *} or {@code 1..*}
+   */
   public boolean isIterated() {
     return getAttributeCardinality().isMany() || getAttributeCardinality().isOneToMany();
   }
 
+  /**
+   * Checks whether the attribute cardinality is optional.
+   *
+   * @return {@code true} for optional cardinality
+   */
   public boolean isOptional() {
     return getAttributeCardinality().isOptional();
   }

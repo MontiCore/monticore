@@ -1,11 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.tf;
 
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
+import de.monticore.runtime.junit.TestWithMCLanguage;
+import mc.testcases.automaton.AutomatonMill;
 import mc.testcases.automaton._ast.ASTAutomaton;
 import mc.testcases.automaton._parser.AutomatonParser;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -13,20 +12,13 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@TestWithMCLanguage(AutomatonMill.class)
 public class AtMostOneSubstateTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
-  ASTAutomaton aut;
 
   @Test
   public void testEmptyAutomaton() throws IOException {
     String inputFile = "src/main/models/automaton/EmptyAutomaton.aut";
-    AutomatonParser parser = new AutomatonParser();
+    AutomatonParser parser = AutomatonMill.parser();
     Optional<ASTAutomaton> aut = parser.parse(inputFile);
 
     assertTrue(aut.isPresent());
@@ -37,14 +29,12 @@ public class AtMostOneSubstateTest {
 
     // should not match
     assertFalse(rule.doPatternMatching());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testOneState() throws IOException {
     String inputFile = "src/main/models/automaton/AutomatonWithSingleState.aut";
-    AutomatonParser parser = new AutomatonParser();
+    AutomatonParser parser = AutomatonMill.parser();
     Optional<ASTAutomaton> aut = parser.parse(inputFile);
 
     assertTrue(aut.isPresent());
@@ -57,14 +47,12 @@ public class AtMostOneSubstateTest {
     assertTrue(rule.doPatternMatching());
     assertNotNull(rule.get_state_top());
     assertFalse(rule.get_state_sub().isPresent());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testOneSubstate() throws IOException {
     String inputFile = "src/main/models/automaton/AutomatonTwoStatesAndSubstate.aut";
-    AutomatonParser parser = new AutomatonParser();
+    AutomatonParser parser = AutomatonMill.parser();
     Optional<ASTAutomaton> aut = parser.parse(inputFile);
 
     assertTrue(aut.isPresent());
@@ -77,17 +65,15 @@ public class AtMostOneSubstateTest {
     // one substate should match
     assertTrue(rule.doPatternMatching());
     assertNotNull(rule.get_state_top());
-    assertEquals(rule.get_state_top().getName(), "a");
+    assertEquals("a", rule.get_state_top().getName());
     assertTrue(rule.get_state_sub().isPresent());
-    assertEquals(rule.get_state_sub().get().getName(), "c");
-  
-    assertTrue(Log.getFindings().isEmpty());
+    assertEquals("c", rule.get_state_sub().get().getName());
   }
 
   @Test
   public void testTwoSubstates() throws IOException {
     String inputFile = "src/main/models/automaton/AutomatonTwoSubstates.aut";
-    AutomatonParser parser = new AutomatonParser();
+    AutomatonParser parser = AutomatonMill.parser();
     Optional<ASTAutomaton> aut = parser.parse(inputFile);
 
     assertTrue(aut.isPresent());
@@ -99,14 +85,12 @@ public class AtMostOneSubstateTest {
 
     // two substates should not match
     assertFalse(rule.doPatternMatching());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testSubstateWithSubstate() throws IOException {
     String inputFile = "src/main/models/automaton/AutomatonSubstateWithSubstate.aut";
-    AutomatonParser parser = new AutomatonParser();
+    AutomatonParser parser = AutomatonMill.parser();
     Optional<ASTAutomaton> aut = parser.parse(inputFile);
 
     assertTrue(aut.isPresent());
@@ -119,7 +103,5 @@ public class AtMostOneSubstateTest {
 
     // substate with substate should not match
     assertFalse(rule.doPatternMatching());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 }
