@@ -61,7 +61,9 @@ public class FunctionSymbol extends FunctionSymbolTOP {
 
   public List<VariableSymbol> getParameterList(){
     //TODO: how to filter for parameters?
-    return Lists.newArrayList(getSpannedScope().getLocalVariableSymbols());
+    return Lists.newArrayList(
+      getSpannedScope().getVariableSymbolsWithSubKinds().values()
+    );
   }
 
   /**
