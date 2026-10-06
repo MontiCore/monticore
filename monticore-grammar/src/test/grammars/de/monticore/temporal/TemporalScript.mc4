@@ -1,0 +1,21 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.temporal;
+
+/* Test Grammar: This is not intended to become a MontiCore stable grammar. */
+
+/**
+ * A small scripting language to test the type system of the temporal
+ * languages, s.a. the TemporalScript example of the temporal languages.
+ */
+grammar TemporalScript extends de.monticore.temporal.ISOTemporals,
+                               de.monticore.temporal.DETemporals,
+                               de.monticore.temporal.EscapedTemporalLiterals,
+                               de.monticore.siunit.SIUnitLiterals,
+                               de.monticore.siunit.SIUnitTypes4Computing,
+                               de.monticore.expressions.CommonExpressions,
+                               de.monticore.expressions.AssignmentExpressions,
+                               de.monticore.statements.MCCommonStatements {
+
+  scope(non_exporting ordered) Script = MCBlockStatement* ;
+
+}
