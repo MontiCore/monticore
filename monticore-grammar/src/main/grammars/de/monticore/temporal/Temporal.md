@@ -102,11 +102,9 @@ TemporalBasis (grammar)
 Because `EscapedTemporalLiteral` implements `Literal`, it can be used in
 MontiCore expression languages that support literal expressions.
 
-For typed MontiCore languages however, there is also a type 
-definition necessary, which must not be provided by an explcit 
-grammar, but can be imported using standard symbol mechanisms.  E.g. 
-`Date`, `Time`, `TimePeriod` can be used, but more fine-grained 
-possibilities would also be allowed. 
+For typed MontiCore languages, the types of temporal values are not
+defined by a grammar, but are added as symbols to the global scope,
+see [Type System](#type-system).
 
 ### Central Nonterminal
 
@@ -569,6 +567,132 @@ Examples:
 | `01.04.2015 12:30 Uhr`    | April 1, 2015 at 12:30.        |
 | `1. April 2015 12 Uhr`    | April 1, 2015 at 12 o’clock.   |
 | `April 2015 12:30:15 Uhr` | April 2015 with time 12:30:15. |
+
+---
+
+## Type System
+
+The temporal languages come with a type system for
+[TypeSystem3.md](../../../../java/de/monticore/types3/TypeSystem3.md).
+It consists of the types `TimePoint`, `DayTime`, and `Period`,
+and the Duration convention for SI unit types of the dimension time.
+
+### Temporal Types
+
+| Type                              | Kind of values                                                  | Derived from                                |
+|-----------------------------------|-----------------------------------------------------------------|---------------------------------------------|
+| `de.monticore.temporal.TimePoint` | A moment in time, e.g., April 1, 2015, at 12:30.                | `Date`, `DateTime`                          |
+| `de.monticore.temporal.DayTime`   | A time of the day, e.g., 12:30.                                 | `Time`                                      |
+| `de.monticore.temporal.Period`    | A context-dependent length of time, e.g., 1 month.              | `Period`                                    |
+| Duration, i.e., `[s]`             | An exact length of time, e.g., 30 seconds (an SI unit type).    | SI unit literals, e.g., `30s`, `5min`, `1d` |
+
+`TimePoint`, `DayTime`, and `Period` are types in the package
+`de.monticore.temporal`.
+They are not provided by a symbol file,
+but added by `TemporalTypes.init()`
+(package `de.monticore.temporal.types3`),
+just like `BasicSymbolsMill.initializePrimitives()` adds the primitives.
+`TemporalTypes.init()` also adds the primitives and `String`
+if they are missing.
+
+Duration is not a type of its own,
+any SI unit type of the dimension time is a Duration,
+e.g., `[s]<long>`, `[min]<int>`, or `[d]<double>`.
+As there are no type aliases, variables of exact lengths of time
+are declared with SI unit types, e.g., `[s]<long> d = ...;`
+(requires `SIUnitTypes4Computing`).
+
+### Operators
+
+Besides the operators on Durations (provided by the SI unit types),
+the following operators are supported:
+
+| Operator                                                                 | Result      |
+|--------------------------------------------------------------------------|-------------|
+| `TimePoint + Period`, `Period + TimePoint`                               | `TimePoint` |
+| `TimePoint + Duration`, `Duration + TimePoint`                           | `TimePoint` |
+| `DayTime + Duration`, `Duration + DayTime`                               | `DayTime`   |
+| `Period + Period`, `Period + Duration`, `Duration + Period`              | `Period`    |
+| `TimePoint - Period`, `TimePoint - Duration`                             | `TimePoint` |
+| `DayTime - Duration`                                                     | `DayTime`   |
+| `TimePoint - TimePoint`, `DayTime - DayTime`                             | `[s]<long>` |
+| `Period - Period`, `Period - Duration`, `Duration - Period`              | `Period`    |
+| `-Period`                                                                | `Period`    |
+| `Period * n`, `n * Period`, `Period / n` (n numeric)                     | `Period`    |
+| `<`, `<=`, `>`, `>=`, `==`, `!=` on two values of the same temporal type | `boolean`   |
+| `String + t`, `t + String` (t of a temporal type)                        | `String`    |
+
+Any other combination, e.g., `DayTime + Period` or `TimePoint < DayTime`,
+is a type error.
+
+### Library Functions
+
+`TemporalTypes.init()` adds the library functions of the temporal types
+to the global scope (unqualified),
+e.g., `getYear(TimePoint): int`, `withMonth(TimePoint, int): TimePoint`,
+`format(TimePoint, String): String`, `minus(TimePoint, TimePoint): Period`,
+or `now(): TimePoint`.
+The full list of signatures is given in `TemporalTypes`
+and available via `TemporalTypes.getFunctionSignatures()`.
+
+### Setup
+
+The temporal languages are component grammars;
+a language using them registers the temporal type visitors
+in its own TypeCheck3 class
+(in addition to the type visitors of the other used grammars)
+and uses `TemporalTypeVisitorOperatorCalculator`
+instead of `TypeVisitorOperatorCalculator`:
+
+```java
+public static void init() {
+  // ...
+  TemporalSymTypeRelations.init();
+  TemporalTypeVisitorOperatorCalculator.init(); // instead of TypeVisitorOperatorCalculator.init()
+  // ...
+  EscapedTemporalLiteralsTypeVisitor visEscaped = new EscapedTemporalLiteralsTypeVisitor();
+  visEscaped.setType4Ast(type4Ast);
+  traverser.add4EscapedTemporalLiterals(visEscaped);
+
+  ISOTemporalsTypeVisitor visISO = new ISOTemporalsTypeVisitor();
+  visISO.setType4Ast(type4Ast);
+  traverser.add4ISOTemporals(visISO);
+
+  DETemporalsTypeVisitor visDE = new DETemporalsTypeVisitor();
+  visDE.setType4Ast(type4Ast);
+  traverser.add4DETemporals(visDE);
+  // ...
+}
+
+public static void reset() {
+  // ...
+  TemporalSymTypeRelations.reset();
+  TypeVisitorOperatorCalculator.reset();
+}
+```
+
+After each initialization of the Mill, call `TemporalTypes.init()`.
+A complete example is the test class `TemporalScriptTypeCheck3`.
+
+The type visitors map the interfaces of `TemporalBasis` to the
+temporal types.
+A new temporal language (e.g., for a further locale) only needs to
+provide a type visitor for its productions that implement `Literal`
+(see `TemporalBasisTypeVisitor`).
+
+### Limitations
+
+- An escaped temporal literal cannot be followed by a String literal or
+  another escaped temporal literal anywhere later in the model
+  (even on a later line): the closing `"` and the next `"` are lexed as
+  one String, e.g., `" + d"` in `d"2017-12-04" + d"P1D"`.
+  Unescaped representations (e.g., `2017-12-04T12:30`, `12:30 Uhr`)
+  and String literals *before* the escaped literal are not affected.
+- There is only one global operator calculator;
+  a language with further custom operators has to combine them
+  in a subclass of `TemporalTypeVisitorOperatorCalculator`.
+- The semantics (interpretation) of the operators and functions
+  is not yet implemented.
 
 ---
 

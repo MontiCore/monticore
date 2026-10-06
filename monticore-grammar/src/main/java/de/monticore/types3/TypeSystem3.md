@@ -66,6 +66,8 @@ and combining their information to the SymTypeExpression currently calculated.
       (factory for CollectionTypes, convenience methods)
     * [StreamSymTypeFactory](streams/StreamSymTypeFactory.java)
       (factory for Stream types, convenience methods)
+    * [TemporalSymTypeFactory](../temporal/types3/TemporalSymTypeFactory.java)
+      (factory for the temporal types, e.g., TimePoint, convenience methods)
 * Functionality to work with SymTypeExpressions, Expressions
     * [SymTypeRelations](SymTypeRelations.java)
       (relations over SymTypeExpressions, e.g., `isSubTypeOf`, `isCompatible`)
@@ -79,6 +81,9 @@ and combining their information to the SymTypeExpression currently calculated.
       (SIUnit relations, e.g., `multiply`, `isOfDimensionOne`)
     * [StreamSymTypeRelations](streams/StreamSymTypeRelations.java)
       (relations over Stream SymTypeExpressions, e.g., isEventStream)
+    * [TemporalSymTypeRelations](../temporal/types3/TemporalSymTypeRelations.java)
+      (relations over the temporal types, e.g., isTimePoint, isDuration;
+      s.a. [the temporal type system](../../../../grammars/de/monticore/temporal/Temporal.md#type-system))
     * [WithinScopeBasicSymbolsResolver](util/WithinScopeBasicSymbolsResolver.java)
       (resolves contained variables, functions, ect. within a given scope;
       unlike symbol resolving this returns SymTypeExpressions)
@@ -149,6 +154,11 @@ and combining their information to the SymTypeExpression currently calculated.
         * [SIUnitLiteralsTypeVisitor](../siunit/siunitliterals/types3/SIUnitLiteralsTypeVisitor.java)
           (calculates the SymTypeExpressions for the literals
           in the grammar SIUnitLiterals)
+        * [EscapedTemporalLiteralsTypeVisitor](../temporal/escapedtemporalliterals/types3/EscapedTemporalLiteralsTypeVisitor.java),
+          [ISOTemporalsTypeVisitor](../temporal/isotemporals/types3/ISOTemporalsTypeVisitor.java),
+          [DETemporalsTypeVisitor](../temporal/detemporals/types3/DETemporalsTypeVisitor.java)
+          (calculate the SymTypeExpressions for the temporal literals
+          in the grammars EscapedTemporalLiterals, ISOTemporals, and DETemporals)
     * Types
         * [MCArrayTypesTypeVisitor](../types/mcarraytypes/types3/MCArrayTypesTypeVisitor.java)
           (calculates the SymTypeExpressions for the types
