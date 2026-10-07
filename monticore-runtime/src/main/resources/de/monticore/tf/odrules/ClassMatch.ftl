@@ -7,7 +7,7 @@ public class Match {
   protected Match(
 <#list mandatoryObjects as object>
   <#if !object.isListObject()> ${object.getType()}
-  <#else>${object.getListtype()}
+  <#else>Match${object.getObjectName()}
   </#if>
   ${object.getObjectName()}
   <#if object_has_next>,</#if>
@@ -24,7 +24,7 @@ public class Match {
   <#assign isWithinOpt = hierarchyHelper.isWithinOptionalStructure(object.getObjectName())>
       protected <#if isWithinOpt>Optional<</#if>
   <#if !object.isListObject()> ${object.getType()}
-  <#else>${object.getListtype()} </#if>
+  <#else>Match${object.getObjectName()} </#if>
   <#if isWithinOpt>></#if>${object.getObjectName()};
 </#list>
 
