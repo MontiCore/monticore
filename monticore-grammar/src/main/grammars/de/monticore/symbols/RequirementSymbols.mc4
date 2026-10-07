@@ -1,0 +1,35 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.symbols;
+
+import de.monticore.*;
+
+/**
+ * The grammar introduces reusable symbols for Requirements.
+ *
+ * The symbols are of general nature.
+ *
+ * This grammar is used to generate an abstract syntax
+ * (and especially symboltable infrastructure) only.
+ * These AST-classes are then used to store information
+ * in the SymbolTable.
+ *
+ * These symbols can be used in other grammars, when actual implementations
+ * of these symbols become available or these symbols need to be imported
+ * from other artifacts.
+ *
+ */
+
+component grammar RequirementSymbols extends de.monticore.MCBasics {
+
+  /*=================================================================*/
+
+  /**
+   * A requirement has a name/id and carries a description.
+   *
+   */
+  interface symbol Requirement = Name;
+
+  symbolrule Requirement =
+      description: String;
+
+}

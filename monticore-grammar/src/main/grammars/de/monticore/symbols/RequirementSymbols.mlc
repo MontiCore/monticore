@@ -1,0 +1,27 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.symbols;
+
+mlc RequirementSymbols {
+
+  // export the grammar
+  export "$projectDir/src/main/grammars" {
+    include "de/monticore/symbols/RequirementSymbols.mc4";
+  }
+
+  // export all Java files generated from the grammar
+  export "$projectDir/target/generated-sources/monticore/sourcecode" {
+    include "de/monticore/symbols/requirementsymbols/**.java";
+  }
+
+  // export handwritten code
+  export "$projectDir/src/main/java" {
+    include "de/monticore/symbols/requirementsymbols/**.java";
+  }
+
+  promote mlc "de.monticore.MCBasics";
+
+  // locally allow using SymTypeExpressions
+  uses {
+  }
+
+}
