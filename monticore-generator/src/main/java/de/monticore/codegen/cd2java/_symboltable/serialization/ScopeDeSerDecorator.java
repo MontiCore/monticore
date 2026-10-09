@@ -267,7 +267,7 @@ public class ScopeDeSerDecorator extends AbstractDecorator {
       String methodName = DESERIALIZE + StringTransformations.capitalize(attr.getName());
       // Deserializers for supplied attributes return a supplier of that type
       ASTMCType returnType = getDecorationHelper().shouldHaveSupplier(attr)
-              ? getDecorationHelper().createStdSupplierTypeOf(attr.getMCType())
+              ? getDecorationHelper().toPublicSupplierType(attr.getMCType())
               : attr.getMCType();
       ASTCDMethod method = getCDMethodFacade()
           .createMethod(PROTECTED.build(), returnType, methodName, scopeParam, scopeJsonParam);

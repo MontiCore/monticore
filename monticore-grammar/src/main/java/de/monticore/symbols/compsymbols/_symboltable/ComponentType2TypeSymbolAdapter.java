@@ -4,6 +4,7 @@ package de.monticore.symbols.compsymbols._symboltable;
 import com.google.common.base.Preconditions;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
+import de.monticore.symboltable.ClearingMemorizer;
 import de.monticore.symboltable.modifiers.BasicAccessModifier;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.se_rwth.commons.SourcePosition;
@@ -20,15 +21,16 @@ public class ComponentType2TypeSymbolAdapter extends TypeSymbol {
     this.adaptee = adaptee;
     this.accessModifier = BasicAccessModifier.PUBLIC;
     this.spannedScope = adaptee.getSpannedScope();
-    setSuperTypesList(adaptee.getSuperComponentsList().stream().map(c -> {
-      if (!c.isGenericComponentType()) {
-        return SymTypeExpressionFactory.createTypeObject(new ComponentType2TypeSymbolAdapter(c.getTypeInfo()));
-      } else {
-        return SymTypeExpressionFactory.createGenerics(
-            new ComponentType2TypeSymbolAdapter(c.getTypeInfo()), c.asGenericComponentType().getTypeBindingsAsList()
-        );
-      }
-    }).collect(Collectors.toList()));
+    setSuperTypesSupplierList(adaptee.getSuperComponentsList().stream()
+        .map(c -> new ClearingMemorizer<>(() -> {
+          if (!c.isGenericComponentType()) {
+            return SymTypeExpressionFactory.createTypeObject(new ComponentType2TypeSymbolAdapter(c.getTypeInfo()));
+          } else {
+            return SymTypeExpressionFactory.createGenerics(
+                new ComponentType2TypeSymbolAdapter(c.getTypeInfo()), c.asGenericComponentType().getTypeBindingsAsList()
+            );
+          }
+        })).collect(Collectors.toList()));
   }
 
   public ComponentTypeSymbol getAdaptee() {

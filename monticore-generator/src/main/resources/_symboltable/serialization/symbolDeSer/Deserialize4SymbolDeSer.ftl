@@ -22,7 +22,7 @@ ${tc.signature("symTabMill", "symbolFullName", "symbolSimpleName","symbolRuleAtt
 
   <#list symbolRuleAttribute as attr>
   <#if genHelper.shouldHaveSupplier(attr)>
-    builder.${genHelper.getPlainSetter(attr)}Supplier(deserialize${attr.getName()?cap_first}(scope, symbolJson));
+    builder.${genHelper.getSupplierSetterName(attr)}(deserialize${attr.getName()?cap_first}(scope, symbolJson));
   <#elseif genHelper.isOptional(attr.getMCType())>
     if (deserialize${attr.getName()?cap_first}(symbolJson).isPresent()) {
       builder.${genHelper.getPlainSetter(attr)}(deserialize${attr.getName()?cap_first}(scope, symbolJson).get());

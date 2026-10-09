@@ -14,17 +14,17 @@ import java.util.function.Supplier;
  */
 public class SuppliedList<T> extends AbstractList<T> {
 
-  protected final List<Supplier<T>> backing;
+  protected final List<Supplier<T>> inner;
 
-  public SuppliedList(List<Supplier<T>> backing) {
-    this.backing = Objects.requireNonNull(backing);
+  public SuppliedList(List<Supplier<T>> inner) {
+    this.inner = Objects.requireNonNull(inner);
   }
 
   /**
    * The underlying suppliers (not a copy), which can be accessed without evaluating them.
    */
   public List<Supplier<T>> getSuppliers() {
-    return backing;
+    return inner;
   }
 
   /**
@@ -34,7 +34,7 @@ public class SuppliedList<T> extends AbstractList<T> {
   public static <T> SuppliedList<T> fromValues(Collection<? extends T> values) {
     if (values instanceof SuppliedList) {
       // reuse the suppliers instead of evaluating the elements
-      return new SuppliedList<>(new ArrayList<>(((SuppliedList<T>) values).backing));
+      return new SuppliedList<>(new ArrayList<>(((SuppliedList<T>) values).inner));
     }
     List<Supplier<T>> result = new ArrayList<>(values.size());
     for (T value : values) {
@@ -47,30 +47,53 @@ public class SuppliedList<T> extends AbstractList<T> {
     return new ClearingMemorizer<>(() -> value);
   }
 
+
+  @Override
+  public boolean addAll(Collection<? extends T> collection) {
+    return addAll(size(), collection);
+  }
+
+  @Override
+  public boolean addAll(int index, Collection<? extends T> collection) {
+    if (index < 0 || index > size()) {
+      throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size());
+    }
+    List<Supplier<T>> toAdd = SuppliedList.<T>fromValues(collection).inner;
+    inner.addAll(index, toAdd);
+    modCount++;
+    return !toAdd.isEmpty();
+  }
+
+  @Override
+  public void clear() {
+    inner.clear();
+    modCount++;
+  }
+
   @Override
   public T get(int index) {
-    return backing.get(index).get();
+    return inner.get(index).get();
   }
 
   @Override
   public int size() {
-    return backing.size();
+    return inner.size();
   }
 
   @Override
   public T set(int index, T element) {
-    return backing.set(index, supplierOf(element)).get();
+    return inner.set(index, supplierOf(element)).get();
   }
 
   @Override
   public void add(int index, T element) {
-    backing.add(index, supplierOf(element));
+    inner.add(index, supplierOf(element));
     modCount++;
   }
 
   @Override
   public T remove(int index) {
-    T removed = backing.remove(index).get();
+    T removed = inner.remove(index).get();
     modCount++;
     return removed;
   }
