@@ -163,4 +163,15 @@ public class StatementsTestModels {
     );
   }
 
+  static public Stream<Arguments> getUnionTypeCases() {
+    return Stream.of(
+        Arguments.of("(int | String) x = 1; x", 1),
+        Arguments.of("(int | String) x = \"a\"; x", "a"),
+        Arguments.of("(long | String) x = 1; x", 1L),
+        Arguments.of("(Integer | String) x = 1; x", 1),
+        Arguments.of("(int | boolean) x = true; x", true),
+        Arguments.of("(int | boolean) -> int f = "
+            + "((int | boolean) x) -> 1; f(false)", 1)
+    );
+  }
 }

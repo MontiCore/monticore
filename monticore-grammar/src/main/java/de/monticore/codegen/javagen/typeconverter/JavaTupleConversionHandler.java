@@ -7,6 +7,7 @@ import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfTuple;
 
+import static de.monticore.types3.SymTypeRelations.normalize;
 import static de.monticore.codegen.CodeGenSymTypeExpressionConverter.printConverted;
 import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getJavaTypePrint;
 import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getJavaTypeQName;
@@ -21,10 +22,14 @@ public class JavaTupleConversionHandler extends AbstractJavaTypeConverter {
   @Override
   public boolean tryPrintConverted(
       IndentPrinter printer,
-      SymTypeExpression modelTargetType,
-      SymTypeExpression modelSourceType,
+      SymTypeExpression nonNormalizedTargetType,
+      SymTypeExpression nonNormalizedSourceType,
       CodeGenPrintAction sourceExprPrintAction
   ) {
+    SymTypeExpression modelTargetType = normalizeUnless(
+        nonNormalizedTargetType, SymTypeExpression::isTupleType);
+    SymTypeExpression modelSourceType = normalizeUnless(
+        nonNormalizedSourceType, SymTypeExpression::isTupleType);
     if (modelSourceType.isTupleType() && modelTargetType.isTupleType()) {
       SymTypeOfTuple sourceTuple = modelSourceType.asTupleType();
       SymTypeOfTuple targetTuple = modelTargetType.asTupleType();
@@ -35,17 +40,17 @@ public class JavaTupleConversionHandler extends AbstractJavaTypeConverter {
       tupleNestingLevel++;
 
       printer.print("((java.util.function.Supplier<");
-      printer.print(getJavaTypePrint(targetTuple));
+      printer.print(getJavaTypePrint(normalize(targetTuple)));
       printer.println(">) () -> {");
       printer.indent();
-      printer.print(getJavaTypePrint(sourceTuple));
+      printer.print(getJavaTypePrint(normalize(sourceTuple)));
       printer.print(" ");
       printer.print(tmpTupleVarName);
       printer.print(" = ");
       sourceExprPrintAction.print(printer);
       printer.println(";");
       printer.print("return ");
-      printer.print(getJavaTypeQName(targetTuple));
+      printer.print(getJavaTypeQName(normalize(targetTuple)));
       printer.print(".of(");
 
       for (int i = 0; i < modelTargetType.asTupleType().getTypeList().size(); i++) {

@@ -344,9 +344,19 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
   public void endVisit(ASTArrayAccessExpression expr) {
     SymTypeExpression innerType = getType4Ast().getPartialTypeOfExpr(expr.getExpression());
     SymTypeExpression indexType = getType4Ast().getPartialTypeOfExpr(expr.getIndexExpression());
-    SymTypeExpression result = TypeVisitorLifting.liftDefault(
-        (innerArg, indexArg) -> calculateArrayAccess(expr, innerArg, indexArg)
-    ).apply(innerType, indexType);
+    SymTypeExpression result;
+    // not normalized, to keep, e.g., SIUnit prefixes
+    if (innerType.isArrayType() || innerType.isTupleType()) {
+      result = TypeVisitorLifting.liftForObscure(
+          (SymTypeExpression innerArg, SymTypeExpression indexArg) ->
+              calculateArrayAccess(expr, innerArg, indexArg)
+      ).apply(innerType, SymTypeRelations.normalize(indexType));
+    }
+    else {
+      result = TypeVisitorLifting.liftDefault(
+          (innerArg, indexArg) -> calculateArrayAccess(expr, innerArg, indexArg)
+      ).apply(innerType, indexType);
+    }
     getType4Ast().setTypeOfExpression(expr, result);
   }
 
@@ -471,9 +481,16 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     // but as we support function types, the difference is nigh existent
     SymTypeExpression type;
     Set<SymTypeExpression> inner;
-    SymTypeExpression calculatedInner = SymTypeRelations.normalize(
-        getType4Ast().getPartialTypeOfExpr(expr.getExpression())
-    );
+    SymTypeExpression calculatedInnerNonNormalized =
+        getType4Ast().getPartialTypeOfExpr(expr.getExpression());
+    SymTypeExpression calculatedInner =
+        SymTypeRelations.normalize(calculatedInnerNonNormalized);
+    // not normalized, to keep, e.g., SIUnit prefixes
+    if (calculatedInnerNonNormalized.isFunctionType()
+        && calculatedInner.isFunctionType()
+    ) {
+      calculatedInner = calculatedInnerNonNormalized;
+    }
     if (calculatedInner.isIntersectionType()) {
       inner = new LinkedHashSet<>(
           ((SymTypeOfIntersection) calculatedInner).getIntersectedTypeSet()
