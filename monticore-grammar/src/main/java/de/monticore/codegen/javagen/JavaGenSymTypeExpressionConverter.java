@@ -7,8 +7,10 @@ import de.monticore.codegen.javagen.typeconverter.JavaFunctionConversionHandler;
 import de.monticore.codegen.javagen.typeconverter.JavaNumericConversionHandler;
 import de.monticore.codegen.javagen.typeconverter.JavaNumericSuperTypeConversionHandler;
 import de.monticore.codegen.javagen.typeconverter.JavaObjectConversionHandler;
+import de.monticore.codegen.javagen.typeconverter.JavaSIUnitConversionHandler;
 import de.monticore.codegen.javagen.typeconverter.JavaStringConversionHandler;
 import de.monticore.codegen.javagen.typeconverter.JavaTupleConversionHandler;
+import de.monticore.codegen.javagen.typeconverter.JavaUnionConversionHandler;
 import de.monticore.codegen.typeconverter.TrivialConversionHandler;
 import de.se_rwth.commons.logging.Log;
 
@@ -22,6 +24,8 @@ public class JavaGenSymTypeExpressionConverter
         List.of(
             // trivial case
             List.of(new TrivialConversionHandler()),
+            // before others, as, e.g., [km/m]<int> is normalized to int
+            List.of(new JavaSIUnitConversionHandler()),
             // most specific cases
             List.of(
                 new JavaBooleanConversionHandler(),
@@ -34,7 +38,8 @@ public class JavaGenSymTypeExpressionConverter
             List.of(
                 new JavaNumericSuperTypeConversionHandler(),
                 new JavaObjectConversionHandler()
-            )
+            ),
+            List.of(new JavaUnionConversionHandler())
         )
     );
   }

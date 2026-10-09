@@ -26,6 +26,7 @@ import static de.monticore.codegen.CodeGenOperationPrinter.printMultiply;
 import static de.monticore.codegen.CodeGenOperationPrinter.printPlus;
 import static de.monticore.codegen.CodeGenSymTypeExpressionConverter.printConverted;
 import static de.monticore.codegen.javagen.JavaGenSymTypeRelations.generatesToJavaNumeric;
+import static de.monticore.codegen.javagen.JavaGenSymTypeRelations.getOperandType;
 import static de.monticore.expressions.assignmentexpressions._ast.ASTConstantsAssignmentExpressions.EQUALS;
 import static de.monticore.expressions.assignmentexpressions._ast.ASTConstantsAssignmentExpressions.MINUSEQUALS;
 import static de.monticore.expressions.assignmentexpressions._ast.ASTConstantsAssignmentExpressions.PERCENTEQUALS;
@@ -34,6 +35,7 @@ import static de.monticore.expressions.assignmentexpressions._ast.ASTConstantsAs
 import static de.monticore.expressions.assignmentexpressions._ast.ASTConstantsAssignmentExpressions.STAREQUALS;
 import static de.monticore.types3.SymTypeRelations.normalize;
 import static de.monticore.types3.TypeCheck3.typeOf;
+import static de.monticore.types3.util.SIUnitTypeRelations.hasSIUnit;
 
 /**
  * prints, e.g., {@code x += 2}
@@ -139,15 +141,27 @@ public class AssignmentExpressionsJavaGenVisitor
 
   @Override
   public void traverse(ASTAssignmentExpression assignment) {
+    // the type of the assignment expression is normalized
+    SymTypeExpression leftType = typeOf(assignment.getLeft());
+    if (hasSIUnit(leftType) && !state.isWithoutValueConversion(assignment)) {
+      printConverted(getPrinter(), typeOf(assignment), leftType,
+          p -> printAssignmentExpression(assignment)
+      );
+    }
+    else {
+      printAssignmentExpression(assignment);
+    }
+  }
 
-    // should be the same as target
-    SymTypeExpression resultType = normalize(typeOf(assignment));
-    SymTypeExpression leftType = normalize(typeOf(assignment.getLeft()));
-    SymTypeExpression rightType = normalize(typeOf(assignment.getRight()));
+  protected void printAssignmentExpression(ASTAssignmentExpression assignment) {
+    SymTypeExpression leftType = typeOf(assignment.getLeft());
+    SymTypeExpression rightType = typeOf(assignment.getRight());
+    SymTypeExpression leftOperandType = getOperandType(leftType);
+    SymTypeExpression rightOperandType = getOperandType(rightType);
     CodeGenPrintAction leftExprPrintAction = p ->
-        assignment.getLeft().accept(getTraverser());
+        state.printOperand(assignment.getLeft(), getTraverser());
     CodeGenPrintAction rightExprPrintAction = p ->
-        assignment.getRight().accept(getTraverser());
+        state.printOperand(assignment.getRight(), getTraverser());
 
     // given expression a *= b, is typeof(a * b)
     SymTypeExpression typeOfInnerOperation;
@@ -156,49 +170,50 @@ public class AssignmentExpressionsJavaGenVisitor
       case EQUALS:
         // no real inner operation -> basically id
         typeOfInnerOperation = rightType;
-        printInnerOperationAction = rightExprPrintAction;
+        printInnerOperationAction = p ->
+            assignment.getRight().accept(getTraverser());
         break;
       case PLUSEQUALS:
-        typeOfInnerOperation = TypeVisitorOperatorCalculator.plus(leftType, rightType).get();
-        printInnerOperationAction = p -> printPlus(p, typeOfInnerOperation, leftType, rightType, leftExprPrintAction, rightExprPrintAction);
+        typeOfInnerOperation = TypeVisitorOperatorCalculator.plus(leftOperandType, rightOperandType).get();
+        printInnerOperationAction = p -> printPlus(p, typeOfInnerOperation, leftOperandType, rightOperandType, leftExprPrintAction, rightExprPrintAction);
         break;
       case MINUSEQUALS:
-        typeOfInnerOperation = TypeVisitorOperatorCalculator.minus(leftType, rightType).get();
-        printInnerOperationAction = p -> printMinus(p, typeOfInnerOperation, leftType, rightType, leftExprPrintAction, rightExprPrintAction);
+        typeOfInnerOperation = TypeVisitorOperatorCalculator.minus(leftOperandType, rightOperandType).get();
+        printInnerOperationAction = p -> printMinus(p, typeOfInnerOperation, leftOperandType, rightOperandType, leftExprPrintAction, rightExprPrintAction);
         break;
       case STAREQUALS:
-        typeOfInnerOperation = TypeVisitorOperatorCalculator.multiply(leftType, rightType).get();
-        printInnerOperationAction = p -> printMultiply(p, typeOfInnerOperation, leftType, rightType, leftExprPrintAction, rightExprPrintAction);
+        typeOfInnerOperation = TypeVisitorOperatorCalculator.multiply(leftOperandType, rightOperandType).get();
+        printInnerOperationAction = p -> printMultiply(p, typeOfInnerOperation, leftOperandType, rightOperandType, leftExprPrintAction, rightExprPrintAction);
         break;
       case SLASHEQUALS:
-        typeOfInnerOperation = TypeVisitorOperatorCalculator.divide(leftType, rightType).get();
-        printInnerOperationAction = p -> printDivide(p, typeOfInnerOperation, leftType, rightType, leftExprPrintAction, rightExprPrintAction);
+        typeOfInnerOperation = TypeVisitorOperatorCalculator.divide(leftOperandType, rightOperandType).get();
+        printInnerOperationAction = p -> printDivide(p, typeOfInnerOperation, leftOperandType, rightOperandType, leftExprPrintAction, rightExprPrintAction);
         break;
       case PERCENTEQUALS:
-        typeOfInnerOperation = TypeVisitorOperatorCalculator.modulo(leftType, rightType).get();
-        printInnerOperationAction = p -> printModulo(p, typeOfInnerOperation, leftType, rightType, leftExprPrintAction, rightExprPrintAction);
+        typeOfInnerOperation = TypeVisitorOperatorCalculator.modulo(leftOperandType, rightOperandType).get();
+        printInnerOperationAction = p -> printModulo(p, typeOfInnerOperation, leftOperandType, rightOperandType, leftExprPrintAction, rightExprPrintAction);
         break;
       // To be extended
         /*
       case LTLTEQUALS:
         typeOfInnerOperation = TypeVisitorOperatorCalculator.leftShift(leftType, rightType).get();
-        printInnerOperationAction = p -> (p, typeOfInnerOperation, leftType, rightType, leftExprPrintAction, rightExprPrintAction);
+        printInnerOperationAction = p -> (p, typeOfInnerOperation, leftOperandType, rightOperandType, leftExprPrintAction, rightExprPrintAction);
         break;
       case GTGTEQUALS:
         typeOfInnerOperation = TypeVisitorOperatorCalculator.shiftRight(leftType, rightType).get();
-        printInnerOperationAction = p -> printShiftRight(p, typeOfInnerOperation, leftType, rightType, leftExprPrintAction, rightExprPrintAction);
+        printInnerOperationAction = p -> printShiftRight(p, typeOfInnerOperation, leftOperandType, rightOperandType, leftExprPrintAction, rightExprPrintAction);
         break;
       case GTGTGTEQUALS:
         typeOfInnerOperation = TypeVisitorOperatorCalculator.unsignedShiftRight(leftType, rightType).get();
-        printInnerOperationAction = p -> printUnsignedShiftRight(p, typeOfInnerOperation, leftType, rightType, leftExprPrintAction, rightExprPrintAction);
+        printInnerOperationAction = p -> printUnsignedShiftRight(p, typeOfInnerOperation, leftOperandType, rightOperandType, leftExprPrintAction, rightExprPrintAction);
         break;
       case AND_EQUALS:
         typeOfInnerOperation = TypeVisitorOperatorCalculator.and(leftType, rightType).get();
-        printInnerOperationAction = p -> printAnd(p, typeOfInnerOperation, leftType, rightType, leftExprPrintAction, rightExprPrintAction);
+        printInnerOperationAction = p -> printAnd(p, typeOfInnerOperation, leftOperandType, rightOperandType, leftExprPrintAction, rightExprPrintAction);
         break;
       case PIPEEQUALS:
         typeOfInnerOperation = TypeVisitorOperatorCalculator.or(leftType, rightType).get();
-        printInnerOperationAction = p -> printOr(p, typeOfInnerOperation, leftType, rightType, leftExprPrintAction, rightExprPrintAction);
+        printInnerOperationAction = p -> printOr(p, typeOfInnerOperation, leftOperandType, rightOperandType, leftExprPrintAction, rightExprPrintAction);
         break;
          */
       default:
@@ -211,11 +226,13 @@ public class AssignmentExpressionsJavaGenVisitor
 
     JavaOperationPrinter.printAssignment(
         getPrinter(),
-        resultType,
+        leftType,
         leftType,
         // left type due to conversion
         leftType,
-        p -> assignment.getLeft().accept(getTraverser()),
+        p -> state.printWithoutValueConversion(
+            assignment.getLeft(), getTraverser()
+        ),
         p2 -> printConverted(
             p2,
             leftType,
