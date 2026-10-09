@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.typeparameters._symboltable;
 
+import de.monticore.symboltable.ClearingMemorizer;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.typeparameters._ast.ASTTypeParameter;
@@ -10,6 +11,7 @@ import de.monticore.types3.TypeCheck3;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * Sets the superTypes of the type parameter symbols.
@@ -29,17 +31,18 @@ public class TypeParametersSTCompleteTypes implements TypeParametersVisitor2 {
 
   @Override
   public void visit(ASTTypeParameter node) {
-    List<SymTypeExpression> bounds = new ArrayList<>();
-    for (ASTMCType astTypeBound : node.getMCTypeList()) {
-      // deprecated behavior:
-      if (tc != null) {
-        bounds.add(tc.symTypeFromAST(astTypeBound));
-      } else {
-        bounds.add(TypeCheck3.symTypeFromAST(astTypeBound));
-      }
+    List<Supplier<SymTypeExpression>> bounds = new ArrayList<>();
+    if (tc != null){
+        //deprecated behavior:
+        for (ASTMCType astTypeBound : node.getMCTypeList()) {
+            bounds.add(new ClearingMemorizer<>(() -> tc.symTypeFromAST(astTypeBound)));
+        }
+    } else {
+        for (ASTMCType astTypeBound : node.getMCTypeList()) {
+            bounds.add(new ClearingMemorizer<>(() -> TypeCheck3.symTypeFromAST(astTypeBound)));
+        }
     }
-    // error logged if obscure
-    node.getSymbol().setSuperTypesList(bounds);
+    node.getSymbol().setSuperTypesSupplierList(bounds);
   }
 
 }

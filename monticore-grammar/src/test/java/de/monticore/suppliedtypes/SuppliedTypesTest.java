@@ -12,6 +12,7 @@ import de.monticore.types.check.SymTypeExpressionFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -63,15 +64,22 @@ public class SuppliedTypesTest {
     List<SymTypeExpression> values = List.of(intType, booleanType);
     symbol.setListTypeList(values);
     assertEquals(values, symbol.getListTypeList());
-    assertEquals(values, symbol.getListTypeListSupplier().get());
+    List<Supplier<SymTypeExpression>> suppliers = symbol.getListTypeSupplierList();
+    assertEquals(2, suppliers.size());
+    assertSame(intType, suppliers.get(0).get());
+    assertSame(booleanType, suppliers.get(1).get());
 
-    symbol.setListTypeListSupplier(() -> values);
-    assertEquals(values, symbol.getListTypeList());
+    List<SymTypeExpression> expr = symbol.getListTypeList();
+    assertEquals(2, expr.size());
+    assertSame(intType, expr.get(0));
+    assertSame(booleanType, expr.get(1));
 
-    // getXSupplier() it returns exactly what was set
-    Supplier<List<SymTypeExpression>> plainSupplier = () -> values;
-    symbol.setListTypeListSupplier(plainSupplier);
-    assertSame(plainSupplier, symbol.getListTypeListSupplier());
+    // getXSupplierList() returns exactly what was set
+    List<Supplier<SymTypeExpression>> plainSuppliers = new ArrayList<>();
+    plainSuppliers.add(() -> booleanType);
+    symbol.setListTypeSupplierList(plainSuppliers);
+    assertEquals(List.of(booleanType), symbol.getListTypeList());
+    assertSame(plainSuppliers, symbol.getListTypeSupplierList());
   }
 
   @Test
@@ -134,15 +142,23 @@ public class SuppliedTypesTest {
     List<SymTypeExpression> values = List.of(intType, booleanType);
     scope.setListTypeList(values);
     assertEquals(values, scope.getListTypeList());
-    assertEquals(values, scope.getListTypeListSupplier().get());
 
-    scope.setListTypeListSupplier(() -> values);
-    assertEquals(values, scope.getListTypeList());
+    List<Supplier<SymTypeExpression>> suppliers = scope.getListTypeSupplierList();
+    assertEquals(2, suppliers.size());
+    assertSame(intType, suppliers.get(0).get());
+    assertSame(booleanType, suppliers.get(1).get());
 
-      // getXSupplier() it returns exactly what was set
-    Supplier<List<SymTypeExpression>> plainSupplier = () -> values;
-    scope.setListTypeListSupplier(plainSupplier);
-    assertSame(plainSupplier, scope.getListTypeListSupplier());
+    List<SymTypeExpression> expr = scope.getListTypeList();
+    assertEquals(2, expr.size());
+    assertSame(intType, expr.get(0));
+    assertSame(booleanType, expr.get(1));
+
+    // getXSupplierList() returns exactly what was set
+    List<Supplier<SymTypeExpression>> plainSuppliers = new ArrayList<>();
+    plainSuppliers.add(() -> booleanType);
+    scope.setListTypeSupplierList(plainSuppliers);
+    assertEquals(List.of(booleanType), scope.getListTypeList());
+    assertSame(plainSuppliers, scope.getListTypeSupplierList());
   }
 
   @Test
@@ -205,15 +221,23 @@ public class SuppliedTypesTest {
     List<SymTypeExpression> values = List.of(intType, booleanType);
     builder.setListTypeList(values);
     assertEquals(values, builder.getListTypeList());
-    assertEquals(values, builder.getListTypeListSupplier().get());
 
-    builder.setListTypeListSupplier(() -> values);
-    assertEquals(values, builder.getListTypeList());
+    List<Supplier<SymTypeExpression>> suppliers = builder.getListTypeSupplierList();
+    assertEquals(2, suppliers.size());
+    assertSame(intType, suppliers.get(0).get());
+    assertSame(booleanType, suppliers.get(1).get());
 
-    // getXSupplier() it returns exactly what was set
-    Supplier<List<SymTypeExpression>> plainSupplier = () -> values;
-    builder.setListTypeListSupplier(plainSupplier);
-    assertSame(plainSupplier, builder.getListTypeListSupplier());
+    List<SymTypeExpression> expr = builder.getListTypeList();
+    assertEquals(2, expr.size());
+    assertSame(intType, expr.get(0));
+    assertSame(booleanType, expr.get(1));
+
+    // getXSupplierList() returns exactly what was set
+    List<Supplier<SymTypeExpression>> plainSuppliers = new ArrayList<>();
+    plainSuppliers.add(() -> booleanType);
+    builder.setListTypeSupplierList(plainSuppliers);
+    assertEquals(List.of(booleanType), builder.getListTypeList());
+    assertSame(plainSuppliers, builder.getListTypeSupplierList());
   }
 
   @Test

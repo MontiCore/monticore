@@ -11,7 +11,7 @@ ${tc.signature("symTabMill", "scopeClass", "scopeRuleAttrList")}
 <#list scopeRuleAttrList as attr>
   <#assign setter = genHelper.getPlainSetter(attr)>
   <#if genHelper.shouldHaveSupplier(attr)>
-    scope.${setter}Supplier(deserialize${attr.getName()?cap_first}(scope, scopeJson));
+    scope.${genHelper.getSupplierSetterName(attr)}(deserialize${attr.getName()?cap_first}(scope, scopeJson));
   <#elseif genHelper.isOptional(attr.getMCType())>
   ${attr.printType()} _${attr.getName()} = deserialize${attr.getName()?cap_first}(scope, scopeJson);
   if (_${attr.getName()}.isPresent()) {

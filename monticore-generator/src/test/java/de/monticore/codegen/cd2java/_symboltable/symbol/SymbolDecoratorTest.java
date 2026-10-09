@@ -279,7 +279,7 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     assertTrue(AccessAsSupplierTypes.shouldHaveSupplier(originalLSymTypeAttribute));
     ASTCDAttribute lSymTypeAttribute = getAttributeBy("lSymType", symbolClassFoo);
     assertDeepEquals(PROTECTED, lSymTypeAttribute.getModifier());
-    assertDeepEquals(DecorationHelper.getInstance().createStdSupplierTypeOf(originalLSymTypeAttribute.getMCType()),
+    assertDeepEquals(DecorationHelper.getInstance().toFieldType(originalLSymTypeAttribute.getMCType()),
         lSymTypeAttribute.getMCType());
 
     ASTCDAttribute originalOSymTypeAttribute = getAttributeBy("oSymType", originalFooClass);
@@ -343,16 +343,16 @@ public class SymbolDecoratorTest extends DecoratorTestCase {
     assertListOf(SYM_TYPE_EXPRESSION, setter.getCDParameter(0).getMCType());
     assertEquals("lSymType", setter.getCDParameter(0).getName());
 
-    ASTCDMethod supplierGetter = getMethodBy("getLSymTypeListSupplier", symbolClassFoo);
+    ASTCDMethod supplierGetter = getMethodBy("getLSymTypeSupplierList", symbolClassFoo);
     assertDeepEquals(PUBLIC, supplierGetter.getModifier());
-    assertDeepEquals(DecorationHelper.getInstance().createStdSupplierTypeOf(lSymTypeType), supplierGetter.getMCReturnType().getMCType());
+    assertDeepEquals(DecorationHelper.getInstance().toPublicSupplierType(lSymTypeType), supplierGetter.getMCReturnType().getMCType());
     assertTrue(supplierGetter.isEmptyCDParameters());
 
-    ASTCDMethod supplierSetter = getMethodBy("setLSymTypeListSupplier", symbolClassFoo);
+    ASTCDMethod supplierSetter = getMethodBy("setLSymTypeSupplierList", symbolClassFoo);
     assertDeepEquals(PUBLIC, supplierSetter.getModifier());
     assertTrue(supplierSetter.getMCReturnType().isPresentMCVoidType());
     assertEquals(1, supplierSetter.sizeCDParameters());
-    assertDeepEquals(DecorationHelper.getInstance().createStdSupplierTypeOf(lSymTypeType), supplierSetter.getCDParameter(0).getMCType());
+    assertDeepEquals(DecorationHelper.getInstance().toPublicSupplierType(lSymTypeType), supplierSetter.getCDParameter(0).getMCType());
     assertEquals("lSymType", supplierSetter.getCDParameter(0).getName());
 
     assertTrue(Log.getFindings().isEmpty());
