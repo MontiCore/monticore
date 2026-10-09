@@ -1,0 +1,55 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.temporal;
+
+/* Alpha-version: This is intended to become a MontiCore stable grammar. */
+
+/**
+ * This grammar defines time trigger conditions (such as 'after', 'on', 'every', 'cron')
+ * using SI unit literals and ISO 8601 temporals.
+ */
+component grammar TimeTriggerConditions extends de.monticore.siunit.SIUnitLiterals,
+    de.monticore.temporal.ISOTemporals {
+
+  interface TimeTriggerCondition;
+
+  AfterCondition implements TimeTriggerCondition =
+    "after" (duration:SIUnitLiteral | period:ISOPeriod);
+
+  OnCondition implements TimeTriggerCondition =
+    "on" (isoDateTime:ISODateTime | dateOnly:CalendarDate | timeOnly:ISOTime);
+
+  EveryTimeCondition implements TimeTriggerCondition =
+    "every" period:SIUnitLiteral (times:NatLiteral "times")?
+  | "from" start:ISODateTime "every" period:SIUnitLiteral
+      (times:NatLiteral "times")?;
+
+  CronCondition implements TimeTriggerCondition =
+    "cron" "[" expression:CronExpression "]";
+
+  CronExpression =
+    minute:CronField
+    hour:CronField
+    dayOfMonth:CronField
+    month:CronField
+    dayOfWeek:CronField;
+
+  CronField =
+    elements:(CronElement || ",")+;
+
+  interface CronElement;
+
+  CronValue implements CronElement =
+    value:CronAtom ("/" step:NatLiteral)?;
+
+  CronRange implements CronElement =
+    start:CronAtom "-" end:CronAtom ("/" step:NatLiteral)?;
+
+  interface CronAtom;
+
+  CronWildcard implements CronAtom = "*";
+
+  CronNumber implements CronAtom = value:NatLiteral;
+
+  CronName implements CronAtom = value:Name;
+
+}
