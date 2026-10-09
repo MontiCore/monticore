@@ -18,9 +18,6 @@ import java.util.Objects;
  * <p>All methods require an explicit UTC offset in the source value.
  * Named time-zone identifiers are not supported; only {@code Z} and numeric
  * offsets such as {@code +02:00} or {@code -05:30} are accepted.</p>
- *
- * <p>Contributed from the TimeTrigger project
- * (se-student/ss26/lectures/sle/projects/timetrigger).</p>
  */
 public final class ISOTemporalsConversions {
 

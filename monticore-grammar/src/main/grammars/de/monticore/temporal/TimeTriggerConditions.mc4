@@ -1,36 +1,29 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.temporal;
 
+/* Alpha-version: This is intended to become a MontiCore stable grammar. */
+
+/**
+ * This grammar defines time trigger conditions (such as 'after', 'on', 'every', 'cron')
+ * using SI unit literals and ISO 8601 temporals.
+ */
 component grammar TimeTriggerConditions extends de.monticore.siunit.SIUnitLiterals,
     de.monticore.temporal.ISOTemporals {
 
   interface TimeTriggerCondition;
 
-  interface AfterCondition extends TimeTriggerCondition;
+  AfterCondition implements TimeTriggerCondition =
+    "after" (duration:SIUnitLiteral | period:ISOPeriod);
 
-  /**
-   * Groups conditions that use WorkflowDSL's generic timer-condition bridge.
-   * {@code after} is deliberately excluded because WorkflowDSL already defines
-   * {@code AfterPeriodCondition}; {@code WorkflowWithTimer} overrides that
-   * existing production to retain host-language compatibility.
-   */
-  interface NonAfterTimeTriggerCondition extends TimeTriggerCondition;
-
-  AfterDurationCondition implements AfterCondition =
-    "after" duration:SIUnitLiteral;
-
-  AfterISOPeriodCondition implements AfterCondition =
-    "after" period:ISOPeriod;
-
-  OnCondition implements NonAfterTimeTriggerCondition =
+  OnCondition implements TimeTriggerCondition =
     "on" (isoDateTime:ISODateTime | dateOnly:CalendarDate | timeOnly:ISOTime);
 
-  EveryTimeCondition implements NonAfterTimeTriggerCondition =
+  EveryTimeCondition implements TimeTriggerCondition =
     "every" period:SIUnitLiteral (times:NatLiteral "times")?
   | "from" start:ISODateTime "every" period:SIUnitLiteral
       (times:NatLiteral "times")?;
 
-  CronCondition implements NonAfterTimeTriggerCondition =
+  CronCondition implements TimeTriggerCondition =
     "cron" "[" expression:CronExpression "]";
 
   CronExpression =
