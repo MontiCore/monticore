@@ -26,6 +26,11 @@ public abstract class ListMethodDecorator extends AbstractCreator<ASTCDAttribute
 
   protected String attributeType;
 
+  /**
+   * whether the attribute carries the supplier marker
+   */
+  protected boolean suppliedList;
+
   public ListMethodDecorator(final GlobalExtensionManagement glex) {
     super(glex);
   }
@@ -41,6 +46,7 @@ public abstract class ListMethodDecorator extends AbstractCreator<ASTCDAttribute
       this.capitalizedAttributeNameWithOutS = capitalizedAttributeNameWithS.substring(0, capitalizedAttributeNameWithS.length() - 1);
     }
     this.attributeType = getAttributeType(ast);
+    this.suppliedList = getDecorationHelper().isSupplier(ast.getMCType());
 
     List<ASTCDMethod> methods = getMethodSignatures().stream()
         .map(getCDMethodFacade()::createMethodByDefinition)
@@ -83,6 +89,12 @@ public abstract class ListMethodDecorator extends AbstractCreator<ASTCDAttribute
   }
 
   public String getAttributeType(ASTCDAttribute attribute) {
-    return getTypeArgumentFromListType(attribute.getMCType());
+    ASTMCType type = attribute.getMCType();
+
+    if (getDecorationHelper().isSupplier(type)) {
+      // a wrapped list attribute has the shape Supplier<List<X>> -> unwrap to List<X> before extracting X
+      type = getDecorationHelper().unwrapSupplier(type);
+    }
+    return getTypeArgumentFromListType(type);
   }
 }
