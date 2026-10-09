@@ -11,6 +11,7 @@ import static de.monticore.codegen.ICodeGenOperationHandler.BinaryOperator.EQUAL
 import static de.monticore.codegen.ICodeGenOperationHandler.BinaryOperator.NOT_EQUALS;
 import static de.monticore.codegen.javagen.JavaGenSymTypeRelations.generatesToJavaPrimitive;
 import static de.monticore.types3.SymTypeRelations.isSubTypeOf;
+import static de.monticore.types3.util.SIUnitTypeRelations.hasSIUnit;
 
 // may need to be split in the future
 
@@ -30,7 +31,11 @@ public class JavaEqualityOperationHandler
       CodeGenPrintAction leftExprPrintAction,
       CodeGenPrintAction rightExprPrintAction
   ) {
-    if (operator == EQUALS) {
+    // handled by JavaSIUnitOperationHandler
+    if (hasSIUnit(leftType) || hasSIUnit(rightType)) {
+      return false;
+    }
+    else if (operator == EQUALS) {
       printEquals(
           printer, leftType, rightType,
           leftExprPrintAction, rightExprPrintAction

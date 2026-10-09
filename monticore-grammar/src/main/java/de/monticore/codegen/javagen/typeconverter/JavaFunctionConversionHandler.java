@@ -7,6 +7,7 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfFunction;
 import de.se_rwth.commons.logging.Log;
 
+import static de.monticore.types3.SymTypeRelations.normalize;
 import static de.monticore.codegen.CodeGenSymTypeExpressionConverter.printConverted;
 import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getBoxedJavaTypePrint;
 import static de.monticore.types3.SymTypeRelations.box;
@@ -20,10 +21,14 @@ public class JavaFunctionConversionHandler
   @Override
   public boolean tryPrintConverted(
       IndentPrinter printer,
-      SymTypeExpression modelTargetType,
-      SymTypeExpression modelSourceType,
+      SymTypeExpression nonNormalizedTargetType,
+      SymTypeExpression nonNormalizedSourceType,
       CodeGenPrintAction sourceExprPrintAction
   ) {
+    SymTypeExpression modelTargetType = normalizeUnless(
+        nonNormalizedTargetType, SymTypeExpression::isFunctionType);
+    SymTypeExpression modelSourceType = normalizeUnless(
+        nonNormalizedSourceType, SymTypeExpression::isFunctionType);
     if (modelTargetType.isFunctionType() && modelSourceType.isFunctionType()) {
       // example target: Student -> Vehicle
       SymTypeOfFunction targetFunc = modelTargetType.asFunctionType();
@@ -38,7 +43,7 @@ public class JavaFunctionConversionHandler
 
       // cast to target function type
       // (Function1<Vehicle, Student>)
-      printJavaCasted(printer, targetFunc, p -> {
+      printJavaCasted(printer, normalize(targetFunc), p -> {
         // lambda parameters and arrow
         // (Student arg0) ->
         p.print("(");
@@ -47,7 +52,7 @@ public class JavaFunctionConversionHandler
             p.print(", ");
           }
           SymTypeExpression paramType = targetFunc.getArgumentType(i);
-          String javaParamTypeStr = getBoxedJavaTypePrint(paramType);
+          String javaParamTypeStr = getBoxedJavaTypePrint(normalize(paramType));
           p.print(javaParamTypeStr);
           p.print(" ");
           p.print("arg" + i);

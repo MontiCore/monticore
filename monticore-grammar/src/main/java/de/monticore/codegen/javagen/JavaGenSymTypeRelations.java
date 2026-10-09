@@ -4,10 +4,16 @@ package de.monticore.codegen.javagen;
 import com.google.common.base.Preconditions;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.check.SymTypeExpressionFactory;
+import de.monticore.types.check.SymTypeOfSIUnit;
+import de.monticore.types3.SymTypeRelations;
+import de.monticore.types3.util.SIUnitTypeRelations;
 import de.se_rwth.commons.logging.Log;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getTypeErasedJavaTypePrint;
@@ -99,6 +105,63 @@ public class JavaGenSymTypeRelations {
 
   protected boolean _generatesToJavaRuntimeIdentifiableType(SymTypeExpression type) {
     return !getTypeErasedJavaTypePrint(type).contains("?");
+  }
+
+  /**
+   * Returns the runtime type, e.g., [km]<int> -> int, [km] -> double
+   */
+  public static SymTypeExpression getSIUnitValueType(SymTypeExpression type) {
+    return getDelegate()._getSIUnitValueType(type);
+  }
+
+  protected SymTypeExpression _getSIUnitValueType(SymTypeExpression type) {
+    if (type.isSIUnitType()) {
+      return SymTypeExpressionFactory.createPrimitive(BasicSymbolsMill.DOUBLE);
+    }
+    else if (type.isNumericWithSIUnitType()) {
+      return type.asNumericWithSIUnitType().getNumericType();
+    }
+    else {
+      return type;
+    }
+  }
+
+  /**
+   * Returns the type an operand is converted to before an operation,
+   * as the type checker calculates using normalized operand types.
+   * Scaled integral values are converted to double,
+   * e.g., [km]<int> -> [m]<double>.
+   */
+  public static SymTypeExpression getOperandType(SymTypeExpression type) {
+    return getDelegate()._getOperandType(type);
+  }
+
+  protected SymTypeExpression _getOperandType(SymTypeExpression type) {
+    SymTypeExpression normalized = SymTypeRelations.normalize(type);
+    if (!SIUnitTypeRelations.hasSIUnit(type)) {
+      return normalized;
+    }
+    SymTypeOfSIUnit siUnit = SIUnitTypeRelations.getSIUnit(type);
+    SymTypeOfSIUnit normalizedSIUnit = SIUnitTypeRelations.getSIUnit(normalized);
+    Optional<BigDecimal> factor =
+        SIUnitTypeRelations.getConversionFactor(siUnit, normalizedSIUnit);
+    SymTypeExpression normalizedValueType = getSIUnitValueType(normalized);
+    if (factor.isEmpty()
+        || factor.get().compareTo(BigDecimal.ONE) == 0
+        || !SymTypeRelations.isIntegralType(normalizedValueType)
+    ) {
+      return normalized;
+    }
+    SymTypeExpression doubleType =
+        SymTypeExpressionFactory.createPrimitive(BasicSymbolsMill.DOUBLE);
+    if (normalized.isNumericWithSIUnitType()) {
+      return SymTypeExpressionFactory.createNumericWithSIUnit(
+          normalizedSIUnit, doubleType
+      );
+    }
+    else {
+      return doubleType;
+    }
   }
 
   // static delegate

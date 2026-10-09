@@ -8,6 +8,7 @@ import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICom
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsScope;
 import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
 import de.monticore.expressions.expressionsbasis.ExpressionsBasisMill;
+import de.monticore.expressions.commonexpressions._ast.ASTCallExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisTraverser;
@@ -2869,6 +2870,44 @@ public class CommonExpressionTypeVisitorTest
     checkExpr("intArray2[0]", "int[]");
     checkExpr("intArray3[0]", "int[][]");
     checkExpr("intArray3[0][0]", "int[]");
+  }
+
+  @Test
+  public void testArrayAccessExpressionKeepsSIUnits() throws IOException {
+    SymTypeExpression km = createNumericWithSIUnit(
+        List.of(createSIUnitBasic("m", "k", 1)), List.of(), _intSymType
+    );
+    IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();
+    inScope(gs, variable("kmArray", createTypeArray(km, 1)));
+    inScope(gs, variable("kmArray2", createTypeArray(km, 2)));
+    inScope(gs, variable("kmTuple", createTuple(km, _intSymType)));
+
+    checkExpr("kmArray[0]", "[km]<int>", false);
+    checkExpr("kmArray2[0][0]", "[km]<int>", false);
+    checkExpr("kmTuple[0]", "[km]<int>", false);
+  }
+
+  @Test
+  public void testCallExpressionKeepsSIUnits() throws IOException {
+    SymTypeExpression km = createNumericWithSIUnit(
+        List.of(createSIUnitBasic("m", "k", 1)), List.of(), _intSymType
+    );
+    IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();
+    inScope(gs, variable("kmFunc", createFunction(km, km)));
+
+    ASTExpression callExpr = parseExpr("kmFunc(1km)");
+    generateScopes(callExpr);
+    SymTypeExpression callType = TypeCheck3.typeOf(callExpr);
+    SymTypeExpression calleeType = TypeCheck3.typeOf(
+        ((ASTCallExpression) callExpr).getExpression()
+    );
+    assertNoFindings();
+    assertTrue(calleeType.isFunctionType());
+    assertEquals("[km]<int>",
+        calleeType.asFunctionType().getArgumentType(0).printFullName());
+    assertEquals("[km]<int>",
+        calleeType.asFunctionType().getType().printFullName());
+    assertEquals("[km]<int>", callType.printFullName());
   }
 
   @Test

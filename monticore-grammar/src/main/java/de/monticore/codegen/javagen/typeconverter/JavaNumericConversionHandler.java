@@ -5,6 +5,7 @@ import de.monticore.codegen.CodeGenPrintAction;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.check.SymTypeExpression;
 
+import static de.monticore.types3.SymTypeRelations.normalize;
 import static de.monticore.types3.SymTypeRelations.isNumericType;
 import static de.monticore.types3.SymTypeRelations.unbox;
 
@@ -17,10 +18,12 @@ public class JavaNumericConversionHandler
   @Override
   public boolean tryPrintConverted(
       IndentPrinter printer,
-      SymTypeExpression modelTargetType,
-      SymTypeExpression modelSourceType,
+      SymTypeExpression nonNormalizedTargetType,
+      SymTypeExpression nonNormalizedSourceType,
       CodeGenPrintAction sourceExprPrintAction
   ) {
+    SymTypeExpression modelTargetType = normalize(nonNormalizedTargetType);
+    SymTypeExpression modelSourceType = normalize(nonNormalizedSourceType);
     if (isNumericType(modelTargetType) && isNumericType(modelSourceType)) {
       // unbox iff required
       CodeGenPrintAction printUnboxedAction = modelSourceType.isPrimitive() ?

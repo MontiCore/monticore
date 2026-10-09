@@ -10,12 +10,15 @@ import de.monticore.types.check.SymTypeOfSIUnit;
 import de.monticore.types3.SymTypeRelations;
 import de.se_rwth.commons.logging.Log;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -172,6 +175,64 @@ public class SIUnitTypeRelations {
     conversionTableTmp.put("sr", List.of());
 
     conversionTable = Collections.unmodifiableMap(conversionTableTmp);
+  }
+
+  /**
+   * factors of the prefixes, e.g., {@code k -> 1000}
+   */
+  protected static final Map<String, BigDecimal> prefixFactors = Map.ofEntries(
+      Map.entry("Y", BigDecimal.TEN.pow(24)),
+      Map.entry("Z", BigDecimal.TEN.pow(21)),
+      Map.entry("E", BigDecimal.TEN.pow(18)),
+      Map.entry("P", BigDecimal.TEN.pow(15)),
+      Map.entry("T", BigDecimal.TEN.pow(12)),
+      Map.entry("G", BigDecimal.TEN.pow(9)),
+      Map.entry("M", BigDecimal.TEN.pow(6)),
+      Map.entry("k", BigDecimal.TEN.pow(3)),
+      Map.entry("h", BigDecimal.TEN.pow(2)),
+      Map.entry("da", BigDecimal.TEN),
+      Map.entry("", BigDecimal.ONE),
+      Map.entry("d", BigDecimal.ONE.scaleByPowerOfTen(-1)),
+      Map.entry("c", BigDecimal.ONE.scaleByPowerOfTen(-2)),
+      Map.entry("m", BigDecimal.ONE.scaleByPowerOfTen(-3)),
+      Map.entry("u", BigDecimal.ONE.scaleByPowerOfTen(-6)),
+      Map.entry("µ", BigDecimal.ONE.scaleByPowerOfTen(-6)),
+      Map.entry("n", BigDecimal.ONE.scaleByPowerOfTen(-9)),
+      Map.entry("p", BigDecimal.ONE.scaleByPowerOfTen(-12)),
+      Map.entry("f", BigDecimal.ONE.scaleByPowerOfTen(-15)),
+      Map.entry("a", BigDecimal.ONE.scaleByPowerOfTen(-18)),
+      Map.entry("z", BigDecimal.ONE.scaleByPowerOfTen(-21)),
+      Map.entry("y", BigDecimal.ONE.scaleByPowerOfTen(-24))
+  );
+
+  /**
+   * factors to convert to SI base units, e.g., {@code h -> 3600} (s);
+   * does not contain, e.g., ºC (affine), dB (logarithmic), deg (angle)
+   */
+  protected static final Map<String, BigDecimal> unitFactors;
+
+  static {
+    Map<String, BigDecimal> unitFactorsTmp = new LinkedHashMap<>();
+    for (String coherentUnit : List.of(
+        "m", "s", "A", "K", "mol", "cd",
+        "Hz", "N", "Pa", "J", "W", "C", "V", "F", "Ohm", "Ω", "S",
+        "Wb", "T", "H", "lm", "lx", "Bq", "Gy", "Sv", "kat"
+    )) {
+      unitFactorsTmp.put(coherentUnit, BigDecimal.ONE);
+    }
+    unitFactorsTmp.put("g", new BigDecimal("0.001"));
+    unitFactorsTmp.put("l", new BigDecimal("0.001"));
+    unitFactorsTmp.put("L", new BigDecimal("0.001"));
+    unitFactorsTmp.put("min", new BigDecimal("60"));
+    unitFactorsTmp.put("h", new BigDecimal("3600"));
+    unitFactorsTmp.put("d", new BigDecimal("86400"));
+    unitFactorsTmp.put("ha", new BigDecimal("10000"));
+    unitFactorsTmp.put("t", new BigDecimal("1000"));
+    unitFactorsTmp.put("au", new BigDecimal("149597870700"));
+    unitFactorsTmp.put("eV", new BigDecimal("1.602176634E-19"));
+    unitFactorsTmp.put("Da", new BigDecimal("1.66053906660E-27"));
+    unitFactorsTmp.put("u", new BigDecimal("1.66053906660E-27"));
+    unitFactors = Collections.unmodifiableMap(unitFactorsTmp);
   }
 
   // methods
@@ -367,6 +428,131 @@ public class SIUnitTypeRelations {
   protected SymTypeOfSIUnit _invert(SymTypeOfSIUnit siUnit) {
     return SymTypeExpressionFactory.createSIUnit(
         siUnit.getDenominator(), siUnit.getNumerator()
+    );
+  }
+
+  /**
+   * Returns true iff the type is, e.g., [km] or [km]<int>
+   */
+  public static boolean hasSIUnit(SymTypeExpression type) {
+    return getDelegate()._hasSIUnit(type);
+  }
+
+  protected boolean _hasSIUnit(SymTypeExpression type) {
+    return type.isSIUnitType() || type.isNumericWithSIUnitType();
+  }
+
+  /**
+   * Returns the SIUnit, e.g., [km]<int> -> [km], int -> []
+   */
+  public static SymTypeOfSIUnit getSIUnit(SymTypeExpression type) {
+    return getDelegate()._getSIUnit(type);
+  }
+
+  protected SymTypeOfSIUnit _getSIUnit(SymTypeExpression type) {
+    if (type.isSIUnitType()) {
+      return type.asSIUnitType();
+    }
+    else if (type.isNumericWithSIUnitType()) {
+      return type.asNumericWithSIUnitType().getSIUnitType();
+    }
+    else {
+      return SymTypeExpressionFactory.createSIUnit(List.of(), List.of());
+    }
+  }
+
+  /**
+   * calculates {@code factor} with
+   * {@code valueInTarget = valueInSource * factor}, e.g., km -> m: 1000.
+   * Units like ºC, dB, or deg are only supported if they cancel out.
+   *
+   * @return the factor or empty, e.g., if the dimensions differ
+   */
+  public static Optional<BigDecimal> getConversionFactor(
+      SymTypeOfSIUnit source,
+      SymTypeOfSIUnit target
+  ) {
+    return getDelegate()._getConversionFactor(source, target);
+  }
+
+  protected Optional<BigDecimal> _getConversionFactor(
+      SymTypeOfSIUnit source,
+      SymTypeOfSIUnit target
+  ) {
+    // source / target
+    List<SIUnitBasic> numerator = new ArrayList<>();
+    numerator.addAll(source.getNumerator());
+    numerator.addAll(target.getDenominator());
+    List<SIUnitBasic> denominator = new ArrayList<>();
+    denominator.addAll(source.getDenominator());
+    denominator.addAll(target.getNumerator());
+
+    BigDecimal factorNumerator = BigDecimal.ONE;
+    BigDecimal factorDenominator = BigDecimal.ONE;
+    List<SIUnitBasic> scalableNumerator = new ArrayList<>();
+    List<SIUnitBasic> scalableDenominator = new ArrayList<>();
+    // these have to cancel each other out
+    Map<String, Integer> nonScalable2Exp = new LinkedHashMap<>();
+    for (int i = 0; i < numerator.size() + denominator.size(); i++) {
+      boolean isNumerator = i < numerator.size();
+      SIUnitBasic unitBasic = isNumerator ?
+          numerator.get(i) :
+          denominator.get(i - numerator.size());
+      Optional<BigDecimal> unitFactor = getFactor(unitBasic);
+      if (unitFactor.isPresent()) {
+        boolean isFactorNumerator =
+            isNumerator == (unitBasic.getExponent() >= 0);
+        BigDecimal factor =
+            unitFactor.get().pow(Math.abs(unitBasic.getExponent()));
+        if (isFactorNumerator) {
+          factorNumerator = factorNumerator.multiply(factor);
+        }
+        else {
+          factorDenominator = factorDenominator.multiply(factor);
+        }
+        (isNumerator ? scalableNumerator : scalableDenominator).add(unitBasic);
+      }
+      else {
+        String key = unitBasic.getPrefix() + unitBasic.getDimension();
+        int exp = isNumerator ?
+            unitBasic.getExponent() :
+            -unitBasic.getExponent();
+        nonScalable2Exp.merge(key, exp, Integer::sum);
+      }
+    }
+
+    if (nonScalable2Exp.values().stream().anyMatch(exp -> exp != 0)) {
+      return Optional.empty();
+    }
+    if (!isOfDimensionOne(SymTypeExpressionFactory.createSIUnit(
+        scalableNumerator, scalableDenominator))
+    ) {
+      return Optional.empty();
+    }
+
+    BigDecimal factor;
+    try {
+      factor = factorNumerator.divide(factorDenominator);
+    }
+    catch (ArithmeticException nonTerminatingDecimalExpansion) {
+      factor = factorNumerator.divide(
+          factorDenominator, MathContext.DECIMAL128
+      );
+    }
+    return Optional.of(factor.stripTrailingZeros());
+  }
+
+  /**
+   * @return the factor of the unit with prefix, ignoring the exponent
+   */
+  protected Optional<BigDecimal> getFactor(SIUnitBasic unitBasic) {
+    if (!unitFactors.containsKey(unitBasic.getDimension())
+        || !prefixFactors.containsKey(unitBasic.getPrefix())
+    ) {
+      return Optional.empty();
+    }
+    return Optional.of(prefixFactors.get(unitBasic.getPrefix())
+        .multiply(unitFactors.get(unitBasic.getDimension()))
     );
   }
 
