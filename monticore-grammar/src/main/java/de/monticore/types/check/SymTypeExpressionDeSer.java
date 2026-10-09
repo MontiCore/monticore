@@ -5,6 +5,8 @@ import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
+import de.monticore.symboltable.ClearingMemorizer;
+import de.monticore.symboltable.SuppliedList;
 import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.JsonParser;
 import de.monticore.symboltable.serialization.JsonPrinter;
@@ -16,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 /**
  * This DeSer reailizes serialization and deserialization of SymTypeExpressions.
@@ -129,15 +132,15 @@ public class SymTypeExpressionDeSer {
     return deserializeListMember(memberName, json, BasicSymbolsMill.globalScope());
   }
 
-  public static List<SymTypeExpression> deserializeListMember(
+  public static SuppliedList<SymTypeExpression> deserializeListMember(
       String memberName, JsonObject json, IBasicSymbolsScope enclosingScope) {
-    List<SymTypeExpression> result = new ArrayList<>();
+    List<Supplier<SymTypeExpression>> result = new ArrayList<>();
     if (json.hasMember(memberName)) {
       for (JsonElement e : json.getArrayMember(memberName)) {
-        result.add(getInstance().deserialize(e, enclosingScope));
+        result.add(new ClearingMemorizer<>(() -> getInstance().deserialize(e, enclosingScope)));
       }
     }
-    return result;
+    return new SuppliedList<>(result);
   }
 
   public static TypeSymbol resolveTypeSymbolOrLogError(
