@@ -9,8 +9,6 @@ import de.se_rwth.commons.logging.Log;
 import java.util.Collection;
 import java.util.List;
 
-import static de.monticore.types3.SymTypeRelations.normalize;
-
 public abstract class CodeGenSymTypeExpressionConverter {
 
   protected static CodeGenSymTypeExpressionConverter delegate;
@@ -64,8 +62,6 @@ public abstract class CodeGenSymTypeExpressionConverter {
       SymTypeExpression modelSourceType,
       CodeGenPrintAction sourceExprPrintAction
   ) {
-    SymTypeExpression targetNormalized = normalize(modelTargetType);
-    SymTypeExpression sourceNormalized = normalize(modelSourceType);
     int numTimesPrinted = 0;
     for (
         Collection<ICodeGenSymTypeExpressionConversionHandler>
@@ -77,8 +73,8 @@ public abstract class CodeGenSymTypeExpressionConverter {
       ) {
         if (conversionHandler.tryPrintConverted(
             printer,
-            targetNormalized,
-            sourceNormalized,
+            modelTargetType,
+            modelSourceType,
             sourceExprPrintAction)
         ) {
           numTimesPrinted++;

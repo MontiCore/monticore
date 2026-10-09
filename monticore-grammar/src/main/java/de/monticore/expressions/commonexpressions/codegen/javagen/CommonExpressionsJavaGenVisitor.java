@@ -18,7 +18,6 @@ import de.monticore.symboltable.IScopeSpanningSymbol;
 import de.monticore.symboltable.ISymbol;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfFunction;
-import de.monticore.types3.SymTypeRelations;
 import de.monticore.types3.TypeCheck3;
 import de.monticore.types3.util.TypeContextCalculator;
 import de.se_rwth.commons.Names;
@@ -27,6 +26,7 @@ import de.se_rwth.commons.logging.Log;
 import java.util.List;
 
 import static de.monticore.codegen.CodeGenSymTypeExpressionConverter.printConverted;
+import static de.monticore.codegen.javagen.JavaGenSymTypeRelations.getOperandType;
 import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getBoxedJavaTypePrint;
 import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getJavaTypeQName;
 import static de.monticore.symbols.oosymbols.types3.OOSymbolsSymTypeRelations.isConstructor;
@@ -34,6 +34,7 @@ import static de.monticore.symbols.oosymbols.types3.OOSymbolsSymTypeRelations.is
 import static de.monticore.types.check.SymTypeExpressionFactory.createDeclaredType;
 import static de.monticore.types3.SymTypeRelations.normalize;
 import static de.monticore.types3.TypeCheck3.typeOf;
+import static de.monticore.types3.util.SIUnitTypeRelations.hasSIUnit;
 
 public class CommonExpressionsJavaGenVisitor
     extends CommonExpressionsInheritanceHandler {
@@ -57,7 +58,7 @@ public class CommonExpressionsJavaGenVisitor
     // only does numeric promotion, so skipping "+" here
     // s. JLS 21 15.15.3
     SymTypeExpression exprType = normalize(typeOf(expr));
-    SymTypeExpression innerType = normalize(typeOf(expr.getExpression()));
+    SymTypeExpression innerType = typeOf(expr.getExpression());
     printConverted(
         getPrinter(), exprType, innerType,
         p -> expr.getExpression().accept(getTraverser())
@@ -67,10 +68,11 @@ public class CommonExpressionsJavaGenVisitor
   @Override
   public void traverse(ASTMinusPrefixExpression expr) {
     SymTypeExpression exprType = normalize(typeOf(expr));
-    SymTypeExpression innerType = normalize(typeOf(expr.getExpression()));
+    SymTypeExpression innerType = typeOf(expr.getExpression());
     state.startParentheses();
     getPrinter().print("-");
-    if (expr.getExpression() instanceof ASTLiteralExpression) {
+    if (expr.getExpression() instanceof ASTLiteralExpression
+        && !hasSIUnit(innerType)) {
       expr.getExpression().accept(getTraverser());
     }
     else {
@@ -88,52 +90,52 @@ public class CommonExpressionsJavaGenVisitor
 
   @Override
   public void traverse(ASTPlusExpression expr) {
-    SymTypeExpression typeLeft = normalize(typeOf(expr.getLeft()));
-    SymTypeExpression typeRight = normalize(typeOf(expr.getRight()));
+    SymTypeExpression typeLeft = getOperandType(typeOf(expr.getLeft()));
+    SymTypeExpression typeRight = getOperandType(typeOf(expr.getRight()));
     CodeGenOperationPrinter.printPlus(
         getPrinter(), normalize(typeOf(expr)), typeLeft, typeRight,
-        p -> expr.getLeft().accept(getTraverser()),
-        p -> expr.getRight().accept(getTraverser()));
+        p -> state.printOperand(expr.getLeft(), getTraverser()),
+        p -> state.printOperand(expr.getRight(), getTraverser()));
   }
 
   @Override
   public void traverse(ASTMultExpression expr) {
-    SymTypeExpression typeLeft = normalize(typeOf(expr.getLeft()));
-    SymTypeExpression typeRight = normalize(typeOf(expr.getRight()));
+    SymTypeExpression typeLeft = getOperandType(typeOf(expr.getLeft()));
+    SymTypeExpression typeRight = getOperandType(typeOf(expr.getRight()));
     CodeGenOperationPrinter.printMultiply(
         getPrinter(), normalize(typeOf(expr)), typeLeft, typeRight,
-        p -> expr.getLeft().accept(getTraverser()),
-        p -> expr.getRight().accept(getTraverser()));
+        p -> state.printOperand(expr.getLeft(), getTraverser()),
+        p -> state.printOperand(expr.getRight(), getTraverser()));
   }
 
   @Override
   public void traverse(ASTDivideExpression expr) {
-    SymTypeExpression typeLeft = normalize(typeOf(expr.getLeft()));
-    SymTypeExpression typeRight = normalize(typeOf(expr.getRight()));
+    SymTypeExpression typeLeft = getOperandType(typeOf(expr.getLeft()));
+    SymTypeExpression typeRight = getOperandType(typeOf(expr.getRight()));
     CodeGenOperationPrinter.printDivide(
         getPrinter(), normalize(typeOf(expr)), typeLeft, typeRight,
-        p -> expr.getLeft().accept(getTraverser()),
-        p -> expr.getRight().accept(getTraverser()));
+        p -> state.printOperand(expr.getLeft(), getTraverser()),
+        p -> state.printOperand(expr.getRight(), getTraverser()));
   }
 
   @Override
   public void traverse(ASTMinusExpression expr) {
-    SymTypeExpression typeLeft = normalize(typeOf(expr.getLeft()));
-    SymTypeExpression typeRight = normalize(typeOf(expr.getRight()));
+    SymTypeExpression typeLeft = getOperandType(typeOf(expr.getLeft()));
+    SymTypeExpression typeRight = getOperandType(typeOf(expr.getRight()));
     CodeGenOperationPrinter.printMinus(
         getPrinter(), normalize(typeOf(expr)), typeLeft, typeRight,
-        p -> expr.getLeft().accept(getTraverser()),
-        p -> expr.getRight().accept(getTraverser()));
+        p -> state.printOperand(expr.getLeft(), getTraverser()),
+        p -> state.printOperand(expr.getRight(), getTraverser()));
   }
 
   @Override
   public void traverse(ASTModuloExpression expr) {
-    SymTypeExpression typeLeft = normalize(typeOf(expr.getLeft()));
-    SymTypeExpression typeRight = normalize(typeOf(expr.getRight()));
+    SymTypeExpression typeLeft = getOperandType(typeOf(expr.getLeft()));
+    SymTypeExpression typeRight = getOperandType(typeOf(expr.getRight()));
     CodeGenOperationPrinter.printModulo(
         getPrinter(), normalize(typeOf(expr)), typeLeft, typeRight,
-        p -> expr.getLeft().accept(getTraverser()),
-        p -> expr.getRight().accept(getTraverser()));
+        p -> state.printOperand(expr.getLeft(), getTraverser()),
+        p -> state.printOperand(expr.getRight(), getTraverser()));
   }
 
   // Numeric Comparison
@@ -142,9 +144,9 @@ public class CommonExpressionsJavaGenVisitor
   public void traverse(ASTEqualsExpression expr) {
     CodeGenOperationPrinter.printEquals(
         getPrinter(), normalize(typeOf(expr)),
-        normalize(typeOf(expr.getLeft())), normalize(typeOf(expr.getRight())),
-        p -> expr.getLeft().accept(getTraverser()),
-        p -> expr.getRight().accept(getTraverser())
+        getOperandType(typeOf(expr.getLeft())), getOperandType(typeOf(expr.getRight())),
+        p -> state.printOperand(expr.getLeft(), getTraverser()),
+        p -> state.printOperand(expr.getRight(), getTraverser())
     );
   }
 
@@ -152,9 +154,9 @@ public class CommonExpressionsJavaGenVisitor
   public void traverse(ASTNotEqualsExpression expr) {
     CodeGenOperationPrinter.printNotEquals(
         getPrinter(), normalize(typeOf(expr)),
-        normalize(typeOf(expr.getLeft())), normalize(typeOf(expr.getRight())),
-        p -> expr.getLeft().accept(getTraverser()),
-        p -> expr.getRight().accept(getTraverser())
+        getOperandType(typeOf(expr.getLeft())), getOperandType(typeOf(expr.getRight())),
+        p -> state.printOperand(expr.getLeft(), getTraverser()),
+        p -> state.printOperand(expr.getRight(), getTraverser())
     );
   }
 
@@ -162,9 +164,9 @@ public class CommonExpressionsJavaGenVisitor
   public void traverse(ASTGreaterThanExpression expr) {
     CodeGenOperationPrinter.printGreaterThan(
         getPrinter(), normalize(typeOf(expr)),
-        normalize(typeOf(expr.getLeft())), normalize(typeOf(expr.getRight())),
-        p -> expr.getLeft().accept(getTraverser()),
-        p -> expr.getRight().accept(getTraverser())
+        getOperandType(typeOf(expr.getLeft())), getOperandType(typeOf(expr.getRight())),
+        p -> state.printOperand(expr.getLeft(), getTraverser()),
+        p -> state.printOperand(expr.getRight(), getTraverser())
     );
   }
 
@@ -172,9 +174,9 @@ public class CommonExpressionsJavaGenVisitor
   public void traverse(ASTLessThanExpression expr) {
     CodeGenOperationPrinter.printLessThan(
         getPrinter(), normalize(typeOf(expr)),
-        normalize(typeOf(expr.getLeft())), normalize(typeOf(expr.getRight())),
-        p -> expr.getLeft().accept(getTraverser()),
-        p -> expr.getRight().accept(getTraverser())
+        getOperandType(typeOf(expr.getLeft())), getOperandType(typeOf(expr.getRight())),
+        p -> state.printOperand(expr.getLeft(), getTraverser()),
+        p -> state.printOperand(expr.getRight(), getTraverser())
     );
   }
 
@@ -182,9 +184,9 @@ public class CommonExpressionsJavaGenVisitor
   public void traverse(ASTGreaterEqualExpression expr) {
     CodeGenOperationPrinter.printGreaterEqual(
         getPrinter(), normalize(typeOf(expr)),
-        normalize(typeOf(expr.getLeft())), normalize(typeOf(expr.getRight())),
-        p -> expr.getLeft().accept(getTraverser()),
-        p -> expr.getRight().accept(getTraverser())
+        getOperandType(typeOf(expr.getLeft())), getOperandType(typeOf(expr.getRight())),
+        p -> state.printOperand(expr.getLeft(), getTraverser()),
+        p -> state.printOperand(expr.getRight(), getTraverser())
     );
   }
 
@@ -192,9 +194,9 @@ public class CommonExpressionsJavaGenVisitor
   public void traverse(ASTLessEqualExpression expr) {
     CodeGenOperationPrinter.printLessEqual(
         getPrinter(), normalize(typeOf(expr)),
-        normalize(typeOf(expr.getLeft())), normalize(typeOf(expr.getRight())),
-        p -> expr.getLeft().accept(getTraverser()),
-        p -> expr.getRight().accept(getTraverser())
+        getOperandType(typeOf(expr.getLeft())), getOperandType(typeOf(expr.getRight())),
+        p -> state.printOperand(expr.getLeft(), getTraverser()),
+        p -> state.printOperand(expr.getRight(), getTraverser())
     );
   }
 
@@ -251,8 +253,8 @@ public class CommonExpressionsJavaGenVisitor
   @Override
   public void traverse(ASTConditionalExpression expr) {
     SymTypeExpression exprType = normalize(typeOf(expr));
-    SymTypeExpression trueType = normalize(typeOf(expr.getTrueExpression()));
-    SymTypeExpression falseType = normalize(typeOf(expr.getFalseExpression()));
+    SymTypeExpression trueType = typeOf(expr.getTrueExpression());
+    SymTypeExpression falseType = typeOf(expr.getFalseExpression());
 
     state.startParentheses();
     expr.getCondition().accept(getTraverser());
@@ -304,7 +306,8 @@ public class CommonExpressionsJavaGenVisitor
     // are to be used instead.
 
     Preconditions.checkNotNull(node);
-    SymTypeExpression innerType = normalize(typeOf(node.getExpression()));
+    SymTypeExpression innerTypeNonNormalized = typeOf(node.getExpression());
+    SymTypeExpression innerType = normalize(innerTypeNonNormalized);
 
     // multiple function types?
     // Java has its limits due to type erasure;
@@ -382,9 +385,12 @@ public class CommonExpressionsJavaGenVisitor
       }
 
       // arguments
+      SymTypeOfFunction funcTypeNonNormalized =
+          innerTypeNonNormalized.isFunctionType() ?
+              innerTypeNonNormalized.asFunctionType() :
+              funcType;
       List<SymTypeExpression> argTypes = node.getArguments().streamExpressions()
           .map(TypeCheck3::typeOf)
-          .map(SymTypeRelations::normalize)
           .toList();
       state.startParentheses();
       for (int i = 0; i < node.getArguments().sizeExpressions(); i++) {
@@ -393,7 +399,7 @@ public class CommonExpressionsJavaGenVisitor
           getPrinter().print(", ");
         }
         printConverted(getPrinter(),
-            funcType.getArgumentType(i),
+            funcTypeNonNormalized.getArgumentType(i),
             argTypes.get(i),
             p -> argExpr.accept(getTraverser())
         );

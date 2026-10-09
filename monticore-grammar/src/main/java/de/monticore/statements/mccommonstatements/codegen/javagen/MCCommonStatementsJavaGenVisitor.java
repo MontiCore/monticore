@@ -110,7 +110,7 @@ public class MCCommonStatementsJavaGenVisitor
         getPrinter().print(",");
       }
       getPrinter().print(" ");
-      node.getExpression(i).accept(getTraverser());
+      state.printWithoutValueConversion(node.getExpression(i), getTraverser());
     }
   }
 
@@ -150,7 +150,7 @@ public class MCCommonStatementsJavaGenVisitor
       if (i > 0) {
         getPrinter().print(", ");
       }
-      node.getExpression(i).accept(getTraverser());
+      state.printWithoutValueConversion(node.getExpression(i), getTraverser());
     }
   }
 
@@ -233,7 +233,7 @@ public class MCCommonStatementsJavaGenVisitor
 
   @Override
   public void traverse(ASTExpressionStatement node) {
-    node.getExpression().accept(getTraverser());
+    state.printWithoutValueConversion(node.getExpression(), getTraverser());
     state.endStatement();
   }
 

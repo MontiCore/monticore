@@ -67,6 +67,12 @@ public class JavaGenTest extends AbstractJavaGenTest {
   }
 
   @ParameterizedTest(name = "[{index}] {0}")
+  @MethodSource("de.monticore.tests.expressionsandstatements.StatementsTestModels#getUnionTypeCases")
+  public void testJavaGenUnionTypeVals(String modelStr, Object expectedValue) {
+    checkValue(modelStr, expectedValue);
+  }
+
+  @ParameterizedTest(name = "[{index}] {0}")
   @MethodSource("de.monticore.tests.expressionsandstatements.Class2MCTestModels#getClass2MCCases")
   void testNativeJavaAClass(String tail, Object expectedValue) {
     // not supported yet, implementation missing
