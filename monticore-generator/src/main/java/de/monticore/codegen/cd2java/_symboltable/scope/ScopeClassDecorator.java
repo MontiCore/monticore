@@ -121,7 +121,7 @@ public class ScopeClassDecorator extends AbstractDecorator {
         .flatMap(List::stream)
         .collect(Collectors.toList());
     // the marker is not needed anymore: the fields store the plain Supplier
-    getDecorationHelper().unmarkSuppliers(scopeRuleAttributeList);
+    getDecorationHelper().toFieldTypes(scopeRuleAttributeList);
 
     Map<String, ASTCDAttribute> symbolAttributes = createSymbolAttributes(
         symbolInput.getCDDefinition().getCDClassesList(), symbolTableService.getCDSymbol());

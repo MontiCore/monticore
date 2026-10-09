@@ -61,8 +61,8 @@ public class BuilderListMutatorDecorator extends ListMutatorDecorator {
     method.setMCReturnType(returnType);
 
     String templateName = "_ast.builder.Set4ASTBuilder";
-    if (getDecorationHelper().isSupplier(ast.getMCType())) {
-      templateName = "_ast.builder.SupplierSet4ASTBuilder";
+    if (suppliedList) {
+      templateName = "_ast.builder.SuppliedListSet4ASTBuilder";
     }
     this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(templateName, ast));
     return method;
@@ -70,13 +70,13 @@ public class BuilderListMutatorDecorator extends ListMutatorDecorator {
 
   @Override
   protected ASTCDMethod createSetListSupplierMethod(ASTCDAttribute ast) {
-    String name = "set" + capitalizedAttributeNameWithOutS + "ListSupplier";
+    String name = "set" + capitalizedAttributeNameWithOutS + "SupplierList";
     ASTMCType supplierType = getDecorationHelper().toPublicSupplierType(ast.getMCType());
     ASTCDParameter parameter = this.getCDParameterFacade().createParameter(supplierType, ast.getName());
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), name, parameter);
     ASTMCReturnType returnType = MCBasicTypesMill.mCReturnTypeBuilder().setMCType(builderType).build();
     method.setMCReturnType(returnType);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.builder.SupplierSetRaw4ASTBuilder", ast));
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_ast.builder.SuppliedListSetRaw4ASTBuilder", ast));
     return method;
   }
 }
