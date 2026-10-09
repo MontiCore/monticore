@@ -118,7 +118,7 @@ public class BuilderDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
 
     builderAttributes.forEach(this::addAttributeDefaultValues);
     // the marker type is not needed anymore: the fields store the plain Supplier
-    getDecorationHelper().unmarkSuppliers(builderAttributes);
+    getDecorationHelper().toFieldTypes(builderAttributes);
 
     return CD4AnalysisMill.cDClassBuilder()
         .setModifier(modifier)

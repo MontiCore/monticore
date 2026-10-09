@@ -23,6 +23,11 @@ public final class AccessAsSupplierTypes {
    */
   public static final String STD_SUPPLIER_TYPE = "java.util.function.Supplier";
 
+  /**
+   * Fully qualified name of the runtime type that stores supplied lists, see {@code SuppliedList}.
+   */
+  public static final String SUPPLIED_LIST_TYPE = "de.monticore.symboltable.SuppliedList";
+
   private static final Set<String> SUPPLIED_TYPES = Set.of(
       "de.monticore.types.check.SymTypeExpression",
       "java.util.List<de.monticore.types.check.SymTypeExpression>",

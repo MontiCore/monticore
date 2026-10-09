@@ -44,7 +44,7 @@ public class ListAccessorDecorator extends ListMethodDecorator {
   public List<ASTCDMethod> decorate(ASTCDAttribute ast) {
     List<ASTCDMethod> methods = super.decorate(ast);
     methods.add(createGetListMethod(ast));
-    if (getDecorationHelper().isSupplier(ast.getMCType())) {
+    if (suppliedList) {
       methods.add(createGetListSupplierMethod(ast));
     }
     return methods;
@@ -55,21 +55,16 @@ public class ListAccessorDecorator extends ListMethodDecorator {
     String signature = String.format(GET_LIST, attributeType, capitalizedAttributeNameWithOutS);
     ASTCDMethod getList = this.getCDMethodFacade().createMethodByDefinition(signature);
 
-    String templateName = "methods.Get";
-    if (getDecorationHelper().isSupplier(ast.getMCType())) {
-      templateName = "methods.SupplierGet";
-    }
-
-    this.replaceTemplate(EMPTY_BODY, getList, new TemplateHookPoint(templateName, ast));
+    this.replaceTemplate(EMPTY_BODY, getList, new TemplateHookPoint("methods.Get", ast));
     return getList;
   }
 
   protected ASTCDMethod createGetListSupplierMethod(ASTCDAttribute ast) {
-    String name = "get" + capitalizedAttributeNameWithOutS + "ListSupplier";
+    String name = "get" + capitalizedAttributeNameWithOutS + "SupplierList";
     ASTMCType supplierType = getDecorationHelper().toPublicSupplierType(ast.getMCType());
     ASTCDMethod method = this.getCDMethodFacade().createMethod(
         PUBLIC.build(), supplierType, name);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.SupplierGetRaw", ast));
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.SuppliedListGetRaw", ast));
     return method;
   }
 
