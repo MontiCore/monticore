@@ -14,8 +14,8 @@ public final class TimeTriggerConditionsCoCos {
    */
   public static TimeTriggerConditionsCoCoChecker createChecker() {
     TimeTriggerConditionsCoCoChecker checker = new TimeTriggerConditionsCoCoChecker();
-    checker.addCoCo(new AfterDurationConditionHasValidDuration());
-    checker.addCoCo(new AfterISOPeriodConditionHasValidPeriod());
+    checker.addCoCo(new AfterConditionHasValidDuration());
+    checker.addCoCo(new AfterConditionHasValidPeriod());
     checker.addCoCo(new OnConditionHasValidValue());
     checker.addCoCo(new EveryTimeConditionHasValidRepetitions());
     checker.addCoCo(new CronExpressionIsValid());
