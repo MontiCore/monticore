@@ -35,6 +35,7 @@ import java.util.Optional;
 import static de.monticore.cd.codegen.CD2JavaTemplates.VALUE;
 import static de.monticore.codegen.cd2java._ast.ast_class.ASTConstants.AST_PREFIX;
 import static de.monticore.codegen.cd2java.methods.AccessAsSupplierTypes.STD_SUPPLIER_TYPE;
+import static de.monticore.codegen.cd2java.methods.AccessAsSupplierTypes.SUPPLIED_LIST_TYPE;
 import static de.monticore.codegen.cd2java.methods.AccessAsSupplierTypes.SUPPLIER_TYPE;
 
 public class DecorationHelper extends MCBasicTypesHelper {
@@ -204,8 +205,8 @@ public class DecorationHelper extends MCBasicTypesHelper {
     if (!isSupplier) {
       defaultValue = inner;
     } else if (isList) {
-      // A list must expose a stable instance, otherwise we would create a new one every get and entries would be lost.
-      defaultValue = "com.google.common.base.Suppliers.memoize(() -> " + inner + ")";
+      // supplied lists start out as an empty list of suppliers
+      defaultValue = "new " + SUPPLIED_LIST_TYPE + "<>(" + inner + ")";
     } else {
       defaultValue = "() -> " + inner;
     }
@@ -240,9 +241,7 @@ public class DecorationHelper extends MCBasicTypesHelper {
    * A copy of this is already in the MCTypeFacade. This can be deleted, and references rerouted to MCTypeFacade after release ...
    */
   public ASTMCType createInternalSupplierTypeOf(ASTMCType inner) {
-    ASTMCTypeArgument arg = MCSimpleGenericTypesMill
-        .mCCustomTypeArgumentBuilder().setMCType(inner.deepClone()).build();
-    return MCTypeFacade.getInstance().createBasicGenericTypeOf(SUPPLIER_TYPE, arg);
+    return MCTypeFacade.getInstance().createBasicGenericTypeOf(SUPPLIER_TYPE, createTypeArgument(inner));
   }
 
   /**
@@ -251,9 +250,7 @@ public class DecorationHelper extends MCBasicTypesHelper {
    * A copy of this is already in the MCTypeFacade. This can be deleted, and references rerouted to MCTypeFacade after release ...
    */
   public ASTMCType createStdSupplierTypeOf(ASTMCType inner) {
-    ASTMCTypeArgument arg = MCSimpleGenericTypesMill
-        .mCCustomTypeArgumentBuilder().setMCType(inner.deepClone()).build();
-    return MCTypeFacade.getInstance().createBasicGenericTypeOf(STD_SUPPLIER_TYPE, arg);
+    return MCTypeFacade.getInstance().createBasicGenericTypeOf(STD_SUPPLIER_TYPE, createTypeArgument(inner));
   }
 
   /**
@@ -304,26 +301,81 @@ public class DecorationHelper extends MCBasicTypesHelper {
   /**
    * The type that generated code exposes for a supplied attribute:
    * {@code __internal__Supplier<X>} (or an unwrapped X) becomes {@code java.util.function.Supplier<X>},
-   * so the internal wrapper never leaks into the public API.
+   * so the internal marker never leaks into the generated code.
+   * For lists, each element is supplied instead of the list:
+   * {@code __internal__Supplier<List<X>>} becomes {@code List<java.util.function.Supplier<X>>}.
    */
   public ASTMCType toPublicSupplierType(ASTMCType type) {
-    return createStdSupplierTypeOf(unwrapSupplier(type));
+    ASTMCType unwrapped = unwrapSupplier(type);
+    if (isList(unwrapped)) {
+      // __internal__Supplier<List<X>> -> List<Supplier<X>>
+      return MCTypeFacade.getInstance().createBasicGenericTypeOf("java.util.List",
+          createTypeArgument(createStdSupplierTypeOf(getListElementType(unwrapped))));
+    }
+    return createStdSupplierTypeOf(unwrapped);
   }
 
   /**
-   * Replaces the internal marker type of all wrapped attributes by the public {@code java.util.function.Supplier<X>}.
-   * Must be called after all decorators that rely on {@link #isSupplier} are done with the attributes, because
-   * afterwards the attributes are no longer recognized as supplied. The generated fields then store the plain supplier.
+   * The type of the generated field of a supplied attribute.
+   * {@code __internal__Supplier<X>} (or an unwrapped X) becomes {@code java.util.function.Supplier<X>},
+   *
+   * For {@code __internal__Supplier<List<X>>}, each element is  stored as {@code SuppliedList<X>} (a {@code List<X>} that holds the suppliers).
    */
-  public void unmarkSuppliers(Collection<ASTCDAttribute> attributes) {
+  public ASTMCType toFieldType(ASTMCType type) {
+    ASTMCType unwrapped = unwrapSupplier(type);
+    if (isList(unwrapped)) {
+      return MCTypeFacade.getInstance().createBasicGenericTypeOf(SUPPLIED_LIST_TYPE,
+          createTypeArgument(getListElementType(unwrapped)));
+    }
+    return createStdSupplierTypeOf(unwrapped);
+  }
+
+  protected ASTMCType getListElementType(ASTMCType list) {
+    return ((ASTMCGenericType) list).getMCTypeArgumentList().getFirst().getMCTypeOpt().get();
+  }
+
+  protected ASTMCTypeArgument createTypeArgument(ASTMCType type) {
+    return MCSimpleGenericTypesMill.mCCustomTypeArgumentBuilder().setMCType(type.deepClone()).build();
+  }
+
+  /**
+   * The name of the getter for the raw suppliers.
+   * Used in .ftl files
+   */
+  public String getSupplierGetterName(ASTCDAttribute ast) {
+    return toSupplierAccessorName(getPlainGetter(ast), ast);
+  }
+
+  /**
+   * The name of the setter for the raw suppliers.
+   * Used in .ftl files
+   */
+  public String getSupplierSetterName(ASTCDAttribute ast) {
+    return toSupplierAccessorName(getPlainSetter(ast), ast);
+  }
+
+  protected String toSupplierAccessorName(String plainName, ASTCDAttribute ast) {
+    if (isList(unwrapSupplier(ast.getMCType()))) {
+      // "getXList" -> "getXSupplierList"
+      return plainName.substring(0, plainName.length() - GET_SUFFIX_LIST.length()) + "Supplier" + GET_SUFFIX_LIST;
+    }
+    return plainName + "Supplier";
+  }
+
+  /**
+   * Replaces the internal marker type of all wrapped attributes by their field type, see {@link #toFieldType}.
+   * Must be called after all decorators that rely on {@link #isSupplier} are done with the attributes, because
+   * afterwards the attributes are no longer recognized as supplied.
+   */
+  public void toFieldTypes(Collection<ASTCDAttribute> attributes) {
     attributes.stream()
         .filter(a -> isSupplier(a.getMCType()))
-        .forEach(a -> a.setMCType(toPublicSupplierType(a.getMCType())));
+        .forEach(a -> a.setMCType(toFieldType(a.getMCType())));
   }
 
   /**
    * Wraps the type of every attribute that {@link #shouldHaveSupplier} selects into the internal supplier type.
-   * The internal type is only a generation-time marker, see {@link #unmarkSuppliers}.
+   * The internal type is only a generation-time marker, see {@link #toFieldTypes}.
    */
   public void wrapAndMarkSuppliers(Collection<ASTCDAttribute> attributes) {
     attributes.stream()

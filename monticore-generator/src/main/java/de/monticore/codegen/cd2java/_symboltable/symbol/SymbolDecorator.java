@@ -102,7 +102,7 @@ public class SymbolDecorator extends AbstractCreator<ASTCDClass, ASTCDClass> {
             .flatMap(List::stream)
             .collect(Collectors.toList());
     // the marker type is not needed anymore: the fields store the plain Supplier
-    getDecorationHelper().unmarkSuppliers(symbolRuleAttributes);
+    getDecorationHelper().toFieldTypes(symbolRuleAttributes);
     List<ASTCDMethod> symbolRuleMethods = symbolInput.getCDMethodList().stream()
             .map(ASTCDMethod::deepClone)
             .collect(Collectors.toList());

@@ -35,7 +35,7 @@ public class InheritedBuilderListMutatorDecorator extends BuilderListMutatorDeco
 
   @Override
   protected ASTCDMethod createSetListSupplierMethod(ASTCDAttribute ast) {
-    String name = "set" + capitalizedAttributeNameWithOutS + "ListSupplier";
+    String name = "set" + capitalizedAttributeNameWithOutS + "SupplierList";
     ASTMCType supplierType = getDecorationHelper().toPublicSupplierType(ast.getMCType());
     ASTCDParameter parameter = this.getCDParameterFacade().createParameter(supplierType, ast.getName());
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), name, parameter);

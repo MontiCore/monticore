@@ -41,7 +41,7 @@ public class ListMutatorDecorator extends ListMethodDecorator {
   public List<ASTCDMethod> decorate(ASTCDAttribute ast) {
     List<ASTCDMethod> methods = createSetter(ast);
     methods.add(createSetListMethod(ast));
-    if (getDecorationHelper().isSupplier(ast.getMCType())) {
+    if (suppliedList) {
       methods.add(createSetListSupplierMethod(ast));
     }
     return methods;
@@ -52,8 +52,8 @@ public class ListMutatorDecorator extends ListMethodDecorator {
     ASTCDMethod getList = this.getCDMethodFacade().createMethodByDefinition(signature);
 
     String templateName = "methods.Set";
-    if (getDecorationHelper().isSupplier(ast.getMCType())) {
-      templateName = "methods.SupplierSet";
+    if (suppliedList) {
+      templateName = "methods.SuppliedListSet";
     }
 
     this.replaceTemplate(EMPTY_BODY, getList, new TemplateHookPoint(templateName, ast));
@@ -61,12 +61,12 @@ public class ListMutatorDecorator extends ListMethodDecorator {
   }
 
   protected ASTCDMethod createSetListSupplierMethod(ASTCDAttribute ast) {
-    String name = "set" + capitalizedAttributeNameWithOutS + "ListSupplier";
+    String name = "set" + capitalizedAttributeNameWithOutS + "SupplierList";
     ASTMCType supplierType = getDecorationHelper().toPublicSupplierType(ast.getMCType());
     ASTCDParameter parameter =
         this.getCDParameterFacade().createParameter(supplierType, ast.getName());
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), name, parameter);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.SupplierSetRaw", ast));
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.SuppliedListSetRaw", ast));
     return method;
   }
 

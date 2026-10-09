@@ -5,8 +5,7 @@ ${symbolClassName} symbol = new ${symbolClassName}(name);
 <#list  attributes as attribute>
   <#assign setter = genHelper.getPlainSetter(attribute)>
   <#if genHelper.isSupplier(attribute.getMCType())>
-    <#assign getter = genHelper.getPlainGetter(attribute)>
-    symbol.${setter}Supplier(this.${getter}Supplier());
+    symbol.${genHelper.getSupplierSetterName(attribute)}(this.${genHelper.getSupplierGetterName(attribute)}());
   <#elseif genHelper.isOptional(attribute.getMCType())>
     if (this.${attribute.getName()}.isPresent()) {
       symbol.${setter}(this.${attribute.getName()}.get());
