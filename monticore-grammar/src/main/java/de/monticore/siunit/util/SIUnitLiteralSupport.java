@@ -20,9 +20,6 @@ import java.util.Set;
  *
  * <p>This class is useful for any CoCo that needs to validate SI-unit
  * durations without depending on a specific host language.</p>
- *
- * <p>Contributed from the TimeTrigger project
- * (se-student/ss26/lectures/sle/projects/timetrigger).</p>
  */
 public final class SIUnitLiteralSupport {
 

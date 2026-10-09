@@ -130,17 +130,9 @@ component grammar ISOTemporals extends de.monticore.temporal.TemporalBasis {
 
   fragment token ISOTimeToken = (BasicTime | ExtendedTime) FractionToken? TimeShiftToken?;
 
-  // TimeTrigger requires the ISO time designator in date-time values. Keeping
-  // this token separate prevents a negative time-only offset such as
-  // 12:00:00-05:30 from being tokenized as a date-time suffix.
-  fragment token ISODateTimeTime =
-      ('T' Digits | 'T' Digits ':' Digits (':' Digits)?)
-      FractionToken? TimeShiftToken?;
-
   token BasicWeekDateToken = SignToken? Digits 'W' Digits;
 
-  token ISODateTimeToken =
-      SignToken? Digits '-'? 'W'? Digits ('-' Digits)? ISODateTimeTime;
+  token ISODateTimeToken = SignToken? Digits '-'? 'W'? Digits ('-' Digits)? ISOTimeToken;
 
   concept antlr {
     parserjava {
