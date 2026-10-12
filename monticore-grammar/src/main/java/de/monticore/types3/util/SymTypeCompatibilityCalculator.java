@@ -147,6 +147,16 @@ public class SymTypeCompatibilityCalculator {
         result = constrainSubTypeOf(boxedSource, boxedTarget);
       }
     }
+    // additionally check for SIUnits that are not subtypes of the union,
+    // e.g., [km] -> [m] | [s]
+    if (result.stream().anyMatch(Bound::isUnsatisfiableBound)
+        && target.isUnionType()
+        && SIUnitTypeRelations.hasSIUnit(source)
+        && target.asUnionType().getUnionizedTypeSet().stream()
+        .anyMatch(t -> constrainCompatiblePreNormalized(t, source).isEmpty())
+    ) {
+      result = Collections.emptyList();
+    }
     // additionally check regular expressions
     if (result.stream().anyMatch(Bound::isUnsatisfiableBound)) {
       if (target.isRegExType() || source.isRegExType()) {
