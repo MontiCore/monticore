@@ -162,7 +162,9 @@ public class SIUnitTypeRelationsTest extends AbstractMCTest {
     checkNoFactor(unit("°"), unit("rad"));
     checkNoFactor(unit("dB"), unit("B"));
     checkNoFactor(unit("Np"), unit("dB"));
-    checkNoFactor(unit("sr"), unit("rad"));
+    // rad and sr are coherent units of dimension one (factor 1)
+    checkFactor(unit("rad"), createSIUnit(List.of(), List.of()), 1);
+    checkFactor(unit("m", "rad"), unit("rad"), 0.001);
     assertNoFindings();
   }
 

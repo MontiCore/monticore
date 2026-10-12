@@ -170,6 +170,8 @@ public class StatementsTestModels {
         Arguments.of("(long | String) x = 1; x", 1L),
         Arguments.of("(Integer | String) x = 1; x", 1),
         Arguments.of("(int | boolean) x = true; x", true),
+        // no unique type of the union
+        Arguments.of("(Integer | long) x = 1; x", 1),
         Arguments.of("(int | boolean) -> int f = "
             + "((int | boolean) x) -> 1; f(false)", 1)
     );
