@@ -122,6 +122,9 @@ public class SymTypeCompatibilityCalculator {
           source.asTupleType()
       );
     }
+    else if (isSIUnitCompatibilityCheck(target, source)) {
+      result = siUnitConstrainCompatible(target, source);
+    }
     // subtypes are assignable to their supertypes
     // in addition, we allow boxing
     else {
@@ -337,6 +340,55 @@ public class SymTypeCompatibilityCalculator {
       ));
     }
     return result;
+  }
+
+  protected boolean isSIUnitCompatibilityCheck(
+      SymTypeExpression target,
+      SymTypeExpression source
+  ) {
+    return (target.isSIUnitType() && source.isSIUnitType())
+        || (target.isNumericWithSIUnitType()
+        && (source.isNumericWithSIUnitType() || SymTypeRelations.isNumericType(source)))
+        || (source.isNumericWithSIUnitType()
+        && SymTypeRelations.isNumericType(target));
+  }
+
+  /**
+   * SIUnits of the same dimension are compatible, e.g., km -> m,
+   * but not subtypes of each other, as the value has to be converted.
+   * Numerics are SIUnits of dimension one in this regard.
+   */
+  protected List<Bound> siUnitConstrainCompatible(
+      SymTypeExpression target,
+      SymTypeExpression source
+  ) {
+    List<Bound> result;
+    if (!SIUnitTypeRelations.isOfSameDimension(
+        SIUnitTypeRelations.getSIUnit(target),
+        SIUnitTypeRelations.getSIUnit(source))
+    ) {
+      result = Collections.singletonList(
+          getUnsatisfiableBoundForCompatibilty(target, source)
+      );
+    }
+    else if (target.isSIUnitType()) {
+      result = Collections.emptyList();
+    }
+    else {
+      result = constrainCompatible(
+          getNumericTypeOfNumericWithSIUnit(target),
+          getNumericTypeOfNumericWithSIUnit(source)
+      );
+    }
+    return result;
+  }
+
+  protected SymTypeExpression getNumericTypeOfNumericWithSIUnit(
+      SymTypeExpression type
+  ) {
+    return type.isNumericWithSIUnitType() ?
+        type.asNumericWithSIUnitType().getNumericType() :
+        type;
   }
 
   /**
@@ -1130,7 +1182,7 @@ public class SymTypeCompatibilityCalculator {
       SymTypeOfNumericWithSIUnit subType,
       SymTypeOfNumericWithSIUnit superType
   ) {
-    // note: here, there is no dimension of one,
+    // note: here, there are no SIUnits that cancel out completely,
     // as they get removed during normalization
     List<Bound> result = new ArrayList<>();
     result.addAll(siUnitConstrainSubTypeOf(subType.getSIUnitType(), superType.getSIUnitType()));
@@ -1143,10 +1195,10 @@ public class SymTypeCompatibilityCalculator {
       SymTypeOfSIUnit superType
   ) {
     List<Bound> result;
-    // order is not important; Here, the subtyping relation is symmetric
-    SymTypeOfSIUnit inverse = SIUnitTypeRelations.invert(subType);
-    SymTypeOfSIUnit divided = SIUnitTypeRelations.multiply(superType, inverse);
-    if (SIUnitTypeRelations.isOfDimensionOne(divided)) {
+    // only the same units, e.g., km is not a subtype of m,
+    // as the values differ (1km = 1000m), s. constrainCompatible
+    if (SIUnitTypeRelations.normalize(subType)
+        .deepEquals(SIUnitTypeRelations.normalize(superType))) {
       result = Collections.emptyList();
     }
     else {

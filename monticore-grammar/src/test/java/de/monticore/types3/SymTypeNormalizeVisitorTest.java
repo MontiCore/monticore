@@ -5,6 +5,7 @@ import de.monticore.expressions.combineexpressionswithliterals.CombineExpression
 import de.monticore.runtime.junit.AbstractMCTest;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeOfIntersection;
+import de.monticore.types.check.SymTypeOfSIUnit;
 import de.monticore.types.check.SymTypeOfUnion;
 import de.monticore.types3.util.DefsTypesForTests;
 import de.monticore.types3.util.SymTypeNormalizeVisitor;
@@ -192,56 +193,28 @@ public class SymTypeNormalizeVisitorTest extends AbstractMCTest {
   }
 
   @Test
-  public void normalizeSIUnitsSimple() {
-    check(_m_SISymType, "[m]");
-    check(_g_SISymType, "[kg]");
-    check(_s_SISymType, "[s]");
-    check(_A_SISymType, "[A]");
-    check(_K_SISymType, "[K]");
-    check(_mol_SISymType, "[mol]");
-    check(_cd_SISymType, "[cd]");
-    check(_kg_SISymType, "[kg]");
-
-    check(_Hz_SISymType, "[1/s]");
-    check(_N_SISymType, "[m^1kg/s^2]");
-    check(_Pa_SISymType, "[kg/s^2m]");
-    check(_J_SISymType, "[m^2kg/s^2]");
-    check(_W_SISymType, "[m^2kg/s^3]");
-    check(_C_SISymType, "[s^1A]");
-    check(_V_SISymType, "[m^2kg/s^3A]");
-    check(_F_SISymType, "[s^4A^2/m^2kg]");
-    check(_Ohm_SISymType, "[m^2kg/s^3A^2]");
-    check(_ohm_SISymType, "[m^2kg/s^3A^2]");
-    check(_S_SISymType, "[s^3A^2/m^2kg]");
-    check(_Wb_SISymType, "[m^2kg/s^2A]");
-    check(_T_SISymType, "[kg/s^2A]");
-    check(_H_SISymType, "[m^2kg/s^2A^2]");
-    check(_lm_SISymType, "[cd]");
-    check(_lx_SISymType, "[cd/m^2]");
-    check(_Bq_SISymType, "[1/s]");
-    check(_Gy_SISymType, "[m^2/s^2]");
-    check(_Sv_SISymType, "[m^2/s^2]");
-    check(_kat_SISymType, "[mol/s]");
-    check(_l_SISymType, "[m^3]");
-    check(_L_SISymType, "[m^3]");
-    check(_min_SISymType, "[s]");
-    check(_h_SISymType, "[s]");
-    check(_d_SISymType, "[s]");
-    check(_ha_SISymType, "[m^2]");
-    check(_t_SISymType, "[kg]");
-    check(_au_SISymType, "[m]");
-    check(_eV_SISymType, "[m^2kg/s^2]");
-    check(_Da_SISymType, "[kg]");
-    check(_u_SISymType, "[kg]");
-    check(_celsius_SISymType, "[K]");
-    check(_fahrenheit_SISymType, "[K]");
-    check(_Np_SISymType, "[1]");
-    check(_B_SISymType, "[1]");
-    check(_dB_SISymType, "[1]");
-    check(_degSym_SISymType, "[1]");
-    check(_deg_SISymType, "[1]");
-    check(_rad_SISymType, "[1]");
-    check(_sr_SISymType, "[1]");
+  public void normalizeSIUnitsKeepsUnits() {
+    // only the representation is normalized, the units are kept,
+    // s. SIUnitTypeRelationsTest for normalizing to the SI base units
+    for (SymTypeOfSIUnit siUnit : List.of(
+        _m_SISymType, _g_SISymType, _s_SISymType, _A_SISymType,
+        _K_SISymType, _mol_SISymType, _cd_SISymType, _kg_SISymType,
+        _Hz_SISymType, _N_SISymType, _Pa_SISymType, _J_SISymType,
+        _W_SISymType, _C_SISymType, _V_SISymType, _F_SISymType,
+        _Ohm_SISymType, _ohm_SISymType, _S_SISymType, _Wb_SISymType,
+        _T_SISymType, _H_SISymType, _lm_SISymType, _lx_SISymType,
+        _Bq_SISymType, _Gy_SISymType, _Sv_SISymType, _kat_SISymType,
+        _l_SISymType, _L_SISymType, _min_SISymType, _h_SISymType,
+        _d_SISymType, _ha_SISymType, _t_SISymType, _au_SISymType,
+        _eV_SISymType, _Da_SISymType, _u_SISymType, _celsius_SISymType,
+        _fahrenheit_SISymType, _Np_SISymType, _B_SISymType, _dB_SISymType,
+        _degSym_SISymType, _deg_SISymType, _rad_SISymType, _sr_SISymType
+    )) {
+      check(siUnit, siUnit.printFullName());
+    }
+    check(createSIUnit(List.of(createSIUnitBasic("m", "k", 1)), List.of()),
+        "[km]"
+    );
     assertNoFindings();
   }
 
@@ -269,10 +242,10 @@ public class SymTypeNormalizeVisitorTest extends AbstractMCTest {
     );
 
     check(createSIUnit(List.of(createSIUnitBasic("N", 3)), List.of()),
-        "[m^3kg^3/s^6]"
+        "[N^3]"
     );
     check(createSIUnit(List.of(createSIUnitBasic("N", -2)), List.of()),
-        "[s^4/m^2kg^2]"
+        "[1/N^2]"
     );
     check(createSIUnit(List.of(createSIUnitBasic("N", 0)), List.of()),
         "[1]"
@@ -282,19 +255,51 @@ public class SymTypeNormalizeVisitorTest extends AbstractMCTest {
             List.of(createSIUnitBasic("s", 2)),
             List.of(_g_SIUnitBasic)
         ),
-        "[s^2/kg]"
+        "[s^2/g]"
+    );
+    // only identical units cancel out
+    check(createSIUnit(
+            List.of(createSIUnitBasic("s", 2)),
+            List.of(_s_SIUnitBasic)
+        ),
+        "[s]"
     );
     check(createSIUnit(
             List.of(createSIUnitBasic("s", 2)),
             List.of(_min_SIUnitBasic)
         ),
-        "[s]"
+        "[s^2/min]"
     );
+    check(createSIUnit(
+            List.of(_m_SIUnitBasic),
+            List.of(createSIUnitBasic("m", "k", 1))
+        ),
+        "[m/km]"
+    );
+    check(createSIUnit(
+            List.of(createSIUnitBasic("m", "k", 1), _m_SIUnitBasic),
+            List.of(_m_SIUnitBasic)
+        ),
+        "[km]"
+    );
+    // deterministic order: SI base units first, larger prefixes first
     check(createSIUnit(
             List.of(_kg_SIUnitBasic, createSIUnitBasic("s", 2)),
             List.of(_min_SIUnitBasic, _m_SIUnitBasic)
         ),
-        "[s^1kg/m]"
+        "[s^2kg/m^1min]"
+    );
+    check(createSIUnit(
+            List.of(_m_SIUnitBasic, createSIUnitBasic("m", "k", 1)),
+            List.of()
+        ),
+        "[km^1m]"
+    );
+    check(createSIUnit(
+            List.of(_J_SIUnitBasic, _m_SIUnitBasic, _N_SIUnitBasic),
+            List.of()
+        ),
+        "[m^1N^1J]"
     );
     assertNoFindings();
   }
@@ -328,6 +333,34 @@ public class SymTypeNormalizeVisitorTest extends AbstractMCTest {
             _intSymType
         ),
         "int"
+    );
+    // dimension one, but not without a unit
+    check(createNumericWithSIUnit(
+            List.of(_m_SIUnitBasic),
+            List.of(createSIUnitBasic("m", "k", 1)),
+            _intSymType
+        ),
+        "[m/km]<int>"
+    );
+    check(createNumericWithSIUnit(_deg_SISymType, _intSymType),
+        "[deg]<int>"
+    );
+  }
+
+  @Test
+  public void normalizeUnionsOfSIUnits() {
+    check(createUnion(
+            createNumericWithSIUnit(_m_SISymType, _intSymType),
+            createNumericWithSIUnit(_m_SISymType, _intSymType)
+        ),
+        "[m]<int>"
+    );
+    check(createUnion(
+            createNumericWithSIUnit(_m_SISymType, _intSymType),
+            createNumericWithSIUnit(
+                List.of(createSIUnitBasic("m", "k", 1)), List.of(), _intSymType)
+        ),
+        "[km]<int> | [m]<int>"
     );
   }
 
