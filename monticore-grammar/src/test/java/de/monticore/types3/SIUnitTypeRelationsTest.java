@@ -17,6 +17,7 @@ import java.util.Optional;
 import static de.monticore.runtime.junit.MCAssertions.assertNoFindings;
 import static de.monticore.types.check.SymTypeExpressionFactory.createSIUnit;
 import static de.monticore.types.check.SymTypeExpressionFactory.createSIUnitBasic;
+import static de.monticore.types3.util.DefsTypesForTests.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -165,7 +166,178 @@ public class SIUnitTypeRelationsTest extends AbstractMCTest {
     assertNoFindings();
   }
 
+  @Test
+  public void normalizeDimensionSimple() {
+    checkDimension(_m_SISymType, "[m]");
+    checkDimension(_g_SISymType, "[kg]");
+    checkDimension(_s_SISymType, "[s]");
+    checkDimension(_A_SISymType, "[A]");
+    checkDimension(_K_SISymType, "[K]");
+    checkDimension(_mol_SISymType, "[mol]");
+    checkDimension(_cd_SISymType, "[cd]");
+    checkDimension(_kg_SISymType, "[kg]");
+
+    checkDimension(_Hz_SISymType, "[1/s]");
+    checkDimension(_N_SISymType, "[m^1kg/s^2]");
+    checkDimension(_Pa_SISymType, "[kg/s^2m]");
+    checkDimension(_J_SISymType, "[m^2kg/s^2]");
+    checkDimension(_W_SISymType, "[m^2kg/s^3]");
+    checkDimension(_C_SISymType, "[s^1A]");
+    checkDimension(_V_SISymType, "[m^2kg/s^3A]");
+    checkDimension(_F_SISymType, "[s^4A^2/m^2kg]");
+    checkDimension(_Ohm_SISymType, "[m^2kg/s^3A^2]");
+    checkDimension(_ohm_SISymType, "[m^2kg/s^3A^2]");
+    checkDimension(_S_SISymType, "[s^3A^2/m^2kg]");
+    checkDimension(_Wb_SISymType, "[m^2kg/s^2A]");
+    checkDimension(_T_SISymType, "[kg/s^2A]");
+    checkDimension(_H_SISymType, "[m^2kg/s^2A^2]");
+    checkDimension(_lm_SISymType, "[cd]");
+    checkDimension(_lx_SISymType, "[cd/m^2]");
+    checkDimension(_Bq_SISymType, "[1/s]");
+    checkDimension(_Gy_SISymType, "[m^2/s^2]");
+    checkDimension(_Sv_SISymType, "[m^2/s^2]");
+    checkDimension(_kat_SISymType, "[mol/s]");
+    checkDimension(_l_SISymType, "[m^3]");
+    checkDimension(_L_SISymType, "[m^3]");
+    checkDimension(_min_SISymType, "[s]");
+    checkDimension(_h_SISymType, "[s]");
+    checkDimension(_d_SISymType, "[s]");
+    checkDimension(_ha_SISymType, "[m^2]");
+    checkDimension(_t_SISymType, "[kg]");
+    checkDimension(_au_SISymType, "[m]");
+    checkDimension(_eV_SISymType, "[m^2kg/s^2]");
+    checkDimension(_Da_SISymType, "[kg]");
+    checkDimension(_u_SISymType, "[kg]");
+    checkDimension(_celsius_SISymType, "[K]");
+    checkDimension(_fahrenheit_SISymType, "[K]");
+    checkDimension(_Np_SISymType, "[1]");
+    checkDimension(_B_SISymType, "[1]");
+    checkDimension(_dB_SISymType, "[1]");
+    checkDimension(_degSym_SISymType, "[1]");
+    checkDimension(_deg_SISymType, "[1]");
+    checkDimension(_rad_SISymType, "[1]");
+    checkDimension(_sr_SISymType, "[1]");
+    assertNoFindings();
+  }
+
+  @Test
+  public void normalizeDimensionComplex() {
+    checkDimension(
+        createSIUnit(List.of(createSIUnitBasic("s", 2)), List.of()),
+        "[s^2]"
+    );
+    checkDimension(
+        createSIUnit(List.of(createSIUnitBasic("s", -1)), List.of()),
+        "[1/s]"
+    );
+    checkDimension(
+        createSIUnit(List.of(createSIUnitBasic("s", -2)), List.of()),
+        "[1/s^2]"
+    );
+    checkDimension(
+        createSIUnit(List.of(), List.of(_s_SIUnitBasic)),
+        "[1/s]"
+    );
+    checkDimension(
+        createSIUnit(List.of(createSIUnitBasic("s", 0)), List.of()),
+        "[1]"
+    );
+
+    checkDimension(createSIUnit(List.of(createSIUnitBasic("N", 3)), List.of()),
+        "[m^3kg^3/s^6]"
+    );
+    checkDimension(createSIUnit(List.of(createSIUnitBasic("N", -2)), List.of()),
+        "[s^4/m^2kg^2]"
+    );
+    checkDimension(createSIUnit(List.of(createSIUnitBasic("N", 0)), List.of()),
+        "[1]"
+    );
+
+    checkDimension(createSIUnit(
+            List.of(createSIUnitBasic("s", 2)),
+            List.of(_g_SIUnitBasic)
+        ),
+        "[s^2/kg]"
+    );
+    checkDimension(createSIUnit(
+            List.of(createSIUnitBasic("s", 2)),
+            List.of(_min_SIUnitBasic)
+        ),
+        "[s]"
+    );
+    checkDimension(createSIUnit(
+            List.of(_kg_SIUnitBasic, createSIUnitBasic("s", 2)),
+            List.of(_min_SIUnitBasic, _m_SIUnitBasic)
+        ),
+        "[s^1kg/m]"
+    );
+    assertNoFindings();
+  }
+
+  @Test
+  public void largerAndSmallerUnit() {
+    SymTypeOfSIUnit kmPerH =
+        createSIUnit(List.of(basic("k", "m")), List.of(basic("", "h")));
+    SymTypeOfSIUnit mPerS =
+        createSIUnit(List.of(basic("", "m")), List.of(basic("", "s")));
+    checkPrint("[km]", SIUnitTypeRelations.getLargerUnit(unit("m"), unit("k", "m")));
+    checkPrint("[km]", SIUnitTypeRelations.getLargerUnit(unit("k", "m"), unit("m")));
+    checkPrint("[m/s]", SIUnitTypeRelations.getLargerUnit(kmPerH, mPerS));
+    checkPrint("[m]", SIUnitTypeRelations.getSmallerUnit(unit("m"), unit("k", "m")));
+    checkPrint("[m]", SIUnitTypeRelations.getSmallerUnit(unit("k", "m"), unit("m")));
+    checkPrint("[km/h]", SIUnitTypeRelations.getSmallerUnit(kmPerH, mPerS));
+    // same size or not comparable: the first one
+    checkPrint("[L]", SIUnitTypeRelations.getLargerUnit(unit("L"), unit("l")));
+    checkPrint("[l]", SIUnitTypeRelations.getSmallerUnit(unit("l"), unit("L")));
+    checkPrint("[deg]", SIUnitTypeRelations.getLargerUnit(unit("deg"), unit("rad")));
+    assertNoFindings();
+  }
+
+  @Test
+  public void multiplyAndDivideForOperation() {
+    // different dimensions or the same units
+    checkPrint("[s^1km]", SIUnitTypeRelations.multiplyForOperation(
+        unit("k", "m"), unit("s")));
+    checkPrint("[km^2]", SIUnitTypeRelations.multiplyForOperation(
+        unit("k", "m"), unit("k", "m")));
+    checkPrint("[km/h]", SIUnitTypeRelations.divideForOperation(
+        unit("k", "m"), unit("h")));
+    checkPrint("[km]", SIUnitTypeRelations.multiplyForOperation(
+        createSIUnit(List.of(basic("k", "m")), List.of(basic("", "h"))),
+        unit("h")));
+    checkPrint("[deg^1rad]", SIUnitTypeRelations.multiplyForOperation(
+        unit("deg"), unit("rad")));
+    // different units of the same dimension
+    checkPrint("[m^2]", SIUnitTypeRelations.multiplyForOperation(
+        unit("k", "m"), unit("m")));
+    checkPrint("[km^2]", SIUnitTypeRelations.multiplyForOperation(
+        unit("k", "m"), unit("M", "m")));
+    checkPrint("[1]", SIUnitTypeRelations.divideForOperation(
+        unit("m"), unit("k", "m")));
+    checkPrint("[Mm]", SIUnitTypeRelations.divideForOperation(
+        createSIUnit(List.of(createSIUnitBasic("m", "k", 2)), List.of()),
+        unit("m")));
+    checkPrint("[1/mm]", SIUnitTypeRelations.divideForOperation(
+        unit("k", "m"),
+        createSIUnit(List.of(createSIUnitBasic("m", 2)), List.of())));
+    checkPrint("[ms^2]", SIUnitTypeRelations.divideForOperation(
+        unit("m", "s"), unit("k", "Hz")));
+    checkPrint("[kg^2]", SIUnitTypeRelations.multiplyForOperation(
+        unit("k", "g"), unit("g")));
+    assertNoFindings();
+  }
+
   // Helper
+
+  protected void checkPrint(String expected, SymTypeOfSIUnit siUnit) {
+    assertEquals(expected, siUnit.printFullName());
+  }
+
+  protected void checkDimension(SymTypeOfSIUnit siUnit, String expectedPrint) {
+    SymTypeOfSIUnit normalized = SIUnitTypeRelations.normalizeDimension(siUnit);
+    assertNoFindings();
+    assertEquals(expectedPrint, normalized.printFullName());
+  }
 
   protected void checkFactor(
       SymTypeOfSIUnit source,

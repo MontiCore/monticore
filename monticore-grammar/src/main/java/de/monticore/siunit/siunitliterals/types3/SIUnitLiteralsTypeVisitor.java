@@ -4,10 +4,12 @@ package de.monticore.siunit.siunitliterals.types3;
 import de.monticore.siunit.siunitliterals._ast.ASTSIUnitLiteral;
 import de.monticore.siunit.siunitliterals._visitor.SIUnitLiteralsVisitor2;
 import de.monticore.siunit.siunits.util.ASTSIUnit2SymTypeExprConverter;
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfSIUnit;
 import de.monticore.types3.AbstractTypeVisitor;
+import de.monticore.types3.SymTypeRelations;
 
 public class SIUnitLiteralsTypeVisitor extends AbstractTypeVisitor
     implements SIUnitLiteralsVisitor2 {
@@ -23,9 +25,23 @@ public class SIUnitLiteralsTypeVisitor extends AbstractTypeVisitor
       type = SymTypeExpressionFactory.createObscureType();
     }
     else {
-      type = SymTypeExpressionFactory.createNumericWithSIUnit(siUnit, litType);
+      type = SymTypeExpressionFactory.createNumericWithSIUnit(
+          siUnit, getValueType(litType)
+      );
     }
     type4Ast.setTypeOfExpression(siLit, type);
+  }
+
+  /**
+   * integral values are stored as double,
+   * as converting between units, e.g., {@code 3m -> 0.003km},
+   * would otherwise lose information
+   */
+  protected SymTypeExpression getValueType(SymTypeExpression litType) {
+    if (SymTypeRelations.isIntegralType(litType)) {
+      return SymTypeExpressionFactory.createPrimitive(BasicSymbolsMill.DOUBLE);
+    }
+    return litType;
   }
 
 }

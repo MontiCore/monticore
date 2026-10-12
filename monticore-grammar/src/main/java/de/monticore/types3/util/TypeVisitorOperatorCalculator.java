@@ -11,6 +11,7 @@ import de.se_rwth.commons.logging.Log;
 
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.function.BinaryOperator;
 
 import static de.monticore.types.check.SymTypeExpressionFactory.createObscureType;
 import static de.monticore.types.check.SymTypeExpressionFactory.createStringType;
@@ -73,7 +74,9 @@ public class TypeVisitorOperatorCalculator {
     // no String in the expression
     // -> use the normal calculation for the basic arithmetic operators
     else {
-      result = calculatePlusMinusModulo(left, right);
+      result = calculatePlusMinusModulo(
+          left, right, SIUnitTypeRelations::getLargerUnit
+      );
     }
     return result;
   }
@@ -90,8 +93,9 @@ public class TypeVisitorOperatorCalculator {
       SymTypeExpression right
   ) {
     SymTypeExpression result =
-        TypeVisitorLifting.liftDefault(this::calculatePlusMinusModulo)
-            .apply(left, right);
+        TypeVisitorLifting.liftDefault((l, r) -> calculatePlusMinusModulo(
+            l, r, SIUnitTypeRelations::getLargerUnit
+        )).apply(left, right);
     return obscure2Empty(result);
   }
 
@@ -107,18 +111,23 @@ public class TypeVisitorOperatorCalculator {
       SymTypeExpression right
   ) {
     SymTypeExpression result =
-        TypeVisitorLifting.liftDefault(this::calculatePlusMinusModulo)
-            .apply(left, right);
+        TypeVisitorLifting.liftDefault((l, r) -> calculatePlusMinusModulo(
+            l, r, SIUnitTypeRelations::getSmallerUnit
+        )).apply(left, right);
     return obscure2Empty(result);
   }
 
   /**
    * calculates +,-,%
    * without support for String
+   *
+   * @param selectSIUnit selects the SIUnit of the result
+   *     given the SIUnits of the operands (with the same dimension)
    */
   protected SymTypeExpression calculatePlusMinusModulo(
       SymTypeExpression left,
-      SymTypeExpression right
+      SymTypeExpression right,
+      BinaryOperator<SymTypeOfSIUnit> selectSIUnit
   ) {
     SymTypeExpression result;
     Optional<SymTypeOfSIUnit> resultSI = Optional.empty();
@@ -133,7 +142,9 @@ public class TypeVisitorOperatorCalculator {
     if (leftSI.isPresent() && rightSI.isPresent()) {
       if (SymTypeRelations.isCompatible(leftSI.get(), rightSI.get())
           || SymTypeRelations.isCompatible(rightSI.get(), leftSI.get())) {
-        resultSI = Optional.of(leftSI.get().deepClone());
+        resultSI = Optional.of(
+            selectSIUnit.apply(leftSI.get(), rightSI.get()).deepClone()
+        );
       }
     }
 
@@ -286,8 +297,8 @@ public class TypeVisitorOperatorCalculator {
 
     // multiply SIUnits
     if (leftSI.isPresent() && rightSI.isPresent()) {
-      resultSI = Optional.of(
-          SIUnitTypeRelations.multiply(leftSI.get(), rightSI.get())
+      resultSI = Optional.of(SIUnitTypeRelations
+          .multiplyForOperation(leftSI.get(), rightSI.get())
       );
     }
     else if (leftSI.isPresent()) {
@@ -347,9 +358,8 @@ public class TypeVisitorOperatorCalculator {
 
     // divide SIUnits
     if (leftSI.isPresent() && rightSI.isPresent()) {
-      resultSI = Optional.of(
-          SIUnitTypeRelations.multiply(leftSI.get(),
-              SIUnitTypeRelations.invert(rightSI.get()))
+      resultSI = Optional.of(SIUnitTypeRelations
+          .divideForOperation(leftSI.get(), rightSI.get())
       );
     }
     else if (leftSI.isPresent()) {
@@ -392,6 +402,50 @@ public class TypeVisitorOperatorCalculator {
     else {
       return SymTypeExpressionFactory.createObscureType();
     }
+  }
+
+  // conditional: ?:
+
+  /**
+   * the type of {@code c ? left : right}, usually {@code left | right},
+   * but numerics with SIUnits of the same dimension use the larger unit,
+   * e.g., {@code [m]<double> | [km]<double> -> [km]<double>}.
+   * In contrast to the other operators, this does not return Optional.empty()
+   * as there are no invalid combinations of types.
+   */
+  public static SymTypeExpression conditional(
+      SymTypeExpression left,
+      SymTypeExpression right
+  ) {
+    return getDelegate()._conditional(left, right);
+  }
+
+  protected SymTypeExpression _conditional(
+      SymTypeExpression left,
+      SymTypeExpression right
+  ) {
+    SymTypeExpression leftNormalized = SymTypeRelations.normalize(left);
+    SymTypeExpression rightNormalized = SymTypeRelations.normalize(right);
+    if (leftNormalized.isNumericWithSIUnitType()
+        && rightNormalized.isNumericWithSIUnitType()) {
+      SymTypeOfSIUnit leftSI =
+          leftNormalized.asNumericWithSIUnitType().getSIUnitType();
+      SymTypeOfSIUnit rightSI =
+          rightNormalized.asNumericWithSIUnitType().getSIUnitType();
+      SymTypeExpression valueType = SymTypeRelations.normalize(
+          SymTypeExpressionFactory.createUnion(
+              leftNormalized.asNumericWithSIUnitType().getNumericType(),
+              rightNormalized.asNumericWithSIUnitType().getNumericType()
+          ));
+      if (SIUnitTypeRelations.isOfSameDimension(leftSI, rightSI)
+          && SymTypeRelations.isNumericType(valueType)) {
+        return SymTypeExpressionFactory.createNumericWithSIUnit(
+            SIUnitTypeRelations.getLargerUnit(leftSI, rightSI), valueType
+        );
+      }
+    }
+    // not normalized, as information may get missing
+    return SymTypeExpressionFactory.createUnion(left, right);
   }
 
   // numeric prefixes: +, -
