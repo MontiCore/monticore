@@ -19,13 +19,23 @@ public class JavaGenSIUnitTest extends AbstractJavaGenTest {
   @ParameterizedTest(name = "[{index}] {0}")
   @ValueSource(strings = {
       "1deg + 1rad",
-      "[rad]<int> x = 1deg; x",
+      "[rad]<double> x = 1deg; x",
       "1dB == 1B",
   })
   public void testJavaGenSIUnitUnsupportedConversion(String modelStr) {
     ASTBehaviorInput ast = testTool.getASTWithSymbolTable(modelStr);
     new ExpressionsAndStatementsJavaGenerator().generateCode(ast);
     MCAssertions.assertHasFindingsStartingWith("0xFD240");
+  }
+
+  @ParameterizedTest(name = "[{index}] {0}")
+  @ValueSource(strings = {
+      "([km]<double> | [m]<double>) x = 1km; x",
+  })
+  public void testJavaGenSIUnitUnsupportedUnion(String modelStr) {
+    ASTBehaviorInput ast = testTool.getASTWithSymbolTable(modelStr);
+    new ExpressionsAndStatementsJavaGenerator().generateCode(ast);
+    MCAssertions.assertHasFindingsStartingWith("0xFD242");
   }
 
 }

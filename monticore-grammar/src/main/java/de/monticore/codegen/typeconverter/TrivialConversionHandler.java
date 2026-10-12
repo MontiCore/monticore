@@ -5,9 +5,6 @@ import de.monticore.codegen.CodeGenPrintAction;
 import de.monticore.codegen.javagen.typeconverter.AbstractJavaTypeConverter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.check.SymTypeExpression;
-import de.monticore.types3.util.SymTypeCollectionVisitor;
-
-import static de.monticore.types3.SymTypeRelations.normalize;
 
 /**
  * Conversions between the type and itself;
@@ -21,38 +18,18 @@ public class TrivialConversionHandler
   @Override
   public boolean tryPrintConverted(
       IndentPrinter printer,
-      SymTypeExpression nonNormalizedTargetType,
-      SymTypeExpression nonNormalizedSourceType,
+      SymTypeExpression modelTargetType,
+      SymTypeExpression modelSourceType,
       CodeGenPrintAction sourceExprPrintAction
   ) {
-    if (isTrivial(nonNormalizedTargetType, nonNormalizedSourceType)) {
-      sourceExprPrintAction.print(printer);
-      return true;
-    }
-    else if (!containsSIUnit(nonNormalizedTargetType)
-        && !containsSIUnit(nonNormalizedSourceType)
-        && isTrivial(normalize(nonNormalizedTargetType), normalize(nonNormalizedSourceType))
-    ) {
+    // temporary workaround due to odd SymbolSurrogate behavior
+    if (modelSourceType.deepEquals(modelTargetType) || modelTargetType.deepEquals(modelSourceType)) {
       sourceExprPrintAction.print(printer);
       return true;
     }
     else {
       return false;
     }
-  }
-
-  protected boolean isTrivial(
-      SymTypeExpression targetType,
-      SymTypeExpression sourceType
-  ) {
-    // temporary workaround due to odd SymbolSurrogate behavior
-    return sourceType.deepEquals(targetType) || targetType.deepEquals(sourceType);
-  }
-
-  protected boolean containsSIUnit(SymTypeExpression type) {
-    return !new SymTypeCollectionVisitor().calculate(type,
-        t -> t.isSIUnitType() || t.isNumericWithSIUnitType()
-    ).isEmpty();
   }
 
 }

@@ -11,6 +11,7 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types3.util.MapBasedTypeCheck3;
 
 import static de.monticore.codegen.CodeGenSymTypeExpressionConverter.printConverted;
+import static de.monticore.types3.SymTypeRelations.normalize;
 import static de.monticore.types3.TypeCheck3.typeOf;
 
 /**
@@ -36,7 +37,7 @@ public class MCReturnStatementsJavaGenVisitor
     getPrinter().print("return");
     if (node.isPresentExpression()) {
       getPrinter().print(" ");
-      SymTypeExpression exprType = typeOf(node.getExpression());
+      SymTypeExpression exprType = normalize(typeOf(node.getExpression()));
       SymTypeExpression targetType = _hack_getTargetType(node.getExpression());
       printConverted(
           getPrinter(),

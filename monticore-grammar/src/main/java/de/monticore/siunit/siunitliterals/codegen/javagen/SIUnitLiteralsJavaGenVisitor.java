@@ -8,8 +8,12 @@ import de.monticore.siunit.siunitliterals._ast.ASTSIUnitLiteral;
 import de.monticore.siunit.siunitliterals._ast.ASTSignedSIUnitLiteral;
 import de.monticore.siunit.siunitliterals._visitor.SIUnitLiteralsInheritanceHandler;
 
+import static de.monticore.codegen.CodeGenSymTypeExpressionConverter.printConverted;
+import static de.monticore.codegen.javagen.JavaGenSymTypeRelations.getSIUnitValueType;
+import static de.monticore.types3.TypeCheck3.typeOf;
+
 /**
- * SIUnits are not represented at runtime, e.g., 5km -> 5
+ * SIUnits are not represented at runtime, e.g., 5km -> 5.0
  */
 public class SIUnitLiteralsJavaGenVisitor
     extends SIUnitLiteralsInheritanceHandler {
@@ -28,7 +32,12 @@ public class SIUnitLiteralsJavaGenVisitor
 
   @Override
   public void traverse(ASTSIUnitLiteral node) {
-    node.getNumericLiteral().accept(getTraverser());
+    // integral literals are of type double, e.g., 5km -> ((double) 5)
+    printConverted(getPrinter(),
+        getSIUnitValueType(typeOf(node)),
+        typeOf(node.getNumericLiteral()),
+        p -> node.getNumericLiteral().accept(getTraverser())
+    );
   }
 
   @Override

@@ -10,6 +10,7 @@ import static de.monticore.codegen.CodeGenSymTypeExpressionConverter.printConver
 import static de.monticore.codegen.ICodeGenOperationHandler.BinaryOperator.EQUALS;
 import static de.monticore.codegen.ICodeGenOperationHandler.BinaryOperator.NOT_EQUALS;
 import static de.monticore.codegen.javagen.JavaGenSymTypeRelations.generatesToJavaPrimitive;
+import static de.monticore.types3.SymTypeRelations.isCompatible;
 import static de.monticore.types3.SymTypeRelations.isSubTypeOf;
 import static de.monticore.types3.util.SIUnitTypeRelations.hasSIUnit;
 
@@ -127,7 +128,10 @@ public class JavaEqualityOperationHandler
       SymTypeExpression rightType,
       CodeGenPrintAction rightExprPrintAction
   ) {
-    if (isSubTypeOf(rightType, leftType)) {
+    // compatible, but not a subtype, e.g., ([m]<double>, int) -> ([km]<double>, int)
+    if (isSubTypeOf(rightType, leftType)
+        || (!isSubTypeOf(leftType, rightType) && isCompatible(leftType, rightType))
+    ) {
       printConverted(printer, leftType, rightType, rightExprPrintAction);
     }
     else {
