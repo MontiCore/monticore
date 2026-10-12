@@ -40,7 +40,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static de.monticore.types.check.SymTypeExpressionFactory.createObscureType;
-import static de.monticore.types.check.SymTypeExpressionFactory.createUnion;
 
 /**
  * This Visitor can calculate a SymTypeExpression (type)
@@ -313,8 +312,7 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
       // boolean conditional expression
     }
     else {
-      // not normalized, as information may get missing
-      result = createUnion(left, right);
+      result = TypeVisitorOperatorCalculator.conditional(left, right);
     }
 
     getType4Ast().setTypeOfExpression(expr, result);

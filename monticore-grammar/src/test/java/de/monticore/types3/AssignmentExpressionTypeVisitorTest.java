@@ -124,7 +124,7 @@ public class AssignmentExpressionTypeVisitorTest extends AbstractTypeVisitorTest
     //example with double
     checkExpr("-15.7", "double");
 
-    checkExpr("-1m", "[m]<int>");
+    checkExpr("-1m", "[m]<double>");
   }
 
   @Test
@@ -141,7 +141,7 @@ public class AssignmentExpressionTypeVisitorTest extends AbstractTypeVisitorTest
     //example with long
     checkExpr("+4L", "long");
 
-    checkExpr("+1m", "[m]<int>");
+    checkExpr("+1m", "[m]<double>");
   }
 
   @Test

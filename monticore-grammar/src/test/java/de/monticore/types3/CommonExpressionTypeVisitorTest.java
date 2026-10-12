@@ -63,10 +63,14 @@ public class CommonExpressionTypeVisitorTest
     checkExpr("3 + \"Hallo\"", "R\"(.*)(Hallo)\""); // example with String
     checkExpr("\"Hallo\" + 3", "R\"(Hallo)(.*)\""); // example with String
     checkExpr("\"Hallo\" + \" Welt\"", "R\"(Hallo)( Welt)\""); // example with String
-    checkExpr("1m + 1m", "[m]<int>");
+    checkExpr("1m + 1m", "[m]<double>");
     checkExpr("1m + 1.0m", "[m]<double>");
-    checkExpr("1m^2 + 1m^2", "[m^2]<int>");
-    checkExpr("1m + 1km", "[m]<int>");
+    checkExpr("1m^2 + 1m^2", "[m^2]<double>");
+    // the larger unit
+    checkExpr("1m + 1km", "[km]<double>");
+    checkExpr("1km + 1m", "[km]<double>");
+    checkExpr("1min + 1h", "[h]<double>");
+    checkExpr("1N + 1kgm/s^2", "[N]<double>");
   }
 
   @Test
@@ -150,10 +154,12 @@ public class CommonExpressionTypeVisitorTest
     checkExpr("varlong - varlong", "long"); // - applicable to long, long, result is long
     checkExpr("varfloat - varfloat", "float"); // - applicable to float, float, result is float
     checkExpr("vardouble - vardouble", "double"); // - applicable to double, double, result is double
-    checkExpr("1m - 1m", "[m]<int>");
+    checkExpr("1m - 1m", "[m]<double>");
     checkExpr("1m - 1.0m", "[m]<double>");
-    checkExpr("1m^2 - 1m^2", "[m^2]<int>");
-    checkExpr("1m - 1km", "[m]<int>");
+    checkExpr("1m^2 - 1m^2", "[m^2]<double>");
+    // the larger unit
+    checkExpr("1m - 1km", "[km]<double>");
+    checkExpr("1km - 1m", "[km]<double>");
   }
 
   @Test
@@ -229,13 +235,22 @@ public class CommonExpressionTypeVisitorTest
     checkExpr("varlong * varlong", "long"); // * applicable to long, long, result is long
     checkExpr("varfloat * varfloat", "float"); // * applicable to float, float, result is float
     checkExpr("vardouble * vardouble", "double"); // * applicable to double, double, result is double
-    checkExpr("1m * 1m", "[m^2]<int>");
+    checkExpr("1m * 1m", "[m^2]<double>");
     checkExpr("1m * 1.0m", "[m^2]<double>");
-    checkExpr("1m^2 * 1m", "[m^3]<int>");
-    checkExpr("1m * 1km", "[m^2]<int>");
-    checkExpr("1m * 1", "[m]<int>");
-    checkExpr("1 * 1m", "[m]<int>");
-    checkExpr("1m * 1s", "[m^1s]<int>");
+    checkExpr("1m^2 * 1m", "[m^3]<double>");
+    checkExpr("1m * 1", "[m]<double>");
+    checkExpr("1 * 1m", "[m]<double>");
+    checkExpr("1m * 1s", "[s^1m]<double>");
+    checkExpr("1km * 1s", "[s^1km]<double>");
+    checkExpr("1km * 1km", "[km^2]<double>");
+    checkExpr("1N * 1m", "[m^1N]<double>");
+    checkExpr("1km/h * 1h", "[km]<double>");
+    // different units of the same dimension:
+    // SI base units with engineering prefixes
+    checkExpr("1m * 1km", "[m^2]<double>");
+    checkExpr("1km * 1Mm", "[km^2]<double>");
+    checkExpr("1km^2 * 1m", "[m^3]<double>");
+    checkExpr("1h * 1s", "[s^2]<double>");
   }
 
   @Test
@@ -291,13 +306,22 @@ public class CommonExpressionTypeVisitorTest
     checkErrorExpr("varchar = 0.1f * 1", "0xA0179"); // expected char but provided float
     checkErrorExpr("varchar = 1 * 0.1", "0xA0179"); // expected char but provided double
     checkErrorExpr("varchar = 0.1 * 1", "0xA0179"); // expected char but provided double
-    checkExpr("1m * 1m", "[m^2]<int>");
+    checkExpr("1m * 1m", "[m^2]<double>");
     checkExpr("1m * 1.0m", "[m^2]<double>");
-    checkExpr("1m^2 * 1m", "[m^3]<int>");
-    checkExpr("1m * 1km", "[m^2]<int>");
-    checkExpr("1m * 1", "[m]<int>");
-    checkExpr("1 * 1m", "[m]<int>");
-    checkExpr("1m * 1s", "[m^1s]<int>");
+    checkExpr("1m^2 * 1m", "[m^3]<double>");
+    checkExpr("1m * 1", "[m]<double>");
+    checkExpr("1 * 1m", "[m]<double>");
+    checkExpr("1m * 1s", "[s^1m]<double>");
+    checkExpr("1km * 1s", "[s^1km]<double>");
+    checkExpr("1km * 1km", "[km^2]<double>");
+    checkExpr("1N * 1m", "[m^1N]<double>");
+    checkExpr("1km/h * 1h", "[km]<double>");
+    // different units of the same dimension:
+    // SI base units with engineering prefixes
+    checkExpr("1m * 1km", "[m^2]<double>");
+    checkExpr("1km * 1Mm", "[km^2]<double>");
+    checkExpr("1km^2 * 1m", "[m^3]<double>");
+    checkExpr("1h * 1s", "[s^2]<double>");
   }
 
   @Test
@@ -311,14 +335,19 @@ public class CommonExpressionTypeVisitorTest
     checkExpr("varlong / varlong", "long"); // / applicable to long, long, result is long
     checkExpr("varfloat / varfloat", "float"); // / applicable to float, float, result is float
     checkExpr("vardouble / vardouble", "double"); // / applicable to double, double, result is double
-    checkExpr("1m / 1m", "int");
+    checkExpr("1m / 1m", "double");
     checkExpr("1m / 1.0m", "double");
-    checkExpr("1m^2 / 1m", "[m]<int>");
-    checkExpr("1m / 1km", "int");
-    checkExpr("1m / 1", "[m]<int>");
-    checkExpr("1 / 1m", "[1/m]<int>");
-    checkExpr("1m / 1s", "[m/s]<int>");
-    checkExpr("1m^1s / 1s", "[m]<int>");
+    checkExpr("1m^2 / 1m", "[m]<double>");
+    checkExpr("1m / 1", "[m]<double>");
+    checkExpr("1 / 1m", "[1/m]<double>");
+    checkExpr("1m / 1s", "[m/s]<double>");
+    checkExpr("1km / 1h", "[km/h]<double>");
+    checkExpr("1m^1s / 1s", "[m]<double>");
+    // different units of the same dimension:
+    // SI base units with engineering prefixes
+    checkExpr("1m / 1km", "double");
+    checkExpr("1km^2 / 1m", "[Mm]<double>");
+    checkExpr("1km / 1m^2", "[1/mm]<double>");
   }
 
   @Test
@@ -387,10 +416,12 @@ public class CommonExpressionTypeVisitorTest
     checkExpr("varlong % varlong", "long"); // % applicable to long, long, result is long
     checkExpr("varfloat % varfloat", "float"); // % applicable to float, float, result is float
     checkExpr("vardouble % vardouble", "double"); // % applicable to double, double, result is double
-    checkExpr("1m % 1m", "[m]<int>");
+    checkExpr("1m % 1m", "[m]<double>");
     checkExpr("1m % 1.0m", "[m]<double>");
-    checkExpr("1m^2 % 1m^2", "[m^2]<int>");
-    checkExpr("1m % 1km", "[m]<int>");
+    checkExpr("1m^2 % 1m^2", "[m^2]<double>");
+    // the smaller unit
+    checkExpr("1m % 1km", "[m]<double>");
+    checkExpr("1km % 1m", "[m]<double>");
   }
 
   @Test
@@ -1502,6 +1533,18 @@ public class CommonExpressionTypeVisitorTest
     assertNoFindings();
     type = TypeCheck3.typeOf(astExpr);
     assertTrue(SymTypeRelations.isCompatible(_doubleSymType, type));
+  }
+
+  @Test
+  public void deriveFromConditionalExpressionSIUnits() throws IOException {
+    checkExpr("varboolean ? 1m : 1m", "[m]<double>");
+    // the larger unit
+    checkExpr("varboolean ? 1m : 1km", "[km]<double>");
+    checkExpr("varboolean ? 1km : 1m", "[km]<double>");
+    checkExpr("varboolean ? 1km/h : 1m/s", "[m/s]<double>");
+    // different dimensions
+    checkExpr("varboolean ? 1m : 1s", "[m]<double> | [s]<double>");
+    checkExpr("varboolean ? 1m : 1", "[m]<double> | int");
   }
 
   @Test
@@ -2890,7 +2933,7 @@ public class CommonExpressionTypeVisitorTest
   @Test
   public void testCallExpressionKeepsSIUnits() throws IOException {
     SymTypeExpression km = createNumericWithSIUnit(
-        List.of(createSIUnitBasic("m", "k", 1)), List.of(), _intSymType
+        List.of(createSIUnitBasic("m", "k", 1)), List.of(), _doubleSymType
     );
     IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();
     inScope(gs, variable("kmFunc", createFunction(km, km)));
@@ -2903,11 +2946,11 @@ public class CommonExpressionTypeVisitorTest
     );
     assertNoFindings();
     assertTrue(calleeType.isFunctionType());
-    assertEquals("[km]<int>",
+    assertEquals("[km]<double>",
         calleeType.asFunctionType().getArgumentType(0).printFullName());
-    assertEquals("[km]<int>",
+    assertEquals("[km]<double>",
         calleeType.asFunctionType().getType().printFullName());
-    assertEquals("[km]<int>", callType.printFullName());
+    assertEquals("[km]<double>", callType.printFullName());
   }
 
   @Test
