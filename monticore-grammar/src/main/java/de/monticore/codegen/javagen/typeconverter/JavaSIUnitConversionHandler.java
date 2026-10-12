@@ -6,11 +6,11 @@ import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
-import de.monticore.types.check.SymTypeOfSIUnit;
 import de.monticore.types3.util.SIUnitTypeRelations;
 import de.se_rwth.commons.logging.Log;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.Optional;
 
 import static de.monticore.codegen.CodeGenSymTypeExpressionConverter.printConverted;
@@ -69,7 +69,7 @@ public class JavaSIUnitConversionHandler
         p.print("((");
         printConverted(p, doubleType, sourceValueType, sourceExprPrintAction);
         p.print(")");
-        printScaling(p, getSIUnit(sourceType), getSIUnit(targetType));
+        printScaling(p, factor.get());
         p.print(")");
       });
     }
@@ -81,20 +81,14 @@ public class JavaSIUnitConversionHandler
    * and {@code / 1000.0} for m -> km,
    * as dividing by 1000 is more precise than multiplying by 0.001
    */
-  protected void printScaling(
-      IndentPrinter printer,
-      SymTypeOfSIUnit sourceUnit,
-      SymTypeOfSIUnit targetUnit
-  ) {
-    BigDecimal factor = SIUnitTypeRelations
-        .getConversionFactor(sourceUnit, targetUnit).orElseThrow();
+  protected void printScaling(IndentPrinter printer, BigDecimal factor) {
     if (factor.compareTo(BigDecimal.ONE) >= 0) {
       printer.print(" * ");
       printer.print(Double.toString(factor.doubleValue()));
     }
     else {
-      BigDecimal divisor = SIUnitTypeRelations
-          .getConversionFactor(targetUnit, sourceUnit).orElseThrow();
+      BigDecimal divisor =
+          BigDecimal.ONE.divide(factor, MathContext.DECIMAL128);
       printer.print(" / ");
       printer.print(Double.toString(divisor.doubleValue()));
     }

@@ -105,8 +105,10 @@ public class JavaSIUnitOperationHandler implements ICodeGenOperationHandler {
       CodeGenPrintAction leftExprPrintAction,
       CodeGenPrintAction rightExprPrintAction
   ) {
-    SymTypeExpression leftValueType = getValueTypeInUnit(leftType, unit);
-    SymTypeExpression rightValueType = getValueTypeInUnit(rightType, unit);
+    SymTypeExpression leftValueType = getCalculationValueType(
+        getSIUnitValueType(leftType), getSIUnit(leftType), unit);
+    SymTypeExpression rightValueType = getCalculationValueType(
+        getSIUnitValueType(rightType), getSIUnit(rightType), unit);
     CodeGenPrintAction leftInUnit = p -> printConverted(p,
         createNumericWithSIUnit(unit, leftValueType),
         leftType, leftExprPrintAction
@@ -133,7 +135,9 @@ public class JavaSIUnitOperationHandler implements ICodeGenOperationHandler {
 
   /**
    * calculates the result in the units of the operands,
-   * then converts the result, e.g., {@code [km*m] -> [m^2]}
+   * then converts the result, e.g., {@code [km*m] -> [m^2]};
+   * if the result is scaled, it is calculated in double,
+   * e.g., {@code 1km / 2m -> 1.0 / 2 * 1000.0}
    */
   protected void printInOperandUnits(
       BinaryOperator operator,
@@ -144,20 +148,25 @@ public class JavaSIUnitOperationHandler implements ICodeGenOperationHandler {
       CodeGenPrintAction leftExprPrintAction,
       CodeGenPrintAction rightExprPrintAction
   ) {
-    SymTypeExpression leftValueType = getSIUnitValueType(leftType);
-    SymTypeExpression rightValueType = getSIUnitValueType(rightType);
-    SymTypeExpression calculationType =
-        numericPromotion(leftValueType, rightValueType);
     SymTypeOfSIUnit rightUnit = operator == BinaryOperator.DIVIDE ?
         SIUnitTypeRelations.invert(getSIUnit(rightType)) :
         getSIUnit(rightType);
     SymTypeOfSIUnit calculationUnit =
         SIUnitTypeRelations.multiply(getSIUnit(leftType), rightUnit);
+    SymTypeExpression leftValueType = getCalculationValueType(
+        getSIUnitValueType(leftType), calculationUnit, getSIUnit(resultType));
+    SymTypeExpression rightValueType = getCalculationValueType(
+        getSIUnitValueType(rightType), calculationUnit, getSIUnit(resultType));
+    SymTypeExpression calculationType =
+        numericPromotion(leftValueType, rightValueType);
     printConverted(printer, resultType,
         createNumericWithSIUnit(calculationUnit, calculationType),
         p -> CodeGenOperationPrinter.print(operator, p, calculationType,
             leftValueType, rightValueType,
-            leftExprPrintAction, rightExprPrintAction
+            p2 -> printConverted(p2, leftValueType,
+                getSIUnitValueType(leftType), leftExprPrintAction),
+            p2 -> printConverted(p2, rightValueType,
+                getSIUnitValueType(rightType), rightExprPrintAction)
         )
     );
   }
@@ -165,21 +174,22 @@ public class JavaSIUnitOperationHandler implements ICodeGenOperationHandler {
   // Helper
 
   /**
-   * the value type after converting to the unit;
-   * double if the value has to be scaled
+   * the value type to calculate with;
+   * double if values in the source unit have to be scaled to the target unit
    */
-  protected SymTypeExpression getValueTypeInUnit(
-      SymTypeExpression type,
-      SymTypeOfSIUnit unit
+  protected SymTypeExpression getCalculationValueType(
+      SymTypeExpression valueType,
+      SymTypeOfSIUnit sourceUnit,
+      SymTypeOfSIUnit targetUnit
   ) {
     Optional<BigDecimal> factor =
-        SIUnitTypeRelations.getConversionFactor(getSIUnit(type), unit);
+        SIUnitTypeRelations.getConversionFactor(sourceUnit, targetUnit);
     if (factor.isPresent() && factor.get().compareTo(BigDecimal.ONE) != 0) {
-      return numericPromotion(getSIUnitValueType(type),
+      return numericPromotion(valueType,
           SymTypeExpressionFactory.createPrimitive(BasicSymbolsMill.DOUBLE)
       );
     }
-    return getSIUnitValueType(type);
+    return valueType;
   }
 
   protected SymTypeExpression createNumericWithSIUnit(

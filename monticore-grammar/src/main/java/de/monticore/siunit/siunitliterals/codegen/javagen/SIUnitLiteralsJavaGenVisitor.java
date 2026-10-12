@@ -5,7 +5,6 @@ import com.google.common.base.Preconditions;
 import de.monticore.codegen.javagen.JavaGenVisitorState;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.siunit.siunitliterals._ast.ASTSIUnitLiteral;
-import de.monticore.siunit.siunitliterals._ast.ASTSignedSIUnitLiteral;
 import de.monticore.siunit.siunitliterals._visitor.SIUnitLiteralsInheritanceHandler;
 
 import static de.monticore.codegen.CodeGenSymTypeExpressionConverter.printConverted;
@@ -38,11 +37,6 @@ public class SIUnitLiteralsJavaGenVisitor
         typeOf(node.getNumericLiteral()),
         p -> node.getNumericLiteral().accept(getTraverser())
     );
-  }
-
-  @Override
-  public void traverse(ASTSignedSIUnitLiteral node) {
-    node.getSignedNumericLiteral().accept(getTraverser());
   }
 
 }
