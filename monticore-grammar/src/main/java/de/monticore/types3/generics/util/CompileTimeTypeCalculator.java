@@ -1410,8 +1410,7 @@ public class CompileTimeTypeCalculator {
 
   /**
    * @param resolvedType must not be normalized
-   * @return List of functions included in the resolved type,
-   *     their parameter and return types are not normalized
+   * @return List of normalized functions included in the resolved type
    */
   protected List<SymTypeOfFunction> getFunctionsOfResolvedType(
       SymTypeExpression resolvedType
@@ -1420,26 +1419,13 @@ public class CompileTimeTypeCalculator {
         splitResolvedType(resolvedType);
     List<SymTypeExpression> resolvedTypes =
         resolvedTypesNonNormalized.stream()
-            .map(this::normalizeExceptFunctionTypes)
+            .map(SymTypeRelations::normalize)
             .toList();
     List<SymTypeOfFunction> resolvedFuncs = resolvedTypes.stream()
         .filter(SymTypeExpression::isFunctionType)
         .map(SymTypeExpression::asFunctionType)
         .collect(Collectors.toList());
     return resolvedFuncs;
-  }
-
-  /**
-   * keeps the parameter and return types, e.g., SIUnit prefixes
-   */
-  protected SymTypeExpression normalizeExceptFunctionTypes(
-      SymTypeExpression type
-  ) {
-    SymTypeExpression normalized = SymTypeRelations.normalize(type);
-    if (type.isFunctionType() && normalized.isFunctionType()) {
-      return type;
-    }
-    return normalized;
   }
 
   /**

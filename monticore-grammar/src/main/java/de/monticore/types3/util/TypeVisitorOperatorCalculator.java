@@ -10,6 +10,7 @@ import de.monticore.types3.SymTypeRelations;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.function.BinaryOperator;
 
@@ -1008,6 +1009,11 @@ public class TypeVisitorOperatorCalculator {
     else if (isString(target) && isString(source)) {
       result = target;
     }
+    // allow to convert between SIUnits of the same dimension,
+    // e.g., ([m]<int>) 5km
+    else if (isSIUnitCast(target, source)) {
+      result = target;
+    }
     // check typecast is possible
     else if (
         SymTypeRelations.isSubTypeOf(target, source) || // downcast
@@ -1019,6 +1025,24 @@ public class TypeVisitorOperatorCalculator {
       result = SymTypeExpressionFactory.createObscureType();
     }
     return result;
+  }
+
+  protected boolean isSIUnitCast(
+      SymTypeExpression target,
+      SymTypeExpression source
+  ) {
+    if (!hasSIUnit(target) && !hasSIUnit(source)) {
+      return false;
+    }
+    Optional<SymTypeExpression> targetValue = getValueType(target);
+    Optional<SymTypeExpression> sourceValue = getValueType(source);
+    SymTypeOfSIUnit noUnit = SymTypeExpressionFactory
+        .createSIUnit(Collections.emptyList(), Collections.emptyList());
+    return targetValue.isPresent() == sourceValue.isPresent()
+        && targetValue.map(SymTypeRelations::isNumericType).orElse(true)
+        && sourceValue.map(SymTypeRelations::isNumericType).orElse(true)
+        && SIUnitTypeRelations.isOfSameDimension(
+        getSIUnit(target).orElse(noUnit), getSIUnit(source).orElse(noUnit));
   }
 
   // Helper

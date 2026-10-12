@@ -24,7 +24,7 @@ public class JavaGenSymTypeExpressionConverter
         List.of(
             // trivial case
             List.of(new TrivialConversionHandler()),
-            // before others, as, e.g., [km/m]<int> is normalized to int
+            // before the numeric handlers, e.g., [m/km]<double> -> double
             List.of(new JavaSIUnitConversionHandler()),
             // most specific cases
             List.of(

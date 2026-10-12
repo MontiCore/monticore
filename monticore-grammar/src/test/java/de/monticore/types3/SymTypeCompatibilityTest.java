@@ -516,6 +516,13 @@ public class SymTypeCompatibilityTest extends AbstractMCTest {
     // dimension one
     assertTrue(SymTypeRelations.isCompatible(_intSymType, mPerKm_int));
     assertTrue(SymTypeRelations.isCompatible(mPerKm_int, _intSymType));
+    // unions
+    assertTrue(SymTypeRelations.isCompatible(
+        createUnion(m_int, _s_int_SISymType), km_int));
+    assertTrue(SymTypeRelations.isCompatible(
+        createUnion(m_int, _personSymType), km_int));
+    assertFalse(SymTypeRelations.isCompatible(
+        createUnion(_A_int_SISymType, _s_int_SISymType), km_int));
 
     // but not subtypes, as the values differ
     assertFalse(SymTypeRelations.isSubTypeOf(km, _m_SISymType));
