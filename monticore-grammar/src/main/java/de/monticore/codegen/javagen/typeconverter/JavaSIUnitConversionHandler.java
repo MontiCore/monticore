@@ -20,7 +20,8 @@ import static de.monticore.types3.util.SIUnitTypeRelations.getSIUnit;
 import static de.monticore.types3.util.SIUnitTypeRelations.hasSIUnit;
 
 /**
- * Conversions between SIUnits, e.g., 5 of [km]<int> -> 5000 of [m]<int>.
+ * Conversions between SIUnits,
+ * e.g., 5 of {@code [km]<int>} -> 5000 of {@code [m]<int>}.
  * Values are in the units of their (non-normalized) types;
  * scaling is calculated using double.
  * Conversions like ºC -> K or deg -> rad are not supported.
