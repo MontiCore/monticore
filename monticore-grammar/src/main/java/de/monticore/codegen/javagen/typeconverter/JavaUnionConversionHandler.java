@@ -18,7 +18,8 @@ import static de.monticore.types3.SymTypeRelations.normalize;
 /**
  * Conversions to unions, e.g., int -> int | String,
  * using the compatible type of the union,
- * e.g., [km]<int> -> [m]<int> | [s]<int> converts to [m]<int>.
+ * e.g., {@code [km]<int> -> [m]<int> | [s]<int>}
+ * converts to {@code [m]<int>}.
  * Should have the lowest priority.
  */
 public class JavaUnionConversionHandler
