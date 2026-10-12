@@ -108,7 +108,8 @@ public class JavaGenSymTypeRelations {
   }
 
   /**
-   * Returns the runtime type, e.g., [km]<int> -> int, [km] -> double
+   * Returns the runtime type, e.g.,
+   * {@code [km]<int> -> int}, {@code [km] -> double}
    */
   public static SymTypeExpression getSIUnitValueType(SymTypeExpression type) {
     return getDelegate()._getSIUnitValueType(type);
@@ -130,7 +131,7 @@ public class JavaGenSymTypeRelations {
    * Returns the type an operand is converted to before an operation,
    * as the type checker calculates using normalized operand types.
    * Scaled integral values are converted to double,
-   * e.g., [km]<int> -> [m]<double>.
+   * e.g., {@code [km]<int> -> [m]<double>}.
    */
   public static SymTypeExpression getOperandType(SymTypeExpression type) {
     return getDelegate()._getOperandType(type);

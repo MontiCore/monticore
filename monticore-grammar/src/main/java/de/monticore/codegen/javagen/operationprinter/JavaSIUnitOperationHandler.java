@@ -15,7 +15,7 @@ import static de.monticore.types3.SymTypeRelations.numericPromotion;
 import static de.monticore.types3.util.SIUnitTypeRelations.hasSIUnit;
 
 /**
- * Operations on SIUnits, e.g., [m]<int> + [m]<int>,
+ * Operations on SIUnits, e.g., {@code [m]<int> + [m]<int>},
  * by delegating to the handlers of the numeric types.
  * The operands are expected to be converted to their normalized units,
  * s.a. {@link de.monticore.codegen.javagen.JavaGenVisitorState#printOperand}.
