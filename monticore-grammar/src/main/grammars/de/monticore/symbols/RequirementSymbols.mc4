@@ -23,12 +23,9 @@ component grammar RequirementSymbols extends de.monticore.MCBasics {
   /*=================================================================*/
 
   /**
-   * A requirement has a name/id and carries a description.
+   * A requirement has a name/id.
    *
    */
   interface symbol Requirement = Name;
-
-  symbolrule Requirement =
-      description: String;
 
 }
