@@ -20,7 +20,6 @@ mlc RequirementSymbols {
 
   promote mlc "de.monticore.MCBasics";
 
-  // locally allow using SymTypeExpressions
   uses {
   }
 
