@@ -54,19 +54,24 @@ public class JavaUnionConversionHandler
         getUnionizedTargetType(targetType.asUnionType().getUnionizedTypeSet()
             .stream().toList(), sourceType
         );
-    if (unionizedTargetType.isEmpty()) {
+    if (unionizedTargetType.isPresent()) {
+      printJavaCasted(printer, targetType, p ->
+          printConverted(p, unionizedTargetType.get(),
+              sourceType, sourceExprPrintAction
+          )
+      );
+    }
+    // SIUnits may require a conversion of the value
+    else if (SIUnitTypeRelations.hasSIUnit(sourceType)) {
       Log.error("0xFD241 Cannot convert " + sourceType.printFullName()
           + " to " + targetType.printFullName()
           + ", as no unique type of the union has been found to convert to."
       );
       sourceExprPrintAction.print(printer);
-      return true;
     }
-    printJavaCasted(printer, targetType, p ->
-        printConverted(p, unionizedTargetType.get(),
-            sourceType, sourceExprPrintAction
-        )
-    );
+    else {
+      printJavaCasted(printer, targetType, sourceExprPrintAction);
+    }
     return true;
   }
 

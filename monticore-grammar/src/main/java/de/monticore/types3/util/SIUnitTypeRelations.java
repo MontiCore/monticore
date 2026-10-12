@@ -218,7 +218,7 @@ public class SIUnitTypeRelations {
     for (String coherentUnit : List.of(
         "m", "s", "A", "K", "mol", "cd",
         "Hz", "N", "Pa", "J", "W", "C", "V", "F", "Ohm", "Ω", "S",
-        "Wb", "T", "H", "lm", "lx", "Bq", "Gy", "Sv", "kat"
+        "Wb", "T", "H", "lm", "lx", "Bq", "Gy", "Sv", "kat", "rad", "sr"
     )) {
       unitFactorsTmp.put(coherentUnit, BigDecimal.ONE);
     }
@@ -235,6 +235,35 @@ public class SIUnitTypeRelations {
     unitFactorsTmp.put("Da", new BigDecimal("1.66053906660E-27"));
     unitFactorsTmp.put("u", new BigDecimal("1.66053906660E-27"));
     unitFactors = Collections.unmodifiableMap(unitFactorsTmp);
+  }
+
+  /**
+   * order of units (ignoring the exponents) used for normalization:
+   * SI base units first, then the other units of the conversion table;
+   * for the same unit, the larger prefixes come first.
+   */
+  protected static final Comparator<SIUnitBasic> unitOrder = createUnitOrder();
+
+  protected static Comparator<SIUnitBasic> createUnitOrder() {
+    Map<String, Integer> dimension2Index = new LinkedHashMap<>();
+    for (String dimension : baseUnitStrings) {
+      dimension2Index.putIfAbsent(dimension, dimension2Index.size());
+    }
+    for (String dimension : conversionTable.keySet()) {
+      dimension2Index.putIfAbsent(dimension, dimension2Index.size());
+    }
+    Comparator<String> byDimension = Comparator
+        .<String>comparingInt(dimension ->
+            dimension2Index.getOrDefault(dimension, dimension2Index.size()))
+        .thenComparing(Comparator.naturalOrder());
+    Comparator<String> byPrefix = Comparator
+        .<String, BigDecimal>comparing(
+            prefix -> prefixFactors.getOrDefault(prefix, BigDecimal.ZERO),
+            Comparator.reverseOrder()
+        )
+        .thenComparing(Comparator.naturalOrder());
+    return Comparator.comparing(SIUnitBasic::getDimension, byDimension)
+        .thenComparing(SIUnitBasic::getPrefix, byPrefix);
   }
 
   // methods
@@ -286,7 +315,7 @@ public class SIUnitTypeRelations {
   }
 
   protected SymTypeOfSIUnit _normalize(SymTypeOfSIUnit siUnit) {
-    Map<SIUnitBasic, Integer> unit2Exp = new TreeMap<>(getUnitOrder());
+    Map<SIUnitBasic, Integer> unit2Exp = new TreeMap<>(unitOrder);
     for (SIUnitBasic siUnitBasic : siUnit.getNumerator()) {
       unit2Exp.merge(siUnitBasic, siUnitBasic.getExponent(), Integer::sum);
     }
@@ -307,30 +336,6 @@ public class SIUnitTypeRelations {
       }
     }
     return SymTypeExpressionFactory.createSIUnit(numerator, denominator);
-  }
-
-  /**
-   * order of units (ignoring the exponents) used for normalization:
-   * SI base units first, then the other units of the conversion table;
-   * for the same unit, the larger prefixes come first.
-   */
-  protected Comparator<SIUnitBasic> getUnitOrder() {
-    List<String> dimensionOrder = new ArrayList<>(baseUnitStrings);
-    conversionTable.keySet().stream()
-        .filter(dimension -> !dimensionOrder.contains(dimension))
-        .forEach(dimensionOrder::add);
-    Comparator<String> byDimension = Comparator
-        .<String>comparingInt(dimension -> dimensionOrder.contains(dimension) ?
-            dimensionOrder.indexOf(dimension) : dimensionOrder.size())
-        .thenComparing(Comparator.naturalOrder());
-    Comparator<String> byPrefix = Comparator
-        .<String, BigDecimal>comparing(
-            prefix -> prefixFactors.getOrDefault(prefix, BigDecimal.ZERO),
-            Comparator.reverseOrder()
-        )
-        .thenComparing(Comparator.naturalOrder());
-    return Comparator.comparing(SIUnitBasic::getDimension, byDimension)
-        .thenComparing(SIUnitBasic::getPrefix, byPrefix);
   }
 
   /**
@@ -528,21 +533,23 @@ public class SIUnitTypeRelations {
       SymTypeOfSIUnit siUnit
   ) {
     // ignoring the exponents, e.g., km^2 and m are of the same dimension
-    List<SymTypeOfSIUnit> units = new ArrayList<>();
+    List<SymTypeOfSIUnit> dimensions = new ArrayList<>();
     for (SIUnitBasic unit : siUnit.getNumerator()) {
-      units.add(createSIUnitWithoutExponent(unit));
+      dimensions.add(normalizeDimension(createSIUnitWithoutExponent(unit)));
     }
     for (SIUnitBasic unit : siUnit.getDenominator()) {
-      units.add(createSIUnitWithoutExponent(unit));
+      dimensions.add(normalizeDimension(createSIUnitWithoutExponent(unit)));
     }
-    for (int i = 0; i < units.size(); i++) {
-      for (int j = i + 1; j < units.size(); j++) {
-        SymTypeOfSIUnit dimensionA = normalizeDimension(units.get(i));
-        SymTypeOfSIUnit dimensionB = normalizeDimension(units.get(j));
-        if (!isOfDimensionOne(dimensionA)
-            && (isOfSameDimension(dimensionA, dimensionB)
-            || isOfSameDimension(dimensionA, invert(dimensionB)))
-        ) {
+    for (int i = 0; i < dimensions.size(); i++) {
+      SymTypeOfSIUnit dimensionA = dimensions.get(i);
+      if (dimensionA.getNumerator().isEmpty()
+          && dimensionA.getDenominator().isEmpty()) {
+        continue;
+      }
+      SymTypeOfSIUnit inverseA = invert(dimensionA);
+      for (int j = i + 1; j < dimensions.size(); j++) {
+        if (dimensionA.deepEquals(dimensions.get(j))
+            || inverseA.deepEquals(dimensions.get(j))) {
           return true;
         }
       }
@@ -571,14 +578,16 @@ public class SIUnitTypeRelations {
         .map(SIUnitBasic::deepClone).collect(Collectors.toList());
     List<SIUnitBasic> denominator = siUnit.getDenominator().stream()
         .map(SIUnitBasic::deepClone).collect(Collectors.toList());
-    List<SIUnitBasic> units = new ArrayList<>(numerator);
-    units.addAll(denominator);
+    // the units with their exponents (negative in the denominator)
+    List<Map.Entry<SIUnitBasic, Integer>> units = new ArrayList<>();
+    numerator.forEach(unit -> units.add(Map.entry(unit, unit.getExponent())));
+    denominator.forEach(unit -> units.add(Map.entry(unit, -unit.getExponent())));
     // larger exponents first, as they can hold more
-    units.sort(Comparator.comparingInt(unit -> -unit.getExponent()));
+    units.sort(Comparator.comparingInt(entry -> -Math.abs(entry.getValue())));
     int remaining = exponent;
-    for (SIUnitBasic unit : units) {
-      int signedExp = numerator.contains(unit) ?
-          unit.getExponent() : -unit.getExponent();
+    for (Map.Entry<SIUnitBasic, Integer> entry : units) {
+      SIUnitBasic unit = entry.getKey();
+      int signedExp = entry.getValue();
       int oldPrefixExp = getPrefixExponent(unit.getPrefix());
       int bestPrefixExp = oldPrefixExp;
       for (int prefixExp = -24; prefixExp <= 24; prefixExp += 3) {

@@ -66,6 +66,12 @@ public class SIUnitTestModels {
         Arguments.of("1km * 1Mm", 1.0 * 1 * 1000.0),
         Arguments.of("1km / 1m", 1.0 / 1 * 1000.0),
         Arguments.of("1m / 1km", 1.0 / 1 / 1000.0),
+        // numerics are SIUnits of dimension one
+        Arguments.of("1rad + 1.0", 2.0),
+        Arguments.of("1.0 + 1rad", 2.0),
+        // the larger unit, 1 instead of m/km
+        Arguments.of("[m/km]<double> x = ([m/km]<double>) 1.0; x + 1",
+            1 * 1000.0 / 1000.0 + 1),
         // prefix operators
         Arguments.of("-(5km)", -5.0),
         Arguments.of("-5km", -5.0),
@@ -86,7 +92,10 @@ public class SIUnitTestModels {
         Arguments.of("60min == 1h", true),
         Arguments.of("1mm == 0m", false),
         Arguments.of("1mm > 0m", true),
-        Arguments.of("1km/h < 1m/s", true)
+        Arguments.of("1km/h < 1m/s", true),
+        // numerics are SIUnits of dimension one
+        Arguments.of("1rad < 2.0", true),
+        Arguments.of("1rad == 1", true)
     );
   }
 
@@ -100,10 +109,17 @@ public class SIUnitTestModels {
         Arguments.of("[km]<float> x = 2.0f km; [m]<double> y = x; y", 2000.0),
         Arguments.of("[km/h]<double> x = 36km/h; [m/s]<double> y = x; y",
             36 / 3.6),
+        Arguments.of("double x = 1rad; x", 1.0),
+        Arguments.of("([m/km]<double>) 1.0", 1 * 1000.0),
         // casts
         Arguments.of("([m]<double>) 2km", 2000.0),
         Arguments.of("([m]<int>) 1.5km", 1500),
-        Arguments.of("[m]<int> x = ([m]<int>) 1km; x += 1.5km; x", 2500)
+        Arguments.of("[m]<int> x = ([m]<int>) 1km; x += 1.5km; x", 2500),
+        // scaled results of integral values are calculated in double
+        Arguments.of("[km]<int> x = ([km]<int>) 1km; "
+            + "[m]<int> y = ([m]<int>) 2m; x / y", 500),
+        Arguments.of("[km]<int> x = ([km]<int>) 1km; "
+            + "[m]<int> y = ([m]<int>) 2m; x * y", 2000)
     );
   }
 
@@ -186,6 +202,8 @@ public class SIUnitTestModels {
             Tuple2.of(Tuple2.of(1000.0, 2), 3)),
         Arguments.of("(1km, 2) == (1000m, 2)", true),
         Arguments.of("(1km, 2) == (1m, 2)", false),
+        Arguments.of("([m]<int>, int) t = (([m]<int>) 1000m, 2); "
+            + "t == (1km, 2)", true),
         Arguments.of("[km]<double> -> ([m]<double>, int) f = "
             + "([km]<double> x) -> (x, 1); f(2km)", Tuple2.of(2000.0, 1)),
         Arguments.of("(([km]<double>, int)) -> [m]<double> f = "

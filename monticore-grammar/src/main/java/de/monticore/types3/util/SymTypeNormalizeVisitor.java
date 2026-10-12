@@ -693,8 +693,13 @@ public class SymTypeNormalizeVisitor extends SymTypeDeepCloneVisitor {
       numericWithSIUnit.getNumericType().accept(this);
     }
     else {
-      // otherwise, normalize SIUnit and numeric type parts
-      super.visit(numericWithSIUnit);
+      // otherwise, normalize the numeric type part as well
+      numericWithSIUnit.getNumericType().accept(this);
+      SymTypeExpression numericType = popTransformedSubSymType();
+      SymTypeOfNumericWithSIUnit normalized = SymTypeExpressionFactory
+          .createNumericWithSIUnit(siUnit, numericType);
+      normalized._internal_setSourceInfo(numericWithSIUnit.getSourceInfo());
+      pushTransformedSymType(normalized);
     }
   }
 

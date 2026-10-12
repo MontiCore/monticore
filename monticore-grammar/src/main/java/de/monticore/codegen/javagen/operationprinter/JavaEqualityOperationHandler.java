@@ -85,6 +85,20 @@ public class JavaEqualityOperationHandler
       );
     }
     // tuples, arrays, etc.
+    else if (!isSubTypeOf(leftType, rightType)
+        && !isSubTypeOf(rightType, leftType)
+        && (isCompatible(leftType, rightType) || isCompatible(rightType, leftType))
+    ) {
+      // compatible, but not subtypes, e.g., tuples with SIUnits:
+      // ([m]<double>, int) and ([km]<double>, int)
+      SymTypeExpression commonType =
+          isCompatible(leftType, rightType) ? leftType : rightType;
+      printer.print("java.util.Objects.equals(");
+      printConverted(printer, commonType, leftType, leftExprPrintAction);
+      printer.print(", ");
+      printConverted(printer, commonType, rightType, rightExprPrintAction);
+      printer.print(")");
+    }
     else {
       printer.print("java.util.Objects.equals(");
       printLeftConverted(printer, leftType, rightType, leftExprPrintAction);
@@ -128,10 +142,7 @@ public class JavaEqualityOperationHandler
       SymTypeExpression rightType,
       CodeGenPrintAction rightExprPrintAction
   ) {
-    // compatible, but not a subtype, e.g., ([m]<double>, int) -> ([km]<double>, int)
-    if (isSubTypeOf(rightType, leftType)
-        || (!isSubTypeOf(leftType, rightType) && isCompatible(leftType, rightType))
-    ) {
+    if (isSubTypeOf(rightType, leftType)) {
       printConverted(printer, leftType, rightType, rightExprPrintAction);
     }
     else {
