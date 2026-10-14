@@ -82,7 +82,7 @@ public class MCSimpleGenericTypesPrettyPrinterTest {
 
   @Test
   public void testMultipleMCCustomTypeArgument() throws IOException {
-    String type = "java.util.List<socnet.Person<Konto>,List<boolean>>";
+    String type = "java.util.List<socnet.Person<Konto>, List<boolean>>";
     MCSimpleGenericTypesTestParser parser = new MCSimpleGenericTypesTestParser();
     Optional<ASTMCBasicGenericType> ast = parser.parse_StringMCBasicGenericType(type);
     assertTrue(ast.isPresent());
