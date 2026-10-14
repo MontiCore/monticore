@@ -52,4 +52,15 @@ component grammar TimeTriggerConditions extends de.monticore.siunit.SIUnitLitera
 
   CronName implements CronAtom = value:Name;
 
+  // In this composition, date-time values must contain the ISO 'T' designator.
+  // This keeps a negative time-only offset such as 12:00:00-05:30 from being
+  // tokenized as an ISODateTimeToken suffix.
+  fragment token TimeTriggerISODateTimeTime =
+    ('T' Digits | 'T' Digits ':' Digits (':' Digits)?)
+    FractionToken? TimeShiftToken?;
+
+  @Override
+  token ISODateTimeToken =
+    SignToken? Digits '-'? 'W'? Digits ('-' Digits)? TimeTriggerISODateTimeTime;
+
 }
