@@ -1,12 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.tf;
 
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
+import de.monticore.runtime.junit.TestWithMCLanguage;
+import mc.testcases.automaton.AutomatonMill;
 import mc.testcases.automaton._ast.ASTAutomaton;
 import mc.testcases.automaton._ast.ASTState;
 import mc.testcases.automaton._parser.AutomatonParser;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -15,18 +14,13 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@TestWithMCLanguage(AutomatonMill.class)
 public class DeleteTransitionsTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
+
   @Test
   public void testDeleteTransitions() throws IOException {
     String inputFile = "src/main/models/automaton/Testautomat.aut";
-    AutomatonParser parser = new AutomatonParser();
+    AutomatonParser parser = AutomatonMill.parser();
     Optional<ASTAutomaton> aut = parser.parse(inputFile);
 
     assertTrue(aut.isPresent());
@@ -53,8 +47,6 @@ public class DeleteTransitionsTest {
 
     assertEquals(2, hierarchicalState.getStateList().size());
     assertEquals(4, hierarchicalState.getTransitionList().size());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
 

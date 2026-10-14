@@ -1,5 +1,10 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${signature("isOptional", "parentObject")}
+${tc.signature("isOptional", "isList" "parentObject")}
+<#-- @ftlvariable name="tc" type="de.monticore.generating.templateengine.TemplateController" -->
+<#-- @ftlvariable name="glex" type="de.monticore.generating.templateengine.GlobalExtensionManagement" -->
+<#-- @ftlvariable name="isOptional" type="boolean" -->
+<#-- @ftlvariable name="isList" type="boolean" -->
+<#-- @ftlvariable name="parentObject" type="de.monticore.tf.odrulegeneration._ast.ASTMatchingObject" -->
 
 <#assign optObject = ast>
 case "${optObject.getObjectName()}" -> {
@@ -9,7 +14,11 @@ case "${optObject.getObjectName()}" -> {
     if (isBacktrackingNegative) {
       isBacktracking = true;
       isBacktrackingNegative = false;
-      clearNegativeObjects();
+      <#if isList && parentObject?has_content>
+        clear${parentObject.getObjectName()}NegativeObjects();
+      <#else>
+        clearNegativeObjects();
+      </#if>
       // put object back on stack
       searchPlan.push(nextNode);
       // put the first object of the backtracking stack
@@ -34,6 +43,7 @@ case "${optObject.getObjectName()}" -> {
       <#if isOptional && parentObject?has_content>
       reset_${parentObject.getObjectName()}();
       </#if>
+      // Note: We should/could also reset the optional candidates when isList=true here?
       break mainLoop;
     } else {
       // start backtracking

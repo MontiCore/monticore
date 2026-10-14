@@ -1,9 +1,7 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 public ${ast.getJavaClassName()}(List<ASTNode> hostGraph) {
-	this.hostGraph = hostGraph;
+  this.modelAccessor = new ModelAccessor(${grammarName}Mill::inheritanceTraverser, hostGraph);
 	this.glex = new GlobalExtensionManagement();
-	// technically, we should call setupReporting here as well
-	// but that would be a breaking change on which existing code depends
 }
 
 public ${ast.getJavaClassName()}(ASTNode... hostGraph){
@@ -11,13 +9,11 @@ public ${ast.getJavaClassName()}(ASTNode... hostGraph){
 }
 
 public ${ast.getJavaClassName()}(GlobalExtensionManagement glex, ASTNode... hostGraph){
-	this.hostGraph = Lists.newArrayList(hostGraph);
+  this.modelAccessor = new ModelAccessor(${grammarName}Mill::inheritanceTraverser, hostGraph);
 	this.glex = glex;
-	// technically, we should call setupReporting here as well
-	// but that would be a breaking change on which existing code depends
 }
 
-public ${ast.getJavaClassName()}(GlobalExtensionManagement glex,ASTNode astNode){
+public ${ast.getJavaClassName()}(GlobalExtensionManagement glex, ASTNode astNode){
   this(astNode, glex);
 }
 
@@ -26,24 +22,15 @@ public ${ast.getJavaClassName()}(ASTNode astNode) {
 }
 
 public ${ast.getJavaClassName()}(ASTNode astNode, GlobalExtensionManagement glex) {
-  this.hostGraph = new ArrayList<>();
-	this.hostGraph.add(astNode);
+  this.modelAccessor = new ModelAccessor(${grammarName}Mill::inheritanceTraverser, astNode);
   this.glex = glex;
-  this.setupReporting();
 }
 
-protected void setupReporting() {
-  ReportManager.ReportManagerFactory factory = new ReportManager.ReportManagerFactory() {
-    @Override
-    public ReportManager provide(String modelName) {
-      ReportManager reports = new ReportManager("target/generated-sources");
-      TransformationReporter transformationReporter = new TransformationReporter(
-      "target/generated-sources/reports/transformations", modelName, new ReportingRepository(new ASTNodeIdentHelper()));
-      reports.addReportEventHandler(transformationReporter);
-      return reports;
-    }
-  };
+public ${ast.getJavaClassName()}(IModelAccessor modelAccessor) {
+  this(modelAccessor, new GlobalExtensionManagement());
+}
 
-  Reporting.init("target/generated-sources/reports/transformations", "target/generated-sources", factory);
-  Reporting.on("${ast.getClassname()}");
+public ${ast.getJavaClassName()}(IModelAccessor modelAccessor, GlobalExtensionManagement glex) {
+  this.modelAccessor = modelAccessor;
+  this.glex = glex;
 }

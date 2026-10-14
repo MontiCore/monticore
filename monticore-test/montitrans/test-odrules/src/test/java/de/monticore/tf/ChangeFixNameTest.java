@@ -1,8 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.tf;
 
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import mc.testcases.automaton.AutomatonMill;
 import mc.testcases.automaton._ast.ASTAutomaton;
 import mc.testcases.automaton._ast.ASTState;
@@ -15,42 +14,32 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@TestWithMCLanguage(AutomatonMill.class)
 public class ChangeFixNameTest {
 
   private ASTState state;
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
+
   @BeforeEach
   public void setUp() throws IOException {
     String inputFile = "src/main/models/automaton/AutomatonWithSingleState.aut";
-    AutomatonParser parser = new AutomatonParser();
+    AutomatonParser parser = AutomatonMill.parser();
     Optional<ASTAutomaton> aut = parser.parse(inputFile);
 
     assertTrue(aut.isPresent());
-
-
+    
     state = aut.get().getState(0);
   }
 
   @Test
-  public void testDoReplacment() {
+  public void testDoReplacement() {
     new ChangeFixName(state).doAll();
     assertEquals("b", state.getName());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testCheckConditions_state_1_1() {
     ChangeFixName testee = new ChangeFixName(state);
     assertTrue(testee.doPatternMatching());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
@@ -61,8 +50,6 @@ public class ChangeFixNameTest {
     state.setFinal(false);
     ChangeFixName testee = new ChangeFixName(state);
     assertFalse(testee.doPatternMatching());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
 }

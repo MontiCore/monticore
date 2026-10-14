@@ -14,8 +14,8 @@ import java.util.Map;
  */
 public class ODRuleNameGenerator {
 
-  private Map<ITFObject, String> generatedNames = new LinkedHashMap<>();
-  private Map<Class<? extends ASTNode>, Integer> numberOfElements = new LinkedHashMap<>();
+  private final Map<ITFObject, String> generatedNames = new LinkedHashMap<>();
+  private final Map<Class<? extends ASTNode>, Integer> numberOfElements = new LinkedHashMap<>();
 
   public String getNameForElement(ITFObject element, Map<ASTNode,ASTNode> parents) {
     ASTNode parent = parents.get(element);
@@ -35,7 +35,7 @@ public class ODRuleNameGenerator {
 
     // return the name chosen by the user if available
     if (parent.isPresentSchemaVarName()) {
-      return  parent.getSchemaVarName();
+      return parent.getSchemaVarName();
     }
 
     return getNameForElement(element);
@@ -61,15 +61,11 @@ public class ODRuleNameGenerator {
       Class<? extends ASTNode> elementType;
       // optional nodes always have the type de.monticore.tf.ast.IOptional
       // regardless of the element they contain
-      if (element instanceof IOptional) {
-        elementType = IOptional.class;
-      }
-      else if (element instanceof IList) {
-        elementType = IList.class;
-      }
-      else {
-        elementType = element._getTFElementType();
-      }
+      elementType = switch (element) {
+        case IOptional a -> IOptional.class;
+        case IList a -> IList.class;
+        default -> element._getTFElementType();
+      };
       if (numberOfElements.containsKey(elementType)) {
         nextNumber = numberOfElements.get(elementType) + 1;
         numberOfElements.put(elementType, nextNumber);
