@@ -5,6 +5,7 @@ package de.monticore.generating.templateengine;
 import de.monticore.ast.ASTNode;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Represents a String hook point.
@@ -15,20 +16,28 @@ import java.util.List;
 public class StringHookPoint extends HookPoint {
 
   protected final String value;
+  protected final Optional<String> sourceURL;
 
   public StringHookPoint(String value) {
     super();
     this.value = value;
+    this.sourceURL = Optional.empty();
+  }
+
+  public StringHookPoint(String value, String sourceURL) {
+    super();
+    this.value = value;
+    this.sourceURL = Optional.of(sourceURL);
   }
   
   @Override
   public String processValue(TemplateController controller, ASTNode ast) {
-    return value;
+    return this.processValue(controller, ast, List.of());
   }
 
   @Override
   public String processValue(TemplateController controller, List<Object> args) {
-    return value;
+    return this.processValue(controller, null, List.of());
   }
   
   /**
@@ -36,6 +45,10 @@ public class StringHookPoint extends HookPoint {
    */
   @Override
   public String processValue(TemplateController controller, ASTNode node, List<Object> args) {
+    if(this.sourceURL.isPresent()) {
+      System.out.println("String HookPoint changes Template Mappings");
+      //SourceMapCalculator.reportStringHP(value, sourceURL.get(), node);
+    }
     return value;
   }
   
