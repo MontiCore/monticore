@@ -4,41 +4,81 @@
   <#assign mandatoryObjects = hierarchyHelper.getListChilds(ast.getPattern().getLHSObjectsList(), list)>
   <#assign matchingObjects = hierarchyHelper.getListChilds(ast.getPattern().getMatchingObjectsList(), list)>
 public static class Match${list.getObjectName()}{
-  protected Match${list.getObjectName()}(
-  <#list mandatoryObjects as object>
-    <#if !object.isListObject()> ${object.getType()}
-    <#else>${object.getListtype()}
-    </#if> ${object.getObjectName()}
-    <#if object_has_next>,</#if>
-  </#list>){
-  <#list mandatoryObjects as object>
-    <#if hierarchyHelper.isWithinOptionalStructure(object.getObjectName())>
-      this.${object.getObjectName()} = Optional.ofNullable(${object.getObjectName()});
-    <#else>
-      this.${object.getObjectName()} = ${object.getObjectName()};
-    </#if>
-  </#list>}
-  <#list matchingObjects as object>
-    <#assign isWithinOpt = hierarchyHelper.isWithinOptionalStructure(object.getObjectName())>
+  protected static class ListMatch {
+    <#list matchingObjects as object>
+      <#assign isWithinOpt = hierarchyHelper.isWithinOptionalStructure(object.getObjectName())>
       protected <#if isWithinOpt>Optional<</#if>
-    <#if !object.isListObject()> ${object.getType()}
-    <#else>${object.getListtype()}>
-    </#if>
-    <#if isWithinOpt>></#if> ${object.getObjectName()};
+      <#if !object.isListObject()> ${object.getType()}
+      <#else>${object.getListtype()}>
+      </#if>
+      <#if isWithinOpt>></#if> ${object.getObjectName()};
       protected List<ASTNode> ${object.getObjectName()}_temp_candidates;
-  </#list>
+    </#list>
     protected Stack<String> backtracking;
+
+    protected ListMatch (
+      <#list mandatoryObjects as object>
+      <#if !object.isListObject()> ${object.getType()}
+      <#else>${object.getListtype()}
+      </#if> ${object.getObjectName()}
+      <#if object_has_next>,</#if>
+      </#list>){
+      <#list mandatoryObjects as object>
+      <#if hierarchyHelper.isWithinOptionalStructure(object.getObjectName())>
+        this.${object.getObjectName()} = Optional.ofNullable(${object.getObjectName()});
+      <#else>
+        this.${object.getObjectName()} = ${object.getObjectName()};
+      </#if>
+      </#list>
+    }
+  }
+
+  protected LinkedList<ListMatch> items;
+  protected ListMatchReferenceCounter refs;
+
+  public Match${list.getObjectName()}() {
+    this.items = new LinkedList<>();
+    this.refs = new ListMatchReferenceCounter();
+  }
+
+  public Match${list.getObjectName()}(Match${list.getObjectName()} match) {
+    this.items = new LinkedList<>(match.items);
+    this.refs = new ListMatchReferenceCounter(match.refs);
+  }
+
+  protected void add(ListMatch listMatch) {
+    this.items.add(listMatch);
+    <#list mandatoryObjects as object>
+      <#if hierarchyHelper.isWithinOptionalStructure(object.getObjectName())>
+    listMatch.${object.getObjectName()}.ifPresent(x -> this.refs.inc(x));
+      <#else>
+    this.refs.inc(listMatch.${object.getObjectName()});
+      </#if>
+    </#list>
+  }
+
+  protected ListMatch popLast() {
+    ListMatch last = this.items.pollLast();
+    if(last != null) {
+    <#list mandatoryObjects as object>
+        <#if hierarchyHelper.isWithinOptionalStructure(object.getObjectName())>
+          last.${object.getObjectName()}.ifPresent(x -> this.refs.dec(x));
+        <#else>
+          this.refs.dec(last.${object.getObjectName()});
+        </#if>
+    </#list>
+    }
+    return last;
+  }
+
+  protected int size() {
+    return this.items.size();
+  }
 }
 
   //Method for checking if the given object is already matched by the list
   protected boolean isMatchedBy${list.getObjectName()} (ASTNode cand) {
-    return
-      <#list mandatoryObjects as listchild>
-      <#assign isInOpt = hierarchyHelper.isWithinOptionalStructure(listchild.getObjectName())>
-      <#if isInOpt>${list.getObjectName()}_candidates.stream().filter(x -> x.${listchild.getObjectName()} != null && x.${listchild.getObjectName()}.isPresent()).map(x -> x.${listchild.getObjectName()}.get()).anyMatch(x -> x.equals(cand))
-      <#else>${list.getObjectName()}_candidates.stream().anyMatch(x -> x.${listchild.getObjectName()} != null && x.${listchild.getObjectName()}.equals(cand))
-      </#if><#if listchild_has_next> || </#if>
-      </#list>;
+    return ${list.getObjectName()}_candidates.refs.isMatchedBy(cand);
   }
 </#if>
 </#list>
