@@ -91,6 +91,10 @@ public class ${ast.getName()}ParserInfo {
 
   </#list>
   <#list usageNameToStates as usageName, states>
+    /**
+    * @deprecated - names are no longer only one state - use tokenXPath instead
+    */
+    @Deprecated
   public static boolean stateHasUsageName${usageName?cap_first}(int state){
     return getDelegate()._stateHasUsageName${usageName?cap_first}(state);
   }
@@ -152,5 +156,24 @@ public class ${ast.getName()}ParserInfo {
   </#if>
   </#list>
     return Optional.empty();
+  }
+
+  public static String getUsageName(int state) {
+      return getDelegate()._getUsageName(state);
+  }
+
+  public String _getUsageName(int state) {
+      switch (state) {
+            <#list usageNameToStates as usageName, states>
+              <#if states?size != 0>
+                <#list states as state>
+                  case ${state?c}:
+                </#list>
+                  return "${usageName?lower_case}";
+              </#if>
+            </#list>
+        // TODO: Map production rules as well?
+        default: return "?" + state;
+      }
   }
 }

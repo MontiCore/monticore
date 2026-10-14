@@ -201,6 +201,7 @@ public class ParserGenerator {
         astGrammar,
         setup,
         antlrTool.getRhsNodeToParserStates(),
+        antlrTool.getInternalNameParserStates(),
         genHelper.getParserPackage(),
         lang,
         grammar2Antlr.getProdInfoMap()
