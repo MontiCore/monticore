@@ -10,7 +10,9 @@ import de.monticore.types3.SymTypeRelations;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Optional;
+import java.util.function.BinaryOperator;
 
 import static de.monticore.types.check.SymTypeExpressionFactory.createObscureType;
 import static de.monticore.types.check.SymTypeExpressionFactory.createStringType;
@@ -107,25 +109,44 @@ public class TypeVisitorOperatorCalculator {
       SymTypeExpression right
   ) {
     SymTypeExpression result =
-        TypeVisitorLifting.liftDefault(this::calculatePlusMinusModulo)
-            .apply(left, right);
+        TypeVisitorLifting.liftDefault((l, r) -> calculatePlusMinusModulo(
+            l, r, SIUnitTypeRelations::getSmallerUnit
+        )).apply(left, right);
     return obscure2Empty(result);
   }
 
   /**
-   * calculates +,-,%
-   * without support for String
+   * calculates +,-
+   * without support for String;
+   * SIUnits of the same dimension result in the larger unit
    */
   protected SymTypeExpression calculatePlusMinusModulo(
       SymTypeExpression left,
       SymTypeExpression right
   ) {
+    return calculatePlusMinusModulo(
+        left, right, SIUnitTypeRelations::getLargerUnit
+    );
+  }
+
+  /**
+   * calculates +,-,%
+   * without support for String
+   *
+   * @param selectSIUnit selects the SIUnit of the result
+   *     given the SIUnits of the operands (with the same dimension)
+   */
+  protected SymTypeExpression calculatePlusMinusModulo(
+      SymTypeExpression left,
+      SymTypeExpression right,
+      BinaryOperator<SymTypeOfSIUnit> selectSIUnit
+  ) {
     SymTypeExpression result;
     Optional<SymTypeOfSIUnit> resultSI = Optional.empty();
     Optional<SymTypeExpression> resultV = Optional.empty();
 
-    Optional<SymTypeOfSIUnit> leftSI = getSIUnit(left);
-    Optional<SymTypeOfSIUnit> rightSI = getSIUnit(right);
+    Optional<SymTypeOfSIUnit> leftSI = getSIUnitOrDimensionOne(left, right);
+    Optional<SymTypeOfSIUnit> rightSI = getSIUnitOrDimensionOne(right, left);
     Optional<SymTypeExpression> leftV = getValueType(left);
     Optional<SymTypeExpression> rightV = getValueType(right);
 
@@ -133,7 +154,9 @@ public class TypeVisitorOperatorCalculator {
     if (leftSI.isPresent() && rightSI.isPresent()) {
       if (SymTypeRelations.isCompatible(leftSI.get(), rightSI.get())
           || SymTypeRelations.isCompatible(rightSI.get(), leftSI.get())) {
-        resultSI = Optional.of(leftSI.get().deepClone());
+        resultSI = Optional.of(
+            selectSIUnit.apply(leftSI.get(), rightSI.get()).deepClone()
+        );
       }
     }
 
@@ -286,8 +309,8 @@ public class TypeVisitorOperatorCalculator {
 
     // multiply SIUnits
     if (leftSI.isPresent() && rightSI.isPresent()) {
-      resultSI = Optional.of(
-          SIUnitTypeRelations.multiply(leftSI.get(), rightSI.get())
+      resultSI = Optional.of(SIUnitTypeRelations
+          .multiplyForOperation(leftSI.get(), rightSI.get())
       );
     }
     else if (leftSI.isPresent()) {
@@ -347,9 +370,8 @@ public class TypeVisitorOperatorCalculator {
 
     // divide SIUnits
     if (leftSI.isPresent() && rightSI.isPresent()) {
-      resultSI = Optional.of(
-          SIUnitTypeRelations.multiply(leftSI.get(),
-              SIUnitTypeRelations.invert(rightSI.get()))
+      resultSI = Optional.of(SIUnitTypeRelations
+          .divideForOperation(leftSI.get(), rightSI.get())
       );
     }
     else if (leftSI.isPresent()) {
@@ -392,6 +414,51 @@ public class TypeVisitorOperatorCalculator {
     else {
       return SymTypeExpressionFactory.createObscureType();
     }
+  }
+
+  // conditional: ?:
+
+  /**
+   * the type of {@code c ? left : right}, usually {@code left | right},
+   * but numerics with SIUnits of the same dimension use the larger unit,
+   * e.g., {@code [m]<double> | [km]<double> -> [km]<double>}.
+   * In contrast to the other operators, this does not return Optional.empty()
+   * as there are no invalid combinations of types.
+   */
+  public static SymTypeExpression conditional(
+      SymTypeExpression left,
+      SymTypeExpression right
+  ) {
+    return getDelegate()._conditional(left, right);
+  }
+
+  protected SymTypeExpression _conditional(
+      SymTypeExpression left,
+      SymTypeExpression right
+  ) {
+    SymTypeExpression leftNormalized = SymTypeRelations.normalize(left);
+    SymTypeExpression rightNormalized = SymTypeRelations.normalize(right);
+    if (leftNormalized.isNumericWithSIUnitType()
+        && rightNormalized.isNumericWithSIUnitType()) {
+      SymTypeOfSIUnit leftSI =
+          leftNormalized.asNumericWithSIUnitType().getSIUnitType();
+      SymTypeOfSIUnit rightSI =
+          rightNormalized.asNumericWithSIUnitType().getSIUnitType();
+      SymTypeExpression valueType = SymTypeRelations.normalize(
+          SymTypeExpressionFactory.createUnion(
+              leftNormalized.asNumericWithSIUnitType().getNumericType(),
+              rightNormalized.asNumericWithSIUnitType().getNumericType()
+          ));
+      if (SIUnitTypeRelations.isOfSameDimension(leftSI, rightSI)
+          && SymTypeRelations.isNumericType(valueType)) {
+        return SymTypeExpressionFactory.createNumericWithSIUnit(
+            SIUnitTypeRelations.getLargerUnit(leftSI, rightSI), valueType
+        );
+      }
+    }
+    // not normalized, as information may get missing,
+    // e.g., Student | Person would be normalized to Person
+    return SymTypeExpressionFactory.createUnion(left, right);
   }
 
   // numeric prefixes: +, -
@@ -488,8 +555,8 @@ public class TypeVisitorOperatorCalculator {
   ) {
     boolean compatibleForComparison = true;
 
-    Optional<SymTypeOfSIUnit> leftSI = getSIUnit(left);
-    Optional<SymTypeOfSIUnit> rightSI = getSIUnit(right);
+    Optional<SymTypeOfSIUnit> leftSI = getSIUnitOrDimensionOne(left, right);
+    Optional<SymTypeOfSIUnit> rightSI = getSIUnitOrDimensionOne(right, left);
     Optional<SymTypeExpression> leftV = getValueType(left);
     Optional<SymTypeExpression> rightV = getValueType(right);
 
@@ -501,7 +568,6 @@ public class TypeVisitorOperatorCalculator {
       }
     }
     else if (leftSI.isPresent() || rightSI.isPresent()) {
-      // SIUnits of Dimension 1 do not exist here, wherefore:
       compatibleForComparison = false;
     }
 
@@ -615,8 +681,8 @@ public class TypeVisitorOperatorCalculator {
   ) {
     boolean compatibleForComparison = true;
 
-    Optional<SymTypeOfSIUnit> leftSI = getSIUnit(left);
-    Optional<SymTypeOfSIUnit> rightSI = getSIUnit(right);
+    Optional<SymTypeOfSIUnit> leftSI = getSIUnitOrDimensionOne(left, right);
+    Optional<SymTypeOfSIUnit> rightSI = getSIUnitOrDimensionOne(right, left);
     Optional<SymTypeExpression> leftV = getValueType(left);
     Optional<SymTypeExpression> rightV = getValueType(right);
 
@@ -628,7 +694,6 @@ public class TypeVisitorOperatorCalculator {
       }
     }
     else if (leftSI.isPresent() || rightSI.isPresent()) {
-      // SIUnits of Dimension 1 do not exist here, wherefore:
       compatibleForComparison = false;
     }
 
@@ -954,6 +1019,11 @@ public class TypeVisitorOperatorCalculator {
     else if (isString(target) && isString(source)) {
       result = target;
     }
+    // allow to convert between SIUnits of the same dimension,
+    // e.g., ([m]<int>) 5km
+    else if (isSIUnitCast(target, source)) {
+      result = target;
+    }
     // check typecast is possible
     else if (
         SymTypeRelations.isSubTypeOf(target, source) || // downcast
@@ -965,6 +1035,24 @@ public class TypeVisitorOperatorCalculator {
       result = SymTypeExpressionFactory.createObscureType();
     }
     return result;
+  }
+
+  protected boolean isSIUnitCast(
+      SymTypeExpression target,
+      SymTypeExpression source
+  ) {
+    if (!hasSIUnit(target) && !hasSIUnit(source)) {
+      return false;
+    }
+    Optional<SymTypeExpression> targetValue = getValueType(target);
+    Optional<SymTypeExpression> sourceValue = getValueType(source);
+    SymTypeOfSIUnit noUnit = SymTypeExpressionFactory
+        .createSIUnit(Collections.emptyList(), Collections.emptyList());
+    return targetValue.isPresent() == sourceValue.isPresent()
+        && targetValue.map(SymTypeRelations::isNumericType).orElse(true)
+        && sourceValue.map(SymTypeRelations::isNumericType).orElse(true)
+        && SIUnitTypeRelations.isOfSameDimension(
+        getSIUnit(target).orElse(noUnit), getSIUnit(source).orElse(noUnit));
   }
 
   // Helper
@@ -984,6 +1072,26 @@ public class TypeVisitorOperatorCalculator {
     else {
       return Optional.empty();
     }
+  }
+
+  /**
+   * numerics are treated as SIUnits of dimension one
+   * if the other operand is of dimension one, e.g., {@code [rad]<double> + double}
+   */
+  protected Optional<SymTypeOfSIUnit> getSIUnitOrDimensionOne(
+      SymTypeExpression type,
+      SymTypeExpression otherType
+  ) {
+    Optional<SymTypeOfSIUnit> otherSI = getSIUnit(otherType);
+    if (!hasSIUnit(type)
+        && otherSI.isPresent()
+        && otherType.isNumericWithSIUnitType()
+        && SIUnitTypeRelations.isOfDimensionOne(otherSI.get())
+    ) {
+      return Optional.of(SymTypeExpressionFactory.createSIUnit(
+          Collections.emptyList(), Collections.emptyList()));
+    }
+    return getSIUnit(type);
   }
 
   protected boolean hasValueType(SymTypeExpression... types) {

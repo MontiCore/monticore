@@ -684,21 +684,28 @@ public class SymTypeNormalizeVisitor extends SymTypeDeepCloneVisitor {
 
   @Override
   public void visit(SymTypeOfNumericWithSIUnit numericWithSIUnit) {
-    if (SIUnitTypeRelations.isOfDimensionOne(numericWithSIUnit.getSIUnitType())) {
-      // remove the SIUnit part, if it holds no dimension other than "1"
-      // e.g. [m^2/m^2]<int> -> int
+    SymTypeOfSIUnit siUnit =
+        SIUnitTypeRelations.normalize(numericWithSIUnit.getSIUnitType());
+    if (siUnit.getNumerator().isEmpty() && siUnit.getDenominator().isEmpty()) {
+      // remove the SIUnit part, if all units cancel each other out,
+      // e.g. [m^2/m^2]<int> -> int,
+      // but not [m/km]<int>, which is of dimension one, but has a factor
       numericWithSIUnit.getNumericType().accept(this);
     }
     else {
-      // otherwise, normalize SIUnit and numeric type parts
-      super.visit(numericWithSIUnit);
+      // otherwise, normalize the numeric type part as well
+      numericWithSIUnit.getNumericType().accept(this);
+      SymTypeExpression numericType = popTransformedSubSymType();
+      SymTypeOfNumericWithSIUnit normalized = SymTypeExpressionFactory
+          .createNumericWithSIUnit(siUnit, numericType);
+      normalized._internal_setSourceInfo(numericWithSIUnit.getSourceInfo());
+      pushTransformedSymType(normalized);
     }
   }
 
   @Override
   public void visit(SymTypeOfSIUnit siUnit) {
-    SymTypeOfSIUnit normalized =
-        SIUnitTypeRelations.internal_normalize(siUnit);
+    SymTypeOfSIUnit normalized = SIUnitTypeRelations.normalize(siUnit);
     pushTransformedSymType(normalized);
   }
 
