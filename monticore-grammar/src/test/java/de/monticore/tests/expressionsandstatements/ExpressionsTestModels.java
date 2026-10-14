@@ -2,6 +2,7 @@
 package de.monticore.tests.expressionsandstatements;
 
 import de.monticore.rte.tuples.Tuple2;
+import de.monticore.rte.streams.EventStream;
 import org.junit.jupiter.params.provider.Arguments;
 
 import java.util.List;
@@ -26,7 +27,8 @@ public class ExpressionsTestModels {
         getTupleCases(),
         getOCLExpressionsCases(),
         getSetExpressionsCases(),
-        getTypeCastingCases()
+        getTypeCastingCases(),
+        getStreamExpressionsCases()
     ).flatMap(s -> s);
   }
 
@@ -257,6 +259,16 @@ public class ExpressionsTestModels {
         // Union + Lambda
         Arguments.of("((() -> (double | float)) () ->  5)() + 2", 7.0),
         Arguments.of("((((() -> double) | (() -> float))) () ->  5)() + 2", 7.0)
+    );
+  }
+
+  static protected Stream<Arguments> getStreamExpressionsCases() {
+    return Stream.of(
+        Arguments.of("#Sync<1, 2, 3>", 3L),
+        Arguments.of("#<1, 2, 3>", 3L),
+        Arguments.of("#(Sync<1, 2> ^^ (1:Sync<int><>))", 3L),
+        Arguments.of("#(Sync<1, 2> ^^ (1:Sync<int><2>))", 4L),
+        Arguments.of("#(Event<1, 2> ^^ (Tick:Event<int><>))", 2L)
     );
   }
 
