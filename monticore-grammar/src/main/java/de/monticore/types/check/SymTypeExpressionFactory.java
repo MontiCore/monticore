@@ -431,9 +431,8 @@ public class SymTypeExpressionFactory {
    * whenever appropriate
    */
   public static SymTypeExpression createFromSymbol(TypeSymbol typeSymbol) {
-    // TODO: use TypeDispatcher as soon as it is fixed
-    if(typeSymbol instanceof TypeVarSymbol) {
-      return createTypeVariable((TypeVarSymbol) typeSymbol);
+    if(typeSymbol instanceof TypeVarSymbol typeVarSymbol) {
+      return createTypeVariable(typeVarSymbol);
     }
     if(typeSymbol.getSpannedScope().getLocalTypeVarSymbols().isEmpty()) {
       return createTypeObject(typeSymbol);
