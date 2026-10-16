@@ -191,6 +191,19 @@ public class SIUnitTypeRelations {
   }
 
   /**
+   * whether both SIUnits are of the same dimension,
+   * i.e., they only differ in prefixes and factors,
+   * e.g.: ms and h, km and m, J and eV
+   */
+  public static boolean isOfSameDimension(SymTypeOfSIUnit siUnit1, SymTypeOfSIUnit siUnit2) {
+    return getDelegate()._isOfSameDimension(siUnit1, siUnit2);
+  }
+
+  protected boolean _isOfSameDimension(SymTypeOfSIUnit siUnit1, SymTypeOfSIUnit siUnit2) {
+    return isOfDimensionOne(multiply(siUnit1, invert(siUnit2)));
+  }
+
+  /**
    * returns a SymTypeOfSIUnit only consisting of the seven SI base units
    * (s, m, kg, A, K, mol, cd)
    * any prefixes are removed (except "k" of kg)
