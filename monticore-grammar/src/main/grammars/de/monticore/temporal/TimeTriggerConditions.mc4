@@ -1,8 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.temporal;
 
-/* Alpha-version: This is intended to become a MontiCore stable grammar. */
-
 /**
  * This grammar defines time trigger conditions (such as 'after', 'on', 'every', 'cron')
  * using SI unit literals and ISO 8601 temporals.
@@ -51,16 +49,5 @@ component grammar TimeTriggerConditions extends de.monticore.siunit.SIUnitLitera
   CronNumber implements CronAtom = value:NatLiteral;
 
   CronName implements CronAtom = value:Name;
-
-  // In this composition, date-time values must contain the ISO 'T' designator.
-  // This keeps a negative time-only offset such as 12:00:00-05:30 from being
-  // tokenized as an ISODateTimeToken suffix.
-  fragment token TimeTriggerISODateTimeTime =
-    ('T' Digits | 'T' Digits ':' Digits (':' Digits)?)
-    FractionToken? TimeShiftToken?;
-
-  @Override
-  token ISODateTimeToken =
-    SignToken? Digits '-'? 'W'? Digits ('-' Digits)? TimeTriggerISODateTimeTime;
 
 }
