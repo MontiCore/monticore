@@ -8,6 +8,11 @@ package de.monticore.temporal;
 component grammar TimeTriggerConditions extends de.monticore.siunit.SIUnitLiterals,
     de.monticore.temporal.ISOTemporals {
 
+  /**
+   * Top-level interface of this grammar: languages embed time trigger
+   * conditions by referencing TimeTriggerCondition, all other productions
+   * are building blocks of its alternatives.
+   */
   interface TimeTriggerCondition;
 
   AfterCondition implements TimeTriggerCondition =
@@ -21,27 +26,58 @@ component grammar TimeTriggerConditions extends de.monticore.siunit.SIUnitLitera
   | "from" start:ISODateTime "every" period:SIUnitLiteral
       (times:NatLiteral "times")?;
 
+  /**
+   * A recurring schedule in the five-field Unix cron format
+   * (as documented at https://crontab.guru), e.g. cron [0 9 * * MON-FRI].
+   * The schedule itself is the standard cron syntax; the differences to
+   * a crontab line are:
+   *  - it is enclosed in "cron [" and "]" and has no command part,
+   *  - only the five standard fields are supported, i.e. no seconds or
+   *    year field, no macros such as @daily, and no Quartz extensions
+   *    such as ?, L, W, or #,
+   *  - whitespace is not significant inside a field, e.g. "1, 2" is
+   *    the same field as "1,2".
+   * Value ranges, names, and steps are checked by CronScheduleIsValid.
+   */
   CronCondition implements TimeTriggerCondition =
-    "cron" "[" expression:CronExpression "]";
+    "cron" "[" schedule:CronSchedule "]";
 
-  CronExpression =
+  /**
+   * The five fields of a cron schedule, in the standard order
+   * minute, hour, day-of-month, month, day-of-week.
+   */
+  CronSchedule =
     minute:CronField
     hour:CronField
     dayOfMonth:CronField
     month:CronField
     dayOfWeek:CronField;
 
+  /** A comma-separated list of values and ranges, e.g. 1,15,20-25. */
   CronField =
     elements:(CronElement || ",")+;
 
+  /** One entry of a cron field list: a single value or a range. */
   interface CronElement;
 
+  /**
+   * A single value, optionally with a step, e.g. 5, a wildcard, or a
+   * wildcard with step 15 (every 15th value). A step on a non-wildcard
+   * value, e.g. 5/15, selects every 15th value starting at 5.
+   */
   CronValue implements CronElement =
     value:CronAtom ("/" step:NatLiteral)?;
 
+  /**
+   * An inclusive range of field values, optionally with a step,
+   * e.g. 9-17 or MON-FRI or 0-30/10. These ranges span the integer
+   * values (or names) of a single field rather than points in time,
+   * so ISOTemporals' dates and times are not reused here.
+   */
   CronRange implements CronElement =
     start:CronAtom "-" end:CronAtom ("/" step:NatLiteral)?;
 
+  /** A wildcard, a number, or a month/weekday name such as JAN or MON. */
   interface CronAtom;
 
   CronWildcard implements CronAtom = "*";
