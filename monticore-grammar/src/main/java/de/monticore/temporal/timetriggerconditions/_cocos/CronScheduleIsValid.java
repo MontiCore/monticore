@@ -5,7 +5,7 @@ import de.se_rwth.commons.logging.Log;
 import de.monticore.temporal.timetriggerconditions._ast.ASTCronAtom;
 import de.monticore.temporal.timetriggerconditions._ast.ASTCronCondition;
 import de.monticore.temporal.timetriggerconditions._ast.ASTCronElement;
-import de.monticore.temporal.timetriggerconditions._ast.ASTCronExpression;
+import de.monticore.temporal.timetriggerconditions._ast.ASTCronSchedule;
 import de.monticore.temporal.timetriggerconditions._ast.ASTCronField;
 import de.monticore.temporal.timetriggerconditions._ast.ASTCronName;
 import de.monticore.temporal.timetriggerconditions._ast.ASTCronNumber;
@@ -22,7 +22,7 @@ import java.util.Set;
 /**
  * Checks that a Cron condition uses the supported Crontab.guru five-field syntax.
  */
-public class CronExpressionIsValid implements TimeTriggerConditionsASTCronConditionCoCo {
+public class CronScheduleIsValid implements TimeTriggerConditionsASTCronConditionCoCo {
   
   /** Error code for invalid field values, names, or ranges. */
   public static final String INVALID_FIELD_VALUE = "0xF0012";
@@ -46,21 +46,21 @@ public class CronExpressionIsValid implements TimeTriggerConditionsASTCronCondit
       "WED", 3, "THU", 4, "FRI", 5, "SAT", 6);
   
   /** Creates the stateless Cron validation CoCo. */
-  public CronExpressionIsValid() {
+  public CronScheduleIsValid() {
   }
   
   @Override
   public void check(ASTCronCondition node) {
-    ASTCronExpression expression = node.getExpression();
+    ASTCronSchedule schedule = node.getSchedule();
     
-    boolean valid = checkField(expression.getMinute(), 0, 59, "minute", Map.of());
-    valid &= checkField(expression.getHour(), 0, 23, "hour", Map.of());
-    valid &= checkField(expression.getDayOfMonth(), 1, 31, "day-of-month", Map.of());
-    valid &= checkField(expression.getMonth(), 1, 12, "month", MONTH_NAMES);
-    valid &= checkField(expression.getDayOfWeek(), 0, 7, "day-of-week", WEEKDAY_NAMES);
+    boolean valid = checkField(schedule.getMinute(), 0, 59, "minute", Map.of());
+    valid &= checkField(schedule.getHour(), 0, 23, "hour", Map.of());
+    valid &= checkField(schedule.getDayOfMonth(), 1, 31, "day-of-month", Map.of());
+    valid &= checkField(schedule.getMonth(), 1, 12, "month", MONTH_NAMES);
+    valid &= checkField(schedule.getDayOfWeek(), 0, 7, "day-of-week", WEEKDAY_NAMES);
     
     if (valid) {
-      warnIfCalendarImpossible(expression);
+      warnIfCalendarImpossible(schedule);
     }
   }
   
@@ -89,20 +89,20 @@ public class CronExpressionIsValid implements TimeTriggerConditionsASTCronCondit
    * years therefore provide valid occurrences. A restricted day-of-week can rescue a
    * restricted day-of-month through the POSIX OR rule; in that case no warning is issued.
    */
-  protected void warnIfCalendarImpossible(ASTCronExpression expression) {
-    if (!startsWithWildcard(expression.getDayOfMonth()) && !startsWithWildcard(expression
+  protected void warnIfCalendarImpossible(ASTCronSchedule schedule) {
+    if (!startsWithWildcard(schedule.getDayOfMonth()) && !startsWithWildcard(schedule
         .getDayOfWeek())) {
       return;
     }
     
-    Set<Integer> days = expand(expression.getDayOfMonth(), 1, 31, Map.of());
-    Set<Integer> months = expand(expression.getMonth(), 1, 12, MONTH_NAMES);
+    Set<Integer> days = expand(schedule.getDayOfMonth(), 1, 31, Map.of());
+    Set<Integer> months = expand(schedule.getMonth(), 1, 12, MONTH_NAMES);
     boolean possible = months.stream().anyMatch(month -> days.stream().anyMatch(day -> day
         <= MAXIMUM_DAY_BY_MONTH[month]));
     
     if (!possible) {
       Log.warn(IMPOSSIBLE_DATE
-          + " Cron day-of-month and month fields cannot match a Gregorian date.", expression
+          + " Cron day-of-month and month fields cannot match a Gregorian date.", schedule
               .getDayOfMonth().get_SourcePositionStart());
     }
   }
