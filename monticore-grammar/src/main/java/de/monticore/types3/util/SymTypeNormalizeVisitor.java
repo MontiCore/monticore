@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.Stack;
 import java.util.function.Predicate;
@@ -66,6 +67,10 @@ public class SymTypeNormalizeVisitor extends SymTypeDeepCloneVisitor {
     // no union of unions
     // (A|(B|C)) -> (A|B|C)
     Set<SymTypeExpression> splittedTypes = splitUnions(types);
+    // SIUnits of the same dimension are not subtypes of each other,
+    // but as they are convertible, the larger unit is used
+    // ([km]<int>|[m]<double>) -> [km]<double>
+    splittedTypes = mergeSIUnitsOfSameDimension(splittedTypes);
     // here would be an opportunity to unbox types,
     // however, we lose information, so we don't do so
     // z.B. (int|Float) -> float would be a Java-esque option
@@ -115,6 +120,71 @@ public class SymTypeNormalizeVisitor extends SymTypeDeepCloneVisitor {
       normalized = SymTypeExpressionFactory.createUnion(uniqueTypes);
     }
     return normalized;
+  }
+
+  /**
+   * merges (numerics with) SIUnits of the same dimension
+   * into the larger unit, e.g., {@code ([km]|[m]|int) -> ([km]|int)}
+   *
+   * @param types normalized types without unions
+   */
+  protected Set<SymTypeExpression> mergeSIUnitsOfSameDimension(
+      Set<SymTypeExpression> types
+  ) {
+    List<SymTypeExpression> mergedTypes = new ArrayList<>();
+    for (SymTypeExpression type : types) {
+      boolean merged = false;
+      for (int i = 0; i < mergedTypes.size() && !merged; i++) {
+        Optional<SymTypeExpression> mergedType =
+            mergeSIUnitsOfSameDimension(mergedTypes.get(i), type);
+        if (mergedType.isPresent()) {
+          mergedTypes.set(i, mergedType.get());
+          merged = true;
+        }
+      }
+      if (!merged) {
+        mergedTypes.add(type);
+      }
+    }
+    return new LinkedHashSet<>(mergedTypes);
+  }
+
+  /**
+   * @return the merged type, e.g., {@code ([km]<int>, [m]<double>) -> [km]<double>},
+   *     or empty if the types cannot be merged
+   */
+  protected Optional<SymTypeExpression> mergeSIUnitsOfSameDimension(
+      SymTypeExpression typeA,
+      SymTypeExpression typeB
+  ) {
+    if (typeA.isSIUnitType() && typeB.isSIUnitType()
+        && SIUnitTypeRelations.isOfSameDimension(
+        typeA.asSIUnitType(), typeB.asSIUnitType())
+    ) {
+      return Optional.of(SIUnitTypeRelations.getLargerUnit(
+          typeA.asSIUnitType(), typeB.asSIUnitType()
+      ).deepClone());
+    }
+    else if (typeA.isNumericWithSIUnitType() && typeB.isNumericWithSIUnitType()) {
+      SymTypeOfNumericWithSIUnit numericA = typeA.asNumericWithSIUnitType();
+      SymTypeOfNumericWithSIUnit numericB = typeB.asNumericWithSIUnitType();
+      SymTypeExpression numericType = normalizeUnionWithNormalizedTypes(
+          SymTypeExpressionFactory.createUnion(
+              numericA.getNumericType(), numericB.getNumericType()
+          ));
+      if (SIUnitTypeRelations.isOfSameDimension(
+          numericA.getSIUnitType(), numericB.getSIUnitType())
+          && SymTypeRelations.isNumericType(numericType)
+      ) {
+        return Optional.of(SymTypeExpressionFactory.createNumericWithSIUnit(
+            SIUnitTypeRelations.getLargerUnit(
+                numericA.getSIUnitType(), numericB.getSIUnitType()
+            ).deepClone(),
+            numericType
+        ));
+      }
+    }
+    return Optional.empty();
   }
 
   @Override

@@ -360,7 +360,36 @@ public class SymTypeNormalizeVisitorTest extends AbstractMCTest {
             createNumericWithSIUnit(
                 List.of(createSIUnitBasic("m", "k", 1)), List.of(), _intSymType)
         ),
-        "[km]<int> | [m]<int>"
+        "[km]<int>"
+    );
+    // SIUnits of the same dimension are merged into the larger unit
+    check(createUnion(
+            createNumericWithSIUnit(
+                List.of(createSIUnitBasic("m", "k", 1)), List.of(), _intSymType),
+            createNumericWithSIUnit(_m_SISymType, _doubleSymType)
+        ),
+        "[km]<double>"
+    );
+    check(createUnion(
+            createNumericWithSIUnit(_m_SISymType, _doubleSymType),
+            createNumericWithSIUnit(_s_SISymType, _doubleSymType),
+            createNumericWithSIUnit(
+                List.of(createSIUnitBasic("m", "k", 1)), List.of(), _doubleSymType),
+            _intSymType
+        ),
+        "[km]<double> | [s]<double> | int"
+    );
+    check(createUnion(_m_SISymType,
+            createSIUnit(List.of(createSIUnitBasic("m", "k", 1)), List.of())
+        ),
+        "[km]"
+    );
+    // not merged, as the dimensions differ
+    check(createUnion(
+            createNumericWithSIUnit(_m_SISymType, _intSymType),
+            createNumericWithSIUnit(_s_SISymType, _intSymType)
+        ),
+        "[m]<int> | [s]<int>"
     );
   }
 

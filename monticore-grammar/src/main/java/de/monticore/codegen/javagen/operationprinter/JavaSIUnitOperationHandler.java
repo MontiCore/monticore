@@ -9,9 +9,9 @@ import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfSIUnit;
+import de.monticore.types3.util.SIUnitConversion;
 import de.monticore.types3.util.SIUnitTypeRelations;
 
-import java.math.BigDecimal;
 import java.util.Optional;
 
 import static de.monticore.codegen.CodeGenSymTypeExpressionConverter.printConverted;
@@ -182,9 +182,9 @@ public class JavaSIUnitOperationHandler implements ICodeGenOperationHandler {
       SymTypeOfSIUnit sourceUnit,
       SymTypeOfSIUnit targetUnit
   ) {
-    Optional<BigDecimal> factor =
-        SIUnitTypeRelations.getConversionFactor(sourceUnit, targetUnit);
-    if (factor.isPresent() && factor.get().compareTo(BigDecimal.ONE) != 0) {
+    Optional<SIUnitConversion> conversion =
+        SIUnitTypeRelations.getConversion(sourceUnit, targetUnit);
+    if (conversion.isPresent() && !conversion.get().isIdentity()) {
       return numericPromotion(valueType,
           SymTypeExpressionFactory.createPrimitive(BasicSymbolsMill.DOUBLE)
       );

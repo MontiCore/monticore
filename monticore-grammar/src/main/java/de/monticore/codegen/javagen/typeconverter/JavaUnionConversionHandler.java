@@ -4,8 +4,6 @@ package de.monticore.codegen.javagen.typeconverter;
 import de.monticore.codegen.CodeGenPrintAction;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.check.SymTypeExpression;
-import de.monticore.types.check.SymTypeOfSIUnit;
-import de.monticore.types.check.SymTypeOfUnion;
 import de.monticore.types3.util.SIUnitTypeRelations;
 import de.se_rwth.commons.logging.Log;
 
@@ -22,9 +20,9 @@ import static de.monticore.types3.SymTypeRelations.isSubTypeOf;
  * using the compatible type of the union,
  * e.g., {@code [km]<double> -> [m]<double> | [s]<double>}
  * converts to {@code [m]<double>}.
- * Unions of different SIUnits of the same dimension,
- * e.g., {@code [km]<double> | [m]<double>}, are not supported,
- * as the unit of the value cannot be determined at runtime.
+ * Unions of SIUnits of the same dimension do not exist here,
+ * as they are normalized to the larger unit,
+ * e.g., {@code [km]<double> | [m]<double> -> [km]<double>}.
  * Should have the lowest priority.
  */
 public class JavaUnionConversionHandler
@@ -40,15 +38,6 @@ public class JavaUnionConversionHandler
     // conversions between unions are not supported yet
     if (!targetType.isUnionType() || sourceType.isUnionType()) {
       return false;
-    }
-    if (containsSIUnitsOfSameDimension(targetType.asUnionType())) {
-      Log.error("0xFD242 Cannot convert " + sourceType.printFullName()
-          + " to " + targetType.printFullName()
-          + ", as unions of different SIUnits of the same dimension"
-          + " are not supported."
-      );
-      sourceExprPrintAction.print(printer);
-      return true;
     }
     Optional<SymTypeExpression> unionizedTargetType =
         getUnionizedTargetType(targetType.asUnionType().getUnionizedTypeSet()
@@ -73,22 +62,6 @@ public class JavaUnionConversionHandler
       printJavaCasted(printer, targetType, sourceExprPrintAction);
     }
     return true;
-  }
-
-  protected boolean containsSIUnitsOfSameDimension(SymTypeOfUnion union) {
-    List<SymTypeOfSIUnit> siUnits = union.getUnionizedTypeSet().stream()
-        .filter(SIUnitTypeRelations::hasSIUnit)
-        .map(SIUnitTypeRelations::getSIUnit)
-        .collect(Collectors.toList());
-    for (int i = 0; i < siUnits.size(); i++) {
-      for (int j = i + 1; j < siUnits.size(); j++) {
-        if (SIUnitTypeRelations.isOfSameDimension(siUnits.get(i), siUnits.get(j))
-            && !siUnits.get(i).deepEquals(siUnits.get(j))) {
-          return true;
-        }
-      }
-    }
-    return false;
   }
 
   /**

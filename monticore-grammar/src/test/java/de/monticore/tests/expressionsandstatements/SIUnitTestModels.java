@@ -26,7 +26,9 @@ public class SIUnitTestModels {
         getFunctionCases(),
         getAccessCases(),
         getTupleCases(),
-        getUnionCases()
+        getUnionCases(),
+        getTemperatureCases(),
+        getAngleCases()
     ).flatMap(s -> s);
   }
 
@@ -219,7 +221,42 @@ public class SIUnitTestModels {
         Arguments.of("([m]<double> | String) x = 1km; x", 1000.0),
         Arguments.of("([km]<double> | String) x = \"a\"; x", "a"),
         Arguments.of("(([km]<double> | [s]<double>), int) t = (1km, 2); t",
-            Tuple2.of(1.0, 2))
+            Tuple2.of(1.0, 2)),
+        // normalized to the larger unit
+        Arguments.of("([km]<double> | [m]<double>) x = 1m; x", 1 / 1000.0),
+        Arguments.of("([m]<double> | [km]<double>) x = 1km; x", 1.0),
+        Arguments.of("([km]<double> | [m]<double>) x = 1km; "
+            + "[m]<double> y = x; y", 1 * 1000.0)
+    );
+  }
+
+  static protected Stream<Arguments> getTemperatureCases() {
+    return Stream.of(
+        Arguments.of("[K]<double> x = 0°C; x", 0 + 273.15),
+        Arguments.of("[°C]<double> x = 300K; x", 300 - 273.15),
+        Arguments.of("[°F]<double> x = 100°C; x", 100 * 1.8 + 32.0),
+        Arguments.of("[°C]<double> x = 212°F; x", 212 / 1.8 - 160 / 9.0),
+        Arguments.of("[mK]<double> x = 1°C; x", 1 * 1000.0 + 273150.0),
+        Arguments.of("([K]<double>) 1°C", 1 + 273.15),
+        // in the unit of the first operand, as both are of the same size
+        Arguments.of("1°C < 275K", true),
+        Arguments.of("1°C > 275K", false),
+        Arguments.of("0°C == 273.15K", true),
+        Arguments.of("false ? 0°C : 0K", 0 - 273.15),
+        Arguments.of("[K]<double> x = true ? 20°C : 0K; x", 20 + 273.15),
+        Arguments.of("-(1°C)", -1.0)
+    );
+  }
+
+  static protected Stream<Arguments> getAngleCases() {
+    return Stream.of(
+        Arguments.of("[rad]<double> x = 180deg; x", 180 / 57.29577951308232),
+        Arguments.of("[rad]<double> x = 180°; x", 180 / 57.29577951308232),
+        Arguments.of("[deg]<double> x = 1rad; x", 1 * 57.29577951308232),
+        // numerics are SIUnits of dimension one (in rad)
+        Arguments.of("double x = 90deg; x", 90 / 57.29577951308232),
+        Arguments.of("1deg + 1rad", 1 / 57.29577951308232 + 1),
+        Arguments.of("90deg == 90deg", true)
     );
   }
 

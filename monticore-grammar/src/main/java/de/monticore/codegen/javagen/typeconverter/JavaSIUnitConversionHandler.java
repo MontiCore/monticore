@@ -6,6 +6,7 @@ import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
+import de.monticore.types3.util.SIUnitConversion;
 import de.monticore.types3.util.SIUnitTypeRelations;
 import de.se_rwth.commons.logging.Log;
 
@@ -24,7 +25,9 @@ import static de.monticore.types3.util.SIUnitTypeRelations.hasSIUnit;
  * e.g., 5.0 of {@code [km]<double>} -> 5000.0 of {@code [m]<double>}.
  * Values are in the units of their types;
  * scaling is calculated using double.
- * Conversions like ºC -> K or deg -> rad are not supported.
+ * Temperatures are converted using their offsets,
+ * e.g., 0.0 of {@code [ºC]<double>} -> 273.15 of {@code [K]<double>}.
+ * Conversions of logarithmic units like dB are not supported.
  */
 public class JavaSIUnitConversionHandler
     extends AbstractJavaTypeConverter {
@@ -45,19 +48,19 @@ public class JavaSIUnitConversionHandler
 
     SymTypeExpression targetValueType = getSIUnitValueType(targetType);
     SymTypeExpression sourceValueType = getSIUnitValueType(sourceType);
-    Optional<BigDecimal> factor = SIUnitTypeRelations.getConversionFactor(
+    Optional<SIUnitConversion> conversion = SIUnitTypeRelations.getConversion(
         getSIUnit(sourceType), getSIUnit(targetType)
     );
-    if (factor.isEmpty()) {
+    if (conversion.isEmpty()) {
       Log.error("0xFD240 Cannot convert " + sourceType.printFullName()
           + " to " + targetType.printFullName()
-          + ", as there is no conversion factor."
-          + " Conversions between, e.g., ºC and K, or deg and rad,"
+          + ", as there is no conversion."
+          + " Conversions of, e.g., dB, or from ºC to ºC/s,"
           + " are not supported."
       );
       sourceExprPrintAction.print(printer);
     }
-    else if (factor.get().compareTo(BigDecimal.ONE) == 0) {
+    else if (conversion.get().isIdentity()) {
       printConverted(printer, targetValueType, sourceValueType,
           sourceExprPrintAction
       );
@@ -69,7 +72,8 @@ public class JavaSIUnitConversionHandler
         p.print("((");
         printConverted(p, doubleType, sourceValueType, sourceExprPrintAction);
         p.print(")");
-        printScaling(p, factor.get());
+        printScaling(p, conversion.get().getFactor());
+        printOffset(p, conversion.get().getOffset());
         p.print(")");
       });
     }
@@ -82,7 +86,10 @@ public class JavaSIUnitConversionHandler
    * as dividing by 1000 is more precise than multiplying by 0.001
    */
   protected void printScaling(IndentPrinter printer, BigDecimal factor) {
-    if (factor.compareTo(BigDecimal.ONE) >= 0) {
+    if (factor.compareTo(BigDecimal.ONE) == 0) {
+      // no scaling, e.g., ºC -> K
+    }
+    else if (factor.compareTo(BigDecimal.ONE) > 0) {
       printer.print(" * ");
       printer.print(Double.toString(factor.doubleValue()));
     }
@@ -91,6 +98,21 @@ public class JavaSIUnitConversionHandler
           BigDecimal.ONE.divide(factor, MathContext.DECIMAL128);
       printer.print(" / ");
       printer.print(Double.toString(divisor.doubleValue()));
+    }
+  }
+
+  /**
+   * prints, e.g., {@code + 273.15} for ºC -> K,
+   * and {@code - 273.15} for K -> ºC
+   */
+  protected void printOffset(IndentPrinter printer, BigDecimal offset) {
+    if (offset.signum() > 0) {
+      printer.print(" + ");
+      printer.print(Double.toString(offset.doubleValue()));
+    }
+    else if (offset.signum() < 0) {
+      printer.print(" - ");
+      printer.print(Double.toString(offset.negate().doubleValue()));
     }
   }
 

@@ -6,6 +6,7 @@ import de.monticore.runtime.junit.AbstractMCTest;
 import de.monticore.types.check.SIUnitBasic;
 import de.monticore.types.check.SymTypeOfSIUnit;
 import de.monticore.types3.util.DefsTypesForTests;
+import de.monticore.types3.util.SIUnitConversion;
 import de.monticore.types3.util.SIUnitTypeRelations;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,7 @@ import static de.monticore.types.check.SymTypeExpressionFactory.createSIUnit;
 import static de.monticore.types.check.SymTypeExpressionFactory.createSIUnitBasic;
 import static de.monticore.types3.util.DefsTypesForTests.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SIUnitTypeRelationsTest extends AbstractMCTest {
@@ -137,18 +139,57 @@ public class SIUnitTypeRelationsTest extends AbstractMCTest {
 
   @Test
   public void conversionFactorAffineUnits() {
-    // only identical affine units can be "converted"
     checkFactor(unit("ºC"), unit("ºC"), 1);
     checkFactor(unit("°C"), unit("°C"), 1);
+    // temperature differences
     checkFactor(
         createSIUnit(List.of(basic("", "ºC")), List.of(basic("", "s"))),
         createSIUnit(List.of(basic("", "ºC")), List.of(basic("m", "s"))),
         0.001
     );
+    checkFactor(
+        createSIUnit(List.of(basic("", "ºC")), List.of(basic("", "s"))),
+        createSIUnit(List.of(basic("", "K")), List.of(basic("", "s"))),
+        1
+    );
+    checkFactor(
+        createSIUnit(List.of(basic("", "°F")), List.of(basic("", "s"))),
+        createSIUnit(List.of(basic("", "K")), List.of(basic("", "s"))),
+        5.0 / 9
+    );
+    // temperatures have an offset
     checkNoFactor(unit("ºC"), unit("K"));
     checkNoFactor(unit("K"), unit("ºC"));
     checkNoFactor(unit("ºF"), unit("ºC"));
     checkNoFactor(unit("°F"), unit("°C"));
+    assertNoFindings();
+  }
+
+  @Test
+  public void conversionAffineUnits() {
+    checkConversion(unit("ºC"), unit("ºC"), 1, 0);
+    checkConversion(unit("ºC"), unit("K"), 1, 273.15);
+    checkConversion(unit("°C"), unit("K"), 1, 273.15);
+    checkConversion(unit("K"), unit("ºC"), 1, -273.15);
+    checkConversion(unit("ºC"), unit("m", "K"), 1000, 273150);
+    checkConversion(unit("ºF"), unit("K"), 5.0 / 9, 459.67 * 5 / 9);
+    checkConversion(unit("ºC"), unit("ºF"), 1.8, 32);
+    checkConversion(unit("°F"), unit("°C"), 5.0 / 9, -32 * 5.0 / 9);
+    // linear conversions have no offset
+    checkConversion(unit("k", "m"), unit("m"), 1000, 0);
+    // temperatures cannot be converted to temperature differences
+    checkNoConversion(unit("ºC"),
+        createSIUnit(List.of(basic("", "K"), basic("", "s")),
+            List.of(basic("m", "s"))));
+    checkNoConversion(unit("ºC"), unit("m"));
+    assertTrue(SIUnitTypeRelations.isAffine(unit("ºC")));
+    assertTrue(SIUnitTypeRelations.isAffine(unit("°F")));
+    assertTrue(SIUnitTypeRelations.isAffine(createSIUnit(
+        List.of(basic("", "ºC"), basic("", "s")), List.of(basic("", "s")))));
+    assertFalse(SIUnitTypeRelations.isAffine(unit("K")));
+    assertFalse(SIUnitTypeRelations.isAffine(unit("k", "ºC")));
+    assertFalse(SIUnitTypeRelations.isAffine(createSIUnit(
+        List.of(basic("", "ºC")), List.of(basic("", "s")))));
     assertNoFindings();
   }
 
@@ -158,9 +199,12 @@ public class SIUnitTypeRelationsTest extends AbstractMCTest {
     checkFactor(unit("dB"), unit("dB"), 1);
     checkFactor(unit("deg"), unit("deg"), 1);
     checkFactor(unit("rad"), unit("rad"), 1);
-    checkNoFactor(unit("deg"), unit("rad"));
-    checkNoFactor(unit("°"), unit("rad"));
     checkNoFactor(unit("dB"), unit("B"));
+    // angles
+    checkFactor(unit("deg"), unit("rad"), Math.PI / 180);
+    checkFactor(unit("°"), unit("rad"), Math.PI / 180);
+    checkFactor(unit("rad"), unit("deg"), 180 / Math.PI);
+    checkFactor(unit("deg"), createSIUnit(List.of(), List.of()), Math.PI / 180);
     checkNoFactor(unit("Np"), unit("dB"));
     // rad and sr are coherent units of dimension one (factor 1)
     checkFactor(unit("rad"), createSIUnit(List.of(), List.of()), 1);
@@ -291,7 +335,10 @@ public class SIUnitTypeRelationsTest extends AbstractMCTest {
     // same size or not comparable: the first one
     checkPrint("[L]", SIUnitTypeRelations.getLargerUnit(unit("L"), unit("l")));
     checkPrint("[l]", SIUnitTypeRelations.getSmallerUnit(unit("l"), unit("L")));
-    checkPrint("[deg]", SIUnitTypeRelations.getLargerUnit(unit("deg"), unit("rad")));
+    checkPrint("[ºC]", SIUnitTypeRelations.getLargerUnit(unit("ºC"), unit("K")));
+    checkPrint("[dB]", SIUnitTypeRelations.getLargerUnit(unit("dB"), unit("B")));
+    checkPrint("[rad]", SIUnitTypeRelations.getLargerUnit(unit("deg"), unit("rad")));
+    checkPrint("[ºC]", SIUnitTypeRelations.getLargerUnit(unit("ºF"), unit("ºC")));
     assertNoFindings();
   }
 
@@ -367,6 +414,39 @@ public class SIUnitTypeRelationsTest extends AbstractMCTest {
     assertTrue(factor.isEmpty(), "expected no conversion factor from "
         + source.printFullName() + " to " + target.printFullName()
         + ", but got " + factor.map(BigDecimal::toString).orElse("")
+    );
+  }
+
+  protected void checkConversion(
+      SymTypeOfSIUnit source,
+      SymTypeOfSIUnit target,
+      double expectedFactor,
+      double expectedOffset
+  ) {
+    Optional<SIUnitConversion> conversion =
+        SIUnitTypeRelations.getConversion(source, target);
+    assertTrue(conversion.isPresent(), "expected a conversion from "
+        + source.printFullName() + " to " + target.printFullName()
+    );
+    assertEquals(expectedFactor, conversion.get().getFactor().doubleValue(),
+        Math.abs(expectedFactor) * 1e-12,
+        "unexpected conversion factor from "
+            + source.printFullName() + " to " + target.printFullName()
+    );
+    assertEquals(expectedOffset, conversion.get().getOffset().doubleValue(),
+        Math.abs(expectedOffset) * 1e-12,
+        "unexpected conversion offset from "
+            + source.printFullName() + " to " + target.printFullName()
+    );
+  }
+
+  protected void checkNoConversion(
+      SymTypeOfSIUnit source,
+      SymTypeOfSIUnit target
+  ) {
+    assertTrue(SIUnitTypeRelations.getConversion(source, target).isEmpty(),
+        "expected no conversion from "
+            + source.printFullName() + " to " + target.printFullName()
     );
   }
 

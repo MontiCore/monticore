@@ -168,6 +168,9 @@ public class SIUnitTypeRelations {
     conversionTableTmp.put("u", List.of(createSIBaseUnit("g")));
     conversionTableTmp.put("ºC", List.of(createSIBaseUnit("K")));
     conversionTableTmp.put("ºF", List.of(createSIBaseUnit("K")));
+    // the parser creates °C and °F (degree sign instead of ordinal indicator)
+    conversionTableTmp.put("°C", List.of(createSIBaseUnit("K")));
+    conversionTableTmp.put("°F", List.of(createSIBaseUnit("K")));
     conversionTableTmp.put("Np", List.of());
     conversionTableTmp.put("B", List.of());
     conversionTableTmp.put("dB", List.of());
@@ -208,8 +211,9 @@ public class SIUnitTypeRelations {
   );
 
   /**
-   * factors to convert to SI base units, e.g., {@code h -> 3600} (s);
-   * does not contain, e.g., ºC (affine), dB (logarithmic), deg (angle)
+   * factors to convert to SI base units, e.g., {@code h -> 3600} (s),
+   * {@code deg -> π/180} (rad);
+   * does not contain logarithmic units, e.g., dB
    */
   protected static final Map<String, BigDecimal> unitFactors;
 
@@ -234,8 +238,33 @@ public class SIUnitTypeRelations {
     unitFactorsTmp.put("eV", new BigDecimal("1.602176634E-19"));
     unitFactorsTmp.put("Da", new BigDecimal("1.66053906660E-27"));
     unitFactorsTmp.put("u", new BigDecimal("1.66053906660E-27"));
+    // temperature differences, s. affineOffsets for temperatures
+    unitFactorsTmp.put("ºC", BigDecimal.ONE);
+    unitFactorsTmp.put("°C", BigDecimal.ONE);
+    BigDecimal fahrenheitFactor =
+        BigDecimal.valueOf(5).divide(BigDecimal.valueOf(9), MathContext.DECIMAL128);
+    unitFactorsTmp.put("ºF", fahrenheitFactor);
+    unitFactorsTmp.put("°F", fahrenheitFactor);
+    // angles in rad
+    BigDecimal degreeFactor = new BigDecimal("3.141592653589793238462643383279503")
+        .divide(BigDecimal.valueOf(180), MathContext.DECIMAL128);
+    unitFactorsTmp.put("°", degreeFactor);
+    unitFactorsTmp.put("deg", degreeFactor);
     unitFactors = Collections.unmodifiableMap(unitFactorsTmp);
   }
+
+  /**
+   * offsets of affine units (temperatures),
+   * {@code valueInK = (value + offset) * unitFactor}, e.g., {@code ºC -> 273.15}.
+   * They only apply to standalone units, e.g., ºC, but not ºC/s,
+   * s. {@link #isAffine(SymTypeOfSIUnit)}
+   */
+  protected static final Map<String, BigDecimal> affineOffsets = Map.of(
+      "ºC", new BigDecimal("273.15"),
+      "°C", new BigDecimal("273.15"),
+      "ºF", new BigDecimal("459.67"),
+      "°F", new BigDecimal("459.67")
+  );
 
   /**
    * order of units (ignoring the exponents) used for normalization:
@@ -624,7 +653,8 @@ public class SIUnitTypeRelations {
   /**
    * the larger of two units of the same dimension, e.g.,
    * {@code (m, km) -> km}, {@code (km/h, m/s) -> m/s}.
-   * If both are of the same size or cannot be compared (e.g., deg and rad),
+   * If both are of the same size (e.g., ºC and K)
+   * or cannot be compared (e.g., dB and B),
    * the first unit is returned.
    */
   public static SymTypeOfSIUnit getLargerUnit(
@@ -638,8 +668,9 @@ public class SIUnitTypeRelations {
       SymTypeOfSIUnit siUnitA,
       SymTypeOfSIUnit siUnitB
   ) {
-    // 1 A = factor B
-    Optional<BigDecimal> factor = getConversionFactor(siUnitA, siUnitB);
+    // 1 A = factor B (ignoring offsets)
+    Optional<BigDecimal> factor = getConversion(siUnitA, siUnitB)
+        .map(SIUnitConversion::getFactor);
     if (factor.isPresent() && factor.get().compareTo(BigDecimal.ONE) < 0) {
       return siUnitB;
     }
@@ -661,7 +692,8 @@ public class SIUnitTypeRelations {
       SymTypeOfSIUnit siUnitA,
       SymTypeOfSIUnit siUnitB
   ) {
-    Optional<BigDecimal> factor = getConversionFactor(siUnitA, siUnitB);
+    Optional<BigDecimal> factor = getConversion(siUnitA, siUnitB)
+        .map(SIUnitConversion::getFactor);
     if (factor.isPresent() && factor.get().compareTo(BigDecimal.ONE) > 0) {
       return siUnitB;
     }
@@ -745,11 +777,57 @@ public class SIUnitTypeRelations {
   }
 
   /**
+   * calculates the conversion with
+   * {@code valueInTarget = valueInSource * factor + offset}, e.g.,
+   * km -> m: (1000, 0), ºC -> K: (1, 273.15), deg -> rad: (π/180, 0).
+   * Offsets only apply to standalone temperatures,
+   * e.g., ºC, but not ºC/s, which is a temperature difference per second,
+   * s. {@link #isAffine(SymTypeOfSIUnit)}.
+   * Units like dB are only supported if they cancel out.
+   *
+   * @return the conversion or empty, e.g., if the dimensions differ
+   */
+  public static Optional<SIUnitConversion> getConversion(
+      SymTypeOfSIUnit source,
+      SymTypeOfSIUnit target
+  ) {
+    return getDelegate()._getConversion(source, target);
+  }
+
+  protected Optional<SIUnitConversion> _getConversion(
+      SymTypeOfSIUnit source,
+      SymTypeOfSIUnit target
+  ) {
+    Optional<BigDecimal> factor = calculateFactor(source, target);
+    if (factor.isEmpty()) {
+      return Optional.empty();
+    }
+    if (!isAffine(source) && !isAffine(target)) {
+      return Optional.of(new SIUnitConversion(factor.get(), BigDecimal.ZERO));
+    }
+    // affine units can only be converted to temperatures,
+    // e.g., ºC -> K, but not ºC -> K*s/s
+    if (!isTemperature(source) || !isTemperature(target)) {
+      return Optional.empty();
+    }
+    // valueInK = (valueInSource + sourceOffset) * sourceFactor
+    // valueInTarget = valueInK / targetFactor - targetOffset
+    //   = valueInSource * factor + sourceOffset * factor - targetOffset
+    BigDecimal offset = getAffineOffset(source).multiply(factor.get())
+        .subtract(getAffineOffset(target));
+    return Optional.of(new SIUnitConversion(
+        factor.get(), offset.stripTrailingZeros()
+    ));
+  }
+
+  /**
    * calculates {@code factor} with
    * {@code valueInTarget = valueInSource * factor}, e.g., km -> m: 1000.
-   * Units like ºC, dB, or deg are only supported if they cancel out.
+   * Units like dB are only supported if they cancel out.
    *
    * @return the factor or empty, e.g., if the dimensions differ
+   *     or the conversion has an offset, e.g., ºC -> K,
+   *     s. {@link #getConversion(SymTypeOfSIUnit, SymTypeOfSIUnit)}
    */
   public static Optional<BigDecimal> getConversionFactor(
       SymTypeOfSIUnit source,
@@ -759,6 +837,39 @@ public class SIUnitTypeRelations {
   }
 
   protected Optional<BigDecimal> _getConversionFactor(
+      SymTypeOfSIUnit source,
+      SymTypeOfSIUnit target
+  ) {
+    return getConversion(source, target)
+        .filter(conversion -> conversion.getOffset().signum() == 0)
+        .map(SIUnitConversion::getFactor);
+  }
+
+  /**
+   * whether the SIUnit is a standalone temperature with an offset,
+   * e.g., ºC and ºF, but not ºC/s, kºC, or K.
+   * Most operations, e.g., {@code 1ºC * 2ºC}, are not supported on them.
+   */
+  public static boolean isAffine(SymTypeOfSIUnit siUnit) {
+    return getDelegate()._isAffine(siUnit);
+  }
+
+  protected boolean _isAffine(SymTypeOfSIUnit siUnit) {
+    SymTypeOfSIUnit normalized = normalize(siUnit);
+    if (normalized.getNumerator().size() != 1
+        || !normalized.getDenominator().isEmpty()) {
+      return false;
+    }
+    SIUnitBasic unitBasic = normalized.getNumerator().get(0);
+    return unitBasic.getExponent() == 1
+        && unitBasic.getPrefix().isEmpty()
+        && affineOffsets.containsKey(unitBasic.getDimension());
+  }
+
+  /**
+   * the factor of the conversion, ignoring offsets of affine units
+   */
+  protected Optional<BigDecimal> calculateFactor(
       SymTypeOfSIUnit source,
       SymTypeOfSIUnit target
   ) {
@@ -837,6 +948,31 @@ public class SIUnitTypeRelations {
     return Optional.of(prefixFactors.get(unitBasic.getPrefix())
         .multiply(unitFactors.get(unitBasic.getDimension()))
     );
+  }
+
+  /**
+   * @return the offset if the SIUnit is affine, e.g., ºC -> 273.15, 0 otherwise
+   */
+  protected BigDecimal getAffineOffset(SymTypeOfSIUnit siUnit) {
+    if (!isAffine(siUnit)) {
+      return BigDecimal.ZERO;
+    }
+    return affineOffsets.get(
+        normalize(siUnit).getNumerator().get(0).getDimension()
+    );
+  }
+
+  /**
+   * whether the SIUnit is a single temperature unit, e.g., ºC, mK
+   */
+  protected boolean isTemperature(SymTypeOfSIUnit siUnit) {
+    SymTypeOfSIUnit normalized = normalize(siUnit);
+    return normalized.getNumerator().size() == 1
+        && normalized.getDenominator().isEmpty()
+        && normalized.getNumerator().get(0).getExponent() == 1
+        && normalizeDimension(normalized).deepEquals(
+        SymTypeExpressionFactory.createSIUnit(
+            List.of(createSIBaseUnit("K")), List.of()));
   }
 
   // helper
