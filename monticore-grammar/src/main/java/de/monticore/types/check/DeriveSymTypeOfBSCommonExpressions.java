@@ -711,7 +711,9 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
    * Hookpoint for object oriented languages to get the correct variables/fields from a type based on their modifiers
    */
   protected List<VariableSymbol> getCorrectFieldsFromInnerType(SymTypeExpression innerResult, ASTFieldAccessExpression expr) {
-    return innerResult.getFieldList(expr.getName(), getTypeCheckResult().isType(), true, AccessModifier.ALL_INCLUSION);
+    return TypeCheck1Deprecations.getFieldList(innerResult,
+        expr.getName(), getTypeCheckResult().isType(), true,
+        AccessModifier.ALL_INCLUSION);
   }
 
   /**
@@ -1085,7 +1087,8 @@ public class DeriveSymTypeOfBSCommonExpressions extends AbstractDeriveFromExpres
    * Hookpoint for object oriented languages to get the correct functions/methods from a type based on their modifiers
    */
   protected List<FunctionSymbol> getCorrectMethodsFromInnerType(SymTypeExpression innerResult, ASTCallExpression expr, String name) {
-    return innerResult.getMethodList(name, getTypeCheckResult().isType(), true, AccessModifier.ALL_INCLUSION);
+    return TypeCheck1Deprecations.getMethodList(innerResult, name,
+        getTypeCheckResult().isType(), true, AccessModifier.ALL_INCLUSION);
   }
 
   protected List<SymTypeOfFunction> getFittingFunctions(List<SymTypeOfFunction> candidates,

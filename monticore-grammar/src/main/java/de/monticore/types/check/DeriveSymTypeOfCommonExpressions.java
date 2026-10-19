@@ -47,11 +47,14 @@ public class DeriveSymTypeOfCommonExpressions extends DeriveSymTypeOfBSCommonExp
 
   @Override
   protected List<FunctionSymbol> getCorrectMethodsFromInnerType(SymTypeExpression innerResult, ASTCallExpression expr, String name) {
-    return innerResult.getMethodList(name, getTypeCheckResult().isType(), false, AccessModifier.ALL_INCLUSION);
+    return TypeCheck1Deprecations.getMethodList(innerResult, name,
+        getTypeCheckResult().isType(), false, AccessModifier.ALL_INCLUSION);
   }
 
   @Override
   protected List<VariableSymbol> getCorrectFieldsFromInnerType(SymTypeExpression innerResult, ASTFieldAccessExpression expr) {
-    return innerResult.getFieldList(expr.getName(), getTypeCheckResult().isType(), false, AccessModifier.ALL_INCLUSION);
+    return TypeCheck1Deprecations.getFieldList(innerResult,
+        expr.getName(), getTypeCheckResult().isType(), false,
+        AccessModifier.ALL_INCLUSION);
   }
 }

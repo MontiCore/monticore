@@ -8,6 +8,7 @@ import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.compsymbols._symboltable.ComponentTypeSymbol;
 import de.monticore.symbols.compsymbols._symboltable.PortSymbol;
+import de.monticore.types3.generics.TypeParameterRelations;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.ArrayList;
@@ -188,8 +189,7 @@ public class CompKindOfGenericComponentType extends CompKindExpression {
       if(typeArg.isTypeVariable() && newTypeVarBindings.containsKey(((TypeVarSymbol) typeArg.getTypeInfo()))) {
         newTypeArg = newTypeVarBindings.get((TypeVarSymbol) typeArg.getTypeInfo());
       } else {
-        newTypeArg = typeArg.deepClone();
-        newTypeArg.replaceTypeVariables(newTypeVarBindings);
+        newTypeArg = replaceTypeVariables(typeArg, newTypeVarBindings);
       }
       newBindings.add(newTypeArg);
     }
@@ -231,8 +231,8 @@ public class CompKindOfGenericComponentType extends CompKindExpression {
     } else if (unboundTypeExpr.isTypeVariable()) {
       return this.getTypeBindingFor(unboundTypeExpr.getTypeInfo().getName());
     } else {
-      SymTypeExpression boundSymType = unboundTypeExpr.deepClone();
-      boundSymType.replaceTypeVariables(this.getTypeVarBindings());
+      SymTypeExpression boundSymType =
+          replaceTypeVariables(unboundTypeExpr, this.getTypeVarBindings());
       return Optional.of(boundSymType);
     }
   }
@@ -240,5 +240,18 @@ public class CompKindOfGenericComponentType extends CompKindExpression {
   protected List<Optional<SymTypeExpression>> createBoundTypeExpression(@NonNull List<SymTypeExpression> typeExprS) {
     Preconditions.checkNotNull(typeExprS);
     return typeExprS.stream().map(this::createBoundTypeExpression).collect(Collectors.toList());
+  }
+
+  protected SymTypeExpression replaceTypeVariables(
+      SymTypeExpression type,
+      Map<TypeVarSymbol, SymTypeExpression> typeVarBindings
+  ) {
+    Map<SymTypeVariable, SymTypeExpression> symTypeVarBindings =
+        typeVarBindings.entrySet().stream().collect(
+        Collectors.toMap(entry ->
+                SymTypeExpressionFactory.createTypeVariable(entry.getKey()),
+        Map.Entry::getValue
+    ));
+    return TypeParameterRelations.replaceTypeVariables(type, symTypeVarBindings);
   }
 }
