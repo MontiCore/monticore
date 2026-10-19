@@ -21,6 +21,7 @@ import java.util.List;
  * use {@link de.monticore.types3.TypeCheck3} instead.
  */
 @Deprecated
+@SuppressWarnings({"deprecation", "removal"})
 public class SynthesizeSymTypeFromMCFunctionTypes extends AbstractSynthesizeFromType
     implements MCFunctionTypesVisitor2, MCFunctionTypesHandler {
 

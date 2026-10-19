@@ -26,6 +26,7 @@ import static de.monticore.types.check.SymTypeExpressionFactory.*;
  * @deprecated Use the test fixture instead
  */
 @Deprecated(forRemoval = true)
+@SuppressWarnings({"deprecation", "removal"})
 public class DefsTypesForTests {
 
   /**

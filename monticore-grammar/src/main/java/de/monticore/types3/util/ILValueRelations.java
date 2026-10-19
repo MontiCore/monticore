@@ -18,6 +18,7 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
  * @deprecated use {@link de.monticore.types3.util.LValueRelations}
  */
 @Deprecated(forRemoval = true)
+@SuppressWarnings({"deprecation", "removal"})
 public interface ILValueRelations {
 
   @Deprecated

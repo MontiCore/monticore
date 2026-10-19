@@ -7,6 +7,7 @@ import de.monticore.types.check.SymTypeExpression;
  * @deprecated use MCCollectionSymTypeRelations
  */
 @Deprecated
+@SuppressWarnings({"deprecation", "removal"})
 public interface IMCCollectionTypeRelations {
 
   /**

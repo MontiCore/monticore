@@ -7,6 +7,7 @@ package de.monticore.expressions.expressionsbasis.types3;
  * @deprecated functionality is now in the super class
  */
 @Deprecated(forRemoval = true)
+@SuppressWarnings({"deprecation", "removal"})
 public class ExpressionBasisTypeIdAsConstructorCTTIVisitor
     extends ExpressionBasisCTTIVisitor {
 

@@ -204,7 +204,11 @@ public class SymTypeExpressionDeSer {
     if(toSerialize.isWildcard()) {
       return symTypeOfWildcardDeSer.serialize((SymTypeOfWildcard) toSerialize);
     }
-    Log.error("0x823FD Internal error: Loading ill-structured SymTab: No way to serialize SymType;");
+    if(toSerialize.isInferenceVariable()) {
+      Log.warn("0x824FD Internal warning: Detected inference variable during symbol table serialization. " +
+              "For the language developer: Consider adding the QualifiedTypeHasNoTypeParameters CoCo to your DSL.");
+    }
+    Log.error("0x823FD Internal error: Ill-structured SymTab: No way to serialize SymType `"  + toSerialize.printFullName() + "`");
     return null;
   }
 

@@ -7,6 +7,7 @@ package de.monticore.types.check;
  * preferably provided by {@link TypeCalculator}
  */
 @Deprecated
+@SuppressWarnings({"deprecation", "removal"})
 public class TypeCheck {
   
   /**
