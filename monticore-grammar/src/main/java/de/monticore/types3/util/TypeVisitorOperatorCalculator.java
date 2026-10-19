@@ -170,6 +170,9 @@ public class TypeVisitorOperatorCalculator {
     if (hasSIUnit(left, right) && resultSI.isEmpty()) {
       result = SymTypeExpressionFactory.createObscureType();
     }
+    else if (hasAffineSIUnit(left, right)) {
+      result = SymTypeExpressionFactory.createObscureType();
+    }
     else {
       result = fuseSIUnitWithValueType(resultSI, resultV);
     }
@@ -333,7 +336,12 @@ public class TypeVisitorOperatorCalculator {
       resultV = Optional.empty();
     }
 
-    result = fuseSIUnitWithValueType(resultSI, resultV);
+    if (hasAffineSIUnit(left, right)) {
+      result = SymTypeExpressionFactory.createObscureType();
+    }
+    else {
+      result = fuseSIUnitWithValueType(resultSI, resultV);
+    }
 
     return result;
   }
@@ -394,7 +402,12 @@ public class TypeVisitorOperatorCalculator {
       resultV = Optional.empty();
     }
 
-    result = fuseSIUnitWithValueType(resultSI, resultV);
+    if (hasAffineSIUnit(left, right)) {
+      result = SymTypeExpressionFactory.createObscureType();
+    }
+    else {
+      result = fuseSIUnitWithValueType(resultSI, resultV);
+    }
 
     return result;
   }
@@ -440,6 +453,8 @@ public class TypeVisitorOperatorCalculator {
     SymTypeExpression rightNormalized = SymTypeRelations.normalize(right);
     if (leftNormalized.isNumericWithSIUnitType()
         && rightNormalized.isNumericWithSIUnitType()) {
+      // same as the normalization of the union,
+      // but for units of the same size, the left one is used, e.g., ºC and K
       SymTypeOfSIUnit leftSI =
           leftNormalized.asNumericWithSIUnitType().getSIUnitType();
       SymTypeOfSIUnit rightSI =
@@ -1060,6 +1075,18 @@ public class TypeVisitorOperatorCalculator {
   protected boolean hasSIUnit(SymTypeExpression... types) {
     return Arrays.stream(types)
         .anyMatch(t -> t.isSIUnitType() || t.isNumericWithSIUnitType());
+  }
+
+  /**
+   * temperatures like ºC do not support, e.g., {@code 1ºC + 1ºC},
+   * as the result depends on the offset (274.15 K + 274.15 K != 2ºC),
+   * s. {@link SIUnitTypeRelations#isAffine(SymTypeOfSIUnit)}
+   */
+  protected boolean hasAffineSIUnit(SymTypeExpression... types) {
+    return Arrays.stream(types)
+        .map(this::getSIUnit)
+        .flatMap(Optional::stream)
+        .anyMatch(SIUnitTypeRelations::isAffine);
   }
 
   protected Optional<SymTypeOfSIUnit> getSIUnit(SymTypeExpression type) {

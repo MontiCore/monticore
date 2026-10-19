@@ -1558,6 +1558,38 @@ public class CommonExpressionTypeVisitorTest
     // different dimensions
     checkExpr("varboolean ? 1m : 1s", "[m]<double> | [s]<double>");
     checkExpr("varboolean ? 1m : 1", "[m]<double> | int");
+    // temperatures
+    checkExpr("varboolean ? 1°C : 1K", "[°C]<double>");
+    checkExpr("varboolean ? 1K : 1°C", "[K]<double>");
+  }
+
+  @Test
+  public void deriveFromAngles() throws IOException {
+    checkExpr("1deg + 1rad", "[rad]<double>");
+    checkExpr("1° + 1rad", "[rad]<double>");
+    // numerics are SIUnits of dimension one (in rad)
+    checkExpr("1deg + 1.0", "double");
+    checkExpr("1deg < 1.0", "boolean");
+  }
+
+  @Test
+  public void deriveFromTemperatures() throws IOException {
+    checkExpr("1°C < 1K", "boolean");
+    checkExpr("1°C == 1°F", "boolean");
+    checkExpr("-1°C", "[°C]<double>");
+    checkExpr("1K + 1K", "[K]<double>");
+    checkExpr("1K/s * 2", "[K/s]<double>");
+  }
+
+  @Test
+  public void testInvalidTemperatureArithmetic() throws IOException {
+    // the result would depend on the offset
+    checkErrorExpr("1°C + 1°C", "0xB0163");
+    checkErrorExpr("1°C + 1K", "0xB0163");
+    checkErrorExpr("1K - 1°F", "0xB0163");
+    checkErrorExpr("1°C % 1°C", "0xB0163");
+    checkErrorExpr("2 * 1°C", "0xB0163");
+    checkErrorExpr("1°C / 1s", "0xB0163");
   }
 
   @Test
