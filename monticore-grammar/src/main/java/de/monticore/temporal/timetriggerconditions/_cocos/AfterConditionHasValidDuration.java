@@ -32,7 +32,8 @@ public class AfterConditionHasValidDuration implements
     SymTypeExpression type = TypeCheck3.typeOf(duration);
     if (!type.isObscureType() && !isTimeDuration(type)) {
       Log.error(UNSUPPORTED_UNIT + " After timer unit must be a unit of time, e.g., ms, s, min, h,"
-          + " or d, but got " + type.printFullName() + ".", node.get_SourcePositionStart());
+              + " or d, but got " + type.printFullName() + ".",
+          node.get_SourcePositionStart(), node.get_SourcePositionEnd());
     }
   }
 
@@ -55,5 +56,4 @@ public class AfterConditionHasValidDuration implements
         List.of(SymTypeExpressionFactory.createSIUnitBasic("s")), List.of());
     return SIUnitTypeRelations.isOfSameDimension(siUnit, second);
   }
-
 }
