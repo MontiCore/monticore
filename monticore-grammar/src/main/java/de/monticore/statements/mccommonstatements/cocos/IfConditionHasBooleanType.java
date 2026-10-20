@@ -23,7 +23,8 @@ public class IfConditionHasBooleanType implements MCCommonStatementsASTIfStateme
     SymTypeExpression result = TypeCheck3.typeOf(node.getCondition());
 
     if (!result.isObscureType() && !SymTypeRelations.isBoolean(result)) {
-      Log.error(ERROR_CODE + " " + ERROR_MSG_FORMAT, node.get_SourcePositionStart());
+      Log.error(ERROR_CODE + " " + ERROR_MSG_FORMAT,
+        node.getCondition().get_SourcePositionStart(), node.getCondition().get_SourcePositionEnd());
     }
   }
 }
