@@ -22,11 +22,11 @@ import java.util.List;
  */
 public class EveryTimeConditionHasValidRepetitions implements
     TimeTriggerConditionsASTEveryTimeConditionCoCo {
-  
+
   public static final String INVALID_INTERVAL = "0xF0009";
   public static final String INVALID_START = "0xF000A";
   public static final String NON_POSITIVE_REPETITIONS = "0xF000B";
-  
+
   @Override
   public void check(ASTEveryTimeCondition node) {
     validateInterval(node.getPeriod(), node);
@@ -37,7 +37,7 @@ public class EveryTimeConditionHasValidRepetitions implements
       validateRepetitions(node.getTimes(), node);
     }
   }
-  
+
   protected void validateInterval(ASTSIUnitLiteral duration, ASTEveryTimeCondition node) {
     SymTypeExpression type = TypeCheck3.typeOf(duration);
     if (!type.isObscureType() && !isTimeDuration(type)) {
@@ -45,23 +45,22 @@ public class EveryTimeConditionHasValidRepetitions implements
           + " e.g., ms, s, min, h, or d, but got " + type.printFullName());
     }
   }
-  
+
   protected void validateStart(ASTISODateTime start, ASTEveryTimeCondition node) {
     try {
       ISOTemporalsConversions.toOffsetDateTime(start);
-    }
-    catch (java.time.format.DateTimeParseException exception) {
+    } catch (java.time.format.DateTimeParseException exception) {
       report(node, INVALID_START,
           "Every timer start must be a valid ISO date-time with an explicit UTC offset");
     }
   }
-  
+
   protected void validateRepetitions(ASTNatLiteral literal, ASTEveryTimeCondition node) {
     if (literal.getDigits().chars().allMatch(c -> c == '0')) {
       report(node, NON_POSITIVE_REPETITIONS, "Every timer repetition count must be greater than 0");
     }
   }
-  
+
   /**
    * @return whether the type is an SI unit (with or without a numeric)
    * of dimension time, e.g., {@code [ms]<int>}, {@code [h]<double>}, or {@code [s]}
@@ -81,9 +80,9 @@ public class EveryTimeConditionHasValidRepetitions implements
         List.of(SymTypeExpressionFactory.createSIUnitBasic("s")), List.of());
     return SIUnitTypeRelations.isOfSameDimension(siUnit, second);
   }
-  
+
   protected void report(ASTEveryTimeCondition node, String code, String requirement) {
-    Log.error(code + " " + requirement + ".", node.get_SourcePositionStart());
+    Log.error(code + " " + requirement + ".",
+        node.get_SourcePositionStart(), node.get_SourcePositionEnd());
   }
-  
 }
