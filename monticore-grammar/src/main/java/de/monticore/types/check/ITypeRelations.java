@@ -7,6 +7,7 @@ package de.monticore.types.check;
  * @deprecated use {@link de.monticore.types3.SymTypeRelations}
  */
 @Deprecated
+@SuppressWarnings({"deprecation", "removal"})
 public interface ITypeRelations {
 
   /**

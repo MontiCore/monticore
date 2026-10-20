@@ -4,7 +4,6 @@ package de.monticore.types3.util;
 import com.google.common.base.Preconditions;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
-import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.modifiers.StaticAccessModifier;
@@ -147,8 +146,7 @@ public class OOWithinTypeBasicSymbolsResolver
   }
 
   protected boolean isConstructor(FunctionSymbol func) {
-    if (OOSymbolsMill.typeDispatcher().isOOSymbolsMethod(func)) {
-      MethodSymbol method = OOSymbolsMill.typeDispatcher().asOOSymbolsMethod(func);
+    if (func instanceof MethodSymbol method) {
       return method.isIsConstructor();
     }
     return false;

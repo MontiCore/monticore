@@ -4,6 +4,7 @@ package de.monticore;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import de.monticore.ast.ASTCNode;
 import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4analysis.CD4AnalysisMill;
 import de.monticore.cd4analysis._symboltable.ICD4AnalysisGlobalScope;
@@ -469,9 +470,10 @@ public class MontiCoreScriptTest {
     assertNotNull(visitorPackageCD);
     assertNotNull(visitorPackageCD.getCDDefinition());
     assertEquals("Statechart", visitorPackageCD.getCDDefinition().getName());
-    assertEquals(2, visitorPackageCD.getCDDefinition().getCDClassesList().size());
+    assertEquals(3, visitorPackageCD.getCDDefinition().getCDClassesList().size());
     assertEquals("StatechartTraverserImplementation", visitorPackageCD.getCDDefinition().getCDClassesList().get(0).getName());
     assertEquals("StatechartInheritanceHandler", visitorPackageCD.getCDDefinition().getCDClassesList().get(1).getName());
+    assertEquals("StatechartSingleStepHandler", visitorPackageCD.getCDDefinition().getCDClassesList().get(2).getName());
     assertEquals(3, visitorPackageCD.getCDDefinition().getCDInterfacesList().size());
     assertEquals("StatechartTraverser", visitorPackageCD.getCDDefinition().getCDInterfacesList().get(0).getName());
     assertEquals("StatechartVisitor2", visitorPackageCD.getCDDefinition().getCDInterfacesList().get(1).getName());
@@ -660,7 +662,10 @@ public class MontiCoreScriptTest {
     Optional<ASTCDPackage> millPackage = decoratedCompilationUnit.getCDDefinition().getPackageWithName("de.monticore.statechart.statechart");
     assertTrue(millPackage.isPresent());
     assertEquals("Statechart", decoratedCompilationUnit.getCDDefinition().getName());
-    assertEquals(1, millPackage.get().getCDElementList().size());
+    //we expect two classes in the mill package: StatechartMill and StatechartMillState
+    assertEquals(2, millPackage.get().getCDElementList().size());
+    assertEquals("StatechartMill",((ASTCDClass) millPackage.get().getCDElementList().get(0)).getName());
+    assertEquals("StatechartMillState", ((ASTCDClass) millPackage.get().getCDElementList().get(1)).getName());
 
     MCAssertions.assertNoFindings();
   }

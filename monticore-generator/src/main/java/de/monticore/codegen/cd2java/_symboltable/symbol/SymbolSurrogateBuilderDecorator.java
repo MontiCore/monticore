@@ -36,6 +36,7 @@ import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.NAM
 import static de.monticore.codegen.cd2java._symboltable.SymbolTableConstants.STEREOINFO_VAR;
 
 @Deprecated
+@SuppressWarnings({"deprecation", "removal"})
 public class SymbolSurrogateBuilderDecorator extends AbstractCreator<ASTCDType, ASTCDClass> {
 
   protected final SymbolTableService symbolTableService;

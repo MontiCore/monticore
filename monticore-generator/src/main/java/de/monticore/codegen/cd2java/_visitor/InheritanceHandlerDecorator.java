@@ -37,7 +37,7 @@ import static de.monticore.codegen.cd2java._visitor.VisitorConstants.HANDLE_SYMT
 import static de.monticore.codegen.cd2java._visitor.VisitorConstants.TRAVERSER;
 
 /**
- * creates a InheritanceVisitor class from a grammar
+ * creates an InheritanceHandler class from a grammar
  */
 public class InheritanceHandlerDecorator extends AbstractCreator<ASTCDCompilationUnit, ASTCDClass> {
 
@@ -46,9 +46,11 @@ public class InheritanceHandlerDecorator extends AbstractCreator<ASTCDCompilatio
   protected final SymbolTableService symbolTableService;
 
   protected final MethodDecorator methodDecorator;
-  public InheritanceHandlerDecorator(final GlobalExtensionManagement glex,  final MethodDecorator methodDecorator,
-                                     final VisitorService visitorService,
-                                     final SymbolTableService symbolTableService) {
+  public InheritanceHandlerDecorator(
+      final GlobalExtensionManagement glex,
+      final MethodDecorator methodDecorator,
+      final VisitorService visitorService,
+      final SymbolTableService symbolTableService) {
     super(glex);
     this.methodDecorator = methodDecorator;
     this.visitorService = visitorService;

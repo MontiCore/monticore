@@ -22,6 +22,7 @@ import java.util.UUID;
  * This is used to track calls of the MontiCore jar
  */
 @Deprecated
+@SuppressWarnings({"deprecation", "removal"})
 public class StatisticsReporterFix extends SummaryReporter {
   public static final String SIMPLE_FILE_NAME = "20_Statistics";
   protected String STAT_TYPE;

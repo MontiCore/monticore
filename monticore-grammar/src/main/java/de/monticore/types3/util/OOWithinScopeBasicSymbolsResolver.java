@@ -2,7 +2,6 @@
 package de.monticore.types3.util;
 
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
-import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
 import de.se_rwth.commons.logging.Log;
 
@@ -27,8 +26,7 @@ public class OOWithinScopeBasicSymbolsResolver
 
   protected Predicate<FunctionSymbol> getIsConstructorPredicate() {
     return f -> {
-      if (OOSymbolsMill.typeDispatcher().isOOSymbolsMethod(f)) {
-        MethodSymbol m = OOSymbolsMill.typeDispatcher().asOOSymbolsMethod(f);
+      if (f instanceof MethodSymbol m) {
         if (m.isIsConstructor()) {
           return true;
         }

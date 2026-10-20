@@ -169,6 +169,11 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
         visitorService.getTraverserFullName(), INHERITANCE_TRAVERSER, visitorService.getTraverserInterfaceFullName());
     millClass.addAllCDMembers(traverserInheritanceMethods);
 
+    // decorate for traverser with SingleStepHandler
+    List<ASTCDMethod> traverserSingleStepMethods = getSingleStepTraverserMethods(visitorService.getInheritanceHandlerSimpleName(),
+        visitorService.getTraverserFullName(), SINGLE_STEP_TRAVERSER, visitorService.getTraverserInterfaceFullName());
+    millClass.addAllCDMembers(traverserSingleStepMethods);
+
     // decorate for global scope
     //globalScope
     String globalScopeAttributeName = StringTransformations.uncapitalize(symbolTableService.getGlobalScopeSimpleName());
@@ -208,6 +213,13 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
 
     ASTCDMethod resetMethod = addResetMethod(superSymbolList);
     millClass.addCDMember(resetMethod);
+
+    // add snapshot and load method
+    ASTCDMethod snapshotMethod = addGetMillStateMethod(superSymbolList);
+    millClass.addCDMember(snapshotMethod);
+
+    ASTCDMethod loadMethod = addSetMillStateMethod(superSymbolList);
+    millClass.addCDMember(loadMethod);
 
     return millClass;
   }
@@ -370,12 +382,16 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
     this.replaceTemplate(EMPTY_BODY, staticGetter,
         new TemplateHookPoint("mill.BuilderMethod",
             "typeDispatcher"));
+    this.replaceTemplate(ANNOTATIONS, staticGetter,
+        new StringHookPoint("@Deprecated(forRemoval = true)"));
     typeDispatcherMembers.add(staticGetter);
 
     ASTCDMethod protectedGetter = this.getCDMethodFacade().createMethod(PROTECTED.build(), typeDispatcherType, "_typeDispatcher");
     this.replaceTemplate(EMPTY_BODY, protectedGetter,
         new TemplateHookPoint("mill.TypeDispatcherGetter",
             packageName + "." + typeDispatcherName));
+    this.replaceTemplate(ANNOTATIONS, protectedGetter,
+        new StringHookPoint("@Deprecated(forRemoval = true)"));
     typeDispatcherMembers.add(protectedGetter);
 
     return typeDispatcherMembers;
@@ -618,6 +634,49 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
    * @param methodType    The return type of the methods
    * @return The accessor and corresponding internal method for the attribute
    */
+  protected List<ASTCDMethod> getSingleStepTraverserMethods(String attributeName, String attributeType, String methodName, String methodType) {
+    List<ASTCDMethod> attributeMethods = Lists.newArrayList();
+
+    // method names and return type
+    String protectedMethodName = "_" + methodName;
+    ASTMCType returnType = getMCTypeFacade().createQualifiedType(methodType);
+
+    // static accessor method
+    ASTCDMethod staticMethod = getCDMethodFacade().createMethod(PUBLIC_STATIC.build(), returnType, methodName);
+    this.replaceTemplate(EMPTY_BODY, staticMethod, new TemplateHookPoint("mill.BuilderMethod", methodName));
+    this.replaceTemplate(JAVADOC, staticMethod, JavaDoc.of("A traverser is the conceptual entry point for every action within the visitor infrastructure.",
+            "Visitors may be added, which contain the implementations for the visit and endVisit methods.",
+            "Handlers may be added to modify the default traversal strategy.",
+            "Each traverser retains their traversed elements to avoid duplicate traversal, ",
+            "possibly requiring {@link de.monticore.visitor.ITraverser#clearTraversedElements()} to be called in case of re-use",
+            "Inheritance Traverser should be preferred over default ones, as they further enable language composition.")
+            .block("return", "a new instance of this language's inheritance traverser")
+            .asHP());
+    attributeMethods.add(staticMethod);
+
+    // protected internal method
+    ASTCDMethod protectedMethod = getCDMethodFacade().createMethod(PROTECTED.build(), returnType, protectedMethodName);
+    this.replaceTemplate(EMPTY_BODY, protectedMethod,
+        new TemplateHookPoint("mill.SingleStepHandlerMethod", attributeType,
+            visitorService.getAllCDs(), visitorService));
+
+    attributeMethods.add(protectedMethod);
+
+    return attributeMethods;
+  }
+
+  /**
+   * Creates the public accessor and protected internal method for a given
+   * attribute. The attribute is specified by its simple name, its qualified
+   * type, and the qualified return type of the methods. The return type of the
+   * method may be equal to the attribute type or a corresponding super type.
+   *
+   * @param attributeName The name of the attribute
+   * @param attributeType The qualified type of the attribute
+   * @param methodName    The name of the method
+   * @param methodType    The return type of the methods
+   * @return The accessor and corresponding internal method for the attribute
+   */
   protected List<ASTCDMethod> getAttributeMethods(String attributeName, String attributeType, String methodName, String methodType) {
     List<ASTCDMethod> attributeMethods = Lists.newArrayList();
 
@@ -636,6 +695,33 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
     attributeMethods.add(protectedMethod);
 
     return attributeMethods;
+  }
+
+  protected ASTCDMethod addGetMillStateMethod(List<DiagramSymbol> superSymbolList) {
+    String stateClassName = symbolTableService.getCDName() + "MillState";
+    ASTMCType stateType = this.getMCTypeFacade().createQualifiedType(stateClassName);
+
+    ASTCDMethod snapshotMethod = this.getCDMethodFacade().createMethod(PUBLIC_STATIC.build(), stateType, "getState");
+
+    this.replaceTemplate(JAVADOC, snapshotMethod, JavaDoc.of("EXPERIMENTAL!", "Returns the mill as an attribute (without static references required).")
+            .block("return", "the mill state")
+            .asHP());
+    this.replaceTemplate(EMPTY_BODY, snapshotMethod, new TemplateHookPoint("mill.SnapshotMethod", stateClassName, superSymbolList));
+    return snapshotMethod;
+  }
+
+  protected ASTCDMethod addSetMillStateMethod(List<DiagramSymbol> superSymbolList) {
+    String stateClassName = symbolTableService.getCDName() + "MillState";
+    ASTMCType stateType = this.getMCTypeFacade().createQualifiedType(stateClassName);
+    ASTCDParameter stateParam = this.getCDParameterFacade().createParameter(stateType, "state");
+
+    ASTCDMethod loadMethod = this.getCDMethodFacade().createMethod(PUBLIC_STATIC.build(), "setState", stateParam);
+
+    this.replaceTemplate(JAVADOC, loadMethod, JavaDoc.of("EXPERIMENTAL!", "Loads the mill state into the static state.")
+            .param("state", "The non-static state, see #getState()")
+            .asHP());
+    this.replaceTemplate(EMPTY_BODY, loadMethod, new TemplateHookPoint("mill.LoadMethod", superSymbolList));
+    return loadMethod;
   }
 
 }

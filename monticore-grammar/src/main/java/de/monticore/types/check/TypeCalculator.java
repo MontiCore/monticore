@@ -14,6 +14,7 @@ import de.se_rwth.commons.logging.Log;
  * {@link de.monticore.types3.SymTypeRelations}
  */
 @Deprecated
+@SuppressWarnings({"deprecation", "removal"})
 public class TypeCalculator implements ITypeRelations {
 
   /**

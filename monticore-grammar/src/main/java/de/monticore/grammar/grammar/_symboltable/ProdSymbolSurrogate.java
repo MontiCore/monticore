@@ -4,6 +4,7 @@ package de.monticore.grammar.grammar._symboltable;
 import java.util.Optional;
 
 @Deprecated
+@SuppressWarnings({"deprecation", "removal"})
 public   class ProdSymbolSurrogate extends ProdSymbolSurrogateTOP  {
 
   public ProdSymbolSurrogate(String name) {

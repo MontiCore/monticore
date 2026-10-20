@@ -15,6 +15,7 @@ import java.util.Optional;
  * @deprecated use SymTypeRelations
  */
 @Deprecated
+@SuppressWarnings({"deprecation", "removal"})
 public interface ISymTypeRelations {
 
   /**

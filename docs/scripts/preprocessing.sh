@@ -79,6 +79,16 @@ for SOURCE_DIR in "00.org" "docs" "monticore-grammar/src" "monticore-libraries/j
        echo "--8<-- \"$filepath\"" > "$target_file"
      fi
   done
+  find "$SOURCE_DIR" -type f \( -name "*.dot" \) | while read -r filepath; do
+    target_file="docs_wd/$filepath"
+    mkdir -p "$(dirname "$target_file")"
+    # turn dot files into svgs and include a zoom function
+    dot -Tsvg "$filepath" | sed '/<\/svg>/{
+                                r docs/scripts/svgzoom.xml
+                                a <\/svg>
+                                d
+                            }'  > "$target_file.svg"
+  done
 done
 echo "[INFO] Created snippet files"
 

@@ -93,6 +93,22 @@ public class VisitorService extends AbstractService<VisitorService> {
     return getPackage(cdSymbol) + "." + getInheritanceHandlerSimpleName(cdSymbol);
   }
 
+  public String getSingleStepHandlerSimpleName() {
+    return getSingleStepHandlerSimpleName(getCDSymbol());
+  }
+
+  public String getSingleStepHandlerSimpleName(DiagramSymbol cdSymbol) {
+    return cdSymbol.getName() + SINGLE_STEP_SUFFIX + HANDLER_SUFFIX;
+  }
+
+  public String getSingleStepHandlerFullName() {
+    return getSingleStepHandlerFullName(getCDSymbol());
+  }
+
+  public String getSingleStepHandlerFullName(DiagramSymbol cdSymbol) {
+    return getPackage(cdSymbol) + "." + getSingleStepHandlerSimpleName(cdSymbol);
+  }
+
 
   /**
    * traverser (+ interface) name e.g. AutomataTraverser

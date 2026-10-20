@@ -1,9 +1,5 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
-
-
 # MontiCore Languages of Level II - an Overview
-
-
 
 [MontiCore](https://www.monticore.de) is a language workbench
 with an explicit notion of language components. It uses 

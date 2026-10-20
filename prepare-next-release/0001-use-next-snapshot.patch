@@ -1,14 +1,14 @@
-From 2f136cf943c05d30a63ed1bd8d6037bf7d51643f Mon Sep 17 00:00:00 2001
+From c9ef3194706e1039c92f673bac19dde18801e984 Mon Sep 17 00:00:00 2001
 From: Janik Rapp <rapp@se-rwth.de>
 Date: Wed, 18 Mar 2026 12:53:07 +0100
 Subject: [PATCH] use next snapshot
 
 
 diff --git a/gradle.properties b/gradle.properties
-index 3d6263242..afdf8f7d1 100644
+index ca7a928e1..62e24a8ca 100644
 --- a/gradle.properties
 +++ b/gradle.properties
-@@ -16,10 +16,10 @@ org.gradle.caching=true
+@@ -16,11 +16,11 @@ org.gradle.caching=true
  # org.gradle.caching.debug=true
  
  # versions used
@@ -16,15 +16,17 @@ index 3d6263242..afdf8f7d1 100644
 -previous_mc_version=7.9.0
 -previous_se_commons_version=7.9.0
 -previous_cd4a_version=7.9.0
+-previous_class2mc_version=7.9.1
 +version=7.11.0-SNAPSHOT
 +previous_mc_version=7.10.0-SNAPSHOT
 +previous_se_commons_version=7.10.0-SNAPSHOT
 +previous_cd4a_version=7.10.0-SNAPSHOT
++previous_class2mc_version=7.10.0-SNAPSHOT
  
  se_commons_version=7.10.0-SNAPSHOT
  se_gradle_version=7.10.0-SNAPSHOT
 diff --git a/monticore-generator/gradle.properties b/monticore-generator/gradle.properties
-index 2c7feb45a..18e97ffeb 100644
+index 0982ff59d..5e1a0490f 100644
 --- a/monticore-generator/gradle.properties
 +++ b/monticore-generator/gradle.properties
 @@ -9,10 +9,10 @@ useLocalRepo=false
