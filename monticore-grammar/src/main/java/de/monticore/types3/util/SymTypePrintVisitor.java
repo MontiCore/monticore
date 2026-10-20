@@ -165,6 +165,19 @@ public class SymTypePrintVisitor implements ISymTypeVisitor {
   }
 
   @Override
+  public void visit(SymTypeOfSIUnit symType) {
+    getPrint().append(symType.print());
+  }
+
+  @Override
+  public void visit(SymTypeOfNumericWithSIUnit symType) {
+    symType.getSIUnitType().accept(this);
+    getPrint().append("<");
+    symType.getNumericType().accept(this);
+    getPrint().append(">");
+  }
+
+  @Override
   public void visit(SymTypeOfTuple symType) {
     getPrint().append("(");
     for (int i = 0; i < symType.sizeTypes(); i++) {
