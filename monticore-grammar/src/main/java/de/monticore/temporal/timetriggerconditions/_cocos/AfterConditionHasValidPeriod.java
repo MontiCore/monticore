@@ -16,18 +16,14 @@ public class AfterConditionHasValidPeriod implements
   /** Error code for an ISO period that does not denote a positive duration. */
   public static final String NON_POSITIVE_PERIOD = "0xF0008";
 
-  /** Creates the stateless ISO-period CoCo. */
-  public AfterConditionHasValidPeriod() {
-  }
-
   @Override
   public void check(ASTAfterCondition node) {
     if (!node.isPresentPeriod()) {
       return;
     }
     if (!isPositive(node.getPeriod())) {
-      Log.error(NON_POSITIVE_PERIOD + " ISO after timer period must be greater than 0.", node
-          .get_SourcePositionStart());
+      Log.error(NON_POSITIVE_PERIOD + " ISO after timer period must be greater than 0.",
+          node.get_SourcePositionStart(), node.get_SourcePositionEnd());
     }
   }
 
@@ -52,5 +48,4 @@ public class AfterConditionHasValidPeriod implements
     return period.isPresentDecimalDigits() && period.getDecimalDigits().chars().anyMatch(
         character -> character != '0');
   }
-
 }
