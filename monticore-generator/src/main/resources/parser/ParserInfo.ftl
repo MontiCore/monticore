@@ -194,7 +194,7 @@ public class ${ast.getName()}ParserInfo {
   protected Set< String> _getInterfaceRulenames() { return interfaceRuleNames; }
 
   public static Set< String> getInterfacesOfRuleLC(String rulename) {
-      return getDelegate().getInterfacesOfRuleLC(rulename);
+      return getDelegate()._getInterfacesOfRuleLC(rulename);
   }
 
   protected Set< String> _getInterfacesOfRuleLC(String rulename) {
