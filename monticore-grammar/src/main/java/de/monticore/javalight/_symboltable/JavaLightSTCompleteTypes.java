@@ -6,6 +6,7 @@ import de.monticore.javalight._visitor.JavaLightVisitor2;
 import de.monticore.statements.mccommonstatements._ast.ASTJavaModifier;
 import de.monticore.statements.mcstatementsbasis._ast.ASTMCModifier;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbol;
+import de.monticore.symboltable.ClearingMemorizer;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
@@ -89,14 +90,14 @@ public class JavaLightSTCompleteTypes implements JavaLightVisitor2 {
             break;
         }
       } else if (modifier instanceof ASTAnnotation astAnnotation) {
-        javaMethodSymbol.addAnnotations(createTypeLoader(astAnnotation.getAnnotationName()));
+          javaMethodSymbol.getAnnotationsSupplierList().add(new ClearingMemorizer<>(() -> createTypeLoader(astAnnotation.getAnnotationName())));
       }
     }
   }
 
   protected void addThrowsToMethod(JavaMethodSymbol javaMethodSymbol, ASTThrows throws1) {
     for (ASTMCQualifiedName astQualifiedName : throws1.getMCQualifiedNameList()) {
-      javaMethodSymbol.addExceptions(createTypeLoader(astQualifiedName));
+      javaMethodSymbol.getExceptionsSupplierList().add(new ClearingMemorizer<>(() -> createTypeLoader(astQualifiedName)));
     }
   }
 
