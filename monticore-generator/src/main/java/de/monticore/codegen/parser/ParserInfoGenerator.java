@@ -61,7 +61,7 @@ public class ParserInfoGenerator {
     Map<ASTNode, Set<Integer>> nonTerminalToEmptyParserStates = collectNonTerminals(astGrammar)
         .stream()
         .collect(Collectors.toMap(nt -> nt, nt -> new LinkedHashSet<>(), (u,v) -> { throw new IllegalStateException(String.format("Duplicate key %s", u));}, LinkedHashMap::new));
-    generateParserInfo(astGrammar, setup, nonTerminalToEmptyParserStates, parserPackage, lang, prodInfoMap);
+    generateParserInfo(astGrammar, setup, nonTerminalToEmptyParserStates, new LinkedHashSet<>(), parserPackage, lang, prodInfoMap);
   }
 
   /**
@@ -80,6 +80,7 @@ public class ParserInfoGenerator {
       ASTMCGrammar astGrammar,
       GeneratorSetup setup,
       Map<ASTNode, Set<Integer>> rhsNodeToParserStates,
+      Set<Integer> internalNameParserStates,
       String parserPackage,
       Languages lang,
       Map<ASTProd, ProdInfo> prodInfoMap
@@ -93,7 +94,7 @@ public class ParserInfoGenerator {
 
     Map<String, Set<Integer>> referencedSymbolToStates = groupStatesByReferencedSymbol(rhsNodeToParserStates);
     Map<String, Set<Integer>> usageNameToStates = groupStatesByUsageName(rhsNodeToParserStates);
-    Set<Integer> nameDefiningStates = findNameDefiningStates(astGrammar, rhsNodeToParserStates);
+    Set<Integer> nameDefiningStates = findNameDefiningStates(astGrammar, rhsNodeToParserStates, internalNameParserStates);
 
     // Generate XParserInfo for this language
     final Path ParserInfoPath = Paths.get(Names.getPathFromPackage(parserPackage),
@@ -107,7 +108,13 @@ public class ParserInfoGenerator {
             usageNameToStates,
             astGrammar.getSymbol().getAllSuperGrammars().stream().map(MCGrammarSymbol::getAstGrammar).map(Optional::get).collect(Collectors.toList()),
             nameDefiningStates,
-            prodInfoMap
+            prodInfoMap,
+            // the names of all interfaces
+            astGrammar.getSymbol().getProdsWithInherited().values().stream().filter(p->p.isIsInterface()).map(p->p.getName().toLowerCase(Locale.ROOT)).collect(Collectors.toList()),
+            // a map ruleName -> [its super interfaces]
+            astGrammar.getSymbol().getProdsWithInherited().values().stream().map(
+                    prod -> Map.entry(prod.getName(), prod.getSuperInterfaceProds().stream().map(superI -> superI.getName()).toList())
+                    ).filter(e->!e.getValue().isEmpty()).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))
     );
 
     // Generate EmptyXParserInfo for this language
@@ -136,7 +143,8 @@ public class ParserInfoGenerator {
     }
   }
 
-  private static Set<Integer> findNameDefiningStates(ASTMCGrammar astGrammar, Map<ASTNode, Set<Integer>> nonTerminalToParserStates) {
+  // States defining a symbol/name
+  private static Set<Integer> findNameDefiningStates(ASTMCGrammar astGrammar, Map<ASTNode, Set<Integer>> nonTerminalToParserStates, Set<Integer> internalNameParserStates) {
     Set<Integer> nameDefiningStates =
         astGrammar.getSymbol()
             .getProdsWithInherited()
@@ -198,7 +206,7 @@ public class ParserInfoGenerator {
       if(!(astNode instanceof ASTNonTerminal astNonTerminal)){
         return;
       }
-      
+
       if(astNonTerminal.isPresentReferencedSymbol()) {
         String referencedSymbol = astNonTerminal.getReferencedSymbol();
         if (!referencedSymbolToStates.containsKey(referencedSymbol)) {

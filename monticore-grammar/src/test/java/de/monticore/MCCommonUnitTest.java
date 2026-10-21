@@ -245,7 +245,7 @@ public class MCCommonUnitTest {
     		TestMCCommonMill.parser().parse_StringCompleteness( "(...,d)"  );
     assertFalse(ast.isPresent());
     
-    MCAssertions.assertHasFindingStartingWith("mismatched input ',' expecting ')' (found: COMMA)");
+    MCAssertions.assertHasFindingStartingWith("mismatched input ',', expecting ')' (found: COMMA)");
   }
 
   // --------------------------------------------------------------------
