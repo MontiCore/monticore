@@ -1,0 +1,27 @@
+/* (c) https://github.com/MontiCore/monticore */
+plugins {
+  id "de.monticore.generator" // MontiCore Plugin
+  id "jacoco"
+}
+
+description = 'MontiCore Rete Pattern Matching Example'
+
+// The grammars of this subproject are built by the generateMCGrammars MCGenTask
+
+dependencies {
+  implementation project(':monticore-runtime')
+  implementation project(':monticore-grammar')
+  grammar (project(path: ':monticore-grammar')){
+    capabilities {
+      requireCapability("de.monticore:monticore-grammar-grammars")
+    }
+  }
+
+  testImplementation testFixtures(project(':monticore-runtime'))
+  testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
+  testImplementation "org.junit.jupiter:junit-jupiter-engine:$junit_version"
+  testRuntimeOnly "org.junit.platform:junit-platform-launcher:$junit_version"
+}
+
+jar.enabled = false
+sourcesJar.enabled = false
