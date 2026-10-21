@@ -66,7 +66,27 @@ public class MCValueInt implements MCValue {
 
   @Override
   public boolean checkEqualityOperator(MCValue other) {
-    return other.isInt() || other.isDouble() && this.value == other.asDouble();
+    return (other.isInt() || other.isDouble())
+        && this.value == other.asDouble();
+  }
+
+  @Override
+  public boolean equals(Object otherObj) {
+    if (this == otherObj) {
+      return true;
+    }
+    if (otherObj instanceof MCValueInt other) {
+      return value == other.value;
+    }
+    if (otherObj instanceof MCValueDouble other) {
+      return Double.compare(value, other.value) == 0;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Integer.hashCode(value);
   }
 
   @Override
