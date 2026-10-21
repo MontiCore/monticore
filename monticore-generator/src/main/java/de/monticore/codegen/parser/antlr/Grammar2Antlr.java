@@ -217,20 +217,8 @@ public class Grammar2Antlr implements GrammarVisitor2, GrammarHandler {
     int index = 0;
     for (ASTConstant c : ast.getConstantList()) {
       addToCodeSection(sep);
-      old: addToCodeSection("\n", "e_" + index++ + "=" + parserHelper.getOrComputeLexSymbolName(c.getName()));
-      // a nokeyword constant is not a token, but has to be parsed by its keyword rule
       String constRuleName = parserHelper.getOrComputeLexSymbolName(c.getName());
       addToCodeSection("\n", "e_" + index++ + "=" + constRuleName);
-
-      if (embeddedJavaCode) {
-        String temp1 = "";
-        temp1 += "$ret = " + getQualifiedName(ruleByName)
-            + "."
-            + parserHelper.getConstantNameForConstant(c) + ";";
-
-        addToCodeSection("\n{" + temp1 + "}");
-
-      }
       sep = "|";
     }
     addToCodeSection(";\n");
