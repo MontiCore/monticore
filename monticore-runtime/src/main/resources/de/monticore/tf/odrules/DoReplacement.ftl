@@ -2,6 +2,8 @@
 
 public void doReplacement() {
 
+  this.modelAccessor.notifyTransformationStart(getClass().getCanonicalName());
+
   for(Match m:allMatches){
 
     // assign values
@@ -17,15 +19,14 @@ ${tc.include("de.monticore.tf.odrules.doreplacement.ChangeAttributeValues")}
 
 <#if ast.getDoStatement()?has_content>
     // execute do statements
+    // TODO: How should we handle change notifications for DoStatements
 ${ast.getDoStatement()}
-	isHostGraphDirty = true;
 </#if>
-
-    Reporting.flush(hostGraph.get(0));
-
     doReplacementExecuted = true;
 
     //do it only for the first match
     break;
   }
+
+  this.modelAccessor.notifyTransformationEnd(getClass().getCanonicalName());
 }

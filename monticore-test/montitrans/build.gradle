@@ -29,11 +29,12 @@ subprojects {
     trafoImplementation(project(path: ":monticore-grammar", configuration: "trafoCompileClasspathForLegacyCompat"))
     trafoImplementation files(project(":monticore-grammar").sourceSets.trafo.output.classesDirs)
 
-
-
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
+    testImplementation "org.junit.jupiter:junit-jupiter-params:$junit_version"
     testImplementation "org.junit.jupiter:junit-jupiter-engine:$junit_version"
     testRuntimeOnly "org.junit.platform:junit-platform-launcher:$junit_version"
+
+    testImplementation testFixtures(project(":monticore-runtime"))
   }
 
   java {
