@@ -108,7 +108,13 @@ public class ParserInfoGenerator {
             usageNameToStates,
             astGrammar.getSymbol().getAllSuperGrammars().stream().map(MCGrammarSymbol::getAstGrammar).map(Optional::get).collect(Collectors.toList()),
             nameDefiningStates,
-            prodInfoMap
+            prodInfoMap,
+            // the names of all interfaces
+            astGrammar.getSymbol().getProdsWithInherited().values().stream().filter(p->p.isIsInterface()).map(p->p.getName().toLowerCase(Locale.ROOT)).collect(Collectors.toList()),
+            // a map ruleName -> [its super interfaces]
+            astGrammar.getSymbol().getProdsWithInherited().values().stream().map(
+                    prod -> Map.entry(prod.getName(), prod.getSuperInterfaceProds().stream().map(superI -> superI.getName()).toList())
+                    ).filter(e->!e.getValue().isEmpty()).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))
     );
 
     // Generate EmptyXParserInfo for this language
@@ -137,6 +143,7 @@ public class ParserInfoGenerator {
     }
   }
 
+  // TODO: Only states defining a name (not just names!)
   private static Set<Integer> findNameDefiningStates(ASTMCGrammar astGrammar, Map<ASTNode, Set<Integer>> nonTerminalToParserStates, Set<Integer> internalNameParserStates) {
     Set<Integer> nameDefiningStates =
         astGrammar.getSymbol()
@@ -172,7 +179,7 @@ public class ParserInfoGenerator {
             // don't fail if the nonTerminal is not found in Map, since it might be overridden and therefore have no parser state associated with it
             .flatMap(nonTerminal -> nonTerminalToParserStates.getOrDefault(nonTerminal, Collections.emptySet()).stream())
             .collect(Collectors.toCollection( LinkedHashSet::new ) );
-    nameDefiningStates.addAll(internalNameParserStates);
+//    nameDefiningStates.addAll(internalNameParserStates); // TODO: No!
     return nameDefiningStates;
   }
 
@@ -200,7 +207,7 @@ public class ParserInfoGenerator {
       if(!(astNode instanceof ASTNonTerminal astNonTerminal)){
         return;
       }
-      
+
       if(astNonTerminal.isPresentReferencedSymbol()) {
         String referencedSymbol = astNonTerminal.getReferencedSymbol();
         if (!referencedSymbolToStates.containsKey(referencedSymbol)) {
