@@ -1,8 +1,10 @@
 /* (c) [https://github.com/MontiCore/monticore](https://github.com/MontiCore/monticore) */
 package de.monticore.statements.cocos;
 
+import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.runtime.junit.MCAssertions;
 import de.monticore.runtime.junit.TestWithMCLanguage;
+import de.monticore.statements.mcvardeclarationstatements._ast.ASTSimpleInit;
 import de.monticore.statements.mcvardeclarationstatements._cocos.VarDeclarationInitializationHasCorrectType;
 import de.monticore.statements.mcvardeclarationstatements._symboltable.MCVarDeclarationStatementsSTCompleteTypes;
 import de.monticore.statements.testmcvardeclarationstatements.TestMCVarDeclarationStatementsMill;
@@ -12,6 +14,7 @@ import de.monticore.statements.testmcvardeclarationstatements._visitor.TestMCVar
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.monticore.types3.util.CombineExpressionsWithLiteralsTypeTraverserFactory;
+import de.se_rwth.commons.logging.Finding;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -23,6 +26,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static de.monticore.statements.testmcvardeclarationstatements.TestMCVarDeclarationStatementsMill.parser;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 @TestWithMCLanguage(TestMCVarDeclarationStatementsMill.class)
@@ -91,6 +95,24 @@ class VarDeclarationInitializationHasCorrectTypeTest {
     for (String error : expectedErrors) {
       MCAssertions.assertHasFindingStartingWith(error);
     }
+  }
+
+  @Test
+  void testInvalidDeclarationReportsInitialization() throws IOException {
+    // Given
+    TestMCVarDeclarationStatementsCoCoChecker checker = new TestMCVarDeclarationStatementsCoCoChecker();
+    checker.addCoCo(new VarDeclarationInitializationHasCorrectType());
+    ASTRootVarDeclaration ast = parseAndBuildAST("int a = \"oh no\";");
+    ASTExpression init = ((ASTSimpleInit) ast.getLocalVariableDeclarationStatement().getLocalVariableDeclaration()
+      .getVariableDeclarator(0).getVariableInit()).getExpression();
+
+    // When
+    checker.checkAll(ast);
+
+    // Then
+    Finding finding = MCAssertions.assertHasFindingStartingWith(VarDeclarationInitializationHasCorrectType.ERROR_CODE);
+    assertEquals(init.get_SourcePositionStart(), finding.getSourcePosition().orElseThrow());
+    assertEquals(init.get_SourcePositionEnd(), finding.getSourcePositionEnd().orElseThrow());
   }
 
   static Stream<Arguments> invalidExpressionAndErrorProvider() {

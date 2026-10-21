@@ -48,7 +48,8 @@ public class VarDeclarationInitializationHasCorrectType implements MCVarDeclarat
 
       } else if (!SymTypeRelations.isCompatible(varType, initType)) {
         Log.error(ERROR_CODE + " " + String.format(ERROR_MSG_FORMAT,
-          initType.printFullName(), node.getDeclarator().getName(), varType.printFullName()));
+          initType.printFullName(), node.getDeclarator().getName(), varType.printFullName()),
+          initExpr.get_SourcePositionStart(), initExpr.get_SourcePositionEnd());
       }
     }
   }

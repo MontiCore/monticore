@@ -50,7 +50,7 @@ public class AssignmentExpressionsTypeVisitor extends AbstractTypeVisitor
     SymTypeExpression inner = getType4Ast().getPartialTypeOfExpr(expr.getExpression());
     SymTypeExpression result = TypeVisitorLifting
         .liftDefault((innerPar) -> this.affix(innerPar, "++",
-            expr.get_SourcePositionStart()))
+            expr.get_SourcePositionStart(), expr.get_SourcePositionEnd()))
         .apply(inner);
     getType4Ast().setTypeOfExpression(expr, result);
   }
@@ -61,7 +61,7 @@ public class AssignmentExpressionsTypeVisitor extends AbstractTypeVisitor
     SymTypeExpression inner = getType4Ast().getPartialTypeOfExpr(expr.getExpression());
     SymTypeExpression result = TypeVisitorLifting
         .liftDefault((innerPar) -> this.affix(innerPar, "--",
-            expr.get_SourcePositionStart()))
+            expr.get_SourcePositionStart(), expr.get_SourcePositionEnd()))
         .apply(inner);
     getType4Ast().setTypeOfExpression(expr, result);
   }
@@ -72,7 +72,7 @@ public class AssignmentExpressionsTypeVisitor extends AbstractTypeVisitor
     SymTypeExpression inner = getType4Ast().getPartialTypeOfExpr(expr.getExpression());
     SymTypeExpression result = TypeVisitorLifting
         .liftDefault((innerPar) -> this.affix(innerPar, "++",
-            expr.get_SourcePositionStart()))
+            expr.get_SourcePositionStart(), expr.get_SourcePositionEnd()))
         .apply(inner);
     getType4Ast().setTypeOfExpression(expr, result);
   }
@@ -83,19 +83,19 @@ public class AssignmentExpressionsTypeVisitor extends AbstractTypeVisitor
     SymTypeExpression inner = getType4Ast().getPartialTypeOfExpr(expr.getExpression());
     SymTypeExpression result = TypeVisitorLifting
         .liftDefault((innerPar) -> this.affix(innerPar, "--",
-            expr.get_SourcePositionStart()))
+            expr.get_SourcePositionStart(), expr.get_SourcePositionEnd()))
         .apply(inner);
     getType4Ast().setTypeOfExpression(expr, result);
   }
 
-  protected SymTypeExpression affix(SymTypeExpression inner, String op, SourcePosition pos) {
+  protected SymTypeExpression affix(SymTypeExpression inner, String op, SourcePosition start, SourcePosition end) {
     if (SymTypeRelations.isNumericType(inner)) {
       SymTypeExpression unboxed = SymTypeRelations.unbox(inner);
       return SymTypeExpressionFactory.createPrimitive(unboxed.print());
     }
     else {
       Log.error("0xA0184 Operator '" + op + "' not applicable to " + "'" + inner.print() + "'",
-          pos);
+          start, end);
       return SymTypeExpressionFactory.createObscureType();
     }
   }
@@ -105,7 +105,8 @@ public class AssignmentExpressionsTypeVisitor extends AbstractTypeVisitor
     Preconditions.checkNotNull(expr);
     SymTypeExpression left = getType4Ast().getPartialTypeOfExpr(expr.getLeft());
     SymTypeExpression right = getType4Ast().getPartialTypeOfExpr(expr.getRight());
-    SymTypeExpression result = assignment(left, right, expr.getOperator(), expr.get_SourcePositionStart());
+    SymTypeExpression result = assignment(left, right, expr.getOperator(),
+        expr.get_SourcePositionStart(), expr.get_SourcePositionEnd());
 
     getType4Ast().setTypeOfExpression(expr, result);
   }
@@ -113,137 +114,138 @@ public class AssignmentExpressionsTypeVisitor extends AbstractTypeVisitor
   @Deprecated(forRemoval = true)
   protected SymTypeExpression derive(
       ASTAssignmentExpression expr, SymTypeExpression left, SymTypeExpression right) {
-    return assignment(left, right, expr.getOperator(), expr.get_SourcePositionStart());
+    return assignment(left, right, expr.getOperator(),
+        expr.get_SourcePositionStart(), expr.get_SourcePositionEnd());
 
   }
 
   protected SymTypeExpression assignment(SymTypeExpression left,
       SymTypeExpression right,
-      int op, SourcePosition pos) {
+      int op, SourcePosition start, SourcePosition end) {
     if (op == ASTConstantsAssignmentExpressions.PLUSEQUALS) {
-      return this.addAssignment(left, right, pos); // a += b
+      return this.addAssignment(left, right, start, end); // a += b
     }
     else if (op == ASTConstantsAssignmentExpressions.MINUSEQUALS) {
-      return this.subtractAssignment(left, right, pos); // a -= b
+      return this.subtractAssignment(left, right, start, end); // a -= b
     }
     else if (op == ASTConstantsAssignmentExpressions.STAREQUALS) {
-      return this.multiplyAssignment(left, right, pos); // a *= b
+      return this.multiplyAssignment(left, right, start, end); // a *= b
     }
     else if (op == ASTConstantsAssignmentExpressions.SLASHEQUALS) {
-      return this.divideAssignment(left, right, pos); // a /= b
+      return this.divideAssignment(left, right, start, end); // a /= b
     }
     else if (op == ASTConstantsAssignmentExpressions.PERCENTEQUALS) {
-      return this.moduloAssignment(left, right, pos); // a %= b
+      return this.moduloAssignment(left, right, start, end); // a %= b
     }
     else if (op == ASTConstantsAssignmentExpressions.AND_EQUALS) {
-      return this.andAssignment(left, right, pos); // a %= b
+      return this.andAssignment(left, right, start, end); // a %= b
     }
     else if (op == ASTConstantsAssignmentExpressions.PIPEEQUALS) {
-      return this.orAssignment(left, right, pos); // a |= b
+      return this.orAssignment(left, right, start, end); // a |= b
     }
     else if (op == ASTConstantsAssignmentExpressions.ROOFEQUALS) {
-      return this.xorAssignment(left, right, pos); // a ^= b
+      return this.xorAssignment(left, right, start, end); // a ^= b
     }
     else if (op == ASTConstantsAssignmentExpressions.GTGTEQUALS) {
-      return this.rightShiftAssignment(left, right, pos); // a >>= b
+      return this.rightShiftAssignment(left, right, start, end); // a >>= b
     }
     else if (op == ASTConstantsAssignmentExpressions.LTLTEQUALS) {
-      return this.leftShiftAssignment(left, right, pos); // a <<= b
+      return this.leftShiftAssignment(left, right, start, end); // a <<= b
     }
     else if (op == ASTConstantsAssignmentExpressions.GTGTGTEQUALS) {
-      return this.unsignedRightShiftAssignment(left, right, pos); // a >>>= b
+      return this.unsignedRightShiftAssignment(left, right, start, end); // a >>>= b
     }
     else {
-      return this.assignment(left, right, pos); // a = b
+      return this.assignment(left, right, start, end); // a = b
     }
   }
 
   protected SymTypeExpression addAssignment(SymTypeExpression left,
       SymTypeExpression right,
-      SourcePosition pos) {
+      SourcePosition start, SourcePosition end) {
     return compoundAssignment(left, right,
         TypeVisitorOperatorCalculator.plus(left, right),
-        ARITHMETIC_ASSIGNMENT_ERROR_CODE, "+=", pos);
+        ARITHMETIC_ASSIGNMENT_ERROR_CODE, "+=", start, end);
   }
 
   protected SymTypeExpression subtractAssignment(SymTypeExpression left,
       SymTypeExpression right,
-      SourcePosition pos) {
+      SourcePosition start, SourcePosition end) {
     return compoundAssignment(left, right,
         TypeVisitorOperatorCalculator.minus(left, right),
-        ARITHMETIC_ASSIGNMENT_ERROR_CODE, "-=", pos);
+        ARITHMETIC_ASSIGNMENT_ERROR_CODE, "-=", start, end);
   }
 
   protected SymTypeExpression multiplyAssignment(SymTypeExpression left,
       SymTypeExpression right,
-      SourcePosition pos) {
+      SourcePosition start, SourcePosition end) {
     return compoundAssignment(left, right,
         TypeVisitorOperatorCalculator.multiply(left, right),
-        ARITHMETIC_ASSIGNMENT_ERROR_CODE, "*=", pos);
+        ARITHMETIC_ASSIGNMENT_ERROR_CODE, "*=", start, end);
   }
 
   protected SymTypeExpression moduloAssignment(SymTypeExpression left,
       SymTypeExpression right,
-      SourcePosition pos) {
+      SourcePosition start, SourcePosition end) {
     return compoundAssignment(left, right,
         TypeVisitorOperatorCalculator.modulo(left, right),
-        ARITHMETIC_ASSIGNMENT_ERROR_CODE, "%=", pos);
+        ARITHMETIC_ASSIGNMENT_ERROR_CODE, "%=", start, end);
   }
 
   protected SymTypeExpression divideAssignment(SymTypeExpression left,
       SymTypeExpression right,
-      SourcePosition pos) {
+      SourcePosition start, SourcePosition end) {
     return compoundAssignment(left, right,
         TypeVisitorOperatorCalculator.divide(left, right),
-        ARITHMETIC_ASSIGNMENT_ERROR_CODE, "/=", pos);
+        ARITHMETIC_ASSIGNMENT_ERROR_CODE, "/=", start, end);
   }
 
   protected SymTypeExpression andAssignment(SymTypeExpression left,
       SymTypeExpression right,
-      SourcePosition pos) {
+      SourcePosition start, SourcePosition end) {
     return compoundAssignment(left, right,
         TypeVisitorOperatorCalculator.binaryAnd(left, right),
-        BINARY_ASSIGNMENT_ERROR_CODE, "&=", pos);
+        BINARY_ASSIGNMENT_ERROR_CODE, "&=", start, end);
   }
 
   protected SymTypeExpression orAssignment(SymTypeExpression left,
       SymTypeExpression right,
-      SourcePosition pos) {
+      SourcePosition start, SourcePosition end) {
     return compoundAssignment(left, right,
         TypeVisitorOperatorCalculator.binaryOr(left, right),
-        BINARY_ASSIGNMENT_ERROR_CODE, "|=", pos);
+        BINARY_ASSIGNMENT_ERROR_CODE, "|=", start, end);
   }
 
   protected SymTypeExpression xorAssignment(SymTypeExpression left,
       SymTypeExpression right,
-      SourcePosition pos) {
+      SourcePosition start, SourcePosition end) {
     return compoundAssignment(left, right,
         TypeVisitorOperatorCalculator.binaryXor(left, right),
-        BINARY_ASSIGNMENT_ERROR_CODE, "^=", pos);
+        BINARY_ASSIGNMENT_ERROR_CODE, "^=", start, end);
   }
 
   protected SymTypeExpression rightShiftAssignment(SymTypeExpression left,
       SymTypeExpression right,
-      SourcePosition pos) {
+      SourcePosition start, SourcePosition end) {
     return compoundAssignment(left, right,
         TypeVisitorOperatorCalculator.signedRightShift(left, right),
-        BIT_ASSIGNMENT_ERROR_CODE, ">>=", pos);
+        BIT_ASSIGNMENT_ERROR_CODE, ">>=", start, end);
   }
 
   protected SymTypeExpression leftShiftAssignment(SymTypeExpression left,
       SymTypeExpression right,
-      SourcePosition pos) {
+      SourcePosition start, SourcePosition end) {
     return compoundAssignment(left, right,
         TypeVisitorOperatorCalculator.leftShift(left, right),
-        BIT_ASSIGNMENT_ERROR_CODE, "<<=", pos);
+        BIT_ASSIGNMENT_ERROR_CODE, "<<=", start, end);
   }
 
   protected SymTypeExpression unsignedRightShiftAssignment(SymTypeExpression left,
       SymTypeExpression right,
-      SourcePosition pos) {
+      SourcePosition start, SourcePosition end) {
     return compoundAssignment(left, right,
         TypeVisitorOperatorCalculator.unsignedRightShift(left, right),
-        BIT_ASSIGNMENT_ERROR_CODE, ">>>=", pos);
+        BIT_ASSIGNMENT_ERROR_CODE, ">>>=", start, end);
   }
 
   /**
@@ -256,22 +258,22 @@ public class AssignmentExpressionsTypeVisitor extends AbstractTypeVisitor
   protected SymTypeExpression compoundAssignment(
       SymTypeExpression left, SymTypeExpression right,
       Optional<SymTypeExpression> interimResult,
-      String errorCode, String op, SourcePosition pos
+      String errorCode, String op, SourcePosition start, SourcePosition end
   ) {
     Optional<SymTypeExpression> casted = interimResult
         .flatMap(ir -> TypeVisitorOperatorCalculator.cast(left, ir));
     Optional<SymTypeExpression> assigned = casted
         .flatMap(c -> TypeVisitorOperatorCalculator.assignment(left, c));
     SymTypeExpression result = getTypeForAssignmentOrLogError(
-        errorCode, op, pos, assigned, left, right);
+        errorCode, op, start, end, assigned, left, right);
     return result;
   }
 
   protected SymTypeExpression assignment(SymTypeExpression left,
       SymTypeExpression right,
-      SourcePosition src) {
+      SourcePosition start, SourcePosition end) {
     return getTypeForAssignmentOrLogError(
-        "0xA0179", "=", src,
+        "0xA0179", "=", start, end,
         TypeVisitorOperatorCalculator.assignment(left, right),
         left, right);
   }
@@ -279,7 +281,7 @@ public class AssignmentExpressionsTypeVisitor extends AbstractTypeVisitor
   // Helper
 
   protected SymTypeExpression getTypeForAssignmentOrLogError(
-      String errorCode, String op, SourcePosition pos,
+      String errorCode, String op, SourcePosition start, SourcePosition end,
       Optional<SymTypeExpression> result,
       SymTypeExpression left, SymTypeExpression right
   ) {
@@ -295,7 +297,7 @@ public class AssignmentExpressionsTypeVisitor extends AbstractTypeVisitor
               + " Operator '" + op + "' not applicable to " +
               "'" + left.print() + "', '"
               + right.print() + "'",
-          pos
+          start, end
       );
       return createObscureType();
     }
