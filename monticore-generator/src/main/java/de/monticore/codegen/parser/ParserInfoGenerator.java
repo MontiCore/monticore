@@ -143,7 +143,7 @@ public class ParserInfoGenerator {
     }
   }
 
-  // TODO: Only states defining a name (not just names!)
+  // States defining a symbol/name
   private static Set<Integer> findNameDefiningStates(ASTMCGrammar astGrammar, Map<ASTNode, Set<Integer>> nonTerminalToParserStates, Set<Integer> internalNameParserStates) {
     Set<Integer> nameDefiningStates =
         astGrammar.getSymbol()
@@ -179,7 +179,6 @@ public class ParserInfoGenerator {
             // don't fail if the nonTerminal is not found in Map, since it might be overridden and therefore have no parser state associated with it
             .flatMap(nonTerminal -> nonTerminalToParserStates.getOrDefault(nonTerminal, Collections.emptySet()).stream())
             .collect(Collectors.toCollection( LinkedHashSet::new ) );
-//    nameDefiningStates.addAll(internalNameParserStates); // TODO: No!
     return nameDefiningStates;
   }
 
