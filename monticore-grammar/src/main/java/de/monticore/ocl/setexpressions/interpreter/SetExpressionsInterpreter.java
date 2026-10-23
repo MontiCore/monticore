@@ -170,7 +170,7 @@ public class SetExpressionsInterpreter
           }
           else {
             final MCValue value = calc.asCalculationValue().calculate(frame);
-            if (value instanceof PrimitiveIterator.OfInt iteratorOfInt) {
+            if (value.asNativeObject() instanceof PrimitiveIterator.OfInt iteratorOfInt) {
               while (iteratorOfInt.hasNext()) {
                 // using PrimitiveIterator to avoid unboxing of Integer
                 result.add((double) iteratorOfInt.nextInt());
@@ -236,7 +236,7 @@ public class SetExpressionsInterpreter
         varSym = item.getGeneratorDeclaration().getSymbol();
       }
       else if (item.isPresentSetVariableDeclaration()) {
-        item.getSetVariableDeclaration().getSymbol();
+        varSym = item.getSetVariableDeclaration().getSymbol();
       }
       if (varSym != null) {
         frameLayout.declareVariable(varSym);
