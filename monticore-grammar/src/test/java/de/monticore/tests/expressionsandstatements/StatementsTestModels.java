@@ -47,6 +47,8 @@ public class StatementsTestModels {
         Arguments.of("int x = 0; for (; ++x < 4;); x", 4),
         Arguments.of("int x = 0; for (; x++ < 4;); x", 5),
         Arguments.of("int x = 1; for (int i = 0; i < 0; i++) x++; x", 1),
+        Arguments.of("int x = 0; for (;;) {x++; if (x > 2) break;} x", 3),
+        Arguments.of("int x = 0; for (int i = 0; i < 3; i++) {do {x++;} while (false);} x", 3),
         // workaround to getting an array (array construction is not implemented yet)
         Arguments.of(
             "int x = 0; for (int e : ((java.lang.String)\"abc\").toCharArray()) x += (int)e; x",
@@ -69,6 +71,9 @@ public class StatementsTestModels {
   static protected Stream<Arguments> getMCLowLevelStatementsCases() {
     return Stream.of(
         Arguments.of("int x = 0; l: while (true) {x++; break l;} x", 1),
+        Arguments.of("int x = 0; l: while (true) {x++; break;} x", 1),
+        Arguments.of("int x = 0; l: while (x < 3) {x++; continue;} x", 3),
+        Arguments.of("int x = 0; l: {x++; if (true) break l; x++;} x", 1),
         Arguments.of("""
                 int x = 0, y = 0;
                 l: while (++x < 4) {
@@ -124,6 +129,9 @@ public class StatementsTestModels {
         Arguments.of("int x = 6; x &= 3; x", 2),
         Arguments.of("int x = 6; x ^= 3; x", 5),
         Arguments.of("int x = 6; x |= 3; x", 7),
+        Arguments.of("boolean b = true; b &= false; b", false),
+        Arguments.of("boolean b = false; b ^= true; b", true),
+        Arguments.of("boolean b = false; b |= true; b", true),
 
         Arguments.of("double x = 1.5; x += 2.0; x", 3.5),
         Arguments.of("double x = 5.0; x -= 2.5; x", 2.5),
