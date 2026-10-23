@@ -6,6 +6,7 @@ import de.monticore.ast.ASTNode;
 import de.monticore.interpreter.calculations.MICalculationBoolean;
 import de.monticore.interpreter.calculations.MICalculationValue;
 import de.monticore.interpreter.calculations.MICalculationVoid;
+import de.monticore.interpreter.frames.MIFrame;
 import de.monticore.interpreter.setters.MISetter;
 import de.monticore.interpreter.signals.MCSignalBreak;
 import de.monticore.interpreter.signals.MCSignalContinue;
@@ -34,7 +35,6 @@ import javax.annotation.Nullable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.BooleanSupplier;
 
 import static de.monticore.types3.SymTypeRelations.normalize;
@@ -251,9 +251,6 @@ public class MCCommonStatementsInterpreter
     node.getCondition().accept(getTraverser());
     MICalculationBoolean conditionCalc =
         iData.popCalculation().asCalculationBoolean();
-    final boolean[] firstRun = new boolean[] { true };
-    MICalculationBoolean conditionCalcSkipFirst = frame ->
-        firstRun[0] ? !(firstRun[0] = false) : conditionCalc.calculate(frame);
 
     // body
     node.getMCStatement().accept(getTraverser());
@@ -261,7 +258,7 @@ public class MCCommonStatementsInterpreter
         iData.popCalculation().asCalculationVoid();
 
     MICalculationVoid doWhileCalc =
-        createWhileLoop(node, conditionCalcSkipFirst, bodyCalc);
+        createDoWhileLoop(node, conditionCalc, bodyCalc);
     iData.putCalculation(doWhileCalc);
   }
 
@@ -320,32 +317,63 @@ public class MCCommonStatementsInterpreter
       MICalculationBoolean conditionCalc,
       MICalculationVoid bodyCalc
   ) {
-    Optional<LabelSymbol> labelSymbolOpt =
-        LabelSymbol.getLabelOfStatement(node);
-    @Nullable final String labelStr = labelSymbolOpt
-        .map(LabelSymbol::getName)
-        .orElse(null);
+    @Nullable final String labelStr = getLabelStr(node);
     return frame -> {
       while (conditionCalc.calculate(frame)) {
-        try {
-          bodyCalc.calculate(frame);
-        }
-        catch (MCSignalBreak signal) {
-          if (!Objects.equals(labelStr, signal.getLabel().orElse(null))) {
-            throw signal;
-          }
+        if (!calculateLoopBody(frame, bodyCalc, labelStr)) {
           break;
-        }
-        catch (MCSignalContinue signal) {
-          if (!Objects.equals(labelStr, signal.getLabel().orElse(null))) {
-            throw signal;
-          }
-          // explicit continue
-          //noinspection UnnecessaryContinue
-          continue;
         }
       }
     };
+  }
+
+  protected MICalculationVoid createDoWhileLoop(
+      ASTMCStatement node,
+      MICalculationBoolean conditionCalc,
+      MICalculationVoid bodyCalc
+  ) {
+    @Nullable final String labelStr = getLabelStr(node);
+    return frame -> {
+      do {
+        if (!calculateLoopBody(frame, bodyCalc, labelStr)) {
+          break;
+        }
+      } while (conditionCalc.calculate(frame));
+    };
+  }
+
+  /**
+   * @return false iff the loop is left due to a {@code break}
+   */
+  protected boolean calculateLoopBody(
+      MIFrame frame,
+      MICalculationVoid bodyCalc,
+      @Nullable String labelStr
+  ) {
+    try {
+      bodyCalc.calculate(frame);
+    }
+    catch (MCSignalBreak signal) {
+      if (signal.getLabel().isPresent()
+          && !Objects.equals(labelStr, signal.getLabel().get())) {
+        throw signal;
+      }
+      return false;
+    }
+    catch (MCSignalContinue signal) {
+      if (signal.getLabel().isPresent()
+          && !Objects.equals(labelStr, signal.getLabel().get())) {
+        throw signal;
+      }
+    }
+    return true;
+  }
+
+  @Nullable
+  protected String getLabelStr(ASTMCStatement node) {
+    return LabelSymbol.getLabelOfStatement(node)
+        .map(LabelSymbol::getName)
+        .orElse(null);
   }
 
 }
