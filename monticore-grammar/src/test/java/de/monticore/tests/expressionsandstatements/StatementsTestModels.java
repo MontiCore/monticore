@@ -18,6 +18,7 @@ public class StatementsTestModels {
         getCommonStatementCases(),
         getMCLowLevelStatementsCases(),
         getAssignmentCases(),
+        getObjectEqualityCases(),
         getValidAssertStatementsCases()
     ).flatMap(Function.identity());
   }
@@ -153,6 +154,16 @@ public class StatementsTestModels {
             "int -> int s = (int n) -> n > 0 ? n + s(n - 1) : 0; s(5)"
             , 15
         )
+    );
+  }
+
+  static protected Stream<Arguments> getObjectEqualityCases() {
+    return Stream.of(
+        Arguments.of("Object o = 1; Object p = 1; o == p", true),
+        Arguments.of("Object o = 1; Object p = 2; o == p", false),
+        Arguments.of("Object o = 1.5; Object p = 2.5; o == p", false),
+        Arguments.of("Object o = 1; Object p = 1; o != p", false),
+        Arguments.of("Object o = 1; Object p = 2; o != p", true)
     );
   }
 
