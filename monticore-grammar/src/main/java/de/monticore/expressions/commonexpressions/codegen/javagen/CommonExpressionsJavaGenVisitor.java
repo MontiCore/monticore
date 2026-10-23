@@ -282,7 +282,9 @@ public class CommonExpressionsJavaGenVisitor
 
   @Override
   public void traverse(ASTArrayAccessExpression node) {
+    state.startParentheses();
     node.getExpression().accept(getTraverser());
+    state.endParentheses();
 
     if (typeOf(node.getExpression()).isTupleType()) {
       // Case tuples
