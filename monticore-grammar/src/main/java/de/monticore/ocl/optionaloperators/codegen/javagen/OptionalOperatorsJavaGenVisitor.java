@@ -132,7 +132,9 @@ public class OptionalOperatorsJavaGenVisitor
     getPrinter().print(" ");
     getPrinter().print(operator);
     getPrinter().print(" ");
+    state.startParentheses();
     right.accept(getTraverser());
+    state.endParentheses();
     getPrinter().print(").orElse(false))");
   }
 
