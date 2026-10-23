@@ -8,6 +8,7 @@ import de.monticore.interpreter.frames.MIFrameLayout;
 import de.monticore.interpreter.setters.MISetter;
 import de.monticore.values.MCValue;
 import de.monticore.values.MCValueFunction;
+import de.monticore.values.MCValueVoid;
 
 import java.util.List;
 
@@ -23,6 +24,8 @@ public class MCValueFunctionOfModel implements MCValueFunction {
   protected MIFrame parentFrame;
   protected final MIFrameLayout frameLayout;
   protected final MISetter[] parameterSetters;
+  // a special calculation,
+  // returning the void-Value in case the function does not return anything
   protected final MICalculationValue calculation;
 
   public MCValueFunctionOfModel(
@@ -48,7 +51,12 @@ public class MCValueFunctionOfModel implements MCValueFunction {
     this.parentFrame = parentFrame;
     this.frameLayout = frameLayout;
     this.parameterSetters = parameterSetters;
-    this.calculation = calculation.asCalculationValue();
+    // create a fake calculationValue only(!) here for void
+    this.calculation = calculation.isCalculationVoid() ?
+        frame -> {
+          calculation.asCalculationVoid().calculate(frame);
+          return MCValueVoid.INSTANCE;
+        } : calculation.asCalculationValue();
   }
 
   /**
@@ -60,6 +68,8 @@ public class MCValueFunctionOfModel implements MCValueFunction {
    * @param arguments the arguments passed to the function.
    *                  for non-static methods, the first arguments is this.
    * @return the calculated value.
+   *     If the function has no return value,
+   *     it is {@link MCValueVoid#INSTANCE}.
    */
   @Override
   public MCValue execute(
@@ -69,7 +79,7 @@ public class MCValueFunctionOfModel implements MCValueFunction {
     for (int i = 0; i < arguments.length; i++) {
       parameterSetters[i].set(newFrame, arguments[i]);
     }
-    return calculation.asCalculationValue().calculate(newFrame);
+    return calculation.calculate(newFrame);
   }
 
   @Override

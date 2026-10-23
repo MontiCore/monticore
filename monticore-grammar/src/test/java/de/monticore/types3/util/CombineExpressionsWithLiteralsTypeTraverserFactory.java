@@ -36,6 +36,7 @@ import de.monticore.types.mcfunctiontypes.types3.MCFunctionTypesTypeVisitor;
 import de.monticore.types.mcsimplegenerictypes.types3.MCSimpleGenericTypesTypeVisitor;
 import de.monticore.types.mcstructuraltypes.types3.MCStructuralTypesTypeVisitor;
 import de.monticore.types3.Type4Ast;
+import de.monticore.types3.Type4AstPersistent;
 import de.monticore.types3.generics.context.InferenceContext4Ast;
 import de.monticore.visitor.ITraverser;
 
@@ -69,7 +70,7 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     TypeVisitorOperatorCalculator.init();
     TypeContextCalculator.init();
     CommonExpressionsLValueRelations.init();
-    Type4Ast type4Ast = new Type4Ast();
+    Type4Ast type4Ast = new Type4AstPersistent();
     InferenceContext4Ast ctx4Ast = new InferenceContext4Ast();
     ITraverser traverser = new CombineExpressionsWithLiteralsTypeTraverserFactory()
         .createTraverser(type4Ast, ctx4Ast);
@@ -105,7 +106,7 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     TypeVisitorOperatorCalculator.init();
     TypeContextCalculator.init();
     CommonExpressionsLValueRelations.init();
-    Type4Ast type4Ast = new Type4Ast();
+    Type4Ast type4Ast = new Type4AstPersistent();
     InferenceContext4Ast ctx4Ast = new InferenceContext4Ast();
     ITraverser traverser = new CombineExpressionsWithLiteralsTypeTraverserFactory()
         .createTraverserForOO(type4Ast, ctx4Ast);

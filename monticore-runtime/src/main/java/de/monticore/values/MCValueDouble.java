@@ -66,7 +66,8 @@ public class MCValueDouble implements MCValue {
 
   @Override
   public boolean checkEqualityOperator(MCValue other) {
-    return other.isDouble() || other.isInt() && value == other.asDouble();
+    return (other.isDouble() || other.isInt())
+        && value == other.asDouble();
   }
 
   @Override

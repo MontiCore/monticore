@@ -14,6 +14,7 @@ public class InterpreterClass2MCTest extends AbstractInterpreterTest {
 
   @BeforeEach
   public void setupAClass() {
+    AClass.resetStaticVars();
     Class2MCTestUtil.addClassPathEntry(AClass.class);
   }
 
