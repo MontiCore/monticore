@@ -126,7 +126,16 @@ public class AbstractInterpreterForBasicSymbols extends AbstractInterpreter {
     iData.reset();
 
     iData.getFrameLayoutStack().push(topMostFrame.getFrameLayout());
-    node.accept(traverser);
+    try {
+      node.accept(traverser);
+    }
+    catch (Throwable t) {
+      // a REPL or similar may want to try
+      // to continue using the current interpreter.
+      // It is not guaranteed, that this works.
+      iData.reset();
+      throw t;
+    }
     if (!iData.isPresentCalculation() ||
         iData.getFrameLayoutStack().size() != 1
     ) {
