@@ -29,6 +29,7 @@ import de.monticore.types.mcsimplegenerictypes.types3.MCSimpleGenericTypesTypeVi
 import de.monticore.types.mcstructuraltypes.types3.MCStructuralTypesTypeVisitor;
 import de.monticore.types3.SymTypeRelations;
 import de.monticore.types3.Type4Ast;
+import de.monticore.types3.Type4AstPersistent;
 import de.monticore.types3.TypeCheck3;
 import de.monticore.types3.generics.TypeParameterRelations;
 import de.monticore.types3.generics.context.InferenceContext4Ast;
@@ -55,7 +56,7 @@ public class ExpressionsAndStatementsTypeCheck3 extends MapBasedTypeCheck3 {
 
     ExpressionsAndStatementsTraverser traverser =
         ExpressionsAndStatementsMill.inheritanceTraverser();
-    Type4Ast type4Ast = new Type4Ast();
+    Type4Ast type4Ast = new Type4AstPersistent();
     InferenceContext4Ast ctx4Ast = new InferenceContext4Ast();
 
     // Literals
