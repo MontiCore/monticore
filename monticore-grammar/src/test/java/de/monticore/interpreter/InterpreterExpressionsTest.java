@@ -47,7 +47,6 @@ public class InterpreterExpressionsTest extends AbstractInterpreterTest {
     assumeFalse(exprStr.contains("} union {"));
     assumeFalse(exprStr.contains("} intersect {"));
     assumeFalse(exprStr.contains("} \\ {"));
-    assumeFalse(exprStr.contains("[z | x in "));
   }
 
 }
