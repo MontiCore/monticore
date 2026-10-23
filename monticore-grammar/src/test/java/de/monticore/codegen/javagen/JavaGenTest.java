@@ -31,13 +31,8 @@ public class JavaGenTest extends AbstractJavaGenTest {
   @MethodSource("de.monticore.tests.expressionsandstatements.ExpressionsTestModels#getExpressionsCases")
   public void testJavaGenExprVals(String modelStr, Object expectedValue) {
     // missing implementations
-    assumeFalse(modelStr.contains("<<"));
-    assumeFalse(modelStr.contains(">>"));
-    assumeFalse(modelStr.contains(">>>"));
-    assumeFalse(modelStr.contains(" ^ "));
-    assumeFalse(modelStr.equals("6 & 3"));
-    assumeFalse(modelStr.equals("6 | 3"));
     assumeFalse(modelStr.equals("true & false"));
+    assumeFalse(modelStr.equals("true ^ true"));
     assumeFalse(modelStr.equals("false | true"));
     // needs better checkValue, as this is not easily tested with Strings
     assumeFalse(expectedValue instanceof Set<?>);
