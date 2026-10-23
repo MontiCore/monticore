@@ -92,9 +92,9 @@ public class ExpressionsBasisJavaGenVisitor
         String funcFullName = funcType.getSymbol().getFullName();
         // assumed to always have a "."
         String javaFuncName =
-            funcName.substring(0, funcFullName.lastIndexOf("."))
+            funcFullName.substring(0, funcFullName.lastIndexOf("."))
                 + "::"
-                + funcName.substring(funcFullName.lastIndexOf(".") + 1);
+                + funcFullName.substring(funcFullName.lastIndexOf(".") + 1);
         getPrinter().print(javaFuncName);
       }
       getPrinter().print(")");
