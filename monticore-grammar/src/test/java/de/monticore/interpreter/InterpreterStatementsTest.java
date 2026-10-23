@@ -32,4 +32,13 @@ public class InterpreterStatementsTest extends AbstractInterpreterTest {
     assertEquals("message", error.getMessage());
   }
 
+  @Test
+  void testDeepRecursionFailure() {
+    MCValue MCValue = interpret(
+        "int -> int f = (int n) -> n == 0 ? 1 / n : f(n - 1); f(10000)"
+    );
+    assertTrue(MCValue.isError());
+    assertInstanceOf(ArithmeticException.class, MCValue.asNativeObject());
+  }
+
 }
