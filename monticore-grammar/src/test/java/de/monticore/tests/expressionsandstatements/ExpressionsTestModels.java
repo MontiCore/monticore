@@ -33,6 +33,7 @@ public class ExpressionsTestModels {
   static protected Stream<Arguments> getArithmeticCases() {
     return Stream.of(
         Arguments.of("42", 42),
+        Arguments.of("010", 10),
         Arguments.of("+42", 42),
         Arguments.of("-(4)", -4),
         Arguments.of("-(-4)", 4),
