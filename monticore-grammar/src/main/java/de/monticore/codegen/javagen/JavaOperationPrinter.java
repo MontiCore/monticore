@@ -3,6 +3,7 @@ package de.monticore.codegen.javagen;
 
 import de.monticore.codegen.CodeGenOperationPrinter;
 import de.monticore.codegen.javagen.operationprinter.JavaAssignmentOperationHandler;
+import de.monticore.codegen.javagen.operationprinter.JavaBooleanOperationHandler;
 import de.monticore.codegen.javagen.operationprinter.JavaEqualityOperationHandler;
 import de.monticore.codegen.javagen.operationprinter.JavaNumericOperationHandler;
 import de.monticore.codegen.javagen.operationprinter.JavaStringConcatenationOperationHandler;
@@ -17,6 +18,7 @@ public class JavaOperationPrinter extends CodeGenOperationPrinter {
         new JavaEqualityOperationHandler(),
         new JavaAssignmentOperationHandler(),
         new JavaNumericOperationHandler(),
+        new JavaBooleanOperationHandler(),
         new JavaStringConcatenationOperationHandler()
     ));
   }
