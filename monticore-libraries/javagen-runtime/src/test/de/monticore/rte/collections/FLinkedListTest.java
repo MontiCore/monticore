@@ -38,6 +38,7 @@ public class FLinkedListTest {
     Assertions.assertEquals(new FLinkedList<>(), FList.of());
     Assertions.assertEquals(new FLinkedList<>(), FList.of(new String[0]));
     Assertions.assertEquals(new FLinkedList<>(List.of("a")), FList.of("a"));
+    Assertions.assertEquals(new FLinkedList<>(List.of("a", "a")), FList.of(List.of("a", "a")));
   }
 
   @Test
