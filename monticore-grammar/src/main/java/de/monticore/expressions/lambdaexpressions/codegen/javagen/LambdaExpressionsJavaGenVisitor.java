@@ -31,9 +31,15 @@ public class LambdaExpressionsJavaGenVisitor
 
   @Override
   public void traverse(ASTLambdaExpressionBody node) {
-    state.startParentheses();
-    node.getExpression().accept(getTraverser());
-    state.endParentheses();
+    if (normalize(typeOf(node.getExpression())).isVoidType()) {
+      // java does not allow parentheses around void expressions
+      node.getExpression().accept(getTraverser());
+    }
+    else {
+      state.startParentheses();
+      node.getExpression().accept(getTraverser());
+      state.endParentheses();
+    }
   }
 
   @Override
