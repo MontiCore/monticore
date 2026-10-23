@@ -20,8 +20,8 @@ import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.io.FilenameUtils;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.WeakHashMap;
 
 /**
  * Stores the type of expressions and type identifiers,
@@ -69,8 +69,8 @@ public class Type4Ast {
   }
 
   public void reset() {
-    expr2type = new LinkedHashMap<>();
-    typeID2type = new LinkedHashMap<>();
+    expr2type = new WeakHashMap<>();
+    typeID2type = new WeakHashMap<>();
   }
 
   /**
