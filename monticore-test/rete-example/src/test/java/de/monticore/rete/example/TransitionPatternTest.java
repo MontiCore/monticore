@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static de.monticore.rete.example.AutomatonFeatures.*;
+import static de.monticore.rete.example.simpleautomata._rete.SimpleAutomataReteFeatures.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**

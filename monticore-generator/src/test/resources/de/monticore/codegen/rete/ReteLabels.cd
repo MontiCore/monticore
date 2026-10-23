@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.codegen.rete;
+
+import de.monticore.codegen.rete.ReteBase.*;
+
+classdiagram ReteLabels {
+
+  public class ASTLabel implements de.monticore.codegen.rete.ReteBase.ASTElement {
+    protected String id;
+    protected String text;
+  }
+}

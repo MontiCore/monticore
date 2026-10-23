@@ -28,7 +28,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.function.Supplier;
 
-import static de.monticore.rete.example.AutomatonFeatures.*;
+import static de.monticore.rete.example.simpleautomata._rete.SimpleAutomataReteFeatures.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 

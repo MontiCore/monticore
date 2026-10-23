@@ -12,10 +12,11 @@ import de.monticore.rete.example.simpleautomata._ast.ASTTransition;
 import de.monticore.rete.example.simpleautomata._visitor.SimpleAutomataTraverser;
 import de.monticore.rete.example.simpleautomata._visitor.SimpleAutomataVisitor2;
 
-import static de.monticore.rete.example.AutomatonFeatures.*;
+import static de.monticore.rete.example.simpleautomata._rete.SimpleAutomataReteFeatures.*;
 
 /**
- * Reports the facts of SimpleAutomata ASTs (see {@link AutomatonFeatures}) to
+ * Reports the facts of SimpleAutomata ASTs (see the generated
+ * {@link de.monticore.rete.example.simpleautomata._rete.SimpleAutomataReteFeatures}) to
  * a {@link ReteNetwork}, e.g. to initialize the network for a parsed model.
  * <p>
  * The facts of a subtree are the AST nodes it contains and the values of all
