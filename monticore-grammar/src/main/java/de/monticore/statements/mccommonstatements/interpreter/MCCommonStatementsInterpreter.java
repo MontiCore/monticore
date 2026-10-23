@@ -150,9 +150,14 @@ public class MCCommonStatementsInterpreter
       forInitCalc = MICalculationVoid.NOOP_CALC;
     }
 
-    node.getCondition().accept(getTraverser());
-    MICalculationBoolean conditionCalc =
-        iData.popCalculation().asCalculationBoolean();
+    MICalculationBoolean conditionCalc;
+    if (node.isPresentCondition()) {
+      node.getCondition().accept(getTraverser());
+      conditionCalc = iData.popCalculation().asCalculationBoolean();
+    }
+    else {
+      conditionCalc = frame -> true;
+    }
 
     MICalculationVoid updateCalc = chainBehavior(node.getExpressionList());
 
