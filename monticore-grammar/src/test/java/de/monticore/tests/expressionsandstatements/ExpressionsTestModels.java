@@ -122,6 +122,9 @@ public class ExpressionsTestModels {
         Arguments.of("!false", true),
         Arguments.of("!(1 < 2)", false),
         Arguments.of("!(2 < 1)", true),
+        Arguments.of("true & false", false),
+        Arguments.of("true ^ true", false),
+        Arguments.of("false | true", true),
         // fits here somewhat-ish
         Arguments.of("true ? 5 + 2 : -1", 7)
     );
