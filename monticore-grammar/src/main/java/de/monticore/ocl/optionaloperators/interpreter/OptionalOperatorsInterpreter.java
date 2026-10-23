@@ -92,7 +92,7 @@ public class OptionalOperatorsInterpreter
     opTraverser.traverseBinaryOperator(
         getTraverser(), iData,
         node, node.getLeft(), node.getRight(),
-        liftForLeftOptional(opCalculator::handleLessThan)
+        liftForLeftOptional(opCalculator::handleLessEqual)
     );
   }
 
