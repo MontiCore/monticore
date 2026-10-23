@@ -318,7 +318,7 @@ public class InterpreterVisitorOperatorCalculator {
       SymTypeExpression rightType,
       SymTypeExpression exprType
   ) {
-    return getBitBinaryCalc(
+    return getIntBitBinaryCalc(
         leftCalc,
         rightCalc,
         leftType,
@@ -336,7 +336,7 @@ public class InterpreterVisitorOperatorCalculator {
       SymTypeExpression rightType,
       SymTypeExpression exprType
   ) {
-    return getBitBinaryCalc(
+    return getIntBitBinaryCalc(
         leftCalc,
         rightCalc,
         leftType,
@@ -354,7 +354,7 @@ public class InterpreterVisitorOperatorCalculator {
       SymTypeExpression rightType,
       SymTypeExpression exprType
   ) {
-    return getBitBinaryCalc(
+    return getIntBitBinaryCalc(
         leftCalc,
         rightCalc,
         leftType,
@@ -379,6 +379,7 @@ public class InterpreterVisitorOperatorCalculator {
         rightType,
         exprType,
         "&",
+        (l, r) -> l & r,
         (l, r) -> l & r
     );
   }
@@ -397,6 +398,7 @@ public class InterpreterVisitorOperatorCalculator {
         rightType,
         exprType,
         "^",
+        (l, r) -> l ^ r,
         (l, r) -> l ^ r
     );
   }
@@ -415,6 +417,7 @@ public class InterpreterVisitorOperatorCalculator {
         rightType,
         exprType,
         "|",
+        (l, r) -> l | r,
         (l, r) -> l | r
     );
   }
@@ -559,7 +562,27 @@ public class InterpreterVisitorOperatorCalculator {
     return res;
   }
 
-  protected MICalculationInt getBitBinaryCalc(
+  protected MICalculation getBitBinaryCalc(
+      MICalculation leftCalc,
+      MICalculation rightCalc,
+      SymTypeExpression leftType,
+      SymTypeExpression rightType,
+      SymTypeExpression exprType,
+      String opStr,
+      IntBinaryOperator opInt,
+      BooleanBiPredicate opBoolean
+  ) {
+    if (isBoolean(leftType) && isBoolean(rightType)) {
+      return getBooleanBitBinaryCalc(
+          leftCalc, rightCalc, leftType, rightType, exprType, opStr, opBoolean
+      );
+    }
+    return getIntBitBinaryCalc(
+        leftCalc, rightCalc, leftType, rightType, exprType, opStr, opInt
+    );
+  }
+
+  protected MICalculationInt getIntBitBinaryCalc(
       MICalculation leftCalc,
       MICalculation rightCalc,
       SymTypeExpression leftType,
@@ -573,6 +596,23 @@ public class InterpreterVisitorOperatorCalculator {
     return frame -> op.applyAsInt(
         leftIntCalc.calculate(frame),
         rightIntCalc.calculate(frame)
+    );
+  }
+
+  protected MICalculationBoolean getBooleanBitBinaryCalc(
+      MICalculation leftCalc,
+      MICalculation rightCalc,
+      SymTypeExpression leftType,
+      SymTypeExpression rightType,
+      SymTypeExpression exprType,
+      String opStr,
+      BooleanBiPredicate op
+  ) {
+    MICalculationBoolean leftBooleanCalc = leftCalc.asCalculationBoolean();
+    MICalculationBoolean rightBooleanCalc = rightCalc.asCalculationBoolean();
+    return frame -> op.test(
+        leftBooleanCalc.calculate(frame),
+        rightBooleanCalc.calculate(frame)
     );
   }
 
