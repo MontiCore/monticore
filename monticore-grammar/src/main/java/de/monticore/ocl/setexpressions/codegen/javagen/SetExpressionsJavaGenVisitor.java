@@ -13,10 +13,13 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.mccollectiontypes.types3.MCCollectionSymTypeRelations;
 import de.monticore.types3.SymTypeRelations;
 import de.monticore.types3.TypeCheck3;
+import de.monticore.types3.generics.context.InferenceContext;
+import de.monticore.types3.util.MapBasedTypeCheck3;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Optional;
 
+import static de.monticore.codegen.CodeGenSymTypeExpressionConverter.printConverted;
 import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getBoxedJavaTypePrint;
 import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getJavaTypePrint;
 import static de.monticore.types3.SymTypeRelations.normalize;
@@ -442,41 +445,51 @@ public class SetExpressionsJavaGenVisitor
 
   @Override
   public void traverse(ASTSetValueItem node) {
+    SymTypeExpression exprType = normalize(TypeCheck3.typeOf(node.getExpression()));
+    SymTypeExpression targetType = _hack_getTargetType(node.getExpression(), exprType);
     getPrinter().print("java.util.Collections.singleton(");
-    node.getExpression().accept(getTraverser());
+    printConverted(getPrinter(), targetType, exprType,
+        p -> node.getExpression().accept(getTraverser())
+    );
     getPrinter().print(")");
   }
 
   @Override
   public void traverse(ASTSetValueRange node) {
-    SymTypeExpression boundType = normalize(TypeCheck3.typeOf(node.getLowerBound()));
-    String boundTypeStr = getBoxedJavaTypePrint(boundType);
+    SymTypeExpression lowerType = normalize(TypeCheck3.typeOf(node.getLowerBound()));
+    SymTypeExpression upperType = normalize(TypeCheck3.typeOf(node.getUpperBound()));
+    SymTypeExpression elemType = _hack_getTargetType(node.getLowerBound(), lowerType);
+    String elemTypeStr = getBoxedJavaTypePrint(elemType);
 
     getPrinter().print("((java.util.function.Supplier<");
     getPrinter().print("java.util.List<");
-    getPrinter().print(boundTypeStr);
+    getPrinter().print(elemTypeStr);
     getPrinter().print(">>) () -> {");
     getPrinter().println();
     getPrinter().indent();
 
     getPrinter().print("java.util.List<");
-    getPrinter().print(boundTypeStr);
+    getPrinter().print(elemTypeStr);
     getPrinter().print("> ");
     getPrinter().print(getVarName(node));
     getPrinter().println(" = new java.util.LinkedList<>();");
 
-    getPrinter().print(boundTypeStr);
+    getPrinter().print(elemTypeStr);
     getPrinter().print(" ");
     getPrinter().print(getVarName(node));
     getPrinter().print("LowerBound = ");
-    node.getLowerBound().accept(getTraverser());
+    printConverted(getPrinter(), elemType, lowerType,
+        p -> node.getLowerBound().accept(getTraverser())
+    );
     state.endStatement();
 
-    getPrinter().print(boundTypeStr);
+    getPrinter().print(elemTypeStr);
     getPrinter().print(" ");
     getPrinter().print(getVarName(node));
     getPrinter().print("UpperBound = ");
-    node.getUpperBound().accept(getTraverser());
+    printConverted(getPrinter(), elemType, upperType,
+        p -> node.getUpperBound().accept(getTraverser())
+    );
     state.endStatement();
 
     getPrinter().print("int ");
@@ -495,7 +508,7 @@ public class SetExpressionsJavaGenVisitor
     getPrinter().println("}");
 
     getPrinter().print("for (");
-    getPrinter().print(boundTypeStr);
+    getPrinter().print(elemTypeStr);
     getPrinter().print(" ");
     getPrinter().print(getVarName(node));
     getPrinter().print("_iter = ");
@@ -511,7 +524,7 @@ public class SetExpressionsJavaGenVisitor
     getPrinter().print("Step; ");
     getPrinter().print(getVarName(node));
     getPrinter().print("_iter = (");
-    getPrinter().print(boundTypeStr);
+    getPrinter().print(elemTypeStr);
     getPrinter().print(")(");
     getPrinter().print(getVarName(node));
     getPrinter().print("_iter + ");
@@ -569,4 +582,14 @@ public class SetExpressionsJavaGenVisitor
     return Optional.of(innerType);
   }
 
+  @Deprecated
+  SymTypeExpression _hack_getTargetType(
+      ASTExpression expr,
+      SymTypeExpression exprType
+  ) {
+    InferenceContext ctx = MapBasedTypeCheck3
+        .internal_hacky_do_not_use_getCtx4Ast()
+        .getContextOfExpression(expr);
+    return ctx.hasTargetType() ? normalize(ctx.getTargetType()) : exprType;
+  }
 }
