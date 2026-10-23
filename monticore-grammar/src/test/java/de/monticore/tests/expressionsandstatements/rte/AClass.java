@@ -30,6 +30,7 @@ public class AClass {
   public Long var_Long = 0L;
   public Float var_Float = 0f;
   public Double var_Double = 0d;
+  public String var_String = "";
 
   public static boolean var_s_boolean;
   public static byte var_s_byte;
@@ -48,6 +49,7 @@ public class AClass {
   public static Long var_s_Long;
   public static Float var_s_Float;
   public static Double var_s_Double;
+  public static String var_s_String;
 
   static public void resetStaticVars() {
     var_s_boolean = false;
@@ -67,6 +69,7 @@ public class AClass {
     var_s_Long = 0L;
     var_s_Float = 0f;
     var_s_Double = 0d;
+    var_s_String = "";
   }
 
   public boolean get_var_boolean() {
@@ -133,6 +136,10 @@ public class AClass {
     return var_Double;
   }
 
+  public String get_var_String() {
+    return var_String;
+  }
+
   public static boolean get_var_s_boolean() {
     return var_s_boolean;
   }
@@ -195,6 +202,10 @@ public class AClass {
 
   public static Double get_var_s_Double() {
     return var_s_Double;
+  }
+
+  public static String get_var_s_String() {
+    return var_s_String;
   }
 
   public void set_var_boolean(boolean value) {
@@ -261,6 +272,10 @@ public class AClass {
     var_Double = value;
   }
 
+  public void set_var_String(String value) {
+    var_String = value;
+  }
+
   public static void set_var_s_boolean(boolean value) {
     var_s_boolean = value;
   }
@@ -323,6 +338,10 @@ public class AClass {
 
   public static void set_var_s_Double(Double value) {
     var_s_Double = value;
+  }
+
+  public static void set_var_s_String(String value) {
+    var_s_String = value;
   }
 
 }
