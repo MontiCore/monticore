@@ -2,7 +2,9 @@
 package de.monticore.ocl.optionaloperators.codegen.javagen;
 
 import com.google.common.base.Preconditions;
+import de.monticore.ast.ASTNode;
 import de.monticore.codegen.javagen.JavaGenVisitorState;
+import de.monticore.codegen.util.Node2Name;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.ocl.optionaloperators._ast.ASTOptionalEqualsExpression;
 import de.monticore.ocl.optionaloperators._ast.ASTOptionalExpressionPrefix;
@@ -94,7 +96,11 @@ public class OptionalOperatorsJavaGenVisitor
   public void traverse(ASTOptionalEqualsExpression node) {
     getPrinter().print("(");
     node.getLeft().accept(getTraverser());
-    getPrinter().print(".map(v -> v.equals(");
+    getPrinter().print(".map(");
+    getPrinter().print(getVarName(node));
+    getPrinter().print(" -> ");
+    getPrinter().print(getVarName(node));
+    getPrinter().print(".equals(");
     node.getRight().accept(getTraverser());
     getPrinter().print(")).orElse(false))");
   }
@@ -103,7 +109,11 @@ public class OptionalOperatorsJavaGenVisitor
   public void traverse(ASTOptionalNotEqualsExpression node) {
     getPrinter().print("(");
     node.getLeft().accept(getTraverser());
-    getPrinter().print(".map(v -> !v.equals(");
+    getPrinter().print(".map(");
+    getPrinter().print(getVarName(node));
+    getPrinter().print(" -> !");
+    getPrinter().print(getVarName(node));
+    getPrinter().print(".equals(");
     node.getRight().accept(getTraverser());
     getPrinter().print(")).orElse(false))");
   }
@@ -115,7 +125,11 @@ public class OptionalOperatorsJavaGenVisitor
   ) {
     getPrinter().print("(");
     left.accept(getTraverser());
-    getPrinter().print(".map(v -> v ");
+    getPrinter().print(".map(");
+    getPrinter().print(getVarName(left));
+    getPrinter().print(" -> ");
+    getPrinter().print(getVarName(left));
+    getPrinter().print(" ");
     getPrinter().print(operator);
     getPrinter().print(" ");
     right.accept(getTraverser());
@@ -168,5 +182,11 @@ public class OptionalOperatorsJavaGenVisitor
     rightExpr.accept(getTraverser());
     getPrinter().print(")");
     state.endParentheses();
+  }
+
+  // helper
+
+  protected String getVarName(ASTNode node) {
+    return "var_" + Node2Name.getName(node);
   }
 }
