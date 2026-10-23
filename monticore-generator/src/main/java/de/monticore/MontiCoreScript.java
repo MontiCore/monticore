@@ -80,6 +80,8 @@ import de.monticore.codegen.cd2java.mill.MillDecorator;
 import de.monticore.codegen.cd2java.mill.MillForSuperDecorator;
 import de.monticore.codegen.cd2java.typecd2java.TemplateHPService;
 import de.monticore.codegen.cd2java.typecd2java.TypeCD2JavaDecorator;
+import de.monticore.codegen.cd2java.rete.FullReteFactEmitterDecorator;
+import de.monticore.codegen.cd2java.rete.ReteFactEmitterDecorator;
 import de.monticore.codegen.cd2java.rete.ReteFeatureDecorator;
 import de.monticore.codegen.cd2java.rete.ReteService;
 import de.monticore.codegen.cd2java.typedispatcher.TypeDispatcherDecorator;
@@ -867,6 +869,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
                                      ASTCDCompilationUnit cd,
                                      ASTCDCompilationUnit decoratedCD) {
     decorateWithReteFeatures(cd, decoratedCD, glex);
+    decorateWithReteFactEmitters(cd, decoratedCD, glex);
   }
 
   protected void decorateWithReteFeatures(ASTCDCompilationUnit cd,
@@ -874,6 +877,18 @@ public class MontiCoreScript extends Script implements GroovyRunner {
                                           GlobalExtensionManagement glex) {
     ReteFeatureDecorator reteFeatureDecorator = new ReteFeatureDecorator(glex, new ReteService(cd));
     reteFeatureDecorator.decorate(cd, decoratedCD);
+  }
+
+  protected void decorateWithReteFactEmitters(ASTCDCompilationUnit cd,
+                                              ASTCDCompilationUnit decoratedCD,
+                                              GlobalExtensionManagement glex) {
+    ReteFactEmitterDecorator emitterDecorator = new ReteFactEmitterDecorator(glex,
+        new ReteService(cd), new VisitorService(cd));
+    emitterDecorator.decorate(cd, decoratedCD);
+
+    FullReteFactEmitterDecorator fullEmitterDecorator = new FullReteFactEmitterDecorator(glex,
+        new ReteService(cd), new VisitorService(cd));
+    fullEmitterDecorator.decorate(cd, decoratedCD);
   }
 
   public void decorateMill(GlobalExtensionManagement glex, ICD4AnalysisScope cdScope,

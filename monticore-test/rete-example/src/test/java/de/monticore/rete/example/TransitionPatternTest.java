@@ -4,6 +4,7 @@ package de.monticore.rete.example;
 import de.monticore.rete.Match;
 import de.monticore.rete.MatchListener;
 import de.monticore.rete.ReteNetwork;
+import de.monticore.rete.example.simpleautomata._rete.SimpleAutomataFullReteFactEmitter;
 import de.monticore.rete.example.simpleautomata.SimpleAutomataMill;
 import de.monticore.rete.example.simpleautomata._ast.ASTAutomaton;
 import de.monticore.rete.example.simpleautomata._ast.ASTState;
@@ -60,7 +61,7 @@ public class TransitionPatternTest {
 
   protected ProductionNode transitions;
 
-  protected AutomatonFactEmitter emitter;
+  protected SimpleAutomataFullReteFactEmitter emitter;
 
   protected ASTAutomaton pingPong;
 
@@ -90,7 +91,7 @@ public class TransitionPatternTest {
 
     pingPong = SimpleAutomataMill.parser().parse_String(PING_PONG).orElseThrow();
     other = SimpleAutomataMill.parser().parse_String(OTHER).orElseThrow();
-    emitter = new AutomatonFactEmitter(network);
+    emitter = new SimpleAutomataFullReteFactEmitter(network);
     emitter.addSubtree(pingPong);
     emitter.addSubtree(other);
   }
@@ -216,11 +217,8 @@ public class TransitionPatternTest {
   public void testAddState() {
     ASTState missing = SimpleAutomataMill.stateBuilder().setName("Missing").build();
     events.clear();
-    network.transaction(() -> {
-      pingPong.addState(missing);
-      emitter.addSubtree(missing);
-      network.featureValueAdded(AUTOMATON_STATES, pingPong, missing);
-    });
+    pingPong.addState(missing);
+    emitter.addSubtree(missing, pingPong, AUTOMATON_STATES);
     assertEquals(List.of("+Pong-stop->Missing"), events);
   }
 
@@ -234,17 +232,11 @@ public class TransitionPatternTest {
         .setFrom("Ping").setInput("wait").setTo("Ping").build();
 
     pingPong.addTransition(loop);
-    network.transaction(() -> {
-      emitter.addSubtree(loop);
-      network.featureValueAdded(AUTOMATON_TRANSITIONS, pingPong, loop);
-    });
+    emitter.addSubtree(loop, pingPong, AUTOMATON_TRANSITIONS);
     assertTrue(matches().contains("Ping-wait->Ping"));
 
     pingPong.removeTransition(loop);
-    network.transaction(() -> {
-      emitter.removeSubtree(loop);
-      network.featureValueRemoved(AUTOMATON_TRANSITIONS, pingPong, loop);
-    });
+    emitter.removeSubtree(loop, pingPong, AUTOMATON_TRANSITIONS);
     assertFalse(matches().contains("Ping-wait->Ping"));
     assertEquals(List.of("+Ping-wait->Ping", "-Ping-wait->Ping"), events.subList(3, 5));
   }
@@ -307,10 +299,7 @@ public class TransitionPatternTest {
     ASTTransition back = SimpleAutomataMill.transitionBuilder()
         .setFrom("Pong").setInput("return").setTo("Pong").build();
     pingPong.addTransition(back);
-    network.transaction(() -> {
-      emitter.addSubtree(back);
-      network.featureValueAdded(AUTOMATON_TRANSITIONS, pingPong, back);
-    });
+    emitter.addSubtree(back, pingPong, AUTOMATON_TRANSITIONS);
     assertEquals(2, transitions.countMatches(pong, null, null));
 
     // ... and when the source of a transition changes
@@ -360,10 +349,7 @@ public class TransitionPatternTest {
     ASTTransition loop = SimpleAutomataMill.transitionBuilder()
         .setFrom("Ping").setInput("wait").setTo("Ping").build();
     pingPong.addTransition(loop);
-    network.transaction(() -> {
-      emitter.addSubtree(loop);
-      network.featureValueAdded(AUTOMATON_TRANSITIONS, pingPong, loop);
-    });
+    emitter.addSubtree(loop, pingPong, AUTOMATON_TRANSITIONS);
     // ... while changes of other states' transitions cause no events
     ASTTransition pongBall = transition(pingPong, "Pong", "ball");
     pongBall.setTo("Pong");
@@ -387,7 +373,7 @@ public class TransitionPatternTest {
     TupleSource initial = net.featureInput(STATE_INITIAL); // [s, isInitial]
     ProductionNode initialStates = net.production(
         net.project(net.filter(initial, t -> t.get(1, Boolean.class)), 0), "state");
-    new AutomatonFactEmitter(net).addSubtree(pingPong);
+    new SimpleAutomataFullReteFactEmitter(net).addSubtree(pingPong);
 
     ASTState ping = state(pingPong, "Ping");
     ASTState pong = state(pingPong, "Pong");

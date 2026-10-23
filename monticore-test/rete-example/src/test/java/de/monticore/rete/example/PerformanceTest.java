@@ -2,6 +2,7 @@
 package de.monticore.rete.example;
 
 import de.monticore.rete.ReteNetwork;
+import de.monticore.rete.example.simpleautomata._rete.SimpleAutomataFullReteFactEmitter;
 import de.monticore.rete.example.simpleautomata.SimpleAutomataMill;
 import de.monticore.rete.example.simpleautomata._ast.ASTAutomaton;
 import de.monticore.rete.example.simpleautomata._ast.ASTState;
@@ -153,7 +154,7 @@ public class PerformanceTest {
   /**
    * Builds the patterns in a new network and initializes it with the model.
    */
-  protected Patterns initializedPatterns(ReteNetwork net, AutomatonFactEmitter emitter) {
+  protected Patterns initializedPatterns(ReteNetwork net, SimpleAutomataFullReteFactEmitter emitter) {
     Patterns p = buildPatterns(net);
     emitter.addSubtree(automaton);
     return p;
@@ -180,7 +181,7 @@ public class PerformanceTest {
       heapBefore = usedHeap();
       ReteNetwork net = new ReteNetwork();
       p = measure("run " + run + ": build network", () -> buildPatterns(net));
-      AutomatonFactEmitter emitter = new AutomatonFactEmitter(net);
+      SimpleAutomataFullReteFactEmitter emitter = new SimpleAutomataFullReteFactEmitter(net);
       measure("run " + run + ": initialize with model", () -> {
         emitter.addSubtree(automaton);
         return null;
@@ -207,7 +208,7 @@ public class PerformanceTest {
   public void testIncrementalChanges(String model) throws IOException {
     parse(model);
     ReteNetwork net = new ReteNetwork();
-    AutomatonFactEmitter emitter = new AutomatonFactEmitter(net);
+    SimpleAutomataFullReteFactEmitter emitter = new SimpleAutomataFullReteFactEmitter(net);
     Patterns p = measure("initialize with model", () -> initializedPatterns(net, emitter));
     Random random = new Random(1);
     List<ASTState> states = automaton.getStateList();
@@ -262,10 +263,7 @@ public class PerformanceTest {
           .setTo(states.get(random.nextInt(states.size())).getName())
           .build();
       automaton.addTransition(t);
-      net.transaction(() -> {
-        emitter.addSubtree(t);
-        net.featureValueAdded(AUTOMATON_TRANSITIONS, automaton, t);
-      });
+      emitter.addSubtree(t, automaton, AUTOMATON_TRANSITIONS);
       added.add(t);
     }
     reportAverage("add transition", "change", CHANGES, System.nanoTime() - start);
@@ -275,10 +273,7 @@ public class PerformanceTest {
     start = System.nanoTime();
     for (ASTTransition t : added) {
       automaton.removeTransition(t);
-      net.transaction(() -> {
-        emitter.removeSubtree(t);
-        net.featureValueRemoved(AUTOMATON_TRANSITIONS, automaton, t);
-      });
+      emitter.removeSubtree(t, automaton, AUTOMATON_TRANSITIONS);
     }
     reportAverage("remove transition", "change", CHANGES, System.nanoTime() - start);
     assertMatchesExpected(p);
@@ -294,7 +289,7 @@ public class PerformanceTest {
   public void testQueriesWithBoundParameters(String model) throws IOException {
     parse(model);
     ReteNetwork net = new ReteNetwork();
-    Patterns p = initializedPatterns(net, new AutomatonFactEmitter(net));
+    Patterns p = initializedPatterns(net, new SimpleAutomataFullReteFactEmitter(net));
     List<ASTState> states = automaton.getStateList();
     Map<ASTState, Integer> expectedPathCounts = new HashMap<>();
     for (Tuple path : computeExpected().twoStepPaths) {
