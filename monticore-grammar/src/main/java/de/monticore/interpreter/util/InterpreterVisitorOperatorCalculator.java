@@ -187,7 +187,7 @@ public class InterpreterVisitorOperatorCalculator {
         (l, r) -> l != r,
         (l, r) -> l != r,
         (l, r) -> l != r,
-        (l, r) -> l != r
+        (l, r) -> !l.checkEqualityOperator(r)
     );
   }
 
