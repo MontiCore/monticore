@@ -27,6 +27,7 @@ public class MCValueFactory {
       case Long l -> new MCValueInt((int) (long) l);
       case Float f -> new MCValueDouble(f);
       case Double d -> new MCValueDouble(d);
+      case null -> new MCValueObject(null);
       default -> new MCValueObject(value);
     };
   }
