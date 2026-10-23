@@ -44,6 +44,7 @@ public class TuplesTest {
     assertEquals("(3, Antwort, 3.0)", tuple3.toString());
     assertEquals("(4, Hund, 4.0, 4.0)", tuple4.toString());
     assertEquals("(5, Hund, 5.0, 4.0, e)", tuple5.toString());
+    assertEquals("(null, Antwort)", Tuple2.<Integer, String> of(null, "Antwort").toString());
   }
 
   @Test
