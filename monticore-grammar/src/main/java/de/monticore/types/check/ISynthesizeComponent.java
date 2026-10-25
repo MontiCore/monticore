@@ -1,15 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.check;
 
-import de.monticore.types.mcbasictypes._ast.ASTMCType;
-import de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser;
+import de.monticore.types.mccomponenttypes._ast.ASTMCComponentType;
+import de.monticore.types.mccomponenttypes._visitor.MCComponentTypesTraverser;
 import de.se_rwth.commons.logging.Log;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.Optional;
 
 /**
- * Interface for synthesizing a {@link CompKindExpression} from an {@link ASTMCType}.
+ * Interface for synthesizing a {@link CompKindExpression} from an {@link ASTMCComponentType}.
  */
 public interface ISynthesizeComponent {
 
@@ -18,17 +18,18 @@ public interface ISynthesizeComponent {
    */
   void init();
 
-  MCBasicTypesTraverser getTraverser();
+  MCComponentTypesTraverser getTraverser();
 
   /**
-   * Collects the synthesized {@link CompKindExpression} after using the traverser to traverse the {@link ASTMCType}
+   * Collects the synthesized {@link CompKindExpression} after using the traverser to traverse the
+   * {@link ASTMCComponentType}.
    */
   Optional<CompKindExpression> getResult();
 
   /**
-   * Synthesizes a {@link CompKindExpression} from a {@link ASTMCType}
+   * Synthesizes a {@link CompKindExpression} from an {@link ASTMCComponentType}.
    */
-  default Optional<CompKindExpression> synthesize(@NonNull ASTMCType mcType) {
+  default Optional<CompKindExpression> synthesize(@NonNull ASTMCComponentType mcType) {
     this.init();
     mcType.accept(this.getTraverser());
     Optional<CompKindExpression> res = this.getResult();

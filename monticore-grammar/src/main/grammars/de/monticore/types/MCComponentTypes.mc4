@@ -1,0 +1,25 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.types;
+
+import de.monticore.types.*;
+
+/**
+ * This grammar defines the type references that may denote component types.
+ * Component types may be qualified and may have type arguments, but they may
+ * not be primitive, collection, array, function, or structural types.
+ */
+component grammar MCComponentTypes extends MCSimpleGenericTypes {
+
+  /** Top-level interface for all component type references. */
+  interface MCComponentType extends MCType;
+
+  /** A simple or qualified component type, such as {@code a.b.Component}. */
+  MCQualifiedComponentType implements MCComponentType = MCQualifiedName;
+
+  /**
+   * A generic component type, such as {@code a.b.Component<String>}.
+   * The type arguments remain regular MC types.
+   */
+  MCGenericComponentType implements MCComponentType <20> =
+      (Name || ".")+ "<" (MCTypeArgument || ",")* ">";
+}

@@ -139,6 +139,7 @@ def grammarDependencies = ext {
   AssignmentExpressions = ["ExpressionsBasis"]
   UMLModifier = ["UMLStereotype"]
   MCArrayTypes = ["MCBasicTypes"]
+  MCComponentTypes = ["MCSimpleGenericTypes", "CompSymbols"]
   MCSimpleGenericTypes = ["MCCollectionTypes"]
   MCCommonStatements = ["MCVarDeclarationStatements"]
   MCCollectionTypes = ["MCBasicTypes"]
@@ -336,6 +337,8 @@ checkArtifactsMCBasicTypes.dependsOn(checkArtifactsOOSymbols)
 
 checkArtifactsMCCollectionTypes.dependsOn(checkArtifactsMCBasicTypes)
 
+checkArtifactsMCComponentTypes.dependsOn(checkArtifactsMCSimpleGenericTypes, checkArtifactsCompSymbols)
+
 checkArtifactsMCFullGenericTypes.dependsOn(checkArtifactsMCSimpleGenericTypes)
 
 checkArtifactsMCSimpleGenericTypes.dependsOn(checkArtifactsMCCollectionTypes)
@@ -470,6 +473,8 @@ showArtifactsMCBasicTypes.dependsOn(showArtifactsMCBasics)
 showArtifactsMCBasicTypes.dependsOn(showArtifactsOOSymbols)
 
 showArtifactsMCCollectionTypes.dependsOn(showArtifactsMCBasicTypes)
+
+showArtifactsMCComponentTypes.dependsOn(showArtifactsMCSimpleGenericTypes, showArtifactsCompSymbols)
 
 showArtifactsMCFullGenericTypes.dependsOn(showArtifactsMCSimpleGenericTypes)
 
