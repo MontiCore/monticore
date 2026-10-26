@@ -33,6 +33,7 @@ import de.monticore.types3.Type4AstPersistent;
 import de.monticore.types3.TypeCheck3;
 import de.monticore.types3.generics.TypeParameterRelations;
 import de.monticore.types3.generics.context.InferenceContext4Ast;
+import de.monticore.types3.generics.context.InferenceContext4AstPersistent;
 import de.monticore.types3.util.*;
 import de.monticore.visitor.ITraverser;
 import de.se_rwth.commons.logging.Log;
@@ -57,7 +58,7 @@ public class ExpressionsAndStatementsTypeCheck3 extends MapBasedTypeCheck3 {
     ExpressionsAndStatementsTraverser traverser =
         ExpressionsAndStatementsMill.inheritanceTraverser();
     Type4Ast type4Ast = new Type4AstPersistent();
-    InferenceContext4Ast ctx4Ast = new InferenceContext4Ast();
+    InferenceContext4Ast ctx4Ast = new InferenceContext4AstPersistent();
 
     // Literals
 

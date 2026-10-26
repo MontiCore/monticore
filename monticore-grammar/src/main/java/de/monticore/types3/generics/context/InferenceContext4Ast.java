@@ -11,8 +11,8 @@ import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.io.FilenameUtils;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.WeakHashMap;
 
 /**
  * Stores context information for expressions and type identifiers,
@@ -56,8 +56,8 @@ public class InferenceContext4Ast {
   }
 
   public void reset() {
-    expr2ctx = new LinkedHashMap<>();
-    expr2resolved = new LinkedHashMap<>();
+    expr2ctx = new WeakHashMap<>();
+    expr2resolved = new WeakHashMap<>();
   }
 
   /**
