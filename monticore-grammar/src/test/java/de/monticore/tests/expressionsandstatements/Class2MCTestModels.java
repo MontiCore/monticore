@@ -208,7 +208,8 @@ public class Class2MCTestModels {
         Arguments.of("((java.lang.Integer) 5) + (java.lang.Double) 2", 7.0),
         Arguments.of("ArrayList()", new ArrayList<>()),
         // test inner calls to void functions
-        Arguments.of("(() -> aClass.set_var_int(3))(); aClass.var_int", 3)
+        Arguments.of("(() -> aClass.set_var_int(3))(); aClass.var_int", 3),
+        Arguments.of("ArrayList<Integer> l = ArrayList(); (() -> l.clear())(); l.size()", 0)
     );
   }
 
