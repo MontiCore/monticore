@@ -30,10 +30,6 @@ public class JavaGenTest extends AbstractJavaGenTest {
   @ParameterizedTest
   @MethodSource("de.monticore.tests.expressionsandstatements.ExpressionsTestModels#getExpressionsCases")
   public void testJavaGenExprVals(String modelStr, Object expectedValue) {
-    // missing implementations
-    assumeFalse(modelStr.equals("true & false"));
-    assumeFalse(modelStr.equals("true ^ true"));
-    assumeFalse(modelStr.equals("false | true"));
     // needs better checkValue, as this is not easily tested with Strings
     assumeFalse(expectedValue instanceof Set<?>);
 
@@ -49,14 +45,6 @@ public class JavaGenTest extends AbstractJavaGenTest {
   @ParameterizedTest(name = "[{index}] {0}")
   @MethodSource("de.monticore.tests.expressionsandstatements.StatementsTestModels#getStatementCases")
   public void testJavaGenStatementVals(String modelStr, Object expectedValue) {
-    // missing implementations
-    assumeFalse(modelStr.contains("<<="));
-    assumeFalse(modelStr.contains(">>="));
-    assumeFalse(modelStr.contains(">>>="));
-    assumeFalse(modelStr.contains("&="));
-    assumeFalse(modelStr.contains("^="));
-    assumeFalse(modelStr.contains("|="));
-    assumeFalse(modelStr.contains("l: {"));
     // recursive function definition currently not supported
     // (they cannot be done directly in Java)
     assumeFalse(modelStr.contains("int -> int s ="));
