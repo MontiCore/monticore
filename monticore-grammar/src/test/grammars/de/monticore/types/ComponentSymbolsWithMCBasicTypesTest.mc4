@@ -2,9 +2,9 @@
 
 package de.monticore.types;
 
-grammar ComponentSymbolsWithMCBasicTypesTest extends
+component grammar ComponentSymbolsWithMCBasicTypesTest extends
           de.monticore.symbols.CompSymbols,
           de.monticore.symbols.OOSymbols,
-          de.monticore.literals.MCCommonLiterals,
-          de.monticore.types.MCComponentTypes {
+          de.monticore.types.MCBasicTypes,
+          de.monticore.types.MCSimpleGenericTypes {
 }
