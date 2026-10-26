@@ -38,6 +38,7 @@ import de.monticore.types.mcstructuraltypes.types3.MCStructuralTypesTypeVisitor;
 import de.monticore.types3.Type4Ast;
 import de.monticore.types3.Type4AstPersistent;
 import de.monticore.types3.generics.context.InferenceContext4Ast;
+import de.monticore.types3.generics.context.InferenceContext4AstPersistent;
 import de.monticore.visitor.ITraverser;
 
 public class CombineExpressionsWithLiteralsTypeTraverserFactory {
@@ -49,7 +50,7 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
   public CombineExpressionsWithLiteralsTraverser createTraverser(
       Type4Ast type4Ast
   ) {
-    return createTraverser(type4Ast, new InferenceContext4Ast());
+    return createTraverser(type4Ast, new InferenceContext4AstPersistent());
   }
 
   public CombineExpressionsWithLiteralsTraverser createTraverser(
@@ -71,7 +72,7 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     TypeContextCalculator.init();
     CommonExpressionsLValueRelations.init();
     Type4Ast type4Ast = new Type4AstPersistent();
-    InferenceContext4Ast ctx4Ast = new InferenceContext4Ast();
+    InferenceContext4Ast ctx4Ast = new InferenceContext4AstPersistent();
     ITraverser traverser = new CombineExpressionsWithLiteralsTypeTraverserFactory()
         .createTraverser(type4Ast, ctx4Ast);
     // sets itself as delegate
@@ -85,7 +86,7 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
   public CombineExpressionsWithLiteralsTraverser createTraverserForOO(
       Type4Ast type4Ast
   ) {
-    return createTraverserForOO(type4Ast, new InferenceContext4Ast());
+    return createTraverserForOO(type4Ast, new InferenceContext4AstPersistent());
   }
 
   public CombineExpressionsWithLiteralsTraverser createTraverserForOO(
@@ -107,7 +108,7 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     TypeContextCalculator.init();
     CommonExpressionsLValueRelations.init();
     Type4Ast type4Ast = new Type4AstPersistent();
-    InferenceContext4Ast ctx4Ast = new InferenceContext4Ast();
+    InferenceContext4Ast ctx4Ast = new InferenceContext4AstPersistent();
     ITraverser traverser = new CombineExpressionsWithLiteralsTypeTraverserFactory()
         .createTraverserForOO(type4Ast, ctx4Ast);
     // sets itself as delegate
