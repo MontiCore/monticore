@@ -105,6 +105,10 @@ public class AggregatorNode extends AbstractSingleParentNode {
     return aggregatedColumn;
   }
 
+  public AggregationOperator<?, ?, ?> getOperator() {
+    return operator;
+  }
+
   /**
    * Updates the accumulator of the tuple's group. If the aggregation result
    * of the group changes, the old result tuple is deleted and the new one is

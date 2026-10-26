@@ -36,6 +36,11 @@ public final class Aggregators {
       public Class<?> getResultType(Class<?> valueType) {
         return Long.class;
       }
+
+      @Override
+      public String toString() {
+        return "count";
+      }
     };
   }
 
@@ -62,6 +67,11 @@ public final class Aggregators {
       @Override
       public Class<?> getResultType(Class<?> valueType) {
         return Long.class;
+      }
+
+      @Override
+      public String toString() {
+        return "sumLong";
       }
     };
   }
@@ -91,6 +101,11 @@ public final class Aggregators {
       @Override
       public Class<?> getResultType(Class<?> valueType) {
         return Double.class;
+      }
+
+      @Override
+      public String toString() {
+        return "sumDouble";
       }
     };
   }
@@ -172,6 +187,11 @@ public final class Aggregators {
     @Override
     public Class<?> getResultType(Class<?> valueType) {
       return valueType;
+    }
+
+    @Override
+    public String toString() {
+      return minimum ? "min" : "max";
     }
   }
 }
