@@ -85,8 +85,8 @@ public class ReteFactEmitterDecoratorTest extends DecoratorTestCase {
   }
 
   /**
-   * one visit method for each type declaring features and for each concrete
-   * class, also without features (ASTTable)
+   * one visit method for each type declaring features, none for types without
+   * features (ASTTable): the nodes are reported by the full emitter
    */
   @Test
   public void testVisitMethods() {
@@ -95,7 +95,7 @@ public class ReteFactEmitterDecoratorTest extends DecoratorTestCase {
         .map(m -> CD4CodeMill.prettyPrint(m.getCDParameter(0).getMCType(), false))
         .toList();
     assertEquals(List.of(AST_PACKAGE + "ASTNamed", AST_PACKAGE + "ASTAutomaton", AST_PACKAGE + "ASTState",
-        AST_PACKAGE + "ASTFinalState", AST_PACKAGE + "ASTTable"), visitedTypes);
+        AST_PACKAGE + "ASTFinalState"), visitedTypes);
     for (ASTCDMethod method : emitterClass.getCDMethodList()) {
       assertDeepEquals(PUBLIC, method.getModifier());
       assertEquals("node", method.getCDParameter(0).getName());
@@ -108,22 +108,22 @@ public class ReteFactEmitterDecoratorTest extends DecoratorTestCase {
   public void testGeneratedCode() {
     String code = generate();
 
-    // interfaces report their features, but not the node
     assertTrue(code.contains("public void visit (" + AST_PACKAGE + "ASTNamed node) { "
         + "fact(ReteReteFeatures.NAMED_NAME, node, node.getName()); }"), code);
     // list and optional attributes
-    assertTrue(code.contains("public void visit (" + AST_PACKAGE + "ASTAutomaton node) { node(node); "
+    assertTrue(code.contains("public void visit (" + AST_PACKAGE + "ASTAutomaton node) { "
         + "facts(ReteReteFeatures.AUTOMATON_STATES, node, node.getStatesList()); "
         + "if (node.isPresentComment()) { fact(ReteReteFeatures.AUTOMATON_COMMENT, node, node.getComment()); } }"), code);
     // escaped names and primitive attributes
-    assertTrue(code.contains("public void visit (" + AST_PACKAGE + "ASTState node) { node(node); "
+    assertTrue(code.contains("public void visit (" + AST_PACKAGE + "ASTState node) { "
         + "fact(ReteReteFeatures.STATE_FINAL, node, node.isFinal()); "
         + "fact(ReteReteFeatures.STATE_KIND, node, node.getKind()); "
         + "facts(ReteReteFeatures.STATE_LABELS, node, node.getLabelsList()); }"), code);
     // the inherited attributes of the super class are reported by its visit method
-    assertTrue(code.contains("public void visit (" + AST_PACKAGE + "ASTFinalState node) { node(node); "
+    assertTrue(code.contains("public void visit (" + AST_PACKAGE + "ASTFinalState node) { "
         + "fact(ReteReteFeatures.FINAL_STATE_ACCEPTING, node, node.isAccepting()); }"), code);
-    assertTrue(code.contains("public void visit (" + AST_PACKAGE + "ASTTable node) { node(node); }"), code);
+    // the nodes are reported by the full emitter
+    assertFalse(code.contains("node(node)"), code);
 
     assertTrue(Log.getFindings().isEmpty());
   }

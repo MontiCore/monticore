@@ -3,6 +3,7 @@ package de.monticore.rete;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.visitor.ITraverser;
+import de.monticore.visitor.IVisitor;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,6 +21,11 @@ import java.util.Objects;
  * their features. The fact linking the subtree's root to its parent belongs to
  * the parent; it is reported by the variants of {@link #addSubtree} and
  * {@link #removeSubtree} taking the parent and the feature.
+ * <p>
+ * The feature values are reported by the emitters of the languages, the nodes
+ * by this class: the inheritance traverser visits each node once as
+ * {@link ASTNode} (via {@link IVisitor}), but possibly several times as a
+ * concrete AST class if a sub language overrides a production.
  */
 public abstract class FullReteFactEmitter {
 
@@ -30,12 +36,23 @@ public abstract class FullReteFactEmitter {
   protected final List<ReteFactEmitter> emitters = new ArrayList<>();
 
   /**
+   * Whether facts are reported as inserted (true) or deleted (false)
+   */
+  protected boolean insert = true;
+
+  /**
    * @param traverser an inheritance traverser of the language, to which the
    *                  subclass adds the emitters
    */
   protected FullReteFactEmitter(ReteNetwork network, ITraverser traverser) {
     this.network = Objects.requireNonNull(network);
     this.traverser = Objects.requireNonNull(traverser);
+    traverser.add4IVisitor(new IVisitor() {
+      @Override
+      public void visit(ASTNode node) {
+        FullReteFactEmitter.this.node(node);
+      }
+    });
   }
 
   public ReteNetwork getNetwork() {
@@ -115,8 +132,20 @@ public abstract class FullReteFactEmitter {
    */
   protected void emit(ASTNode root, boolean insert) {
     network.transaction(() -> {
+      this.insert = insert;
       emitters.forEach(emitter -> emitter.setInsert(insert));
       root.accept(traverser);
     });
+  }
+
+  /**
+   * Reports an AST node as added or removed.
+   */
+  protected void node(ASTNode node) {
+    if (insert) {
+      network.nodeAdded(node);
+    } else {
+      network.nodeRemoved(node);
+    }
   }
 }

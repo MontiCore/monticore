@@ -17,6 +17,7 @@ import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mccollectiontypes._ast.ASTMCGenericType;
+import de.se_rwth.commons.StringTransformations;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -175,8 +176,19 @@ public class ReteService extends AbstractService<ReteService> {
    * name, so that the feature of the super type applies
    */
   public boolean isDeclaredInSuperType(ASTCDType type, ASTCDAttribute attribute) {
+    String name = getSymbolName(attribute);
     return getSuperTypesTransitive(type.getSymbol()).stream()
-        .anyMatch(superType -> getAttributeNames(superType).contains(attribute.getName()));
+        .anyMatch(superType -> getAttributeNames(superType).contains(name));
+  }
+
+  /**
+   * @return the name of the attribute as known to the symbol table. The
+   * ListSuffixDecorator renames list attributes (e.g. cDMember to cDMembers)
+   * after the symbol table has been created, so the symbols of all types still
+   * carry the original names.
+   */
+  protected String getSymbolName(ASTCDAttribute attribute) {
+    return attribute.isPresentSymbol() ? attribute.getSymbol().getName() : attribute.getName();
   }
 
   protected Set<String> getAttributeNames(TypeSymbol typeSymbol) {
@@ -213,7 +225,8 @@ public class ReteService extends AbstractService<ReteService> {
 
   /**
    * @return the name of the feature constant, e.g. STATE_NAME for the attribute
-   * name of ASTState and FOO_BAR_BAZ_LIST for the attribute bazList of ASTFooBar
+   * name of ASTState, FOO_BAR_BAZ_LIST for the attribute bazList of ASTFooBar
+   * and CD_CLASS_CD_MEMBERS for the attribute cDMembers of ASTCDClass
    */
   public String getFeatureConstantName(ASTCDType type, ASTCDAttribute attribute) {
     String typeName = type.getName().startsWith(AST_PREFIX)
@@ -223,7 +236,14 @@ public class ReteService extends AbstractService<ReteService> {
     return toConstantName(typeName) + "_" + toConstantName(attributeName);
   }
 
+  /**
+   * splits camel case words, keeping acronyms together: CDClass and cDClass
+   * become CD_CLASS, MCQualifiedName becomes MC_QUALIFIED_NAME
+   */
   protected String toConstantName(String camelCaseName) {
-    return camelCaseName.replaceAll("([a-z0-9])([A-Z])", "$1_$2").toUpperCase();
+    return StringTransformations.capitalize(camelCaseName)
+        .replaceAll("([a-z0-9])([A-Z])", "$1_$2")
+        .replaceAll("([A-Z])([A-Z][a-z])", "$1_$2")
+        .toUpperCase();
   }
 }

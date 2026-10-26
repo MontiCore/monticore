@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.codegen.rete;
+
+/* list attributes repeated in an implementing production */
+grammar ReteListSuffix {
+  token Name = ('a'..'z'|'A'..'Z')+;
+  interface Signature = Name Param*;
+  Method implements Signature = "m" Name Param* ";";
+  Param = Name;
+}

@@ -111,8 +111,8 @@ public class FullReteFactEmitterDecoratorTest extends DecoratorTestCase {
 
   /**
    * the emitter of the sub language only reports the features declared by its
-   * own types: the overriding ASTState reports the node and its new attribute,
-   * the inherited attributes are reported by the emitters of the super languages
+   * own types: the overriding ASTState reports its new attribute, the
+   * inherited attributes are reported by the emitters of the super languages
    */
   @Test
   public void testComposedEmitter() {
@@ -121,9 +121,9 @@ public class FullReteFactEmitterDecoratorTest extends DecoratorTestCase {
     String code = generate(emitterClass);
 
     assertTrue(code.contains("public void visit (de.monticore.codegen.rete.retecomposed._ast.ASTState node) { "
-        + "node(node); fact(ReteComposedReteFeatures.STATE_PRIORITY, node, node.getPriority()); }"), code);
+        + "fact(ReteComposedReteFeatures.STATE_PRIORITY, node, node.getPriority()); }"), code);
     assertTrue(code.contains("public void visit (de.monticore.codegen.rete.retecomposed._ast.ASTLabeledState node) { "
-        + "node(node); facts(ReteComposedReteFeatures.LABELED_STATE_LABELS, node, node.getLabelsList()); }"), code);
+        + "facts(ReteComposedReteFeatures.LABELED_STATE_LABELS, node, node.getLabelsList()); }"), code);
     assertFalse(code.contains("STATE_NAME"), code);
     assertFalse(code.contains("ELEMENT_ID"), code);
 

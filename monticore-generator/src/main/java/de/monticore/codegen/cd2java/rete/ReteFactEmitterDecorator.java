@@ -23,10 +23,11 @@ import static de.monticore.codegen.cd2java._visitor.VisitorConstants.VISIT;
 import static de.monticore.codegen.cd2java.rete.ReteConstants.*;
 
 /**
- * creates the fact emitter of a grammar, a visitor reporting the facts of the
- * AST nodes of the grammar to a de.monticore.rete.ReteNetwork: for each AST
- * type, its visit method reports the node (for concrete classes) and the
- * values of exactly the features the ReteFeatureDecorator creates for this type
+ * creates the fact emitter of a grammar, a visitor reporting the feature values
+ * of the AST nodes of the grammar to a de.monticore.rete.ReteNetwork: for each
+ * AST type, its visit method reports the values of exactly the features the
+ * ReteFeatureDecorator creates for this type. The nodes themselves are
+ * reported by the FullReteFactEmitter.
  * <p>
  * Used with an inheritance traverser, every node is visited once for its
  * concrete class and once for each super type, so each fact is reported
@@ -68,12 +69,12 @@ public class ReteFactEmitterDecorator extends AbstractCreator<ASTCDCompilationUn
 
     replaceTemplate(JAVADOC, emitterClass, new StringHookPoint("""
         /**
-         * Reports the facts of the AST nodes of the language {@code %s} to a
-         * {@link de.monticore.rete.ReteNetwork}: the nodes and the values of the
-         * features in {@link %s}. Only handles the types of this language; use the
-         * {@link %s} to report the facts of whole subtrees.
+         * Reports the values of the features in {@link %s} of the AST nodes of
+         * the language {@code %s} to a {@link de.monticore.rete.ReteNetwork}.
+         * Only handles the types of this language; use the {@link %s} to report
+         * the facts of whole subtrees, including the nodes themselves.
          */
-        """.formatted(reteService.getCDName(), reteService.getFeaturesSimpleName(),
+        """.formatted(reteService.getFeaturesSimpleName(), reteService.getCDName(),
         reteService.getFullFactEmitterSimpleName())));
 
     return emitterClass;
@@ -89,22 +90,19 @@ public class ReteFactEmitterDecorator extends AbstractCreator<ASTCDCompilationUn
   }
 
   /**
-   * creates a visit method for each concrete class and for each other type
-   * declaring features
+   * creates a visit method for each type declaring features
    */
   protected List<ASTCDMethod> createVisitMethods(ASTCDDefinition cdDefinition) {
     List<ASTCDMethod> visitMethods = new ArrayList<>();
     for (ASTCDType type : reteService.getFeatureTypes(cdDefinition)) {
-      boolean isConcrete = type instanceof ASTCDClass && !type.getModifier().isAbstract();
       List<String> facts = createFactStatements(type);
-      if (!isConcrete && facts.isEmpty()) {
+      if (facts.isEmpty()) {
         continue;
       }
       String astFullName = reteService.createASTFullName(type.getSymbol());
       ASTCDMethod visitMethod = visitorService.getVisitorMethod(VISIT,
           getMCTypeFacade().createQualifiedType(astFullName));
-      this.replaceTemplate(EMPTY_BODY, visitMethod,
-          new TemplateHookPoint("_rete.FactEmitterVisit", isConcrete, facts));
+      this.replaceTemplate(EMPTY_BODY, visitMethod, new TemplateHookPoint("_rete.FactEmitterVisit", facts));
       visitMethods.add(visitMethod);
     }
     return visitMethods;

@@ -162,4 +162,22 @@ public class ReteFeatureDecoratorTest extends DecoratorTestCase {
     assertTrue(finding.isError());
     assertTrue(finding.getMsg().startsWith("0xA5C10"), finding.getMsg());
   }
+
+  /**
+   * acronyms at the start of type names (CDClass) and attribute names derived
+   * from nonterminals (cDMembers, mCType) are kept together
+   */
+  @Test
+  public void testConstantNamesWithAcronyms() {
+    ReteService reteService = new ReteService(decoratedCompilationUnit);
+    assertEquals("STATE", reteService.toConstantName("State"));
+    assertEquals("FINAL_STATE", reteService.toConstantName("FinalState"));
+    assertEquals("CD_CLASS", reteService.toConstantName("CDClass"));
+    assertEquals("CD_MEMBERS", reteService.toConstantName("cDMembers"));
+    assertEquals("MC_TYPE", reteService.toConstantName("mCType"));
+    assertEquals("MC_QUALIFIED_NAME", reteService.toConstantName("MCQualifiedName"));
+    assertEquals("CD4_CODE_ENUM_CONSTANT", reteService.toConstantName("CD4CodeEnumConstant"));
+
+    assertTrue(Log.getFindings().isEmpty());
+  }
 }

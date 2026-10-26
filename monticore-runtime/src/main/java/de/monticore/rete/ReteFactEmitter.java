@@ -9,8 +9,9 @@ import java.util.Objects;
 /**
  * Base class of the generated fact emitters of a language
  * ({@code <Grammar>ReteFactEmitter}). A fact emitter is a visitor that reports
- * the facts of each visited AST node to a {@link ReteNetwork}: the node itself
- * and the values of the features declared by the visited type.
+ * the values of the features declared by the visited type to a
+ * {@link ReteNetwork}. The AST nodes themselves are reported by the
+ * {@link FullReteFactEmitter}.
  * <p>
  * Each generated emitter only handles the types of its own language. Use it
  * with an inheritance traverser, which visits a node once for its concrete
@@ -47,17 +48,6 @@ public abstract class ReteFactEmitter {
    */
   public void setInsert(boolean insert) {
     this.insert = insert;
-  }
-
-  /**
-   * Reports an AST node as added or removed.
-   */
-  protected void node(ASTNode node) {
-    if (insert) {
-      network.nodeAdded(node);
-    } else {
-      network.nodeRemoved(node);
-    }
   }
 
   /**
