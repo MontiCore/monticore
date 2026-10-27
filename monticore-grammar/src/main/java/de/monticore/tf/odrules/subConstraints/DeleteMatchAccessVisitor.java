@@ -22,69 +22,69 @@ public class DeleteMatchAccessVisitor implements
 
   @Override
   public void visit(ASTFieldAccessExpression node) {
-    if (node.getExpression() instanceof ASTFieldAccessExpression) {
-      node.setExpression(replaceNode((ASTFieldAccessExpression) node.getExpression()));
+    if (node.getExpression() instanceof ASTFieldAccessExpression faExpression) {
+      node.setExpression(replaceNode(faExpression));
     }
   }
 
   @Override
   public void visit(ASTBooleanNotExpression node) {
-    if (node.getExpression() instanceof ASTFieldAccessExpression) {
-      node.setExpression(replaceNode((ASTFieldAccessExpression) node.getExpression()));
+    if (node.getExpression() instanceof ASTFieldAccessExpression faExpression) {
+      node.setExpression(replaceNode(faExpression));
     }
   }
 
   @Override
   public void visit(ASTLogicalNotExpression node) {
-    if (node.getExpression() instanceof ASTFieldAccessExpression) {
-      node.setExpression(replaceNode((ASTFieldAccessExpression) node.getExpression()));
+    if (node.getExpression() instanceof ASTFieldAccessExpression faExpression) {
+      node.setExpression(replaceNode(faExpression));
     }
   }
 
   @Override
   public void visit(ASTEqualsExpression node) {
-    if (node.getLeft() instanceof ASTFieldAccessExpression) {
-      node.setLeft(replaceNode((ASTFieldAccessExpression) node.getLeft()));
+    if (node.getLeft() instanceof ASTFieldAccessExpression leftFaExpression) {
+      node.setLeft(replaceNode(leftFaExpression));
     }
-    if (node.getRight() instanceof ASTFieldAccessExpression) {
-      node.setRight(replaceNode((ASTFieldAccessExpression) node.getRight()));
+    if (node.getRight() instanceof ASTFieldAccessExpression rightFaExpression) {
+      node.setRight(replaceNode(rightFaExpression));
     }
   }
 
   @Override
   public void visit(ASTBooleanAndOpExpression node) {
-    if (node.getLeft() instanceof ASTFieldAccessExpression) {
-      node.setLeft(replaceNode((ASTFieldAccessExpression) node.getLeft()));
+    if (node.getLeft() instanceof ASTFieldAccessExpression leftFaExpression) {
+      node.setLeft(replaceNode(leftFaExpression));
     }
-    if (node.getRight() instanceof ASTFieldAccessExpression) {
-      node.setRight(replaceNode((ASTFieldAccessExpression) node.getRight()));
+    if (node.getRight() instanceof ASTFieldAccessExpression rightFaExpression) {
+      node.setRight(replaceNode(rightFaExpression));
     }
   }
 
   @Override
   public void visit(ASTBooleanOrOpExpression node) {
-    if (node.getLeft() instanceof ASTFieldAccessExpression) {
-      node.setLeft(replaceNode((ASTFieldAccessExpression) node.getLeft()));
+    if (node.getLeft() instanceof ASTFieldAccessExpression leftFaExpression) {
+      node.setLeft(replaceNode(leftFaExpression));
     }
-    if (node.getRight() instanceof ASTFieldAccessExpression) {
-      node.setRight(replaceNode((ASTFieldAccessExpression) node.getRight()));
+    if (node.getRight() instanceof ASTFieldAccessExpression rightFaExpression) {
+      node.setRight(replaceNode(rightFaExpression));
     }
   }
 
   @Override
   public void visit(ASTBracketExpression node) {
-    if (node.getExpression() instanceof ASTFieldAccessExpression) {
-      node.setExpression(replaceNode((ASTFieldAccessExpression) node.getExpression()));
+    if (node.getExpression() instanceof ASTFieldAccessExpression faExpression) {
+      node.setExpression(replaceNode(faExpression));
     }
   }
 
   @Override
   public void visit(ASTPlusExpression node) {
-    if (node.getLeft() instanceof ASTFieldAccessExpression) {
-      node.setLeft(replaceNode((ASTFieldAccessExpression) node.getLeft()));
+    if (node.getLeft() instanceof ASTFieldAccessExpression leftFaExpression) {
+      node.setLeft(replaceNode(leftFaExpression));
     }
-    if (node.getRight() instanceof ASTFieldAccessExpression) {
-      node.setRight(replaceNode((ASTFieldAccessExpression) node.getRight()));
+    if (node.getRight() instanceof ASTFieldAccessExpression rightFaExpression) {
+      node.setRight(replaceNode(rightFaExpression));
     }
   }
 

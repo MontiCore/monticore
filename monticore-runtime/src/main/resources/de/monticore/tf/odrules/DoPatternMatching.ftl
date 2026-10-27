@@ -7,7 +7,6 @@
 </#macro>
 
 public boolean doPatternMatching() {
-  Reporting.reportTransformationStart("${ast.getClassname()}");
   boolean foundMatch = true;
   // indicates whether this rule is currently backtracking
   // (this will skip all attempts to match negative nodes)
@@ -17,11 +16,6 @@ public boolean doPatternMatching() {
 <#list hierarchyHelper.getOptionalMatchObjects(ast.getPattern().getLHSObjectsList()) as optional>
   reset_${optional.getObjectName()}();
 </#list>
-
-  if (isHostGraphDirty || searchPlan == null) {
-    this.loadIntoModelTraverser();
-    isHostGraphDirty= false;
-  }
 
   if (searchPlan == null) {
     searchPlan = findSearchPlan();
@@ -40,13 +34,13 @@ public boolean doPatternMatching() {
     <#--creates a switch case for each object for matching the object-->
 <#list hierarchyHelper.getMandatoryObjectsWithoutListChilds(ast.getPattern().getLHSObjectsList()) as object>
   <#if object.isListObject()>
-    ${tc.includeArgs("de.monticore.tf.odrules.dopatternmatching.HandleListObject", object, [false, ""])}
+    ${tc.includeArgs("de.monticore.tf.odrules.dopatternmatching.HandleListObject", object, [false, false, ""])}
   <#elseif object.isOptObject()>
-    ${tc.includeArgs("de.monticore.tf.odrules.dopatternmatching.HandleOptObject", object, [false, ""])}
+    ${tc.includeArgs("de.monticore.tf.odrules.dopatternmatching.HandleOptObject", object, [false, false, ""])}
   <#elseif object.isNotObject()>
-    ${tc.includeArgs("de.monticore.tf.odrules.dopatternmatching.HandleNotObject", object, [false, ""])}
+    ${tc.includeArgs("de.monticore.tf.odrules.dopatternmatching.HandleNotObject", object, [false, false, ""])}
   <#else>
-    ${tc.includeArgs("de.monticore.tf.odrules.dopatternmatching.HandleNormalObject", object, [false, ""])}
+    ${tc.includeArgs("de.monticore.tf.odrules.dopatternmatching.HandleNormalObject", object, [false, false, ""])}
   </#if>
 </#list>
     }
@@ -78,16 +72,6 @@ public boolean doPatternMatching() {
   // create a replacement candidate if a match was found
   if (foundMatch) {
     Match match = new Match(<@commaSeperatedNames/>);
-    <#list ast.getPattern().getLHSObjectsList() as object>
-      <#if !object.isNotObject() && !object.isListObject() && !object.isOptObject() && !hierarchyHelper.isWithinOptionalStructure(object.getObjectName()) && !hierarchyHelper.isWithinListStructure(object.getObjectName())>
-    if (${object.getObjectName()}_cand != null) {
-      Reporting.reportTransformationObjectMatch("${ast.getClassname()}",${object.getObjectName()}_cand);
-    }
-    if (${object.getObjectName()}_cand != null) {
-      Reporting.reportTransformationObjectMatch("${ast.getClassname()}",${object.getObjectName()}_cand);
-    }
-      </#if>
-    </#list>
     if (nextNode != null) {
       searchPlan.push(nextNode);
     }

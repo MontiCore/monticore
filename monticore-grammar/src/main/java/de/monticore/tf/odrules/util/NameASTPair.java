@@ -3,10 +3,6 @@ package de.monticore.tf.odrules.util;
 
 import de.monticore.tf.odrules._ast.ASTODRule;
 
-/**
- * Created by
- *
- */
 public class NameASTPair  {
   private final String name;
   private final ASTODRule ast;
