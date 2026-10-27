@@ -3,148 +3,43 @@ package de.monticore.symbols.oosymbols._symboltable;
 
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
-import de.monticore.symboltable.IScopeSpanningSymbol;
 import de.monticore.symboltable.modifiers.AccessModifier;
-import de.monticore.symboltable.modifiers.StaticAccessModifier;
-import de.monticore.types.check.SymTypeExpression;
-import de.monticore.types.check.TypeCheck1Deprecations;
-import de.se_rwth.commons.logging.Log;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Predicate;
 
 public  interface IOOSymbolsScope extends IOOSymbolsScopeTOP  {
+  // Class2MC incorrectly references IOOSymbolsScopeTOP, which
+  // is not generated, when we remove this class
+  // https://bugs.openjdk.org/browse/JDK-8301046
 
   /**
-   * override method from ExpressionBasisScope to resolve all methods correctly
-   * method needed to be overridden because of special cases: if the scope is spanned by a type symbol you have to look for fitting methods in its super types too because of inheritance
-   * the method resolves the methods like the overridden method and if the spanning symbol is a type symbol it additionally looks for methods in its super types
-   * it is used by the method getMethodList in SymTypeExpression
-   */
-  @Override
-  default List<MethodSymbol> resolveMethodLocallyMany(boolean foundSymbols, String name, AccessModifier modifier,
-                                                         Predicate<MethodSymbol> predicate) {
-    //resolve methods by using overridden method
-    List<MethodSymbol> set = IOOSymbolsScopeTOP.super.resolveMethodLocallyMany(foundSymbols,name,modifier,predicate);
-    if(this.isPresentSpanningSymbol()){
-      try {
-      // unsupported legacy implementation based on TC1 (to be replaced)
-      IScopeSpanningSymbol spanningSymbol = getSpanningSymbol();
-      //if the methodsymbol is in the spanned scope of a typesymbol then look for method in super types too
-      if(spanningSymbol instanceof OOTypeSymbol typeSymbol){
-        for(SymTypeExpression t : typeSymbol.getSuperTypesList()){
-          TypeCheck1Deprecations.resolveSuperTypeFunctions(
-              t, name, modifier
-          ).stream()
-              .filter(m -> m instanceof MethodSymbol)
-              .forEach(m -> set.add((MethodSymbol) m));
-        }
-      }
-      } catch(UnsupportedOperationException e) {
-        Log.info("Legacy implementation run into an exception." +
-            "As it is not supported anymore, it is ignored",
-            e, "Resolving"
-        );
-      }
-    }
-    return set;
-  }
-
-  /**
-   * override method from ExpressionBasisScope to resolve all fields correctly
-   * method needed to be overridden because of special cases: if the scope is spanned by a type symbol you have to look for fitting fields in its super types too because of inheritance
-   * the method resolves the fields like the overridden method and if the spanning symbol is a type symbol it additionally looks for fields in its super types
-   * it is used by the method getFieldList in SymTypeExpression
+   * This method intentionally resolves only symbols locally in the current scope and does not
+   * consider symbols from supertypes of the enclosing type or scope. For resolution including
+   * supertypes, use {@link de.monticore.types3.util.OOWithinScopeBasicSymbolsResolver} instead.
    */
   @Override
   default List<FieldSymbol> resolveFieldLocallyMany(boolean foundSymbols, String name, AccessModifier modifier, Predicate<FieldSymbol> predicate){
-    //resolve methods by using overridden method
-    List<FieldSymbol> result = IOOSymbolsScopeTOP.super.resolveFieldLocallyMany(foundSymbols,name,modifier,predicate);
-    if(this.isPresentSpanningSymbol() && modifier.includes(StaticAccessModifier.NON_STATIC)){
-      try {
-      // unsupported legacy implementation based on TC1 (to be replaced)
-      IScopeSpanningSymbol spanningSymbol = getSpanningSymbol();
-      //if the fieldsymbol is in the spanned scope of a typesymbol then look for method in super types too
-      if(spanningSymbol instanceof OOTypeSymbol typeSymbol){
-        for(SymTypeExpression superType : typeSymbol.getSuperTypesList()){
-          TypeCheck1Deprecations.resolveSuperTypeVariables(
-              superType, name, modifier
-          ).stream()
-              .filter(f -> f instanceof FieldSymbol)
-              .forEach(f -> result.add((FieldSymbol) f));
-        }
-      }
-    } catch(UnsupportedOperationException e) {
-      Log.info("Legacy implementation run into an exception." +
-              "As it is not supported anymore, it is ignored",
-          e, "Resolving"
-      );
-    }
-    }
-    return result;
+    return IOOSymbolsScopeTOP.super.resolveFieldLocallyMany(foundSymbols,name,modifier,predicate);
   }
 
   /**
-   * override method from ExpressionBasisScope to resolve all fields correctly
-   * method needed to be overridden because of special cases: if the scope is spanned by a type symbol you have to look for fitting fields in its super types too because of inheritance
-   * the method resolves the fields like the overridden method and if the spanning symbol is a type symbol it additionally looks for fields in its super types
-   * it is used by the method getFieldList in SymTypeExpression
+   * This method intentionally resolves only symbols locally in the current scope and does not
+   * consider symbols from supertypes of the enclosing type or scope. For resolution including
+   * supertypes, use {@link de.monticore.types3.util.OOWithinScopeBasicSymbolsResolver} instead.
    */
   @Override
   default List<VariableSymbol> resolveVariableLocallyMany(boolean foundSymbols, String name, AccessModifier modifier, Predicate<VariableSymbol> predicate){
-    final List<de.monticore.symbols.basicsymbols._symboltable.VariableSymbol> resolvedSymbols = new ArrayList<>();
-
-    try {
-      Optional<VariableSymbol> resolvedSymbol = filterVariable(name, getVariableSymbols());
-      resolvedSymbol.ifPresent(resolvedSymbols::add);
-    } catch (de.monticore.symboltable.resolving.ResolvedSeveralEntriesForSymbolException e) {
-      resolvedSymbols.addAll(e.getSymbols());
-    }
-
-    // add all symbols of sub kinds of the current kind
-    resolvedSymbols.addAll(resolveVariableSubKinds(foundSymbols, name, modifier, predicate));
-
-    // filter out symbols that are not included within the access modifier
-    List<de.monticore.symbols.basicsymbols._symboltable.VariableSymbol> filteredSymbols = filterSymbolsByAccessModifier(modifier, resolvedSymbols);
-    filteredSymbols =
-        filteredSymbols.stream().filter(predicate).collect(java.util.stream.Collectors.toList());
-
-    //try to find adapted one
-    filteredSymbols.addAll(resolveAdaptedVariableLocallyMany(foundSymbols, name, modifier, predicate));
-    filteredSymbols = filterSymbolsByAccessModifier(modifier, filteredSymbols);
-    filteredSymbols =
-        filteredSymbols.stream().filter(predicate).collect(java.util.stream.Collectors.toList());
-
-    return filteredSymbols;
+    return IOOSymbolsScopeTOP.super.resolveVariableLocallyMany(foundSymbols,name,modifier,predicate);
   }
 
+  /**
+   * This method intentionally resolves only symbols locally in the current scope and does not
+   * consider symbols from supertypes of the enclosing type or scope. For resolution including
+   * supertypes, use {@link de.monticore.types3.util.OOWithinScopeBasicSymbolsResolver} instead.
+   */
   @Override
   default List<FunctionSymbol> resolveFunctionLocallyMany(boolean foundSymbols, String name, AccessModifier modifier, Predicate<FunctionSymbol> predicate) {
-    final List<de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol> resolvedSymbols = new ArrayList<>();
-
-    try {
-      Optional<de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol> resolvedSymbol = filterFunction(name, getFunctionSymbols());
-      resolvedSymbol.ifPresent(resolvedSymbols::add);
-    } catch (de.monticore.symboltable.resolving.ResolvedSeveralEntriesForSymbolException e) {
-      resolvedSymbols.addAll(e.getSymbols());
-    }
-
-    // add all symbols of sub kinds of the current kind
-    resolvedSymbols.addAll(resolveFunctionSubKinds(foundSymbols, name, modifier, predicate));
-
-    // filter out symbols that are not included within the access modifier
-    List<de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol> filteredSymbols = filterSymbolsByAccessModifier(modifier, resolvedSymbols);
-    filteredSymbols =
-        filteredSymbols.stream().filter(predicate).collect(java.util.stream.Collectors.toList());
-
-    //try to find adapted one
-    filteredSymbols.addAll(resolveAdaptedFunctionLocallyMany(foundSymbols, name, modifier, predicate));
-    filteredSymbols = filterSymbolsByAccessModifier(modifier, filteredSymbols);
-    filteredSymbols =
-        filteredSymbols.stream().filter(predicate).collect(java.util.stream.Collectors.toList());
-
-    return filteredSymbols;
+    return IOOSymbolsScopeTOP.super.resolveFunctionLocallyMany(foundSymbols,name,modifier,predicate);
   }
 }

@@ -160,27 +160,4 @@ public class AbstractDeriveTest {
     assertTrue(Log.getFindings().isEmpty());
   }
 
-  @Test
-  public void testInheritanceVariables() throws IOException {
-    Optional<ASTExpression> expr = p.parse_StringExpression("firstsemester.bar");
-    assertTrue(expr.isPresent());
-    expr.get().accept(traverser);
-
-    assertEquals("int", tc.typeOf(expr.get()).print());
-  
-    assertTrue(Log.getFindings().isEmpty());
-  }
-
-  @Test
-  public void testInheritanceMethods() throws IOException {
-    Optional<ASTExpression> expr = p.parse_StringExpression("firstsemester.foo()");
-    assertTrue(expr.isPresent());
-    expr.get().accept(traverser);
-
-    assertEquals("void", tc.typeOf(expr.get()).print());
-  
-    assertTrue(Log.getFindings().isEmpty());
-  }
-
-
 }
