@@ -1,6 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.mcbasictypes.cocos;
 
+import de.monticore.runtime.junit.MCAssertions;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._cocos.MCBasicTypesCoCoChecker;
 import de.monticore.types.mcbasictypestest.MCBasicTypesTestMill;
@@ -10,7 +12,6 @@ import de.monticore.types.mcbasictypeswithbasicsymbolstest._symboltable.IMCBasic
 import de.monticore.types.mcbasictypeswithbasicsymbolstest.types3.MCBasicTypesWithBasicSymbolsTestTypeCheck3;
 import de.monticore.types3.util.DefsTypesForTests;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -18,19 +19,17 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+// not using MCBasicTypesTest, as we additionally require BasicSymbols
+@TestWithMCLanguage(MCBasicTypesWithBasicSymbolsTestMill.class)
 public class QualifiedTypeHasNoTypeParametersTest {
 
   MCBasicTypesCoCoChecker checker;
 
   @BeforeEach
   public void init() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-    // not using MCBasicTypesTest, as we additionally require BasicSymbols
-    MCBasicTypesWithBasicSymbolsTestMill.reset();
-    MCBasicTypesWithBasicSymbolsTestMill.init();
     MCBasicTypesWithBasicSymbolsTestTypeCheck3.init();
     DefsTypesForTests.setup();
     checker = new MCBasicTypesCoCoChecker();
@@ -46,7 +45,6 @@ public class QualifiedTypeHasNoTypeParametersTest {
   public void testValid(String model) throws IOException {
     ASTMCType mcType = parseAndCreateSymTab(model);
     checker.checkAll(mcType);
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @ParameterizedTest
@@ -57,11 +55,7 @@ public class QualifiedTypeHasNoTypeParametersTest {
   public void testInvalid(String model) throws IOException {
     ASTMCType mcType = parseAndCreateSymTab(model);
     checker.checkAll(mcType);
-    assertFalse(Log.getFindings().isEmpty());
-    assertEquals(
-        "0xFD123",
-        Log.getFindings().get(0).getMsg().substring(0, 7)
-    );
+    MCAssertions.assertHasFindingsStartingWith("0xFD123");
   }
 
   protected ASTMCType parseAndCreateSymTab(String model)
