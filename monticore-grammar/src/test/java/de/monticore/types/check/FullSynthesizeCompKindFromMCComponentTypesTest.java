@@ -6,10 +6,12 @@ import de.monticore.runtime.junit.MCAssertions;
 import de.monticore.symbols.compsymbols._symboltable.ComponentTypeSymbol;
 import de.monticore.types.componentsymbolswithmccomponenttypestest.ComponentSymbolsWithMCComponentTypesTestMill;
 import de.monticore.types.mccollectiontypes._ast.ASTMCTypeArgument;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcfullgenerictypes.MCFullGenericTypesMill;
 import de.monticore.types.mccomponenttypes._ast.ASTMCComponentType;
 import de.monticore.types.mccomponenttypes._ast.ASTMCGenericComponentType;
 import de.monticore.types.mccomponenttypes._ast.ASTMCQualifiedComponentType;
+import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.BeforeEach;
@@ -133,6 +135,45 @@ public class FullSynthesizeCompKindFromMCComponentTypesTest extends AbstractMCTe
 
     assertTrue(synthesizer.typeArgumentsToTypes(List.of(unsupported)).isEmpty());
     MCAssertions.assertHasFindingStartingWith("0xD0106");
+  }
+
+  @Test
+  @SuppressWarnings("deprecation")
+  public void shouldKeepDeprecatedQualifiedTypeSynthesizerOperational() {
+    ComponentTypeSymbol component = addComponent("Legacy");
+    ASTMCQualifiedType ast = ComponentSymbolsWithMCComponentTypesTestMill
+        .mCQualifiedTypeBuilder()
+        .setMCQualifiedName(ComponentSymbolsWithMCComponentTypesTestMill
+            .mCQualifiedNameBuilder()
+            .addAllParts(List.of("Legacy"))
+            .build())
+        .build();
+    ast.setEnclosingScope(ComponentSymbolsWithMCComponentTypesTestMill.globalScope());
+
+    Optional<CompKindExpression> result =
+        new FullSynthesizeCompKindFromMCBasicTypes().synthesize(ast);
+
+    assertTrue(result.isPresent());
+    assertSame(component, result.get().getTypeInfo());
+    assertSame(ast, result.get().getSourceNode().orElseThrow());
+  }
+
+  @Test
+  @SuppressWarnings("deprecation")
+  public void shouldKeepDeprecatedGenericTypeSynthesizerOperational() {
+    ComponentTypeSymbol component = addComponent("LegacyGeneric");
+    ASTMCBasicGenericType ast = ComponentSymbolsWithMCComponentTypesTestMill
+        .mCBasicGenericTypeBuilder()
+        .setNamesList(List.of("LegacyGeneric"))
+        .build();
+    ast.setEnclosingScope(ComponentSymbolsWithMCComponentTypesTestMill.globalScope());
+
+    Optional<CompKindExpression> result =
+        new FullSynthesizeCompKindFromMCSimpleGenericTypes().synthesize(ast);
+
+    assertTrue(result.isPresent());
+    assertSame(component, result.get().getTypeInfo());
+    assertSame(ast, result.get().getSourceNode().orElseThrow());
   }
 
   protected Optional<ASTMCComponentType> parse(String input) throws IOException {

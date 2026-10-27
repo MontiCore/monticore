@@ -3,6 +3,8 @@ package de.monticore.types.check;
 
 import de.monticore.types.mccomponenttypes._ast.ASTMCComponentType;
 import de.monticore.types.mccomponenttypes._visitor.MCComponentTypesTraverser;
+import de.monticore.types.mcbasictypes._ast.ASTMCType;
+import de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser;
 import de.se_rwth.commons.logging.Log;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -18,7 +20,7 @@ public interface ISynthesizeComponent {
    */
   void init();
 
-  MCComponentTypesTraverser getTraverser();
+  MCBasicTypesTraverser getTraverser();
 
   /**
    * Collects the synthesized {@link CompKindExpression} after using the traverser to traverse the
@@ -31,7 +33,24 @@ public interface ISynthesizeComponent {
    */
   default Optional<CompKindExpression> synthesize(@NonNull ASTMCComponentType mcType) {
     this.init();
+    mcType.accept((MCComponentTypesTraverser) this.getTraverser());
+    return checkedResult(mcType);
+  }
+
+  /**
+   * Synthesizes a component from a regular MC type.
+   *
+   * @deprecated Component references must use {@link ASTMCComponentType}. This overload remains
+   *     available for compatibility with the deprecated legacy synthesizers.
+   */
+  @Deprecated
+  default Optional<CompKindExpression> synthesize(@NonNull ASTMCType mcType) {
+    this.init();
     mcType.accept(this.getTraverser());
+    return checkedResult(mcType);
+  }
+
+  private Optional<CompKindExpression> checkedResult(@NonNull ASTMCType mcType) {
     Optional<CompKindExpression> res = this.getResult();
     if (res.isEmpty()) {
       Log.error(String.format("0xD0104 Cannot resolve component '%s'", mcType.printType()),
