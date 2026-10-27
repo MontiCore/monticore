@@ -11,6 +11,10 @@ import java.util.List;
 import static de.monticore.rete.AutomatonModel.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Tests the {@link FeatureInputNode}, which is filled by the feature
+ * notifications of the network.
+ */
 public class FeatureInputNodeTest extends AbstractNodeTest {
 
   protected ASTState s1, s2;
@@ -21,6 +25,11 @@ public class FeatureInputNodeTest extends AbstractNodeTest {
     s2 = new ASTState("s2");
   }
 
+  /**
+   * Added, changed and removed feature values are passed on as
+   * {@code [owner, value]} tuples, in order; a value added twice is
+   * contained twice. There is a single input node per feature.
+   */
   @Test
   public void testContainsReportedValuesAsMultiset() {
     FeatureInputNode<ASTNamedElement, String> names = net.featureInput(NAME);
@@ -44,6 +53,10 @@ public class FeatureInputNodeTest extends AbstractNodeTest {
     recorder.assertConsistent();
   }
 
+  /**
+   * Removing an unknown value, a {@code null} value and (with raw types) a
+   * value of the wrong type are rejected.
+   */
   @Test
   public void testInvalidNotificationsAreRejected() {
     net.featureInput(NAME);
@@ -54,6 +67,10 @@ public class FeatureInputNodeTest extends AbstractNodeTest {
     assertThrows(ClassCastException.class, () -> net.featureValueAdded(raw, s1, 42));
   }
 
+  /**
+   * Values of features without input node are irrelevant and ignored
+   * without error.
+   */
   @Test
   public void testValuesOfFeaturesWithoutInputAreIgnored() {
     net.featureInput(NAME);
@@ -61,6 +78,10 @@ public class FeatureInputNodeTest extends AbstractNodeTest {
     net.featureValueAdded(SOURCE, new ASTTransition("t1"), s1);
   }
 
+  /**
+   * The contents can only be changed via the notifications of the network,
+   * not by calling {@code insert} or {@code delete} directly.
+   */
   @Test
   public void testDirectModificationIsRejected() {
     FeatureInputNode<ASTNamedElement, String> names = net.featureInput(NAME);
@@ -68,6 +89,10 @@ public class FeatureInputNodeTest extends AbstractNodeTest {
     assertThrows(IllegalStateException.class, () -> names.delete(s1, "x"));
   }
 
+  /**
+   * A second input node for the same feature is rejected, and no input node
+   * can be created after the first notification.
+   */
   @Test
   public void testOnlyOneInputPerFeatureBeforeFirstFact() {
     net.featureInput(NAME);
@@ -76,6 +101,10 @@ public class FeatureInputNodeTest extends AbstractNodeTest {
     assertThrows(IllegalStateException.class, () -> net.featureInput(STATES));
   }
 
+  /**
+   * A disposed input node is unregistered from the network and receives no
+   * further values.
+   */
   @Test
   public void testDispose() {
     FeatureInputNode<ASTNamedElement, String> names = net.featureInput(NAME);
@@ -86,6 +115,9 @@ public class FeatureInputNodeTest extends AbstractNodeTest {
     assertEquals(0, names.size());
   }
 
+  /**
+   * The string representation names the feature.
+   */
   @Test
   public void testToString() {
     assertEquals("FeatureInputNode[" + NAME + "]", net.featureInput(NAME).toString());

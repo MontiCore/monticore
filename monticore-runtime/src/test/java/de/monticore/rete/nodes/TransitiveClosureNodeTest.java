@@ -26,6 +26,11 @@ public class TransitiveClosureNodeTest extends AbstractNodeTest {
     edges = source(String.class, String.class);
   }
 
+  /**
+   * In a chain a, b, c, each new edge adds the pairs it connects, and deleting
+   * an edge deletes the pairs that depended on it. The queries
+   * {@code isReachable} and {@code getReachableFrom} reflect the pairs.
+   */
   @Test
   public void testChain() {
     TransitiveClosureNode closure = net.transitiveClosure(edges);
@@ -47,6 +52,10 @@ public class TransitiveClosureNodeTest extends AbstractNodeTest {
     recorder.assertConsistent();
   }
 
+  /**
+   * In a diamond, deleting one path keeps the pair connected by the other one;
+   * only deleting both paths deletes it.
+   */
   @Test
   public void testAlternativePathKeepsPair() {
     TransitiveClosureNode closure = net.transitiveClosure(edges);
@@ -64,6 +73,10 @@ public class TransitiveClosureNodeTest extends AbstractNodeTest {
     recorder.assertConsistent();
   }
 
+  /**
+   * In a cycle, every node reaches itself. Breaking the cycle deletes these
+   * pairs and the pairs only connected via the deleted edge.
+   */
   @Test
   public void testCycle() {
     TransitiveClosureNode closure = net.transitiveClosure(edges);
@@ -78,6 +91,10 @@ public class TransitiveClosureNodeTest extends AbstractNodeTest {
     recorder.assertConsistent();
   }
 
+  /**
+   * An edge reported twice is a single edge for the closure, which only
+   * changes when the edge appears for the first time or disappears completely.
+   */
   @Test
   public void testParallelEdgesAreCounted() {
     TransitiveClosureNode closure = net.transitiveClosure(edges);
@@ -91,6 +108,9 @@ public class TransitiveClosureNodeTest extends AbstractNodeTest {
     assertEquals(List.of("-[a, b]"), recorder.take());
   }
 
+  /**
+   * A closure created on a populated source contains all reachable pairs.
+   */
   @Test
   public void testInitializedFromPopulatedSource() {
     edges.insert("a", "b");
@@ -100,6 +120,10 @@ public class TransitiveClosureNodeTest extends AbstractNodeTest {
         contents(closure));
   }
 
+  /**
+   * Both output columns may contain sources and targets of edges, so both have
+   * the common supertype of the input columns.
+   */
   @Test
   public void testColumnTypesAreCommonSupertype() {
     TestSource mixed = source(String.class, CharSequence.class);
@@ -107,12 +131,18 @@ public class TransitiveClosureNodeTest extends AbstractNodeTest {
         net.transitiveClosure(mixed).getColumnTypes());
   }
 
+  /**
+   * A source that is no binary relation is rejected.
+   */
   @Test
   public void testOnlyBinaryRelationsAreAccepted() {
     assertThrows(IllegalArgumentException.class,
         () -> net.transitiveClosure(source(String.class, String.class, String.class)));
   }
 
+  /**
+   * The deletion of an unknown edge is reported as an inconsistent network.
+   */
   @Test
   public void testDeletionOfUnknownEdgeIsDetected() {
     net.transitiveClosure(edges);

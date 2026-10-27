@@ -9,6 +9,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Tests the {@link ExistenceNode} as semi join and anti join: left tuples are
+ * passed on depending on the existence of right tuples with the same key.
+ */
 public class ExistenceNodeTest extends AbstractNodeTest {
 
   /**
@@ -27,6 +31,12 @@ public class ExistenceNodeTest extends AbstractNodeTest {
     right = source(String.class);
   }
 
+  /**
+   * A semi join passes on the left tuples having a right partner with the same
+   * key. A right change only matters if it changes the existence of the key
+   * (first insertion, last deletion); then all left tuples of the key are
+   * inserted or deleted. The output columns are those of the left side.
+   */
   @Test
   public void testSemiJoin() {
     Indexer leftIndexer = net.indexer(left, 0);
@@ -58,6 +68,11 @@ public class ExistenceNodeTest extends AbstractNodeTest {
     recorder.assertConsistent();
   }
 
+  /**
+   * An anti join passes on the left tuples without right partner: the first
+   * right tuple of a key deletes the left tuples of that key, the deletion of
+   * the last one inserts them again.
+   */
   @Test
   public void testAntiJoin() {
     ExistenceNode anti = net.antiJoin(net.indexer(left, 0), net.indexer(right, 0));
@@ -80,6 +95,10 @@ public class ExistenceNodeTest extends AbstractNodeTest {
     recorder.assertConsistent();
   }
 
+  /**
+   * When the existence of a key changes, each left tuple is passed on as often
+   * as it occurs.
+   */
   @Test
   public void testLeftMultiplicitiesArePropagated() {
     ExistenceNode semi = net.semiJoin(net.indexer(left, 0), net.indexer(right, 0));
@@ -92,6 +111,10 @@ public class ExistenceNodeTest extends AbstractNodeTest {
     assertEquals(List.of("-[a, 1]", "-[a, 1]"), recorder.take());
   }
 
+  /**
+   * Semi and anti joins created on populated indexers provide the left tuples
+   * with resp. without partner, with their multiplicities.
+   */
   @Test
   public void testInitializedFromPopulatedIndexers() {
     left.insert("a", 1);
@@ -105,6 +128,10 @@ public class ExistenceNodeTest extends AbstractNodeTest {
     assertEquals(tuples(Tuple.of("b", 1)), contents(anti));
   }
 
+  /**
+   * Identical indexers on both sides, keys of different size and key columns
+   * whose types can never hold equal values are rejected.
+   */
   @Test
   public void testInvalidConfigurationsAreRejected() {
     Indexer byName = net.indexer(left, 0);
@@ -116,6 +143,9 @@ public class ExistenceNodeTest extends AbstractNodeTest {
         () -> net.antiJoin(net.indexer(left, 1), net.indexer(right, 0)), "Integer vs. String");
   }
 
+  /**
+   * Disposing the node unregisters it from both indexers.
+   */
   @Test
   public void testDispose() {
     Indexer leftIndexer = net.indexer(left, 0);

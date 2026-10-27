@@ -9,8 +9,15 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Tests the {@link UnionNode}: the multiset union of the deltas of all parents.
+ */
 public class UnionNodeTest extends AbstractNodeTest {
 
+  /**
+   * The deltas of all parents are passed on unchanged and in order; equal
+   * tuples of different parents are kept as separate occurrences.
+   */
   @Test
   public void testPassesDeltasOfAllParents() {
     TestSource left = source(String.class);
@@ -28,6 +35,10 @@ public class UnionNodeTest extends AbstractNodeTest {
     recorder.assertConsistent();
   }
 
+  /**
+   * Each output column has the most specific common supertype of the
+   * corresponding parent columns, e.g. {@link Number} for Integer and Long.
+   */
   @Test
   public void testColumnTypesAreCommonSupertypes() {
     TestSource strings = source(String.class, Integer.class);
@@ -36,6 +47,10 @@ public class UnionNodeTest extends AbstractNodeTest {
     assertEquals(List.of(Serializable.class, Number.class), union.getColumnTypes());
   }
 
+  /**
+   * A parent given twice contributes its tuples and deltas twice, and
+   * disposing the union detaches it from that parent completely.
+   */
   @Test
   public void testParentContainedTwiceContributesTwice() {
     TestSource source = source(String.class);
@@ -53,6 +68,10 @@ public class UnionNodeTest extends AbstractNodeTest {
     assertTrue(source.getChildren().isEmpty());
   }
 
+  /**
+   * A union without parents, of parents with different arities or with a
+   * parent of another network is rejected.
+   */
   @Test
   public void testInvalidParentsAreRejected() {
     assertThrows(IllegalArgumentException.class, () -> new UnionNode(net, List.of()));

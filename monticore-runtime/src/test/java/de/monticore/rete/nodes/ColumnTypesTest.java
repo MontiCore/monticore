@@ -11,6 +11,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Tests the type computations used to check and type the columns of nodes.
+ */
 public class ColumnTypesTest {
 
   static class First {
@@ -19,6 +22,12 @@ public class ColumnTypesTest {
   static class Second {
   }
 
+  /**
+   * Two types may hold a common value if they are related, both interfaces,
+   * or an interface and a non-final class (a subclass may implement the
+   * interface). Unrelated classes cannot, nor can an interface and a final
+   * class not implementing it. The check is symmetric.
+   */
   @Test
   public void testMayOverlap() {
     assertTrue(ColumnTypes.mayOverlap(String.class, String.class));
@@ -32,6 +41,10 @@ public class ColumnTypesTest {
     assertFalse(ColumnTypes.mayOverlap(First.class, Second.class), "unrelated classes");
   }
 
+  /**
+   * Of two related types, the more specific one is chosen in both argument
+   * orders; of unrelated types, the first one.
+   */
   @Test
   public void testNarrower() {
     assertSame(String.class, ColumnTypes.narrower(CharSequence.class, String.class));
@@ -40,6 +53,11 @@ public class ColumnTypesTest {
         "unrelated types keep the first one");
   }
 
+  /**
+   * The common supertype is the more general of two related types, else the
+   * closest supertype of the first type (superclasses before interfaces)
+   * that the second one is assignable to, and {@link Object} as last resort.
+   */
   @Test
   public void testCommonSupertype() {
     assertSame(CharSequence.class, ColumnTypes.commonSupertype(CharSequence.class, String.class));

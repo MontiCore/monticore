@@ -10,8 +10,17 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Tests the {@link Indexer}: the memory grouping the tuples of a source by
+ * key, and the notification of its listeners.
+ */
 public class IndexerTest extends AbstractNodeTest {
 
+  /**
+   * The tuples are grouped by the values of the key columns, with
+   * multiplicities; unknown keys yield no tuples, and keys whose last tuple is
+   * deleted disappear.
+   */
   @Test
   public void testGroupsTuplesByKey() {
     TestSource source = source(String.class, Integer.class);
@@ -36,6 +45,10 @@ public class IndexerTest extends AbstractNodeTest {
     assertEquals(Set.of(Tuple.of("a")), indexer.getKeys());
   }
 
+  /**
+   * A key may consist of several columns in any order; an empty key puts all
+   * tuples under the empty tuple.
+   */
   @Test
   public void testCompositeAndEmptyKeys() {
     TestSource source = source(String.class, Integer.class, Boolean.class);
@@ -50,6 +63,10 @@ public class IndexerTest extends AbstractNodeTest {
     assertEquals(3, empty.count(Tuple.EMPTY));
   }
 
+  /**
+   * An indexer created on a populated source contains its tuples with their
+   * multiplicities and keeps track of later deletions.
+   */
   @Test
   public void testInitializedFromPopulatedSource() {
     TestSource source = source(String.class, Integer.class);
@@ -61,6 +78,11 @@ public class IndexerTest extends AbstractNodeTest {
     assertEquals(1, indexer.count(Tuple.of("a")));
   }
 
+  /**
+   * Listeners are notified about each change in order, with the key of the
+   * tuple, and already see the updated memory (the count includes the
+   * change). Removed listeners are no longer notified.
+   */
   @Test
   public void testListenersAreNotifiedAfterTheUpdate() {
     TestSource source = source(String.class, Integer.class);
@@ -80,6 +102,9 @@ public class IndexerTest extends AbstractNodeTest {
     assertEquals(List.of(), listener.take());
   }
 
+  /**
+   * The tuples, keys and listeners returned by the indexer cannot be modified.
+   */
   @Test
   public void testContentsAreUnmodifiable() {
     TestSource source = source(String.class);
@@ -92,6 +117,10 @@ public class IndexerTest extends AbstractNodeTest {
         () -> indexer.getListeners().add(new RecordingIndexerListener()));
   }
 
+  /**
+   * The deletion of an unknown tuple is reported as an inconsistent network,
+   * both for an unknown key and for an unknown tuple of a known key.
+   */
   @Test
   public void testDeletionOfUnknownTupleIsDetected() {
     TestSource source = source(String.class, Integer.class);
@@ -102,6 +131,9 @@ public class IndexerTest extends AbstractNodeTest {
     assertThrows(IllegalStateException.class, () -> source.delete("a", 2));
   }
 
+  /**
+   * A key mask for another arity and a source of another network are rejected.
+   */
   @Test
   public void testMaskMustFitArity() {
     TestSource source = source(String.class, Integer.class);
@@ -111,6 +143,10 @@ public class IndexerTest extends AbstractNodeTest {
     assertThrows(IllegalArgumentException.class, () -> net.indexer(foreign, 0));
   }
 
+  /**
+   * An indexer with listeners cannot be disposed; a disposed indexer is
+   * detached from its source and accepts no new listeners.
+   */
   @Test
   public void testDispose() {
     TestSource source = source(String.class);

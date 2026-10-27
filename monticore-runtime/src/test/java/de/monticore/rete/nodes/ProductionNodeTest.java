@@ -13,6 +13,10 @@ import java.util.Set;
 import static de.monticore.rete.AutomatonModel.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Tests the {@link ProductionNode}: the matches as the distinct tuples of its
+ * parent, the match events delivered to listeners and the queries.
+ */
 public class ProductionNodeTest extends AbstractNodeTest {
 
   /**
@@ -41,6 +45,10 @@ public class ProductionNodeTest extends AbstractNodeTest {
     return new Match(production, Tuple.of(values));
   }
 
+  /**
+   * The parameter names are assigned to the columns in order; unknown names
+   * are rejected.
+   */
   @Test
   public void testParameters() {
     assertSame(source, production.getParent());
@@ -50,6 +58,10 @@ public class ProductionNodeTest extends AbstractNodeTest {
     assertThrows(IllegalArgumentException.class, () -> production.getParameterIndex("x"));
   }
 
+  /**
+   * A wrong number of parameter names, duplicate names and columns that are
+   * no AST nodes are rejected.
+   */
   @Test
   public void testInvalidConfigurationsAreRejected() {
     assertThrows(IllegalArgumentException.class, () -> net.production(source, "state"),
@@ -61,6 +73,11 @@ public class ProductionNodeTest extends AbstractNodeTest {
         "non-AST column");
   }
 
+  /**
+   * A tuple is a match as long as at least one occurrence exists, and is
+   * contained once in the matches regardless of its multiplicity. The match
+   * tuples cannot be modified.
+   */
   @Test
   public void testMatchesAreTuplesWithPositiveCount() {
     source.insert(s1, t1);
@@ -75,6 +92,10 @@ public class ProductionNodeTest extends AbstractNodeTest {
         () -> production.getMatchTuples().add(Tuple.of(s1, t1)));
   }
 
+  /**
+   * A production created on a populated parent contains the existing matches
+   * without reporting them to listeners added afterwards.
+   */
   @Test
   public void testInitializedFromPopulatedParent() {
     source.insert(s1, t1);
@@ -85,6 +106,11 @@ public class ProductionNodeTest extends AbstractNodeTest {
     assertTrue(listener.events.isEmpty());
   }
 
+  /**
+   * Listeners are notified when a tuple becomes or stops being a match, not
+   * about further occurrences of an existing match. Removed listeners are no
+   * longer notified.
+   */
   @Test
   public void testListenersAreNotifiedAboutChangedMatches() {
     RecordingListener listener = new RecordingListener();
@@ -104,6 +130,9 @@ public class ProductionNodeTest extends AbstractNodeTest {
     assertEquals(2, listener.events.size());
   }
 
+  /**
+   * Inserting and deleting a match within one transaction reports no event.
+   */
   @Test
   public void testChangesCancellingOutAreNotReported() {
     RecordingListener listener = new RecordingListener();
@@ -115,6 +144,10 @@ public class ProductionNodeTest extends AbstractNodeTest {
     assertTrue(listener.events.isEmpty());
   }
 
+  /**
+   * Events are delivered at the end of the outermost transaction, not during
+   * the change itself.
+   */
   @Test
   public void testEventsAreDeliveredAtTheEndOfTheTransaction() {
     RecordingListener listener = new RecordingListener();
@@ -126,6 +159,10 @@ public class ProductionNodeTest extends AbstractNodeTest {
     assertEquals(Set.of(match(s1, t1)), listener.matches);
   }
 
+  /**
+   * A listener added with {@code fireForExistingMatches} is notified
+   * immediately about all current matches.
+   */
   @Test
   public void testFireForExistingMatches() {
     source.insert(s1, t1);
@@ -134,6 +171,11 @@ public class ProductionNodeTest extends AbstractNodeTest {
     assertEquals(Set.of(match(s1, t1)), listener.matches);
   }
 
+  /**
+   * Queries without values, with only unbound values ({@code null}), with
+   * some bound values and with all values bound return the compatible
+   * matches; a binding of wrong length is rejected.
+   */
   @Test
   public void testQueries() {
     source.insert(s1, t1);
@@ -153,7 +195,9 @@ public class ProductionNodeTest extends AbstractNodeTest {
   }
 
   /**
-   * The index created for a partial binding is maintained afterwards.
+   * The index created for the first query with a partial binding is
+   * maintained afterwards: later queries with the same bound positions
+   * reflect insertions and deletions of matches.
    */
   @Test
   public void testQueryIndexesAreMaintained() {
@@ -168,6 +212,10 @@ public class ProductionNodeTest extends AbstractNodeTest {
     assertEquals(1, production.countMatches(s2, null));
   }
 
+  /**
+   * The action of {@code forEachMatch} may change the network, e.g. delete
+   * the visited matches, as the matches are copied before.
+   */
   @Test
   public void testForEachMatchMayReportChanges() {
     source.insert(s1, t1);
@@ -176,11 +224,19 @@ public class ProductionNodeTest extends AbstractNodeTest {
     assertEquals(0, production.countMatches());
   }
 
+  /**
+   * The deletion of a tuple that is no match is reported as an inconsistent
+   * network.
+   */
   @Test
   public void testDeletionOfUnknownTupleIsDetected() {
     assertThrows(IllegalStateException.class, () -> source.delete(s1, t1));
   }
 
+  /**
+   * A disposed production is detached from its parent and drops its
+   * listeners, which are not notified about later changes.
+   */
   @Test
   public void testDispose() {
     RecordingListener listener = new RecordingListener();

@@ -29,7 +29,10 @@ public class AggregatorNodeTest extends AbstractNodeTest {
   }
 
   /**
-   * A changed result replaces the old result tuple; an empty group deletes it.
+   * Counting per group: the output consists of the group columns followed by
+   * the count. A changed result is passed on as deletion of the old result
+   * tuple followed by insertion of the new one; a group becoming empty deletes
+   * its result tuple and has no result anymore.
    */
   @Test
   public void testCountPerGroup() {
@@ -56,6 +59,10 @@ public class AggregatorNodeTest extends AbstractNodeTest {
     recorder.assertConsistent();
   }
 
+  /**
+   * A change not affecting the result of its group (adding 0 to a sum)
+   * produces no delta.
+   */
   @Test
   public void testUnchangedResultIsNotPropagated() {
     AggregatorNode sum = net.aggregate(source, TupleMask.of(2, 0), 1, Aggregators.sumLong());
@@ -66,6 +73,10 @@ public class AggregatorNodeTest extends AbstractNodeTest {
     assertEquals(List.of("+[g, 1]"), recorder.take());
   }
 
+  /**
+   * Aggregating a column without group columns yields a single result tuple;
+   * the result type of {@code min} is the type of the aggregated column.
+   */
   @Test
   public void testAggregatedColumnWithoutGroups() {
     AggregatorNode min = net.aggregate(source, TupleMask.empty(2), 1, Aggregators.min());
@@ -81,6 +92,9 @@ public class AggregatorNodeTest extends AbstractNodeTest {
     recorder.assertConsistent();
   }
 
+  /**
+   * Each occurrence of a tuple counts, also for repeated occurrences.
+   */
   @Test
   public void testMultiplicitiesAreCounted() {
     AggregatorNode count = net.count(source);
@@ -89,6 +103,10 @@ public class AggregatorNodeTest extends AbstractNodeTest {
     assertEquals(2L, count.getResult(Tuple.EMPTY));
   }
 
+  /**
+   * An aggregator created on a populated source computes the results of the
+   * existing tuples and updates them on later changes.
+   */
   @Test
   public void testInitializedFromPopulatedSource() {
     source.insert("g", 1);
@@ -100,6 +118,10 @@ public class AggregatorNodeTest extends AbstractNodeTest {
     assertEquals(List.of("-[g, 2]", "+[g, 1]"), recorder.take());
   }
 
+  /**
+   * A group mask for another arity and an aggregated column out of range are
+   * rejected.
+   */
   @Test
   public void testInvalidConfigurationsAreRejected() {
     AggregationOperator<?, ?, ?> count = Aggregators.count();
@@ -111,12 +133,20 @@ public class AggregatorNodeTest extends AbstractNodeTest {
         () -> net.aggregate(source, TupleMask.of(2, 0), -2, count), "negative column");
   }
 
+  /**
+   * The deletion of a tuple of an empty group is reported as an inconsistent
+   * network.
+   */
   @Test
   public void testDeletionFromUnknownGroupIsDetected() {
     net.count(source, 0);
     assertThrows(IllegalStateException.class, () -> source.delete("g", 1));
   }
 
+  /**
+   * An operator returning {@code null} as result violates the contract of
+   * {@link AggregationOperator} and causes a {@link NullPointerException}.
+   */
   @Test
   public void testNullResultIsRejected() {
     AggregationOperator<Object, Object, Object> nullResult = new AggregationOperator<>() {

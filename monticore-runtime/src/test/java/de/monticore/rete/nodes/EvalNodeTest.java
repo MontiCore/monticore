@@ -15,6 +15,10 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class EvalNodeTest extends AbstractNodeTest {
 
+  /**
+   * Each delta is passed on with the computed value appended, in the same
+   * direction; the result type becomes the type of the new last column.
+   */
   @Test
   public void testAppendsComputedValue() {
     TestSource source = source(String.class);
@@ -29,6 +33,10 @@ public class EvalNodeTest extends AbstractNodeTest {
     recorder.assertConsistent();
   }
 
+  /**
+   * A primitive result type is replaced by its wrapper type, so that the
+   * computed (boxed) values are accepted.
+   */
   @Test
   public void testPrimitiveResultTypeIsWrapped() {
     TestSource source = source(String.class);
@@ -38,6 +46,10 @@ public class EvalNodeTest extends AbstractNodeTest {
     assertEquals(tuples(Tuple.of("ab", 2)), contents(eval));
   }
 
+  /**
+   * Tuples for which the function returns {@code null} are dropped, both in
+   * the deltas and in the contents provided to a newly attached child.
+   */
   @Test
   public void testNullResultDropsTuple() {
     TestSource source = source(String.class);
@@ -53,6 +65,10 @@ public class EvalNodeTest extends AbstractNodeTest {
     assertEquals(List.of("+[a, x]"), recorder.take());
   }
 
+  /**
+   * A computed value that is no instance of the declared result type causes
+   * a {@link ClassCastException}.
+   */
   @Test
   public void testResultOfWrongTypeIsRejected() {
     TestSource source = source(String.class);
@@ -62,7 +78,9 @@ public class EvalNodeTest extends AbstractNodeTest {
 
   /**
    * Eval nodes have no memory: the function runs for every delta and every
-   * pull of the contents.
+   * pull of the contents. A function returning a different value for the
+   * deletion than for the insertion therefore makes the network inconsistent,
+   * which the distinct node below the eval node detects.
    */
   @Test
   public void testFunctionIsEvaluatedPerDeltaAndPull() {
@@ -78,6 +96,10 @@ public class EvalNodeTest extends AbstractNodeTest {
         "a non-deterministic function makes the network inconsistent");
   }
 
+  /**
+   * An eval node created on a populated source provides the extended tuples
+   * with the multiplicities of the source.
+   */
   @Test
   public void testPullIntoKeepsMultiplicities() {
     TestSource source = source(String.class);

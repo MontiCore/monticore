@@ -10,6 +10,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Tests the {@link JoinNode}: the deltas produced for changes on both sides,
+ * multiplicities, output columns and the special case of a self join.
+ */
 public class JoinNodeTest extends AbstractNodeTest {
 
   /**
@@ -28,6 +32,12 @@ public class JoinNodeTest extends AbstractNodeTest {
     right = source(String.class, Boolean.class);
   }
 
+  /**
+   * A change on either side is combined with all tuples of the other side
+   * having the same key; the output consists of the left columns followed by
+   * the non-key columns of the right side. Changes without partner produce no
+   * delta.
+   */
   @Test
   public void testJoinsOnEqualKeys() {
     Indexer leftIndexer = net.indexer(left, 0);
@@ -53,6 +63,10 @@ public class JoinNodeTest extends AbstractNodeTest {
     recorder.assertConsistent();
   }
 
+  /**
+   * A pair occurs as often as the product of the multiplicities of its left
+   * and right tuple: a change is passed on once per occurrence of its partner.
+   */
   @Test
   public void testMultiplicitiesAreMultiplied() {
     JoinNode join = net.join(net.indexer(left, 0), net.indexer(right, 0));
@@ -66,6 +80,10 @@ public class JoinNodeTest extends AbstractNodeTest {
     recorder.assertConsistent();
   }
 
+  /**
+   * A join created on populated indexers provides all pairs with the products
+   * of their multiplicities.
+   */
   @Test
   public void testInitializedFromPopulatedIndexers() {
     left.insert("a", 1);
@@ -77,6 +95,10 @@ public class JoinNodeTest extends AbstractNodeTest {
         Tuple.of("a", 1, false), Tuple.of("a", 1, false)), contents(join));
   }
 
+  /**
+   * An explicit output mask selects the right columns appended to the left
+   * tuple, here including the right key column.
+   */
   @Test
   public void testRightOutputMask() {
     JoinNode join = net.join(net.indexer(left, 0), net.indexer(right, 0), TupleMask.identity(2));
@@ -87,6 +109,10 @@ public class JoinNodeTest extends AbstractNodeTest {
     assertEquals(tuples(Tuple.of("a", 1, "a", true)), contents(join));
   }
 
+  /**
+   * Joined key values are instances of both key column types, so the output
+   * type of the key columns is the more specific one.
+   */
   @Test
   public void testKeyColumnsAreNarrowed() {
     TestSource general = source(CharSequence.class);
@@ -96,6 +122,10 @@ public class JoinNodeTest extends AbstractNodeTest {
     assertEquals(List.of(String.class, String.class), join.getColumnTypes());
   }
 
+  /**
+   * Keys of different size, key columns whose types can never hold equal
+   * values and an output mask for another arity are rejected.
+   */
   @Test
   public void testInvalidConfigurationsAreRejected() {
     Indexer byName = net.indexer(left, 0);
@@ -108,8 +138,10 @@ public class JoinNodeTest extends AbstractNodeTest {
   }
 
   /**
-   * In a self join on a shared indexer, each pair must be produced exactly
-   * once, although both sides are notified about the same change.
+   * In a self join on a shared indexer, the join is notified only once per
+   * change but has to process it as left and as right tuple. Each pair must
+   * nevertheless be produced exactly as often as its multiplicity, also for
+   * repeated occurrences of a tuple and for deletions.
    */
   @Test
   public void testSelfJoin() {
@@ -141,6 +173,10 @@ public class JoinNodeTest extends AbstractNodeTest {
     assertTrue(contents(pairs).isEmpty());
   }
 
+  /**
+   * Disposing a join unregisters it from both indexers, which can then be
+   * disposed themselves.
+   */
   @Test
   public void testDispose() {
     Indexer leftIndexer = net.indexer(left, 0);

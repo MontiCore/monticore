@@ -7,6 +7,10 @@ import java.util.Comparator;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Tests the operators of {@link Aggregators} directly on their accumulators,
+ * without a network.
+ */
 public class AggregatorsTest {
 
   /**
@@ -30,6 +34,10 @@ public class AggregatorsTest {
     return operator.getAggregate(accumulator);
   }
 
+  /**
+   * {@code count} counts every insertion and subtracts every removal,
+   * regardless of the values, and yields Long.
+   */
   @Test
   public void testCount() {
     AggregationOperator<Object, Long, Long> count = Aggregators.count();
@@ -40,6 +48,10 @@ public class AggregatorsTest {
     assertEquals("count", count.toString());
   }
 
+  /**
+   * {@code sumLong} sums integral values of any number type as long and
+   * subtracts removed values.
+   */
   @Test
   public void testSumLong() {
     AggregationOperator<Number, Long, Long> sum = Aggregators.sumLong();
@@ -50,6 +62,10 @@ public class AggregatorsTest {
     assertEquals("sumLong", sum.toString());
   }
 
+  /**
+   * {@code sumDouble} sums values of any number type as double and subtracts
+   * removed values.
+   */
   @Test
   public void testSumDouble() {
     AggregationOperator<Number, Double, Double> sum = Aggregators.sumDouble();
@@ -59,6 +75,11 @@ public class AggregatorsTest {
     assertEquals("sumDouble", sum.toString());
   }
 
+  /**
+   * {@code min} yields the smallest value; removing it reveals the next one, but
+   * a value inserted twice remains until both occurrences are removed. The
+   * result type is the value type.
+   */
   @Test
   public void testMin() {
     AggregationOperator<Integer, ?, Integer> min = Aggregators.min();
@@ -71,6 +92,9 @@ public class AggregatorsTest {
     assertEquals("min", min.toString());
   }
 
+  /**
+   * {@code max} yields the largest value and the next one after its removal.
+   */
   @Test
   public void testMax() {
     AggregationOperator<String, ?, String> max = Aggregators.max();
@@ -79,6 +103,11 @@ public class AggregatorsTest {
     assertEquals("max", max.toString());
   }
 
+  /**
+   * With a comparator, min and max follow its order. Values equal with respect
+   * to the comparator are treated as one value: the first one inserted
+   * represents them until all of them are removed.
+   */
   @Test
   public void testComparator() {
     AggregationOperator<String, ?, String> shortest =
@@ -93,6 +122,9 @@ public class AggregatorsTest {
     assertEquals("dd", aggregate(shortest, "a", "b", "dd", "-", "b", "-", "a"));
   }
 
+  /**
+   * Removing a value that was never inserted leaves min and max unchanged.
+   */
   @Test
   public void testRemovalOfUnknownValueIsIgnored() {
     AggregationOperator<Integer, ?, Integer> min = Aggregators.min();

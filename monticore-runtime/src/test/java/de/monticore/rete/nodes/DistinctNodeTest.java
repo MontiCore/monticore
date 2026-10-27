@@ -14,6 +14,10 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class DistinctNodeTest extends AbstractNodeTest {
 
+  /**
+   * Only the first insertion and the last deletion of a tuple are passed on;
+   * further occurrences only change the internal count.
+   */
   @Test
   public void testPropagatesOnlyFirstAndLastOccurrence() {
     TestSource source = source(String.class);
@@ -33,6 +37,11 @@ public class DistinctNodeTest extends AbstractNodeTest {
     recorder.assertConsistent();
   }
 
+  /**
+   * A distinct node created on a populated source contains each tuple once and
+   * knows the counts of the existing occurrences: deleting the first of two
+   * occurrences is not passed on, deleting the second one is.
+   */
   @Test
   public void testInitializedFromPopulatedSource() {
     TestSource source = source(String.class);
@@ -49,6 +58,10 @@ public class DistinctNodeTest extends AbstractNodeTest {
     assertEquals(List.of("-[a]"), recorder.take());
   }
 
+  /**
+   * The deletion of a tuple the node does not contain is reported as an
+   * inconsistent network.
+   */
   @Test
   public void testDeletionOfUnknownTupleIsDetected() {
     TestSource source = source(String.class);

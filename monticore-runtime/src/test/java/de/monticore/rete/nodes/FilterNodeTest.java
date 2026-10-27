@@ -15,6 +15,11 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class FilterNodeTest extends AbstractNodeTest {
 
+  /**
+   * Insertions and deletions of tuples satisfying the predicate are passed on
+   * unchanged and in order, including repeated occurrences; deltas of other
+   * tuples are dropped. The output columns are those of the parent.
+   */
   @Test
   public void testPassesOnlyMatchingDeltas() {
     TestSource source = source(String.class, Integer.class);
@@ -34,6 +39,10 @@ public class FilterNodeTest extends AbstractNodeTest {
     recorder.assertConsistent();
   }
 
+  /**
+   * A filter created on a populated source provides the satisfying tuples of
+   * the source with their multiplicities.
+   */
   @Test
   public void testPullIntoKeepsMultiplicities() {
     TestSource source = source(String.class, Integer.class);
@@ -44,6 +53,10 @@ public class FilterNodeTest extends AbstractNodeTest {
     assertEquals(tuples(Tuple.of("a", 1), Tuple.of("a", 1)), contents(filter));
   }
 
+  /**
+   * {@code equality} keeps the tuples whose given columns are all equal, for
+   * two as well as for more columns.
+   */
   @Test
   public void testEquality() {
     TestSource source = source(String.class, String.class, String.class);
@@ -56,6 +69,9 @@ public class FilterNodeTest extends AbstractNodeTest {
     assertEquals(tuples(Tuple.of("a", "a", "a")), contents(threeColumns));
   }
 
+  /**
+   * {@code inequality} keeps the tuples whose two given columns differ.
+   */
   @Test
   public void testInequality() {
     TestSource source = source(String.class, String.class);
@@ -65,6 +81,10 @@ public class FilterNodeTest extends AbstractNodeTest {
     assertEquals(tuples(Tuple.of("a", "b")), contents(inequality));
   }
 
+  /**
+   * A predicate creating a node during propagation is rejected with an
+   * {@link IllegalStateException}.
+   */
   @Test
   public void testPredicateMustNotModifyNetwork() {
     TestSource source = source(String.class);
@@ -75,6 +95,11 @@ public class FilterNodeTest extends AbstractNodeTest {
     assertThrows(IllegalStateException.class, () -> source.insert("a"));
   }
 
+  /**
+   * Disposing as implemented by {@link AbstractSingleParentNode}: a node with
+   * children cannot be disposed; a disposed node is detached from its parent,
+   * disposing it again has no effect, and no node can be attached to it.
+   */
   @Test
   public void testDispose() {
     TestSource source = source(String.class);
@@ -91,6 +116,10 @@ public class FilterNodeTest extends AbstractNodeTest {
         "attaching to a disposed node");
   }
 
+  /**
+   * A node whose parent belongs to another network is rejected (implemented
+   * by {@link AbstractSingleParentNode}).
+   */
   @Test
   public void testParentOfOtherNetworkIsRejected() {
     TestSource foreign = new TestSource(new TestNetwork(), String.class);

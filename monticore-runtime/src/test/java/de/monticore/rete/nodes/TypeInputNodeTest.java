@@ -10,6 +10,10 @@ import java.util.List;
 import static de.monticore.rete.AutomatonModel.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Tests the {@link TypeInputNode}, which is filled by the AST node
+ * notifications of the network.
+ */
 public class TypeInputNodeTest extends AbstractNodeTest {
 
   protected ASTAutomaton aut;
@@ -26,6 +30,10 @@ public class TypeInputNodeTest extends AbstractNodeTest {
     t1 = new ASTTransition("t1");
   }
 
+  /**
+   * Added and removed AST nodes of the type are passed on as unary tuples, in
+   * order; there is a single input node per type.
+   */
   @Test
   public void testContainsReportedNodes() {
     TypeInputNode<ASTState> states = net.typeInput(ASTState.class);
@@ -45,6 +53,10 @@ public class TypeInputNodeTest extends AbstractNodeTest {
     recorder.assertConsistent();
   }
 
+  /**
+   * The input node of an interface contains the instances of all implementing
+   * classes, but no other nodes.
+   */
   @Test
   public void testContainsInstancesOfSubtypes() {
     TypeInputNode<ASTNamedElement> named = net.typeInput(ASTNamedElement.class);
@@ -54,6 +66,9 @@ public class TypeInputNodeTest extends AbstractNodeTest {
     assertEquals(tuples(Tuple.of(aut), Tuple.of(s1)), contents(named));
   }
 
+  /**
+   * Adding a node twice and removing an unknown node are rejected.
+   */
   @Test
   public void testInvalidNotificationsAreRejected() {
     net.typeInput(ASTState.class);
@@ -62,6 +77,10 @@ public class TypeInputNodeTest extends AbstractNodeTest {
     assertThrows(IllegalStateException.class, () -> net.nodeRemoved(s2));
   }
 
+  /**
+   * The contents can only be changed via the notifications of the network,
+   * not by calling {@code insert} or {@code delete} directly.
+   */
   @Test
   public void testDirectModificationIsRejected() {
     TypeInputNode<ASTState> states = net.typeInput(ASTState.class);
@@ -69,6 +88,10 @@ public class TypeInputNodeTest extends AbstractNodeTest {
     assertThrows(IllegalStateException.class, () -> states.delete(s1));
   }
 
+  /**
+   * A second input node for the same type is rejected, and no input node can
+   * be created after the first notification, as earlier facts are not retained.
+   */
   @Test
   public void testOnlyOneInputPerTypeBeforeFirstFact() {
     net.typeInput(ASTState.class);
@@ -77,6 +100,10 @@ public class TypeInputNodeTest extends AbstractNodeTest {
     assertThrows(IllegalStateException.class, () -> net.typeInput(ASTTransition.class));
   }
 
+  /**
+   * An input node with children cannot be disposed; a disposed input node is
+   * unregistered from the network and receives no further AST nodes.
+   */
   @Test
   public void testDispose() {
     TypeInputNode<ASTState> states = net.typeInput(ASTState.class);
@@ -91,6 +118,9 @@ public class TypeInputNodeTest extends AbstractNodeTest {
     assertEquals(0, states.size());
   }
 
+  /**
+   * The string representation names the type.
+   */
   @Test
   public void testToString() {
     assertEquals("TypeInputNode[ASTState]", net.typeInput(ASTState.class).toString());

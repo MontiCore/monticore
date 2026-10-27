@@ -15,6 +15,10 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class ProjectionNodeTest extends AbstractNodeTest {
 
+  /**
+   * The mask selects, reorders and repeats columns; the column types are
+   * transformed accordingly, and each delta is passed on projected.
+   */
   @Test
   public void testSelectsAndReordersColumns() {
     TestSource source = source(String.class, Integer.class, Boolean.class);
@@ -28,6 +32,10 @@ public class ProjectionNodeTest extends AbstractNodeTest {
     assertEquals(List.of("+[true, a, a]", "-[true, a, a]"), recorder.take());
   }
 
+  /**
+   * Different tuples with equal projections are not merged: each insertion
+   * and deletion is passed on, so the projection contains duplicates.
+   */
   @Test
   public void testKeepsMultiplicities() {
     TestSource source = source(String.class, Integer.class);
@@ -44,6 +52,9 @@ public class ProjectionNodeTest extends AbstractNodeTest {
     recorder.assertConsistent();
   }
 
+  /**
+   * A projection to no column yields one empty tuple per source tuple.
+   */
   @Test
   public void testEmptyProjection() {
     TestSource source = source(String.class);
@@ -54,6 +65,9 @@ public class ProjectionNodeTest extends AbstractNodeTest {
     assertEquals(tuples(Tuple.EMPTY, Tuple.EMPTY), contents(projection));
   }
 
+  /**
+   * A mask for another arity and a column index out of range are rejected.
+   */
   @Test
   public void testMaskMustFitArity() {
     TestSource source = source(String.class, Integer.class);
