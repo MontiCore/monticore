@@ -13,15 +13,20 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import java.util.List;
 
 /**
- * Legacy handler for component references represented by {@link ASTMCQualifiedType}.
+ * A visitor (a handler indeed) that creates a {@link CompKindOfComponentType} from an
+ * {@link ASTMCQualifiedType}, given that there is matching, resolvable
+ * component type symbol.
  *
- * @deprecated use {@link SynthesizeCompKindFromMCComponentTypes} with MCComponentTypes AST nodes.
+ * @deprecated use {@link SynthesizeCompKindFromMCComponentTypes}.
  */
 @Deprecated
 public class SynthesizeCompKindFromMCBasicTypes implements MCBasicTypesHandler {
 
   protected MCBasicTypesTraverser traverser;
 
+  /**
+   * Common state with other visitors, if this visitor is part of a visitor composition.
+   */
   protected CompKindCheckResult resultWrapper;
 
   public SynthesizeCompKindFromMCBasicTypes(@NonNull CompKindCheckResult resultWrapper) {
@@ -44,25 +49,25 @@ public class SynthesizeCompKindFromMCBasicTypes implements MCBasicTypesHandler {
     Preconditions.checkNotNull(node.getEnclosingScope());
     Preconditions.checkArgument(node.getEnclosingScope() instanceof ICompSymbolsScope);
 
-    ICompSymbolsScope enclosingScope = (ICompSymbolsScope) node.getEnclosingScope();
-    List<ComponentTypeSymbol> components =
-        enclosingScope.resolveComponentTypeMany(node.getMCQualifiedName().getQName());
+    ICompSymbolsScope enclScope = ((ICompSymbolsScope) node.getEnclosingScope());
+    List<ComponentTypeSymbol> comp = enclScope.resolveComponentTypeMany(node.getMCQualifiedName().getQName());
 
-    if (components.isEmpty()) {
+    if (comp.isEmpty()) {
       this.resultWrapper.setResultAbsent();
-      return;
-    }
+    } else {
+      CompKindExpression result = new CompKindOfComponentType(comp.getFirst());
+      result.setSourceNode(node);
+      this.resultWrapper.setResult(result);
 
-    CompKindExpression result = new CompKindOfComponentType(components.getFirst());
-    result.setSourceNode(node);
-    this.resultWrapper.setResult(result);
-
-    if (components.size() > 1) {
-      Log.error(
+      if (comp.size() > 1) {
+        Log.error(
           String.format(
-              "0xD0105 Ambiguous reference, both '%s' and '%s' match'",
-              components.get(0).getFullName(), components.get(1).getFullName()),
-          node.get_SourcePositionStart(), node.get_SourcePositionEnd());
+            "0xD0105 Ambiguous reference, both '%s' and '%s' match'",
+            comp.get(0).getFullName(), comp.get(1).getFullName()
+          ),
+          node.get_SourcePositionStart(), node.get_SourcePositionEnd()
+        );
+      }
     }
   }
 }

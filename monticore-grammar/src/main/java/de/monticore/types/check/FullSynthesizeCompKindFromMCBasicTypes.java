@@ -20,9 +20,9 @@ public class FullSynthesizeCompKindFromMCBasicTypes implements ISynthesizeCompon
   public void init() {
     this.traverser = MCBasicTypesMill.traverser();
     this.resultWrapper = new CompKindCheckResult();
-    SynthesizeCompKindFromMCBasicTypes synthesizer =
-        new SynthesizeCompKindFromMCBasicTypes(resultWrapper);
-    traverser.setMCBasicTypesHandler(synthesizer);
+    SynthesizeCompKindFromMCBasicTypes synFromBasic = new SynthesizeCompKindFromMCBasicTypes(resultWrapper);
+
+    traverser.setMCBasicTypesHandler(synFromBasic);
   }
 
   @Override

@@ -21,13 +21,11 @@ public class FullSynthesizeCompKindFromMCSimpleGenericTypes implements ISynthesi
   public void init() {
     this.traverser = MCSimpleGenericTypesMill.traverser();
     this.resultWrapper = new CompKindCheckResult();
-    SynthesizeCompKindFromMCBasicTypes basicSynthesizer =
-        new SynthesizeCompKindFromMCBasicTypes(resultWrapper);
-    SynthesizeCompKindFromMCSimpleGenericTypes genericSynthesizer =
-        new SynthesizeCompKindFromMCSimpleGenericTypes(resultWrapper);
+    SynthesizeCompKindFromMCBasicTypes synFromBasic = new SynthesizeCompKindFromMCBasicTypes(resultWrapper);
+    SynthesizeCompKindFromMCSimpleGenericTypes synFromSimple = new SynthesizeCompKindFromMCSimpleGenericTypes(resultWrapper);
 
-    traverser.setMCSimpleGenericTypesHandler(genericSynthesizer);
-    traverser.setMCBasicTypesHandler(basicSynthesizer);
+    traverser.setMCSimpleGenericTypesHandler(synFromSimple);
+    traverser.setMCBasicTypesHandler(synFromBasic);
   }
 
   @Override

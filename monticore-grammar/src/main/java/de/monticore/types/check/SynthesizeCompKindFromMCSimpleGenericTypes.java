@@ -19,21 +19,24 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
- * Legacy handler for component references represented by {@link ASTMCBasicGenericType}.
+ * A visitor (a handler indeed) that creates a {@link CompKindOfComponentType} from an
+ * {@link ASTMCBasicGenericType}, given that there is a matching resolvable
+ * component type symbol.
  *
- * @deprecated use {@link SynthesizeCompKindFromMCComponentTypes} with MCComponentTypes AST nodes.
+ * @deprecated use {@link SynthesizeCompKindFromMCComponentTypes}.
  */
 @Deprecated
-public class SynthesizeCompKindFromMCSimpleGenericTypes
-    implements MCSimpleGenericTypesHandler {
+public class SynthesizeCompKindFromMCSimpleGenericTypes implements MCSimpleGenericTypesHandler {
 
   protected MCSimpleGenericTypesTraverser traverser;
 
+  /**
+   * Common state with other visitors, if this visitor is part of a visitor composition.
+   */
   protected CompKindCheckResult resultWrapper;
 
-  public SynthesizeCompKindFromMCSimpleGenericTypes(
-      @NonNull CompKindCheckResult resultWrapper) {
-    this.resultWrapper = Preconditions.checkNotNull(resultWrapper);
+  public SynthesizeCompKindFromMCSimpleGenericTypes(@NonNull CompKindCheckResult result) {
+    this.resultWrapper = result;
   }
 
   @Override
@@ -47,52 +50,51 @@ public class SynthesizeCompKindFromMCSimpleGenericTypes
   }
 
   @Override
-  public void handle(@NonNull ASTMCBasicGenericType node) {
-    Preconditions.checkNotNull(node);
-    Preconditions.checkNotNull(node.getEnclosingScope());
-    Preconditions.checkArgument(node.getEnclosingScope() instanceof ICompSymbolsScope);
+  public void handle(@NonNull ASTMCBasicGenericType mcType) {
+    Preconditions.checkNotNull(mcType);
+    Preconditions.checkNotNull(mcType.getEnclosingScope());
+    Preconditions.checkArgument(mcType.getEnclosingScope() instanceof ICompSymbolsScope);
 
-    ICompSymbolsScope enclosingScope = (ICompSymbolsScope) node.getEnclosingScope();
-    String componentName = String.join(".", node.getNameList());
-    List<ComponentTypeSymbol> components =
-        enclosingScope.resolveComponentTypeMany(componentName);
+    ICompSymbolsScope enclScope = (ICompSymbolsScope) mcType.getEnclosingScope();
+    String compName = String.join(".", mcType.getNameList());
+    List<ComponentTypeSymbol> compSym = enclScope.resolveComponentTypeMany(compName);
 
-    if (components.isEmpty()) {
+    if (compSym.isEmpty()) {
       this.resultWrapper.setResultAbsent();
-      return;
-    }
+    } else {
+      if (compSym.size() > 1) {
+        Log.error(String.format(
+                "0xD0105 Ambiguous reference, both '%s' and '%s' match'",
+                compSym.get(0).getFullName(), compSym.get(1).getFullName()),
+            mcType.get_SourcePositionStart(), mcType.get_SourcePositionEnd()
+        );
+      }
+      List<SymTypeExpression> typeArgExpressions = typeArgumentsToTypes(mcType.getMCTypeArgumentList()).stream()
+          .map(TypeCheck3::symTypeFromAST)
+          .collect(Collectors.toList());
 
-    if (components.size() > 1) {
-      Log.error(
-          String.format(
-              "0xD0105 Ambiguous reference, both '%s' and '%s' match'",
-              components.get(0).getFullName(), components.get(1).getFullName()),
-          node.get_SourcePositionStart(), node.get_SourcePositionEnd());
+      CompKindExpression result = new CompKindOfGenericComponentType(compSym.get(0), typeArgExpressions);
+      result.setSourceNode(mcType);
+      this.resultWrapper.setResult(result);
     }
-
-    List<SymTypeExpression> typeArguments = typeArgumentsToTypes(node.getMCTypeArgumentList())
-        .stream()
-        .map(TypeCheck3::symTypeFromAST)
-        .collect(Collectors.toList());
-    CompKindExpression result =
-        new CompKindOfGenericComponentType(components.getFirst(), typeArguments);
-    result.setSourceNode(node);
-    this.resultWrapper.setResult(result);
   }
 
-  protected List<ASTMCType> typeArgumentsToTypes(
-      @NonNull List<ASTMCTypeArgument> typeArguments) {
-    Preconditions.checkNotNull(typeArguments);
+  /**
+   * Given that all {@link ASTMCTypeArgument}s in {@code typeArgs} are {@link ASTMCType}s, this method returns a list
+   * with these {@code ASTMCType}s in the same order. Else, an exception is thrown.
+   */
+  protected List<ASTMCType> typeArgumentsToTypes(@NonNull List<ASTMCTypeArgument> typeArgs) {
+    Preconditions.checkNotNull(typeArgs);
 
-    List<ASTMCType> types = new ArrayList<>(typeArguments.size());
-    for (ASTMCTypeArgument typeArgument : typeArguments) {
-      Optional<ASTMCType> type = typeArgument.getMCTypeOpt();
+    List<ASTMCType> types = new ArrayList<>(typeArgs.size());
+    for (ASTMCTypeArgument typeArg : typeArgs) {
+      Optional<ASTMCType> type = typeArg.getMCTypeOpt();
       if (type.isPresent()) {
         types.add(type.get());
       } else {
-        Log.error("0xD0106 Used an unsupported type argument for component. "
-            + "You can not use WildCards as type arguments, "
-            + "such as GenericType<? extends Person>.");
+        Log.error("0xD0106 Used an unsupported type argument for component. " +
+            "You can not use WildCards as type arguments," +
+            "such as GenericType<? extends Person>.");
       }
     }
     return types;
