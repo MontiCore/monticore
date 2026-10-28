@@ -12,6 +12,7 @@ import de.monticore.interpreter.setters.MISetter;
 import de.monticore.interpreter.setters.MISetterBoolean;
 import de.monticore.interpreter.setters.MISetterDouble;
 import de.monticore.interpreter.setters.MISetterInt;
+import de.monticore.interpreter.setters.MISetterValue;
 import de.monticore.interpreter.values.MCValueFunctionOfMethodHandle;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
@@ -268,7 +269,7 @@ public class SymbolAccessHandler {
     }
 
     final BiConsumer<MIFrame, Object> genericSetter;
-    if (handle.type().parameterCount() == 0) {
+    if (handle.type().parameterCount() == 1) {
       // static
       genericSetter = (frame, value) -> {
         try {
@@ -324,7 +325,7 @@ public class SymbolAccessHandler {
       setter = (MISetterDouble) genericSetter::accept;
     }
     else {
-      setter = (frame, value) ->
+      setter = (MISetterValue) (frame, value) ->
           genericSetter.accept(frame, value.asNativeObject());
     }
     return Optional.of(setter);

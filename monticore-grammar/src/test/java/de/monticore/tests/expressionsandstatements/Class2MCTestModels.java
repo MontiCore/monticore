@@ -61,6 +61,7 @@ public class Class2MCTestModels {
         Arguments.of("aClass.var_Long", 0L),
         Arguments.of("aClass.var_Float", 0.0f),
         Arguments.of("aClass.var_Double", 0.0d),
+        Arguments.of("aClass.var_String", ""),
 
         Arguments.of("AClass.var_s_boolean", false),
         Arguments.of("AClass.var_s_byte", (byte) 0),
@@ -78,6 +79,7 @@ public class Class2MCTestModels {
         Arguments.of("AClass.var_s_Long", 0L),
         Arguments.of("AClass.var_s_Float", 0.0f),
         Arguments.of("AClass.var_s_Double", 0.0d),
+        Arguments.of("AClass.var_s_String", ""),
 
         Arguments.of("aClass.get_var_boolean()", false),
         Arguments.of("aClass.get_var_byte()", (byte) 0),
@@ -95,6 +97,7 @@ public class Class2MCTestModels {
         Arguments.of("aClass.get_var_Long()", 0L),
         Arguments.of("aClass.get_var_Float()", 0.0f),
         Arguments.of("aClass.get_var_Double()", 0.0d),
+        Arguments.of("aClass.get_var_String()", ""),
 
         Arguments.of("AClass.get_var_s_boolean()", false),
         Arguments.of("AClass.get_var_s_byte()", (byte) 0),
@@ -112,6 +115,7 @@ public class Class2MCTestModels {
         Arguments.of("AClass.get_var_s_Long()", 0L),
         Arguments.of("AClass.get_var_s_Float()", 0.0f),
         Arguments.of("AClass.get_var_s_Double()", 0.0d),
+        Arguments.of("AClass.get_var_s_String()", ""),
 
         Arguments.of("aClass.set_var_boolean(true); aClass.var_boolean", true),
         Arguments.of("aClass.set_var_byte((byte)1); aClass.var_byte", (byte) 1),
@@ -129,6 +133,7 @@ public class Class2MCTestModels {
         Arguments.of("aClass.set_var_Long(10L); aClass.var_Long", 10L),
         Arguments.of("aClass.set_var_Float(11.0f); aClass.var_Float", 11.0f),
         Arguments.of("aClass.set_var_Double(12.0); aClass.var_Double", 12.0d),
+        Arguments.of("aClass.set_var_String(\"A\"); aClass.var_String", "A"),
 
         Arguments.of("AClass.set_var_s_boolean(true); AClass.var_s_boolean", true),
         Arguments.of("AClass.set_var_s_byte((byte)13); AClass.var_s_byte", (byte) 13),
@@ -145,7 +150,44 @@ public class Class2MCTestModels {
         Arguments.of("AClass.set_var_s_Integer(21); AClass.var_s_Integer", 21),
         Arguments.of("AClass.set_var_s_Long(22L); AClass.var_s_Long", 22L),
         Arguments.of("AClass.set_var_s_Float(23.0f); AClass.var_s_Float", 23.0f),
-        Arguments.of("AClass.set_var_s_Double(24.0); AClass.var_s_Double", 24.0d)
+        Arguments.of("AClass.set_var_s_Double(24.0); AClass.var_s_Double", 24.0d),
+        Arguments.of("AClass.set_var_s_String(\"B\"); AClass.var_s_String", "B"),
+
+        Arguments.of("aClass.var_boolean = true; aClass.var_boolean", true),
+        Arguments.of("aClass.var_byte = (byte)1; aClass.var_byte", (byte) 1),
+        Arguments.of("aClass.var_short = (short)2; aClass.var_short", (short) 2),
+        Arguments.of("aClass.var_char = 'R'; aClass.var_char", 'R'),
+        Arguments.of("aClass.var_int = 3; aClass.var_int", 3),
+        Arguments.of("aClass.var_long = 4L; aClass.var_long", 4L),
+        Arguments.of("aClass.var_float = 5.0f; aClass.var_float", 5.0f),
+        Arguments.of("aClass.var_double = 6.0; aClass.var_double", 6.0d),
+        Arguments.of("aClass.var_Boolean = true; aClass.var_Boolean", true),
+        Arguments.of("aClass.var_Byte = (byte)7; aClass.var_Byte", (byte) 7),
+        Arguments.of("aClass.var_Short = (short)8; aClass.var_Short", (short) 8),
+        Arguments.of("aClass.var_Character = 'E'; aClass.var_Character", 'E'),
+        Arguments.of("aClass.var_Integer = 9; aClass.var_Integer", 9),
+        Arguments.of("aClass.var_Long = 10L; aClass.var_Long", 10L),
+        Arguments.of("aClass.var_Float = 11.0f; aClass.var_Float", 11.0f),
+        Arguments.of("aClass.var_Double = 12.0; aClass.var_Double", 12.0d),
+        Arguments.of("aClass.var_String = \"C\"; aClass.var_String", "C"),
+
+        Arguments.of("AClass.var_s_boolean = true; AClass.var_s_boolean", true),
+        Arguments.of("AClass.var_s_byte = (byte)13; AClass.var_s_byte", (byte) 13),
+        Arguments.of("AClass.var_s_short = (short)14; AClass.var_s_short", (short) 14),
+        Arguments.of("AClass.var_s_char = 'P'; AClass.var_s_char", 'P'),
+        Arguments.of("AClass.var_s_int = 15; AClass.var_s_int", 15),
+        Arguments.of("AClass.var_s_long = 16L; AClass.var_s_long", 16L),
+        Arguments.of("AClass.var_s_float = 17.0f; AClass.var_s_float", 17.0f),
+        Arguments.of("AClass.var_s_double = 18.0; AClass.var_s_double", 18.0d),
+        Arguments.of("AClass.var_s_Boolean = true; AClass.var_s_Boolean", true),
+        Arguments.of("AClass.var_s_Byte = (byte)19; AClass.var_s_Byte", (byte) 19),
+        Arguments.of("AClass.var_s_Short = (short)20; AClass.var_s_Short", (short) 20),
+        Arguments.of("AClass.var_s_Character = 'L'; AClass.var_s_Character", 'L'),
+        Arguments.of("AClass.var_s_Integer = 21; AClass.var_s_Integer", 21),
+        Arguments.of("AClass.var_s_Long = 22L; AClass.var_s_Long", 22L),
+        Arguments.of("AClass.var_s_Float = 23.0f; AClass.var_s_Float", 23.0f),
+        Arguments.of("AClass.var_s_Double = 24.0; AClass.var_s_Double", 24.0d),
+        Arguments.of("AClass.var_s_String = \"D\"; AClass.var_s_String", "D")
     );
   }
 
@@ -164,7 +206,9 @@ public class Class2MCTestModels {
         Arguments.of("java.lang.Math.abs(-2)", 2),
         Arguments.of("((java.lang.Integer) 5) + 2.0", 7.0),
         Arguments.of("((java.lang.Integer) 5) + (java.lang.Double) 2", 7.0),
-        Arguments.of("ArrayList()", new ArrayList<>())
+        Arguments.of("ArrayList()", new ArrayList<>()),
+        // test inner calls to void functions
+        Arguments.of("(() -> aClass.set_var_int(3))(); aClass.var_int", 3)
     );
   }
 

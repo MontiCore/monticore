@@ -353,7 +353,7 @@ public class MIFrameLayoutForBasicSymbols implements MIFrameLayout {
           .map(level -> 1 + level);
     }
     else {
-      return Optional.of(Integer.MIN_VALUE);
+      return Optional.empty();
     }
   }
 
