@@ -447,12 +447,6 @@ public class TemplateController {
       Log.warn("0xA4057 Template " + qualifiedTemplateName + " produced no content for.");
     }
 
-    // add trace to source-model:
-    if (!Reporting.isTemplateSourceMappingEnabled() && config.isTracing() && config.getModelName().isPresent()) {
-      content.insert(0, config.getCommentStart() + " generated from model " + config.getModelName().get() + " "
-          + config.getCommentEnd() + "\n");
-    }
-
     Reporting.reportFileCreation(qualifiedTemplateName, filePath, ast);
 
     FileReaderWriter.storeInFile(completeFilePath, content.toString());
