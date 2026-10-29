@@ -1,6 +1,5 @@
 package de.monticore.generating.templateengine.sourcemap;
 
-import com.google.common.io.Resources;
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.freemarker.FreeMarkerTemplateEngine;
 import de.monticore.generating.templateengine.reporting.Reporting;
@@ -13,10 +12,8 @@ import freemarker.template.Template;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class SourceMapCalculator {
@@ -270,10 +267,8 @@ public class SourceMapCalculator {
     List<DecodedMapping> res = new ArrayList<>(deduplicatedMappings.size());
     for(SimpleSourceMapping mapping : deduplicatedMappings) {
       URL urlToSource = createSourceURL(mapping.sourcePosition.getFileName());
-      // debug:
-      String content = readSourceContent(urlToSource);
       res.add(new DecodedMapping(
-              new DecodedSource(urlToSource, content),
+              new DecodedSource(urlToSource),
               new PositionMapping(urlToSource, mapping.sourcePosition, mapping.targetPosition)
       ));
     }
@@ -312,14 +307,6 @@ public class SourceMapCalculator {
     }
 
     return res;
-  }
-
-  private static String readSourceContent(URL url){
-    try {
-      return Resources.toString(url, StandardCharsets.UTF_8);
-    }catch (IOException e) {
-      return null;
-    }
   }
 
   private static URL createSourceURL(Optional<String> fileOpt) {
