@@ -12,7 +12,6 @@ import de.monticore.generating.templateengine.freemarker.alias.*;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.generating.templateengine.sourcemap.SourceMapCalculator;
 import de.monticore.io.FileReaderWriter;
-import de.monticore.generating.templateengine.sourcemap.SourceMapCalculator;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import freemarker.ext.beans.BeansWrapper;
@@ -438,7 +437,7 @@ public class TemplateController {
       if(Reporting.isTemplateSourceMappingEnabled()){
         // Check if there is already something appended to content up to this point
         // to ensure correct offset
-        int currentOffset = (int) (content.toString() + " ").lines().count() - 1;
+        int currentOffset = (int) (content + " ").lines().count() - 1;
         SourceMapCalculator.setBaseLineOffset(currentOffset);
       }
       content.append(tn.processValue(this, ast, templateArguments));
@@ -607,7 +606,7 @@ public class TemplateController {
 
       // Run template with data to create output
       config.getFreeMarkerTemplateEngine().run(ret, tc.data, template);
-      
+
       oldAst.ifPresent(templateModel -> d.put(AST, templateModel));
 
       if(Reporting.isTemplateSourceMappingEnabled() && !Reporting.isConfigTemplate(tc.templatename)) {
