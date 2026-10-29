@@ -77,7 +77,9 @@ public class TemplateAdaptionForSourcePositionReporting {
 
     String templateSource = t.getTemplate().getName();
     try {
-      templateSource = configuration.getTemplateLoader().findTemplateSource(t.getTemplate().getName()).toString();
+      Object src = configuration.getTemplateLoader().findTemplateSource(t.getTemplate().getName());
+      if(src != null)
+        templateSource = src.toString().replace('\\', '/');
     } catch (IOException e) {
       Log.warn("Could not find fully qualified source URL of Template.");
     }
@@ -122,10 +124,11 @@ public class TemplateAdaptionForSourcePositionReporting {
    * @return formatted FreeMarker string snippet executing the reporting call
    */
   private static String buildReportTag(SourcePosition p, int pairId, boolean expression, boolean expressionStart){
+    String fileName = p.getFileName().get().replace('\\', '/');
     if(!expression)
-      return "${"+ TemplateController.SOURCE_MAP_CALCULATOR +".report(" + pairId + "," + p.getLine() + "," + p.getColumn() +",\""+p.getFileName().get()+ "\")}";
+      return "${"+ TemplateController.SOURCE_MAP_CALCULATOR +".report(" + pairId + "," + p.getLine() + "," + p.getColumn() +",\""+fileName+ "\")}";
     else{
-      return "${"+ TemplateController.SOURCE_MAP_CALCULATOR +".report(" + pairId + "," + p.getLine() + "," + p.getColumn() + ",\""+p.getFileName().get()+"\",ast," + expressionStart +")}";
+      return "${"+ TemplateController.SOURCE_MAP_CALCULATOR +".report(" + pairId + "," + p.getLine() + "," + p.getColumn() + ",\""+fileName+"\",ast," + expressionStart +")}";
     }
   }
 
