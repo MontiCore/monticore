@@ -64,7 +64,8 @@ public class GeneratorTest {
         + "1. automata modelfile,\n"
         + "2. handcodedPath,\n"
         + "3. output directory.\n"
-        + "4. (optional) templatePath", Log.getFindings().get(0).buildMsg());
+        + "4. (optional) templatePath\n"
+        + "5. (optional) tracing", Log.getFindings().get(0).buildMsg());
   }
 
   @Test
