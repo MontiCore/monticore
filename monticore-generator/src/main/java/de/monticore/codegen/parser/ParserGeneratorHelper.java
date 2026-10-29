@@ -17,7 +17,6 @@ import de.monticore.grammar.PredicatePair;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
-import de.monticore.grammar.grammar._symboltable.ProdSymbolTOP;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTAction;
 import de.monticore.grammar.grammar_withconcepts._ast.ASTExpressionPredicate;
@@ -730,7 +729,7 @@ public class ParserGeneratorHelper {
    */
   public Map<String, List<String>> getPlusKeywordRules() {
     Map<String, List<String>> ret = new HashMap<>();
-    if (grammarSymbol.getSpannedScope().resolveProdImported("Name", ALL_INCLUSION).stream().anyMatch(ProdSymbolTOP::isIsLexerProd)) {
+    if (grammarSymbol.getSpannedScope().resolveProdImported("Name", ALL_INCLUSION).stream().anyMatch(ProdSymbol::isIsLexerProd)) {
       List<String> tokens = new ArrayList<>();
       tokens.add("Name");
       for (String keyword : grammarInfo.getKeywords())
@@ -750,7 +749,7 @@ public class ParserGeneratorHelper {
    */
   public Map<String, List<String>> getPlusNoKeywordRules() {
     Map<String, List<String>> ret = new HashMap<>();
-    if (grammarSymbol.getSpannedScope().resolveProdImported("Name", ALL_INCLUSION).stream().anyMatch(ProdSymbolTOP::isIsLexerProd)) {
+    if (grammarSymbol.getSpannedScope().resolveProdImported("Name", ALL_INCLUSION).stream().anyMatch(ProdSymbol::isIsLexerProd)) {
       List<String> tokens = new ArrayList<>();
       tokens.add("Name");
       for (String notAKeyword : grammarInfo.getGrammarSymbol().getKeywordRulesWithInherited()) {

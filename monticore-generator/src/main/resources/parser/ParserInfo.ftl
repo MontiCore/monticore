@@ -110,7 +110,10 @@ public class ${ast.getName()}ParserInfo {
   }
 
   </#list>
-  // Use XPath#isSymbolDef instead
+  /**
+  * @deprecated - names are no longer only one state - use TokenXPathisSymbolDef instead
+  */
+  @Deprecated // Note: This method is required by the internals of the LSP-AntlrParser (please do not delete yet)
   public static boolean stateDefinesName(int state){
     return getDelegate()._stateDefinesName(state);
   }
@@ -179,25 +182,26 @@ public class ${ast.getName()}ParserInfo {
                   return "${usageName?lower_case}";
               </#if>
             </#list>
-        // TODO: Map production rules as well?
+        // In case we want to map production rules to their usage names as well, this is the location
+        // See https://git.rwth-aachen.de/monticore/monticore/-/work_items/5265
         default: return "?" + state;
       }
   }
 
-  protected static final Set< String > interfaceRuleNames =
+  protected static final Set<String> interfaceRuleNames =
             <#list interfaceNames>
               Set.of( <#items as interfaceName>"${interfaceName}"<#sep>,</#items>
               )
               <#else> Collections.emptySet()
             </#list>;
-  public static Set< String> getInterfaceRulenames() { return getDelegate()._getInterfaceRulenames(); }
-  protected Set< String> _getInterfaceRulenames() { return interfaceRuleNames; }
+  public static Set<String> getInterfaceRulenames() { return getDelegate()._getInterfaceRulenames(); }
+  protected Set<String> _getInterfaceRulenames() { return interfaceRuleNames; }
 
-  public static Set< String> getInterfacesOfRuleLC(String rulename) {
+  public static Set<String> getInterfacesOfRuleLC(String rulename) {
       return getDelegate()._getInterfacesOfRuleLC(rulename);
   }
 
-  protected Set< String> _getInterfacesOfRuleLC(String rulename) {
+  protected Set<String> _getInterfacesOfRuleLC(String rulename) {
      // The interfaces each rule implements
      switch (rulename) {
             <#list rulesToInterfaceMap as rule, interfaces>

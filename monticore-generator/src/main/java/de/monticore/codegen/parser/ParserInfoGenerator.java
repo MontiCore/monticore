@@ -9,6 +9,7 @@ import de.monticore.grammar.MCGrammarSymbolTableHelper;
 import de.monticore.grammar.grammar._ast.*;
 import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
 import de.monticore.grammar.grammar._symboltable.ProdSymbol;
+import de.monticore.grammar.grammar._symboltable.ProdSymbolTOP;
 import de.monticore.grammar.grammar._visitor.GrammarVisitor2;
 import de.monticore.grammar.grammar_withconcepts.Grammar_WithConceptsMill;
 import de.monticore.grammar.grammar_withconcepts._visitor.Grammar_WithConceptsTraverser;
@@ -110,11 +111,16 @@ public class ParserInfoGenerator {
             nameDefiningStates,
             prodInfoMap,
             // the names of all interfaces
-            astGrammar.getSymbol().getProdsWithInherited().values().stream().filter(p->p.isIsInterface()).map(p->p.getName().toLowerCase(Locale.ROOT)).collect(Collectors.toList()),
+            astGrammar.getSymbol().getProdsWithInherited().values().stream()
+                    .filter(ProdSymbol::isIsInterface)
+                    .map(p->p.getName().toLowerCase(Locale.ROOT))
+                    .collect(Collectors.toList()),
             // a map ruleName -> [its super interfaces]
             astGrammar.getSymbol().getProdsWithInherited().values().stream().map(
-                    prod -> Map.entry(prod.getName(), prod.getSuperInterfaceProds().stream().map(superI -> superI.getName()).toList())
-                    ).filter(e->!e.getValue().isEmpty()).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))
+                    prod -> Map.entry(prod.getName(), prod.getSuperInterfaceProds().stream()
+                            .map(ProdSymbol::getName).toList())
+                    ).filter(e->!e.getValue().isEmpty())
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))
     );
 
     // Generate EmptyXParserInfo for this language

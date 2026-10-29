@@ -31,6 +31,7 @@ public class ${ast.getName()}ParserInfoFor${superLangGrammarAst.getName()} exten
   protected String _getUsageName(int state) {
     return ${ast.getName()}ParserInfo.getUsageName(state);
   }
+
   protected Set< String> _getInterfaceRulenames() {
     return ${ast.getName()}ParserInfo.getInterfaceRulenames();
   }
