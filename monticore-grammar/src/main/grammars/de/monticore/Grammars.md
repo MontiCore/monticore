@@ -5,7 +5,6 @@
 # MontiCore Grammars for Expressions, Literals and Types - an Overview
 
 
-
 [MontiCore](https://www.monticore.de) is a language workbench. It uses an
 extended grammar format as primary mechanism to describe DSLs. This format
 allows to **compose language components** by grammar
