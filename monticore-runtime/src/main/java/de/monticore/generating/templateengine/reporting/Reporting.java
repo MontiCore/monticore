@@ -6,6 +6,7 @@ import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.TemplateController;
 import de.monticore.generating.templateengine.reporting.commons.ReportLogHook;
 import de.monticore.generating.templateengine.reporting.commons.ReportManager.ReportManagerFactory;
+import de.monticore.generating.templateengine.reporting.reporter.TemplateSourceMappingReporter;
 import de.monticore.generating.templateengine.sourcemap.IncludeSpan;
 import de.monticore.io.paths.MCPath;
 import de.monticore.sourcemap.DecodedMapping;
@@ -24,8 +25,6 @@ import java.util.Optional;
  * AReporter implementing this method to execute it.
  */
 public class Reporting extends Log {
-
-  public static final String MC_REPORT_SOURCE_MAPPING = "MC_REPORT_SOURCE_MAPPING";
 
   /* whether reporting is enabled at the moment */
   protected static boolean enabled = false;
@@ -118,7 +117,15 @@ public class Reporting extends Log {
   }
 
   public static boolean isTemplateSourceMappingEnabled(){
-    return isEnabled() && "true".equals(System.getProperty(MC_REPORT_SOURCE_MAPPING));
+    if(!isEnabled()) {
+      return false;
+    }
+    for(ReportLogHook hook : getReportHooks()){
+      if(hook.hasReportEventHandler(TemplateSourceMappingReporter.class)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   public static void setConfigTemplate(String templateName){
