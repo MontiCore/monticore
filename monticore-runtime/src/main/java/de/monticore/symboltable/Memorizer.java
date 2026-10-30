@@ -8,13 +8,13 @@ import java.util.function.Supplier;
  * Evaluates the wrapped supplier at most once and caches the result. Afterwards the
  * supplier is released (and with it everything it captured, e.g. the JSON it deserializes from).
  */
-public class ClearingMemorizer<T> implements Supplier<T> {
+public class Memorizer<T> implements Supplier<T> {
 
   private Supplier<T> supplier;
 
   private T cache;
 
-  public ClearingMemorizer(Supplier<T> supplier) {
+  public Memorizer(Supplier<T> supplier) {
     this.supplier = supplier;
   }
 
@@ -24,7 +24,7 @@ public class ClearingMemorizer<T> implements Supplier<T> {
    * attribute of a symbol without forcing it.
    */
   public static <T, R> Supplier<R> map(Supplier<T> source, Function<? super T, ? extends R> mapper) {
-    return new ClearingMemorizer<>(() -> mapper.apply(source.get()));
+    return new Memorizer<>(() -> mapper.apply(source.get()));
   }
 
   @Override

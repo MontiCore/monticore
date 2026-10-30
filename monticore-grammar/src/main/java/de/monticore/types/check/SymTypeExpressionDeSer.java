@@ -5,7 +5,7 @@ import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
-import de.monticore.symboltable.ClearingMemorizer;
+import de.monticore.symboltable.Memorizer;
 import de.monticore.symboltable.SuppliedList;
 import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.JsonParser;
@@ -137,7 +137,7 @@ public class SymTypeExpressionDeSer {
     List<Supplier<SymTypeExpression>> result = new ArrayList<>();
     if (json.hasMember(memberName)) {
       for (JsonElement e : json.getArrayMember(memberName)) {
-        result.add(new ClearingMemorizer<>(() -> getInstance().deserialize(e, enclosingScope)));
+        result.add(new Memorizer<>(() -> getInstance().deserialize(e, enclosingScope)));
       }
     }
     return new SuppliedList<>(result);

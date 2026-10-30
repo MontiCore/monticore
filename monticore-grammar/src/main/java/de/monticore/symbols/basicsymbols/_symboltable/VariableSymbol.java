@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.symbols.basicsymbols._symboltable;
 
-import de.monticore.symboltable.ClearingMemorizer;
+import de.monticore.symboltable.Memorizer;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.types.check.SymTypeExpression;
 import de.se_rwth.commons.logging.Log;
@@ -24,7 +24,7 @@ public class VariableSymbol extends VariableSymbolTOP {
       clone.setAstNode(this.getAstNode());
     }
     // keep the type lazy
-    clone.setTypeSupplier(ClearingMemorizer.map(getTypeSupplier(), t -> t == null ? null : t.deepClone()));
+    clone.setTypeSupplier(Memorizer.map(getTypeSupplier(), t -> t == null ? null : t.deepClone()));
     return clone;
   }
 
