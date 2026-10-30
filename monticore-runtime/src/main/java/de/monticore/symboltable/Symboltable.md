@@ -64,6 +64,29 @@ for obtaining the scope that this symbol spans. Symbols that span a scope (which
 if the respective nonterminal in the grammar is annotated with both the keywords `symbol` and `scope`)
 implement this interface instead of the `ISymbol` interface.  
 
+### Supplier Infrastructure for Lazy Loading
+Symbols often refer to other symbols (e.g., a type symbol refers to its super types) that are 
+not yet available when the symbol is created, for instance, during deserialization or when the referred
+symbol is defined in another artifact. Instead of resolving such references eagerly, MontiCore stores
+them as `java.util.function.Supplier`s that are evaluated on demand. The MontiCore runtime contains the
+following classes that support this. They replace the deprecated 
+[symbol surrogates](#symbol-surrogate-class-deprecated).
+
+#### Memorizer Class
+The class `Memorizer` wraps a supplier, evaluates it at most once, and caches its result (including
+`null`). After evaluation, the wrapped supplier is released together with everything it captured, e.g.,
+the JSON element it deserializes from. The static method `map(Supplier, Function)` lazily applies a 
+function to the value of a supplier without evaluating it, which is handy for copying or adapting
+not-yet-resolvable attributes.
+
+#### SuppliedList Class
+The class `SuppliedList` adapts a `List<Supplier<T>>` to a `List<T>`. Elements are only evaluated
+when they are accessed, i.e., accessing one element of the list does not resolve the remaining ones.
+The underlying suppliers are accessible via `getSuppliers()` without evaluating them. The static
+method `fromValues(Collection)` creates a supplied list from already available values; if the collection
+is a `SuppliedList` itself, its suppliers are reused instead of evaluated. Generated symbol classes
+use supplied lists to store [supplied attributes](#supplied-symbol-attributes) of list type.
+
 ### Modifiers
 The modifiers contained in the MontiCore runtime implement the interface `AccessModifier`, which again
 is a `Modifier`. Out of the box, MontiCore supports the two access modifier 
@@ -229,17 +252,40 @@ as such, are reused for all languages that inherit from the current language. As
 deserialization of individual symbols is rarely triggered manually, no load and store methods exist
 in symbol DeSer classes.
 
-#### Symbol Surrogate Class 
-Symbol surrogate classes extend the generated symbol classes and realize lazy loading of symbls of this kind. Surrogates have a delegate of the symbol class that is empty during initialization of the surrogate., where only the enclosing scope and the name are set. They further define a method for resolving the symbol
-with the on demand.
-Symbol surrogates must only be if both of the following two conditions are met:
-1. If on type level, a symbol has an attribute of another symbol, the attribute *may* be initialized with the surrogate as the symbol's subtype.
-2. If on instance level, the symbol definition of the 
-Surrogates must never be used to simplify instantiation of local symbols, i.e., of symbols that are contained in a single model for which the symbol table currently is build. In this case, it is always possible to split symbol table creation into multiple phases: In the first phase, all symbol definitions 
-instantiate symbol class objects, for which the symbol attributes are not instantiated yet. In a later phase, the symbol attributes are filled with values.
+#### Supplied Symbol Attributes
+Some attributes of symbols or scopes, which are defined in `symbolrule`s or `scoperule`s, refer to
+elements that might not be known immediately during symbol table creation or deserialization. For instance, attributes of the type `SymTypeExpression` (as well as lists and optionals
+of this type) might only be resolvable after the complete artifact has been processed.
+For such an attribute, the generated symbol or scope class and its builder store a supplier 
+instead of the value itself:
+* The regular getters and setters keep their signatures. The getter evaluates the supplier on demand.
+* The supplier itself can be accessed without evaluating it via `getXSupplier()` and `setXSupplier(...)`.
+* Lists are stored as a `List<Supplier<T>>` instead of a `Supplier<List<T>>`, such that each element is
+  evaluated individually. The field is a [`SuppliedList<T>`](#suppliedlist-class), which provides the usual list methods
+  and allows direct access to the suppliers.
+* Suppliers created by the generated DeSers are wrapped in a [`Memorizer`](#memorizer-class) and, thus, 
+  are evaluated at most once. 
 
-#### Symbol Surrogate Builder
-MontiCore generated builder classes for each symbol surrogate. The instances of the builders are available through the language's mill. With the builder, the attributes of the symbol surrogate class can be initialized and a new instance of the symbol surrogate can be created. 
+The types that are wrapped in suppliers are defined in the generator class
+[`AccessAsSupplierTypes`](../../../../../../../monticore-generator/src/main/java/de/monticore/codegen/cd2java/methods/AccessAsSupplierTypes.java).
+
+#### ~~Symbol Surrogate Class~~ (deprecated)
+*Symbol surrogates are deprecated and will be removed in a future version of MontiCore. 
+Use [supplied symbol attributes](#supplied-symbol-attributes) instead.*
+
+~~Symbol surrogate classes extend the generated symbol classes and realize lazy loading of symbls of this kind. Surrogates have a delegate of the symbol class that is empty during initialization of the surrogate., where only the enclosing scope and the name are set. They further define a method for resolving the symbol
+with the on demand.
+Symbol surrogates must only be if both of the following two conditions are met:~~
+1. ~~If on type level, a symbol has an attribute of another symbol, the attribute *may* be initialized with the surrogate as the symbol's subtype.~~
+2. ~~If on instance level, the symbol definition of the 
+Surrogates must never be used to simplify instantiation of local symbols, i.e., of symbols that are contained in a single model for which the symbol table currently is build. In this case, it is always possible to split symbol table creation into multiple phases: In the first phase, all symbol definitions 
+instantiate symbol class objects, for which the symbol attributes are not instantiated yet. In a later phase, the symbol attributes are filled with values.~~
+
+#### ~~Symbol Surrogate Builder~~ (deprecated)
+*Symbol surrogate builders are deprecated together with symbol surrogates and will be removed in a 
+future version of MontiCore.*
+
+~~MontiCore generated builder classes for each symbol surrogate. The instances of the builders are available through the language's mill. With the builder, the attributes of the symbol surrogate class can be initialized and a new instance of the symbol surrogate can be created.~~
 
 #### Resolvers
 MontiCore generates a resolver interface for each symbol kind of a language. Resolvers
