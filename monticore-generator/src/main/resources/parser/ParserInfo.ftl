@@ -1,5 +1,7 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-${tc.signature("referencedSymbolToStates", "usageNameToStates", "superGrammars", "nameDefiningStates", "prodInfoMap")}
+${tc.signature("referencedSymbolToStates", "usageNameToStates", "superGrammars",
+  "nameDefiningStates", "prodInfoMap",
+  "interfaceNames", "rulesToInterfaceMap")}
 <#assign genHelper = glex.getGlobalVar("parserHelper")>
 package ${genHelper.getParserPackage()};
 
@@ -81,6 +83,10 @@ public class ${ast.getName()}ParserInfo {
   }
 
   <#list referencedSymbolToStates as referencedSymbol, states>
+  /**
+  * @deprecated - names are no longer only one state - use tokenXPath instead
+  */
+  @Deprecated
   public static boolean stateReferences${referencedSymbol?cap_first}Symbol(int state){
     return getDelegate()._stateReferences${referencedSymbol?cap_first}Symbol(state);
   }
@@ -91,6 +97,10 @@ public class ${ast.getName()}ParserInfo {
 
   </#list>
   <#list usageNameToStates as usageName, states>
+  /**
+  * @deprecated - names are no longer only one state - use tokenXPath instead
+  */
+  @Deprecated
   public static boolean stateHasUsageName${usageName?cap_first}(int state){
     return getDelegate()._stateHasUsageName${usageName?cap_first}(state);
   }
@@ -100,6 +110,10 @@ public class ${ast.getName()}ParserInfo {
   }
 
   </#list>
+  /**
+  * @deprecated - names are no longer only one state - use TokenXPathisSymbolDef instead
+  */
+  @Deprecated // Note: This method is required by the internals of the LSP-AntlrParser (please do not delete yet)
   public static boolean stateDefinesName(int state){
     return getDelegate()._stateDefinesName(state);
   }
@@ -143,7 +157,7 @@ public class ${ast.getName()}ParserInfo {
     return getDelegate()._getImplementationOfInterfaceProd(context);
   }
 
-  public Optional<String> _getImplementationOfInterfaceProd(ParserRuleContext context) {
+  protected Optional<String> _getImplementationOfInterfaceProd(ParserRuleContext context) {
   <#list prodInfoMap as prod, prodInfo>
   <#if prodInfo.getAlternativeToNames()?? && (prodInfo.getAlternativeToNames()?size != 0) >
     if(context instanceof ${ast.getName()}AntlrParser.${prod.getName()}Context){
@@ -152,5 +166,70 @@ public class ${ast.getName()}ParserInfo {
   </#if>
   </#list>
     return Optional.empty();
+  }
+
+  public static String getUsageName(int state) {
+      return getDelegate()._getUsageName(state);
+  }
+
+  protected String _getUsageName(int state) {
+      switch (state) {
+            <#list usageNameToStates as usageName, states>
+              <#if states?size != 0>
+                <#list states as state>
+                  case ${state?c}:
+                </#list>
+                  return "${usageName?lower_case}";
+              </#if>
+            </#list>
+        // In case we want to map production rules to their usage names as well, this is the location
+        // See https://git.rwth-aachen.de/monticore/monticore/-/work_items/5265
+        default: return "?" + state;
+      }
+  }
+
+  protected static final Set<String> interfaceRuleNames =
+            <#list interfaceNames>
+              Set.of( <#items as interfaceName>"${interfaceName}"<#sep>,</#items>
+              )
+              <#else> Collections.emptySet()
+            </#list>;
+  public static Set<String> getInterfaceRulenames() { return getDelegate()._getInterfaceRulenames(); }
+  protected Set<String> _getInterfaceRulenames() { return interfaceRuleNames; }
+
+  public static Set<String> getInterfacesOfRuleLC(String rulename) {
+      return getDelegate()._getInterfacesOfRuleLC(rulename);
+  }
+
+  protected Set<String> _getInterfacesOfRuleLC(String rulename) {
+     // The interfaces each rule implements
+     switch (rulename) {
+            <#list rulesToInterfaceMap as rule, interfaces>
+                case "${rule?uncap_first}":
+              return Set.of(${interfaces?map(i -> '"' + i?lower_case + '"')?join(", ")});
+            </#list>
+       default: return Collections.emptySet();
+     }
+  }
+
+  @javax.annotation.Nullable
+  public static String getStatesReferencingSymbols(int state) {
+    return getDelegate()._getStatesReferencingSymbols(state);
+  }
+
+  @javax.annotation.Nullable
+  protected String _getStatesReferencingSymbols(int state) {
+    // The states referenced
+    switch(state) {
+        <#list referencedSymbolToStates as referencedSymbol, states>
+          <#if states?size != 0>
+            <#list states as state>
+              case ${state?c}:
+            </#list>
+            return "${referencedSymbol?c_lower_case}";
+          </#if>
+        </#list>
+        default: return null;
+    }
   }
 }
