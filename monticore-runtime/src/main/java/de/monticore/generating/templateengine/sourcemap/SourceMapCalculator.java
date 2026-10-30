@@ -1,0 +1,487 @@
+package de.monticore.generating.templateengine.sourcemap;
+
+import de.monticore.ast.ASTNode;
+import de.monticore.generating.templateengine.HookPoint;
+import de.monticore.generating.templateengine.StringHookPoint;
+import de.monticore.generating.templateengine.TemplateHookPoint;
+import de.monticore.generating.templateengine.freemarker.FreeMarkerTemplateEngine;
+import de.monticore.generating.templateengine.reporting.Reporting;
+import de.monticore.sourcemap.DecodedMapping;
+import de.monticore.sourcemap.DecodedSource;
+import de.monticore.sourcemap.convenience.PositionMapping;
+import de.se_rwth.commons.SourcePosition;
+import de.se_rwth.commons.logging.Log;
+import freemarker.template.Template;
+import org.apache.commons.lang3.tuple.MutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+
+public class SourceMapCalculator {
+
+  private static ThreadLocal<Stack<Template>> templates = ThreadLocal.withInitial(() -> new Stack<>());
+
+  // We need this for nested template evaluations
+  private static ThreadLocal<Pair<Integer, Integer>> curAbsolutePos = ThreadLocal.withInitial(() -> Pair.of(0, 0));
+
+  private static ThreadLocal<List<SimpleSourceMapping>> mappings = ThreadLocal.withInitial(ArrayList::new);
+  private static ThreadLocal<List<SimpleSourceMapping>> astMappings = ThreadLocal.withInitial(ArrayList::new);
+  private static ThreadLocal<List<IncludeSpan>> includeSpans = ThreadLocal.withInitial(ArrayList::new);
+  private static ThreadLocal<Set<Integer>> includePairIds = ThreadLocal.withInitial(HashSet::new);
+  private static ThreadLocal<AtomicInteger> nextRuntimePairId = ThreadLocal.withInitial(() -> new AtomicInteger(1));
+  private static ThreadLocal<Map<Template, OpenSpan>> activeParentMappings = ThreadLocal.withInitial(HashMap::new);
+  private static ThreadLocal<Integer> baseLineOffset = ThreadLocal.withInitial(() -> 0);
+
+  private final Deque<OpenSpan> openSpans = new ArrayDeque<>();
+  private final FreeMarkerTemplateEngine.ContentWriter sw;
+  private final Template template;
+  private final Pair<Integer, Integer> startOffset;
+
+
+  // Everytime a template is executed it uses a new StringWriter instance
+  public SourceMapCalculator(FreeMarkerTemplateEngine.ContentWriter sw, Template template) {
+    this.sw = sw;
+    this.template = template;
+    this.startOffset = curAbsolutePos.get();
+  }
+
+  /**
+   * Pushes a template onto the active evaluation stack, initializing the position tracking and recording an
+   * include mapping if triggered by a parent template.
+   *
+   * @param template The template being entered.
+   */
+  public static void pushTemplate(Template template) {
+    // Do not push config-templates as they should not be reported
+    if(Reporting.isConfigTemplate(template.getName()))
+      return;
+
+
+    // Check if there is a "parent" template to map the inclusion
+    if(templates.get().isEmpty() == false) {
+      Template parentTemplate = templates.get().peek();
+      OpenSpan parentSpan = activeParentMappings.get().get(parentTemplate);
+      if(parentSpan != null){
+        parentSpan.triggeredIncludes.add(template.getName());
+      }
+    }
+
+    if(templates.get().isEmpty()){
+      curAbsolutePos.set(Pair.of(getBaseLineOffset(), 0));
+    }
+
+    templates.get().push(template);
+  }
+
+  /**
+   * Pops the current template from the stack, and flushes and resets mapping data if all nested templates
+   * have completed evaluation.
+   *
+   * @param template The template being exited.
+   * @throws IllegalStateException If the popped template does not match expectations or stack sizes desynchronize
+   */
+  public static void popTemplate(Template template){
+    // Do not consider config-templates
+    if(Reporting.isConfigTemplate(template.getName()))
+      return;
+
+    if (templates.get().pop() != template) {
+      Log.error("0xA0740 Discrepancy between template stack and template name");
+      throw new IllegalStateException();
+    }
+
+    if (templates.get().isEmpty()) {
+      flushMappings();
+      reset();
+    }
+  }
+
+  /**
+   * Records an inclusion triggered through a HookPoint (e.g. StringHookPoint or replacement).
+   *
+   * @param templateName The name of the template being included
+   * @param hp The hook point handling the inclusion
+   */
+  public static void reportIncludeHookPoint(String templateName, HookPoint hp) {
+    if (Reporting.isConfigTemplate(templateName)) {
+      return;
+    }
+    if (!(hp instanceof TemplateHookPoint)) {
+      String target = templateName;
+      if (hp instanceof StringHookPoint shp && shp.getSourceURL().isPresent()) {
+        target = shp.getSourceURL().get();
+      }
+      reportInclude(target);
+    }
+  }
+
+  /**
+   * Directly records an include target under the active parent template span.
+   *
+   * @param targetTemplate The included template name
+   */
+  public static void reportInclude(String targetTemplate) {
+    if (templates.get().isEmpty()) {
+      return;
+    }
+    Template parentTemplate = templates.get().peek();
+    OpenSpan parentSpan = activeParentMappings.get().get(parentTemplate);
+    if (parentSpan != null) {
+      parentSpan.triggeredIncludes.add(targetTemplate);
+    }
+  }
+
+  public static void setBaseLineOffset(int offset){
+    baseLineOffset.set(offset);
+  }
+
+  public static int getBaseLineOffset(){
+    return baseLineOffset.get();
+  }
+
+
+  /**
+   * Records a mapping position for both template source coordinates and an associated AST node,
+   * and updates the absolute generated file position.
+   * @param elementId identifier of the template element
+   * @param lineInTemplate line number within the template source
+   * @param colInTemplate column number within the template source
+   * @param templateSource identifier of template source
+   * @param astNode the AST-node tied to this output segment
+   * @param isStart true, if marking the beginning of the node span, false for the end
+   */
+  public void report(int elementId, int lineInTemplate, int colInTemplate, String templateSource, ASTNode astNode, boolean isStart) {
+    // Suppress recording if this is a config template
+    if(Reporting.isConfigTemplate(template.getName()))
+      return;
+
+    String content = sw.getCurrentContent();
+
+    int numberOfLinesInContent = numberOfNewLines(content);
+    int curGeneratedColPos = getColumnOfLastLine(content);
+
+    // Update absolute position stack so line numbering stays in sync
+    Pair<Integer,Integer> absPos = updateAndGetAbsolutePos(numberOfLinesInContent, curGeneratedColPos);
+
+    SourcePosition positionInGeneratedFile = new SourcePosition(absPos.getLeft(), absPos.getRight(), "GenOutput");
+
+    if (isStart) {
+      int runtimePairId = nextRuntimePairId.get().getAndIncrement();
+      SourcePosition sourcePos = new SourcePosition(Math.max(0, lineInTemplate), Math.max(0, colInTemplate), templateSource);
+      OpenSpan openSpan = new OpenSpan(runtimePairId, elementId, sourcePos, positionInGeneratedFile, astNode);
+      openSpans.push(openSpan);
+      activeParentMappings.get().put(this.template, openSpan);
+
+      mappings.get().add(new SimpleSourceMapping(sourcePos, positionInGeneratedFile, runtimePairId));
+      addASTMapping(astNode, true, positionInGeneratedFile, runtimePairId);
+    } else {
+      OpenSpan openSpan = null;
+      Iterator<OpenSpan> it = openSpans.iterator();
+      while (it.hasNext()) {
+        OpenSpan s = it.next();
+        if (s.elementId == elementId) {
+          openSpan = s;
+          it.remove();
+          break;
+        }
+      }
+      if (openSpan == null && !openSpans.isEmpty()) {
+        openSpan = openSpans.pop();
+      }
+      if (openSpan == null) {
+        return;
+      }
+
+      if (openSpans.isEmpty()) {
+        activeParentMappings.get().remove(this.template);
+      } else {
+        activeParentMappings.get().put(this.template, openSpans.peek());
+      }
+
+      SourcePosition endSourcePos = new SourcePosition(Math.max(0, lineInTemplate), Math.max(0, colInTemplate), templateSource);
+
+      if (!openSpan.triggeredIncludes.isEmpty()) {
+        includePairIds.get().add(openSpan.runtimePairId);
+        for (String targetTemplate : openSpan.triggeredIncludes) {
+          includeSpans.get().add(new IncludeSpan(openSpan.startSourcePosition, endSourcePos, targetTemplate));
+        }
+      }
+
+      if (openSpan.startTargetPosition.equals(positionInGeneratedFile)) {
+        int rId = openSpan.runtimePairId;
+        mappings.get().removeIf(m -> m.pairId == rId);
+        astMappings.get().removeIf(m -> m.pairId == rId);
+      } else {
+        mappings.get().add(new SimpleSourceMapping(endSourcePos, positionInGeneratedFile, openSpan.runtimePairId));
+        addASTMapping(astNode, false, positionInGeneratedFile, openSpan.runtimePairId);
+      }
+    }
+  }
+
+  /**
+   * Records a mapping position for template source coordinates without an associated AST node.
+   * @param elementId identifier of the template element
+   * @param lineInTemplate line number within the template source
+   * @param colInTemplate column number within the template source
+   * @param templateSource identifier of template source
+   * @param isStart true, if marking the beginning of the node span, false for the end
+   */
+  public void report(int elementId, int lineInTemplate, int colInTemplate, String templateSource, boolean isStart) {
+    report(elementId, lineInTemplate, colInTemplate, templateSource, null, isStart);
+  }
+
+  /**
+   * Processes raw sources and AST mappings into decoded mapping spans, filters zero-width spans, deduplicates overlaps
+   * generated by includes, and sorts them for VLQ delta generation.
+   * @param simpleMappings List of raw source mappings collected during execution
+   * @return list of decoded mappings ready for source map generation
+   */
+  private static List<DecodedMapping> calculateMappings(List<SimpleSourceMapping> simpleMappings) {
+    Set<Integer> includePairIdsSet = includePairIds.get();
+
+    Map<Integer, SimpleSourceMapping> openSpansMap = new HashMap<>();
+
+    List<MappingSpan> completedSpans = new ArrayList<>();
+    for(SimpleSourceMapping mapping : simpleMappings) {
+      if(mapping.sourcePosition.getLine() < 0 || mapping.targetPosition.getLine() < 0){
+        Log.warn("Negative lines detected in mapping, ignoring...");
+        continue;
+      }
+
+      int id = mapping.pairId;
+      if (includePairIdsSet.contains(id)) {
+        continue;
+      }
+      if(openSpansMap.containsKey(id)) {
+        SimpleSourceMapping start = openSpansMap.remove(id);
+        completedSpans.add(new MappingSpan(id, start, mapping));
+      }else{
+        openSpansMap.put(id, mapping);
+      }
+    }
+
+    // Filter out zero-width generated spans (directives that did not emit any code)
+    completedSpans.removeIf(span -> span.isZeroWidthGenerated());
+
+    // Deduplicate: If multiple mappings land on the same (generatedLine/Column), keep only the
+    // first one. This corresponds to the most inner one in nested templates (as there the "end" is found first when
+    // the completed spans are searched)
+    Map<String, MappingSpan> deduplicatedPairs = new HashMap<>();
+    List<SimpleSourceMapping> deduplicatedMappings = new ArrayList<>();
+    for(MappingSpan current : completedSpans) {
+
+      // For the case that the span goes over multiple lines, we have to add a mapping
+      // for each, otherwise this would leave them unmapped
+      int startTargetLine = current.start.targetPosition.getLine();
+      int endTargetLine = current.end.targetPosition.getLine();
+      int startSourceLine = current.start.sourcePosition.getLine();
+      int endSourceLine = current.end.sourcePosition.getLine();
+
+      // When the end is at position 0 at the subsequent line (e.g., following trailing \n),
+      // this line did not receive any content from the span
+      int lastTargetLine = (current.end.targetPosition.getColumn() == 0 && endTargetLine > startTargetLine)
+              ? endTargetLine - 1
+              : endTargetLine;
+
+      int targetLineDelta = Math.max(0, lastTargetLine - startTargetLine);
+      int sourceLineDelta = Math.max(0, endSourceLine - startSourceLine);
+
+      // Iterate all lines of the map
+      for(int offset = 0; offset <= targetLineDelta; offset++) {
+        SimpleSourceMapping mappingToAdd;
+        if(offset == 0){
+          // First line has initial column offset
+          mappingToAdd = current.start;
+        }else{
+          int curTargetLine = startTargetLine + offset;
+          int curSourceLine;
+          if(targetLineDelta == sourceLineDelta){
+            // 1-to-1 correspondence (default for text-blocks)
+            curSourceLine = startSourceLine + offset;
+          }else if(sourceLineDelta == 0){
+            // Single line expanded to multiple generated lines
+            curSourceLine = startSourceLine;
+          }else{
+            // delta mismatch, try to scale
+            curSourceLine = Math.min(startSourceLine + offset, endSourceLine);
+          }
+          SourcePosition targetPos = current.start.targetPosition.getFileName().isPresent()
+                  ? new SourcePosition(curTargetLine, 0, current.start.targetPosition.getFileName().get())
+                  : new SourcePosition(curTargetLine, 0);
+
+          SourcePosition sourcePos = current.start.sourcePosition.getFileName().isPresent()
+                  ? new SourcePosition(curSourceLine, 0, current.start.sourcePosition.getFileName().get())
+                  : new SourcePosition(curSourceLine, 0);
+
+          mappingToAdd = new SimpleSourceMapping(sourcePos, targetPos, current.pairId);
+        }
+        String key = mappingToAdd.targetPosition.getLine() + ":" + mappingToAdd.targetPosition.getColumn();
+        if(deduplicatedPairs.containsKey(key)){
+          continue;
+        }
+        deduplicatedMappings.add(mappingToAdd);
+        deduplicatedPairs.put(key, current);
+      }
+    }
+
+    // Sort by generated coordinates (for VLQ deltas)
+    deduplicatedMappings.sort(
+            Comparator.comparingInt((SimpleSourceMapping m) -> m.targetPosition.getLine())
+                    .thenComparing(m -> m.targetPosition.getColumn())
+                    .thenComparing(m -> m.sourcePosition.getLine())
+                    .thenComparing(m -> m.sourcePosition.getColumn())
+    );
+
+    // Convert to decoded mappings
+    List<DecodedMapping> res = new ArrayList<>(deduplicatedMappings.size());
+    for(SimpleSourceMapping mapping : deduplicatedMappings) {
+      URL urlToSource = createSourceURL(mapping.sourcePosition.getFileName());
+      res.add(new DecodedMapping(
+              new DecodedSource(urlToSource),
+              new PositionMapping(urlToSource, mapping.sourcePosition, mapping.targetPosition)
+      ));
+    }
+    return res;
+  }
+
+  private static URL createSourceURL(Optional<String> fileOpt) {
+    try {
+      return new URL(fileOpt.orElse(""));
+    } catch(MalformedURLException e){
+      try {
+        return new URL("file:/"+fileOpt.orElseGet(() -> "#"));
+      } catch (MalformedURLException e2) {
+        // handle somehow
+        throw new RuntimeException(e2);
+      }
+    }
+  }
+
+  /**
+   * Updates the absolute generation coordinate stack using content line/column metrics and the parent
+   * template offsets, ensuring multi-template nestings stays synchronized.
+   * @param numberOfLinesInContent number of newlines found in the latest content chunk
+   * @param curGeneratedColPos column position within the last line of the content
+   * @return the newly absolut position in the generated file
+   */
+  private Pair<Integer, Integer> updateAndGetAbsolutePos(int numberOfLinesInContent, int curGeneratedColPos) {
+    int absoluteLine = startOffset.getLeft() + numberOfLinesInContent;
+    int absoluteColumn = (numberOfLinesInContent == 0)
+        ? startOffset.getRight() + curGeneratedColPos
+        : curGeneratedColPos;
+    Pair<Integer, Integer> newPos = Pair.of(absoluteLine, absoluteColumn);
+    curAbsolutePos.set(newPos);
+    return newPos;
+  }
+
+  /**
+   * Adds an AST-linked position mapping, adjusting MontiCore's one-based line numbers to zero-based
+   * coordinates and filtering out redundant boundaries.
+   * @param astNode the AST node being mapped
+   * @param isStart true to extract the nodes start position, false for end position
+   * @param positionInGeneratedFile absolute position in the output file
+   * @param pairId unique identifier linking the span pair
+   */
+  protected void addASTMapping(ASTNode astNode, boolean isStart, SourcePosition positionInGeneratedFile, int pairId) {
+    if(astNode!=null) {
+      SourcePosition startOrEnd = null;
+      if(isStart && astNode.isPresent_SourcePositionStart()) {
+        startOrEnd= astNode.get_SourcePositionStart();
+      } else if(!isStart && astNode.isPresent_SourcePositionEnd()) {
+        startOrEnd= astNode.get_SourcePositionEnd();
+      }
+      if(startOrEnd != null) {
+        // Zero based in line and column numbers
+        int line = Math.max(0, startOrEnd.getLine() - 1);
+        int col = Math.max(0, startOrEnd.getColumn() );
+        SourcePosition s = startOrEnd.getFileName().isPresent()?
+            new SourcePosition(line, col, startOrEnd.getFileName().get()) :
+            new SourcePosition(line, col);
+        astMappings.get().add(new SimpleSourceMapping(s, positionInGeneratedFile, pairId));
+      }
+    }
+  }
+
+  private static int numberOfNewLines(String wholeContent) {
+    // Note the String::lines method does not recognize a new line if the String ends with it furthermore it returns 1 if the String is not empty
+    return (int) (wholeContent+" ").lines().count() -1;
+  }
+
+  private static int getColumnOfLastLine(String wholeContent) {
+    // We add a Space at the end, so the String::lines method really returns the last line
+    return (wholeContent+" ").lines().reduce((first, second) -> second).orElse("").length() - 1;
+  }
+
+  /**
+   * Compiles all buffered template mappings, AST mappings, and include spans, dispatches them to the reporting engine,
+   * and clears temporary buffers.
+   */
+  public static void flushMappings(){
+    List<DecodedMapping> templateSourceMappings = calculateMappings(mappings.get());
+    List<DecodedMapping> astSourceMappings = calculateMappings(astMappings.get());
+    List<IncludeSpan> incSpans = new ArrayList<>(includeSpans.get());
+    Reporting.reportASTSourceMapping(astSourceMappings);
+    Reporting.reportTemplateSourceMapping(templateSourceMappings);
+    Reporting.reportTemplateIncludeSpan(incSpans);
+    clearMappings();
+  }
+
+  public static void clearMappings(){
+    mappings.get().clear();
+    mappings.remove();
+    astMappings.get().clear();
+    astMappings.remove();
+    includeSpans.get().clear();
+    includeSpans.remove();
+    includePairIds.get().clear();
+    includePairIds.remove();
+    activeParentMappings.get().clear();
+    activeParentMappings.remove();
+  }
+
+  public static void reset() {
+    clearMappings();
+    templates.get().clear();
+    templates.remove();
+    curAbsolutePos.remove();
+    baseLineOffset.remove();
+    nextRuntimePairId.remove();
+  }
+
+  public static class OpenSpan {
+    final int runtimePairId;
+    final int elementId;
+    final SourcePosition startSourcePosition;
+    final SourcePosition startTargetPosition;
+    final List<String> triggeredIncludes = new ArrayList<>();
+    final ASTNode astNode;
+
+    public OpenSpan(int runtimePairId, int elementId, SourcePosition startSourcePosition, SourcePosition startTargetPosition, ASTNode astNode) {
+      this.runtimePairId = runtimePairId;
+      this.elementId = elementId;
+      this.startSourcePosition = startSourcePosition;
+      this.startTargetPosition = startTargetPosition;
+      this.astNode = astNode;
+    }
+  }
+
+  private static class MappingSpan{
+    final int pairId;
+    final SimpleSourceMapping start;
+    final SimpleSourceMapping end;
+
+    MappingSpan(int pairId, SimpleSourceMapping start, SimpleSourceMapping end) {
+      this.pairId = pairId;
+      this.start = start;
+      this.end = end;
+    }
+
+    boolean isZeroWidthGenerated(){
+      return start.targetPosition.getLine() == end.targetPosition.getLine()
+              && start.targetPosition.getColumn() == end.targetPosition.getColumn();
+    }
+  }
+}

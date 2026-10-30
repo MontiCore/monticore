@@ -10,6 +10,7 @@ import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.freemarker.SimpleHashFactory;
 import de.monticore.generating.templateengine.freemarker.alias.*;
 import de.monticore.generating.templateengine.reporting.Reporting;
+import de.monticore.generating.templateengine.sourcemap.SourceMapCalculator;
 import de.monticore.io.FileReaderWriter;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
@@ -28,6 +29,12 @@ import static com.google.common.collect.Lists.newArrayList;
  * calling and including of templates.
  */
 public class TemplateController {
+
+  /**
+   * Variable name for the necessary for SourceMapping points to an instance of
+   * {@link de.monticore.generating.templateengine.sourcemap.SourceMapCalculator}
+   **/
+  public static final String SOURCE_MAP_CALCULATOR = "sourceMapCalculator";
 
   /**
    * Variable name for the current node (used in the templates)
@@ -131,6 +138,9 @@ public class TemplateController {
         List<HookPoint> templateForwardings =
             config.getGlex().getTemplateForwardings(template, ast);
         for (HookPoint templateHp : templateForwardings) {
+          if (Reporting.isTemplateSourceMappingEnabled()) {
+            SourceMapCalculator.reportIncludeHookPoint(template, templateHp);
+          }
           ret.append(templateHp.processValue(this, ast));
         }
       }
@@ -279,6 +289,9 @@ public class TemplateController {
     StringBuilder ret = new StringBuilder();
     List<HookPoint> templateForwardings = config.getGlex().getTemplateForwardings(templateName, node);
     for (HookPoint tn : templateForwardings) {
+      if (Reporting.isTemplateSourceMappingEnabled()) {
+        SourceMapCalculator.reportIncludeHookPoint(templateName, tn);
+      }
       ret.append(tn.processValue(this, node, templateArguments));
     }
 
@@ -302,6 +315,9 @@ public class TemplateController {
     StringBuilder ret = new StringBuilder();
     List<HookPoint> templateForwardings = config.getGlex().getTemplateForwardings(templateName, getAST());
     for (HookPoint tn : templateForwardings) {
+      if (Reporting.isTemplateSourceMappingEnabled()) {
+        SourceMapCalculator.reportIncludeHookPoint(templateName, tn);
+      }
       ret.append(tn.processValue(this, templateArguments));
     }
 
@@ -401,6 +417,16 @@ public class TemplateController {
                         final List<Object> templateArguments) {
     final String qualifiedTemplateName = completeQualifiedName(templateName);
 
+    Path completeFilePath;
+    if (filePath.isAbsolute()) {
+      completeFilePath = filePath;
+    } else {
+      completeFilePath = Paths.get(config.getOutputDirectory().getAbsolutePath(),
+          filePath.toString());
+    }
+
+    Reporting.reportBeforeFileCreation(qualifiedTemplateName, completeFilePath, ast);
+
     StringBuilder content = new StringBuilder();
     // add trace to source-model:
     if (config.isTracing() && config.getModelName().isPresent()) {
@@ -417,18 +443,17 @@ public class TemplateController {
     List<HookPoint> templateForwardings =
         config.getGlex().getTemplateForwardings(templateName, ast);
     for (HookPoint tn : templateForwardings) {
+      if(Reporting.isTemplateSourceMappingEnabled()){
+        // Check if there is already something appended to content up to this point
+        // to ensure correct offset
+        int currentOffset = (int) (content + " ").lines().count() - 1;
+        SourceMapCalculator.setBaseLineOffset(currentOffset);
+      }
       content.append(tn.processValue(this, ast, templateArguments));
     }
 
     if (content.length() == beforeTemplatesLength) {
       Log.warn("0xA4057 Template " + qualifiedTemplateName + " produced no content for.");
-    }
-
-    Path completeFilePath;
-    if (filePath.isAbsolute()) {
-      completeFilePath = filePath;
-    } else {
-      completeFilePath = Paths.get(config.getOutputDirectory().getAbsolutePath(), filePath.toString());
     }
 
     Reporting.reportFileCreation(qualifiedTemplateName, filePath, ast);
@@ -549,9 +574,17 @@ public class TemplateController {
       SimpleHash d = config.getGlex().getGlobalData();
       Optional<TemplateModel> oldAst = Optional.empty();
 
+      Optional<TemplateModel> oldSourceMappingUtil = Optional.empty();
+
       try {
         if (d.containsKey(AST)) {
           oldAst = Optional.ofNullable(d.get(AST));
+        }
+        if(Reporting.isTemplateSourceMappingEnabled() && !Reporting.isConfigTemplate(tc.templatename)) {
+          SourceMapCalculator.pushTemplate(template);
+          if(d.containsKey(SOURCE_MAP_CALCULATOR)){
+            oldSourceMappingUtil = Optional.ofNullable(d.get(SOURCE_MAP_CALCULATOR));
+          }
         }
         for (var key : d.toMap().keySet()) {
           if (key instanceof String) {
@@ -576,8 +609,15 @@ public class TemplateController {
 
       // Run template with data to create output
       config.getFreeMarkerTemplateEngine().run(ret, tc.data, template);
-      
+
       oldAst.ifPresent(templateModel -> d.put(AST, templateModel));
+
+      if(Reporting.isTemplateSourceMappingEnabled() && !Reporting.isConfigTemplate(tc.templatename)) {
+        if(oldSourceMappingUtil.isPresent()){
+          d.put(SOURCE_MAP_CALCULATOR, oldSourceMappingUtil.get());
+        }
+        SourceMapCalculator.popTemplate(template);
+      }
     } else {
       // no template
       String usage = this.templatename != null ? " (used in " + this.templatename + ")" : "";
@@ -587,6 +627,7 @@ public class TemplateController {
           + "doesn't exist. It may be in another package? The name printed is the qualified version, "
           + "but you may have used the unqualified name. ##");
     }
+
 
     return ret;
   }

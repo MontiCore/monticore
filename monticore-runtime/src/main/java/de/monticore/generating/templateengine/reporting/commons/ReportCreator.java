@@ -79,6 +79,16 @@ public class ReportCreator {
 		writer.append(content).append("\n");
 	}
 
+  /**
+   * Flushes the buffer of a specific writer to keep the memory overhead lower
+   *
+   * @param file
+   * @throws IOException
+   */
+  public void flushBuffer(File file) throws IOException {
+    writers.get(file).flush();
+  }
+
 	/**
 	 * Closes the given file
 	 * 
