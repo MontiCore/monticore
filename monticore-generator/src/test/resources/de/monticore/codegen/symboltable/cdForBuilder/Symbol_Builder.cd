@@ -4,6 +4,8 @@ package de.monticore.codegen.symboltable.cdForBuilder;
 classdiagram Symbol_Builder {
 
     class A {
-
+        protected de.monticore.types.check.SymTypeExpression symType;
+        protected java.util.List<de.monticore.types.check.SymTypeExpression> lSymType;
+        protected java.util.Optional<de.monticore.types.check.SymTypeExpression> oSymType;
     }
 }
