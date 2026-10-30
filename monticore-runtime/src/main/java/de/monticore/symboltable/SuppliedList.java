@@ -9,7 +9,7 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 /**
- * Adapter Type for List<Supplier<T>> to List<T>.
+ * Adapter Type for {@code List<Supplier<T>>} to {@code List<T>}.
  * Allows access to the raw type inside
  */
 public class SuppliedList<T> extends AbstractList<T> {
@@ -27,9 +27,7 @@ public class SuppliedList<T> extends AbstractList<T> {
     return inner;
   }
 
-  /**
-   * Creates a new list that supplies the given, already evaluated values.
-   */
+
   @SuppressWarnings("unchecked")
   public static <T> SuppliedList<T> fromValues(Collection<? extends T> values) {
     if (values instanceof SuppliedList) {
@@ -44,24 +42,7 @@ public class SuppliedList<T> extends AbstractList<T> {
   }
 
   protected static <T> Supplier<T> supplierOf(T value) {
-    return new ClearingMemorizer<>(() -> value);
-  }
-
-
-  @Override
-  public boolean addAll(Collection<? extends T> collection) {
-    return addAll(size(), collection);
-  }
-
-  @Override
-  public boolean addAll(int index, Collection<? extends T> collection) {
-    if (index < 0 || index > size()) {
-      throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size());
-    }
-    List<Supplier<T>> toAdd = SuppliedList.<T>fromValues(collection).inner;
-    inner.addAll(index, toAdd);
-    modCount++;
-    return !toAdd.isEmpty();
+    return new Memorizer<>(() -> value);
   }
 
   @Override
