@@ -3,6 +3,7 @@ package de.monticore.codegen.javagen;
 
 import de.monticore.codegen.util.Node2Name;
 import de.monticore.runtime.junit.AbstractMCTest;
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.util.Class2MCTestUtil;
 import de.monticore.tests.expressionsandstatements.TestExpressionsAndStatementsTool;
 import de.monticore.tests.expressionsandstatements._ast.ASTBehaviorInput;
@@ -25,6 +26,7 @@ public abstract class AbstractJavaGenTest extends AbstractMCTest {
     LogStub.initPlusLog();
     TestExpressionsAndStatementsTool.initLanguage();
     Class2MCTestUtil.initializeClass2MC4OOSymbols();
+    BasicSymbolsMill.initializeStreams();
   }
 
   /**

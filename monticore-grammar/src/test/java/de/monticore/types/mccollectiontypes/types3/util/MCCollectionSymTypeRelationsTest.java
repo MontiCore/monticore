@@ -1,5 +1,5 @@
 // (c) https://github.com/MontiCore/monticore
-package de.monticore.types3.streams;
+package de.monticore.types.mccollectiontypes.types3.util;
 
 import de.monticore.runtime.junit.AbstractMCTest;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
@@ -16,7 +16,7 @@ import static de.monticore.runtime.junit.MCAssertions.assertHasFindingStartingWi
 import static de.monticore.types3.util.DefsTypesForTests.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class StreamTypeRelationsTest extends AbstractMCTest {
+public class MCCollectionSymTypeRelationsTest extends AbstractMCTest {
 
   @BeforeEach
   public void init() {
@@ -97,15 +97,15 @@ public class StreamTypeRelationsTest extends AbstractMCTest {
 
     // incorrect number of arguments
     _unboxedSetSymType.setArgumentList(Collections.emptyList());
-    _boxedSetSymType.setArgumentList(Collections.emptyList());
     assertFalse(MCCollectionSymTypeRelations.isSet(_unboxedSetSymType));
     assertHasFindingStartingWith("0xFD1C4");
+    _boxedSetSymType.setArgumentList(Collections.emptyList());
     assertFalse(MCCollectionSymTypeRelations.isSet(_boxedSetSymType));
     assertHasFindingStartingWith("0xFD1C4");
     _unboxedSetSymType.setArgumentList(List.of(_intSymType, _intSymType));
-    _boxedSetSymType.setArgumentList(List.of(_intSymType, _intSymType));
     assertFalse(MCCollectionSymTypeRelations.isSet(_unboxedSetSymType));
     assertHasFindingStartingWith("0xFD1C4");
+    _boxedSetSymType.setArgumentList(List.of(_intSymType, _intSymType));
     assertFalse(MCCollectionSymTypeRelations.isSet(_boxedSetSymType));
     assertHasFindingStartingWith("0xFD1C4");
   }
@@ -127,15 +127,15 @@ public class StreamTypeRelationsTest extends AbstractMCTest {
 
     // incorrect number of arguments
     _unboxedOptionalSymType.setArgumentList(Collections.emptyList());
-    _boxedOptionalSymType.setArgumentList(Collections.emptyList());
     assertFalse(MCCollectionSymTypeRelations.isOptional(_unboxedOptionalSymType));
     assertHasFindingStartingWith("0xFD1C4");
+    _boxedOptionalSymType.setArgumentList(Collections.emptyList());
     assertFalse(MCCollectionSymTypeRelations.isOptional(_boxedOptionalSymType));
     assertHasFindingStartingWith("0xFD1C4");
     _unboxedOptionalSymType.setArgumentList(List.of(_intSymType, _intSymType));
-    _boxedOptionalSymType.setArgumentList(List.of(_intSymType, _intSymType));
     assertFalse(MCCollectionSymTypeRelations.isOptional(_unboxedOptionalSymType));
     assertHasFindingStartingWith("0xFD1C4");
+    _boxedOptionalSymType.setArgumentList(List.of(_intSymType, _intSymType));
     assertFalse(MCCollectionSymTypeRelations.isOptional(_boxedOptionalSymType));
     assertHasFindingStartingWith("0xFD1C4");
   }
@@ -157,23 +157,23 @@ public class StreamTypeRelationsTest extends AbstractMCTest {
 
     // incorrect number of arguments
     _unboxedMapSymType.setArgumentList(Collections.emptyList());
-    _boxedMapSymType.setArgumentList(Collections.emptyList());
     assertFalse(MCCollectionSymTypeRelations.isMap(_unboxedMapSymType));
     assertHasFindingStartingWith("0xFD1C4");
+    _boxedMapSymType.setArgumentList(Collections.emptyList());
     assertFalse(MCCollectionSymTypeRelations.isMap(_boxedMapSymType));
     assertHasFindingStartingWith("0xFD1C4");
     _unboxedMapSymType.setArgumentList(List.of(_intSymType));
-    _boxedMapSymType.setArgumentList(List.of(_intSymType));
     assertFalse(MCCollectionSymTypeRelations.isMap(_unboxedMapSymType));
     assertHasFindingStartingWith("0xFD1C4");
+    _boxedMapSymType.setArgumentList(List.of(_intSymType));
     assertFalse(MCCollectionSymTypeRelations.isMap(_boxedMapSymType));
     assertHasFindingStartingWith("0xFD1C4");
     _unboxedMapSymType.setArgumentList(
         List.of(_intSymType, _intSymType, _intSymType));
-    _boxedMapSymType.setArgumentList(
-        List.of(_intSymType, _intSymType, _intSymType));
     assertFalse(MCCollectionSymTypeRelations.isMap(_unboxedMapSymType));
     assertHasFindingStartingWith("0xFD1C4");
+    _boxedMapSymType.setArgumentList(
+        List.of(_intSymType, _intSymType, _intSymType));
     assertFalse(MCCollectionSymTypeRelations.isMap(_boxedMapSymType));
     assertHasFindingStartingWith("0xFD1C4");
   }

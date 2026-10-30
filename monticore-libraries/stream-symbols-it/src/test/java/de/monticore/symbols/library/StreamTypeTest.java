@@ -36,20 +36,7 @@ public class StreamTypeTest {
     OOSymbolsMill.reset();
     OOSymbolsMill.init();
     BasicSymbolsMill.initializePrimitives();
-
-    // workaround to get library path working (in emf)
-    URL streamURL = StreamTypeTest.class.getClassLoader().getResource("Stream.symtabdefinitionsym");
-    assertNotNull(streamURL);
-    // need to be expanded if ever false (could be a folder?)
-    assertEquals("jar", streamURL.getProtocol());
-    JarURLConnection urlConnection = (JarURLConnection) streamURL.openConnection();
-    JarFile jar = urlConnection.getJarFile();
-    Path jarPath = Path.of(jar.getName());
-    BasicSymbolsMill.globalScope().getSymbolPath().addEntry(jarPath);
-
-    // workaround as CDs are not known
-    BasicSymbolsMill.globalScope().putSymbolDeSer("de.monticore.cdbasis._symboltable.CDTypeSymbol", new OOTypeSymbolDeSer());
-    BasicSymbolsMill.globalScope().putSymbolDeSer("de.monticore.cd4codebasis._symboltable.CDMethodSignatureSymbol", new MethodSymbolDeSer());
+    BasicSymbolsMill.initializeStreams();
   }
 
   @Test
