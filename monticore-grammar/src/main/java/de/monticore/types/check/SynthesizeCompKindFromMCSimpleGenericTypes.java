@@ -22,7 +22,10 @@ import java.util.stream.Collectors;
  * A visitor (a handler indeed) that creates a {@link CompKindOfComponentType} from an
  * {@link ASTMCBasicGenericType}, given that there is a matching resolvable
  * component type symbol.
+ *
+ * @deprecated use {@link SynthesizeCompKindFromMCComponentTypes}.
  */
+@Deprecated
 public class SynthesizeCompKindFromMCSimpleGenericTypes implements MCSimpleGenericTypesHandler {
 
   protected MCSimpleGenericTypesTraverser traverser;
