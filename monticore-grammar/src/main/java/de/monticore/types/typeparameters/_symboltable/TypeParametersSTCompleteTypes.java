@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.types.typeparameters._symboltable;
 
-import de.monticore.symboltable.ClearingMemorizer;
+import de.monticore.symboltable.Memorizer;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.typeparameters._ast.ASTTypeParameter;
@@ -35,11 +35,11 @@ public class TypeParametersSTCompleteTypes implements TypeParametersVisitor2 {
     if (tc != null){
         //deprecated behavior:
         for (ASTMCType astTypeBound : node.getMCTypeList()) {
-            bounds.add(new ClearingMemorizer<>(() -> tc.symTypeFromAST(astTypeBound)));
+            bounds.add(new Memorizer<>(() -> tc.symTypeFromAST(astTypeBound)));
         }
     } else {
         for (ASTMCType astTypeBound : node.getMCTypeList()) {
-            bounds.add(new ClearingMemorizer<>(() -> TypeCheck3.symTypeFromAST(astTypeBound)));
+            bounds.add(new Memorizer<>(() -> TypeCheck3.symTypeFromAST(astTypeBound)));
         }
     }
     node.getSymbol().setSuperTypesSupplierList(bounds);

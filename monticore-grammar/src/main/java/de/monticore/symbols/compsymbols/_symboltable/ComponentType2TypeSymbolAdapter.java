@@ -4,7 +4,7 @@ package de.monticore.symbols.compsymbols._symboltable;
 import com.google.common.base.Preconditions;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
-import de.monticore.symboltable.ClearingMemorizer;
+import de.monticore.symboltable.Memorizer;
 import de.monticore.symboltable.modifiers.BasicAccessModifier;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.se_rwth.commons.SourcePosition;
@@ -22,7 +22,7 @@ public class ComponentType2TypeSymbolAdapter extends TypeSymbol {
     this.accessModifier = BasicAccessModifier.PUBLIC;
     this.spannedScope = adaptee.getSpannedScope();
     setSuperTypesSupplierList(adaptee.getSuperComponentsList().stream()
-        .map(c -> new ClearingMemorizer<>(() -> {
+        .map(c -> new Memorizer<>(() -> {
           if (!c.isGenericComponentType()) {
             return SymTypeExpressionFactory.createTypeObject(new ComponentType2TypeSymbolAdapter(c.getTypeInfo()));
           } else {
