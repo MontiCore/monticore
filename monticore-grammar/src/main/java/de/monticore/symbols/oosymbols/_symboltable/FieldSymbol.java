@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.symbols.oosymbols._symboltable;
 
+import de.monticore.symboltable.Memorizer;
 import de.monticore.symboltable.modifiers.*;
 
 import java.util.ArrayList;
@@ -34,9 +35,8 @@ public class FieldSymbol extends FieldSymbolTOP {
     if(isPresentAstNode()) {
       clone.setAstNode(this.getAstNode());
     }
-    if(getType()!=null){
-      clone.setType(this.getType().deepClone());
-    }
+    // keep the type lazy
+    clone.setTypeSupplier(Memorizer.map(getTypeSupplier(), t -> t == null ? null : t.deepClone()));
     return clone;
   }
 
