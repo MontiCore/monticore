@@ -56,6 +56,8 @@ public class UglyExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
     checkExpr("(float)varint", "float");
     checkExpr("(char)varshort", "char");
     checkExpr("(short)varchar", "short");
+    checkExpr("([km]<int>)varintMetre", "[km]<int>");
+    checkExpr("([km]<int>)1.0m", "[km]<int>");
     // un-/boxing
     checkExpr("(int)varInteger", "int");
     checkExpr("(java.lang.Integer)varint", "java.lang.Integer");
@@ -65,6 +67,8 @@ public class UglyExpressionsTypeVisitorTest extends AbstractTypeVisitorTest {
   public void testInvalidTypeCastExpression() throws IOException {
     // unrelated type
     checkErrorExpr("(Person)varintList", "0xFD204");
+    // different dimensions
+    checkErrorExpr("([s]<int>)varintMetre", "0xFD204");
   }
 
   @Test
