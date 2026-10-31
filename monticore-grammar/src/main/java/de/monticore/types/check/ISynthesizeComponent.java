@@ -34,7 +34,13 @@ public interface ISynthesizeComponent {
   default Optional<CompKindExpression> synthesize(@NonNull ASTMCComponentType mcType) {
     this.init();
     mcType.accept((MCComponentTypesTraverser) this.getTraverser());
-    return checkedResult(mcType);
+    Optional<CompKindExpression> res = this.getResult();
+    if (res.isEmpty()) {
+      Log.error(String.format("0xD0104 Cannot resolve component '%s'", mcType.printType()),
+        mcType.get_SourcePositionStart(), mcType.get_SourcePositionEnd()
+      );
+    }
+    return res;
   }
 
   /**
@@ -47,10 +53,6 @@ public interface ISynthesizeComponent {
   default Optional<CompKindExpression> synthesize(@NonNull ASTMCType mcType) {
     this.init();
     mcType.accept(this.getTraverser());
-    return checkedResult(mcType);
-  }
-
-  private Optional<CompKindExpression> checkedResult(@NonNull ASTMCType mcType) {
     Optional<CompKindExpression> res = this.getResult();
     if (res.isEmpty()) {
       Log.error(String.format("0xD0104 Cannot resolve component '%s'", mcType.printType()),

@@ -11,7 +11,7 @@ import de.monticore.types.*;
 component grammar MCComponentTypes extends MCSimpleGenericTypes {
 
   /** Top-level interface for all component type references. */
-  interface MCComponentType extends MCType;
+  interface MCComponentType;
 
   /** A simple or qualified component type, such as {@code a.b.Component}. */
   MCQualifiedComponentType implements MCComponentType = MCQualifiedName;
