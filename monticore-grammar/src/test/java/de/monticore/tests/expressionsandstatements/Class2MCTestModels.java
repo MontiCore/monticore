@@ -154,7 +154,13 @@ public class Class2MCTestModels {
         Arguments.of("Color.GREEN == Color.GREEN", true),
         Arguments.of("Color.GREEN == Color.RED", false),
         Arguments.of("Color.GREEN.equals(Color.GREEN)", true),
-        Arguments.of("Color.GREEN.equals(Color.RED)", false)
+        Arguments.of("Color.GREEN.equals(Color.RED)", false),
+        // todo enable after
+        //  https://git.rwth-aachen.de/monticore/monticore/-/work_items/4997
+        //Arguments.of("int x = 0; switch(State.ON) {case ON: x = 1;} x", 1),
+        //Arguments.of("int x = 0; switch(State.ON) {case OFF: x = 1;} x", 0),
+        Arguments.of("int x = 0; switch(State.ON) {case State.ON: x = 1;} x", 1),
+        Arguments.of("int x = 0; switch(State.ON) {case State.OFF: x = 1;} x", 0)
     );
   }
 

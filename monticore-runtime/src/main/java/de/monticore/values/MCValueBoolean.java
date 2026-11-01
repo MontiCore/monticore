@@ -40,6 +40,22 @@ public class MCValueBoolean implements MCValue {
   }
 
   @Override
+  public boolean equals(Object otherObj) {
+    if (this == otherObj) {
+      return true;
+    }
+    if (!(otherObj instanceof MCValueBoolean other)) {
+      return false;
+    }
+    return value == other.value;
+  }
+
+  @Override
+  public int hashCode() {
+    return Boolean.hashCode(value);
+  }
+
+  @Override
   public String printType() {
     return "Boolean";
   }
