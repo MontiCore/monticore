@@ -16,7 +16,10 @@ import java.util.List;
  * A visitor (a handler indeed) that creates a {@link CompKindOfComponentType} from an
  * {@link ASTMCQualifiedType}, given that there is matching, resolvable
  * component type symbol.
+ *
+ * @deprecated use {@link SynthesizeCompKindFromMCComponentTypes}.
  */
+@Deprecated
 public class SynthesizeCompKindFromMCBasicTypes implements MCBasicTypesHandler {
 
   protected MCBasicTypesTraverser traverser;
