@@ -26,6 +26,7 @@ grammar ExpressionsAndStatements
             SetExpressions,
             TupleExpressions,
             UglyExpressions,
+            StreamExpressions,
             // Types
             MCArrayTypes,
             MCBasicTypes,

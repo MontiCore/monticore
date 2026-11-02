@@ -81,7 +81,15 @@ public class EventStream<T> implements Stream<UntimedStream<T>>, TimeableStream<
 
   @Override
   public long len() {
-    return this.backing.len();
+    // iterator based len, implementors are encouraged to overwrite
+
+    // counter object are by-reference, longs are copied
+    class Counter {
+      long count = 0;
+    }
+    Counter counter = new Counter();
+    this.forEach(elem -> counter.count += elem.len());
+    return counter.count;
   }
 
   @Override
