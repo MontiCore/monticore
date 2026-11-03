@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.temporal;
 
+import de.monticore.runtime.junit.MCAssertions;
 import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.temporal.combinedtemporalstest.CombinedTemporalsTestMill;
 import de.monticore.temporal.combinedtemporalstest._ast.ASTTemporal;
@@ -16,6 +17,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.*;
 import java.time.temporal.WeekFields;
@@ -32,9 +34,9 @@ public class ConversionTest {
   @ParameterizedTest(name = "Input: {0}")
   @MethodSource("de.monticore.temporal.TemporalTestCases#calendarDates")
   void testCalendarDateConversion(String input, int century, int decade,
-      int year, int month, int day) {
-    ASTTemporal ast = Assertions.assertDoesNotThrow(() ->
-        CombinedTemporalsTestMill.parser().parse_String(input).orElseThrow());
+      int year, int month, int day) throws IOException {
+    ASTTemporal ast = CombinedTemporalsTestMill.parser().parse_String(input)
+        .orElseGet(MCAssertions::failAndPrintFindings);
     Assertions.assertTrue(ast.isPresentInstant());
     Assertions.assertInstanceOf(ASTDate.class, ast.getInstant());
     ASTDate realAst = (ASTDate) ast.getInstant();
@@ -84,9 +86,9 @@ public class ConversionTest {
   @DisplayName("Ordinal Date Conversion")
   @ParameterizedTest(name = "Input: {0}")
   @MethodSource("de.monticore.temporal.TemporalTestCases#ordinalDates")
-  void testOrdinalDateConversion(String input, int year, int dayOfYear) {
-    ASTTemporal ast = Assertions.assertDoesNotThrow(() ->
-        CombinedTemporalsTestMill.parser().parse_String(input).orElseThrow());
+  void testOrdinalDateConversion(String input, int year, int dayOfYear) throws IOException {
+    ASTTemporal ast = CombinedTemporalsTestMill.parser().parse_String(input)
+        .orElseGet(MCAssertions::failAndPrintFindings);
     Assertions.assertTrue(ast.isPresentInstant());
     Assertions.assertInstanceOf(ASTDate.class, ast.getInstant());
     ASTDate realAst = (ASTDate) ast.getInstant();
@@ -106,9 +108,9 @@ public class ConversionTest {
   @DisplayName("Week Date Conversion")
   @ParameterizedTest(name = "Input: {0}")
   @MethodSource("de.monticore.temporal.TemporalTestCases#weekDates")
-  public void testWeekDateConversion(String input, int year, int week, int dayOfWeek) {
-    ASTTemporal ast = Assertions.assertDoesNotThrow(() ->
-        CombinedTemporalsTestMill.parser().parse_String(input).orElseThrow());
+  public void testWeekDateConversion(String input, int year, int week, int dayOfWeek) throws IOException {
+    ASTTemporal ast = CombinedTemporalsTestMill.parser().parse_String(input)
+        .orElseGet(MCAssertions::failAndPrintFindings);
     Assertions.assertTrue(ast.isPresentInstant());
     Assertions.assertInstanceOf(ASTDate.class, ast.getInstant());
     ASTDate realAst = (ASTDate) ast.getInstant();
@@ -145,9 +147,9 @@ public class ConversionTest {
   @DisplayName("ISO Time Conversion")
   @ParameterizedTest(name = "Input: {0}")
   @MethodSource("de.monticore.temporal.TemporalTestCases#isoTimes")
-  public void testIsoTimeConversion(String input, int hour, int minute, int second, String decimalDigits, Optional<Integer> timeShift) {
-    ASTTemporal ast = Assertions.assertDoesNotThrow(() ->
-        CombinedTemporalsTestMill.parser().parse_String(input).orElseThrow());
+  public void testIsoTimeConversion(String input, int hour, int minute, int second, String decimalDigits, Optional<Integer> timeShift) throws IOException {
+    ASTTemporal ast = CombinedTemporalsTestMill.parser().parse_String(input)
+        .orElseGet(MCAssertions::failAndPrintFindings);
     Assertions.assertTrue(ast.isPresentInstant());
     Assertions.assertInstanceOf(ASTTime.class, ast.getInstant());
     ASTTime realAst = (ASTTime) ast.getInstant();
@@ -203,9 +205,9 @@ public class ConversionTest {
   @ParameterizedTest(name = "Input: {0}")
   @MethodSource("de.monticore.temporal.TemporalTestCases#calendarDateTimes")
   public void testCalendarDateTimeConversion(String input, int year, int month, int day,
-      int hour, int minute, int second, String decimalDigits, Optional<Integer> timeShift) {
-    ASTTemporal ast = Assertions.assertDoesNotThrow(() ->
-        CombinedTemporalsTestMill.parser().parse_String(input).orElseThrow());
+      int hour, int minute, int second, String decimalDigits, Optional<Integer> timeShift) throws IOException {
+    ASTTemporal ast = CombinedTemporalsTestMill.parser().parse_String(input)
+        .orElseGet(MCAssertions::failAndPrintFindings);
     Assertions.assertTrue(ast.isPresentInstant());
     Assertions.assertInstanceOf(ASTDateTime.class, ast.getInstant());
     ASTDateTime realAst = (ASTDateTime) ast.getInstant();
@@ -239,9 +241,9 @@ public class ConversionTest {
   @ParameterizedTest(name = "Input: {0}")
   @MethodSource("de.monticore.temporal.TemporalTestCases#ordinalDateTimes")
   public void testOrdinalDateTimeConversion(String input, int year, int dayOfYear,
-      int hour, int minute, int second, String decimalDigits, Optional<Integer> timeShift) {
-    ASTTemporal ast = Assertions.assertDoesNotThrow(() ->
-        CombinedTemporalsTestMill.parser().parse_String(input).orElseThrow());
+      int hour, int minute, int second, String decimalDigits, Optional<Integer> timeShift) throws IOException {
+    ASTTemporal ast = CombinedTemporalsTestMill.parser().parse_String(input)
+        .orElseGet(MCAssertions::failAndPrintFindings);
     Assertions.assertTrue(ast.isPresentInstant());
     Assertions.assertInstanceOf(ASTDateTime.class, ast.getInstant());
     ASTDateTime realAst = (ASTDateTime) ast.getInstant();
@@ -282,9 +284,9 @@ public class ConversionTest {
   @ParameterizedTest(name = "Input: {0}")
   @MethodSource("de.monticore.temporal.TemporalTestCases#weekDateTimes")
   public void testWeekDateTimeConversion(String input, int year, int week, int dayOfWeek,
-      int hour, int minute, int second, String decimalDigits, Optional<Integer> timeShift) {
-    ASTTemporal ast = Assertions.assertDoesNotThrow(() ->
-        CombinedTemporalsTestMill.parser().parse_String(input).orElseThrow());
+      int hour, int minute, int second, String decimalDigits, Optional<Integer> timeShift) throws IOException {
+    ASTTemporal ast = CombinedTemporalsTestMill.parser().parse_String(input)
+        .orElseGet(MCAssertions::failAndPrintFindings);
     Assertions.assertTrue(ast.isPresentInstant());
     Assertions.assertInstanceOf(ASTDateTime.class, ast.getInstant());
     ASTDateTime realAst = (ASTDateTime) ast.getInstant();
@@ -327,9 +329,9 @@ public class ConversionTest {
   @DisplayName("German Date Conversion")
   @ParameterizedTest(name = "Input: {0}")
   @MethodSource("de.monticore.temporal.TemporalTestCases#germanDates")
-  public void testGermanDateConversion(String input, int year, int month, int day) {
-    ASTDate ast = Assertions.assertDoesNotThrow(
-        () -> CombinedTemporalsTestMill.parser().parse_StringDEDate(input).orElseThrow());
+  public void testGermanDateConversion(String input, int year, int month, int day) throws IOException {
+    ASTDate ast = CombinedTemporalsTestMill.parser().parse_StringDEDate(input)
+        .orElseGet(MCAssertions::failAndPrintFindings);
     
     Year expectedYear = Year.of(year);
     YearMonth expectedYearMonth = expectedYear.atMonth(month == -1 ? 1 : month);
@@ -355,9 +357,9 @@ public class ConversionTest {
   @DisplayName("German Time Conversion")
   @ParameterizedTest(name = "Input: {0}")
   @MethodSource("de.monticore.temporal.TemporalTestCases#germanTimes")
-  public void testGermanTimeConversion(String input, int hour, int minute, int second) {
-    ASTTime ast = Assertions.assertDoesNotThrow(
-        () -> CombinedTemporalsTestMill.parser().parse_StringTime(input).orElseThrow());
+  public void testGermanTimeConversion(String input, int hour, int minute, int second) throws IOException {
+    ASTTime ast = CombinedTemporalsTestMill.parser().parse_StringTime(input)
+        .orElseGet(MCAssertions::failAndPrintFindings);
     
     LocalTime expectedTime = LocalTime.of(hour, minute == -1 ? 0 : minute, second == -1 ? 0 : second);
     Assertions.assertFalse(ast.isOffsetTime());
@@ -377,9 +379,9 @@ public class ConversionTest {
   @DisplayName("German DateTime Conversion")
   @ParameterizedTest(name = "Input: {0}")
   @MethodSource("de.monticore.temporal.TemporalTestCases#germanDateTimes")
-  public void testGermanDateTimeConversion(String input, int year, int month, int day, int hour, int minute, int second) {
-    ASTDateTime ast = Assertions.assertDoesNotThrow(
-        () -> CombinedTemporalsTestMill.parser().parse_StringDateTime(input).orElseThrow());
+  public void testGermanDateTimeConversion(String input, int year, int month, int day, int hour, int minute, int second) throws IOException {
+    ASTDateTime ast = CombinedTemporalsTestMill.parser().parse_StringDateTime(input)
+        .orElseGet(MCAssertions::failAndPrintFindings);
     
     if (minute == -1) {
       minute = 0;
