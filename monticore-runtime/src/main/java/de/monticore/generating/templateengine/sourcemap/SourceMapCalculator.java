@@ -1,5 +1,6 @@
 package de.monticore.generating.templateengine.sourcemap;
 
+import com.google.common.io.Resources;
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.freemarker.FreeMarkerTemplateEngine;
 import de.monticore.generating.templateengine.reporting.Reporting;
@@ -11,10 +12,11 @@ import de.se_rwth.commons.logging.Log;
 import freemarker.template.Template;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class SourceMapCalculator {
   private static ThreadLocal<Stack<Template>> templates = ThreadLocal.withInitial(() -> new Stack<>());
@@ -34,7 +36,7 @@ public class SourceMapCalculator {
     templates.get().push(template);
 
     // Ask parent template for its known last absolute pos inside nested template evaluation
-    int curLine = curAbsolutePos.get().isEmpty() ? 1 : curAbsolutePos.get().peek().getLeft();
+    int curLine = curAbsolutePos.get().isEmpty() ? getBaseLineOffset() : curAbsolutePos.get().peek().getLeft();
     int curColumn = curAbsolutePos.get().isEmpty() ? 0 : curAbsolutePos.get().peek().getRight();
     curAbsolutePos.get().push(Pair.of(curLine,curColumn));
 
@@ -98,39 +100,46 @@ public class SourceMapCalculator {
       validMappings.add(span.start);
     }
 
+    // Deduplicate: If multiple mappings land on the same (generatedLine/Column), keep only the
+    // first one. This corresponds to the most inner one in nested templates (as there the "end" is found first when
+    // the completed spans are searched
+    Map<String, SimpleSourceMapping> deduplicatedPairs = new LinkedHashMap<>();
+    for(SimpleSourceMapping current : validMappings) {
+      String key = current.targetPosition.getLine() + ":" + current.targetPosition.getColumn();
+      if(deduplicatedPairs.containsKey(key))
+        continue;
+      deduplicatedPairs.put(key, current);
+    }
+    List<SimpleSourceMapping> deduplicatedMappings = new ArrayList<>(deduplicatedPairs.values());
+
     // Sort by generated coordinates (for VLQ deltas)
-    validMappings.sort(
+    deduplicatedMappings.sort(
             Comparator.comparingInt((SimpleSourceMapping m) -> m.targetPosition.getLine())
                     .thenComparing(m -> m.targetPosition.getColumn())
                     .thenComparing(m -> m.sourcePosition.getLine())
                     .thenComparing(m -> m.sourcePosition.getColumn())
     );
 
-    // Deduplicate: If multiple mappings land on the same (generatedLine/Column), keep only the
-    // last. This corresponds to the most inner one in nested templates
-    List<SimpleSourceMapping> deduplicatedMappings = new ArrayList<>();
-    for(SimpleSourceMapping current : validMappings){
-      if(!deduplicatedMappings.isEmpty()){
-        SimpleSourceMapping last = deduplicatedMappings.getLast();
-        if(last.targetPosition.getLine() == current.targetPosition.getLine()
-                && last.targetPosition.getColumn() == current.targetPosition.getColumn()){
-          deduplicatedMappings.set(deduplicatedMappings.size() - 1, current);
-          continue;
-        }
-      }
-      deduplicatedMappings.add(current);
-    }
-
     // Convert to decoded mappings
     List<DecodedMapping> res = new ArrayList<>(deduplicatedMappings.size());
     for(SimpleSourceMapping mapping : deduplicatedMappings) {
       URL urlToSource = createSourceURL(mapping.sourcePosition.getFileName());
+      // debug:
+      String content = readSourceContent(urlToSource);
       res.add(new DecodedMapping(
-          new DecodedSource(urlToSource),
+          new DecodedSource(urlToSource, content),
           new PositionMapping(urlToSource, mapping.sourcePosition, mapping.targetPosition)
       ));
     }
     return res;
+  }
+
+  private static String readSourceContent(URL url){
+    try {
+      return Resources.toString(url, StandardCharsets.UTF_8);
+    }catch (IOException e) {
+      return null;
+    }
   }
 
   private static URL createSourceURL(Optional<String> fileOpt) {
@@ -162,7 +171,7 @@ public class SourceMapCalculator {
 
     String content = sw.getCurrentContent();
 
-    int numberOfLinesInContent = numberOfNewLines(content) + getBaseLineOffset();
+    int numberOfLinesInContent = numberOfNewLines(content);
     int curGeneratedColPos = getColumnOfLastLine(content);
 
     // Update absolute position stack so line numbering stays in sync
@@ -182,7 +191,7 @@ public class SourceMapCalculator {
 
     String content = sw.getCurrentContent();
 
-    int numberOfLinesInContent = numberOfNewLines(content) + getBaseLineOffset();
+    int numberOfLinesInContent = numberOfNewLines(content);
     int curGeneratedColPos = getColumnOfLastLine(content);
 
     // Update absolute position stack so line numbering stays in sync
@@ -198,14 +207,17 @@ public class SourceMapCalculator {
    * This function does not add a new position state but updates the current one
    */
   private static Pair<Integer, Integer> updateAndGetAbsolutePos(int numberOfLinesInContent, int curGeneratedColPos) {
+    // The stack is never empty when this is called for a report, due to the push/pop validation
     curAbsolutePos.get().pop();
 
-    int lineOffset = 0;
+    int lineOffset;
     int columnOffset = 0;
     if(!curAbsolutePos.get().empty()) {
       Pair<Integer, Integer> offsetFromParentTemplate = curAbsolutePos.get().peek();
       lineOffset = offsetFromParentTemplate.getLeft();
       columnOffset = offsetFromParentTemplate.getRight();
+    }else{
+      lineOffset = getBaseLineOffset();
     }
 
     int absoluteLine = lineOffset + numberOfLinesInContent;
@@ -287,14 +299,6 @@ public class SourceMapCalculator {
   private static int getColumnOfLastLine(String wholeContent) {
     // We add a Space at the end, so the String::lines method really returns the last line
     return (wholeContent+" ").lines().reduce((first, second) -> second).orElse("").length() - 1;
-  }
-
-  protected static boolean currentlyInMainTemplateForGeneration() {
-    return templates.get().size() == 1;
-  }
-
-  protected static boolean isChildTemplateForGeneration() {
-    return templates.get().size() > 1;
   }
 
   public static void flushMappings(){
