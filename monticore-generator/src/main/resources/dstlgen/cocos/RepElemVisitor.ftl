@@ -11,6 +11,7 @@ import de.monticore.tf.tfcommons._ast.ASTITFPart;
 /**
  * This visitor counts occurrences of replacement elements
  */
+${tc.include("mc.Generated")}
 public class ${className} implements ${ast.getName()}TRVisitor2, ${ast.getName()}TRHandler  {
 
   private CollectCoCoInformationState state;

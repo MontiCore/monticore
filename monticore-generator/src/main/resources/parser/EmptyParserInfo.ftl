@@ -16,6 +16,7 @@ import <#if superLangGrammarAst.getPackageList()?has_content>${superLangGrammarA
  * This is used in the static delegate pattern as the superclass for the ParserInfoForSuperLang classes.
  * Therefore, the ParserInfoForSuperLang classes don't have to know all symbol references and usage names that are used in a super-language, but not in the sub-language.
  */
+${tc.include("mc.Generated")}
 public abstract class Empty${ast.getName()}ParserInfo extends ${ast.getName()}ParserInfo{
   <#list referencedSymbolToStates as referencedSymbol, states>
     @Override

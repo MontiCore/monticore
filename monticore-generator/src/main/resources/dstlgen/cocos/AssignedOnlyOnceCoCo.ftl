@@ -14,6 +14,7 @@ import java.util.List;
 /**
 * This CoCo makes warns of assigning to the same variable multiple times
 */
+${tc.include("mc.Generated")}
 public class ${classname} implements TFCommonsASTTFAssignmentsCoCo {
 
   @Override

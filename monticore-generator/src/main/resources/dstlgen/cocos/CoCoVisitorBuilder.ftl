@@ -11,6 +11,7 @@ import java.util.Set;
 import de.monticore.tf.grammartransformation.CollectCoCoInformationState;
 import de.monticore.tf.tfcommons._ast.ASTITFPart;
 
+${tc.include("mc.Generated")}
 public class ${visitorClassName}Builder  {
 
   public ${ast.getName()}TRTraverser build(){
