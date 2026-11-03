@@ -15,7 +15,7 @@ import static de.monticore.codegen.ICodeGenOperationHandler.BinaryOperator.BITWI
 import static de.monticore.types3.SymTypeRelations.isBoolean;
 
 /**
- * Handles the non-short-circuit operators "&", "|", and "^" on booleans
+ * Handles the non-short-circuit operators @code{&}, @code{|}, and @code{^} on booleans
  */
 public class JavaBooleanOperationHandler implements ICodeGenOperationHandler {
 
