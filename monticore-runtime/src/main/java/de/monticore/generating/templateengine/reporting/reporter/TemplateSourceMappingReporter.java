@@ -52,16 +52,17 @@ public class TemplateSourceMappingReporter extends DefaultReportEventHandler {
 
   @Override
   public void reportBeforeFileCreation(String templateName, String path, String fileExtension, ASTNode ast) {
-    SourceMapCalculator.reset();
+    SourceMapCalculator.clearMappings();
     clearVariables();
     currentGeneratedFile = path;
-    currentTemplateMappingFile = new File(path.replace(fileExtension, "")+"_"+TEMPLATE_MAPPING+"."+this.fileextension);
-    currentASTMappingFile = new File(path.replace(fileExtension, "")+"_"+AST_MAPPING+"."+this.fileextension);
+    currentTemplateMappingFile = new File(path.replace("." + fileExtension, "")+"_"+TEMPLATE_MAPPING+"."+this.fileextension);
+    currentASTMappingFile = new File(path.replace("." + fileExtension, "")+"_"+AST_MAPPING+"."+this.fileextension);
   }
 
   @Override
   public void reportFileCreation(String templateName, String qualifiedFilename, String fileExtension, ASTNode ast) {
     System.out.println("Reporting file finalized "+qualifiedFilename);
+    SourceMapCalculator.flushMappings();
     writeContent(currentGeneratedFile);
   }
 
