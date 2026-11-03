@@ -16,11 +16,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class SourceMapCalculator {
   protected static Stack<Template> templates = new Stack<>();
 
-  // This is only needed when we want to use SourceMapCalculator::reportStringHP
-  protected static Stack<Pair<Integer, Integer>> positionState = new Stack<>();
-
-  protected static int absoluteLineOffset;
-  protected static int absoluteColumnOffset;
+  // We need this for nested template evaluations
+  protected static Stack<Pair<Integer, Integer>> curAbsolutePos = new Stack<>();
 
   public static List<SimpleSourceMapping> mappings = new ArrayList<>();
   public static List<SimpleSourceMapping> astMappings = new ArrayList<>();
@@ -28,40 +25,36 @@ public class SourceMapCalculator {
 
   public static void pushTemplate(Template template) {
     templates.push(template);
-    positionState.push(Pair.of(0,0));
-    assert positionState.size() == templates.size();
+
+    // Ask parent template for its known last absolute pos inside nested template evaluation
+    int curLine = curAbsolutePos.isEmpty()? 0 : curAbsolutePos.peek().getLeft();
+    int curColumn = curAbsolutePos.isEmpty()? 0 : curAbsolutePos.peek().getRight();
+    curAbsolutePos.push(Pair.of(curLine,curColumn));
+
+    assert curAbsolutePos.size() == templates.size();
   }
 
-  public static void popTemplate(Template template, StringBuilder content) {
-    Pair<Integer, Integer> lastRelativeLineAndCol = positionState.pop();
+  public static void popTemplate(Template template) {
     if (templates.pop() != template) {
       throw new IllegalStateException();
     }
 
-    // After every template evaluation in the parent template we set the absolute offset to the current offset again
-    if(templates.size()==1) {
-      var currentPosition = positionState.pop();
-      absoluteLineOffset = currentPosition.getLeft();
-      absoluteColumnOffset = currentPosition.getRight();
-      positionState.push(currentPosition);
-    }
-    if(templates.size() > 1) {
-      absoluteLineOffset += lastRelativeLineAndCol.getLeft();
-      // Columns are resetted after every line
-      absoluteColumnOffset = lastRelativeLineAndCol.getLeft()>0? 0: lastRelativeLineAndCol.getRight();
+    curAbsolutePos.pop();
+
+    if(templates.size() != curAbsolutePos.size()) {
+      throw new IllegalStateException();
     }
 
     if (templates.isEmpty()) {
-      List<DecodedMapping> templateSourceMappings = calculateMappings(mappings, content.toString());
-      List<DecodedMapping> astSourceMappings = calculateMappings(astMappings, content.toString());
-      Reporting.reportTemplateSourceMapping(templateSourceMappings);
+      List<DecodedMapping> templateSourceMappings = calculateMappings(mappings);
+      List<DecodedMapping> astSourceMappings = calculateMappings(astMappings);
       Reporting.reportASTSourceMapping(astSourceMappings);
+      Reporting.reportTemplateSourceMapping(templateSourceMappings);
       reset();
     }
-    assert positionState.size() == templates.size();
   }
 
-  public static List<DecodedMapping> calculateMappings(List<SimpleSourceMapping> simpleMappings, String content) {
+  public static List<DecodedMapping> calculateMappings(List<SimpleSourceMapping> simpleMappings) {
     // group by pairId
     List<Pair<SimpleSourceMapping, SimpleSourceMapping>> pairs = new ArrayList<>();
     Map<Integer, SimpleSourceMapping> openIds = new HashMap<>();
@@ -106,21 +99,21 @@ public class SourceMapCalculator {
   final StringWriter sw;
   final Template template;
 
-  // Every Template uses the same StringWriter?
+  // Everytime a template is executed it uses a new StringWriter instance
   public SourceMapCalculator(StringWriter sw, Template template) {
     this.sw = sw;
     this.template = template;
   }
 
   // Probably not needed
-  public static void reportStringHP(String content, String source, ASTNode astNode) {
+/*  public static void reportStringHP(String content, String source, ASTNode astNode) {
     int curPairId = pairId.getAndIncrement();
     int newLines = numberOfNewLines(content);
     int columnPosOfLastLine = getColumnOfLastLine(content);
     var currentRelativePosition = getCurrentRelativePosition();
 
-    int absoluteFirstLinePos = absoluteLineOffset + currentRelativePosition.getLeft();
-    int absoluteFirstColumnPos = absoluteColumnOffset+currentRelativePosition.getRight();
+    int absoluteFirstLinePos = *//*lastPrintedPositionInFinalGeneratedOutput.getKey() + *//*currentRelativePosition.getLeft();
+    int absoluteFirstColumnPos = *//*lastPrintedPositionInFinalGeneratedOutput.getRight() +*//*currentRelativePosition.getRight();
 
     int absoluteLastLinePos = absoluteFirstLinePos + newLines;
     int absoluteLastColumnPos = newLines > 0? columnPosOfLastLine : columnPosOfLastLine + absoluteFirstColumnPos;
@@ -139,17 +132,17 @@ public class SourceMapCalculator {
     // Theoretically we have to load the template here and check for its last pos
     mappings.add(new SimpleSourceMapping(new SourcePosition(newLines+1, columnPosOfLastLine,"SHP"+source),
         generatedEnd, curPairId));
-    assert positionState.size() == templates.size();
-  }
+    assert curAbsolutePos.size() == templates.size();
+  }*/
 
   // This method is bad -> positionState should not be a Stack and it should definitely not be popped and pushed just to iterate it
-  protected static Pair<Integer, Integer> getCurrentRelativePosition() {
-   List<Pair<Integer, Integer>> posList = new ArrayList<>(positionState.size());
+/*  protected static Pair<Integer, Integer> getCurrentRelativePosition() {
+   List<Pair<Integer, Integer>> posList = new ArrayList<>(curAbsolutePos.size());
 
-    while(positionState.size() >= 2) {
-      posList.add(positionState.pop());
+    while(curAbsolutePos.size() >= 2) {
+      posList.add(curAbsolutePos.pop());
     }
-    posList.forEach(e -> positionState.push(e));
+    posList.forEach(e -> curAbsolutePos.push(e));
     int relativeLine = 0;
     int relativeColumn = 0;
     Collections.reverse(posList);
@@ -162,38 +155,56 @@ public class SourceMapCalculator {
       }
     }
     return Pair.of(relativeLine, relativeColumn);
-  }
+  }*/
 
   public void report(int pairId, int lineInTemplate, int colInTemplate, ASTNode astNode, boolean isStart) {
     String content = sw.toString();
 
-    int numberOfNewLines = numberOfNewLines(content);
+    int numberOfLinesInContent = numberOfNewLines(content);
     int curGeneratedColPos = getColumnOfLastLine(content);
 
-    // Case we generated at least one new line we reset the absoluteColumnOffset
-    if(numberOfNewLines > 0) {
-      absoluteColumnOffset = 0;
-    }
+    Pair<Integer,Integer> absPos = updateAndGetAbsolutePos(numberOfLinesInContent, curGeneratedColPos);
 
-    int lineOffset = currentlyInMainTemplateForGeneration()? 0 : absoluteLineOffset;
-    int colOffset = currentlyInMainTemplateForGeneration()? 0 : absoluteColumnOffset;
-
-    positionState.pop();
-    positionState.push(Pair.of(numberOfNewLines, curGeneratedColPos));
-
-    SourcePosition positionInGeneratedFile = new SourcePosition(lineOffset + numberOfNewLines, colOffset +curGeneratedColPos, template.getName());
-
+    SourcePosition positionInGeneratedFile = new SourcePosition(absPos.getLeft(), absPos.getRight(), template.getName());
     addASTMapping(astNode, isStart, positionInGeneratedFile, pairId);
     addTemplateMapping(lineInTemplate, colInTemplate, positionInGeneratedFile, pairId);
 
+    assert curAbsolutePos.size() == templates.size();
+  }
 
-    // In this case the given Writer has the absolute position
-    // In all other cases the absolute position is updated when the Template is popped
-    if(currentlyInMainTemplateForGeneration()) {
-      absoluteLineOffset = numberOfNewLines;
+  public void report(int pairId, int lineInTemplate, int colInTemplate) {
+    String content = sw.toString();
+
+    int numberOfLinesInContent = numberOfNewLines(content);
+    int curGeneratedColPos = getColumnOfLastLine(content);
+
+    Pair<Integer,Integer> absPos = updateAndGetAbsolutePos(numberOfLinesInContent, curGeneratedColPos);
+
+    SourcePosition positionInGeneratedFile = new SourcePosition(absPos.getLeft(), absPos.getRight(), template.getName());
+    addTemplateMapping(lineInTemplate, colInTemplate, positionInGeneratedFile, pairId);
+
+    assert curAbsolutePos.size() == templates.size();
+  }
+
+  /**
+   * This function does not add a new position state but updates the current one
+   */
+  private static Pair<Integer, Integer> updateAndGetAbsolutePos(int numberOfLinesInContent, int curGeneratedColPos) {
+
+    curAbsolutePos.pop();
+
+    int lineOffset = 0;
+    int columnOffset = 0;
+    if(!curAbsolutePos.empty()) {
+      Pair<Integer, Integer> offsetFromParentTemplate = curAbsolutePos.peek();
+      lineOffset = offsetFromParentTemplate.getLeft();
+      columnOffset = offsetFromParentTemplate.getRight();
     }
 
-    assert positionState.size() == templates.size();
+    int absoluteLine = lineOffset + numberOfLinesInContent;
+    int absoluteColumn = numberOfLinesInContent==0? columnOffset + curGeneratedColPos : curGeneratedColPos;
+    curAbsolutePos.push(Pair.of(absoluteLine, absoluteColumn));
+    return curAbsolutePos.peek();
   }
 
   /**
@@ -228,12 +239,13 @@ public class SourceMapCalculator {
   }
 
   private static int numberOfNewLines(String wholeContent) {
-    // Note the .lines() method does not recognize a new line if the String ends with it furthermore it returns 1 if the String is not empty
+    // Note the String::lines method does not recognize a new line if the String ends with it furthermore it returns 1 if the String is not empty
     return (int) (wholeContent+" ").lines().count() -1;
   }
 
   private static int getColumnOfLastLine(String wholeContent) {
-    return wholeContent.lines().reduce((first, second) -> second).orElseGet(() -> "").length();
+    // We add a Space at the end, so the String::lines method really returns the last line
+    return (wholeContent+" ").lines().reduce((first, second) -> second).orElse("").length() - 1;
   }
 
   protected static boolean currentlyInMainTemplateForGeneration() {
@@ -245,10 +257,8 @@ public class SourceMapCalculator {
   }
 
   public static void reset() {
-    absoluteLineOffset = 0;
-    absoluteColumnOffset = 0;
     templates.clear();
-    positionState.clear();
+    curAbsolutePos.clear();
     mappings.clear();
     astMappings.clear();
   }

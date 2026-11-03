@@ -412,7 +412,7 @@ public class ReportLogHook implements ILogHook, IReportEventHandler {
 
   @Override
   public void reportASTSourceMapping(List<DecodedMapping> mapping) {
-    this.getReportManager().reportTemplateSourceMapping(mapping);
+    this.getReportManager().reportASTSourceMapping(mapping);
   }
 
 }

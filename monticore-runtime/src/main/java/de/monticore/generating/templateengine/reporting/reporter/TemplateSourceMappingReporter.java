@@ -9,7 +9,7 @@ import de.monticore.generating.templateengine.source_mapping.SourceMapCalculator
 import java.util.ArrayList;
 import java.util.List;
 
-import static de.monticore.generating.templateengine.source_mapping.encoding.Encoding.encodDecodedSourceMapToString;
+import static de.monticore.generating.templateengine.source_mapping.encoding.Encoding.encodeDecodedSourceMapToString;
 
 public class TemplateSourceMappingReporter extends AReporter {
   public static boolean FIRST_FILE_WRITE = false;
@@ -54,8 +54,8 @@ public class TemplateSourceMappingReporter extends AReporter {
   }
 
   protected void writeContent(String fileName) {
-    writeLine(encodDecodedSourceMapToString(new DecodedSourceMap(fileName, templateMappings)));
-    writeLine(encodDecodedSourceMapToString(new DecodedSourceMap(fileName, astMappings)));
+    writeLine(encodeDecodedSourceMapToString(new DecodedSourceMap(fileName, this.astMappings)));
+    writeLine(encodeDecodedSourceMapToString(new DecodedSourceMap(fileName, templateMappings)));
   }
 
   protected void clearVariables() {
