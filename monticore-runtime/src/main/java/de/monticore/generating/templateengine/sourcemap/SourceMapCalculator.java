@@ -1,6 +1,9 @@
 package de.monticore.generating.templateengine.sourcemap;
 
 import de.monticore.ast.ASTNode;
+import de.monticore.generating.templateengine.HookPoint;
+import de.monticore.generating.templateengine.StringHookPoint;
+import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.generating.templateengine.freemarker.FreeMarkerTemplateEngine;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.sourcemap.DecodedMapping;
@@ -15,6 +18,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class SourceMapCalculator {
 
@@ -25,11 +29,13 @@ public class SourceMapCalculator {
 
   private static ThreadLocal<List<SimpleSourceMapping>> mappings = ThreadLocal.withInitial(ArrayList::new);
   private static ThreadLocal<List<SimpleSourceMapping>> astMappings = ThreadLocal.withInitial(ArrayList::new);
-  private static ThreadLocal<List<SimpleIncludeMapping>> includeMappings = ThreadLocal.withInitial(ArrayList::new);
-  private static ThreadLocal<Map<Template, SimpleSourceMapping>> activeParentMappings = ThreadLocal.withInitial(HashMap::new);
+  private static ThreadLocal<List<IncludeSpan>> includeSpans = ThreadLocal.withInitial(ArrayList::new);
+  private static ThreadLocal<Set<Integer>> includePairIds = ThreadLocal.withInitial(HashSet::new);
+  private static ThreadLocal<AtomicInteger> nextRuntimePairId = ThreadLocal.withInitial(() -> new AtomicInteger(1));
+  private static ThreadLocal<Map<Template, OpenSpan>> activeParentMappings = ThreadLocal.withInitial(HashMap::new);
   private static ThreadLocal<Integer> baseLineOffset = ThreadLocal.withInitial(() -> 0);
 
-
+  private final Deque<OpenSpan> openSpans = new ArrayDeque<>();
   private final FreeMarkerTemplateEngine.ContentWriter sw;
   private final Template template;
   private final Pair<Integer, Integer> startOffset;
@@ -57,10 +63,9 @@ public class SourceMapCalculator {
     // Check if there is a "parent" template to map the inclusion
     if(templates.get().isEmpty() == false) {
       Template parentTemplate = templates.get().peek();
-      SimpleSourceMapping parentMapping = activeParentMappings.get().get(parentTemplate);
-      if(parentMapping != null){
-        includeMappings.get().add(new SimpleIncludeMapping(parentMapping.sourcePosition, parentMapping.pairId,
-                template.getName()));
+      OpenSpan parentSpan = activeParentMappings.get().get(parentTemplate);
+      if(parentSpan != null){
+        parentSpan.triggeredIncludes.add(template.getName());
       }
     }
 
@@ -94,6 +99,41 @@ public class SourceMapCalculator {
     }
   }
 
+  /**
+   * Records an inclusion triggered through a HookPoint (e.g. StringHookPoint or replacement).
+   *
+   * @param templateName The name of the template being included
+   * @param hp The hook point handling the inclusion
+   */
+  public static void reportIncludeHookPoint(String templateName, HookPoint hp) {
+    if (Reporting.isConfigTemplate(templateName)) {
+      return;
+    }
+    if (!(hp instanceof TemplateHookPoint)) {
+      String target = templateName;
+      if (hp instanceof StringHookPoint shp && shp.getSourceURL().isPresent()) {
+        target = shp.getSourceURL().get();
+      }
+      reportInclude(target);
+    }
+  }
+
+  /**
+   * Directly records an include target under the active parent template span.
+   *
+   * @param targetTemplate The included template name
+   */
+  public static void reportInclude(String targetTemplate) {
+    if (templates.get().isEmpty()) {
+      return;
+    }
+    Template parentTemplate = templates.get().peek();
+    OpenSpan parentSpan = activeParentMappings.get().get(parentTemplate);
+    if (parentSpan != null) {
+      parentSpan.triggeredIncludes.add(targetTemplate);
+    }
+  }
+
   public static void setBaseLineOffset(int offset){
     baseLineOffset.set(offset);
   }
@@ -106,14 +146,14 @@ public class SourceMapCalculator {
   /**
    * Records a mapping position for both template source coordinates and an associated AST node,
    * and updates the absolute generated file position.
-   * @param pairId unique identifier to link start and end mapping spans
+   * @param elementId identifier of the template element
    * @param lineInTemplate line number within the template source
    * @param colInTemplate column number within the template source
    * @param templateSource identifier of template source
    * @param astNode the AST-node tied to this output segment
    * @param isStart true, if marking the beginning of the node span, false for the end
    */
-  public void report(int pairId, int lineInTemplate, int colInTemplate, String templateSource, ASTNode astNode, boolean isStart) {
+  public void report(int elementId, int lineInTemplate, int colInTemplate, String templateSource, ASTNode astNode, boolean isStart) {
     // Suppress recording if this is a config template
     if(Reporting.isConfigTemplate(template.getName()))
       return;
@@ -127,37 +167,70 @@ public class SourceMapCalculator {
     Pair<Integer,Integer> absPos = updateAndGetAbsolutePos(numberOfLinesInContent, curGeneratedColPos);
 
     SourcePosition positionInGeneratedFile = new SourcePosition(absPos.getLeft(), absPos.getRight(), "GenOutput");
-    addASTMapping(astNode, isStart, positionInGeneratedFile, pairId);
-    SimpleSourceMapping mapping = addTemplateMapping(lineInTemplate, colInTemplate, templateSource, positionInGeneratedFile, pairId);
-    if(isStart && mapping != null) {
-      activeParentMappings.get().put(this.template, mapping);
-    } else if(!isStart) {
-      activeParentMappings.get().remove(this.template);
+
+    if (isStart) {
+      int runtimePairId = nextRuntimePairId.get().getAndIncrement();
+      SourcePosition sourcePos = new SourcePosition(Math.max(0, lineInTemplate), Math.max(0, colInTemplate), templateSource);
+      OpenSpan openSpan = new OpenSpan(runtimePairId, elementId, sourcePos, positionInGeneratedFile, astNode);
+      openSpans.push(openSpan);
+      activeParentMappings.get().put(this.template, openSpan);
+
+      mappings.get().add(new SimpleSourceMapping(sourcePos, positionInGeneratedFile, runtimePairId));
+      addASTMapping(astNode, true, positionInGeneratedFile, runtimePairId);
+    } else {
+      OpenSpan openSpan = null;
+      Iterator<OpenSpan> it = openSpans.iterator();
+      while (it.hasNext()) {
+        OpenSpan s = it.next();
+        if (s.elementId == elementId) {
+          openSpan = s;
+          it.remove();
+          break;
+        }
+      }
+      if (openSpan == null && !openSpans.isEmpty()) {
+        openSpan = openSpans.pop();
+      }
+      if (openSpan == null) {
+        return;
+      }
+
+      if (openSpans.isEmpty()) {
+        activeParentMappings.get().remove(this.template);
+      } else {
+        activeParentMappings.get().put(this.template, openSpans.peek());
+      }
+
+      SourcePosition endSourcePos = new SourcePosition(Math.max(0, lineInTemplate), Math.max(0, colInTemplate), templateSource);
+
+      if (!openSpan.triggeredIncludes.isEmpty()) {
+        includePairIds.get().add(openSpan.runtimePairId);
+        for (String targetTemplate : openSpan.triggeredIncludes) {
+          includeSpans.get().add(new IncludeSpan(openSpan.startSourcePosition, endSourcePos, targetTemplate));
+        }
+      }
+
+      if (openSpan.startTargetPosition.equals(positionInGeneratedFile)) {
+        int rId = openSpan.runtimePairId;
+        mappings.get().removeIf(m -> m.pairId == rId);
+        astMappings.get().removeIf(m -> m.pairId == rId);
+      } else {
+        mappings.get().add(new SimpleSourceMapping(endSourcePos, positionInGeneratedFile, openSpan.runtimePairId));
+        addASTMapping(astNode, false, positionInGeneratedFile, openSpan.runtimePairId);
+      }
     }
   }
 
   /**
    * Records a mapping position for template source coordinates without an associated AST node.
-   * @param pairId unique identifier to link start and end mapping spans
+   * @param elementId identifier of the template element
    * @param lineInTemplate line number within the template source
    * @param colInTemplate column number within the template source
    * @param templateSource identifier of template source
+   * @param isStart true, if marking the beginning of the node span, false for the end
    */
-  public void report(int pairId, int lineInTemplate, int colInTemplate, String templateSource) {
-    // Suppress recording if this is a config template
-    if(Reporting.isConfigTemplate(template.getName()))
-      return;
-
-    String content = sw.getCurrentContent();
-
-    int numberOfLinesInContent = numberOfNewLines(content);
-    int curGeneratedColPos = getColumnOfLastLine(content);
-
-    // Update absolute position stack so line numbering stays in sync
-    Pair<Integer,Integer> absPos = updateAndGetAbsolutePos(numberOfLinesInContent, curGeneratedColPos);
-
-    SourcePosition positionInGeneratedFile = new SourcePosition(absPos.getLeft(), absPos.getRight(), "GenOutput");
-    addTemplateMapping(lineInTemplate, colInTemplate, templateSource, positionInGeneratedFile, pairId);
+  public void report(int elementId, int lineInTemplate, int colInTemplate, String templateSource, boolean isStart) {
+    report(elementId, lineInTemplate, colInTemplate, templateSource, null, isStart);
   }
 
   /**
@@ -167,12 +240,9 @@ public class SourceMapCalculator {
    * @return list of decoded mappings ready for source map generation
    */
   private static List<DecodedMapping> calculateMappings(List<SimpleSourceMapping> simpleMappings) {
-    Set<Integer> includePairIds = new HashSet<>();
-    for (SimpleIncludeMapping inc : includeMappings.get()) {
-      includePairIds.add(inc.pairId);
-    }
+    Set<Integer> includePairIdsSet = includePairIds.get();
 
-    Map<Integer, SimpleSourceMapping> openSpans = new HashMap<>();
+    Map<Integer, SimpleSourceMapping> openSpansMap = new HashMap<>();
 
     List<MappingSpan> completedSpans = new ArrayList<>();
     for(SimpleSourceMapping mapping : simpleMappings) {
@@ -182,14 +252,14 @@ public class SourceMapCalculator {
       }
 
       int id = mapping.pairId;
-      if (includePairIds.contains(id)) {
+      if (includePairIdsSet.contains(id)) {
         continue;
       }
-      if(openSpans.containsKey(id)) {
-        SimpleSourceMapping start = openSpans.remove(id);
+      if(openSpansMap.containsKey(id)) {
+        SimpleSourceMapping start = openSpansMap.remove(id);
         completedSpans.add(new MappingSpan(id, start, mapping));
       }else{
-        openSpans.put(id, mapping);
+        openSpansMap.put(id, mapping);
       }
     }
 
@@ -277,40 +347,6 @@ public class SourceMapCalculator {
     return res;
   }
 
-  /**
-   * Correlates include statements with their corresponding source mapping spans to build
-   * template include tracking spans.
-   * @param includes List of recorded include mappings.
-   * @param sourceMappings List of general mappings used to resolve span boundaries
-   * @return List of structured include spans
-   */
-  private static List<IncludeSpan> calculateIncludeMappings(List<SimpleIncludeMapping> includes, List<SimpleSourceMapping> sourceMappings){
-    // Store source mappings in map for faster look-up
-    Map<Integer, Pair<SimpleSourceMapping, SimpleSourceMapping>> mappings = new HashMap<>();
-    for(SimpleSourceMapping mapping : sourceMappings){
-      if(mappings.containsKey(mapping.pairId)){
-        mappings.get(mapping.pairId).setValue(mapping);
-      }else{
-        mappings.put(mapping.pairId, new MutablePair<>(mapping, null));
-      }
-    }
-
-    List<IncludeSpan> res = new ArrayList<>();
-    for(SimpleIncludeMapping include : includes){
-      Pair<SimpleSourceMapping, SimpleSourceMapping> startEnd = mappings.get(include.pairId);
-      if(startEnd == null){
-        continue;
-      }
-      if(startEnd.getRight() == null){
-        Log.warn("Missing end for include: " + include.pairId);
-        continue;
-      }
-      res.add(new IncludeSpan(startEnd.getLeft().sourcePosition, startEnd.getRight().sourcePosition, include.targetTemplate));
-    }
-
-    return res;
-  }
-
   private static URL createSourceURL(Optional<String> fileOpt) {
     try {
       return new URL(fileOpt.orElse(""));
@@ -323,8 +359,6 @@ public class SourceMapCalculator {
       }
     }
   }
-
-
 
   /**
    * Updates the absolute generation coordinate stack using content line/column metrics and the parent
@@ -366,59 +400,9 @@ public class SourceMapCalculator {
         SourcePosition s = startOrEnd.getFileName().isPresent()?
             new SourcePosition(line, col, startOrEnd.getFileName().get()) :
             new SourcePosition(line, col);
-        Optional<SimpleSourceMapping> startMappingOpt = astMappings.get().stream()
-                .filter(mapping -> mapping.pairId == pairId)
-                .findFirst();
-        if(startMappingOpt.isPresent()) {
-          SimpleSourceMapping startMapping = startMappingOpt.get();
-          if(startMapping.targetPosition.equals(positionInGeneratedFile)) {
-            astMappings.get().remove(startMapping);
-          }else{
-            astMappings.get().add(new SimpleSourceMapping(s, positionInGeneratedFile, pairId));
-          }
-        }else{
-          astMappings.get().add(new SimpleSourceMapping(s, positionInGeneratedFile, pairId));
-        }
+        astMappings.get().add(new SimpleSourceMapping(s, positionInGeneratedFile, pairId));
       }
     }
-  }
-
-  /**
-   * Adds or cleans a template mapping, dropping zero-width spans where no content was generated between markers.
-   * @param lineInTemplate Line number in the template.
-   * @param colInTemplate Column number in the template.
-   * @param templateSource Source template identifier.
-   * @param positionInGeneratedFile Absolute position in the output file.
-   * @param pairId Unique identifier linking the span pair.
-   * @return the mapping created, or null if dropped as zero-width
-   */
-  protected SimpleSourceMapping addTemplateMapping(int lineInTemplate, int colInTemplate, String templateSource, SourcePosition positionInGeneratedFile, int pairId) {
-    int line = Math.max(0, lineInTemplate);
-    int col = Math.max(0, colInTemplate);
-
-    Optional<SimpleSourceMapping> startMappingOpt = mappings.get().stream()
-            .filter(m -> m.pairId == pairId)
-            .findFirst();
-    if(startMappingOpt.isPresent()){
-      SimpleSourceMapping startMapping = startMappingOpt.get();
-      // If not moved since start-mapping, nothing was generated
-      if(startMapping.targetPosition.equals(positionInGeneratedFile)) {
-        mappings.get().remove(startMapping); // Drop to keep source-map clean
-        return null;
-      }else{
-        SimpleSourceMapping endMapping = new SimpleSourceMapping(new SourcePosition(line, col, templateSource),
-                positionInGeneratedFile, pairId);
-        mappings.get().add(endMapping);
-        return endMapping;
-      }
-    }else{
-      // Start mapping
-      SimpleSourceMapping startMapping = new SimpleSourceMapping(new SourcePosition(line, col, templateSource),
-              positionInGeneratedFile, pairId);
-      mappings.get().add(startMapping);
-      return startMapping;
-    }
-
   }
 
   private static int numberOfNewLines(String wholeContent) {
@@ -432,16 +416,16 @@ public class SourceMapCalculator {
   }
 
   /**
-   * Compiles add buffered template mappings, AST mappings, and include spans, dispatches them to the reporting engine,
+   * Compiles all buffered template mappings, AST mappings, and include spans, dispatches them to the reporting engine,
    * and clears temporary buffers.
    */
   public static void flushMappings(){
     List<DecodedMapping> templateSourceMappings = calculateMappings(mappings.get());
     List<DecodedMapping> astSourceMappings = calculateMappings(astMappings.get());
-    List<IncludeSpan> includeSpans = calculateIncludeMappings(includeMappings.get(), mappings.get());
+    List<IncludeSpan> incSpans = new ArrayList<>(includeSpans.get());
     Reporting.reportASTSourceMapping(astSourceMappings);
     Reporting.reportTemplateSourceMapping(templateSourceMappings);
-    Reporting.reportTemplateIncludeSpan(includeSpans);
+    Reporting.reportTemplateIncludeSpan(incSpans);
     clearMappings();
   }
 
@@ -450,8 +434,10 @@ public class SourceMapCalculator {
     mappings.remove();
     astMappings.get().clear();
     astMappings.remove();
-    includeMappings.get().clear();
-    includeMappings.remove();
+    includeSpans.get().clear();
+    includeSpans.remove();
+    includePairIds.get().clear();
+    includePairIds.remove();
     activeParentMappings.get().clear();
     activeParentMappings.remove();
   }
@@ -461,10 +447,26 @@ public class SourceMapCalculator {
     templates.get().clear();
     templates.remove();
     curAbsolutePos.remove();
-    curAbsolutePos.remove();
     baseLineOffset.remove();
+    nextRuntimePairId.remove();
   }
 
+  public static class OpenSpan {
+    final int runtimePairId;
+    final int elementId;
+    final SourcePosition startSourcePosition;
+    final SourcePosition startTargetPosition;
+    final List<String> triggeredIncludes = new ArrayList<>();
+    final ASTNode astNode;
+
+    public OpenSpan(int runtimePairId, int elementId, SourcePosition startSourcePosition, SourcePosition startTargetPosition, ASTNode astNode) {
+      this.runtimePairId = runtimePairId;
+      this.elementId = elementId;
+      this.startSourcePosition = startSourcePosition;
+      this.startTargetPosition = startTargetPosition;
+      this.astNode = astNode;
+    }
+  }
 
   private static class MappingSpan{
     final int pairId;
@@ -482,21 +484,4 @@ public class SourceMapCalculator {
               && start.targetPosition.getColumn() == end.targetPosition.getColumn();
     }
   }
-
-  private static class SimpleIncludeMapping {
-    final SourcePosition sourcePosition;
-    final int pairId;
-    final String targetTemplate;
-
-    SimpleIncludeMapping(SourcePosition sourcePosition, int pairId, String targetTemplate) {
-      this.sourcePosition = sourcePosition;
-      this.pairId = pairId;
-      this.targetTemplate = targetTemplate;
-    }
-
-    public String toString(){
-      return sourcePosition.toString() + " -> " + targetTemplate;
-    }
-  }
-
 }

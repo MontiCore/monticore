@@ -138,6 +138,9 @@ public class TemplateController {
         List<HookPoint> templateForwardings =
             config.getGlex().getTemplateForwardings(template, ast);
         for (HookPoint templateHp : templateForwardings) {
+          if (Reporting.isTemplateSourceMappingEnabled()) {
+            SourceMapCalculator.reportIncludeHookPoint(template, templateHp);
+          }
           ret.append(templateHp.processValue(this, ast));
         }
       }
@@ -286,6 +289,9 @@ public class TemplateController {
     StringBuilder ret = new StringBuilder();
     List<HookPoint> templateForwardings = config.getGlex().getTemplateForwardings(templateName, node);
     for (HookPoint tn : templateForwardings) {
+      if (Reporting.isTemplateSourceMappingEnabled()) {
+        SourceMapCalculator.reportIncludeHookPoint(templateName, tn);
+      }
       ret.append(tn.processValue(this, node, templateArguments));
     }
 
@@ -309,6 +315,9 @@ public class TemplateController {
     StringBuilder ret = new StringBuilder();
     List<HookPoint> templateForwardings = config.getGlex().getTemplateForwardings(templateName, getAST());
     for (HookPoint tn : templateForwardings) {
+      if (Reporting.isTemplateSourceMappingEnabled()) {
+        SourceMapCalculator.reportIncludeHookPoint(templateName, tn);
+      }
       ret.append(tn.processValue(this, templateArguments));
     }
 

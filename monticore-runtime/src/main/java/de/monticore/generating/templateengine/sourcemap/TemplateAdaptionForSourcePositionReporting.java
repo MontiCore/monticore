@@ -94,7 +94,7 @@ public class TemplateAdaptionForSourcePositionReporting {
       startPos = buildReportTag(new SourcePosition(startLine-1, startColumn-1, templateSource), curPairId, true, true);
     }else {
       endPos = buildReportTag(new SourcePosition(endLine-1, endColumn-1, templateSource), curPairId, false, false);
-      startPos = buildReportTag(new SourcePosition(startLine-1, startColumn-1, templateSource), curPairId, false, false);
+      startPos = buildReportTag(new SourcePosition(startLine-1, startColumn-1, templateSource), curPairId, false, true);
     }
 
     // Inserting at the endPos first as otherwise we mangle with the String
@@ -118,17 +118,17 @@ public class TemplateAdaptionForSourcePositionReporting {
    * Constructs the executable FreeMarker interpolation string that invokes the source map calculator's reporting method
    * during template evaluation.
    * @param p The source position being reported.
-   * @param pairId Unique identifier linking the span pair.
+   * @param elementId Unique identifier for the element within the template.
    * @param expression true if reporting an expression/AST node, false for standard text blocks
    * @param expressionStart true if this tag represents the start boundary of an expression
    * @return formatted FreeMarker string snippet executing the reporting call
    */
-  private static String buildReportTag(SourcePosition p, int pairId, boolean expression, boolean expressionStart){
+  private static String buildReportTag(SourcePosition p, int elementId, boolean expression, boolean expressionStart){
     String fileName = p.getFileName().get().replace('\\', '/');
     if(!expression)
-      return "${"+ TemplateController.SOURCE_MAP_CALCULATOR +".report(" + pairId + "," + p.getLine() + "," + p.getColumn() +",\""+fileName+ "\")}";
+      return "${"+ TemplateController.SOURCE_MAP_CALCULATOR +".report(" + elementId + "," + p.getLine() + "," + p.getColumn() +",\""+fileName+ "\"," + expressionStart + ")}";
     else{
-      return "${"+ TemplateController.SOURCE_MAP_CALCULATOR +".report(" + pairId + "," + p.getLine() + "," + p.getColumn() + ",\""+fileName+"\",ast," + expressionStart +")}";
+      return "${"+ TemplateController.SOURCE_MAP_CALCULATOR +".report(" + elementId + "," + p.getLine() + "," + p.getColumn() + ",\""+fileName+"\",ast," + expressionStart +")}";
     }
   }
 
