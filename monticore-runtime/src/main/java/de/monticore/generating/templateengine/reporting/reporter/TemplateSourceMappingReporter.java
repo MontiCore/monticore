@@ -3,9 +3,11 @@ package de.monticore.generating.templateengine.reporting.reporter;
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.reporting.commons.DefaultReportEventHandler;
 import de.monticore.generating.templateengine.reporting.commons.ReportCreator;
+import de.monticore.generating.templateengine.sourcemap.IncludeSpan;
 import de.monticore.sourcemap.DecodedMapping;
 import de.monticore.sourcemap.DecodedSourceMap;
 import de.monticore.generating.templateengine.sourcemap.SourceMapCalculator;
+import de.monticore.symboltable.serialization.json.*;
 import de.se_rwth.commons.logging.Log;
 
 import java.io.File;
@@ -21,24 +23,24 @@ public class TemplateSourceMappingReporter extends DefaultReportEventHandler {
 
   protected String fileextension;
 
-  protected final String TEMPLATE_MAPPING = "TEMPL";
   protected final String AST_MAPPING = "AST";
+  protected final String INCLUDE_EXTENSION = ".incl.json";
 
   protected String qualifiedFileName;
 
   protected List<DecodedMapping> templateMappings = new ArrayList<>();
   protected List<DecodedMapping> astMappings = new ArrayList<>();
+  protected List<IncludeSpan> includeSpans = new ArrayList<>();
 
   protected String currentGeneratedFile;
   protected File currentTemplateMappingFile;
   protected File currentASTMappingFile;
-  protected File dbgMappingFile;
+  protected File currentIncludeSpanFile;
 
   public TemplateSourceMappingReporter(String path, String qualifiedFileName, String fileExtension) {
     reportingHelper = new ReportCreator(path);
     this.qualifiedFileName = qualifiedFileName;
     this.fileextension = fileExtension;
-    System.out.println("Creating Template Source Mapping Reporter");
   }
 
   @Override
@@ -52,13 +54,17 @@ public class TemplateSourceMappingReporter extends DefaultReportEventHandler {
   }
 
   @Override
+  public void reportTemplateIncludeSpan(List<IncludeSpan> spans){ this.includeSpans.addAll(spans); }
+
+  @Override
   public void reportBeforeFileCreation(String templateName, String path, String fileExtension, ASTNode ast) {
     SourceMapCalculator.clearMappings();
     clearVariables();
     currentGeneratedFile = path;
-    currentTemplateMappingFile = new File(path.replace("." + fileExtension, "")+"_"+TEMPLATE_MAPPING+"."+this.fileextension);
+
+    currentTemplateMappingFile = new File(path + "." + this.fileextension);
     currentASTMappingFile = new File(path.replace("." + fileExtension, "")+"_"+AST_MAPPING+"."+this.fileextension);
-    dbgMappingFile = new File(path.replace("." + fileExtension, "")+"_DEBUG."+this.fileextension);
+    currentIncludeSpanFile = new File(path + INCLUDE_EXTENSION);
   }
 
   @Override
@@ -75,20 +81,7 @@ public class TemplateSourceMappingReporter extends DefaultReportEventHandler {
   protected void writeContent(String fileName) {
     writeLine(currentTemplateMappingFile, getEncodeSourceMap(new DecodedSourceMap(fileName, this.templateMappings)));
     writeLine(currentASTMappingFile, getEncodeSourceMap(new DecodedSourceMap(fileName, this.astMappings)));
-
-    // Temp: Write the not encoded source-map for the template for debugging
-    StringBuilder dbgBuilder = new StringBuilder();
-    for(DecodedMapping mapping : this.templateMappings) {
-      dbgBuilder
-              .append("generatedLine: [").append(mapping.generatedLine)
-              .append("] generatedColumn: [").append(mapping.generatedColumn)
-              .append("] source: [").append(mapping.originalSource.url.toString())
-              .append("] originalLine: [").append(mapping.originalLine)
-              .append("] originalColumn: [").append(mapping.originalColumn)
-              .append("]\n");
-    }
-    writeLine(dbgMappingFile, dbgBuilder.toString());
-
+    writeLine(currentIncludeSpanFile, getIncludeSourceMap(fileName, this.includeSpans));
   }
 
   /**
@@ -116,5 +109,51 @@ public class TemplateSourceMappingReporter extends DefaultReportEventHandler {
   protected void clearVariables() {
     templateMappings.clear();
     astMappings.clear();
+    includeSpans.clear();
+  }
+
+  private String getIncludeSourceMap(String fileName, List<IncludeSpan> includeSpans) {
+    JsonObject content = new JsonObject();
+    content.putMember("file", new UserJsonString(fileName));
+    List<String> targetFiles = new ArrayList<>();
+    List<String> sourceFiles = new ArrayList<>();
+    JsonArray includedFiles = new JsonArray();
+    JsonArray includes = new JsonArray();
+    JsonArray sources = new JsonArray();
+    // Build list of all included files on the fly to avoid iterating twice,
+    // keep list of plain strings for faster lookup
+    for (IncludeSpan span : includeSpans) {
+      int posTarget = targetFiles.indexOf(span.targetTemplate);
+      if(posTarget == -1) {
+        // First occurrence
+        targetFiles.add(span.targetTemplate);
+        includedFiles.add(new UserJsonString(span.targetTemplate));
+        posTarget = targetFiles.size() - 1;
+      }
+      int posSource = sourceFiles.indexOf(span.start.getFileName().get());
+      if(posSource == -1){
+        // First occurrence
+        sourceFiles.add(span.start.getFileName().get());
+        sources.add(new UserJsonString(span.start.getFileName().get()));
+        posSource = sourceFiles.size() - 1;
+      }
+
+      JsonObject include = new JsonObject();
+      JsonObject start = new JsonObject();
+      start.putMember("line", new JsonNumber(span.start.getLine() + ""));
+      start.putMember("col", new JsonNumber(span.start.getColumn() + ""));
+      JsonObject end = new JsonObject();
+      end.putMember("line", new JsonNumber(span.end.getLine() + ""));
+      end.putMember("col", new JsonNumber(span.end.getColumn() + ""));
+      include.putMember("start", start);
+      include.putMember("end", end);
+      include.putMember("source", new JsonNumber(posSource + ""));
+      include.putMember("target", new JsonNumber(posTarget + ""));
+      includes.add(include);
+    }
+    content.putMember("sources", sources);
+    content.putMember("includedFiles", includedFiles);
+    content.putMember("includes", includes);
+    return content.toString();
   }
 }

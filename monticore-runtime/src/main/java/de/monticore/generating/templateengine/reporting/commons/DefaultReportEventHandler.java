@@ -4,6 +4,7 @@ package de.monticore.generating.templateengine.reporting.commons;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.HookPoint;
+import de.monticore.generating.templateengine.sourcemap.IncludeSpan;
 import de.monticore.sourcemap.DecodedMapping;
 import de.monticore.io.paths.MCPath;
 import de.monticore.symboltable.IScope;
@@ -326,6 +327,11 @@ public class DefaultReportEventHandler implements IReportEventHandler {
 
   @Override
   public void reportASTSourceMapping(List<DecodedMapping> mapping) {
+    // default
+  }
+
+  @Override
+  public void reportTemplateIncludeSpan(List<IncludeSpan> spans){
     // default
   }
 
