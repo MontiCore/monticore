@@ -30,6 +30,17 @@ public record DecodedSource(URL url, String content, boolean ignored) {
     this(url, content, false);
   }
 
+  /**
+   * Creates a new instance of {@code DecodedSource} with the same URL and ignored flag as the
+   * current instance, but with the specified content.
+   *
+   * @param content the content to associate with the new {@code DecodedSource} instance
+   * @return a new {@code DecodedSource} instance with the specified content
+   */
+  public DecodedSource withContent(String content){
+    return new DecodedSource(this.url, content, this.ignored);
+  }
+
   @Override
   public String toString() {
     return "{"

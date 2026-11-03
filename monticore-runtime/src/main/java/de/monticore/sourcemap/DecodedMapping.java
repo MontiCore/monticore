@@ -88,6 +88,24 @@ public record DecodedMapping(
     );
   }
 
+  /**
+   * Creates a new instance of {@code DecodedMapping} with the same generated line and column
+   * information, but with the specified original source context.
+   *
+   * @param originalSource the original source context to associate with the new
+   * {@code DecodedMapping} instance
+   * @return a new {@code DecodedMapping} instance with the specified original source context
+   */
+  public DecodedMapping withOriginalSource(DecodedSource originalSource){
+    return new DecodedMapping(
+        generatedLine,
+        generatedColumn,
+        originalSource,
+        originalLine,
+        originalColumn,
+        name);
+  }
+
 
   @Override
   public String toString() {
