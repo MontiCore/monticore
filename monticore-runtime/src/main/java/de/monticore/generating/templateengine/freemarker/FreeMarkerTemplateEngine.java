@@ -23,14 +23,14 @@ import freemarker.template.TemplateException;
 
 /**
  * Helps to process FreeMarker templates with MontiCore.
- * 
+ *
  *
  */
 public class FreeMarkerTemplateEngine {
-  
+
   public static final String FM_FILE_EXTENSION = ".ftl";
   protected final Configuration configuration;
-  
+
   public FreeMarkerTemplateEngine(Configuration configuration) {
     this.configuration = Preconditions.checkNotNull(
             configuration,
@@ -39,17 +39,17 @@ public class FreeMarkerTemplateEngine {
 
   /**
    * Loads the template named qualifiedTemplateName from the class path.
-   * 
+   *
    * @param qualifiedTemplateName full qualified template name EXCLUDING the
    *          file extension
    * @return the FreeMarker template or null, if the template is not available
    */
   public Template loadTemplate(String qualifiedTemplateName) {
     isNullOrEmpty(qualifiedTemplateName);
-      
+
     // use empty logger to suppress default free marker log behaviour
     System.setProperty(Logger.SYSTEM_PROPERTY_NAME_LOGGER_LIBRARY, Logger.LIBRARY_NAME_NONE);
-  
+
     Template result;
     try {
       result = configuration.getTemplate(qualifiedTemplateName);
@@ -62,11 +62,11 @@ public class FreeMarkerTemplateEngine {
     }
     return result;
   }
-  
+
   /**
    * Runs the Template engine on the given template and data and writes the
    * result into the StringBuilder buffer
-   * 
+   *
    * @param buffer contains the result
    * @param data data for the template
    * @param template the template file
@@ -79,8 +79,7 @@ public class FreeMarkerTemplateEngine {
 
     try {
       if(Reporting.isTemplateSourceMappingEnabled()) {
-        if (data instanceof SimpleHash) {
-          SimpleHash asSimpleHash = (SimpleHash) data;
+        if (data instanceof SimpleHash asSimpleHash) {
           asSimpleHash.put(TemplateController.SOURCE_MAP_CALCULATOR, new SourceMapCalculator(w, template));
         }
       }
@@ -122,11 +121,11 @@ public class FreeMarkerTemplateEngine {
               seperator + "Exception-type: " + e.getCause())  ;
     }
   }
-  
+
   /**
    * Loads the template first using the loadTemplate() method then runs the
    * template engine using the run() method.
-   * 
+   *
    * @param qualifiedTemplateName full qualified template name EXCLUDING the
    *          file extension
    * @param buffer contains the result
