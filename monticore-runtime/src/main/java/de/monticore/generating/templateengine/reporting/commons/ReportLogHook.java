@@ -92,6 +92,11 @@ public class ReportLogHook implements ILogHook, IReportEventHandler {
     return getReportManager(Reporting.getCurrentModel());
   }
 
+  public boolean hasReportEventHandler(Class<? extends IReportEventHandler> handlerClass) {
+    ReportManager manager = this.getReportManager();
+    return manager != null && manager.hasReportEventHandler(handlerClass);
+  }
+
   /**
    * For creating report managers on-demand for newly processed models.
    */

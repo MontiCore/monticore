@@ -25,6 +25,10 @@ public class ReportManager implements IReportEventHandler {
     this.outputDir = outputDir;
   }
 
+  public boolean hasReportEventHandler(Class<? extends IReportEventHandler> handlerClass) {
+    return this.reportEventHandlers.stream().anyMatch(handlerClass::isInstance);
+  }
+
   public String getOutputDir() {
     return this.outputDir;
   }
@@ -100,17 +104,17 @@ public class ReportManager implements IReportEventHandler {
           fileExtension, ast);
     }
   }
-  
+
   @Override
   public void reportFileCreation(Path parentPath, Path file) {
     this.reportEventHandlers.forEach(h -> h.reportFileCreation(parentPath, file));
   }
-  
+
   @Override
   public void reportFileCreation(String fileName) {
     this.reportEventHandlers.forEach(h -> h.reportFileCreation(fileName));
   }
-  
+
   @Override
   public void reportFileExistenceChecking(List<Path> parentPath, Path file) {
     this.reportEventHandlers.forEach(h -> h.reportFileExistenceChecking(parentPath, file));
