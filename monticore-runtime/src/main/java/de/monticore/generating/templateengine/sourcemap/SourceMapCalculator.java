@@ -203,12 +203,59 @@ public class SourceMapCalculator {
     Map<String, MappingSpan> deduplicatedPairs = new HashMap<>();
     List<SimpleSourceMapping> deduplicatedMappings = new ArrayList<>();
     for(MappingSpan current : completedSpans) {
-      String key = current.start.targetPosition.getLine() + ":" + current.start.targetPosition.getColumn();
-      if(deduplicatedPairs.containsKey(key)){
-        continue;
+
+      // For the case that the span goes over multiple lines, we have to add a mapping
+      // for each, otherwise this would leave them unmapped
+      int startTargetLine = current.start.targetPosition.getLine();
+      int endTargetLine = current.end.targetPosition.getLine();
+      int startSourceLine = current.start.sourcePosition.getLine();
+      int endSourceLine = current.end.sourcePosition.getLine();
+
+      // When the end is at position 0 at the subsequent line (e.g., following trailing \n),
+      // this line did not receive any content from the span
+      int lastTargetLine = (current.end.targetPosition.getColumn() == 0 && endTargetLine > startTargetLine)
+              ? endTargetLine - 1
+              : endTargetLine;
+
+      int targetLineDelta = Math.max(0, lastTargetLine - startTargetLine);
+      int sourceLineDelta = Math.max(0, endSourceLine - startSourceLine);
+
+      // Iterate all lines of the map
+      for(int offset = 0; offset <= targetLineDelta; offset++) {
+        SimpleSourceMapping mappingToAdd;
+        if(offset == 0){
+          // First line has initial column offset
+          mappingToAdd = current.start;
+        }else{
+          int curTargetLine = startTargetLine + offset;
+          int curSourceLine;
+          if(targetLineDelta == sourceLineDelta){
+            // 1-to-1 correspondence (default for text-blocks)
+            curSourceLine = startSourceLine + offset;
+          }else if(sourceLineDelta == 0){
+            // Single line expanded to multiple generated lines
+            curSourceLine = startSourceLine;
+          }else{
+            // delta mismatch, try to scale
+            curSourceLine = Math.min(startSourceLine + offset, endSourceLine);
+          }
+          SourcePosition targetPos = current.start.targetPosition.getFileName().isPresent()
+                  ? new SourcePosition(curTargetLine, 0, current.start.targetPosition.getFileName().get())
+                  : new SourcePosition(curTargetLine, 0);
+
+          SourcePosition sourcePos = current.start.sourcePosition.getFileName().isPresent()
+                  ? new SourcePosition(curSourceLine, 0, current.start.sourcePosition.getFileName().get())
+                  : new SourcePosition(curSourceLine, 0);
+
+          mappingToAdd = new SimpleSourceMapping(sourcePos, targetPos, current.pairId);
+        }
+        String key = mappingToAdd.targetPosition.getLine() + ":" + mappingToAdd.targetPosition.getColumn();
+        if(deduplicatedPairs.containsKey(key)){
+          continue;
+        }
+        deduplicatedMappings.add(mappingToAdd);
+        deduplicatedPairs.put(key, current);
       }
-      deduplicatedMappings.add(current.start);
-      deduplicatedPairs.put(key, current);
     }
 
     // Sort by generated coordinates (for VLQ deltas)
