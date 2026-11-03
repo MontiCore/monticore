@@ -4,6 +4,8 @@ package de.monticore.generating.templateengine.reporting.commons;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.HookPoint;
+import de.monticore.generating.templateengine.source_mapping.DecodedMapping;
+import de.monticore.generating.templateengine.source_mapping.SourceMapping;
 import de.monticore.io.paths.MCPath;
 import de.monticore.symboltable.IScope;
 
@@ -311,4 +313,10 @@ public class DefaultReportEventHandler implements IReportEventHandler {
   public void reportFileExistenceChecking(List<Path> parentPath, Path file) {
     // default
   }
+
+  @Override
+  public void reportTemplateSourceMapping(String qualifiedTemplateName, List<DecodedMapping> mapping) {
+    // default
+  }
+
 }

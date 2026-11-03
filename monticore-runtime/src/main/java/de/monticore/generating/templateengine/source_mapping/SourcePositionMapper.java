@@ -1,5 +1,6 @@
-package de.monticore.source_mapping;
+package de.monticore.generating.templateengine.source_mapping;
 
+import de.monticore.generating.templateengine.TemplateController;
 import de.se_rwth.commons.SourcePosition;
 import freemarker.core.TemplateElement;
 import freemarker.core.TemplateObject;
@@ -15,8 +16,9 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
+import static de.monticore.generating.templateengine.source_mapping.SourceMapCalculator.pairId;
+
 public class SourcePositionMapper {
-  protected static AtomicInteger pairId = new AtomicInteger();
 
   public static Template adaptTemplateWithPositionMarkers(Template result, Configuration configuration) throws IOException {
     List<TemplateElement> tes = new ArrayList<>();
@@ -45,17 +47,18 @@ public class SourcePositionMapper {
   private static void addSourcePositionReport(TemplateElement t, StringBuilder sb, String canonicalForm) {
     String endPos = reportingExpressionEnd(new SourcePosition(t.getEndLine(), t.getEndColumn(), t.getTemplate().getName()), pairId.get());
     String startPos = reportingExpressionStart(new SourcePosition(t.getBeginLine(), t.getBeginColumn(), t.getTemplate().getName()), pairId.get());
+    // Inserting at the endPos first as otherwise we mangle with the String
     sb.insert(lineColumnToOffset(canonicalForm, t.getEndLine(), t.getEndColumn()) + 1, endPos);
     sb.insert(lineColumnToOffset(canonicalForm, t.getBeginLine(), t.getBeginColumn()), startPos);
     pairId.getAndIncrement();
   }
 
   protected static String reportingExpressionStart(SourcePosition p, int pairId) {
-    return "${sourceMappingUtil.reportStart(" + pairId + "," + +p.getLine() + "," + p.getColumn() + ",ast)}";
+    return "${"+ TemplateController.SOURCE_MAP_CALCULATOR +".reportStart(" + pairId + "," + +p.getLine() + "," + p.getColumn() + ",ast)}";
   }
 
   protected static String reportingExpressionEnd(SourcePosition p, int pairId) {
-    return "${sourceMappingUtil.reportEnd(" + pairId + "," + +p.getLine() + "," + p.getColumn() + ",ast)}";
+    return "${"+TemplateController.SOURCE_MAP_CALCULATOR +".reportEnd(" + pairId + "," + +p.getLine() + "," + p.getColumn() + ",ast)}";
   }
 
   public static int lineColumnToOffset(String input, int lineNumber, int columnNumber) {

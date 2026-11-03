@@ -1,4 +1,4 @@
-package de.monticore.source_mapping;
+package de.monticore.generating.templateengine.source_mapping;
 
 import de.se_rwth.commons.SourcePosition;
 
