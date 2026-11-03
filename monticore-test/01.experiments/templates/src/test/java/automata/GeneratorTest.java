@@ -81,7 +81,7 @@ public class GeneratorTest {
     try {
       ReportManager.ReportManagerFactory factory = modelName -> {
         ReportManager reports = new ReportManager("target/statepattern");
-        reports.addReportEventHandler(new TemplateSourceMappingReporter("target/statepattern", modelName, false));
+        reports.addReportEventHandler(new TemplateSourceMappingReporter("target/statepattern", modelName, true));
         return reports;
       };
       Reporting.init("target/statepattern", factory);
@@ -97,7 +97,8 @@ public class GeneratorTest {
 
 
       URL templateUrl = getClass().getClassLoader().getResource("AbstractState.ftl");
-      DecodedSource src = new DecodedSource(templateUrl);
+      String templateContent = Resources.toString(templateUrl, StandardCharsets.UTF_8);
+      DecodedSource src = new DecodedSource(templateUrl, templateContent, false);
 
       List<DecodedMapping> mappings = getMappingsForAbstractPingPongState(src, true);
 
