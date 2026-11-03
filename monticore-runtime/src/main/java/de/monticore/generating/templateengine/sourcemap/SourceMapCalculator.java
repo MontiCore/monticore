@@ -234,14 +234,12 @@ public class SourceMapCalculator {
     if(startMappingOpt.isPresent()){
       SimpleSourceMapping startMapping = startMappingOpt.get();
       // If not moved since start-mapping, nothing was generated
-      /*if(startMapping.targetPosition.equals(positionInGeneratedFile)) {
+      if(startMapping.targetPosition.equals(positionInGeneratedFile)) {
         mappings.get().remove(startMapping); // Drop to keep source-map clean
       }else{
         mappings.get().add(new SimpleSourceMapping(new SourcePosition(line, col, templateSource),
                 positionInGeneratedFile, pairId));
-      }*/
-      mappings.get().add(new SimpleSourceMapping(new SourcePosition(line, col, templateSource),
-              positionInGeneratedFile, pairId));
+      }
     }else{
       // Start mapping
       mappings.get().add(new SimpleSourceMapping(new SourcePosition(line, col, templateSource),
