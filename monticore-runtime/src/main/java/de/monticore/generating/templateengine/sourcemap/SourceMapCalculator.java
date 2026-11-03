@@ -21,22 +21,25 @@ public class SourceMapCalculator {
   private static ThreadLocal<Stack<Template>> templates = ThreadLocal.withInitial(() -> new Stack<>());
 
   // We need this for nested template evaluations
-  private static ThreadLocal<Stack<Pair<Integer, Integer>>> curAbsolutePos = ThreadLocal.withInitial(() -> new Stack<>());
+  private static ThreadLocal<Pair<Integer, Integer>> curAbsolutePos = ThreadLocal.withInitial(() -> Pair.of(0, 0));
 
   private static ThreadLocal<List<SimpleSourceMapping>> mappings = ThreadLocal.withInitial(ArrayList::new);
   private static ThreadLocal<List<SimpleSourceMapping>> astMappings = ThreadLocal.withInitial(ArrayList::new);
   private static ThreadLocal<List<SimpleIncludeMapping>> includeMappings = ThreadLocal.withInitial(ArrayList::new);
+  private static ThreadLocal<Map<Template, SimpleSourceMapping>> activeParentMappings = ThreadLocal.withInitial(HashMap::new);
   private static ThreadLocal<Integer> baseLineOffset = ThreadLocal.withInitial(() -> 0);
 
 
   private final FreeMarkerTemplateEngine.ContentWriter sw;
   private final Template template;
+  private final Pair<Integer, Integer> startOffset;
 
 
   // Everytime a template is executed it uses a new StringWriter instance
   public SourceMapCalculator(FreeMarkerTemplateEngine.ContentWriter sw, Template template) {
     this.sw = sw;
     this.template = template;
+    this.startOffset = curAbsolutePos.get();
   }
 
   /**
@@ -52,25 +55,20 @@ public class SourceMapCalculator {
 
 
     // Check if there is a "parent" template to map the inclusion
-    if(templates.get().isEmpty() == false && mappings.get().isEmpty() == false) {
-      // The latest mapping-report must have triggered this include, store start and target,
-      // end is resolved via the same id
-      SimpleSourceMapping latestMapping = mappings.get().getLast();
-      if(latestMapping != null){
-        includeMappings.get().add(new SimpleIncludeMapping(latestMapping.sourcePosition, latestMapping.pairId,
+    if(templates.get().isEmpty() == false) {
+      Template parentTemplate = templates.get().peek();
+      SimpleSourceMapping parentMapping = activeParentMappings.get().get(parentTemplate);
+      if(parentMapping != null){
+        includeMappings.get().add(new SimpleIncludeMapping(parentMapping.sourcePosition, parentMapping.pairId,
                 template.getName()));
       }
     }
 
+    if(templates.get().isEmpty()){
+      curAbsolutePos.set(Pair.of(getBaseLineOffset(), 0));
+    }
+
     templates.get().push(template);
-
-    // Ask parent template for its known last absolute pos inside nested template evaluation
-    int curLine = curAbsolutePos.get().isEmpty() ? getBaseLineOffset() : curAbsolutePos.get().peek().getLeft();
-    int curColumn = curAbsolutePos.get().isEmpty() ? 0 : curAbsolutePos.get().peek().getRight();
-
-    curAbsolutePos.get().push(Pair.of(curLine,curColumn));
-
-    assert curAbsolutePos.get().size() == templates.get().size();
   }
 
   /**
@@ -86,12 +84,7 @@ public class SourceMapCalculator {
       return;
 
     if (templates.get().pop() != template) {
-      throw new IllegalStateException();
-    }
-
-    curAbsolutePos.get().pop();
-
-    if(templates.get().size() != curAbsolutePos.get().size()) {
+      Log.error("0xA0740 Discrepancy between template stack and template name");
       throw new IllegalStateException();
     }
 
@@ -135,9 +128,12 @@ public class SourceMapCalculator {
 
     SourcePosition positionInGeneratedFile = new SourcePosition(absPos.getLeft(), absPos.getRight(), "GenOutput");
     addASTMapping(astNode, isStart, positionInGeneratedFile, pairId);
-    addTemplateMapping(lineInTemplate, colInTemplate, templateSource, positionInGeneratedFile, pairId);
-
-    assert curAbsolutePos.get().size() == templates.get().size();
+    SimpleSourceMapping mapping = addTemplateMapping(lineInTemplate, colInTemplate, templateSource, positionInGeneratedFile, pairId);
+    if(isStart && mapping != null) {
+      activeParentMappings.get().put(this.template, mapping);
+    } else if(!isStart) {
+      activeParentMappings.get().remove(this.template);
+    }
   }
 
   /**
@@ -162,8 +158,6 @@ public class SourceMapCalculator {
 
     SourcePosition positionInGeneratedFile = new SourcePosition(absPos.getLeft(), absPos.getRight(), "GenOutput");
     addTemplateMapping(lineInTemplate, colInTemplate, templateSource, positionInGeneratedFile, pairId);
-
-    assert curAbsolutePos.get().size() == templates.get().size();
   }
 
   /**
@@ -173,6 +167,11 @@ public class SourceMapCalculator {
    * @return list of decoded mappings ready for source map generation
    */
   private static List<DecodedMapping> calculateMappings(List<SimpleSourceMapping> simpleMappings) {
+    Set<Integer> includePairIds = new HashSet<>();
+    for (SimpleIncludeMapping inc : includeMappings.get()) {
+      includePairIds.add(inc.pairId);
+    }
+
     Map<Integer, SimpleSourceMapping> openSpans = new HashMap<>();
 
     List<MappingSpan> completedSpans = new ArrayList<>();
@@ -183,6 +182,9 @@ public class SourceMapCalculator {
       }
 
       int id = mapping.pairId;
+      if (includePairIds.contains(id)) {
+        continue;
+      }
       if(openSpans.containsKey(id)) {
         SimpleSourceMapping start = openSpans.remove(id);
         completedSpans.add(new MappingSpan(id, start, mapping));
@@ -331,24 +333,13 @@ public class SourceMapCalculator {
    * @param curGeneratedColPos column position within the last line of the content
    * @return the newly absolut position in the generated file
    */
-  private static Pair<Integer, Integer> updateAndGetAbsolutePos(int numberOfLinesInContent, int curGeneratedColPos) {
-    // The stack is never empty when this is called for a report, due to the push/pop validation
-    curAbsolutePos.get().pop();
-
-    int lineOffset;
-    int columnOffset = 0;
-    if(!curAbsolutePos.get().empty()) {
-      Pair<Integer, Integer> offsetFromParentTemplate = curAbsolutePos.get().peek();
-      lineOffset = offsetFromParentTemplate.getLeft();
-      columnOffset = offsetFromParentTemplate.getRight();
-    }else{
-      lineOffset = getBaseLineOffset();
-    }
-
-    int absoluteLine = lineOffset + numberOfLinesInContent;
-    int absoluteColumn = numberOfLinesInContent == 0 ? columnOffset + curGeneratedColPos : curGeneratedColPos;
+  private Pair<Integer, Integer> updateAndGetAbsolutePos(int numberOfLinesInContent, int curGeneratedColPos) {
+    int absoluteLine = startOffset.getLeft() + numberOfLinesInContent;
+    int absoluteColumn = (numberOfLinesInContent == 0)
+        ? startOffset.getRight() + curGeneratedColPos
+        : curGeneratedColPos;
     Pair<Integer, Integer> newPos = Pair.of(absoluteLine, absoluteColumn);
-    curAbsolutePos.get().push(newPos);
+    curAbsolutePos.set(newPos);
     return newPos;
   }
 
@@ -399,8 +390,9 @@ public class SourceMapCalculator {
    * @param templateSource Source template identifier.
    * @param positionInGeneratedFile Absolute position in the output file.
    * @param pairId Unique identifier linking the span pair.
+   * @return the mapping created, or null if dropped as zero-width
    */
-  protected void addTemplateMapping(int lineInTemplate, int colInTemplate, String templateSource, SourcePosition positionInGeneratedFile, int pairId) {
+  protected SimpleSourceMapping addTemplateMapping(int lineInTemplate, int colInTemplate, String templateSource, SourcePosition positionInGeneratedFile, int pairId) {
     int line = Math.max(0, lineInTemplate);
     int col = Math.max(0, colInTemplate);
 
@@ -412,14 +404,19 @@ public class SourceMapCalculator {
       // If not moved since start-mapping, nothing was generated
       if(startMapping.targetPosition.equals(positionInGeneratedFile)) {
         mappings.get().remove(startMapping); // Drop to keep source-map clean
+        return null;
       }else{
-        mappings.get().add(new SimpleSourceMapping(new SourcePosition(line, col, templateSource),
-                positionInGeneratedFile, pairId));
+        SimpleSourceMapping endMapping = new SimpleSourceMapping(new SourcePosition(line, col, templateSource),
+                positionInGeneratedFile, pairId);
+        mappings.get().add(endMapping);
+        return endMapping;
       }
     }else{
       // Start mapping
-      mappings.get().add(new SimpleSourceMapping(new SourcePosition(line, col, templateSource),
-              positionInGeneratedFile, pairId));
+      SimpleSourceMapping startMapping = new SimpleSourceMapping(new SourcePosition(line, col, templateSource),
+              positionInGeneratedFile, pairId);
+      mappings.get().add(startMapping);
+      return startMapping;
     }
 
   }
@@ -455,13 +452,15 @@ public class SourceMapCalculator {
     astMappings.remove();
     includeMappings.get().clear();
     includeMappings.remove();
+    activeParentMappings.get().clear();
+    activeParentMappings.remove();
   }
 
   public static void reset() {
     clearMappings();
     templates.get().clear();
     templates.remove();
-    curAbsolutePos.get().clear();
+    curAbsolutePos.remove();
     curAbsolutePos.remove();
     baseLineOffset.remove();
   }
