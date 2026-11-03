@@ -2,6 +2,7 @@ package de.monticore.generating.templateengine.sourcemap;
 
 import de.monticore.generating.templateengine.TemplateController;
 import de.se_rwth.commons.SourcePosition;
+import de.se_rwth.commons.logging.Log;
 import freemarker.core.TemplateElement;
 import freemarker.core.TemplateObject;
 import freemarker.core.TextBlock;
@@ -31,13 +32,13 @@ public class TemplateAdaptionForSourcePositionReporting {
     Comparator<TemplateElement> c = firstComp.thenComparingInt(TemplateObject::getEndColumn);
     tes.stream().sorted(c.reversed()).forEach(t -> {
       if (t.getClass().getName().contains("DollarVariable")) {
-        addSourcePositionReport(t, sb, canonicalForm, true);
+        addSourcePositionReport(t, sb, canonicalForm, configuration,true);
       }
       if (t instanceof TextBlock) {
         if (!t.getCanonicalForm().isBlank()) {
           // No AST Reporting since this is only text from the template
           // to discuss: Through freemarker-ifs this might still be dependent on the AST variable
-          addSourcePositionReport(t, sb, canonicalForm, false);
+          addSourcePositionReport(t, sb, canonicalForm, configuration, false);
         }
       }
     });
@@ -45,19 +46,26 @@ public class TemplateAdaptionForSourcePositionReporting {
     return new Template(result.getName(), sb.toString(), configuration);
   }
 
-  private static void addSourcePositionReport(TemplateElement t, StringBuilder sb, String canonicalForm, boolean reportAstMapping) {
+  private static void addSourcePositionReport(TemplateElement t, StringBuilder sb, String canonicalForm, Configuration configuration, boolean reportAstMapping) {
 
     // The Freemarker Engine uses Source Positions starting at line and column 1, but we report them zero based
     int curPairId = pairId.getAndIncrement();
     String endPos;
     String startPos;
 
+    String templateSource = t.getTemplate().getName();
+    try {
+      templateSource = configuration.getTemplateLoader().findTemplateSource(t.getTemplate().getName()).toString();
+    } catch (IOException e) {
+      Log.warn("Could not find fully qualified source URL of Template.");
+    }
+
     if(reportAstMapping) {
-      endPos = reportingExpressionEnd(new SourcePosition(t.getEndLine()-1, t.getEndColumn()-1, t.getTemplate().getName()), curPairId);
-      startPos = reportingExpressionStart(new SourcePosition(t.getBeginLine()-1, t.getBeginColumn()-1, t.getTemplate().getName()), curPairId);
+      endPos = reportingExpressionEnd(new SourcePosition(t.getEndLine()-1, t.getEndColumn()-1, templateSource), curPairId);
+      startPos = reportingExpressionStart(new SourcePosition(t.getBeginLine()-1, t.getBeginColumn()-1, templateSource), curPairId);
     } else {
-      endPos = reportingTextStart(new SourcePosition(t.getEndLine()-1, t.getEndColumn()-1, t.getTemplate().getName()), curPairId);
-      startPos = reportingTextEnd(new SourcePosition(t.getBeginLine()-1, t.getBeginColumn()-1, t.getTemplate().getName()), curPairId);
+      endPos = reportingTextStart(new SourcePosition(t.getEndLine()-1, t.getEndColumn()-1, templateSource), curPairId);
+      startPos = reportingTextEnd(new SourcePosition(t.getBeginLine()-1, t.getBeginColumn()-1, templateSource), curPairId);
     }
 
     // Inserting at the endPos first as otherwise we mangle with the String
@@ -66,19 +74,19 @@ public class TemplateAdaptionForSourcePositionReporting {
   }
 
   protected static String reportingTextStart(SourcePosition p, int pairId) {
-    return "${"+ TemplateController.SOURCE_MAP_CALCULATOR +".report(" + pairId + "," + +p.getLine() + "," + p.getColumn() + ")}";
+    return "${"+ TemplateController.SOURCE_MAP_CALCULATOR +".report(" + pairId + "," + +p.getLine() + "," + p.getColumn() +",\""+p.getFileName().get()+ "\")}";
   }
 
   protected static String reportingTextEnd(SourcePosition p, int pairId) {
-    return "${"+TemplateController.SOURCE_MAP_CALCULATOR +".report(" + pairId + "," + +p.getLine() + "," + p.getColumn() + ")}";
+    return "${"+TemplateController.SOURCE_MAP_CALCULATOR +".report(" + pairId + "," + +p.getLine() + "," + p.getColumn() +",\""+p.getFileName().get()+ "\")}";
   }
 
   protected static String reportingExpressionStart(SourcePosition p, int pairId) {
-    return "${"+ TemplateController.SOURCE_MAP_CALCULATOR +".report(" + pairId + "," + +p.getLine() + "," + p.getColumn() + ",ast, true)}";
+    return "${"+ TemplateController.SOURCE_MAP_CALCULATOR +".report(" + pairId + "," + +p.getLine() + "," + p.getColumn() + ",\""+p.getFileName().get()+"\",ast, true)}";
   }
 
   protected static String reportingExpressionEnd(SourcePosition p, int pairId) {
-    return "${"+TemplateController.SOURCE_MAP_CALCULATOR +".report(" + pairId + "," + +p.getLine() + "," + p.getColumn() + ",ast, false)}";
+    return "${"+TemplateController.SOURCE_MAP_CALCULATOR +".report(" + pairId + "," + +p.getLine() + "," + p.getColumn() + ", \""+p.getFileName().get()+"\",ast, false)}";
   }
 
   public static int lineColumnToOffset(String input, int lineNumber, int columnNumber) {

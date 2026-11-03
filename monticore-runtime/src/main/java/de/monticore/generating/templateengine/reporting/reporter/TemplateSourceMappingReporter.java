@@ -54,8 +54,8 @@ public class TemplateSourceMappingReporter extends AReporter {
   }
 
   protected void writeContent(String fileName) {
+    writeLine(getEncodeSourceMap(new DecodedSourceMap(fileName, this.templateMappings)));
     writeLine(getEncodeSourceMap(new DecodedSourceMap(fileName, this.astMappings)));
-    writeLine(getEncodeSourceMap(new DecodedSourceMap(fileName, templateMappings)));
   }
 
   protected void clearVariables() {
