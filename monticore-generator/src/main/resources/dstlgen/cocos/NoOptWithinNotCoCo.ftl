@@ -9,6 +9,7 @@ import ${package}.${grammarNameLower}tr._ast.*;
 /**
  * This CoCo makes sure no optional nodes appear within negative nodes.
  */
+${tc.include("mc.Generated")}
 public class ${className}
 <#list productions>
     implements

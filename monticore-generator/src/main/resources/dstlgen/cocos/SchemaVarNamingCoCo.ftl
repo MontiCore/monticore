@@ -9,6 +9,7 @@ import de.monticore.tf.tfcommons._ast.ASTTfIdentifier;
 /**
 * This CoCo naming convetions for schema variables.
 */
+${tc.include("mc.Generated")}
 public class ${classname} implements ${ast.getName()}TRAST${prod.getName()}_PatCoCo {
 
     @Override
