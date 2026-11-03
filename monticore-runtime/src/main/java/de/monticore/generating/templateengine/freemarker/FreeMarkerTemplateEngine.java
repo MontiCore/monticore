@@ -55,13 +55,6 @@ public class FreeMarkerTemplateEngine {
       result = configuration.getTemplate(qualifiedTemplateName);
       if(Reporting.isTemplateSourceMappingEnabled() && !Reporting.isConfigTemplate(qualifiedTemplateName)) {
         result = TemplateAdaptionForSourcePositionReporting.adaptTemplateWithPositionMarkers(result, configuration);
-        // Debug: Write result as file for further investigation
-        try(Writer writer = new FileWriter(result.getName() + "_annotated.ftl")){
-          result.dump(writer);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
       }
     }
     catch (IOException e) {
