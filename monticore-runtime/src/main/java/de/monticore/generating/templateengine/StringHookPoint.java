@@ -3,8 +3,6 @@
 package de.monticore.generating.templateengine;
 
 import de.monticore.ast.ASTNode;
-import de.monticore.generating.templateengine.source_mapping.SourceMapCalculator;
-import de.monticore.generating.templateengine.source_mapping.SourceMapping;
 
 import java.util.List;
 import java.util.Optional;
