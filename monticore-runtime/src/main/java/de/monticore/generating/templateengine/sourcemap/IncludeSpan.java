@@ -1,19 +1,21 @@
+/* (c) https://github.com/MontiCore/monticore */
+
 package de.monticore.generating.templateengine.sourcemap;
 
 import de.se_rwth.commons.SourcePosition;
 
-public class IncludeSpan {
-  public final SourcePosition start;
-  public final SourcePosition end;
-  public final String targetTemplate;
 
-  IncludeSpan(SourcePosition start, SourcePosition end, String targetTemplate) {
-    this.start = start;
-    this.end = end;
-    this.targetTemplate = targetTemplate;
-  }
+/**
+ * Represents a span of source code included from one position to another during template generation.
+ * <p>
+ * @param start Specifies the starting position of the code span in the source.
+ * @param end Specifies the ending position of the code span in the source.
+ * @param targetTemplate Represents the name of the target template associated with this span.
+ */
+public record IncludeSpan(SourcePosition start, SourcePosition end, String targetTemplate) {
 
-  public String toString(){
-      return start.toString() + " -> " + end.toString() + " -> " + targetTemplate;
+  @Override
+  public String toString() {
+    return start.toString() + " -> " + end.toString() + " -> " + targetTemplate;
   }
 }

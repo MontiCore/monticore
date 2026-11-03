@@ -1,3 +1,5 @@
+/* (c) https://github.com/MontiCore/monticore */
+
 package de.monticore.generating.templateengine.sourcemap;
 
 import de.monticore.ast.ASTNode;
@@ -12,7 +14,6 @@ import de.monticore.sourcemap.convenience.PositionMapping;
 import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Log;
 import freemarker.template.Template;
-import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.net.MalformedURLException;
@@ -20,6 +21,11 @@ import java.net.URL;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * Responsible for tracking mapping information between template source code, generated output
+ * positions, and associated Abstract Syntax Tree (AST) nodes. It provides functionality
+ * to record, process, and finalize source map data during template rendering.
+ */
 public class SourceMapCalculator {
 
   private static ThreadLocal<Stack<Template>> templates = ThreadLocal.withInitial(() -> new Stack<>());
@@ -212,8 +218,8 @@ public class SourceMapCalculator {
 
       if (openSpan.startTargetPosition.equals(positionInGeneratedFile)) {
         int rId = openSpan.runtimePairId;
-        mappings.get().removeIf(m -> m.pairId == rId);
-        astMappings.get().removeIf(m -> m.pairId == rId);
+        mappings.get().removeIf(m -> m.pairId() == rId);
+        astMappings.get().removeIf(m -> m.pairId() == rId);
       } else {
         mappings.get().add(new SimpleSourceMapping(endSourcePos, positionInGeneratedFile, openSpan.runtimePairId));
         addASTMapping(astNode, false, positionInGeneratedFile, openSpan.runtimePairId);
@@ -246,12 +252,12 @@ public class SourceMapCalculator {
 
     List<MappingSpan> completedSpans = new ArrayList<>();
     for(SimpleSourceMapping mapping : simpleMappings) {
-      if(mapping.sourcePosition.getLine() < 0 || mapping.targetPosition.getLine() < 0){
+      if(mapping.sourcePosition().getLine() < 0 || mapping.targetPosition().getLine() < 0){
         Log.warn("Negative lines detected in mapping, ignoring...");
         continue;
       }
 
-      int id = mapping.pairId;
+      int id = mapping.pairId();
       if (includePairIdsSet.contains(id)) {
         continue;
       }
@@ -275,14 +281,14 @@ public class SourceMapCalculator {
 
       // For the case that the span goes over multiple lines, we have to add a mapping
       // for each, otherwise this would leave them unmapped
-      int startTargetLine = current.start.targetPosition.getLine();
-      int endTargetLine = current.end.targetPosition.getLine();
-      int startSourceLine = current.start.sourcePosition.getLine();
-      int endSourceLine = current.end.sourcePosition.getLine();
+      int startTargetLine = current.start.targetPosition().getLine();
+      int endTargetLine = current.end.targetPosition().getLine();
+      int startSourceLine = current.start.sourcePosition().getLine();
+      int endSourceLine = current.end.sourcePosition().getLine();
 
       // When the end is at position 0 at the subsequent line (e.g., following trailing \n),
       // this line did not receive any content from the span
-      int lastTargetLine = (current.end.targetPosition.getColumn() == 0 && endTargetLine > startTargetLine)
+      int lastTargetLine = (current.end.targetPosition().getColumn() == 0 && endTargetLine > startTargetLine)
               ? endTargetLine - 1
               : endTargetLine;
 
@@ -308,17 +314,17 @@ public class SourceMapCalculator {
             // delta mismatch, try to scale
             curSourceLine = Math.min(startSourceLine + offset, endSourceLine);
           }
-          SourcePosition targetPos = current.start.targetPosition.getFileName().isPresent()
-                  ? new SourcePosition(curTargetLine, 0, current.start.targetPosition.getFileName().get())
+          SourcePosition targetPos = current.start.targetPosition().getFileName().isPresent()
+                  ? new SourcePosition(curTargetLine, 0, current.start.targetPosition().getFileName().get())
                   : new SourcePosition(curTargetLine, 0);
 
-          SourcePosition sourcePos = current.start.sourcePosition.getFileName().isPresent()
-                  ? new SourcePosition(curSourceLine, 0, current.start.sourcePosition.getFileName().get())
+          SourcePosition sourcePos = current.start.sourcePosition().getFileName().isPresent()
+                  ? new SourcePosition(curSourceLine, 0, current.start.sourcePosition().getFileName().get())
                   : new SourcePosition(curSourceLine, 0);
 
           mappingToAdd = new SimpleSourceMapping(sourcePos, targetPos, current.pairId);
         }
-        String key = mappingToAdd.targetPosition.getLine() + ":" + mappingToAdd.targetPosition.getColumn();
+        String key = mappingToAdd.targetPosition().getLine() + ":" + mappingToAdd.targetPosition().getColumn();
         if(deduplicatedPairs.containsKey(key)){
           continue;
         }
@@ -329,19 +335,19 @@ public class SourceMapCalculator {
 
     // Sort by generated coordinates (for VLQ deltas)
     deduplicatedMappings.sort(
-            Comparator.comparingInt((SimpleSourceMapping m) -> m.targetPosition.getLine())
-                    .thenComparing(m -> m.targetPosition.getColumn())
-                    .thenComparing(m -> m.sourcePosition.getLine())
-                    .thenComparing(m -> m.sourcePosition.getColumn())
+            Comparator.comparingInt((SimpleSourceMapping m) -> m.targetPosition().getLine())
+                    .thenComparing(m -> m.targetPosition().getColumn())
+                    .thenComparing(m -> m.sourcePosition().getLine())
+                    .thenComparing(m -> m.sourcePosition().getColumn())
     );
 
     // Convert to decoded mappings
     List<DecodedMapping> res = new ArrayList<>(deduplicatedMappings.size());
     for(SimpleSourceMapping mapping : deduplicatedMappings) {
-      URL urlToSource = createSourceURL(mapping.sourcePosition.getFileName());
+      URL urlToSource = createSourceURL(mapping.sourcePosition().getFileName());
       res.add(new DecodedMapping(
               new DecodedSource(urlToSource),
-              new PositionMapping(urlToSource, mapping.sourcePosition, mapping.targetPosition)
+              new PositionMapping(urlToSource, mapping.sourcePosition(), mapping.targetPosition())
       ));
     }
     return res;
@@ -480,8 +486,8 @@ public class SourceMapCalculator {
     }
 
     boolean isZeroWidthGenerated(){
-      return start.targetPosition.getLine() == end.targetPosition.getLine()
-              && start.targetPosition.getColumn() == end.targetPosition.getColumn();
+      return start.targetPosition().getLine() == end.targetPosition().getLine()
+              && start.targetPosition().getColumn() == end.targetPosition().getColumn();
     }
   }
 }

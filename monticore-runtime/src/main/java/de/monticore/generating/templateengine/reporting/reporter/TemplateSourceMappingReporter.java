@@ -1,3 +1,5 @@
+/* (c) https://github.com/MontiCore/monticore */
+
 package de.monticore.generating.templateengine.reporting.reporter;
 
 import com.google.common.io.Resources;
@@ -23,6 +25,9 @@ import java.util.Map;
 
 import static de.monticore.sourcemap.Encoding.getEncodeSourceMap;
 
+/**
+ * Handles reporting source mappings for templates, AST nodes, and include spans.
+ */
 public class TemplateSourceMappingReporter extends DefaultReportEventHandler {
 
   protected final ReportCreator reportingHelper;
@@ -164,28 +169,28 @@ public class TemplateSourceMappingReporter extends DefaultReportEventHandler {
     // Build list of all included files on the fly to avoid iterating twice,
     // keep list of plain strings for faster lookup
     for (IncludeSpan span : includeSpans) {
-      int posTarget = targetFiles.indexOf(span.targetTemplate);
+      int posTarget = targetFiles.indexOf(span.targetTemplate());
       if (posTarget == -1) {
         // First occurrence
-        targetFiles.add(span.targetTemplate);
-        includedFiles.add(new UserJsonString(span.targetTemplate));
+        targetFiles.add(span.targetTemplate());
+        includedFiles.add(new UserJsonString(span.targetTemplate()));
         posTarget = targetFiles.size() - 1;
       }
-      int posSource = sourceFiles.indexOf(span.start.getFileName().get());
+      int posSource = sourceFiles.indexOf(span.start().getFileName().get());
       if (posSource == -1) {
         // First occurrence
-        sourceFiles.add(span.start.getFileName().get());
-        sources.add(new UserJsonString(span.start.getFileName().get()));
+        sourceFiles.add(span.start().getFileName().get());
+        sources.add(new UserJsonString(span.start().getFileName().get()));
         posSource = sourceFiles.size() - 1;
       }
 
       JsonObject include = new JsonObject();
       JsonObject start = new JsonObject();
-      start.putMember("line", new JsonNumber(span.start.getLine() + ""));
-      start.putMember("col", new JsonNumber(span.start.getColumn() + ""));
+      start.putMember("line", new JsonNumber(span.start().getLine() + ""));
+      start.putMember("col", new JsonNumber(span.start().getColumn() + ""));
       JsonObject end = new JsonObject();
-      end.putMember("line", new JsonNumber(span.end.getLine() + ""));
-      end.putMember("col", new JsonNumber(span.end.getColumn() + ""));
+      end.putMember("line", new JsonNumber(span.end().getLine() + ""));
+      end.putMember("col", new JsonNumber(span.end().getColumn() + ""));
       include.putMember("start", start);
       include.putMember("end", end);
       include.putMember("source", new JsonNumber(posSource + ""));

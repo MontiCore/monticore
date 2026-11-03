@@ -1,3 +1,5 @@
+/* (c) https://github.com/MontiCore/monticore */
+
 package de.monticore.generating.templateengine.sourcemap;
 
 import de.monticore.generating.templateengine.TemplateController;
@@ -17,6 +19,10 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
+/**
+ * Provides functionality to adapt a FreeMarker template by injecting source position
+ * reporting markers into its AST to enable tracking of template evaluation positions.
+ */
 public class TemplateAdaptionForSourcePositionReporting {
 
   private static AtomicInteger pairId = new AtomicInteger(0);
