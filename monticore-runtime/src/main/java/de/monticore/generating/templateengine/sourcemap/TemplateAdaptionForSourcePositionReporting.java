@@ -29,7 +29,11 @@ public class TemplateAdaptionForSourcePositionReporting {
     StringBuilder sb = new StringBuilder(canonicalForm);
 
     Comparator<TemplateElement> firstComp = Comparator.comparingInt(TemplateObject::getEndLine);
-    Comparator<TemplateElement> c = firstComp.thenComparingInt(TemplateObject::getEndColumn);
+    Comparator<TemplateElement> c = firstComp
+            .thenComparingInt(TemplateObject::getEndColumn)
+            .thenComparing(TemplateObject::getBeginLine)
+            .thenComparing(TemplateObject::getBeginColumn)
+            .thenComparing(t -> t.getClass().getName()); // Deterministic fallback to ensure always same order
     tes.stream().sorted(c.reversed()).forEach(t -> {
       if (t.getClass().getName().contains("DollarVariable")) {
         addSourcePositionReport(t, sb, canonicalForm, configuration,true);
@@ -66,11 +70,11 @@ public class TemplateAdaptionForSourcePositionReporting {
     int endColumn = increasePositionIfNecessary(t.getEndColumn());
 
     if(reportAstMapping) {
-      endPos = reportingExpressionEnd(new SourcePosition(endLine-1, endColumn-1, templateSource), curPairId);
-      startPos = reportingExpressionStart(new SourcePosition(startLine-1, startColumn-1, templateSource), curPairId);
+      endPos = buildReportTag(new SourcePosition(endLine-1, endColumn-1, templateSource), curPairId, true, false);
+      startPos = buildReportTag(new SourcePosition(startLine-1, startColumn-1, templateSource), curPairId, true, true);
     } else {
-      endPos = reportingTextStart(new SourcePosition(endLine-1, endColumn-1, templateSource), curPairId);
-      startPos = reportingTextEnd(new SourcePosition(startLine-1, startColumn-1, templateSource), curPairId);
+      endPos = buildReportTag(new SourcePosition(endLine-1, endColumn-1, templateSource), curPairId, false, false);
+      startPos = buildReportTag(new SourcePosition(startLine-1, startColumn-1, templateSource), curPairId, false, false);
     }
 
     // Inserting at the endPos first as otherwise we mangle with the String
@@ -89,23 +93,15 @@ public class TemplateAdaptionForSourcePositionReporting {
     }
   }
 
-  protected static String reportingTextStart(SourcePosition p, int pairId) {
-    return "${"+ TemplateController.SOURCE_MAP_CALCULATOR +".report(" + pairId + "," + +p.getLine() + "," + p.getColumn() +",\""+p.getFileName().get()+ "\")}";
+  private static String buildReportTag(SourcePosition p, int pairId, boolean expression, boolean expressionStart){
+    if(!expression)
+      return "${"+ TemplateController.SOURCE_MAP_CALCULATOR +".report(" + pairId + "," + p.getLine() + "," + p.getColumn() +",\""+p.getFileName().get()+ "\")}";
+    else{
+      return "${"+ TemplateController.SOURCE_MAP_CALCULATOR +".report(" + pairId + "," + p.getLine() + "," + p.getColumn() + ",\""+p.getFileName().get()+"\",ast," + expressionStart +")}";
+    }
   }
 
-  protected static String reportingTextEnd(SourcePosition p, int pairId) {
-    return "${"+TemplateController.SOURCE_MAP_CALCULATOR +".report(" + pairId + "," + +p.getLine() + "," + p.getColumn() +",\""+p.getFileName().get()+ "\")}";
-  }
-
-  protected static String reportingExpressionStart(SourcePosition p, int pairId) {
-    return "${"+ TemplateController.SOURCE_MAP_CALCULATOR +".report(" + pairId + "," + +p.getLine() + "," + p.getColumn() + ",\""+p.getFileName().get()+"\",ast, true)}";
-  }
-
-  protected static String reportingExpressionEnd(SourcePosition p, int pairId) {
-    return "${"+TemplateController.SOURCE_MAP_CALCULATOR +".report(" + pairId + "," + +p.getLine() + "," + p.getColumn() + ", \""+p.getFileName().get()+"\",ast, false)}";
-  }
-
-  public static int lineColumnToOffset(String input, int lineNumber, int columnNumber) {
+  private static int lineColumnToOffset(String input, int lineNumber, int columnNumber) {
     int currentLine = 1;
     int offset = 0;
 
@@ -123,7 +119,7 @@ public class TemplateAdaptionForSourcePositionReporting {
     return -1;
   }
 
-  protected static void inorderTraversal(TreeNode node, Consumer<TreeNode> c) {
+  private static void inorderTraversal(TreeNode node, Consumer<TreeNode> c) {
     var children = node.children();
     while (children.hasMoreElements()) {
       TreeNode child = children.nextElement();
