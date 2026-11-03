@@ -1,49 +1,41 @@
+/* (c) https://github.com/MontiCore/monticore */
+
 package de.monticore.sourcemap;
 
 import java.net.URL;
-import java.util.Objects;
 
-public class DecodedSource {
+/**
+ * Represents a decoded source that contains a URL, associated content, and a flag indicating
+ * whether it is ignored.
+ */
+public record DecodedSource(URL url, String content, boolean ignored) {
 
-    public final URL url;
+  /**
+   * Constructs a {@code DecodedSource} with the specified URL, a null content value,
+   * and an ignored flag set to false.
+   *
+   * @param url the URL representing the source to be decoded
+   */
+  public DecodedSource(URL url) {
+    this(url, null, false);
+  }
 
-    public final String content;
+  /**
+   * Constructs a {@code DecodedSource} with the specified URL and content, and an ignored flag set to false.
+   *
+   * @param url     the URL representing the source to be decoded
+   * @param content the content associated with the source
+   */
+  public DecodedSource(URL url, String content) {
+    this(url, content, false);
+  }
 
-    public final boolean ignored;
-
-    public DecodedSource(URL url) {
-        this.url = url;
-        this.content = null;
-        this.ignored = false;
-    }
-
-    public DecodedSource(URL url, String content) {
-        this.url = url;
-        this.content = content;
-        this.ignored = false;
-    }
-
-    public DecodedSource(URL url, String content, boolean ignored) {
-        this.url = url;
-        this.content = content;
-        this.ignored = ignored;
-    }
-
-    @Override
-    public String toString() {
-        return "{"
-                +url.toString()+","
-                +content+","
-                +ignored
-                +"}";
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        DecodedSource that = (DecodedSource) obj;
-        return Objects.equals(url, that.url);
-    }
-
+  @Override
+  public String toString() {
+    return "{"
+        + url.toString() + ","
+        + content + ","
+        + ignored
+        + "}";
+  }
 }
