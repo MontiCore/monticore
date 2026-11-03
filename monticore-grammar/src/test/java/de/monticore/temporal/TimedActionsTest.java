@@ -5,6 +5,7 @@ import de.monticore.expressions.commonexpressions._ast.ASTCallExpression;
 import de.monticore.expressions.commonexpressions._ast.ASTPlusExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
+import de.monticore.runtime.junit.MCAssertions;
 import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.statements.mccommonstatements._ast.ASTExpressionStatement;
 import de.monticore.statements.mccommonstatements._ast.ASTMCJavaBlock;
@@ -24,6 +25,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
@@ -325,8 +327,9 @@ public class TimedActionsTest {
   @DisplayName("Timed Action")
   @ParameterizedTest(name = "Input: {0}")
   @MethodSource("timedActions")
-  public void testTimedAction(String input) {
-    ASTTimedAction ast = Assertions.assertDoesNotThrow(() -> parser.parse_StringTimedAction(input).orElseThrow());
+  public void testTimedAction(String input) throws IOException {
+    ASTTimedAction ast = parser.parse_StringTimedAction(input)
+        .orElseGet(MCAssertions::failAndPrintFindings);
     ASTLiteral
         temporalSubExpression = ((ASTLiteralExpression) ((ASTPlusExpression) ((ASTCallExpression) ((ASTExpressionStatement) ast.getAction()
         .getMCStatement())
@@ -353,10 +356,11 @@ public class TimedActionsTest {
   @DisplayName("No New Keywords - German")
   @ParameterizedTest(name = "Input: {0}")
   @MethodSource("keywordExamples")
-  public void testGermanKeywords(String filePath) {
+  public void testGermanKeywords(String filePath) throws IOException {
     List<String> undesiredKeywords = new ArrayList<>(List.of("Uhr", "Januar", "Februar",
         "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"));
-    ASTActionSequence ast = Assertions.assertDoesNotThrow(() -> parser.parse(filePath).orElseThrow());
+    ASTActionSequence ast = parser.parse(filePath)
+        .orElseGet(MCAssertions::failAndPrintFindings);
     ASTMCJavaBlock statementBlock = (ASTMCJavaBlock) ast.getTimedAction(0).getAction().getMCStatement();
     for (ASTMCBlockStatement statement : statementBlock.getMCBlockStatementList()) {
       if (!(statement instanceof ASTLocalVariableDeclarationStatement)) {
