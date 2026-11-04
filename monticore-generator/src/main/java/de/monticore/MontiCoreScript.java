@@ -1349,9 +1349,9 @@ public class MontiCoreScript extends Script implements GroovyRunner {
     // initialize glex
     GlobalExtensionManagement glex = new GlobalExtensionManagement();
     glex.addAfterTemplate("cd2java.Imports", new TemplateHookPoint("mc.Imports"));
-    glex.bindTemplateHookPoint("ClassContent:Annotations", "mc.Generated");
-    glex.bindTemplateHookPoint("InterfaceContent:Annotations", "mc.Generated");
-    glex.bindTemplateHookPoint("EnumContent:Annotations", "mc.Generated");
+    glex.addBeforeTemplate("ClassContent:Annotations", new TemplateHookPoint("mc.Generated"));
+    glex.addBeforeTemplate("InterfaceContent:Annotations", new TemplateHookPoint("mc.Generated"));
+    glex.addBeforeTemplate("EnumContent:Annotations", new TemplateHookPoint("mc.Generated"));
       if(mcConfig.getConfigTemplate().isPresent()) {
         String configTemplate = mcConfig.getConfigTemplate().get();
         if (configTemplate.endsWith(".ftl")) { // remove file ending
