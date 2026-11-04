@@ -353,12 +353,13 @@ public class TimedActionsTest {
     );
   }
   
-  @DisplayName("No New Keywords - German")
+  @DisplayName("No New Keywords")
   @ParameterizedTest(name = "Input: {0}")
   @MethodSource("keywordExamples")
   public void testGermanKeywords(String filePath) throws IOException {
     List<String> undesiredKeywords = new ArrayList<>(List.of("Uhr", "Januar", "Februar",
-        "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"));
+        "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember",
+        "Z"));
     ASTActionSequence ast = parser.parse(filePath)
         .orElseGet(MCAssertions::failAndPrintFindings);
     ASTMCJavaBlock statementBlock = (ASTMCJavaBlock) ast.getTimedAction(0).getAction().getMCStatement();
