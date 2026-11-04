@@ -17,6 +17,7 @@ import de.monticore.temporal.combinedtemporalstest._parser.CombinedTemporalsTest
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -218,7 +219,18 @@ public class CombinedTemporalsTest {
     
     MCAssertions.assertHasFindings(Finding::isError);
   }
-  
+
+  // These inputs pass the first parse step but are rejected by the second one.
+  // The second parser has to report an error instead of throwing an exception.
+  @DisplayName("Basic Week Date Parse Invalid")
+  @ParameterizedTest(name = "Input: {0}")
+  @ValueSource(strings = {"3W4", "2017W4", "17W481"})
+  void testBasicWeekDateInvalidParse(String input) throws IOException {
+    parser.parse_String(input);
+
+    MCAssertions.assertHasFindings(Finding::isError);
+  }
+
   @DisplayName("Numeric Date Parsing")
   @ParameterizedTest(name = "Input: {0}")
   @MethodSource("de.monticore.temporal.TemporalTestCases#numericDatesWithoutYear")
