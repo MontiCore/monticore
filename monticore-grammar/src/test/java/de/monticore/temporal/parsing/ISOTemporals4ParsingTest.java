@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.temporal.parsing;
 
+import de.monticore.runtime.junit.MCAssertions;
 import de.monticore.temporal.parsing.isotemporals4parsingtest.ISOTemporals4ParsingTestMill;
 import de.monticore.temporal.parsing.isotemporals4parsingtest._parser.ISOTemporals4ParsingTestParser;
 import de.se_rwth.commons.logging.Finding;
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.io.IOException;
 import java.util.stream.Stream;
 
 /**
@@ -53,7 +55,7 @@ public class ISOTemporals4ParsingTest {
   @DisplayName("Calendar Date and Time")
   @ParameterizedTest(name = "Input: {0}")
   @MethodSource("calendarDates")
-  public void testCalendarDate(String input) {
+  public void testCalendarDate(String input) throws IOException {
     checkValid(input);
   }
 
@@ -77,7 +79,7 @@ public class ISOTemporals4ParsingTest {
   @DisplayName("Calendar Date")
   @ParameterizedTest(name = "Input: {0}")
   @MethodSource("calendarDatesAndTimes")
-  public void testCalendarDateAndTime(String input) {
+  public void testCalendarDateAndTime(String input) throws IOException {
     checkValid(input);
   }
 
@@ -135,7 +137,7 @@ public class ISOTemporals4ParsingTest {
   @DisplayName("Calendar Date – no white space")
   @ParameterizedTest(name = "Input: {0}")
   @MethodSource("calendarDatesWS")
-  public void testCalendarDateWS(String input) {
+  public void testCalendarDateWS(String input) throws IOException {
     checkInvalidWS(input);
   }
 
@@ -163,7 +165,7 @@ public class ISOTemporals4ParsingTest {
   @DisplayName("Ordinal Date")
   @ParameterizedTest(name = "Input: {0}")
   @MethodSource("ordinalDates")
-  public void testOrdinalDate(String input) {
+  public void testOrdinalDate(String input) throws IOException {
     checkValid(input);
   }
 
@@ -184,7 +186,7 @@ public class ISOTemporals4ParsingTest {
   @DisplayName("Ordinal Date – no white space")
   @ParameterizedTest(name = "Input: {0}")
   @MethodSource("ordinalDatesWS")
-  public void testOrdinalDateWS(String input) {
+  public void testOrdinalDateWS(String input) throws IOException {
     checkInvalidWS(input);
   }
 
@@ -214,7 +216,7 @@ public class ISOTemporals4ParsingTest {
   @DisplayName("Week Date")
   @ParameterizedTest(name = "Input: {0}")
   @MethodSource("weekDates")
-  public void testWeekDate(String input) {
+  public void testWeekDate(String input) throws IOException {
     checkValid(input);
   }
 
@@ -241,7 +243,7 @@ public class ISOTemporals4ParsingTest {
   @DisplayName("Week Date – no white space")
   @ParameterizedTest(name = "Input: {0}")
   @MethodSource("weekDatesWS")
-  public void testWeekDateWS(String input) {
+  public void testWeekDateWS(String input) throws IOException {
     checkInvalidWS(input);
   }
 
@@ -286,18 +288,17 @@ public class ISOTemporals4ParsingTest {
   @DisplayName("Time Only")
   @ParameterizedTest(name = "Input: {0}")
   @MethodSource("timeOnly")
-  public void testTimeOnly(String input) {
+  public void testTimeOnly(String input) throws IOException {
     checkValid(input);
   }
 
-  void checkValid(String input) {
-    Assertions.assertDoesNotThrow(() ->
-        isoParser.parse_String(input).orElseThrow());
+  void checkValid(String input) throws IOException {
+    isoParser.parse_String(input)
+        .orElseGet(MCAssertions::failAndPrintFindings);
   }
 
-  void checkInvalidWS(String input) {
-    var optTemporalExpression =
-        Assertions.assertDoesNotThrow(() -> isoParser.parse_String(input));
+  void checkInvalidWS(String input) throws IOException {
+    var optTemporalExpression = isoParser.parse_String(input);
     Assertions.assertFalse(optTemporalExpression.isPresent());
     Assertions.assertTrue(Log.getFindingsCount() >= 1, () -> {
       StringBuilder sb = new StringBuilder();
