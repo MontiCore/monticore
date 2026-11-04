@@ -8,9 +8,12 @@ import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.MethodSymbol;
 import de.monticore.symbols.oosymbols._symboltable.MethodSymbolDeSer;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolDeSer;
+import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.check.SymTypeOfFunction;
 import de.monticore.types.check.SymTypeOfGenerics;
 import de.monticore.types3.util.WithinScopeBasicSymbolsResolver;
+import de.monticore.types3.util.WithinTypeBasicSymbolsResolver;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.BeforeEach;
@@ -65,7 +68,7 @@ public class StreamTypeTest {
 
   @Test
   public void resolveStaticRepeat() {
-    MethodSymbol method = getMethodSymbol("Stream.repeat");
+    MethodSymbol method = getMethodSymbol("Stream","repeat");
     assertEquals(2, method.getParameterList().size());
     assertIsStreamWithTypeVar(method.getType());
     assertTrue(method.isIsStatic());
@@ -76,7 +79,7 @@ public class StreamTypeTest {
 
   @Test
   public void resolveStreamMethodLen() {
-    MethodSymbol method = getMethodSymbol("Stream.len");
+    MethodSymbol method = getMethodSymbol("Stream", "len");
     assertEquals(0, method.getParameterList().size());
     assertInstanceOf(TypeSymbol.class, method.getEnclosingScope().getSpanningSymbol());
     assertEquals("Stream", method.getEnclosingScope().getSpanningSymbol().getName());
@@ -85,7 +88,7 @@ public class StreamTypeTest {
 
   @Test
   public void resolveStreamMethodIsEmpty() {
-    MethodSymbol method = getMethodSymbol("Stream.isEmpty");
+    MethodSymbol method = getMethodSymbol("Stream", "isEmpty");
     assertEquals(0, method.getParameterList().size());
     assertInstanceOf(TypeSymbol.class, method.getEnclosingScope().getSpanningSymbol());
     assertEquals("Stream", method.getEnclosingScope().getSpanningSymbol().getName());
@@ -106,38 +109,38 @@ public class StreamTypeTest {
   }
 
   protected void resolveStaticMethods(String streamType) {
-    testResolveMethod(streamType + ".repeat");
-    testResolveMethod(streamType + ".iterate");
-    testResolveMethod(streamType + ".projFst");
-    testResolveMethod(streamType + ".projSnd");
+    testResolveMethod(streamType, "repeat");
+    testResolveMethod(streamType, "iterate");
+    testResolveMethod(streamType, "projFst");
+    testResolveMethod(streamType, "projSnd");
   }
 
   protected void resolveCommonMemberMethods(String streamType) {
-    testResolveMethod(streamType + ".isEmpty");
-    testResolveMethod(streamType + ".len");
-    testResolveMethod(streamType + ".first");
-    testResolveMethod(streamType + ".dropFirst");
-    testResolveMethod(streamType + ".nth");
-    testResolveMethod(streamType + ".take");
-    testResolveMethod(streamType + ".times");
-    testResolveMethod(streamType + ".map");
-    testResolveMethod(streamType + ".filter");
-    testResolveMethod(streamType + ".takeWhile");
-    testResolveMethod(streamType + ".dropWhile");
-    testResolveMethod(streamType + ".rcDups");
+    testResolveMethod(streamType, "isEmpty");
+    testResolveMethod(streamType, "len");
+    testResolveMethod(streamType, "first");
+    testResolveMethod(streamType, "dropFirst");
+    testResolveMethod(streamType, "nth");
+    testResolveMethod(streamType, "take");
+    testResolveMethod(streamType, "times");
+    testResolveMethod(streamType, "map");
+    testResolveMethod(streamType, "filter");
+    testResolveMethod(streamType, "takeWhile");
+    testResolveMethod(streamType, "dropWhile");
+    testResolveMethod(streamType, "rcDups");
   }
 
   @Test
   public void resolveTimedStreamMethods() {
-    testResolveMethod("EventStream.delay");
-    testResolveMethod("EventStream.mapSlice");
-    testResolveMethod("EventStream.rougherTime");
-    testResolveMethod("EventStream.finerTime");
-    testResolveMethod("EventStream.sync");
-    testResolveMethod("EventStream.topt");
-    testResolveMethod("EventStream.untimed");
-    testResolveMethod("ToptStream.sizeEmptyTimeslices");
-    testResolveMethod("SyncStream.event");
+    testResolveMethod("EventStream", "delay");
+    testResolveMethod("EventStream", "mapSlice");
+    testResolveMethod("EventStream", "rougherTime");
+    testResolveMethod("EventStream", "finerTime");
+    testResolveMethod("EventStream", "sync");
+    testResolveMethod("EventStream", "topt");
+    testResolveMethod("EventStream", "untimed");
+    testResolveMethod("ToptStream", "sizeEmptyTimeslices");
+    testResolveMethod("SyncStream", "event");
   }
 
   @Test
@@ -153,18 +156,17 @@ public class StreamTypeTest {
     assertTrue(((SymTypeOfGenerics) type).getArgument(0).isTypeVariable());
   }
 
-  protected void testResolveMethod(String name) {
-    Optional<SymTypeExpression> methodType = WithinScopeBasicSymbolsResolver.resolveNameAsExpr(BasicSymbolsMill.globalScope(), name);
-    assertTrue(methodType.isPresent(), name);
-    assertTrue(methodType.get().isFunctionType()
-        || methodType.get().isIntersectionType()
-    );
+  protected List<SymTypeOfFunction> testResolveMethod(String type, String name) {
+    Optional<SymTypeExpression> typeExpression = WithinScopeBasicSymbolsResolver.resolveType(BasicSymbolsMill.globalScope(), type);
+    assertTrue(typeExpression.isPresent());
+    List<SymTypeOfFunction> methodTypes = WithinTypeBasicSymbolsResolver.resolveFunctions(typeExpression.get(), name, AccessModifier.ALL_INCLUSION, t -> true);
+    assertFalse(methodTypes.isEmpty());
+    return methodTypes;
   }
 
-  protected MethodSymbol getMethodSymbol(String name) {
-    testResolveMethod(name);
-    Optional<SymTypeExpression> methodType = WithinScopeBasicSymbolsResolver.resolveNameAsExpr(BasicSymbolsMill.globalScope(), name);
-    return (MethodSymbol) methodType.get().asFunctionType().getSymbol();
+  protected MethodSymbol getMethodSymbol(String type, String name) {
+    List<SymTypeOfFunction> methodTypes = testResolveMethod(type, name);
+    return (MethodSymbol) methodTypes.getFirst().asFunctionType().getSymbol();
   }
 
 }
