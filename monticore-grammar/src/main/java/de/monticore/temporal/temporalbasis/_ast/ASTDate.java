@@ -4,6 +4,7 @@ package de.monticore.temporal.temporalbasis._ast;
 import java.time.LocalDate;
 import java.time.Year;
 import java.time.YearMonth;
+import java.time.temporal.IsoFields;
 import java.time.temporal.Temporal;
 import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.WeekFields;
@@ -90,8 +91,9 @@ public interface ASTDate extends ASTDateTOP {
     }
     
     if (isSupported(YEAR) && isSupported(WeekFields.ISO.weekOfYear()) && isSupported(DAY_OF_WEEK)) {
-      return LocalDate.ofYearDay(get(YEAR), 1)
-          .plusWeeks(get(WeekFields.ISO.weekOfYear()) - 1)
+      // The year of a week date is the ISO week-based year. Its week 1 always contains 4 January.
+      return LocalDate.of(get(YEAR), 1, 4)
+          .with(IsoFields.WEEK_OF_WEEK_BASED_YEAR, get(WeekFields.ISO.weekOfYear()))
           .with(DAY_OF_WEEK, get(DAY_OF_WEEK));
     }
     
