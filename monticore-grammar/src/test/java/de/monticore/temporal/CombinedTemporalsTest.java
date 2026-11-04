@@ -18,6 +18,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.io.IOException;
 import java.util.Optional;
 
 @TestWithMCLanguage(CombinedTemporalsTestMill.class)
@@ -33,9 +34,9 @@ public class CombinedTemporalsTest {
   @ParameterizedTest(name = "Input: {0}")
   @MethodSource("de.monticore.temporal.TemporalTestCases#calendarDates")
   void testCalendarDates(String input, int century, int decade,
-      int year, int month, int day) {
-    ASTTemporal
-        ast = Assertions.assertDoesNotThrow(() -> parser.parse_String(input).orElseThrow());
+      int year, int month, int day) throws IOException {
+    ASTTemporal ast = parser.parse_String(input)
+        .orElseGet(MCAssertions::failAndPrintFindings);
     Assertions.assertTrue(ast.isPresentInstant());
     Assertions.assertInstanceOf(ASTCalendarDate.class, ast.getInstant());
     ASTCalendarDate realAst = (ASTCalendarDate) ast.getInstant();
@@ -50,9 +51,9 @@ public class CombinedTemporalsTest {
   @DisplayName("Ordinal Date Parsing")
   @ParameterizedTest(name = "Input: {0}")
   @MethodSource("de.monticore.temporal.TemporalTestCases#ordinalDates")
-  void testOrdinalDates(String input, int year, int dayOfYear) {
-    ASTTemporal
-        ast = Assertions.assertDoesNotThrow(() -> parser.parse_String(input).orElseThrow());
+  void testOrdinalDates(String input, int year, int dayOfYear) throws IOException {
+    ASTTemporal ast = parser.parse_String(input)
+        .orElseGet(MCAssertions::failAndPrintFindings);
     Assertions.assertTrue(ast.isPresentInstant());
     Assertions.assertInstanceOf(ASTOrdinalDate.class, ast.getInstant());
     ASTOrdinalDate realAst = (ASTOrdinalDate) ast.getInstant();
@@ -64,9 +65,9 @@ public class CombinedTemporalsTest {
   @DisplayName("Week Date Parsing")
   @ParameterizedTest(name = "Input: {0}")
   @MethodSource("de.monticore.temporal.TemporalTestCases#weekDates")
-  public void testWeekDateParsing(String input, int year, int week, int dayOfWeek) {
-    ASTTemporal
-        ast = Assertions.assertDoesNotThrow(() -> parser.parse_String(input).orElseThrow());
+  public void testWeekDateParsing(String input, int year, int week, int dayOfWeek) throws IOException {
+    ASTTemporal ast = parser.parse_String(input)
+        .orElseGet(MCAssertions::failAndPrintFindings);
     Assertions.assertTrue(ast.isPresentInstant());
     Assertions.assertInstanceOf(ASTWeekDate.class, ast.getInstant());
     ASTWeekDate realAst = (ASTWeekDate) ast.getInstant();
@@ -79,9 +80,9 @@ public class CombinedTemporalsTest {
   @DisplayName("ISO Time Parsing")
   @ParameterizedTest(name = "Input: {0}")
   @MethodSource("de.monticore.temporal.TemporalTestCases#isoTimes")
-  public void testIsoTimeParsing(String input, int hour, int minute, int second, String decimalDigits, Optional<Integer> timeShift) {
-    ASTTemporal
-        ast = Assertions.assertDoesNotThrow(() -> parser.parse_String(input).orElseThrow());
+  public void testIsoTimeParsing(String input, int hour, int minute, int second, String decimalDigits, Optional<Integer> timeShift) throws IOException {
+    ASTTemporal ast = parser.parse_String(input)
+        .orElseGet(MCAssertions::failAndPrintFindings);
     Assertions.assertTrue(ast.isPresentInstant());
     Assertions.assertInstanceOf(ASTISOTime.class, ast.getInstant());
     ASTISOTime realAst = (ASTISOTime) ast.getInstant();
@@ -97,9 +98,9 @@ public class CombinedTemporalsTest {
   @ParameterizedTest(name = "Input: {0}")
   @MethodSource("de.monticore.temporal.TemporalTestCases#calendarDateTimes")
   public void testCalendarDateTimeParsing(String input, int year, int month, int day,
-      int hour, int minute, int second, String decimalDigits, Optional<Integer> timeShift) {
-    ASTTemporal
-        ast = Assertions.assertDoesNotThrow(() -> parser.parse_String(input).orElseThrow());
+      int hour, int minute, int second, String decimalDigits, Optional<Integer> timeShift) throws IOException {
+    ASTTemporal ast = parser.parse_String(input)
+        .orElseGet(MCAssertions::failAndPrintFindings);
     Assertions.assertTrue(ast.isPresentInstant());
     Assertions.assertInstanceOf(ASTISODateTime.class, ast.getInstant());
     ASTISODateTime realAst = (ASTISODateTime) ast.getInstant();
@@ -124,9 +125,9 @@ public class CombinedTemporalsTest {
   @ParameterizedTest(name = "Input: {0}")
   @MethodSource("de.monticore.temporal.TemporalTestCases#ordinalDateTimes")
   public void testOrdinalDateTimeParsing(String input, int year, int dayOfYear,
-      int hour, int minute, int second, String decimalDigits, Optional<Integer> timeShift) {
-    ASTTemporal
-        ast = Assertions.assertDoesNotThrow(() -> parser.parse_String(input).orElseThrow());
+      int hour, int minute, int second, String decimalDigits, Optional<Integer> timeShift) throws IOException {
+    ASTTemporal ast = parser.parse_String(input)
+        .orElseGet(MCAssertions::failAndPrintFindings);
     Assertions.assertTrue(ast.isPresentInstant());
     Assertions.assertInstanceOf(ASTISODateTime.class, ast.getInstant());
     ASTISODateTime realAst = (ASTISODateTime) ast.getInstant();
@@ -150,9 +151,9 @@ public class CombinedTemporalsTest {
   @ParameterizedTest(name = "Input: {0}")
   @MethodSource("de.monticore.temporal.TemporalTestCases#weekDateTimes")
   public void testWeekDateTimeParsing(String input, int year, int week, int dayOfWeek,
-      int hour, int minute, int second, String decimalDigits, Optional<Integer> timeShift) {
-    ASTTemporal
-        ast = Assertions.assertDoesNotThrow(() -> parser.parse_String(input).orElseThrow());
+      int hour, int minute, int second, String decimalDigits, Optional<Integer> timeShift) throws IOException {
+    ASTTemporal ast = parser.parse_String(input)
+        .orElseGet(MCAssertions::failAndPrintFindings);
     Assertions.assertTrue(ast.isPresentInstant());
     Assertions.assertInstanceOf(ASTISODateTime.class, ast.getInstant());
     ASTISODateTime realAst = (ASTISODateTime) ast.getInstant();
@@ -177,9 +178,9 @@ public class CombinedTemporalsTest {
   @ParameterizedTest(name = "Input: {0}")
   @MethodSource("de.monticore.temporal.TemporalTestCases#fullPeriods")
   void testFullPeriodParsing(String input, int years, int months, int days, int hours,
-      int minutes, int seconds, String decimalDigits) {
-    ASTTemporal
-        ast = Assertions.assertDoesNotThrow(() -> parser.parse_String(input).orElseThrow());
+      int minutes, int seconds, String decimalDigits) throws IOException {
+    ASTTemporal ast = parser.parse_String(input)
+        .orElseGet(MCAssertions::failAndPrintFindings);
     Assertions.assertTrue(ast.isPresentPeriod());
     Assertions.assertInstanceOf(ASTFullPeriod.class, ast.getPeriod());
     ASTFullPeriod realAst = (ASTFullPeriod) ast.getPeriod();
@@ -197,9 +198,9 @@ public class CombinedTemporalsTest {
   @DisplayName("Week Period Parsing")
   @ParameterizedTest(name = "Input: {0}")
   @MethodSource("de.monticore.temporal.TemporalTestCases#weekPeriods")
-  void testWeekPeriodParsing(String input, int weeks) {
-    ASTTemporal
-        ast = Assertions.assertDoesNotThrow(() -> parser.parse_String(input).orElseThrow());
+  void testWeekPeriodParsing(String input, int weeks) throws IOException {
+    ASTTemporal ast = parser.parse_String(input)
+        .orElseGet(MCAssertions::failAndPrintFindings);
     Assertions.assertTrue(ast.isPresentPeriod());
     Assertions.assertInstanceOf(ASTWeekPeriod.class, ast.getPeriod());
     ASTWeekPeriod realAst = (ASTWeekPeriod) ast.getPeriod();
@@ -212,9 +213,8 @@ public class CombinedTemporalsTest {
   @DisplayName("Full Period Parse Invalid")
   @ParameterizedTest(name = "Input: {0}")
   @MethodSource("de.monticore.temporal.TemporalTestCases#invalidPeriods")
-  void testFullPeriodInvalidParse(String input) {
-    Optional<ASTTemporal>
-        ast = Assertions.assertDoesNotThrow(() -> parser.parse_String(input));
+  void testFullPeriodInvalidParse(String input) throws IOException {
+    Optional<ASTTemporal> ast = parser.parse_String(input);
     
     MCAssertions.assertHasFindings(Finding::isError);
   }
@@ -222,9 +222,9 @@ public class CombinedTemporalsTest {
   @DisplayName("Numeric Date Parsing")
   @ParameterizedTest(name = "Input: {0}")
   @MethodSource("de.monticore.temporal.TemporalTestCases#numericDatesWithoutYear")
-  public void testNumericDateParsing(String input, int year, int month, int day) {
-    ASTTemporal
-        ast = Assertions.assertDoesNotThrow(() -> parser.parse_String(input).orElseThrow());
+  public void testNumericDateParsing(String input, int year, int month, int day) throws IOException {
+    ASTTemporal ast = parser.parse_String(input)
+        .orElseGet(MCAssertions::failAndPrintFindings);
     Assertions.assertTrue(ast.isPresentInstant());
     Assertions.assertInstanceOf(ASTDENumericDate.class, ast.getInstant());
     ASTDENumericDate realAst = (ASTDENumericDate) ast.getInstant();
@@ -237,9 +237,9 @@ public class CombinedTemporalsTest {
   @DisplayName("Alphanumeric Date Parsing")
   @ParameterizedTest(name = "Input: {0}")
   @MethodSource("de.monticore.temporal.TemporalTestCases#alphanumericDates")
-  public void testAlphanumericDateParsing(String input, int year, int month, int day) {
-    ASTTemporal
-        ast = Assertions.assertDoesNotThrow(() -> parser.parse_String(input).orElseThrow());
+  public void testAlphanumericDateParsing(String input, int year, int month, int day) throws IOException {
+    ASTTemporal ast = parser.parse_String(input)
+        .orElseGet(MCAssertions::failAndPrintFindings);
     Assertions.assertTrue(ast.isPresentInstant());
     Assertions.assertInstanceOf(ASTDEAlphanumericDate.class, ast.getInstant());
     ASTDEAlphanumericDate realAst = (ASTDEAlphanumericDate) ast.getInstant();
@@ -252,9 +252,9 @@ public class CombinedTemporalsTest {
   @DisplayName("German Time Parsing")
   @ParameterizedTest(name = "Input: {0}")
   @MethodSource("de.monticore.temporal.TemporalTestCases#germanTimes")
-  public void testGermanTimeParsing(String input, int hour, int minute, int second) {
-    ASTTemporal
-        ast = Assertions.assertDoesNotThrow(() -> parser.parse_String(input).orElseThrow());
+  public void testGermanTimeParsing(String input, int hour, int minute, int second) throws IOException {
+    ASTTemporal ast = parser.parse_String(input)
+        .orElseGet(MCAssertions::failAndPrintFindings);
     Assertions.assertTrue(ast.isPresentInstant());
     Assertions.assertInstanceOf(ASTDETime.class, ast.getInstant());
     ASTDETime realAst = (ASTDETime) ast.getInstant();
@@ -267,9 +267,9 @@ public class CombinedTemporalsTest {
   @DisplayName("German DateTime Parsing")
   @ParameterizedTest(name = "Input: {0}")
   @MethodSource("de.monticore.temporal.TemporalTestCases#germanDateTimes")
-  public void testGermanDateTimeParsing(String input, int year, int month, int day, int hour, int minute, int second) {
-    ASTTemporal
-        ast = Assertions.assertDoesNotThrow(() -> parser.parse_String(input).orElseThrow());
+  public void testGermanDateTimeParsing(String input, int year, int month, int day, int hour, int minute, int second) throws IOException {
+    ASTTemporal ast = parser.parse_String(input)
+        .orElseGet(MCAssertions::failAndPrintFindings);
     Assertions.assertTrue(ast.isPresentInstant());
     Assertions.assertInstanceOf(ASTDEDateTime.class, ast.getInstant());
     ASTDEDateTime realAst = (ASTDEDateTime) ast.getInstant();
