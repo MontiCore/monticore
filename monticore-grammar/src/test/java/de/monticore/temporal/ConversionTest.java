@@ -15,11 +15,13 @@ import de.monticore.temporal.temporalbasis._ast.ASTTime;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.*;
+import java.time.temporal.IsoFields;
 import java.time.temporal.WeekFields;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -136,12 +138,38 @@ public class ConversionTest {
             )
             .filter(i -> i).count());
     if (realAst.isLocalDate()) {
-      Assertions.assertEquals(
-          LocalDate.ofYearDay(year, 1)
-              .plusWeeks(week - 1)
-              .with(DAY_OF_WEEK, dayOfWeek),
-          realAst.toLocalDate());
+      Assertions.assertEquals(isoWeekDate(year, week, dayOfWeek), realAst.toLocalDate());
     }
+  }
+
+  // Expected dates are taken from ISO 8601-1 (1985-W15-5, Amd. 1 for 2019-W01-1)
+  // or cover years whose 1 January is a Friday, Saturday or Sunday
+  @DisplayName("Week Date Known Values")
+  @ParameterizedTest(name = "Input: {0}")
+  @CsvSource({
+      "1985-W15-5, 1985-04-12",
+      "2017-W48-1, 2017-11-27",
+      "2019-W01-1, 2018-12-31",
+      "2020-W53-5, 2021-01-01",
+      "2021-W01-1, 2021-01-04",
+      "2022W011, 2022-01-03"
+  })
+  public void testWeekDateKnownValues(String input, String expectedDate) throws IOException {
+    ASTTemporal ast = CombinedTemporalsTestMill.parser().parse_String(input)
+        .orElseGet(MCAssertions::failAndPrintFindings);
+    Assertions.assertInstanceOf(ASTDate.class, ast.getInstant());
+
+    Assertions.assertEquals(LocalDate.parse(expectedDate), ((ASTDate) ast.getInstant()).toLocalDate());
+  }
+
+  /**
+   * @return the date of an ISO week date, computed with java.time's ISO week-based fields
+   */
+  protected static LocalDate isoWeekDate(int weekBasedYear, int week, int dayOfWeek) {
+    return LocalDate.EPOCH
+        .with(IsoFields.WEEK_BASED_YEAR, weekBasedYear)
+        .with(IsoFields.WEEK_OF_WEEK_BASED_YEAR, week)
+        .with(DAY_OF_WEEK, dayOfWeek);
   }
   
   @DisplayName("ISO Time Conversion")
@@ -302,10 +330,7 @@ public class ConversionTest {
       minute = 0; // Same as above
     }
     int offset = timeShift.orElse(0);
-    LocalDate expectedDate = LocalDate
-        .ofYearDay(year, 1)
-        .plusWeeks(week - 1)
-        .with(DAY_OF_WEEK, dayOfWeek);
+    LocalDate expectedDate = isoWeekDate(year, week, dayOfWeek);
     LocalTime expectedTime = LocalTime.of(hour, minute, second, nanos);
     OffsetTime expectedOffsetTime = expectedTime.atOffset(ZoneOffset.ofHours(offset));
     LocalDateTime expectedDateTime = expectedDate.atTime(expectedTime);
