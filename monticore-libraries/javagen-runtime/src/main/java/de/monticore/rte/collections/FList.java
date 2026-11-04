@@ -239,9 +239,9 @@ public interface FList<T> extends FCollection<T> {
     return new FLinkedList<>(ele);
   }
 
-  static <T> FSet<T> of(List<T> ele) {
+  static <T> FList<T> of(List<T> ele) {
     @SuppressWarnings("unchecked")
     T[] arr = (T[]) ele.toArray();
-    return FSet.of(arr);
+    return of(arr);
   }
 }
