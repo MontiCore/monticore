@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.tf.odrules;
 
-import com.google.common.collect.Lists;
 import de.monticore.expressions.commonexpressions._ast.ASTBooleanAndOpExpression;
 import de.monticore.expressions.commonexpressions._ast.ASTBracketExpression;
 import de.monticore.expressions.commonexpressions._ast.ASTCallExpression;
@@ -16,7 +15,6 @@ import de.monticore.io.paths.MCPath;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.statements.mcarraystatements._ast.ASTArrayInit;
-import de.monticore.statements.mccommonstatements._ast.ASTMCJavaBlock;
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTVariableInit;
 import de.monticore.tf.ruletranslation.Rule2ODVisitor;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
@@ -42,8 +40,13 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class ODRuleCodeGenerator {
+
+  /**
+   * The package of the generated transformations, if the rule does not declare a package
+   */
+  public static final String DEFAULT_PACKAGE = "de.monticore.tf";
+
   // contains all the data for the code generator
-  protected ASTTransformationStructure root;
   protected String filename;
   protected ASTODDefinition lhs;
   protected ASTODDefinition rhs;
@@ -55,19 +58,11 @@ public class ODRuleCodeGenerator {
 
 
   public static void generate(ASTODRule parsedModel, File targetDir) {
-    String packageName = "de.monticore.tf";
-    if (!parsedModel.getPackageList().isEmpty()) {
-      packageName = Names.constructQualifiedName(parsedModel.getPackageList());
-    }
-    generate(parsedModel, targetDir, packageName);
+    generate(parsedModel, targetDir, getPackageName(parsedModel));
   }
 
   public static void generate(ASTODRule parsedModel, GeneratorSetup setup) {
-    String packageName = "de.monticore.tf";
-    if (!parsedModel.getPackageList().isEmpty()) {
-      packageName = Names.constructQualifiedName(parsedModel.getPackageList());
-    }
-    generate(parsedModel, new GlobalExtensionManagement(), setup, parsedModel.getName(), packageName);
+    generate(parsedModel, new GlobalExtensionManagement(), setup, parsedModel.getName(), getPackageName(parsedModel));
   }
 
   public static void generate(ASTODRule parsedModel, File targetDir, String packageName) {
@@ -75,7 +70,16 @@ public class ODRuleCodeGenerator {
   }
 
   public static void generate(ASTODRule parsedModel, GlobalExtensionManagement glex, File targetDir, String fileName) {
-    generate(parsedModel, glex, targetDir, fileName, "");
+    generate(parsedModel, glex, targetDir, fileName, getPackageName(parsedModel));
+  }
+
+  /**
+   * @return the package declared by the rule, or the {@link #DEFAULT_PACKAGE}
+   */
+  public static String getPackageName(ASTODRule parsedModel) {
+    return parsedModel.getPackageList().isEmpty()
+        ? DEFAULT_PACKAGE
+        : Names.constructQualifiedName(parsedModel.getPackageList());
   }
 
   public static void generate(ASTODRule parsedModel, GlobalExtensionManagement glex, File targetDir, String fileName, String packageName) {
@@ -101,13 +105,10 @@ public class ODRuleCodeGenerator {
     }
     // Import the mill
     List<String> millImportList = new ArrayList<>(parsedModel.getGrammarPackageList());
+    millImportList.removeIf(String::isEmpty); // older TFGenTools use [""] for the default package
     millImportList.add(parsedModel.getGrammarName().toLowerCase());
     millImportList.add(parsedModel.getGrammarName() + "Mill");
-    String p = Joiners.DOT.join(millImportList);
-    if(p.startsWith(".")){
-      p = p.substring(1);
-    }
-    odRuleCodeGenerator.hierarchyHelper.addCustomImports("import " + p + ";");
+    odRuleCodeGenerator.hierarchyHelper.addCustomImports("import " + Joiners.DOT.join(millImportList) + ";");
     glex.setGlobalValue("hierarchyHelper", odRuleCodeGenerator.hierarchyHelper);
     glex.setGlobalValue("grammarName", parsedModel.getGrammarName());
 
@@ -117,13 +118,15 @@ public class ODRuleCodeGenerator {
     final GeneratorEngine generator = new GeneratorEngine(setup);
     ASTTransformationStructure tfStructure = odRuleCodeGenerator.generateASTTransformationStructure(parsedModel);
 
-    String outFile = fileName + ".java";
+    // the file must be named after the (capitalized) class
+    String className = tfStructure.getClassname();
+    String outFile = className + ".java";
 
     // The TFGen does not decorate a CD - thus we emulate the TOPDecorator
     if (!setup.getHandcodedPath().isEmpty()
-            && existsHandwrittenClass(setup.getHandcodedPath(), packageName + "." + fileName)) {
+            && existsHandwrittenClass(setup.getHandcodedPath(), Names.getQualifiedName(packageName, className))) {
       tfStructure.setTop(true);
-      outFile = fileName + "TOP.java";
+      outFile = className + "TOP.java";
     }
 
     final Path filePath = Paths.get(Names.getPathFromPackage(packageName), outFile);
@@ -165,11 +168,7 @@ public class ODRuleCodeGenerator {
     ASTTransformationStructureBuilder tsBuilder = ODRuleGenerationMill.transformationStructureBuilder();
     ASTPatternBuilder patternBuilder = ODRuleGenerationMill.patternBuilder();
 
-    if (!ast.getPackageList().isEmpty()) {
-      tsBuilder.setPackage(Names.constructQualifiedName(ast.getPackageList()));
-    } else {
-      tsBuilder.setPackage("de.monticore.tf");
-    }
+    tsBuilder.setPackage(getPackageName(ast));
     tsBuilder.setClassname(getClassName());
 
     patternBuilder.setMatchingObjectsList(generateObjectList(ast));
@@ -192,24 +191,12 @@ public class ODRuleCodeGenerator {
   }
 
   protected String generateDoStatement(ASTODRule ast) {
-    if (ast.isPresentDoBlock()) {
-      ASTMCJavaBlock doblock = ast.getDoBlock();
-      if (doblock == null) {
-        return "";
-      }
-      return Util.print(doblock, lhsObjects, this.hierarchyHelper);
-    } else {
-      return "";
-    }
+    return ast.isPresentDoBlock() ? Util.print(ast.getDoBlock(), lhsObjects, this.hierarchyHelper) : "";
   }
 
   protected String generateUndoStatement(ASTODRule ast) {
     if (ast.isPresentUndoBlock()) {
-      ASTMCJavaBlock undoblock = ast.getDoBlock();
-      if (undoblock == null) {
-        return "";
-      }
-      String undoStatement = Util.print(undoblock, lhsObjects, this.hierarchyHelper);
+      String undoStatement = Util.print(ast.getUndoBlock(), lhsObjects, this.hierarchyHelper);
       if(!ast.isPresentDoBlock())
         undoStatement += "\n Log.warn(\"UndoBlock was present and undoReplacement was executed, but there was no DoBlock\");";
       return undoStatement;
@@ -330,19 +317,12 @@ public class ODRuleCodeGenerator {
        * In order to prevent this we add an isPresent()-check to the expression like this: $O.isPresent ? $O.getName() : "undef"
        */
       if (!findOptVisitor.optVars.isEmpty()) {
-
-        stringbuilder.insert(0, "()?");
-        stringbuilder.insert(stringbuilder.length(), ":\"undef\"");
-        Iterator<ASTMatchingObject> optVarsIterator = findOptVisitor.optVars.iterator();
-
-        while (optVarsIterator.hasNext()) {
-          ASTMatchingObject o = optVarsIterator.next();
-          String condition = "m." + o.getObjectName() + ".isPresent()";
-          if (optVarsIterator.hasNext()) {
-            condition = "&&" + condition;
-          }
-          stringbuilder.insert(1, condition);
+        List<String> checks = new ArrayList<>();
+        for (ASTMatchingObject o : findOptVisitor.optVars) {
+          checks.add("m." + o.getObjectName() + ".isPresent()");
         }
+        Collections.reverse(checks); // keeps the order of the previously generated checks
+        stringbuilder.insert(0, "(" + String.join("&&", checks) + ")?").append(":\"undef\"");
       }
 
       result.add(exp.getLhs() + " =" + stringbuilder + ";");
@@ -493,12 +473,7 @@ public class ODRuleCodeGenerator {
     Map<String, Integer> allDependVars = new LinkedHashMap<>();
     for (ODSubConstraint subConstraint : subConstraints) {
       for (ASTMatchingObject object : subConstraint.dependVars) {
-        String objectName = object.getObjectName();
-        if (allDependVars.containsKey(objectName)) {
-          allDependVars.put(objectName, allDependVars.get(objectName) + 1);
-        } else {
-          allDependVars.put(objectName, 1);
-        }
+        allDependVars.merge(object.getObjectName(), 1, Integer::sum);
       }
     }
     return allDependVars;
@@ -573,7 +548,7 @@ public class ODRuleCodeGenerator {
   }
 
     protected List<ASTMatchingObject> generateObjectList(ASTODRule ast) {
-    List<String> objectNames = new LinkedList<>();
+    Set<String> objectNames = new HashSet<>();
     List<ASTMatchingObject> objects = generateLHSObjectList(ast);
     for (ASTMatchingObject o : objects) {
       objectNames.add(o.getObjectName());
@@ -694,16 +669,11 @@ public class ODRuleCodeGenerator {
     List<ASTVariable> variables = new ArrayList<>();
     for (ASTODObject obj : ast) {
       for (ASTODAttribute attr : obj.getAttributesList()) {
-        if ((attr.isPresentSingleValue() && !(collectedNames.contains(
-                Util.printExpression(attr.getSingleValue()))))) {
+        if (attr.isPresentSingleValue()
+            && !collectedNames.contains(Util.printExpression(attr.getSingleValue()))) {
           ASTVariable variable = generateVariable(obj, attr);
-
           if (variable != null) {
-            if (attr.isPresentSingleValue()) {
-              collectedNames.add(Util.printExpression(attr.getSingleValue()));
-            } else {
-              collectedNames.add(Util.printFirstListValue(attr.getList()));
-            }
+            collectedNames.add(Util.printExpression(attr.getSingleValue()));
             variables.add(variable);
           }
         } else if (attr.isPresentList()) {
@@ -815,16 +785,7 @@ public class ODRuleCodeGenerator {
           String value = set.getValue();
           if (!set.isValueStringList() && value.contains(".") && !requirementNames.containsKey(value)) {
             // create new name
-            StringBuilder sb = new StringBuilder("_");
-
-            sb.append(value.replace(".get()", ""));
-            for (int i = 0; i < sb.length(); i++) {
-              if (sb.charAt(i) == '.') {
-                sb.setCharAt(i, '_');
-              }
-            }
-
-            requirementNames.put(value, sb.toString());
+            requirementNames.put(value, "_" + value.replace(".get()", "").replace('.', '_'));
 
             // create Requirement
             ASTRequirementBuilder requirement = ODRuleGenerationMill.requirementBuilder();
@@ -875,36 +836,23 @@ public class ODRuleCodeGenerator {
   }
 
   protected List<ASTCreateOperation> generateCreateObjects(List<ASTChangeOperation> changesList) {
-    List<ASTCreateOperation> createSequence = new ArrayList<>();
-
-    for (ASTChangeOperation co : changesList) {
-      createSequence.addAll(co.getCreateOperationsList());
-    }
-    return createSequence;
+    return changesList.stream()
+        .flatMap(co -> co.getCreateOperationsList().stream())
+        .collect(Collectors.toList());
   }
 
   protected List<ASTDeleteOperation> generateDeleteObjects(List<ASTChangeOperation> changesList) {
-
-    List<ASTDeleteOperation> deleteSequence = new ArrayList<>();
-
-    for (ASTChangeOperation co : changesList) {
-      deleteSequence.addAll(co.getDeleteOperationsList());
-    }
-    return deleteSequence;
+    return changesList.stream()
+        .flatMap(co -> co.getDeleteOperationsList().stream())
+        .collect(Collectors.toList());
   }
 
   protected List<String> generateTypesList(ASTODRule ast) {
     Set<String> types = new LinkedHashSet<>();
-
-    List<ASTODObject> astObjects = Util.getAllODObjects(ast.getLhs());
-    for (ASTODObject obj : astObjects) {
-
-      // generates a String from a type
-
-      ASTMCType type = obj.getType();
-      types.add(Util.printType(type));
+    for (ASTODObject obj : Util.getAllODObjects(ast.getLhs())) {
+      types.add(Util.printType(obj.getType()));
     }
-    return Lists.newArrayList(types);
+    return new ArrayList<>(types);
   }
 
 
