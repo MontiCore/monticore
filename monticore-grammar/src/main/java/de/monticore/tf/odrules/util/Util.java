@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.tf.odrules.util;
 
-
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.statements.mcarraystatements._ast.ASTArrayInit;
@@ -19,16 +18,18 @@ import de.monticore.tf.odrules._symboltable.ODDefinitionSymbol;
 import de.monticore.tf.odrules._symboltable.ODObjectSymbol;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
- * Created by
- *
+ * Helper methods for the generation of transformations from object diagram rules.
  */
 public class Util {
   private static final String AST_PREFIX = "AST";
+
+  private static final Set<String> BUILT_IN_TYPES =
+      Set.of("boolean", "int", "float", "double", "char", "long", "byte", "short", "String");
 
   /**
    * MontiCore appends this suffix to derived names of iterated attributes
@@ -40,7 +41,7 @@ public class Util {
   }
 
   /**
-   * Resolves an ODObject by it's name.
+   * Resolves an ODObject by its name.
    * @param node the parent ODDefinition
    * @param attrName the object's name
    * @return the ASTODObject
@@ -48,10 +49,10 @@ public class Util {
   public static ASTODObject getODObject(ASTODDefinition node, String attrName) {
     // first, try to resolve the object directly with the parent ODDefinition
     ODDefinitionSymbol symb = node.getSymbol();
-    Optional<ODObjectSymbol> resultSymbol = getFirstSymbol(symb.getSpannedScope().resolveODObjectDownMany(attrName));
+    Optional<ODObjectSymbol> resultSymbol = symb.getSpannedScope().resolveODObjectDownMany(attrName).stream().findFirst();
 
-    if(resultSymbol.isPresent() && resultSymbol.get().isPresentAstNode()) {
-      return (ASTODObject) resultSymbol.get().getAstNode();
+    if (resultSymbol.isPresent() && resultSymbol.get().isPresentAstNode()) {
+      return resultSymbol.get().getAstNode();
     }
     else {
       // the object is not a direct child of the ODDefinition.
@@ -69,7 +70,7 @@ public class Util {
   }
 
   /**
-   * Resolves an ODObject by it's name.
+   * Resolves an ODObject by its name.
    * @param node the parent ODObject
    * @param attrName the object's name
    * @return the ASTODObject
@@ -77,7 +78,7 @@ public class Util {
   public static ASTODObject getODObject(ASTODObject node, String attrName) {
     // first, try to resolve the object directly with the parent object
     ODObjectSymbol symb = node.getSymbol();
-    Optional<ODObjectSymbol> resultSymbol = getFirstSymbol(symb.getSpannedScope().resolveODObjectDownMany(attrName));
+    Optional<ODObjectSymbol> resultSymbol = symb.getSpannedScope().resolveODObjectDownMany(attrName).stream().findFirst();
 
     if (resultSymbol.isPresent() && resultSymbol.get().isPresentAstNode()) {
       return resultSymbol.get().getAstNode();
@@ -95,20 +96,6 @@ public class Util {
       // if we reach this then the ODObject really is not a child of the parent object
       return null;
     }
-  }
-
-  /**
-   * Returns the first symbol of the given collection.
-   * @param symbols the symbol collection
-   * @return optional of the first symbol or empty optional if collection is null or empty
-   */
-  private static Optional<ODObjectSymbol> getFirstSymbol(Collection<ODObjectSymbol> symbols) {
-    if (symbols != null && !symbols.isEmpty()) {
-      for (ODObjectSymbol symb : symbols) {
-        return Optional.of(symb);
-      }
-    }
-    return Optional.empty();
   }
 
   /**
@@ -180,20 +167,7 @@ public class Util {
   }
 
   public static boolean isBuiltInType(ASTODAttribute attribute) {
-    String typename = attribute.printType();
-    if("boolean".equals(typename)
-            || "int".equals(typename)
-            || "float".equals(typename)
-            || "double".equals(typename)
-            || "char".equals(typename)
-            || "long".equals(typename)
-            || "byte".equals(typename)
-            || "short".equals(typename)
-            || "String".equals(typename)){
-      return true;
-
-    }
-    return false;
+    return BUILT_IN_TYPES.contains(attribute.printType());
   }
 
   /**
