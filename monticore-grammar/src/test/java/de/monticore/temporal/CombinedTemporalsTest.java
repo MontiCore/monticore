@@ -19,11 +19,13 @@ import org.junit.jupiter.api.BeforeEach;
 import de.monticore.temporal.combinedtemporalstest._parser.CombinedTemporalsTestParser;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @TestWithMCLanguage(CombinedTemporalsTestMill.class)
 public class CombinedTemporalsTest {
@@ -242,6 +244,37 @@ public class CombinedTemporalsTest {
     Assertions.assertTrue(finding.isError());
     Assertions.assertEquals(1, finding.getSourcePosition().map(SourcePosition::getLine).orElse(0));
     Assertions.assertEquals(0, finding.getSourcePosition().map(SourcePosition::getColumn).orElse(-1));
+  }
+
+  // Inputs for the other constructs that pass the first parse step but not the second one.
+  @DisplayName("Second Parse Step Invalid")
+  @ParameterizedTest(name = "Input: {0}")
+  @MethodSource("secondParseStepFailures")
+  void testSecondParseStepInvalid(String input, Class<?> astClass, String errorCode,
+      String expected) throws IOException {
+    ASTTemporal ast = parser.parse_String(input)
+        .orElseGet(MCAssertions::failAndPrintFindings);
+    Assertions.assertInstanceOf(astClass, ast.getInstant());
+    
+    Assertions.assertEquals(1, Log.getFindings().size());
+    Finding finding = MCAssertions.assertHasFindingStartingWith(errorCode);
+    Assertions.assertTrue(finding.isError());
+    Assertions.assertTrue(finding.getMsg().contains("Expected " + expected + " but got '" + input + "'"),
+        finding.getMsg());
+    Assertions.assertEquals(1, finding.getSourcePosition().map(SourcePosition::getLine).orElse(0));
+  }
+  
+  static Stream<Arguments> secondParseStepFailures() {
+    return Stream.of(
+        Arguments.of("-0002-04-12", ASTCalendarDate.class,
+            ISOTemporals2ndParser.CALENDAR_DATE_ERROR_CODE, "a calendar date"),
+        Arguments.of("2017-1", ASTCalendarDate.class,
+            ISOTemporals2ndParser.CALENDAR_DATE_ERROR_CODE, "a calendar date"),
+        Arguments.of("12:30:01-0", ASTISOTime.class,
+            ISOTemporals2ndParser.ISO_TIME_ERROR_CODE, "an ISO time"),
+        Arguments.of("17W481T1230", ASTISODateTime.class,
+            ISOTemporals2ndParser.ISO_DATE_TIME_ERROR_CODE, "an ISO date-time")
+    );
   }
 
   @DisplayName("Numeric Date Parsing")
