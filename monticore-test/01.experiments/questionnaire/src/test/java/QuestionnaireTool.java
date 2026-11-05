@@ -5,7 +5,6 @@ import questionnaire._ast.*;
 import questionnaire._parser.*;
 import questionnaire._visitor.*;
 
-import java.io.IOException;
 import org.antlr.v4.runtime.RecognitionException;
 
 import de.se_rwth.commons.logging.Log;
@@ -67,7 +66,7 @@ public class QuestionnaireTool {
       }
       Log.error("0xEE849 Model could not be parsed.");
     }
-    catch (RecognitionException | IOException e) {
+    catch (RecognitionException e) {
       Log.error("0xEE649 Failed to parse " + model, e);
     }
     return null;

@@ -13,7 +13,6 @@ import org.antlr.v4.runtime.RecognitionException;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Optional;
 
@@ -93,7 +92,7 @@ public class HierAutomataTest {
         Log.error("0xEE848 Model could not be parsed.");
       }
     }
-    catch (RecognitionException | IOException e) {
+    catch (RecognitionException e) {
       Log.error("0xEE648 Failed to parse " + model, e);
     }
     return optStateMachine.get();

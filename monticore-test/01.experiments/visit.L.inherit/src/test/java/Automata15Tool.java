@@ -1,6 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-import java.io.IOException;
 import java.util.*;
 
 import automata15.Automata15Mill;
@@ -67,7 +66,7 @@ public class Automata15Tool {
       }
       Log.error("0xEE850 Model could not be parsed.");
     }
-    catch (RecognitionException | IOException e) {
+    catch (RecognitionException e) {
       Log.error("0xEE650 Failed to parse " + model, e);
     }
     System.exit(1);

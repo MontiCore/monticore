@@ -8,8 +8,6 @@ import mc.feature.semanticpredicate.sempredwithinterface._ast.ASTISequence;
 import mc.feature.semanticpredicate.sempredwithinterface._parser.SemPredWithInterfaceParser;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 @TestWithMCLanguage(SemPredWithInterfaceMill.class)
@@ -19,12 +17,7 @@ public class SemPredWithInterfaceParserTest {
   public void testParse() {
     String input = "foo foo";
     SemPredWithInterfaceParser p = SemPredWithInterfaceMill.parser();
-    java.util.Optional<ASTISequence> ast = java.util.Optional.empty();
-    try {
-       ast = p.parse_StringISequence(input);
-    } catch (IOException e) {
-      fail();
-    }
+    java.util.Optional<ASTISequence> ast = p.parse_StringISequence(input);
     assertTrue(ast.isPresent());
     ASTISequence seq = ast.get();
     assertEquals(2, seq.getIList().size());

@@ -15,7 +15,6 @@ import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -32,15 +31,11 @@ public class ResolvingTest {
 
   protected Optional<ASTCDCompilationUnit> parseAndTransform(String model){
     SimpleCDParser parser = SimpleCDMill.parser();
-    try {
-      Optional<ASTCDCompilationUnit> unit = parser.parse(model);
-      if(unit.isPresent()){
-        return Optional.of(unit.get());
-      }
-      return Optional.empty();
-    } catch (IOException e) {
-      return Optional.empty();
+    Optional<ASTCDCompilationUnit> unit = parser.parse(model);
+    if(unit.isPresent()){
+      return Optional.of(unit.get());
     }
+    return Optional.empty();
   }
 
   protected ISimpleCDArtifactScope buildSymbolTable(ASTCDCompilationUnit ast){

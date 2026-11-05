@@ -114,7 +114,6 @@ public class MCGenericsTypesTest {
     GenericTypesTestMill.reset();
     GenericTypesTestMill.init();
     GenericTypesTestParser parser = new GenericTypesTestParser();
-    try {
       // test-data
       LinkedHashMap<String, Integer> testdata = new LinkedHashMap<String, Integer>();
       testdata.put("Collection<?>[]", 1);
@@ -134,10 +133,6 @@ public class MCGenericsTypesTest {
         assertEquals(testdata.get(teststring).intValue(), arrayType.getDimensions());
         assertInstanceOf(ASTMCObjectType.class, arrayType.getMCType());
       }
-    }
-    catch (IOException e) {
-      fail(e.getMessage());
-    }
   
     assertTrue(Log.getFindings().isEmpty());
   }

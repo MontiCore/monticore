@@ -118,29 +118,23 @@ public class ParserClassDecorator extends AbstractDecorator {
 
   protected List<ASTCDMethod> createParseMethods(String startRuleName, String startRuleFullName){
     List<ASTCDMethod> methods = Lists.newArrayList();
-    ASTMCQualifiedName ioException = MCBasicTypesMill.mCQualifiedNameBuilder()
-        .setPartsList(Lists.newArrayList("java", "io", "IOException"))
-        .build();
 
     String prodName = service.removeASTPrefix(startRuleName);
 
     ASTMCType returnType = getMCTypeFacade().createOptionalTypeOf(getMCTypeFacade().createQualifiedType(startRuleFullName));
     ASTCDParameter fileNameParameter = getCDParameterFacade().createParameter(String.class, "fileName");
     ASTCDMethod parse = getCDMethodFacade().createMethod(PUBLIC.build(), returnType, "parse", fileNameParameter);
-    parse.setCDThrowsDeclaration(CD4CodeBasisMill.cDThrowsDeclarationBuilder().addException(ioException).build());
     this.replaceTemplate(EMPTY_BODY, parse, new TemplateHookPoint(TEMPLATE_PATH + "Parse", prodName));
     methods.add(parse);
 
     ASTMCType readerType = getMCTypeFacade().createQualifiedType("java.io.Reader");
     ASTCDParameter readerParameter = getCDParameterFacade().createParameter(readerType, "reader");
     ASTCDMethod parseReader = getCDMethodFacade().createMethod(PUBLIC.build(), returnType, "parse", readerParameter);
-    parseReader.setCDThrowsDeclaration(CD4CodeBasisMill.cDThrowsDeclarationBuilder().addException(ioException).build());
     this.replaceTemplate(EMPTY_BODY, parseReader, new TemplateHookPoint(TEMPLATE_PATH + "ParseReader", prodName));
     methods.add(parseReader);
 
     ASTCDParameter strParameter = getCDParameterFacade().createParameter(String.class, "str");
     ASTCDMethod parseString = getCDMethodFacade().createMethod(PUBLIC.build(), returnType, "parse_String", strParameter);
-    parseString.setCDThrowsDeclaration(CD4CodeBasisMill.cDThrowsDeclarationBuilder().addException(ioException).build());
     this.replaceTemplate(EMPTY_BODY, parseString, new TemplateHookPoint(TEMPLATE_PATH + "ParseString", prodName));
     methods.add(parseString);
 
@@ -149,8 +143,6 @@ public class ParserClassDecorator extends AbstractDecorator {
 
   protected List<ASTCDMethod> createParseMethodsForProds(String grammarName, Map<ASTCDType, ASTCDDefinition> prods){
     List<ASTCDMethod> methods = Lists.newArrayList();
-    ASTMCQualifiedName ioException = MCBasicTypesMill.mCQualifiedNameBuilder()
-        .setPartsList(Lists.newArrayList("java", "io", "IOException")).build();
     for(Map.Entry<ASTCDType, ASTCDDefinition> entry: prods.entrySet()){
       String packageName = service.getASTPackage(entry.getValue().getSymbol());
       ASTCDType prod = entry.getKey();
@@ -160,18 +152,15 @@ public class ParserClassDecorator extends AbstractDecorator {
       ASTMCType returnType = getMCTypeFacade().createOptionalTypeOf(getMCTypeFacade().createQualifiedType(qualifiedRuleName));
       ASTCDParameter fileNameParameter = getCDParameterFacade().createParameter(String.class, "fileName");
       ASTCDMethod parse = getCDMethodFacade().createMethod(PUBLIC.build(), returnType, "parse" + parseMethodSuffix, fileNameParameter);
-      parse.setCDThrowsDeclaration(CD4CodeBasisMill.cDThrowsDeclarationBuilder().addException(ioException).build());
       this.replaceTemplate(EMPTY_BODY, parse, new TemplateHookPoint(TEMPLATE_PATH + "ParseRule", grammarName, qualifiedRuleName, service.getParseRuleNameJavaCompatible(prod)));
       methods.add(parse);
       ASTMCType readerType = getMCTypeFacade().createQualifiedType("java.io.Reader");
       ASTCDParameter readerParameter = getCDParameterFacade().createParameter(readerType, "reader");
       ASTCDMethod parseReader = getCDMethodFacade().createMethod(PUBLIC.build(), returnType, "parse" + parseMethodSuffix, readerParameter);
-      parseReader.setCDThrowsDeclaration(CD4CodeBasisMill.cDThrowsDeclarationBuilder().addException(ioException).build());
       this.replaceTemplate(EMPTY_BODY, parseReader, new TemplateHookPoint(TEMPLATE_PATH + "ParseRuleReader", grammarName, qualifiedRuleName, service.getParseRuleNameJavaCompatible(prod)));
       methods.add(parseReader);
       ASTCDParameter strParameter = getCDParameterFacade().createParameter(String.class, "str");
       ASTCDMethod parseString = getCDMethodFacade().createMethod(PUBLIC.build(), returnType, "parse_String" + parseMethodSuffix, strParameter);
-      parseString.setCDThrowsDeclaration(CD4CodeBasisMill.cDThrowsDeclarationBuilder().addException(ioException).build());
       this.replaceTemplate(EMPTY_BODY, parseString, new TemplateHookPoint(TEMPLATE_PATH + "ParseRuleString", parseMethodSuffix));
       methods.add(parseString);
     }

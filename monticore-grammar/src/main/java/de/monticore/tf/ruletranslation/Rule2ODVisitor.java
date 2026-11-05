@@ -29,7 +29,6 @@ import de.monticore.tf.tfcommons._ast.*;
 import de.monticore.tf.tfcommons._visitor.TFCommonsVisitor2;
 import de.monticore.tf.ast.*;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -156,18 +155,13 @@ public abstract class Rule2ODVisitor implements TFCommonsVisitor2 {
       if(!value.startsWith("$")){
         value = "m." +  value;
       }
-      try {
-        ASTAssignment assignment = ODRulesMill.assignmentBuilder().uncheckedBuild();
-        assignment.setLhs(key);
-        assignment.setRhs(ODRulesMill.parser().parse_StringExpression(value).get());
-        if (isListChild) {
-          assignment.add_PostComment(LISTCHILD_COMMENT);
-        }
-        state.getGenRule().getAssignmentList().addFirst(assignment);
+      ASTAssignment assignment = ODRulesMill.assignmentBuilder().uncheckedBuild();
+      assignment.setLhs(key);
+      assignment.setRhs(ODRulesMill.parser().parse_StringExpression(value).get());
+      if (isListChild) {
+        assignment.add_PostComment(LISTCHILD_COMMENT);
       }
-      catch (IOException e) {
-        Log.error("0xF0901: Invalid Java Expression used in Transformation Rule", e);
-      }
+      state.getGenRule().getAssignmentList().addFirst(assignment);
     }
   }
 
@@ -309,22 +303,15 @@ public abstract class Rule2ODVisitor implements TFCommonsVisitor2 {
   }
 
   protected ASTExpression createQualifiedNameExpression(List<String> parts) {
-    try {
-      Optional<ASTExpression> exp = ODRulesMill.parser()
-          .parse_StringExpression(
-              Names.constructQualifiedName(parts));
-      if (exp.isPresent()) {
-        return exp.get();
-      }
-      else {
-        Log.error(
-            "0xF0006: " + Names.constructQualifiedName(parts) + " cannot be treated as an expression");
-        return ODRulesMill.nameExpressionBuilder().uncheckedBuild();
-      }
+    Optional<ASTExpression> exp = ODRulesMill.parser()
+        .parse_StringExpression(
+            Names.constructQualifiedName(parts));
+    if (exp.isPresent()) {
+      return exp.get();
     }
-    catch (IOException e) {
+    else {
       Log.error(
-          "0xF0004: " + Names.constructQualifiedName(parts) + " cannot be treated as an expression");
+          "0xF0006: " + Names.constructQualifiedName(parts) + " cannot be treated as an expression");
       return ODRulesMill.nameExpressionBuilder().uncheckedBuild();
     }
   }

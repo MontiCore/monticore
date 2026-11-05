@@ -100,23 +100,18 @@ public class ${className} {
   
   public Optional<AST${grammarName}TFRule> parseRule(Path model) {
     Log.debug("Start parsing of the model " + model, LOG_ID);
-    try {
-      ${dstlName}Parser parser = new ${dstlName}Parser();
-      Optional<AST${grammarName}TFRule> ast = parser.parse${grammarName}TFRule(model.toString());
-      if (!parser.hasErrors() && ast.isPresent()) {
-        Log.debug("Model " + model + " parsed successfully", LOG_ID);
-        String name = model.toString().replace(".mtr", "");
-        ast.get().getTFRule().setName(name.substring(model.toString().lastIndexOf(File.separator) + 1, name.length()));
-      }
-      else {
-        Log.error(
-            "0xA6152${service.getGeneratedErrorCode(classname)} There are parsing errors while parsing of the model " + model);
-      }
-      return ast;
+    ${dstlName}Parser parser = new ${dstlName}Parser();
+    Optional<AST${grammarName}TFRule> ast = parser.parse${grammarName}TFRule(model.toString());
+    if (!parser.hasErrors() && ast.isPresent()) {
+      Log.debug("Model " + model + " parsed successfully", LOG_ID);
+      String name = model.toString().replace(".mtr", "");
+      ast.get().getTFRule().setName(name.substring(model.toString().lastIndexOf(File.separator) + 1, name.length()));
     }
-    catch (IOException e) {
-      throw new RuntimeException(e);
+    else {
+      Log.error(
+          "0xA6152${service.getGeneratedErrorCode(classname)} There are parsing errors while parsing of the model " + model);
     }
+    return ast;
   }
   
   public void checkCoCos(AST${grammarName}TFRule ast) {

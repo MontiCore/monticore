@@ -11,7 +11,6 @@ import javaaut._symboltable.*;
 import org.antlr.v4.runtime.RecognitionException;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -54,7 +53,7 @@ public class SymTabTest {
       }
       Log.error("0xEE84C Model could not be parsed.");
     }
-    catch (RecognitionException | IOException e) {
+    catch (RecognitionException e) {
       Log.error("0xEE64C Failed to parse " + model, e);
     }
     return null;

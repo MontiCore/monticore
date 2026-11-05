@@ -27,6 +27,7 @@ import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertOptionalOf;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getMethodsBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ParserForSuperDecoratorTest extends DecoratorTestCase {
@@ -96,9 +97,6 @@ public class ParserForSuperDecoratorTest extends DecoratorTestCase {
   @Test
   public void testParseTransitionMethods(){
     List<ASTCDMethod> methods = getMethodsBy("parseTransition", parserClass);
-    ASTMCQualifiedName ioException = MCBasicTypesMill.mCQualifiedNameBuilder()
-        .setPartsList(Lists.newArrayList("java", "io", "IOException"))
-        .build();
 
     assertEquals(2, methods.size());
 
@@ -109,8 +107,7 @@ public class ParserForSuperDecoratorTest extends DecoratorTestCase {
     assertEquals(1, parse.sizeCDParameters());
     assertEquals("fileName", parse.getCDParameter(0).getName());
     assertDeepEquals(String.class, parse.getCDParameter(0).getMCType());
-    assertEquals(1, parse.getCDThrowsDeclaration().sizeException());
-    assertDeepEquals(ioException, parse.getCDThrowsDeclaration().getException(0));
+    assertFalse(parse.isPresentCDThrowsDeclaration());
 
     ASTCDMethod parseReader = methods.get(1);
     assertDeepEquals(CDModifier.PUBLIC, parseReader.getModifier());
@@ -119,18 +116,14 @@ public class ParserForSuperDecoratorTest extends DecoratorTestCase {
     assertEquals(1, parseReader.sizeCDParameters());
     assertEquals("reader", parseReader.getCDParameter(0).getName());
     assertDeepEquals("java.io.Reader", parseReader.getCDParameter(0).getMCType());
-    assertEquals(1, parseReader.getCDThrowsDeclaration().sizeException());
-    assertDeepEquals(ioException, parseReader.getCDThrowsDeclaration().getException(0));
-  
+    assertFalse(parseReader.isPresentCDThrowsDeclaration());
+
     assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testParseOverriddenStateMethods(){
     List<ASTCDMethod> methods = getMethodsBy("parseState", parserClass);
-    ASTMCQualifiedName ioException = MCBasicTypesMill.mCQualifiedNameBuilder()
-        .setPartsList(Lists.newArrayList("java", "io", "IOException"))
-        .build();
 
     assertEquals(2, methods.size());
 
@@ -141,8 +134,7 @@ public class ParserForSuperDecoratorTest extends DecoratorTestCase {
     assertEquals(1, parse.sizeCDParameters());
     assertEquals("fileName", parse.getCDParameter(0).getName());
     assertDeepEquals(String.class, parse.getCDParameter(0).getMCType());
-    assertEquals(1, parse.getCDThrowsDeclaration().sizeException());
-    assertDeepEquals(ioException, parse.getCDThrowsDeclaration().getException(0));
+    assertFalse(parse.isPresentCDThrowsDeclaration());
 
     ASTCDMethod parseReader = methods.get(1);
     assertDeepEquals(CDModifier.PUBLIC, parseReader.getModifier());
@@ -151,9 +143,8 @@ public class ParserForSuperDecoratorTest extends DecoratorTestCase {
     assertEquals(1, parseReader.sizeCDParameters());
     assertEquals("reader", parseReader.getCDParameter(0).getName());
     assertDeepEquals("java.io.Reader", parseReader.getCDParameter(0).getMCType());
-    assertEquals(1, parseReader.getCDThrowsDeclaration().sizeException());
-    assertDeepEquals(ioException, parseReader.getCDThrowsDeclaration().getException(0));
-  
+    assertFalse(parseReader.isPresentCDThrowsDeclaration());
+
     assertTrue(Log.getFindings().isEmpty());
   }
 

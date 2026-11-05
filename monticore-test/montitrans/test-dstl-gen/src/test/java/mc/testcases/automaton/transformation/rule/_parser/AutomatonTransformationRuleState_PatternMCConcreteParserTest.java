@@ -5,7 +5,6 @@ import de.se_rwth.commons.logging.LogStub;
 import mc.testcases.automaton.tr.automatontr._ast.ASTState_Pat;
 import mc.testcases.automaton.tr.automatontr._parser.AutomatonTRParser;
 
-import java.io.IOException;
 import java.util.Optional;
 
 import de.se_rwth.commons.logging.Log;
@@ -23,7 +22,7 @@ public class AutomatonTransformationRuleState_PatternMCConcreteParserTest {
   }
   
   @Test
-  public void testParse1() throws IOException {
+  public void testParse1() {
     String input = "state s1 { State $BAR }";
     parseStatePattern(input);
     
@@ -49,14 +48,9 @@ public class AutomatonTransformationRuleState_PatternMCConcreteParserTest {
   protected void parseStatePattern(String input) {
     AutomatonTRParser parser = new AutomatonTRParser();
 
-    try {
-      Optional<ASTState_Pat> ast = parser.parse_StringState_Pat(input);
-      assertFalse(parser.hasErrors());
-      assertTrue(ast.isPresent());
-    }
-    catch (IOException e) {
-      fail(e.toString());
-    }
+    Optional<ASTState_Pat> ast = parser.parse_StringState_Pat(input);
+    assertFalse(parser.hasErrors());
+    assertTrue(ast.isPresent());
   }
 
 }

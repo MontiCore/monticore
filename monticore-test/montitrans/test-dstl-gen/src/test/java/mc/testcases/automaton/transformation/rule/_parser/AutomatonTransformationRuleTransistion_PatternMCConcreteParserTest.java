@@ -5,7 +5,6 @@ import de.se_rwth.commons.logging.LogStub;
 import mc.testcases.automaton.tr.automatontr._ast.ASTTransition_Pat;
 import mc.testcases.automaton.tr.automatontr._parser.AutomatonTRParser;
 
-import java.io.IOException;
 import java.util.Optional;
 
 import de.se_rwth.commons.logging.Log;
@@ -27,12 +26,8 @@ public class AutomatonTransformationRuleTransistion_PatternMCConcreteParserTest 
     Optional<ASTTransition_Pat> transitionPattern = Optional.empty();
     String input = "Transition $T [[ $from-$activate>$to; ]]";
     AutomatonTRParser p = new AutomatonTRParser();
-    try {
-      transitionPattern = p.parse_StringTransition_Pat(input);
-      assertFalse(p.hasErrors());
-    } catch (IOException e) {
-      fail(e.toString());
-    }
+    transitionPattern = p.parse_StringTransition_Pat(input);
+    assertFalse(p.hasErrors());
 
     assertTrue(transitionPattern.isPresent());
     assertEquals("$T", transitionPattern.get().getSchemaVarName());
