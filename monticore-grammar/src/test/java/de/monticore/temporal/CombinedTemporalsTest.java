@@ -10,7 +10,10 @@ import de.monticore.temporal.detemporals._ast.ASTDEDateTime;
 import de.monticore.temporal.detemporals._ast.ASTDENumericDate;
 import de.monticore.temporal.detemporals._ast.ASTDETime;
 import de.monticore.temporal.isotemporals._ast.*;
+import de.monticore.temporal.isotemporals.parsing.ISOTemporals2ndParser;
+import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Finding;
+import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import de.monticore.temporal.combinedtemporalstest._parser.CombinedTemporalsTestParser;
@@ -221,14 +224,24 @@ public class CombinedTemporalsTest {
   }
 
   // These inputs pass the first parse step but are rejected by the second one.
-  // The second parser has to report an error instead of throwing an exception.
+  // The second parser keeps the AST with default values and reports exactly one error
+  // at the position of the date instead of throwing an exception.
   @DisplayName("Basic Week Date Parse Invalid")
   @ParameterizedTest(name = "Input: {0}")
   @ValueSource(strings = {"3W4", "2017W4", "17W481"})
   void testBasicWeekDateInvalidParse(String input) throws IOException {
-    parser.parse_String(input);
-
-    MCAssertions.assertHasFindings(Finding::isError);
+    ASTTemporal ast = parser.parse_String(input)
+        .orElseGet(MCAssertions::failAndPrintFindings);
+    Assertions.assertInstanceOf(ASTBasicWeekDate.class, ast.getInstant());
+    ASTBasicWeekDate realAst = (ASTBasicWeekDate) ast.getInstant();
+    Assertions.assertEquals(0, realAst.getYear());
+    Assertions.assertEquals(0, realAst.getWeek());
+    
+    Assertions.assertEquals(1, Log.getFindings().size());
+    Finding finding = MCAssertions.assertHasFindingStartingWith(ISOTemporals2ndParser.WEEK_DATE_ERROR_CODE);
+    Assertions.assertTrue(finding.isError());
+    Assertions.assertEquals(1, finding.getSourcePosition().map(SourcePosition::getLine).orElse(0));
+    Assertions.assertEquals(0, finding.getSourcePosition().map(SourcePosition::getColumn).orElse(-1));
   }
 
   @DisplayName("Numeric Date Parsing")
