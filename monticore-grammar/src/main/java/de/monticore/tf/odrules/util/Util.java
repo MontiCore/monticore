@@ -34,6 +34,13 @@ import java.util.Optional;
 public class Util {
   private static final int PREFIX_LENGHT = 3;
 
+  private static final String AST_PREFIX = "AST";
+
+  /**
+   * MontiCore appends this suffix to derived names of iterated attributes
+   */
+  private static final String LIST_SUFFIX = "s";
+
   protected Util(){
     // no instances
   }
@@ -305,13 +312,64 @@ public class Util {
     return false;
   }
 
-  public static String makeSingular(String name) {
-    if(name.endsWith("ses"))
-      name = name.substring(0, name.length() - 2);
-    else if(name.endsWith("ss") && !name.endsWith("class"))
-      name = name.substring(0, name.length() - 2);
-    else if(name.endsWith("s") && !name.endsWith("class"))
-      name = name.substring(0, name.length() - 1);
+  /**
+   * Returns the capitalized name MontiCore uses for the list accessors
+   * ({@code get<Name>List()}) of the attribute set by the given link.
+   *
+   * @param link   a link whose attribute is iterated
+   * @param target the target object of the link, may be null
+   * @see #getListAccessorName(String, String)
+   */
+  public static String getListAccessorName(ASTODLink link, ASTODObject target) {
+    String name = link.isPresentRightRole() ? link.getRightRole() : "";
+    if (!link.getStereotypeValue("genericType").isEmpty()) {
+      // Links translated by the DSTL carry the declared type of the attribute and use the name
+      // from the grammar. As the name may be a usage name ending with an "s"
+      // (contexts:Context*), it must not be changed.
+      return StringTransformations.capitalize(name);
+    }
+    return getListAccessorName(name, target != null ? target.printType() : "");
+  }
+
+  /**
+   * Returns the capitalized name MontiCore uses for the list accessors
+   * ({@code get<Name>List()}) of the given iterated attribute.
+   *
+   * @see #getListAccessorName(String, String)
+   */
+  public static String getListAccessorName(ASTODAttribute attribute) {
+    return getListAccessorName(attribute.getName(), attribute.printType());
+  }
+
+  /**
+   * Returns the capitalized name MontiCore uses for the list accessors
+   * ({@code get<Name>List()}) of an iterated attribute.
+   * <p>
+   * MontiCore names the list accessors after the name in the grammar, i.e., the usage name
+   * ({@code contexts:Context*} results in {@code getContextsList()}) or the name derived from
+   * the nonterminal ({@code State*} results in {@code getStateList()}), see
+   * {@code DecorationHelper#getPlainGetter} in the generator. Rules translated by the DSTL use
+   * exactly this name. Handwritten rules may use the name of the attribute in the class
+   * diagram instead, to which an "s" has been appended for derived names ({@code states}).
+   * This "s" is removed, if the name matches the name derived from the given type.
+   * <p>
+   * Note that this is ambiguous for usage names which equal the derived attribute name
+   * ({@code contexts:Context*}), as the name alone does not reveal whether it has been derived.
+   * Links translated by the DSTL avoid this ambiguity,
+   * see {@link #getListAccessorName(ASTODLink, ASTODObject)}.
+   *
+   * @param name the name of the attribute
+   * @param type the (qualified) type of the attribute or its elements, may be empty
+   */
+  public static String getListAccessorName(String name, String type) {
+    String typeName = Names.getSimpleName(type);
+    if (typeName.startsWith(AST_PREFIX)) {
+      typeName = typeName.substring(AST_PREFIX.length());
+    }
+    if (!typeName.isEmpty()
+        && name.equals(StringTransformations.uncapitalize(typeName) + LIST_SUFFIX)) {
+      name = name.substring(0, name.length() - LIST_SUFFIX.length());
+    }
     return StringTransformations.capitalize(name);
   }
 

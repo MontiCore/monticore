@@ -128,7 +128,7 @@ public class GenerateConditionsVisitor implements
     if (isOptional) {
       condition = format("(!cand.isPresent%s() || ! cand.get%s().equals(%s", capitalize(node.getName()), capitalize(node.getName()), getter);
     } else if(isIterated) {
-      condition = format("(!cand.get%sList().equals(%s", Util.makeSingular(node.getName()), getter);
+      condition = format("(!cand.get%sList().equals(%s", Util.getListAccessorName(node), getter);
     }else{
       condition = format("(!cand.get%s().equals(%s", capitalize(node.getName()), getter);
     }
@@ -166,7 +166,7 @@ public class GenerateConditionsVisitor implements
         if (isOptional) {
           second += format(".get%s()", capitalize(node.getName()));
         } else if(isIterated) {
-          second += format(".get%sList()", Util.makeSingular(node.getName()));
+          second += format(".get%sList()", Util.getListAccessorName(node));
         } else {
           second += format(".get%s()", capitalize(node.getName()));
         }
@@ -330,7 +330,7 @@ public class GenerateConditionsVisitor implements
             // In the best case/future work, we cache the size value in a boolean?
             secondObjectCondition.setConditionString(format("(%s_cand.get%sList().size() > 10 &&",
                 uncapitalize(leftObjectName),
-                Util.makeSingular(node.getRightRole())
+                getListAccessorName(node)
                ) + secondObjectCondition.getConditionString() + ")");
           }
 
@@ -381,7 +381,7 @@ public class GenerateConditionsVisitor implements
   protected String createSourceObjectCondition(ASTODLink node, String rightObjectName, boolean isIterated, boolean isOptional) {
     if (isIterated) {
       return format("!cand.get%sList().contains(%s_cand)",
-          Util.makeSingular(node.getRightRole()),
+          getListAccessorName(node),
           rightObjectName);
     } else if (isOptional) {
       return format("((!cand.isPresent%s())||(cand.isPresent%s() && cand.get%s() != %s_cand))",
@@ -400,9 +400,9 @@ public class GenerateConditionsVisitor implements
     if (isIterated) {
       return format("(%s_cand.get%sList().size() <= 10 && !%s_cand.get%sList().contains(cand))",
           uncapitalize(leftObjectName),
-          Util.makeSingular(node.getRightRole()),
+          getListAccessorName(node),
           uncapitalize(leftObjectName),
-          Util.makeSingular(node.getRightRole()));
+          getListAccessorName(node));
     } else if (isOptional) {
       return format("((!%s_cand.isPresent%s())||(%s_cand.isPresent%s() && %s_cand.get%s() != cand))",
           leftObjectName, capitalize(node.getRightRole()),
@@ -496,6 +496,14 @@ public class GenerateConditionsVisitor implements
       return split[0].substring(1);
     }
     return split[0];
+  }
+
+  /**
+   * @return the name of the list accessors of the attribute set by the given link
+   */
+  protected String getListAccessorName(ASTODLink link) {
+    String rightObjectName = Names.constructQualifiedName(link.getRightReferenceName(0).getPartsList());
+    return Util.getListAccessorName(link, getODObject(rightObjectName).orElse(null));
   }
 
   protected Optional<ASTODObject> getODObject(String objName) {

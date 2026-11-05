@@ -231,8 +231,8 @@ public class ChangeOperationFactory {
     builder.setValueType(type);
 
     if (isAttributeIterated) {
-      builder.setSetter("get" + StringTransformations.capitalize(attributeName) + "List().addAll");
-      builder.setUnsetter("get" + StringTransformations.capitalize(attributeName) + "List().remove");
+      builder.setSetter("get" + Util.getListAccessorName(attribute) + "List().addAll");
+      builder.setUnsetter("get" + Util.getListAccessorName(attribute) + "List().remove");
     } else {
       builder.setSetter("set" + StringTransformations.capitalize(attributeName));
       builder.setUnsetter("set" + StringTransformations.capitalize(attributeName));
@@ -241,9 +241,9 @@ public class ChangeOperationFactory {
     if (type.equals("boolean")) {
       builder.setGetter("is" + StringTransformations.capitalize(attributeName));
     } else if(isAttributeIterated) {
-      builder.setGetter("get" +  StringTransformations.capitalize(attributeName) + "List");
+      builder.setGetter("get" + Util.getListAccessorName(attribute) + "List");
       if(isAttributeOptional) {
-        builder.setGetIsPresent("isPresent" + Util.makeSingular(attributeName) + "List()");
+        builder.setGetIsPresent("isPresent" + Util.getListAccessorName(attribute) + "List()");
       }
     } else {
       builder.setGetter("get" + StringTransformations.capitalize(attributeName));
@@ -352,8 +352,8 @@ public class ChangeOperationFactory {
     builder.setCopy(link.hasStereotype("copy"));
 
     if (isAttributeIterated) {
-      builder.setSetter("get" + Util.makeSingular(attributeName) + "List().add");
-      builder.setUnsetter("get" + Util.makeSingular(attributeName) + "List().remove");
+      builder.setSetter("get" + Util.getListAccessorName(link, targetObject) + "List().add");
+      builder.setUnsetter("get" + Util.getListAccessorName(link, targetObject) + "List().remove");
     } else {
       builder.setSetter("set" + StringTransformations.capitalize(attributeName));
       builder.setUnsetter("set" + StringTransformations.capitalize(attributeName));
@@ -362,9 +362,9 @@ public class ChangeOperationFactory {
     if (type.equals("boolean")) {
       builder.setGetter("is" + StringTransformations.capitalize(attributeName));
     } else if(isAttributeIterated) {
-      builder.setGetter("get" + Util.makeSingular(attributeName) + "List");
+      builder.setGetter("get" + Util.getListAccessorName(link, targetObject) + "List");
       if(isAttributeOptional) {
-        builder.setGetIsPresent("isPresent" + Util.makeSingular(attributeName) + "List()");
+        builder.setGetIsPresent("isPresent" + Util.getListAccessorName(link, targetObject) + "List()");
       }
     } else {
       builder.setGetter("get" + StringTransformations.capitalize(attributeName));
@@ -496,8 +496,8 @@ public class ChangeOperationFactory {
     builder.setValueType(type);
 
     if (isAttributeIterated) {
-      builder.setSetter("get" + Util.makeSingular(attributeName) + "List().add");
-      builder.setUnsetter("get" + Util.makeSingular(attributeName) + "List().remove");
+      builder.setSetter("get" + Util.getListAccessorName(link, targetObject) + "List().add");
+      builder.setUnsetter("get" + Util.getListAccessorName(link, targetObject) + "List().remove");
     } else {
       builder.setSetter("set" + StringTransformations.capitalize(attributeName));
       builder.setUnsetter("set" + StringTransformations.capitalize(attributeName));
@@ -506,9 +506,9 @@ public class ChangeOperationFactory {
     if (type.equals("boolean")) {
       builder.setGetter("is" + StringTransformations.capitalize(attributeName));
     } else if(isAttributeIterated) {
-      builder.setGetter("get" + Util.makeSingular(attributeName) + "List");
+      builder.setGetter("get" + Util.getListAccessorName(link, targetObject) + "List");
       if(isAttributeOptional) {
-        builder.setGetIsPresent("isPresent" + Util.makeSingular(attributeName) + "List()");
+        builder.setGetIsPresent("isPresent" + Util.getListAccessorName(link, targetObject) + "List()");
       }
     } else {
       builder.setGetter("get" + StringTransformations.capitalize(attributeName));
