@@ -56,10 +56,13 @@ public class TemplatesTool {
 
   // output directory: args[2]
   static protected File outputDir;
-  
-  // output directory: args[2]
+
+  // optional template path: args[3]
   static protected MCPath templatePath = new MCPath();
-  
+
+  // tracing: args[4]
+  static protected boolean tracing = true;
+
   // The AST of the model to be handled (will result from parsing)
   protected ASTAutomaton ast;
 
@@ -71,19 +74,19 @@ public class TemplatesTool {
 
   // The generator engine used (reentrant, so only one instance needed)
   protected GeneratorEngine generatorEngine;
-  
+
   // The global extension management used
   protected GlobalExtensionManagement glex;
-  
+
   // Two dimensional map: SourceState x Stimulus -> Transition
   Map<ASTState, Map<String,ASTTransition>> deltaMap = new LinkedHashMap<>();
-  
+
   // Map: Name -> State (== State-Symbols)
   Map<String, ASTState> stateMap = new LinkedHashMap<>();
-  
+
   // List of stimuli
   Set<String> stimuli = new LinkedHashSet<>();
-  
+
   /**
    * Use three arguments to specify the automata model,
    * the path containing handwritten extensions of
@@ -109,7 +112,8 @@ public class TemplatesTool {
           + "1. automata modelfile,\n"
           + "2. handcodedPath,\n"
           + "3. output directory.\n"
-          + "4. (optional) templatePath"
+          + "4. (optional) templatePath\n"
+          + "5. (optional) tracing"
           );
       return;
     }
@@ -121,15 +125,23 @@ public class TemplatesTool {
 
     // get output directory from arg[2]
     outputDir = new File(args[2]);
-    
+
     // if present get templatePath
-    if(args.length == 4) {
-      templatePath.addEntry(Paths.get(args[3]));
+    if(args.length >= 4) {
+      // check if boolean (tracing case)
+      if("true".equalsIgnoreCase(args[3]) || "false".equalsIgnoreCase(args[3])){
+        tracing = Boolean.parseBoolean(args[3]);
+      }else{
+        templatePath.addEntry(Paths.get(args[3]));
+        if(args.length >= 5){
+          tracing = Boolean.parseBoolean(args[4]);
+        }
+      }
     }
-    
+
     executeWorkflow();
   }
-  
+
   /**
    * Second entry method of the AutomataTool:
    * it stores the input parameters and calls the execution workflow
@@ -138,11 +150,11 @@ public class TemplatesTool {
     this.modelfilename = modelfilename;
     this.handcodedPath = handcodedPath;
     this.outputDir = outputDir;
-    
+
     executeWorkflow();
   }
-  
-  
+
+
   /**
    * The execution workflow:
    * a single larger method calling all the individual steps needed
@@ -156,49 +168,50 @@ public class TemplatesTool {
 
     // Part 1b: setup the symbol table
     setupSymbolTable();
-  
+
     // Part 2: CoCos
     // deliberately omitted
-  
+
     // Part 3: Store Symboltable
     storeSymbolTable();
     Log.info(modelfilename + " symboltable stored successfully", this.getClass().getName());
-    
+
     // Part 4: Transformation and Data Calculation
     deriveStateMap_DeltaMap();
-    
+
     // Part 5: Backend for Generation: Setup Engine
     initGeneratorEngine();
-    
+
     // Part 6: Generate.....
     //generate the class for the whole statechart
     generateStatechart();
-  
+
     //generate the factory class for the states
     generateFactory();
-  
+
     //generate the abstract class for the states
     generateAbstractState();
-  
+
     // generate the class for each state
     for(ASTState state : ast.getStateList()) {
       generateState(state);
     }
-  
+
     Log.info(modelfilename + " code generated successfully", this.getClass().getName());
   }
 
   /************************************************************************/
   /***          The Generator Functions: each creates a java file       ***/
   /************************************************************************/
-  
+
   /**
    * Initializes the generator engine
    */
   protected void initGeneratorEngine() {
     initGlex();
     GeneratorSetup s = new GeneratorSetup();
-  
+    s.setTracing(tracing);
+
     s.setGlex(glex);
     s.setOutputDirectory(outputDir);
     if(!templatePath.isEmpty()){
@@ -209,17 +222,17 @@ public class TemplatesTool {
     }
     generatorEngine = new GeneratorEngine(s);
   }
-  
+
   /**
    * Initializes the global extension management
    */
   protected void initGlex() {
     glex = new GlobalExtensionManagement();
-    
+
     // The modelName is used everywhere and does not change during generation
     glex.setGlobalValue("modelName", ast.getName());
   }
-  
+
   /**
    * Generates the class for the statechart itself
    */
@@ -230,13 +243,13 @@ public class TemplatesTool {
     // if there are more: one will arbitrarily be choosen
     //                        (may be the last one)  (---> CoCo?)
     ASTState initialState = ast.getStateList().stream().filter(ASTState::isInitial).findAny().get();
-    
+
     // handle TOP extension
     boolean isHW = existsHandwrittenClass(handcodedPath,className);
     if(isHW){
       className = ast.getName() + TOP_NAME_EXTENSION;
     }
-    
+
     // call generator
     generatorEngine.generate("Statechart.ftl",
             Paths.get(className + ".java"), ast,
@@ -244,13 +257,13 @@ public class TemplatesTool {
             stimuli,
             className, isHW);
   }
-  
+
   /**
    * Generates the abstract super class for all state classes
    */
   protected void generateAbstractState() {
     String className = "Abstract" + ast.getName() + "State";
-  
+
     // handle TOP extension
     if(existsHandwrittenClass(handcodedPath,className)){
       className += TOP_NAME_EXTENSION;
@@ -260,8 +273,8 @@ public class TemplatesTool {
             Paths.get(className+ ".java"), ast,
             stimuli, className);
   }
-  
-  
+
+
   /**
    * Generates a class for the given state
    *
@@ -269,55 +282,55 @@ public class TemplatesTool {
    */
   protected void generateState(ASTState state) {
     String className = state.getName() + "State";
-  
+
     // handle TOP extension
     boolean isHW = existsHandwrittenClass(handcodedPath,className);
     if(isHW){
       className += TOP_NAME_EXTENSION;
     }
-  
+
     // sub Map of delta: contains all transitions starting in this state
     Map<String,ASTTransition> outgoing = deltaMap.get(state);
-    
+
     generatorEngine.generate("ConcreteState.ftl",
             Paths.get(className+ ".java"), ast,
             outgoing, className, isHW);
   }
-  
+
   /**
    * Generates the class for the state factory
    * (although the factory isn't used in this example)
    */
   protected void generateFactory() {
     String className = ast.getName() + "Factory";
-  
+
     // handle TOP extension
     boolean isHW = existsHandwrittenClass(handcodedPath,className);
     if(isHW){
       className = className+ TOP_NAME_EXTENSION;
     }
-    
+
     generatorEngine.generate("StatechartFactory.ftl",
             Paths.get(className+ ".java"), ast,
             className, isHW);
   }
-  
+
   /**
    * Calculates a list of transitions that act as representatives for all occurring stimuli
    * (each stimulus is represented exactly once in that list)
    *
    */
   protected void deriveStateMap_DeltaMap() {
-    
+
     // We might also extend and use the symbol table for this extra infos
     // For demonstration we use the direct approach
-  
+
     // initialize delta: transition map of maps, and state name2node
     for(ASTState s: ast.getStateList()) {
       stateMap.put(s.getName(),s);
       deltaMap.put(s,new LinkedHashMap<>());
     }
-    
+
     // Add the transitions to the table
     for(ASTTransition t: ast.getTransitionList()) {
       String input = t.getInput();
@@ -329,7 +342,7 @@ public class TemplatesTool {
       deltaMap.get(from).put(input, t);
     }
   }
-  
+
   /**
    * Parse the model contained in the specified file.
    *
@@ -362,7 +375,7 @@ public class TemplatesTool {
     globalScope =  AutomataMill
         .globalScope();
 
-    // the global scope here is initialized with an empty path to look for 
+    // the global scope here is initialized with an empty path to look for
     // models
     globalScope.setSymbolPath(new MCPath());
 
@@ -373,7 +386,7 @@ public class TemplatesTool {
     modelTopScope = AutomataMill.scopesGenitorDelegator().createFromAST(ast);
 
     // in complex languages, we may add a second pass here
-    // to fill symbol attributes with values 
+    // to fill symbol attributes with values
     // (but in this case it is not needed)
   }
 
