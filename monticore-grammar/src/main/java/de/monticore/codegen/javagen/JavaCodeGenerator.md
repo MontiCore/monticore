@@ -20,6 +20,8 @@ statements ought to be added later in development.
     * Literals
         * [MCCommonLiteralsJavaGenVisitor](../../literals/mccommonliterals/codegen/javagen/MCCommonLiteralsJavaGenVisitor.java)
           (JavaGenVisitor for MCCommonLiterals)
+        * [SIUnitLiteralsJavaGenVisitor](../../siunit/siunitliterals/codegen/javagen/SIUnitLiteralsJavaGenVisitor.java)
+          (JavaGenVisitor for SIUnitLiterals)
     * Expressions
         * [AssignmentExpressionsJavaGenVisitor](../../expressions/assignmentexpressions/codegen/javagen/AssignmentExpressionsJavaGenVisitor.java)
           (CodeGenVisitor for AssignmentExpressions, partially implemented)
@@ -67,8 +69,12 @@ statements ought to be added later in development.
       (Conversion between numeric types (boxed and unboxed))
     * [JavaObjectConversionHandler](typeconverter/JavaObjectConversionHandler.java)
       (Conversion between Object types)
+    * [JavaSIUnitConversionHandler](typeconverter/JavaSIUnitConversionHandler.java)
+      (Conversion between (numerics with) SIUnits, e.g., km -> m)
     * [JavaTupleConversionHandler](typeconverter/JavaTupleConversionHandler.java)
       (Conversion between tuples)
+    * [JavaUnionConversionHandler](typeconverter/JavaUnionConversionHandler.java)
+      (Conversion to unions, e.g., int -> int | String)
 * [JavaOperationPrinter](JavaOperationPrinter.java)
   (reusable printer for operators,
   based on several handler that are delegated to)
@@ -80,6 +86,8 @@ statements ought to be added later in development.
       (support for Operators on numbers)
     * [JavaStringOperatorGeneratorHandler](operationprinter/JavaStringConcatenationOperationHandler.java)
       (support for String concatenation)
+    * [JavaSIUnitOperationHandler](operationprinter/JavaSIUnitOperationHandler.java)
+      (support for operators on numerics with SIUnits)
 * [SymTypeExpression2JavaConverter](SymTypeExpression2JavaConverter.java)
   (Converts SymTypeExpression to Java types with or without type erasure)
     * [SymTypeExpressionJavaPrinterVisitor](SymTypeExpressionJavaPrinterVisitor.java)

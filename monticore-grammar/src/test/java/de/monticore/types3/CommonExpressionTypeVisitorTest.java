@@ -62,10 +62,14 @@ public class CommonExpressionTypeVisitorTest
     checkExpr("3 + \"Hallo\"", "R\"(.*)(Hallo)\""); // example with String
     checkExpr("\"Hallo\" + 3", "R\"(Hallo)(.*)\""); // example with String
     checkExpr("\"Hallo\" + \" Welt\"", "R\"(Hallo)( Welt)\""); // example with String
-    checkExpr("1m + 1m", "[m]<int>");
+    checkExpr("1m + 1m", "[m]<double>");
     checkExpr("1m + 1.0m", "[m]<double>");
-    checkExpr("1m^2 + 1m^2", "[m^2]<int>");
-    checkExpr("1m + 1km", "[m]<int>");
+    checkExpr("1m^2 + 1m^2", "[m^2]<double>");
+    // the larger unit
+    checkExpr("1m + 1km", "[km]<double>");
+    checkExpr("1km + 1m", "[km]<double>");
+    checkExpr("1min + 1h", "[h]<double>");
+    checkExpr("1N + 1kgm/s^2", "[N]<double>");
   }
 
   @Test
@@ -149,10 +153,12 @@ public class CommonExpressionTypeVisitorTest
     checkExpr("varlong - varlong", "long"); // - applicable to long, long, result is long
     checkExpr("varfloat - varfloat", "float"); // - applicable to float, float, result is float
     checkExpr("vardouble - vardouble", "double"); // - applicable to double, double, result is double
-    checkExpr("1m - 1m", "[m]<int>");
+    checkExpr("1m - 1m", "[m]<double>");
     checkExpr("1m - 1.0m", "[m]<double>");
-    checkExpr("1m^2 - 1m^2", "[m^2]<int>");
-    checkExpr("1m - 1km", "[m]<int>");
+    checkExpr("1m^2 - 1m^2", "[m^2]<double>");
+    // the larger unit
+    checkExpr("1m - 1km", "[km]<double>");
+    checkExpr("1km - 1m", "[km]<double>");
   }
 
   @Test
@@ -228,13 +234,22 @@ public class CommonExpressionTypeVisitorTest
     checkExpr("varlong * varlong", "long"); // * applicable to long, long, result is long
     checkExpr("varfloat * varfloat", "float"); // * applicable to float, float, result is float
     checkExpr("vardouble * vardouble", "double"); // * applicable to double, double, result is double
-    checkExpr("1m * 1m", "[m^2]<int>");
+    checkExpr("1m * 1m", "[m^2]<double>");
     checkExpr("1m * 1.0m", "[m^2]<double>");
-    checkExpr("1m^2 * 1m", "[m^3]<int>");
-    checkExpr("1m * 1km", "[m^2]<int>");
-    checkExpr("1m * 1", "[m]<int>");
-    checkExpr("1 * 1m", "[m]<int>");
-    checkExpr("1m * 1s", "[m^1s]<int>");
+    checkExpr("1m^2 * 1m", "[m^3]<double>");
+    checkExpr("1m * 1", "[m]<double>");
+    checkExpr("1 * 1m", "[m]<double>");
+    checkExpr("1m * 1s", "[s^1m]<double>");
+    checkExpr("1km * 1s", "[s^1km]<double>");
+    checkExpr("1km * 1km", "[km^2]<double>");
+    checkExpr("1N * 1m", "[m^1N]<double>");
+    checkExpr("1km/h * 1h", "[km]<double>");
+    // different units of the same dimension:
+    // SI base units with engineering prefixes
+    checkExpr("1m * 1km", "[m^2]<double>");
+    checkExpr("1km * 1Mm", "[km^2]<double>");
+    checkExpr("1km^2 * 1m", "[m^3]<double>");
+    checkExpr("1h * 1s", "[s^2]<double>");
   }
 
   @Test
@@ -290,13 +305,22 @@ public class CommonExpressionTypeVisitorTest
     checkErrorExpr("varchar = 0.1f * 1", "0xA0179"); // expected char but provided float
     checkErrorExpr("varchar = 1 * 0.1", "0xA0179"); // expected char but provided double
     checkErrorExpr("varchar = 0.1 * 1", "0xA0179"); // expected char but provided double
-    checkExpr("1m * 1m", "[m^2]<int>");
+    checkExpr("1m * 1m", "[m^2]<double>");
     checkExpr("1m * 1.0m", "[m^2]<double>");
-    checkExpr("1m^2 * 1m", "[m^3]<int>");
-    checkExpr("1m * 1km", "[m^2]<int>");
-    checkExpr("1m * 1", "[m]<int>");
-    checkExpr("1 * 1m", "[m]<int>");
-    checkExpr("1m * 1s", "[m^1s]<int>");
+    checkExpr("1m^2 * 1m", "[m^3]<double>");
+    checkExpr("1m * 1", "[m]<double>");
+    checkExpr("1 * 1m", "[m]<double>");
+    checkExpr("1m * 1s", "[s^1m]<double>");
+    checkExpr("1km * 1s", "[s^1km]<double>");
+    checkExpr("1km * 1km", "[km^2]<double>");
+    checkExpr("1N * 1m", "[m^1N]<double>");
+    checkExpr("1km/h * 1h", "[km]<double>");
+    // different units of the same dimension:
+    // SI base units with engineering prefixes
+    checkExpr("1m * 1km", "[m^2]<double>");
+    checkExpr("1km * 1Mm", "[km^2]<double>");
+    checkExpr("1km^2 * 1m", "[m^3]<double>");
+    checkExpr("1h * 1s", "[s^2]<double>");
   }
 
   @Test
@@ -310,14 +334,19 @@ public class CommonExpressionTypeVisitorTest
     checkExpr("varlong / varlong", "long"); // / applicable to long, long, result is long
     checkExpr("varfloat / varfloat", "float"); // / applicable to float, float, result is float
     checkExpr("vardouble / vardouble", "double"); // / applicable to double, double, result is double
-    checkExpr("1m / 1m", "int");
+    checkExpr("1m / 1m", "double");
     checkExpr("1m / 1.0m", "double");
-    checkExpr("1m^2 / 1m", "[m]<int>");
-    checkExpr("1m / 1km", "int");
-    checkExpr("1m / 1", "[m]<int>");
-    checkExpr("1 / 1m", "[1/m]<int>");
-    checkExpr("1m / 1s", "[m/s]<int>");
-    checkExpr("1m^1s / 1s", "[m]<int>");
+    checkExpr("1m^2 / 1m", "[m]<double>");
+    checkExpr("1m / 1", "[m]<double>");
+    checkExpr("1 / 1m", "[1/m]<double>");
+    checkExpr("1m / 1s", "[m/s]<double>");
+    checkExpr("1km / 1h", "[km/h]<double>");
+    checkExpr("1m^1s / 1s", "[m]<double>");
+    // different units of the same dimension:
+    // SI base units with engineering prefixes
+    checkExpr("1m / 1km", "double");
+    checkExpr("1km^2 / 1m", "[Mm]<double>");
+    checkExpr("1km / 1m^2", "[1/mm]<double>");
   }
 
   @Test
@@ -386,10 +415,12 @@ public class CommonExpressionTypeVisitorTest
     checkExpr("varlong % varlong", "long"); // % applicable to long, long, result is long
     checkExpr("varfloat % varfloat", "float"); // % applicable to float, float, result is float
     checkExpr("vardouble % vardouble", "double"); // % applicable to double, double, result is double
-    checkExpr("1m % 1m", "[m]<int>");
+    checkExpr("1m % 1m", "[m]<double>");
     checkExpr("1m % 1.0m", "[m]<double>");
-    checkExpr("1m^2 % 1m^2", "[m^2]<int>");
-    checkExpr("1m % 1km", "[m]<int>");
+    checkExpr("1m^2 % 1m^2", "[m^2]<double>");
+    // the smaller unit
+    checkExpr("1m % 1km", "[m]<double>");
+    checkExpr("1km % 1m", "[m]<double>");
   }
 
   @Test
@@ -1501,6 +1532,64 @@ public class CommonExpressionTypeVisitorTest
     assertNoFindings();
     type = TypeCheck3.typeOf(astExpr);
     assertTrue(SymTypeRelations.isCompatible(_doubleSymType, type));
+  }
+
+  @Test
+  public void deriveFromSIUnitsOfDimensionOneWithNumerics() throws IOException {
+    // numerics are SIUnits of dimension one
+    checkExpr("1rad + 1.0", "[rad]<double>");
+    checkExpr("1.0 + 1rad", "double");
+    checkExpr("1rad - 1", "[rad]<double>");
+    checkExpr("1rad % 1", "[rad]<double>");
+    checkExpr("1rad < 1.0", "boolean");
+    checkExpr("1rad == 1", "boolean");
+    checkErrorExpr("1m + 1", "0xB0163");
+    checkErrorExpr("1m < 1", "0xB0167");
+    checkErrorExpr("1m == 1", "0xB0166");
+  }
+
+  @Test
+  public void deriveFromConditionalExpressionSIUnits() throws IOException {
+    checkExpr("varboolean ? 1m : 1m", "[m]<double>");
+    // the larger unit
+    checkExpr("varboolean ? 1m : 1km", "[km]<double>");
+    checkExpr("varboolean ? 1km : 1m", "[km]<double>");
+    checkExpr("varboolean ? 1km/h : 1m/s", "[m/s]<double>");
+    // different dimensions
+    checkExpr("varboolean ? 1m : 1s", "[m]<double> | [s]<double>");
+    checkExpr("varboolean ? 1m : 1", "[m]<double> | int");
+    // temperatures
+    checkExpr("varboolean ? 1°C : 1K", "[°C]<double>");
+    checkExpr("varboolean ? 1K : 1°C", "[K]<double>");
+  }
+
+  @Test
+  public void deriveFromAngles() throws IOException {
+    checkExpr("1deg + 1rad", "[rad]<double>");
+    checkExpr("1° + 1rad", "[rad]<double>");
+    // numerics are SIUnits of dimension one (in rad)
+    checkExpr("1deg + 1.0", "double");
+    checkExpr("1deg < 1.0", "boolean");
+  }
+
+  @Test
+  public void deriveFromTemperatures() throws IOException {
+    checkExpr("1°C < 1K", "boolean");
+    checkExpr("1°C == 1°F", "boolean");
+    checkExpr("-1°C", "[°C]<double>");
+    checkExpr("1K + 1K", "[K]<double>");
+    checkExpr("1K/s * 2", "[K/s]<double>");
+  }
+
+  @Test
+  public void testInvalidTemperatureArithmetic() throws IOException {
+    // the result would depend on the offset
+    checkErrorExpr("1°C + 1°C", "0xB0163");
+    checkErrorExpr("1°C + 1K", "0xB0163");
+    checkErrorExpr("1K - 1°F", "0xB0163");
+    checkErrorExpr("1°C % 1°C", "0xB0163");
+    checkErrorExpr("2 * 1°C", "0xB0163");
+    checkErrorExpr("1°C / 1s", "0xB0163");
   }
 
   @Test
