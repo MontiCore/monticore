@@ -1,0 +1,17 @@
+/* (c) https://github.com/MontiCore/monticore */
+grammar mc.testcases.Petrinet;
+// places:Placedeclaration* is an explicitly named list (getPlacesList)
+pattern objectdiagram lhs {
+    petrinet_1 : mc.testcases.petrinet._ast.ASTPetrinet {
+    }
+
+    place_1 : mc.testcases.petrinet._ast.ASTPlacedeclaration {
+      String name [1] = "b";
+    }
+
+    composition petrinet_1 -- (places) [*] place_1;
+}
+replacement objectdiagram rhs {
+    petrinet_1 : mc.testcases.petrinet._ast.ASTPetrinet {
+    }
+}
