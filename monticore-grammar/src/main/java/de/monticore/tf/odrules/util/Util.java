@@ -3,9 +3,6 @@ package de.monticore.tf.odrules.util;
 
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar._symboltable.ProdSymbol;
-import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.statements.mcarraystatements._ast.ASTArrayInit;
 import de.monticore.statements.mccommonstatements._ast.ASTMCJavaBlock;
@@ -15,7 +12,6 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcsimplegenerictypes.MCSimpleGenericTypesMill;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
-import de.se_rwth.commons.logging.Log;
 import de.monticore.tf.odrulegeneration._ast.ASTMatchingObject;
 import de.monticore.tf.odrules.HierarchyHelper;
 import de.monticore.tf.odrules._ast.*;
@@ -32,8 +28,6 @@ import java.util.Optional;
  *
  */
 public class Util {
-  private static final int PREFIX_LENGHT = 3;
-
   private static final String AST_PREFIX = "AST";
 
   /**
@@ -198,116 +192,6 @@ public class Util {
             || "String".equals(typename)){
       return true;
 
-    }
-    return false;
-  }
-
-  @Deprecated
-  public static boolean isIterated(ASTODLink node, ASTODDefinition def, MCGrammarSymbol grammarSymbol) {
-    ASTODObject sourceObject = getODObject(def,
-        Names.getSimpleName(node.getLeftReferenceName(0).getPartsList()));
-    return isIterated(node, sourceObject, grammarSymbol);
-  }
-  @Deprecated
-  public static boolean isIterated(ASTODLink node, ASTODObject leftObject, MCGrammarSymbol grammarSymbol) {
-    if(grammarSymbol ==null){
-      Log.warn("Grammar not specified. Cannot determine whether model elements are allowed multiple times within the grammar.");
-      return false;
-    } else if (leftObject.hasStereotype("list")){
-      return true;
-    } else {
-      Optional<RuleComponentSymbol> attribute = getMCAttributeSymbol(node.getRightRole(), leftObject,
-          grammarSymbol);
-
-      return attribute.isPresent() && attribute.get().isIsList();
-    }
-  }
-  @Deprecated
-  public static boolean isOptional(ASTODLink node, ASTODDefinition def, MCGrammarSymbol grammarSymbol) {
-    ASTODObject sourceObject = getODObject(def,
-        Names.getSimpleName(node.getLeftReferenceName(0).getPartsList()));
-    return isOptional(node, sourceObject, grammarSymbol);
-  }
-
-  @Deprecated
-  public static boolean isOptional(ASTODLink node, ASTODObject astodObject,
-      MCGrammarSymbol grammarSymbol) {
-    if(grammarSymbol == null){
-      Log.warn("Grammar not specified. Cannot determine whether model elements are optional within the grammar.");
-      return false;
-    } else if(astodObject.hasStereotype("list")){
-      return false;
-    }
-    Optional<RuleComponentSymbol> attribute = getMCAttributeSymbol(node.getRightRole(),astodObject, grammarSymbol);
-
-    return attribute.isPresent() && attribute.get().isIsOptional() && !attribute.get().isIsList();
-  }
-  @Deprecated
-  public static Optional<RuleComponentSymbol> getMCAttributeSymbol (String attributeName, ASTODObject leftObject, MCGrammarSymbol grammarSymbol){
-    ASTMCType sourceType = leftObject.getType();
-    String javaType = Names.getSimpleName(Util.printType(sourceType));
-    // remove AST prefix
-    String grammarType = javaType.substring(PREFIX_LENGHT);
-
-
-    ProdSymbol prod = grammarSymbol.getProdWithInherited(grammarType).get();
-    Optional<RuleComponentSymbol> attribute = getProdComponent(prod, attributeName);
-
-    // This may be required depending on whether there is a usage name for this
-    // attribute
-    if (attribute.isEmpty()) {
-      attribute = getProdComponent(prod, StringTransformations.capitalize(attributeName));
-    }
-    if (attribute.isEmpty()) {
-      attribute = getProdComponent(prod, attributeName.concat("s"));
-    }
-    if (attribute.isEmpty() && attributeName.endsWith("s")) {
-      attributeName = attributeName.substring(0, attributeName.length() - 1);
-      attribute = getProdComponent(prod, attributeName);
-    }
-    if (attribute.isEmpty() && attributeName.endsWith("e")) {
-      attributeName = attributeName.substring(0, attributeName.length() - 1);
-      attribute = getProdComponent(prod, attributeName);
-    }
-    return  attribute;
-  }
-  @Deprecated
-  private static Optional<RuleComponentSymbol> getProdComponent(ProdSymbol prod, String attributeName) {
-    return prod.getProdComponents().stream().filter(c -> c.getName().equals(attributeName)).findFirst();
-  }
-  @Deprecated
-  public static boolean isIterated(ASTODObject object, ASTODAttribute attribute, MCGrammarSymbol grammarSymbol) {
-    if(grammarSymbol == null){
-      Log.warn("Grammar not specified. Cannot determine whether model elements are optional within the grammar.");
-      return false;
-    }
-    Optional<RuleComponentSymbol> attributeSymbol = getMCAttributeSymbol(attribute.getName(),object, grammarSymbol);
-
-    if(attribute.printType().equals("boolean")) {
-        return false;
-    }
-
-    return attributeSymbol.isPresent() && attributeSymbol.get().isIsList();
-  }
-  @Deprecated
-  public static boolean isOptional(ASTODObject object, ASTODAttribute attribute, MCGrammarSymbol grammarSymbol) {
-    if("boolean".equals(attribute.printType())){
-      return false;
-    }
-    if(grammarSymbol == null){
-      Log.warn("Grammar not specified. Cannot determine whether model elements are optional within the grammar.");
-      return false;
-    }
-    Optional<RuleComponentSymbol> attributeSymbol = getMCAttributeSymbol(attribute.getName(),object, grammarSymbol);
-    return attributeSymbol.isPresent() && attributeSymbol.get().isIsOptional() && !attributeSymbol.get().isIsList();
-
-  }
-  @Deprecated
-  public static boolean isOptional(Optional<ASTODObject> target, String attrname,
-      MCGrammarSymbol grammarSymbol) {
-    if(target.isPresent()){
-      Optional<RuleComponentSymbol> attributeSymbol = getMCAttributeSymbol(attrname,target.get(), grammarSymbol);
-      return attributeSymbol.isPresent() && attributeSymbol.get().isIsOptional()&& !attributeSymbol.get().isIsList();
     }
     return false;
   }
