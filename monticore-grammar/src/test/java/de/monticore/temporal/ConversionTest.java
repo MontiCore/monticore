@@ -162,6 +162,18 @@ public class ConversionTest {
     Assertions.assertEquals(LocalDate.parse(expectedDate), ((ASTDate) ast.getInstant()).toLocalDate());
   }
 
+  // 2021 has 52 ISO weeks, so W53 is out of range like W00 and W54
+  @DisplayName("Week Date Invalid Week")
+  @ParameterizedTest(name = "Input: {0}")
+  @CsvSource({"2021-W53-1", "2021-W00-1", "2021-W54-1"})
+  public void testWeekDateInvalidWeek(String input) throws IOException {
+    ASTTemporal ast = CombinedTemporalsTestMill.parser().parse_String(input)
+        .orElseGet(MCAssertions::failAndPrintFindings);
+    Assertions.assertInstanceOf(ASTDate.class, ast.getInstant());
+
+    Assertions.assertThrows(DateTimeException.class, () -> ((ASTDate) ast.getInstant()).toLocalDate());
+  }
+
   /**
    * @return the date of an ISO week date, computed with java.time's ISO week-based fields
    */

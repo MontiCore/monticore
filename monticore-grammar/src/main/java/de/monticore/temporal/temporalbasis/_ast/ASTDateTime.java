@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.temporal.temporalbasis._ast;
 
+import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.temporal.Temporal;
@@ -19,6 +20,8 @@ public interface ASTDateTime extends ASTDateTimeTOP {
    * @return the corresponding {@link LocalDateTime} or {@link OffsetDateTime}
    * @throws UnsupportedTemporalTypeException if this date-time cannot be
    * represented as either type
+   * @throws DateTimeException if a field value is out of range,
+   * e.g., month 13 or week 53 in a year with 52 ISO weeks
    */
   @Override
   default Temporal toTemporal() {
@@ -64,6 +67,10 @@ public interface ASTDateTime extends ASTDateTimeTOP {
     return getDate().isLocalDate() && getTime().isExactlyLocalTime();
   }
 
+  /**
+   * @throws DateTimeException if a field value is out of range,
+   * e.g., month 13 or week 53 in a year with 52 ISO weeks
+   */
   default LocalDateTime toLocalDateTime() {
     return getDate().toLocalDate().atTime(getTime().toLocalTime());
   }
@@ -72,6 +79,10 @@ public interface ASTDateTime extends ASTDateTimeTOP {
     return getDate().isLocalDate() && getTime().isOffsetTime();
   }
 
+  /**
+   * @throws DateTimeException if a field value is out of range,
+   * e.g., month 13 or week 53 in a year with 52 ISO weeks
+   */
   default OffsetDateTime toOffsetDateTime() {
     return getDate().toLocalDate().atTime(getTime().toOffsetTime());
   }
