@@ -21,7 +21,6 @@ import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-import java.io.IOException;
 import java.util.Optional;
 
 /**
@@ -138,7 +137,7 @@ public class AutomataTool extends AutomataToolTOP {
       }
       Log.error("0xEE840 Model could not be parsed.");
     }
-    catch (RecognitionException | IOException e) {
+    catch (RecognitionException e) {
       Log.error("0xEE640 Failed to parse " + model, e);
     }
     System.exit(1);

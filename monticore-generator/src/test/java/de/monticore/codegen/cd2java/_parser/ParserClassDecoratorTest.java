@@ -120,9 +120,6 @@ public class ParserClassDecoratorTest extends DecoratorTestCase {
 
   @Test
   public void testParseMethods(){
-    ASTMCQualifiedName ioException = MCBasicTypesMill.mCQualifiedNameBuilder()
-        .setPartsList(Lists.newArrayList("java", "io", "IOException"))
-        .build();
     List<ASTCDMethod> methods = getMethodsBy("parse", parserClass);
     assertEquals(2, methods.size());
     //parse with filename
@@ -130,8 +127,7 @@ public class ParserClassDecoratorTest extends DecoratorTestCase {
     assertTrue(parseFileName.getMCReturnType().isPresentMCType());
     assertOptionalOf(AST_AUTOMATON, parseFileName.getMCReturnType().getMCType());
     assertDeepEquals(CDModifier.PUBLIC, parseFileName.getModifier());
-    assertEquals(1, parseFileName.getCDThrowsDeclaration().getExceptionList().size());
-    assertDeepEquals(ioException, parseFileName.getCDThrowsDeclaration().getException(0));
+    assertFalse(parseFileName.isPresentCDThrowsDeclaration());
     assertEquals(1, parseFileName.sizeCDParameters());
     assertDeepEquals(String.class, parseFileName.getCDParameter(0).getMCType());
     assertEquals("fileName", parseFileName.getCDParameter(0).getName());
@@ -141,8 +137,7 @@ public class ParserClassDecoratorTest extends DecoratorTestCase {
     assertTrue(parseReader.getMCReturnType().isPresentMCType());
     assertOptionalOf(AST_AUTOMATON, parseReader.getMCReturnType().getMCType());
     assertDeepEquals(CDModifier.PUBLIC, parseReader.getModifier());
-    assertEquals(1, parseReader.getCDThrowsDeclaration().getExceptionList().size());
-    assertDeepEquals(ioException, parseReader.getCDThrowsDeclaration().getException(0));
+    assertFalse(parseReader.isPresentCDThrowsDeclaration());
     assertEquals(1, parseReader.sizeCDParameters());
     assertDeepEquals("java.io.Reader", parseReader.getCDParameter(0).getMCType());
     assertEquals("reader", parseReader.getCDParameter(0).getName());
@@ -152,8 +147,7 @@ public class ParserClassDecoratorTest extends DecoratorTestCase {
     assertTrue(parseString.getMCReturnType().isPresentMCType());
     assertOptionalOf(AST_AUTOMATON, parseString.getMCReturnType().getMCType());
     assertDeepEquals(CDModifier.PUBLIC, parseString.getModifier());
-    assertEquals(1, parseString.getCDThrowsDeclaration().getExceptionList().size());
-    assertDeepEquals(ioException, parseString.getCDThrowsDeclaration().getException(0));
+    assertFalse(parseString.isPresentCDThrowsDeclaration());
     assertEquals(1, parseString.sizeCDParameters());
     assertDeepEquals(String.class, parseString.getCDParameter(0).getMCType());
     assertEquals("str", parseString.getCDParameter(0).getName());

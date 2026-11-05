@@ -22,7 +22,6 @@ import org.antlr.v4.runtime.RecognitionException;
 import org.apache.commons.cli.*;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -380,7 +379,7 @@ public class AutomataTool extends AutomataToolTOP {
         return optAutomaton.get();
       }
       Log.error("0xD38F1 Model could not be parsed: " + file + ".");
-    } catch (RecognitionException | IOException e) {
+    } catch (RecognitionException e) {
       Log.error("0xD38F2 Failed to parse " + file, e);
     }
     return null;

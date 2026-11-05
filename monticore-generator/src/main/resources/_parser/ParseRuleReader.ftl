@@ -5,7 +5,7 @@ ${tc.signature("grammarName", "astClassName", "parseRuleNameJavaCompatible")}
     parser = create(reader);
   } catch (java.io.IOException e) {
     setError(true);
-    Log.error("IOException occurred.", e);
+    Log.error("0xA01141${service.getGeneratedErrorCode(astClassName)} IOException occurred.", e);
     return Optional.empty();
   }
   ${astClassName} astPV;

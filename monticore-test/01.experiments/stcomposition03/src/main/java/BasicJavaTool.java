@@ -9,7 +9,6 @@ import de.monticore.umlstereotype.UMLStereotypeMill;
 import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.runtime.RecognitionException;
 
-import java.io.IOException;
 import java.util.Optional;
 
 public class BasicJavaTool {
@@ -34,7 +33,7 @@ public class BasicJavaTool {
       }
       Log.error("0xEE84D Model could not be parsed.");
     }
-    catch (RecognitionException | IOException e) {
+    catch (RecognitionException e) {
       Log.error("0xEE64D Failed to parse " + model, e);
     }
     System.exit(1);

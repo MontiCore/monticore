@@ -5,7 +5,7 @@ ${tc.signature("grammarName", "astClassName", "parseRuleNameJavaCompatible")}
     parser = create(fileName);
   } catch (java.io.IOException e) {
     setError(true);
-    Log.error("IOException occurred for file " + fileName, e);
+    Log.error("0xA0114${service.getGeneratedErrorCode(astClassName)} IOException occurred for file " + fileName, e);
     return Optional.empty();
   }
   ${astClassName} astPV;
