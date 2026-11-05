@@ -147,12 +147,12 @@ public class ConversionTest {
   @DisplayName("Week Date Known Values")
   @ParameterizedTest(name = "Input: {0}")
   @CsvSource({
-      "1985-W15-5, 1985-04-12",
-      "2017-W48-1, 2017-11-27",
-      "2019-W01-1, 2018-12-31",
-      "2020-W53-5, 2021-01-01",
-      "2021-W01-1, 2021-01-04",
-      "2022W011, 2022-01-03"
+      "1985-W15-5, 1985-04-12", // ISO 8601-1
+      "2017-W48-1, 2017-11-27", // 2017-01-01 is a Sunday
+      "2019-W01-1, 2018-12-31", // ISO 8601-1 Amd. 1
+      "2020-W53-5, 2021-01-01", // 2021-01-01 is a Friday
+      "2021-W01-1, 2021-01-04", // 2021-01-01 is a Friday
+      "2022W011, 2022-01-03"    // 2022-01-01 is a Saturday
   })
   public void testWeekDateKnownValues(String input, String expectedDate) throws IOException {
     ASTTemporal ast = CombinedTemporalsTestMill.parser().parse_String(input)

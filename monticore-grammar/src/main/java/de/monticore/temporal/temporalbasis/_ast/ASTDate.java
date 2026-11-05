@@ -91,7 +91,12 @@ public interface ASTDate extends ASTDateTOP {
     }
     
     if (isSupported(YEAR) && isSupported(WeekFields.ISO.weekOfYear()) && isSupported(DAY_OF_WEEK)) {
-      // The year of a week date is the ISO week-based year. Its week 1 always contains 4 January.
+      // ChronoField has no ISO week field (ALIGNED_WEEK_OF_YEAR counts 7-day blocks from 1 January),
+      // so week dates expose their parsed week number under WeekFields.ISO.weekOfYear(). It serves
+      // only as a lookup key here: as a date field, it numbers weeks within the calendar year
+      // (e.g., 2018-12-31 is week 53 of 2018, not 2019-W01). The conversion therefore uses
+      // IsoFields.WEEK_OF_WEEK_BASED_YEAR, starting from 4 January, which always lies in week 1 of
+      // the ISO week-based year that YEAR holds for week dates.
       return LocalDate.of(get(YEAR), 1, 4)
           .with(IsoFields.WEEK_OF_WEEK_BASED_YEAR, get(WeekFields.ISO.weekOfYear()))
           .with(DAY_OF_WEEK, get(DAY_OF_WEEK));
