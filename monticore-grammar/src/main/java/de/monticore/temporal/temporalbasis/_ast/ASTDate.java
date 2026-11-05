@@ -1,9 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.temporal.temporalbasis._ast;
 
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.Year;
 import java.time.YearMonth;
+import java.time.temporal.IsoFields;
 import java.time.temporal.Temporal;
 import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.WeekFields;
@@ -25,6 +27,8 @@ public interface ASTDate extends ASTDateTOP {
    *
    * @return the corresponding temporal representation
    * @throws UnsupportedTemporalTypeException if no valid conversion is possible
+   * @throws DateTimeException if a field value is out of range,
+   * e.g., month 13 or week 53 in a year with 52 ISO weeks
    */
   @Override
   default Temporal toTemporal() {
@@ -77,7 +81,8 @@ public interface ASTDate extends ASTDateTOP {
    *
    * @return the corresponding {@link LocalDate}
    * @throws UnsupportedTemporalTypeException if required fields are missing
-   * or the date cannot be converted
+   * @throws DateTimeException if a field value is out of range,
+   * e.g., month 13 or week 53 in a year with 52 ISO weeks
    */
   default LocalDate toLocalDate() {
     // In case it has
@@ -90,8 +95,18 @@ public interface ASTDate extends ASTDateTOP {
     }
     
     if (isSupported(YEAR) && isSupported(WeekFields.ISO.weekOfYear()) && isSupported(DAY_OF_WEEK)) {
-      return LocalDate.ofYearDay(get(YEAR), 1)
-          .plusWeeks(get(WeekFields.ISO.weekOfYear()) - 1)
+      // ChronoField has no ISO week field (ALIGNED_WEEK_OF_YEAR counts 7-day blocks from 1 January),
+      // so week dates expose their parsed week number under WeekFields.ISO.weekOfYear(). It serves
+      // only as a lookup key here: as a date field, it numbers weeks within the calendar year
+      // (e.g., 2018-12-31 is week 53 of 2018, not 2019-W01). The conversion therefore uses
+      // IsoFields.WEEK_OF_WEEK_BASED_YEAR, starting from 4 January, which always lies in week 1 of
+      // the ISO week-based year that YEAR holds for week dates.
+      // The adjuster only checks the range 1-53, so the week is checked against the actual year.
+      LocalDate jan4 = LocalDate.of(get(YEAR), 1, 4);
+      int week = get(WeekFields.ISO.weekOfYear());
+      jan4.range(IsoFields.WEEK_OF_WEEK_BASED_YEAR).checkValidIntValue(week, IsoFields.WEEK_OF_WEEK_BASED_YEAR);
+      return jan4
+          .with(IsoFields.WEEK_OF_WEEK_BASED_YEAR, week)
           .with(DAY_OF_WEEK, get(DAY_OF_WEEK));
     }
     
