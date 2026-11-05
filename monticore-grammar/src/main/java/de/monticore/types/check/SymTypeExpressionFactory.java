@@ -161,6 +161,7 @@ public class SymTypeExpressionFactory {
     return new SymTypeOfObject(typeSymbol);
   }
 
+
   /**
    * for RegEx-types, e.g. 'R"gr(a|e)y"'
    */
@@ -210,8 +211,14 @@ public class SymTypeExpressionFactory {
   @Deprecated(forRemoval = true)
   public static SymTypeArray createTypeArray(String name, IBasicSymbolsScope typeSymbolsScope,
                                              int dim, SymTypeExpression argument) {
-    TypeSymbol typeSymbol = new TypeSymbolSurrogate(name);
-    typeSymbol.setEnclosingScope(typeSymbolsScope);
+
+    TypeSymbol typeSymbol = typeSymbolsScope.resolveType(name)
+        .orElseGet(() -> {
+          TypeSymbol unresolved = new TypeSymbol(name);
+          unresolved.setEnclosingScope(typeSymbolsScope);
+          unresolved.setFullName(name);
+          return unresolved;
+        });
     return new SymTypeArray(typeSymbol, dim, argument);
   }
 

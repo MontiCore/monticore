@@ -93,7 +93,11 @@ public class ScopeInterfaceDecorator extends AbstractDecorator {
             .map(ASTCDClass::getCDAttributeList)
             .flatMap(List::stream)
             .map(ASTCDAttribute::deepClone)
-            .toList();
+            .collect(Collectors.toList());
+
+    // Wrap selected scoperule attribute types into Supplier<X> so their (possibly not-yet-resolvable) value can be computed later.
+    // Als mark them as special case suppliers. As Interfaces have no attributes, we don't need to unmark later
+    getDecorationHelper().wrapAndMarkSuppliers(scopeRuleAttributes);
 
     List<ASTCDMethod> scopeRuleMethodList = scopeInput.deepClone().getCDDefinition().getCDClassesList()
             .stream()
