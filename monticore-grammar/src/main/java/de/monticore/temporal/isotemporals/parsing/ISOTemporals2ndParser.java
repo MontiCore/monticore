@@ -231,9 +231,34 @@ public class ISOTemporals2ndParser implements ISOTemporalsVisitor2 {
   }
 
   /**
-   * Parses the raw string of a node with a rule of ISOTemporals4Parsing.
-   * If this fails, exactly one error is logged at the position of the node;
-   * the node keeps its default values.
+   * Runs the second parse step for one node and reports a failure as exactly one error.
+   * <p>
+   * The first parse step only produced a token for the node, e.g. {@code 17W481} as a
+   * week date. This method parses the raw text of that token with a rule of
+   * ISOTemporals4Parsing. If that fails, it logs
+   * <pre>
+   *   &lt;errorCode&gt;: Expected &lt;expected&gt; but got '&lt;input&gt;' (&lt;syntax errors&gt;)
+   * </pre>
+   * at the source position of {@code node}, i.e. where the literal stands in the model.
+   * The syntax errors of the inner parser are only part of the message; {@link SilentParser}
+   * explains why they are not logged on their own.
+   * <p>
+   * Example: if the third line of a model is {@code on 17W481 do ping();}, the result is
+   * one error at {@code <3,3>}:
+   * <pre>
+   *   0xE9EFC: Expected a week date but got '17W481' (no viable alternative at input '17W')
+   * </pre>
+   * The node is not changed in that case, so its fields keep their default values
+   * (object fields stay {@code null}). The caller still gets the AST and has to check
+   * {@link Log} for errors.
+   *
+   * @param ruleParser the parse method of the ISOTemporals4Parsing rule,
+   *                   e.g. {@code parser::parse_StringWeekDate4P}
+   * @param node       the node whose source position the error refers to
+   * @param input      the raw text of the node
+   * @param errorCode  the error code of this construct, e.g. {@link #WEEK_DATE_ERROR_CODE}
+   * @param expected   the construct for the message, e.g. "a week date"
+   * @return the AST of the second parse step, or empty if it failed
    */
   protected <T> Optional<T> parse(RuleParser<T> ruleParser, ASTNode node, String input,
                                   String errorCode, String expected) {
@@ -243,6 +268,7 @@ public class ISOTemporals2ndParser implements ISOTemporalsVisitor2 {
       result = ruleParser.parse(input);
       detail = String.join("; ", parser.syntaxErrors);
     } catch (IOException e) {
+      // Declared by the generated parser, but not thrown when reading from a string
       result = Optional.empty();
       detail = e.getMessage();
     }
@@ -253,15 +279,36 @@ public class ISOTemporals2ndParser implements ISOTemporalsVisitor2 {
     return result;
   }
   
+  /**
+   * A {@code parse_String<Rule>} method of the ISOTemporals4Parsing parser.
+   * Needed because {@link java.util.function.Function} cannot throw {@link IOException}.
+   */
   @FunctionalInterface
   protected interface RuleParser<T> {
     Optional<T> parse(String input) throws IOException;
   }
-  
+
   /**
-   * Collects the syntax errors of the second parse step instead of logging them.
-   * Their positions refer to the raw string, not to the model,
-   * so {@link #parse} reports them as part of a single error at the position of the node.
+   * The ISOTemporals4Parsing parser, except that it collects its syntax errors in
+   * {@link #syntaxErrors} instead of logging them.
+   * <p>
+   * Why: the generated parser logs each syntax error with a position relative to the
+   * string it parses. In the second parse step that string is only the literal. For
+   * {@code 17W481} in line 3 of a model, the generated parser logs an error at
+   * {@code <1,2>}, which points to the wrong line, and {@link #parse} logs a second error
+   * for the same problem. With this class, the user sees one error at {@code <3,3>}.
+   * <p>
+   * How: the generated {@code create} attaches a logging {@code MCErrorListener} to the
+   * ANTLR lexer and parser. This override replaces both with a listener that
+   * <ul>
+   *   <li>records the message, and</li>
+   *   <li>calls {@code setErrors(true)}. This is essential: on a syntax error, the
+   *   generated {@code parse_String<Rule>} methods return {@link Optional#empty()} only if
+   *   this flag is set. Without it, a broken input would yield an AST.</li>
+   * </ul>
+   * {@code create} is called once per {@code parse_String<Rule>} call, so
+   * {@link #syntaxErrors} always belongs to the most recent parse. Hence an instance is not
+   * thread-safe; {@link ISOTemporals2ndParser#doParse} creates a new one for every node.
    */
   protected static class SilentParser extends ISOTemporals4ParsingParser {
     protected List<String> syntaxErrors = new ArrayList<>();
@@ -280,6 +327,7 @@ public class ISOTemporals2ndParser implements ISOTemporalsVisitor2 {
       };
       antlrParser.removeErrorListeners();
       antlrParser.addErrorListener(listener);
+      // The generated parser exposes the lexer only via its token stream
       Lexer lexer = (Lexer) antlrParser.getTokenStream().getTokenSource();
       lexer.removeErrorListeners();
       lexer.addErrorListener(listener);
