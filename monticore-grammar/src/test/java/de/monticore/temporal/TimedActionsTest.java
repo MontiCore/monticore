@@ -356,22 +356,24 @@ public class TimedActionsTest {
   @DisplayName("No New Keywords")
   @ParameterizedTest(name = "Input: {0}")
   @MethodSource("keywordExamples")
-  public void testGermanKeywords(String filePath) throws IOException {
-    List<String> undesiredKeywords = new ArrayList<>(List.of("Uhr", "Januar", "Februar",
+  public void testNoNewKeywords(String filePath) throws IOException {
+    // Words of the temporal grammars that must stay usable as names in a host language
+    List<String> undesiredKeywords = List.of("Uhr", "Januar", "Februar",
         "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember",
-        "Z"));
+        "Z");
     ASTActionSequence ast = parser.parse(filePath)
         .orElseGet(MCAssertions::failAndPrintFindings);
     ASTMCJavaBlock statementBlock = (ASTMCJavaBlock) ast.getTimedAction(0).getAction().getMCStatement();
+    List<String> declaredNames = new ArrayList<>();
     for (ASTMCBlockStatement statement : statementBlock.getMCBlockStatementList()) {
       if (!(statement instanceof ASTLocalVariableDeclarationStatement)) {
         continue;
       }
       
-      String variableName = ((ASTLocalVariableDeclarationStatement) statement)
-          .getLocalVariableDeclaration().getVariableDeclarator(0).getDeclarator().getName();
-      Assertions.assertTrue(undesiredKeywords.remove(variableName));
+      declaredNames.add(((ASTLocalVariableDeclarationStatement) statement)
+          .getLocalVariableDeclaration().getVariableDeclarator(0).getDeclarator().getName());
     }
-    Assertions.assertTrue(undesiredKeywords.isEmpty());
+    assertEquals(undesiredKeywords, declaredNames,
+        "The variables declared in " + filePath + " must be exactly the undesired keywords");
   }
 }
