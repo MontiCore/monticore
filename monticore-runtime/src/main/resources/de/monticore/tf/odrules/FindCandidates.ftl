@@ -2,14 +2,14 @@
 <#list hierarchyHelper.getMandatoryMatchObjects(ast.getPattern().getMatchingObjectsList()) as object>
   <#if !object.isListObject()>
 
-protected List<ASTNode> find_${object.getObjectName()}_candidates(){
-  <#--This can only be applied on non not-objects-->
-    <#if !object.isNotObject()>
-  // test if object is set fix
-  if (is_${object.getObjectName()}_fix) {
-    // if object is set return only the set candidates
-    return ${object.getObjectName()}_candidates;
-  }
+  protected List<ASTNode> find_${object.getObjectName()}_candidates(){
+    <#--This can only be applied on non not-objects-->
+      <#if !object.isNotObject()>
+    // test if object is set fix
+    if (is_${object.getObjectName()}_fix) {
+      // if object is set return only the set candidates
+      return ${object.getObjectName()}_candidates;
+    }
     </#if>
   <#--tests if ODlinks are used-->
     <#if (ast.getPattern().getLinkConditionsList()?size >0)>
