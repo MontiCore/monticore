@@ -19,13 +19,17 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class MCTypeFacadeTest {
 
-  private MCTypeFacade mcTypeFacade;
+  protected MCTypeFacade mcTypeFacade;
 
   @BeforeEach
   public void init() {
     LogStub.init();
     Log.enableFailQuick(false);
-    this.mcTypeFacade = MCTypeFacade.getInstance();
+    this.mcTypeFacade = doCreateTypeFacade();
+  }
+
+  protected MCTypeFacade doCreateTypeFacade() {
+    return MCTypeFacade.getInstance();
   }
 
   @Test
