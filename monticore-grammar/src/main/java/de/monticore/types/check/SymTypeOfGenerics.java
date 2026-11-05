@@ -3,7 +3,6 @@ package de.monticore.types.check;
 
 import com.google.common.base.Preconditions;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
-import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
 import de.monticore.symbols.basicsymbols._symboltable.TypeVarSymbol;
 import de.monticore.types3.ISymTypeVisitor;
 import de.se_rwth.commons.logging.Log;
@@ -267,36 +266,6 @@ public class SymTypeOfGenerics extends SymTypeExpression {
       }
     }
     return replaceMap;
-  }
-
-  /**
-   * @deprecated use {@link de.monticore.types3.util.WithinTypeBasicSymbolsResolver}
-   *             or {@link de.monticore.types3.util.WithinScopeBasicSymbolsResolver}
-   */
-  @Deprecated(forRemoval = true)
-  @Override
-  public void replaceTypeVariables(Map<TypeVarSymbol, SymTypeExpression> replaceMap) {
-    for(int i = 0; i<this.getArgumentList().size(); i++){
-      SymTypeExpression type = this.getArgument(i);
-      TypeSymbol realTypeInfo;
-      TypeSymbol typeInfo = type.getTypeInfo();
-      if(typeInfo instanceof TypeSymbolSurrogate){
-        realTypeInfo = ((TypeSymbolSurrogate) type.getTypeInfo()).lazyLoadDelegate();
-      }else{
-        realTypeInfo = typeInfo;
-      }
-      if(type.isTypeVariable() && realTypeInfo instanceof TypeVarSymbol){
-        Optional<TypeVarSymbol> typeVar =  replaceMap.keySet().stream().filter(t -> t.getName().equals(realTypeInfo.getName())).findAny();
-        if(typeVar.isPresent()){
-          List<SymTypeExpression> args = new ArrayList<>(getArgumentList());
-          args.remove(type);
-          args.add(i, replaceMap.get(typeVar.get()));
-          this.setArgumentList(args);
-        }
-      }else{
-        type.replaceTypeVariables(replaceMap);
-      }
-    }
   }
 
   @Override
