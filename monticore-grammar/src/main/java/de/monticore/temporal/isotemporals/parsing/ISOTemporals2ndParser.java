@@ -14,6 +14,8 @@ import de.monticore.temporal.isotemporals.cocos.PeriodIsNonemptyCoCo;
 import de.monticore.temporal.parsing.isotemporals4parsing.convert.ConvertToISOTemporals;
 import de.se_rwth.commons.logging.Log;
 
+import java.io.IOException;
+import java.util.Optional;
 
 public class ISOTemporals2ndParser implements ISOTemporalsVisitor2 {
   protected ISOTemporals4ParsingParser parser;
@@ -31,13 +33,18 @@ public class ISOTemporals2ndParser implements ISOTemporalsVisitor2 {
   
   @Override
   public void visit(ASTCalendarDate node) {
-    ASTCalendarDate4P parsed;
+    Optional<ASTCalendarDate4P> result;
     try {
-      parsed = parser.parse_StringCalendarDate4P(node.toRawString()).orElseThrow();
-    } catch (Exception e) {
+      result = parser.parse_StringCalendarDate4P(node.toRawString());
+    } catch (IOException e) {
       Log.error("Expected a calendar date but got " + node.toRawString(), e);
       return;
     }
+    if (result.isEmpty()) {
+      Log.error("Expected a calendar date but got " + node.toRawString());
+      return;
+    }
+    ASTCalendarDate4P parsed = result.get();
     String dateExtension = "";
     if (parsed.isPresentDateExtension()) {
       dateExtension = parsed.getDateExtension().getRawString();
@@ -61,13 +68,18 @@ public class ISOTemporals2ndParser implements ISOTemporalsVisitor2 {
   
   @Override
   public void visit(ASTOrdinalDate node) {
-    ASTOrdinalDate4P parsed;
+    Optional<ASTOrdinalDate4P> result;
     try {
-      parsed = parser.parse_StringOrdinalDate4P(node.toRawString()).orElseThrow();
-    } catch (Exception e) {
+      result = parser.parse_StringOrdinalDate4P(node.toRawString());
+    } catch (IOException e) {
       Log.error("Expected an ordinal date but got " + node.toRawString(), e);
       return;
     }
+    if (result.isEmpty()) {
+      Log.error("Expected an ordinal date but got " + node.toRawString());
+      return;
+    }
+    ASTOrdinalDate4P parsed = result.get();
     String dateExtension = "";
     if (parsed.isPresentDateExtension()) {
       dateExtension = parsed.getDateExtension().getRawString();
@@ -78,13 +90,18 @@ public class ISOTemporals2ndParser implements ISOTemporalsVisitor2 {
   
   @Override
   public void visit(ASTBasicWeekDate node) {
-    ASTWeekDate4P parsed;
+    Optional<ASTWeekDate4P> result;
     try {
-      parsed = parser.parse_StringWeekDate4P(node.toRawString()).orElseThrow();
-    } catch (Exception e) {
+      result = parser.parse_StringWeekDate4P(node.toRawString());
+    } catch (IOException e) {
       Log.error("Expected a week date but got " + node.toRawString(), e);
       return;
     }
+    if (result.isEmpty()) {
+      Log.error("Expected a week date but got " + node.toRawString());
+      return;
+    }
+    ASTWeekDate4P parsed = result.get();
     String dateExtension = "";
     if (parsed.isPresentDateExtension()) {
       dateExtension = parsed.getDateExtension().getRawString();
@@ -98,13 +115,18 @@ public class ISOTemporals2ndParser implements ISOTemporalsVisitor2 {
   
   @Override
   public void visit(ASTISOTime node) {
-    ASTISOTime4P parsed;
+    Optional<ASTISOTime4P> result;
     try {
-      parsed = parser.parse_StringISOTime4P(node.toRawString()).orElseThrow();
-    } catch (Exception e) {
+      result = parser.parse_StringISOTime4P(node.toRawString());
+    } catch (IOException e) {
       Log.error("Expected an ISO time but got " + node.toRawString(), e);
       return;
     }
+    if (result.isEmpty()) {
+      Log.error("Expected an ISO time but got " + node.toRawString());
+      return;
+    }
+    ASTISOTime4P parsed = result.get();
     node.setHour(parsed.getHour().getValue());
     if (parsed.isPresentMinute()) {
       node.setMinute(parsed.getMinute().getValue());
@@ -140,13 +162,18 @@ public class ISOTemporals2ndParser implements ISOTemporalsVisitor2 {
   
   @Override
   public void visit(ASTISODateTime node) {
-    ASTISODateTime4P parsed;
+    Optional<ASTISODateTime4P> result;
     try {
-      parsed = parser.parse_StringISODateTime4P(node.toRawString()).orElseThrow();
-    } catch (Exception e) {
+      result = parser.parse_StringISODateTime4P(node.toRawString());
+    } catch (IOException e) {
       Log.error("Expected an ISO time but got " + node.toRawString(), e);
       return;
     }
+    if (result.isEmpty()) {
+      Log.error("Expected an ISO time but got " + node.toRawString());
+      return;
+    }
+    ASTISODateTime4P parsed = result.get();
     
     ConvertToISOTemporals converter = new ConvertToISOTemporals();
     ISOTemporals4ParsingTraverser traverser = ISOTemporals4ParsingMill.traverser();
@@ -164,13 +191,18 @@ public class ISOTemporals2ndParser implements ISOTemporalsVisitor2 {
   public void visit(ASTFullPeriod node) {
     PeriodIsNonemptyCoCo.doCheck(node);
     
-    ASTFullPeriod4P parsed;
+    Optional<ASTFullPeriod4P> result;
     try {
-      parsed = parser.parse_StringFullPeriod4P(node.toRawString()).orElseThrow();
-    } catch (Exception e) {
+      result = parser.parse_StringFullPeriod4P(node.toRawString());
+    } catch (IOException e) {
       Log.error("Expected an ISO period but got " + node.toRawString(), e);
       return;
     }
+    if (result.isEmpty()) {
+      Log.error("Expected an ISO period but got " + node.toRawString());
+      return;
+    }
+    ASTFullPeriod4P parsed = result.get();
     
     if (parsed.isPresentYears()) {
       node.setYears(parsed.getYears().getValue());
@@ -198,13 +230,18 @@ public class ISOTemporals2ndParser implements ISOTemporalsVisitor2 {
   
   @Override
   public void visit(ASTWeekPeriod node) {
-    ASTWeekPeriod4P parsed;
+    Optional<ASTWeekPeriod4P> result;
     try {
-      parsed = parser.parse_StringWeekPeriod4P(node.toRawString()).orElseThrow();
-    } catch (Exception e) {
+      result = parser.parse_StringWeekPeriod4P(node.toRawString());
+    } catch (IOException e) {
       Log.error("Expected an ISO week period but got " + node.toRawString(), e);
       return;
     }
+    if (result.isEmpty()) {
+      Log.error("Expected an ISO week period but got " + node.toRawString());
+      return;
+    }
+    ASTWeekPeriod4P parsed = result.get();
     
     node.setWeeks(parsed.getWeeks().getValue());
   }
