@@ -4,100 +4,101 @@ package de.monticore.tf.odrules;
 import de.monticore.tf.odrules._ast.ASTODLink;
 import de.monticore.tf.odrules._ast.ASTODObject;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
+/**
+ * Calculates the order, in which new objects are created: Children are created before their
+ * parents, so that a parent can be created together with the links to its (new) children.
+ */
 public class ODBuildOrder {
 
-    public static class ObjectTrees {
-        private LinkedHashMap<String, ObjectNode> nodes = new LinkedHashMap<>();
+  /** the new objects by their names */
+  protected final Map<String, ASTODObject> objects = new LinkedHashMap<>();
 
-        public static class ObjectNode {
-            private ObjectNode parent;
-            private List<ObjectNode> childs = new LinkedList<>();
-            private ASTODObject object;
-            private boolean visited = false;
-            private List<ASTODLink> attrs = new LinkedList<>();
+  /** the links, which are set when creating an object, by the name of their source */
+  protected final Map<String, List<ASTODLink>> links = new HashMap<>();
 
-            public ObjectNode(ASTODObject object) {
-                this.object = object;
-            }
+  protected final Map<String, List<String>> children = new HashMap<>();
 
+  protected final Map<String, String> parents = new HashMap<>();
+
+  protected final Set<String> visited = new HashSet<>();
+
+  protected final List<ASTODObject> buildOrder = new ArrayList<>();
+
+  /**
+   * @param objects the new objects
+   * @param links   the new links
+   */
+  public ODBuildOrder(List<ASTODObject> objects, List<ASTODLink> links) {
+    for (ASTODObject object : objects) {
+      if (this.objects.putIfAbsent(object.getName(), object) == null) {
+        this.links.put(object.getName(), new ArrayList<>());
+        this.children.put(object.getName(), new ArrayList<>());
+      }
+    }
+    for (ASTODLink link : links) {
+      String parent = link.getLeftReferenceName(0).toString();
+      String child = link.getRightReferenceName(0).toString();
+      boolean isNewParent = this.objects.containsKey(parent);
+      if (isNewParent) {
+        this.links.get(parent).add(link);
+      }
+      if (this.objects.containsKey(child)) {
+        if (isNewParent) {
+          children.get(parent).add(child);
+          parents.put(child, parent);
+        } else {
+          parents.remove(child);
         }
+      }
+    }
+    calculateBuildOrder();
+  }
 
-        public void addObjects(List<ASTODObject> objects) {
-            for(ASTODObject o : objects) {
-                if(!nodes.containsKey(o.getName())) {
-                    ObjectNode node = new ObjectNode(o);
-                    nodes.put(o.getName(), node);
-                }
-            }
+  /**
+   * @return the new objects in the build order together with the links set during their creation
+   */
+  public LinkedHashMap<ASTODObject, List<ASTODLink>> getBuildAttrs() {
+    LinkedHashMap<ASTODObject, List<ASTODLink>> buildAttrs = new LinkedHashMap<>();
+    for (ASTODObject object : buildOrder) {
+      buildAttrs.put(object, links.get(object.getName()));
+    }
+    return buildAttrs;
+  }
+
+  public List<ASTODObject> getBuildOrder() {
+    return buildOrder;
+  }
+
+  /**
+   * Adds each tree of new objects to the build order, starting from its root
+   */
+  public void calculateBuildOrder() {
+    for (String name : objects.keySet()) {
+      if (!visited.contains(name)) {
+        String root = name;
+        Set<String> ancestors = new HashSet<>();
+        while (parents.containsKey(root) && ancestors.add(root)) {
+          root = parents.get(root);
         }
-
-        public void addLinks(List<ASTODLink> links){
-            for(ASTODLink l : links) {
-                String parent = l.getLeftReferenceName(0).toString();
-                String child = l.getRightReferenceName(0).toString();
-                ObjectNode parentNode = nodes.get(parent);
-                ObjectNode childNode = nodes.get(child);
-                if (parentNode != null) {
-                    if(childNode != null) {
-                        parentNode.childs.add(childNode);
-                    }
-                    parentNode.attrs.add(l);
-                }
-                if (childNode != null) {
-                    childNode.parent = parentNode;
-                }
-            }
-        }
+        addBottomUp(root);
+      }
     }
+  }
 
-    private ObjectTrees trees = new ObjectTrees();
-    private List<ASTODObject> buildOrder = new LinkedList<>();
-
-
-    public ODBuildOrder(List<ASTODObject> objects, List<ASTODLink> links) {
-        trees.addObjects(objects);
-        trees.addLinks(links);
-        calculateBuildOrder();
+  protected void addBottomUp(String name) {
+    for (String child : children.get(name)) {
+      addBottomUp(child);
     }
-
-    public LinkedHashMap<ASTODObject, List<ASTODLink>> getBuildAttrs() {
-        LinkedHashMap<ASTODObject, List<ASTODLink>> buildAttrs = new LinkedHashMap<>();
-
-        for(ASTODObject o : buildOrder) {
-            buildAttrs.put(o, trees.nodes.get(o.getName()).attrs);
-        }
-
-        return buildAttrs;
-    }
-
-    public List<ASTODObject> getBuildOrder() {
-        return buildOrder;
-    }
-
-    public void calculateBuildOrder() {
-        for(ObjectTrees.ObjectNode node : trees.nodes.values()) {
-            if(!node.visited) {
-                ObjectTrees.ObjectNode localRoot = getRoot(node);
-                calculateBuildOrder(localRoot);
-            }
-        }
-    }
-
-    private void calculateBuildOrder(ObjectTrees.ObjectNode node) {
-        for(ObjectTrees.ObjectNode c : node.childs) {
-            calculateBuildOrder(c);
-        }
-        buildOrder.add(node.object);
-        node.visited = true;
-    }
-
-    private ObjectTrees.ObjectNode getRoot(ObjectTrees.ObjectNode node) {
-        return node.parent == null ? node : getRoot(node.parent);
-    }
-
+    buildOrder.add(objects.get(name));
+    visited.add(name);
+  }
 
 }
