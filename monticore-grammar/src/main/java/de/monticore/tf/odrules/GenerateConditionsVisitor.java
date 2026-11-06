@@ -194,7 +194,7 @@ public class GenerateConditionsVisitor implements ODRulesVisitor2 {
   }
 
   protected void createConditionsForListWithoutTarget(ASTODAttribute node) {
-    String listGetter = format("cand.get%sList()", capitalize(node.getName()));
+    String listGetter = format("cand.get%sList()", Util.getListAccessorName(node));
     List<ASTVariableInit> values = node.getList().getVariableInitList();
     StringBuilder conditionString = new StringBuilder(format("(%s == null || %s.size() != %s",
         listGetter, listGetter, values.size()));
@@ -207,7 +207,7 @@ public class GenerateConditionsVisitor implements ODRulesVisitor2 {
         // variable
         value = value.substring(1, value.length() - 1);
         conditionString.append(value).append("_is_fix && ");
-      } else if (value.contains(".")) {
+      } else if (Util.isAttributeReference(value)) {
         // attribute of another object
         List<String> qName = Splitters.DOT.splitToList(value);
         String cand = qName.get(0) + CAND_SUFFIX;
@@ -247,6 +247,10 @@ public class GenerateConditionsVisitor implements ODRulesVisitor2 {
 
   @Override
   public void visit(ASTODLink node) {
+    if (node.isLink() && !node.isPresentName()) {
+      // conditions can only be created for named links
+      return;
+    }
     String leftObjectName = Names.constructQualifiedName(node.getLeftReferenceName(0).getPartsList());
     String rightObjectName = Names.constructQualifiedName(node.getRightReferenceName(0).getPartsList());
     ASTODObject leftObject = getODObject(leftObjectName).get();
@@ -286,14 +290,13 @@ public class GenerateConditionsVisitor implements ODRulesVisitor2 {
             // for large lists, getParent(child) == parent is checked instead of
             // parent.getChildren().contains(child)
             secondObjectCondition.setConditionString(format("(%s_cand.get%sList().size() > 10 &&%s)",
-                uncapitalize(leftObjectName), getListAccessorName(node),
+                leftObjectName, getListAccessorName(node),
                 secondObjectCondition.getConditionString()));
           }
           objectConditions.add(roleCondition);
         }
       }
-    } else if (!node.getName().isEmpty()) {
-      // links require a name for the conditions
+    } else {
       String association = uncapitalize(node.getName());
       objectCondition.setConditionString(format("%s.getRightFromLeft(cand) != null && !%s.getRightFromLeft(cand).contains(%s_cand)",
           association, association, rightObjectName));
@@ -344,7 +347,7 @@ public class GenerateConditionsVisitor implements ODRulesVisitor2 {
 
   protected String createTargetObjectCondition(ASTODLink node, String leftObjectName, boolean isIterated, boolean isOptional) {
     if (isIterated) {
-      String list = format("%s_cand.get%sList()", uncapitalize(leftObjectName), getListAccessorName(node));
+      String list = format("%s_cand.get%sList()", leftObjectName, getListAccessorName(node));
       return format("(%s.size() <= 10 && !%s.contains(cand))", list, list);
     }
     String role = capitalize(node.getRightRole());
@@ -359,7 +362,7 @@ public class GenerateConditionsVisitor implements ODRulesVisitor2 {
    * Whether the value of the attribute is an attribute of another object, which may be absent
    */
   protected boolean isTargetOptional(ASTODAttribute attrWithValue) {
-    return Util.printExpression(attrWithValue.getSingleValue()).split(REGEX).length > 1
+    return Util.isAttributeReference(Util.printExpression(attrWithValue.getSingleValue()))
         && attrWithValue.isValueOptional();
   }
 
@@ -367,24 +370,29 @@ public class GenerateConditionsVisitor implements ODRulesVisitor2 {
    * @return the expression for the value of the attribute
    */
   protected String createGetterStatement(ASTODAttribute attrWithValue) {
-    String[] split = Util.printExpression(attrWithValue.getSingleValue()).split(REGEX);
-    if (split.length > 1) {
+    String value = Util.printExpression(attrWithValue.getSingleValue());
+    if (Util.isAttributeReference(value)) {
       // attribute of another object
+      String[] split = value.split(REGEX);
       return appendAttributeAccess(split[0] + CAND_SUFFIX, split);
-    } else if (getODObject(split[0]).isPresent()) {
+    } else if (getODObject(value).isPresent()) {
       // another object
-      return split[0] + CAND_SUFFIX;
-    } else if (split[0].startsWith("\"$")) {
+      return value + CAND_SUFFIX;
+    } else if (value.startsWith("\"$")) {
       // variable
-      return split[0].substring(1, split[0].length() - 1);
+      return value.substring(1, value.length() - 1);
     }
     // fixed value
-    return split[0];
+    return value;
   }
 
   protected String createPresentCheckStatement(String getter) {
+    // replaces the getter of the last attribute, e.g., getX() with isPresentX()
     List<String> splits = new ArrayList<>(Splitters.DOT.splitToList(getter));
-    splits.set(splits.size() - 1, splits.getLast().replace("get", "isPresent"));
+    String last = splits.getLast();
+    if (last.startsWith("get")) {
+      splits.set(splits.size() - 1, "isPresent" + last.substring("get".length()));
+    }
     return Joiners.DOT.join(splits);
   }
 

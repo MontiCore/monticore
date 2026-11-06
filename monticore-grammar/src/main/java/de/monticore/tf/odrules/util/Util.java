@@ -166,6 +166,15 @@ public class Util {
     return obj != null ? obj.printType() : null;
   }
 
+  /**
+   * Whether the printed value refers to an attribute of another object
+   * ({@code object.attribute[.member]*}). Literals may contain dots, too ({@code "a.b"}, {@code 1.5}).
+   */
+  public static boolean isAttributeReference(String value) {
+    return !value.isEmpty() && Character.isJavaIdentifierStart(value.charAt(0))
+        && value.split("\\.").length > 1;
+  }
+
   public static boolean isBuiltInType(ASTODAttribute attribute) {
     return BUILT_IN_TYPES.contains(attribute.printType());
   }

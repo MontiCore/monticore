@@ -115,7 +115,7 @@ public class ChangeOperationFactory {
    * @param withinOpt whether the object of the attribute is within an optional structure
    */
   protected String getListElementValue(String value, boolean withinOpt) {
-    if (value.contains(".")) {
+    if (Util.isAttributeReference(value)) {
       // reference to an attribute of another object: object.attribute[.member]
       List<String> parts = Splitters.DOT.splitToList(value);
       String access = ".get" + StringTransformations.capitalize(parts.get(1)) + "()"

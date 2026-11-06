@@ -783,7 +783,7 @@ public class ODRuleCodeGenerator {
 
         if (set.isPresentValue()) {
           String value = set.getValue();
-          if (!set.isValueStringList() && value.contains(".") && !requirementNames.containsKey(value)) {
+          if (!set.isValueStringList() && Util.isAttributeReference(value) && !requirementNames.containsKey(value)) {
             // create new name
             requirementNames.put(value, "_" + value.replace(".get()", "").replace('.', '_'));
 
