@@ -15,42 +15,20 @@ tasks.register('generateMTOD') {
 import de.monticore.MontiTransExec
 import de.monticore.gradle.gen.MCGenTask
 
-fileTree(dir: "$modelsDir/automaton", include: '*.mtod').each {
-  def g = it
-  def taskname = "generateAutomatonTRRule${it.getName().substring(0, it.getName().lastIndexOf('.'))}"
-  tasks.register(taskname, MontiTransExec) {
-    group = "montitrans"
-    getClassPath().setFrom(project(':monticore-test:montitrans:test-dstl-gen').sourceSets.trafo.runtimeClasspath)
-    TFGenTool = 'de.monticore.tf.odrules.ODRulesCLI'
-    input = file(g)
-    outputDir = file(_outputDir)
-  }
-  generateMTOD.dependsOn("$taskname")
-}
-fileTree(dir: "$modelsDir/misc", include: '*.mtod').each {
-  def g = it
-  def taskname = "generateMiscTRRules${it.getName().substring(0, it.getName().lastIndexOf('.'))}"
+// One incremental task per model folder: the ODRulesCLI is only invoked for added or modified rules
+def trafoTasks = [
+    generateAutomatonTRRules : ['automaton', '*.mtod'],
+    generateMiscTRRules      : ['misc', '*.mtod'],
+    generatePetrinetTRRules  : ['petrinet', '**/*.mtod'],
+]
+trafoTasks.each { taskname, config ->
   tasks.register(taskname, MontiTransExec) {
     getClassPath().setFrom(project(':monticore-test:montitrans:test-dstl-gen').sourceSets.trafo.runtimeClasspath)
     TFGenTool = 'de.monticore.tf.odrules.ODRulesCLI'
-    input = file(g)
+    models.from(fileTree("$modelsDir/${config[0]}") { include config[1] })
     outputDir = file(_outputDir)
   }
-  generateMTOD.dependsOn("$taskname")
-}
-tasks.register('generatePetrinetTRRules') {
-  group = "montitrans"
-}
-fileTree(dir: "$modelsDir/petrinet", include: '**/**.mtod').each {
-  def g = it
-  def taskname = "generatePetrinetTRRules${it.getName().substring(0, it.getName().lastIndexOf('.'))}"
-  tasks.register(taskname, MontiTransExec) {
-    getClassPath().setFrom(project(':monticore-test:montitrans:test-dstl-gen').sourceSets.trafo.runtimeClasspath)
-    TFGenTool = 'de.monticore.tf.odrules.ODRulesCLI'
-    input = file(g)
-    outputDir = file(_outputDir)
-  }
-  generateMTOD.dependsOn("$taskname")
+  generateMTOD.dependsOn(taskname)
 }
 
 compileJava {
