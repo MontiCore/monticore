@@ -4,8 +4,9 @@ package de.monticore;
 import org.apache.commons.io.FileUtils;
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.GradleRunner;
-import org.gradle.tooling.internal.consumer.DefaultGradleConnector;
+import org.gradle.tooling.internal.consumer.ConnectorServices;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
@@ -90,9 +91,20 @@ public class MontiTransExecTest {
     write("tool/src/main/java/de/se_rwth/commons/logging/Log.java", FAKE_LOG);
   }
 
+  /**
+   * The TestKit tests share the (JVM-wide) Gradle connector. Other test classes close it
+   * after their tests, so a fresh one is required.
+   */
+  @BeforeAll
+  static void resetConnector() {
+    ConnectorServices.reset();
+  }
+
   @AfterAll
   static void cleanup() {
-    DefaultGradleConnector.close();
+    // Stops the daemons, so that they release the test projects, and provides a fresh
+    // connector for subsequent test classes
+    ConnectorServices.reset();
     for (Path dir : workingDirs) {
       FileUtils.deleteQuietly(dir.toFile());
     }
