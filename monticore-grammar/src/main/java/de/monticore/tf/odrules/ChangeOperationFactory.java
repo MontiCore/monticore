@@ -349,7 +349,7 @@ public class ChangeOperationFactory {
     builder.setAttributeOptional(isAttributeOptional);
     builder.setValueListObject(targetObject.hasStereotype(ODRuleStereotypes.LIST));
     builder.setValueType(type);
-    builder.setCopy(link.hasStereotype("copy"));
+    builder.setCopy(link.hasStereotype(ODRuleStereotypes.COPY));
 
     if (isAttributeIterated) {
       builder.setSetter("get" + Util.getListAccessorName(link, targetObject) + "List().add");
