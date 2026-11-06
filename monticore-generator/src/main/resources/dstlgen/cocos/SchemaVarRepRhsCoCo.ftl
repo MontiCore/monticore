@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Set;
 
 <#assign service = glex.getGlobalVar("service")>
+${tc.include("mc.Generated")}
 public class ${classname} implements ${ast.getName()}TRAST${grammarName}TFRuleCoCo {
 
   @Override

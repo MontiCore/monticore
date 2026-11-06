@@ -15,6 +15,7 @@ import ${genHelper.getParserPackage()}._auxiliary.${ast.getName()}ParserInfoFor$
 import <#if superLangGrammarAst.getPackageList()?has_content>${superLangGrammarAst.getPackageList()?join(".")}.</#if>${superLangGrammarAst.getName()?lower_case}._parser.${superLangGrammarAst.getName()}ParserInfo;
 </#list>
 
+${tc.include("mc.Generated")}
 public class ${ast.getName()}ParserInfo {
   // References
   <#list referencedSymbolToStates as referencedSymbol, states>
