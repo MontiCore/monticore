@@ -96,7 +96,21 @@ public class TemporalTestCases {
         Arguments.of("T12:30:01-05", 12, 30, 1, "", Optional.of(-5))
     );
   }
-  
+
+  // Time shifts with a minute part, the expected offset is given in java.time notation
+  protected static Stream<Arguments> isoTimeShifts() {
+    return Stream.of(
+        Arguments.of("T123001+0530", "+05:30"),
+        Arguments.of("T123001-0530", "-05:30"),
+        Arguments.of("T123001-0030", "-00:30"),
+        Arguments.of("12:30:01+05:30", "+05:30"),
+        Arguments.of("20171204T123001-0530", "-05:30"),
+        Arguments.of("2017-12-04T12:30:01+05:30", "+05:30"),
+        Arguments.of("2017-12-04T12:30:01-05:30", "-05:30"),
+        Arguments.of("2017-12-04T12:30:01-00:30", "-00:30")
+    );
+  }
+
   protected static Stream<Arguments> calendarDateTimes() {
     return Stream.of(
         Arguments.of("20171204T123001", 2017, 12, 4, 12, 30, 1, "", Optional.empty()),

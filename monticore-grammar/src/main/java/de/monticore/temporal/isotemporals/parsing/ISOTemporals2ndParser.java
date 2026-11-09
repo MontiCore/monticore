@@ -124,11 +124,6 @@ public class ISOTemporals2ndParser implements ISOTemporalsVisitor2 {
         node.setTimeShiftMinute(0);
       } else {
         int timeShiftHour = parsed.getTimeShift().getHour().getValue();
-        if (parsed.getTimeShift().getSign() == ASTSign4P.MINUS) {
-          timeShiftHour = -timeShiftHour;
-        }
-        node.setTimeShiftHour(timeShiftHour);
-        
         int timeShiftMinute;
         if (parsed.getTimeShift().isPresentMinute()) {
           timeShiftMinute = parsed.getTimeShift().getMinute().getValue();
@@ -136,6 +131,12 @@ public class ISOTemporals2ndParser implements ISOTemporalsVisitor2 {
         else {
           timeShiftMinute = 0;
         }
+        // The sign applies to the whole time shift, e.g. -05:30 is -5 hours and -30 minutes
+        if (parsed.getTimeShift().getSign() == ASTSign4P.MINUS) {
+          timeShiftHour = -timeShiftHour;
+          timeShiftMinute = -timeShiftMinute;
+        }
+        node.setTimeShiftHour(timeShiftHour);
         node.setTimeShiftMinute(timeShiftMinute);
       }
     }
