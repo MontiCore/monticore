@@ -11,6 +11,7 @@ import de.monticore.temporal.isotemporals._ast.ASTISOTime;
 import de.monticore.temporal.isotemporals._ast.ASTWeekDate;
 import de.monticore.temporal.temporalbasis._ast.ASTDate;
 import de.monticore.temporal.temporalbasis._ast.ASTDateTime;
+import de.monticore.temporal.temporalbasis._ast.ASTInstant;
 import de.monticore.temporal.temporalbasis._ast.ASTTime;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -201,6 +202,19 @@ public class ConversionTest {
     }
   }
   
+  @DisplayName("ISO Time Shift Conversion")
+  @ParameterizedTest(name = "Input: {0}")
+  @MethodSource("de.monticore.temporal.TemporalTestCases#isoTimeShifts")
+  public void testIsoTimeShiftConversion(String input, String expectedOffset) throws IOException {
+    ASTTemporal ast = CombinedTemporalsTestMill.parser().parse_String(input)
+        .orElseGet(MCAssertions::failAndPrintFindings);
+    Assertions.assertTrue(ast.isPresentInstant());
+    ASTInstant realAst = ast.getInstant();
+
+    Assertions.assertTrue(realAst.isSupported(OFFSET_SECONDS));
+    Assertions.assertEquals(ZoneOffset.of(expectedOffset).getTotalSeconds(), realAst.get(OFFSET_SECONDS));
+  }
+
   @DisplayName("Calendar DateTime Conversion")
   @ParameterizedTest(name = "Input: {0}")
   @MethodSource("de.monticore.temporal.TemporalTestCases#calendarDateTimes")
