@@ -7,6 +7,7 @@ import java.time.OffsetDateTime;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalField;
 import java.time.temporal.UnsupportedTemporalTypeException;
+import java.time.temporal.ValueRange;
 
 public interface ASTDateTime extends ASTDateTimeTOP {
   
@@ -55,6 +56,28 @@ public interface ASTDateTime extends ASTDateTimeTOP {
       return getDate().getLong(field);
     } else if (getTime().isSupported(field)) {
       return getTime().getLong(field);
+    }
+    throw new UnsupportedTemporalTypeException(field.toString());
+  }
+  
+  /**
+   * Returns the range of valid values for the specified temporal field.
+   * <p>
+   * The range is delegated to either the date or time component, depending on
+   * which part supports the requested field, so that ranges refined by a
+   * component, e.g., the ISO weeks of a week date, are also used here.
+   *
+   * @param field the temporal field to query
+   * @return the range of valid values for the field
+   * @throws UnsupportedTemporalTypeException if the field is not supported by
+   * either the date or time part
+   */
+  @Override
+  default ValueRange range(TemporalField field) {
+    if (getDate().isSupported(field)) {
+      return getDate().range(field);
+    } else if (getTime().isSupported(field)) {
+      return getTime().range(field);
     }
     throw new UnsupportedTemporalTypeException(field.toString());
   }

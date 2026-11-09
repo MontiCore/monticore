@@ -5,12 +5,12 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.Year;
 import java.time.YearMonth;
-import java.time.temporal.IsoFields;
 import java.time.temporal.Temporal;
 import java.time.temporal.UnsupportedTemporalTypeException;
-import java.time.temporal.WeekFields;
 
 import static java.time.temporal.ChronoField.*;
+import static java.time.temporal.IsoFields.WEEK_BASED_YEAR;
+import static java.time.temporal.IsoFields.WEEK_OF_WEEK_BASED_YEAR;
 
 @SuppressWarnings("unused") // This interface is part of the public-facing API
 public interface ASTDate extends ASTDateTOP {
@@ -66,7 +66,7 @@ public interface ASTDate extends ASTDateTOP {
     }
     
     // Check whether it has form yyyy-ww-d
-    return isSupported(YEAR) && isSupported(WeekFields.ISO.weekOfYear()) && isSupported(DAY_OF_WEEK);
+    return isSupported(WEEK_BASED_YEAR) && isSupported(WEEK_OF_WEEK_BASED_YEAR) && isSupported(DAY_OF_WEEK);
   }
   
   /**
@@ -94,19 +94,11 @@ public interface ASTDate extends ASTDateTOP {
       return LocalDate.ofYearDay(get(YEAR), get(DAY_OF_YEAR));
     }
     
-    if (isSupported(YEAR) && isSupported(WeekFields.ISO.weekOfYear()) && isSupported(DAY_OF_WEEK)) {
-      // ChronoField has no ISO week field (ALIGNED_WEEK_OF_YEAR counts 7-day blocks from 1 January),
-      // so week dates expose their parsed week number under WeekFields.ISO.weekOfYear(). It serves
-      // only as a lookup key here: as a date field, it numbers weeks within the calendar year
-      // (e.g., 2018-12-31 is week 53 of 2018, not 2019-W01). The conversion therefore uses
-      // IsoFields.WEEK_OF_WEEK_BASED_YEAR, starting from 4 January, which always lies in week 1 of
-      // the ISO week-based year that YEAR holds for week dates.
-      // The adjuster only checks the range 1-53, so the week is checked against the actual year.
-      LocalDate jan4 = LocalDate.of(get(YEAR), 1, 4);
-      int week = get(WeekFields.ISO.weekOfYear());
-      jan4.range(IsoFields.WEEK_OF_WEEK_BASED_YEAR).checkValidIntValue(week, IsoFields.WEEK_OF_WEEK_BASED_YEAR);
-      return jan4
-          .with(IsoFields.WEEK_OF_WEEK_BASED_YEAR, week)
+    if (isSupported(WEEK_BASED_YEAR) && isSupported(WEEK_OF_WEEK_BASED_YEAR) && isSupported(DAY_OF_WEEK)) {
+      // 4 January always lies in week 1. The adjuster only checks the range 1-53, so get() has to
+      // check the week against the range of the actual week-based year.
+      return LocalDate.of(get(WEEK_BASED_YEAR), 1, 4)
+          .with(WEEK_OF_WEEK_BASED_YEAR, get(WEEK_OF_WEEK_BASED_YEAR))
           .with(DAY_OF_WEEK, get(DAY_OF_WEEK));
     }
     
@@ -131,7 +123,7 @@ public interface ASTDate extends ASTDateTOP {
   
   default boolean isExactlyYear() {
     return isYear() && !isSupported(DAY_OF_YEAR) && !isSupported(MONTH_OF_YEAR)
-        && !isSupported(WeekFields.ISO.weekOfYear());
+        && !isSupported(WEEK_OF_WEEK_BASED_YEAR);
   }
   
   default Year toYear() {

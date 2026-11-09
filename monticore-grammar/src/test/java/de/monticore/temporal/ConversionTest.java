@@ -6,9 +6,11 @@ import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.temporal.combinedtemporalstest.CombinedTemporalsTestMill;
 import de.monticore.temporal.combinedtemporalstest._ast.ASTTemporal;
 import de.monticore.temporal.detemporals._ast.ASTDETime;
+import de.monticore.temporal.isotemporals._ast.ASTBasicWeekDate;
 import de.monticore.temporal.isotemporals._ast.ASTCalendarDate;
 import de.monticore.temporal.isotemporals._ast.ASTISOTime;
 import de.monticore.temporal.isotemporals._ast.ASTWeekDate;
+import de.monticore.temporal.isotemporals.parsing.ISOTemporals2ndParser;
 import de.monticore.temporal.temporalbasis._ast.ASTDate;
 import de.monticore.temporal.temporalbasis._ast.ASTDateTime;
 import de.monticore.temporal.temporalbasis._ast.ASTTime;
@@ -22,6 +24,8 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.*;
 import java.time.temporal.IsoFields;
+import java.time.temporal.UnsupportedTemporalTypeException;
+import java.time.temporal.ValueRange;
 import java.time.temporal.WeekFields;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -117,17 +121,25 @@ public class ConversionTest {
     Assertions.assertInstanceOf(ASTDate.class, ast.getInstant());
     ASTDate realAst = (ASTDate) ast.getInstant();
     
-    Assertions.assertTrue(realAst.isSupported(YEAR));
-    Assertions.assertEquals(year, realAst.get(YEAR));
+    Assertions.assertTrue(realAst.isSupported(IsoFields.WEEK_BASED_YEAR));
+    Assertions.assertEquals(year, realAst.get(IsoFields.WEEK_BASED_YEAR));
     
-    Assertions.assertTrue(realAst.isSupported(WeekFields.ISO.weekOfYear()));
-    Assertions.assertEquals(week, realAst.get(WeekFields.ISO.weekOfYear()));
+    Assertions.assertTrue(realAst.isSupported(IsoFields.WEEK_OF_WEEK_BASED_YEAR));
+    Assertions.assertEquals(week, realAst.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR));
     
     if (dayOfWeek == -1) {
       Assertions.assertFalse(realAst.isSupported(DAY_OF_WEEK));
+      Assertions.assertThrows(UnsupportedTemporalTypeException.class, () -> realAst.getLong(DAY_OF_WEEK));
+      Assertions.assertFalse(realAst.isSupported(YEAR));
+      Assertions.assertFalse(realAst.isSupported(ASTWeekDate.WEEK_OF_YEAR));
+      Assertions.assertThrows(UnsupportedTemporalTypeException.class, () -> realAst.getLong(ASTWeekDate.WEEK_OF_YEAR));
+      Assertions.assertThrows(UnsupportedTemporalTypeException.class, ((ASTWeekDate) realAst)::getCalendarYear);
     } else {
       Assertions.assertTrue(realAst.isSupported(DAY_OF_WEEK));
       Assertions.assertEquals(dayOfWeek, realAst.get(DAY_OF_WEEK));
+      Assertions.assertTrue(realAst.isSupported(YEAR));
+      Assertions.assertTrue(realAst.isSupported(ASTWeekDate.WEEK_OF_YEAR));
+      Assertions.assertEquals(DayOfWeek.of(dayOfWeek), ((ASTWeekDate) realAst).toDayOfWeek());
     }
     
     // Exactly one of these boolean conditions has to be true
@@ -159,7 +171,23 @@ public class ConversionTest {
         .orElseGet(MCAssertions::failAndPrintFindings);
     Assertions.assertInstanceOf(ASTDate.class, ast.getInstant());
 
-    Assertions.assertEquals(LocalDate.parse(expectedDate), ((ASTDate) ast.getInstant()).toLocalDate());
+    ASTDate realAst = (ASTDate) ast.getInstant();
+    LocalDate expected = LocalDate.parse(expectedDate);
+
+    Assertions.assertEquals(expected, realAst.toLocalDate());
+    Assertions.assertEquals(expected, realAst.toTemporal());
+    // YEAR is the calendar year of the date, not the week-based year
+    Assertions.assertEquals(expected.getYear(), realAst.get(YEAR));
+    Assertions.assertEquals(expected.get(IsoFields.WEEK_BASED_YEAR), realAst.get(IsoFields.WEEK_BASED_YEAR));
+    Assertions.assertEquals(expected.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR), realAst.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR));
+    // WEEK_OF_YEAR counts weeks within the calendar year, not the ISO week
+    Assertions.assertTrue(realAst.isSupported(ASTWeekDate.WEEK_OF_YEAR));
+    Assertions.assertEquals(expected.get(WeekFields.ISO.weekOfYear()), realAst.get(ASTWeekDate.WEEK_OF_YEAR));
+    Assertions.assertEquals(expected.range(WeekFields.ISO.weekOfYear()), realAst.range(ASTWeekDate.WEEK_OF_YEAR));
+
+    ASTWeekDate weekDate = (ASTWeekDate) realAst;
+    Assertions.assertEquals(expected.getYear(), weekDate.getCalendarYear());
+    Assertions.assertEquals(expected.getDayOfWeek(), weekDate.toDayOfWeek());
   }
 
   // 2021 has 52 ISO weeks, so W53 is out of range like W00 and W54
@@ -171,7 +199,30 @@ public class ConversionTest {
         .orElseGet(MCAssertions::failAndPrintFindings);
     Assertions.assertInstanceOf(ASTDate.class, ast.getInstant());
 
-    Assertions.assertThrows(DateTimeException.class, () -> ((ASTDate) ast.getInstant()).toLocalDate());
+    ASTDate realAst = (ASTDate) ast.getInstant();
+
+    Assertions.assertThrows(DateTimeException.class, realAst::toLocalDate);
+    Assertions.assertThrows(DateTimeException.class, () -> realAst.get(YEAR));
+    Assertions.assertThrows(DateTimeException.class, () -> realAst.get(ASTWeekDate.WEEK_OF_YEAR));
+    Assertions.assertThrows(DateTimeException.class, ((ASTWeekDate) realAst)::getCalendarYear);
+  }
+
+  // 2020 has 53 ISO weeks, 2021 has 52
+  @DisplayName("Week Date Range")
+  @ParameterizedTest(name = "Input: {0}")
+  @CsvSource({"2020-W01-1, 53", "2021-W01-1, 52", "2021-W01, 52"})
+  public void testWeekDateRange(String input, int weeks) throws IOException {
+    ASTTemporal ast = CombinedTemporalsTestMill.parser().parse_String(input)
+        .orElseGet(MCAssertions::failAndPrintFindings);
+    Assertions.assertInstanceOf(ASTDate.class, ast.getInstant());
+    ASTDate realAst = (ASTDate) ast.getInstant();
+
+    Assertions.assertEquals(ValueRange.of(1, weeks), realAst.range(IsoFields.WEEK_OF_WEEK_BASED_YEAR));
+    Assertions.assertEquals(IsoFields.WEEK_BASED_YEAR.range(), realAst.range(IsoFields.WEEK_BASED_YEAR));
+    if (!((ASTWeekDate) realAst).isPresentDayOfWeek()) {
+      Assertions.assertThrows(UnsupportedTemporalTypeException.class, () -> realAst.range(YEAR));
+      Assertions.assertThrows(UnsupportedTemporalTypeException.class, () -> realAst.range(ASTWeekDate.WEEK_OF_YEAR));
+    }
   }
 
   /**
@@ -361,6 +412,27 @@ public class ConversionTest {
     } else if (realAst.isOffsetDateTime()) {
       Assertions.assertEquals(expectedOffsetDateTime, realAst.toOffsetDateTime());
     }
+    
+    // The date-time uses the ranges refined by the week date
+    Assertions.assertEquals(expectedDate.range(IsoFields.WEEK_OF_WEEK_BASED_YEAR),
+        realAst.range(IsoFields.WEEK_OF_WEEK_BASED_YEAR));
+    Assertions.assertEquals(week, realAst.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR));
+    Assertions.assertEquals(expectedDate.get(WeekFields.ISO.weekOfYear()), realAst.get(ASTWeekDate.WEEK_OF_YEAR));
+    Assertions.assertEquals(expectedDate.getYear(), realAst.get(YEAR));
+    Assertions.assertEquals(hour, realAst.get(HOUR_OF_DAY));
+  }
+  
+  @DisplayName("Week Date Reparsing")
+  @ParameterizedTest(name = "Input: {0} -> {1}")
+  @CsvSource({"2017W481, 2015W14, -1", "2015W14, 2017W481, 1"})
+  public void testWeekDateReparsing(String input, String newSource, int dayOfWeek) {
+    ASTBasicWeekDate ast = CombinedTemporalsTestMill.basicWeekDateBuilder().setSource(input).build();
+    ast.setSource(newSource);
+    ISOTemporals2ndParser.doParse(ast);
+    
+    Assertions.assertEquals(dayOfWeek != -1, ast.isPresentDayOfWeek());
+    Assertions.assertEquals(dayOfWeek, ast.isPresentDayOfWeek() ? ast.getDayOfWeek() : -1);
+    Assertions.assertEquals(dayOfWeek != -1, ast.isLocalDate());
   }
   
   @DisplayName("German Date Conversion")
