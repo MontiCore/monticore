@@ -72,9 +72,9 @@ public class CombinedTemporalsTest {
     Assertions.assertInstanceOf(ASTWeekDate.class, ast.getInstant());
     ASTWeekDate realAst = (ASTWeekDate) ast.getInstant();
     
-    Assertions.assertEquals(year, realAst.getYear());
-    Assertions.assertEquals(week, realAst.getWeek());
-    Assertions.assertEquals(dayOfWeek, realAst.getDayOfWeek());
+    Assertions.assertEquals(year, realAst.getWeekBasedYear());
+    Assertions.assertEquals(week, realAst.getWeekOfWeekBasedYear());
+    Assertions.assertEquals(dayOfWeek, realAst.isPresentDayOfWeek() ? realAst.getDayOfWeek() : -1);
   }
   
   @DisplayName("ISO Time Parsing")
@@ -164,8 +164,8 @@ public class CombinedTemporalsTest {
     ASTWeekDate date = (ASTWeekDate) realAst.getDate();
     ASTISOTime time = realAst.getTime();
     
-    Assertions.assertEquals(year, date.getYear());
-    Assertions.assertEquals(week, date.getWeek());
+    Assertions.assertEquals(year, date.getWeekBasedYear());
+    Assertions.assertEquals(week, date.getWeekOfWeekBasedYear());
     Assertions.assertEquals(dayOfWeek, date.getDayOfWeek());
     Assertions.assertEquals(hour, time.getHour());
     Assertions.assertEquals(minute, time.isPresentMinute() ? time.getMinute() : -1);
