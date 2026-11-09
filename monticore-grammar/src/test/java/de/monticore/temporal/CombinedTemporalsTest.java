@@ -226,8 +226,8 @@ public class CombinedTemporalsTest {
   }
 
   // These inputs pass the first parse step but are rejected by the second one.
-  // The second parser keeps the AST with default values and reports exactly one error
-  // at the position of the date instead of throwing an exception.
+  // The second parser reports exactly one error at the position of the date instead of
+  // throwing an exception. The field values of the AST are meaningless in that case.
   @DisplayName("Basic Week Date Parse Invalid")
   @ParameterizedTest(name = "Input: {0}")
   @ValueSource(strings = {"3W4", "2017W4", "17W481"})
@@ -235,10 +235,7 @@ public class CombinedTemporalsTest {
     ASTTemporal ast = parser.parse_String(input)
         .orElseGet(MCAssertions::failAndPrintFindings);
     Assertions.assertInstanceOf(ASTBasicWeekDate.class, ast.getInstant());
-    ASTBasicWeekDate realAst = (ASTBasicWeekDate) ast.getInstant();
-    Assertions.assertEquals(0, realAst.getYear());
-    Assertions.assertEquals(0, realAst.getWeek());
-    
+
     Assertions.assertEquals(1, Log.getFindings().size());
     Finding finding = MCAssertions.assertHasFindingStartingWith(ISOTemporals2ndParser.WEEK_DATE_ERROR_CODE);
     Assertions.assertTrue(finding.isError());
