@@ -103,7 +103,7 @@ Because `EscapedTemporalLiteral` implements `Literal`, it can be used in
 MontiCore expression languages that support literal expressions.
 
 For typed MontiCore languages however, there is also a type 
-definition necessary, which must not be provided by an explcit 
+definition necessary, which need not be provided by an explicit 
 grammar, but can be imported using standard symbol mechanisms.  E.g. 
 `Date`, `Time`, `TimePeriod` can be used, but more fine-grained 
 possibilities would also be allowed. 
@@ -136,7 +136,7 @@ d"12:30 Uhr"
 
 Maybe some variants of the literals need explanation: `d"2015-W14-3"` 
 describes the 3rd day in the 14th week of 2015, `d"PT6.5H"` describes 
-6 days, and 5 hours and `d"P2W"` describes 2 weeks. 
+6.5 hours and `d"P2W"` describes 2 weeks. 
 
 --- 
 
