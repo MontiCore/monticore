@@ -19,7 +19,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Responsible for tracking mapping information between template source code, generated output
@@ -28,18 +27,18 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class SourceMapCalculator {
 
-  private static ThreadLocal<Stack<Template>> templates = ThreadLocal.withInitial(() -> new Stack<>());
+  private static Stack<Template> templates = new Stack<>();
 
   // We need this for nested template evaluations
-  private static ThreadLocal<Pair<Integer, Integer>> curAbsolutePos = ThreadLocal.withInitial(() -> Pair.of(0, 0));
+  private static Pair<Integer, Integer> curAbsolutePos = Pair.of(0, 0);
 
-  private static ThreadLocal<List<SimpleSourceMapping>> mappings = ThreadLocal.withInitial(ArrayList::new);
-  private static ThreadLocal<List<SimpleSourceMapping>> astMappings = ThreadLocal.withInitial(ArrayList::new);
-  private static ThreadLocal<List<IncludeSpan>> includeSpans = ThreadLocal.withInitial(ArrayList::new);
-  private static ThreadLocal<Set<Integer>> includePairIds = ThreadLocal.withInitial(HashSet::new);
-  private static ThreadLocal<AtomicInteger> nextRuntimePairId = ThreadLocal.withInitial(() -> new AtomicInteger(1));
-  private static ThreadLocal<Map<Template, OpenSpan>> activeParentMappings = ThreadLocal.withInitial(HashMap::new);
-  private static ThreadLocal<Integer> baseLineOffset = ThreadLocal.withInitial(() -> 0);
+  private static List<SimpleSourceMapping> mappings = new ArrayList<>();
+  private static List<SimpleSourceMapping> astMappings = new ArrayList<>();
+  private static List<IncludeSpan> includeSpans = new ArrayList<>();
+  private static Set<Integer> includePairIds = new HashSet<>();
+  private static int nextRuntimePairId = 1;
+  private static Map<Template, OpenSpan> activeParentMappings = new HashMap<>();
+  private static Integer baseLineOffset = 0;
 
   private final Deque<OpenSpan> openSpans = new ArrayDeque<>();
   private final FreeMarkerTemplateEngine.ContentWriter sw;
@@ -51,7 +50,7 @@ public class SourceMapCalculator {
   public SourceMapCalculator(FreeMarkerTemplateEngine.ContentWriter sw, Template template) {
     this.sw = sw;
     this.template = template;
-    this.startOffset = curAbsolutePos.get();
+    this.startOffset = curAbsolutePos;
   }
 
   /**
@@ -67,19 +66,19 @@ public class SourceMapCalculator {
 
 
     // Check if there is a "parent" template to map the inclusion
-    if(templates.get().isEmpty() == false) {
-      Template parentTemplate = templates.get().peek();
-      OpenSpan parentSpan = activeParentMappings.get().get(parentTemplate);
+    if(templates.isEmpty() == false) {
+      Template parentTemplate = templates.peek();
+      OpenSpan parentSpan = activeParentMappings.get(parentTemplate);
       if(parentSpan != null){
         parentSpan.triggeredIncludes.add(template.getName());
       }
     }
 
-    if(templates.get().isEmpty()){
-      curAbsolutePos.set(Pair.of(getBaseLineOffset(), 0));
+    if(templates.isEmpty()){
+      curAbsolutePos = Pair.of(getBaseLineOffset(), 0);
     }
 
-    templates.get().push(template);
+    templates.push(template);
   }
 
   /**
@@ -94,12 +93,12 @@ public class SourceMapCalculator {
     if(Reporting.isConfigTemplate(template.getName()))
       return;
 
-    if (templates.get().pop() != template) {
+    if (templates.pop() != template) {
       Log.error("0xA0740 Discrepancy between template stack and template name");
       throw new IllegalStateException();
     }
 
-    if (templates.get().isEmpty()) {
+    if (templates.isEmpty()) {
       flushMappings();
       reset();
     }
@@ -130,22 +129,22 @@ public class SourceMapCalculator {
    * @param targetTemplate The included template name
    */
   public static void reportInclude(String targetTemplate) {
-    if (templates.get().isEmpty()) {
+    if (templates.isEmpty()) {
       return;
     }
-    Template parentTemplate = templates.get().peek();
-    OpenSpan parentSpan = activeParentMappings.get().get(parentTemplate);
+    Template parentTemplate = templates.peek();
+    OpenSpan parentSpan = activeParentMappings.get(parentTemplate);
     if (parentSpan != null) {
       parentSpan.triggeredIncludes.add(targetTemplate);
     }
   }
 
   public static void setBaseLineOffset(int offset){
-    baseLineOffset.set(offset);
+    baseLineOffset = offset;
   }
 
   public static int getBaseLineOffset(){
-    return baseLineOffset.get();
+    return baseLineOffset;
   }
 
 
@@ -175,13 +174,13 @@ public class SourceMapCalculator {
     SourcePosition positionInGeneratedFile = new SourcePosition(absPos.getLeft(), absPos.getRight(), "GenOutput");
 
     if (isStart) {
-      int runtimePairId = nextRuntimePairId.get().getAndIncrement();
+      int runtimePairId = nextRuntimePairId++;
       SourcePosition sourcePos = new SourcePosition(Math.max(0, lineInTemplate), Math.max(0, colInTemplate), templateSource);
       OpenSpan openSpan = new OpenSpan(runtimePairId, elementId, sourcePos, positionInGeneratedFile, astNode);
       openSpans.push(openSpan);
-      activeParentMappings.get().put(this.template, openSpan);
+      activeParentMappings.put(this.template, openSpan);
 
-      mappings.get().add(new SimpleSourceMapping(sourcePos, positionInGeneratedFile, runtimePairId));
+      mappings.add(new SimpleSourceMapping(sourcePos, positionInGeneratedFile, runtimePairId));
       addASTMapping(astNode, true, positionInGeneratedFile, runtimePairId);
     } else {
       OpenSpan openSpan = null;
@@ -202,26 +201,26 @@ public class SourceMapCalculator {
       }
 
       if (openSpans.isEmpty()) {
-        activeParentMappings.get().remove(this.template);
+        activeParentMappings.remove(this.template);
       } else {
-        activeParentMappings.get().put(this.template, openSpans.peek());
+        activeParentMappings.put(this.template, openSpans.peek());
       }
 
       SourcePosition endSourcePos = new SourcePosition(Math.max(0, lineInTemplate), Math.max(0, colInTemplate), templateSource);
 
       if (!openSpan.triggeredIncludes.isEmpty()) {
-        includePairIds.get().add(openSpan.runtimePairId);
+        includePairIds.add(openSpan.runtimePairId);
         for (String targetTemplate : openSpan.triggeredIncludes) {
-          includeSpans.get().add(new IncludeSpan(openSpan.startSourcePosition, endSourcePos, targetTemplate));
+          includeSpans.add(new IncludeSpan(openSpan.startSourcePosition, endSourcePos, targetTemplate));
         }
       }
 
       if (openSpan.startTargetPosition.equals(positionInGeneratedFile)) {
         int rId = openSpan.runtimePairId;
-        mappings.get().removeIf(m -> m.pairId() == rId);
-        astMappings.get().removeIf(m -> m.pairId() == rId);
+        mappings.removeIf(m -> m.pairId() == rId);
+        astMappings.removeIf(m -> m.pairId() == rId);
       } else {
-        mappings.get().add(new SimpleSourceMapping(endSourcePos, positionInGeneratedFile, openSpan.runtimePairId));
+        mappings.add(new SimpleSourceMapping(endSourcePos, positionInGeneratedFile, openSpan.runtimePairId));
         addASTMapping(astNode, false, positionInGeneratedFile, openSpan.runtimePairId);
       }
     }
@@ -246,7 +245,7 @@ public class SourceMapCalculator {
    * @return list of decoded mappings ready for source map generation
    */
   private static List<DecodedMapping> calculateMappings(List<SimpleSourceMapping> simpleMappings) {
-    Set<Integer> includePairIdsSet = includePairIds.get();
+    Set<Integer> includePairIdsSet = includePairIds;
 
     Map<Integer, SimpleSourceMapping> openSpansMap = new HashMap<>();
 
@@ -379,7 +378,7 @@ public class SourceMapCalculator {
         ? startOffset.getRight() + curGeneratedColPos
         : curGeneratedColPos;
     Pair<Integer, Integer> newPos = Pair.of(absoluteLine, absoluteColumn);
-    curAbsolutePos.set(newPos);
+    curAbsolutePos = newPos;
     return newPos;
   }
 
@@ -406,7 +405,7 @@ public class SourceMapCalculator {
         SourcePosition s = startOrEnd.getFileName().isPresent()?
             new SourcePosition(line, col, startOrEnd.getFileName().get()) :
             new SourcePosition(line, col);
-        astMappings.get().add(new SimpleSourceMapping(s, positionInGeneratedFile, pairId));
+        astMappings.add(new SimpleSourceMapping(s, positionInGeneratedFile, pairId));
       }
     }
   }
@@ -426,9 +425,9 @@ public class SourceMapCalculator {
    * and clears temporary buffers.
    */
   public static void flushMappings(){
-    List<DecodedMapping> templateSourceMappings = calculateMappings(mappings.get());
-    List<DecodedMapping> astSourceMappings = calculateMappings(astMappings.get());
-    List<IncludeSpan> incSpans = new ArrayList<>(includeSpans.get());
+    List<DecodedMapping> templateSourceMappings = calculateMappings(mappings);
+    List<DecodedMapping> astSourceMappings = calculateMappings(astMappings);
+    List<IncludeSpan> incSpans = new ArrayList<>(includeSpans);
     Reporting.reportASTSourceMapping(astSourceMappings);
     Reporting.reportTemplateSourceMapping(templateSourceMappings);
     Reporting.reportTemplateIncludeSpan(incSpans);
@@ -436,25 +435,19 @@ public class SourceMapCalculator {
   }
 
   public static void clearMappings(){
-    mappings.get().clear();
-    mappings.remove();
-    astMappings.get().clear();
-    astMappings.remove();
-    includeSpans.get().clear();
-    includeSpans.remove();
-    includePairIds.get().clear();
-    includePairIds.remove();
-    activeParentMappings.get().clear();
-    activeParentMappings.remove();
+    mappings.clear();
+    astMappings.clear();
+    includeSpans.clear();
+    includePairIds.clear();
+    activeParentMappings.clear();
   }
 
   public static void reset() {
     clearMappings();
-    templates.get().clear();
-    templates.remove();
-    curAbsolutePos.remove();
-    baseLineOffset.remove();
-    nextRuntimePairId.remove();
+    templates.clear();
+    curAbsolutePos = Pair.of(0,0);
+    baseLineOffset = 0;
+    nextRuntimePairId = 1;
   }
 
   public static class OpenSpan {

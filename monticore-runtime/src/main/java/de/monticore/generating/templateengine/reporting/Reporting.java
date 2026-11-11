@@ -32,7 +32,7 @@ public class Reporting extends Log {
   /* the currently active model for which reporting takes place */
   protected static String currentModel;
 
-  protected static final ThreadLocal<String> currentConfigTemplate = new ThreadLocal<>();
+  protected static String currentConfigTemplate;
 
   public static String getCurrentModel() {
     return currentModel;
@@ -129,16 +129,15 @@ public class Reporting extends Log {
   }
 
   public static void setConfigTemplate(String templateName){
-    currentConfigTemplate.set(templateName);
+    currentConfigTemplate = templateName;
   }
 
   public static void clearConfigTemplate(){
-    currentConfigTemplate.remove();
+    currentConfigTemplate = null;
   }
 
   public static boolean isConfigTemplate(String templ){
-    String configTemplate = currentConfigTemplate.get();
-    return configTemplate != null && templ.equals(configTemplate);
+    return currentConfigTemplate != null && templ.equals(currentConfigTemplate);
   }
 
   public static void reportTemplateSourceMapping(List<DecodedMapping> mapping) {
