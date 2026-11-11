@@ -14,7 +14,6 @@ import de.monticore.temporal.isotemporals.cocos.PeriodIsNonemptyCoCo;
 import de.monticore.temporal.parsing.isotemporals4parsing.convert.ConvertToISOTemporals;
 import de.se_rwth.commons.logging.Log;
 
-import java.io.IOException;
 
 public class ISOTemporals2ndParser implements ISOTemporalsVisitor2 {
   protected ISOTemporals4ParsingParser parser;
@@ -65,7 +64,7 @@ public class ISOTemporals2ndParser implements ISOTemporalsVisitor2 {
     ASTOrdinalDate4P parsed;
     try {
       parsed = parser.parse_StringOrdinalDate4P(node.toRawString()).orElseThrow();
-    } catch (IOException e) {
+    } catch (Exception e) {
       Log.error("Expected an ordinal date but got " + node.toRawString(), e);
       return;
     }
@@ -82,7 +81,7 @@ public class ISOTemporals2ndParser implements ISOTemporalsVisitor2 {
     ASTWeekDate4P parsed;
     try {
       parsed = parser.parse_StringWeekDate4P(node.toRawString()).orElseThrow();
-    } catch (IOException e) {
+    } catch (Exception e) {
       Log.error("Expected a week date but got " + node.toRawString(), e);
       return;
     }
@@ -102,7 +101,7 @@ public class ISOTemporals2ndParser implements ISOTemporalsVisitor2 {
     ASTISOTime4P parsed;
     try {
       parsed = parser.parse_StringISOTime4P(node.toRawString()).orElseThrow();
-    } catch (IOException e) {
+    } catch (Exception e) {
       Log.error("Expected an ISO time but got " + node.toRawString(), e);
       return;
     }
@@ -145,7 +144,7 @@ public class ISOTemporals2ndParser implements ISOTemporalsVisitor2 {
     ASTISODateTime4P parsed;
     try {
       parsed = parser.parse_StringISODateTime4P(node.toRawString()).orElseThrow();
-    } catch (IOException e) {
+    } catch (Exception e) {
       Log.error("Expected an ISO time but got " + node.toRawString(), e);
       return;
     }

@@ -141,9 +141,20 @@ grammar ISOTemporals4Parsing {
 
   FullPeriod4P implements ISOPeriod4P = PeriodDesignator
       (years:DigitVar YearDesignator)? (months:DigitVar MonthDesignator)?
-      (days:DigitVar DayDesignator)? TimeDesignator?
-      (hours:DigitVar fraction:Fraction4P? HourDesignator)? (minutes:DigitVar fraction:Fraction4P? (MonthDesignator | MinuteDesignator))?
-      (seconds:DigitVar fraction:Fraction4P? SecondDesignator)?;
+      (days:DigitVar DayDesignator)?
+      // Without T, M is the month designator and only denotes minutes after hours.
+      // Otherwise, a fractional month such as P2Y3.5M would be read as minutes.
+      ( TimeDesignator
+          (hours:DigitVar fraction:Fraction4P? HourDesignator)?
+          (minutes:DigitVar fraction:Fraction4P? (MonthDesignator | MinuteDesignator))?
+          (seconds:DigitVar fraction:Fraction4P? SecondDesignator)?
+      | (hours:DigitVar fraction:Fraction4P? HourDesignator)
+          (minutes:DigitVar fraction:Fraction4P? (MonthDesignator | MinuteDesignator))?
+          (seconds:DigitVar fraction:Fraction4P? SecondDesignator)?
+      | (minutes:DigitVar fraction:Fraction4P? MinuteDesignator)
+          (seconds:DigitVar fraction:Fraction4P? SecondDesignator)?
+      | (seconds:DigitVar fraction:Fraction4P? SecondDesignator)
+      )?;
 
   WeekPeriod4P implements ISOPeriod4P = PeriodDesignator weeks:DigitVar WeekDesignator;
 

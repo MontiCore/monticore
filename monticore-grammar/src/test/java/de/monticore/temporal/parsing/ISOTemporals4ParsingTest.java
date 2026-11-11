@@ -138,7 +138,7 @@ public class ISOTemporals4ParsingTest {
   @ParameterizedTest(name = "Input: {0}")
   @MethodSource("calendarDatesWS")
   public void testCalendarDateWS(String input) throws IOException {
-    checkInvalidWS(input);
+    checkInvalid(input);
   }
 
   protected static Stream<String> ordinalDates() {
@@ -187,7 +187,7 @@ public class ISOTemporals4ParsingTest {
   @ParameterizedTest(name = "Input: {0}")
   @MethodSource("ordinalDatesWS")
   public void testOrdinalDateWS(String input) throws IOException {
-    checkInvalidWS(input);
+    checkInvalid(input);
   }
 
   protected static Stream<String> weekDates() {
@@ -244,7 +244,7 @@ public class ISOTemporals4ParsingTest {
   @ParameterizedTest(name = "Input: {0}")
   @MethodSource("weekDatesWS")
   public void testWeekDateWS(String input) throws IOException {
-    checkInvalidWS(input);
+    checkInvalid(input);
   }
 
   protected static Stream<String> timeOnly() {
@@ -296,7 +296,9 @@ public class ISOTemporals4ParsingTest {
     return Stream.of(
         "P2Y10M15DT10H30M20S", "P1Y2M10DT2H30M", "PT36H", "P6W",
         // decimal fraction of the lowest order component
-        "PT0.5H", "PT1,5M", "PT2.25S", "P1YT0.5H");
+        "PT0.5H", "PT1,5M", "PT2.25S", "P1YT0.5H",
+        // without T, M denotes minutes only after hours
+        "P22H30.5M", "P1D22H30,5M");
   }
 
   @DisplayName("Period")
@@ -319,6 +321,18 @@ public class ISOTemporals4ParsingTest {
     checkInvalid(input);
   }
 
+  // Without T, M is the month designator, and months cannot have a fractional part
+  protected static Stream<String> periodsWithFractionalMonths() {
+    return Stream.of("P3.5M", "P2Y3,5M", "P10D3.5M");
+  }
+
+  @DisplayName("Period – fractional months")
+  @ParameterizedTest(name = "Input: {0}")
+  @MethodSource("periodsWithFractionalMonths")
+  public void testPeriodWithFractionalMonths(String input) throws IOException {
+    checkInvalid(input);
+  }
+
   protected static Stream<String> periodsWithoutDigits() {
     return Stream.of("PW", "PYD", "PT1H.M");
   }
@@ -333,10 +347,6 @@ public class ISOTemporals4ParsingTest {
   void checkValid(String input) throws IOException {
     isoParser.parse_String(input)
         .orElseGet(MCAssertions::failAndPrintFindings);
-  }
-
-  void checkInvalidWS(String input) throws IOException {
-    checkInvalid(input);
   }
 
   void checkInvalid(String input) throws IOException {
