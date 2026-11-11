@@ -106,12 +106,12 @@ public class SourceMapTest extends AbstractMCTest {
     DecodedSourceMap original = new DecodedSourceMap("Generated.java", sources, mappings);
 
     // Encode to JSON
-    String json = Encoding.getEncodeSourceMap(original);
+    String json = SourceMapEncoding.getEncodeSourceMap(original);
     assertNotNull(json);
     assertFalse(json.isEmpty());
 
     // Decode from JSON
-    DecodedSourceMap decoded = Decoding.parseSourceMapJson(json, null);
+    DecodedSourceMap decoded = SourceMapDecoding.parseSourceMapJson(json, null);
 
     // Verify: different instance reference, but equivalent record state
     assertNotSame(original, decoded);
@@ -148,8 +148,8 @@ public class SourceMapTest extends AbstractMCTest {
 
     DecodedSourceMap original = new DecodedSourceMap("Output.java", sources, mappings);
 
-    String encoded = Encoding.getEncodeSourceMap(original);
-    DecodedSourceMap decoded = Decoding.parseSourceMapJson(encoded, null);
+    String encoded = SourceMapEncoding.getEncodeSourceMap(original);
+    DecodedSourceMap decoded = SourceMapDecoding.parseSourceMapJson(encoded, null);
 
     assertNotSame(original, decoded);
     assertEquals(original, decoded);

@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static de.monticore.sourcemap.Encoding.getEncodeSourceMap;
+import static de.monticore.sourcemap.SourceMapEncoding.getEncodeSourceMap;
 
 /**
  * Handles reporting source mappings for templates, AST nodes, and include spans.

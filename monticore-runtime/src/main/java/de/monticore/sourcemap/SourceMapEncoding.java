@@ -12,7 +12,7 @@ import static de.monticore.sourcemap.Base64VLQUtil.encodeBase64;
 /**
  * A utility class for encoding source maps into their string representation.
  */
-public class Encoding {
+public class SourceMapEncoding {
 
   /**
    * Encodes a given {@code DecodedSourceMap} into its equivalent string representation.

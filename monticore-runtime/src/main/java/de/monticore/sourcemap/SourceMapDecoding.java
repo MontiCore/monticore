@@ -20,7 +20,7 @@ import static de.monticore.sourcemap.Base64VLQUtil.base64Encoding;
  * A utility class for decoding source maps from JSON strings and processing the associated data,
  * including mappings, sources, and metadata.
  */
-public class Decoding {
+public class SourceMapDecoding {
 
   /**
    * Parses a JSON string representing a source map and returns a corresponding

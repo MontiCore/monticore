@@ -10,7 +10,7 @@ import de.monticore.runtime.junit.MCAssertions;
 import de.monticore.sourcemap.DecodedMapping;
 import de.monticore.sourcemap.DecodedSource;
 import de.monticore.sourcemap.DecodedSourceMap;
-import de.monticore.sourcemap.Decoding;
+import de.monticore.sourcemap.SourceMapDecoding;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.apache.commons.io.FileUtils;
@@ -96,7 +96,7 @@ public class GeneratorTest {
       File mapFile = new File("target/statepattern/AbstractPingPongState.java.map");
       assertTrue(mapFile.exists());
       String json = Files.readString(mapFile.toPath());
-      DecodedSourceMap decoded = Decoding.parseSourceMapJson(json, null);
+      DecodedSourceMap decoded = SourceMapDecoding.parseSourceMapJson(json, null);
 
 
       URL templateUrl = getClass().getClassLoader().getResource("AbstractState.ftl");
@@ -132,7 +132,7 @@ public class GeneratorTest {
       File mapFile = new File("target/statepattern/AbstractPingPongState.java.map");
       assertTrue(mapFile.exists());
       String json = Files.readString(mapFile.toPath());
-      DecodedSourceMap decoded = Decoding.parseSourceMapJson(json, null);
+      DecodedSourceMap decoded = SourceMapDecoding.parseSourceMapJson(json, null);
 
 
       URL templateUrl = getClass().getClassLoader().getResource("AbstractState.ftl");
@@ -168,7 +168,7 @@ public class GeneratorTest {
       File mapFile = new File("target/statepattern/AbstractPingPongState.java.map");
       assertTrue(mapFile.exists());
       String json = Files.readString(mapFile.toPath());
-      DecodedSourceMap decoded = Decoding.parseSourceMapJson(json, null);
+      DecodedSourceMap decoded = SourceMapDecoding.parseSourceMapJson(json, null);
 
 
       URL templateUrl = getClass().getClassLoader().getResource("AbstractState.ftl");
