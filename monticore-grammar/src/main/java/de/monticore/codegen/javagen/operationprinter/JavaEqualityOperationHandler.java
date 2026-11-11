@@ -108,7 +108,7 @@ public class JavaEqualityOperationHandler
 
   /**
    * whether the types are compatible without being subtypes, e.g.,
-   * ([m]<double>, int) and ([km]<double>, int).
+   * {@code ([m]<double>, int)} and {@code ([km]<double>, int)}.
    * This excludes boxing, e.g., Integer and long,
    * as unboxing is not null-safe.
    */
