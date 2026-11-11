@@ -10,7 +10,8 @@ The temporal language family is organized around a small common basis:
 
 - `TemporalBasis` defines abstract interfaces such as `Date`, `Time`,
   `DateTime`, and `Period`.
-- `ISOTemporals` realizes these interfaces using formats based on ISO 8601-1.
+- `ISOTemporals` realizes these interfaces using formats based on
+  ISO 8601-1:2019 and its Amendment 1:2022.
 - `DETemporals` realizes them using date and time formats common in
   German-speaking regions.
 - `EscapedTemporalLiterals` allows temporal values to be embedded as literals by
@@ -34,7 +35,7 @@ hierarchy that other temporal grammars can implement.
 
 This makes it possible to define language components that work with temporal
 concepts independently of whether the concrete syntax follows ISO 8601, German
-DIN-style notation, or another future temporal notation.
+notation, or another future temporal notation.
 
 ### Hierarchical Connection
 
@@ -105,7 +106,7 @@ MontiCore expression languages that support literal expressions.
 For typed MontiCore languages however, there is also a type 
 definition necessary, which need not be provided by an explicit 
 grammar, but can be imported using standard symbol mechanisms.  E.g. 
-`Date`, `Time`, `TimePeriod` can be used, but more fine-grained 
+`Date`, `Time`, `Period` can be used, but more fine-grained 
 possibilities would also be allowed. 
 
 ### Central Nonterminal
@@ -145,7 +146,7 @@ describes the 3rd day in the 14th week of 2015, `d"PT6.5H"` describes
 ### Purpose
 
 `ISOTemporals` realizes the temporal interfaces from `TemporalBasis` using date
-and time formats based on ISO 8601-1.
+and time formats based on ISO 8601-1:2019 and its Amendment 1:2022.
 
 ISO 8601 is an international standard for the unambiguous representation of
 temporal data. The grammar supports the main ISO-style representations for:
@@ -210,7 +211,7 @@ literals through `EscapedTemporalLiterals`.
 | `ISOPeriod`        | Common interface for ISO periods.                                                    |
 | `FullPeriod`       | Period using year, month, day, hour, minute, and second components.                  |
 | `WeekPeriod`       | Period expressed in weeks.                                                           |
-| `Sign`             | Optional plus or minus sign for expanded years or time shifts.                       |
+| `Sign`             | Plus or minus sign for expanded years or time shifts.                                |
 | `Fraction`         | Decimal fraction using either `.` or `,`.                                            |
 | `TimeShift`        | UTC marker `Z` or signed UTC offset.                                                 |
 
@@ -232,6 +233,9 @@ Examples:
 | `+120004-03-10` | March 10 in the expanded year `120004`.              |
 | `-100005-02-20` | February 20 in the expanded negative year `-100005`. |
 
+ISO 8601-1 requires the sign in expanded representations, even for positive
+years.
+
 ---
 
 ### ISO Ordinal Dates
@@ -246,8 +250,8 @@ Examples:
 | `2015091`     | Same date in basic notation.            |
 | `+120004-091` | The 91st day of expanded year `120004`. |
 
-Ordinal dates do not support reduced precision because shorter forms would
-conflict with other ISO date formats.
+Ordinal dates do not support reduced precision, since ISO 8601-1 defines only
+complete and expanded representations for them.
 
 ---
 
@@ -304,7 +308,9 @@ In basic notation, the leading `T` is used to disambiguate times from dates.
 
 ### ISO Date-Time Values
 
-An ISO date-time combines an ISO date with an ISO time.
+An ISO date-time combines an ISO date with an ISO time. According to
+ISO 8601-1, the date part must be complete, while the time may have reduced
+precision.
 
 Examples:
 
@@ -322,7 +328,8 @@ The date and time are separated by the literal designator `T`.
 
 ### ISO Periods
 
-An ISO period represents a duration or length of time.
+An ISO period represents a duration or length of time. ISO 8601-1:2019 calls
+these values *durations*; the grammar keeps the name `Period`.
 
 The grammar supports two main period forms:
 
@@ -340,7 +347,7 @@ Examples:
 | `P1Y2M3DT4H5M6.25S` | Same, with fractional seconds.                                         |
 | `P2W`               | Period of 2 weeks.                                                     |
 
-The period designator `P` starts the value. If time components are used, they
+The duration designator `P` starts the value. If time components are used, they
 are introduced by `T`.
 
 ISO periods are different from SI unit literals such as `5s`, `3h`, or `2 km/s`.
@@ -462,6 +469,11 @@ It supports:
 
 Unlike `ISOTemporals`, this grammar does not define period formats.
 
+DIN 5008:2020 prescribes the ISO order `YYYY-MM-DD` for numeric dates, which
+is covered by `ISOTemporals`. `DETemporals` covers the order `DD.MM.YYYY`,
+which DIN 5008 mentions as common for domestic recipients, and the
+alphanumeric dates of DIN 5008.
+
 ### Hierarchical Connection
 
 `DETemporals` extends `TemporalBasis`
@@ -505,6 +517,9 @@ Examples:
 | `04.2015`    | April 2015.    |
 | `2015`       | Year 2015.     |
 
+DIN 5008 only describes the complete form with day, month, and four-digit
+year. The reduced forms `04.2015` and `2015` are an extension of this grammar.
+
 ---
 
 ### German Alphanumeric Dates
@@ -515,7 +530,7 @@ Examples:
 
 ```text
 1. April 2015
-01. Apr. 2015
+1. Apr. 2015
 April 2015
 März 2026
 1. Mär. 2026
@@ -529,7 +544,7 @@ Supported month forms include:
 | February  | `Februar`   | `Feb.`       |
 | March     | `März`      | `Mär.`       |
 | April     | `April`     | `Apr.`       |
-| May       | `Mai`       | `Mai.`       |
+| May       | `Mai`       | –            |
 | June      | `Juni`      | `Jun.`       |
 | July      | `Juli`      | `Jul.`       |
 | August    | `August`    | `Aug.`       |
@@ -537,6 +552,8 @@ Supported month forms include:
 | October   | `Oktober`   | `Okt.`       |
 | November  | `November`  | `Nov.`       |
 | December  | `Dezember`  | `Dez.`       |
+
+As in DIN 5008, a one-digit day is written without a leading zero.
 
 ---
 
@@ -564,11 +581,14 @@ configuration.
 
 Examples:
 
-| Syntax                    | Meaning                        |
-|---------------------------|--------------------------------|
-| `01.04.2015 12:30 Uhr`    | April 1, 2015 at 12:30.        |
-| `1. April 2015 12 Uhr`    | April 1, 2015 at 12 o’clock.   |
-| `April 2015 12:30:15 Uhr` | April 2015 with time 12:30:15. |
+| Syntax                      | Meaning                      |
+|-----------------------------|------------------------------|
+| `01.04.2015 12:30 Uhr`      | April 1, 2015 at 12:30.      |
+| `1. April 2015 12 Uhr`      | April 1, 2015 at 12 o’clock. |
+| `1. Apr. 2015 12:30:15 Uhr` | April 1, 2015 at 12:30:15.   |
+
+As in ISO 8601-1, the date part should be complete; a time attached to a
+month or year does not denote a single instant.
 
 ---
 
