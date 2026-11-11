@@ -448,7 +448,7 @@ public class TemplateController {
         // Check if there is already something appended to content up to this point
         // to ensure correct offset
         int currentOffset = (int) (content + " ").lines().count() - 1;
-        SourceMapCalculator.setBaseLineOffset(currentOffset);
+        SourceMapCalculator.getState().setBaseLineOffset(currentOffset);
       }
       content.append(tn.processValue(this, ast, templateArguments));
     }
