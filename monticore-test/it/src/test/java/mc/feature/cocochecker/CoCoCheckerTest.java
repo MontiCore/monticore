@@ -17,7 +17,6 @@ import mc.feature.cocochecker.c._cocos.CCoCoChecker;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -54,8 +53,8 @@ public class CoCoCheckerTest {
   private ASTANode ast;
   
   @BeforeEach
-  public void setUp() throws IOException {
-    Optional<ASTX> astOpt = AMill.parser().parse_StringX("xyz");;
+  public void setUp() {
+    Optional<ASTX> astOpt = AMill.parser().parse_StringX("xyz");
     assertTrue(astOpt.isPresent());
     ast = astOpt.get();
     checked.setLength(0);

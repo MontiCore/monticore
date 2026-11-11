@@ -11,7 +11,6 @@ import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.runtime.RecognitionException;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Optional;
 
@@ -38,7 +37,7 @@ public class JavaAndAutTool {
       }
       Log.error("0xEE84E Model could not be parsed.");
     }
-    catch (RecognitionException | IOException e) {
+    catch (RecognitionException e) {
       Log.error("0xEE64E Failed to parse " + model, e);
     }
     System.exit(1);

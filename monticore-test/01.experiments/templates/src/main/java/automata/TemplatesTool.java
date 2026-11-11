@@ -16,7 +16,6 @@ import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.runtime.RecognitionException;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -346,7 +345,7 @@ public class TemplatesTool {
       }
       Log.error("0x238F1 Model could not be parsed: " + file + ".");
     }
-    catch (RecognitionException | IOException e) {
+    catch (RecognitionException e) {
       Log.error("0x238F2 Failed to parse " + file, e);
     }
     return null;

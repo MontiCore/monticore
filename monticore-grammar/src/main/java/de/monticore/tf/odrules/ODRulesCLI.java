@@ -84,20 +84,16 @@ public class ODRulesCLI {
   
   public Optional<ASTODRule> parseODRule(Path model) {
     Log.debug("Start parsing of the model " + model, LOG_ID);
-    try {
-      ODRulesParser parser = ODRulesMill.parser();
-      Optional<ASTODRule> ast = parser.parse(model.toString());
-      if (!parser.hasErrors() && ast.isPresent()) {
-        Log.debug("Model " + model + " parsed successfully", LOG_ID);
-      } else {
-        Log.info(
-            "There are parsing errors while parsing of the model " + model, LOG_ID);
-      }
-      
-      return ast;
-    } catch (IOException e) {
-      throw new RuntimeException(e);
+    ODRulesParser parser = ODRulesMill.parser();
+    Optional<ASTODRule> ast = parser.parse(model.toString());
+    if (!parser.hasErrors() && ast.isPresent()) {
+      Log.debug("Model " + model + " parsed successfully", LOG_ID);
+    } else {
+      Log.info(
+          "There are parsing errors while parsing of the model " + model, LOG_ID);
     }
+    
+    return ast;
   }
   
   /**

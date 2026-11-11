@@ -14,8 +14,6 @@ import de.monticore.temporal.isotemporals.cocos.PeriodIsNonemptyCoCo;
 import de.monticore.temporal.parsing.isotemporals4parsing.convert.ConvertToISOTemporals;
 import de.se_rwth.commons.logging.Log;
 
-import java.io.IOException;
-
 public class ISOTemporals2ndParser implements ISOTemporalsVisitor2 {
   protected ISOTemporals4ParsingParser parser;
   
@@ -63,12 +61,7 @@ public class ISOTemporals2ndParser implements ISOTemporalsVisitor2 {
   @Override
   public void visit(ASTOrdinalDate node) {
     ASTOrdinalDate4P parsed;
-    try {
-      parsed = parser.parse_StringOrdinalDate4P(node.toRawString()).orElseThrow();
-    } catch (IOException e) {
-      Log.error("Expected an ordinal date but got " + node.toRawString(), e);
-      return;
-    }
+    parsed = parser.parse_StringOrdinalDate4P(node.toRawString()).orElseThrow();
     String dateExtension = "";
     if (parsed.isPresentDateExtension()) {
       dateExtension = parsed.getDateExtension().getRawString();
@@ -80,12 +73,7 @@ public class ISOTemporals2ndParser implements ISOTemporalsVisitor2 {
   @Override
   public void visit(ASTBasicWeekDate node) {
     ASTWeekDate4P parsed;
-    try {
-      parsed = parser.parse_StringWeekDate4P(node.toRawString()).orElseThrow();
-    } catch (IOException e) {
-      Log.error("Expected a week date but got " + node.toRawString(), e);
-      return;
-    }
+    parsed = parser.parse_StringWeekDate4P(node.toRawString()).orElseThrow();
     String dateExtension = "";
     if (parsed.isPresentDateExtension()) {
       dateExtension = parsed.getDateExtension().getRawString();
@@ -100,12 +88,7 @@ public class ISOTemporals2ndParser implements ISOTemporalsVisitor2 {
   @Override
   public void visit(ASTISOTime node) {
     ASTISOTime4P parsed;
-    try {
-      parsed = parser.parse_StringISOTime4P(node.toRawString()).orElseThrow();
-    } catch (IOException e) {
-      Log.error("Expected an ISO time but got " + node.toRawString(), e);
-      return;
-    }
+    parsed = parser.parse_StringISOTime4P(node.toRawString()).orElseThrow();
     node.setHour(parsed.getHour().getValue());
     if (parsed.isPresentMinute()) {
       node.setMinute(parsed.getMinute().getValue());
@@ -143,12 +126,7 @@ public class ISOTemporals2ndParser implements ISOTemporalsVisitor2 {
   @Override
   public void visit(ASTISODateTime node) {
     ASTISODateTime4P parsed;
-    try {
-      parsed = parser.parse_StringISODateTime4P(node.toRawString()).orElseThrow();
-    } catch (IOException e) {
-      Log.error("Expected an ISO time but got " + node.toRawString(), e);
-      return;
-    }
+    parsed = parser.parse_StringISODateTime4P(node.toRawString()).orElseThrow();
     
     ConvertToISOTemporals converter = new ConvertToISOTemporals();
     ISOTemporals4ParsingTraverser traverser = ISOTemporals4ParsingMill.traverser();

@@ -2,7 +2,6 @@
 
 package de.monticore.antlr4;
 
-import java.io.IOException;
 import java.io.Reader;
 import java.util.Optional;
 
@@ -31,9 +30,8 @@ public abstract class MCConcreteParser {
    *
    * @param fileName The name of the file to be parsed
    * @return An Optional of the created AST
-   * @throws IOException Errors during file handling
    */
-  public abstract Optional<? extends ASTNode> parse(String fileName) throws IOException;
+  public abstract Optional<? extends ASTNode> parse(String fileName);
   
   /**
    * Implement this method to call top rule of parser. This method will be
@@ -41,9 +39,8 @@ public abstract class MCConcreteParser {
    *
    * @param reader The reader containing the input to be parsed
    * @return An Optional of the created AST
-   * @throws IOException Errors during reader handling
    */
-  public abstract Optional<? extends ASTNode> parse(Reader reader) throws IOException;
+  public abstract Optional<? extends ASTNode> parse(Reader reader);
 
   /**
    * Returns true, if errors occurred while parsing
@@ -57,9 +54,8 @@ public abstract class MCConcreteParser {
   public void setError(boolean value) {
     hasErrors = value;
   }
-  
-  public Optional<? extends ASTNode> parse(Reader reader, String qualifiedModelName)
-      throws IOException {
+
+  public Optional<? extends ASTNode> parse(Reader reader, String qualifiedModelName) {
     return parse(reader);
   }
 }

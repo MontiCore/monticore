@@ -7,7 +7,6 @@ import org.antlr.v4.runtime.RecognitionException;
 import automata._ast.ASTAutomaton;
 import automata._parser.AutomataParser;
 
-import java.io.IOException;
 import java.util.Optional;
 
 
@@ -37,7 +36,7 @@ public class AutomataTool extends AutomataToolTOP {
       }
       Log.error("0xEE851 Model could not be parsed.");
     }
-    catch (RecognitionException | IOException e) {
+    catch (RecognitionException e) {
       Log.error("0xEE650 Failed to parse " + model, e);
     }
     System.exit(1);

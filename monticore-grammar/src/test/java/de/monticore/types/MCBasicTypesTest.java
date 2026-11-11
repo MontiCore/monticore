@@ -61,19 +61,15 @@ public class MCBasicTypesTest {
 
     String[] primitives = new String[]{"boolean", "byte", "char", "short", "int", "long",
         "float", "double"};
-    try {
-      for (String primitive : primitives) {
-        MCBasicTypesTestParser mcBasicTypesParser = new MCBasicTypesTestParser();
-        // .parseType(primitive);
+    for (String primitive : primitives) {
+      MCBasicTypesTestParser mcBasicTypesParser = new MCBasicTypesTestParser();
+      // .parseType(primitive);
 
-        Optional<? extends ASTMCType> type = mcBasicTypesParser.parse_String(primitive);
+      Optional<? extends ASTMCType> type = mcBasicTypesParser.parse_String(primitive);
 
-        assertNotNull(type);
-        assertTrue(type.isPresent());
-        assertInstanceOf(ASTMCPrimitiveType.class, type.get());
-      }
-    } catch (IOException e) {
-      e.printStackTrace();
+      assertNotNull(type);
+      assertTrue(type.isPresent());
+      assertInstanceOf(ASTMCPrimitiveType.class, type.get());
     }
   
     assertTrue(Log.getFindings().isEmpty());

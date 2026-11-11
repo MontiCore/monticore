@@ -11,7 +11,6 @@ import org.antlr.v4.runtime.RecognitionException;
 import basicjava._ast.ASTCompilationUnit;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -40,7 +39,7 @@ public class ParserTest {
       }
       Log.error("0xEE84B Model could not be parsed.");
     }
-    catch (RecognitionException | IOException e) {
+    catch (RecognitionException e) {
       Log.error("0xEE64B Failed to parse " + model, e);
     }
     return null;

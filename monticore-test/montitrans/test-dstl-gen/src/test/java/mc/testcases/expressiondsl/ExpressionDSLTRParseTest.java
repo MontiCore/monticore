@@ -31,7 +31,7 @@ public class ExpressionDSLTRParseTest {
   }
 
   @Test
-  public void testITFExpressions() throws IOException {
+  public void testITFExpressions() {
     // Test if various literals can be parsed
     test("a=b", ExpressionDSLTRParser::parse_StringITFExpression);
     test("a=\"string\"", ExpressionDSLTRParser::parse_StringITFExpression);
@@ -43,7 +43,7 @@ public class ExpressionDSLTRParseTest {
   }
 
   @Test
-  public void testTypes() throws IOException {
+  public void testTypes() {
     // Test if various literals can be parsed
     test("String", ExpressionDSLTRParser::parse_StringTfIdentifierName);
     test("fully.qualified.type", ExpressionDSLTRParser::parse_StringITFMCType);
@@ -56,7 +56,7 @@ public class ExpressionDSLTRParseTest {
   }
 
   @Test
-  public void testAssigns() throws IOException {
+  public void testAssigns() {
     ASTAssign ast = test("$exp1 = $exp2 ;", ExpressionDSLTRParser::parse_StringAssign);
     assertEquals(ASTNameExpression.class.getName(), ast.getValue().getClass().getName());
     ast = test("$exp1 = \"string\" ;", ExpressionDSLTRParser::parse_StringAssign);
@@ -71,7 +71,7 @@ public class ExpressionDSLTRParseTest {
   }
 
   @Test
-  public void testNoKeyword() throws IOException {
+  public void testNoKeyword() {
     // Test if (no)keywords rules apply
     test("MyFancyKeyword", ExpressionDSLTRParser::parse_StringITFMyFancyKeywordP);
     test("MyFancyKeyword", ExpressionDSLTRParser::parse_StringITFNameExpression);
@@ -79,7 +79,7 @@ public class ExpressionDSLTRParseTest {
     test("42 <42", ExpressionDSLTRParser::parse_StringITFExpression);
   }
 
-  protected <A>  A test(String exp, ParserFunction<A> parserFunction) throws IOException {
+  protected <A>  A test(String exp, ParserFunction<A> parserFunction) {
     ExpressionDSLTRParser parser = ExpressionDSLTRMill.parser();
     Optional<A> typeOptional = parserFunction.parse(parser, exp);
     assertFalse(parser.hasErrors(), "Parser error while parsing: " + exp);
@@ -89,6 +89,6 @@ public class ExpressionDSLTRParseTest {
 
   @FunctionalInterface
   protected interface ParserFunction<A> {
-    Optional<A> parse(ExpressionDSLTRParser parser, String input) throws IOException;
+    Optional<A> parse(ExpressionDSLTRParser parser, String input);
   }
 }
