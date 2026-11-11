@@ -8,6 +8,11 @@ import java.time.temporal.UnsupportedTemporalTypeException;
 public interface ASTDEDate extends ASTDEDateTOP {
   
   int getYear();
+
+  /**
+   * @return the year as written, e.g. {@code 2017} or {@code 17}
+   */
+  String getYearSource();
   
   boolean isPresentMonth();
   

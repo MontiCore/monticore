@@ -160,6 +160,19 @@ public class ISOTemporals2ndParser implements ISOTemporalsVisitor2 {
     node.setDate((ASTISODate) converter.getResult());
     parsed.getTime().accept(traverser);
     node.setTime((ASTISOTime) converter.getResult());
+
+    // The date and time are built from a single token, so they share its source position
+    copySourcePosition(node, node.getDate());
+    copySourcePosition(node, node.getTime());
+  }
+
+  protected void copySourcePosition(ASTISOTemporalsNode from, ASTISOTemporalsNode to) {
+    if (from.isPresent_SourcePositionStart()) {
+      to.set_SourcePositionStart(from.get_SourcePositionStart());
+    }
+    if (from.isPresent_SourcePositionEnd()) {
+      to.set_SourcePositionEnd(from.get_SourcePositionEnd());
+    }
   }
   
   @Override
