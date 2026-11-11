@@ -31,8 +31,9 @@ import static com.google.common.collect.Lists.newArrayList;
 public class TemplateController {
 
   /**
-   * Variable name for the necessary for SourceMapping points to an instance of
+   * Variable name used to expose the
    * {@link de.monticore.generating.templateengine.sourcemap.SourceMapCalculator}
+   * instance for source mapping.
    **/
   public static final String SOURCE_MAP_CALCULATOR = "sourceMapCalculator";
 
