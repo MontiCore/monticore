@@ -507,15 +507,33 @@ public class SourceMapCalculator {
       return res;
     }
 
+    /**
+     * Resolves an optional source file path or URL string into a valid {@link URL}.
+     *
+     * @param fileOpt Optional file path or URL string
+     * @return Valid {@link URL} to the source and a fallback dummy URL if the file path is empty
+     * or blank
+     */
     protected URL createSourceURL(Optional<String> fileOpt) {
-      try {
-        return new URL(fileOpt.orElse(""));
-      } catch(MalformedURLException e){
+      if (fileOpt.isEmpty() || fileOpt.get().isBlank()) {
         try {
-          return new URL("file:/"+fileOpt.orElseGet(() -> "#"));
+          // Fallback dummy URL for synthetic or in-memory sources without a file path
+          return new URL("file:///unknown");
+        } catch (MalformedURLException e) {
+          Log.error("0xA0743 Failed to create fallback source URL", e);
+          throw new IllegalStateException(e);
+        }
+      }
+
+      String fileStr = fileOpt.get();
+      try {
+        return new URL(fileStr);
+      } catch (MalformedURLException e) {
+        try {
+          return new java.io.File(fileStr).toURI().toURL();
         } catch (MalformedURLException e2) {
-          // handle somehow
-          throw new RuntimeException(e2);
+          Log.error("0xA0744 Malformed source URL for path: " + fileStr, e2);
+          throw new IllegalStateException(e2);
         }
       }
     }
