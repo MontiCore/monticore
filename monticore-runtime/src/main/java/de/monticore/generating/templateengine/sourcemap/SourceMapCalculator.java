@@ -110,7 +110,7 @@ public class SourceMapCalculator {
    * @param hp The hook point handling the inclusion
    */
   public static void reportHookPoint(String templateName, HookPoint hp) {
-    if (Reporting.isConfigTemplate(templateName) || hp.isTemplate()) {
+    if (!Reporting.isTemplateSourceMappingEnabled() || Reporting.isConfigTemplate(templateName) || hp.isTemplate()) {
       return;
     }
     String target = hp.getSourceURL().orElse(templateName);
