@@ -4,6 +4,7 @@ ${tc.include("cd2java.Package", packageDir)}
 
 ${tc.include("cd2java.Imports")}
 
+${tc.include("mc.Generated")}
 ${cdPrinter.printSimpleModifier(packageInterface.getModifier())} interface ${packageInterface.getName()} <#rt><#lt>
 <#if packageInterface.isPresentCDExtendUsage()>extends ${cdPrinter.printObjectTypeList(packageInterface.getCDExtendUsage().getSuperclassList())} </#if>{
 

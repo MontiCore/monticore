@@ -13,6 +13,7 @@ import de.monticore.tf.tfcommons._ast.ASTITFPart;
 /**
 * This Visitor makes sure that no elements are deleted without specifying a parent pattern.
 */
+${tc.include("mc.Generated")}
 public class ${className} implements ${ast.getName()}TRVisitor2,${ast.getName()}TRHandler {
 
     private CollectCoCoInformationState state;

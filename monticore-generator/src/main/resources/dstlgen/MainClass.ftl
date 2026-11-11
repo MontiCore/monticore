@@ -32,6 +32,7 @@ import org.apache.commons.cli.*;
 
 <#assign service = glex.getGlobalVar("service")>
 
+${tc.include("mc.Generated")}
 public class ${className} {
   
   public static void main(String[] args) {
