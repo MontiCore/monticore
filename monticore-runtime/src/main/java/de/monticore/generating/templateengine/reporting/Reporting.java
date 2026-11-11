@@ -17,8 +17,10 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Facade for all reporting activities. Invoking a report method causes all
@@ -32,7 +34,7 @@ public class Reporting extends Log {
   /* the currently active model for which reporting takes place */
   protected static String currentModel;
 
-  protected static String currentConfigTemplate;
+  protected static Set<String> currentConfigTemplates = new HashSet<>();
 
   public static String getCurrentModel() {
     return currentModel;
@@ -128,16 +130,30 @@ public class Reporting extends Log {
     return false;
   }
 
-  public static void setConfigTemplate(String templateName){
-    currentConfigTemplate = templateName;
+  /**
+   * Registers a template name as configuration/orchistration template.
+   * Config-templates can orchestrate multi-file generation workflows and are excluded from
+   * source map tracking.
+   * @param templateName The name of the template to be registered as config-template.
+   */
+  public static void addConfigTemplate(String templateName){
+    currentConfigTemplates.add(templateName);
   }
 
-  public static void clearConfigTemplate(){
-    currentConfigTemplate = null;
+  /**
+   * Clears all registered configuration templates.
+   */
+  public static void clearConfigTemplates(){
+    currentConfigTemplates.clear();
   }
 
-  public static boolean isConfigTemplate(String templ){
-    return currentConfigTemplate != null && templ.equals(currentConfigTemplate);
+  /**
+   * Checks if a template name is registered as configuration/orchistration template.
+   * @param templateName The name of the template to be checked.
+   * @return True if the template is registered as config-template, false otherwise.
+   */
+  public static boolean isConfigTemplate(String templateName){
+    return currentConfigTemplates.contains(templateName);
   }
 
   public static void reportTemplateSourceMapping(List<DecodedMapping> mapping) {
