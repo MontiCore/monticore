@@ -49,19 +49,19 @@ public class TemplatesTool {
    */
 
   // Filename of the model: args[0]
-  static protected String modelfilename = "";
+  protected String modelfilename = "";
 
   //  handcodedPath: args[1]
-  static protected MCPath handcodedPath;
+  protected MCPath handcodedPath;
 
   // output directory: args[2]
-  static protected File outputDir;
+  protected File outputDir;
 
   // optional template path: args[3]
-  static protected MCPath templatePath = new MCPath();
+  protected MCPath templatePath = new MCPath();
 
   // tracing: args[4]
-  static protected boolean tracing = true;
+  protected boolean tracing = true;
 
   // The AST of the model to be handled (will result from parsing)
   protected ASTAutomaton ast;
