@@ -380,19 +380,19 @@ public class SourceMapCalculator {
      * @return list of decoded mappings ready for source map generation
      */
     public List<DecodedMapping> calculateMappings(List<SimpleSourceMapping> simpleMappings) {
-      Set<Integer> includePairIdsSet = includePairIds;
-
       Map<Integer, SimpleSourceMapping> openSpansMap = new HashMap<>();
 
       List<MappingSpan> completedSpans = new ArrayList<>();
       for(SimpleSourceMapping mapping : simpleMappings) {
         if(mapping.sourcePosition().getLine() < 0 || mapping.targetPosition().getLine() < 0){
-          Log.warn("Negative lines detected in mapping, ignoring...");
+          Log.warn("0xA0742 Negative line number detected in source mapping (" + mapping + "). "
+              + "Skipping this mapping, which may lead to incomplete or inaccurate source maps. "
+              + "Please report this issue to the MontiCore developers.");
           continue;
         }
 
         int id = mapping.pairId();
-        if (includePairIdsSet.contains(id)) {
+        if (includePairIds.contains(id)) {
           continue;
         }
         if(openSpansMap.containsKey(id)) {

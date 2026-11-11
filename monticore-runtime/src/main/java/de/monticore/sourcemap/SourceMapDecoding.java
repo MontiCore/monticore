@@ -133,7 +133,7 @@ public class SourceMapDecoding {
       List<String> sources,
       List<String> sourcesContent,
       List<Integer> ignoreList) {
-    List<DecodedSource> decodedSources = new ArrayList();
+    List<DecodedSource> decodedSources = new ArrayList<>();
     String sourceURLPrefix = "";
     if (sourceRoot != null) {
       if (sourceRoot.contains("/")) {
@@ -186,7 +186,7 @@ public class SourceMapDecoding {
      */
     for (int generatedLine = 0; generatedLine < groups.length; generatedLine++) {
       // Skip
-      if (groups[generatedLine].equals("")) {
+      if (groups[generatedLine].isEmpty()) {
         continue;
       }
       String[] segments = groups[generatedLine].split(",");
