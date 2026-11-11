@@ -303,23 +303,42 @@ public class SourceMapCalculator {
     state.reset();
   }
 
-  public static class OpenSpan {
-    final int runtimePairId;
-    final int elementId;
-    final SourcePosition startSourcePosition;
-    final SourcePosition startTargetPosition;
-    final List<String> triggeredIncludes = new ArrayList<>();
-    final ASTNode astNode;
+  /**
+   * Represents an unfinished evaluation span between a start-marker directive and its corresponding
+   * end-marker directive.
+   * <p>
+   * Tracks the starting position in both the template source and the generated output, the
+   * associated AST node, and the list of triggered includes.
+   * @param runtimePairId
+   * @param elementId
+   * @param startSourcePosition
+   * @param startTargetPosition
+   * @param triggeredIncludes
+   * @param astNode
+   */
+  public record OpenSpan(
+    int runtimePairId,
+    int elementId,
+    SourcePosition startSourcePosition,
+    SourcePosition startTargetPosition,
+    List<String> triggeredIncludes,
+    ASTNode astNode){
 
     public OpenSpan(int runtimePairId, int elementId, SourcePosition startSourcePosition, SourcePosition startTargetPosition, ASTNode astNode) {
-      this.runtimePairId = runtimePairId;
-      this.elementId = elementId;
-      this.startSourcePosition = startSourcePosition;
-      this.startTargetPosition = startTargetPosition;
-      this.astNode = astNode;
+      this(
+      runtimePairId,
+      elementId,
+      startSourcePosition,
+      startTargetPosition,
+      new ArrayList<>(),
+      astNode);
     }
   }
 
+  /**
+   * Represents a completed source-to-target mapping span formed by pairing at start-mapping and
+   * end-mapping that shares the same id.
+   */
   public static class MappingSpan{
     final int pairId;
     final SimpleSourceMapping start;
@@ -337,6 +356,10 @@ public class SourceMapCalculator {
     }
   }
 
+  /**
+   * Encapsulates the mutable life-cycle state across nested template evaluations and execution
+   * phases for source map calculations.
+   */
   public static class State {
     protected final Stack<Template> templates = new Stack<>();
     protected Pair<Integer, Integer> curAbsolutePos = Pair.of(0, 0);
