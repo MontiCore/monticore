@@ -66,15 +66,14 @@ public class SourceMapCalculator {
 
 
     // Check if there is a "parent" template to map the inclusion
-    if(templates.isEmpty() == false) {
+    if(!templates.isEmpty()) {
       Template parentTemplate = templates.peek();
       OpenSpan parentSpan = activeParentMappings.get(parentTemplate);
       if(parentSpan != null){
         parentSpan.triggeredIncludes.add(template.getName());
       }
-    }
-
-    if(templates.isEmpty()){
+    }else{
+      // Reset position
       curAbsolutePos = Pair.of(getBaseLineOffset(), 0);
     }
 

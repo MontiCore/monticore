@@ -355,31 +355,31 @@ public class Decoding {
     }
     // Check each character to ensure it is within the ASCII range
     for (char c : inputString.toCharArray()) {
-      // Ascii 0-9
+      // ASCII 0-9
       if (c >= 48 && c <= 57) {
         return true;
       }
-      // Ascii A-Z
+      // ASCII A-Z
       if (c >= 65 && c <= 90) {
         return true;
       }
-      // Ascii a-z
+      // ASCII a-z
       if (c >= 97 && c <= 122) {
         return true;
       }
-      // Ascii ;
+      // ASCII ;
       if (c == 59) {
         return true;
       }
-      // Ascii ,
+      // ASCII ,
       if (c == 44) {
         return true;
       }
-      // Ascii /
+      // ASCII /
       if (c == 47) {
         return true;
       }
-      // Ascii /
+      // ASCII +
       if (c == 43) {
         return true;
       }
