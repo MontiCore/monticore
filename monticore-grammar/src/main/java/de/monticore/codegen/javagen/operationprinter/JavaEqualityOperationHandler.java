@@ -10,7 +10,7 @@ import static de.monticore.codegen.CodeGenSymTypeExpressionConverter.printConver
 import static de.monticore.codegen.ICodeGenOperationHandler.BinaryOperator.EQUALS;
 import static de.monticore.codegen.ICodeGenOperationHandler.BinaryOperator.NOT_EQUALS;
 import static de.monticore.codegen.javagen.JavaGenSymTypeRelations.generatesToJavaPrimitive;
-import static de.monticore.types3.SymTypeRelations.box;
+import static de.monticore.codegen.javagen.JavaGenSymTypeRelations.requiresConversion;
 import static de.monticore.types3.SymTypeRelations.isCompatible;
 import static de.monticore.types3.SymTypeRelations.isSubTypeOf;
 import static de.monticore.types3.util.SIUnitTypeRelations.hasSIUnit;
@@ -116,12 +116,8 @@ public class JavaEqualityOperationHandler
       SymTypeExpression leftType,
       SymTypeExpression rightType
   ) {
-    SymTypeExpression boxedLeft = box(leftType);
-    SymTypeExpression boxedRight = box(rightType);
-    return !isSubTypeOf(leftType, rightType)
-        && !isSubTypeOf(rightType, leftType)
-        && !isSubTypeOf(boxedLeft, boxedRight)
-        && !isSubTypeOf(boxedRight, boxedLeft)
+    return requiresConversion(leftType, rightType)
+        && requiresConversion(rightType, leftType)
         && (isCompatible(leftType, rightType)
         || isCompatible(rightType, leftType));
   }

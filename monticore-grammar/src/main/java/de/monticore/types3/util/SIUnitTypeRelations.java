@@ -692,12 +692,8 @@ public class SIUnitTypeRelations {
       SymTypeOfSIUnit siUnitA,
       SymTypeOfSIUnit siUnitB
   ) {
-    Optional<BigDecimal> factor = getConversion(siUnitA, siUnitB)
-        .map(SIUnitConversion::getFactor);
-    if (factor.isPresent() && factor.get().compareTo(BigDecimal.ONE) > 0) {
-      return siUnitB;
-    }
-    return siUnitA;
+    // the first unit, if both are of the same size
+    return getLargerUnit(siUnitB, siUnitA) == siUnitB ? siUnitA : siUnitB;
   }
 
   public static SymTypeOfNumericWithSIUnit multiplyWithNumerics(
