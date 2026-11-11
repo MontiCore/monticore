@@ -102,22 +102,19 @@ public class SourceMapCalculator {
   }
 
   /**
-   * Records an inclusion triggered through a HookPoint (e.g. StringHookPoint or replacement).
+   * Records an inclusion triggered through a HookPoint. Template-based HookPoints are ignored,
+   * because their inclusion is automatically tracked when executed in the template engine via
+   * pushTemplate.
    *
    * @param templateName The name of the template being included
    * @param hp The hook point handling the inclusion
    */
-  public static void reportIncludeHookPoint(String templateName, HookPoint hp) {
-    if (Reporting.isConfigTemplate(templateName)) {
+  public static void reportHookPoint(String templateName, HookPoint hp) {
+    if (Reporting.isConfigTemplate(templateName) || hp.isTemplate()) {
       return;
     }
-    if (!(hp instanceof TemplateHookPoint)) {
-      String target = templateName;
-      if (hp instanceof StringHookPoint shp && shp.getSourceURL().isPresent()) {
-        target = shp.getSourceURL().get();
-      }
-      reportInclude(target);
-    }
+    String target = hp.getSourceURL().orElse(templateName);
+    reportInclude(target);
   }
 
   /**

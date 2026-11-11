@@ -52,6 +52,7 @@ public class StringHookPoint extends HookPoint {
 	  return value;
   }
 
+  @Override
   public Optional<String> getSourceURL() {
     return sourceURL;
   }
