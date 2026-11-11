@@ -32,12 +32,12 @@ public class StringHookPoint extends HookPoint {
 
   @Override
   public String processValue(TemplateController controller, ASTNode ast) {
-    return this.processValue(controller, ast, List.of());
+    return value;
   }
 
   @Override
   public String processValue(TemplateController controller, List<Object> args) {
-    return this.processValue(controller, null, List.of());
+    return value;
   }
 
   /**
