@@ -138,6 +138,8 @@ public class CommonExpressionTypeVisitorTest
     checkErrorExpr("1m + 1", "0xB0163");
     checkErrorExpr("1 + 1m", "0xB0163");
     checkErrorExpr("1m + 1s", "0xB0163");
+    checkErrorExpr("1dB + 1B", "0xB0163");
+    checkErrorExpr("1dB + 1.0", "0xB0163");
   }
 
   @Test
@@ -1558,9 +1560,11 @@ public class CommonExpressionTypeVisitorTest
     // different dimensions
     checkExpr("varboolean ? 1m : 1s", "[m]<double> | [s]<double>");
     checkExpr("varboolean ? 1m : 1", "[m]<double> | int");
-    // temperatures
-    checkExpr("varboolean ? 1°C : 1K", "[°C]<double>");
+    // units of the same size, independent of the order
+    checkExpr("varboolean ? 1°C : 1K", "[K]<double>");
     checkExpr("varboolean ? 1K : 1°C", "[K]<double>");
+    // no conversion
+    checkExpr("varboolean ? 1dB : 1B", "[B]<double> | [dB]<double>");
   }
 
   @Test

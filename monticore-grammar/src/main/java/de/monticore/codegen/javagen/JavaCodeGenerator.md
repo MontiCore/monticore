@@ -22,6 +22,8 @@ statements ought to be added later in development.
           (JavaGenVisitor for MCCommonLiterals)
         * [SIUnitLiteralsJavaGenVisitor](../../siunit/siunitliterals/codegen/javagen/SIUnitLiteralsJavaGenVisitor.java)
           (JavaGenVisitor for SIUnitLiterals)
+        * [SIUnitsJavaGenVisitor](../../siunit/siunits/codegen/javagen/SIUnitsJavaGenVisitor.java)
+          (JavaGenVisitor for SIUnits, required for SIUnits in types)
     * Expressions
         * [AssignmentExpressionsJavaGenVisitor](../../expressions/assignmentexpressions/codegen/javagen/AssignmentExpressionsJavaGenVisitor.java)
           (CodeGenVisitor for AssignmentExpressions, partially implemented)

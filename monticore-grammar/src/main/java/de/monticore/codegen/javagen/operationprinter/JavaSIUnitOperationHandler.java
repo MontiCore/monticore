@@ -3,6 +3,7 @@ package de.monticore.codegen.javagen.operationprinter;
 
 import de.monticore.codegen.CodeGenOperationPrinter;
 import de.monticore.codegen.CodeGenPrintAction;
+import de.monticore.codegen.javagen.typeconverter.JavaSIUnitConversionHandler;
 import de.monticore.codegen.ICodeGenOperationHandler;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
@@ -125,7 +126,9 @@ public class JavaSIUnitOperationHandler implements ICodeGenOperationHandler {
     else {
       SymTypeExpression calculationType =
           numericPromotion(leftValueType, rightValueType);
-      printConverted(printer, getSIUnitValueType(resultType), calculationType,
+      // rounded, if integral operands have been scaled
+      JavaSIUnitConversionHandler.printScaledConverted(
+          printer, getSIUnitValueType(resultType), calculationType,
           p -> CodeGenOperationPrinter.print(operator, p, calculationType,
               leftValueType, rightValueType, leftInUnit, rightInUnit
           )

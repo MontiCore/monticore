@@ -4,6 +4,7 @@ package de.monticore.tests.expressionsandstatements;
 import de.monticore.rte.tuples.Tuple2;
 import org.junit.jupiter.params.provider.Arguments;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 /**
@@ -26,6 +27,9 @@ public class SIUnitTestModels {
         getFunctionCases(),
         getAccessCases(),
         getTupleCases(),
+        getListCases(),
+        getOCLCases(),
+        getIntegralCases(),
         getUnionCases(),
         getTemperatureCases(),
         getAngleCases()
@@ -213,6 +217,72 @@ public class SIUnitTestModels {
     );
   }
 
+  static protected Stream<Arguments> getListCases() {
+    return Stream.of(
+        Arguments.of("[1km, 2km]", List.of(1.0, 2.0)),
+        Arguments.of("List<[km]<double>> l = [1km, 2km]; l",
+            List.of(1.0, 2.0)),
+        Arguments.of("List<[km]<double>> l = [1km, 2000m]; l",
+            List.of(1.0, 2.0)),
+        Arguments.of("[x + 1000m | x in [1km, 2km]]", List.of(2.0, 3.0)),
+        Arguments.of("[m]<double> s = 0m; "
+            + "for ([km]<double> e : [1km, 2km]) s += e; s", 3000.0),
+        Arguments.of("[m]<double> s = 0m; "
+            + "for ([m]<double> e : [1km, 2km]) s += e; s", 3000.0),
+        Arguments.of("java.util.List<[km]<double>> l = ArrayList(); "
+            + "l.add(1500m); l", List.of(1.5)),
+        Arguments.of("java.util.List<[km]<double>> l = ArrayList(); "
+            + "l.add(1500m); l.get(0)", 1.5),
+        Arguments.of("java.util.List<[km]<double>> l = ArrayList(); "
+            + "l.add(1km); l.set(0, 2500m); l.get(0) + 500m", 3.0),
+        Arguments.of("java.util.List<[km]<double>> l = ArrayList(); "
+            + "l.add(1500m); [m]<double> x = l.get(0); x", 1500.0)
+    );
+  }
+
+  static protected Stream<Arguments> getOCLCases() {
+    return Stream.of(
+        Arguments.of("let [km]<double> x = 1500m in x", 1.5),
+        Arguments.of("let [km]<double> x = 1500m in x + 0km", 1.5),
+        Arguments.of("let x = 1500m in x", 1500.0),
+        Arguments.of("if false then 1km else 1m", 1 / 1000.0),
+        Arguments.of("forall x in [1km, 2km]: x > 500m", true),
+        Arguments.of("forall [m]<double> x in [1km]: x > 500m", true),
+        Arguments.of("exists [m]<double> x in [1km, 2km]: x == 2000m", true),
+        Arguments.of("iterate { x in [1km, 2km]; "
+            + "[m]<double> acc = 0m : acc = acc + x }", 3000.0),
+        Arguments.of("[x | [m]<double> x in [1km, 2km]]",
+            List.of(1000.0, 2000.0)),
+        Arguments.of("[y | x in [1km, 2km], [m]<double> y = x]",
+            List.of(1000.0, 2000.0)),
+        // SIUnits with exponents in types
+        Arguments.of("[m^2]<double> x = 1km^2; x", 1000000.0),
+        Arguments.of("[m/s^2]<double> x = 1km/s^2; x", 1000.0)
+    );
+  }
+
+  /**
+   * scaled values are rounded if the target is integral,
+   * values that are not scaled are converted like Java numerics
+   */
+  static protected Stream<Arguments> getIntegralCases() {
+    return Stream.of(
+        Arguments.of("[m]<int> x = ([m]<int>) 1m; x += 1km; x", 1001),
+        Arguments.of("([km]<int>) 999m", 1),
+        Arguments.of("([km]<int>) 1499m", 1),
+        Arguments.of("([km]<int>) 1500m", 2),
+        Arguments.of("([cm]<int>) 0.29m", 29),
+        Arguments.of("([km]<int>) -1500m", -1),
+        // not scaled
+        Arguments.of("([m]<int>) 1.9m", 1),
+        Arguments.of("[m]<int> x = ([m]<int>) 1m; x += 1.9m; x", 2),
+        // operands are scaled
+        Arguments.of("[m]<int> x = ([m]<int>) 600m; "
+            + "[km]<int> y = ([km]<int>) 1km; x + y", 2),
+        Arguments.of("[m]<long> x = ([m]<long>) 5000000km; x", 5000000000L)
+    );
+  }
+
   static protected Stream<Arguments> getUnionCases() {
     return Stream.of(
         Arguments.of("([km]<double> | [km]<double>) x = 2km; x", 2.0),
@@ -242,7 +312,7 @@ public class SIUnitTestModels {
         Arguments.of("1°C < 275K", true),
         Arguments.of("1°C > 275K", false),
         Arguments.of("0°C == 273.15K", true),
-        Arguments.of("false ? 0°C : 0K", 0 - 273.15),
+        Arguments.of("false ? 0°C : 0K", 0.0),
         Arguments.of("[K]<double> x = true ? 20°C : 0K; x", 20 + 273.15),
         Arguments.of("-(1°C)", -1.0)
     );

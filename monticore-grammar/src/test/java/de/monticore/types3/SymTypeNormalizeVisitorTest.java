@@ -379,6 +379,13 @@ public class SymTypeNormalizeVisitorTest extends AbstractMCTest {
         ),
         "[km]<double> | [s]<double> | int"
     );
+    // units of the same size, independent of the order
+    check(createUnion(_celsius_int_SISymType, _K_int_SISymType), "[K]<int>");
+    check(createUnion(_K_int_SISymType, _celsius_int_SISymType), "[K]<int>");
+    // no conversion
+    check(createUnion(_dB_int_SISymType, _B_int_SISymType),
+        "[B]<int> | [dB]<int>"
+    );
     check(createUnion(_m_SISymType,
             createSIUnit(List.of(createSIUnitBasic("m", "k", 1)), List.of())
         ),

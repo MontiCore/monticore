@@ -10,6 +10,7 @@ import static de.monticore.codegen.CodeGenSymTypeExpressionConverter.printConver
 import static de.monticore.codegen.ICodeGenOperationHandler.BinaryOperator.EQUALS;
 import static de.monticore.codegen.ICodeGenOperationHandler.BinaryOperator.NOT_EQUALS;
 import static de.monticore.codegen.javagen.JavaGenSymTypeRelations.generatesToJavaPrimitive;
+import static de.monticore.types3.SymTypeRelations.box;
 import static de.monticore.types3.SymTypeRelations.isCompatible;
 import static de.monticore.types3.SymTypeRelations.isSubTypeOf;
 import static de.monticore.types3.util.SIUnitTypeRelations.hasSIUnit;
@@ -85,10 +86,7 @@ public class JavaEqualityOperationHandler
       );
     }
     // tuples, arrays, etc.
-    else if (!isSubTypeOf(leftType, rightType)
-        && !isSubTypeOf(rightType, leftType)
-        && (isCompatible(leftType, rightType) || isCompatible(rightType, leftType))
-    ) {
+    else if (requiresConversionToCommonType(leftType, rightType)) {
       // compatible, but not subtypes, e.g., tuples with SIUnits:
       // ([m]<double>, int) and ([km]<double>, int)
       SymTypeExpression commonType =
@@ -106,6 +104,26 @@ public class JavaEqualityOperationHandler
       printRightConverted(printer, leftType, rightType, rightExprPrintAction);
       printer.print(")");
     }
+  }
+
+  /**
+   * whether the types are compatible without being subtypes, e.g.,
+   * ([m]<double>, int) and ([km]<double>, int).
+   * This excludes boxing, e.g., Integer and long,
+   * as unboxing is not null-safe.
+   */
+  protected boolean requiresConversionToCommonType(
+      SymTypeExpression leftType,
+      SymTypeExpression rightType
+  ) {
+    SymTypeExpression boxedLeft = box(leftType);
+    SymTypeExpression boxedRight = box(rightType);
+    return !isSubTypeOf(leftType, rightType)
+        && !isSubTypeOf(rightType, leftType)
+        && !isSubTypeOf(boxedLeft, boxedRight)
+        && !isSubTypeOf(boxedRight, boxedLeft)
+        && (isCompatible(leftType, rightType)
+        || isCompatible(rightType, leftType));
   }
 
   protected void printWithEqualsOperator(

@@ -453,22 +453,12 @@ public class TypeVisitorOperatorCalculator {
     SymTypeExpression rightNormalized = SymTypeRelations.normalize(right);
     if (leftNormalized.isNumericWithSIUnitType()
         && rightNormalized.isNumericWithSIUnitType()) {
-      // same as the normalization of the union,
-      // but for units of the same size, the left one is used, e.g., ºC and K
-      SymTypeOfSIUnit leftSI =
-          leftNormalized.asNumericWithSIUnitType().getSIUnitType();
-      SymTypeOfSIUnit rightSI =
-          rightNormalized.asNumericWithSIUnitType().getSIUnitType();
-      SymTypeExpression valueType = SymTypeRelations.normalize(
-          SymTypeExpressionFactory.createUnion(
-              leftNormalized.asNumericWithSIUnitType().getNumericType(),
-              rightNormalized.asNumericWithSIUnitType().getNumericType()
-          ));
-      if (SIUnitTypeRelations.isOfSameDimension(leftSI, rightSI)
-          && SymTypeRelations.isNumericType(valueType)) {
-        return SymTypeExpressionFactory.createNumericWithSIUnit(
-            SIUnitTypeRelations.getLargerUnit(leftSI, rightSI), valueType
-        );
+      // the normalization of the union merges the SIUnits
+      SymTypeExpression merged = SymTypeRelations.normalize(
+          SymTypeExpressionFactory.createUnion(leftNormalized, rightNormalized)
+      );
+      if (merged.isNumericWithSIUnitType()) {
+        return merged;
       }
     }
     // not normalized, as information may get missing,
@@ -1034,8 +1024,7 @@ public class TypeVisitorOperatorCalculator {
     else if (isString(target) && isString(source)) {
       result = target;
     }
-    // allow to convert between SIUnits of the same dimension,
-    // e.g., ([m]<int>) 5km
+    // allow to convert between SIUnits, e.g., ([m]<int>) 5km
     else if (isSIUnitCast(target, source)) {
       result = target;
     }
@@ -1061,13 +1050,12 @@ public class TypeVisitorOperatorCalculator {
     }
     Optional<SymTypeExpression> targetValue = getValueType(target);
     Optional<SymTypeExpression> sourceValue = getValueType(source);
-    SymTypeOfSIUnit noUnit = SymTypeExpressionFactory
-        .createSIUnit(Collections.emptyList(), Collections.emptyList());
     return targetValue.isPresent() == sourceValue.isPresent()
         && targetValue.map(SymTypeRelations::isNumericType).orElse(true)
         && sourceValue.map(SymTypeRelations::isNumericType).orElse(true)
-        && SIUnitTypeRelations.isOfSameDimension(
-        getSIUnit(target).orElse(noUnit), getSIUnit(source).orElse(noUnit));
+        && SIUnitTypeRelations.getConversion(
+        SIUnitTypeRelations.getSIUnit(source),
+        SIUnitTypeRelations.getSIUnit(target)).isPresent();
   }
 
   // Helper

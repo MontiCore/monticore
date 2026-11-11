@@ -17,6 +17,7 @@ import de.monticore.types.check.SymTypeVariable;
 import de.monticore.types3.SymTypeRelations;
 import de.se_rwth.commons.logging.Log;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -157,34 +158,57 @@ public class SymTypeNormalizeVisitor extends SymTypeDeepCloneVisitor {
       SymTypeExpression typeA,
       SymTypeExpression typeB
   ) {
-    if (typeA.isSIUnitType() && typeB.isSIUnitType()
-        && SIUnitTypeRelations.isOfSameDimension(
-        typeA.asSIUnitType(), typeB.asSIUnitType())
-    ) {
-      return Optional.of(SIUnitTypeRelations.getLargerUnit(
+    if (typeA.isSIUnitType() && typeB.isSIUnitType()) {
+      return mergeSIUnitsOfSameDimension(
           typeA.asSIUnitType(), typeB.asSIUnitType()
-      ).deepClone());
+      ).map(siUnit -> siUnit);
     }
     else if (typeA.isNumericWithSIUnitType() && typeB.isNumericWithSIUnitType()) {
       SymTypeOfNumericWithSIUnit numericA = typeA.asNumericWithSIUnitType();
       SymTypeOfNumericWithSIUnit numericB = typeB.asNumericWithSIUnitType();
-      SymTypeExpression numericType = normalizeUnionWithNormalizedTypes(
-          SymTypeExpressionFactory.createUnion(
-              numericA.getNumericType(), numericB.getNumericType()
-          ));
-      if (SIUnitTypeRelations.isOfSameDimension(
-          numericA.getSIUnitType(), numericB.getSIUnitType())
-          && SymTypeRelations.isNumericType(numericType)
-      ) {
-        return Optional.of(SymTypeExpressionFactory.createNumericWithSIUnit(
-            SIUnitTypeRelations.getLargerUnit(
-                numericA.getSIUnitType(), numericB.getSIUnitType()
-            ).deepClone(),
-            numericType
-        ));
+      Optional<SymTypeOfSIUnit> siUnit = mergeSIUnitsOfSameDimension(
+          numericA.getSIUnitType(), numericB.getSIUnitType()
+      );
+      if (siUnit.isPresent()) {
+        SymTypeExpression numericType = normalizeUnionWithNormalizedTypes(
+            SymTypeExpressionFactory.createUnion(
+                numericA.getNumericType(), numericB.getNumericType()
+            ));
+        if (SymTypeRelations.isNumericType(numericType)) {
+          return Optional.of(SymTypeExpressionFactory
+              .createNumericWithSIUnit(siUnit.get(), numericType)
+          );
+        }
       }
     }
     return Optional.empty();
+  }
+
+  /**
+   * @return the larger unit, e.g., {@code (km, m) -> km},
+   *     or empty if there is no conversion between the units, e.g., dB and B.
+   *     The result does not depend on the order of the arguments;
+   *     For units of the same size, e.g., ºC and K,
+   *     the first one according to their printed names is used.
+   */
+  protected Optional<SymTypeOfSIUnit> mergeSIUnitsOfSameDimension(
+      SymTypeOfSIUnit siUnitA,
+      SymTypeOfSIUnit siUnitB
+  ) {
+    Optional<SIUnitConversion> conversion =
+        SIUnitTypeRelations.getConversion(siUnitA, siUnitB);
+    if (conversion.isEmpty()) {
+      return Optional.empty();
+    }
+    SymTypeOfSIUnit merged;
+    if (conversion.get().getFactor().compareTo(BigDecimal.ONE) == 0) {
+      merged = siUnitA.printFullName().compareTo(siUnitB.printFullName()) <= 0 ?
+          siUnitA : siUnitB;
+    }
+    else {
+      merged = SIUnitTypeRelations.getLargerUnit(siUnitA, siUnitB);
+    }
+    return Optional.of(merged.deepClone());
   }
 
   @Override

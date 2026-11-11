@@ -16,6 +16,7 @@ import java.util.Optional;
 
 import static de.monticore.codegen.CodeGenSymTypeExpressionConverter.printConverted;
 import static de.monticore.codegen.javagen.JavaGenSymTypeRelations.getSIUnitValueType;
+import static de.monticore.types3.SymTypeRelations.isIntegralType;
 import static de.monticore.types3.SymTypeRelations.isNumericType;
 import static de.monticore.types3.util.SIUnitTypeRelations.getSIUnit;
 import static de.monticore.types3.util.SIUnitTypeRelations.hasSIUnit;
@@ -25,6 +26,7 @@ import static de.monticore.types3.util.SIUnitTypeRelations.hasSIUnit;
  * e.g., 5.0 of {@code [km]<double>} -> 5000.0 of {@code [m]<double>}.
  * Values are in the units of their types;
  * scaling is calculated using double.
+ * Scaled values are rounded if the target is integral, e.g., 1999m -> 2km.
  * Temperatures are converted using their offsets,
  * e.g., 0.0 of {@code [ºC]<double>} -> 273.15 of {@code [K]<double>}.
  * Conversions of logarithmic units like dB are not supported.
@@ -68,7 +70,7 @@ public class JavaSIUnitConversionHandler
     else {
       SymTypeExpression doubleType =
           SymTypeExpressionFactory.createPrimitive(BasicSymbolsMill.DOUBLE);
-      printConverted(printer, targetValueType, doubleType, p -> {
+      printScaledConverted(printer, targetValueType, doubleType, p -> {
         p.print("((");
         printConverted(p, doubleType, sourceValueType, sourceExprPrintAction);
         p.print(")");
@@ -78,6 +80,37 @@ public class JavaSIUnitConversionHandler
       });
     }
     return true;
+  }
+
+  /**
+   * converts a value that has been scaled due to a conversion of SIUnits.
+   * Integral targets are rounded to the nearest integer,
+   * e.g., 1999m -> 2km, as the scaling is not exact
+   * (1.001 * 1000.0 == 1000.9999999999999).
+   * Conversions without scaling, e.g., (int) 1.5, are not rounded.
+   */
+  public static void printScaledConverted(
+      IndentPrinter printer,
+      SymTypeExpression targetValueType,
+      SymTypeExpression scaledValueType,
+      CodeGenPrintAction scaledExprPrintAction
+  ) {
+    if (isIntegralType(targetValueType) && !isIntegralType(scaledValueType)) {
+      SymTypeExpression doubleType =
+          SymTypeExpressionFactory.createPrimitive(BasicSymbolsMill.DOUBLE);
+      SymTypeExpression longType =
+          SymTypeExpressionFactory.createPrimitive(BasicSymbolsMill.LONG);
+      printConverted(printer, targetValueType, longType, p -> {
+        p.print("java.lang.Math.round(");
+        printConverted(p, doubleType, scaledValueType, scaledExprPrintAction);
+        p.print(")");
+      });
+    }
+    else {
+      printConverted(printer, targetValueType, scaledValueType,
+          scaledExprPrintAction
+      );
+    }
   }
 
   /**
