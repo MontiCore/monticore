@@ -44,7 +44,10 @@ public class GeneratorTest {
 
   @BeforeEach
   public void cleanTargetDirectory() throws IOException {
-    FileUtils.cleanDirectory(new File("target/statepattern"));
+    File target = new File("target/statepattern");
+    if(target.exists()){
+      FileUtils.cleanDirectory(target);
+    }
   }
 
   /* We execute the Generator here, but do not really test it:
