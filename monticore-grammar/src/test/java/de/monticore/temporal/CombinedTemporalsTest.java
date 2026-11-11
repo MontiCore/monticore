@@ -219,6 +219,16 @@ public class CombinedTemporalsTest {
     MCAssertions.assertHasFindings(Finding::isError);
   }
   
+  @SuppressWarnings("unused")
+  @DisplayName("ISO Instant Parse Invalid")
+  @ParameterizedTest(name = "Input: {0}")
+  @MethodSource("de.monticore.temporal.TemporalTestCases#invalidIsoInstants")
+  void testIsoInstantInvalidParse(String input) throws IOException {
+    Optional<ASTTemporal> ast = parser.parse_String(input);
+    
+    MCAssertions.assertHasFindings(Finding::isError);
+  }
+  
   @DisplayName("Numeric Date Parsing")
   @ParameterizedTest(name = "Input: {0}")
   @MethodSource("de.monticore.temporal.TemporalTestCases#numericDatesWithoutYear")

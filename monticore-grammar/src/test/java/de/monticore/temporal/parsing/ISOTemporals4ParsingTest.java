@@ -138,7 +138,7 @@ public class ISOTemporals4ParsingTest {
   @ParameterizedTest(name = "Input: {0}")
   @MethodSource("calendarDatesWS")
   public void testCalendarDateWS(String input) throws IOException {
-    checkInvalidWS(input);
+    checkInvalid(input);
   }
 
   protected static Stream<String> ordinalDates() {
@@ -187,7 +187,7 @@ public class ISOTemporals4ParsingTest {
   @ParameterizedTest(name = "Input: {0}")
   @MethodSource("ordinalDatesWS")
   public void testOrdinalDateWS(String input) throws IOException {
-    checkInvalidWS(input);
+    checkInvalid(input);
   }
 
   protected static Stream<String> weekDates() {
@@ -244,7 +244,7 @@ public class ISOTemporals4ParsingTest {
   @ParameterizedTest(name = "Input: {0}")
   @MethodSource("weekDatesWS")
   public void testWeekDateWS(String input) throws IOException {
-    checkInvalidWS(input);
+    checkInvalid(input);
   }
 
   protected static Stream<String> timeOnly() {
@@ -292,12 +292,64 @@ public class ISOTemporals4ParsingTest {
     checkValid(input);
   }
 
+  protected static Stream<String> periods() {
+    return Stream.of(
+        "P2Y10M15DT10H30M20S", "P1Y2M10DT2H30M", "PT36H", "P6W",
+        // decimal fraction of the lowest order component
+        "PT0.5H", "PT1,5M", "PT2.25S", "P1YT0.5H",
+        // without T, M denotes minutes only after hours
+        "P22H30.5M", "P1D22H30,5M");
+  }
+
+  @DisplayName("Period")
+  @ParameterizedTest(name = "Input: {0}")
+  @MethodSource("periods")
+  public void testPeriod(String input) throws IOException {
+    checkValid(input);
+  }
+
+  // A decimal fraction needs digits in front of it. Without them, the empty digit sequence
+  // used to be accepted and its getValue() threw a NumberFormatException.
+  protected static Stream<String> periodsWithoutDigitsBeforeFraction() {
+    return Stream.of("P1Y.5M", "P1Y,5M", "PT.5H", "P1D,5H", "PT.5S", "P.5S");
+  }
+
+  @DisplayName("Period – no digits before the fraction")
+  @ParameterizedTest(name = "Input: {0}")
+  @MethodSource("periodsWithoutDigitsBeforeFraction")
+  public void testPeriodWithoutDigitsBeforeFraction(String input) throws IOException {
+    checkInvalid(input);
+  }
+
+  // Without T, M is the month designator, and months cannot have a fractional part
+  protected static Stream<String> periodsWithFractionalMonths() {
+    return Stream.of("P3.5M", "P2Y3,5M", "P10D3.5M");
+  }
+
+  @DisplayName("Period – fractional months")
+  @ParameterizedTest(name = "Input: {0}")
+  @MethodSource("periodsWithFractionalMonths")
+  public void testPeriodWithFractionalMonths(String input) throws IOException {
+    checkInvalid(input);
+  }
+
+  protected static Stream<String> periodsWithoutDigits() {
+    return Stream.of("PW", "PYD", "PT1H.M");
+  }
+
+  @DisplayName("Period – designator without digits")
+  @ParameterizedTest(name = "Input: {0}")
+  @MethodSource("periodsWithoutDigits")
+  public void testPeriodWithoutDigits(String input) throws IOException {
+    checkInvalid(input);
+  }
+
   void checkValid(String input) throws IOException {
     isoParser.parse_String(input)
         .orElseGet(MCAssertions::failAndPrintFindings);
   }
 
-  void checkInvalidWS(String input) throws IOException {
+  void checkInvalid(String input) throws IOException {
     var optTemporalExpression = isoParser.parse_String(input);
     Assertions.assertFalse(optTemporalExpression.isPresent());
     Assertions.assertTrue(Log.getFindingsCount() >= 1, () -> {
