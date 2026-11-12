@@ -34,6 +34,7 @@ import java.util.List;
 import ${package}.${ast.getName()?lower_case}tr._visitor.*;
 
 
+${tc.include("mc.Generated")}
 public class ${className} {
 
   private final ${ast.getName()}TRTraverser traverser;

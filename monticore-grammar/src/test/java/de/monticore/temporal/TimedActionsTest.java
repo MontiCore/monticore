@@ -5,25 +5,32 @@ import de.monticore.expressions.commonexpressions._ast.ASTCallExpression;
 import de.monticore.expressions.commonexpressions._ast.ASTPlusExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
+import de.monticore.runtime.junit.MCAssertions;
 import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.statements.mccommonstatements._ast.ASTExpressionStatement;
 import de.monticore.statements.mccommonstatements._ast.ASTMCJavaBlock;
 import de.monticore.statements.mcstatementsbasis._ast.ASTMCBlockStatement;
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTLocalVariableDeclarationStatement;
 import de.monticore.temporal.escapedtemporalliterals._ast.ASTEscapedTemporalLiteral;
+import de.monticore.temporal.isotemporals.parsing.ISOTemporals2ndParser;
 import de.monticore.temporal.temporalbasis._ast.ASTInstant;
 import de.monticore.temporal.temporalbasis._ast.ASTPeriod;
 import de.monticore.temporal.timedactions.TimedActionsMill;
 import de.monticore.temporal.timedactions._ast.ASTActionSequence;
 import de.monticore.temporal.timedactions._ast.ASTTimedAction;
 import de.monticore.temporal.timedactions._parser.TimedActionsParser;
+import de.se_rwth.commons.SourcePosition;
+import de.se_rwth.commons.logging.Finding;
+import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
@@ -325,8 +332,9 @@ public class TimedActionsTest {
   @DisplayName("Timed Action")
   @ParameterizedTest(name = "Input: {0}")
   @MethodSource("timedActions")
-  public void testTimedAction(String input) {
-    ASTTimedAction ast = Assertions.assertDoesNotThrow(() -> parser.parse_StringTimedAction(input).orElseThrow());
+  public void testTimedAction(String input) throws IOException {
+    ASTTimedAction ast = parser.parse_StringTimedAction(input)
+        .orElseGet(MCAssertions::failAndPrintFindings);
     ASTLiteral
         temporalSubExpression = ((ASTLiteralExpression) ((ASTPlusExpression) ((ASTCallExpression) ((ASTExpressionStatement) ast.getAction()
         .getMCStatement())
@@ -350,23 +358,53 @@ public class TimedActionsTest {
     );
   }
   
-  @DisplayName("No New Keywords - German")
+  @DisplayName("No New Keywords")
   @ParameterizedTest(name = "Input: {0}")
   @MethodSource("keywordExamples")
-  public void testGermanKeywords(String filePath) {
-    List<String> undesiredKeywords = new ArrayList<>(List.of("Uhr", "Januar", "Februar",
-        "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"));
-    ASTActionSequence ast = Assertions.assertDoesNotThrow(() -> parser.parse(filePath).orElseThrow());
+  public void testNoNewKeywords(String filePath) throws IOException {
+    // Words of the temporal grammars that must stay usable as names in a host language
+    List<String> undesiredKeywords = List.of("Uhr", "Januar", "Februar",
+        "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember",
+        "Z");
+    ASTActionSequence ast = parser.parse(filePath)
+        .orElseGet(MCAssertions::failAndPrintFindings);
     ASTMCJavaBlock statementBlock = (ASTMCJavaBlock) ast.getTimedAction(0).getAction().getMCStatement();
+    List<String> declaredNames = new ArrayList<>();
     for (ASTMCBlockStatement statement : statementBlock.getMCBlockStatementList()) {
       if (!(statement instanceof ASTLocalVariableDeclarationStatement)) {
         continue;
       }
       
-      String variableName = ((ASTLocalVariableDeclarationStatement) statement)
-          .getLocalVariableDeclaration().getVariableDeclarator(0).getDeclarator().getName();
-      Assertions.assertTrue(undesiredKeywords.remove(variableName));
+      declaredNames.add(((ASTLocalVariableDeclarationStatement) statement)
+          .getLocalVariableDeclaration().getVariableDeclarator(0).getDeclarator().getName());
     }
-    Assertions.assertTrue(undesiredKeywords.isEmpty());
+    assertEquals(undesiredKeywords, declaredNames,
+        "The variables declared in " + filePath + " must be exactly the undesired keywords");
+  }
+  
+  // A literal that only fails in the second parse step, in the third line of a model.
+  // Before, the inner parser logged an error at <1,2> (a position in the literal, not in
+  // the model) and the second parser logged another one without position and code.
+  // Now there is exactly one error, with code and at the position of the literal.
+  @DisplayName("Second Parse Step Error Position")
+  @Test
+  public void testSecondParseStepErrorPosition() throws IOException {
+    String model = "on 2017-12-04 do ping();\n"
+        + "on 2017-12-05 do ping();\n"
+        + "on 17W481 do ping();\n";
+    ASTActionSequence ast = parser.parse_String(model)
+        .orElseGet(MCAssertions::failAndPrintFindings);
+    Assertions.assertEquals(3, ast.getTimedActionList().size());
+    
+    Assertions.assertEquals(1, Log.getFindings().size());
+    Finding finding = MCAssertions.assertHasFindingStartingWith(
+        ISOTemporals2ndParser.WEEK_DATE_ERROR_CODE);
+    Assertions.assertEquals(
+        ISOTemporals2ndParser.WEEK_DATE_ERROR_CODE
+            + ": Expected a week date but got '17W481' (no viable alternative at input '17W')",
+        finding.getMsg());
+    SourcePosition position = finding.getSourcePosition().orElseGet(Assertions::fail);
+    Assertions.assertEquals(3, position.getLine());
+    Assertions.assertEquals(3, position.getColumn());
   }
 }

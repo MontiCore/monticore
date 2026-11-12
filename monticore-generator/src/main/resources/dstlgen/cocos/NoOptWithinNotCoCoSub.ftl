@@ -6,6 +6,7 @@ import ${package}.${grammarNameLower}tr._ast.*;
 import ${package}.${grammarNameLower}tr._visitor.${ast.getName()}TRTraverser;
 
 
+${tc.include("mc.Generated")}
 public class ${classname} implements ${ast.getName()}TRAST${prod.getName()}_NegCoCo {
   private ${ast.getName()}TRTraverser NoOptWithinNotTraverser;
 
