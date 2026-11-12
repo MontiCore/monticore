@@ -8,6 +8,7 @@ import de.monticore.tf.odrules._ast.ASTODObject;
 import de.monticore.tf.odrules._ast.ASTODRule;
 import de.monticore.tf.odrules.util.ODRuleStereotypes;
 import de.monticore.tf.odrules.util.Util;
+import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -153,8 +154,8 @@ public final class HierarchyHelper {
     // Search for every List in the given Objects
     for (ASTODObject object : objects) {
       if (object.isPresentType() &&
-              Util.printType(object.getType())
-                      .equals(listType)) {
+          object.getType() instanceof ASTMCBasicGenericType genericType &&
+          genericType.printWithoutTypeArguments().equals(listType)) {
         childs = getListChilds(object);
         // If there is a name for the list, save it and the childnames of the
         // list
@@ -180,8 +181,8 @@ public final class HierarchyHelper {
     // Search for every List in the given Objects
     for (ASTODObject object : objects) {
       if (object.isPresentType() &&
-              Util.printType(object.getType())
-                      .equals(listType)) {
+          object.getType() instanceof ASTMCBasicGenericType genericType &&
+          genericType.printWithoutTypeArguments().equals(listType)) {
         childs = getListChildsWithOptionals(object);
         // If there is a name for the list, save it and the childnames of the
         // list
@@ -235,8 +236,8 @@ public final class HierarchyHelper {
       // Do it recursively for each Optional or look if the name is present and
       // save it
       if (object.isPresentType() &&
-              Util.printType(object.getType())
-                      .equals(optionalType)) {
+          object.getType() instanceof ASTMCBasicGenericType genericType &&
+          genericType.printWithoutTypeArguments().equals(optionalType)) {
         result.addAll(getListChilds(object));
       } else if (object.isPresentName()) {
         result.add(object.getName());
