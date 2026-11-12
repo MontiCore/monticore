@@ -1,11 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.tf;
 
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
+import mc.testcases.automaton.AutomatonMill;
 import mc.testcases.automaton._ast.ASTAutomaton;
 import mc.testcases.automaton._parser.AutomatonParser;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -13,55 +13,48 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@TestWithMCLanguage(AutomatonMill.class)
 public class OptionalChangeFixNameTest {
 
-  private ASTAutomaton automaton;
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
-  private void setUp(String model) throws IOException {
+  private ASTAutomaton setUp(String model) throws IOException {
     String inputFile = "src/main/models/automaton/" + model;
-    AutomatonParser parser = new AutomatonParser();
+    AutomatonParser parser = AutomatonMill.parser();
     Optional<ASTAutomaton> aut = parser.parse(inputFile);
 
     assertTrue(aut.isPresent());
-    automaton = aut.get();
+    return aut.get();
   }
 
   @Test
-  public void testSuccessfullMatch() throws IOException {
-    setUp("AutomatonTwoStatesAndSubstate.aut");
+  public void testSuccessfulMatch() throws IOException {
+    ASTAutomaton automaton = setUp("AutomatonTwoStatesAndSubstate.aut");
 
     OptionalChangeFixName testee = new OptionalChangeFixName(automaton);
     assertTrue(testee.doPatternMatching());
     assertTrue(testee.get_state_2().isPresent());
-    assertEquals(testee.get_state_2().get().getName(), "c");
+    assertEquals("c", testee.get_state_2().get().getName());
   
     assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
-  public void testSuccessfullMatchReplacement() throws IOException {
-    setUp("AutomatonTwoStatesAndSubstate.aut");
+  public void testSuccessfulMatchReplacement() throws IOException {
+    ASTAutomaton automaton = setUp("AutomatonTwoStatesAndSubstate.aut");
 
     OptionalChangeFixName testee = new OptionalChangeFixName(automaton);
     assertTrue(testee.doPatternMatching());
     assertTrue(testee.get_state_2().isPresent());
-    assertEquals(testee.get_state_2().get().getName(), "c");
+    assertEquals("c", testee.get_state_2().get().getName());
     testee.doReplacement();
     assertTrue(testee.get_state_2().isPresent());
-    assertEquals(testee.get_state_2().get().getName(), "c_new");
+    assertEquals("c_new", testee.get_state_2().get().getName());
   
     assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testNoOptFoundMatch() throws IOException {
-    setUp("AutomatonTwoStatesAndSubstate_2.aut");
+    ASTAutomaton automaton = setUp("AutomatonTwoStatesAndSubstate_2.aut");
 
     OptionalChangeFixName testee = new OptionalChangeFixName(automaton);
     assertTrue(testee.doPatternMatching());
@@ -70,7 +63,7 @@ public class OptionalChangeFixNameTest {
 
   @Test
   public void testNoOptFoundReplacement() throws IOException {
-    setUp("AutomatonTwoStatesAndSubstate_2.aut");
+    ASTAutomaton automaton = setUp("AutomatonTwoStatesAndSubstate_2.aut");
 
     OptionalChangeFixName testee = new OptionalChangeFixName(automaton);
     assertTrue(testee.doPatternMatching());
@@ -81,7 +74,7 @@ public class OptionalChangeFixNameTest {
 
   @Test
   public void testNoOptFoundUndoReplacement() throws IOException {
-    setUp("AutomatonTwoStatesAndSubstate_2.aut");
+    ASTAutomaton automaton = setUp("AutomatonTwoStatesAndSubstate_2.aut");
 
     OptionalChangeFixName testee = new OptionalChangeFixName(automaton);
     assertTrue(testee.doPatternMatching());

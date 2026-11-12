@@ -2,8 +2,7 @@
 package de.monticore.tf;
 
 import de.monticore.ast.ASTNode;
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import mc.testcases.misc.MiscMill;
 import mc.testcases.misc._ast.ASTDef;
 import mc.testcases.misc._ast.ASTSub;
@@ -15,14 +14,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@TestWithMCLanguage(MiscMill.class)
 public class MoveSubTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
+
   ASTDef oldParent, newParent;
   ASTSub child;
 
@@ -35,7 +29,7 @@ public class MoveSubTest {
   }
 
   @Test
-  public void testDoReplacment() {
+  public void testDoReplacement() {
     List<ASTNode> parents = new ArrayList<ASTNode>();
     parents.add(oldParent);
     parents.add(newParent);
@@ -45,8 +39,6 @@ public class MoveSubTest {
 
     assertFalse(oldParent.isPresentSub());
     assertSame(child, newParent.getSub());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
 

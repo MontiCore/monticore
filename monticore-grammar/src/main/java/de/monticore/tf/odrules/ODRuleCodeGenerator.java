@@ -108,6 +108,19 @@ public class ODRuleCodeGenerator {
       p = p.substring(1);
     }
     odRuleCodeGenerator.hierarchyHelper.addCustomImports("import " + p + ";");
+    
+    // Import the traverser
+    List<String> traverserImportList = new ArrayList<>(parsedModel.getGrammarPackageList());
+    traverserImportList.add(parsedModel.getGrammarName().toLowerCase());
+    traverserImportList.add("_visitor");
+    traverserImportList.add(parsedModel.getGrammarName() + "Traverser");
+    String parts = Joiners.DOT.join(traverserImportList);
+    if(parts.startsWith(".")){
+      parts = parts.substring(1);
+    }
+    odRuleCodeGenerator.hierarchyHelper.addCustomImports("import " + parts + ";");
+    
+    
     glex.setGlobalValue("hierarchyHelper", odRuleCodeGenerator.hierarchyHelper);
     glex.setGlobalValue("grammarName", parsedModel.getGrammarName());
 

@@ -1,11 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.tf;
 
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
+import de.monticore.runtime.junit.TestWithMCLanguage;
+import mc.testcases.automaton.AutomatonMill;
 import mc.testcases.automaton._ast.ASTAutomaton;
 import mc.testcases.automaton._parser.AutomatonParser;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -13,20 +12,13 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@TestWithMCLanguage(AutomatonMill.class)
 public class FlattenStateTest {
-  
-  @BeforeEach
-  public void before() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
-  
-  ASTAutomaton aut;
 
   @Test
   public void testAutomatonWithOneState() throws IOException {
     String inputFile = "src/main/models/automaton/AutomatonWithSingleState.aut";
-    AutomatonParser parser = new AutomatonParser();
+    AutomatonParser parser = AutomatonMill.parser();
     Optional<ASTAutomaton> aut = parser.parse(inputFile);
 
     assertTrue(aut.isPresent());
@@ -37,14 +29,12 @@ public class FlattenStateTest {
 
     // should not match
     assertFalse(rule.doPatternMatching());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testAutomatonWithTwoStatesAndSubstate() throws IOException {
     String inputFile = "src/main/models/automaton/AutomatonTwoStatesAndSubstate.aut";
-    AutomatonParser parser = new AutomatonParser();
+    AutomatonParser parser = AutomatonMill.parser();
     Optional<ASTAutomaton> aut = parser.parse(inputFile);
 
     assertTrue(aut.isPresent());
@@ -70,14 +60,12 @@ public class FlattenStateTest {
     assertEquals(2, aut.get().getStateList().size());
     assertEquals(1, aut.get().getState(0).getStateList().size());
     assertEquals(0, aut.get().getState(1).getStateList().size());*/
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 
   @Test
   public void testAutomatonWithTwoSubstates() throws IOException {
     String inputFile = "src/main/models/automaton/AutomatonTwoSubstates.aut";
-    AutomatonParser parser = new AutomatonParser();
+    AutomatonParser parser = AutomatonMill.parser();
     Optional<ASTAutomaton> aut = parser.parse(inputFile);
 
     assertTrue(aut.isPresent());
@@ -89,7 +77,5 @@ public class FlattenStateTest {
 
     // pattern should match
     assertFalse(rule.doPatternMatching());
-  
-    assertTrue(Log.getFindings().isEmpty());
   }
 }
