@@ -440,10 +440,11 @@ public abstract class Rule2ODVisitor implements TFCommonsVisitor2 {
 
   protected ASTODAttribute createAttributeForString(String name, boolean isOptional) {
     ASTODAttribute attribute = ODRulesMill.oDAttributeBuilder().uncheckedBuild();
-    ASTMCQualifiedType type = ODRulesMill.mCQualifiedTypeBuilder().uncheckedBuild();
-    ASTMCQualifiedName typeName = ODRulesMill.mCQualifiedNameBuilder().uncheckedBuild();
-    typeName.setPartsList(Splitters.DOT.splitToList("String"));
-    type.setMCQualifiedName(typeName);
+    ASTMCQualifiedName typeName =
+        ODRulesMill.mCQualifiedNameBuilder().setPartsList(Splitters.DOT.splitToList("String"))
+            .build();
+    ASTMCQualifiedType type =
+        ODRulesMill.mCQualifiedTypeBuilder().setMCQualifiedName(typeName).build();
     attribute.setMCType(type);
     attribute.setName(name);
     attribute.setAttributeCardinality(ODRulesMill.cardinalityBuilder().uncheckedBuild());
