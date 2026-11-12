@@ -442,7 +442,7 @@ public abstract class Rule2ODVisitor implements TFCommonsVisitor2 {
     ASTODAttribute attribute = ODRulesMill.oDAttributeBuilder().uncheckedBuild();
     ASTMCQualifiedType type = ODRulesMill.mCQualifiedTypeBuilder().uncheckedBuild();
     ASTMCQualifiedName typeName = ODRulesMill.mCQualifiedNameBuilder().uncheckedBuild();
-    typeName.setPartsList(Splitters.DOT.splitToList("java.lang.String"));
+    typeName.setPartsList(Splitters.DOT.splitToList("String"));
     type.setMCQualifiedName(typeName);
     attribute.setMCType(type);
     attribute.setName(name);
