@@ -292,27 +292,13 @@ public abstract class Rule2ODVisitor implements TFCommonsVisitor2 {
   }
 
   protected ASTMCType createMCTypeForITFObject(ITFObject tfObject) {
-    if (tfObject instanceof IList || tfObject instanceof IOptional) {
-      List<String> qType = switch (tfObject) {
-        case IList iList -> Splitters.DOT.splitToList("de.monticore.tf.ast.IList");
-        case IOptional iOptional -> Splitters.DOT.splitToList("de.monticore.tf.ast.IOptional");
-        default -> throw new IllegalArgumentException(
-            "Unexpected type: " + tfObject.getClass().getSimpleName());
-      };
-      ASTMCQualifiedName argTypeName = ODRulesMill.mCQualifiedNameBuilder()
-          .setPartsList(Splitters.DOT.splitToList(tfObject._getTFElementType().getName())).build();
-      ASTMCQualifiedType argType =
-          ODRulesMill.mCQualifiedTypeBuilder().setMCQualifiedName(argTypeName).build();
-      ASTMCCustomTypeArgument typeArgument =
-          ODRulesMill.mCCustomTypeArgumentBuilder().setMCType(argType).build();
-      return ODRulesMill.mCBasicGenericTypeBuilder().setNamesList(qType)
-          .addMCTypeArgument(typeArgument).build();
-    } else {
-      List<String> qType =
-          Splitters.DOT.splitToList(tfObject._getTFElementType().getName());
-      ASTMCQualifiedName qName = ODRulesMill.mCQualifiedNameBuilder().setPartsList(qType).build();
-      return ODRulesMill.mCQualifiedTypeBuilder().setMCQualifiedName(qName).build();
-    }
+    List<String> qType = switch (tfObject) {
+      case IList iList -> Splitters.DOT.splitToList("de.monticore.tf.ast.IList");
+      case IOptional iOptional -> Splitters.DOT.splitToList("de.monticore.tf.ast.IOptional");
+      default -> Splitters.DOT.splitToList(tfObject._getTFElementType().getName());
+    };
+    ASTMCQualifiedName qName = ODRulesMill.mCQualifiedNameBuilder().setPartsList(qType).build();
+    return ODRulesMill.mCQualifiedTypeBuilder().setMCQualifiedName(qName).build();
   }
 
   protected boolean isOnLHS() {
