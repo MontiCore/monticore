@@ -10,10 +10,9 @@ import de.monticore.literals.mccommonliterals._ast.ASTBooleanLiteral;
 import de.monticore.literals.mccommonliterals._ast.ASTStringLiteral;
 import de.monticore.literals.mcjavaliterals._ast.ASTIntLiteral;
 import de.monticore.tf.odrules.HierarchyHelper;
-import de.monticore.types.mcbasictypes._ast.ASTConstantsMCBasicTypes;
-import de.monticore.types.mcbasictypes._ast.ASTMCPrimitiveType;
-import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
+import de.monticore.types.mcbasictypes._ast.*;
 import de.monticore.types.mcsimplegenerictypes._ast.ASTMCBasicGenericType;
+import de.monticore.types.mcsimplegenerictypes._ast.ASTMCCustomTypeArgument;
 import de.monticore.umlstereotype._ast.ASTStereoValue;
 import de.monticore.umlstereotype._ast.ASTStereotype;
 import de.se_rwth.commons.Names;
@@ -21,7 +20,6 @@ import de.se_rwth.commons.Splitters;
 import de.se_rwth.commons.logging.Log;
 import de.monticore.tf.odrules.ODRulesMill;
 import de.monticore.tf.odrules._ast.*;
-import de.monticore.tf.odrules._parser.ODRulesParser;
 import de.monticore.tf.odrules.util.ODRuleStereotypes;
 import de.monticore.tf.odrules.util.Util;
 import de.monticore.tf.rule2od.Variable2AttributeMap;
@@ -201,10 +199,7 @@ public abstract class Rule2ODVisitor implements TFCommonsVisitor2 {
 
   protected void doHandle(IPattern node, ASTODObject obj) {
     obj.setName(state.getNameGen().getNameForElement(node, state.getParents()));
-    List<String> qType =
-            Splitters.DOT.splitToList(node._getTFElementType().getName());
-    ASTMCBasicGenericType type = ODRulesMill.mCBasicGenericTypeBuilder().uncheckedBuild();
-    type.setNameList(qType);
+    ASTMCType type = createMCTypeForITFObject(node);
     obj.setType(type);
   }
 
@@ -254,9 +249,7 @@ public abstract class Rule2ODVisitor implements TFCommonsVisitor2 {
     objectRhs.setStereotype(list);
 
     // set type to IList
-    List<String> qType = Splitters.DOT.splitToList("de.monticore.tf.ast.IList");
-    ASTMCBasicGenericType type = ODRulesMill.mCBasicGenericTypeBuilder().uncheckedBuild();
-    type.setNameList(qType);
+    ASTMCType type = createMCTypeForITFObject(node);
     objectLhs.setType(type);
     objectRhs.setType(type);
 
@@ -288,9 +281,7 @@ public abstract class Rule2ODVisitor implements TFCommonsVisitor2 {
     objectRhs.setStereotype(opt);
 
     // set type to IOptional
-    List<String> qType = Splitters.DOT.splitToList("de.monticore.tf.ast.IOptional");
-    ASTMCBasicGenericType type = ODRulesMill.mCBasicGenericTypeBuilder().uncheckedBuild();
-    type.setNameList(qType);
+    ASTMCType type = createMCTypeForITFObject(node);
     objectLhs.setType(type);
     objectRhs.setType(type);
 
@@ -298,6 +289,30 @@ public abstract class Rule2ODVisitor implements TFCommonsVisitor2 {
     state.getHierarchyLHS().push(objectLhs);
     addObjectToRHS(objectRhs);
     state.getHierarchyRHS().push(objectRhs);
+  }
+
+  protected ASTMCType createMCTypeForITFObject(ITFObject tfObject) {
+    if (tfObject instanceof IList || tfObject instanceof IOptional) {
+      List<String> qType = switch (tfObject) {
+        case IList iList -> Splitters.DOT.splitToList("de.monticore.tf.ast.IList");
+        case IOptional iOptional -> Splitters.DOT.splitToList("de.monticore.tf.ast.IOptional");
+        default -> throw new IllegalArgumentException(
+            "Unexpected type: " + tfObject.getClass().getSimpleName());
+      };
+      ASTMCQualifiedName argTypeName = ODRulesMill.mCQualifiedNameBuilder()
+          .setPartsList(Splitters.DOT.splitToList(tfObject._getTFElementType().getName())).build();
+      ASTMCQualifiedType argType =
+          ODRulesMill.mCQualifiedTypeBuilder().setMCQualifiedName(argTypeName).build();
+      ASTMCCustomTypeArgument typeArgument =
+          ODRulesMill.mCCustomTypeArgumentBuilder().setMCType(argType).build();
+      return ODRulesMill.mCBasicGenericTypeBuilder().setNamesList(qType)
+          .addMCTypeArgument(typeArgument).build();
+    } else {
+      List<String> qType =
+          Splitters.DOT.splitToList(tfObject._getTFElementType().getName());
+      ASTMCQualifiedName qName = ODRulesMill.mCQualifiedNameBuilder().setPartsList(qType).build();
+      return ODRulesMill.mCQualifiedTypeBuilder().setMCQualifiedName(qName).build();
+    }
   }
 
   protected boolean isOnLHS() {
@@ -439,8 +454,10 @@ public abstract class Rule2ODVisitor implements TFCommonsVisitor2 {
 
   protected ASTODAttribute createAttributeForString(String name, boolean isOptional) {
     ASTODAttribute attribute = ODRulesMill.oDAttributeBuilder().uncheckedBuild();
-    ASTMCBasicGenericType type = ODRulesMill.mCBasicGenericTypeBuilder().uncheckedBuild();
-    type.setNameList(Splitters.DOT.splitToList("String"));
+    ASTMCQualifiedType type = ODRulesMill.mCQualifiedTypeBuilder().uncheckedBuild();
+    ASTMCQualifiedName typeName = ODRulesMill.mCQualifiedNameBuilder().uncheckedBuild();
+    typeName.setPartsList(Splitters.DOT.splitToList("java.lang.String"));
+    type.setMCQualifiedName(typeName);
     attribute.setMCType(type);
     attribute.setName(name);
     attribute.setAttributeCardinality(ODRulesMill.cardinalityBuilder().uncheckedBuild());
