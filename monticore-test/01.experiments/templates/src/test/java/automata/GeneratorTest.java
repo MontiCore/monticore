@@ -30,6 +30,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class GeneratorTest {
 
+  protected static final String SOURCE_MAP_TARGET = "target/statepattern-sourcemap";
+
   @BeforeEach
   public void init(){
     LogStub.init();         // replace log by a sideffect free variant
@@ -43,8 +45,8 @@ public class GeneratorTest {
   }
 
   @BeforeEach
-  public void cleanTargetDirectory() throws IOException {
-    File target = new File("target/statepattern");
+  public void cleanSourceMapTargetDirectory() throws IOException {
+    File target = new File(SOURCE_MAP_TARGET);
     if(target.exists()){
       FileUtils.cleanDirectory(target);
     }
@@ -83,17 +85,17 @@ public class GeneratorTest {
   public void testSourceMapPingPong() throws IOException {
     try {
       ReportManager.ReportManagerFactory factory = modelName -> {
-        ReportManager reports = new ReportManager("target/statepattern");
-        reports.addReportEventHandler(new TemplateSourceMappingReporter("target/statepattern", modelName, true));
+        ReportManager reports = new ReportManager(SOURCE_MAP_TARGET);
+        reports.addReportEventHandler(new TemplateSourceMappingReporter(SOURCE_MAP_TARGET, modelName, true));
         return reports;
       };
-      Reporting.init("target/statepattern", factory);
+      Reporting.init(SOURCE_MAP_TARGET, factory);
       Reporting.on("PingPong");
-      TemplatesTool.main(new String[] { "src/test/resources/example/PingPong.aut", "src/product/java", "target/statepattern" });
+      TemplatesTool.main(new String[] { "src/test/resources/example/PingPong.aut", "src/product/java", SOURCE_MAP_TARGET });
       assertEquals(0, Log.getErrorCount());
       MCAssertions.assertNoFindings();
 
-      File mapFile = new File("target/statepattern/AbstractPingPongState.java.map");
+      File mapFile = new File(SOURCE_MAP_TARGET + "/AbstractPingPongState.java.map");
       assertTrue(mapFile.exists());
       String json = Files.readString(mapFile.toPath());
       DecodedSourceMap decoded = SourceMapDecoding.parseSourceMapJson(json, null);
@@ -105,7 +107,7 @@ public class GeneratorTest {
 
       List<DecodedMapping> mappings = getMappingsForAbstractPingPongState(src, true);
 
-      File generatedFile = new File("target/statepattern/AbstractPingPongState.java");
+      File generatedFile = new File(SOURCE_MAP_TARGET + "/AbstractPingPongState.java");
       DecodedSourceMap expected = new DecodedSourceMap(generatedFile.getAbsolutePath(), List.of(src), mappings);
 
       assertEquals(expected, decoded);
@@ -119,17 +121,17 @@ public class GeneratorTest {
   public void testSourceMapPingPongWithoutTracing() throws IOException {
     try {
       ReportManager.ReportManagerFactory factory = modelName -> {
-        ReportManager reports = new ReportManager("target/statepattern");
-        reports.addReportEventHandler(new TemplateSourceMappingReporter("target/statepattern", modelName, true));
+        ReportManager reports = new ReportManager(SOURCE_MAP_TARGET);
+        reports.addReportEventHandler(new TemplateSourceMappingReporter(SOURCE_MAP_TARGET, modelName, true));
         return reports;
       };
-      Reporting.init("target/statepattern", factory);
+      Reporting.init(SOURCE_MAP_TARGET, factory);
       Reporting.on("PingPong");
-      TemplatesTool.main(new String[] { "src/test/resources/example/PingPong.aut", "src/product/java", "target/statepattern", "false" });
+      TemplatesTool.main(new String[] { "src/test/resources/example/PingPong.aut", "src/product/java", SOURCE_MAP_TARGET, "false" });
       assertEquals(0, Log.getErrorCount());
       MCAssertions.assertNoFindings();
 
-      File mapFile = new File("target/statepattern/AbstractPingPongState.java.map");
+      File mapFile = new File(SOURCE_MAP_TARGET + "/AbstractPingPongState.java.map");
       assertTrue(mapFile.exists());
       String json = Files.readString(mapFile.toPath());
       DecodedSourceMap decoded = SourceMapDecoding.parseSourceMapJson(json, null);
@@ -141,7 +143,7 @@ public class GeneratorTest {
 
       List<DecodedMapping> mappings = getMappingsForAbstractPingPongState(src, false);
 
-      File generatedFile = new File("target/statepattern/AbstractPingPongState.java");
+      File generatedFile = new File(SOURCE_MAP_TARGET + "/AbstractPingPongState.java");
       DecodedSourceMap expected = new DecodedSourceMap(generatedFile.getAbsolutePath(), List.of(src), mappings);
 
       assertEquals(expected, decoded);
@@ -155,17 +157,17 @@ public class GeneratorTest {
   public void testSourceMapPingPongWithoutContent() throws IOException {
     try {
       ReportManager.ReportManagerFactory factory = modelName -> {
-        ReportManager reports = new ReportManager("target/statepattern");
-        reports.addReportEventHandler(new TemplateSourceMappingReporter("target/statepattern", modelName, false));
+        ReportManager reports = new ReportManager(SOURCE_MAP_TARGET);
+        reports.addReportEventHandler(new TemplateSourceMappingReporter(SOURCE_MAP_TARGET, modelName, false));
         return reports;
       };
-      Reporting.init("target/statepattern", factory);
+      Reporting.init(SOURCE_MAP_TARGET, factory);
       Reporting.on("PingPong");
-      TemplatesTool.main(new String[] { "src/test/resources/example/PingPong.aut", "src/product/java", "target/statepattern", "false" });
+      TemplatesTool.main(new String[] { "src/test/resources/example/PingPong.aut", "src/product/java", SOURCE_MAP_TARGET, "false" });
       assertEquals(0, Log.getErrorCount());
       MCAssertions.assertNoFindings();
 
-      File mapFile = new File("target/statepattern/AbstractPingPongState.java.map");
+      File mapFile = new File(SOURCE_MAP_TARGET + "/AbstractPingPongState.java.map");
       assertTrue(mapFile.exists());
       String json = Files.readString(mapFile.toPath());
       DecodedSourceMap decoded = SourceMapDecoding.parseSourceMapJson(json, null);
@@ -176,7 +178,7 @@ public class GeneratorTest {
 
       List<DecodedMapping> mappings = getMappingsForAbstractPingPongState(src, false);
 
-      File generatedFile = new File("target/statepattern/AbstractPingPongState.java");
+      File generatedFile = new File(SOURCE_MAP_TARGET + "/AbstractPingPongState.java");
       DecodedSourceMap expected = new DecodedSourceMap(generatedFile.getAbsolutePath(), List.of(src), mappings);
 
       assertEquals(expected, decoded);
@@ -190,16 +192,16 @@ public class GeneratorTest {
   public void testDisabledSourceMap(){
     try {
       ReportManager.ReportManagerFactory factory = modelName -> {
-        ReportManager reports = new ReportManager("target/statepattern");
+        ReportManager reports = new ReportManager(SOURCE_MAP_TARGET);
         return reports;
       };
-      Reporting.init("target/statepattern", factory);
+      Reporting.init(SOURCE_MAP_TARGET, factory);
       Reporting.on("PingPong");
-      TemplatesTool.main(new String[] { "src/test/resources/example/PingPong.aut", "src/product/java", "target/statepattern", "false" });
+      TemplatesTool.main(new String[] { "src/test/resources/example/PingPong.aut", "src/product/java", SOURCE_MAP_TARGET, "false" });
       assertEquals(0, Log.getErrorCount());
       MCAssertions.assertNoFindings();
 
-      File mapFile = new File("target/statepattern/AbstractPingPongState.java.map");
+      File mapFile = new File(SOURCE_MAP_TARGET + "/AbstractPingPongState.java.map");
       assertFalse(mapFile.exists());
 
     } finally {
