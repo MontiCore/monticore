@@ -85,7 +85,7 @@ public class HooksToolTest {
     try {
       ReportManager.ReportManagerFactory factory = modelName -> {
         ReportManager reports = new ReportManager("target/statepattern");
-        reports.addReportEventHandler(new TemplateSourceMappingReporter("target/statepattern", modelName, true));
+        reports.addReportEventHandler(new TemplateSourceMappingReporter("target/statepattern", true));
         return reports;
       };
       Reporting.init("target/statepattern", factory);

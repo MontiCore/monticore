@@ -86,7 +86,7 @@ public class GeneratorTest {
     try {
       ReportManager.ReportManagerFactory factory = modelName -> {
         ReportManager reports = new ReportManager(SOURCE_MAP_TARGET);
-        reports.addReportEventHandler(new TemplateSourceMappingReporter(SOURCE_MAP_TARGET, modelName, true));
+        reports.addReportEventHandler(new TemplateSourceMappingReporter(SOURCE_MAP_TARGET, true));
         return reports;
       };
       Reporting.init(SOURCE_MAP_TARGET, factory);
@@ -122,7 +122,7 @@ public class GeneratorTest {
     try {
       ReportManager.ReportManagerFactory factory = modelName -> {
         ReportManager reports = new ReportManager(SOURCE_MAP_TARGET);
-        reports.addReportEventHandler(new TemplateSourceMappingReporter(SOURCE_MAP_TARGET, modelName, true));
+        reports.addReportEventHandler(new TemplateSourceMappingReporter(SOURCE_MAP_TARGET, true));
         return reports;
       };
       Reporting.init(SOURCE_MAP_TARGET, factory);
@@ -158,7 +158,7 @@ public class GeneratorTest {
     try {
       ReportManager.ReportManagerFactory factory = modelName -> {
         ReportManager reports = new ReportManager(SOURCE_MAP_TARGET);
-        reports.addReportEventHandler(new TemplateSourceMappingReporter(SOURCE_MAP_TARGET, modelName, false));
+        reports.addReportEventHandler(new TemplateSourceMappingReporter(SOURCE_MAP_TARGET, false));
         return reports;
       };
       Reporting.init(SOURCE_MAP_TARGET, factory);

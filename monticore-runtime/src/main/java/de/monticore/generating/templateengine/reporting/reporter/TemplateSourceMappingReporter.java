@@ -36,7 +36,6 @@ public class TemplateSourceMappingReporter extends DefaultReportEventHandler {
   protected final String INCLUDE_EXTENSION = ".incl.json";
   protected final String MAP_EXTENSION = ".map";
 
-  protected final String qualifiedFileName;
   protected final boolean addContent;
 
   protected final List<DecodedMapping> templateMappings = new ArrayList<>();
@@ -50,9 +49,8 @@ public class TemplateSourceMappingReporter extends DefaultReportEventHandler {
   protected File currentASTMappingFile;
   protected File currentIncludeSpanFile;
 
-  public TemplateSourceMappingReporter(String path, String qualifiedFileName, boolean addContent) {
+  public TemplateSourceMappingReporter(String path, boolean addContent) {
     reportingHelper = new ReportCreator(path);
-    this.qualifiedFileName = qualifiedFileName;
     this.addContent = addContent;
   }
 
