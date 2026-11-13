@@ -6,7 +6,7 @@ import static de.monticore.literals.MCLiteralsDecoder.decodeNat;
 public class ASTExtendedWeekDate extends ASTExtendedWeekDateTOP {
   
   @Override
-  public int getYear() {
+  public int getWeekBasedYear() {
     int unsignedYear = decodeNat(getYearSource());
     if (isPresentSign() && getSign() == ASTSign.MINUS) {
       return -unsignedYear;
@@ -16,7 +16,7 @@ public class ASTExtendedWeekDate extends ASTExtendedWeekDateTOP {
   }
   
   @Override
-  public int getWeek() {
+  public int getWeekOfWeekBasedYear() {
     return decodeNat(getWeekSource().getSource().substring(1));
   }
   
