@@ -17,7 +17,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * facade for creation of ASTMCTypes
+ * facade for creation of ASTMCTypes.
+ * In case the simple generic types are loaded, {@link de.monticore.types.mcsimplegenerictypes.MCSimpleGenericTypesMCTypeFacade} is used
  */
 public class MCTypeFacade {
 
@@ -25,12 +26,16 @@ public class MCTypeFacade {
 
   private static MCTypeFacade MCTypeFacade;
 
-  private MCTypeFacade() {
+  protected MCTypeFacade() {
+  }
+
+  protected static void setInstance(MCTypeFacade instance) {
+    MCTypeFacade = instance;
   }
 
   public static MCTypeFacade getInstance() {
     if (MCTypeFacade == null) {
-      MCTypeFacade = new MCTypeFacade();
+      setInstance(new MCTypeFacade());
     }
     return MCTypeFacade;
   }
