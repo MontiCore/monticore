@@ -7,6 +7,7 @@
 release: TBD
 
 ## Additions
+* added `isSealed` to `OOType` in `OOSymbols`
 * TBD
 
 ## Changes:
