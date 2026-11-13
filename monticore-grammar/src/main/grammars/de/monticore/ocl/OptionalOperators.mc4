@@ -26,6 +26,13 @@ import de.monticore.expressions.*;
 component grammar OptionalOperators
           extends CommonExpressions //InfixExpression
 {
+
+  /**
+   * `Optional<type> x = ~~~` declares x as an empty optional
+   */
+  OptionalEmptyExpression implements Expression =
+    "~~~";
+
   /**
    * `val ?: 0W`     equals to   `val.isPresent ? val.get : 0W`
    * this operator is right associative, so that multiple optionals can be 
