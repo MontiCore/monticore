@@ -122,6 +122,9 @@ public class SymTypeCompatibilityCalculator {
           source.asTupleType()
       );
     }
+    else if (isSIUnitCompatibilityCheck(target, source)) {
+      result = siUnitConstrainCompatible(target, source);
+    }
     // subtypes are assignable to their supertypes
     // in addition, we allow boxing
     else {
@@ -143,6 +146,16 @@ public class SymTypeCompatibilityCalculator {
       if (result.stream().anyMatch(Bound::isUnsatisfiableBound)) {
         result = constrainSubTypeOf(boxedSource, boxedTarget);
       }
+    }
+    // additionally check for types that are compatible to,
+    // but not subtypes of a type of the union, e.g., [km] -> [m] | [s]
+    if (result.stream().anyMatch(Bound::isUnsatisfiableBound)
+        && target.isUnionType()
+        && !source.isUnionType()
+        && target.asUnionType().getUnionizedTypeSet().stream()
+        .anyMatch(t -> constrainCompatiblePreNormalized(t, source).isEmpty())
+    ) {
+      result = Collections.emptyList();
     }
     // additionally check regular expressions
     if (result.stream().anyMatch(Bound::isUnsatisfiableBound)) {
@@ -337,6 +350,56 @@ public class SymTypeCompatibilityCalculator {
       ));
     }
     return result;
+  }
+
+  protected boolean isSIUnitCompatibilityCheck(
+      SymTypeExpression target,
+      SymTypeExpression source
+  ) {
+    return (target.isSIUnitType() && source.isSIUnitType())
+        || (target.isNumericWithSIUnitType()
+        && (source.isNumericWithSIUnitType() || SymTypeRelations.isNumericType(source)))
+        || (source.isNumericWithSIUnitType()
+        && SymTypeRelations.isNumericType(target));
+  }
+
+  /**
+   * SIUnits are compatible if the value can be converted, e.g., km -> m,
+   * but they are not subtypes of each other.
+   * Numerics are SIUnits of dimension one in this regard.
+   * Units without a conversion, e.g., dB -> B, are not compatible.
+   */
+  protected List<Bound> siUnitConstrainCompatible(
+      SymTypeExpression target,
+      SymTypeExpression source
+  ) {
+    List<Bound> result;
+    if (SIUnitTypeRelations.getConversion(
+        SIUnitTypeRelations.getSIUnit(source),
+        SIUnitTypeRelations.getSIUnit(target)).isEmpty()
+    ) {
+      result = Collections.singletonList(
+          getUnsatisfiableBoundForCompatibilty(target, source)
+      );
+    }
+    else if (target.isSIUnitType()) {
+      result = Collections.emptyList();
+    }
+    else {
+      result = constrainCompatible(
+          getNumericTypeOfNumericWithSIUnit(target),
+          getNumericTypeOfNumericWithSIUnit(source)
+      );
+    }
+    return result;
+  }
+
+  protected SymTypeExpression getNumericTypeOfNumericWithSIUnit(
+      SymTypeExpression type
+  ) {
+    return type.isNumericWithSIUnitType() ?
+        type.asNumericWithSIUnitType().getNumericType() :
+        type;
   }
 
   /**
@@ -1130,7 +1193,7 @@ public class SymTypeCompatibilityCalculator {
       SymTypeOfNumericWithSIUnit subType,
       SymTypeOfNumericWithSIUnit superType
   ) {
-    // note: here, there is no dimension of one,
+    // note: here, there are no SIUnits that cancel out completely,
     // as they get removed during normalization
     List<Bound> result = new ArrayList<>();
     result.addAll(siUnitConstrainSubTypeOf(subType.getSIUnitType(), superType.getSIUnitType()));
@@ -1143,10 +1206,13 @@ public class SymTypeCompatibilityCalculator {
       SymTypeOfSIUnit superType
   ) {
     List<Bound> result;
-    // order is not important; Here, the subtyping relation is symmetric
-    SymTypeOfSIUnit inverse = SIUnitTypeRelations.invert(subType);
-    SymTypeOfSIUnit divided = SIUnitTypeRelations.multiply(superType, inverse);
-    if (SIUnitTypeRelations.isOfDimensionOne(divided)) {
+    // only units with the same values, e.g., Ohm and Ω, N and kg*m/s^2;
+    // km is not a subtype of m,
+    // as the values differ (1km = 1000m), s. constrainCompatible
+    if (SIUnitTypeRelations.normalize(subType)
+        .deepEquals(SIUnitTypeRelations.normalize(superType))
+        || SIUnitTypeRelations.getConversion(subType, superType)
+        .filter(SIUnitConversion::isIdentity).isPresent()) {
       result = Collections.emptyList();
     }
     else {
@@ -1500,8 +1566,9 @@ public class SymTypeCompatibilityCalculator {
     result.addAll(internal_constrainSubTypeOfPreNormalized(typeA, typeB));
     result.addAll(internal_constrainSubTypeOfPreNormalized(typeB, typeA));
     // only happens if any type includes inference variables
-    // (or, as of 2025.03.02, only partially supported RegExTypes)
-    if (!result.isEmpty()) {
+    // (or, as of 2025.03.02, only partially supported RegExTypes);
+    // different types, e.g., [km]<int> and [m]<int>, are not an error
+    if (result.stream().anyMatch(bound -> !bound.isUnsatisfiableBound())) {
       Log.error("0xFDCAF (internal) error: Constraint to complex"
           + " to evaluate with the current implementation: "
           + new TypeEqualityConstraint(typeA, typeB).print()

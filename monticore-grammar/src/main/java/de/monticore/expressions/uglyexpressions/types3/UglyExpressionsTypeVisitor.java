@@ -19,7 +19,9 @@ import de.monticore.types3.AbstractTypeVisitor;
 import de.monticore.types3.SymTypeRelations;
 import de.monticore.types3.util.FunctionRelations;
 import de.monticore.types3.util.OOWithinTypeBasicSymbolsResolver;
+import de.monticore.types3.util.SIUnitTypeRelations;
 import de.monticore.types3.util.TypeContextCalculator;
+import de.monticore.types3.util.TypeVisitorOperatorCalculator;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Collections;
@@ -71,6 +73,14 @@ public class UglyExpressionsTypeVisitor
     }
     else if (isBoolean(typeResult) && isBoolean(exprResult)) {
       // allow explicit boxing/unboxing of booleans.
+      result = typeResult;
+    }
+    else if ((SIUnitTypeRelations.hasSIUnit(typeResult)
+        || SIUnitTypeRelations.hasSIUnit(exprResult))
+        && TypeVisitorOperatorCalculator.cast(typeResult, exprResult).isPresent()
+    ) {
+      // allow to convert between SIUnits of the same dimension,
+      // e.g., ([m]<int>) 5km
       result = typeResult;
     }
     else if (

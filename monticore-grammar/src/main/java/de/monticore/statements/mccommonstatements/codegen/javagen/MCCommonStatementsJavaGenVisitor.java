@@ -3,6 +3,7 @@ package de.monticore.statements.mccommonstatements.codegen.javagen;
 
 import com.google.common.base.Preconditions;
 import de.monticore.codegen.javagen.JavaGenVisitorState;
+import de.monticore.codegen.util.Node2Name;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.statements.mccommonstatements.MCCommonStatementsMill;
@@ -13,10 +14,16 @@ import de.monticore.statements.mcvardeclarationstatements._ast.ASTLocalVariableD
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTVariableDeclarator;
 import de.monticore.types.check.SymTypeExpression;
 
+import java.util.Optional;
+
 import static de.monticore.codegen.CodeGenSymTypeExpressionConverter.printConverted;
+import static de.monticore.codegen.javagen.JavaGenSymTypeRelations.requiresConversion;
+import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getJavaTypePrint;
 import static de.monticore.symbols.basicsymbols.BasicSymbolsMill.BOOLEAN;
 import static de.monticore.types.check.SymTypeExpressionFactory.createPrimitive;
 import static de.monticore.types3.SymTypeRelations.normalize;
+import static de.monticore.types3.SymTypeRelationsOfIterables.getIterationType;
+import static de.monticore.types3.TypeCheck3.symTypeFromAST;
 import static de.monticore.types3.TypeCheck3.typeOf;
 
 /**
@@ -74,10 +81,66 @@ public class MCCommonStatementsJavaGenVisitor
 
   @Override
   public void traverse(ASTForStatement node) {
+    if (node.getForControl() instanceof ASTEnhancedForControl
+        && requiresConversionOfLoopVariable(
+        (ASTEnhancedForControl) node.getForControl())
+    ) {
+      printForEachWithConversion(
+          node, (ASTEnhancedForControl) node.getForControl()
+      );
+      return;
+    }
     getPrinter().print("for (");
     node.getForControl().accept(getTraverser());
     getPrinter().print(") ");
     printStatementAsBlock(node.getMCStatement());
+  }
+
+  /**
+   * whether Java does not convert the elements to the type
+   * of the loop variable, e.g., {@code [km]<double> -> [m]<double>}
+   */
+  protected boolean requiresConversionOfLoopVariable(
+      ASTEnhancedForControl forControl
+  ) {
+    Optional<SymTypeExpression> iterationType =
+        getIterationType(normalize(typeOf(forControl.getExpression())));
+    return iterationType.isPresent() && requiresConversion(
+        normalize(symTypeFromAST(forControl.getFormalParameter().getMCType())),
+        iterationType.get()
+    );
+  }
+
+  /**
+   * prints the for-each loop with a converted loop variable, e.g.,
+   * {@code for ([m]<double> e : kms) s} is printed as
+   * {@code for (double var_e : kms) { double e = var_e * 1000.0; s }}
+   */
+  protected void printForEachWithConversion(
+      ASTForStatement node,
+      ASTEnhancedForControl forControl
+  ) {
+    SymTypeExpression iterationType =
+        getIterationType(normalize(typeOf(forControl.getExpression()))).get();
+    SymTypeExpression variableType =
+        normalize(symTypeFromAST(forControl.getFormalParameter().getMCType()));
+    String iterationVarName = "var_" + Node2Name.getName(forControl);
+    getPrinter().print("for (");
+    getPrinter().print(getJavaTypePrint(iterationType));
+    getPrinter().print(" " + iterationVarName + " : ");
+    state.startParentheses();
+    forControl.getExpression().accept(getTraverser());
+    state.endParentheses();
+    getPrinter().print(") ");
+    state.startStatementBlock();
+    forControl.getFormalParameter().accept(getTraverser());
+    getPrinter().print(" = ");
+    printConverted(getPrinter(), variableType, iterationType,
+        p -> p.print(iterationVarName)
+    );
+    state.endStatement();
+    printStatementAsBlock(node.getMCStatement());
+    state.endStatementBlock();
   }
 
   @Override
