@@ -1,323 +1,175 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.tf.odrules;
 
-import de.monticore.ast.ASTNode;
-import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
-import de.monticore.umlstereotype._ast.ASTStereoValue;
-import de.monticore.umlstereotype._ast.ASTStereotype;
-import de.se_rwth.commons.Names;
 import de.monticore.tf.odrulegeneration._ast.ASTChangeOperation;
 import de.monticore.tf.odrules._ast.ASTODDefinition;
 import de.monticore.tf.odrules._ast.ASTODLink;
 import de.monticore.tf.odrules._ast.ASTODObject;
 import de.monticore.tf.odrules._ast.ASTODRule;
-import de.monticore.tf.odrules._parser.ODRulesParser;
 import de.monticore.tf.odrules.util.ODRuleStereotypes;
 import de.monticore.tf.odrules.util.Util;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
+import de.monticore.umlstereotype._ast.ASTStereotype;
+import de.se_rwth.commons.Names;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+/**
+ * Calculates the change operations, which transform the lhs of a rule into its rhs.
+ * Objects and links are matched by their names.
+ */
 public class DifferenceFinder {
 
+  protected final HierarchyHelper hierarchyHelper;
 
-  private static class ChangePair<T extends ASTNode> {
-
-    ChangePair(T from, T to) {
-      this.from = from;
-      this.to = to;
-    }
-
-    private T from;
-    private T to;
+  protected record ObjectChange(ASTODObject from, ASTODObject to) {
   }
-
-
-  private List<ASTODObject> toDeleteObjects = new ArrayList<>();
-  private List<ASTODObject> toCreateObjects =  new ArrayList<>();
-  private List<ASTODObject> unchangedObjects =  new ArrayList<>();
-  private List<ChangePair<ASTODObject>> toChangeObjects = new LinkedList<>();
-
-  private List<ASTODLink> toDeleteLinks = new LinkedList<>();
-  private List<ASTODLink> toCreateLinks = new LinkedList<>();
-  private List<ASTODLink> unchangedLinks = new LinkedList<>();
-  private ASTODDefinition lhs;
-
-  private LinkedHashMap<ASTODObject, List<ASTODLink>> toCreateObjectsAttr = new LinkedHashMap<>();
-
-  private HierarchyHelper hierarchyHelper;
 
   public DifferenceFinder(HierarchyHelper hierarchyHelper) {
     this.hierarchyHelper = hierarchyHelper;
   }
 
-
   /**
-   * @param transformationRulesFilename Filename to the mtod File that contains
-   *          both lhs and rhs of the Rules.
-   * @return
-   *
+   * @param transformationRulesFilename the mtod file that contains both lhs and rhs of the rule
+   * @return the change operations, see {@link #getDifference(ASTODRule)}
    */
   public List<ASTChangeOperation> getDifference(String transformationRulesFilename) throws IOException {
-    ODRulesParser parser = ODRulesMill.parser();
-    Optional<ASTODRule> rule = parser.parse(transformationRulesFilename);
-    return getDifference(rule.get());
+    return getDifference(ODRulesMill.parser().parse(transformationRulesFilename).orElseThrow());
   }
 
-
   /**
+   * Calculates the change operations in the following order: changes of objects, creation of
+   * objects (including the links set during their creation), deletion of links, creation of
+   * links, and deletion of objects. Unchanged objects and links do not result in operations.
+   *
    * @param rule the parsed ODRule
-   * @return returns the Composition of all change operations that have to be
-   *         performed. Throws IllegalArgumentException, if the there are type
-   *         mismatches in lhs rhs.
+   * @return the change operations, which have to be performed
    */
   public List<ASTChangeOperation> getDifference(ASTODRule rule) {
-    this.lhs = rule.getLhs();
-    //clear all lists for new calculation
-    toDeleteObjects = new ArrayList<>();
-    toCreateObjects = new ArrayList<>();
-    unchangedObjects = new ArrayList<>();
-    toChangeObjects = new LinkedList<>();
-
-
-    toDeleteLinks = new LinkedList<>();
-    toCreateLinks = new LinkedList<>();
-    unchangedLinks = new LinkedList<>();
-
+    if (!rule.isPresentRhs()) {
+      return new ArrayList<>();
+    }
+    ASTODDefinition lhs = rule.getLhs();
+    ASTODDefinition rhs = rule.getRhs();
     List<ASTODObject> leftObjects = Util.getAllODObjects(lhs);
+    List<ASTODObject> rightObjects = Util.getAllODObjects(rhs);
+    List<ASTODLink> leftLinks = lhs.getODLinkList();
+    List<ASTODLink> rightLinks = rhs.getODLinkList();
 
-    if(rule.isPresentRhs()){
-      List<ASTODObject> rightObjects = Util.getAllODObjects(rule.getRhs());
-
-      //calculate the list of deleted and the list of changed objects
-      calculateObjectsToChangeOrDelete(leftObjects, rightObjects);
-
-      //calculate the list of created objects
-      calculateObjectsToCreate(leftObjects, rightObjects);
-
-      List<ASTODLink> lhsLinks = lhs.getODLinkList();
-      List<ASTODLink> rhsLinks = rule.getRhs().getODLinkList();
-
-      // calculate the list of deleted links
-      calculateLinksToDelete(lhsLinks, rhsLinks);
-
-      //calculate the list of created links
-      calculateLinksToCreate(lhsLinks, rhsLinks);
-
-      //calculate the build order of created objects
-      ODBuildOrder buildOrder = new ODBuildOrder(toCreateObjects, toCreateLinks);
-      toCreateObjects = buildOrder.getBuildOrder();
-      toCreateObjectsAttr = buildOrder.getBuildAttrs();
-
-      //calculate and return the composition of all changes
-      return calculateChanges(rule, lhs, rule.getRhs());
-    }
-    return new ArrayList<>();
-  }
-
-
-  /**
-   * Calculates the change between the LHS and the RHS
-   * based on the fields toDeleteObjects, toCreateObjects,
-   * toChangeObjects, toDeleteLinks, toCreateLinks
-   *
-   * @param lhs left hand side of the Rules
-   * @param rhs right hand side of the Rules
-   * @return the changeComposition containing all changes.
-   */
-  private List<ASTChangeOperation> calculateChanges(ASTODRule rule, ASTODDefinition lhs, ASTODDefinition rhs) {
-    ChangeOperationFactory operationFactory = new ChangeOperationFactory(rule, lhs, rhs, hierarchyHelper);
-
-    List<ASTChangeOperation> changeOpList = new ArrayList<>();
-    List<ASTODLink> toCreateLinksCopy = new LinkedList<>(toCreateLinks);
-
-    for (ChangePair<ASTODObject> pair : toChangeObjects) {
-      changeOpList.add(operationFactory.createChangeOperation(pair.from, pair.to));
-    }
-    for (ASTODObject obj : toCreateObjects) {
-      List<ASTODLink> relLinks = new LinkedList<>();
-      for (ASTODLink link : toCreateObjectsAttr.get(obj)) {
-        toCreateLinksCopy.remove(link);
-        relLinks.add(link);
-      }
-      changeOpList.add(operationFactory.createCreateOperation(obj, relLinks));
-    }
-    for (ASTODLink link : toDeleteLinks) {
-      String targetName = Names.constructQualifiedName(link.getRightReferenceName(0).getPartsList());
-      ASTODObject targetObject = Util.getODObject(lhs, targetName);
-      if(!targetObject.hasStereotype(ODRuleStereotypes.NOT)){
-        changeOpList.add(operationFactory.createDeleteOperation(link));
-      }
-    }
-    for (ASTODLink link : toCreateLinksCopy) {
-      changeOpList.add(operationFactory.createCreateOperation(link));
-    }
-    for (ASTODObject obj : toDeleteObjects) {
-      changeOpList.add(operationFactory.createDeleteOperation(obj));
-    }
-    // unchanged objects do not need to be listed anywhere.
-    return changeOpList;
-  }
-
-  /**
-   * Calculates the list of deleted objects stored in the field toDeleteObjects
-   * and the list of changed objects stored in the field toChangeObjects
-   *
-   * @param leftObjects List of objects from the LHS
-   * @param rightObjects List of objects from the RHS
-   */
-  private void calculateObjectsToChangeOrDelete(List<ASTODObject> leftObjects, List<ASTODObject> rightObjects){
+    // objects only on the lhs are deleted, objects on both sides may be changed
+    Map<String, ASTODObject> rightObjectsByName = new HashMap<>();
+    rightObjects.forEach(o -> rightObjectsByName.putIfAbsent(o.getName(), o));
+    List<ObjectChange> objectsToChange = new ArrayList<>();
+    List<ASTODObject> objectsToDelete = new ArrayList<>();
     for (ASTODObject left : leftObjects) {
-      // says, weather the variable from the left side is found on the
-      // right side.
-      boolean found = false;
-      // for all rules on the left side, find the matching rule on the
-      // right side.
-      if (!left.hasStereotype(ODRuleStereotypes.NOT)) {
-        for (ASTODObject right : rightObjects) {
-          if (left.getName().equals(right.getName())) {
-            // deepEquals is too strong but if there is nothing to
-            // change the factory doesn't add any changes
-            // needs to be replaced by another equals, if you need a
-            // correct list of unchanged Objects.
-            if (left.deepEquals(right)) {
-              unchangedObjects.add(left.deepClone());
-            } else {
-              toChangeObjects.add(new ChangePair<>(left.deepClone(), right.deepClone()));
-            }
-            found = true;
-          }
-        }
-        // Objects only on left side should be deleted
-        if (!found) {
-          toDeleteObjects.add(left.deepClone());
-        }
+      if (left.hasStereotype(ODRuleStereotypes.NOT)) {
+        continue;
       }
-    }
-  }
-
-  /**
-   * Calculates the list of created objects stored in the field toCreateObjects
-   *
-   * @param leftObjects List of objects from the LHS
-   * @param rightObjects List of objects from the RHS
-   */
-  private void calculateObjectsToCreate(List<ASTODObject> leftObjects, List<ASTODObject> rightObjects){
-    for (ASTODObject right : rightObjects) {
-      // says, weather the variable from the right side is found on the
-      // left side.
-      boolean found = false;
-      // there must be a better way than iterating the whole object list
-      // on the right
-      for (ASTODObject left : leftObjects) {
-        if (left.getName().equals(right.getName())) {
-          found = true;
-        }
-      }
-      if (!found) {
-        toCreateObjects.add(right.deepClone());
+      ASTODObject right = rightObjectsByName.get(left.getName());
+      if (right == null) {
+        objectsToDelete.add(left.deepClone());
+      } else if (!left.deepEquals(right)) {
+        objectsToChange.add(new ObjectChange(left.deepClone(), right.deepClone()));
       }
     }
 
-  }
+    // objects only on the rhs are created
+    Set<String> leftObjectNames = leftObjects.stream()
+        .map(ASTODObject::getName)
+        .collect(Collectors.toSet());
+    List<ASTODObject> objectsToCreate = rightObjects.stream()
+        .filter(o -> !leftObjectNames.contains(o.getName()))
+        .map(ASTODObject::deepClone)
+        .collect(Collectors.toList());
 
-  /**
-   * Calculates the list of deleted links stored in the field toDeleteLinks
-   * and the list of changed links stored in the field toChangeLinks
-   *
-   * @param lhsLinks List of links from the LHS
-   * @param rhsLinks List of links from the RHS
-   */
-  private void calculateLinksToDelete(List<ASTODLink> lhsLinks, List<ASTODLink> rhsLinks) {
-    for (ASTODLink left : lhsLinks) {
-      // says, whether the variable from the left side is found on the
-      // right side.
-      boolean found = false;
-      boolean isSetValued = left.isAttributeIterated();
-  
-      // for all rules on the left side, find the matching rule on the
-      // right side. If the multiplicity at the right end is larger than 1,
-      // then any link with the same source object and the same role is
-      // a match
-        for (ASTODLink right : rhsLinks) {
-          boolean match;
-          boolean unchanged;
-          if (isSetValued) {
-            match = isMatchForSetValuedLink(left, right);
-            unchanged = match;
-          }
-          else {
-            match = isMatchForLink(left, right);
-            unchanged = match && referencesAreEqual(left.getRightReferenceNameList(),
-                right.getRightReferenceNameList());
-          }
-          if (match) {
-            if (unchanged) {
-              unchangedLinks.add(left);
-            }
-            found = true;
-          }
-        }
-        // Objects only on left side should be deleted
-        if (!found) {
-          toDeleteLinks.add(left);
-        }
-  
+    // links without a counterpart on the other side are deleted or created, respectively
+    List<ASTODLink> linksToDelete = leftLinks.stream()
+        .filter(left -> rightLinks.stream().noneMatch(right -> isKept(left, right)))
+        .filter(left -> !getTarget(left, lhs).hasStereotype(ODRuleStereotypes.NOT))
+        .collect(Collectors.toList());
+    List<ASTODLink> linksToCreate = rightLinks.stream()
+        .filter(right -> leftLinks.stream().noneMatch(right::deepEquals))
+        .collect(Collectors.toList());
+
+    // must happen after the links have been compared, as it modifies the rhs
+    markCopiedLinks(rightLinks);
+
+    ChangeOperationFactory factory = new ChangeOperationFactory(rule, lhs, rhs, hierarchyHelper);
+    List<ASTChangeOperation> changes = new ArrayList<>();
+    for (ObjectChange change : objectsToChange) {
+      changes.add(factory.createChangeOperation(change.from(), change.to()));
     }
-  }
-
-  private boolean referencesAreEqual(List<ASTMCQualifiedName> rightReferenceNames,
-      List<ASTMCQualifiedName> rightReferenceNames1) {
-    return rightReferenceNames.getFirst().deepEquals(rightReferenceNames1.getFirst());
-  }
-
-  private boolean isMatchForSetValuedLink(ASTODLink left, ASTODLink right){
-    return (referencesAreEqual(left.getLeftReferenceNameList(),right.getLeftReferenceNameList())
-        && referencesAreEqual(left.getRightReferenceNameList(),right.getRightReferenceNameList()))
-        && areRolesEqual(left, right);
-  }
-
-  private boolean areRolesEqual(ASTODLink left, ASTODLink right){
-    return ((left.getRightRole() == null && right.getRightRole() == null)
-        || (left.getRightRole() != null && left.getRightRole().equals(right.getRightRole())));
-  }
-
-  private boolean isMatchForLink(ASTODLink left, ASTODLink right){
-    return referencesAreEqual(left.getLeftReferenceNameList(),right.getLeftReferenceNameList())
-        && areRolesEqual(left, right);
+    // objects are created bottom-up, together with the links to their children
+    ODBuildOrder buildOrder = new ODBuildOrder(objectsToCreate, linksToCreate);
+    Map<ASTODObject, List<ASTODLink>> linksOfCreatedObjects = buildOrder.getBuildAttrs();
+    Set<ASTODLink> linksCreatedWithObjects = new HashSet<>();
+    for (ASTODObject object : buildOrder.getBuildOrder()) {
+      List<ASTODLink> links = linksOfCreatedObjects.get(object);
+      linksCreatedWithObjects.addAll(links);
+      changes.add(factory.createCreateOperation(object, new ArrayList<>(links)));
+    }
+    for (ASTODLink link : linksToDelete) {
+      changes.add(factory.createDeleteOperation(link));
+    }
+    for (ASTODLink link : linksToCreate) {
+      if (!linksCreatedWithObjects.contains(link)) {
+        changes.add(factory.createCreateOperation(link));
+      }
+    }
+    for (ASTODObject object : objectsToDelete) {
+      changes.add(factory.createDeleteOperation(object));
+    }
+    return changes;
   }
 
   /**
-   * Calculates the list of created links stored in the field toCreateLinks
-   *
-   * @param lhsLinks List of links from the LHS
-   * @param rhsLinks List of links from the RHS
+   * A link of the lhs is kept, if a link of the rhs connects the same source using the same
+   * role. For iterated attributes, it has to connect the same target, too.
    */
-  private void calculateLinksToCreate(List<ASTODLink> lhsLinks, List<ASTODLink> rhsLinks){
-    for (ASTODLink right : rhsLinks) {
-      // says, weather the variable from the right side is found on the
-      // left side.
-      boolean found = false;
-      // there must be a better way than iterating the whole object list
-      // on the right
-      for (ASTODLink left : lhsLinks) {
-        if (left.deepEquals(right)) {
-            found = true;
-        }
+  protected boolean isKept(ASTODLink left, ASTODLink right) {
+    return isSameReference(left.getLeftReferenceNameList(), right.getLeftReferenceNameList())
+        && hasSameRightRole(left, right)
+        && (!left.isAttributeIterated()
+            || isSameReference(left.getRightReferenceNameList(), right.getRightReferenceNameList()));
+  }
 
-      }
+  protected boolean hasSameRightRole(ASTODLink left, ASTODLink right) {
+    if (left.isPresentRightRole() != right.isPresentRightRole()) {
+      return false;
+    }
+    return !left.isPresentRightRole() || left.getRightRole().equals(right.getRightRole());
+  }
 
-      for(ASTODLink former : rhsLinks){
-        if(!right.deepEquals(former) &&  referencesAreEqual(former.getRightReferenceNameList(),right.getRightReferenceNameList())){
-          ASTStereotype stereotype = ODRulesMill.stereotypeBuilder().build();
-          ASTStereoValue value = ODRulesMill.stereoValueBuilder().setName("copy").build();
-          stereotype.getValuesList().add(value);
-          right.setStereotype(stereotype);
-        }
-      }
-      if (!found) {
-        toCreateLinks.add(right);
-      }
+  protected boolean isSameReference(List<ASTMCQualifiedName> left, List<ASTMCQualifiedName> right) {
+    return left.getFirst().deepEquals(right.getFirst());
+  }
+
+  protected ASTODObject getTarget(ASTODLink link, ASTODDefinition definition) {
+    return Util.getODObject(definition,
+        Names.constructQualifiedName(link.getRightReferenceName(0).getPartsList()));
+  }
+
+  /**
+   * Marks the links of the rhs, whose target is also the target of another link,
+   * with the stereotype {@value ODRuleStereotypes#COPY}.
+   * Note that this replaces any other stereotypes of these links.
+   */
+  protected void markCopiedLinks(List<ASTODLink> rightLinks) {
+    List<ASTODLink> copiedLinks = rightLinks.stream()
+        .filter(link -> rightLinks.stream().anyMatch(other -> !link.deepEquals(other)
+            && isSameReference(link.getRightReferenceNameList(), other.getRightReferenceNameList())))
+        .collect(Collectors.toList());
+    for (ASTODLink link : copiedLinks) {
+      ASTStereotype stereotype = ODRulesMill.stereotypeBuilder().build();
+      stereotype.addValues(ODRulesMill.stereoValueBuilder().setName(ODRuleStereotypes.COPY).build());
+      link.setStereotype(stereotype);
     }
   }
 

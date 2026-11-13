@@ -10,52 +10,21 @@ dependencies {
 
 import de.monticore.MontiTransExec
 
-tasks.register('generateStatechartTRRules') {
-  group = "montitrans"
-}
-fileTree(dir: "$projectDir/src/main/models/statechart/mtr", include: '**/**.mtr').each {
-  def g = it
-  def taskname = "generateStatechartTRRules${it.getName().substring(0, it.getName().lastIndexOf('.'))}"
+// One incremental task per language: the TFGenTool is only invoked for added or modified rules,
+// and the outputs of removed rules are deleted
+def trafoTasks = [
+    generateStatechartTRRules    : ['statechart', 'mc.testcases.statechart.tr.StatechartTFGenTool'],
+    generateSocialNetworkTRRules : ['social', 'mc.testcases.social.tr.SocialNetworkTFGenTool'],
+    generateExpressionDSLTRRules : ['expressiondsl', 'mc.testcases.tr.ExpressionDSLTFGenTool'],
+]
+trafoTasks.each { taskname, config ->
   tasks.register(taskname, MontiTransExec) {
     getClassPath().setFrom(project(':monticore-test:montitrans:test-dstl-gen').sourceSets.trafo.runtimeClasspath)
-    TFGenTool = 'mc.testcases.statechart.tr.StatechartTFGenTool'
-    input = file(g)
+    TFGenTool = config[1]
+    models.from(fileTree("$projectDir/src/main/models/${config[0]}/mtr") { include '**/*.mtr' })
     outputDir = file(_outputDir)
     getHandWrittenCodeDir().from(file("src/main/java"))
   }
-  generateStatechartTRRules.dependsOn("$taskname")
-}
-
-tasks.register('generateSocialNetworkTRRules') {
-  group = "montitrans"
-}
-fileTree(dir: "$projectDir/src/main/models/social/mtr", include: '**/**.mtr').each {
-  def g = it
-  def taskname = "generateSocialNetworkTRRules${it.getName().substring(0, it.getName().lastIndexOf('.'))}"
-  tasks.register(taskname, MontiTransExec) {
-    getClassPath().setFrom(project(':monticore-test:montitrans:test-dstl-gen').sourceSets.trafo.runtimeClasspath)
-    TFGenTool = 'mc.testcases.social.tr.SocialNetworkTFGenTool'
-    input = file(g)
-    outputDir = file(_outputDir)
-    getHandWrittenCodeDir().from(file("src/main/java"))
-  }
-  generateSocialNetworkTRRules.dependsOn("$taskname")
-}
-
-tasks.register('generateExpressionDSLTRRules') {
-  group = "montitrans"
-}
-fileTree(dir: "$projectDir/src/main/models/expressiondsl/mtr", include: '**/**.mtr').each {
-  def g = it
-  def taskname = "generateExpressionDSLTRRules${it.getName().substring(0, it.getName().lastIndexOf('.'))}"
-  tasks.register(taskname, MontiTransExec) {
-    getClassPath().setFrom(project(':monticore-test:montitrans:test-dstl-gen').sourceSets.trafo.runtimeClasspath)
-    TFGenTool = 'mc.testcases.tr.ExpressionDSLTFGenTool'
-    input = file(g)
-    outputDir = file(_outputDir)
-    getHandWrittenCodeDir().from(file("src/main/java"))
-  }
-  generateExpressionDSLTRRules.dependsOn("$taskname")
 }
 
 
