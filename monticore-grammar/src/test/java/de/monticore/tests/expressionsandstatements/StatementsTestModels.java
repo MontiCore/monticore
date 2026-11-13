@@ -3,6 +3,7 @@ package de.monticore.tests.expressionsandstatements;
 
 import org.junit.jupiter.params.provider.Arguments;
 
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -64,6 +65,7 @@ public class StatementsTestModels {
                 x++;
             x
             """, 6),
+        Arguments.of("Optional<int> value = ~~~; value", Optional.empty()),
         Arguments.of("int x = 1; ; ; ; x", 1)
     );
   }
