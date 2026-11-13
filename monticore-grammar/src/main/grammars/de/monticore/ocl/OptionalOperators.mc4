@@ -28,7 +28,8 @@ component grammar OptionalOperators
 {
 
   /**
-   * `Optional<type> x = ~~~` declares x as an empty optional
+   * `~~~` creates an empty optional value.
+   * E.g., `Optional<type> x = ~~~;` initializes x with an empty optional.
    */
   OptionalEmptyExpression implements Expression =
     "~~~";
