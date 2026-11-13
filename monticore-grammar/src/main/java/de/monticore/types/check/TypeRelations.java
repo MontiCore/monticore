@@ -100,8 +100,9 @@ public class TypeRelations implements ITypeRelations {
   }
 
   protected boolean isSubtypeOfRec(SymTypeExpression subType, SymTypeExpression superType) {
-    if (!subType.getTypeInfo().getSuperTypesList().isEmpty()) {
-      for (SymTypeExpression type : subType.getTypeInfo().getSuperTypesList()) {
+    List<SymTypeExpression> superTypes = subType.getTypeInfo().getSuperTypesList();
+    if (!superTypes.isEmpty()) {
+      for (SymTypeExpression type : superTypes) {
         if (type.print().equals(superType.print())) {
           return true;
         }
@@ -127,8 +128,8 @@ public class TypeRelations implements ITypeRelations {
       }
     }
     boolean subtype = false;
-    for (int i = 0; i < subType.getTypeInfo().getSuperTypesList().size(); i++) {
-      if (isSubtypeOf(subType.getTypeInfo().getSuperTypesList().get(i), superType)) {
+    for (SymTypeExpression directSuperType : superTypes) {
+      if (isSubtypeOf(directSuperType, superType)) {
         subtype = true;
         break;
       }
