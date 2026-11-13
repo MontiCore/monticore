@@ -4,6 +4,7 @@ package de.monticore.ocl.optionaloperators.codegen.javagen;
 import com.google.common.base.Preconditions;
 import de.monticore.codegen.javagen.JavaGenVisitorState;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.ocl.optionaloperators._ast.ASTOptionalEmptyExpression;
 import de.monticore.ocl.optionaloperators._ast.ASTOptionalEqualsExpression;
 import de.monticore.ocl.optionaloperators._ast.ASTOptionalExpressionPrefix;
 import de.monticore.ocl.optionaloperators._ast.ASTOptionalGreaterEqualExpression;
@@ -38,6 +39,11 @@ public class OptionalOperatorsJavaGenVisitor
 
   public OptionalOperatorsJavaGenVisitor(JavaGenVisitorState state) {
     this.state = Preconditions.checkNotNull(state);
+  }
+
+  @Override
+  public void traverse(ASTOptionalEmptyExpression node) {
+    getPrinter().print("java.util.Optional.empty()");
   }
 
   @Override
