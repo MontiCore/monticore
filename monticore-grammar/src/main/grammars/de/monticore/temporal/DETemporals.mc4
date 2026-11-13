@@ -4,7 +4,8 @@ package de.monticore.temporal;
 /* Alpha-version: This is intended to become a MontiCore stable grammar. */
 
 /**
- * This grammar realizes the core interfaces defined in TemporalBasis with the DIN date/time standard.
+ * This grammar realizes the core interfaces defined in TemporalBasis with German date/time
+ * notations (cf. DIN 5008).
  *
  * These date/time-formats are commonly used in German speaking regions.
  */
