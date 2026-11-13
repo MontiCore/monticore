@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.monticore.types;
+
+grammar MCStructuralTypesTest extends
+  de.monticore.types.MCBasicTypes,
+  de.monticore.types.MCStructuralTypes,
+  de.monticore.symbols.BasicSymbols {
+
+  start MCType;
+}

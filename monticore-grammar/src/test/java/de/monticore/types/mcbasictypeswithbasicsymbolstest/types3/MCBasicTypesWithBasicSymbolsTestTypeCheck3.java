@@ -7,8 +7,6 @@ import de.monticore.types.mcbasictypeswithbasicsymbolstest._visitor.MCBasicTypes
 import de.monticore.types3.Type4Ast;
 import de.monticore.types3.generics.context.InferenceContext4Ast;
 import de.monticore.types3.util.MapBasedTypeCheck3;
-import de.monticore.types3.util.WithinScopeBasicSymbolsResolver;
-import de.monticore.types3.util.WithinTypeBasicSymbolsResolver;
 import de.monticore.visitor.ITraverser;
 
 public class MCBasicTypesWithBasicSymbolsTestTypeCheck3 extends MapBasedTypeCheck3 {
@@ -19,8 +17,6 @@ public class MCBasicTypesWithBasicSymbolsTestTypeCheck3 extends MapBasedTypeChec
     Type4Ast type4Ast = new Type4Ast();
 
     MCBasicTypesTypeVisitor visMCBasicTypes = new MCBasicTypesTypeVisitor();
-    visMCBasicTypes.setWithinTypeResolver(new WithinTypeBasicSymbolsResolver());
-    visMCBasicTypes.setWithinScopeResolver(new WithinScopeBasicSymbolsResolver());
     visMCBasicTypes.setType4Ast(type4Ast);
     traverser.add4MCBasicTypes(visMCBasicTypes);
 
