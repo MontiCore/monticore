@@ -36,6 +36,7 @@ public class OOSymbolsSymbols2JsonTest {
         .setName("Type")
         .setSpannedScope(typeSpannedScope)
         .setEnclosingScope(scope)
+        .setIsSealed(true)
         .build();
 
     type.setSpannedScope(typeSpannedScope);
@@ -97,12 +98,14 @@ public class OOSymbolsSymbols2JsonTest {
     Optional<OOTypeSymbol> deserializedType = deserialized.resolveOOType("Type");
     assertTrue(type.isPresent());
     assertTrue(deserializedType.isPresent());
+    assertTrue(deserializedType.get().isIsSealed());
 
     //check that both can resolve the type "SubType" with the supertype "Type"
     Optional<OOTypeSymbol> subtype = scope.resolveOOType("SubType");
     Optional<OOTypeSymbol> deserializedSubType = deserialized.resolveOOType("SubType");
     assertTrue(subtype.isPresent());
     assertTrue(deserializedSubType.isPresent());
+    assertFalse(deserializedSubType.get().isIsSealed());
     assertEquals(1, subtype.get().getSuperTypesList().size());
     assertEquals(1, deserializedSubType.get().getSuperTypesList().size());
     assertEquals("Type", subtype.get().getSuperTypesList().get(0).print());

@@ -47,6 +47,10 @@ component grammar OOSymbols extends BasicSymbols {
    *
    * The new symbol OOTypeSymbol mainly adds OO specific properties.
    *
+   * isSealed marks a type whose direct subtypes are restricted
+   * (e.g., Java's sealed classes, JLS 17, §8.1.1.2). Which subtypes
+   * are permitted is defined by the respective language.
+   *
    */
   interface symbol OOType extends Type = Name ;
   
@@ -59,7 +63,8 @@ component grammar OOSymbols extends BasicSymbols {
     isProtected: boolean
     isPublic: boolean
     isStatic: boolean
-    isFinal: boolean ;
+    isFinal: boolean
+    isSealed: boolean ;
 
   /*=================================================================*/
 
