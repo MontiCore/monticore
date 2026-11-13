@@ -2,6 +2,7 @@
 package de.monticore.expressions.commonexpressions.interpreter;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Throwables;
 import de.monticore.expressions.commonexpressions._ast.*;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsInheritanceHandler;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
@@ -370,11 +371,16 @@ public class CommonExpressionsInterpreter
           ) || currentCallDepth <= callDepthPerMainThread
       ) {
         callDepth.set(callDepth.get() + 1);
-        result = recursiveCalc.calculate(currentFrame);
-        callDepth.set(callDepth.get() - 1);
+        try {
+          result = recursiveCalc.calculate(currentFrame);
+        }
+        finally {
+          callDepth.set(callDepth.get() - 1);
+        }
       }
       else {
         final MCValue[] resultStorage = new MCValue[1];
+        final Throwable[] throwableStorage = new Throwable[1];
         final Runnable recursiveRunnable = () -> {
           isOnCustomStack.set(true);
           resultStorage[0] = recursiveCalc.calculate(currentFrame);
@@ -386,6 +392,7 @@ public class CommonExpressionsInterpreter
             "interpreter",
             stackSizePerCustomThread
         );
+        t.setUncaughtExceptionHandler((thread, e) -> throwableStorage[0] = e);
         t.start();
         try {
           t.join();
@@ -393,6 +400,11 @@ public class CommonExpressionsInterpreter
         catch (InterruptedException e) {
           threadGroup.interrupt();
           Thread.currentThread().interrupt();
+        }
+        if (throwableStorage[0] != null) {
+          Throwables.throwIfUnchecked(throwableStorage[0]);
+          // should never occur
+          throw new IllegalStateException(throwableStorage[0]);
         }
         result = resultStorage[0];
       }

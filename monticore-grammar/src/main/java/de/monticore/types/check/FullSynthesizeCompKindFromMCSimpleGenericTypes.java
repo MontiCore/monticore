@@ -7,6 +7,10 @@ import de.monticore.types.mcsimplegenerictypes._visitor.MCSimpleGenericTypesTrav
 
 import java.util.Optional;
 
+/**
+ * @deprecated use {@link FullSynthesizeCompKindFromMCComponentTypes} for component references.
+ */
+@Deprecated
 public class FullSynthesizeCompKindFromMCSimpleGenericTypes implements ISynthesizeComponent {
 
   protected MCSimpleGenericTypesTraverser traverser;

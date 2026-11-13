@@ -84,12 +84,12 @@ public class IntCommonLiteralsTest {
     Optional<ASTNatLiteral> lit = parser.parse_StringNatLiteral(s);
     assertFalse(lit.isPresent());
     
-    MCAssertions.assertHasFindingsStartingWith("Expected EOF but found token");
+    MCAssertions.assertHasFindingsStartingWith("mismatched input");
   }
   
   static Stream<Arguments> checkSignedFalseArgs() {
     return Stream.of(
-        Arguments.of("0x12", "Expected EOF but found token"),
+        Arguments.of("0x12", "mismatched input 'x12', expected EOF (found: Name) in rule stack: [SignedNatLiteral] "),
         Arguments.of("- 2", "no viable alternative at input '-'"),
         Arguments.of("- 02", "no viable alternative at input '-'")
     );

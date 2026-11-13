@@ -51,7 +51,10 @@ grammar ParseErrors extends de.monticore.MCBasics {
   NoSpaceTest = {noSpace(2)}? "@" Name;
 
   // Example productions based on CDs
-  CDLike = "cd" CDLikeElement*;
+  CDLike = "cd" CDLikeElement+;
+
+  // Example productions based on CDs without an easy EOF
+  CDLikeB = "cd" "{" CDLikeElement* "}";
 
   interface CDLikeElement;
 

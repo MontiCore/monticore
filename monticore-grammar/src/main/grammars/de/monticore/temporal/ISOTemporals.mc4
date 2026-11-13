@@ -78,6 +78,9 @@ component grammar ISOTemporals extends de.monticore.temporal.TemporalBasis {
 
   TimeShift = "Z" | Sign hour:Digits (":" minute:Digits)?;
 
+  // Keeps Z usable as a name in languages that include this grammar
+  nokeyword "Z";
+
   /* ======================================================================== */
   /* =============================== DateTime =============================== */
   /* ======================================================================== */

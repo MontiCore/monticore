@@ -6,6 +6,8 @@ import com.google.common.base.Preconditions;
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.reporting.artifacts.ReportingNameHelper;
+import de.monticore.generating.templateengine.sourcemap.IncludeSpan;
+import de.monticore.sourcemap.DecodedMapping;
 import de.monticore.io.paths.MCPath;
 import de.monticore.symboltable.IScope;
 
@@ -21,6 +23,10 @@ public class ReportManager implements IReportEventHandler {
 
   public ReportManager(String outputDir) {
     this.outputDir = outputDir;
+  }
+
+  public boolean hasReportEventHandler(Class<? extends IReportEventHandler> handlerClass) {
+    return this.reportEventHandlers.stream().anyMatch(handlerClass::isInstance);
   }
 
   public String getOutputDir() {
@@ -57,6 +63,12 @@ public class ReportManager implements IReportEventHandler {
     }
   }
 
+  public void reportBeforeFileCreation(String templateName, Path path, ASTNode ast) {
+    String fileExtension = ReportingNameHelper.getFileextension(path);
+
+    this.reportBeforeFileCreation(templateName, path.toString(), fileExtension, ast);
+  }
+
   public void reportFileCreation(String templateName, Path path, ASTNode ast) {
     String qualifiedName = ReportingNameHelper.getQualifiedName(
         this.getOutputDir(), path);
@@ -83,17 +95,26 @@ public class ReportManager implements IReportEventHandler {
           fileExtension, ast);
     }
   }
-  
+
+  @Override
+  public void reportBeforeFileCreation(String templateName,
+                                 String path, String fileExtension, ASTNode ast) {
+    for (IReportEventHandler handler : this.reportEventHandlers) {
+      handler.reportBeforeFileCreation(templateName, path,
+          fileExtension, ast);
+    }
+  }
+
   @Override
   public void reportFileCreation(Path parentPath, Path file) {
     this.reportEventHandlers.forEach(h -> h.reportFileCreation(parentPath, file));
   }
-  
+
   @Override
   public void reportFileCreation(String fileName) {
     this.reportEventHandlers.forEach(h -> h.reportFileCreation(fileName));
   }
-  
+
   @Override
   public void reportFileExistenceChecking(List<Path> parentPath, Path file) {
     this.reportEventHandlers.forEach(h -> h.reportFileExistenceChecking(parentPath, file));
@@ -448,6 +469,28 @@ public class ReportManager implements IReportEventHandler {
       handler.reportSymbolTableScope(scope);
     }
   }
+
+  @Override
+  public void reportTemplateSourceMapping(List<DecodedMapping> mapping) {
+    for (IReportEventHandler handler : reportEventHandlers) {
+      handler.reportTemplateSourceMapping(mapping);
+    }
+  }
+
+  @Override
+  public void reportASTSourceMapping(List<DecodedMapping> mapping) {
+    for (IReportEventHandler handler : reportEventHandlers) {
+      handler.reportASTSourceMapping(mapping);
+    }
+  }
+
+  @Override
+  public void reportTemplateIncludeSpan(List<IncludeSpan> span) {
+    for (IReportEventHandler handler : reportEventHandlers) {
+      handler.reportTemplateIncludeSpan(span);
+    }
+  }
+
 
   /**
    * A factory for providing tool specific report managers.

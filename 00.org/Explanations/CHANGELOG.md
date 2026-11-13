@@ -2,6 +2,26 @@
 
 # Release Notes
 
+
+## MontiCore 7.10.0
+release: TBD
+
+## Additions
+* TBD
+
+## Changes:
+* Parser:
+  * noKeyword handling without a semantic predicate/changed Name parsing [#370](https://github.com/MontiCore/monticore/pull/370)
+  * removed state information from ParserInfos, see LSP's TokenXPath for a replacement [#370](https://github.com/MontiCore/monticore/pull/370)
+* TBD
+
+## Removals:
+* TBD
+
+## Fixes:
+* TBD
+
+
 ## MontiCore 7.9.0
 release: 04. August 2026
 

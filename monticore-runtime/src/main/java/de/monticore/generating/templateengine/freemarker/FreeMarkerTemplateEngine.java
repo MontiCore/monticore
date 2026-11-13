@@ -4,25 +4,33 @@ package de.monticore.generating.templateengine.freemarker;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
+
+import de.monticore.generating.templateengine.TemplateController;
+import de.monticore.generating.templateengine.reporting.Reporting;
+import de.monticore.generating.templateengine.sourcemap.SourceMapCalculator;
+import de.monticore.generating.templateengine.sourcemap.TemplateAdaptionForSourcePositionReporting;
+import de.se_rwth.commons.logging.Log;
 import com.google.common.base.Preconditions;
 import freemarker.log.Logger;
 import freemarker.template.Configuration;
+import freemarker.template.SimpleHash;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
 /**
  * Helps to process FreeMarker templates with MontiCore.
- * 
+ *
  *
  */
 public class FreeMarkerTemplateEngine {
-  
+
   public static final String FM_FILE_EXTENSION = ".ftl";
   protected final Configuration configuration;
-  
+
   public FreeMarkerTemplateEngine(Configuration configuration) {
     this.configuration = Preconditions.checkNotNull(
             configuration,
@@ -31,31 +39,34 @@ public class FreeMarkerTemplateEngine {
 
   /**
    * Loads the template named qualifiedTemplateName from the class path.
-   * 
+   *
    * @param qualifiedTemplateName full qualified template name EXCLUDING the
    *          file extension
    * @return the FreeMarker template or null, if the template is not available
    */
   public Template loadTemplate(String qualifiedTemplateName) {
     isNullOrEmpty(qualifiedTemplateName);
-      
+
     // use empty logger to suppress default free marker log behaviour
     System.setProperty(Logger.SYSTEM_PROPERTY_NAME_LOGGER_LIBRARY, Logger.LIBRARY_NAME_NONE);
-  
+
     Template result;
     try {
       result = configuration.getTemplate(qualifiedTemplateName);
+      if(Reporting.isTemplateSourceMappingEnabled() && !Reporting.isConfigTemplate(qualifiedTemplateName)) {
+        result = TemplateAdaptionForSourcePositionReporting.adaptTemplateWithPositionMarkers(result, configuration);
+      }
     }
     catch (IOException e) {
       throw new MontiCoreFreeMarkerException("0xA0560 Unable to load template: " + e.getMessage());
     }
     return result;
   }
-  
+
   /**
    * Runs the Template engine on the given template and data and writes the
    * result into the StringBuilder buffer
-   * 
+   *
    * @param buffer contains the result
    * @param data data for the template
    * @param template the template file
@@ -64,15 +75,14 @@ public class FreeMarkerTemplateEngine {
     Preconditions.checkNotNull(template, "0xA0562 The given template must not be null");
     String seperator = System.getProperty("line.seperator");
 
-    Writer w = new Writer() {
-      public void write(char[] cbuf, int off, int len) {
-        buffer.append(cbuf, off, len);
-      }
-      public void flush() { }
-      public void close() { }
-    };
+    ContentWriter w = new ContentWriter(buffer);
 
     try {
+      if(Reporting.isTemplateSourceMappingEnabled()) {
+        if (data instanceof SimpleHash asSimpleHash) {
+          asSimpleHash.put(TemplateController.SOURCE_MAP_CALCULATOR, new SourceMapCalculator(w, template));
+        }
+      }
       template.process(data, w);
       w.flush();
     }
@@ -111,11 +121,11 @@ public class FreeMarkerTemplateEngine {
               seperator + "Exception-type: " + e.getCause())  ;
     }
   }
-  
+
   /**
    * Loads the template first using the loadTemplate() method then runs the
    * template engine using the run() method.
-   * 
+   *
    * @param qualifiedTemplateName full qualified template name EXCLUDING the
    *          file extension
    * @param buffer contains the result
@@ -124,5 +134,24 @@ public class FreeMarkerTemplateEngine {
   public void loadAndRun(String qualifiedTemplateName, StringBuilder buffer, Object data) {
     Template t = loadTemplate(qualifiedTemplateName);
     run(buffer, data, t);
+  }
+
+  public static class ContentWriter extends Writer {
+
+    StringBuilder buffer;
+
+    public ContentWriter(StringBuilder buffer) {
+      this.buffer = buffer;
+    }
+
+    public void write(char[] cbuf, int off, int len) {
+      buffer.append(cbuf, off, len);
+    }
+    public void flush() { }
+    public void close() { }
+
+    public String getCurrentContent() {
+      return buffer.toString();
+    }
   }
 }

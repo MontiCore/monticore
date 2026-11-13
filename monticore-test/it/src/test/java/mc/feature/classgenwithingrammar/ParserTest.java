@@ -33,7 +33,7 @@ public class ParserTest {
   static Stream<Arguments> testTypeInvalidArgs() {
     return Stream.of(
         // Test that one Welt is too much
-        Arguments.of("Hallo Hallo Hallo Welt ", "Expected EOF but found token"),
+        Arguments.of("Hallo Hallo Hallo Welt ", "mismatched input 'Welt', expected EOF"),
         // Test that the last Hallo is too much
         Arguments.of("Hallo Hallo Hallo Hallo ",
             "0xA7018x298 Invalid maximal occurence for sub in rule Type : Should be 3 but is 4!"),
@@ -64,7 +64,7 @@ public class ParserTest {
   static Stream<Arguments> testType2InvalidArgs() {
     return Stream.of(
         // Test that one Welt is too much
-        Arguments.of("Hall Hall Hall \"Wel\" ", "Expected EOF but found token"),
+        Arguments.of("Hall Hall Hall \"Wel\" ", "mismatched input 'Wel', expected EOF"),
         // Test that too many Hallo and Welt are detected in one go
         Arguments.of("Hall Hall Hall Hall \"Wel\" ",
             "0xA7018x288 Invalid maximal occurence for name in rule Type2 : Should be 3 but is 4!")

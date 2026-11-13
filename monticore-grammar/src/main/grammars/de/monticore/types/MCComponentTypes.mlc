@@ -1,0 +1,37 @@
+package de.monticore.types;
+
+mlc MCComponentTypes {
+
+  // export the grammar
+  export "$projectDir/src/main/grammars" {
+    include "de/monticore/types/MCComponentTypes.mc4";
+  }
+
+  // export handwritten code
+  export "$projectDir/src/main/java" {
+    include "de/monticore/types/mccomponenttypes/**.java";
+    include "de/monticore/types/check/ISynthesizeComponent.java";
+    include "de/monticore/types/check/FullSynthesizeCompKindFromMCComponentTypes.java";
+    include "de/monticore/types/check/SynthesizeCompKindFromMCComponentTypes.java";
+  }
+
+  // export all Java files generated from the grammar
+  export "$projectDir/target/generated-sources/monticore/sourcecode" {
+    include "de/monticore/types/mccomponenttypes/**.java";
+  }
+
+  promote {
+    mlc "de.monticore.types.MCSimpleGenericTypes";
+    mlc "de.monticore.symbols.CompSymbols";
+  }
+
+  uses {
+    include "$projectDir/src/main/java/de/monticore/types/check/CompKindCheckResult.java";
+    include "$projectDir/src/main/java/de/monticore/types/check/CompKindExpression.java";
+    include "$projectDir/src/main/java/de/monticore/types/check/CompKindOfComponentType.java";
+    include "$projectDir/src/main/java/de/monticore/types/check/CompKindOfGenericComponentType.java";
+    include "$projectDir/src/main/java/de/monticore/types/check/SymTypeExpression.java";
+    include "$projectDir/src/main/java/de/monticore/types3/TypeCheck3.java";
+    include "$mp/com/google/common/base/Preconditions.class";
+  }
+}

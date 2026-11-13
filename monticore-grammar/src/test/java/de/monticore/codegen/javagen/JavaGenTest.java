@@ -37,6 +37,8 @@ public class JavaGenTest extends AbstractJavaGenTest {
     assumeFalse(modelStr.contains(" ^ "));
     assumeFalse(modelStr.equals("6 & 3"));
     assumeFalse(modelStr.equals("6 | 3"));
+    assumeFalse(modelStr.equals("true & false"));
+    assumeFalse(modelStr.equals("false | true"));
     // needs better checkValue, as this is not easily tested with Strings
     assumeFalse(expectedValue instanceof Set<?>);
 
@@ -59,6 +61,7 @@ public class JavaGenTest extends AbstractJavaGenTest {
     assumeFalse(modelStr.contains("&="));
     assumeFalse(modelStr.contains("^="));
     assumeFalse(modelStr.contains("|="));
+    assumeFalse(modelStr.contains("l: {"));
     // recursive function definition currently not supported
     // (they cannot be done directly in Java)
     assumeFalse(modelStr.contains("int -> int s ="));

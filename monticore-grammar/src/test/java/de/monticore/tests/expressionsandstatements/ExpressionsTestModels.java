@@ -122,6 +122,9 @@ public class ExpressionsTestModels {
         Arguments.of("!false", true),
         Arguments.of("!(1 < 2)", false),
         Arguments.of("!(2 < 1)", true),
+        Arguments.of("true & false", false),
+        Arguments.of("true ^ true", false),
+        Arguments.of("false | true", true),
         // fits here somewhat-ish
         Arguments.of("true ? 5 + 2 : -1", 7)
     );
@@ -145,8 +148,9 @@ public class ExpressionsTestModels {
         Arguments.of("Optional.of(2) ?< 3", true),
         Arguments.of("((Optional<int>)Optional.empty()) ?< 1", false),
         Arguments.of("Optional.of(2) ?> 3", false),
-        Arguments.of("Optional.of(2) ?<= 3", true),
         Arguments.of("Optional.of(2) ?<= 1", false),
+        Arguments.of("Optional.of(2) ?<= 2", true),
+        Arguments.of("Optional.of(2) ?<= 3", true),
         Arguments.of("Optional.of(2) ?>= 2", true),
         Arguments.of("Optional.of(2) ?== 2", true),
         Arguments.of("Optional.of(2) ?!= 2", false)
@@ -231,6 +235,8 @@ public class ExpressionsTestModels {
         Arguments.of("[x in [1,3] | true]", List.of(1, 3)),
         Arguments.of("[x in [1,2,3] | x % 2 == 1]", List.of(1, 3)),
         Arguments.of("{1, 4..6, 4}", Set.of(1, 4, 5, 6)),
+        Arguments.of("[1, 0.5]", List.of(1.0, 0.5)),
+        Arguments.of("[1..3, 0.5]", List.of(1.0, 2.0, 3.0, 0.5)),
         Arguments.of("{x * x | x in {1, 2, 3}}", Set.of(1, 4, 9)),
         Arguments.of("{x | x in {1, 2, 3, 4}, x % 2 == 0}", Set.of(2, 4))
     );
