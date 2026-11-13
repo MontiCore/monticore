@@ -24,6 +24,16 @@ public class OptionalOperatorsTypeVisitorTest extends AbstractTypeVisitorTest {
     addFurtherVariables();
   }
 
+  @Test
+  public void inferOptionalEmptyExpressionType() throws IOException {
+    checkExpr("~~~", "Optional<int>", "Optional<int>");
+  }
+
+  @Test
+  public void emptyExpressionWithoutTargetTypeIsAnError() throws IOException {
+    checkErrorExpr("~~~", "0xFDB76");
+  }
+
   protected void addFurtherVariables() {
     // add further types to test more complex expressions
     IBasicSymbolsGlobalScope gs = BasicSymbolsMill.globalScope();

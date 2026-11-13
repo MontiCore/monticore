@@ -3,6 +3,7 @@ package de.monticore.ocl.optionaloperators.types3;
 
 import de.monticore.expressions.commonexpressions._ast.ASTInfixExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.ocl.optionaloperators._ast.ASTOptionalEmptyExpression;
 import de.monticore.ocl.optionaloperators._ast.ASTOptionalEqualsExpression;
 import de.monticore.ocl.optionaloperators._ast.ASTOptionalExpressionPrefix;
 import de.monticore.ocl.optionaloperators._ast.ASTOptionalGreaterEqualExpression;
@@ -35,6 +36,18 @@ public class OptionalOperatorsTypeVisitor extends AbstractTypeVisitor
   protected static final String OPT_NUMERIC_COMPARISON_ERROR_CODE = "0xFD280";
   protected static final String OPT_NUMERIC_EXPECTED_ERROR_CODE = "0xFD209";
   protected static final String OPT_EQUALITY_ERROR_CODE = "0xFD285";
+  protected static final String OPT_EMPTY_ERROR_CODE = "0xFDB75";
+
+  @Override
+  public void endVisit(ASTOptionalEmptyExpression expr) {
+    Log.error(
+        OPT_EMPTY_ERROR_CODE + " internal error: "
+            + "empty Optional expression requires CTTI visitor",
+        expr.get_SourcePositionStart(),
+        expr.get_SourcePositionEnd()
+    );
+    getType4Ast().setTypeOfExpression(expr, createObscureType());
+  }
 
   /**
    * @deprecated is now a static delegate
