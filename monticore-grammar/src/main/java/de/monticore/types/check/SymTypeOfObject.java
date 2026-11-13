@@ -14,9 +14,6 @@ public class SymTypeOfObject extends SymTypeExpression {
 
   protected TypeSymbol typeSymbol;
 
-  /**
-   * Constructor: with a TypeSymbolSurrogate that contains the name and enclosingScope
-   */
   public SymTypeOfObject(TypeSymbol typeSymbol)
   {
     Preconditions.checkNotNull(typeSymbol);

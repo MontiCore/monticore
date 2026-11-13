@@ -2,6 +2,7 @@
 package de.monticore.symbols.oosymbols._symboltable;
 
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
+import de.monticore.symboltable.Memorizer;
 import de.monticore.symboltable.modifiers.*;
 
 import java.util.ArrayList;
@@ -18,7 +19,8 @@ public class MethodSymbol extends MethodSymbolTOP {
    */
   public MethodSymbol deepClone() {
     MethodSymbol clone = new MethodSymbol(name);
-    clone.setType(this.type.deepClone());
+    // keep the type lazy
+    clone.setTypeSupplier(Memorizer.map(getTypeSupplier(), t -> t == null ? null : t.deepClone()));
     clone.setEnclosingScope(this.enclosingScope);
     clone.setFullName(this.fullName);
     clone.setIsConstructor(this.isConstructor);
