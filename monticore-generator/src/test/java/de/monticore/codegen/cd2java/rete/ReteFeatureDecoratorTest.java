@@ -121,7 +121,9 @@ public class ReteFeatureDecoratorTest extends DecoratorTestCase {
     CD4C.init(generatorSetup);
     StringBuilder sb = generatorEngine.generate(CD2JavaTemplates.CLASS, featureClass, packageDir);
     // test parsing
-    ParserConfiguration configuration = new ParserConfiguration();
+    // resolveConstant uses switch expressions
+    ParserConfiguration configuration = new ParserConfiguration()
+        .setLanguageLevel(ParserConfiguration.LanguageLevel.JAVA_17);
     JavaParser parser = new JavaParser(configuration);
     ParseResult<?> parseResult = parser.parse(sb.toString());
     assertTrue(parseResult.isSuccessful());

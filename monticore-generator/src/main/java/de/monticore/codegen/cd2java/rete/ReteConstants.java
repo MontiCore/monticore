@@ -26,4 +26,8 @@ public class ReteConstants {
 
   public static final String ALL_TRANSITIVE_FEATURES = "ALL_TRANSITIVE";
 
+  public static final String RESOLVE_CONSTANT = "resolveConstant";
+
+  public static final String RESOLVE_CONSTANT_IN_SUPER_LANGUAGES = "resolveConstantInSuperLanguages";
+
 }

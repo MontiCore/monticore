@@ -19,6 +19,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Map;
 
 import static de.monticore.codegen.cd2java.DecoratorAssert.assertDeepEquals;
 import static de.monticore.codegen.cd2java.DecoratorTestUtil.getAttributeBy;
@@ -46,17 +47,83 @@ public class ReteFeatureDecoratorCompositionTest extends DecoratorTestCase {
 
   private ASTCDClass composedFeatures;
 
+  private ASTCDCompilationUnit base;
+
+  private ASTCDCompilationUnit states;
+
+  private ASTCDCompilationUnit composed;
+
   @BeforeEach
   public void setup() {
     // super languages first, as the generator processes them before the sub language
-    ASTCDCompilationUnit base = parseAndComplete("ReteBase");
-    ASTCDCompilationUnit states = parseAndComplete("ReteStates");
+    base = parseAndComplete("ReteBase");
+    states = parseAndComplete("ReteStates");
     parseAndComplete("ReteLabels");
-    ASTCDCompilationUnit composed = parseAndComplete("ReteComposed");
+    composed = parseAndComplete("ReteComposed");
 
     baseFeatures = new ReteFeatureDecorator(glex, new ReteService(base)).decorate(base);
     statesFeatures = new ReteFeatureDecorator(glex, new ReteService(states)).decorate(states);
     composedFeatures = new ReteFeatureDecorator(glex, new ReteService(composed)).decorate(composed);
+  }
+
+  private Map<String, Map<String, String>> resolveConstantCases(ASTCDCompilationUnit compilationUnit) {
+    return new ReteFeatureDecorator(glex, new ReteService(compilationUnit))
+        .createResolveConstantCases(compilationUnit.getCDDefinition());
+  }
+
+  private static String constant(String featuresClass, String constantName) {
+    return "java.util.Optional.of(\"" + featuresClass + "." + constantName + "\")";
+  }
+
+  private static String inSuperLanguages(String astType, String attributeName) {
+    return "resolveConstantInSuperLanguages(\"" + astType + "\", \"" + attributeName + "\")";
+  }
+
+  /**
+   * resolveConstant resolves the features of the language itself directly and attributes whose
+   * feature is declared by a super language via the super languages, passing the declaring type:
+   * ASTState of ReteStates inherits id from the interface ASTElement of ReteBase
+   */
+  @Test
+  public void testResolveConstantOfSuperLanguages() {
+    assertEquals(Map.of(
+            "de.monticore.codegen.rete.retebase._ast.ASTElement",
+            Map.of("id", constant(BASE_FEATURES, "ELEMENT_ID"))),
+        resolveConstantCases(base));
+
+    assertEquals(Map.of(
+            "de.monticore.codegen.rete.retestates._ast.ASTState", Map.of(
+                "id", inSuperLanguages("de.monticore.codegen.rete.retebase._ast.ASTElement", "id"),
+                "initial", constant(STATES_FEATURES, "STATE_INITIAL"),
+                "name", constant(STATES_FEATURES, "STATE_NAME"))),
+        resolveConstantCases(states));
+
+    assertTrue(Log.getFindings().isEmpty());
+  }
+
+  /**
+   * the overriding ASTState of ReteComposed inherits name and initial from ASTState of ReteStates
+   * (which repeats id of ReteBase's ASTElement); the feature of the type declaring the attribute
+   * first applies, even across the diamond
+   */
+  @Test
+  public void testResolveConstantOfComposedLanguage() {
+    String composedFeaturesClass = "de.monticore.codegen.rete.retecomposed._rete.ReteComposedReteFeatures";
+    String statesState = "de.monticore.codegen.rete.retestates._ast.ASTState";
+    String baseElement = "de.monticore.codegen.rete.retebase._ast.ASTElement";
+
+    assertEquals(Map.of(
+            "de.monticore.codegen.rete.retecomposed._ast.ASTState", Map.of(
+                "id", inSuperLanguages(baseElement, "id"),
+                "initial", inSuperLanguages(statesState, "initial"),
+                "name", inSuperLanguages(statesState, "name"),
+                "priority", constant(composedFeaturesClass, "STATE_PRIORITY")),
+            "de.monticore.codegen.rete.retecomposed._ast.ASTLabeledState", Map.of(
+                "id", inSuperLanguages(baseElement, "id"),
+                "labels", constant(composedFeaturesClass, "LABELED_STATE_LABELS"))),
+        resolveConstantCases(composed));
+
+    assertTrue(Log.getFindings().isEmpty());
   }
 
   private ASTCDCompilationUnit parseAndComplete(String name) {
@@ -142,7 +209,9 @@ public class ReteFeatureDecoratorCompositionTest extends DecoratorTestCase {
     GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
     CD4C.init(generatorSetup);
     String code = generatorEngine.generate(CD2JavaTemplates.CLASS, featureClass, packageDir).toString();
-    ParseResult<?> parseResult = new JavaParser(new ParserConfiguration()).parse(code);
+    // resolveConstant uses switch expressions
+    ParseResult<?> parseResult = new JavaParser(new ParserConfiguration()
+        .setLanguageLevel(ParserConfiguration.LanguageLevel.JAVA_17)).parse(code);
     assertTrue(parseResult.isSuccessful(), code);
     return code;
   }

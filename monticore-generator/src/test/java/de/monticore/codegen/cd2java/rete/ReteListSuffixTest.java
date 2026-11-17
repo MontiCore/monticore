@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Test;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -59,6 +60,27 @@ public class ReteListSuffixTest extends DecoratorTestCase {
 
     assertEquals(List.of("SIGNATURE_NAME", "SIGNATURE_PARAMS", "PARAM_NAME", "ALL", "ALL_TRANSITIVE"),
         features.getCDAttributeList().stream().map(ASTCDAttribute::getName).toList());
+    assertTrue(Log.getFindings().isEmpty());
+  }
+
+  /**
+   * resolveConstant uses the attribute names of the grammar (param), not the names with list
+   * suffix (params); Method repeats name and param of the interface Signature, whose features apply
+   */
+  @Test
+  public void testResolveConstant() {
+    String astPackage = "de.monticore.codegen.rete.retelistsuffix._ast.";
+    String features = "java.util.Optional.of(\"de.monticore.codegen.rete.retelistsuffix._rete.ReteListSuffixReteFeatures.";
+
+    Map<String, String> signatureCases = Map.of(
+        "name", features + "SIGNATURE_NAME\")",
+        "param", features + "SIGNATURE_PARAMS\")");
+
+    assertEquals(Map.of(
+            astPackage + "ASTSignature", signatureCases,
+            astPackage + "ASTMethod", signatureCases,
+            astPackage + "ASTParam", Map.of("name", features + "PARAM_NAME\")")),
+        new ReteFeatureDecorator(glex, new ReteService(cd)).createResolveConstantCases(cd.getCDDefinition()));
     assertTrue(Log.getFindings().isEmpty());
   }
 
