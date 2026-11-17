@@ -8,6 +8,7 @@ import de.monticore.cdbasis._ast.*;
 import de.monticore.codegen.cd2java.AbstractCreator;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.generating.templateengine.StringHookPoint;
+import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
@@ -165,18 +166,9 @@ public class ReteFeatureDecorator extends AbstractCreator<ASTCDCompilationUnit, 
         getCDParameterFacade().createParameter("String", "astType"),
         getCDParameterFacade().createParameter("String", "attributeName"));
 
-    // types of this language list all their visible attributes, so an unknown attribute has no
-    // feature; types of other languages may be known by the super languages
-    StringBuilder body = new StringBuilder("return switch (astType) {\n");
-    createResolveConstantCases(cdDefinition).forEach((astType, attributes) -> {
-      body.append("  case \"").append(astType).append("\" -> switch (attributeName) {\n");
-      attributes.forEach((attributeName, result) -> body.append("    case \"").append(attributeName)
-          .append("\" -> ").append(result).append(";\n"));
-      body.append("    default -> java.util.Optional.empty();\n  };\n");
-    });
-    body.append("  default -> ").append(RESOLVE_CONSTANT_IN_SUPER_LANGUAGES)
-        .append("(astType, attributeName);\n};");
-    replaceTemplate(EMPTY_BODY, method, new StringHookPoint(body.toString()));
+    Map<String, Map<String, String>> featureConstants = createFeatureConstants(cdDefinition);
+    replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("_rete.ResolveConstant",
+        createDeclaringTypes(cdDefinition, featureConstants), featureConstants));
 
     replaceTemplate(JAVADOC, method, new StringHookPoint("""
         /**
@@ -193,22 +185,37 @@ public class ReteFeatureDecorator extends AbstractCreator<ASTCDCompilationUnit, 
   }
 
   /**
-   * @return the cases of resolveConstant: astType -> attributeName -> result, for all AST types of
-   * this language and all their (also inherited) attributes. The result is the qualified name of a
-   * feature constant of this language, or the delegation to the super languages for attributes
-   * whose feature is declared by a super language. Types without such attributes are omitted.
+   * @return the feature constants of this language: AST type -> attribute name (as in the
+   * grammar) -> qualified name of the constant; types without features of their own are omitted
    */
-  protected Map<String, Map<String, String>> createResolveConstantCases(ASTCDDefinition cdDefinition) {
-    // the feature constants of this language: AST type -> attribute name -> constant
-    Map<String, Map<String, String>> ownConstants = new LinkedHashMap<>();
+  protected Map<String, Map<String, String>> createFeatureConstants(ASTCDDefinition cdDefinition) {
+    Map<String, Map<String, String>> featureConstants = new LinkedHashMap<>();
     for (ASTCDType type : reteService.getFeatureTypes(cdDefinition)) {
       Map<String, String> constants = new LinkedHashMap<>();
       for (ASTCDAttribute attribute : reteService.getFeatureAttributes(type)) {
         constants.put(getNativeName(reteService.getSymbolName(attribute)),
             reteService.getFeaturesFullName() + "." + reteService.getFeatureConstantName(type, attribute));
       }
-      ownConstants.put(reteService.createASTFullName(type.getSymbol()), constants);
+      if (!constants.isEmpty()) {
+        featureConstants.put(reteService.createASTFullName(type.getSymbol()), constants);
+      }
     }
+    return featureConstants;
+  }
+
+  /**
+   * @return the cases of resolveConstant: AST type -> attribute name (as in the grammar) -> the
+   * AST type declaring the feature of the attribute, for all AST types of this language and all
+   * their (also inherited) attributes having a feature. The declaring type is either a type of
+   * this language (see {@link #createFeatureConstants}) or of a super language. Types without
+   * such attributes are omitted.
+   *
+   * @param ownConstants the feature constants of this language (see {@link #createFeatureConstants})
+   */
+  protected Map<String, Map<String, String>> createDeclaringTypes(ASTCDDefinition cdDefinition,
+      Map<String, Map<String, String>> ownConstants) {
+    Set<String> ownTypes = reteService.getFeatureTypes(cdDefinition).stream()
+        .map(type -> reteService.createASTFullName(type.getSymbol())).collect(Collectors.toSet());
 
     Map<String, Map<String, String>> cases = new LinkedHashMap<>();
     for (ASTCDType type : reteService.getFeatureTypes(cdDefinition)) {
@@ -227,15 +234,10 @@ public class ReteFeatureDecorator extends AbstractCreator<ASTCDCompilationUnit, 
         }
         String declaringASTType = reteService.createASTFullName(declaringType.get());
         String nativeName = getNativeName(attributeName);
-        if (ownConstants.containsKey(declaringASTType)) {
-          String constant = ownConstants.get(declaringASTType).get(nativeName);
-          if (constant != null) {
-            typeCases.put(nativeName, "java.util.Optional.of(\"" + constant + "\")");
-          }
-        }
-        else {
-          typeCases.put(nativeName, RESOLVE_CONSTANT_IN_SUPER_LANGUAGES + "(\"" + declaringASTType
-              + "\", \"" + nativeName + "\")");
+        // attributes of types of this language without feature constant are omitted
+        if (!ownTypes.contains(declaringASTType)
+            || ownConstants.getOrDefault(declaringASTType, Map.of()).containsKey(nativeName)) {
+          typeCases.put(nativeName, declaringASTType);
         }
       }
       if (!typeCases.isEmpty()) {
@@ -274,17 +276,10 @@ public class ReteFeatureDecorator extends AbstractCreator<ASTCDCompilationUnit, 
         getCDParameterFacade().createParameter("String", "astType"),
         getCDParameterFacade().createParameter("String", "attributeName"));
 
-    StringBuilder body = new StringBuilder();
-    if (!reteService.getSuperCDsDirect().isEmpty()) {
-      body.append("java.util.Optional<String> constant;\n");
-      for (DiagramSymbol superCD : reteService.getSuperCDsDirect()) {
-        body.append("constant = ").append(reteService.getFeaturesFullName(superCD)).append(".")
-            .append(RESOLVE_CONSTANT).append("(astType, attributeName);\n")
-            .append("if (constant.isPresent()) {\n  return constant;\n}\n");
-      }
-    }
-    body.append("return java.util.Optional.empty();");
-    replaceTemplate(EMPTY_BODY, method, new StringHookPoint(body.toString()));
+    List<String> superFeatures = reteService.getSuperCDsDirect().stream()
+        .map(reteService::getFeaturesFullName).toList();
+    replaceTemplate(EMPTY_BODY, method,
+        new TemplateHookPoint("_rete.ResolveConstantInSuperLanguages", superFeatures));
     return method;
   }
 

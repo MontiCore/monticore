@@ -70,17 +70,23 @@ public class ReteListSuffixTest extends DecoratorTestCase {
   @Test
   public void testResolveConstant() {
     String astPackage = "de.monticore.codegen.rete.retelistsuffix._ast.";
-    String features = "java.util.Optional.of(\"de.monticore.codegen.rete.retelistsuffix._rete.ReteListSuffixReteFeatures.";
+    String features = "de.monticore.codegen.rete.retelistsuffix._rete.ReteListSuffixReteFeatures.";
 
-    Map<String, String> signatureCases = Map.of(
-        "name", features + "SIGNATURE_NAME\")",
-        "param", features + "SIGNATURE_PARAMS\")");
+    String signature = astPackage + "ASTSignature";
+    String param = astPackage + "ASTParam";
+    ReteFeatureDecorator decorator = new ReteFeatureDecorator(glex, new ReteService(cd));
+    Map<String, Map<String, String>> featureConstants = decorator.createFeatureConstants(cd.getCDDefinition());
 
     assertEquals(Map.of(
-            astPackage + "ASTSignature", signatureCases,
-            astPackage + "ASTMethod", signatureCases,
-            astPackage + "ASTParam", Map.of("name", features + "PARAM_NAME\")")),
-        new ReteFeatureDecorator(glex, new ReteService(cd)).createResolveConstantCases(cd.getCDDefinition()));
+            signature, Map.of("name", signature, "param", signature),
+            astPackage + "ASTMethod", Map.of("name", signature, "param", signature),
+            param, Map.of("name", param)),
+        decorator.createDeclaringTypes(cd.getCDDefinition(), featureConstants));
+    // Method has no features of its own
+    assertEquals(Map.of(
+            signature, Map.of("name", features + "SIGNATURE_NAME", "param", features + "SIGNATURE_PARAMS"),
+            param, Map.of("name", features + "PARAM_NAME")),
+        featureConstants);
     assertTrue(Log.getFindings().isEmpty());
   }
 

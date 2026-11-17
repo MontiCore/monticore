@@ -9,6 +9,7 @@ import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cdbasis._ast.ASTCDAttribute;
 import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.codegen.cd2java.DecoratorTestCase;
 import de.monticore.codegen.mc2cd.MC2CD4CodeSymbolTableCompleter;
 import de.monticore.generating.GeneratorEngine;
@@ -66,17 +67,15 @@ public class ReteFeatureDecoratorCompositionTest extends DecoratorTestCase {
     composedFeatures = new ReteFeatureDecorator(glex, new ReteService(composed)).decorate(composed);
   }
 
-  private Map<String, Map<String, String>> resolveConstantCases(ASTCDCompilationUnit compilationUnit) {
+  private Map<String, Map<String, String>> declaringTypes(ASTCDCompilationUnit compilationUnit) {
+    ReteFeatureDecorator decorator = new ReteFeatureDecorator(glex, new ReteService(compilationUnit));
+    ASTCDDefinition cdDefinition = compilationUnit.getCDDefinition();
+    return decorator.createDeclaringTypes(cdDefinition, decorator.createFeatureConstants(cdDefinition));
+  }
+
+  private Map<String, Map<String, String>> featureConstants(ASTCDCompilationUnit compilationUnit) {
     return new ReteFeatureDecorator(glex, new ReteService(compilationUnit))
-        .createResolveConstantCases(compilationUnit.getCDDefinition());
-  }
-
-  private static String constant(String featuresClass, String constantName) {
-    return "java.util.Optional.of(\"" + featuresClass + "." + constantName + "\")";
-  }
-
-  private static String inSuperLanguages(String astType, String attributeName) {
-    return "resolveConstantInSuperLanguages(\"" + astType + "\", \"" + attributeName + "\")";
+        .createFeatureConstants(compilationUnit.getCDDefinition());
   }
 
   /**
@@ -86,17 +85,18 @@ public class ReteFeatureDecoratorCompositionTest extends DecoratorTestCase {
    */
   @Test
   public void testResolveConstantOfSuperLanguages() {
-    assertEquals(Map.of(
-            "de.monticore.codegen.rete.retebase._ast.ASTElement",
-            Map.of("id", constant(BASE_FEATURES, "ELEMENT_ID"))),
-        resolveConstantCases(base));
+    String baseElement = "de.monticore.codegen.rete.retebase._ast.ASTElement";
+    String statesState = "de.monticore.codegen.rete.retestates._ast.ASTState";
 
-    assertEquals(Map.of(
-            "de.monticore.codegen.rete.retestates._ast.ASTState", Map.of(
-                "id", inSuperLanguages("de.monticore.codegen.rete.retebase._ast.ASTElement", "id"),
-                "initial", constant(STATES_FEATURES, "STATE_INITIAL"),
-                "name", constant(STATES_FEATURES, "STATE_NAME"))),
-        resolveConstantCases(states));
+    assertEquals(Map.of(baseElement, Map.of("id", baseElement)), declaringTypes(base));
+    assertEquals(Map.of(baseElement, Map.of("id", BASE_FEATURES + ".ELEMENT_ID")), featureConstants(base));
+
+    assertEquals(Map.of(statesState, Map.of("id", baseElement, "initial", statesState, "name", statesState)),
+        declaringTypes(states));
+    assertEquals(Map.of(statesState, Map.of(
+            "initial", STATES_FEATURES + ".STATE_INITIAL",
+            "name", STATES_FEATURES + ".STATE_NAME")),
+        featureConstants(states));
 
     assertTrue(Log.getFindings().isEmpty());
   }
@@ -109,19 +109,25 @@ public class ReteFeatureDecoratorCompositionTest extends DecoratorTestCase {
   @Test
   public void testResolveConstantOfComposedLanguage() {
     String composedFeaturesClass = "de.monticore.codegen.rete.retecomposed._rete.ReteComposedReteFeatures";
+    String composedState = "de.monticore.codegen.rete.retecomposed._ast.ASTState";
+    String composedLabeledState = "de.monticore.codegen.rete.retecomposed._ast.ASTLabeledState";
     String statesState = "de.monticore.codegen.rete.retestates._ast.ASTState";
     String baseElement = "de.monticore.codegen.rete.retebase._ast.ASTElement";
 
     assertEquals(Map.of(
-            "de.monticore.codegen.rete.retecomposed._ast.ASTState", Map.of(
-                "id", inSuperLanguages(baseElement, "id"),
-                "initial", inSuperLanguages(statesState, "initial"),
-                "name", inSuperLanguages(statesState, "name"),
-                "priority", constant(composedFeaturesClass, "STATE_PRIORITY")),
-            "de.monticore.codegen.rete.retecomposed._ast.ASTLabeledState", Map.of(
-                "id", inSuperLanguages(baseElement, "id"),
-                "labels", constant(composedFeaturesClass, "LABELED_STATE_LABELS"))),
-        resolveConstantCases(composed));
+            composedState, Map.of(
+                "id", baseElement,
+                "initial", statesState,
+                "name", statesState,
+                "priority", composedState),
+            composedLabeledState, Map.of(
+                "id", baseElement,
+                "labels", composedLabeledState)),
+        declaringTypes(composed));
+    assertEquals(Map.of(
+            composedState, Map.of("priority", composedFeaturesClass + ".STATE_PRIORITY"),
+            composedLabeledState, Map.of("labels", composedFeaturesClass + ".LABELED_STATE_LABELS")),
+        featureConstants(composed));
 
     assertTrue(Log.getFindings().isEmpty());
   }
