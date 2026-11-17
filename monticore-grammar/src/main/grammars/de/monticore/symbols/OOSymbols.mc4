@@ -48,8 +48,11 @@ component grammar OOSymbols extends BasicSymbols {
    * The new symbol OOTypeSymbol mainly adds OO specific properties.
    *
    * isSealed marks a type whose direct subtypes are restricted
-   * (e.g., Java's sealed classes, JLS 17, §8.1.1.2). Which subtypes
-   * are permitted is defined by the respective language.
+   * (e.g., Java's sealed classes, JLS 17, §8.1.1.2).
+   * permittedSubTypes lists these direct subtypes and is only
+   * meaningful if isSealed is set. How the list is obtained
+   * (e.g., an explicit permits clause or inferred from the
+   * compilation unit) is defined by the respective language.
    *
    */
   interface symbol OOType extends Type = Name ;
@@ -64,7 +67,8 @@ component grammar OOSymbols extends BasicSymbols {
     isPublic: boolean
     isStatic: boolean
     isFinal: boolean
-    isSealed: boolean ;
+    isSealed: boolean
+    permittedSubTypes: de.monticore.types.check.SymTypeExpression* ;
 
   /*=================================================================*/
 

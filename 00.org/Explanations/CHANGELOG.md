@@ -7,7 +7,7 @@
 release: TBD
 
 ## Additions
-* added `isSealed` to `OOType` in `OOSymbols`
+* added `isSealed` and `permittedSubTypes` to `OOType` in `OOSymbols`
 * TBD
 
 ## Changes:

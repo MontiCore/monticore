@@ -37,6 +37,8 @@ public class OOSymbolsSymbols2JsonTest {
         .setSpannedScope(typeSpannedScope)
         .setEnclosingScope(scope)
         .setIsSealed(true)
+        .setPermittedSubTypesList(Lists.newArrayList(
+            SymTypeExpressionFactory.createTypeObjectViaSurrogate("SubType", scope)))
         .build();
 
     type.setSpannedScope(typeSpannedScope);
@@ -99,6 +101,8 @@ public class OOSymbolsSymbols2JsonTest {
     assertTrue(type.isPresent());
     assertTrue(deserializedType.isPresent());
     assertTrue(deserializedType.get().isIsSealed());
+    assertEquals(1, deserializedType.get().getPermittedSubTypesList().size());
+    assertEquals("SubType", deserializedType.get().getPermittedSubTypesList().get(0).print());
 
     //check that both can resolve the type "SubType" with the supertype "Type"
     Optional<OOTypeSymbol> subtype = scope.resolveOOType("SubType");
@@ -106,6 +110,7 @@ public class OOSymbolsSymbols2JsonTest {
     assertTrue(subtype.isPresent());
     assertTrue(deserializedSubType.isPresent());
     assertFalse(deserializedSubType.get().isIsSealed());
+    assertTrue(deserializedSubType.get().getPermittedSubTypesList().isEmpty());
     assertEquals(1, subtype.get().getSuperTypesList().size());
     assertEquals(1, deserializedSubType.get().getSuperTypesList().size());
     assertEquals("Type", subtype.get().getSuperTypesList().get(0).print());
@@ -129,6 +134,19 @@ public class OOSymbolsSymbols2JsonTest {
     assertTrue(deserializedFunction.isPresent());
     assertEquals("int", function.get().getType().print());
     assertEquals("int", deserializedFunction.get().getType().print());
+  }
+
+  @Test
+  public void testDeserializeWithoutSealedMembers() {
+    // symbol files written before isSealed and permittedSubTypes existed
+    String json = "{\"name\":\"Test\",\"symbols\":[{"
+        + "\"kind\":\"de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol\","
+        + "\"name\":\"Type\",\"isClass\":true}]}";
+    IOOSymbolsArtifactScope deserialized = new OOSymbolsSymbols2Json().deserialize(json);
+    Optional<OOTypeSymbol> type = deserialized.resolveOOType("Type");
+    assertTrue(type.isPresent());
+    assertFalse(type.get().isIsSealed());
+    assertTrue(type.get().getPermittedSubTypesList().isEmpty());
   }
 
   @Test
