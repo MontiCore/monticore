@@ -1,0 +1,11 @@
+{
+  "generated-using": "www.MontiCore.de technology",
+  "name": "String",
+  "symbols": [
+    {
+      "kind": "de.monticore.symbols.basicsymbols._symboltable.TypeSymbol",
+      "name": "String",
+      "fullName": "String"
+    }
+  ]
+}

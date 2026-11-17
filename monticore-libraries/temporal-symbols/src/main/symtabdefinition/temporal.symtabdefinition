@@ -1,0 +1,16 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.monticore;
+
+/**
+ * The types of the temporal type system,
+ * i.e., de.monticore.temporal.TimePoint, etc.
+ * Duration is an alias for the SIUnit type [s] and has no symbol.
+ */
+symtabdefinition temporal {
+
+  class TimePoint;
+  class DayTime;
+  class Period;
+
+}
