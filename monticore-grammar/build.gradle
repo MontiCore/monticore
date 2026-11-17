@@ -70,6 +70,8 @@ dependencies {
   implementation "com.google.guava:guava:$guava_version"
   implementation "org.apache.commons:commons-lang3:$commons_lang3_version"
   implementation "org.apache.commons:commons-text:$commons_text_version"
+  // symbols of the temporal type system, s. TemporalBasisMill
+  runtimeOnly project(":monticore-libraries:temporal-symbols")
 
   testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
   testImplementation "org.junit.jupiter:junit-jupiter-params:$junit_version"

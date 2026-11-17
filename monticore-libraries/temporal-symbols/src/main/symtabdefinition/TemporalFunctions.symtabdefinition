@@ -1,0 +1,149 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.monticore.temporal;
+
+/**
+ * The functional style operations of the temporal type system,
+ * s. Appendix B.2 of the documentation of the temporal languages.
+ * Unlike B.2.3 and B.2.4, the getters and withers of Period use long,
+ * as each component of a Period is a long (s. Fig. 3.8).
+ */
+symtabdefinition TemporalFunctions {
+
+  // B.2.1 getters for instant types
+
+  DayTime getDayTime(TimePoint t);
+  int getCentury(TimePoint t);
+  int getDecade(TimePoint t);
+  int getYear(TimePoint t);
+  int getWeekYear(TimePoint t);
+  int getMonth(TimePoint t);
+  int getWeek(TimePoint t);
+  int getDayOfYear(TimePoint t);
+  int getDay(TimePoint t);
+  int getDayOfWeek(TimePoint t);
+  int getHour(TimePoint t);
+  int getHour(DayTime t);
+  int getAmPm(TimePoint t);
+  int getAmPm(DayTime t);
+  int getClockHour(TimePoint t);
+  int getClockHour(DayTime t);
+  int getMinute(TimePoint t);
+  int getMinute(DayTime t);
+  int getSecond(TimePoint t);
+  int getSecond(DayTime t);
+  int getMillisecond(TimePoint t);
+  int getMillisecond(DayTime t);
+  int getNanosecond(TimePoint t);
+  int getNanosecond(DayTime t);
+  int getOffset(TimePoint t);
+  int getOffset(DayTime t);
+  int getOffsetHour(TimePoint t);
+  int getOffsetHour(DayTime t);
+  int getOffsetMinute(TimePoint t);
+  int getOffsetMinute(DayTime t);
+  String getZone(TimePoint t);
+  String getZone(DayTime t);
+
+  // B.2.2 withers for instant types
+
+  TimePoint withDayTime(TimePoint t, DayTime d);
+  TimePoint withCentury(TimePoint t, int n);
+  TimePoint withDecade(TimePoint t, int n);
+  TimePoint withYear(TimePoint t, int n);
+  TimePoint withWeekYear(TimePoint t, int n);
+  TimePoint withMonth(TimePoint t, int n);
+  TimePoint withWeek(TimePoint t, int n);
+  TimePoint withDayOfYear(TimePoint t, int n);
+  TimePoint withDay(TimePoint t, int n);
+  TimePoint withDayOfWeek(TimePoint t, int n);
+  TimePoint withHour(TimePoint t, int n);
+  DayTime withHour(DayTime t, int n);
+  TimePoint withAmPm(TimePoint t, int n);
+  DayTime withAmPm(DayTime t, int n);
+  TimePoint withClockHour(TimePoint t, int n);
+  DayTime withClockHour(DayTime t, int n);
+  TimePoint withMinute(TimePoint t, int n);
+  DayTime withMinute(DayTime t, int n);
+  TimePoint withSecond(TimePoint t, int n);
+  DayTime withSecond(DayTime t, int n);
+  TimePoint withMillisecond(TimePoint t, int n);
+  DayTime withMillisecond(DayTime t, int n);
+  TimePoint withNanosecond(TimePoint t, int n);
+  DayTime withNanosecond(DayTime t, int n);
+  TimePoint withZone(TimePoint t, String z);
+  DayTime withZone(DayTime t, String z);
+  TimePoint adjustToZone(TimePoint t, String z);
+  DayTime adjustToZone(DayTime t, String z);
+
+  // B.2.3 getters for the type Period
+
+  long getYears(Period p);
+  long getMonths(Period p);
+  long getWeeks(Period p);
+  long getDays(Period p);
+  long getWeekDays(Period p);
+  long getHours(Period p);
+  long getMinutes(Period p);
+  long getSeconds(Period p);
+  long getMilliseconds(Period p);
+  long getNanoseconds(Period p);
+
+  // B.2.4 setters for the type Period
+
+  Period withYears(Period p, long n);
+  Period withMonths(Period p, long n);
+  Period withWeeks(Period p, long n);
+  Period withDays(Period p, long n);
+  Period withWeekDays(Period p, long n);
+  Period withHours(Period p, long n);
+  Period withMinutes(Period p, long n);
+  Period withSeconds(Period p, long n);
+  Period withMilliseconds(Period p, long n);
+  Period withNanoseconds(Period p, long n);
+
+  // B.2.5 formatters for instant types
+
+  String format(TimePoint t, String f);
+  String format(DayTime t, String f);
+  String format(TimePoint t);
+  String format(DayTime t);
+  String formatZoned(TimePoint t);
+  String formatZoned(DayTime t);
+  String formatDate(TimePoint t);
+  String formatOrdinalDate(TimePoint t);
+  String formatWeekDate(TimePoint t);
+  String formatTime(TimePoint t);
+  String formatTime(DayTime t);
+  String formatOffsetTime(TimePoint t);
+  String formatOffsetTime(DayTime t);
+  String formatDateTime(TimePoint t);
+  String formatOffsetDateTime(TimePoint t);
+  String formatDE(TimePoint t);
+  String formatDE(DayTime t);
+  String formatDEDate(TimePoint t);
+  String formatDEAlnumDate(TimePoint t);
+  String formatDETime(TimePoint t);
+  String formatDETime(DayTime t);
+  String formatUS(TimePoint t);
+  String formatUS(DayTime t);
+  String formatUSDate(TimePoint t);
+  String formatUSAlnumDate(TimePoint t);
+  String formatUSTime(TimePoint t);
+  String formatUSTime(DayTime t);
+
+  // B.2.6 formatters for the type Period
+
+  String format(Period p);
+  String formatNormalized(Period p);
+  String formatWeeks(Period p);
+
+  // B.2.7 miscellaneous
+
+  TimePoint now();
+  TimePoint utc();
+  Period minus(TimePoint t, TimePoint u);
+  Period minus(DayTime t, DayTime u);
+  Period abs(Period p);
+
+}

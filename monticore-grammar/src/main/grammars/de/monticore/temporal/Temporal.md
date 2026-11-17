@@ -572,6 +572,68 @@ Examples:
 
 ---
 
+## Type System
+
+The temporal languages come with a [TypeCheck3](../../../../java/de/monticore/types3/TypeSystem3.md)
+implementation of the temporal type system.
+It consists of four types:
+
+| Type        | Description                                        | Assigned to                                |
+|-------------|----------------------------------------------------|--------------------------------------------|
+| `TimePoint` | A moment in time.                                  | `Date`, `DateTime`                         |
+| `DayTime`   | A time of day.                                     | `Time`                                     |
+| `Period`    | A context-dependent length of time, e.g., 1 month. | `Period`                                   |
+| `Duration`  | A context-independent length of time.              | SIUnit literals of seconds, e.g., `2.5min` |
+
+`TimePoint`, `DayTime`, and `Period` are nominal types
+in the package `de.monticore.temporal`,
+i.e., their full names are, e.g., `de.monticore.temporal.TimePoint`,
+whose symbols are expected to be resolvable from the global scope.
+The functional style operations, e.g., `getYear`,
+are in the same package.
+Thus, models either import them (`import de.monticore.temporal.*;`)
+or use the qualified names, e.g., `de.monticore.temporal.getYear(t)`.
+`Duration` is not a nominal type, but an alias for the SIUnit type `[s]`;
+Any SIUnit type that can be normalized to seconds is a `Duration`,
+e.g., `[s]<int>` or `[h]<double>`.
+
+The following infrastructure is provided:
+
+* [EscapedTemporalLiteralsTypeVisitor](../../../../java/de/monticore/temporal/escapedtemporalliterals/types3/EscapedTemporalLiteralsTypeVisitor.java),
+  [ISOTemporalsTypeVisitor](../../../../java/de/monticore/temporal/isotemporals/types3/ISOTemporalsTypeVisitor.java),
+  and [DETemporalsTypeVisitor](../../../../java/de/monticore/temporal/detemporals/types3/DETemporalsTypeVisitor.java)
+  (calculate the SymTypeExpressions of the temporal literals,
+  e.g., `d"2015-04-01"` is a `TimePoint`)
+* [TypeVisitorOperatorCalculator](../../../../java/de/monticore/types3/util/TypeVisitorOperatorCalculator.java)
+  (the operators on temporal types, e.g., `TimePoint + Period` is a `TimePoint`
+  and `TimePoint - TimePoint` is a `Duration`,
+  are calculated by its `calculate*Temporal` methods
+  whenever an operand is a `TimePoint`, `DayTime`, or `Period`)
+* the library [temporal-symbols](../../../../../../../monticore-libraries/temporal-symbols)
+  (the symbols of the temporal types and of the functional style operations,
+  e.g., `getYear(t: TimePoint): int`,
+  defined in SymTabDefinition files)
+* [TemporalSymTypeFactory](../../../../java/de/monticore/types3/temporal/TemporalSymTypeFactory.java)
+  and [TemporalSymTypeRelations](../../../../java/de/monticore/types3/temporal/TemporalSymTypeRelations.java)
+  (create temporal types and check, e.g., `isTimePoint`)
+
+To use the temporal type system, a language has to
+
+1. add the type visitors of the included temporal grammars to its type traverser, and
+2. provide the symbols of the temporal types and functions,
+   e.g., using `TemporalBasisMill.initializeTemporalSymbols()`
+   after the primitive types and `String` have been added to the global scope.
+   It adds the library `temporal-symbols` to the symbol path
+   of the global scope and loads the functions
+   (the types are loaded on demand).
+
+For `Duration`s, the type visitors of the SIUnit languages are required.
+As some of the functions are overloaded, e.g., `getHour`,
+the CTTI variants of the expression type visitors
+(e.g., `CommonExpressionsCTTIVisitor`) are required.
+
+---
+
 ## Summary
 
 The MontiCore Temporal language family separates temporal concepts from concrete

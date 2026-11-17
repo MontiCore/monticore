@@ -7,6 +7,8 @@ import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfSIUnit;
 import de.monticore.types3.SymTypeRelations;
+import de.monticore.types3.temporal.TemporalSymTypeFactory;
+import de.monticore.types3.temporal.TemporalSymTypeRelations;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Arrays;
@@ -18,6 +20,10 @@ import static de.monticore.types.check.SymTypeExpressionFactory.createTypeRegEx;
 import static de.monticore.types3.SymTypeRelations.isNumericType;
 import static de.monticore.types3.SymTypeRelations.isString;
 import static de.monticore.types3.SymTypeRelations.isStringOrSubType;
+import static de.monticore.types3.temporal.TemporalSymTypeRelations.isDayTime;
+import static de.monticore.types3.temporal.TemporalSymTypeRelations.isDuration;
+import static de.monticore.types3.temporal.TemporalSymTypeRelations.isPeriod;
+import static de.monticore.types3.temporal.TemporalSymTypeRelations.isTimePoint;
 
 /**
  * Implementation of common operators for type visitors,
@@ -63,9 +69,12 @@ public class TypeVisitorOperatorCalculator {
       SymTypeExpression right
   ) {
     SymTypeExpression result;
+    if (involvesTemporalType(left, right)) {
+      result = calculatePlusTemporal(left, right);
+    }
     // if one part of the expression is a String (subtype)
     // then the whole expression is a String (subtype)
-    if (isStringOrSubType(left) ||
+    else if (isStringOrSubType(left) ||
         isStringOrSubType(right)
     ) {
       result = calculatePlusString(left, right);
@@ -74,6 +83,35 @@ public class TypeVisitorOperatorCalculator {
     // -> use the normal calculation for the basic arithmetic operators
     else {
       result = calculatePlusMinusModulo(left, right);
+    }
+    return result;
+  }
+
+  protected SymTypeExpression calculatePlusTemporal(
+      SymTypeExpression left,
+      SymTypeExpression right
+  ) {
+    SymTypeExpression result;
+    if (isTimePoint(left) && isPeriodOrDuration(right)) {
+      result = left.deepClone();
+    }
+    else if (isPeriodOrDuration(left) && isTimePoint(right)) {
+      result = right.deepClone();
+    }
+    else if (isDayTime(left) && isDuration(right)) {
+      result = left.deepClone();
+    }
+    else if (isDuration(left) && isDayTime(right)) {
+      result = right.deepClone();
+    }
+    else if (isPeriodOrDuration(left)
+        && isPeriodOrDuration(right)
+        && (isPeriod(left) || isPeriod(right))
+    ) {
+      result = TemporalSymTypeFactory.createPeriod();
+    }
+    else {
+      result = createObscureType();
     }
     return result;
   }
@@ -90,9 +128,62 @@ public class TypeVisitorOperatorCalculator {
       SymTypeExpression right
   ) {
     SymTypeExpression result =
-        TypeVisitorLifting.liftDefault(this::calculatePlusMinusModulo)
+        TypeVisitorLifting.liftDefault(this::calculateMinus)
             .apply(left, right);
     return obscure2Empty(result);
+  }
+
+  protected SymTypeExpression calculateMinus(
+      SymTypeExpression left,
+      SymTypeExpression right
+  ) {
+    SymTypeExpression result;
+    if (involvesTemporalType(left, right)) {
+      result = calculateMinusTemporal(left, right);
+    }
+    else {
+      result = calculatePlusMinusModulo(left, right);
+    }
+    return result;
+  }
+
+  protected SymTypeExpression calculateMinusTemporal(
+      SymTypeExpression left,
+      SymTypeExpression right
+  ) {
+    SymTypeExpression result;
+    if (isTimePoint(left) && isPeriodOrDuration(right)) {
+      result = left.deepClone();
+    }
+    else if (isDayTime(left) && isDuration(right)) {
+      result = left.deepClone();
+    }
+    else if ((isTimePoint(left) && isTimePoint(right))
+        || (isDayTime(left) && isDayTime(right))) {
+      result = calculateDurationBetweenInstants(left, right);
+    }
+    else if (isPeriodOrDuration(left) && isPeriodOrDuration(right)
+        && (isPeriod(left) || isPeriod(right))) {
+      result = TemporalSymTypeFactory.createPeriod();
+    }
+    else {
+      result = createObscureType();
+    }
+    return result;
+  }
+
+  /**
+   * The Duration between two instants, e.g., {@code t - u}.
+   * The numeric type is not specified by the temporal type system;
+   * As instants are precise to the nanosecond, double is used.
+   */
+  protected SymTypeExpression calculateDurationBetweenInstants(
+      SymTypeExpression left,
+      SymTypeExpression right
+  ) {
+    return TemporalSymTypeFactory.createDuration(
+        SymTypeExpressionFactory.createPrimitive(BasicSymbolsMill.DOUBLE)
+    );
   }
 
   public static Optional<SymTypeExpression> modulo(
@@ -114,7 +205,7 @@ public class TypeVisitorOperatorCalculator {
 
   /**
    * calculates +,-,%
-   * without support for String
+   * without support for String or temporal types
    */
   protected SymTypeExpression calculatePlusMinusModulo(
       SymTypeExpression left,
@@ -275,6 +366,9 @@ public class TypeVisitorOperatorCalculator {
       SymTypeExpression left,
       SymTypeExpression right
   ) {
+    if (involvesTemporalType(left, right)) {
+      return calculateMultiplyTemporal(left, right);
+    }
     SymTypeExpression result;
     Optional<SymTypeOfSIUnit> resultSI;
     Optional<SymTypeExpression> resultV;
@@ -315,6 +409,23 @@ public class TypeVisitorOperatorCalculator {
     return result;
   }
 
+  protected SymTypeExpression calculateMultiplyTemporal(
+      SymTypeExpression left,
+      SymTypeExpression right
+  ) {
+    SymTypeExpression result;
+    if (isPeriod(left) && isNumericType(right)) {
+      result = left.deepClone();
+    }
+    else if (isNumericType(left) && isPeriod(right)) {
+      result = right.deepClone();
+    }
+    else {
+      result = createObscureType();
+    }
+    return result;
+  }
+
   public static Optional<SymTypeExpression> divide(
       SymTypeExpression left,
       SymTypeExpression right
@@ -336,6 +447,9 @@ public class TypeVisitorOperatorCalculator {
       SymTypeExpression left,
       SymTypeExpression right
   ) {
+    if (involvesTemporalType(left, right)) {
+      return calculateDivideTemporal(left, right);
+    }
     SymTypeExpression result;
     Optional<SymTypeOfSIUnit> resultSI;
     Optional<SymTypeExpression> resultV;
@@ -377,6 +491,20 @@ public class TypeVisitorOperatorCalculator {
     return result;
   }
 
+  protected SymTypeExpression calculateDivideTemporal(
+      SymTypeExpression left,
+      SymTypeExpression right
+  ) {
+    SymTypeExpression result;
+    if (isPeriod(left) && isNumericType(right)) {
+      result = left.deepClone();
+    }
+    else {
+      result = createObscureType();
+    }
+    return result;
+  }
+
   /**
    * calculates +,-,*,/,%
    * without support for String and SIUnits
@@ -413,9 +541,33 @@ public class TypeVisitorOperatorCalculator {
 
   protected Optional<SymTypeExpression> _minusPrefix(SymTypeExpression inner) {
     SymTypeExpression result =
-        TypeVisitorLifting.liftDefault(this::calculatePlusMinusPrefix)
+        TypeVisitorLifting.liftDefault(this::calculateMinusPrefix)
             .apply(inner);
     return obscure2Empty(result);
+  }
+
+  protected SymTypeExpression calculateMinusPrefix(SymTypeExpression inner) {
+    SymTypeExpression result;
+    if (involvesTemporalType(inner)) {
+      result = calculateMinusPrefixTemporal(inner);
+    }
+    else {
+      result = calculatePlusMinusPrefix(inner);
+    }
+    return result;
+  }
+
+  protected SymTypeExpression calculateMinusPrefixTemporal(
+      SymTypeExpression inner
+  ) {
+    SymTypeExpression result;
+    if (isPeriod(inner)) {
+      result = inner.deepClone();
+    }
+    else {
+      result = createObscureType();
+    }
+    return result;
   }
 
   /**
@@ -613,6 +765,9 @@ public class TypeVisitorOperatorCalculator {
       SymTypeExpression left,
       SymTypeExpression right
   ) {
+    if (involvesTemporalType(left, right)) {
+      return calculateComparisonTemporal(left, right);
+    }
     boolean compatibleForComparison = true;
 
     Optional<SymTypeOfSIUnit> leftSI = getSIUnit(left);
@@ -645,6 +800,23 @@ public class TypeVisitorOperatorCalculator {
     else {
       return SymTypeExpressionFactory.createObscureType();
     }
+  }
+
+  protected SymTypeExpression calculateComparisonTemporal(
+      SymTypeExpression left,
+      SymTypeExpression right
+  ) {
+    SymTypeExpression result;
+    if ((isTimePoint(left) && isTimePoint(right))
+        || (isDayTime(left) && isDayTime(right))
+        || (isPeriod(left) && isPeriod(right))) {
+      result = SymTypeExpressionFactory
+          .createPrimitive(BasicSymbolsMill.BOOLEAN);
+    }
+    else {
+      result = createObscureType();
+    }
+    return result;
   }
 
   // boolean operators: &&, ||, !
@@ -968,6 +1140,23 @@ public class TypeVisitorOperatorCalculator {
   }
 
   // Helper
+
+  /**
+   * @return whether any of the types is a temporal type,
+   *     in which case the operators are calculated by
+   *     the calculate*Temporal methods
+   */
+  protected boolean involvesTemporalType(SymTypeExpression... types) {
+    return Arrays.stream(types)
+        .anyMatch(TemporalSymTypeRelations::isTemporalType);
+  }
+
+  /**
+   * @return whether the type is a Period or a Duration
+   */
+  protected boolean isPeriodOrDuration(SymTypeExpression type) {
+    return isPeriod(type) || isDuration(type);
+  }
 
   protected boolean hasSIUnit(SymTypeExpression... types) {
     return Arrays.stream(types)

@@ -28,6 +28,9 @@ import de.monticore.regex.regextype.types3.RegExTypeTypeVisitor;
 import de.monticore.siunit.siunitliterals.types3.SIUnitLiteralsTypeVisitor;
 import de.monticore.siunit.siunittypes4computing.types3.SIUnitTypes4ComputingTypeVisitor;
 import de.monticore.siunit.siunittypes4math.types3.SIUnitTypes4MathTypeVisitor;
+import de.monticore.temporal.detemporals.types3.DETemporalsTypeVisitor;
+import de.monticore.temporal.escapedtemporalliterals.types3.EscapedTemporalLiteralsTypeVisitor;
+import de.monticore.temporal.isotemporals.types3.ISOTemporalsTypeVisitor;
 import de.monticore.types.mcarraytypes.types3.MCArrayTypesTypeVisitor;
 import de.monticore.types.mcbasictypes.types3.MCBasicTypesTypeVisitor;
 import de.monticore.types.mccollectiontypes.types3.MCCollectionTypesTypeVisitor;
@@ -180,6 +183,15 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     if (visitors.derSIUnitLiterals != null) {
       visitors.derSIUnitLiterals.setType4Ast(type4Ast);
     }
+    if (visitors.derISOTemporals != null) {
+      visitors.derISOTemporals.setType4Ast(type4Ast);
+    }
+    if (visitors.derDETemporals != null) {
+      visitors.derDETemporals.setType4Ast(type4Ast);
+    }
+    if (visitors.derEscapedTemporalLiterals != null) {
+      visitors.derEscapedTemporalLiterals.setType4Ast(type4Ast);
+    }
     // MCTypes
     if (visitors.synMCArrayTypes != null) {
       visitors.synMCArrayTypes.setType4Ast(type4Ast);
@@ -255,6 +267,9 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     visitors.cTTIUglyExpressions = new UglyExpressionsCTTIVisitor();
     visitors.derOfMCCommonLiterals = new MCCommonLiteralsTypeVisitor();
     visitors.derSIUnitLiterals = new SIUnitLiteralsTypeVisitor();
+    visitors.derISOTemporals = new ISOTemporalsTypeVisitor();
+    visitors.derDETemporals = new DETemporalsTypeVisitor();
+    visitors.derEscapedTemporalLiterals = new EscapedTemporalLiteralsTypeVisitor();
     // MCTypes
     visitors.synMCArrayTypes = new MCArrayTypesTypeVisitor();
     visitors.synMCBasicTypes = new MCBasicTypesTypeVisitor();
@@ -286,6 +301,9 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     visitors.derUglyExpressions = new UglyExpressionsTypeVisitor();
     visitors.derOfMCCommonLiterals = new MCCommonLiteralsTypeVisitor();
     visitors.derSIUnitLiterals = new SIUnitLiteralsTypeVisitor();
+    visitors.derISOTemporals = new ISOTemporalsTypeVisitor();
+    visitors.derDETemporals = new DETemporalsTypeVisitor();
+    visitors.derEscapedTemporalLiterals = new EscapedTemporalLiteralsTypeVisitor();
     // MCTypes
     visitors.synMCArrayTypes = new MCArrayTypesTypeVisitor();
     visitors.synMCBasicTypes = new MCBasicTypesTypeVisitor();
@@ -385,6 +403,15 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     if (visitors.derSIUnitLiterals != null) {
       traverser.add4SIUnitLiterals(visitors.derSIUnitLiterals);
     }
+    if (visitors.derISOTemporals != null) {
+      traverser.add4ISOTemporals(visitors.derISOTemporals);
+    }
+    if (visitors.derDETemporals != null) {
+      traverser.add4DETemporals(visitors.derDETemporals);
+    }
+    if (visitors.derEscapedTemporalLiterals != null) {
+      traverser.add4EscapedTemporalLiterals(visitors.derEscapedTemporalLiterals);
+    }
     // MCTypes
     if (visitors.synMCArrayTypes != null) {
       traverser.add4MCArrayTypes(visitors.synMCArrayTypes);
@@ -468,6 +495,12 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     public MCCommonLiteralsTypeVisitor derOfMCCommonLiterals;
 
     public SIUnitLiteralsTypeVisitor derSIUnitLiterals;
+
+    public ISOTemporalsTypeVisitor derISOTemporals;
+
+    public DETemporalsTypeVisitor derDETemporals;
+
+    public EscapedTemporalLiteralsTypeVisitor derEscapedTemporalLiterals;
 
     // MCTypes
 

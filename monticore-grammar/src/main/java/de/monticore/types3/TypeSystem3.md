@@ -66,6 +66,8 @@ and combining their information to the SymTypeExpression currently calculated.
       (factory for CollectionTypes, convenience methods)
     * [StreamSymTypeFactory](streams/StreamSymTypeFactory.java)
       (factory for Stream types, convenience methods)
+    * [TemporalSymTypeFactory](temporal/TemporalSymTypeFactory.java)
+      (factory for temporal types, convenience methods)
 * Functionality to work with SymTypeExpressions, Expressions
     * [SymTypeRelations](SymTypeRelations.java)
       (relations over SymTypeExpressions, e.g., `isSubTypeOf`, `isCompatible`)
@@ -79,6 +81,8 @@ and combining their information to the SymTypeExpression currently calculated.
       (SIUnit relations, e.g., `multiply`, `isOfDimensionOne`)
     * [StreamSymTypeRelations](streams/StreamSymTypeRelations.java)
       (relations over Stream SymTypeExpressions, e.g., isEventStream)
+    * [TemporalSymTypeRelations](temporal/TemporalSymTypeRelations.java)
+      (relations over temporal SymTypeExpressions, e.g., isTimePoint)
     * [WithinScopeBasicSymbolsResolver](util/WithinScopeBasicSymbolsResolver.java)
       (resolves contained variables, functions, ect. within a given scope;
       unlike symbol resolving this returns SymTypeExpressions)
@@ -102,7 +106,8 @@ and combining their information to the SymTypeExpression currently calculated.
       union types)
     * [TypeVisitorOperatorCalculator](util/TypeVisitorOperatorCalculator.java)
       (used in TypeVisitors to provide consistent handling of
-      operators and similar constructs)
+      operators and similar constructs,
+      including the operators of the temporal types)
 * TypeVisitors traverse the AST and
   store the calculated SymTypeExpression in the Type4Ast map
     * Expressions
@@ -140,6 +145,15 @@ and combining their information to the SymTypeExpression currently calculated.
           (calculates the SymTypeExpressions for the expressions
           in the grammar UglyExpressions)
     * Literals
+        * [DETemporalsTypeVisitor](../temporal/detemporals/types3/DETemporalsTypeVisitor.java)
+          (calculates the SymTypeExpressions for the literals
+          in the grammar DETemporals)
+        * [EscapedTemporalLiteralsTypeVisitor](../temporal/escapedtemporalliterals/types3/EscapedTemporalLiteralsTypeVisitor.java)
+          (calculates the SymTypeExpressions for the literals
+          in the grammar EscapedTemporalLiterals)
+        * [ISOTemporalsTypeVisitor](../temporal/isotemporals/types3/ISOTemporalsTypeVisitor.java)
+          (calculates the SymTypeExpressions for the literals
+          in the grammar ISOTemporals)
         * [MCCommonLiteralsTypeVisitor](../literals/mccommonliterals/types3/MCCommonLiteralsTypeVisitor.java)
           (calculates the SymTypeExpressions for the literals
           in the grammar MCCommonLiterals)
