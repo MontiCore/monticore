@@ -47,12 +47,19 @@ component grammar OOSymbols extends BasicSymbols {
    *
    * The new symbol OOTypeSymbol mainly adds OO specific properties.
    *
-   * isSealed marks a type whose direct subtypes are restricted
-   * (e.g., Java's sealed classes, JLS 17, §8.1.1.2).
-   * permittedSubTypes lists these direct subtypes and is only
-   * meaningful if isSealed is set. How the list is obtained
-   * (e.g., an explicit permits clause or inferred from the
-   * compilation unit) is defined by the respective language.
+   * restrictedSubTypes restricts the direct subtypes of a type
+   * (a closed type hierarchy). If empty, the direct subtypes are not
+   * restricted (unless the type is final). Otherwise, it is the
+   * complete list of the permitted direct subtypes. A restriction to
+   * no subtypes is not representable, as such a type is final.
+   * Languages realize this concept differently, e.g., Java, Kotlin,
+   * Scala, and Dart with sealed (note that sealed in C# means final).
+   * If a language derives the permitted subtypes implicitly (e.g.,
+   * Java from the compilation unit if the permits clause is omitted),
+   * the language computes the list when creating the symbol.
+   * Thus, the symbol never depends on language-specific rules.
+   * Well-formedness (e.g., that a permitted subtype actually extends
+   * this type) is checked by the respective language.
    *
    */
   interface symbol OOType extends Type = Name ;
@@ -67,8 +74,7 @@ component grammar OOSymbols extends BasicSymbols {
     isPublic: boolean
     isStatic: boolean
     isFinal: boolean
-    isSealed: boolean
-    permittedSubTypes: de.monticore.types.check.SymTypeExpression* ;
+    restrictedSubTypes: de.monticore.types.check.SymTypeExpression* ;
 
   /*=================================================================*/
 

@@ -86,6 +86,14 @@ public class OOTypeSymbol extends OOTypeSymbolTOP {
     return !getSuperClassesOnly().isEmpty();
   }
 
+  /**
+   * @return whether the direct subtypes of this type are restricted
+   * to the list of restricted subtypes (e.g., Java's sealed classes)
+   */
+  public boolean hasRestrictedSubTypes() {
+    return !getRestrictedSubTypesList().isEmpty();
+  }
+
   public SymTypeExpression getSuperClass() {
     if (isPresentSuperClass()) {
       return getSuperClassesOnly().getFirst();
