@@ -50,7 +50,7 @@ component grammar OOSymbols extends BasicSymbols {
    * subTypeRestriction restricts the direct subtypes of a type to a
    * closed type hierarchy. If the list is empty, the direct subtypes
    * are not restricted, unless the type is final. Otherwise, it is the
-   * complete list of the permitted direct subtypes. A restriction to
+   * list of the permitted direct subtypes. A restriction to
    * no subtypes is not representable, as such a type is final.
    * Languages realize this concept differently. For example, Java,
    * Kotlin, Scala, and Dart use sealed, whereas sealed in C# means
