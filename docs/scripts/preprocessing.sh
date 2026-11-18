@@ -37,9 +37,9 @@ case " $* " in
     ln -s ../docs/stylesheets docs_wd/
     ln -s ../docs/scripts docs_wd/
     ln -s ../docs/img docs_wd/
-    # all images referenced in the root-Readme must be handled specially :(
-    mkdir -p docs_wd/docs/img
-    ln -s ../../../docs/img/MC_Symp_Banner.png docs_wd/docs/img/MC_Symp_Banner.png
+    # all images referenced in the docs or root-Readme must be handled specially :(
+    mkdir -p docs_wd/docs/
+    ln -s ../../docs/img docs_wd/docs
     ln -s ../docs/README.md docs_wd/
     # Link to the javadoc directories
     mkdir -p docs_wd/monticore-runtime
@@ -56,7 +56,7 @@ case " $* " in
     cp docs/README.md docs_wd/README.md
     # all images referenced in the root-Readme must be handled specially :(
     mkdir -p docs_wd/docs/img
-    cp docs/img/MC_Symp_Banner.png docs_wd/docs/img/MC_Symp_Banner.png
+    cp docs/img/* docs_wd/docs/img/
     echo "[INFO] Copied site design"
     # Copy the javadoc directories
     mkdir -p docs_wd/monticore-runtime

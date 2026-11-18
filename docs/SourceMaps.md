@@ -15,7 +15,7 @@ using Base64 Variable-Length Quantity (VLQ) encoding
 
 Source maps can be viewed in most modern IDEs or [online](https://sokra.github.io/source-map-visualization/).
 The following shows an example visualization in IntelliJ IDEA:
-![visualization](./img/SourceMapVisualization.png)
+![visualization](img/SourceMapVisualization.png)
 
 ## Source Maps in MontiCore
 
