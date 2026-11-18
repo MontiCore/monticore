@@ -54,9 +54,9 @@ component grammar OOSymbols extends BasicSymbols {
    * no subtypes is not representable, as such a type is final.
    * Languages realize this concept differently. For example, Java,
    * Kotlin, Scala, and Dart use sealed, whereas sealed in C# means
-   * final. If a language derives the permitted subtypes implicitly,
-   * e.g., Java from the compilation unit if the permits clause is
-   * omitted, the language computes the list when creating the symbol.
+   * final. The list is always complete. If a language derives the
+   * permitted subtypes implicitly, e.g., Java from the compilation unit
+   * if the permits clause is omitted, the list contains them as well.
    * Thus, the symbol never depends on language-specific rules.
    * The respective language checks well-formedness, e.g., that each
    * permitted subtype actually extends this type.
