@@ -7,7 +7,7 @@
 release: TBD
 
 ## Additions
-* added `restrictedSubTypes` to `OOType` in `OOSymbols` (e.g., for Java's sealed classes)
+* added `subTypeRestriction` to `OOType` in `OOSymbols` (e.g., for Java's sealed classes)
 * TBD
 
 ## Changes:
