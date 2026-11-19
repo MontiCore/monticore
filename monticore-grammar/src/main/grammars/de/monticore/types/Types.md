@@ -17,6 +17,7 @@ the following language components:
 * [`MCArrayTypes`](MCArrayTypes.mc4)
 * [`MCFunctionTypes`](MCFunctionTypes.mc4)
 * [`MCStructuralTypes`](MCStructuralTypes.mc4)
+* [`MCOptionalTypes`](MCOptionalTypes.mc4)
 * [`TypeParameters`](TypeParameters.mc4)
 * [`SIUnitTypes4Math`](../siunit/SIUnitTypes4Math.mc4)
 * [`SIUnitTypes4Computing`](../siunit/SIUnitTypes4Computing.mc4)
@@ -100,6 +101,16 @@ like the union type `Foo | Bar` which is the type that is "`Foo` or `Bar`".
 As structural types are orthogonal to other kinds of types,
 `MCStructuralTypes` can be combined with any of the above
 language components.
+
+## [`MCOptionalTypes`](MCOptionalTypes.mc4)
+
+This language component allows to express optional types
+with the short notation `Person?`, which is equivalent to `Optional<Person>`.
+`MCOptionalTypes` extends `MCCollectionTypes` and can be combined
+with any of the above language components,
+as well as with other language components using `?`,
+e.g., the conditional expression `c ? a : b`
+or the operators of `OptionalOperators`.
 
 ## [`SIUnitTypes4Math`](../siunit/SIUnitTypes4Math.mc4)
 
