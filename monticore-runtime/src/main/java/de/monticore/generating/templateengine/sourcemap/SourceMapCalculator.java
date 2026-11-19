@@ -5,8 +5,6 @@ package de.monticore.generating.templateengine.sourcemap;
 import com.google.common.base.Preconditions;
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.HookPoint;
-import de.monticore.generating.templateengine.StringHookPoint;
-import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.generating.templateengine.freemarker.FreeMarkerTemplateEngine;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.sourcemap.DecodedMapping;
@@ -14,9 +12,12 @@ import de.monticore.sourcemap.DecodedSource;
 import de.monticore.sourcemap.convenience.PositionMapping;
 import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Log;
+import freemarker.core.Environment;
 import freemarker.template.Template;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
@@ -148,6 +149,18 @@ public class SourceMapCalculator {
     if(Reporting.isConfigTemplate(template.getName()))
       return;
 
+    // Flush any active FreeMarker transform writer (e.g. <@compress> / <#compress>) so that
+    // buffered content is visible in the underlying ContentWriter before measuring positions.
+    Writer currentOut = getCurrentEnvironmentOut();
+    boolean inCompressWriter = isStandardCompressWriter(currentOut);
+    if (currentOut != null && currentOut != sw) {
+      try {
+        currentOut.flush();
+      } catch (IOException e) {
+        Log.warn("0xA0745 Failed to flush template output writer during source map calculation.", e);
+      }
+    }
+
     String content = sw.getCurrentContent();
 
     int numberOfLinesInContent = numberOfNewLines(content);
@@ -161,7 +174,7 @@ public class SourceMapCalculator {
     if (isStart) {
       int runtimePairId = state.nextRuntimePairId++;
       SourcePosition sourcePos = new SourcePosition(Math.max(0, lineInTemplate), Math.max(0, colInTemplate), templateSource);
-      OpenSpan openSpan = new OpenSpan(runtimePairId, elementId, sourcePos, positionInGeneratedFile, astNode);
+      OpenSpan openSpan = new OpenSpan(runtimePairId, elementId, sourcePos, positionInGeneratedFile, astNode, content.length(), inCompressWriter);
       openSpans.push(openSpan);
       state.activeParentMappings.put(this.template, openSpan);
 
@@ -205,8 +218,51 @@ public class SourceMapCalculator {
         state.mappings.removeIf(m -> m.pairId() == rId);
         state.astMappings.removeIf(m -> m.pairId() == rId);
       } else {
+        // StandardCompressWriter defers writing a compressed space or line break until the next
+        // non-whitespace character arrives. Skip that leading separator so the span starts on its
+        // actual emitted token rather than on the preceding whitespace separator.
+        if (openSpan.inCompressWriter && content.length() > openSpan.startContentLength) {
+          int wsCount = countLeadingWhitespace(content, openSpan.startContentLength);
+          if (wsCount > 0 && openSpan.startContentLength + wsCount < content.length()) {
+            String prefixWithWs = content.substring(0, openSpan.startContentLength + wsCount);
+            int adjustedLines = numberOfNewLines(prefixWithWs);
+            int adjustedCol = getColumnOfLastLine(prefixWithWs);
+            int absLine = startOffset.getLeft() + adjustedLines;
+            int absCol = (adjustedLines == 0) ? startOffset.getRight() + adjustedCol : adjustedCol;
+            SourcePosition adjustedStartPos = new SourcePosition(absLine, absCol, "GenOutput");
+            updateStartTargetPosition(state.mappings, openSpan.runtimePairId, adjustedStartPos);
+            updateStartTargetPosition(state.astMappings, openSpan.runtimePairId, adjustedStartPos);
+          }
+        }
         state.mappings.add(new SimpleSourceMapping(endSourcePos, positionInGeneratedFile, openSpan.runtimePairId));
         addASTMapping(astNode, false, positionInGeneratedFile, openSpan.runtimePairId);
+      }
+    }
+  }
+
+  protected Writer getCurrentEnvironmentOut() {
+    Environment env = Environment.getCurrentEnvironment();
+    return env != null ? env.getOut() : null;
+  }
+
+  protected boolean isStandardCompressWriter(Writer writer) {
+    return writer != null && writer.getClass().getName().endsWith("StandardCompressWriter");
+  }
+
+  protected int countLeadingWhitespace(String content, int fromIndex) {
+    int count = 0;
+    while (fromIndex + count < content.length() && Character.isWhitespace(content.charAt(fromIndex + count))) {
+      count++;
+    }
+    return count;
+  }
+
+  protected void updateStartTargetPosition(List<SimpleSourceMapping> mappingList, int runtimePairId, SourcePosition newTargetPos) {
+    for (int i = mappingList.size() - 1; i >= 0; i--) {
+      SimpleSourceMapping m = mappingList.get(i);
+      if (m.pairId() == runtimePairId) {
+        mappingList.set(i, new SimpleSourceMapping(m.sourcePosition(), newTargetPos, m.pairId()));
+        break;
       }
     }
   }
@@ -319,16 +375,20 @@ public class SourceMapCalculator {
     SourcePosition startSourcePosition,
     SourcePosition startTargetPosition,
     List<String> triggeredIncludes,
-    ASTNode astNode){
+    ASTNode astNode,
+    int startContentLength,
+    boolean inCompressWriter){
 
-    public OpenSpan(int runtimePairId, int elementId, SourcePosition startSourcePosition, SourcePosition startTargetPosition, ASTNode astNode) {
+    public OpenSpan(int runtimePairId, int elementId, SourcePosition startSourcePosition, SourcePosition startTargetPosition, ASTNode astNode, int startContentLength, boolean inCompressWriter) {
       this(
       runtimePairId,
       elementId,
       startSourcePosition,
       startTargetPosition,
       new ArrayList<>(),
-      astNode);
+      astNode,
+      startContentLength,
+      inCompressWriter);
     }
   }
 
