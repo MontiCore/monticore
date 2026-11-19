@@ -88,7 +88,8 @@ public class OOTypeSymbol extends OOTypeSymbolTOP {
 
   /**
    * @return whether the direct subtypes of this type are restricted
-   * to the subtype restriction, e.g., for Java's sealed classes
+   * to the types in {@link #getSubTypeRestrictionList()},
+   * e.g., for Java's sealed classes
    */
   public boolean hasSubTypeRestriction() {
     return !getSubTypeRestrictionList().isEmpty();
