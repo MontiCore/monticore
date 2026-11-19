@@ -247,6 +247,21 @@ grammar TestPrettyPrinters extends de.monticore.literals.MCCommonLiterals  {
     NoSpaceSpecialB = {noSpace(2,3)}? "{" "a" "}";
     NoSpaceSpecialS = {noSpace(2,3)}? ";" "a" ";";
 
+    // References to EnumProds
+    enum EnumOp = plus:"+" | minus:"-" | "*";
+    enum EnumKw = "kw1" | other:"kw2";
+    enum EnumDup = d:"dup1" | d:"dup2"; // Only one constant D is generated, which is printed as "dup1"
+
+    CPEnum = "term" EnumOp;
+    CPEnumU = "term" op:EnumOp Name;
+    CPEnumOpt = "term" EnumOp? Name;
+    CPEnumStar = "term" EnumOp* ";";
+    CPEnumPlus = "term" EnumOp+ ";";
+    CPEnumAlt = EnumOp Name | "none";
+    CPEnumKw = EnumKw Name;
+    CPEnumDup = "term" EnumDup;
+    CPEnumIterated = EnumOp "term" EnumOp;  // Unsupported
+
 
     UsedTerminalD = un:"a"  "b";
     UsedTerminalQ = un:"a"? "b";

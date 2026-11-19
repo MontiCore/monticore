@@ -13,4 +13,7 @@ grammar SuperTestPrettyPrinters extends TestPrettyPrinters {
 
     SuperTestType implements TypeInterface = "SuperTestType";
     SuperTestType2 implements TypeInterface2 = "STT2";
+
+    // Reference to an EnumProd of the super grammar
+    SuperEnum = "super" EnumOp Name;
 }

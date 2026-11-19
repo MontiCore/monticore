@@ -28,6 +28,7 @@ public class PPGuardComponent {
   protected final boolean isMCCommonLiteralsSuper;
 
   protected String tokenType; // the corresponding token type (e.g., Name, AUT1234)
+  protected Map<String, String> constantTokenTypes; // the token type per constant of an EnumProd
   protected String nameOrIndex; // the position in the parsetree
   protected boolean hasNoSpace = false;
 
@@ -118,6 +119,10 @@ public class PPGuardComponent {
     return this.tokenType;
   }
 
+  public String getConstantTokenType(String constantName) {
+    return this.constantTokenTypes.get(constantName);
+  }
+
   public String getNameOrIndex() {
     return this.nameOrIndex;
   }
@@ -128,7 +133,7 @@ public class PPGuardComponent {
    * @param value the string/terminal to be printed
    */
   public boolean isTerminalNoSpace(String value) {
-    if (this.type == PPGuardType.T || this.type == PPGuardType.CG) {
+    if (this.type == PPGuardType.T || this.type == PPGuardType.CG || this.type == PPGuardType.ENUM) {
       for (int i = 0, l = value.length(); i < l; i++) {
         if (value.charAt(i) == '?' || Character.isAlphabetic(value.charAt(i)) || Character.isDigit(value.charAt(i)))
           return false;
@@ -171,7 +176,11 @@ public class PPGuardComponent {
     /**
      * A Terminal
      */
-    T
+    T,
+    /**
+     * A NonTerminalReference to an EnumProd
+     */
+    ENUM
   }
 
   public static PPGuardComponent forBlock(BlockData blockData,
@@ -195,6 +204,17 @@ public class PPGuardComponent {
 
   public static PPGuardComponent forT(String name, String usageName, int iteration, ASTNode node, String tokenType) {
     return new PPGuardComponent(PPGuardType.T, null, name, usageName, null, null, iteration, false, node, false, tokenType, null);
+  }
+
+  /**
+   * @param enumType  the full name of the AST enum, e.g. de.monticore.x._ast.ASTSign
+   * @param constants the constant names of the AST enum mapped to their terminals
+   */
+  public static PPGuardComponent forEnum(String enumType, String usageName, int iteration,
+                                         Set<Map.Entry<String, String>> constants, Map<String, String> constantTokenTypes, ASTNode node) {
+    PPGuardComponent component = new PPGuardComponent(PPGuardType.ENUM, null, enumType, usageName, null, constants, iteration, false, node, false, null, null);
+    component.constantTokenTypes = constantTokenTypes;
+    return component;
   }
 
   public static PPGuardComponent forCG(String usageName, Set<Map.Entry<String, String>> constants, ASTNode node, String tokenType) {
