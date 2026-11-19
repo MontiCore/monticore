@@ -99,9 +99,15 @@ public class OOSymbolsSymbols2JsonTest {
     Optional<OOTypeSymbol> deserializedType = deserialized.resolveOOType("Type");
     assertTrue(type.isPresent());
     assertTrue(deserializedType.isPresent());
+    assertTrue(type.get().hasSubTypeRestriction());
     assertTrue(deserializedType.get().hasSubTypeRestriction());
     assertEquals(1, deserializedType.get().getSubTypeRestrictionList().size());
     assertEquals("SubType", deserializedType.get().getSubTypeRestrictionList().get(0).print());
+    // the restricted subtype resolves to the SubType symbol
+    assertEquals("SubType", deserializedType.get().getSubTypeRestrictionList().get(0)
+        .getTypeInfo().getName());
+    // only a restriction is written to the symbol file
+    assertEquals(1, countOccurrences(serialized, "subTypeRestriction"));
 
     //check that both can resolve the type "SubType" with the supertype "Type"
     Optional<OOTypeSymbol> subtype = scope.resolveOOType("SubType");
@@ -132,6 +138,10 @@ public class OOSymbolsSymbols2JsonTest {
     assertTrue(deserializedFunction.isPresent());
     assertEquals("int", function.get().getType().print());
     assertEquals("int", deserializedFunction.get().getType().print());
+  }
+
+  private static int countOccurrences(String s, String sub) {
+    return s.split(java.util.regex.Pattern.quote(sub), -1).length - 1;
   }
 
   @Test

@@ -7,7 +7,7 @@
 release: TBD
 
 ## Additions
-* added `subTypeRestriction` to `OOType` in `OOSymbols` (e.g., for Java's sealed classes)
+* added `subTypeRestriction` to `OOType` in `OOSymbols` (e.g., for Java's sealed classes) [#419](https://github.com/MontiCore/monticore/pull/419)
 * TBD
 
 ## Changes:
