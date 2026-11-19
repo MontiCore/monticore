@@ -31,6 +31,7 @@ import java.util.Optional;
 import static de.monticore.codegen.CodeGenSymTypeExpressionConverter.printConverted;
 import static de.monticore.codegen.javagen.JavaGenSymTypeRelations.generatesToJavaPrimitive;
 import static de.monticore.codegen.javagen.JavaGenSymTypeRelations.generatesToJavaRuntimeIdentifiableType;
+import static de.monticore.codegen.javagen.JavaGenSymTypeRelations.requiresConversion;
 import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getJavaTypePrint;
 import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getTypeErasedJavaTypePrint;
 import static de.monticore.types3.SymTypeRelations.normalize;
@@ -287,7 +288,12 @@ public class OCLExpressionsJavaGenVisitor
     node.getIteration().accept(getTraverser());
     getPrinter().print(node.getName());
     getPrinter().print(" = ");
-    node.getValue().accept(getTraverser());
+    // the value may have to be converted, e.g., [km]<double> -> [m]<double>
+    printConverted(getPrinter(),
+        getDeclaredType(node.getInit()),
+        normalize(typeOf(node.getValue())),
+        p -> node.getValue().accept(getTraverser())
+    );
     state.endStatement();
 
     printEndBrackets(node.getIteration());
@@ -339,15 +345,36 @@ public class OCLExpressionsJavaGenVisitor
     }
 
     String innerTypeStr = getJavaTypePrint(innerTypeOpt.get());
+    // the declared type may differ from the type of the elements,
+    // e.g., forall [m]<double> x in [1km]: ...
+    SymTypeExpression exprType = normalize(typeOf(node.getExpression()));
+    Optional<SymTypeExpression> elementType = exprType.isGenericType() ?
+        Optional.of(MCCollectionSymTypeRelations.getCollectionElementType(exprType))
+            .filter(t -> !t.isObscureType()) :
+        Optional.empty();
+    boolean convert = elementType.isPresent()
+        && requiresConversion(innerTypeOpt.get(), elementType.get());
     for (ASTInDeclarationVariable var : node.getInDeclarationVariableList()) {
+      String elementVarName = convert ? getVarName(var) : var.getName();
       getPrinter().print("for (");
-      getPrinter().print(innerTypeStr);
+      getPrinter().print(convert ?
+          getJavaTypePrint(elementType.get()) : innerTypeStr);
       getPrinter().print(" ");
-      getPrinter().print(var.getName());
+      getPrinter().print(elementVarName);
       getPrinter().print(" : ");
       node.getExpression().accept(getTraverser());
       getPrinter().println(") {");
       getPrinter().indent();
+      if (convert) {
+        getPrinter().print(innerTypeStr);
+        getPrinter().print(" ");
+        getPrinter().print(var.getName());
+        getPrinter().print(" = ");
+        printConverted(getPrinter(), innerTypeOpt.get(), elementType.get(),
+            p -> p.print(elementVarName)
+        );
+        state.endStatement();
+      }
     }
   }
 
@@ -375,9 +402,23 @@ public class OCLExpressionsJavaGenVisitor
     getPrinter().print(node.getName());
     if (node.isPresentExpression()) {
       getPrinter().print(" = ");
-      node.getExpression().accept(getTraverser());
+      // the value may have to be converted, e.g., [km]<double> x = 1500m
+      printConverted(getPrinter(),
+          getDeclaredType(node),
+          normalize(typeOf(node.getExpression())),
+          p -> node.getExpression().accept(getTraverser())
+      );
     }
     state.endStatement();
+  }
+
+  /**
+   * the type of the variable; requires a type or an expression
+   */
+  protected SymTypeExpression getDeclaredType(ASTOCLVariableDeclaration node) {
+    return node.isPresentMCType() ?
+        normalize(symTypeFromAST(node.getMCType())) :
+        normalize(typeOf(node.getExpression()));
   }
 
   @Override

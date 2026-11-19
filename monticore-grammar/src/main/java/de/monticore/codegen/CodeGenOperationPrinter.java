@@ -259,6 +259,19 @@ public abstract class CodeGenOperationPrinter {
     );
   }
 
+  public static void print(
+      ICodeGenOperationHandler.BinaryOperator op,
+      IndentPrinter printer, SymTypeExpression resultType,
+      SymTypeExpression leftType, SymTypeExpression rightType,
+      CodeGenPrintAction leftExprPrintAction,
+      CodeGenPrintAction rightExprPrintAction
+  ) {
+    getDelegate().printOperation(
+        op, printer, resultType, leftType, rightType,
+        leftExprPrintAction, rightExprPrintAction
+    );
+  }
+
   protected void printOperation(
       ICodeGenOperationHandler.BinaryOperator op,
       IndentPrinter printer,

@@ -4,6 +4,8 @@ package de.monticore.codegen.javagen;
 import com.google.common.base.Preconditions;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.check.SymTypeExpressionFactory;
+import de.monticore.types3.SymTypeRelations;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Collections;
@@ -99,6 +101,48 @@ public class JavaGenSymTypeRelations {
 
   protected boolean _generatesToJavaRuntimeIdentifiableType(SymTypeExpression type) {
     return !getTypeErasedJavaTypePrint(type).contains("?");
+  }
+
+  /**
+   * Returns the runtime type, e.g.,
+   * {@code [km]<int> -> int}, {@code [km] -> double}
+   */
+  public static SymTypeExpression getSIUnitValueType(SymTypeExpression type) {
+    return getDelegate()._getSIUnitValueType(type);
+  }
+
+  protected SymTypeExpression _getSIUnitValueType(SymTypeExpression type) {
+    if (type.isSIUnitType()) {
+      return SymTypeExpressionFactory.createPrimitive(BasicSymbolsMill.DOUBLE);
+    }
+    else if (type.isNumericWithSIUnitType()) {
+      return type.asNumericWithSIUnitType().getNumericType();
+    }
+    else {
+      return type;
+    }
+  }
+
+  /**
+   * whether a value of the source type has to be converted explicitly
+   * to be used as the (compatible) target type,
+   * as Java does not convert it implicitly,
+   * e.g., {@code [km]<double> -> [m]<double>}
+   */
+  public static boolean requiresConversion(
+      SymTypeExpression targetType,
+      SymTypeExpression sourceType
+  ) {
+    return getDelegate()._requiresConversion(targetType, sourceType);
+  }
+
+  protected boolean _requiresConversion(
+      SymTypeExpression targetType,
+      SymTypeExpression sourceType
+  ) {
+    return !SymTypeRelations.isSubTypeOf(sourceType, targetType)
+        && !SymTypeRelations.isSubTypeOf(
+        SymTypeRelations.box(sourceType), SymTypeRelations.box(targetType));
   }
 
   // static delegate

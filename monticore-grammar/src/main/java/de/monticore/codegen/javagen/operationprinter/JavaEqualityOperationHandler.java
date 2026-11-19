@@ -10,7 +10,10 @@ import static de.monticore.codegen.CodeGenSymTypeExpressionConverter.printConver
 import static de.monticore.codegen.ICodeGenOperationHandler.BinaryOperator.EQUALS;
 import static de.monticore.codegen.ICodeGenOperationHandler.BinaryOperator.NOT_EQUALS;
 import static de.monticore.codegen.javagen.JavaGenSymTypeRelations.generatesToJavaPrimitive;
+import static de.monticore.codegen.javagen.JavaGenSymTypeRelations.requiresConversion;
+import static de.monticore.types3.SymTypeRelations.isCompatible;
 import static de.monticore.types3.SymTypeRelations.isSubTypeOf;
+import static de.monticore.types3.util.SIUnitTypeRelations.hasSIUnit;
 
 // may need to be split in the future
 
@@ -30,7 +33,11 @@ public class JavaEqualityOperationHandler
       CodeGenPrintAction leftExprPrintAction,
       CodeGenPrintAction rightExprPrintAction
   ) {
-    if (operator == EQUALS) {
+    // handled by JavaSIUnitOperationHandler
+    if (hasSIUnit(leftType) || hasSIUnit(rightType)) {
+      return false;
+    }
+    else if (operator == EQUALS) {
       printEquals(
           printer, leftType, rightType,
           leftExprPrintAction, rightExprPrintAction
@@ -79,6 +86,17 @@ public class JavaEqualityOperationHandler
       );
     }
     // tuples, arrays, etc.
+    else if (requiresConversionToCommonType(leftType, rightType)) {
+      // compatible, but not subtypes, e.g., tuples with SIUnits:
+      // ([m]<double>, int) and ([km]<double>, int)
+      SymTypeExpression commonType =
+          isCompatible(leftType, rightType) ? leftType : rightType;
+      printer.print("java.util.Objects.equals(");
+      printConverted(printer, commonType, leftType, leftExprPrintAction);
+      printer.print(", ");
+      printConverted(printer, commonType, rightType, rightExprPrintAction);
+      printer.print(")");
+    }
     else {
       printer.print("java.util.Objects.equals(");
       printLeftConverted(printer, leftType, rightType, leftExprPrintAction);
@@ -86,6 +104,22 @@ public class JavaEqualityOperationHandler
       printRightConverted(printer, leftType, rightType, rightExprPrintAction);
       printer.print(")");
     }
+  }
+
+  /**
+   * whether the types are compatible without being subtypes, e.g.,
+   * {@code ([m]<double>, int)} and {@code ([km]<double>, int)}.
+   * This excludes boxing, e.g., Integer and long,
+   * as unboxing is not null-safe.
+   */
+  protected boolean requiresConversionToCommonType(
+      SymTypeExpression leftType,
+      SymTypeExpression rightType
+  ) {
+    return requiresConversion(leftType, rightType)
+        && requiresConversion(rightType, leftType)
+        && (isCompatible(leftType, rightType)
+        || isCompatible(rightType, leftType));
   }
 
   protected void printWithEqualsOperator(

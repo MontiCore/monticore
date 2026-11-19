@@ -9,22 +9,22 @@ public class SIUnitLiteralsTypeVisitorTest extends AbstractTypeVisitorTest {
 
   @Test
   public void deriveTFromSIUnitLiteralsSimple() throws IOException {
-    checkExpr("17s", "[s]<int>");
+    checkExpr("17s", "[s]<double>");
     checkExpr("1.0 1/m", "[1/m]<double>");
-    checkExpr("30kg", "[kg]<int>");
-    checkExpr("30km", "[km]<int>");
-    checkExpr("30g", "[g]<int>");
-    checkExpr("30 kg", "[kg]<int>");
+    checkExpr("30kg", "[kg]<double>");
+    checkExpr("30km", "[km]<double>");
+    checkExpr("30g", "[g]<double>");
+    checkExpr("30 kg", "[kg]<double>");
     checkExpr("30.4 kg", "[kg]<double>");
     checkExpr("30.4kg", "[kg]<double>");
     checkExpr("30.4 kg^2", "[kg^2]<double>");
-    checkExpr("30 g^2", "[g^2]<int>");
-    checkExpr("30 km^2", "[km^2]<int>");
+    checkExpr("30 g^2", "[g^2]<double>");
+    checkExpr("30 km^2", "[km^2]<double>");
     checkExpr("30.4kg^2", "[kg^2]<double>");
     checkExpr("30.4s^3/kgm^2", "[s^3/kg^1m^2]<double>");
     checkExpr("30.4 s^3/kgm^2", "[s^3/kg^1m^2]<double>");
-    checkExpr("30 kg/m", "[kg/m]<int>");
-    checkExpr("1 h/min", "[h/min]<int>");
+    checkExpr("30 kg/m", "[kg/m]<double>");
+    checkExpr("1 h/min", "[h/min]<double>");
     checkExpr("30.4 rad", "[rad]<double>");
   }
 
@@ -33,12 +33,12 @@ public class SIUnitLiteralsTypeVisitorTest extends AbstractTypeVisitorTest {
     checkExpr("30.2f km", "[km]<float>");
     checkExpr("30.4F F", "[F]<float>");
     checkExpr("30.4F kg", "[kg]<float>");
-    checkExpr("30L F", "[F]<long>");
+    checkExpr("30L F", "[F]<double>");
     checkExpr("30.2 F", "[F]<double>");
-    checkExpr("30F", "[F]<int>"); // questionable
-    checkExpr("30 L", "[L]<int>");
+    checkExpr("30F", "[F]<double>"); // questionable
+    checkExpr("30 L", "[L]<double>");
     checkExpr("30.2L", "[L]<double>");
-    checkExpr("30 l", "[l]<int>");
+    checkExpr("30 l", "[l]<double>");
   }
 
   @Test
