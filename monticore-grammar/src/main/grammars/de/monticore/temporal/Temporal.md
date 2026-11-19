@@ -572,6 +572,43 @@ Examples:
 
 ---
 
+## Context Conditions
+
+The grammars accept any digits in a date or time, e.g. `2017-02-30` or `25:00`.
+Whether such values exist is checked by context conditions (CoCos). They are
+only active if a language adds them to its CoCo checker. Each temporal grammar
+provides its CoCos as a checker, which a language adds for every temporal
+grammar it uses:
+
+```java
+MyLanguageCoCoChecker checker = new MyLanguageCoCoChecker();
+checker.addChecker(new TemporalBasisCoCos().getCoCoChecker());
+checker.addChecker(new ISOTemporalsCoCos().getCoCoChecker());
+checker.addChecker(new DETemporalsCoCos().getCoCoChecker());
+```
+
+The checkers of `ISOTemporals` and `DETemporals` do not include those of
+`TemporalBasis`, so the general CoCos run once in languages using both.
+
+| CoCo                        | Grammar         | Rejects, e.g.                                         |
+|-----------------------------|-----------------|-------------------------------------------------------|
+| `DateFieldsInRangeCoCo`     | `TemporalBasis` | `2017-13-04`, `2017-02-29`, `2017-366`, `30.02.2017`  |
+| `TimeFieldsInRangeCoCo`     | `TemporalBasis` | `25:00`, `12:60`, `24:30`, `12:30:60Z`, `12:00+19:00` |
+| `WeekDateFieldsInRangeCoCo` | `ISOTemporals`  | `2017-W53` (2017 has 52 weeks), `2017-W01-8`          |
+| `ISOTimeFieldsInRangeCoCo`  | `ISOTemporals`  | `12:00+05:75`, `T24,5`                                |
+| `DEYearHasFourDigitsCoCo`   | `DETemporals`   | `04.12.17` (DIN 5008 requires four-digit years)       |
+
+Following ISO 8601-1:2019/Amd.1:2022, the hour `24` denotes the end of the day
+and is only allowed as `24:00` or `24:00:00`. The second `60` denotes a positive
+leap second, which is inserted after `23:59:59Z`. With a time shift, the time is
+converted to UTC first, e.g. `00:59:60+01:00` is accepted. Without a time shift,
+the offset to UTC is unknown, so a leap second is accepted in any minute.
+
+`PeriodIsNonemptyCoCo` of `ISOTemporals` is checked while parsing and is
+therefore not part of these checkers.
+
+---
+
 ## Summary
 
 The MontiCore Temporal language family separates temporal concepts from concrete
