@@ -1,0 +1,49 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.types;
+
+import de.monticore.types.*;
+
+/**
+ * This grammar introduces a short notation for optional types:
+ *
+ *   T?   which is equivalent to   Optional<T>
+ *
+ * Examples:
+ *   Person?        Optional<Person>
+ *   List<int>?     Optional<List<int>>
+ *   int[]?         Optional<int[]>
+ *
+ * The short notation is kept in a separate grammar (instead of
+ * MCCollectionTypes), s.t. languages explicitly opt into this notation.
+ * It can be combined with other uses of "?", e.g.,
+ * the conditional expression "c ? a : b" (CommonExpressions),
+ * the operators of OptionalOperators (e.g., "?:", "?==", "?<"),
+ * and wildcard type arguments "? extends T" (MCFullGenericTypes).
+ *
+ * The grammar extends MCCollectionTypes, as T? is semantically
+ * identical to Optional<T> and both notations should be usable
+ * side by side.
+ *
+ * This grammar is part of a hierarchy of types, which can be found
+ * under
+ *   https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/
+ *                 src/main/grammars/de/monticore/types/Types.md
+ *
+ */
+
+component grammar MCOptionalTypes
+          extends MCCollectionTypes {
+
+  /** ASTMCShortOptionalType represents the optional type T?,
+   * which is the short notation of Optional<T>.
+   * (The name MCOptionalType is already used for Optional<T>
+   *  in MCCollectionTypes and would override that production.)
+   *
+   * Example:
+   * Person? p = Optional.empty();
+   */
+  MCShortOptionalType implements MCType <170> =
+    MCType "?"
+  ;
+
+}

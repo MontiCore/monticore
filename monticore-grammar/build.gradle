@@ -146,6 +146,7 @@ def grammarDependencies = ext {
   MCExceptionStatements = ["MCCommonStatements"]
   MCFunctionTypes = ["MCBasicTypes"]
   MCStructuralTypes = ["MCBasicTypes"]
+  MCOptionalTypes = ["MCCollectionTypes"]
   OOSymbols = ["BasicSymbols"]
   TFCommons = ["TFBasisExts"]
   MCJavaLiterals = ["MCCommonLiterals"]
@@ -376,6 +377,8 @@ checkArtifactsUglyExpressions.dependsOn(checkArtifactsMCBasicTypes)
 
 checkArtifactsMCStructuralTypes.dependsOn(checkArtifactsMCBasicTypes)
 
+checkArtifactsMCOptionalTypes.dependsOn(checkArtifactsMCCollectionTypes)
+
 ///////////// dependencies between show artifacts tasks ///////////////////////
 
 showArtifactsAssignmentExpressions.dependsOn(showArtifactsExpressionsBasis)
@@ -512,6 +515,8 @@ showArtifactsUglyExpressions.dependsOn(showArtifactsCommonExpressions)
 showArtifactsUglyExpressions.dependsOn(showArtifactsMCBasicTypes)
 
 showArtifactsMCStructuralTypes.dependsOn(showArtifactsMCBasicTypes)
+
+showArtifactsMCOptionalTypes.dependsOn(showArtifactsMCCollectionTypes)
 
 ///////////// MLC tasks - End ///////////////////////
 
