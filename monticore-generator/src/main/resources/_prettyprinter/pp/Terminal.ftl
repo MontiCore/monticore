@@ -20,6 +20,13 @@ ${tc.signature("terminal", "hasNoSpace", "nonAlphabeticNoSpace")}
 <#else>
     getPrinter().println("${terminal} ");
 </#if>
+<#elseif terminal == ",">
+    <#if hasNoSpace>
+        getPrinter().print("${terminal}");
+    <#else>
+        getPrinter().stripTrailing();
+        getPrinter().print("${terminal} ");
+    </#if>
 <#elseif terminal == "{">
 <#if hasNoSpace>
     getPrinter().print("${terminal}");
