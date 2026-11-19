@@ -3,6 +3,9 @@ ${tc.signature("symTabMill", "symbolFullName", "symbolSimpleName","symbolRuleAtt
 <#assign genHelper = glex.getGlobalVar("astHelper")>
   ${symbolFullName}Builder builder = ${symTabMill}.${symbolSimpleName?uncap_first}Builder();
   builder.setName(symbolJson.getStringMember(de.monticore.symboltable.serialization.JsonDeSers.NAME));
+  if (scope != null) {
+    builder.setEnclosingScope(scope);
+  }
   if (symbolJson.hasStringMember(de.monticore.symboltable.serialization.JsonDeSers.FULL_NAME)) {
     builder.setFullName(symbolJson.getStringMember(de.monticore.symboltable.serialization.JsonDeSers.FULL_NAME));
   }
