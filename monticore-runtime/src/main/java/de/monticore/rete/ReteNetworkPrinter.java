@@ -15,9 +15,10 @@ import java.util.stream.Collectors;
  * <p>
  * Each node is shown with its kind, its parameters (e.g. the key columns of
  * an indexer or the parameter names of a production) and the types of its
- * columns, where {@code ?} marks optional columns. Edges point in the direction of the data flow, from the input
- * nodes to the productions; the edges from an indexer to a join or existence
- * node are labeled with the side of the indexer. Nodes not reachable from an
+ * columns, where {@code ?} marks optional columns. Edges point in the
+ * direction of the data flow, from the input nodes to the productions; the
+ * edges from an indexer to a join, left outer join or existence node are
+ * labeled with the side of the indexer. Nodes not reachable from an
  * input node (i.e. disposed nodes) are not printed.
  */
 public final class ReteNetworkPrinter {
@@ -93,6 +94,9 @@ public final class ReteNetworkPrinter {
     } else if (listener instanceof ExistenceNode existence) {
       left = existence.getLeft();
       right = existence.getRight();
+    } else if (listener instanceof LeftOuterJoinNode outerJoin) {
+      left = outerJoin.getLeft();
+      right = outerJoin.getRight();
     }
     if (left == indexer && right == indexer) {
       return "left, right";
@@ -118,6 +122,8 @@ public final class ReteNetworkPrinter {
           + ColumnTypes.toString(indexer.getKeyTypes(), indexer.getKeyOptionality()));
     } else if (node instanceof JoinNode) {
       lines.add("Join");
+    } else if (node instanceof LeftOuterJoinNode) {
+      lines.add("LeftOuterJoin (optional)");
     } else if (node instanceof ExistenceNode existence) {
       lines.add(existence.isNegative() ? "AntiJoin (not exists)" : "SemiJoin (exists)");
     } else if (node instanceof FilterNode) {

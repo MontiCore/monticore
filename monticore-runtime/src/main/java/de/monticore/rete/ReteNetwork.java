@@ -13,6 +13,7 @@ import de.monticore.rete.nodes.FeatureInputNode;
 import de.monticore.rete.nodes.FilterNode;
 import de.monticore.rete.nodes.Indexer;
 import de.monticore.rete.nodes.JoinNode;
+import de.monticore.rete.nodes.LeftOuterJoinNode;
 import de.monticore.rete.nodes.ProductionNode;
 import de.monticore.rete.nodes.ProjectionNode;
 import de.monticore.rete.nodes.Receiver;
@@ -226,6 +227,47 @@ public class ReteNetwork {
    */
   public JoinNode join(Indexer left, Indexer right, TupleMask rightOutputMask) {
     return new JoinNode(this, left, right, rightOutputMask);
+  }
+
+  /**
+   * Left outer join on equal keys (optional pattern elements). The result
+   * consists of the left columns followed by the non-key columns of the right
+   * side, which are {@link Tuple#ABSENT} for left tuples without partner.
+   *
+   * @see LeftOuterJoinNode
+   */
+  public LeftOuterJoinNode leftOuterJoin(Indexer left, Indexer right) {
+    return new LeftOuterJoinNode(this, left, right);
+  }
+
+  /**
+   * Left outer join on equal keys for which the condition holds. The result
+   * consists of the left columns followed by the non-key columns of the right
+   * side, which are {@link Tuple#ABSENT} for left tuples without partner.
+   *
+   * @param condition a deterministic predicate only depending on tuple
+   *                  values, evaluated for the joined tuple (left columns
+   *                  followed by the non-key columns of the right side)
+   * @see LeftOuterJoinNode
+   */
+  public LeftOuterJoinNode leftOuterJoin(Indexer left, Indexer right,
+      Predicate<Tuple> condition) {
+    return new LeftOuterJoinNode(this, left, right, right.getMask().complement(), condition);
+  }
+
+  /**
+   * Left outer join on equal keys for which the condition holds. The result
+   * consists of the left columns followed by the right columns selected by
+   * {@code rightOutputMask}, which are {@link Tuple#ABSENT} for left tuples
+   * without partner.
+   *
+   * @param condition a deterministic predicate only depending on tuple
+   *                  values, evaluated for the joined tuple
+   * @see LeftOuterJoinNode
+   */
+  public LeftOuterJoinNode leftOuterJoin(Indexer left, Indexer right, TupleMask rightOutputMask,
+      Predicate<Tuple> condition) {
+    return new LeftOuterJoinNode(this, left, right, rightOutputMask, condition);
   }
 
   /**
