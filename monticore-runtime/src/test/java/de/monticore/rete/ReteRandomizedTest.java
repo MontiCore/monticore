@@ -108,6 +108,25 @@ public class ReteRandomizedTest {
     TupleSource union = net.union(p2, edges, net.project(j2, 0, 2));
     TupleSource namedReachable = net.semiJoin(net.indexer(tc, 1), net.indexer(names, 0));
 
+    // optional pattern elements: each state with an optional successor t != s
+    TupleSource optNext = net.leftOuterJoin(net.indexer(states, 0), net.indexer(edges, 0),
+        t -> t.get(0) != t.get(1));                                      // [s, t?]
+    // nested optional: the optional name of the optional successor
+    TupleSource optNextName = net.leftOuterJoin(net.indexer(optNext, 1),
+        net.indexer(names, 0));                                          // [s, t?, n?]
+    // sequential optional with injectivity across both optionals
+    TupleSource optPred = net.leftOuterJoin(net.indexer(optNext, 0), net.indexer(edges, 1),
+        t -> t.get(2) != t.get(0) && t.get(2) != t.get(1));              // [s, t?, p?]
+    // optional successor edge of each edge, with indexers of the same source
+    TupleSource optEdgeNext = net.leftOuterJoin(net.indexer(edges, 1),
+        net.indexer(edges, 0));                                          // [x, y, z?]
+    // downstream nodes reading ABSENT
+    TupleSource optNextJoined = net.join(net.indexer(optNext, 1), net.indexer(names, 0));
+    TupleSource optNextNoSucc = net.antiJoin(net.indexer(optNext, 1), net.indexer(edges, 0));
+    TupleSource optNextHasSucc = net.semiJoin(net.indexer(optNext, 1), net.indexer(edges, 0));
+    TupleSource optPredDistinct = net.inequality(net.distinct(net.project(optPred, 1, 2)), 0, 1);
+    TupleSource optPredCount = net.count(optPred, 1);
+
     s.sources.put("j1", j1);
     s.sources.put("p2", p2);
     s.sources.put("j2", j2);
@@ -121,12 +140,22 @@ public class ReteRandomizedTest {
     s.sources.put("distinct", distinct);
     s.sources.put("union", union);
     s.sources.put("namedReachable", namedReachable);
+    s.sources.put("optNext", optNext);
+    s.sources.put("optNextName", optNextName);
+    s.sources.put("optPred", optPred);
+    s.sources.put("optEdgeNext", optEdgeNext);
+    s.sources.put("optNextJoined", optNextJoined);
+    s.sources.put("optNextNoSucc", optNextNoSucc);
+    s.sources.put("optNextHasSucc", optNextHasSucc);
+    s.sources.put("optPredDistinct", optPredDistinct);
+    s.sources.put("optPredCount", optPredCount);
 
     s.productions.put("tc", net.production(tc, "x", "y"));
     s.productions.put("distinct", net.production(distinct, "x", "z"));
     s.productions.put("anti", net.production(anti, "x", "y"));
     s.productions.put("deadEnds", net.production(deadEnds, "s"));
     s.productions.put("j2", net.production(j2, "x", "y", "z"));
+    s.productions.put("optPred", net.production(optPred, "s", "t", "p"));
     for (Map.Entry<String, ProductionNode> p : s.productions.entrySet()) {
       RecordingListener listener = new RecordingListener();
       p.getValue().addMatchListener(listener, true);
@@ -165,6 +194,53 @@ public class ReteRandomizedTest {
   }
 
   /**
+   * Compares the left outer joins to their semantics computed directly from
+   * the facts, independent of the network: each state with each successor
+   * {@code t != s}, or {@code ABSENT} if there is none ({@code optNext}); the
+   * name of the successor, if any ({@code optNextName}); and each predecessor
+   * {@code p} different from {@code s} and {@code t}, or {@code ABSENT}
+   * ({@code optPred}). Multiplicities result from parallel edges.
+   */
+  protected static void assertOptionalSemantics(Facts facts, Structure actual, String context) {
+    Multiset<Tuple> optNext = HashMultiset.create();
+    for (ASTState s : facts.nodes) {
+      boolean found = false;
+      for (Tuple edge : facts.edges) {
+        if (edge.get(0) == s && edge.get(1) != s) {
+          optNext.add(Tuple.of(s, edge.get(1)));
+          found = true;
+        }
+      }
+      if (!found) {
+        optNext.add(Tuple.of(s, Tuple.ABSENT));
+      }
+    }
+    Multiset<Tuple> optNextName = HashMultiset.create();
+    Multiset<Tuple> optPred = HashMultiset.create();
+    for (Tuple st : optNext) {
+      Object s = st.get(0);
+      Object t = st.isAbsent(1) ? Tuple.ABSENT : st.get(1);
+      String name = st.isAbsent(1) ? null : facts.names.get(st.get(1, ASTState.class));
+      optNextName.add(Tuple.of(s, t, name == null ? Tuple.ABSENT : name));
+      boolean found = false;
+      for (Tuple edge : facts.edges) {
+        Object p = edge.get(0);
+        if (edge.get(1) == s && p != s && p != t) {
+          optPred.add(Tuple.of(s, t, p));
+          found = true;
+        }
+      }
+      if (!found) {
+        optPred.add(Tuple.of(s, t, Tuple.ABSENT));
+      }
+    }
+    assertEquals(optNext, contents(actual.sources.get("optNext")), context + ": optNext");
+    assertEquals(optNextName, contents(actual.sources.get("optNextName")),
+        context + ": optNextName");
+    assertEquals(optPred, contents(actual.sources.get("optPred")), context + ": optPred");
+  }
+
+  /**
    * Builds a fresh network for the given facts.
    *
    * @param pullInitialization whether the inner nodes are created after the
@@ -186,7 +262,8 @@ public class ReteRandomizedTest {
   /**
    * Applies random insertions and deletions (some grouped in transactions)
    * and periodically compares the incrementally maintained network to both
-   * kinds of networks built from scratch.
+   * kinds of networks built from scratch, and its left outer joins to their
+   * semantics.
    */
   @ParameterizedTest
   @ValueSource(longs = {1, 2, 3, 4, 5})
@@ -215,6 +292,9 @@ public class ReteRandomizedTest {
       if (step % 300 == 299) {
         assertSameResults(fromScratch(facts, false), incremental, "seed " + seed + ", step " + step);
         assertSameResults(fromScratch(facts, true), incremental, "seed " + seed + ", step " + step);
+      }
+      if (step % 50 == 49) {
+        assertOptionalSemantics(facts, incremental, "seed " + seed + ", step " + step);
       }
     }
   }
