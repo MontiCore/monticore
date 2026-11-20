@@ -22,6 +22,13 @@ import java.util.Set;
  * of them.
  * <p>
  * Listeners are notified after the memory has been updated.
+ * <p>
+ * The memory compares {@link Tuple#ABSENT} like other values, so tuples with
+ * {@code ABSENT} in a key column are stored under a key containing
+ * {@code ABSENT} and can be deleted again. For joins, however,
+ * {@code ABSENT} matches no value, not even {@code ABSENT}: such keys have no
+ * partners (see {@link #isJoinable}, {@link #lookupPartners} and
+ * {@link #countPartners}).
  */
 public class Indexer extends ReteNode implements Receiver {
 
@@ -126,6 +133,35 @@ public class Indexer extends ReteNode implements Receiver {
   public int count(Tuple key) {
     Multiset<Tuple> tuples = memory.get(key);
     return tuples == null ? 0 : tuples.size();
+  }
+
+  /**
+   * Join semantics of keys: {@link Tuple#ABSENT} stands for an unmatched
+   * optional pattern element and matches no value, not even {@code ABSENT}.
+   *
+   * @return whether tuples with the given key can have join partners, i.e.
+   * whether the key contains no {@code ABSENT}
+   */
+  public static boolean isJoinable(Tuple key) {
+    return !key.containsAbsent();
+  }
+
+  /**
+   * @return the internal multiset of tuples of this indexer joining with
+   * tuples with the given key, or {@code null} if there are none, in particular
+   * if the key is not {@linkplain #isJoinable joinable}
+   */
+  Multiset<Tuple> lookupPartners(Tuple key) {
+    return isJoinable(key) ? memory.get(key) : null;
+  }
+
+  /**
+   * @return the number of tuples (with multiplicities) of this indexer joining
+   * with tuples with the given key; 0 if the key is not
+   * {@linkplain #isJoinable joinable}
+   */
+  public int countPartners(Tuple key) {
+    return isJoinable(key) ? count(key) : 0;
   }
 
   /**

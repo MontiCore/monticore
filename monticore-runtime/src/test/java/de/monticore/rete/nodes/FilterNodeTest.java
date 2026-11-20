@@ -124,6 +124,28 @@ public class FilterNodeTest extends AbstractNodeTest {
   }
 
   /**
+   * {@link Tuple#ABSENT} equals no value, not even {@code ABSENT}:
+   * {@code equality} drops the tuples with {@code ABSENT} in one of its
+   * columns (the first as well as the others), {@code inequality} keeps them.
+   */
+  @Test
+  public void testAbsentEqualsNoValue() {
+    TestSource source = source(List.of(true, true, false), String.class, String.class,
+        String.class);
+    FilterNode equality = net.equality(source, 0, 1);
+    FilterNode equalityOtherColumns = net.equality(source, 2, 0, 1);
+    FilterNode inequality = net.inequality(source, 0, 1);
+    source.insert(Tuple.ABSENT, Tuple.ABSENT, "a");
+    source.insert(Tuple.ABSENT, "a", "a");
+    source.insert("a", Tuple.ABSENT, "a");
+    source.insert("a", "a", "a");
+    assertEquals(tuples(Tuple.of("a", "a", "a")), contents(equality));
+    assertEquals(tuples(Tuple.of("a", "a", "a")), contents(equalityOtherColumns));
+    assertEquals(tuples(Tuple.of(Tuple.ABSENT, Tuple.ABSENT, "a"),
+        Tuple.of(Tuple.ABSENT, "a", "a"), Tuple.of("a", Tuple.ABSENT, "a")), contents(inequality));
+  }
+
+  /**
    * A predicate creating a node during propagation is rejected with an
    * {@link IllegalStateException}.
    */

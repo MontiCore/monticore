@@ -18,6 +18,10 @@ import java.util.List;
  * i.e. the key columns of the right tuple are omitted as they are equal to
  * the left key columns.
  * <p>
+ * Keys containing {@link Tuple#ABSENT} join with nothing (see
+ * {@link Indexer#isJoinable}), so the key columns of the output never contain
+ * {@code ABSENT} and are not optional.
+ * <p>
  * Both indexers may be the same object (self join on the same key).
  */
 public class JoinNode extends AbstractSourceNode implements IndexerListener {
@@ -106,16 +110,24 @@ public class JoinNode extends AbstractSourceNode implements IndexerListener {
 
   /**
    * The output columns are optional if the corresponding left column or
-   * selected right column is optional. Must be called after
-   * {@link #computeColumnTypes}, which validates the configuration.
+   * selected right column is optional, except for the key columns: as keys
+   * containing {@link Tuple#ABSENT} join with nothing, joined key values are
+   * never {@code ABSENT}. Must be called after {@link #computeColumnTypes},
+   * which validates the configuration.
    *
    * @return the optionality of the left columns followed by the optionality
    * of the right columns selected by {@code rightOutputMask}
    */
   protected static List<Boolean> computeColumnOptionality(Indexer left, Indexer right,
       TupleMask rightOutputMask) {
-    List<Boolean> result = new ArrayList<>(left.getSource().getColumnOptionality());
-    result.addAll(rightOutputMask.transform(right.getSource().getColumnOptionality()));
+    List<Boolean> leftOptionality = new ArrayList<>(left.getSource().getColumnOptionality());
+    List<Boolean> rightOptionality = new ArrayList<>(right.getSource().getColumnOptionality());
+    for (int i = 0; i < left.getMask().getSize(); i++) {
+      leftOptionality.set(left.getMask().getIndex(i), false);
+      rightOptionality.set(right.getMask().getIndex(i), false);
+    }
+    List<Boolean> result = new ArrayList<>(leftOptionality);
+    result.addAll(rightOutputMask.transform(rightOptionality));
     return result;
   }
 
@@ -135,11 +147,13 @@ public class JoinNode extends AbstractSourceNode implements IndexerListener {
    * Joins the changed tuple with the tuples of the opposite indexer having
    * the same key and propagates the resulting pairs in the same direction.
    * For a self join (both indexers identical), both sides are processed.
+   * Tuples whose key is not {@linkplain Indexer#isJoinable joinable} have no
+   * partners and produce no output.
    */
   @Override
   public void indexerUpdated(Indexer indexer, Direction direction, Tuple tuple, Tuple key) {
     if (indexer == left) {
-      Multiset<Tuple> rightTuples = right.lookup(key);
+      Multiset<Tuple> rightTuples = right.lookupPartners(key);
       if (rightTuples != null) {
         for (Multiset.Entry<Tuple> entry : rightTuples.entrySet()) {
           propagate(direction, tuple.concat(entry.getElement(), rightOutputMask),
@@ -148,9 +162,12 @@ public class JoinNode extends AbstractSourceNode implements IndexerListener {
       }
     }
     if (indexer == right) {
-      Multiset<Tuple> leftTuples = left.lookup(key);
+      Multiset<Tuple> leftTuples = left.lookupPartners(key);
       if (left == right) {
-        selfJoinRightUpdate(direction, tuple, leftTuples);
+        // a tuple with ABSENT in its key does not even join with itself
+        if (Indexer.isJoinable(key)) {
+          selfJoinRightUpdate(direction, tuple, leftTuples);
+        }
       } else if (leftTuples != null) {
         for (Multiset.Entry<Tuple> entry : leftTuples.entrySet()) {
           propagate(direction, entry.getElement().concat(tuple, rightOutputMask),
@@ -192,12 +209,13 @@ public class JoinNode extends AbstractSourceNode implements IndexerListener {
 
   /**
    * Computes the join of the current indexer contents. The multiplicity of a
-   * result is the product of the multiplicities of the joined tuples.
+   * result is the product of the multiplicities of the joined tuples; keys
+   * that are not {@linkplain Indexer#isJoinable joinable} are skipped.
    */
   @Override
   public void pullInto(Multiset<Tuple> collector) {
     for (Tuple key : left.getKeys()) {
-      Multiset<Tuple> rightTuples = right.lookup(key);
+      Multiset<Tuple> rightTuples = right.lookupPartners(key);
       if (rightTuples == null) {
         continue;
       }

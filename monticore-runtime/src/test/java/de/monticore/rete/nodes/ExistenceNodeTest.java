@@ -69,9 +69,9 @@ public class ExistenceNodeTest extends AbstractNodeTest {
   }
 
   /**
-   * The output columns of semi and anti joins keep the optionality of the
-   * left columns; {@link Tuple#ABSENT} in columns that are not part of the
-   * key is passed on like other values.
+   * The output columns of semi and anti joins that are not part of the key
+   * keep the optionality of the left columns; {@link Tuple#ABSENT} in these
+   * columns is passed on like other values.
    */
   @Test
   public void testOptionalColumns() {
@@ -86,6 +86,48 @@ public class ExistenceNodeTest extends AbstractNodeTest {
     assertEquals(tuples(Tuple.of("a", Tuple.ABSENT)), contents(anti));
     right.insert("a");
     assertEquals(tuples(Tuple.of("a", Tuple.ABSENT)), contents(semi));
+  }
+
+  /**
+   * Keys with {@link Tuple#ABSENT} have no partners, not even right tuples
+   * with {@code ABSENT} in their key: such left tuples are never passed on by
+   * a semi join and always by an anti join, and such right tuples have no
+   * effect. Hence, the key columns of a semi join are not optional, while
+   * those of an anti join keep their optionality. Nodes created on populated
+   * indexers agree.
+   */
+  @Test
+  public void testKeysWithAbsentHaveNoPartners() {
+    TestSource optionalLeft = source(List.of(true, false), String.class, Integer.class);
+    TestSource optionalRight = source(List.of(true), String.class);
+    Indexer leftIndexer = net.indexer(optionalLeft, 0);
+    Indexer rightIndexer = net.indexer(optionalRight, 0);
+    ExistenceNode semi = net.semiJoin(leftIndexer, rightIndexer);
+    ExistenceNode anti = net.antiJoin(leftIndexer, rightIndexer);
+    RecordingReceiver semiRecorder = record(semi);
+    RecordingReceiver antiRecorder = record(anti);
+    assertEquals(List.of(false, false), semi.getColumnOptionality());
+    assertEquals(List.of(true, false), anti.getColumnOptionality());
+
+    optionalLeft.insert(Tuple.ABSENT, 1);
+    assertEquals(List.of(), semiRecorder.take());
+    assertEquals(List.of("+[⊥, 1]"), antiRecorder.take());
+
+    // right tuples with ABSENT in their key change nothing
+    optionalRight.insert(Tuple.ABSENT);
+    optionalLeft.insert(Tuple.ABSENT, 2);
+    assertEquals(List.of(), semiRecorder.take());
+    assertEquals(List.of("+[⊥, 2]"), antiRecorder.take());
+    assertEquals(tuples(Tuple.of(Tuple.ABSENT, 1), Tuple.of(Tuple.ABSENT, 2)), contents(anti));
+    assertTrue(contents(semi).isEmpty());
+    assertTrue(contents(net.semiJoin(leftIndexer, rightIndexer)).isEmpty());
+    assertEquals(contents(anti), contents(net.antiJoin(leftIndexer, rightIndexer)));
+
+    optionalRight.delete(Tuple.ABSENT);
+    assertEquals(List.of(), semiRecorder.take());
+    assertEquals(List.of(), antiRecorder.take());
+    semiRecorder.assertConsistent();
+    antiRecorder.assertConsistent();
   }
 
   /**

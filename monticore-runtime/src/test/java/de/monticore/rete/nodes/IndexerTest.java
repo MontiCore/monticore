@@ -85,6 +85,34 @@ public class IndexerTest extends AbstractNodeTest {
   }
 
   /**
+   * For joins, {@link Tuple#ABSENT} matches no value, not even
+   * {@code ABSENT}: keys containing it are not joinable and have no partners,
+   * although the indexer stores tuples under them. Other keys have all their
+   * tuples as partners.
+   */
+  @Test
+  public void testKeysWithAbsentHaveNoPartners() {
+    TestSource source = source(List.of(false, true), String.class, Integer.class);
+    Indexer indexer = net.indexer(source, 0, 1);
+    source.insert("a", Tuple.ABSENT);
+    source.insert("a", 1);
+    source.insert("a", 1);
+    Tuple absentKey = Tuple.of("a", Tuple.ABSENT);
+    Tuple presentKey = Tuple.of("a", 1);
+
+    assertFalse(Indexer.isJoinable(absentKey));
+    assertEquals(1, indexer.count(absentKey));
+    assertEquals(0, indexer.countPartners(absentKey));
+    assertNull(indexer.lookupPartners(absentKey));
+
+    assertTrue(Indexer.isJoinable(presentKey));
+    assertEquals(2, indexer.countPartners(presentKey));
+    assertEquals(tuples(presentKey, presentKey), indexer.lookupPartners(presentKey));
+    assertEquals(0, indexer.countPartners(Tuple.of("b", 1)));
+    assertNull(indexer.lookupPartners(Tuple.of("b", 1)));
+  }
+
+  /**
    * An indexer created on a populated source contains its tuples with their
    * multiplicities and keeps track of later deletions.
    */

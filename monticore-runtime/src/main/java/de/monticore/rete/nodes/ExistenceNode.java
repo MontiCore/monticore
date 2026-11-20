@@ -5,11 +5,19 @@ import com.google.common.collect.Multiset;
 import de.monticore.rete.ReteNetwork;
 import de.monticore.rete.tuple.Tuple;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Semi join or anti join of two {@link Indexer}s. Contains the left tuples
  * for which a right tuple with an equal key exists (semi join) or does not
  * exist (anti join, {@code negative == true}). The latter implements
  * negative application conditions.
+ * <p>
+ * Keys containing {@link Tuple#ABSENT} have no partners (see
+ * {@link Indexer#isJoinable}): left tuples with such keys are never passed on
+ * by a semi join and always by an anti join, and right tuples with such keys
+ * have no effect.
  */
 public class ExistenceNode extends AbstractSourceNode implements IndexerListener {
 
@@ -21,7 +29,9 @@ public class ExistenceNode extends AbstractSourceNode implements IndexerListener
 
   /**
    * Creates the node and registers it as listener of both indexers. The
-   * output columns (incl. their optionality) are the columns of the left input.
+   * output columns are the columns of the left input, with their optionality;
+   * only the key columns of a semi join are not optional, as left tuples with
+   * {@link Tuple#ABSENT} in their key have no partner.
    *
    * @param left     indexer of the tuples to filter
    * @param right    indexer of the tuples whose existence is checked
@@ -30,7 +40,7 @@ public class ExistenceNode extends AbstractSourceNode implements IndexerListener
    *                                  differ in size or can never match
    */
   public ExistenceNode(ReteNetwork network, Indexer left, Indexer right, boolean negative) {
-    super(network, left.getSource().getColumnTypes(), left.getSource().getColumnOptionality());
+    super(network, left.getSource().getColumnTypes(), computeColumnOptionality(left, negative));
     checkSameNetwork(left);
     checkSameNetwork(right);
     if (left == right) {
@@ -56,6 +66,20 @@ public class ExistenceNode extends AbstractSourceNode implements IndexerListener
     right.addListener(this);
   }
 
+  /**
+   * @return the optionality of the left columns, with the key columns not
+   * optional for a semi join
+   */
+  protected static List<Boolean> computeColumnOptionality(Indexer left, boolean negative) {
+    List<Boolean> result = new ArrayList<>(left.getSource().getColumnOptionality());
+    if (!negative) {
+      for (int i = 0; i < left.getMask().getSize(); i++) {
+        result.set(left.getMask().getIndex(i), false);
+      }
+    }
+    return result;
+  }
+
   public Indexer getLeft() {
     return left;
   }
@@ -77,13 +101,14 @@ public class ExistenceNode extends AbstractSourceNode implements IndexerListener
   @Override
   public void indexerUpdated(Indexer indexer, Direction direction, Tuple tuple, Tuple key) {
     if (indexer == left) {
-      if ((right.count(key) > 0) != negative) {
+      if ((right.countPartners(key) > 0) != negative) {
         propagate(direction, tuple);
       }
     } else {
       int count = right.count(key);
       boolean existenceChanged = direction == Direction.INSERT ? count == 1 : count == 0;
-      Multiset<Tuple> leftTuples = left.lookup(key);
+      // null for keys that are not joinable, which change nothing
+      Multiset<Tuple> leftTuples = left.lookupPartners(key);
       if (existenceChanged && leftTuples != null) {
         Direction out = negative ? direction.opposite() : direction;
         for (Multiset.Entry<Tuple> entry : leftTuples.entrySet()) {
@@ -99,7 +124,7 @@ public class ExistenceNode extends AbstractSourceNode implements IndexerListener
   @Override
   public void pullInto(Multiset<Tuple> collector) {
     for (Tuple key : left.getKeys()) {
-      if ((right.count(key) > 0) != negative) {
+      if ((right.countPartners(key) > 0) != negative) {
         for (Multiset.Entry<Tuple> entry : left.lookup(key).entrySet()) {
           collector.add(entry.getElement(), entry.getCount());
         }

@@ -110,9 +110,9 @@ public class JoinNodeTest extends AbstractNodeTest {
   }
 
   /**
-   * The optionality of the output columns is that of the left columns
-   * followed by that of the selected right columns; {@link Tuple#ABSENT} in
-   * columns that are not part of the key is passed on like other values.
+   * The optionality of the output columns that are not part of the key is
+   * that of the left columns followed by that of the selected right columns;
+   * {@link Tuple#ABSENT} in these columns is passed on like other values.
    */
   @Test
   public void testOptionalColumns() {
@@ -127,6 +127,63 @@ public class JoinNodeTest extends AbstractNodeTest {
     optionalLeft.insert("a", Tuple.ABSENT);
     optionalRight.insert("a", Tuple.ABSENT);
     assertEquals(tuples(Tuple.of("a", Tuple.ABSENT, Tuple.ABSENT)), contents(join));
+  }
+
+  /**
+   * Tuples with {@link Tuple#ABSENT} in their key join with nothing, not even
+   * with tuples having {@code ABSENT} in their key: neither their insertion
+   * nor their deletion produces a delta, and they are missing in the contents.
+   * Hence, the key columns of the output, both left and selected right ones,
+   * are not optional.
+   */
+  @Test
+  public void testKeysWithAbsentJoinWithNothing() {
+    TestSource optionalLeft = source(List.of(true, false), String.class, Integer.class);
+    TestSource optionalRight = source(List.of(true, false), String.class, Boolean.class);
+    Indexer leftIndexer = net.indexer(optionalLeft, 0);
+    Indexer rightIndexer = net.indexer(optionalRight, 0);
+    JoinNode join = net.join(leftIndexer, rightIndexer);
+    RecordingReceiver recorder = record(join);
+    assertEquals(List.of(false, false, false), join.getColumnOptionality());
+    assertEquals(List.of(false, false, false, false),
+        net.join(leftIndexer, rightIndexer, TupleMask.identity(2)).getColumnOptionality());
+
+    optionalLeft.insert(Tuple.ABSENT, 1);
+    optionalRight.insert(Tuple.ABSENT, true);
+    optionalLeft.insert(Tuple.ABSENT, 2);
+    optionalLeft.insert("a", 3);
+    optionalRight.insert("a", false);
+    assertEquals(List.of("+[a, 3, false]"), recorder.take());
+    assertEquals(tuples(Tuple.of("a", 3, false)), contents(join));
+
+    optionalRight.delete(Tuple.ABSENT, true);
+    optionalLeft.delete(Tuple.ABSENT, 1);
+    assertEquals(List.of(), recorder.take());
+    recorder.assertConsistent();
+  }
+
+  /**
+   * In a self join, a tuple with {@link Tuple#ABSENT} in its key does not
+   * even join with itself, neither on insertion nor on deletion.
+   */
+  @Test
+  public void testSelfJoinWithAbsentKey() {
+    TestSource members = source(List.of(false, true), String.class, String.class);
+    Indexer byGroup = net.indexer(members, 1);
+    JoinNode pairs = net.join(byGroup, byGroup);               // [x, group, y]
+    RecordingReceiver recorder = record(pairs);
+    assertEquals(List.of(false, false, false), pairs.getColumnOptionality());
+
+    members.insert("a", Tuple.ABSENT);
+    members.insert("b", Tuple.ABSENT);
+    members.insert("c", "g");
+    assertEquals(List.of("+[c, g, c]"), recorder.take());
+    assertEquals(tuples(Tuple.of("c", "g", "c")), contents(pairs));
+
+    members.delete("a", Tuple.ABSENT);
+    members.delete("b", Tuple.ABSENT);
+    assertEquals(List.of(), recorder.take());
+    recorder.assertConsistent();
   }
 
   /**

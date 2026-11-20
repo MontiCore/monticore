@@ -252,12 +252,19 @@ public class ReteNetwork {
   }
 
   /**
+   * As in joins, {@link Tuple#ABSENT} equals no value, not even
+   * {@code ABSENT}, so tuples with {@code ABSENT} in one of the columns are
+   * dropped.
+   *
    * @return a filter keeping the tuples whose given columns hold equal values
    */
   public FilterNode equality(TupleSource source, int column, int... otherColumns) {
     return filter(source, t -> {
+      if (t.isAbsent(column)) {
+        return false;
+      }
       for (int other : otherColumns) {
-        if (!t.get(column).equals(t.get(other))) {
+        if (t.isAbsent(other) || !t.get(column).equals(t.get(other))) {
           return false;
         }
       }
@@ -266,10 +273,16 @@ public class ReteNetwork {
   }
 
   /**
+   * As {@link Tuple#ABSENT} equals no value, not even {@code ABSENT}, tuples
+   * with {@code ABSENT} in one of the columns are kept. For injectivity, this
+   * means that an unmatched optional element does not conflict with any other
+   * element.
+   *
    * @return a filter keeping the tuples whose given columns hold different values
    */
   public FilterNode inequality(TupleSource source, int column, int otherColumn) {
-    return filter(source, t -> !t.get(column).equals(t.get(otherColumn)));
+    return filter(source, t -> t.isAbsent(column) || t.isAbsent(otherColumn)
+        || !t.get(column).equals(t.get(otherColumn)));
   }
 
   /**
