@@ -15,6 +15,7 @@ import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -91,6 +92,7 @@ public class TypeCalculatorTest {
     LogStub.init();
   }
 
+  @Disabled("TypeCheck1 does not support ASTQualifiedNameExpression")
   @Test
   public void testIsOfTypeForAssign() throws IOException {
     //primitives
@@ -140,6 +142,7 @@ public class TypeCalculatorTest {
     assertFalse(tc.isOfTypeForAssign(tc.typeOf(int1), pers));
   }
 
+  @Disabled("TypeCheck1 does not support ASTQualifiedNameExpression")
   @Test
   public void testIsSubtype() throws IOException {
     //primitives

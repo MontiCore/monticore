@@ -7,11 +7,10 @@ import de.monticore.expressions.combineexpressionswithliterals._ast.ASTFoo;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsArtifactScope;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsGlobalScope;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsScope;
-import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
+import de.monticore.expressions.commonexpressions._ast.ASTQualifiedNameExpression;
 import de.monticore.expressions.commonexpressions._ast.ASTStaticFieldAccessExpression;
 import de.monticore.expressions.expressionsbasis.ExpressionsBasisMill;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisTraverser;
 import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisitor2;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
@@ -1150,7 +1149,7 @@ public class CommonExpressionTypeVisitorTest
 
   @Test
   public void testInvalidBracketExpression() throws IOException {
-    checkErrorExpr("(a)", "0xF735F"); // a cannot be resolved -> a has no type
+    checkErrorExpr("(a)", "0xFD118"); // a cannot be resolved -> a has no type
   }
 
   @Test
@@ -1516,7 +1515,7 @@ public class CommonExpressionTypeVisitorTest
 
   @Test
   public void testInvalidConditionalExpression() throws IOException {
-    checkErrorExpr("3?true:fvarlse", "0xF735F");
+    checkErrorExpr("3?true:fvarlse", "0xFD118");
     checkErrorExpr("varbyte ? 0 : 1", "0xB0165"); // ? not applicable to byte
     checkErrorExpr("varshort ? 0 : 1", "0xB0165"); // ? not applicable to short
     checkErrorExpr("varchar ? 0 : 1", "0xB0165"); // ? not applicable to char
@@ -1751,33 +1750,16 @@ public class CommonExpressionTypeVisitorTest
   public void deriveFromFieldAccessExpressionInnerResults() throws IOException {
     //initialize symbol table
     init_advanced();
-    ASTFieldAccessExpression astTestVariable = (ASTFieldAccessExpression)
+    // the inner results are part of the replacement,
+    // s. restructureStaticFieldAccessTypeWithInnerType
+    ASTQualifiedNameExpression astTestVariable = (ASTQualifiedNameExpression)
         parseExpr("types3.types2.Test.TestInnerType.testVariable");
-    ASTFieldAccessExpression astTestInnerType = (ASTFieldAccessExpression)
-        astTestVariable.getExpression();
-    ASTFieldAccessExpression astTest = (ASTFieldAccessExpression)
-        astTestInnerType.getExpression();
-    ASTFieldAccessExpression astTypes2 = (ASTFieldAccessExpression)
-        astTest.getExpression();
-    ASTNameExpression astTypes3 = (ASTNameExpression)
-        astTypes2.getExpression();
     generateScopes(astTestVariable);
     // calculate all the types
     TypeCheck3.typeOf(astTestVariable);
     assertNoFindings();
     assertTrue(getType4Ast().hasTypeOfExpression(astTestVariable));
-    assertFalse(getType4Ast().hasTypeOfTypeIdentifierForName(astTestVariable));
     assertEquals("short", getType4Ast().getTypeOfExpression(astTestVariable).printFullName());
-    assertFalse(getType4Ast().hasTypeOfExpression(astTestInnerType));
-    assertTrue(getType4Ast().hasTypeOfTypeIdentifierForName(astTestInnerType));
-    assertEquals("types3.types2.Test.TestInnerType", getType4Ast().getPartialTypeOfTypeIdForName(astTestInnerType).printFullName());
-    assertFalse(getType4Ast().hasTypeOfExpression(astTest));
-    assertTrue(getType4Ast().hasTypeOfTypeIdentifierForName(astTest));
-    assertEquals("types3.types2.Test", getType4Ast().getPartialTypeOfTypeIdForName(astTest).printFullName());
-    assertFalse(getType4Ast().hasTypeOfExpression(astTypes2));
-    assertFalse(getType4Ast().hasTypeOfTypeIdentifierForName(astTypes2));
-    assertFalse(getType4Ast().hasTypeOfExpression(astTypes3));
-    assertFalse(getType4Ast().hasTypeOfTypeIdentifierForName(astTypes3));
     assertNoFindings();
   }
 
@@ -1914,16 +1896,20 @@ public class CommonExpressionTypeVisitorTest
         CombineExpressionsWithLiteralsMill::inheritanceTraverser,
         rootNode
     );
-    ASTFieldAccessExpression replacedExpr =
-        (ASTFieldAccessExpression) rootNode.getExpression();
-    ASTStaticFieldAccessExpression innerExpr =
-        (ASTStaticFieldAccessExpression) replacedExpr.getExpression();
-    ASTMCQualifiedType replacedType = innerExpr.getType();
+    ASTStaticFieldAccessExpression replacedExpr =
+        (ASTStaticFieldAccessExpression) rootNode.getExpression();
+    assertEquals("testVariable", replacedExpr.getName());
+    assertEquals("short",
+        getType4Ast().getTypeOfExpression(replacedExpr).printFullName()
+    );
+    ASTMCQualifiedType replacedType = replacedExpr.getType();
     assertEquals(
-        List.of("types3", "types2", "Test"),
+        List.of("types3", "types2", "Test", "TestInnerType"),
         replacedType.getMCQualifiedName().getPartsList()
     );
-    assertEquals("TestInnerType", replacedType.toString());
+    assertEquals("types3.types2.Test.TestInnerType",
+        getType4Ast().getPartialTypeOfTypeId(replacedType).printFullName()
+    );
   }
 
   @Test

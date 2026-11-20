@@ -99,7 +99,9 @@ class SwitchStatementValidTest {
     ASTMCBlockStatement ast = parser().parse_StringMCBlockStatement(expr).orElseThrow();
 
     TestMCCommonStatementsTraverser traverser = TestMCCommonStatementsMill.traverser();
-    traverser.add4ExpressionsBasis(new FlatExpressionScopeSetter(TestMCCommonStatementsMill.globalScope()));
+    FlatExpressionScopeSetter scopeSetter = new FlatExpressionScopeSetter(TestMCCommonStatementsMill.globalScope());
+    traverser.add4ExpressionsBasis(scopeSetter);
+    traverser.add4CommonExpressions(scopeSetter);
     ast.accept(traverser);
 
     // When
@@ -126,7 +128,9 @@ class SwitchStatementValidTest {
     ASTMCBlockStatement ast = parser().parse_StringMCBlockStatement("switch(d){}").orElseThrow();
 
     TestMCCommonStatementsTraverser traverser = TestMCCommonStatementsMill.traverser();
-    traverser.add4ExpressionsBasis(new FlatExpressionScopeSetter(TestMCCommonStatementsMill.globalScope()));
+    FlatExpressionScopeSetter scopeSetter = new FlatExpressionScopeSetter(TestMCCommonStatementsMill.globalScope());
+    traverser.add4ExpressionsBasis(scopeSetter);
+    traverser.add4CommonExpressions(scopeSetter);
     ast.accept(traverser);
 
     // When

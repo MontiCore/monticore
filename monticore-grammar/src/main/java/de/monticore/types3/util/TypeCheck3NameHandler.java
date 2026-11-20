@@ -24,6 +24,7 @@ import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkState;
 import static de.monticore.types.check.SymTypeExpressionFactory.createObscureType;
+import static de.monticore.types3.SymTypeRelations.normalize;
 
 /**
  * Handles (non-)qualified names and chains of names, e.g., {@code a.b.c.d}.
@@ -178,12 +179,24 @@ public class TypeCheck3NameHandler {
     Optional<SymTypeExpression> type =
         calculateExprQName(astInput, resultsAreOptional);
     if (type.isEmpty() && !resultsAreOptional) {
-      Log.error("0xF735F unable to interpret qualified name \""
-              + astInput.getNameAsString()
-              + "\" as expression",
-          astInput.getSourcePositionStart(),
-          astInput.getSourcePositionEnd()
-      );
+      // legacy: single names keep the error code
+      // they had as NameExpressions before the AST restructuring
+      if (astInput.getSize() == 1) {
+        Log.error("0xFD118 could not find symbol for expression \""
+                + astInput.getNameAsString()
+                + "\"",
+            astInput.getSourcePositionStart(),
+            astInput.getSourcePositionEnd()
+        );
+      }
+      else {
+        Log.error("0xF735F unable to interpret qualified name \""
+                + astInput.getNameAsString()
+                + "\" as expression",
+            astInput.getSourcePositionStart(),
+            astInput.getSourcePositionEnd()
+        );
+      }
       type = Optional.of(createObscureType());
     }
     return type;
@@ -400,12 +413,19 @@ public class TypeCheck3NameHandler {
       NameTypingResultExpectation expectedResult,
       TypeCheck3NameHandlerResult result
   ) {
-    SymTypeExpression innerExprType = result.getExprTypeOfNamePart(
+    SymTypeExpression innerExprType = normalize(result.getExprTypeOfNamePart(
         result.getIdxOfLastTypedNamePart()
-    ).get();
-    Optional<SymTypeExpression> exprType = _calculateExprFieldAccessOrLogError(
-        astInput, innerExprType, false
-    );
+    ).get());
+    Optional<SymTypeExpression> exprType;
+    // check obscure, the error has already been logged
+    if (innerExprType.isObscureType()) {
+      exprType = Optional.of(createObscureType());
+    }
+    else {
+      exprType = _calculateExprFieldAccessOrLogError(
+          astInput, innerExprType, false
+      );
+    }
 
     result.setExprOfNamePart(astInput.getSize() - 1, exprType);
     result.setMCTypeTypeOfNamePart(astInput.getSize() - 1, Optional.empty());

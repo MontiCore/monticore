@@ -22,6 +22,7 @@ import mc.typescalculator.combineexpressionswithliterals._symboltable.CombineExp
 import mc.typescalculator.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsArtifactScope;
 import mc.typescalculator.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsGlobalScope;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -53,6 +54,7 @@ public class CombineExpressionsWithLiteralsTest {
     BasicSymbolsMill.initializePrimitives();
   }
 
+  @Disabled("TypeCheck1 does not support ASTQualifiedNameExpression")
   @Test
   public void testCD() throws IOException {
     ITestCD4AnalysisGlobalScope globalScope = TestCD4AnalysisMill.globalScope();

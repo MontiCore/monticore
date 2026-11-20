@@ -576,7 +576,29 @@ public class CommonExpressionsTypeVisitor extends AbstractTypeVisitor
     nameTyping.getExprTypeOfLastNamePart().ifPresent(
         t -> handleResolvedType(expr, t)
     );
-    storeReplacementExpression(expr, nameTyping);
+    if (isReplaceable(nameTyping)) {
+      storeReplacementExpression(expr, nameTyping);
+    }
+  }
+
+  /**
+   * whether the typing can be represented using
+   * NameExpressions, FieldAccessExpressions and StaticFieldAccessExpressions,
+   * e.g., not the case for qualified function names (pkg.func)
+   * or if the name could not be resolved.
+   */
+  protected boolean isReplaceable(
+      TypeCheck3NameHandler.TypeCheck3NameHandlerResult nameTyping
+  ) {
+    if (nameTyping.size() == 0 ||
+        nameTyping.getExprTypeOfLastNamePart().isEmpty()) {
+      return false;
+    }
+    TypeCheck3NameHandler.TypeCheck3NameHandlerResult innerNameTyping =
+        nameTyping.getSublist(nameTyping.size() - 1);
+    return innerNameTyping.size() == 0 ||
+        innerNameTyping.getMCTypeOfLastNamePart().isPresent() ||
+        isReplaceable(innerNameTyping);
   }
 
   protected void storeReplacementExpression(

@@ -6,7 +6,9 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
+import de.monticore.types.mcbasictypes.MCBasicTypesMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types.mcbasictypes._ast.ASTMCReturnType;
 import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcbasictypes._ast.ASTMCVoidType;
@@ -117,10 +119,16 @@ public class MapBasedTypeCheck3 extends TypeCheck3 {
 
   @Override
   protected SymTypeExpression _symTypeFromAST(ASTMCQualifiedName mcQualifiedName) {
-    if (!getType4Ast().hasTypeOfTypeIdentifier(mcQualifiedName)) {
-      mcQualifiedName.accept(getTypeTraverser());
+    if (getType4Ast().hasTypeOfTypeIdentifier(mcQualifiedName)) {
+      return getType4Ast().getPartialTypeOfTypeId(mcQualifiedName);
     }
-    return getType4Ast().getPartialTypeOfTypeId(mcQualifiedName);
+    // qualified names are only typed as part of qualified types
+    ASTMCQualifiedType mcQualifiedType =
+        MCBasicTypesMill.mCQualifiedTypeBuilder()
+            .setMCQualifiedName(mcQualifiedName)
+            .build();
+    mcQualifiedType.setEnclosingScope(mcQualifiedName.getEnclosingScope());
+    return _symTypeFromAST(mcQualifiedType);
   }
 
   @Override

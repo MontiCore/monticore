@@ -17,6 +17,7 @@ import de.monticore.types3.util.FunctionRelations;
 import de.monticore.types3.util.MapBasedTypeCheck3;
 import de.monticore.types3.util.OOWithinScopeBasicSymbolsResolver;
 import de.monticore.types3.util.OOWithinTypeBasicSymbolsResolver;
+import de.monticore.types3.util.PostTypeCheckNodeReplacer;
 import de.monticore.types3.util.TypeContextCalculator;
 import de.monticore.types3.util.TypeVisitorLifting;
 import de.monticore.types3.util.TypeVisitorOperatorCalculator;
@@ -37,6 +38,7 @@ public class JavaLightTypeCheck3 extends MapBasedTypeCheck3 {
     OOWithinScopeBasicSymbolsResolver.init();
     OOWithinTypeBasicSymbolsResolver.init();
     TypeContextCalculator.init();
+    PostTypeCheckNodeReplacer.init();
     TypeVisitorOperatorCalculator.init();
     TypeVisitorLifting.init();
     FunctionRelations.init();
@@ -102,6 +104,7 @@ public class JavaLightTypeCheck3 extends MapBasedTypeCheck3 {
     OOWithinScopeBasicSymbolsResolver.reset();
     OOWithinTypeBasicSymbolsResolver.reset();
     TypeContextCalculator.reset();
+    PostTypeCheckNodeReplacer.reset();
     TypeVisitorOperatorCalculator.reset();
     TypeVisitorLifting.reset();
     FunctionRelations.reset();
