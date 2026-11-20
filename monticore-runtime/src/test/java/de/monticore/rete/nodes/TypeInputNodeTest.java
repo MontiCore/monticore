@@ -32,7 +32,7 @@ public class TypeInputNodeTest extends AbstractNodeTest {
 
   /**
    * Added and removed AST nodes of the type are passed on as unary tuples, in
-   * order; there is a single input node per type.
+   * order; there is a single input node per type. The column is not optional.
    */
   @Test
   public void testContainsReportedNodes() {
@@ -40,6 +40,7 @@ public class TypeInputNodeTest extends AbstractNodeTest {
     RecordingReceiver recorder = record(states);
     assertSame(ASTState.class, states.getType());
     assertEquals(List.of(ASTState.class), states.getColumnTypes());
+    assertEquals(List.of(false), states.getColumnOptionality());
     assertSame(states, net.typeInput(ASTState.class));
 
     net.nodeAdded(s1);

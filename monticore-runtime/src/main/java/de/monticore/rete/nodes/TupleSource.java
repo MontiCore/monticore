@@ -18,9 +18,30 @@ public interface TupleSource {
   int getArity();
 
   /**
-   * @return for each column, a type all values of that column are instances of
+   * @return for each column, a type all values of that column are instances
+   * of (except {@link Tuple#ABSENT} in optional columns)
    */
   List<Class<?>> getColumnTypes();
+
+  /**
+   * @return for each column, whether it is optional, i.e. may contain
+   * {@link Tuple#ABSENT} instead of a value of its type
+   */
+  List<Boolean> getColumnOptionality();
+
+  /**
+   * @return whether the given column may contain {@link Tuple#ABSENT}
+   */
+  default boolean isOptional(int column) {
+    return getColumnOptionality().get(column);
+  }
+
+  /**
+   * @return whether any column may contain {@link Tuple#ABSENT}
+   */
+  default boolean hasOptionalColumns() {
+    return getColumnOptionality().contains(true);
+  }
 
   /**
    * Attaches a child receiving all future deltas of this node. The child is

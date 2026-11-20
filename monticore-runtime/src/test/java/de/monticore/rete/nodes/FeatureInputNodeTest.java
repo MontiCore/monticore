@@ -28,7 +28,8 @@ public class FeatureInputNodeTest extends AbstractNodeTest {
   /**
    * Added, changed and removed feature values are passed on as
    * {@code [owner, value]} tuples, in order; a value added twice is
-   * contained twice. There is a single input node per feature.
+   * contained twice. There is a single input node per feature. The columns are
+   * not optional (unset optional attributes produce no facts).
    */
   @Test
   public void testContainsReportedValuesAsMultiset() {
@@ -36,6 +37,7 @@ public class FeatureInputNodeTest extends AbstractNodeTest {
     RecordingReceiver recorder = record(names);
     assertSame(NAME, names.getFeature());
     assertEquals(List.of(ASTNamedElement.class, String.class), names.getColumnTypes());
+    assertEquals(List.of(false, false), names.getColumnOptionality());
     assertSame(names, net.featureInput(NAME));
 
     net.featureValueAdded(NAME, s1, "x");

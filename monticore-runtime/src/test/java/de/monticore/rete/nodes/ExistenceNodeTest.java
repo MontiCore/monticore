@@ -69,6 +69,26 @@ public class ExistenceNodeTest extends AbstractNodeTest {
   }
 
   /**
+   * The output columns of semi and anti joins keep the optionality of the
+   * left columns; {@link Tuple#ABSENT} in columns that are not part of the
+   * key is passed on like other values.
+   */
+  @Test
+  public void testOptionalColumns() {
+    TestSource optionalLeft = source(List.of(false, true), String.class, Integer.class);
+    Indexer leftIndexer = net.indexer(optionalLeft, 0);
+    ExistenceNode semi = net.semiJoin(leftIndexer, net.indexer(right, 0));
+    ExistenceNode anti = net.antiJoin(leftIndexer, net.indexer(right, 0));
+    assertEquals(List.of(false, true), semi.getColumnOptionality());
+    assertEquals(List.of(false, true), anti.getColumnOptionality());
+
+    optionalLeft.insert("a", Tuple.ABSENT);
+    assertEquals(tuples(Tuple.of("a", Tuple.ABSENT)), contents(anti));
+    right.insert("a");
+    assertEquals(tuples(Tuple.of("a", Tuple.ABSENT)), contents(semi));
+  }
+
+  /**
    * An anti join passes on the left tuples without right partner: the first
    * right tuple of a key deletes the left tuples of that key, the deletion of
    * the last one inserts them again.

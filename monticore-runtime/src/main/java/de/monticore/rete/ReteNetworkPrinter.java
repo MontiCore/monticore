@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
  * <p>
  * Each node is shown with its kind, its parameters (e.g. the key columns of
  * an indexer or the parameter names of a production) and the types of its
- * columns. Edges point in the direction of the data flow, from the input
+ * columns, where {@code ?} marks optional columns. Edges point in the direction of the data flow, from the input
  * nodes to the productions; the edges from an indexer to a join or existence
  * node are labeled with the side of the indexer. Nodes not reachable from an
  * input node (i.e. disposed nodes) are not printed.
@@ -115,7 +115,7 @@ public final class ReteNetworkPrinter {
     } else if (node instanceof Indexer indexer) {
       lines.add("Indexer");
       lines.add("key " + Arrays.toString(indexer.getMask().getIndices()) + ": "
-          + typeNames(indexer.getKeyTypes()));
+          + ColumnTypes.toString(indexer.getKeyTypes(), indexer.getKeyOptionality()));
     } else if (node instanceof JoinNode) {
       lines.add("Join");
     } else if (node instanceof ExistenceNode existence) {
@@ -144,9 +144,10 @@ public final class ReteNetworkPrinter {
       lines.add(node.getClass().getSimpleName());
     }
     if (node instanceof TupleSource source) {
-      lines.add(typeNames(source.getColumnTypes()));
+      lines.add(ColumnTypes.toString(source.getColumnTypes(), source.getColumnOptionality()));
     } else if (node instanceof ProductionNode production) {
-      lines.add(typeNames(production.getParent().getColumnTypes()));
+      lines.add(ColumnTypes.toString(production.getParent().getColumnTypes(),
+          production.getParent().getColumnOptionality()));
     }
     return lines;
   }
@@ -166,10 +167,6 @@ public final class ReteNetworkPrinter {
       return "[[" + text + "]]";
     }
     return "[" + text + "]";
-  }
-
-  private static String typeNames(List<Class<?>> types) {
-    return types.stream().map(Class::getSimpleName).collect(Collectors.joining(", ", "[", "]"));
   }
 
   /**

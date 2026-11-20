@@ -132,6 +132,19 @@ public class TransitiveClosureNodeTest extends AbstractNodeTest {
   }
 
   /**
+   * Edges must not contain {@link Tuple#ABSENT}, so optional input columns
+   * are rejected; the output columns are not optional.
+   */
+  @Test
+  public void testOptionalColumnsAreRejected() {
+    assertThrows(IllegalArgumentException.class,
+        () -> net.transitiveClosure(source(List.of(true, false), String.class, String.class)));
+    assertThrows(IllegalArgumentException.class,
+        () -> net.transitiveClosure(source(List.of(false, true), String.class, String.class)));
+    assertEquals(List.of(false, false), net.transitiveClosure(edges).getColumnOptionality());
+  }
+
+  /**
    * A source that is no binary relation is rejected.
    */
   @Test

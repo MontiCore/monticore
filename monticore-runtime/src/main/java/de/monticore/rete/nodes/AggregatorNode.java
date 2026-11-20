@@ -61,7 +61,8 @@ public class AggregatorNode extends AbstractSingleParentNode {
    */
   public AggregatorNode(ReteNetwork network, TupleSource parent, TupleMask groupMask,
       int aggregatedColumn, AggregationOperator<?, ?, ?> operator) {
-    super(network, parent, computeColumnTypes(parent, groupMask, aggregatedColumn, operator));
+    super(network, parent, computeColumnTypes(parent, groupMask, aggregatedColumn, operator),
+        EvalNode.append(groupMask.transform(parent.getColumnOptionality()), false));
     this.groupMask = groupMask;
     this.aggregatedColumn = aggregatedColumn;
     this.operator = operator;
@@ -76,10 +77,13 @@ public class AggregatorNode extends AbstractSingleParentNode {
   /**
    * Validates the configuration and computes the output column types: the
    * types of the group columns followed by the result type of the operator.
+   * Group columns may be optional (tuples with {@link Tuple#ABSENT} in a
+   * group column form a group of their own), the aggregated column must not
+   * be optional.
    *
    * @throws IllegalArgumentException if the group mask does not fit the
    *                                  parent's arity or the aggregated column
-   *                                  is invalid
+   *                                  is invalid or optional
    */
   protected static List<Class<?>> computeColumnTypes(TupleSource parent, TupleMask groupMask,
       int aggregatedColumn, AggregationOperator<?, ?, ?> operator) {
@@ -89,6 +93,9 @@ public class AggregatorNode extends AbstractSingleParentNode {
     }
     if (aggregatedColumn < WHOLE_TUPLE || aggregatedColumn >= parent.getArity()) {
       throw new IllegalArgumentException("Invalid aggregated column " + aggregatedColumn);
+    }
+    if (aggregatedColumn != WHOLE_TUPLE) {
+      ColumnTypes.checkNotOptional(parent, aggregatedColumn, "the aggregated column");
     }
     Class<?> valueType = aggregatedColumn == WHOLE_TUPLE ? Tuple.class
         : parent.getColumnTypes().get(aggregatedColumn);

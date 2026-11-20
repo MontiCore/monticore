@@ -21,7 +21,7 @@ public class ExistenceNode extends AbstractSourceNode implements IndexerListener
 
   /**
    * Creates the node and registers it as listener of both indexers. The
-   * output columns are the columns of the left input.
+   * output columns (incl. their optionality) are the columns of the left input.
    *
    * @param left     indexer of the tuples to filter
    * @param right    indexer of the tuples whose existence is checked
@@ -30,7 +30,7 @@ public class ExistenceNode extends AbstractSourceNode implements IndexerListener
    *                                  differ in size or can never match
    */
   public ExistenceNode(ReteNetwork network, Indexer left, Indexer right, boolean negative) {
-    super(network, left.getSource().getColumnTypes());
+    super(network, left.getSource().getColumnTypes(), left.getSource().getColumnOptionality());
     checkSameNetwork(left);
     checkSameNetwork(right);
     if (left == right) {

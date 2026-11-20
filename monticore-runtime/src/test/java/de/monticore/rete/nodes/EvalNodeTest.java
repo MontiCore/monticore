@@ -34,6 +34,23 @@ public class EvalNodeTest extends AbstractNodeTest {
   }
 
   /**
+   * The optional columns of the parent stay optional, the appended column is
+   * not optional; the function receives {@code null} for {@link Tuple#ABSENT}.
+   */
+  @Test
+  public void testOptionalColumns() {
+    TestSource source = source(List.of(false, true), String.class, String.class);
+    EvalNode eval = net.eval(source, t -> t.get(1) == null ? "absent" : "present",
+        String.class);
+    assertEquals(List.of(false, true, false), eval.getColumnOptionality());
+
+    source.insert("a", Tuple.ABSENT);
+    source.insert("b", "x");
+    assertEquals(tuples(Tuple.of("a", Tuple.ABSENT, "absent"), Tuple.of("b", "x", "present")),
+        contents(eval));
+  }
+
+  /**
    * A primitive result type is replaced by its wrapper type, so that the
    * computed (boxed) values are accepted.
    */

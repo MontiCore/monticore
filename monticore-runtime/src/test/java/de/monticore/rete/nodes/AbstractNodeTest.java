@@ -7,6 +7,7 @@ import de.monticore.rete.tuple.Tuple;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Base class of the unit tests of single nodes, which are driven by
@@ -30,6 +31,11 @@ import java.util.Arrays;
  *   unchecked.</li>
  *   <li><b>Initialization from a populated source</b> is tested in each test
  *   class.</li>
+ *   <li><b>Optional columns</b>: the optionality of the output columns and
+ *   the handling of {@link de.monticore.rete.tuple.Tuple#ABSENT} are tested in
+ *   each test class. The column metadata of {@link AbstractSourceNode}
+ *   (default optionality, validation, string representation) is tested in
+ *   {@link FilterNodeTest}.</li>
  * </ul>
  */
 public abstract class AbstractNodeTest {
@@ -46,6 +52,15 @@ public abstract class AbstractNodeTest {
    */
   protected TestSource source(Class<?>... columnTypes) {
     return new TestSource(net, columnTypes);
+  }
+
+  /**
+   * @param columnOptionality for each column, whether it is optional, e.g.
+   *                          {@code List.of(false, true)}
+   * @return a new source with the given column types and optional columns
+   */
+  protected TestSource source(List<Boolean> columnOptionality, Class<?>... columnTypes) {
+    return new TestSource(net, columnOptionality, columnTypes);
   }
 
   /**

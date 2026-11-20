@@ -15,7 +15,8 @@ import java.util.function.Function;
  * function returns {@code null} are dropped.
  * <p>
  * The function must be deterministic and must only depend on the values of
- * the tuple (see {@link FilterNode}).
+ * the tuple (see {@link FilterNode}, also for {@link Tuple#ABSENT} in
+ * optional columns). The appended column is not optional.
  */
 public class EvalNode extends AbstractSingleParentNode {
 
@@ -33,18 +34,20 @@ public class EvalNode extends AbstractSingleParentNode {
    */
   public EvalNode(ReteNetwork network, TupleSource parent, Function<Tuple, ?> function,
       Class<?> resultType) {
-    super(network, parent, appendType(parent.getColumnTypes(), Primitives.wrap(resultType)));
+    super(network, parent, append(parent.getColumnTypes(), Primitives.wrap(resultType)),
+        append(parent.getColumnOptionality(), false));
     this.function = function;
     this.resultType = Primitives.wrap(resultType);
     attach();
   }
 
   /**
-   * @return a new list containing {@code types} followed by {@code type}
+   * @return a new list containing {@code list} followed by {@code element},
+   * e.g. the column types of the parent followed by the result type
    */
-  protected static List<Class<?>> appendType(List<Class<?>> types, Class<?> type) {
-    List<Class<?>> result = new ArrayList<>(types);
-    result.add(type);
+  protected static <T> List<T> append(List<T> list, T element) {
+    List<T> result = new ArrayList<>(list);
+    result.add(element);
     return result;
   }
 

@@ -51,10 +51,11 @@ public class TransitiveClosureNode extends AbstractSingleParentNode {
    * {@code parent} and attaches it to {@code parent}.
    *
    * @param parent a binary relation {@code [source, target]}
-   * @throws IllegalArgumentException if {@code parent} is not binary
+   * @throws IllegalArgumentException if {@code parent} is not binary or has
+   *                                  optional columns
    */
   public TransitiveClosureNode(ReteNetwork network, TupleSource parent) {
-    super(network, parent, computeColumnTypes(parent));
+    super(network, parent, computeColumnTypes(parent), ColumnTypes.noOptionalColumns(2));
     for (Multiset.Entry<Tuple> entry : pull(parent).entrySet()) {
       for (int i = 0; i < entry.getCount(); i++) {
         update(Direction.INSERT, entry.getElement());
@@ -65,15 +66,20 @@ public class TransitiveClosureNode extends AbstractSingleParentNode {
 
   /**
    * Both output columns may contain sources as well as targets of edges, so
-   * both have the common supertype of the parent's column types.
+   * both have the common supertype of the parent's column types. Edges must
+   * not contain {@link Tuple#ABSENT}, so the parent's columns must not be
+   * optional.
    *
-   * @throws IllegalArgumentException if {@code parent} is not binary
+   * @throws IllegalArgumentException if {@code parent} is not binary or has
+   *                                  optional columns
    */
   protected static List<Class<?>> computeColumnTypes(TupleSource parent) {
     if (parent.getArity() != 2) {
       throw new IllegalArgumentException("Transitive closure requires a binary relation, got "
           + parent);
     }
+    ColumnTypes.checkNotOptional(parent, 0, "the source column of the edges");
+    ColumnTypes.checkNotOptional(parent, 1, "the target column of the edges");
     Class<?> type = ColumnTypes.commonSupertype(parent.getColumnTypes().get(0),
         parent.getColumnTypes().get(1));
     return List.of(type, type);

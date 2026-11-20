@@ -26,7 +26,7 @@ public class UnionNode extends AbstractSourceNode implements Receiver {
    *                                  parents differ in arity
    */
   public UnionNode(ReteNetwork network, List<? extends TupleSource> parents) {
-    super(network, computeColumnTypes(parents));
+    super(network, computeColumnTypes(parents), computeColumnOptionality(parents));
     parents.forEach(this::checkSameNetwork);
     this.parents = List.copyOf(parents);
     for (TupleSource parent : this.parents) {
@@ -55,6 +55,18 @@ public class UnionNode extends AbstractSourceNode implements Receiver {
       }
     }
     return types;
+  }
+
+  /**
+   * An output column is optional if it is optional in any parent. Must be
+   * called after {@link #computeColumnTypes}, which validates the parents.
+   */
+  protected static List<Boolean> computeColumnOptionality(List<? extends TupleSource> parents) {
+    List<Boolean> optionality = parents.get(0).getColumnOptionality();
+    for (TupleSource parent : parents) {
+      optionality = ColumnTypes.eitherOptional(optionality, parent.getColumnOptionality());
+    }
+    return optionality;
   }
 
   public List<TupleSource> getParents() {

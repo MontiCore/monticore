@@ -8,9 +8,11 @@ import de.monticore.rete.tuple.Tuple;
 import java.util.List;
 
 /**
- * A source node with arbitrary column types whose contents are set by the
- * test. Each change is propagated through the network like a change of an
- * input node.
+ * A source node with arbitrary column types (optionally with optional
+ * columns) whose contents are set by the test. Each change is propagated
+ * through the network like a change of an input node. Values are not checked
+ * against the column types, e.g. {@link Tuple#ABSENT} may also be inserted
+ * into a column that is not optional.
  */
 public class TestSource extends AbstractSourceNode {
 
@@ -20,6 +22,15 @@ public class TestSource extends AbstractSourceNode {
 
   public TestSource(TestNetwork network, Class<?>... columnTypes) {
     super(network, List.of(columnTypes));
+    this.testNetwork = network;
+  }
+
+  /**
+   * @param columnOptionality for each column, whether it is optional
+   */
+  public TestSource(TestNetwork network, List<Boolean> columnOptionality,
+      Class<?>... columnTypes) {
+    super(network, List.of(columnTypes), columnOptionality);
     this.testNetwork = network;
   }
 

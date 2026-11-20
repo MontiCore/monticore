@@ -48,6 +48,25 @@ public class UnionNodeTest extends AbstractNodeTest {
   }
 
   /**
+   * An output column is optional if it is optional in any parent.
+   */
+  @Test
+  public void testColumnIsOptionalIfOptionalInAnyParent() {
+    TestSource first = source(List.of(false, true, false), String.class, String.class,
+        String.class);
+    TestSource second = source(List.of(false, false, true), String.class, String.class,
+        String.class);
+    UnionNode union = net.union(first, second);
+    assertEquals(List.of(false, true, true), union.getColumnOptionality());
+
+    TestSource plain = source(String.class);
+    TestSource optional = source(List.of(true), String.class);
+    assertEquals(List.of(false), net.union(plain, plain).getColumnOptionality());
+    assertEquals(List.of(true), net.union(plain, plain, optional).getColumnOptionality(),
+        "only the last parent has an optional column");
+  }
+
+  /**
    * A parent given twice contributes its tuples and deltas twice, and
    * disposing the union detaches it from that parent completely.
    */

@@ -9,8 +9,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Base class of nodes producing tuples. Manages the attached children and
- * the column types.
+ * Base class of nodes producing tuples. Manages the attached children, the
+ * column types and which columns are optional.
  */
 public abstract class AbstractSourceNode extends ReteNode implements TupleSource {
 
@@ -18,9 +18,29 @@ public abstract class AbstractSourceNode extends ReteNode implements TupleSource
 
   protected final List<Class<?>> columnTypes;
 
+  protected final List<Boolean> columnOptionality;
+
+  /**
+   * For nodes without optional columns, e.g. input nodes
+   */
   protected AbstractSourceNode(ReteNetwork network, List<Class<?>> columnTypes) {
+    this(network, columnTypes, ColumnTypes.noOptionalColumns(columnTypes.size()));
+  }
+
+  /**
+   * @param columnOptionality for each column, whether it may contain
+   *                          {@link Tuple#ABSENT}
+   * @throws IllegalArgumentException if the number of columns differs
+   */
+  protected AbstractSourceNode(ReteNetwork network, List<Class<?>> columnTypes,
+      List<Boolean> columnOptionality) {
     super(network);
+    if (columnTypes.size() != columnOptionality.size()) {
+      throw new IllegalArgumentException(columnTypes.size() + " column types, but "
+          + columnOptionality.size() + " optionality flags");
+    }
     this.columnTypes = List.copyOf(columnTypes);
+    this.columnOptionality = List.copyOf(columnOptionality);
   }
 
   @Override
@@ -31,6 +51,11 @@ public abstract class AbstractSourceNode extends ReteNode implements TupleSource
   @Override
   public List<Class<?>> getColumnTypes() {
     return columnTypes;
+  }
+
+  @Override
+  public List<Boolean> getColumnOptionality() {
+    return columnOptionality;
   }
 
   @Override
@@ -87,9 +112,12 @@ public abstract class AbstractSourceNode extends ReteNode implements TupleSource
     }
   }
 
+  /**
+   * E.g. {@code JoinNode[ASTState, ASTTransition?]}, where {@code ?} marks
+   * optional columns
+   */
   @Override
   public String toString() {
-    return getClass().getSimpleName() + columnTypes.stream()
-        .map(Class::getSimpleName).toList();
+    return getClass().getSimpleName() + ColumnTypes.toString(columnTypes, columnOptionality);
   }
 }

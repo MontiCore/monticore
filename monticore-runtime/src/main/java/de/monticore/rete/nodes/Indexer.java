@@ -74,6 +74,14 @@ public class Indexer extends ReteNode implements Receiver {
   }
 
   /**
+   * @return for each key column, whether it may contain
+   * {@link Tuple#ABSENT}
+   */
+  public List<Boolean> getKeyOptionality() {
+    return mask.transform(source.getColumnOptionality());
+  }
+
+  /**
    * Updates the memory and afterwards notifies all listeners synchronously.
    * Listeners must not cause further memory updates directly; their output is
    * deferred via the network's propagation queue.

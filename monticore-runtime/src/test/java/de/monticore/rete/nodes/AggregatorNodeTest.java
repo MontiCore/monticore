@@ -134,6 +134,37 @@ public class AggregatorNodeTest extends AbstractNodeTest {
   }
 
   /**
+   * Group columns may be optional: the result tuples keep their optionality
+   * (the result column is not optional), and tuples with {@link Tuple#ABSENT}
+   * in a group column form a group of their own. Whole tuples may be
+   * aggregated as well, even if they contain {@code ABSENT}.
+   */
+  @Test
+  public void testOptionalGroupColumns() {
+    TestSource optional = source(List.of(true, false), String.class, Integer.class);
+    AggregatorNode count = net.count(optional, 0);
+    assertEquals(List.of(true, false), count.getColumnOptionality());
+
+    optional.insert(Tuple.ABSENT, 1);
+    optional.insert(Tuple.ABSENT, 2);
+    optional.insert("g", 1);
+    assertEquals(tuples(Tuple.of(Tuple.ABSENT, 2L), Tuple.of("g", 1L)), contents(count));
+    assertEquals(2L, count.getResult(Tuple.of(Tuple.ABSENT)));
+  }
+
+  /**
+   * The aggregated column must not be optional, as the operators cannot
+   * aggregate {@link Tuple#ABSENT}.
+   */
+  @Test
+  public void testOptionalAggregatedColumnIsRejected() {
+    TestSource optional = source(List.of(false, true), String.class, Integer.class);
+    assertThrows(IllegalArgumentException.class,
+        () -> net.aggregate(optional, TupleMask.of(2, 0), 1, Aggregators.sumLong()));
+    net.aggregate(optional, TupleMask.of(2, 0), AggregatorNode.WHOLE_TUPLE, Aggregators.count());
+  }
+
+  /**
    * The deletion of a tuple of an empty group is reported as an inconsistent
    * network.
    */

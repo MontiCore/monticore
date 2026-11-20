@@ -19,7 +19,7 @@ public class DistinctNode extends AbstractSingleParentNode {
    * {@code parent} and attaches it to {@code parent}.
    */
   public DistinctNode(ReteNetwork network, TupleSource parent) {
-    super(network, parent, parent.getColumnTypes());
+    super(network, parent, parent.getColumnTypes(), parent.getColumnOptionality());
     parent.pullInto(memory);
     attach();
   }

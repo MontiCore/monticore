@@ -38,6 +38,26 @@ public class DistinctNodeTest extends AbstractNodeTest {
   }
 
   /**
+   * The optional columns of the parent stay optional. Tuples containing
+   * {@link Tuple#ABSENT} are duplicates if they are equal otherwise, i.e.
+   * {@code ABSENT} equals itself here.
+   */
+  @Test
+  public void testOptionalColumns() {
+    TestSource source = source(List.of(false, true), String.class, String.class);
+    DistinctNode distinct = net.distinct(source);
+    RecordingReceiver recorder = record(distinct);
+    assertEquals(List.of(false, true), distinct.getColumnOptionality());
+
+    source.insert("a", Tuple.ABSENT);
+    source.insert("a", Tuple.ABSENT);
+    source.delete("a", Tuple.ABSENT);
+    assertEquals(List.of("+[a, ⊥]"), recorder.take());
+    source.delete("a", Tuple.ABSENT);
+    assertEquals(List.of("-[a, ⊥]"), recorder.take());
+  }
+
+  /**
    * A distinct node created on a populated source contains each tuple once and
    * knows the counts of the existing occurrences: deleting the first of two
    * occurrences is not passed on, deleting the second one is.

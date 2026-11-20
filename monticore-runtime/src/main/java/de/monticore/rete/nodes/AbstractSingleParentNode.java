@@ -14,9 +14,14 @@ public abstract class AbstractSingleParentNode extends AbstractSourceNode implem
 
   protected final TupleSource parent;
 
+  /**
+   * @param columnTypes       the types of the output columns
+   * @param columnOptionality for each output column, whether it may contain
+   *                          {@link de.monticore.rete.tuple.Tuple#ABSENT}
+   */
   protected AbstractSingleParentNode(ReteNetwork network, TupleSource parent,
-      List<Class<?>> columnTypes) {
-    super(network, columnTypes);
+      List<Class<?>> columnTypes, List<Boolean> columnOptionality) {
+    super(network, columnTypes, columnOptionality);
     checkSameNetwork(parent);
     this.parent = parent;
   }

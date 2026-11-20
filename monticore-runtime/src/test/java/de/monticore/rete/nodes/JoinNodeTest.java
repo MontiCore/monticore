@@ -110,6 +110,26 @@ public class JoinNodeTest extends AbstractNodeTest {
   }
 
   /**
+   * The optionality of the output columns is that of the left columns
+   * followed by that of the selected right columns; {@link Tuple#ABSENT} in
+   * columns that are not part of the key is passed on like other values.
+   */
+  @Test
+  public void testOptionalColumns() {
+    TestSource optionalLeft = source(List.of(false, true), String.class, Integer.class);
+    TestSource optionalRight = source(List.of(false, true), String.class, Boolean.class);
+    JoinNode join = net.join(net.indexer(optionalLeft, 0), net.indexer(optionalRight, 0));
+    assertEquals(List.of(false, true, true), join.getColumnOptionality());
+    JoinNode withRightKey = net.join(net.indexer(optionalLeft, 0), net.indexer(optionalRight, 0),
+        TupleMask.of(2, 1, 0));
+    assertEquals(List.of(false, true, true, false), withRightKey.getColumnOptionality());
+
+    optionalLeft.insert("a", Tuple.ABSENT);
+    optionalRight.insert("a", Tuple.ABSENT);
+    assertEquals(tuples(Tuple.of("a", Tuple.ABSENT, Tuple.ABSENT)), contents(join));
+  }
+
+  /**
    * Joined key values are instances of both key column types, so the output
    * type of the key columns is the more specific one.
    */

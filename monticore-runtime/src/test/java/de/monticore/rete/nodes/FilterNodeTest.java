@@ -11,9 +11,51 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Also covers the behavior of {@link AbstractSingleParentNode} shared by all
  * nodes with a single parent: disposing and rejecting parents of another
- * network (see {@link AbstractNodeTest}).
+ * network, and the column metadata of {@link AbstractSourceNode} (see
+ * {@link AbstractNodeTest}).
  */
 public class FilterNodeTest extends AbstractNodeTest {
+
+  /**
+   * The optional columns of the parent stay optional; the predicate receives
+   * {@code null} for {@link Tuple#ABSENT}, and tuples containing it are passed
+   * on like other tuples.
+   */
+  @Test
+  public void testOptionalColumns() {
+    TestSource source = source(List.of(false, true), String.class, String.class);
+    FilterNode filter = net.filter(source, t -> t.get(1) == null);
+    RecordingReceiver recorder = record(filter);
+    assertEquals(List.of(false, true), filter.getColumnOptionality());
+    assertTrue(filter.isOptional(1));
+    assertTrue(filter.hasOptionalColumns());
+
+    source.insert("a", Tuple.ABSENT);
+    source.insert("b", "x");
+    source.delete("a", Tuple.ABSENT);
+    assertEquals(List.of("+[a, ⊥]", "-[a, ⊥]"), recorder.take());
+    recorder.assertConsistent();
+  }
+
+  /**
+   * Column metadata as implemented by {@link AbstractSourceNode}: without
+   * explicit optionality, no column is optional; the optionality has to fit
+   * the column types; the string representation lists the column types and
+   * marks optional columns.
+   */
+  @Test
+  public void testColumnMetadata() {
+    TestSource plain = source(String.class, Integer.class);
+    assertEquals(List.of(false, false), plain.getColumnOptionality());
+    assertFalse(plain.hasOptionalColumns());
+    assertEquals("TestSource[String, Integer]", plain.toString());
+
+    TestSource optional = source(List.of(false, true), String.class, Integer.class);
+    assertEquals("TestSource[String, Integer?]", optional.toString());
+
+    assertThrows(IllegalArgumentException.class,
+        () -> source(List.of(false), String.class, Integer.class));
+  }
 
   /**
    * Insertions and deletions of tuples satisfying the predicate are passed on

@@ -125,7 +125,7 @@ public final class TupleMask {
     }
     Object[] result = new Object[indices.length];
     for (int i = 0; i < indices.length; i++) {
-      result[i] = tuple.get(indices[i]);
+      result[i] = tuple.getStored(indices[i]);
     }
     return Tuple.wrap(result);
   }

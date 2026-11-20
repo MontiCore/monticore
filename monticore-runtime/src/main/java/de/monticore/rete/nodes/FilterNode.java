@@ -14,7 +14,10 @@ import java.util.function.Predicate;
  * The predicate must be deterministic and must only depend on the values of
  * the tuple. In particular, it must not read mutable state of AST nodes, as
  * changes of that state are not tracked by the network; use
- * {@link de.monticore.rete.Feature}s for such state instead.
+ * {@link de.monticore.rete.Feature}s for such state instead. Values of
+ * optional columns may be {@link Tuple#ABSENT}, which the getters of the
+ * tuple return as {@code null}. The output columns (incl. their optionality)
+ * are those of the parent.
  */
 public class FilterNode extends AbstractSingleParentNode {
 
@@ -27,7 +30,7 @@ public class FilterNode extends AbstractSingleParentNode {
    * @param predicate a deterministic predicate over the parent's tuples
    */
   public FilterNode(ReteNetwork network, TupleSource parent, Predicate<Tuple> predicate) {
-    super(network, parent, parent.getColumnTypes());
+    super(network, parent, parent.getColumnTypes(), parent.getColumnOptionality());
     this.predicate = predicate;
     attach();
   }

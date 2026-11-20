@@ -23,7 +23,8 @@ public class ProjectionNode extends AbstractSingleParentNode {
    * @throws IllegalArgumentException if the mask does not fit the arity of {@code parent}
    */
   public ProjectionNode(ReteNetwork network, TupleSource parent, TupleMask mask) {
-    super(network, parent, checkMask(parent, mask).transform(parent.getColumnTypes()));
+    super(network, parent, checkMask(parent, mask).transform(parent.getColumnTypes()),
+        mask.transform(parent.getColumnOptionality()));
     this.mask = mask;
     attach();
   }

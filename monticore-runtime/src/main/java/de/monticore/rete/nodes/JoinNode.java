@@ -50,7 +50,8 @@ public class JoinNode extends AbstractSourceNode implements IndexerListener {
    *                                  mask does not fit the right arity
    */
   public JoinNode(ReteNetwork network, Indexer left, Indexer right, TupleMask rightOutputMask) {
-    super(network, computeColumnTypes(left, right, rightOutputMask));
+    super(network, computeColumnTypes(left, right, rightOutputMask),
+        computeColumnOptionality(left, right, rightOutputMask));
     checkSameNetwork(left);
     checkSameNetwork(right);
     this.left = left;
@@ -100,6 +101,21 @@ public class JoinNode extends AbstractSourceNode implements IndexerListener {
     }
     List<Class<?>> result = new ArrayList<>(leftTypes);
     result.addAll(rightOutputMask.transform(rightTypes));
+    return result;
+  }
+
+  /**
+   * The output columns are optional if the corresponding left column or
+   * selected right column is optional. Must be called after
+   * {@link #computeColumnTypes}, which validates the configuration.
+   *
+   * @return the optionality of the left columns followed by the optionality
+   * of the right columns selected by {@code rightOutputMask}
+   */
+  protected static List<Boolean> computeColumnOptionality(Indexer left, Indexer right,
+      TupleMask rightOutputMask) {
+    List<Boolean> result = new ArrayList<>(left.getSource().getColumnOptionality());
+    result.addAll(rightOutputMask.transform(right.getSource().getColumnOptionality()));
     return result;
   }
 

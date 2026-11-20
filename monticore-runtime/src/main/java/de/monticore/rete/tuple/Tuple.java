@@ -13,10 +13,32 @@ import java.util.Objects;
  * classes do not override {@code equals}, AST nodes are compared by identity,
  * while attribute values (Strings, numbers, enums, ...) are compared by value.
  * {@code null} elements are not allowed.
+ * <p>
+ * Optional columns (e.g. the columns of an optional pattern part) may contain
+ * {@link #ABSENT} (⊥) instead of a value. Tuples containing {@code ABSENT}
+ * are compared like other tuples, i.e. {@code ABSENT} equals itself here, so
+ * that memories can find and delete such tuples. Reading {@code ABSENT} via
+ * {@link #get(int)}, {@link #get(int, Class)} or {@link #asList()} yields
+ * {@code null}.
  */
 public final class Tuple {
 
   public static final Tuple EMPTY = new Tuple(new Object[0]);
+
+  /**
+   * The content of an optional column without a value (⊥). Read as
+   * {@code null} via the getters of a tuple.
+   */
+  public static final Object ABSENT = Absent.INSTANCE;
+
+  private enum Absent {
+    INSTANCE;
+
+    @Override
+    public String toString() {
+      return "⊥";
+    }
+  }
 
   private final Object[] values;
 
@@ -28,7 +50,8 @@ public final class Tuple {
   }
 
   /**
-   * Creates a tuple containing the given values.
+   * Creates a tuple containing the given values. A value of an optional
+   * column may be {@link #ABSENT}.
    *
    * @throws NullPointerException if any value is {@code null}
    */
@@ -52,16 +75,47 @@ public final class Tuple {
     return values.length;
   }
 
+  /**
+   * @return the value at the given position, {@code null} if it is {@link #ABSENT}
+   */
   public Object get(int index) {
-    return values[index];
+    return values[index] == ABSENT ? null : values[index];
   }
 
   /**
-   * @return the value at the given position, cast to the given type
+   * @return the value at the given position cast to the given type,
+   * {@code null} if it is {@link #ABSENT}
    * @throws ClassCastException if the value is not an instance of {@code type}
    */
   public <T> T get(int index, Class<T> type) {
-    return type.cast(values[index]);
+    return type.cast(get(index));
+  }
+
+  /**
+   * @return whether the value at the given position is {@link #ABSENT}
+   */
+  public boolean isAbsent(int index) {
+    return values[index] == ABSENT;
+  }
+
+  /**
+   * @return whether the tuple contains {@link #ABSENT}
+   */
+  public boolean containsAbsent() {
+    for (Object value : values) {
+      if (value == ABSENT) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * @return the value at the given position as stored, i.e. {@link #ABSENT}
+   * instead of {@code null}; used to copy values between tuples
+   */
+  Object getStored(int index) {
+    return values[index];
   }
 
   /**
@@ -87,8 +141,17 @@ public final class Tuple {
     return wrap(result);
   }
 
+  /**
+   * @return the values of the tuple (unmodifiable), {@code null} for {@link #ABSENT}
+   */
   public List<Object> asList() {
-    return Collections.unmodifiableList(Arrays.asList(values));
+    Object[] result = values.clone();
+    for (int i = 0; i < result.length; i++) {
+      if (result[i] == ABSENT) {
+        result[i] = null;
+      }
+    }
+    return List.of(result);
   }
 
   @Override

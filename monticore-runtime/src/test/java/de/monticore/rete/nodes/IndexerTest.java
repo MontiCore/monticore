@@ -64,6 +64,27 @@ public class IndexerTest extends AbstractNodeTest {
   }
 
   /**
+   * The optionality of the key columns is that of the selected source
+   * columns. Tuples with {@link Tuple#ABSENT} in a key column are stored under
+   * the key containing {@code ABSENT} and can be deleted again, i.e. the
+   * memory compares {@code ABSENT} like other values.
+   */
+  @Test
+  public void testOptionalKeyColumns() {
+    TestSource source = source(List.of(false, true), String.class, Integer.class);
+    Indexer indexer = net.indexer(source, 1, 0);
+    assertEquals(List.of(true, false), indexer.getKeyOptionality());
+
+    source.insert("a", Tuple.ABSENT);
+    source.insert("a", Tuple.ABSENT);
+    assertEquals(Set.of(Tuple.of(Tuple.ABSENT, "a")), indexer.getKeys());
+    assertEquals(2, indexer.count(Tuple.of(Tuple.ABSENT, "a")));
+    source.delete("a", Tuple.ABSENT);
+    source.delete("a", Tuple.ABSENT);
+    assertTrue(indexer.getKeys().isEmpty());
+  }
+
+  /**
    * An indexer created on a populated source contains its tuples with their
    * multiplicities and keeps track of later deletions.
    */

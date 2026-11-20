@@ -70,4 +70,52 @@ public class ColumnTypesTest {
     assertSame(Object.class, ColumnTypes.commonSupertype(First.class, Second.class));
     assertSame(List.class, ColumnTypes.commonSupertype(List.class, ArrayList.class));
   }
+
+  /**
+   * Without optional columns, every flag is {@code false}.
+   */
+  @Test
+  public void testNoOptionalColumns() {
+    assertEquals(List.of(false, false, false), ColumnTypes.noOptionalColumns(3));
+    assertEquals(List.of(), ColumnTypes.noOptionalColumns(0));
+  }
+
+  /**
+   * A column is optional if it is optional in either of the two lists, which
+   * must have the same size.
+   */
+  @Test
+  public void testEitherOptional() {
+    assertEquals(List.of(false, true, true, true), ColumnTypes.eitherOptional(
+        List.of(false, true, false, true), List.of(false, false, true, true)));
+    assertThrows(IllegalArgumentException.class,
+        () -> ColumnTypes.eitherOptional(List.of(false), List.of(false, true)));
+  }
+
+  /**
+   * The type names are listed like a list of the simple names, optional
+   * columns are marked with {@code ?}.
+   */
+  @Test
+  public void testToString() {
+    assertEquals("[String, Integer?]",
+        ColumnTypes.toString(List.of(String.class, Integer.class), List.of(false, true)));
+    assertEquals("[]", ColumnTypes.toString(List.of(), List.of()));
+  }
+
+  /**
+   * Using an optional column where a value is required is rejected with a
+   * message naming the column and its usage; columns that are not optional
+   * are accepted.
+   */
+  @Test
+  public void testCheckNotOptional() {
+    TestSource source = new TestSource(new TestNetwork(), List.of(false, true),
+        String.class, String.class);
+    ColumnTypes.checkNotOptional(source, 0, "the key");
+    IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
+        () -> ColumnTypes.checkNotOptional(source, 1, "the key"));
+    assertTrue(e.getMessage().contains("Column 1"), e.getMessage());
+    assertTrue(e.getMessage().contains("the key"), e.getMessage());
+  }
 }

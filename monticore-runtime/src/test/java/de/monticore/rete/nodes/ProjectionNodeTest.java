@@ -33,6 +33,22 @@ public class ProjectionNodeTest extends AbstractNodeTest {
   }
 
   /**
+   * The optionality of the columns is transformed like the column types, and
+   * {@link Tuple#ABSENT} is projected like other values.
+   */
+  @Test
+  public void testOptionalColumns() {
+    TestSource source = source(List.of(false, true, false), String.class, String.class,
+        Integer.class);
+    ProjectionNode projection = net.project(source, 1, 2, 1);
+    RecordingReceiver recorder = record(projection);
+    assertEquals(List.of(true, false, true), projection.getColumnOptionality());
+
+    source.insert("a", Tuple.ABSENT, 1);
+    assertEquals(List.of("+[⊥, 1, ⊥]"), recorder.take());
+  }
+
+  /**
    * Different tuples with equal projections are not merged: each insertion
    * and deletion is passed on, so the projection contains duplicates.
    */
