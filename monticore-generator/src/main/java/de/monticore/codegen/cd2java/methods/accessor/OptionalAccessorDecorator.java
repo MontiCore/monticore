@@ -11,7 +11,6 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
@@ -36,9 +35,13 @@ public class OptionalAccessorDecorator extends AbstractCreator<ASTCDAttribute, L
   @Override
   public List<ASTCDMethod> decorate(final ASTCDAttribute ast) {
     naiveAttributeName = getNaiveAttributeName(ast);
-    ASTCDMethod get = createGetMethod(ast);
-    ASTCDMethod isPresent = createIsPresentMethod(ast);
-    return new ArrayList<>(Arrays.asList(get, isPresent));
+    List<ASTCDMethod> methods = new ArrayList<>();
+    methods.add(createGetMethod(ast));
+    methods.add(createIsPresentMethod(ast));
+    if (getDecorationHelper().isSupplier(ast.getMCType())) {
+      methods.add(createSupplierGetMethod(ast));
+    }
+    return methods;
   }
 
   protected String getNaiveAttributeName(ASTCDAttribute astcdAttribute) {
@@ -47,17 +50,39 @@ public class OptionalAccessorDecorator extends AbstractCreator<ASTCDAttribute, L
 
   protected ASTCDMethod createGetMethod(final ASTCDAttribute ast) {
     String name = String.format(GET, naiveAttributeName);
-    ASTMCType type = getDecorationHelper().getReferenceTypeFromOptional(ast.getMCType().deepClone()).getMCTypeOpt().get();
+
+    ASTMCType type = ast.getMCType().deepClone();
+    String templateName = "methods.opt.Get4Opt";
+    if (getDecorationHelper().isSupplier(type)) {
+      type = getDecorationHelper().unwrapSupplier(type);
+      templateName = "methods.opt.SupplierGet4Opt";
+    }
+
+    type = getDecorationHelper().getReferenceTypeOfOptional(type).getMCTypeOpt().get();
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), type, name);
     String generatedErrorCode = service.getGeneratedErrorCode(ast.getName() + ast.printType());
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.opt.Get4Opt", ast, naiveAttributeName, generatedErrorCode));
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(templateName, ast, naiveAttributeName, generatedErrorCode));
+    return method;
+  }
+
+  protected ASTCDMethod createSupplierGetMethod(final ASTCDAttribute ast) {
+    String name = String.format(GET, naiveAttributeName) + "Supplier";
+    ASTMCType supplierType = getDecorationHelper().toPublicSupplierType(ast.getMCType());
+    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), supplierType, name);
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.SupplierGetRaw", ast));
     return method;
   }
 
   protected ASTCDMethod createIsPresentMethod(final ASTCDAttribute ast) {
     String name = String.format(IS_PRESENT, naiveAttributeName);
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), getMCTypeFacade().createBooleanType(), name);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.opt.IsPresent4Opt", ast));
+
+    String templateName = "methods.opt.IsPresent4Opt";
+    if (getDecorationHelper().isSupplier(ast.getMCType())) {
+      templateName = "methods.opt.SupplierIsPresent4Opt";
+    }
+
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(templateName, ast));
     return method;
   }
 }
