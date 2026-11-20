@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.codegen.rete;
+
+/* common super language of ReteStates and ReteLabels (diamond) */
+classdiagram ReteBase {
+
+  public interface ASTElement {
+    protected String id;
+  }
+}

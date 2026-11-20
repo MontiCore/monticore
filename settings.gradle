@@ -65,6 +65,8 @@ include(':monticore-test:monticore-grammar-it')
 
 include(':monticore-test:it')
 
+include(':monticore-test:rete-example')
+
 include(':monticore-test:01experiments')
 project(':monticore-test:01experiments').projectDir = file("monticore-test/01.experiments")
 // Include all 01experiments

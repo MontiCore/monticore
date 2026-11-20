@@ -1,0 +1,33 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.codegen.cd2java.rete;
+
+public class ReteConstants {
+
+  private ReteConstants() {
+  }
+
+  public static final String RETE_PACKAGE = "_rete";
+
+  public static final String FEATURES_SUFFIX = "ReteFeatures";
+
+  public static final String FACT_EMITTER_SUFFIX = "ReteFactEmitter";
+
+  public static final String FULL_FACT_EMITTER_SUFFIX = "FullReteFactEmitter";
+
+  public static final String FEATURE_TYPE = "de.monticore.rete.Feature";
+
+  public static final String FACT_EMITTER_TYPE = "de.monticore.rete.ReteFactEmitter";
+
+  public static final String FULL_FACT_EMITTER_TYPE = "de.monticore.rete.FullReteFactEmitter";
+
+  public static final String RETE_NETWORK_TYPE = "de.monticore.rete.ReteNetwork";
+
+  public static final String ALL_FEATURES = "ALL";
+
+  public static final String ALL_TRANSITIVE_FEATURES = "ALL_TRANSITIVE";
+
+  public static final String RESOLVE_CONSTANT = "resolveConstant";
+
+  public static final String RESOLVE_CONSTANT_IN_SUPER_LANGUAGES = "resolveConstantInSuperLanguages";
+
+}
