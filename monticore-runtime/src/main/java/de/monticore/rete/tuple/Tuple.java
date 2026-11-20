@@ -151,7 +151,9 @@ public final class Tuple {
         result[i] = null;
       }
     }
-    return List.of(result);
+    // List.of rejects null
+    //noinspection Java9CollectionFactory
+    return Collections.unmodifiableList(Arrays.asList(result));
   }
 
   @Override
