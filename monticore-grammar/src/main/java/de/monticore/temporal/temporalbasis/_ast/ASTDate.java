@@ -1,14 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.temporal.temporalbasis._ast;
 
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.Year;
 import java.time.YearMonth;
 import java.time.temporal.Temporal;
 import java.time.temporal.UnsupportedTemporalTypeException;
-import java.time.temporal.WeekFields;
 
 import static java.time.temporal.ChronoField.*;
+import static java.time.temporal.IsoFields.WEEK_BASED_YEAR;
+import static java.time.temporal.IsoFields.WEEK_OF_WEEK_BASED_YEAR;
 
 @SuppressWarnings("unused") // This interface is part of the public-facing API
 public interface ASTDate extends ASTDateTOP {
@@ -25,6 +27,8 @@ public interface ASTDate extends ASTDateTOP {
    *
    * @return the corresponding temporal representation
    * @throws UnsupportedTemporalTypeException if no valid conversion is possible
+   * @throws DateTimeException if a field value is out of range,
+   * e.g., month 13 or week 53 in a year with 52 ISO weeks
    */
   @Override
   default Temporal toTemporal() {
@@ -62,7 +66,7 @@ public interface ASTDate extends ASTDateTOP {
     }
     
     // Check whether it has form yyyy-ww-d
-    return isSupported(YEAR) && isSupported(WeekFields.ISO.weekOfYear()) && isSupported(DAY_OF_WEEK);
+    return isSupported(WEEK_BASED_YEAR) && isSupported(WEEK_OF_WEEK_BASED_YEAR) && isSupported(DAY_OF_WEEK);
   }
   
   /**
@@ -77,7 +81,8 @@ public interface ASTDate extends ASTDateTOP {
    *
    * @return the corresponding {@link LocalDate}
    * @throws UnsupportedTemporalTypeException if required fields are missing
-   * or the date cannot be converted
+   * @throws DateTimeException if a field value is out of range,
+   * e.g., month 13 or week 53 in a year with 52 ISO weeks
    */
   default LocalDate toLocalDate() {
     // In case it has
@@ -89,9 +94,11 @@ public interface ASTDate extends ASTDateTOP {
       return LocalDate.ofYearDay(get(YEAR), get(DAY_OF_YEAR));
     }
     
-    if (isSupported(YEAR) && isSupported(WeekFields.ISO.weekOfYear()) && isSupported(DAY_OF_WEEK)) {
-      return LocalDate.ofYearDay(get(YEAR), 1)
-          .plusWeeks(get(WeekFields.ISO.weekOfYear()) - 1)
+    if (isSupported(WEEK_BASED_YEAR) && isSupported(WEEK_OF_WEEK_BASED_YEAR) && isSupported(DAY_OF_WEEK)) {
+      // 4 January always lies in week 1. The adjuster only checks the range 1-53, so get() has to
+      // check the week against the range of the actual week-based year.
+      return LocalDate.of(get(WEEK_BASED_YEAR), 1, 4)
+          .with(WEEK_OF_WEEK_BASED_YEAR, get(WEEK_OF_WEEK_BASED_YEAR))
           .with(DAY_OF_WEEK, get(DAY_OF_WEEK));
     }
     
@@ -116,7 +123,7 @@ public interface ASTDate extends ASTDateTOP {
   
   default boolean isExactlyYear() {
     return isYear() && !isSupported(DAY_OF_YEAR) && !isSupported(MONTH_OF_YEAR)
-        && !isSupported(WeekFields.ISO.weekOfYear());
+        && !isSupported(WEEK_OF_WEEK_BASED_YEAR);
   }
   
   default Year toYear() {

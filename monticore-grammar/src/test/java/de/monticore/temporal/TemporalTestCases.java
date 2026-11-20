@@ -53,7 +53,10 @@ public class TemporalTestCases {
         Arguments.of("+002017-W48-1", 2017, 48, 1),
         Arguments.of("-002017-W48-1", -2017, 48, 1),
         Arguments.of("+002017W481", 2017, 48, 1),
-        Arguments.of("-002017W481", -2017, 48, 1)
+        Arguments.of("-002017W481", -2017, 48, 1),
+        
+        Arguments.of("2015-W14", 2015, 14, -1),
+        Arguments.of("2015W14", 2015, 14, -1)
     );
   }
   

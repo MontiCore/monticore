@@ -277,6 +277,23 @@ The weekday values follow the ISO convention:
 | `6`   | Saturday  |
 | `7`   | Sunday    |
 
+The ISO week year differs from the calendar year around 1 January:
+
+| Syntax       | Date       | ISO week year | ISO week | Calendar year |
+|--------------|------------|---------------|----------|---------------|
+| `2019-W01-1` | 2018-12-31 | 2019          | 1        | 2018          |
+| `2020-W53-5` | 2021-01-01 | 2020          | 53       | 2021          |
+
+As a `TemporalAccessor`, a week date provides the ISO week year as
+`IsoFields.WEEK_BASED_YEAR` and the ISO week as
+`IsoFields.WEEK_OF_WEEK_BASED_YEAR`. If a weekday is given, it also provides
+`ChronoField.DAY_OF_WEEK`, the calendar year of the date as `ChronoField.YEAR`,
+and the week of the calendar year as `ASTWeekDate.WEEK_OF_YEAR`
+(`WeekFields.ISO.weekOfYear()`). The latter is not the ISO week: it counts weeks
+within the calendar year (week 53 for 2018-12-31, week 0 for 2021-01-01).
+`ASTWeekDate` also offers `getWeekBasedYear()`, `getWeekOfWeekBasedYear()`,
+`getDayOfWeek()`, `toDayOfWeek()` and `getCalendarYear()`.
+
 ---
 
 ### ISO Times

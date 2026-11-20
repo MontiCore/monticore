@@ -1,11 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.temporal.temporalbasis._ast;
 
+import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalField;
 import java.time.temporal.UnsupportedTemporalTypeException;
+import java.time.temporal.ValueRange;
 
 public interface ASTDateTime extends ASTDateTimeTOP {
   
@@ -19,6 +21,8 @@ public interface ASTDateTime extends ASTDateTimeTOP {
    * @return the corresponding {@link LocalDateTime} or {@link OffsetDateTime}
    * @throws UnsupportedTemporalTypeException if this date-time cannot be
    * represented as either type
+   * @throws DateTimeException if a field value is out of range,
+   * e.g., month 13 or week 53 in a year with 52 ISO weeks
    */
   @Override
   default Temporal toTemporal() {
@@ -55,6 +59,28 @@ public interface ASTDateTime extends ASTDateTimeTOP {
     }
     throw new UnsupportedTemporalTypeException(field.toString());
   }
+  
+  /**
+   * Returns the range of valid values for the specified temporal field.
+   * <p>
+   * The range is delegated to either the date or time component, depending on
+   * which part supports the requested field, so that ranges refined by a
+   * component, e.g., the ISO weeks of a week date, are also used here.
+   *
+   * @param field the temporal field to query
+   * @return the range of valid values for the field
+   * @throws UnsupportedTemporalTypeException if the field is not supported by
+   * either the date or time part
+   */
+  @Override
+  default ValueRange range(TemporalField field) {
+    if (getDate().isSupported(field)) {
+      return getDate().range(field);
+    } else if (getTime().isSupported(field)) {
+      return getTime().range(field);
+    }
+    throw new UnsupportedTemporalTypeException(field.toString());
+  }
 
   default boolean isLocalDateTime() {
     return getDate().isLocalDate() && getTime().isLocalTime();
@@ -64,6 +90,10 @@ public interface ASTDateTime extends ASTDateTimeTOP {
     return getDate().isLocalDate() && getTime().isExactlyLocalTime();
   }
 
+  /**
+   * @throws DateTimeException if a field value is out of range,
+   * e.g., month 13 or week 53 in a year with 52 ISO weeks
+   */
   default LocalDateTime toLocalDateTime() {
     return getDate().toLocalDate().atTime(getTime().toLocalTime());
   }
@@ -72,6 +102,10 @@ public interface ASTDateTime extends ASTDateTimeTOP {
     return getDate().isLocalDate() && getTime().isOffsetTime();
   }
 
+  /**
+   * @throws DateTimeException if a field value is out of range,
+   * e.g., month 13 or week 53 in a year with 52 ISO weeks
+   */
   default OffsetDateTime toOffsetDateTime() {
     return getDate().toLocalDate().atTime(getTime().toOffsetTime());
   }
