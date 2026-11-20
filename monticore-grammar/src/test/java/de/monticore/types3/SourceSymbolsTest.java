@@ -2,14 +2,15 @@
 package de.monticore.types3;
 
 import de.monticore.expressions.combineexpressionswithliterals.CombineExpressionsWithLiteralsMill;
+import de.monticore.ast.ASTNode;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsArtifactScope;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsGlobalScope;
 import de.monticore.expressions.combineexpressionswithliterals._symboltable.ICombineExpressionsWithLiteralsScope;
 import de.monticore.expressions.combineexpressionswithliterals._visitor.CombineExpressionsWithLiteralsTraverser;
 import de.monticore.expressions.commonexpressions._ast.ASTCallExpression;
-import de.monticore.expressions.commonexpressions._ast.ASTFieldAccessExpression;
+import de.monticore.expressions.commonexpressions._ast.ASTQualifiedNameExpression;
+import de.monticore.expressions.commonexpressions._ast.ASTStaticFieldAccessExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.expressions.expressionsbasis._symboltable.IExpressionsBasisScope;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
@@ -19,7 +20,9 @@ import de.monticore.symboltable.ISymbol;
 import de.monticore.types.check.FlatExpressionScopeSetter;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types.check.SymTypeExpressionFactory;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedType;
 import de.monticore.types3.util.DefsTypesForTests;
+import de.monticore.types3.util.PostTypeCheckNodeReplacer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -66,10 +69,9 @@ public class SourceSymbolsTest extends AbstractTypeVisitorTest {
   @Test
   public void testQualifiedField() throws IOException {
     ASTExpression expr = parseExpr("ListOfInt.e");
-    assertInstanceOf(ASTFieldAccessExpression.class, expr);
-    ASTFieldAccessExpression e = (ASTFieldAccessExpression) expr;
-    generateScopes(e);
-    SymTypeExpression eType = TypeCheck3.typeOf(e);
+    assertInstanceOf(ASTQualifiedNameExpression.class, expr);
+    generateScopes(expr);
+    SymTypeExpression eType = TypeCheck3.typeOf(expr);
 
     // e
     assertEquals("int", eType.printFullName());
@@ -78,9 +80,11 @@ public class SourceSymbolsTest extends AbstractTypeVisitorTest {
     assertSame(this.e, definingSymbol);
 
     // ListOfInt
-    assertInstanceOf(ASTNameExpression.class, e.getExpression());
-    ASTNameExpression listOfInt = (ASTNameExpression) e.getExpression();
-    SymTypeExpression listOfIntType = getType4Ast().getPartialTypeOfTypeIdForName(listOfInt);
+    ASTNode replacedExpr = replaceNodes(expr);
+    assertInstanceOf(ASTStaticFieldAccessExpression.class, replacedExpr);
+    ASTMCQualifiedType listOfInt =
+        ((ASTStaticFieldAccessExpression) replacedExpr).getType();
+    SymTypeExpression listOfIntType = getType4Ast().getPartialTypeOfTypeId(listOfInt);
     assertTrue(listOfIntType.getSourceInfo().getSourceSymbol().isPresent());
     definingSymbol = listOfIntType.getSourceInfo().getSourceSymbol().get();
     assertSame(this.listOfInt, definingSymbol);
@@ -102,10 +106,11 @@ public class SourceSymbolsTest extends AbstractTypeVisitorTest {
     assertSame(this.add, definingSymbol);
 
     // ListOfInt
-    assertInstanceOf(ASTFieldAccessExpression.class, add.getExpression());
-    assertInstanceOf(ASTNameExpression.class, ((ASTFieldAccessExpression) add.getExpression()).getExpression());
-    ASTNameExpression listOfIntExpr = (ASTNameExpression) ((ASTFieldAccessExpression) add.getExpression()).getExpression();
-    SymTypeExpression listOfIntType = getType4Ast().getPartialTypeOfTypeIdForName(listOfIntExpr);
+    replaceNodes(add);
+    assertInstanceOf(ASTStaticFieldAccessExpression.class, add.getExpression());
+    ASTMCQualifiedType listOfIntType4Ast =
+        ((ASTStaticFieldAccessExpression) add.getExpression()).getType();
+    SymTypeExpression listOfIntType = getType4Ast().getPartialTypeOfTypeId(listOfIntType4Ast);
     assertTrue(listOfIntType.getSourceInfo().getSourceSymbol().isPresent());
     definingSymbol = listOfIntType.getSourceInfo().getSourceSymbol().get();
     assertEquals(this.listOfInt, definingSymbol);
@@ -114,8 +119,8 @@ public class SourceSymbolsTest extends AbstractTypeVisitorTest {
   @Test
   public void testWithinTypeField() throws IOException {
     ASTExpression expr = parseExpr("e");
-    assertInstanceOf(ASTNameExpression.class, expr);
-    ASTNameExpression eExpr = (ASTNameExpression) expr;
+    assertInstanceOf(ASTQualifiedNameExpression.class, expr);
+    ASTQualifiedNameExpression eExpr = (ASTQualifiedNameExpression) expr;
     eExpr.accept(getFlatExpressionScopeSetter(typeScope));
     SymTypeExpression eType = TypeCheck3.typeOf(eExpr);
 
@@ -152,6 +157,15 @@ public class SourceSymbolsTest extends AbstractTypeVisitorTest {
     traverser.add4MCSimpleGenericTypes(flatExpressionScopeSetter);
     traverser.add4MCCommonLiterals(flatExpressionScopeSetter);
     return traverser;
+  }
+
+  // Helper
+
+  protected ASTNode replaceNodes(ASTExpression rootNode) {
+    return PostTypeCheckNodeReplacer.replace(
+        CombineExpressionsWithLiteralsMill::inheritanceTraverser,
+        rootNode
+    );
   }
 
 }

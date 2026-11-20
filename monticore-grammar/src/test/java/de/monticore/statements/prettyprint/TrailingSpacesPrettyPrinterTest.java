@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.statements.prettyprint;
 
+import de.monticore.expressions.commonexpressions._ast.ASTQualifiedNameExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.statements.mccommonstatements._ast.ASTMCJavaBlock;
@@ -28,7 +29,10 @@ public class TrailingSpacesPrettyPrinterTest {
     assertTrue(blocks.isPresent());
     ASTLocalVariableDeclarationStatement setStatement = (ASTLocalVariableDeclarationStatement) blocks.get().getMCBlockStatementList().get(0);
     ASTExpression initialValueAST = ((ASTSimpleInit) setStatement.getLocalVariableDeclaration().getVariableDeclarator(0).getVariableInit()).getExpression();
-    assertEquals(1, initialValueAST.get_PostCommentList().size());
+    // the comment is attached to the qualified name within the expression
+    assertInstanceOf(ASTQualifiedNameExpression.class, initialValueAST);
+    assertEquals(1, ((ASTQualifiedNameExpression) initialValueAST)
+        .getMCQualifiedName().get_PostCommentList().size());
 
     // print the initial value expression
     String initialValue = TestMCCommonStatementsMill.prettyPrint(initialValueAST, true);

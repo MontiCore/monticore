@@ -15,6 +15,7 @@ import de.monticore.types.mcsimplegenerictypes.types3.MCSimpleGenericTypesTypeVi
 import de.monticore.types3.Type4Ast;
 import de.monticore.types3.generics.context.InferenceContext4Ast;
 import de.monticore.types3.util.*;
+import de.monticore.types3.util.PostTypeCheckNodeReplacer;
 import de.monticore.visitor.ITraverser;
 import de.se_rwth.commons.logging.Log;
 
@@ -32,6 +33,7 @@ public class JavaLightTypeCheck3 extends MapBasedTypeCheck3 {
     OOWithinScopeBasicSymbolsResolver.init();
     OOWithinTypeBasicSymbolsResolver.init();
     TypeContextCalculator.init();
+    PostTypeCheckNodeReplacer.init();
     TypeVisitorOperatorCalculator.init();
 
     JavaLightTraverser traverser = JavaLightMill.traverser();

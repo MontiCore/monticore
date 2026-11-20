@@ -341,6 +341,7 @@ public class CombineExpressionsWithLiteralsTypeTraverserFactory {
     }
     if (visitors.derExpressionBasis != null) {
       traverser.add4ExpressionsBasis(visitors.derExpressionBasis);
+      traverser.setExpressionsBasisHandler(visitors.derExpressionBasis);
     }
     else if (visitors.cTTIExpressionBasis != null) {
       traverser.add4ExpressionsBasis(visitors.cTTIExpressionBasis);

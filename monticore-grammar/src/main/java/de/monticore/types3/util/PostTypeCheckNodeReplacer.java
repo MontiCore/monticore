@@ -104,15 +104,18 @@ public class PostTypeCheckNodeReplacer {
    * @param inheritanceTraverserSupplier Supplies the inheritance-traverser
    *                                     of the current language.
    * @param rootNode                     The root node of the current model.
+   * @return the root node after the replacement,
+   *     this is the replacement of the root node, if it is to be replaced,
+   *     e.g., if the root node is a single name.
    */
-  public static void replace(
+  public static ASTNode replace(
       Supplier<ITraverser> inheritanceTraverserSupplier,
       ASTNode rootNode
   ) {
-    getDelegate()._replace(inheritanceTraverserSupplier, rootNode);
+    return getDelegate()._replace(inheritanceTraverserSupplier, rootNode);
   }
 
-  protected void _replace(
+  protected ASTNode _replace(
       Supplier<ITraverser> inheritanceTraverserSupplier,
       ASTNode rootNode
   ) {
@@ -122,6 +125,8 @@ public class PostTypeCheckNodeReplacer {
     inheritanceTraverser.add4IVisitor(nodeReplacer);
     inheritanceTraverser.add4IVisitor(parentNodeTracker);
     rootNode.accept(inheritanceTraverser);
+    // the root node has no parent to replace it in
+    return replacements.getOrDefault(rootNode, rootNode);
   }
 
   /**
@@ -140,22 +145,13 @@ public class PostTypeCheckNodeReplacer {
 
     @Override
     public void visit(ASTNode node) {
-      if (replacements.containsKey(node)) {
-        Optional<ASTNode> parentNode =
-            parentNodeTracker.getCurrentParentNode();
-        if (parentNode.isPresent()) {
-          parent2Replacement
-              .computeIfAbsent(parentNode.get(), n -> new LinkedHashSet<>())
-              .add(Map.entry(node, replacements.get(node)));
-        }
-        else {
-          Log.warn("0xFD200 could not replace"
-                  + " the (presumably top-most) node"
-                  + ", as only inner nodes can be replaced.",
-              node.get_SourcePositionStart(),
-              node.get_SourcePositionEnd()
-          );
-        }
+      Optional<ASTNode> parentNode =
+          parentNodeTracker.getCurrentParentNode();
+      // the root node (without parent) is replaced by returning it
+      if (replacements.containsKey(node) && parentNode.isPresent()) {
+        parent2Replacement
+            .computeIfAbsent(parentNode.get(), n -> new LinkedHashSet<>())
+            .add(Map.entry(node, replacements.get(node)));
       }
     }
 

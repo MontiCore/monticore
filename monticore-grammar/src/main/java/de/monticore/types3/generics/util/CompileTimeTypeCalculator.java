@@ -143,6 +143,11 @@ public class CompileTimeTypeCalculator {
       Type4Ast type4Ast,
       InferenceContext4Ast infCtx4Ast
   ) {
+    // e.g., unresolvable names, the error has already been logged
+    if (resolvedType.isObscureType()) {
+      type4Ast.setTypeOfExpression(expr, resolvedType);
+      return;
+    }
     InferenceContext ctx = infCtx4Ast.getContextOfExpression(expr);
     InferenceResult infResult = inferCalledFunction(
         resolvedType, ctx,
