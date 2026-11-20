@@ -195,6 +195,80 @@ public class ProductionNodeTest extends AbstractNodeTest {
   }
 
   /**
+   * Parameters of optional columns are optional. Their absence is a value of
+   * the match: {@link Tuple#ABSENT} in a partial binding queries the matches
+   * in which the parameter is absent, as opposed to {@code null} for unbound
+   * parameters; for parameters that are not optional, it matches nothing.
+   * Listeners are notified about matches with absent parameters like about
+   * other matches, and the query indexes are maintained.
+   */
+  @Test
+  public void testOptionalParameters() {
+    TestSource optional = source(List.of(false, true), ASTState.class, ASTTransition.class);
+    ProductionNode withOptional = net.production(optional, "state", "tr");
+    RecordingListener listener = new RecordingListener();
+    withOptional.addMatchListener(listener);
+    assertFalse(withOptional.isOptionalParameter("state"));
+    assertTrue(withOptional.isOptionalParameter("tr"));
+    assertTrue(withOptional.isOptionalParameter(1));
+    assertFalse(production.isOptionalParameter("tr"));
+
+    optional.insert(s1, Tuple.ABSENT);
+    optional.insert(s1, t1);
+    optional.insert(s2, Tuple.ABSENT);
+    Match s1Absent = new Match(withOptional, Tuple.of(s1, Tuple.ABSENT));
+    Match s2Absent = new Match(withOptional, Tuple.of(s2, Tuple.ABSENT));
+    assertEquals(Set.of(s1Absent, s2Absent, new Match(withOptional, Tuple.of(s1, t1))),
+        listener.matches);
+    assertEquals(3, withOptional.countMatches());
+    assertEquals(Set.of(s1Absent, s2Absent),
+        Set.copyOf(withOptional.getAllMatches(null, Tuple.ABSENT)));
+    assertEquals(2, withOptional.countMatches(s1, null));
+    assertTrue(withOptional.hasMatch(s1, Tuple.ABSENT));
+    assertFalse(withOptional.hasMatch(s2, t1));
+
+    // the index for [_, tr] is maintained
+    optional.delete(s1, Tuple.ABSENT);
+    assertEquals(Set.of(s2Absent), Set.copyOf(withOptional.getAllMatches(null, Tuple.ABSENT)));
+    assertFalse(listener.matches.contains(s1Absent));
+
+    source.insert(s1, t1);
+    assertEquals(0, production.countMatches(null, Tuple.ABSENT));
+  }
+
+  /**
+   * An absent parameter of a match is not present, {@code get} returns
+   * {@code null} for it and {@code find} an empty optional; present
+   * parameters are returned by both. The string representation marks absent
+   * parameters with {@code ⊥}, and matches with absent parameters are equal
+   * if their present parameters are.
+   */
+  @Test
+  public void testMatchWithAbsentParameter() {
+    ProductionNode withOptional = net.production(
+        source(List.of(false, true), ASTState.class, ASTTransition.class), "state", "tr");
+    Match absent = new Match(withOptional, Tuple.of(s1, Tuple.ABSENT));
+    assertTrue(absent.isPresent("state"));
+    assertFalse(absent.isPresent("tr"));
+    assertFalse(absent.isPresent(1));
+    assertNull(absent.get("tr"));
+    assertNull(absent.get(1, ASTTransition.class));
+    assertTrue(absent.find("tr").isEmpty());
+    assertTrue(absent.find(1, ASTTransition.class).isEmpty());
+    assertSame(s1, absent.find("state").orElseThrow());
+    assertSame(s1, absent.find(0, ASTState.class).orElseThrow());
+    assertEquals("{state=s1, tr=⊥}", absent.toString());
+    assertEquals(new Match(withOptional, Tuple.of(s1, Tuple.ABSENT)), absent);
+
+    Match present = new Match(withOptional, Tuple.of(s1, t1));
+    assertTrue(present.isPresent("tr"));
+    assertSame(t1, present.find("tr", ASTTransition.class).orElseThrow());
+    assertSame(t1, present.find(1).orElseThrow());
+    assertEquals("{state=s1, tr=t1}", present.toString());
+    assertNotEquals(present, absent);
+  }
+
+  /**
    * The index created for the first query with a partial binding is
    * maintained afterwards: later queries with the same bound positions
    * reflect insertions and deletions of matches.

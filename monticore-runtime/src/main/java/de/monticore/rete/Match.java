@@ -6,10 +6,16 @@ import de.monticore.rete.nodes.ProductionNode;
 import de.monticore.rete.tuple.Tuple;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * A match of a pattern, i.e. a binding of the pattern parameters (provided by
  * a {@link ProductionNode}) to AST nodes. Matches are immutable value objects.
+ * <p>
+ * {@linkplain ProductionNode#isOptionalParameter Optional parameters} are
+ * absent if the optional pattern element was not matched: then
+ * {@link #isPresent} is {@code false}, {@code get} returns {@code null} and
+ * {@code find} an empty {@link Optional}.
  */
 public final class Match {
 
@@ -34,13 +40,17 @@ public final class Match {
     return tuple.size();
   }
 
+  /**
+   * @return the AST node bound to the parameter at the given position, or
+   * {@code null} if the parameter is absent
+   */
   public ASTNode get(int index) {
     return (ASTNode) tuple.get(index);
   }
 
   /**
    * @return the AST node bound to the parameter at the given position, cast
-   * to the given type
+   * to the given type, or {@code null} if the parameter is absent
    * @throws ClassCastException if the node is not an instance of {@code type}
    */
   public <T extends ASTNode> T get(int index, Class<T> type) {
@@ -48,7 +58,8 @@ public final class Match {
   }
 
   /**
-   * @return the AST node bound to the parameter of the given name
+   * @return the AST node bound to the parameter of the given name, or
+   * {@code null} if the parameter is absent
    * @throws IllegalArgumentException if there is no parameter of that name
    */
   public ASTNode get(String parameterName) {
@@ -57,12 +68,65 @@ public final class Match {
 
   /**
    * @return the AST node bound to the parameter of the given name, cast to
-   * the given type
+   * the given type, or {@code null} if the parameter is absent
    * @throws IllegalArgumentException if there is no parameter of that name
    * @throws ClassCastException       if the node is not an instance of {@code type}
    */
   public <T extends ASTNode> T get(String parameterName, Class<T> type) {
     return get(production.getParameterIndex(parameterName), type);
+  }
+
+  /**
+   * @return whether the parameter at the given position is bound to an AST
+   * node; always {@code true} for parameters that are not optional
+   */
+  public boolean isPresent(int index) {
+    return !tuple.isAbsent(index);
+  }
+
+  /**
+   * @return whether the parameter of the given name is bound to an AST node;
+   * always {@code true} for parameters that are not optional
+   * @throws IllegalArgumentException if there is no parameter of that name
+   */
+  public boolean isPresent(String parameterName) {
+    return isPresent(production.getParameterIndex(parameterName));
+  }
+
+  /**
+   * @return the AST node bound to the parameter at the given position, or an
+   * empty optional if the parameter is absent
+   */
+  public Optional<ASTNode> find(int index) {
+    return Optional.ofNullable(get(index));
+  }
+
+  /**
+   * @return the AST node bound to the parameter at the given position, cast
+   * to the given type, or an empty optional if the parameter is absent
+   * @throws ClassCastException if the node is not an instance of {@code type}
+   */
+  public <T extends ASTNode> Optional<T> find(int index, Class<T> type) {
+    return Optional.ofNullable(get(index, type));
+  }
+
+  /**
+   * @return the AST node bound to the parameter of the given name, or an
+   * empty optional if the parameter is absent
+   * @throws IllegalArgumentException if there is no parameter of that name
+   */
+  public Optional<ASTNode> find(String parameterName) {
+    return find(production.getParameterIndex(parameterName));
+  }
+
+  /**
+   * @return the AST node bound to the parameter of the given name, cast to
+   * the given type, or an empty optional if the parameter is absent
+   * @throws IllegalArgumentException if there is no parameter of that name
+   * @throws ClassCastException       if the node is not an instance of {@code type}
+   */
+  public <T extends ASTNode> Optional<T> find(String parameterName, Class<T> type) {
+    return find(production.getParameterIndex(parameterName), type);
   }
 
   public Tuple toTuple() {
@@ -85,6 +149,10 @@ public final class Match {
     return tuple.hashCode();
   }
 
+  /**
+   * @return the bindings of the parameters, e.g. {@code {state=s1, tr=⊥}},
+   * where {@code ⊥} marks absent parameters
+   */
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder("{");
@@ -93,7 +161,7 @@ public final class Match {
       if (i > 0) {
         sb.append(", ");
       }
-      sb.append(names.get(i)).append('=').append(tuple.get(i));
+      sb.append(names.get(i)).append('=').append(isPresent(i) ? tuple.get(i) : Tuple.ABSENT);
     }
     return sb.append('}').toString();
   }

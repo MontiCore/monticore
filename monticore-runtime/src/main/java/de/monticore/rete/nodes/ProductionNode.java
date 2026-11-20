@@ -29,9 +29,16 @@ import java.util.function.Consumer;
  * the parent is a single match. All parameters must be AST nodes; this is
  * checked against the column types of the parent on construction.
  * <p>
+ * Parameters of optional columns of the parent are
+ * {@linkplain #isOptionalParameter optional}: they are bound to
+ * {@link Tuple#ABSENT} in matches in which the optional pattern element is
+ * absent (see {@link Match#isPresent}).
+ * <p>
  * Queries accept partial bindings: one value per parameter, where
- * {@code null} denotes an unbound parameter. Indexes for partial bindings are
- * created on first use and maintained afterwards.
+ * {@code null} denotes an unbound parameter and {@link Tuple#ABSENT} an
+ * absent optional parameter (which no match of a non-optional parameter
+ * has). Indexes for partial bindings are created on first use and maintained
+ * afterwards.
  */
 public class ProductionNode extends ReteNode implements Receiver {
 
@@ -107,6 +114,23 @@ public class ProductionNode extends ReteNode implements Receiver {
           + ", expected one of " + parameterNames);
     }
     return index;
+  }
+
+  /**
+   * @return whether the parameter at the given position is optional, i.e.
+   * may be bound to {@link Tuple#ABSENT}
+   */
+  public boolean isOptionalParameter(int index) {
+    return parent.isOptional(index);
+  }
+
+  /**
+   * @return whether the parameter of the given name is optional, i.e. may be
+   * bound to {@link Tuple#ABSENT}
+   * @throws IllegalArgumentException if there is no parameter of that name
+   */
+  public boolean isOptionalParameter(String parameterName) {
+    return isOptionalParameter(getParameterIndex(parameterName));
   }
 
   // ---------------------------------------------------------------------------
@@ -221,7 +245,9 @@ public class ProductionNode extends ReteNode implements Receiver {
 
   /**
    * @param partialBinding one value per parameter, {@code null} for unbound
-   *                       parameters; no values for querying all matches
+   *                       parameters and {@link Tuple#ABSENT} for absent
+   *                       optional parameters; no values for querying all
+   *                       matches
    * @return all matches compatible with the partial binding
    */
   public List<Match> getAllMatches(Object... partialBinding) {
