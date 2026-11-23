@@ -376,14 +376,18 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
     String packageName = cdPackage.getName();
     ASTMCQualifiedType typeDispatcherType = this.getMCTypeFacade().createQualifiedType(packageName + ".I" + typeDispatcherName);
 
-    typeDispatcherMembers.add(this.getCDAttributeFacade().createAttribute(PROTECTED.build(), typeDispatcherType, "typeDispatcher"));
+    ASTCDAttribute typeDispatcherAttr = this.getCDAttributeFacade()
+            .createAttribute(PROTECTED.build(), typeDispatcherType, "typeDispatcher");
+    this.replaceTemplate(ANNOTATIONS, typeDispatcherAttr,
+                         new StringHookPoint("@SuppressWarnings(\"removal\")"));
+    typeDispatcherMembers.add(typeDispatcherAttr);
 
     ASTCDMethod staticGetter = this.getCDMethodFacade().createMethod(PUBLIC_STATIC.build(), typeDispatcherType, "typeDispatcher");
     this.replaceTemplate(EMPTY_BODY, staticGetter,
         new TemplateHookPoint("mill.BuilderMethod",
             "typeDispatcher"));
     this.replaceTemplate(ANNOTATIONS, staticGetter,
-        new StringHookPoint("@Deprecated(forRemoval = true)"));
+        new StringHookPoint("@Deprecated(forRemoval = true) @SuppressWarnings(\"removal\")"));
     typeDispatcherMembers.add(staticGetter);
 
     ASTCDMethod protectedGetter = this.getCDMethodFacade().createMethod(PROTECTED.build(), typeDispatcherType, "_typeDispatcher");
@@ -391,7 +395,7 @@ public class MillDecorator extends AbstractCreator<List<ASTCDPackage>, ASTCDClas
         new TemplateHookPoint("mill.TypeDispatcherGetter",
             packageName + "." + typeDispatcherName));
     this.replaceTemplate(ANNOTATIONS, protectedGetter,
-        new StringHookPoint("@Deprecated(forRemoval = true)"));
+        new StringHookPoint("@Deprecated(forRemoval = true) @SuppressWarnings(\"removal\")"));
     typeDispatcherMembers.add(protectedGetter);
 
     return typeDispatcherMembers;
