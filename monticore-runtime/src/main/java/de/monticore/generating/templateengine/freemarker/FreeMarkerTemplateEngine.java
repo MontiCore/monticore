@@ -4,16 +4,16 @@ package de.monticore.generating.templateengine.freemarker;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 import de.monticore.generating.templateengine.TemplateController;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.generating.templateengine.sourcemap.SourceMapCalculator;
 import de.monticore.generating.templateengine.sourcemap.TemplateAdaptionForSourcePositionReporting;
-import de.se_rwth.commons.logging.Log;
 import com.google.common.base.Preconditions;
 import freemarker.log.Logger;
 import freemarker.template.Configuration;
@@ -30,6 +30,7 @@ public class FreeMarkerTemplateEngine {
 
   public static final String FM_FILE_EXTENSION = ".ftl";
   protected final Configuration configuration;
+  protected final Map<Template, Template> adaptedTemplateCache = new WeakHashMap<>();
 
   public FreeMarkerTemplateEngine(Configuration configuration) {
     this.configuration = Preconditions.checkNotNull(
@@ -54,7 +55,12 @@ public class FreeMarkerTemplateEngine {
     try {
       result = configuration.getTemplate(qualifiedTemplateName);
       if(Reporting.isTemplateSourceMappingEnabled() && !Reporting.isConfigTemplate(qualifiedTemplateName)) {
-        result = TemplateAdaptionForSourcePositionReporting.adaptTemplateWithPositionMarkers(result, configuration);
+        Template original = result;
+        result = adaptedTemplateCache.get(original);
+        if (result == null) {
+          result = TemplateAdaptionForSourcePositionReporting.adaptTemplateWithPositionMarkers(original, configuration);
+          adaptedTemplateCache.put(original, result);
+        }
       }
     }
     catch (IOException e) {
@@ -75,13 +81,16 @@ public class FreeMarkerTemplateEngine {
     Preconditions.checkNotNull(template, "0xA0562 The given template must not be null");
     String seperator = System.getProperty("line.seperator");
 
-    ContentWriter w = new ContentWriter(buffer);
-
+    ContentWriter w;
     try {
       if(Reporting.isTemplateSourceMappingEnabled()) {
+        PositionTrackingContentWriter trackingWriter = new PositionTrackingContentWriter(buffer);
+        w = trackingWriter;
         if (data instanceof SimpleHash asSimpleHash) {
-          asSimpleHash.put(TemplateController.SOURCE_MAP_CALCULATOR, new SourceMapCalculator(w, template));
+          asSimpleHash.put(TemplateController.SOURCE_MAP_CALCULATOR, new SourceMapCalculator(trackingWriter, template));
         }
+      } else {
+        w = new ContentWriter(buffer);
       }
       template.process(data, w);
       w.flush();
@@ -152,6 +161,68 @@ public class FreeMarkerTemplateEngine {
 
     public String getCurrentContent() {
       return buffer.toString();
+    }
+  }
+
+  /**
+   * {@link ContentWriter} specialization used only when source map generation is enabled.
+   * Tracks line count and column offset incrementally in O(1) per written character so
+   * {@link SourceMapCalculator} does not need to copy and re-scan the accumulated buffer.
+   */
+  public static class PositionTrackingContentWriter extends ContentWriter {
+
+    private int lineCount = 0;
+    private int currentColumn = 0;
+    private boolean lastCharWasCR = false;
+
+    public PositionTrackingContentWriter(StringBuilder buffer) {
+      super(buffer);
+      int initialLen = buffer.length();
+      for (int i = 0; i < initialLen; i++) {
+        updatePosition(buffer.charAt(i));
+      }
+    }
+
+    @Override
+    public void write(char[] cbuf, int off, int len) {
+      super.write(cbuf, off, len);
+      int end = off + len;
+      for (int i = off; i < end; i++) {
+        updatePosition(cbuf[i]);
+      }
+    }
+
+    private void updatePosition(char c) {
+      if (c == '\n') {
+        if (!lastCharWasCR) {
+          lineCount++;
+          currentColumn = 0;
+        }
+        lastCharWasCR = false;
+      } else if (c == '\r') {
+        lineCount++;
+        currentColumn = 0;
+        lastCharWasCR = true;
+      } else {
+        currentColumn++;
+        lastCharWasCR = false;
+      }
+    }
+
+    public int getLineCount() {
+      return lineCount;
+    }
+
+    public int getCurrentColumn() {
+      return currentColumn;
+    }
+
+    public int getCurrentLength() {
+      return buffer.length();
+    }
+
+    public char charAt(int index) {
+      return buffer.charAt(index);
     }
   }
 }

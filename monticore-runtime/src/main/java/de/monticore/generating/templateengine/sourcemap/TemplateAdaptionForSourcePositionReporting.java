@@ -41,6 +41,9 @@ public class TemplateAdaptionForSourcePositionReporting {
 
     String canonicalForm = rootTreeNode.toString();
     StringBuilder sb = new StringBuilder(canonicalForm);
+    int[] lineStartOffsets = computeLineStartOffsets(canonicalForm);
+
+    String templateSource = resolveTemplateSource(template, configuration);
 
     Comparator<TemplateElement> firstComp = Comparator.comparingInt(TemplateObject::getEndLine);
     Comparator<TemplateElement> c = firstComp
@@ -51,13 +54,13 @@ public class TemplateAdaptionForSourcePositionReporting {
     tes.stream().sorted(c.reversed()).forEach(t -> {
       // DollarVariable is package-private, thus check via class-name
       if (t.getClass().getName().contains("DollarVariable")) {
-          addSourcePositionReport(t, sb, canonicalForm, configuration, true);
+          addSourcePositionReport(t, sb, lineStartOffsets, templateSource, true);
       }
       if (t instanceof TextBlock) {
         if (!t.getCanonicalForm().isBlank()) {
           // No AST Reporting since this is only text from the template
           // to discuss: Through freemarker-ifs this might still be dependent on the AST variable
-          addSourcePositionReport(t, sb, canonicalForm, configuration, false);
+          addSourcePositionReport(t, sb, lineStartOffsets, templateSource, false);
         }
       }
     });
@@ -65,30 +68,62 @@ public class TemplateAdaptionForSourcePositionReporting {
     return new Template(template.getName(), sb.toString(), configuration);
   }
 
+  private static String resolveTemplateSource(Template template, Configuration configuration) {
+    String templateSource = template.getName();
+    try {
+      Object src = configuration.getTemplateLoader().findTemplateSource(template.getName());
+      if (src != null) {
+        templateSource = src.toString().replace('\\', '/');
+      }
+    } catch (IOException e) {
+      Log.warn("Could not find fully qualified source URL of Template.");
+    }
+    return templateSource;
+  }
+
+  private static int[] computeLineStartOffsets(String input) {
+    if (input.isEmpty()) {
+      return new int[0];
+    }
+    int lineCount = 1;
+    for (int i = 0; i < input.length() - 1; i++) {
+      if (input.charAt(i) == '\n') {
+        lineCount++;
+      }
+    }
+    int[] offsets = new int[lineCount];
+    offsets[0] = 0;
+    int line = 1;
+    for (int i = 0; i < input.length() - 1; i++) {
+      if (input.charAt(i) == '\n') {
+        offsets[line++] = i + 1;
+      }
+    }
+    return offsets;
+  }
+
+  private static int lineColumnToOffset(int[] lineStartOffsets, int lineNumber, int columnNumber) {
+    if (lineNumber < 1 || lineNumber > lineStartOffsets.length) {
+      return -1;
+    }
+    return lineStartOffsets[lineNumber - 1] + columnNumber - 1;
+  }
+
   /**
    * Injects start and end position-reporting FreeMarker directives into the template string surrounding a specified
    * template element.
    * @param t The template element being wrapped.
    * @param sb Mutable string builder containing the template
-   * @param canonicalForm Original string representation of the template
-   * @param configuration FreeMarker configuration context
+   * @param lineStartOffsets Precomputed 0-based start offsets for each 1-based line in the canonical template string
+   * @param templateSource Resolved source path/URL of the template
    * @param reportAstMapping true to include AST node mapping hooks, false for text-only blocks
    */
-  private static void addSourcePositionReport(TemplateElement t, StringBuilder sb, String canonicalForm, Configuration configuration, boolean reportAstMapping) {
+  private static void addSourcePositionReport(TemplateElement t, StringBuilder sb, int[] lineStartOffsets, String templateSource, boolean reportAstMapping) {
 
     // The Freemarker Engine uses Source Positions starting at line and column 1, but we report them zero based
     int curPairId = pairId.getAndIncrement();
     String endPos;
     String startPos;
-
-    String templateSource = t.getTemplate().getName();
-    try {
-      Object src = configuration.getTemplateLoader().findTemplateSource(t.getTemplate().getName());
-      if(src != null)
-        templateSource = src.toString().replace('\\', '/');
-    } catch (IOException e) {
-      Log.warn("Could not find fully qualified source URL of Template.");
-    }
 
     int startLine = increasePositionIfNecessary(t.getBeginLine());
     int startColumn = increasePositionIfNecessary(t.getBeginColumn());
@@ -104,8 +139,8 @@ public class TemplateAdaptionForSourcePositionReporting {
     }
 
     // Inserting at the endPos first as otherwise we mangle with the String
-    sb.insert(lineColumnToOffset(canonicalForm, t.getEndLine(), t.getEndColumn()) + 1, endPos);
-    sb.insert(lineColumnToOffset(canonicalForm, t.getBeginLine(), t.getBeginColumn()), startPos);
+    sb.insert(lineColumnToOffset(lineStartOffsets, t.getEndLine(), t.getEndColumn()) + 1, endPos);
+    sb.insert(lineColumnToOffset(lineStartOffsets, t.getBeginLine(), t.getBeginColumn()), startPos);
   }
 
   /** Normalizes FreeMarker line/column coordinates bugs where line-end positions might evaluate below 1.
