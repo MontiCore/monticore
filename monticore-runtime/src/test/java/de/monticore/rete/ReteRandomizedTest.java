@@ -127,6 +127,18 @@ public class ReteRandomizedTest {
     TupleSource optPredDistinct = net.inequality(net.distinct(net.project(optPred, 1, 2)), 0, 1);
     TupleSource optPredCount = net.count(optPred, 1);
 
+    // existence with conditions spanning both sides (e.g. injectivity): edges (x, y) without
+    // an edge from x to another target, with indexers of the same source
+    TupleSource onlyTarget = net.antiJoin(net.indexer(edges, 0), net.indexer(edges, 0),
+        t -> t.get(1) != t.get(2));                                      // [x, y]
+    // states with a predecessor other than themselves
+    TupleSource otherPred = net.semiJoin(net.indexer(states, 0), net.indexer(edges, 1),
+        t -> t.get(0) != t.get(1));                                      // [s]
+    // a key and a condition reading ABSENT: each optional successor t without a successor
+    // other than s
+    TupleSource optNextNoOtherSucc = net.antiJoin(net.indexer(optNext, 1),
+        net.indexer(edges, 0), t -> t.get(2) != t.get(0));             // [s, t?]
+
     s.sources.put("j1", j1);
     s.sources.put("p2", p2);
     s.sources.put("j2", j2);
@@ -149,6 +161,9 @@ public class ReteRandomizedTest {
     s.sources.put("optNextHasSucc", optNextHasSucc);
     s.sources.put("optPredDistinct", optPredDistinct);
     s.sources.put("optPredCount", optPredCount);
+    s.sources.put("onlyTarget", onlyTarget);
+    s.sources.put("otherPred", otherPred);
+    s.sources.put("optNextNoOtherSucc", optNextNoOtherSucc);
 
     s.productions.put("tc", net.production(tc, "x", "y"));
     s.productions.put("distinct", net.production(distinct, "x", "z"));
@@ -156,6 +171,7 @@ public class ReteRandomizedTest {
     s.productions.put("deadEnds", net.production(deadEnds, "s"));
     s.productions.put("j2", net.production(j2, "x", "y", "z"));
     s.productions.put("optPred", net.production(optPred, "s", "t", "p"));
+    s.productions.put("onlyTarget", net.production(onlyTarget, "x", "y"));
     for (Map.Entry<String, ProductionNode> p : s.productions.entrySet()) {
       RecordingListener listener = new RecordingListener();
       p.getValue().addMatchListener(listener, true);
@@ -238,6 +254,47 @@ public class ReteRandomizedTest {
     assertEquals(optNextName, contents(actual.sources.get("optNextName")),
         context + ": optNextName");
     assertEquals(optPred, contents(actual.sources.get("optPred")), context + ": optPred");
+    assertExistenceSemantics(facts, optNext, actual, context);
+  }
+
+  /**
+   * Compares the semi and anti joins with conditions to their semantics
+   * computed directly from the facts: each edge {@code (x, y)} without an edge
+   * from {@code x} to a target other than {@code y} ({@code onlyTarget}), each
+   * state with a predecessor other than itself ({@code otherPred}), and each
+   * tuple {@code (s, t)} of {@code optNext} whose successor {@code t} is
+   * absent or has no successor other than {@code s}
+   * ({@code optNextNoOtherSucc}). Left tuples keep their multiplicities.
+   *
+   * @param optNext the expected contents of {@code optNext}
+   */
+  protected static void assertExistenceSemantics(Facts facts, Multiset<Tuple> optNext,
+      Structure actual, String context) {
+    Multiset<Tuple> onlyTarget = HashMultiset.create();
+    for (Tuple edge : facts.edges) {
+      if (facts.edges.stream()
+          .noneMatch(other -> other.get(0) == edge.get(0) && other.get(1) != edge.get(1))) {
+        onlyTarget.add(edge);
+      }
+    }
+    Multiset<Tuple> otherPred = HashMultiset.create();
+    for (ASTState s : facts.nodes) {
+      if (facts.edges.stream().anyMatch(edge -> edge.get(1) == s && edge.get(0) != s)) {
+        otherPred.add(Tuple.of(s));
+      }
+    }
+    Multiset<Tuple> optNextNoOtherSucc = HashMultiset.create();
+    for (Tuple st : optNext) {
+      if (st.isAbsent(1) || facts.edges.stream()
+          .noneMatch(edge -> edge.get(0) == st.get(1) && edge.get(1) != st.get(0))) {
+        optNextNoOtherSucc.add(st);
+      }
+    }
+    assertEquals(onlyTarget, contents(actual.sources.get("onlyTarget")),
+        context + ": onlyTarget");
+    assertEquals(otherPred, contents(actual.sources.get("otherPred")), context + ": otherPred");
+    assertEquals(optNextNoOtherSucc, contents(actual.sources.get("optNextNoOtherSucc")),
+        context + ": optNextNoOtherSucc");
   }
 
   /**
@@ -262,8 +319,8 @@ public class ReteRandomizedTest {
   /**
    * Applies random insertions and deletions (some grouped in transactions)
    * and periodically compares the incrementally maintained network to both
-   * kinds of networks built from scratch, and its left outer joins to their
-   * semantics.
+   * kinds of networks built from scratch, and its left outer joins and its
+   * semi and anti joins with conditions to their semantics.
    */
   @ParameterizedTest
   @ValueSource(longs = {1, 2, 3, 4, 5})

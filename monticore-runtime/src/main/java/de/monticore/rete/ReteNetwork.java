@@ -278,11 +278,39 @@ public class ReteNetwork {
   }
 
   /**
+   * @param condition a deterministic predicate only depending on tuple
+   *                  values, evaluated for the joined tuple (left columns
+   *                  followed by the non-key columns of the right side)
+   * @return the left tuples for which a right tuple with equal key exists for
+   * which the condition holds
+   * @see ExistenceNode
+   */
+  public ExistenceNode semiJoin(Indexer left, Indexer right, Predicate<Tuple> condition) {
+    return new ExistenceNode(this, left, right, false, condition);
+  }
+
+  /**
    * @return the left tuples for which no right tuple with equal key exists
    * (negative application condition)
    */
   public ExistenceNode antiJoin(Indexer left, Indexer right) {
     return new ExistenceNode(this, left, right, true);
+  }
+
+  /**
+   * Anti join with a condition spanning both sides, e.g. the injectivity
+   * between the objects of a negative application condition and the objects
+   * of the positive pattern.
+   *
+   * @param condition a deterministic predicate only depending on tuple
+   *                  values, evaluated for the joined tuple (left columns
+   *                  followed by the non-key columns of the right side)
+   * @return the left tuples for which no right tuple with equal key exists
+   * for which the condition holds (negative application condition)
+   * @see ExistenceNode
+   */
+  public ExistenceNode antiJoin(Indexer left, Indexer right, Predicate<Tuple> condition) {
+    return new ExistenceNode(this, left, right, true, condition);
   }
 
   /**
