@@ -1,0 +1,52 @@
+From 3f34fe2b71f9e08e74877d49cb8a376eb2957aeb Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Alex=20L=C3=BCpges?= <luepges@se-rwth.de>
+Date: Mon, 23 Nov 2026 20:39:29 +0100
+Subject: [PATCH] Update symbol table constructors
+
+
+diff --git a/monticore-generator/src/main/java/de/monticore/codegen/mc2cd/MC2CD4CodeSymbolTableCompleter.java b/monticore-generator/src/main/java/de/monticore/codegen/mc2cd/MC2CD4CodeSymbolTableCompleter.java
+index 704267049..508962271 100644
+--- a/monticore-generator/src/main/java/de/monticore/codegen/mc2cd/MC2CD4CodeSymbolTableCompleter.java
++++ b/monticore-generator/src/main/java/de/monticore/codegen/mc2cd/MC2CD4CodeSymbolTableCompleter.java
+@@ -20,18 +20,18 @@ public class MC2CD4CodeSymbolTableCompleter {
+     FullSynthesizeFromMCSGT4Grammar synthesize = new FullSynthesizeFromMCSGT4Grammar();
+ 
+     final CDBasisSymbolTableCompleter cDBasisVisitor =
+-        new MC2CDBasisSymbolTableCompleter(synthesize);
++        new MC2CDBasisSymbolTableCompleter();
+     traverser.add4CDBasis(cDBasisVisitor);
+     traverser.add4OOSymbols(cDBasisVisitor);
+     final CDAssociationSymbolTableCompleter cDAssociationVisitor =
+-        new CDAssociationSymbolTableCompleter(synthesize);
++        new CDAssociationSymbolTableCompleter();
+     traverser.add4CDAssociation(cDAssociationVisitor);
+     traverser.setCDAssociationHandler(cDAssociationVisitor);
+     final CDInterfaceAndEnumSymbolTableCompleter cdInterfaceAndEnumVisitor =
+-        new CDInterfaceAndEnumSymbolTableCompleter(synthesize);
++        new CDInterfaceAndEnumSymbolTableCompleter();
+     traverser.add4CDInterfaceAndEnum(cdInterfaceAndEnumVisitor);
+     final CD4CodeBasisSymbolTableCompleter cd4CodeBasisVisitor =
+-        new CD4CodeBasisSymbolTableCompleter(synthesize);
++        new CD4CodeBasisSymbolTableCompleter();
+     traverser.add4CD4CodeBasis(cd4CodeBasisVisitor);
+     traverser.add4CDBasis(cd4CodeBasisVisitor);
+   }
+diff --git a/monticore-generator/src/main/java/de/monticore/codegen/mc2cd/MC2CDBasisSymbolTableCompleter.java b/monticore-generator/src/main/java/de/monticore/codegen/mc2cd/MC2CDBasisSymbolTableCompleter.java
+index 42053298c..f296101f8 100644
+--- a/monticore-generator/src/main/java/de/monticore/codegen/mc2cd/MC2CDBasisSymbolTableCompleter.java
++++ b/monticore-generator/src/main/java/de/monticore/codegen/mc2cd/MC2CDBasisSymbolTableCompleter.java
+@@ -7,11 +7,6 @@ import de.monticore.types.check.ISynthesize;
+ 
+ public class MC2CDBasisSymbolTableCompleter extends CDBasisSymbolTableCompleter {
+ 
+-
+-  public MC2CDBasisSymbolTableCompleter(ISynthesize typeSynthesizer) {
+-    super(typeSynthesizer);
+-  }
+-
+   @Override
+   public void visit(ASTCDCompilationUnit node) {
+     // Do nothing
+-- 
+2.45.1.windows.1
+
