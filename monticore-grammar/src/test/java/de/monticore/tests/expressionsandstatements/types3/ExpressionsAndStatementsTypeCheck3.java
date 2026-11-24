@@ -11,7 +11,7 @@ import de.monticore.expressions.tupleexpressions.types3.TupleExpressionsCTTIVisi
 import de.monticore.expressions.uglyexpressions.types3.UglyExpressionsCTTIVisitor;
 import de.monticore.literals.mccommonliterals.types3.MCCommonLiteralsTypeVisitor;
 import de.monticore.ocl.oclexpressions.types3.OCLExpressionsTypeVisitor;
-import de.monticore.ocl.optionaloperators.types3.OptionalOperatorsTypeVisitor;
+import de.monticore.ocl.optionaloperators.types3.OptionalOperatorsCTTIVisitor;
 import de.monticore.ocl.setexpressions.types3.SetExpressionsCTTIVisitor;
 import de.monticore.regex.regextype.types3.RegExTypeTypeVisitor;
 import de.monticore.siunit.siunitliterals.types3.SIUnitLiteralsTypeVisitor;
@@ -110,9 +110,12 @@ public class ExpressionsAndStatementsTypeCheck3 extends MapBasedTypeCheck3 {
     visOCLExpressions.setType4Ast(type4Ast);
     traverser.add4OCLExpressions(visOCLExpressions);
 
-    OptionalOperatorsTypeVisitor visOptionalOperators = new OptionalOperatorsTypeVisitor();
+    OptionalOperatorsCTTIVisitor visOptionalOperators =
+        new OptionalOperatorsCTTIVisitor();
     visOptionalOperators.setType4Ast(type4Ast);
+    visOptionalOperators.setContext4Ast(ctx4Ast);
     traverser.add4OptionalOperators(visOptionalOperators);
+    traverser.setOptionalOperatorsHandler(visOptionalOperators);
 
     SetExpressionsCTTIVisitor visSetExpressions = new SetExpressionsCTTIVisitor();
     visSetExpressions.setType4Ast(type4Ast);

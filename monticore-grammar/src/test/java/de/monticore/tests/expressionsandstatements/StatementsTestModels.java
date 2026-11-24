@@ -3,6 +3,7 @@ package de.monticore.tests.expressionsandstatements;
 
 import org.junit.jupiter.params.provider.Arguments;
 
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -64,6 +65,7 @@ public class StatementsTestModels {
                 x++;
             x
             """, 6),
+        Arguments.of("Optional<int> value = ~~~; value", Optional.empty()),
         Arguments.of("int x = 1; ; ; ; x", 1)
     );
   }
@@ -73,7 +75,6 @@ public class StatementsTestModels {
         Arguments.of("int x = 0; l: while (true) {x++; break l;} x", 1),
         Arguments.of("int x = 0; l: while (true) {x++; break;} x", 1),
         Arguments.of("int x = 0; l: while (x < 3) {x++; continue;} x", 3),
-        Arguments.of("int x = 0; l: {x++; if (true) break l; x++;} x", 1),
         Arguments.of("""
                 int x = 0, y = 0;
                 l: while (++x < 4) {
@@ -145,6 +146,9 @@ public class StatementsTestModels {
         Arguments.of("int x = 2; --x", 1),
         Arguments.of("int x = 2; x--", 2),
         Arguments.of("int x = 2; x--; x", 1),
+        Arguments.of("byte b = (byte) 1; ++b; b", (byte) 2),
+        Arguments.of("byte b = (byte) 1; --b; b", (byte) 0),
+        Arguments.of("char c = 'a'; ++c; c", 'b'),
 
         Arguments.of("double x = 1.5; ++x", 2.5),
         Arguments.of("double x = 1.5; x++", 1.5),

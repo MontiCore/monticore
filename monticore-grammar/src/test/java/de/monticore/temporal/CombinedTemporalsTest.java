@@ -10,16 +10,22 @@ import de.monticore.temporal.detemporals._ast.ASTDEDateTime;
 import de.monticore.temporal.detemporals._ast.ASTDENumericDate;
 import de.monticore.temporal.detemporals._ast.ASTDETime;
 import de.monticore.temporal.isotemporals._ast.*;
+import de.monticore.temporal.isotemporals.parsing.ISOTemporals2ndParser;
+import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Finding;
+import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import de.monticore.temporal.combinedtemporalstest._parser.CombinedTemporalsTestParser;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @TestWithMCLanguage(CombinedTemporalsTestMill.class)
 public class CombinedTemporalsTest {
@@ -72,9 +78,9 @@ public class CombinedTemporalsTest {
     Assertions.assertInstanceOf(ASTWeekDate.class, ast.getInstant());
     ASTWeekDate realAst = (ASTWeekDate) ast.getInstant();
     
-    Assertions.assertEquals(year, realAst.getYear());
-    Assertions.assertEquals(week, realAst.getWeek());
-    Assertions.assertEquals(dayOfWeek, realAst.getDayOfWeek());
+    Assertions.assertEquals(year, realAst.getWeekBasedYear());
+    Assertions.assertEquals(week, realAst.getWeekOfWeekBasedYear());
+    Assertions.assertEquals(dayOfWeek, realAst.isPresentDayOfWeek() ? realAst.getDayOfWeek() : -1);
   }
   
   @DisplayName("ISO Time Parsing")
@@ -164,8 +170,8 @@ public class CombinedTemporalsTest {
     ASTWeekDate date = (ASTWeekDate) realAst.getDate();
     ASTISOTime time = realAst.getTime();
     
-    Assertions.assertEquals(year, date.getYear());
-    Assertions.assertEquals(week, date.getWeek());
+    Assertions.assertEquals(year, date.getWeekBasedYear());
+    Assertions.assertEquals(week, date.getWeekOfWeekBasedYear());
     Assertions.assertEquals(dayOfWeek, date.getDayOfWeek());
     Assertions.assertEquals(hour, time.getHour());
     Assertions.assertEquals(minute, time.isPresentMinute() ? time.getMinute() : -1);
@@ -217,6 +223,70 @@ public class CombinedTemporalsTest {
     Optional<ASTTemporal> ast = parser.parse_String(input);
     
     MCAssertions.assertHasFindings(Finding::isError);
+  }
+
+  @DisplayName("Full Period Second Parse Step Invalid")
+  @ParameterizedTest(name = "Input: {0}")
+  @MethodSource("de.monticore.temporal.TemporalTestCases#periodsRejectedBySecondStep")
+  void testFullPeriodSecondParseStepInvalid(String input) throws IOException {
+    ASTTemporal ast = parser.parse_String(input)
+        .orElseGet(MCAssertions::failAndPrintFindings);
+    Assertions.assertInstanceOf(ASTFullPeriod.class, ast.getPeriod());
+    
+    Assertions.assertEquals(1, Log.getFindings().size());
+    Finding finding = MCAssertions.assertHasFindingStartingWith(ISOTemporals2ndParser.FULL_PERIOD_ERROR_CODE);
+    Assertions.assertTrue(finding.isError());
+    Assertions.assertTrue(finding.getMsg().contains("Expected an ISO period but got '" + input + "'"),
+        finding.getMsg());
+  }
+  
+  // These inputs pass the first parse step but are rejected by the second one.
+  // The second parser reports exactly one error at the position of the date instead of
+  // throwing an exception. The field values of the AST are meaningless in that case.
+  @DisplayName("Basic Week Date Parse Invalid")
+  @ParameterizedTest(name = "Input: {0}")
+  @ValueSource(strings = {"3W4", "2017W4", "17W481"})
+  void testBasicWeekDateInvalidParse(String input) throws IOException {
+    ASTTemporal ast = parser.parse_String(input)
+        .orElseGet(MCAssertions::failAndPrintFindings);
+    Assertions.assertInstanceOf(ASTBasicWeekDate.class, ast.getInstant());
+
+    Assertions.assertEquals(1, Log.getFindings().size());
+    Finding finding = MCAssertions.assertHasFindingStartingWith(ISOTemporals2ndParser.WEEK_DATE_ERROR_CODE);
+    Assertions.assertTrue(finding.isError());
+    Assertions.assertEquals(1, finding.getSourcePosition().map(SourcePosition::getLine).orElse(0));
+    Assertions.assertEquals(0, finding.getSourcePosition().map(SourcePosition::getColumn).orElse(-1));
+  }
+
+  // Inputs for the other constructs that pass the first parse step but not the second one.
+  @DisplayName("Second Parse Step Invalid")
+  @ParameterizedTest(name = "Input: {0}")
+  @MethodSource("secondParseStepFailures")
+  void testSecondParseStepInvalid(String input, Class<?> astClass, String errorCode,
+      String expected) throws IOException {
+    ASTTemporal ast = parser.parse_String(input)
+        .orElseGet(MCAssertions::failAndPrintFindings);
+    Assertions.assertInstanceOf(astClass, ast.getInstant());
+    
+    Assertions.assertEquals(1, Log.getFindings().size());
+    Finding finding = MCAssertions.assertHasFindingStartingWith(errorCode);
+    Assertions.assertTrue(finding.isError());
+    Assertions.assertTrue(finding.getMsg().contains("Expected " + expected + " but got '" + input + "'"),
+        finding.getMsg());
+    Assertions.assertEquals(1, finding.getSourcePosition().map(SourcePosition::getLine).orElse(0));
+  }
+  
+  static Stream<Arguments> secondParseStepFailures() {
+    return Stream.of(
+        Arguments.of("-0002-04-12", ASTCalendarDate.class,
+            ISOTemporals2ndParser.CALENDAR_DATE_ERROR_CODE, "a calendar date"),
+        Arguments.of("2017-1", ASTCalendarDate.class,
+            ISOTemporals2ndParser.CALENDAR_DATE_ERROR_CODE, "a calendar date"),
+        Arguments.of("12:30:01-0", ASTISOTime.class,
+            ISOTemporals2ndParser.ISO_TIME_ERROR_CODE, "an ISO time"),
+        Arguments.of("17W481T1230", ASTISODateTime.class,
+            ISOTemporals2ndParser.ISO_DATE_TIME_ERROR_CODE, "an ISO date-time")
+    );
   }
   
   @SuppressWarnings("unused")

@@ -8,6 +8,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import ${genHelper.getParserPackage()}.${ast.getName()}ParserInfo;
 import <#if superLangGrammarAst.getPackageList()?has_content>${superLangGrammarAst.getPackageList()?join(".")}.</#if>${superLangGrammarAst.getName()?lower_case}._parser.Empty${superLangGrammarAst.getName()}ParserInfo;
 
+${tc.include("mc.Generated")}
 public class ${ast.getName()}ParserInfoFor${superLangGrammarAst.getName()} extends Empty${superLangGrammarAst.getName()}ParserInfo {
   <#list referencedSymbolToStates as referencedSymbol, states>
   protected boolean _stateReferences${referencedSymbol?cap_first}Symbol(int state){

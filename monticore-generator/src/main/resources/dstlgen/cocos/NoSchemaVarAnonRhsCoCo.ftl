@@ -11,6 +11,7 @@ import de.monticore.tf.grammartransformation.CollectCoCoInformationState;
 /**
 * This CoCo makes sure that no negative elements are nested.
 */
+${tc.include("mc.Generated")}
 public class ${className} implements ${ast.getName()}TRAST${grammarName}TFRuleCoCo {
 
   @Override

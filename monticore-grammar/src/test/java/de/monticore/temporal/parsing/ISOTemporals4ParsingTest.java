@@ -308,8 +308,7 @@ public class ISOTemporals4ParsingTest {
     checkValid(input);
   }
 
-  // A decimal fraction needs digits in front of it. Without them, the empty digit sequence
-  // used to be accepted and its getValue() threw a NumberFormatException.
+  // A decimal fraction needs digits in front of it
   protected static Stream<String> periodsWithoutDigitsBeforeFraction() {
     return Stream.of("P1Y.5M", "P1Y,5M", "PT.5H", "P1D,5H", "PT.5S", "P.5S");
   }

@@ -33,6 +33,7 @@ import java.util.List;
 import ${package}.${ast.getName()?lower_case}tr._visitor.*;
 
 
+${tc.include("mc.Generated")}
 public class ${className} extends Rule2ODVisitor implements ${ast.getName()}TRVisitor2, ${ast.getName()}TRHandler {
 
   private ${ast.getName()}TRTraverser traverser;

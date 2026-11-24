@@ -11,6 +11,7 @@ import freemarker.template.Template;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.List;
+import java.util.Optional;
 
 public class TemplateStringHookPoint extends HookPoint {
   protected Template template;
@@ -20,7 +21,7 @@ public class TemplateStringHookPoint extends HookPoint {
     template = new Template("template", new StringReader(statement),
         new Configuration(GeneratorSetup.FREEMARKER_VERSION));
   }
-  
+
   @Override
   public String processValue(TemplateController controller, ASTNode ast) {
     return controller.runInEngine(Lists.newArrayList(), template, ast).toString();
@@ -36,4 +37,13 @@ public class TemplateStringHookPoint extends HookPoint {
      return controller.runInEngine(args, template, node).toString();
   }
 
+  @Override
+  public Optional<String> getSourceURL() {
+    return Optional.of(template.getName());
+  }
+
+  @Override
+  public boolean isTemplate() {
+    return true;
+  }
 }

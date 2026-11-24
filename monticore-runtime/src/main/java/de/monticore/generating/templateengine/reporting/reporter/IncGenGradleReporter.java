@@ -19,7 +19,7 @@ public class IncGenGradleReporter extends IncGenReporter {
     this(outputDir, modelName, "mc4");
   }
   public IncGenGradleReporter(String outputDir, String modelName, String fileExtension) {
-    this(outputDir, p->p, modelName, "mc4");
+    this(outputDir, p->p, modelName, fileExtension);
   }
   public IncGenGradleReporter(String outputDir, Function<Path, Path> reportPathOutput, String modelName) {
     this(outputDir, reportPathOutput, modelName, "mc4");
