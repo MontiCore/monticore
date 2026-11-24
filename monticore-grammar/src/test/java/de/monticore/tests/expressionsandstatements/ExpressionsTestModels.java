@@ -33,6 +33,7 @@ public class ExpressionsTestModels {
   static protected Stream<Arguments> getArithmeticCases() {
     return Stream.of(
         Arguments.of("42", 42),
+        Arguments.of("010", 10),
         Arguments.of("+42", 42),
         Arguments.of("-(4)", -4),
         Arguments.of("-(-4)", 4),
@@ -150,6 +151,7 @@ public class ExpressionsTestModels {
         Arguments.of("Optional.of(2) ?> 3", false),
         Arguments.of("Optional.of(2) ?<= 1", false),
         Arguments.of("Optional.of(2) ?<= 2", true),
+        Arguments.of("Optional.of(2) ?< (true ? 3 : 1)", true),
         Arguments.of("Optional.of(2) ?<= 3", true),
         Arguments.of("Optional.of(2) ?>= 2", true),
         Arguments.of("Optional.of(2) ?== 2", true),
@@ -202,6 +204,8 @@ public class ExpressionsTestModels {
         ),
         Arguments.of("2 isin [1, 2, 3]", true),
         Arguments.of("2 notin [1, 2, 3]", false),
+        Arguments.of("2 isin (true ? [1, 2] : [3])", true),
+        Arguments.of("2 notin (true ? [1, 2] : [3])", false),
         Arguments.of("setand [true, true, false]", false),
         Arguments.of("setor [false, false, true]", true),
         Arguments.of("1 isin union {{1}, {2}, {3}}", true),

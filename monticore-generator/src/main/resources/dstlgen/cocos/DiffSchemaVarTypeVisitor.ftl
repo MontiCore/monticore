@@ -16,6 +16,7 @@ import de.monticore.tf.tfcommons._ast.ASTITFPart;
 /**
  * This CoCo makes sure that the same schema variable is not used for different elements of a different type.
  */
+${tc.include("mc.Generated")}
 public class ${className} implements ${ast.getName()}TRVisitor2, ${ast.getName()}TRHandler {
 
   List<String> variables = new ArrayList<>();

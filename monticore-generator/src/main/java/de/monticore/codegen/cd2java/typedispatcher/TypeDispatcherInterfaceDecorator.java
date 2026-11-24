@@ -69,7 +69,7 @@ public class TypeDispatcherInterfaceDecorator extends AbstractCreator<ASTCDCompi
     ASTCDInterface interfaceNode = builder.build();
 
     replaceTemplate(ANNOTATIONS, interfaceNode,
-        new StringHookPoint("@Deprecated(forRemoval = true)"));
+                    new StringHookPoint("@Deprecated(forRemoval = true)\n@SuppressWarnings(\"removal\")"));
 
     return interfaceNode;
   }

@@ -11,5 +11,6 @@ on 04.12.2017 12:30:00 Uhr do {
   int Oktober = 9;
   int November = 10;
   int Dezember = 11;
-  print(Uhr + Januar + Februar + April + Mai + Juni + Juli + August + September + Oktober + November + Dezember);
+  int Z = 12;
+  print(Uhr + Januar + Februar + April + Mai + Juni + Juli + August + September + Oktober + November + Dezember + Z);
 }

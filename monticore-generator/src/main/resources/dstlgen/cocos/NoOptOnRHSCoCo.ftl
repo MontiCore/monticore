@@ -10,6 +10,7 @@ import ${package}.${grammarNameLower}tr._visitor.${ast.getName()}TRVisitor2;
 /**
  * This CoCo makes sure no optional nodes appear on the right-hand side of replacements.
  */
+${tc.include("mc.Generated")}
 public class ${className}
 <#list productions>
     implements //${ast.getName()}TRVisitor2

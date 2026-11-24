@@ -11,6 +11,7 @@ import de.se_rwth.commons.logging.Log;
 /**
 * This CoCo makes sure that no replacement is empty.
 */
+${tc.include("mc.Generated")}
 public class ${classname} implements ${ast.getName()}TRAST${prod.getName()}_PatCoCo {
 
   @Override
