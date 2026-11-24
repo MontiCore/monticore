@@ -19,7 +19,7 @@ import java.util.stream.Stream;
 /**
  * Round-trip tests: parse, print, and parse again. The second AST must equal the first one,
  * including the values set by the second parse step. German literals are compared as ASTs
- * only, since e.g. the abbreviation "Apr." and "April" share one constant.
+ * only.
  */
 @TestWithMCLanguage(CombinedTemporalsTestMill.class)
 public class TemporalPrettyPrinterTest {
