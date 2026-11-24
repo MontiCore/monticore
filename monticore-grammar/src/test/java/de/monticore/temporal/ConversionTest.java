@@ -157,7 +157,7 @@ public class ConversionTest {
 
   // Expected dates are taken from ISO 8601-1 (1985-W15-5, Amd. 1 for 2019-W01-1)
   // or cover years whose January 1 is a Friday, Saturday or Sunday: only then January 1 lies in
-  // the last week of the previous year, which the former computation got wrong
+  // the last week of the previous week-based year, so week 1 starts after it
   @DisplayName("Week Date Known Values")
   @ParameterizedTest(name = "Input: {0}")
   @CsvSource({
