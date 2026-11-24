@@ -1,27 +1,28 @@
 # MontiCore - Temporal Literals 
 
-The MontiCore Temporal languages provide reusable grammar components for
-representing temporal values such as dates, times, combined date-times, and
-periods. They define a common abstraction for temporal concepts and provide
-concrete syntaxes for several standards and also regional conventions 
-(in particular German).
+The MontiCore Temporal languages provide reusable grammar components
+for representing temporal values
+such as dates, times, combined date-times, and periods.
+They define a common abstraction for temporal concepts
+and provide concrete syntaxes for several standards
+and also regional conventions (in particular German).
 
 The temporal language family is organized around a small common basis:
 
-- `TemporalBasis` defines abstract interfaces such as `Date`, `Time`,
-  `DateTime`, and `Period`.
-- `ISOTemporals` realizes these interfaces using formats based on
-  ISO 8601-1:2019 and its Amendment 1:2022.
-- `DETemporals` realizes them using date and time formats common in
-  German-speaking regions.
-- `EscapedTemporalLiterals` allows temporal values to be embedded as literals by
-  using an explicit escape syntax.
-- `ISOTemporals4Parsing` is an internal helper grammar used to extract ISO
-  temporal components during parsing.
+- `TemporalBasis` defines abstract interfaces
+  such as `Date`, `Time`, `DateTime`, and `Period`.
+- `ISOTemporals` realizes these interfaces
+  using formats based on ISO 8601-1:2019 and its Amendment 1:2022.
+- `DETemporals` realizes them
+  using date and time formats common in German-speaking regions.
+- `EscapedTemporalLiterals` allows temporal values to be embedded as literals
+  by using an explicit escape syntax.
+- `ISOTemporals4Parsing` is an internal helper grammar
+  used to extract ISO temporal components during parsing.
 
 Temporal values are useful whenever a MontiCore language needs to express
-scheduling data, timestamps, durations, validity ranges, historical dates, or
-other time-related information in a structured way.
+scheduling data, timestamps, durations, validity ranges, historical dates,
+or other time-related information in a structured way.
 
 ---
 
@@ -29,13 +30,15 @@ other time-related information in a structured way.
 
 ### Purpose
 
-`TemporalBasis` defines the core interfaces for temporal values. It does not
-prescribe a concrete date or time syntax. Instead, it provides a common type
-hierarchy that other temporal grammars can implement.
+`TemporalBasis` defines the core interfaces for temporal values.
+It does not prescribe a concrete date or time syntax.
+Instead, it provides a common type hierarchy
+that other temporal grammars can implement.
 
-This makes it possible to define language components that work with temporal
-concepts independently of whether the concrete syntax follows ISO 8601, German
-notation, or another future temporal notation.
+This makes it possible to define language components
+that work with temporal concepts
+independently of whether the concrete syntax follows ISO 8601, German notation,
+or another future temporal notation.
 
 ### Hierarchical Connection
 
@@ -66,11 +69,12 @@ TemporalBasis (grammar)
 
 ### Purpose
 
-`EscapedTemporalLiterals` makes temporal values usable as ordinary MontiCore
-literals. It introduces an escape syntax that wraps any temporal `Instant` or
-`Period`.
+`EscapedTemporalLiterals` makes temporal values usable
+as ordinary MontiCore literals.
+It introduces an escape syntax that wraps any temporal `Instant` or `Period`.
 
-The escape form is useful because many temporal syntaxes may otherwise conflict
+The escape form is useful
+because many temporal syntaxes may otherwise conflict
 with existing literals, identifiers, or operators of a host language.
 
 The basic syntax is to enclose a temporal value like:
@@ -91,8 +95,8 @@ d"P2Y5M3D"
 
 `EscapedTemporalLiterals` extends `TemporalBasis`
 
-It uses the interfaces from `TemporalBasis` and introduces one concrete literal
-production:
+It uses the interfaces from `TemporalBasis`
+and introduces one concrete literal production:
 
 ```text
 TemporalBasis (grammar)
@@ -100,14 +104,16 @@ TemporalBasis (grammar)
     └── EscapedTemporalLiteral (nt) implements Literal
 ```
 
-Because `EscapedTemporalLiteral` implements `Literal`, it can be used in
-MontiCore expression languages that support literal expressions.
+Because `EscapedTemporalLiteral` implements `Literal`,
+it can be used in MontiCore expression languages
+that support literal expressions.
 
-For typed MontiCore languages however, there is also a type 
-definition necessary, which need not be provided by an explicit 
-grammar, but can be imported using standard symbol mechanisms.  E.g. 
-`Date`, `Time`, `Period` can be used, but more fine-grained 
-possibilities would also be allowed. 
+For typed MontiCore languages however,
+there is also a type definition necessary,
+which need not be provided by an explicit grammar,
+but can be imported using standard symbol mechanisms.
+E.g., `Date`, `Time`, `Period` can be used,
+but more fine-grained possibilities would also be allowed.
 
 ### Central Nonterminal
 
@@ -117,8 +123,8 @@ possibilities would also be allowed.
 
 ### Concrete Syntax Examples
 
-The escaped form can wrap temporal values provided by concrete temporal
-grammars:
+The escaped form can wrap temporal values
+provided by concrete temporal grammars:
 
 ```text
 d"2015-04-01"
@@ -135,9 +141,10 @@ d"1. April 2015"
 d"12:30 Uhr"
 ```
 
-Maybe some variants of the literals need explanation: `d"2015-W14-3"` 
-describes the 3rd day in the 14th week of 2015, `d"PT6.5H"` describes 
-6.5 hours and `d"P2W"` describes 2 weeks. 
+Maybe some variants of the literals need explanation:
+`d"2015-W14-3"` describes the 3rd day in the 14th week of 2015,
+`d"PT6.5H"` describes 6.5 hours,
+and `d"P2W"` describes 2 weeks.
 
 --- 
 
@@ -145,11 +152,13 @@ describes the 3rd day in the 14th week of 2015, `d"PT6.5H"` describes
 
 ### Purpose
 
-`ISOTemporals` realizes the temporal interfaces from `TemporalBasis` using date
-and time formats based on ISO 8601-1:2019 and its Amendment 1:2022.
+`ISOTemporals` realizes the temporal interfaces from `TemporalBasis`
+using date and time formats
+based on ISO 8601-1:2019 and its Amendment 1:2022.
 
-ISO 8601 is an international standard for the unambiguous representation of
-temporal data. The grammar supports the main ISO-style representations for:
+ISO 8601 is an international standard
+for the unambiguous representation of temporal data.
+The grammar supports the main ISO-style representations for:
 
 - combined date-time values,
 - calendar dates,
@@ -161,11 +170,14 @@ temporal data. The grammar supports the main ISO-style representations for:
 The grammar supports both:
 
 - basic notation, where separators are omitted, for example `20150401`;
-- extended notation, where separators improve readability, for example
-  `2015-04-01`.
+- extended notation, where separators improve readability,
+  for example `2015-04-01`.
 
-It also supports features such as reduced precision for certain date formats,
-expanded signed years, decimal fractions for times and periods, and UTC offsets.
+It also supports features such as
+reduced precision for certain date formats,
+expanded signed years,
+decimal fractions for times and periods,
+and UTC offsets.
 
 ### Hierarchical Connection
 
@@ -191,9 +203,10 @@ TemporalBasis (grammar)
         └── WeekPeriod (nt)
 ```
 
-Some ISO temporal productions also implement `Literal`, allowing them to be used
-directly where literals are accepted. Other temporal values can be used as
-literals through `EscapedTemporalLiterals`.
+Some ISO temporal productions also implement `Literal`,
+allowing them to be used directly where literals are accepted.
+Other temporal values can be used as literals
+through `EscapedTemporalLiterals`.
 
 ### Central Nonterminals
 
@@ -233,8 +246,8 @@ Examples:
 | `+120004-03-10` | March 10 in the expanded year `120004`.              |
 | `-100005-02-20` | February 20 in the expanded negative year `-100005`. |
 
-ISO 8601-1 requires the sign in expanded representations, even for positive
-years.
+ISO 8601-1 requires the sign in expanded representations,
+even for positive years.
 
 ---
 
@@ -250,15 +263,15 @@ Examples:
 | `2015091`     | Same date in basic notation.            |
 | `+120004-091` | The 91st day of expanded year `120004`. |
 
-Ordinal dates do not support reduced precision, since ISO 8601-1 defines only
-complete and expanded representations for them.
+Ordinal dates do not support reduced precision,
+since ISO 8601-1 defines only complete and expanded representations for them.
 
 ---
 
 ### ISO Week Dates
 
-A week date represents a date using an ISO week year, a week number, and
-optionally a weekday.
+A week date represents a date
+using an ISO week year, a week number, and optionally a weekday.
 
 Examples:
 
@@ -308,9 +321,10 @@ In basic notation, the leading `T` is used to disambiguate times from dates.
 
 ### ISO Date-Time Values
 
-An ISO date-time combines an ISO date with an ISO time. According to
-ISO 8601-1, the date part must be complete, while the time may have reduced
-precision.
+An ISO date-time combines an ISO date with an ISO time.
+According to ISO 8601-1,
+the date part must be complete,
+while the time may have reduced precision.
 
 Examples:
 
@@ -328,8 +342,14 @@ The date and time are separated by the literal designator `T`.
 
 ### ISO Periods
 
-An ISO period represents a duration or length of time. ISO 8601-1:2019 calls
-these values *durations*; the grammar keeps the name `Period`.
+An ISO period represents a length of time
+that may include calendar units such as years and months.
+ISO 8601-1:2019 calls these values *durations*
+and `P` the *duration designator*.
+MontiCore calls them `Period`s instead,
+since it uses *duration* for context-independent lengths of time
+given in SI units, such as `90s` or `2.5min`
+(see the comparison with SI units below).
 
 The grammar supports two main period forms:
 
@@ -347,14 +367,18 @@ Examples:
 | `P1Y2M3DT4H5M6.25S` | Same, with fractional seconds.                                         |
 | `P2W`               | Period of 2 weeks.                                                     |
 
-The duration designator `P` starts the value. If time components are used, they
-are introduced by `T`.
+The designator `P` starts the value.
+If time components are used, they are introduced by `T`.
 
 ISO periods are different from SI unit literals such as `5s`, `3h`, or `2 km/s`.
-SI Units describe physical units and support unit composition, prefixes and
-compatibility checks. ISO periods instead describe structured temporal
-durations, including calendar-dependent units such as years and months whose
-exact length depends on context.
+SI units describe physical units
+and support unit composition, prefixes, and compatibility checks;
+a duration in seconds has a fixed length.
+ISO periods instead describe structured lengths of time,
+including calendar-dependent units such as years and months
+whose exact length depends on context:
+`P1M` added to January 31 is not the same number of seconds
+as `P1M` added to April 1.
 
 ---
 
@@ -362,21 +386,22 @@ exact length depends on context.
 
 ### Purpose
 
-`ISOTemporals4Parsing` is an internal helper grammar for ISO temporal values. It
-is used during a second parsing round to extract structured component data from
-ISO temporal representations.
+`ISOTemporals4Parsing` is an internal helper grammar for ISO temporal values.
+It is used during a second parsing round
+to extract structured component data from ISO temporal representations.
 
-It is **not intended for direct use** in ordinary MontiCore languages. The
-grammar explicitly warns that it is incompatible with `MCBasics`.
+It is **not intended for direct use** in ordinary MontiCore languages.
+The grammar explicitly warns that it is incompatible with `MCBasics`.
 
-Its main purpose is to parse the inner structure of ISO date, time, date-time,
-and period values after they have been recognized by the main ISO temporal
-grammar.
+Its main purpose is to parse the inner structure
+of ISO date, time, date-time, and period values
+after they have been recognized by the main ISO temporal grammar.
 
 ### Hierarchical Connection
 
-Unlike the other temporal grammars, `ISOTemporals4Parsing` does not extend
-`TemporalBasis`. It is a standalone parsing grammar in the package:
+Unlike the other temporal grammars,
+`ISOTemporals4Parsing` does not extend `TemporalBasis`.
+It is a standalone parsing grammar in the package:
 
 ```text
 de.monticore.temporal.parsing
@@ -411,11 +436,12 @@ ISOTemporals
 
 ### Design Notes
 
-The grammar uses individual `Digit` tokens and fixed-length digit nonterminals
-such as `Digit2`, `Digit3`, and `Digit4`.
+The grammar uses individual `Digit` tokens
+and fixed-length digit nonterminals such as `Digit2`, `Digit3`, and `Digit4`.
 
-This is important because ISO basic formats often rely on the exact number of
-digits to distinguish between otherwise similar forms.
+This is important because ISO basic formats
+often rely on the exact number of digits
+to distinguish between otherwise similar forms.
 
 For example:
 
@@ -425,8 +451,8 @@ For example:
 20150401
 ```
 
-These values differ primarily by length and therefore require careful digit
-counting.
+These values differ primarily by length
+and therefore require careful digit counting.
 
 ### Concrete Syntax Examples
 
@@ -448,8 +474,9 @@ PT6H30M
 P2W
 ```
 
-Although these examples match common ISO temporal syntax, users should rely on
-`ISOTemporals` rather than using `ISOTemporals4Parsing` directly.
+Although these examples match common ISO temporal syntax,
+users should rely on `ISOTemporals`
+rather than using `ISOTemporals4Parsing` directly.
 
 ---
 
@@ -457,8 +484,8 @@ Although these examples match common ISO temporal syntax, users should rely on
 
 ### Purpose
 
-`DETemporals` realizes the temporal interfaces from `TemporalBasis` using date
-and time formats common in German-speaking regions.
+`DETemporals` realizes the temporal interfaces from `TemporalBasis`
+using date and time formats common in German-speaking regions.
 
 It supports:
 
@@ -469,10 +496,11 @@ It supports:
 
 Unlike `ISOTemporals`, this grammar does not define period formats.
 
-DIN 5008:2020 prescribes the ISO order `YYYY-MM-DD` for numeric dates, which
-is covered by `ISOTemporals`. `DETemporals` covers the order `DD.MM.YYYY`,
-which DIN 5008 mentions as common for domestic recipients, and the
-alphanumeric dates of DIN 5008.
+DIN 5008:2020 prescribes the ISO order `YYYY-MM-DD` for numeric dates,
+which is covered by `ISOTemporals`.
+`DETemporals` covers the order `DD.MM.YYYY`,
+which DIN 5008 mentions as common for domestic recipients,
+and the alphanumeric dates of DIN 5008.
 
 ### Hierarchical Connection
 
@@ -517,8 +545,9 @@ Examples:
 | `04.2015`    | April 2015.    |
 | `2015`       | Year 2015.     |
 
-DIN 5008 only describes the complete form with day, month, and four-digit
-year. The reduced forms `04.2015` and `2015` are an extension of this grammar.
+DIN 5008 only describes the complete form
+with day, month, and four-digit year.
+The reduced forms `04.2015` and `2015` are an extension of this grammar.
 
 ---
 
@@ -531,6 +560,7 @@ Examples:
 ```text
 1. April 2015
 1. Apr. 2015
+01. Apr. 2015
 April 2015
 März 2026
 1. Mär. 2026
@@ -553,7 +583,8 @@ Supported month forms include:
 | November  | `November`  | `Nov.`       |
 | December  | `Dezember`  | `Dez.`       |
 
-As in DIN 5008, a one-digit day is written without a leading zero.
+DIN 5008 writes a one-digit day without a leading zero (`1. April 2015`).
+The grammar also accepts the leading zero (`01. Apr. 2015`).
 
 ---
 
@@ -569,9 +600,9 @@ Examples:
 | `12:30 Uhr`    | 12:30.      |
 | `12:30:15 Uhr` | 12:30:15.   |
 
-Whitespace is typically ignored between tokens in MontiCore grammars, so compact
-forms such as `12Uhr` may also be accepted depending on the surrounding language
-configuration.
+Whitespace is typically ignored between tokens in MontiCore grammars,
+so compact forms such as `12Uhr` may also be accepted,
+depending on the surrounding language configuration.
 
 ---
 
@@ -587,15 +618,15 @@ Examples:
 | `1. April 2015 12 Uhr`      | April 1, 2015 at 12 o’clock. |
 | `1. Apr. 2015 12:30:15 Uhr` | April 1, 2015 at 12:30:15.   |
 
-As in ISO 8601-1, the date part should be complete; a time attached to a
-month or year does not denote a single instant.
+As in ISO 8601-1, the date part should be complete;
+a time attached to a month or year does not denote a single instant.
 
 ---
 
 ## Summary
 
-The MontiCore Temporal language family separates temporal concepts from concrete
-notation:
+The MontiCore Temporal language family
+separates temporal concepts from concrete notation:
 
 | Grammar                   | Role                                                              |
 |---------------------------|-------------------------------------------------------------------|
@@ -605,9 +636,9 @@ notation:
 | `ISOTemporals4Parsing`    | Internal helper grammar for extracting ISO temporal components.   |
 | `DETemporals`             | Provides German-style date, time, and date-time syntax.           |
 
-Together, these grammars allow MontiCore language developers to reuse
-standardized temporal concepts while choosing a concrete syntax appropriate for
-their domain.
+Together, these grammars allow MontiCore language developers
+to reuse standardized temporal concepts
+while choosing a concrete syntax appropriate for their domain.
 
 ---
 
