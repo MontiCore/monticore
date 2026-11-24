@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Collections;
 import java.util.List;
 
+import static de.monticore.runtime.junit.MCAssertions.assertNoFindings;
 import static de.monticore.types.check.SymTypeExpressionFactory.*;
 import static de.monticore.types3.util.DefsTypesForTests.*;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -483,6 +484,124 @@ public class SymTypeCompatibilityTest extends AbstractMCTest {
     // cannot combine SIUnits with NumericWithSIUnits
     assertFalse(SymTypeRelations.isCompatible(_s_SISymType, _s_int_SISymType));
     assertFalse(SymTypeRelations.isCompatible(_s_int_SISymType, _s_SISymType));
+  }
+
+  @Test
+  public void isCompatibleListsOfSIUnits() {
+    SymTypeOfSIUnit km = createSIUnit(
+        List.of(createSIUnitBasic("m", "k", 1)), List.of());
+    SymTypeExpression m_double = createNumericWithSIUnit(_m_SISymType, _doubleSymType);
+    SymTypeExpression km_double = createNumericWithSIUnit(km, _doubleSymType);
+    SymTypeExpression omega_int = createNumericWithSIUnit(
+        List.of(createSIUnitBasic("Ω")), List.of(), _intSymType);
+    SymTypeOfGenerics mList =
+        createGenerics(_unboxedListSymType.getTypeInfo(), m_double);
+    SymTypeOfGenerics mList2 =
+        createGenerics(_unboxedListSymType.getTypeInfo(), m_double.deepClone());
+    SymTypeOfGenerics kmList =
+        createGenerics(_unboxedListSymType.getTypeInfo(), km_double);
+    SymTypeOfGenerics ohmList =
+        createGenerics(_unboxedListSymType.getTypeInfo(), _Ohm_int_SISymType);
+    SymTypeOfGenerics omegaList =
+        createGenerics(_unboxedListSymType.getTypeInfo(), omega_int);
+    SymTypeOfGenerics doubleList =
+        createGenerics(_unboxedListSymType.getTypeInfo(), _doubleSymType);
+
+    // the same unit
+    assertTrue(SymTypeRelations.isCompatible(mList, mList2));
+    assertTrue(SymTypeRelations.isSubTypeOf(mList, mList2));
+    // the elements would have to be converted
+    assertFalse(SymTypeRelations.isCompatible(mList, kmList));
+    assertFalse(SymTypeRelations.isCompatible(kmList, mList));
+    assertFalse(SymTypeRelations.isSubTypeOf(kmList, mList));
+    assertFalse(SymTypeRelations.isCompatible(doubleList, mList));
+    assertFalse(SymTypeRelations.isCompatible(mList, doubleList));
+    // the same values
+    assertTrue(SymTypeRelations.isCompatible(ohmList, omegaList));
+    assertTrue(SymTypeRelations.isCompatible(omegaList, ohmList));
+    assertTrue(SymTypeRelations.isSubTypeOf(ohmList, omegaList));
+    assertNoFindings();
+  }
+
+  @Test
+  public void isCompatibleSIUnitsOfSameDimension() {
+    SymTypeOfSIUnit km = createSIUnit(
+        List.of(createSIUnitBasic("m", "k", 1)), List.of());
+    SymTypeOfSIUnit kgMPerS2 = createSIUnit(
+        List.of(_kg_SIUnitBasic, _m_SIUnitBasic),
+        List.of(createSIUnitBasic("s", 2))
+    );
+    SymTypeOfNumericWithSIUnit m_int = createNumericWithSIUnit(_m_SISymType, _intSymType);
+    SymTypeOfNumericWithSIUnit km_int = createNumericWithSIUnit(km, _intSymType);
+    SymTypeOfNumericWithSIUnit km_double = createNumericWithSIUnit(km, _doubleSymType);
+    SymTypeOfNumericWithSIUnit mPerKm_int = createNumericWithSIUnit(
+        List.of(_m_SIUnitBasic), List.of(createSIUnitBasic("m", "k", 1)),
+        _intSymType
+    );
+
+    // compatible by assignment (with a conversion of the value)
+    assertTrue(SymTypeRelations.isCompatible(_m_SISymType, km));
+    assertTrue(SymTypeRelations.isCompatible(km, _m_SISymType));
+    assertTrue(SymTypeRelations.isCompatible(_N_SISymType, kgMPerS2));
+    assertTrue(SymTypeRelations.isCompatible(kgMPerS2, _N_SISymType));
+    assertTrue(SymTypeRelations.isCompatible(m_int, km_int));
+    assertTrue(SymTypeRelations.isCompatible(km_int, m_int));
+    assertTrue(SymTypeRelations.isCompatible(km_double, m_int));
+    assertFalse(SymTypeRelations.isCompatible(m_int, km_double));
+    assertFalse(SymTypeRelations.isCompatible(m_int, _s_int_SISymType));
+    assertFalse(SymTypeRelations.isCompatible(m_int, km));
+    // dimension one
+    assertTrue(SymTypeRelations.isCompatible(_intSymType, mPerKm_int));
+    assertTrue(SymTypeRelations.isCompatible(mPerKm_int, _intSymType));
+    // unions
+    assertTrue(SymTypeRelations.isCompatible(
+        createUnion(m_int, _s_int_SISymType), km_int));
+    assertTrue(SymTypeRelations.isCompatible(
+        createUnion(m_int, _personSymType), km_int));
+    assertFalse(SymTypeRelations.isCompatible(
+        createUnion(_A_int_SISymType, _s_int_SISymType), km_int));
+
+    // but not subtypes, as the values differ
+    assertFalse(SymTypeRelations.isSubTypeOf(km, _m_SISymType));
+    assertFalse(SymTypeRelations.isSubTypeOf(_m_SISymType, km));
+    assertFalse(SymTypeRelations.isSubTypeOf(km_int, m_int));
+    assertFalse(SymTypeRelations.isSubTypeOf(mPerKm_int, _intSymType));
+    assertFalse(SymTypeRelations.isSubTypeOf(_intSymType, mPerKm_int));
+
+    // subtypes, if the values are the same
+    assertTrue(SymTypeRelations.isSubTypeOf(kgMPerS2, _N_SISymType));
+    assertTrue(SymTypeRelations.isSubTypeOf(_N_SISymType, kgMPerS2));
+    assertTrue(SymTypeRelations.isSubTypeOf(
+        _Ohm_int_SISymType,
+        createNumericWithSIUnit(
+            List.of(createSIUnitBasic("Ω")), List.of(), _intSymType)
+    ));
+
+    // no conversion, thus, not compatible
+    assertFalse(SymTypeRelations.isCompatible(_dB_int_SISymType, _B_int_SISymType));
+    assertFalse(SymTypeRelations.isCompatible(_B_int_SISymType, _dB_int_SISymType));
+    assertFalse(SymTypeRelations.isCompatible(_intSymType, _dB_int_SISymType));
+    assertTrue(SymTypeRelations.isCompatible(_dB_int_SISymType, _dB_int_SISymType));
+    assertNoFindings();
+  }
+
+  @Test
+  public void isSubTypeSIUnits() {
+    SymTypeOfSIUnit mTimesS = createSIUnit(
+        List.of(_m_SIUnitBasic, _s_SIUnitBasic), List.of());
+    SymTypeOfSIUnit sTimesM = createSIUnit(
+        List.of(_s_SIUnitBasic, _m_SIUnitBasic), List.of());
+    assertTrue(SymTypeRelations.isSubTypeOf(_m_SISymType, _m_SISymType));
+    assertTrue(SymTypeRelations.isSubTypeOf(mTimesS, sTimesM));
+    assertTrue(SymTypeRelations.isSubTypeOf(
+        createNumericWithSIUnit(_m_SISymType, _intSymType),
+        createNumericWithSIUnit(_m_SISymType, _doubleSymType)
+    ));
+    assertFalse(SymTypeRelations.isSubTypeOf(
+        createNumericWithSIUnit(_m_SISymType, _doubleSymType),
+        createNumericWithSIUnit(_m_SISymType, _intSymType)
+    ));
+    assertNoFindings();
   }
 
   @Test

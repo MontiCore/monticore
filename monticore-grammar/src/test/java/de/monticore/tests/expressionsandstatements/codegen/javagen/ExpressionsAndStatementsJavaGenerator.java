@@ -18,6 +18,8 @@ import de.monticore.ocl.oclexpressions.codegen.javagen.OCLExpressionsJavaGenVisi
 import de.monticore.ocl.optionaloperators.codegen.javagen.OptionalOperatorsJavaGenVisitor;
 import de.monticore.ocl.setexpressions.codegen.javagen.SetExpressionsJavaGenVisitor;
 import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.siunit.siunitliterals.codegen.javagen.SIUnitLiteralsJavaGenVisitor;
+import de.monticore.siunit.siunits.codegen.javagen.SIUnitsJavaGenVisitor;
 import de.monticore.statements.mcassertstatements.codegen.javagen.MCAssertStatementsJavaGenVisitor;
 import de.monticore.statements.mccommonstatements.codegen.javagen.MCCommonStatementsJavaGenVisitor;
 import de.monticore.statements.mclowlevelstatements.codegen.javagen.MCLowLevelStatementsJavaGenVisitor;
@@ -56,6 +58,12 @@ public class ExpressionsAndStatementsJavaGenerator
     MCCommonLiteralsJavaGenVisitor visMCCommonLiterals =
         new MCCommonLiteralsJavaGenVisitor(state);
     traverser.setMCCommonLiteralsHandler(visMCCommonLiterals);
+
+    SIUnitLiteralsJavaGenVisitor visSIUnitLiterals =
+        new SIUnitLiteralsJavaGenVisitor(state);
+    traverser.setSIUnitLiteralsHandler(visSIUnitLiterals);
+
+    traverser.setSIUnitsHandler(new SIUnitsJavaGenVisitor());
 
     // Expressions
 

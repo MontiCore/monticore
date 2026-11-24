@@ -20,6 +20,7 @@ import de.se_rwth.commons.logging.Log;
 import java.util.Optional;
 
 import static de.monticore.codegen.CodeGenSymTypeExpressionConverter.printConverted;
+import static de.monticore.codegen.javagen.JavaGenSymTypeRelations.requiresConversion;
 import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getBoxedJavaTypePrint;
 import static de.monticore.codegen.javagen.SymTypeExpression2JavaConverter.getJavaTypePrint;
 import static de.monticore.types3.SymTypeRelations.normalize;
@@ -386,7 +387,16 @@ public class SetExpressionsJavaGenVisitor
       getPrinter().print(" ");
       getPrinter().print(setVarDecl.getName());
       getPrinter().print(" = ");
-      setVarDecl.getExpression().accept(getTraverser());
+      // the value may have to be converted, e.g., [km]<double> x = 1500m
+      SymTypeExpression exprType =
+          normalize(TypeCheck3.typeOf(setVarDecl.getExpression()));
+      printConverted(getPrinter(),
+          setVarDecl.isPresentMCType() ?
+              normalize(TypeCheck3.symTypeFromAST(setVarDecl.getMCType())) :
+              exprType,
+          exprType,
+          p -> setVarDecl.getExpression().accept(getTraverser())
+      );
       state.endStatement();
     }
     else {
@@ -399,6 +409,29 @@ public class SetExpressionsJavaGenVisitor
 
   @Override
   public void traverse(ASTGeneratorDeclaration node) {
+    // the declared type may differ from the type of the elements,
+    // e.g., [x | [m]<double> x in [1km]]
+    Optional<SymTypeExpression> elementType = getInnerType(node.getExpression());
+    if (node.isPresentMCType() && elementType.isPresent()) {
+      SymTypeExpression declaredType =
+          normalize(TypeCheck3.symTypeFromAST(node.getMCType()));
+      if (requiresConversion(declaredType, elementType.get())) {
+        String elementVarName = getVarName(node);
+        getPrinter().print("for (");
+        getPrinter().print(getBoxedJavaTypePrint(elementType.get()));
+        getPrinter().print(" " + elementVarName + " : ");
+        node.getExpression().accept(getTraverser());
+        getPrinter().println(") {");
+        getPrinter().indent();
+        printDerivedType(declaredType);
+        getPrinter().print(" " + node.getName() + " = ");
+        printConverted(getPrinter(), declaredType, elementType.get(),
+            p -> p.print(elementVarName)
+        );
+        state.endStatement();
+        return;
+      }
+    }
     getPrinter().print("for (");
     if (node.isPresentMCType()) {
       printDerivedType(TypeCheck3.symTypeFromAST(node.getMCType()));
