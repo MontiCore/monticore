@@ -114,10 +114,12 @@ public class ISOTemporals2ndParser implements ISOTemporalsVisitor2 {
     if (parsed.isPresentDateExtension()) {
       dateExtension = parsed.getDateExtension().getRawString();
     }
-    node.setYear(Integer.parseInt(dateExtension + parsed.getYear().getSource()));
-    node.setWeek(parsed.getWeek().getValue());
+    node.setWeekBasedYear(Integer.parseInt(dateExtension + parsed.getYear().getSource()));
+    node.setWeekOfWeekBasedYear(parsed.getWeek().getValue());
     if (parsed.isPresentDayOfWeek()) {
       node.setDayOfWeekInternal(parsed.getDayOfWeek().getValue());
+    } else {
+      node.setDayOfWeekInternalAbsent();
     }
   }
   

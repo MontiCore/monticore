@@ -260,6 +260,18 @@ The weekday values follow the ISO convention:
 | `6`   | Saturday  |
 | `7`   | Sunday    |
 
+The ISO week year differs from the calendar year around the turn of the year:
+
+| Syntax       | Date       | ISO week year | ISO week | Calendar year |
+|--------------|------------|---------------|----------|---------------|
+| `2019-W01-1` | 2018-12-31 | 2019          | 1        | 2018          |
+| `2020-W53-5` | 2021-01-01 | 2020          | 53       | 2021          |
+
+As a `TemporalAccessor`, a week date provides the ISO week year and the ISO week
+as [`IsoFields`](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/temporal/IsoFields.html).
+`ChronoField.YEAR` is the calendar year of the date
+and requires a weekday, like `ChronoField.DAY_OF_WEEK`.
+
 ---
 
 ### ISO Times
