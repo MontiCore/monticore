@@ -10,6 +10,7 @@ import de.monticore.interpreter.calculations.MICalculationInt;
 import de.monticore.interpreter.calculations.MICalculationValue;
 import de.monticore.interpreter.util.InterpreterDataForBasicSymbols;
 import de.monticore.interpreter.util.InterpreterVisitorOperatorCalculator;
+import de.monticore.ocl.optionaloperators._ast.ASTOptionalEmptyExpression;
 import de.monticore.ocl.optionaloperators._ast.ASTOptionalEqualsExpression;
 import de.monticore.ocl.optionaloperators._ast.ASTOptionalExpressionPrefix;
 import de.monticore.ocl.optionaloperators._ast.ASTOptionalGreaterEqualExpression;
@@ -48,6 +49,13 @@ public class OptionalOperatorsInterpreter
 
   public OptionalOperatorsInterpreter(InterpreterDataForBasicSymbols iData) {
     this.iData = Preconditions.checkNotNull(iData);
+  }
+
+  @Override
+  public void traverse(ASTOptionalEmptyExpression node) {
+    iData.putCalculation((MICalculationValue) frame ->
+        MCValueFactory.createMIValueOfNativeObject(Optional.empty())
+    );
   }
 
   @Override
@@ -289,5 +297,4 @@ public class OptionalOperatorsInterpreter
   }
 
 }
-
 

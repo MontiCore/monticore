@@ -8,6 +8,7 @@ import de.se_rwth.commons.logging.Log;
 /**
  * This CoCo makes sure that no negative element is created or added.
  */
+${tc.include("mc.Generated")}
 public class ${classname} implements ${ast.getName()}TRAST${prod.getName()}_RepCoCo {
 
   @Override

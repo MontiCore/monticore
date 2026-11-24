@@ -7,6 +7,7 @@ import ${package}.${grammarNameLower}tr._ast.AST${grammarName}TFRule;
 /**
 * This CoCo makes sure that the same schema variable is not used for different elements of a different type.
 */
+${tc.include("mc.Generated")}
 public class DiffSchemaVarTypeCoCo implements ${grammarName}TRAST${grammarName}TFRuleCoCo {
 
     @Override

@@ -207,8 +207,22 @@ public class MontiCoreScriptTest {
     try {
       List<String> lines = Files.readAllLines(Paths.get(outputPath.getAbsolutePath() + "/de/monticore/statechart/statechart/_ast/ASTState.java"));
       assertFalse(lines.stream().filter(l -> "// Test:Replace Template".equals(l)).findAny().isPresent());
+      List<String> generatedTypes = Lists.newArrayList(
+          "/de/monticore/statechart/statechart/_ast/ASTState.java",
+          "/de/monticore/statechart/statechart/_ast/ASTStatechartNode.java",
+          "/de/monticore/statechart/statechart/_ast/StatechartLiterals.java",
+          "/de/monticore/statechart/statechart/StatechartMill.java",
+          "/de/monticore/statechart/statechart/_parser/StatechartParserInfo.java",
+          "/de/monticore/statechart/statechart/_parser/EmptyStatechartParserInfo.java",
+          "/de/monticore/statechart/statechart/_parser/_auxiliary/StatechartParserInfoForTestLexicals.java");
+      for (String generatedType : generatedTypes) {
+        List<String> generatedLines = Files.readAllLines(
+            Paths.get(outputPath.getAbsolutePath() + generatedType));
+        assertTrue(generatedLines.contains("@de.se_rwth.commons.Generated(\"monticore\")"),
+            generatedType + " is not annotated as generated");
+      }
     } catch (Exception e) {
-      fail();
+      fail(e);
     }
   
     MCAssertions.assertNoFindings();
@@ -253,6 +267,12 @@ public class MontiCoreScriptTest {
   public void testDefaultScriptSubsubgrammarArgs_EMF() {
     Log.getFindings().clear();
     testDefaultScriptWithEmf(subsubgrammarArgs);
+    Path generatedPackage = Paths.get(outputPath.getAbsolutePath()
+        + "/de/monticore/inherited/subsub/subsubgrammar/_ast/SubsubgrammarPackage.java");
+    assertDoesNotThrow(() -> assertTrue(
+        Files.readAllLines(generatedPackage)
+            .contains("@de.se_rwth.commons.Generated(\"monticore\")"),
+        generatedPackage + " is not annotated as generated"));
     MCAssertions.assertNoFindings();
   }
 

@@ -7,6 +7,7 @@ import ${package}.${grammarNameLower}tr._ast.AST${grammarName}TFRule;
 /**
 * This CoCo makes sure that no elements are deleted without specifying a parent pattern.
 */
+${tc.include("mc.Generated")}
 public class NoDeleteWithoutParentCoCo implements ${grammarName}TRAST${grammarName}TFRuleCoCo {
 
     @Override

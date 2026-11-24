@@ -6,7 +6,10 @@ import de.monticore.generating.templateengine.HookPoint;
 import de.monticore.generating.templateengine.TemplateController;
 import de.monticore.generating.templateengine.reporting.commons.ReportLogHook;
 import de.monticore.generating.templateengine.reporting.commons.ReportManager.ReportManagerFactory;
+import de.monticore.generating.templateengine.reporting.reporter.TemplateSourceMappingReporter;
+import de.monticore.generating.templateengine.sourcemap.IncludeSpan;
 import de.monticore.io.paths.MCPath;
+import de.monticore.sourcemap.DecodedMapping;
 import de.monticore.symboltable.IScope;
 import de.se_rwth.commons.logging.Log;
 
@@ -14,8 +17,10 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Facade for all reporting activities. Invoking a report method causes all
@@ -28,6 +33,8 @@ public class Reporting extends Log {
 
   /* the currently active model for which reporting takes place */
   protected static String currentModel;
+
+  protected static Set<String> currentConfigTemplates = new HashSet<>();
 
   public static String getCurrentModel() {
     return currentModel;
@@ -109,6 +116,68 @@ public class Reporting extends Log {
    */
   public static void clearReportHooks() {
     reportHooks.clear();
+  }
+
+  public static boolean isTemplateSourceMappingEnabled(){
+    if(!isEnabled()) {
+      return false;
+    }
+    for(ReportLogHook hook : getReportHooks()){
+      if(hook.hasReportEventHandler(TemplateSourceMappingReporter.class)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Registers a template name as configuration/orchistration template.
+   * Config-templates can orchestrate multi-file generation workflows and are excluded from
+   * source map tracking.
+   * @param templateName The name of the template to be registered as config-template.
+   */
+  public static void addConfigTemplate(String templateName){
+    currentConfigTemplates.add(templateName);
+  }
+
+  /**
+   * Clears all registered configuration templates.
+   */
+  public static void clearConfigTemplates(){
+    currentConfigTemplates.clear();
+  }
+
+  /**
+   * Checks if a template name is registered as configuration/orchistration template.
+   * @param templateName The name of the template to be checked.
+   * @return True if the template is registered as config-template, false otherwise.
+   */
+  public static boolean isConfigTemplate(String templateName){
+    return currentConfigTemplates.contains(templateName);
+  }
+
+  public static void reportTemplateSourceMapping(List<DecodedMapping> mapping) {
+    if (isEnabled()) {
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportTemplateSourceMapping(mapping);
+      }
+    }
+  }
+
+  public static void reportASTSourceMapping(List<DecodedMapping> mapping) {
+    if (isEnabled()) {
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportASTSourceMapping(mapping);
+      }
+    }
+  }
+
+  public static void reportTemplateIncludeSpan(List<IncludeSpan> span){
+    if(isEnabled()){
+      for(ReportLogHook hook : getReportHooks()){
+        hook.reportTemplateIncludeSpan(span);
+      }
+    }
   }
 
   public static void reportTransformationStart(String transformationName) {
@@ -244,6 +313,22 @@ public class Reporting extends Log {
       }
     }
   }
+
+  /**
+   * Reports directly before a template based file creation via the
+   * {@link de.monticore.generating.templateengine.TemplateController#writeArgs(String, String, String, ASTNode, List)
+   * writeArgs} method of the
+   * {@link de.monticore.generating.templateengine.TemplateController
+   * TemplateController}.
+   */
+  public static void reportBeforeFileCreation(String templateName, Path path, ASTNode ast) {
+    if (isEnabled()) {
+      for (ReportLogHook hook : getReportHooks()) {
+        hook.reportBeforeFileCreation(templateName, path, ast);
+      }
+    }
+  }
+
 
   /**
    * Reports a file creation

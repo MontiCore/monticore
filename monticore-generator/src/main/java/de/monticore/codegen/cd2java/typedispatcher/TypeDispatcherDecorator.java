@@ -69,8 +69,7 @@ public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUni
     addGettersAndSetters(optAttributes, dispatcher);
 
     replaceTemplate(ANNOTATIONS, dispatcher,
-        new StringHookPoint("@Deprecated(forRemoval = true)"));
-
+        new StringHookPoint("@Deprecated(forRemoval = true) @SuppressWarnings(\"removal\")"));
     replaceTemplate(JAVADOC, dispatcher,
         new StringHookPoint("""
             /**
