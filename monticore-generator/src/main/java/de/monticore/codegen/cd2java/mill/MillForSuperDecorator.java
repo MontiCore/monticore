@@ -34,6 +34,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static de.monticore.cd.codegen.CD2JavaTemplates.ANNOTATIONS;
 import static de.monticore.cd.facade.CDModifier.PROTECTED;
 import static de.monticore.cd.facade.CDModifier.PUBLIC;
 import static de.monticore.cd.codegen.CD2JavaTemplates.EMPTY_BODY;
@@ -266,7 +267,10 @@ public class MillForSuperDecorator extends AbstractCreator<ASTCDCompilationUnit,
         visitorService.getPackage(cdSymbol).replace("_visitor", UTILS_PACKAGE),
         cdSymbol.getName(),
         TYPE_DISPATCHER_SUFFIX);
-    return getProtectedForSuperMethod("typeDispatcher", dispatcherInterfaceType);
+    ASTCDMethod method = getProtectedForSuperMethod("typeDispatcher", dispatcherInterfaceType);
+    this.replaceTemplate(ANNOTATIONS, method,
+                         new StringHookPoint("@Deprecated(forRemoval = true) @SuppressWarnings(\"removal\")"));
+    return method;
   }
 
   protected ASTCDMethod getSuperPrettyPrintMethod(DiagramSymbol cdSymbol) {
