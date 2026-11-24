@@ -1,0 +1,22 @@
+From 1f583fd7c53580ecd4bb085219ba6a5bae9157d8 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Alex=20L=C3=BCpges?= <luepges@se-rwth.de>
+Date: Tue, 24 Nov 2026 08:43:05 +0100
+Subject: [PATCH] Unique PP-ArtifactScope
+
+
+diff --git a/monticore-generator/src/main/java/de/monticore/codegen/prettyprint/MC2PPTranslation.java b/monticore-generator/src/main/java/de/monticore/codegen/prettyprint/MC2PPTranslation.java
+index a60e7e8e8..5cff3f603 100644
+--- a/monticore-generator/src/main/java/de/monticore/codegen/prettyprint/MC2PPTranslation.java
++++ b/monticore-generator/src/main/java/de/monticore/codegen/prettyprint/MC2PPTranslation.java
+@@ -46,7 +46,7 @@ public class MC2PPTranslation extends AbstractCreator<ASTMCGrammar, ASTCDCompila
+ 
+ 
+     ASTCDDefinition astcdDefinition = CDBasisMill.cDDefinitionBuilder()
+-            .setName(grammar.getName())
++            .setName(grammar.getName() + "PrettyPrinter")
+             .setModifier(UMLModifierMill.modifierBuilder().build())
+             .build();
+ 
+-- 
+2.45.1.windows.1
+

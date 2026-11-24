@@ -1,0 +1,29 @@
+From 5d98b1181aa9ba231ce06f0687cb13ba76d1eb89 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Alex=20L=C3=BCpges?= <luepges@se-rwth.de>
+Date: Tue, 24 Nov 2026 08:42:45 +0100
+Subject: [PATCH] Add java.lang import
+
+
+diff --git a/monticore-generator/src/main/java/de/monticore/MontiCoreScript.java b/monticore-generator/src/main/java/de/monticore/MontiCoreScript.java
+index 7e6e3dca6..78f5a32e2 100644
+--- a/monticore-generator/src/main/java/de/monticore/MontiCoreScript.java
++++ b/monticore-generator/src/main/java/de/monticore/MontiCoreScript.java
+@@ -115,6 +115,7 @@ import de.monticore.io.FileReaderWriterFix;
+ import de.monticore.io.paths.MCPath;
+ import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+ import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
++import de.monticore.symboltable.ImportStatement;
+ import de.se_rwth.commons.Joiners;
+ import de.se_rwth.commons.Names;
+ import de.se_rwth.commons.configuration.Configuration;
+@@ -410,6 +411,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
+       Log.debug("Used present symbol table for " + cdSymbol.get().getFullName(), LOG_ID);
+     } else {
+       ICD4CodeArtifactScope artScope = CD4CodeMill.scopesGenitorDelegator().createFromAST(result);
++      artScope.addImports(new ImportStatement("java.lang", true));
+       CDStereotypeFacade.getInstance().addStereotype(result.getCDDefinition().getModifier(),
+                                                      MC_NEEDS_SYMBOL_TABLE_COMPLETION);
+     }
+-- 
+2.45.1.windows.1
+
