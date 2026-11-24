@@ -313,8 +313,9 @@ Examples:
 | `2015-091T12:30:15`    | Ordinal date with time.       |
 | `2015-W14-3T12:30:15Z` | Week date with UTC time.      |
 
-The date and time are separated by the literal designator `T`.
-Unlike in a time without date, the `T` cannot be omitted (ISO 8601-1, 5.4.2).
+The date and time are separated by the literal designator `T`,
+which cannot be omitted (ISO 8601-1, 5.4.2).
+Only a time without date in extended notation, such as `12:30`, may omit the `T`.
 
 ---
 
