@@ -13,6 +13,7 @@ import de.monticore.tf.tfcommons._ast.ASTITFPart;
 /**
 * This Visitor makes sure that no elements are deleted without specifying a parent pattern.
 */
+${tc.include("mc.Generated")}
 public class ${visitorClassName}Builder  {
 
   public ${ast.getName()}TRTraverser build(){

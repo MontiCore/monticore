@@ -40,8 +40,8 @@ component grammar ISOTemporals extends de.monticore.temporal.TemporalBasis {
   ExtendedWeekDate implements WeekDate = Sign? yearSource:Digits "-" weekSource:WDigits ("-" dayOfWeekSource:Digits)?;
 
   astrule BasicWeekDate =
-    year: int
-    week: int
+    weekBasedYear: int
+    weekOfWeekBasedYear: int
     dayOfWeekInternal: java.util.Optional<Integer>;
 
   // A 'W' followed by any number of digits ('0'-'9'). Only used above for the WeekDate rule

@@ -2,6 +2,7 @@
 ${signature("className","package")}
 package ${package}.${grammarNameLower}tr._cocos;
 
+${tc.include("mc.Generated")}
 public class ${className} {
 
   protected static TransCoCos transCoCos;

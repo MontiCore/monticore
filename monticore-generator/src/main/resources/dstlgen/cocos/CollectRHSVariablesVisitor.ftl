@@ -10,6 +10,7 @@ import java.util.Set;
 import de.monticore.tf.grammartransformation.CollectCoCoInformationState;
 import de.monticore.tf.tfcommons._ast.ASTITFPart;
 
+${tc.include("mc.Generated")}
 public class ${className} implements ${ast.getName()}TRVisitor2, ${ast.getName()}TRHandler  {
 
   private CollectCoCoInformationState state;

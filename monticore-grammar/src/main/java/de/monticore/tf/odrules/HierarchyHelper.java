@@ -153,8 +153,7 @@ public final class HierarchyHelper {
     // Search for every List in the given Objects
     for (ASTODObject object : objects) {
       if (object.isPresentType() &&
-              Util.printType(object.getType())
-                      .equals(listType)) {
+          object.getType().printType().equals(listType)) {
         childs = getListChilds(object);
         // If there is a name for the list, save it and the childnames of the
         // list
@@ -180,8 +179,7 @@ public final class HierarchyHelper {
     // Search for every List in the given Objects
     for (ASTODObject object : objects) {
       if (object.isPresentType() &&
-              Util.printType(object.getType())
-                      .equals(listType)) {
+          object.getType().printType().equals(listType)) {
         childs = getListChildsWithOptionals(object);
         // If there is a name for the list, save it and the childnames of the
         // list
@@ -235,8 +233,7 @@ public final class HierarchyHelper {
       // Do it recursively for each Optional or look if the name is present and
       // save it
       if (object.isPresentType() &&
-              Util.printType(object.getType())
-                      .equals(optionalType)) {
+          object.getType().printType().equals(optionalType)) {
         result.addAll(getListChilds(object));
       } else if (object.isPresentName()) {
         result.add(object.getName());

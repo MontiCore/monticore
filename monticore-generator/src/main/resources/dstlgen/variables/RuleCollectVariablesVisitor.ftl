@@ -16,6 +16,7 @@ import de.monticore.tf.ruletranslation.Rule2ODState;
  * and stores them in a maps that maps each variable to the attribute declaration
  * where it is used first
  */
+${tc.include("mc.Generated")}
 public class ${className} implements ${ast.getName()}TRVisitor2, ${ast.getName()}TRHandler {
 
 

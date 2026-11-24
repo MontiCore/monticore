@@ -36,6 +36,8 @@ public class OOSymbolsSymbols2JsonTest {
         .setName("Type")
         .setSpannedScope(typeSpannedScope)
         .setEnclosingScope(scope)
+        .setSubTypeRestrictionList(Lists.newArrayList(
+            SymTypeExpressionFactory.createTypeObjectViaSurrogate("SubType", scope)))
         .build();
 
     type.setSpannedScope(typeSpannedScope);
@@ -97,12 +99,20 @@ public class OOSymbolsSymbols2JsonTest {
     Optional<OOTypeSymbol> deserializedType = deserialized.resolveOOType("Type");
     assertTrue(type.isPresent());
     assertTrue(deserializedType.isPresent());
+    assertTrue(type.get().hasSubTypeRestriction());
+    assertTrue(deserializedType.get().hasSubTypeRestriction());
+    assertEquals(1, deserializedType.get().getSubTypeRestrictionList().size());
+    assertEquals("SubType", deserializedType.get().getSubTypeRestrictionList().get(0).printFullName());
+    // the restricted subtype resolves to the SubType symbol
+    assertEquals("SubType", deserializedType.get().getSubTypeRestrictionList().get(0)
+        .getTypeInfo().getName());
 
     //check that both can resolve the type "SubType" with the supertype "Type"
     Optional<OOTypeSymbol> subtype = scope.resolveOOType("SubType");
     Optional<OOTypeSymbol> deserializedSubType = deserialized.resolveOOType("SubType");
     assertTrue(subtype.isPresent());
     assertTrue(deserializedSubType.isPresent());
+    assertFalse(deserializedSubType.get().hasSubTypeRestriction());
     assertEquals(1, subtype.get().getSuperTypesList().size());
     assertEquals(1, deserializedSubType.get().getSuperTypesList().size());
     assertEquals("Type", subtype.get().getSuperTypesList().get(0).print());
@@ -126,6 +136,19 @@ public class OOSymbolsSymbols2JsonTest {
     assertTrue(deserializedFunction.isPresent());
     assertEquals("int", function.get().getType().print());
     assertEquals("int", deserializedFunction.get().getType().print());
+  }
+
+  @Test
+  public void testDeserializeWithoutSubTypeRestriction() {
+    // symbol files written before subTypeRestriction existed
+    String json = "{\"name\":\"Test\",\"symbols\":[{"
+        + "\"kind\":\"de.monticore.symbols.oosymbols._symboltable.OOTypeSymbol\","
+        + "\"name\":\"Type\",\"isClass\":true}]}";
+    IOOSymbolsArtifactScope deserialized = new OOSymbolsSymbols2Json().deserialize(json);
+    Optional<OOTypeSymbol> type = deserialized.resolveOOType("Type");
+    assertTrue(type.isPresent());
+    assertNotNull(type.get().getSubTypeRestrictionList());
+    assertFalse(type.get().hasSubTypeRestriction());
   }
 
   @Test

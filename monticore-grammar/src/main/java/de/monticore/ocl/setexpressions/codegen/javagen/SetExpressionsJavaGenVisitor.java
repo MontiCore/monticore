@@ -42,7 +42,9 @@ public class SetExpressionsJavaGenVisitor
 
   @Override
   public void traverse(ASTSetInExpression node) {
+    state.startParentheses();
     node.getSet().accept(getTraverser());
+    state.endParentheses();
     getPrinter().print(".contains(");
     node.getElem().accept(getTraverser());
     getPrinter().print(")");
@@ -51,7 +53,9 @@ public class SetExpressionsJavaGenVisitor
   @Override
   public void traverse(ASTSetNotInExpression node) {
     getPrinter().print("!");
+    state.startParentheses();
     node.getSet().accept(getTraverser());
+    state.endParentheses();
     getPrinter().print(".contains(");
     node.getElem().accept(getTraverser());
     getPrinter().print(")");
