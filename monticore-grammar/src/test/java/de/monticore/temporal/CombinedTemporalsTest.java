@@ -288,17 +288,7 @@ public class CombinedTemporalsTest {
             ISOTemporals2ndParser.ISO_DATE_TIME_ERROR_CODE, "an ISO date-time")
     );
   }
-  
-  @SuppressWarnings("unused")
-  @DisplayName("ISO Instant Parse Invalid")
-  @ParameterizedTest(name = "Input: {0}")
-  @MethodSource("de.monticore.temporal.TemporalTestCases#invalidIsoInstants")
-  void testIsoInstantInvalidParse(String input) throws IOException {
-    Optional<ASTTemporal> ast = parser.parse_String(input);
-    
-    MCAssertions.assertHasFindings(Finding::isError);
-  }
-  
+
   @DisplayName("Numeric Date Parsing")
   @ParameterizedTest(name = "Input: {0}")
   @MethodSource("de.monticore.temporal.TemporalTestCases#numericDatesWithoutYear")

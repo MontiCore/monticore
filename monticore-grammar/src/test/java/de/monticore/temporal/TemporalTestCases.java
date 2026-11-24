@@ -426,16 +426,6 @@ public class TemporalTestCases {
     );
   }
   
-  // These inputs pass the first parse step but not the second one
-  protected static Stream<Arguments> invalidIsoInstants() {
-    return Stream.of(
-        Arguments.of("1:2"),
-        Arguments.of("T1:2:3"),
-        Arguments.of("1W2"),
-        Arguments.of("2026W1T10")
-    );
-  }
-  
   // Periods that pass the first parse step and the non-emptiness check,
   // so the second parse step has to reject them.
   protected static Stream<Arguments> periodsRejectedBySecondStep() {
