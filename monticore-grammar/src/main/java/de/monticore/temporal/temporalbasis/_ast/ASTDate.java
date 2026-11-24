@@ -95,8 +95,8 @@ public interface ASTDate extends ASTDateTOP {
     }
     
     if (isSupported(WEEK_BASED_YEAR) && isSupported(WEEK_OF_WEEK_BASED_YEAR) && isSupported(DAY_OF_WEEK)) {
-      // 4 January always lies in week 1. The adjuster only checks the range 1-53, so get() has to
-      // check the week against the range of the actual week-based year.
+      // ISO 8601 defines week 1 as the week with January 4, so this date lies in the week-based year.
+      // The adjuster only checks the range 1-53; get() checks the weeks of the week-based year.
       return LocalDate.of(get(WEEK_BASED_YEAR), 1, 4)
           .with(WEEK_OF_WEEK_BASED_YEAR, get(WEEK_OF_WEEK_BASED_YEAR))
           .with(DAY_OF_WEEK, get(DAY_OF_WEEK));

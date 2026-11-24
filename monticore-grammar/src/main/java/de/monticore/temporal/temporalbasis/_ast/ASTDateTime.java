@@ -60,18 +60,7 @@ public interface ASTDateTime extends ASTDateTimeTOP {
     throw new UnsupportedTemporalTypeException(field.toString());
   }
   
-  /**
-   * Returns the range of valid values for the specified temporal field.
-   * <p>
-   * The range is delegated to either the date or time component, depending on
-   * which part supports the requested field, so that ranges refined by a
-   * component, e.g., the ISO weeks of a week date, are also used here.
-   *
-   * @param field the temporal field to query
-   * @return the range of valid values for the field
-   * @throws UnsupportedTemporalTypeException if the field is not supported by
-   * either the date or time part
-   */
+  // Uses ranges refined by the date or time, e.g., the ISO weeks of a week date
   @Override
   default ValueRange range(TemporalField field) {
     if (getDate().isSupported(field)) {
@@ -90,10 +79,6 @@ public interface ASTDateTime extends ASTDateTimeTOP {
     return getDate().isLocalDate() && getTime().isExactlyLocalTime();
   }
 
-  /**
-   * @throws DateTimeException if a field value is out of range,
-   * e.g., month 13 or week 53 in a year with 52 ISO weeks
-   */
   default LocalDateTime toLocalDateTime() {
     return getDate().toLocalDate().atTime(getTime().toLocalTime());
   }
@@ -102,10 +87,6 @@ public interface ASTDateTime extends ASTDateTimeTOP {
     return getDate().isLocalDate() && getTime().isOffsetTime();
   }
 
-  /**
-   * @throws DateTimeException if a field value is out of range,
-   * e.g., month 13 or week 53 in a year with 52 ISO weeks
-   */
   default OffsetDateTime toOffsetDateTime() {
     return getDate().toLocalDate().atTime(getTime().toOffsetTime());
   }
