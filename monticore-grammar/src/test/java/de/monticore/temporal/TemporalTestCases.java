@@ -53,7 +53,9 @@ public class TemporalTestCases {
         Arguments.of("+002017-W48-1", 2017, 48, 1),
         Arguments.of("-002017-W48-1", -2017, 48, 1),
         Arguments.of("+002017W481", 2017, 48, 1),
-        Arguments.of("-002017W481", -2017, 48, 1)
+        Arguments.of("-002017W481", -2017, 48, 1),
+        Arguments.of("2015-W14", 2015, 14, -1),
+        Arguments.of("2015W14", 2015, 14, -1)
     );
   }
   
@@ -104,7 +106,24 @@ public class TemporalTestCases {
         Arguments.of("20171204T123001-0530", "-05:30"),
         Arguments.of("2017-12-04T12:30:01+05:30", "+05:30"),
         Arguments.of("2017-12-04T12:30:01-05:30", "-05:30"),
-        Arguments.of("2017-12-04T12:30:01-00:30", "-00:30")
+        Arguments.of("2017-12-04T12:30:01-00:30", "-00:30"),
+        Arguments.of("12:30:01-05:30", "-05:30"),
+        Arguments.of("T12:30:01-05:30", "-05:30"),
+        Arguments.of("12:30:01-05:00", "-05:00"),
+        Arguments.of("T12:30:01-05:00", "-05:00"),
+        Arguments.of("12:30:01-00:30", "-00:30"),
+        Arguments.of("T12:30:01-00:30", "-00:30"),
+        Arguments.of("T123001+05", "+05:00"),
+        Arguments.of("12:30:01+05", "+05:00"),
+        Arguments.of("T12:30:01+05", "+05:00"),
+        Arguments.of("20171204T123001+05", "+05:00"),
+        Arguments.of("2017-12-04T12:30:01+05", "+05:00"),
+        Arguments.of("T12:30:01+05:30", "+05:30"),
+        Arguments.of("20171204T123001+0530", "+05:30"),
+        Arguments.of("T123001-0500", "-05:00"),
+        Arguments.of("20171204T123001-0500", "-05:00"),
+        Arguments.of("2017-12-04T12:30:01-05:00", "-05:00"),
+        Arguments.of("20171204T123001-0030", "-00:30")
     );
   }
 
@@ -424,6 +443,26 @@ public class TemporalTestCases {
     );
   }
   
+  // Periods that pass the first parse step and the non-emptiness check,
+  // so the second parse step has to reject them.
+  protected static Stream<Arguments> periodsRejectedBySecondStep() {
+    return Stream.of(
+        // A fraction needs digits in front of it
+        Arguments.of("P1Y.5M"),
+        Arguments.of("P1Y,5M"),
+        Arguments.of("P1D,5H"),
+        Arguments.of("P1YT.5H"),
+        Arguments.of("P1DT.5S"),
+        
+        // Without T, M denotes months, which must not have a fractional part
+        Arguments.of("P3.5M"),
+        Arguments.of("P3,5M"),
+        Arguments.of("P2Y3.5M"),
+        Arguments.of("P2Y3,5M"),
+        Arguments.of("P10D3.5M")
+    );
+  }
+  
   protected static Stream<Arguments> invalidPeriods() {
     return Stream.of(
         // At least one numbered field needs to be specified
@@ -440,7 +479,7 @@ public class TemporalTestCases {
         Arguments.of("P4W1D"),
         Arguments.of("P4W15S"),
         
-        // Only the seconds field is allowed to have a fractional part
+        // Only the hours, minutes, and seconds fields are allowed to have a fractional part
         Arguments.of("P10.5DT"),
         Arguments.of("P10,5DT"),
         Arguments.of("P3.5MT"),

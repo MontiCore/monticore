@@ -1,11 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.temporal.temporalbasis._ast;
 
+import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalField;
 import java.time.temporal.UnsupportedTemporalTypeException;
+import java.time.temporal.ValueRange;
 
 public interface ASTDateTime extends ASTDateTimeTOP {
   
@@ -19,6 +21,8 @@ public interface ASTDateTime extends ASTDateTimeTOP {
    * @return the corresponding {@link LocalDateTime} or {@link OffsetDateTime}
    * @throws UnsupportedTemporalTypeException if this date-time cannot be
    * represented as either type
+   * @throws DateTimeException if a field value is out of range,
+   * e.g., month 13 or week 53 in a year with 52 ISO weeks
    */
   @Override
   default Temporal toTemporal() {
@@ -52,6 +56,17 @@ public interface ASTDateTime extends ASTDateTimeTOP {
       return getDate().getLong(field);
     } else if (getTime().isSupported(field)) {
       return getTime().getLong(field);
+    }
+    throw new UnsupportedTemporalTypeException(field.toString());
+  }
+  
+  // Uses ranges refined by the date or time, e.g., the ISO weeks of a week date
+  @Override
+  default ValueRange range(TemporalField field) {
+    if (getDate().isSupported(field)) {
+      return getDate().range(field);
+    } else if (getTime().isSupported(field)) {
+      return getTime().range(field);
     }
     throw new UnsupportedTemporalTypeException(field.toString());
   }

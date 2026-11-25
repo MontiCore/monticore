@@ -46,7 +46,7 @@ public class MCCommonLiteralsJavaGenVisitor
   @Override
   public void traverse(ASTCharLiteral node) {
     getPrinter().print("'");
-    getPrinter().print(node.getValue());
+    getPrinter().print(node.getSource());
     getPrinter().print("'");
   }
 
@@ -59,7 +59,7 @@ public class MCCommonLiteralsJavaGenVisitor
 
   @Override
   public void traverse(ASTNatLiteral node) {
-    getPrinter().print(node.getSource());
+    getPrinter().print(node.getValue());
   }
 
   @Override

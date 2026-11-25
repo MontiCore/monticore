@@ -2,8 +2,12 @@
 package de.monticore.temporal;
 
 import de.monticore.expressions.commonexpressions._ast.ASTCallExpression;
+import de.monticore.expressions.commonexpressions._ast.ASTConditionalExpression;
+import de.monticore.expressions.commonexpressions._ast.ASTMinusExpression;
 import de.monticore.expressions.commonexpressions._ast.ASTPlusExpression;
+import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
+import de.monticore.literals.mccommonliterals._ast.ASTNatLiteral;
 import de.monticore.literals.mcliteralsbasis._ast.ASTLiteral;
 import de.monticore.runtime.junit.MCAssertions;
 import de.monticore.runtime.junit.TestWithMCLanguage;
@@ -12,6 +16,8 @@ import de.monticore.statements.mccommonstatements._ast.ASTMCJavaBlock;
 import de.monticore.statements.mcstatementsbasis._ast.ASTMCBlockStatement;
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTLocalVariableDeclarationStatement;
 import de.monticore.temporal.escapedtemporalliterals._ast.ASTEscapedTemporalLiteral;
+import de.monticore.temporal.isotemporals._ast.ASTISODateTime;
+import de.monticore.temporal.isotemporals._ast.ASTISOTime;
 import de.monticore.temporal.isotemporals.parsing.ISOTemporals2ndParser;
 import de.monticore.temporal.temporalbasis._ast.ASTInstant;
 import de.monticore.temporal.temporalbasis._ast.ASTPeriod;
@@ -31,10 +37,16 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.OffsetTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static java.time.temporal.ChronoField.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @TestWithMCLanguage(TimedActionsMill.class)
@@ -406,5 +418,77 @@ public class TimedActionsTest {
     SourcePosition position = finding.getSourcePosition().orElseGet(Assertions::fail);
     Assertions.assertEquals(3, position.getLine());
     Assertions.assertEquals(3, position.getColumn());
+  }
+
+  protected ASTTimedAction parseTimedAction(String input) throws IOException {
+    return parser.parse_StringTimedAction(input)
+        .orElseGet(MCAssertions::failAndPrintFindings);
+  }
+
+  @Test
+  public void testTimeWithNegativeTimeShift() throws IOException {
+    ASTISOTime time = Assertions.assertInstanceOf(ASTISOTime.class,
+        parseTimedAction("on 12:00-05:30 do ping();").getInstant());
+
+    Assertions.assertEquals(12, time.get(HOUR_OF_DAY));
+    Assertions.assertEquals(0, time.get(MINUTE_OF_HOUR));
+    Assertions.assertEquals(ZoneOffset.ofHoursMinutes(-5, -30).getTotalSeconds(),
+        time.get(OFFSET_SECONDS));
+  }
+
+  @Test
+  public void testTimeWithDesignatorAndNegativeTimeShift() throws IOException {
+    ASTISOTime time = Assertions.assertInstanceOf(ASTISOTime.class,
+        parseTimedAction("on T12:30:01-05:00 do ping();").getInstant());
+
+    Assertions.assertEquals(OffsetTime.of(LocalTime.of(12, 30, 1), ZoneOffset.ofHours(-5)),
+        time.toOffsetTime());
+  }
+
+  @Test
+  public void testDateTimeWithNegativeTimeShift() throws IOException {
+    ASTISODateTime dateTime = Assertions.assertInstanceOf(ASTISODateTime.class,
+        parseTimedAction("on 2017-12-04T12:30:01-05:30 do ping();").getInstant());
+
+    Assertions.assertEquals(OffsetDateTime.of(LocalDate.of(2017, 12, 4), LocalTime.of(12, 30, 1),
+        ZoneOffset.ofHoursMinutes(-5, -30)), dateTime.toOffsetDateTime());
+  }
+
+  // Digits around ':' and '-' in a conditional expression are no temporal values
+  @Test
+  public void testConditionalWithNumbers() throws IOException {
+    ASTConditionalExpression conditional = conditionalArgument(
+        parseTimedAction("on 2017-12-04 do f(b ? 100:20);"));
+
+    Assertions.assertEquals(100, natLiteral(conditional.getTrueExpression()).getValue());
+    Assertions.assertEquals(20, natLiteral(conditional.getFalseExpression()).getValue());
+  }
+
+  @Test
+  public void testConditionalWithSubtraction() throws IOException {
+    ASTConditionalExpression conditional = conditionalArgument(
+        parseTimedAction("on 2017-12-04 do f(b ? 10-05:20);"));
+
+    ASTMinusExpression minus = Assertions.assertInstanceOf(ASTMinusExpression.class,
+        conditional.getTrueExpression());
+    Assertions.assertEquals(10, natLiteral(minus.getLeft()).getValue());
+    Assertions.assertEquals(5, natLiteral(minus.getRight()).getValue());
+    Assertions.assertEquals(20, natLiteral(conditional.getFalseExpression()).getValue());
+  }
+
+  protected ASTConditionalExpression conditionalArgument(ASTTimedAction action) {
+    ASTExpressionStatement statement = Assertions.assertInstanceOf(ASTExpressionStatement.class,
+        action.getAction().getMCStatement());
+    ASTCallExpression call = Assertions.assertInstanceOf(ASTCallExpression.class,
+        statement.getExpression());
+    Assertions.assertEquals(1, call.getArguments().sizeExpressions());
+    return Assertions.assertInstanceOf(ASTConditionalExpression.class,
+        call.getArguments().getExpression(0));
+  }
+
+  protected ASTNatLiteral natLiteral(ASTExpression expression) {
+    ASTLiteralExpression literal = Assertions.assertInstanceOf(ASTLiteralExpression.class,
+        expression);
+    return Assertions.assertInstanceOf(ASTNatLiteral.class, literal.getLiteral());
   }
 }

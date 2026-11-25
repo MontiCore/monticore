@@ -24,8 +24,12 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.IOException;
+import java.time.LocalTime;
+import java.time.ZoneOffset;
 import java.util.Optional;
 import java.util.stream.Stream;
+
+import static java.time.temporal.ChronoField.*;
 
 @TestWithMCLanguage(CombinedTemporalsTestMill.class)
 public class CombinedTemporalsTest {
@@ -78,9 +82,9 @@ public class CombinedTemporalsTest {
     Assertions.assertInstanceOf(ASTWeekDate.class, ast.getInstant());
     ASTWeekDate realAst = (ASTWeekDate) ast.getInstant();
     
-    Assertions.assertEquals(year, realAst.getYear());
-    Assertions.assertEquals(week, realAst.getWeek());
-    Assertions.assertEquals(dayOfWeek, realAst.getDayOfWeek());
+    Assertions.assertEquals(year, realAst.getWeekBasedYear());
+    Assertions.assertEquals(week, realAst.getWeekOfWeekBasedYear());
+    Assertions.assertEquals(dayOfWeek, realAst.isPresentDayOfWeek() ? realAst.getDayOfWeek() : -1);
   }
   
   @DisplayName("ISO Time Parsing")
@@ -170,8 +174,8 @@ public class CombinedTemporalsTest {
     ASTWeekDate date = (ASTWeekDate) realAst.getDate();
     ASTISOTime time = realAst.getTime();
     
-    Assertions.assertEquals(year, date.getYear());
-    Assertions.assertEquals(week, date.getWeek());
+    Assertions.assertEquals(year, date.getWeekBasedYear());
+    Assertions.assertEquals(week, date.getWeekOfWeekBasedYear());
     Assertions.assertEquals(dayOfWeek, date.getDayOfWeek());
     Assertions.assertEquals(hour, time.getHour());
     Assertions.assertEquals(minute, time.isPresentMinute() ? time.getMinute() : -1);
@@ -225,6 +229,18 @@ public class CombinedTemporalsTest {
     MCAssertions.assertHasFindings(Finding::isError);
   }
 
+  @DisplayName("Full Period Second Parse Step Invalid")
+  @ParameterizedTest(name = "Input: {0}")
+  @MethodSource("de.monticore.temporal.TemporalTestCases#periodsRejectedBySecondStep")
+  void testFullPeriodSecondParseStepInvalid(String input) throws IOException {
+    ASTTemporal ast = parser.parse_String(input)
+        .orElseGet(MCAssertions::failAndPrintFindings);
+    Assertions.assertInstanceOf(ASTFullPeriod.class, ast.getPeriod());
+    
+    Finding finding = MCAssertions.assertHasFindingStartingWith(ISOTemporals2ndParser.FULL_PERIOD_ERROR_CODE);
+    Assertions.assertTrue(finding.isError());
+  }
+  
   // These inputs pass the first parse step but are rejected by the second one.
   // The second parser reports exactly one error at the position of the date instead of
   // throwing an exception. The field values of the AST are meaningless in that case.
@@ -335,5 +351,42 @@ public class CombinedTemporalsTest {
     Assertions.assertEquals(hour, realAst.getTime().getHour());
     Assertions.assertEquals(minute, realAst.getTime().isPresentMinute() ? realAst.getTime().getMinute() : -1);
     Assertions.assertEquals(second, realAst.getTime().isPresentSecond() ? realAst.getTime().getSecond() : -1);
+  }
+
+  // Times without seconds are no OffsetTime, so hour, minute and offset are compared directly.
+  // 18:30-08:00 is the example in Temporal.md.
+  @DisplayName("ISO Time without Seconds with Time Shift")
+  @ParameterizedTest(name = "Input: {0}")
+  @MethodSource("timesWithoutSecondsWithTimeShift")
+  void testTimeWithoutSecondsWithTimeShift(String input, LocalTime expectedTime, ZoneOffset offset)
+      throws IOException {
+    ASTTemporal ast = parser.parse_String(input)
+        .orElseGet(MCAssertions::failAndPrintFindings);
+    ASTISOTime time = Assertions.assertInstanceOf(ASTISOTime.class, ast.getInstant());
+
+    Assertions.assertEquals(expectedTime.getHour(), time.get(HOUR_OF_DAY));
+    Assertions.assertEquals(expectedTime.getMinute(), time.get(MINUTE_OF_HOUR));
+    Assertions.assertFalse(time.isSupported(SECOND_OF_MINUTE));
+    Assertions.assertEquals(offset.getTotalSeconds(), time.get(OFFSET_SECONDS));
+  }
+
+  static Stream<Arguments> timesWithoutSecondsWithTimeShift() {
+    return Stream.of(
+        Arguments.of("18:30-08:00", LocalTime.of(18, 30), ZoneOffset.ofHours(-8)),
+        Arguments.of("12:00-05:30", LocalTime.of(12, 0), ZoneOffset.ofHoursMinutes(-5, -30)),
+        Arguments.of("T1200-0530", LocalTime.of(12, 0), ZoneOffset.ofHoursMinutes(-5, -30))
+    );
+  }
+
+  // A date-time needs the designator T between date and time (ISO 8601-1, 5.4.2).
+  // Without it, the input is no date-time and the parser rejects it.
+  @DisplayName("ISO Date-Time without T")
+  @ParameterizedTest(name = "Input: {0}")
+  @ValueSource(strings = {"2017-12-0412:30", "2017-12-0412:30:01-05:00", "20171204123001-05:00"})
+  void testDateTimeWithoutT(String input) throws IOException {
+    Optional<ASTTemporal> ast = parser.parse_String(input);
+
+    Assertions.assertTrue(ast.isEmpty());
+    MCAssertions.assertHasFindings(Finding::isError);
   }
 }

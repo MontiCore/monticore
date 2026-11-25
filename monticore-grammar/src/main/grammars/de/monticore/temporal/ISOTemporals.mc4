@@ -40,8 +40,8 @@ component grammar ISOTemporals extends de.monticore.temporal.TemporalBasis {
   ExtendedWeekDate implements WeekDate = Sign? yearSource:Digits "-" weekSource:WDigits ("-" dayOfWeekSource:Digits)?;
 
   astrule BasicWeekDate =
-    year: int
-    week: int
+    weekBasedYear: int
+    weekOfWeekBasedYear: int
     dayOfWeekInternal: java.util.Optional<Integer>;
 
   // A 'W' followed by any number of digits ('0'-'9'). Only used above for the WeekDate rule
@@ -123,19 +123,17 @@ component grammar ISOTemporals extends de.monticore.temporal.TemporalBasis {
 
   fragment token SignToken = '+' | '-';
 
-  fragment token BasicTime = 'T' Digits;
-
-  fragment token ExtendedTime = 'T'? Digits ':' Digits (':' Digits)?;
-
   fragment token FractionToken = ('.' | ',') Digits;
 
   fragment token TimeShiftToken = 'Z' | SignToken Digits (':' Digits)?;
 
-  fragment token ISOTimeToken = (BasicTime | ExtendedTime) FractionToken? TimeShiftToken?;
+  // The time of a date-time always starts with the designator 'T' (ISO 8601-1, 5.4.2).
+  // Without it, the lexer would take, e.g., "00-05:30" in "12:00-05:30" as a date-time.
+  fragment token TimeOfDateToken = 'T' Digits (':' Digits (':' Digits)?)? FractionToken? TimeShiftToken?;
 
   token BasicWeekDateToken = SignToken? Digits 'W' Digits;
 
-  token ISODateTimeToken = SignToken? Digits '-'? 'W'? Digits ('-' Digits)? ISOTimeToken;
+  token ISODateTimeToken = SignToken? Digits '-'? 'W'? Digits ('-' Digits)? TimeOfDateToken;
 
   concept antlr {
     parserjava {
