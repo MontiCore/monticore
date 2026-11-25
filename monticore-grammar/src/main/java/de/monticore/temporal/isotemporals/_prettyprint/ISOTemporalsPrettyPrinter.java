@@ -4,12 +4,16 @@ package de.monticore.temporal.isotemporals._prettyprint;
 import de.monticore.ast.ASTNode;
 import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.temporal.isotemporals._ast.*;
+import de.monticore.temporal.isotemporals._ast.ASTCalendarDate;
+import de.monticore.temporal.isotemporals._ast.ASTExtendedWeekDate;
+import de.monticore.temporal.isotemporals._ast.ASTFullPeriod;
+import de.monticore.temporal.isotemporals._ast.ASTISOTime;
+import de.monticore.temporal.isotemporals._ast.ASTOrdinalDate;
+import de.monticore.temporal.isotemporals._ast.ASTSign;
+import de.monticore.temporal.isotemporals._ast.ASTTimeShift;
 
 /**
- * This hand-written pretty printer prints ISO temporals as they were written.
- * The generated one does not support the enum Sign and inserts spaces inside a
- * literal, e.g. before the unit of a period fraction (PT6.5 H) or a time shift.
+ * This pretty printer prints ISO temporals.
  */
 public class ISOTemporalsPrettyPrinter extends ISOTemporalsPrettyPrinterTOP {
 
