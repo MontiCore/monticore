@@ -22,7 +22,9 @@
             if(checkConditions_${object.getObjectName()}(cand)
     <#list mandatoryObjects as o>
       <#if object.getObjectName() != o.getObjectName() && !ast.getFoldingHash()[object.getObjectName()]?seq_contains(o.getObjectName())>
-        <#if !o.isListObject() && !o.isNotObject() && !hierarchyHelper.isListChild(o)>
+        <#-- injective w.r.t. the positive objects and the objects of the same negative application condition -->
+        <#if !o.isListObject() && !hierarchyHelper.isListChild(o)
+            && (!o.isNotObject() || hierarchyHelper.isInSameNegativeStructure(object.getObjectName(), o.getObjectName()))>
                         && cand != (ASTNode) ${o.getObjectName()}_cand
         </#if>
       </#if>

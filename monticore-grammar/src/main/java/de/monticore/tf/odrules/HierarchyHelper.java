@@ -628,6 +628,41 @@ public final class HierarchyHelper {
   }
 
   /**
+   * Checks if the objects with the given names belong to the same negative application condition
+   * of the LHS: both are within negative structures (not[[..]]-elements) and have the same
+   * innermost enclosing optional or list structure (or none). All negative structures of such a
+   * part of the pattern are matched together, thus their objects are matched injectively among
+   * each other, like the objects of the positive part.
+   *
+   * @param objectName1 the name of the first object
+   * @param objectName2 the name of the second object
+   * @return whether both objects belong to the same negative application condition
+   */
+  public boolean isInSameNegativeStructure(String objectName1, String objectName2) {
+    return isWithinNegativeStructure(lhs, objectName1)
+        && isWithinNegativeStructure(lhs, objectName2)
+        && getInnermostStructure(objectName1).equals(getInnermostStructure(objectName2));
+  }
+
+  /**
+   * Calculates the innermost optional or list structure of the LHS containing the object with the
+   * given name.
+   *
+   * @param objectName the object name
+   * @return the innermost structure containing the object, empty if the object is not within an
+   * optional or list structure
+   */
+  private Optional<ASTODObject> getInnermostStructure(String objectName) {
+    return Util.getAllODObjects(lhs).stream()
+            .filter(odObj -> odObj.hasStereotype(ODRuleStereotypes.OPTIONAL)
+                || odObj.hasStereotype(ODRuleStereotypes.LIST))
+            .filter(structure -> isChild(structure, objectName))
+            // the structures containing the object are nested in each other: keep the inner one
+            .reduce((structure1, structure2) ->
+                isChild(structure1, structure2.getName()) ? structure2 : structure1);
+  }
+
+  /**
    * Checks if the object with the given name is within an structure with the
    * given stereotype.
    *

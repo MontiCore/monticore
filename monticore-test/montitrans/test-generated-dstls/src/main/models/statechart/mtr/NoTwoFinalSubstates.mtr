@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+/* Marks Top as initial if it has no two (different) final substates: the negative structures form
+   one negative application condition */
+{
+state Top << [[ :- initial ]] >> {
+  not [[ state $_ <<final>>; ]]
+  not [[ state $_ <<final>>; ]]
+}
+}

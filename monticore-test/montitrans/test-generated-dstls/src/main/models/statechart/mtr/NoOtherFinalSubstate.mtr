@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+/* Marks Top as initial if it has a final substate and no other one */
+{
+state Top << [[ :- initial ]] >> {
+  state $_ <<final>>;
+  not [[ state $_ <<final>>; ]]
+}
+}
