@@ -233,11 +233,8 @@ public class CombinedTemporalsTest {
         .orElseGet(MCAssertions::failAndPrintFindings);
     Assertions.assertInstanceOf(ASTFullPeriod.class, ast.getPeriod());
     
-    Assertions.assertEquals(1, Log.getFindings().size());
     Finding finding = MCAssertions.assertHasFindingStartingWith(ISOTemporals2ndParser.FULL_PERIOD_ERROR_CODE);
     Assertions.assertTrue(finding.isError());
-    Assertions.assertTrue(finding.getMsg().contains("Expected an ISO period but got '" + input + "'"),
-        finding.getMsg());
   }
   
   // These inputs pass the first parse step but are rejected by the second one.

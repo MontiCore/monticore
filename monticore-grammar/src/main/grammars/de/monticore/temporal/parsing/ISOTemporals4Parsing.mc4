@@ -209,7 +209,6 @@ grammar ISOTemporals4Parsing {
 
   Digit4 implements Digits = Digit Digit Digit Digit;
 
-  // At least one digit: an empty sequence has no value (getValue() would throw)
   DigitVar implements Digits = Digit+;
 
   /* ======================================================================= */

@@ -294,11 +294,19 @@ public class ISOTemporals4ParsingTest {
 
   protected static Stream<String> periods() {
     return Stream.of(
-        "P2Y10M15DT10H30M20S", "P1Y2M10DT2H30M", "PT36H", "P6W",
+        "P2Y10M15DT10H30M20S",
+        "P1Y2M10DT2H30M",
+        "PT36H",
+        "P6W",
         // decimal fraction of the lowest order component
-        "PT0.5H", "PT1,5M", "PT2.25S", "P1YT0.5H",
+        "PT0.5H",
+        "PT1,5M",
+        "PT2.25S",
+        "P1YT0.5H",
         // without T, M denotes minutes only after hours
-        "P22H30.5M", "P1D22H30,5M");
+        "P22H30.5M",
+        "P1D22H30,5M"
+    );
   }
 
   @DisplayName("Period")
@@ -310,7 +318,14 @@ public class ISOTemporals4ParsingTest {
 
   // A decimal fraction needs digits in front of it
   protected static Stream<String> periodsWithoutDigitsBeforeFraction() {
-    return Stream.of("P1Y.5M", "P1Y,5M", "PT.5H", "P1D,5H", "PT.5S", "P.5S");
+    return Stream.of(
+        "P1Y.5M",
+        "P1Y,5M",
+        "PT.5H",
+        "P1D,5H",
+        "PT.5S",
+        "P.5S"
+    );
   }
 
   @DisplayName("Period – no digits before the fraction")
@@ -322,7 +337,11 @@ public class ISOTemporals4ParsingTest {
 
   // Without T, M is the month designator, and months cannot have a fractional part
   protected static Stream<String> periodsWithFractionalMonths() {
-    return Stream.of("P3.5M", "P2Y3,5M", "P10D3.5M");
+    return Stream.of(
+        "P3.5M",
+        "P2Y3,5M",
+        "P10D3.5M"
+    );
   }
 
   @DisplayName("Period – fractional months")
@@ -333,7 +352,11 @@ public class ISOTemporals4ParsingTest {
   }
 
   protected static Stream<String> periodsWithoutDigits() {
-    return Stream.of("PW", "PYD", "PT1H.M");
+    return Stream.of(
+        "PW",
+        "PYD",
+        "PT1H.M"
+    );
   }
 
   @DisplayName("Period – designator without digits")
