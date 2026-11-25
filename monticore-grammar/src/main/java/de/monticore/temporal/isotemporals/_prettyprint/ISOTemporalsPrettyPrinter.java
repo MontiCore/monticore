@@ -14,6 +14,8 @@ import de.monticore.temporal.isotemporals._ast.ASTTimeShift;
 
 /**
  * This pretty printer prints ISO temporals.
+ * The generated one does not support the enum Sign and inserts spaces inside a
+ * literal, e.g. before the unit of a period fraction (PT6.5 H) or a time shift.
  */
 public class ISOTemporalsPrettyPrinter extends ISOTemporalsPrettyPrinterTOP {
 
