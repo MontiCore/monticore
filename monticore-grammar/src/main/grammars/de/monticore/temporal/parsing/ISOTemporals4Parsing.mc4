@@ -139,11 +139,23 @@ grammar ISOTemporals4Parsing {
 
   interface ISOPeriod4P extends ISOTemporal4P;
 
+  // Without T, M is the month designator. It denotes minutes only after hours,
+  // so that a fractional month such as P2Y3.5M is rejected instead of read as minutes.
   FullPeriod4P implements ISOPeriod4P = PeriodDesignator
-      (years:DigitVar YearDesignator)? (months:DigitVar MonthDesignator)?
-      (days:DigitVar DayDesignator)? TimeDesignator?
-      (hours:DigitVar fraction:Fraction4P? HourDesignator)? (minutes:DigitVar fraction:Fraction4P? (MonthDesignator | MinuteDesignator))?
-      (seconds:DigitVar fraction:Fraction4P? SecondDesignator)?;
+      (years:DigitVar YearDesignator)?
+      (months:DigitVar MonthDesignator)?
+      (days:DigitVar DayDesignator)?
+      ( TimeDesignator
+            (hours:DigitVar fraction:Fraction4P? HourDesignator)?
+            (minutes:DigitVar fraction:Fraction4P? (MonthDesignator | MinuteDesignator))?
+            (seconds:DigitVar fraction:Fraction4P? SecondDesignator)?
+      |     (hours:DigitVar fraction:Fraction4P? HourDesignator)
+            (minutes:DigitVar fraction:Fraction4P? (MonthDesignator | MinuteDesignator))?
+            (seconds:DigitVar fraction:Fraction4P? SecondDesignator)?
+      |     (minutes:DigitVar fraction:Fraction4P? MinuteDesignator)
+            (seconds:DigitVar fraction:Fraction4P? SecondDesignator)?
+      |     (seconds:DigitVar fraction:Fraction4P? SecondDesignator)
+      )?;
 
   WeekPeriod4P implements ISOPeriod4P = PeriodDesignator weeks:DigitVar WeekDesignator;
 
@@ -197,7 +209,7 @@ grammar ISOTemporals4Parsing {
 
   Digit4 implements Digits = Digit Digit Digit Digit;
 
-  DigitVar implements Digits = Digit*;
+  DigitVar implements Digits = Digit+;
 
   /* ======================================================================= */
   /* ===================== [3.2.5] Designators Symbols ===================== */

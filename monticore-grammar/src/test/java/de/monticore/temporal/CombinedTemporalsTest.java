@@ -229,6 +229,18 @@ public class CombinedTemporalsTest {
     MCAssertions.assertHasFindings(Finding::isError);
   }
 
+  @DisplayName("Full Period Second Parse Step Invalid")
+  @ParameterizedTest(name = "Input: {0}")
+  @MethodSource("de.monticore.temporal.TemporalTestCases#periodsRejectedBySecondStep")
+  void testFullPeriodSecondParseStepInvalid(String input) throws IOException {
+    ASTTemporal ast = parser.parse_String(input)
+        .orElseGet(MCAssertions::failAndPrintFindings);
+    Assertions.assertInstanceOf(ASTFullPeriod.class, ast.getPeriod());
+    
+    Finding finding = MCAssertions.assertHasFindingStartingWith(ISOTemporals2ndParser.FULL_PERIOD_ERROR_CODE);
+    Assertions.assertTrue(finding.isError());
+  }
+  
   // These inputs pass the first parse step but are rejected by the second one.
   // The second parser reports exactly one error at the position of the date instead of
   // throwing an exception. The field values of the AST are meaningless in that case.
