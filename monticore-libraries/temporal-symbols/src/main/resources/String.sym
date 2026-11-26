@@ -1,5 +1,6 @@
 {
   "generated-using": "www.MontiCore.de technology",
+  "comment": "Temporary, until the new version is released and String is supported",
   "name": "String",
   "symbols": [
     {

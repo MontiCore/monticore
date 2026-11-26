@@ -2,7 +2,7 @@
 package de.monticore.values;
 
 /**
- * Factory to create MIValues.
+ * Factory to create MCValues.
  * Mostly constructors are used directly in the current version
  * for efficiency reasons
  */
