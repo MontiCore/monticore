@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.temporal.compatibility;
+
+/* Combines the temporal grammars with SIUnitTypes4Computing
+ * to test their compatibility, see AbstractTemporalCompatibilityTest. */
+grammar TemporalsWithSIUnitTypes4Computing extends de.monticore.temporal.ISOTemporals,
+    de.monticore.temporal.DETemporals,
+    de.monticore.temporal.EscapedTemporalLiterals,
+    de.monticore.siunit.SIUnitTypes4Computing {
+  Temporal = Instant | Period;
+  EscapedTemporals = EscapedTemporalLiteral+;
+}

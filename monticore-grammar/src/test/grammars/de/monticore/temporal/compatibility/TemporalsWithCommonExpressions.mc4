@@ -1,0 +1,13 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.temporal.compatibility;
+
+/* Combines the temporal grammars with CommonExpressions
+ * to test their compatibility, see AbstractTemporalCompatibilityTest. */
+grammar TemporalsWithCommonExpressions extends de.monticore.temporal.ISOTemporals,
+    de.monticore.temporal.DETemporals,
+    de.monticore.temporal.EscapedTemporalLiterals,
+    de.monticore.expressions.CommonExpressions {
+  Temporal = Instant | Period;
+  EscapedTemporals = EscapedTemporalLiteral+;
+  TemporalExpression = Expression;
+}

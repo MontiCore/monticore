@@ -1,0 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.temporal.compatibility;
+
+/* Combines the temporal grammars with MCJavaLiterals
+ * to test their compatibility, see AbstractTemporalCompatibilityTest.
+ * This combination cannot be generated: the parser production 'enum Sign' of ISOTemporals
+ * replaces the lexical fragment 'Sign' of MCJavaLiterals, so the generated lexer refers to
+ * an undefined rule. Hence it is kept here instead of in src/test/grammars. */
+grammar TemporalsWithMCJavaLiterals extends de.monticore.temporal.ISOTemporals,
+    de.monticore.temporal.DETemporals,
+    de.monticore.temporal.EscapedTemporalLiterals,
+    de.monticore.literals.MCJavaLiterals {
+  Temporal = Instant | Period;
+  EscapedTemporals = EscapedTemporalLiteral+;
+}

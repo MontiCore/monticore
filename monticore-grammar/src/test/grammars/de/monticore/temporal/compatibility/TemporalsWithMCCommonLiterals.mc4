@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.temporal.compatibility;
+
+/* Combines the temporal grammars with nothing but MCCommonLiterals (the control)
+ * to test their compatibility, see AbstractTemporalCompatibilityTest. */
+grammar TemporalsWithMCCommonLiterals extends de.monticore.temporal.ISOTemporals,
+    de.monticore.temporal.DETemporals,
+    de.monticore.temporal.EscapedTemporalLiterals {
+  Temporal = Instant | Period;
+  EscapedTemporals = EscapedTemporalLiteral+;
+}
