@@ -290,6 +290,42 @@ public class CombinedTemporalsTest {
     );
   }
 
+  // The date and the time of a date-time are built from a single token; each gets the
+  // position of its part of that token, e.g. for reporting CoCo errors.
+  @DisplayName("ISO Date-Time Part Positions")
+  @ParameterizedTest(name = "Input: {0}")
+  @MethodSource("dateTimePartPositions")
+  void testISODateTimePartPositions(String input, int line, int dateStart, int dateEnd,
+      int timeStart, int timeEnd) throws IOException {
+    ASTTemporal ast = parser.parse_String(input)
+        .orElseGet(MCAssertions::failAndPrintFindings);
+    ASTISODateTime dateTime = Assertions.assertInstanceOf(ASTISODateTime.class, ast.getInstant());
+
+    assertPosition(line, dateStart, dateEnd, dateTime.getDate());
+    assertPosition(line, timeStart, timeEnd, dateTime.getTime());
+  }
+
+  static Stream<Arguments> dateTimePartPositions() {
+    return Stream.of(
+        Arguments.of("2017-12-04T12:30", 1, 0, 10, 10, 16),
+        Arguments.of("  2017-12-04T12:30", 1, 2, 12, 12, 18),
+        Arguments.of("\n2017-12-04T12:30", 2, 0, 10, 10, 16),
+        Arguments.of("+002017-12-04T12:30:15.5-05:30", 1, 0, 13, 13, 30),
+        Arguments.of("2017-338T12Z", 1, 0, 8, 8, 12),
+        Arguments.of("2017W481T1230", 1, 0, 8, 8, 13)
+    );
+  }
+
+  protected void assertPosition(int line, int start, int end, ASTISOTemporalsNode node) {
+    // SourcePosition does not implement equals
+    Assertions.assertEquals(line + ":" + start, toString(node.get_SourcePositionStart()));
+    Assertions.assertEquals(line + ":" + end, toString(node.get_SourcePositionEnd()));
+  }
+
+  protected String toString(SourcePosition position) {
+    return position.getLine() + ":" + position.getColumn();
+  }
+
   @DisplayName("Numeric Date Parsing")
   @ParameterizedTest(name = "Input: {0}")
   @MethodSource("de.monticore.temporal.TemporalTestCases#numericDatesWithoutYear")
