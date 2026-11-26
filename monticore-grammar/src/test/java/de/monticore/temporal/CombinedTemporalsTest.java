@@ -285,6 +285,10 @@ public class CombinedTemporalsTest {
             ISOTemporals2ndParser.CALENDAR_DATE_ERROR_CODE, "a calendar date"),
         Arguments.of("12:30:01-0", ASTISOTime.class,
             ISOTemporals2ndParser.ISO_TIME_ERROR_CODE, "an ISO time"),
+        Arguments.of("1:2", ASTISOTime.class,
+            ISOTemporals2ndParser.ISO_TIME_ERROR_CODE, "an ISO time"),
+        Arguments.of("T1:2:3", ASTISOTime.class,
+            ISOTemporals2ndParser.ISO_TIME_ERROR_CODE, "an ISO time"),
         Arguments.of("17W481T1230", ASTISODateTime.class,
             ISOTemporals2ndParser.ISO_DATE_TIME_ERROR_CODE, "an ISO date-time")
     );
