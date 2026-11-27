@@ -5,13 +5,13 @@ import de.monticore.expressions.commonexpressions._ast.ASTPlusExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTLiteralExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.literals.mccommonliterals._ast.ASTStringLiteral;
+import de.monticore.runtime.junit.TestWithMCLanguage;
 import de.monticore.tf.tfcommons._ast.ASTAssign;
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import mc.testcases.tr.expressiondsltr.ExpressionDSLTRMill;
 import mc.testcases.tr.expressiondsltr._parser.ExpressionDSLTRParser;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -21,38 +21,49 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Test for literal support in left recursive grammars (aka expressions)
  */
+@TestWithMCLanguage(ExpressionDSLTRMill.class)
 public class ExpressionDSLTRParseTest {
-  @BeforeEach
-  public void beforeEach() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-    ExpressionDSLTRMill.init();
-    Log.clearFindings();
+
+  @ParameterizedTest
+  @ValueSource(strings = {
+    "a=b",
+    "a=\"string\"",
+    "a='c'",
+    "a=false",
+    "a=true",
+    "a=null",
+    "a=12"
+  })
+  public void testITFExpressions(String expr) throws IOException {
+    // Test if various literals can be parsed
+    test(expr, ExpressionDSLTRParser::parse_StringITFExpression);
   }
 
   @Test
-  public void testITFExpressions() throws IOException {
-    // Test if various literals can be parsed
-    test("a=b", ExpressionDSLTRParser::parse_StringITFExpression);
-    test("a=\"string\"", ExpressionDSLTRParser::parse_StringITFExpression);
-    test("a='c'", ExpressionDSLTRParser::parse_StringITFExpression);
-    test("a=false", ExpressionDSLTRParser::parse_StringITFExpression);
-    test("a=true", ExpressionDSLTRParser::parse_StringITFExpression);
-    test("a=null", ExpressionDSLTRParser::parse_StringITFExpression);
-    test("a=12", ExpressionDSLTRParser::parse_StringITFExpression);
-  }
-
-  @Test
-  public void testTypes() throws IOException {
-    // Test if various literals can be parsed
+  public void testTFIdentifierName() throws IOException {
     test("String", ExpressionDSLTRParser::parse_StringTfIdentifierName);
-    test("fully.qualified.type", ExpressionDSLTRParser::parse_StringITFMCType);
-    test("boolean", ExpressionDSLTRParser::parse_StringITFMCType);
-    test("String", ExpressionDSLTRParser::parse_StringITFMCType);
-    test("public String s1;", ExpressionDSLTRParser::parse_StringITFCDAttribute);
-    test("private String s2;", ExpressionDSLTRParser::parse_StringITFCDAttribute);
-    test("public Boolean b1;", ExpressionDSLTRParser::parse_StringITFCDAttribute);
-    test("public boolean b2;", ExpressionDSLTRParser::parse_StringITFCDAttribute);
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {
+    "String",
+    "fully.qualified.type",
+    "boolean"
+  })
+  public void testITFMCType(String type) throws IOException {
+    test(type, ExpressionDSLTRParser::parse_StringITFMCType);
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {
+    "public String s1;",
+    "private String s2;",
+    "public Boolean b1;",
+    "public boolean b2;"
+  })
+  public void testITFCDAttribute(String attr) throws IOException {
+    // Test if various literals can be parsed
+    test(attr, ExpressionDSLTRParser::parse_StringITFCDAttribute);
   }
 
   @Test
