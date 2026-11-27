@@ -593,6 +593,61 @@ public class TestPrettyPrinterTest extends PPTestClass {
   }
 
   @Test
+  public void testCPEnum() throws IOException {
+    testPP("term +", TestPrettyPrintersMill.parser()::parse_StringCPEnum, s -> s.contains("+"));
+    testPP("term -", TestPrettyPrintersMill.parser()::parse_StringCPEnum, s -> s.contains("-"));
+    testPP("term *", TestPrettyPrintersMill.parser()::parse_StringCPEnum, s -> s.contains("*"));
+  }
+
+  @Test
+  public void testCPEnumU() throws IOException {
+    testPP("term - n1", TestPrettyPrintersMill.parser()::parse_StringCPEnumU, s -> s.contains("-n1"));
+  }
+
+  @Test
+  public void testCPEnumOpt() throws IOException {
+    testPP("term + n1", TestPrettyPrintersMill.parser()::parse_StringCPEnumOpt, s -> s.contains("+"));
+    testPP("term n1", TestPrettyPrintersMill.parser()::parse_StringCPEnumOpt);
+  }
+
+  @Test
+  public void testCPEnumList() throws IOException {
+    testPP("term ;", TestPrettyPrintersMill.parser()::parse_StringCPEnumStar);
+    testPP("term + - * ;", TestPrettyPrintersMill.parser()::parse_StringCPEnumStar, s -> s.contains("+-*"));
+    testPP("term - ;", TestPrettyPrintersMill.parser()::parse_StringCPEnumPlus, s -> s.contains("-"));
+    testPP("term * + ;", TestPrettyPrintersMill.parser()::parse_StringCPEnumPlus, s -> s.contains("*+"));
+  }
+
+  @Test
+  public void testCPEnumAlt() throws IOException {
+    testPP("+ n1", TestPrettyPrintersMill.parser()::parse_StringCPEnumAlt, s -> s.contains("+n1"));
+    testPP("none", TestPrettyPrintersMill.parser()::parse_StringCPEnumAlt);
+  }
+
+  @Test
+  public void testCPEnumKw() throws IOException {
+    testPP("kw1 n1", TestPrettyPrintersMill.parser()::parse_StringCPEnumKw, s -> s.contains("kw1 n1"));
+    testPP("kw2 n1", TestPrettyPrintersMill.parser()::parse_StringCPEnumKw, s -> s.contains("kw2 n1"));
+  }
+
+  @Test
+  public void testCPEnumDup() throws IOException {
+    testPP("term dup1", TestPrettyPrintersMill.parser()::parse_StringCPEnumDup, s -> s.contains("dup1"));
+    testPP("term dup2", TestPrettyPrintersMill.parser()::parse_StringCPEnumDup, s -> s.contains("dup1"));
+  }
+
+  @Test
+  public void testCPEnumIterated() throws IOException {
+    try {
+      testPP("+ term -", TestPrettyPrintersMill.parser()::parse_StringCPEnumIterated);
+      Assertions.fail();
+    } catch (IllegalStateException expected) {
+      Assertions.assertEquals("EnumProd references used multiple times or within a repeated block are not yet supported by the generated pretty printer", expected.getMessage());
+      MCAssertions.assertHasFinding(f -> f.getMsg().contains("EnumProd references used multiple times or within a repeated block are not yet supported"));
+    }
+  }
+
+  @Test
   public void testNoSpaceAltsOverflow() throws IOException {
     try {
       testPP("-n1.n2", TestPrettyPrintersMill.parser()::parse_StringNoSpaceAltsOverflow);

@@ -41,5 +41,11 @@ public class SuperTestPrettyPrinterTest extends PPTestClass {
     testPP("b", SuperTestPrettyPrintersMill.parser()::parse_StringSuperInterfaceI);
   }
 
+  @Test
+  public void testSuperEnum() throws IOException {
+    testPP("super - n1", SuperTestPrettyPrintersMill.parser()::parse_StringSuperEnum, s -> s.contains("-n1"));
+    testPP("super * n1", SuperTestPrettyPrintersMill.parser()::parse_StringSuperEnum, s -> s.contains("*n1"));
+  }
+
 
 }

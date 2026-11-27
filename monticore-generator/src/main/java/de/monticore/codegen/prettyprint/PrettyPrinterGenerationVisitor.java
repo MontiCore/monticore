@@ -309,12 +309,14 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
     if (blockDataStack.isEmpty()) return; // Only visit in CPs
     AltData altData = altDataStack.peek();
 
-    if (node.getSymbol().getReferencedProd().get().isIsEnum()) {
-      this.failureMessage = "EnumProd references are not yet supported by the generated pretty printer";
-      return;
-    }
     String refName = node.isPresentUsageName() ? node.getUsageName() : node.getName();
     Multiplicity multiplicity = currentClassProdData.getMultiplicity(StringTransformations.uncapitalize(refName));
+
+    ProdSymbol referencedProd = node.getSymbol().getReferencedProd().get();
+    if (referencedProd.isIsEnum()) {
+      visitEnumNonTerminal(node, referencedProd, refName, multiplicity);
+      return;
+    }
 
 
     Optional<ProdSymbol> prodSymbol = currentClassProd.getSpannedScope().resolveProd(node.getName());
@@ -394,6 +396,67 @@ public class PrettyPrinterGenerationVisitor implements GrammarVisitor2 {
     );
 
     altData.getComponentList().add(component);
+  }
+
+  /**
+   * References to EnumProds are printed by comparing the attribute with each constant of the AST enum,
+   * e.g. Sign? for enum Sign = plus:"+" | minus:"-";
+   */
+  protected void visitEnumNonTerminal(ASTNonTerminal node, ProdSymbol enumProd, String refName, Multiplicity multiplicity) {
+    AltData altData = altDataStack.peek();
+
+    // The referenced symbol might be a surrogate without an AST
+    enumProd = grammarSymbol.getProdWithInherited(enumProd.getName()).orElse(enumProd);
+    if (!enumProd.isPresentAstNode() || !(enumProd.getAstNode() instanceof ASTEnumProd)) {
+      this.failureMessage = "Unable to find the constants of the EnumProd " + enumProd.getName();
+      return;
+    }
+    if (currentClassProdData.isIteratorNeeded(refName)
+            || (multiplicity == Multiplicity.LIST && node.getIteration() == ASTConstantsGrammar.DEFAULT)) {
+      this.failureMessage = "EnumProd references used multiple times or within a repeated block are not yet supported by the generated pretty printer";
+      return;
+    }
+
+    // Map each constant of the AST enum to its terminal, analogous to the EnumTranslation (the first terminal wins)
+    Map<String, String> constants = new LinkedHashMap<>();
+    Map<String, String> tokenTypes = new LinkedHashMap<>();
+    for (ASTConstant constant : ((ASTEnumProd) enumProd.getAstNode()).getConstantList()) {
+      String constantName = LexNamer.createSimpleGoodName(constant.isPresentUsageName() ? constant.getUsageName() : constant.getName());
+      if (constantName.isEmpty()) {
+        this.failureMessage = "Unable to find good Constant name for the EnumProd " + enumProd.getName() + " and value " + constant.getName();
+        return;
+      }
+      constants.putIfAbsent(constantName, constant.getName());
+      tokenTypes.putIfAbsent(constantName, lexNamer.getOrComputeLexName(grammarSymbol, constant.getName()));
+    }
+
+    int iteration = node.getIteration();
+    if (iteration == ASTConstantsGrammar.PLUS || iteration == ASTConstantsGrammar.DEFAULT) {
+      altData.getRequiredSet().add(refName);
+    } else {
+      altData.getOptionalSet().add(refName);
+    }
+
+    if (multiplicity == Multiplicity.STANDARD && (iteration == ASTConstantsGrammar.PLUS || iteration == ASTConstantsGrammar.STAR))
+      iteration = ASTConstantsGrammar.DEFAULT; // Force overwrite in case of ASTRule shenanigans
+    if (multiplicity == Multiplicity.OPTIONAL && (iteration == ASTConstantsGrammar.PLUS || iteration == ASTConstantsGrammar.STAR))
+      iteration = ASTConstantsGrammar.QUESTION; // Force overwrite in case of ASTRule shenanigans
+
+    if (node.getIteration() == ASTConstantsGrammar.QUESTION || node.getIteration() == ASTConstantsGrammar.STAR) {
+      altData.setOptional(altData.getOptional() + 1);
+    } else {
+      if (node.getIteration() == ASTConstantsGrammar.PLUS)
+        altData.setOptional(altData.getOptional() + 1);
+      altData.setRequired(altData.getRequired() + 1);
+
+      ASTExpression exp = getExp(node.getSymbol().getName(), refName, multiplicity);
+      if (exp != null) {
+        altData.getExpressionList().add(exp);
+      }
+    }
+
+    String enumType = Joiners.DOT.join(getASTPackage(enumProd)) + "." + ASTConstants.AST_PREFIX + StringTransformations.capitalize(enumProd.getName());
+    altData.getComponentList().add(PPGuardComponent.forEnum(enumType, refName, iteration, constants.entrySet(), tokenTypes, node));
   }
 
   protected String substituteLexProdType(String type){

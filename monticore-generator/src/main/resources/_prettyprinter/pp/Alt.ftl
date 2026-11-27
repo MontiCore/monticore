@@ -80,6 +80,18 @@ ${tc.signature("glex", "altData", "grammarName", "astPackage")}
                 iter_${comp.getNameToUse()?uncap_first}.next().accept(getTraverser());
             </#if>
         </#if>
+    <#elseif comp.getType().name() == "ENUM">  <#-- NonTerminal referencing an EnumProd -->
+        <#if comp.isList()>
+            node.get${comp.getNameToUse()?cap_first}List().forEach(n->{
+            <@enumConstant comp "n"/>
+            });
+        <#elseif comp.isOpt()>
+            if (node.isPresent${comp.getNameToUse()?cap_first}()) {
+            <@enumConstant comp "node.get${comp.getNameToUse()?cap_first}()"/>
+            }
+        <#else >
+            <@enumConstant comp "node.get${comp.getNameToUse()?cap_first}()"/>
+        </#if>
     <#elseif comp.getType().name() == "BLOCK">  <#-- Block -->
         ${includeArgs("Block", ast, comp.getBlockData(), grammarName, astPackage)}
     <#elseif comp.getType().name() == "CG">  <#-- Constant Group -->
@@ -99,4 +111,13 @@ ${tc.signature("glex", "altData", "grammarName", "astPackage")}
         ${error("Unknown RuleComponent Type " + comp.getType())}
     </#if>
 </#list>
+</#macro>
+<#-- Print the terminal of the enum constant the value (a Java expression) is equal to -->
+<#macro enumConstant comp value>
+    <#list comp.getConstants() as const>
+        if (${value} == ${comp.getName()}.${const.getKey()}) {
+        ${includeArgs("Terminal", const.getValue(), comp.isHasNoSpace(), comp.isTerminalNoSpace(const.getValue()))}
+        }
+        <#sep> else
+    </#list>
 </#macro>
