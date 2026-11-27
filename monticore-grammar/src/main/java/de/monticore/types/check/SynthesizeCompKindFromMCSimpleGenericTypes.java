@@ -23,7 +23,8 @@ import java.util.stream.Collectors;
  * {@link ASTMCBasicGenericType}, given that there is a matching resolvable
  * component type symbol.
  *
- * @deprecated use {@link SynthesizeCompKindFromMCComponentTypes}.
+ * @deprecated use
+ *     {@link de.monticore.types.mccomponenttypes.types3.MCComponentTypesTypeVisitor}.
  */
 @Deprecated
 public class SynthesizeCompKindFromMCSimpleGenericTypes implements MCSimpleGenericTypesHandler {

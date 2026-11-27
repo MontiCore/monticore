@@ -7,7 +7,9 @@ import de.monticore.types.mcbasictypes._visitor.MCBasicTypesTraverser;
 import java.util.Optional;
 
 /**
- * @deprecated use {@link FullSynthesizeCompKindFromMCComponentTypes} for component references.
+ * @deprecated use
+ *     {@link de.monticore.types.mccomponenttypes.types3.MCComponentTypesTypeCheck3#compTypeFromAST}
+ *     for component references.
  */
 @Deprecated
 public class FullSynthesizeCompKindFromMCBasicTypes implements ISynthesizeComponent {
