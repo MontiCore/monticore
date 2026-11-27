@@ -47,14 +47,16 @@ jobs:
           GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
         run: |
           python -m pip install --upgrade pip
-          pip install mkdocs mkdocs-material
+          pip install zensical
           git clone https://monticore:$GITLAB_TOKEN@git.rwth-aachen.de/se/infrastructure/monticore-pygments-highlighting.git
           pip install -r ./monticore-pygments-highlighting/requirements.txt
           pip install ./monticore-pygments-highlighting
       - name: Preprocess the docs
-        run: sh docs/scripts/preprocessing.sh inplace
+        run: |
+          sh docs/scripts/preprocessing.sh inplace
+          python docs/scripts/expand_snippets.py docs_wd
       - name: Build the docs into a site directory
-        run: mkdocs build --verbose --clean --strict
+        run: zensical build --clean --strict
       - name: Upload static files as artifact
         id: deployment
         uses: actions/upload-pages-artifact@v3 # or specific "vX.X.X" version tag for this action

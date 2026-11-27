@@ -89,8 +89,8 @@
     {% endif %}
 
     <!-- Button to open search modal -->
-    {% if "material/search" in config.plugins %}
-      {% set search = config.plugins["material/search"] | attr("config") %}
+    {% if "material/search" in config.plugins or "search" in config.plugins %}
+      {% set search = config.plugins["material/search" if "material/search" in config.plugins else "search"] | attr("config") %}
 
       <!-- Check if search is actually enabled - see https://t.ly/DT_0V -->
       {% if search.enabled %}
