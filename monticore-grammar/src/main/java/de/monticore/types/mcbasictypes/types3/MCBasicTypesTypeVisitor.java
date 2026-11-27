@@ -77,7 +77,7 @@ public class MCBasicTypesTypeVisitor extends AbstractTypeVisitor
     if (rType.isPresentMCType()) {
       getType4Ast().setTypeOfTypeIdentifier(
           rType,
-          getType4Ast().getTypeOfTypeIdentifier(rType.getMCType())
+          getType4Ast().getPartialTypeOfTypeId(rType.getMCType())
       );
     }
     else if (rType.isPresentMCVoidType()) {
