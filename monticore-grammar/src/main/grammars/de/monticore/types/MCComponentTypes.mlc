@@ -10,9 +10,6 @@ mlc MCComponentTypes {
   // export handwritten code
   export "$projectDir/src/main/java" {
     include "de/monticore/types/mccomponenttypes/**.java";
-    include "de/monticore/types/check/ISynthesizeComponent.java";
-    include "de/monticore/types/check/FullSynthesizeCompKindFromMCComponentTypes.java";
-    include "de/monticore/types/check/SynthesizeCompKindFromMCComponentTypes.java";
   }
 
   // export all Java files generated from the grammar
@@ -26,12 +23,15 @@ mlc MCComponentTypes {
   }
 
   uses {
-    include "$projectDir/src/main/java/de/monticore/types/check/CompKindCheckResult.java";
     include "$projectDir/src/main/java/de/monticore/types/check/CompKindExpression.java";
     include "$projectDir/src/main/java/de/monticore/types/check/CompKindOfComponentType.java";
     include "$projectDir/src/main/java/de/monticore/types/check/CompKindOfGenericComponentType.java";
     include "$projectDir/src/main/java/de/monticore/types/check/SymTypeExpression.java";
+    include "$projectDir/src/main/java/de/monticore/types3/AbstractTypeVisitor.java";
+    include "$projectDir/src/main/java/de/monticore/types3/Type4Ast.java";
     include "$projectDir/src/main/java/de/monticore/types3/TypeCheck3.java";
+    include "$projectDir/src/main/java/de/monticore/types3/generics/context/InferenceContext4Ast.java";
+    include "$projectDir/src/main/java/de/monticore/types3/util/MapBasedTypeCheck3.java";
     include "$mp/com/google/common/base/Preconditions.class";
   }
 }

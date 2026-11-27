@@ -17,7 +17,8 @@ import java.util.List;
  * {@link ASTMCQualifiedType}, given that there is matching, resolvable
  * component type symbol.
  *
- * @deprecated use {@link SynthesizeCompKindFromMCComponentTypes}.
+ * @deprecated use
+ *     {@link de.monticore.types.mccomponenttypes.types3.MCComponentTypesTypeVisitor}.
  */
 @Deprecated
 public class SynthesizeCompKindFromMCBasicTypes implements MCBasicTypesHandler {
