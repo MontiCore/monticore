@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.temporal.compatibility;
+
+/* Combines the temporal grammars with MCLowLevelStatements
+ * to test their compatibility, see AbstractTemporalCompatibilityTest. */
+grammar TemporalsWithMCLowLevelStatements extends de.monticore.temporal.ISOTemporals,
+    de.monticore.temporal.DETemporals,
+    de.monticore.temporal.EscapedTemporalLiterals,
+    de.monticore.statements.MCLowLevelStatements {
+  Temporal = Instant | Period;
+  EscapedTemporals = EscapedTemporalLiteral+;
+}

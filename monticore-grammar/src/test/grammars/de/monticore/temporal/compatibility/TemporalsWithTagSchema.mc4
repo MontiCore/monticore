@@ -1,0 +1,13 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.temporal.compatibility;
+
+/* Combines the temporal grammars with TagSchema
+ * to test their compatibility, see AbstractTemporalCompatibilityTest. */
+grammar TemporalsWithTagSchema extends de.monticore.temporal.ISOTemporals,
+    de.monticore.temporal.DETemporals,
+    de.monticore.temporal.EscapedTemporalLiterals,
+    de.monticore.tagging.TagSchema {
+  Temporal = Instant | Period;
+  EscapedTemporals = EscapedTemporalLiteral+;
+  NameScopeIdentifier implements ScopeIdentifier = Name;
+}

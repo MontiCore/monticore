@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.temporal.compatibility;
+
+/* Combines the temporal grammars with JavaLight (and CommonExpressions for the expression templates)
+ * to test their compatibility, see AbstractTemporalCompatibilityTest. */
+grammar TemporalsWithJavaLight extends de.monticore.temporal.ISOTemporals,
+    de.monticore.temporal.DETemporals,
+    de.monticore.temporal.EscapedTemporalLiterals,
+    de.monticore.expressions.CommonExpressions,
+    de.monticore.JavaLight {
+  Temporal = Instant | Period;
+  EscapedTemporals = EscapedTemporalLiteral+;
+  TemporalExpression = Expression;
+}

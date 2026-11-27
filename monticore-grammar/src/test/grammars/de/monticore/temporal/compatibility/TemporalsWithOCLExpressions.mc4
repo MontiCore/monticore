@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.temporal.compatibility;
+
+/* Combines the temporal grammars with OCLExpressions (and CommonExpressions for the expression templates)
+ * to test their compatibility, see AbstractTemporalCompatibilityTest. */
+grammar TemporalsWithOCLExpressions extends de.monticore.temporal.ISOTemporals,
+    de.monticore.temporal.DETemporals,
+    de.monticore.temporal.EscapedTemporalLiterals,
+    de.monticore.expressions.CommonExpressions,
+    de.monticore.ocl.OCLExpressions {
+  Temporal = Instant | Period;
+  EscapedTemporals = EscapedTemporalLiteral+;
+  TemporalExpression = Expression;
+}

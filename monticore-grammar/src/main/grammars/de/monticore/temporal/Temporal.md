@@ -600,6 +600,34 @@ Together, these grammars allow MontiCore language developers to reuse standardiz
 
 ---
 
+## Compatibility with Other Grammars
+
+The temporal grammars are tested in combination with every grammar of `monticore-grammar` that introduces terminals of its own.
+For each such grammar `X`, the test grammar `TemporalsWith<X>` extends `ISOTemporals`, `DETemporals`, `EscapedTemporalLiterals`, and `X`
+(grammars with expressions also extend `CommonExpressions`).
+`AbstractTemporalCompatibilityTest` checks each combination in four contexts:
+
+| Context            | Inputs                                                                                                 |
+|--------------------|--------------------------------------------------------------------------------------------------------|
+| standalone         | all valid ISO and German test inputs as `Instant` or `Period`, including a pretty-printer round trip   |
+| expression         | literals in expressions, e.g. `x < 2017-12-04T12:30` or `b ? 12 Uhr : y`                               |
+| escaped            | one or more escaped literals, e.g. `d"4. April 2017"` or `d"P1D" d"P2D"`                               |
+| escaped expression | escaped literals in expressions, e.g. `d"12:00Z" < d"13:00Z"`                                          |
+
+Known incompatibilities:
+
+- `MCJavaLiterals` cannot be combined with `ISOTemporals`:
+  the parser production `enum Sign` of `ISOTemporals` replaces the lexical fragment `Sign` of `MCJavaLiterals`,
+  so the generated lexer refers to an undefined rule.
+  Hence the combination is not generated; its test grammar is kept in the test resources.
+- Two escaped literals in one input fail in every combination, e.g. `d"12:00Z" < d"13:00Z"`:
+  the text from the closing `"` of the first literal to the opening `"` of the second one is lexed as a `String` of `MCCommonLiterals`.
+  Use at most one escaped literal per parsed input.
+
+All other combinations parse every input in every context.
+
+---
+
 ## Further Information
 
 - [Project root: MontiCore @ GitHub](https://github.com/MontiCore/monticore)
