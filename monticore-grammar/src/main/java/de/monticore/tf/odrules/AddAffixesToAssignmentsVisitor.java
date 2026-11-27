@@ -14,134 +14,131 @@ import java.util.List;
 /**
  * This visitor adds prefix "m." to normal nodes in assignments.
  */
-public class AddAffixesToAssignmentsVisitor implements
-        ExpressionsBasisVisitor2, CommonExpressionsVisitor2 {
+public class AddAffixesToAssignmentsVisitor
+    implements ExpressionsBasisVisitor2, CommonExpressionsVisitor2 {
 
-    protected List<ASTMatchingObject> lhsObjects;
-    protected HierarchyHelper hierarchyHelper;
-    public ASTExpression rootExp;
+  protected List<ASTMatchingObject> lhsObjects;
+  protected HierarchyHelper hierarchyHelper;
+  public ASTExpression rootExp;
 
-    public AddAffixesToAssignmentsVisitor(List<ASTMatchingObject> lhsObjects, HierarchyHelper hierarchyHelper, ASTExpression rootExp) {
-        super();
-        this.hierarchyHelper = hierarchyHelper;
-        this.lhsObjects = lhsObjects;
-        this.rootExp = rootExp;
+  public AddAffixesToAssignmentsVisitor(List<ASTMatchingObject> lhsObjects,
+      HierarchyHelper hierarchyHelper, ASTExpression rootExp) {
+    super();
+    this.hierarchyHelper = hierarchyHelper;
+    this.lhsObjects = lhsObjects;
+    this.rootExp = rootExp;
+  }
+
+  @Override
+  public void visit(ASTFieldAccessExpression node) {
+    if (node.getExpression() instanceof ASTNameExpression nameExpression) {
+      node.setExpression(replaceNode(nameExpression));
     }
+  }
 
-    @Override
-    public void visit(ASTFieldAccessExpression node) {
-        if (node.getExpression() instanceof ASTNameExpression) {
-            node.setExpression(replaceNode((ASTNameExpression) node.getExpression()));
-        }
+  @Override
+  public void visit(ASTBooleanNotExpression node) {
+    if (node.getExpression() instanceof ASTNameExpression nameExpression) {
+      node.setExpression(replaceNode(nameExpression));
     }
+  }
 
-    @Override
-    public void visit(ASTBooleanNotExpression node) {
-        if (node.getExpression() instanceof ASTNameExpression) {
-            node.setExpression(replaceNode((ASTNameExpression) node.getExpression()));
-        }
+  @Override
+  public void visit(ASTLogicalNotExpression node) {
+    if (node.getExpression() instanceof ASTNameExpression nameExpression) {
+      node.setExpression(replaceNode(nameExpression));
     }
+  }
 
-    @Override
-    public void visit(ASTLogicalNotExpression node) {
-        if (node.getExpression() instanceof ASTNameExpression) {
-            node.setExpression(replaceNode((ASTNameExpression) node.getExpression()));
-        }
+  @Override
+  public void visit(ASTEqualsExpression node) {
+    if (node.getLeft() instanceof ASTNameExpression leftNameExpression) {
+      node.setLeft(replaceNode(leftNameExpression));
     }
-
-    @Override
-    public void visit(ASTEqualsExpression node) {
-        if (node.getLeft() instanceof ASTNameExpression) {
-            node.setLeft(replaceNode((ASTNameExpression) node.getLeft()));
-        }
-        if (node.getRight() instanceof ASTNameExpression) {
-            node.setRight(replaceNode((ASTNameExpression) node.getRight()));
-        }
+    if (node.getRight() instanceof ASTNameExpression rightNameExpression) {
+      node.setRight(replaceNode(rightNameExpression));
     }
+  }
 
-    @Override
-    public void visit(ASTBooleanAndOpExpression node) {
-        if (node.getLeft() instanceof ASTNameExpression) {
-            node.setLeft(replaceNode((ASTNameExpression) node.getLeft()));
-        }
-        if (node.getRight() instanceof ASTNameExpression) {
-            node.setRight(replaceNode((ASTNameExpression) node.getRight()));
-        }
+  @Override
+  public void visit(ASTBooleanAndOpExpression node) {
+    if (node.getLeft() instanceof ASTNameExpression leftNameExpression) {
+      node.setLeft(replaceNode(leftNameExpression));
     }
-
-    @Override
-    public void visit(ASTBooleanOrOpExpression node) {
-        if (node.getLeft() instanceof ASTNameExpression) {
-            node.setLeft(replaceNode((ASTNameExpression) node.getLeft()));
-        }
-        if (node.getRight() instanceof ASTNameExpression) {
-            node.setRight(replaceNode((ASTNameExpression) node.getRight()));
-        }
+    if (node.getRight() instanceof ASTNameExpression rightNameExpression) {
+      node.setRight(replaceNode(rightNameExpression));
     }
+  }
 
-    @Override
-    public void visit(ASTPlusExpression node) {
-        if (node.getLeft() instanceof ASTNameExpression) {
-            node.setLeft(replaceNode((ASTNameExpression) node.getLeft()));
-        }
-        if (node.getRight() instanceof ASTNameExpression) {
-            node.setRight(replaceNode((ASTNameExpression) node.getRight()));
-        }
+  @Override
+  public void visit(ASTBooleanOrOpExpression node) {
+    if (node.getLeft() instanceof ASTNameExpression leftNameExpression) {
+      node.setLeft(replaceNode(leftNameExpression));
     }
+    if (node.getRight() instanceof ASTNameExpression rightNameExpression) {
+      node.setRight(replaceNode(rightNameExpression));
+    }
+  }
 
-    @Override
-    public void visit(ASTBracketExpression node) {
-        if (node.getExpression() instanceof ASTNameExpression) {
-            node.setExpression(replaceNode((ASTNameExpression) node.getExpression()));
+  @Override
+  public void visit(ASTPlusExpression node) {
+    if (node.getLeft() instanceof ASTNameExpression leftNameExpression) {
+      node.setLeft(replaceNode(leftNameExpression));
+    }
+    if (node.getRight() instanceof ASTNameExpression rightNameExpression) {
+      node.setRight(replaceNode(rightNameExpression));
+    }
+  }
+
+  @Override
+  public void visit(ASTBracketExpression node) {
+    if (node.getExpression() instanceof ASTNameExpression nameExpression) {
+      node.setExpression(replaceNode(nameExpression));
+    }
+  }
+
+  @Override
+  public void visit(ASTNameExpression node) {
+    if (node.equals(rootExp))
+    //if(!node.getName().equals("m"))
+    {
+      rootExp = replaceNode(node);
+    }
+  }
+
+  /**
+   * Prefix "m." is added for nodes.
+   * Suffix .get() for optional variables
+   */
+  private ASTExpression replaceNode(ASTNameExpression node) {
+    for (ASTMatchingObject o : lhsObjects) {
+      if (node.getName().equals(o.getObjectName())) {
+
+        ASTNameExpression nameExpr =
+            CommonExpressionsMill.nameExpressionBuilder().setName("m").build();
+
+        ASTFieldAccessExpression resultExpr =
+            CommonExpressionsMill.fieldAccessExpressionBuilder().setExpression(nameExpr)
+                .setName(node.getName()).build();
+
+        if (hierarchyHelper.isWithinOptionalStructure(o.getObjectName())
+            || hierarchyHelper.isWithinNegativeStructure(o.getObjectName())) {
+
+          ASTFieldAccessExpression getExpr =
+              CommonExpressionsMill.fieldAccessExpressionBuilder().setExpression(resultExpr)
+                  .setName("get").build();
+
+          ASTCallExpression callExpr =
+              CommonExpressionsMill.callExpressionBuilder().setExpression(getExpr)
+                  .setArguments(CommonExpressionsMill.argumentsBuilder().uncheckedBuild()).build();
+
+          return callExpr;
         }
+
+        return resultExpr;
+      }
     }
-
-    @Override
-    public void visit(ASTNameExpression node) {
-        if(node.equals(rootExp))
-            //if(!node.getName().equals("m"))
-            rootExp = replaceNode(node);
-    }
-
-    /**
-     * Prefix "m." is added for nodes.
-     * Suffix .get() for optional variables
-     */
-    private ASTExpression replaceNode(ASTNameExpression node) {
-        for (ASTMatchingObject o : lhsObjects) {
-            if (node.getName().equals(o.getObjectName())) {
-
-                ASTNameExpression nameExpr = CommonExpressionsMill.nameExpressionBuilder()
-                        .setName("m")
-                        .build();
-
-                ASTFieldAccessExpression resultExpr = CommonExpressionsMill.fieldAccessExpressionBuilder()
-                        .setExpression(nameExpr)
-                        .setName(node.getName())
-                        .build();
-
-                if(hierarchyHelper.isWithinOptionalStructure(o.getObjectName())
-                        || hierarchyHelper.isWithinNegativeStructure(o.getObjectName())) {
-
-                    ASTFieldAccessExpression getExpr = CommonExpressionsMill.fieldAccessExpressionBuilder()
-                            .setExpression(resultExpr)
-                            .setName("get")
-                            .build();
-
-                    ASTCallExpression callExpr = CommonExpressionsMill.callExpressionBuilder()
-                            .setExpression(getExpr)
-                            .setArguments(CommonExpressionsMill.argumentsBuilder().uncheckedBuild())
-                            .build();
-
-                    return callExpr;
-                }
-
-                return resultExpr;
-            }
-        }
-
-        return node;
-    }
-
+    return node;
+  }
 
 }

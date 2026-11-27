@@ -2,13 +2,7 @@
 package de.monticore.tf.odrules;
 
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.statements.mcarraystatements._ast.ASTArrayInit;
 import de.monticore.statements.mcvardeclarationstatements._ast.ASTVariableInit;
-import de.se_rwth.commons.Joiners;
-import de.se_rwth.commons.Names;
-import de.se_rwth.commons.Splitters;
-import de.se_rwth.commons.StringTransformations;
-import de.se_rwth.commons.logging.Log;
 import de.monticore.tf.odrulegeneration.ODRuleGenerationMill;
 import de.monticore.tf.odrulegeneration._ast.ASTDependency;
 import de.monticore.tf.odrulegeneration._ast.ASTObjectCondition;
@@ -20,36 +14,52 @@ import de.monticore.tf.odrules._visitor.ODRulesVisitor2;
 import de.monticore.tf.odrules.util.ODRuleStereotypes;
 import de.monticore.tf.odrules.util.TFExpressionFullPrettyPrinter;
 import de.monticore.tf.odrules.util.Util;
+import de.se_rwth.commons.Joiners;
+import de.se_rwth.commons.Names;
+import de.se_rwth.commons.Splitters;
+import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static de.se_rwth.commons.StringTransformations.capitalize;
 import static de.se_rwth.commons.StringTransformations.uncapitalize;
 import static java.lang.String.format;
 
-public class GenerateConditionsVisitor implements
-        ODRulesVisitor2 {
+/**
+ * Creates the conditions, which the candidates for the objects of the lhs of a rule have to
+ * fulfill. Each condition string describes a violation, i.e., a candidate is rejected,
+ * if it evaluates to true.
+ */
+public class GenerateConditionsVisitor implements ODRulesVisitor2 {
 
-  private static final String REGEX = "\\.";
-  private static final String CAND = "cand";
-  private static final String CAND_SUFFIX = "_cand";
-  private static final String GET = ".get()";
-  private static final String GET_ATTRIBUTE = ".get%s()";
+  protected static final String REGEX = "\\.";
+  protected static final String CAND = "cand";
+  protected static final String CAND_SUFFIX = "_cand";
+  protected static final String GET = ".get()";
+  protected static final String GET_ATTRIBUTE = ".get%s()";
 
-  protected List<ASTObjectCondition> objectConditions = new ArrayList<>();
+  protected final List<ASTObjectCondition> objectConditions = new ArrayList<>();
 
-  protected String objectName = "";
-  protected String attrValue = "";
-  protected boolean targetOptional = false;
+  protected final Map<String, ASTODObject> objectsByName = new HashMap<>();
 
+  /** the object, whose attributes are currently visited */
   protected ASTODObject object;
-  protected List<ASTODObject> objectList;
+  protected String objectName = "";
 
+  /** the printed value of the attribute, which is currently visited */
+  protected String attrValue = "";
 
   public List<ASTObjectCondition> getObjectConditions() {
     return objectConditions;
+  }
+
+  @Override
+  public void visit(ASTODDefinition node) {
+    Util.getAllODObjects(node).forEach(o -> objectsByName.putIfAbsent(o.getName(), o));
   }
 
   @Override
@@ -63,30 +73,16 @@ public class GenerateConditionsVisitor implements
   }
 
   @Override
-  public void visit(ASTODDefinition node) {
-    objectList = Util.getAllODObjects(node);
-  }
-
-
-  /**
-   * Visits the nodes of the given AST of the type ASTODAttribute and generates
-   * Strings for the conditions
-   *
-   * @param node the node to start visiting
-   */
-  @Override
   public void visit(ASTODAttribute node) {
     if (node.isPresentSingleValue()) {
       attrValue = Util.printExpression(node.getSingleValue());
     } else if (node.isPresentList()) {
-      attrValue = new TFExpressionFullPrettyPrinter(new IndentPrinter()).prettyprint(node.getList());
+      attrValue = Util.printListValue(node.getList());
     } else {
       Log.error("0xF0002: Object value must be set.");
     }
 
     Optional<ASTODObject> targetObject = getODObject(createObjectString(attrValue));
-
-
     if ("boolean".equals(node.printType())) {
       createConditionsForBoolean(node, targetObject);
     } else if ("int".equals(node.printType())) {
@@ -98,413 +94,355 @@ public class GenerateConditionsVisitor implements
     }
   }
 
-  @Override
-  public void endVisit(ASTODAttribute node) {
-    targetOptional = false;
+  /**
+   * Adds the conditions, which belong to an object
+   */
+  protected void addConditions(ASTObjectCondition... conditions) {
+    for (ASTObjectCondition condition : conditions) {
+      if (condition.getObjectName() != null && !condition.getObjectName().isEmpty()) {
+        objectConditions.add(condition);
+      }
+    }
   }
 
-  protected void addConditions(ASTObjectCondition... objectCondition) {
-    for (ASTObjectCondition o : objectCondition) {
-      if (o.getObjectName() != null && !o.getObjectName().isEmpty()) {
-        objectConditions.add(o);
-      }
+  protected ASTObjectCondition createCondition(String objectName) {
+    ASTObjectCondition condition = ODRuleGenerationMill.objectConditionBuilder().uncheckedBuild();
+    condition.setObjectName(objectName);
+    return condition;
+  }
+
+  protected ASTObjectCondition createCondition(String objectName, String conditionString) {
+    ASTObjectCondition condition = createCondition(objectName);
+    condition.setConditionString(conditionString);
+    return condition;
+  }
+
+  /**
+   * The condition depends on the candidate of the given object (if any)
+   */
+  protected void setDependency(ASTObjectCondition condition, String dependsOn) {
+    if (!dependsOn.isEmpty()) {
+      ASTDependency dependency = ODRuleGenerationMill.dependencyBuilder().uncheckedBuild();
+      dependency.setContent(dependsOn);
+      condition.setDependency(dependency);
     }
   }
 
   protected void createConditions(ASTODAttribute node, ASTODObject object, Optional<ASTODObject> targetObject) {
-    boolean isOptional = node.isOptional();
-    boolean isIterated = node.isIterated();
     boolean isSameObject = targetObject.isPresent() && targetObject.get().getName().equals(objectName);
-
-    ASTObjectCondition objectCondition = ODRuleGenerationMill.objectConditionBuilder().uncheckedBuild();
-    objectCondition.setObjectName(objectName);
-    ASTObjectCondition secondObjectCondition = ODRuleGenerationMill.objectConditionBuilder().uncheckedBuild();
+    boolean targetOptional = isTargetOptional(node);
     String getter = createGetterStatement(node);
     if (isSameObject) {
       // replace <objectName>_cand.getAttr() with cand.getAttr()
-      getter = getter.replace(objectName + "_cand", "cand");
+      getter = getter.replace(objectName + CAND_SUFFIX, CAND);
     }
-    String condition;
-    if (isOptional) {
-      condition = format("(!cand.isPresent%s() || ! cand.get%s().equals(%s", capitalize(node.getName()), capitalize(node.getName()), getter);
-    } else if(isIterated) {
-      condition = format("(!cand.get%sList().equals(%s", Util.makeSingular(node.getName()), getter);
-    }else{
-      condition = format("(!cand.get%s().equals(%s", capitalize(node.getName()), getter);
+
+    String attributeAccess = getAttributeAccess(node);
+    String condition = format("(!cand.%s.equals(%s))", attributeAccess, getter);
+    if (node.isOptional()) {
+      condition = format("(!cand.isPresent%s() || ! cand.%s.equals(%s))",
+          capitalize(node.getName()), attributeAccess, getter);
     }
+
+    ASTObjectCondition objectCondition = createCondition(objectName);
     objectCondition.setTargetOptional(targetOptional);
     objectCondition.setAttribute(node);
-    if (targetObject.isPresent() && !isSameObject)
+    if (targetObject.isPresent() && !isSameObject) {
       objectCondition.setTarget(targetObject.get());
-    else
+    } else {
       objectCondition.setTargetAbsent();
+    }
 
-    condition += "))";
     if (targetOptional) {
-      String presentCheck = createPresentCheckStatement(getter);
-      objectCondition.setConditionString(format("%s && %s", presentCheck, condition));
+      objectCondition.setConditionString(format("%s && %s", createPresentCheckStatement(getter), condition));
     } else if (getter.endsWith(GET)) {
       objectCondition.setConditionString(getter.replace(GET, ".isPresent()") + " && " + condition);
+    } else if (getter.startsWith("$") && !getter.contains(".")) {
+      objectCondition.setConditionString(format("%s_is_fix && %s", getter, condition));
     } else if (getter.startsWith("$")) {
-      if (!getter.contains(".")) {
-        objectCondition.setConditionString(format("%s_is_fix && %s", getter, condition));
-      } else {
-        objectCondition.setConditionString(format("%s != null && %s", getter, condition));
-      }
+      objectCondition.setConditionString(format("%s != null && %s", getter, condition));
     } else {
       objectCondition.setConditionString(condition);
     }
-    // only if value refers to a different object
+
+    // the same check from the perspective of the referenced object,
+    // only if the value refers to a different object
+    ASTObjectCondition secondObjectCondition = null;
     if (targetObject.isPresent() && !isSameObject) {
-      if (!createObjectString(attrValue).isEmpty()) {
-        ASTDependency dependency = ODRuleGenerationMill.dependencyBuilder().uncheckedBuild();
-        dependency.setContent(createObjectString(attrValue));
-        objectCondition.setDependency(dependency);
-      }
+      String targetName = createObjectString(attrValue);
+      setDependency(objectCondition, targetName);
       if (isObjectWithoutStereoType(object)) {
-        String second = format("!%s_cand", objectName);
-        if (isOptional) {
-          second += format(".get%s()", capitalize(node.getName()));
-        } else if(isIterated) {
-          second += format(".get%sList()", Util.makeSingular(node.getName()));
-        } else {
-          second += format(".get%s()", capitalize(node.getName()));
-        }
-        second = format("%s.equals(%s)", second, createGetterStatementForCand(attrValue));
-        secondObjectCondition.setConditionString(second);
-        if (!objectName.isEmpty()) {
-          ASTDependency dependency = ODRuleGenerationMill.dependencyBuilder().uncheckedBuild();
-          dependency.setContent(objectName);
-          secondObjectCondition.setDependency(dependency);
-        }
-        secondObjectCondition.setObjectName(createObjectString(attrValue));
+        secondObjectCondition = createCondition(targetName, format("!%s_cand.%s.equals(%s)",
+            objectName, attributeAccess, createGetterStatementForCand(attrValue)));
+        setDependency(secondObjectCondition, objectName);
       }
     }
-    addConditions(objectCondition, secondObjectCondition);
-  }
-
-  protected void createConditionsForListWithoutTarget(ASTODAttribute node) {
-    ASTObjectCondition objectCondition = ODRuleGenerationMill.objectConditionBuilder().uncheckedBuild();
-    objectCondition.setObjectName(objectName);
-    StringBuilder conditionString = new StringBuilder(format("(cand.get%sList() == null ",  StringTransformations.capitalize(node.getName())));
-    ASTArrayInit value = node.getList();
-    int numberOfStrings = value.getVariableInitList().size();
-    conditionString.append(format("|| cand.get%sList().size() != %s", StringTransformations.capitalize(node.getName()), numberOfStrings));
-    for (int i = 0; i < numberOfStrings; i++) {
-      ASTVariableInit nextValue = value.getVariableInit(i);
-      TFExpressionFullPrettyPrinter printer = new TFExpressionFullPrettyPrinter(new IndentPrinter());
-      String v = printer.prettyprint(nextValue);
-      conditionString.append("|| ");
-      String check = "";
-      // value is a variable
-      if (v.startsWith("\"$")) {
-        v = v.substring(1, v.length() - 1);
-        conditionString.append(v).append("_is_fix && ");
-        // value is a reference to another object
-      } else if (v.contains(".")) {
-        List<String> qName = Splitters.DOT.splitToList(v);
-        String cand = qName.get(0) + CAND_SUFFIX;
-        StringBuilder getter = new StringBuilder();
-        getter.append(format(GET_ATTRIBUTE, capitalize(qName.get(1))));
-
-        if (qName.size() == 3) {
-          getter.append(".").append(qName.get(2));
-        }
-        v = cand + getter;
-        check = cand + " != null &&";
-
-      }
-      conditionString.append(format("%s! cand.get%sList().get(%s).equals(%s) ", check, StringTransformations.capitalize(node.getName()), i, v));
-    }
-    conditionString.append(")");
-    objectCondition.setConditionString(conditionString.toString());
-
     addConditions(objectCondition);
-  }
-
-
-  protected void createConditionsForBoolean(ASTODAttribute node, Optional<ASTODObject> targetObject) {
-    ASTObjectCondition objectCondition = ODRuleGenerationMill.objectConditionBuilder().uncheckedBuild();
-    objectCondition.setObjectName(objectName);
-    ASTObjectCondition secondObjectCondition = ODRuleGenerationMill.objectConditionBuilder().uncheckedBuild();
-    if ("true".equals(attrValue)) {
-      objectCondition.setConditionString(format("!cand.is%s()", capitalize(node.getName())));
-    } else if ("false".equals(attrValue)) {
-      objectCondition.setConditionString(format("cand.is%s()", capitalize(node.getName())));
-    } else {
-      objectCondition.setConditionString(format("cand.is%s() != %s", capitalize(node.getName()), createIsStatement(attrValue, false)));
-      if (targetObject.isPresent() && attrValue.contains(".")) {
-        if (!createObjectString(attrValue).isEmpty()) {
-          ASTDependency dependency = ODRuleGenerationMill.dependencyBuilder().uncheckedBuild();
-          dependency.setContent(createObjectString(attrValue));
-          objectCondition.setDependency(dependency);
-        }
-        secondObjectCondition.setConditionString(format("%s_cand.is%s() != %s", objectName, capitalize(node.getName()), createIsStatement(attrValue, true)));
-        if (!objectName.isEmpty()) {
-          ASTDependency dependency = ODRuleGenerationMill.dependencyBuilder().uncheckedBuild();
-          dependency.setContent(objectName);
-          secondObjectCondition.setDependency(dependency);
-        }
-        secondObjectCondition.setObjectName(createObjectString(attrValue));
-      }
+    if (secondObjectCondition != null) {
+      addConditions(secondObjectCondition);
     }
-    addConditions(objectCondition, secondObjectCondition);
-  }
-
-  protected void createConditionsForInt(ASTODAttribute node) {
-    ASTObjectCondition objectCondition = ODRuleGenerationMill.objectConditionBuilder().uncheckedBuild();
-    objectCondition.setObjectName(objectName);
-    objectCondition.setConditionString(format("cand.get%s() != %s", capitalize(node.getName()), attrValue));
-    addConditions(objectCondition);
-
   }
 
   /**
-   * Visits the nodes of the given AST of the type ASTODLink and generates
-   * Strings for the conditions
-   *
-   * @param node the node to start visiting
+   * @return the call of the getter for the attribute, which is compared with the value
    */
+  protected String getAttributeAccess(ASTODAttribute node) {
+    if (node.isIterated() && !node.isOptional()) {
+      return format("get%sList()", Util.getListAccessorName(node));
+    }
+    return format("get%s()", capitalize(node.getName()));
+  }
+
+  protected void createConditionsForListWithoutTarget(ASTODAttribute node) {
+    String listGetter = format("cand.get%sList()", Util.getListAccessorName(node));
+    List<ASTVariableInit> values = node.getList().getVariableInitList();
+    StringBuilder conditionString = new StringBuilder(format("(%s == null || %s.size() != %s",
+        listGetter, listGetter, values.size()));
+    TFExpressionFullPrettyPrinter printer = new TFExpressionFullPrettyPrinter(new IndentPrinter());
+    for (int i = 0; i < values.size(); i++) {
+      String value = printer.prettyprint(values.get(i));
+      String check = "";
+      conditionString.append("|| ");
+      if (value.startsWith("\"$")) {
+        // variable
+        value = value.substring(1, value.length() - 1);
+        conditionString.append(value).append("_is_fix && ");
+      } else if (Util.isAttributeReference(value)) {
+        // attribute of another object
+        List<String> qName = Splitters.DOT.splitToList(value);
+        String cand = qName.get(0) + CAND_SUFFIX;
+        value = cand + format(GET_ATTRIBUTE, capitalize(qName.get(1))) + (qName.size() == 3 ? "." + qName.get(2) : "");
+        check = cand + " != null &&";
+      }
+      conditionString.append(format("%s! %s.get(%s).equals(%s) ", check, listGetter, i, value));
+    }
+    conditionString.append(")");
+    addConditions(createCondition(objectName, conditionString.toString()));
+  }
+
+  protected void createConditionsForBoolean(ASTODAttribute node, Optional<ASTODObject> targetObject) {
+    String name = capitalize(node.getName());
+    if ("true".equals(attrValue)) {
+      addConditions(createCondition(objectName, format("!cand.is%s()", name)));
+    } else if ("false".equals(attrValue)) {
+      addConditions(createCondition(objectName, format("cand.is%s()", name)));
+    } else {
+      ASTObjectCondition objectCondition = createCondition(objectName,
+          format("cand.is%s() != %s", name, createIsStatement(attrValue, false)));
+      addConditions(objectCondition);
+      if (targetObject.isPresent() && attrValue.contains(".")) {
+        String targetName = createObjectString(attrValue);
+        setDependency(objectCondition, targetName);
+        ASTObjectCondition secondObjectCondition = createCondition(targetName,
+            format("%s_cand.is%s() != %s", objectName, name, createIsStatement(attrValue, true)));
+        setDependency(secondObjectCondition, objectName);
+        addConditions(secondObjectCondition);
+      }
+    }
+  }
+
+  protected void createConditionsForInt(ASTODAttribute node) {
+    addConditions(createCondition(objectName, format("cand.get%s() != %s", capitalize(node.getName()), attrValue)));
+  }
+
   @Override
   public void visit(ASTODLink node) {
+    if (node.isLink() && !node.isPresentName()) {
+      // conditions can only be created for named links
+      return;
+    }
     String leftObjectName = Names.constructQualifiedName(node.getLeftReferenceName(0).getPartsList());
     String rightObjectName = Names.constructQualifiedName(node.getRightReferenceName(0).getPartsList());
-    Optional<ASTODObject> rightObject = getODObject(rightObjectName);
-    Optional<ASTODObject> leftObject = getODObject(leftObjectName);
-    boolean isIterated = node.isAttributeIterated();
-    boolean isOptional = node.isAttributeOptional();
+    ASTODObject leftObject = getODObject(leftObjectName).get();
+    ASTODObject rightObject = getODObject(rightObjectName).get();
+    boolean checkedForSource = isCheckedForSource(leftObject, rightObject);
+    boolean checkedForTarget = isCheckedForTarget(leftObject);
 
-    ASTObjectCondition objectCondition = ODRuleGenerationMill.objectConditionBuilder().uncheckedBuild();
-    objectCondition.setObjectName(leftObjectName);
-    ASTObjectCondition secondObjectCondition = ODRuleGenerationMill.objectConditionBuilder().uncheckedBuild();
-    secondObjectCondition.setObjectName(rightObjectName);
-
-    objectCondition.setTargetOptional(targetOptional);
+    // the condition for the candidates of the source object
+    ASTObjectCondition objectCondition = createCondition(leftObjectName);
+    objectCondition.setTargetOptional(false);
     objectCondition.setLink(node);
-
-    secondObjectCondition.setTargetOptional(targetOptional);
+    // the condition for the candidates of the target object
+    ASTObjectCondition secondObjectCondition = createCondition(rightObjectName);
+    secondObjectCondition.setTargetOptional(false);
     secondObjectCondition.setLink(node);
 
     if (!node.isLink()) {
-      // if it is a composition the left side is the parent of the right
+      // for compositions, the source is the parent of the target
       objectCondition.setConditionString(format("t.getParent(%s_cand) != cand", rightObjectName));
+      setDependency(objectCondition, rightObjectName);
       secondObjectCondition.setConditionString(format("t.getParent(cand) != %s_cand", leftObjectName));
-      if (!rightObjectName.isEmpty()) {
-        ASTDependency dependency = ODRuleGenerationMill.dependencyBuilder().uncheckedBuild();
-        dependency.setContent(rightObjectName);
-        objectCondition.setDependency(dependency);
-      }
-      if (!leftObjectName.isEmpty()) {
-        ASTDependency dependency = ODRuleGenerationMill.dependencyBuilder().uncheckedBuild();
-        dependency.setContent(leftObjectName);
-        secondObjectCondition.setDependency(dependency);
-      }
+      setDependency(secondObjectCondition, leftObjectName);
+
       if (node.isPresentRightRole()) {
-        // if a role name is given, then there is a second condition
-        // if an object is a list object or a negative node, it will be
-        // checked later 
-
-
-        if (!rightObject.get().hasStereotype(ODRuleStereotypes.LIST)
-            && !(!leftObject.get().hasStereotype(ODRuleStereotypes.NOT) && rightObject.get().hasStereotype(ODRuleStereotypes.NOT))
-            && !rightObject.get().hasStereotype(ODRuleStereotypes.OPTIONAL)) {
-          ASTObjectCondition roleCondition1 = ODRuleGenerationMill.objectConditionBuilder().uncheckedBuild();
-          roleCondition1.setObjectName(leftObjectName);
-          roleCondition1.setConditionString(createSourceObjectCondition(node, rightObjectName, isIterated, isOptional));
-          if (!rightObjectName.isEmpty()) {
-            ASTDependency dependency = ODRuleGenerationMill.dependencyBuilder().uncheckedBuild();
-            dependency.setContent(rightObjectName);
-            roleCondition1.setDependency(dependency);
-          }
-          objectConditions.add(roleCondition1);
+        // the target is also reachable using the role, list and negative objects are checked later
+        if (checkedForSource) {
+          ASTObjectCondition roleCondition = createCondition(leftObjectName,
+              createSourceObjectCondition(node, rightObjectName, node.isAttributeIterated(), node.isAttributeOptional()));
+          setDependency(roleCondition, rightObjectName);
+          objectConditions.add(roleCondition);
         }
-        if (!leftObject.get().hasStereotype(ODRuleStereotypes.LIST)
-            && !leftObject.get().hasStereotype(ODRuleStereotypes.OPTIONAL)) {
-          ASTObjectCondition roleCondition2 = ODRuleGenerationMill.objectConditionBuilder().uncheckedBuild();
-          roleCondition2.setObjectName(rightObjectName);
-          roleCondition2.setConditionString(createTargetObjectCondition(node, leftObjectName, isIterated, isOptional));
-
-          if (isIterated) {
-            // we either check parent.getChilds().contains(child)
-            // or getParent(child) == parent, depending on if we have more than 10
-            // In the best case/future work, we cache the size value in a boolean?
-            secondObjectCondition.setConditionString(format("(%s_cand.get%sList().size() > 10 &&",
-                uncapitalize(leftObjectName),
-                Util.makeSingular(node.getRightRole())
-               ) + secondObjectCondition.getConditionString() + ")");
+        if (checkedForTarget) {
+          ASTObjectCondition roleCondition = createCondition(rightObjectName,
+              createTargetObjectCondition(node, leftObjectName, node.isAttributeIterated(), node.isAttributeOptional()));
+          setDependency(roleCondition, leftObjectName);
+          if (node.isAttributeIterated()) {
+            // for large lists, getParent(child) == parent is checked instead of
+            // parent.getChildren().contains(child)
+            secondObjectCondition.setConditionString(format("(%s_cand.get%sList().size() > 10 &&%s)",
+                leftObjectName, getListAccessorName(node),
+                secondObjectCondition.getConditionString()));
           }
-
-          if (!leftObjectName.isEmpty()) {
-            ASTDependency dependency = ODRuleGenerationMill.dependencyBuilder().uncheckedBuild();
-            dependency.setContent(leftObjectName);
-            roleCondition2.setDependency(dependency);
-          }
-          objectConditions.add(roleCondition2);
+          objectConditions.add(roleCondition);
         }
       }
     } else {
-      // if its not a composition it should be a link
-      if (!node.getName().isEmpty()) {
-        // name must be given to create conditionString
-        objectCondition.setConditionString(format("%s.getRightFromLeft(cand) != null && !%s.getRightFromLeft(cand).contains(%s_cand)",
-            uncapitalize(node.getName()),
-            uncapitalize(node.getName()),
-            rightObjectName));
-        if (!rightObjectName.isEmpty()) {
-          ASTDependency dependency = ODRuleGenerationMill.dependencyBuilder().uncheckedBuild();
-          dependency.setContent(rightObjectName);
-          objectCondition.setDependency(dependency);
-        }
-        secondObjectCondition.setConditionString(format("%s.getRightFromLeft(%s_cand) != null && !%s.getRightFromLeft(%s_cand).contains(cand)",
-            uncapitalize(node.getName()),
-            leftObjectName,
-            uncapitalize(node.getName()),
-            leftObjectName));
-        if (!leftObjectName.isEmpty()) {
-          ASTDependency dependency = ODRuleGenerationMill.dependencyBuilder().uncheckedBuild();
-          dependency.setContent(leftObjectName);
-          secondObjectCondition.setDependency(dependency);
-        }
-      }
+      String association = uncapitalize(node.getName());
+      objectCondition.setConditionString(format("%s.getRightFromLeft(cand) != null && !%s.getRightFromLeft(cand).contains(%s_cand)",
+          association, association, rightObjectName));
+      setDependency(objectCondition, rightObjectName);
+      secondObjectCondition.setConditionString(format("%s.getRightFromLeft(%s_cand) != null && !%s.getRightFromLeft(%s_cand).contains(cand)",
+          association, leftObjectName, association, leftObjectName));
+      setDependency(secondObjectCondition, leftObjectName);
     }
-    if (!leftObject.get().hasStereotype(ODRuleStereotypes.LIST)
-        && !leftObject.get().hasStereotype(ODRuleStereotypes.OPTIONAL)) {
+
+    if (checkedForTarget) {
       objectConditions.add(secondObjectCondition);
     }
-    if (!rightObject.get().hasStereotype(ODRuleStereotypes.LIST)
-        && !(!leftObject.get().hasStereotype(ODRuleStereotypes.NOT) && rightObject.get().hasStereotype(ODRuleStereotypes.NOT))
-        && !rightObject.get().hasStereotype(ODRuleStereotypes.OPTIONAL)) {
+    if (checkedForSource) {
       objectConditions.add(objectCondition);
     }
   }
 
+  /**
+   * Whether a link is checked for the candidates of its source object. Links to list or
+   * optional objects as well as links from positive to negative objects are checked later.
+   */
+  protected boolean isCheckedForSource(ASTODObject source, ASTODObject target) {
+    return !target.hasStereotype(ODRuleStereotypes.LIST)
+        && !target.hasStereotype(ODRuleStereotypes.OPTIONAL)
+        && (source.hasStereotype(ODRuleStereotypes.NOT) || !target.hasStereotype(ODRuleStereotypes.NOT));
+  }
+
+  /**
+   * Whether a link is checked for the candidates of its target object.
+   * Links from list or optional objects are checked later.
+   */
+  protected boolean isCheckedForTarget(ASTODObject source) {
+    return !source.hasStereotype(ODRuleStereotypes.LIST)
+        && !source.hasStereotype(ODRuleStereotypes.OPTIONAL);
+  }
+
   protected String createSourceObjectCondition(ASTODLink node, String rightObjectName, boolean isIterated, boolean isOptional) {
     if (isIterated) {
-      return format("!cand.get%sList().contains(%s_cand)",
-          Util.makeSingular(node.getRightRole()),
-          rightObjectName);
-    } else if (isOptional) {
-      return format("((!cand.isPresent%s())||(cand.isPresent%s() && cand.get%s() != %s_cand))",
-          capitalize(node.getRightRole()),
-          capitalize(node.getRightRole()),
-          capitalize(node.getRightRole()),
-          rightObjectName);
-    } else {
-      return format("cand.get%s() != %s_cand",
-          capitalize(node.getRightRole()),
-          rightObjectName);
+      return format("!cand.get%sList().contains(%s_cand)", getListAccessorName(node), rightObjectName);
     }
+    String role = capitalize(node.getRightRole());
+    if (isOptional) {
+      return format("((!cand.isPresent%s())||(cand.isPresent%s() && cand.get%s() != %s_cand))",
+          role, role, role, rightObjectName);
+    }
+    return format("cand.get%s() != %s_cand", role, rightObjectName);
   }
 
   protected String createTargetObjectCondition(ASTODLink node, String leftObjectName, boolean isIterated, boolean isOptional) {
     if (isIterated) {
-      return format("(%s_cand.get%sList().size() <= 10 && !%s_cand.get%sList().contains(cand))",
-          uncapitalize(leftObjectName),
-          Util.makeSingular(node.getRightRole()),
-          uncapitalize(leftObjectName),
-          Util.makeSingular(node.getRightRole()));
-    } else if (isOptional) {
-      return format("((!%s_cand.isPresent%s())||(%s_cand.isPresent%s() && %s_cand.get%s() != cand))",
-          leftObjectName, capitalize(node.getRightRole()),
-          leftObjectName, capitalize(node.getRightRole()),
-          leftObjectName, capitalize(node.getRightRole()));
-    } else {
-      return format("%s_cand.get%s() != cand",
-          leftObjectName,
-          capitalize(node.getRightRole()));
+      String list = format("%s_cand.get%sList()", leftObjectName, getListAccessorName(node));
+      return format("(%s.size() <= 10 && !%s.contains(cand))", list, list);
     }
+    String role = capitalize(node.getRightRole());
+    if (isOptional) {
+      return format("((!%s_cand.isPresent%s())||(%s_cand.isPresent%s() && %s_cand.get%s() != cand))",
+          leftObjectName, role, leftObjectName, role, leftObjectName, role);
+    }
+    return format("%s_cand.get%s() != cand", leftObjectName, role);
   }
 
+  /**
+   * Whether the value of the attribute is an attribute of another object, which may be absent
+   */
+  protected boolean isTargetOptional(ASTODAttribute attrWithValue) {
+    return Util.isAttributeReference(Util.printExpression(attrWithValue.getSingleValue()))
+        && attrWithValue.isValueOptional();
+  }
+
+  /**
+   * @return the expression for the value of the attribute
+   */
   protected String createGetterStatement(ASTODAttribute attrWithValue) {
     String value = Util.printExpression(attrWithValue.getSingleValue());
-    String[] split = value.split(REGEX);
-
-    if (split.length == 1) {
-      if (getODObject(split[0]).isPresent()) {
-        // object reference
-        return split[0] + CAND_SUFFIX;
-      } else if (split[0].startsWith("\"$")) {
-        // variable
-        return split[0].substring(1, split[0].length() - 1);
-      } else {
-        // fix value
-        return split[0];
-      }
-    } else {
-      // attribute reference
-      StringBuilder result = new StringBuilder(split[0]).append(CAND_SUFFIX);
-      if (split.length > 1) {
-        result.append(format(GET_ATTRIBUTE, capitalize(split[1])));
-        targetOptional = attrWithValue.isValueOptional();
-      }
-      for (int i = 2; i < split.length; i++) {
-        if(!split[i].equals("get()")) {
-          result.append(".").append(split[i]);
-          targetOptional = attrWithValue.isValueOptional();
-        }
-      }
-      return result.toString();
+    if (Util.isAttributeReference(value)) {
+      // attribute of another object
+      String[] split = value.split(REGEX);
+      return appendAttributeAccess(split[0] + CAND_SUFFIX, split);
+    } else if (getODObject(value).isPresent()) {
+      // another object
+      return value + CAND_SUFFIX;
+    } else if (value.startsWith("\"$")) {
+      // variable
+      return value.substring(1, value.length() - 1);
     }
-
+    // fixed value
+    return value;
   }
-  protected String createPresentCheckStatement(String getter) {
-    List<String> splits = new ArrayList<>(Splitters.DOT.splitToList(getter));
-    splits.set(splits.size() - 1, splits.getLast().replace("get", "isPresent"));
 
+  protected String createPresentCheckStatement(String getter) {
+    // replaces the getter of the last attribute, e.g., getX() with isPresentX()
+    List<String> splits = new ArrayList<>(Splitters.DOT.splitToList(getter));
+    String last = splits.getLast();
+    if (last.startsWith("get")) {
+      splits.set(splits.size() - 1, "isPresent" + last.substring("get".length()));
+    }
     return Joiners.DOT.join(splits);
   }
 
+  /**
+   * @return the expression for the value of the attribute, where the referenced object
+   * is the candidate
+   */
   protected String createGetterStatementForCand(String statement) {
     String[] split = statement.split(REGEX);
-    if (split.length == 1) {
-      return CAND;
-    } else {
-      StringBuilder result = new StringBuilder(CAND);
-      if (split.length > 1) {
-        result.append(format(GET_ATTRIBUTE, capitalize(split[1])));
+    return split.length == 1 ? CAND : appendAttributeAccess(CAND, split);
+  }
+
+  /**
+   * @param split the parts of a qualified attribute reference (object.attribute[.member]*)
+   * @return the access of the attribute (and its members) of the given object
+   */
+  protected String appendAttributeAccess(String object, String[] split) {
+    StringBuilder result = new StringBuilder(object).append(format(GET_ATTRIBUTE, capitalize(split[1])));
+    for (int i = 2; i < split.length; i++) {
+      if (!split[i].equals("get()")) {
+        result.append(".").append(split[i]);
       }
-      for (int i = 2; i < split.length; i++) {
-          if(!split[i].equals("get()")) {
-              result.append(".").append(split[i]);
-          }
-      }
-      return result.toString();
     }
+    return result.toString();
   }
 
   protected String createIsStatement(String attrValue, boolean forCand) {
     String[] split = attrValue.split(REGEX);
-    StringBuilder result;
-    if (forCand) {
-      result = new StringBuilder(CAND);
-    } else {
-      result = new StringBuilder(split[0]).append(CAND_SUFFIX);
-    }
-    String getter = ".get";
+    StringBuilder result = new StringBuilder(forCand ? CAND : split[0] + CAND_SUFFIX);
     for (int i = 1; i < split.length; i++) {
-      if (i == split.length - 1) {
-        getter = ".is";
-      }
-      result.append(getter).append(capitalize(split[i])).append("()");
+      result.append(i == split.length - 1 ? ".is" : ".get").append(capitalize(split[i])).append("()");
     }
     return result.toString();
   }
 
   protected String createObjectString(String statement) {
-    String[] split = statement.split(REGEX);
-    if (split[0].startsWith("{")) {
-      return split[0].substring(1);
-    }
-    return split[0];
+    String objectName = statement.split(REGEX)[0];
+    return objectName.startsWith("{") ? objectName.substring(1) : objectName;
+  }
+
+  /**
+   * @return the name of the list accessors of the attribute set by the given link
+   */
+  protected String getListAccessorName(ASTODLink link) {
+    String rightObjectName = Names.constructQualifiedName(link.getRightReferenceName(0).getPartsList());
+    return Util.getListAccessorName(link, getODObject(rightObjectName).orElse(null));
   }
 
   protected Optional<ASTODObject> getODObject(String objName) {
-    for (ASTODObject o : objectList) {
-      if (objName.equals(o.getName())) {
-        return Optional.of(o);
-      }
-    }
-    return Optional.empty();
+    return Optional.ofNullable(objectsByName.get(objName));
   }
 
   protected boolean isObjectWithoutStereoType(ASTODObject object) {

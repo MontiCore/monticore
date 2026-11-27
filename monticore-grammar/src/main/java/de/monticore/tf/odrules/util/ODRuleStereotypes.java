@@ -6,6 +6,7 @@ public class ODRuleStereotypes {
   public static final String NOT = "not";
   public static final String OPTIONAL = "optional";
   public static final String LIST = "list";
+  public static final String COPY = "copy";
 
   
 }

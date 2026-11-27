@@ -1,11 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.tf.odrules.util;
 
-
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import de.monticore.grammar.grammar._symboltable.MCGrammarSymbol;
-import de.monticore.grammar.grammar._symboltable.ProdSymbol;
-import de.monticore.grammar.grammar._symboltable.RuleComponentSymbol;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.statements.mcarraystatements._ast.ASTArrayInit;
 import de.monticore.statements.mccommonstatements._ast.ASTMCJavaBlock;
@@ -15,7 +11,6 @@ import de.monticore.types.mcbasictypes._ast.ASTMCType;
 import de.monticore.types.mcsimplegenerictypes.MCSimpleGenericTypesMill;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
-import de.se_rwth.commons.logging.Log;
 import de.monticore.tf.odrulegeneration._ast.ASTMatchingObject;
 import de.monticore.tf.odrules.HierarchyHelper;
 import de.monticore.tf.odrules._ast.*;
@@ -23,23 +18,30 @@ import de.monticore.tf.odrules._symboltable.ODDefinitionSymbol;
 import de.monticore.tf.odrules._symboltable.ODObjectSymbol;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
- * Created by
- *
+ * Helper methods for the generation of transformations from object diagram rules.
  */
 public class Util {
-  private static final int PREFIX_LENGHT = 3;
+  private static final String AST_PREFIX = "AST";
+
+  private static final Set<String> BUILT_IN_TYPES =
+      Set.of("boolean", "int", "float", "double", "char", "long", "byte", "short", "String");
+
+  /**
+   * MontiCore appends this suffix to derived names of iterated attributes
+   */
+  private static final String LIST_SUFFIX = "s";
 
   protected Util(){
     // no instances
   }
 
   /**
-   * Resolves an ODObject by it's name.
+   * Resolves an ODObject by its name.
    * @param node the parent ODDefinition
    * @param attrName the object's name
    * @return the ASTODObject
@@ -47,10 +49,10 @@ public class Util {
   public static ASTODObject getODObject(ASTODDefinition node, String attrName) {
     // first, try to resolve the object directly with the parent ODDefinition
     ODDefinitionSymbol symb = node.getSymbol();
-    Optional<ODObjectSymbol> resultSymbol = getFirstSymbol(symb.getSpannedScope().resolveODObjectDownMany(attrName));
+    Optional<ODObjectSymbol> resultSymbol = symb.getSpannedScope().resolveODObjectDownMany(attrName).stream().findFirst();
 
-    if(resultSymbol.isPresent() && resultSymbol.get().isPresentAstNode()) {
-      return (ASTODObject) resultSymbol.get().getAstNode();
+    if (resultSymbol.isPresent() && resultSymbol.get().isPresentAstNode()) {
+      return resultSymbol.get().getAstNode();
     }
     else {
       // the object is not a direct child of the ODDefinition.
@@ -68,7 +70,7 @@ public class Util {
   }
 
   /**
-   * Resolves an ODObject by it's name.
+   * Resolves an ODObject by its name.
    * @param node the parent ODObject
    * @param attrName the object's name
    * @return the ASTODObject
@@ -76,7 +78,7 @@ public class Util {
   public static ASTODObject getODObject(ASTODObject node, String attrName) {
     // first, try to resolve the object directly with the parent object
     ODObjectSymbol symb = node.getSymbol();
-    Optional<ODObjectSymbol> resultSymbol = getFirstSymbol(symb.getSpannedScope().resolveODObjectDownMany(attrName));
+    Optional<ODObjectSymbol> resultSymbol = symb.getSpannedScope().resolveODObjectDownMany(attrName).stream().findFirst();
 
     if (resultSymbol.isPresent() && resultSymbol.get().isPresentAstNode()) {
       return resultSymbol.get().getAstNode();
@@ -94,20 +96,6 @@ public class Util {
       // if we reach this then the ODObject really is not a child of the parent object
       return null;
     }
-  }
-
-  /**
-   * Returns the first symbol of the given collection.
-   * @param symbols the symbol collection
-   * @return optional of the first symbol or empty optional if collection is null or empty
-   */
-  private static Optional<ODObjectSymbol> getFirstSymbol(Collection<ODObjectSymbol> symbols) {
-    if (symbols != null && !symbols.isEmpty()) {
-      for (ODObjectSymbol symb : symbols) {
-        return Optional.of(symb);
-      }
-    }
-    return Optional.empty();
   }
 
   /**
@@ -178,140 +166,77 @@ public class Util {
     return obj != null ? obj.printType() : null;
   }
 
+  /**
+   * Whether the printed value refers to an attribute of another object
+   * ({@code object.attribute[.member]*}). Literals may contain dots, too ({@code "a.b"}, {@code 1.5}).
+   */
+  public static boolean isAttributeReference(String value) {
+    return !value.isEmpty() && Character.isJavaIdentifierStart(value.charAt(0))
+        && value.split("\\.").length > 1;
+  }
+
   public static boolean isBuiltInType(ASTODAttribute attribute) {
-    String typename = attribute.printType();
-    if("boolean".equals(typename)
-            || "int".equals(typename)
-            || "float".equals(typename)
-            || "double".equals(typename)
-            || "char".equals(typename)
-            || "long".equals(typename)
-            || "byte".equals(typename)
-            || "short".equals(typename)
-            || "String".equals(typename)){
-      return true;
-
-    }
-    return false;
+    return BUILT_IN_TYPES.contains(attribute.printType());
   }
 
-  @Deprecated
-  public static boolean isIterated(ASTODLink node, ASTODDefinition def, MCGrammarSymbol grammarSymbol) {
-    ASTODObject sourceObject = getODObject(def,
-        Names.getSimpleName(node.getLeftReferenceName(0).getPartsList()));
-    return isIterated(node, sourceObject, grammarSymbol);
-  }
-  @Deprecated
-  public static boolean isIterated(ASTODLink node, ASTODObject leftObject, MCGrammarSymbol grammarSymbol) {
-    if(grammarSymbol ==null){
-      Log.warn("Grammar not specified. Cannot determine whether model elements are allowed multiple times within the grammar.");
-      return false;
-    } else if (leftObject.hasStereotype("list")){
-      return true;
-    } else {
-      Optional<RuleComponentSymbol> attribute = getMCAttributeSymbol(node.getRightRole(), leftObject,
-          grammarSymbol);
-
-      return attribute.isPresent() && attribute.get().isIsList();
+  /**
+   * Returns the capitalized name MontiCore uses for the list accessors
+   * ({@code get<Name>List()}) of the attribute set by the given link.
+   *
+   * @param link   a link whose attribute is iterated
+   * @param target the target object of the link, may be null
+   * @see #getListAccessorName(String, String)
+   */
+  public static String getListAccessorName(ASTODLink link, ASTODObject target) {
+    String name = link.isPresentRightRole() ? link.getRightRole() : "";
+    if (!link.getStereotypeValue("genericType").isEmpty()) {
+      // Links translated by the DSTL carry the declared type of the attribute and use the name
+      // from the grammar. As the name may be a usage name ending with an "s"
+      // (contexts:Context*), it must not be changed.
+      return StringTransformations.capitalize(name);
     }
-  }
-  @Deprecated
-  public static boolean isOptional(ASTODLink node, ASTODDefinition def, MCGrammarSymbol grammarSymbol) {
-    ASTODObject sourceObject = getODObject(def,
-        Names.getSimpleName(node.getLeftReferenceName(0).getPartsList()));
-    return isOptional(node, sourceObject, grammarSymbol);
+    return getListAccessorName(name, target != null ? target.printType() : "");
   }
 
-  @Deprecated
-  public static boolean isOptional(ASTODLink node, ASTODObject astodObject,
-      MCGrammarSymbol grammarSymbol) {
-    if(grammarSymbol == null){
-      Log.warn("Grammar not specified. Cannot determine whether model elements are optional within the grammar.");
-      return false;
-    } else if(astodObject.hasStereotype("list")){
-      return false;
-    }
-    Optional<RuleComponentSymbol> attribute = getMCAttributeSymbol(node.getRightRole(),astodObject, grammarSymbol);
-
-    return attribute.isPresent() && attribute.get().isIsOptional() && !attribute.get().isIsList();
-  }
-  @Deprecated
-  public static Optional<RuleComponentSymbol> getMCAttributeSymbol (String attributeName, ASTODObject leftObject, MCGrammarSymbol grammarSymbol){
-    ASTMCType sourceType = leftObject.getType();
-    String javaType = Names.getSimpleName(Util.printType(sourceType));
-    // remove AST prefix
-    String grammarType = javaType.substring(PREFIX_LENGHT);
-
-
-    ProdSymbol prod = grammarSymbol.getProdWithInherited(grammarType).get();
-    Optional<RuleComponentSymbol> attribute = getProdComponent(prod, attributeName);
-
-    // This may be required depending on whether there is a usage name for this
-    // attribute
-    if (attribute.isEmpty()) {
-      attribute = getProdComponent(prod, StringTransformations.capitalize(attributeName));
-    }
-    if (attribute.isEmpty()) {
-      attribute = getProdComponent(prod, attributeName.concat("s"));
-    }
-    if (attribute.isEmpty() && attributeName.endsWith("s")) {
-      attributeName = attributeName.substring(0, attributeName.length() - 1);
-      attribute = getProdComponent(prod, attributeName);
-    }
-    if (attribute.isEmpty() && attributeName.endsWith("e")) {
-      attributeName = attributeName.substring(0, attributeName.length() - 1);
-      attribute = getProdComponent(prod, attributeName);
-    }
-    return  attribute;
-  }
-  @Deprecated
-  private static Optional<RuleComponentSymbol> getProdComponent(ProdSymbol prod, String attributeName) {
-    return prod.getProdComponents().stream().filter(c -> c.getName().equals(attributeName)).findFirst();
-  }
-  @Deprecated
-  public static boolean isIterated(ASTODObject object, ASTODAttribute attribute, MCGrammarSymbol grammarSymbol) {
-    if(grammarSymbol == null){
-      Log.warn("Grammar not specified. Cannot determine whether model elements are optional within the grammar.");
-      return false;
-    }
-    Optional<RuleComponentSymbol> attributeSymbol = getMCAttributeSymbol(attribute.getName(),object, grammarSymbol);
-
-    if(attribute.printType().equals("boolean")) {
-        return false;
-    }
-
-    return attributeSymbol.isPresent() && attributeSymbol.get().isIsList();
-  }
-  @Deprecated
-  public static boolean isOptional(ASTODObject object, ASTODAttribute attribute, MCGrammarSymbol grammarSymbol) {
-    if("boolean".equals(attribute.printType())){
-      return false;
-    }
-    if(grammarSymbol == null){
-      Log.warn("Grammar not specified. Cannot determine whether model elements are optional within the grammar.");
-      return false;
-    }
-    Optional<RuleComponentSymbol> attributeSymbol = getMCAttributeSymbol(attribute.getName(),object, grammarSymbol);
-    return attributeSymbol.isPresent() && attributeSymbol.get().isIsOptional() && !attributeSymbol.get().isIsList();
-
-  }
-  @Deprecated
-  public static boolean isOptional(Optional<ASTODObject> target, String attrname,
-      MCGrammarSymbol grammarSymbol) {
-    if(target.isPresent()){
-      Optional<RuleComponentSymbol> attributeSymbol = getMCAttributeSymbol(attrname,target.get(), grammarSymbol);
-      return attributeSymbol.isPresent() && attributeSymbol.get().isIsOptional()&& !attributeSymbol.get().isIsList();
-    }
-    return false;
+  /**
+   * Returns the capitalized name MontiCore uses for the list accessors
+   * ({@code get<Name>List()}) of the given iterated attribute.
+   *
+   * @see #getListAccessorName(String, String)
+   */
+  public static String getListAccessorName(ASTODAttribute attribute) {
+    return getListAccessorName(attribute.getName(), attribute.printType());
   }
 
-  public static String makeSingular(String name) {
-    if(name.endsWith("ses"))
-      name = name.substring(0, name.length() - 2);
-    else if(name.endsWith("ss") && !name.endsWith("class"))
-      name = name.substring(0, name.length() - 2);
-    else if(name.endsWith("s") && !name.endsWith("class"))
-      name = name.substring(0, name.length() - 1);
+  /**
+   * Returns the capitalized name MontiCore uses for the list accessors
+   * ({@code get<Name>List()}) of an iterated attribute.
+   * <p>
+   * MontiCore names the list accessors after the name in the grammar, i.e., the usage name
+   * ({@code contexts:Context*} results in {@code getContextsList()}) or the name derived from
+   * the nonterminal ({@code State*} results in {@code getStateList()}), see
+   * {@code DecorationHelper#getPlainGetter} in the generator. Rules translated by the DSTL use
+   * exactly this name. Handwritten rules may use the name of the attribute in the class
+   * diagram instead, to which an "s" has been appended for derived names ({@code states}).
+   * This "s" is removed, if the name matches the name derived from the given type.
+   * <p>
+   * Note that this is ambiguous for usage names which equal the derived attribute name
+   * ({@code contexts:Context*}), as the name alone does not reveal whether it has been derived.
+   * Links translated by the DSTL avoid this ambiguity,
+   * see {@link #getListAccessorName(ASTODLink, ASTODObject)}.
+   *
+   * @param name the name of the attribute
+   * @param type the (qualified) type of the attribute or its elements, may be empty
+   */
+  public static String getListAccessorName(String name, String type) {
+    String typeName = Names.getSimpleName(type);
+    if (typeName.startsWith(AST_PREFIX)) {
+      typeName = typeName.substring(AST_PREFIX.length());
+    }
+    if (!typeName.isEmpty()
+        && name.equals(StringTransformations.uncapitalize(typeName) + LIST_SUFFIX)) {
+      name = name.substring(0, name.length() - LIST_SUFFIX.length());
+    }
     return StringTransformations.capitalize(name);
   }
 
