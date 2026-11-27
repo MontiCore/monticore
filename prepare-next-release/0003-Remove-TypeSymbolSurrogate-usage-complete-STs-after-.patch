@@ -1,0 +1,106 @@
+From a3755b2e7172013c1b5969b91b4e52793c81c578 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Alex=20L=C3=BCpges?= <luepges@se-rwth.de>
+Date: Mon, 23 Nov 2026 22:29:42 +0100
+Subject: [PATCH] Remove TypeSymbolSurrogate usage & complete STs after
+ deriving
+
+
+diff --git a/monticore-generator/src/main/java/de/monticore/MontiCoreScript.java b/monticore-generator/src/main/java/de/monticore/MontiCoreScript.java
+index 5ff2e5d0a..7e6e3dca6 100644
+--- a/monticore-generator/src/main/java/de/monticore/MontiCoreScript.java
++++ b/monticore-generator/src/main/java/de/monticore/MontiCoreScript.java
+@@ -11,6 +11,7 @@ import de.monticore.cd._symboltable.BuiltInTypes;
+ import de.monticore.cd.codegen.CDGenerator;
+ import de.monticore.cd.codegen.CdUtilsPrinter;
+ import de.monticore.cd.codegen.TopDecorator;
++import de.monticore.cd.facade.CDStereotypeFacade;
+ import de.monticore.cd.methodtemplates.CD4C;
+ import de.monticore.cd4analysis._symboltable.ICD4AnalysisGlobalScope;
+ import de.monticore.cd4analysis._symboltable.ICD4AnalysisScope;
+@@ -155,6 +156,7 @@ public class MontiCoreScript extends Script implements GroovyRunner {
+ 
+   /* The logger name for logging from within a Groovy script. */
+   static final String LOG_ID = "MAIN";
++  static final String MC_NEEDS_SYMBOL_TABLE_COMPLETION = "__mc_needs_symbol_table_completion";
+ 
+   /**
+    * Executes the default MontiCore Groovy script (parses grammars, generates
+@@ -408,8 +410,8 @@ public class MontiCoreScript extends Script implements GroovyRunner {
+       Log.debug("Used present symbol table for " + cdSymbol.get().getFullName(), LOG_ID);
+     } else {
+       ICD4CodeArtifactScope artScope = CD4CodeMill.scopesGenitorDelegator().createFromAST(result);
+-      MC2CD4CodeSymbolTableCompleter completer = new MC2CD4CodeSymbolTableCompleter();
+-      result.accept(completer.getTraverser());
++      CDStereotypeFacade.getInstance().addStereotype(result.getCDDefinition().getModifier(),
++                                                     MC_NEEDS_SYMBOL_TABLE_COMPLETION);
+     }
+ 
+     return result;
+@@ -454,15 +456,25 @@ public class MontiCoreScript extends Script implements GroovyRunner {
+   public List<ASTCDCompilationUnit> deriveCD(ASTMCGrammar astGrammar,
+                                              GlobalExtensionManagement glex,
+                                              ICD4AnalysisGlobalScope cdScope) {
++    // First: derive the cds
+     List<ASTCDCompilationUnit> cds = new ArrayList<>();
+     cds.add(deriveASTCD(astGrammar, glex, cdScope));
+     cds.add(deriveSymbolCD(astGrammar, cdScope));
+     cds.add(deriveScopeCD(astGrammar, cdScope));
+     cds.add(generatePrettyPrinter(glex, astGrammar));
++
++    // Then: complete their CDs (must be done after all cds/symbols exist)
++    for (ASTCDCompilationUnit cdAST : cds) {
++      if (cdAST.getCDDefinition().getModifier().isPresentStereotype()
++              && cdAST.getCDDefinition().getModifier().getStereotype().contains(MC_NEEDS_SYMBOL_TABLE_COMPLETION)) {
++        MC2CD4CodeSymbolTableCompleter completer = new MC2CD4CodeSymbolTableCompleter();
++        cdAST.accept(completer.getTraverser());
++      }
++    }
++
+     return cds;
+   }
+ 
+-
+   /**
+    * Transforms grammar AST to class diagram AST.
+    *
+diff --git a/monticore-generator/src/main/java/de/monticore/codegen/cd2java/AbstractService.java b/monticore-generator/src/main/java/de/monticore/codegen/cd2java/AbstractService.java
+index 007598027..64d11152f 100644
+--- a/monticore-generator/src/main/java/de/monticore/codegen/cd2java/AbstractService.java
++++ b/monticore-generator/src/main/java/de/monticore/codegen/cd2java/AbstractService.java
+@@ -188,8 +188,7 @@ public class AbstractService<T extends AbstractService> {
+         List<CDTypeSymbol> localSuperInterfaces = Lists.newArrayList();
+         cdTypeSymbol.getSuperTypesList().stream()
+                 .filter(s -> !isTFInterface(s))
+-            .filter(s -> ((TypeSymbolSurrogate)s.getTypeInfo()).checkLazyLoadDelegate())
+-                    .map(s -> ((TypeSymbolSurrogate)s.getTypeInfo()).lazyLoadDelegate())
++                .map(SymTypeExpression::getTypeInfo)
+             .forEach(t -> {if(t instanceof CDTypeSymbol && ((CDTypeSymbol)t).isIsInterface()) localSuperInterfaces.add((CDTypeSymbol) t);});
+     for (CDTypeSymbol superInterface : localSuperInterfaces) {
+       superSymbolList.add(createASTFullName(superInterface));
+diff --git a/monticore-generator/src/main/java/de/monticore/codegen/cd2java/typedispatcher/TypeDispatcherDecorator.java b/monticore-generator/src/main/java/de/monticore/codegen/cd2java/typedispatcher/TypeDispatcherDecorator.java
+index 24ec8c303..501d2088a 100644
+--- a/monticore-generator/src/main/java/de/monticore/codegen/cd2java/typedispatcher/TypeDispatcherDecorator.java
++++ b/monticore-generator/src/main/java/de/monticore/codegen/cd2java/typedispatcher/TypeDispatcherDecorator.java
+@@ -15,8 +15,8 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
+ import de.monticore.generating.templateengine.StringHookPoint;
+ import de.monticore.generating.templateengine.TemplateHookPoint;
+ import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
+-import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
+ import de.monticore.types.MCTypeFacade;
++import de.monticore.types.check.SymTypeExpression;
+ 
+ import java.util.ArrayList;
+ import java.util.List;
+@@ -276,8 +276,7 @@ public class TypeDispatcherDecorator extends AbstractCreator<ASTCDCompilationUni
+   protected List<String> getSuperTypes(CDTypeSymbol typeSymbol) {
+     return typeSymbol.getSuperTypesList()
+         .stream()
+-        .filter(s -> ((TypeSymbolSurrogate) s.getTypeInfo()).checkLazyLoadDelegate())
+-        .map(s -> ((TypeSymbolSurrogate) s.getTypeInfo()).lazyLoadDelegate())
++        .map(SymTypeExpression::getTypeInfo)
+         .filter(t -> t instanceof CDTypeSymbol)
+         .map(s -> visitorService.createASTFullName((CDTypeSymbol) s))
+         .collect(Collectors.toList());
+-- 
+2.45.1.windows.1
+

@@ -19,3 +19,4 @@ if [ "$?" != "0" ]; then
 fi
 echo "Switching back to branch: $originalBranch"
 git checkout $originalBranch
+git add ./prepare-next-release
