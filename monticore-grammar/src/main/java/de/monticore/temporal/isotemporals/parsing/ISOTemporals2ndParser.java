@@ -14,6 +14,7 @@ import de.monticore.temporal.isotemporals.cocos.PeriodIsNonemptyCoCo;
 import de.monticore.temporal.parsing.isotemporals4parsing.convert.ConvertToISOTemporals;
 import de.monticore.ast.ASTNode;
 import de.monticore.temporal.parsing.isotemporals4parsing._parser.ISOTemporals4ParsingAntlrParser;
+import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.Lexer;
@@ -184,6 +185,37 @@ public class ISOTemporals2ndParser implements ISOTemporalsVisitor2 {
     node.setDate((ASTISODate) converter.getResult());
     parsed.getTime().accept(traverser);
     node.setTime((ASTISOTime) converter.getResult());
+
+    setSourcePosition(node.getDate(), node, parsed.getDate());
+    setSourcePosition(node.getTime(), node, parsed.getTime());
+  }
+
+  /**
+   * Sets the source position of a node built from part of a literal.
+   * <p>
+   * The second parse step reports positions relative to the raw text of the literal,
+   * i.e. in line 1. A token does not span lines, so the position in the model is the
+   * position of the literal shifted by the column of the part. Example: for
+   * {@code 2017-12-04T12:30} at {@code <3,3>}, the time {@code T12:30} gets {@code <3,13>}.
+   *
+   * @param target  the node built from the part, e.g. the time of a date-time
+   * @param literal the node of the whole literal, positioned in the model
+   * @param part    the node of the part from the second parse step
+   */
+  protected void setSourcePosition(ASTNode target, ASTNode literal, ASTNode part) {
+    if (!literal.isPresent_SourcePositionStart()) {
+      return;
+    }
+    SourcePosition start = literal.get_SourcePositionStart();
+    target.set_SourcePositionStart(shift(start, part.get_SourcePositionStart()));
+    target.set_SourcePositionEnd(shift(start, part.get_SourcePositionEnd()));
+  }
+
+  protected SourcePosition shift(SourcePosition literalStart, SourcePosition inLiteral) {
+    int column = literalStart.getColumn() + inLiteral.getColumn();
+    return literalStart.getFileName()
+        .map(fileName -> new SourcePosition(literalStart.getLine(), column, fileName))
+        .orElseGet(() -> new SourcePosition(literalStart.getLine(), column));
   }
   
   @Override
