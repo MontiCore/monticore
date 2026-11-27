@@ -5,8 +5,6 @@ package de.monticore.generating.templateengine.sourcemap;
 import com.google.common.base.Preconditions;
 import de.monticore.ast.ASTNode;
 import de.monticore.generating.templateengine.HookPoint;
-import de.monticore.generating.templateengine.StringHookPoint;
-import de.monticore.generating.templateengine.TemplateHookPoint;
 import de.monticore.generating.templateengine.freemarker.FreeMarkerTemplateEngine;
 import de.monticore.generating.templateengine.reporting.Reporting;
 import de.monticore.sourcemap.DecodedMapping;
@@ -14,9 +12,12 @@ import de.monticore.sourcemap.DecodedSource;
 import de.monticore.sourcemap.convenience.PositionMapping;
 import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Log;
+import freemarker.core.Environment;
 import freemarker.template.Template;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
@@ -31,13 +32,13 @@ public class SourceMapCalculator {
   protected static State state = new State();
 
   private final Deque<OpenSpan> openSpans = new ArrayDeque<>();
-  private final FreeMarkerTemplateEngine.ContentWriter sw;
+  private final FreeMarkerTemplateEngine.PositionTrackingContentWriter sw;
   private final Template template;
   private final Pair<Integer, Integer> startOffset;
 
 
   // Everytime a template is executed it uses a new StringWriter instance
-  public SourceMapCalculator(FreeMarkerTemplateEngine.ContentWriter sw, Template template) {
+  public SourceMapCalculator(FreeMarkerTemplateEngine.PositionTrackingContentWriter sw, Template template) {
     this.sw = sw;
     this.template = template;
     this.startOffset = state.curAbsolutePos;
@@ -148,10 +149,21 @@ public class SourceMapCalculator {
     if(Reporting.isConfigTemplate(template.getName()))
       return;
 
-    String content = sw.getCurrentContent();
+    // Flush any active FreeMarker transform writer (e.g. <@compress> / <#compress>) so that
+    // buffered content is visible in the underlying ContentWriter before measuring positions.
+    Writer currentOut = getCurrentEnvironmentOut();
+    boolean inCompressWriter = isStandardCompressWriter(currentOut);
+    if (currentOut != null && currentOut != sw) {
+      try {
+        currentOut.flush();
+      } catch (IOException e) {
+        Log.warn("0xA0745 Failed to flush template output writer during source map calculation.", e);
+      }
+    }
 
-    int numberOfLinesInContent = numberOfNewLines(content);
-    int curGeneratedColPos = getColumnOfLastLine(content);
+    int numberOfLinesInContent = sw.getLineCount();
+    int curGeneratedColPos = sw.getCurrentColumn();
+    int contentLength = sw.getCurrentLength();
 
     // Update absolute position stack so line numbering stays in sync
     Pair<Integer,Integer> absPos = updateAndGetAbsolutePos(numberOfLinesInContent, curGeneratedColPos);
@@ -161,7 +173,7 @@ public class SourceMapCalculator {
     if (isStart) {
       int runtimePairId = state.nextRuntimePairId++;
       SourcePosition sourcePos = new SourcePosition(Math.max(0, lineInTemplate), Math.max(0, colInTemplate), templateSource);
-      OpenSpan openSpan = new OpenSpan(runtimePairId, elementId, sourcePos, positionInGeneratedFile, astNode);
+      OpenSpan openSpan = new OpenSpan(runtimePairId, elementId, sourcePos, positionInGeneratedFile, astNode, contentLength, inCompressWriter);
       openSpans.push(openSpan);
       state.activeParentMappings.put(this.template, openSpan);
 
@@ -202,11 +214,83 @@ public class SourceMapCalculator {
 
       if (openSpan.startTargetPosition.equals(positionInGeneratedFile)) {
         int rId = openSpan.runtimePairId;
-        state.mappings.removeIf(m -> m.pairId() == rId);
-        state.astMappings.removeIf(m -> m.pairId() == rId);
+        removeLastByPairId(state.mappings, rId);
+        removeLastByPairId(state.astMappings, rId);
       } else {
+        // StandardCompressWriter defers writing a compressed space or line break until the next
+        // non-whitespace character arrives. Skip that leading separator so the span starts on its
+        // actual emitted token rather than on the preceding whitespace separator.
+        if (openSpan.inCompressWriter && contentLength > openSpan.startContentLength) {
+          int wsCount = countLeadingWhitespace(openSpan.startContentLength, contentLength);
+          if (wsCount > 0 && openSpan.startContentLength + wsCount < contentLength) {
+            SourcePosition adjustedStartPos = advancePositionByWhitespace(
+                openSpan.startTargetPosition, openSpan.startContentLength, wsCount);
+            updateStartTargetPosition(state.mappings, openSpan.runtimePairId, adjustedStartPos);
+            updateStartTargetPosition(state.astMappings, openSpan.runtimePairId, adjustedStartPos);
+          }
+        }
         state.mappings.add(new SimpleSourceMapping(endSourcePos, positionInGeneratedFile, openSpan.runtimePairId));
         addASTMapping(astNode, false, positionInGeneratedFile, openSpan.runtimePairId);
+      }
+    }
+  }
+
+  protected Writer getCurrentEnvironmentOut() {
+    Environment env = Environment.getCurrentEnvironment();
+    return env != null ? env.getOut() : null;
+  }
+
+  protected boolean isStandardCompressWriter(Writer writer) {
+    return writer != null && writer.getClass().getName().endsWith("StandardCompressWriter");
+  }
+
+  protected int countLeadingWhitespace(int fromIndex, int contentLength) {
+    int count = 0;
+    while (fromIndex + count < contentLength && Character.isWhitespace(sw.charAt(fromIndex + count))) {
+      count++;
+    }
+    return count;
+  }
+
+  protected SourcePosition advancePositionByWhitespace(SourcePosition startPos, int fromIndex, int wsCount) {
+    int absLine = startPos.getLine();
+    int absCol = startPos.getColumn();
+    boolean lastCharWasCR = false;
+    for (int i = 0; i < wsCount; i++) {
+      char c = sw.charAt(fromIndex + i);
+      if (c == '\n') {
+        if (!lastCharWasCR) {
+          absLine++;
+          absCol = 0;
+        }
+        lastCharWasCR = false;
+      } else if (c == '\r') {
+        absLine++;
+        absCol = 0;
+        lastCharWasCR = true;
+      } else {
+        absCol++;
+        lastCharWasCR = false;
+      }
+    }
+    return new SourcePosition(absLine, absCol, "GenOutput");
+  }
+
+  protected void removeLastByPairId(List<SimpleSourceMapping> mappingList, int runtimePairId) {
+    for (int i = mappingList.size() - 1; i >= 0; i--) {
+      if (mappingList.get(i).pairId() == runtimePairId) {
+        mappingList.remove(i);
+        break;
+      }
+    }
+  }
+
+  protected void updateStartTargetPosition(List<SimpleSourceMapping> mappingList, int runtimePairId, SourcePosition newTargetPos) {
+    for (int i = mappingList.size() - 1; i >= 0; i--) {
+      SimpleSourceMapping m = mappingList.get(i);
+      if (m.pairId() == runtimePairId) {
+        mappingList.set(i, new SimpleSourceMapping(m.sourcePosition(), newTargetPos, m.pairId()));
+        break;
       }
     }
   }
@@ -319,16 +403,20 @@ public class SourceMapCalculator {
     SourcePosition startSourcePosition,
     SourcePosition startTargetPosition,
     List<String> triggeredIncludes,
-    ASTNode astNode){
+    ASTNode astNode,
+    int startContentLength,
+    boolean inCompressWriter){
 
-    public OpenSpan(int runtimePairId, int elementId, SourcePosition startSourcePosition, SourcePosition startTargetPosition, ASTNode astNode) {
+    public OpenSpan(int runtimePairId, int elementId, SourcePosition startSourcePosition, SourcePosition startTargetPosition, ASTNode astNode, int startContentLength, boolean inCompressWriter) {
       this(
       runtimePairId,
       elementId,
       startSourcePosition,
       startTargetPosition,
       new ArrayList<>(),
-      astNode);
+      astNode,
+      startContentLength,
+      inCompressWriter);
     }
   }
 
@@ -507,6 +595,8 @@ public class SourceMapCalculator {
       return res;
     }
 
+    protected final Map<String, URL> urlCache = new HashMap<>();
+
     /**
      * Resolves an optional source file path or URL string into a valid {@link URL}.
      *
@@ -516,26 +606,30 @@ public class SourceMapCalculator {
      */
     protected URL createSourceURL(Optional<String> fileOpt) {
       if (fileOpt.isEmpty() || fileOpt.get().isBlank()) {
-        try {
-          // Fallback dummy URL for synthetic or in-memory sources without a file path
-          return new URL("file:///unknown");
-        } catch (MalformedURLException e) {
-          Log.error("0xA0743 Failed to create fallback source URL", e);
-          throw new IllegalStateException(e);
-        }
+        return urlCache.computeIfAbsent("", k -> {
+          try {
+            // Fallback dummy URL for synthetic or in-memory sources without a file path
+            return new URL("file:///unknown");
+          } catch (MalformedURLException e) {
+            Log.error("0xA0743 Failed to create fallback source URL", e);
+            throw new IllegalStateException(e);
+          }
+        });
       }
 
       String fileStr = fileOpt.get();
-      try {
-        return new URL(fileStr);
-      } catch (MalformedURLException e) {
+      return urlCache.computeIfAbsent(fileStr, s -> {
         try {
-          return new java.io.File(fileStr).toURI().toURL();
-        } catch (MalformedURLException e2) {
-          Log.error("0xA0744 Malformed source URL for path: " + fileStr, e2);
-          throw new IllegalStateException(e2);
+          return new URL(s);
+        } catch (MalformedURLException e) {
+          try {
+            return new java.io.File(s).toURI().toURL();
+          } catch (MalformedURLException e2) {
+            Log.error("0xA0744 Malformed source URL for path: " + s, e2);
+            throw new IllegalStateException(e2);
+          }
         }
-      }
+      });
     }
   }
 }
