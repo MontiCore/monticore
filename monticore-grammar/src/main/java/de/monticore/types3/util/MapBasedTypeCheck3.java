@@ -96,7 +96,7 @@ public class MapBasedTypeCheck3 extends TypeCheck3 {
 
   @Override
   protected SymTypeExpression _symTypeFromAST(ASTMCType mcType) {
-    if (!getType4Ast().hasTypeOfTypeIdentifier(mcType)) {
+    if (!getType4Ast().hasPartialTypeOfTypeIdentifier(mcType)) {
       mcType.accept(getTypeTraverser());
     }
     return getType4Ast().getPartialTypeOfTypeId(mcType);
@@ -109,7 +109,7 @@ public class MapBasedTypeCheck3 extends TypeCheck3 {
 
   @Override
   protected SymTypeExpression _symTypeFromAST(ASTMCReturnType mcReturnType) {
-    if (!getType4Ast().hasTypeOfTypeIdentifier(mcReturnType)) {
+    if (!getType4Ast().hasPartialTypeOfTypeIdentifier(mcReturnType)) {
       mcReturnType.accept(getTypeTraverser());
     }
     return getType4Ast().getPartialTypeOfTypeId(mcReturnType);
@@ -117,7 +117,7 @@ public class MapBasedTypeCheck3 extends TypeCheck3 {
 
   @Override
   protected SymTypeExpression _symTypeFromAST(ASTMCQualifiedName mcQualifiedName) {
-    if (!getType4Ast().hasTypeOfTypeIdentifier(mcQualifiedName)) {
+    if (!getType4Ast().hasPartialTypeOfTypeIdentifier(mcQualifiedName)) {
       mcQualifiedName.accept(getTypeTraverser());
     }
     return getType4Ast().getPartialTypeOfTypeId(mcQualifiedName);
