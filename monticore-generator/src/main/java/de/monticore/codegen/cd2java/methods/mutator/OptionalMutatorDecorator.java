@@ -34,22 +34,48 @@ public class OptionalMutatorDecorator extends AbstractCreator<ASTCDAttribute, Li
     naiveAttributeName = StringUtils.capitalize(getDecorationHelper().getNativeAttributeName(ast.getName()));
     methodList.add(createSetMethod(ast));
     methodList.add(createSetAbsentMethod(ast));
+    if (getDecorationHelper().isSupplier(ast.getMCType())) {
+      methodList.add(createSupplierSetMethod(ast));
+    }
     return methodList;
   }
 
   protected ASTCDMethod createSetMethod(final ASTCDAttribute ast) {
     String name = String.format(SET, naiveAttributeName);
-    ASTMCType parameterType = getDecorationHelper().getReferenceTypeFromOptional(ast.getMCType()).getMCTypeOpt().get().deepClone();
-    ASTCDParameter parameter = this.getCDParameterFacade().createParameter(parameterType, ast.getName());
+
+    ASTMCType type = ast.getMCType().deepClone();
+    String templateName = "methods.opt.Set4Opt";
+    if (getDecorationHelper().isSupplier(type)) {
+      type = getDecorationHelper().unwrapSupplier(type);
+      templateName = "methods.opt.SupplierSet4Opt";
+    }
+
+    type = getDecorationHelper().getReferenceTypeOfOptional(type).getMCTypeOpt().get().deepClone();
+    ASTCDParameter parameter = this.getCDParameterFacade().createParameter(type, ast.getName());
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), name, parameter);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.opt.Set4Opt", ast, naiveAttributeName));
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(templateName, ast, naiveAttributeName));
+    return method;
+  }
+
+  protected ASTCDMethod createSupplierSetMethod(final ASTCDAttribute ast) {
+    String name = String.format(SET, naiveAttributeName) + "Supplier";
+    ASTMCType supplierType = getDecorationHelper().toPublicSupplierType(ast.getMCType());
+    ASTCDParameter parameter = this.getCDParameterFacade().createParameter(supplierType, ast.getName());
+    ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), name, parameter);
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.SupplierSetRaw", ast));
     return method;
   }
 
   protected ASTCDMethod createSetAbsentMethod(final ASTCDAttribute ast) {
     String name = String.format(SET_ABSENT, naiveAttributeName);
     ASTCDMethod method = this.getCDMethodFacade().createMethod(PUBLIC.build(), name);
-    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint("methods.opt.SetAbsent", ast));
+
+    String templateName = "methods.opt.SetAbsent";
+    if (getDecorationHelper().isSupplier(ast.getMCType())) {
+      templateName = "methods.opt.SupplierSetAbsent";
+    }
+
+    this.replaceTemplate(EMPTY_BODY, method, new TemplateHookPoint(templateName, ast));
     return method;
   }
 }

@@ -1,0 +1,20 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.monticore.suppliedtypes;
+
+
+grammar SuppliedTypes extends de.monticore.symbols.BasicSymbols {
+
+  symbol Holder = "holder" Name;
+
+  symbolrule Holder =
+    mandatoryType: de.monticore.types.check.SymTypeExpression
+    listType: de.monticore.types.check.SymTypeExpression*
+    optType: de.monticore.types.check.SymTypeExpression?;
+
+  scoperule =
+    mandatoryType: de.monticore.types.check.SymTypeExpression
+    listType: de.monticore.types.check.SymTypeExpression*
+    optType: de.monticore.types.check.SymTypeExpression?;
+
+}
