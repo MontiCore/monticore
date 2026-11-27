@@ -20,8 +20,42 @@ public class StatementsTestModels {
         getMCLowLevelStatementsCases(),
         getAssignmentCases(),
         getObjectEqualityCases(),
-        getValidAssertStatementsCases()
+        getValidAssertStatementsCases(),
+        getShortOptionalTypeCases()
     ).flatMap(Function.identity());
+  }
+
+  /**
+   * T? (MCOptionalTypes) combined with other uses of "?",
+   * e.g., the conditional expression, OptionalOperators, wildcards.
+   */
+  static protected Stream<Arguments> getShortOptionalTypeCases() {
+    return Stream.of(
+        // declarations
+        Arguments.of("int? v = ~~~; v", Optional.empty()),
+        Arguments.of("int? v = Optional.of(2); v", Optional.of(2)),
+        Arguments.of("int?? v = Optional.of(Optional.of(2)); v.get() ?: 0", 2),
+        Arguments.of("Optional<int> v = Optional.of(2); int? w = v; w", Optional.of(2)),
+        // OptionalOperators
+        Arguments.of("int? v = ~~~; v ?: 3", 3),
+        Arguments.of("int? v = Optional.of(2); v ?: 3", 2),
+        Arguments.of("int? o = Optional.of(2); o ?== 2", true),
+        // conditional expression
+        Arguments.of("boolean b = true; int x = b ? 1 : 2; x", 1),
+        Arguments.of("boolean b = false; int x; x = b ? 1 : 2; x", 2),
+        Arguments.of("boolean b = true; int? v = b ? Optional.of(1) : ~~~; v", Optional.of(1)),
+        Arguments.of("boolean b = true; int? v = b?Optional.of(1):~~~; v", Optional.of(1)),
+        // casts
+        Arguments.of("Optional<int> o = Optional.of(2); ((int?) o) ?: 3", 2),
+        Arguments.of("Optional<int> o = Optional.of(2); ((int?)o)?:3", 2),
+        // generics
+        Arguments.of("List<int?> l = [Optional.of(1)]; l.get(0) ?: 0", 1),
+        Arguments.of("List<int>? l = Optional.of([1, 2]); l.get().size()", 2),
+        Arguments.of("List<? extends int?> l = [Optional.of(1)]; l.size()", 1),
+        // "?>" and "?<" are tokens of OptionalOperators
+        Arguments.of("List<int? > l = [Optional.of(1)]; l.get(0) ?: 0", 1),
+        Arguments.of("List<List<int?>> l = [[Optional.of(1)]]; l.get(0).get(0) ?: 0", 1)
+    );
   }
 
   static protected Stream<Arguments> getCommonStatementCases() {

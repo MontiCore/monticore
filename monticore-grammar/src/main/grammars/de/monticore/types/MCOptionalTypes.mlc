@@ -1,0 +1,29 @@
+package de.monticore.types;
+
+mlc MCOptionalTypes {
+
+  //export the grammar
+  export "$projectDir/src/main/grammars" {
+    include "de/monticore/types/MCOptionalTypes.mc4";
+  }
+
+  //export handwritten code
+  export "$projectDir/src/main/java" {
+    include "de/monticore/types/mcoptionaltypes/**.java";
+    include "de/monticore/types/MCOptionalTypes**.java";
+  }
+
+  // export all Java files generated from the grammar
+  export "$projectDir/target/generated-sources/monticore/sourcecode" {
+    include "de/monticore/types/mcoptionaltypes/**.java";
+  }
+
+  promote {
+    mlc "de.monticore.types.MCCollectionTypes";
+  }
+
+  uses {
+    include "$projectDir/src/main/java/de/monticore/types3/AbstractTypeVisitor.java";
+  }
+
+}
