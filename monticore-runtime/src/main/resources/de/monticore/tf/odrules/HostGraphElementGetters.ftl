@@ -19,11 +19,11 @@
 <#-- ListObjects and their childs-->
   <#assign ListTree = hierarchyHelper.getListTree(list.getObjectName())>
   <#if hierarchyHelper.isWithinOptionalStructure(list.getObjectName())>
-    public Optional<List<Match${list.getObjectName()}>> get_${list.getObjectName()}() {
+    public Optional<Match${list.getObjectName()}> get_${list.getObjectName()}() {
     <#if !hierarchyHelper.isListChild(list)>
         return getMatches().get(0).${list.getObjectName()};
     <#else>
-        List<Match${list.getObjectName()}> ${list.getObjectName()} = new ArrayList<Match${list.getObjectName()}>();
+        Match${list.getObjectName()} ${list.getObjectName()} = new Match${list.getObjectName()}();
       <#assign currentlevel = "getMatches().get(0)">
       <#list ListTree as level>
         if(${currentlevel}.${level}.isPresent())
@@ -43,11 +43,11 @@
     <#assign listchilds = hierarchyHelper.getListChilds(ast.getPattern().getMatchingObjectsList(), list)>
     <#list listchilds as listchild>
     public Optional<List<${listchild.getType()}>> get_${listchild.getObjectName()}() {
-      List<${listchild.getType()}> ${listchild.getObjectName()} = new ArrayList<${listchild.getType()}>();
+      List<${listchild.getType()}> ${listchild.getObjectName()} = new ArrayList<>();
       <#assign currentlevel = "getMatches().get(0)">
       <#list hierarchyHelper.getListTree(listchild.getObjectName()) as level>
       if (${currentlevel}.${level}.isPresent()) {
-        for (Match${level} ${level}: ${currentlevel}.${level}.get()) {
+        for (Match${level}.ListMatch ${level}: ${currentlevel}.${level}.get().items) {
         <#assign currentlevel = level>
       </#list>
         if(${currentlevel}.${listchild.getObjectName()}.isPresent()) {
@@ -63,14 +63,14 @@
     }
     </#list>
   <#else>
-    public List<Match${list.getObjectName()}> get_${list.getObjectName()}() {
+    public Match${list.getObjectName()} get_${list.getObjectName()}() {
     <#if !hierarchyHelper.isListChild(list)>
         return getMatches().get(0).${list.getObjectName()};
     <#else>
-        <List<Match${list.getObjectName()}> ${list.getObjectName()} = new ArrayList<Match${list.getObjectName()}>();
+        Match${list.getObjectName()} ${list.getObjectName()} = new Match${list.getObjectName()}();
       <#assign currentlevel = "getMatches().get(0)">
       <#list ListTree as level>
-          for (Match${level} ${level}: ${currentlevel}.${level}) {
+          for (Match${level}.ListMatch ${level}: ${currentlevel}.${level}.items) {
         <#assign currentlevel = level>
       </#list>
       ${list.getObjectName()}.add(${currentlevel}.${list.getObjectName()});
@@ -91,11 +91,11 @@
           <Optional<${listchild.getType()}>>();
       <#else>
       public List<${listchild.getType()}> get_${listchild.getObjectName()}() {
-        List<${listchild.getType()}> ${listchild.getObjectName()} = new ArrayList<${listchild.getType()}>();
+        List<${listchild.getType()}> ${listchild.getObjectName()} = new ArrayList<>();
       </#if>
       <#assign currentlevel = "getMatches().get(0)">
       <#list hierarchyHelper.getListTree(listchild.getObjectName()) as level>
-        for (Match${level} ${level}: ${currentlevel}.${level}) {
+        for (Match${level}.ListMatch ${level}: ${currentlevel}.${level}.items) {
         <#assign currentlevel = level>
       </#list>
       ${listchild.getObjectName()}.add(${currentlevel}.${listchild.getObjectName()});

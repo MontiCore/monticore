@@ -1,8 +1,8 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 <#assign matchObject = ast>
 <#if matchObject.isListObject()>
-  protected ${matchObject.getListtype()} ${matchObject.getObjectName()}_candidates, ${matchObject.getObjectName()}_candidates_temp;
-  protected ${matchObject.getListtype()} ${matchObject.getObjectName()}_cand;
+  protected Match${matchObject.getObjectName()} ${matchObject.getObjectName()}_candidates, ${matchObject.getObjectName()}_candidates_temp;
+  protected Match${matchObject.getObjectName()} ${matchObject.getObjectName()}_cand;
 <#else>
   protected List<ASTNode> ${matchObject.getObjectName()}_candidates, ${matchObject.getObjectName()}_candidates_temp;
   protected ${matchObject.getType()} ${matchObject.getObjectName()}_cand;
