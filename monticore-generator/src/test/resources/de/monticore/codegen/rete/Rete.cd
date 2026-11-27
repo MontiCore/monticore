@@ -1,0 +1,30 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.codegen.rete;
+
+classdiagram Rete {
+
+  public interface ASTNamed {
+    protected String name;
+  }
+
+  public class ASTAutomaton implements ASTNamed {
+    protected String name;
+    <<astType>> protected java.util.List<de.monticore.codegen.rete.rete._ast.ASTState> states;
+    protected java.util.Optional<String> comment;
+  }
+
+  public class ASTState implements ASTNamed {
+    protected String name;
+    protected boolean r__final;
+    protected int kind;
+    protected java.util.List<String> labels;
+  }
+
+  public class ASTFinalState extends ASTState {
+    protected boolean accepting;
+  }
+
+  public class ASTTable {
+    protected java.util.Map<String, String> entries;
+  }
+}

@@ -1,0 +1,21 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.codegen.rete;
+
+import de.monticore.codegen.rete.ReteStates.*;
+import de.monticore.codegen.rete.ReteLabels.*;
+
+/* extends two languages, which share the super language ReteBase */
+classdiagram ReteComposed {
+
+  /* overrides the production State of ReteStates */
+  public class ASTState extends de.monticore.codegen.rete.ReteStates.ASTState {
+    protected String name;
+    protected int priority;
+  }
+
+  /* implements an interface of the transitively inherited ReteBase */
+  public class ASTLabeledState implements de.monticore.codegen.rete.ReteBase.ASTElement {
+    protected String id;
+    <<astType>> protected java.util.List<de.monticore.codegen.rete.retelabels._ast.ASTLabel> labels;
+  }
+}

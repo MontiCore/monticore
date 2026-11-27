@@ -12,11 +12,14 @@
 
       switch(obj) {
         <#list optListObjects as object>
-        case <#list object.getInnerLinkObjectNamesList() as elem>"${elem}<#if hierarchyHelper.isListObject(elem)>_$List</#if>"<#if elem_has_next>, </#if></#list> -> {
+        <#-- an optional structure without objects (e.g. opt [[ [[ :- x ]] ]]) has nothing to split off -->
+        <#if object.getInnerLinkObjectNamesList()?has_content>
+        case<#list object.getInnerLinkObjectNamesList() as elem>"${elem}<#if hierarchyHelper.isListObject(elem)>_$List</#if>"<#if elem_has_next>, </#if></#list> -> {
           searchPlan.remove(i);
           i--;
           searchPlan_${object.getObjectName()}.push(obj);
         }
+        </#if>
         </#list>
       }
     }

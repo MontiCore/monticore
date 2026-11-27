@@ -1,0 +1,35 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.rete.example;
+
+/**
+ * A minimal language of flat finite automata, used to demonstrate the Rete
+ * based pattern matching of the MontiCore runtime.
+ * Transitions reference their source and target states by name.
+ */
+grammar SimpleAutomata extends de.monticore.MCBasics {
+
+  /** An automaton consisting of states and transitions
+      @attribute name        Name of the automaton
+      @attribute states      List of states
+      @attribute transitions List of transitions
+  */
+  Automaton =
+    "automaton" Name "{" (State | Transition)* "}" ;
+
+  /** A state of an automaton
+      @attribute name    Name of the state
+      @attribute initial True if the state is an initial state
+      @attribute final   True if the state is a final state
+  */
+  State =
+    "state" Name ("<<" ["initial"] ">>")? ("<<" ["final"] ">>")? ";" ;
+
+  /** A transition between two states, referenced by their names
+      @attribute from  Name of the source state
+      @attribute input Input symbol triggering the transition
+      @attribute to    Name of the target state
+  */
+  Transition =
+    from:Name "-" input:Name ">" to:Name ";" ;
+
+}

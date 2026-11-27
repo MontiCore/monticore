@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import static de.se_rwth.commons.StringTransformations.capitalize;
 import static de.monticore.tf.ruletranslation.Position.*;
@@ -341,6 +342,45 @@ public abstract class Rule2ODVisitor implements TFCommonsVisitor2 {
         return (ITFObject) elem;
       return getElementAsObject(elem, repSide);
     }
+  }
+
+  /**
+   * Checks whether the child exists on the LHS of the rule, i.e. whether a composition has to be
+   * created for it on the LHS (see {@link #isPresentOn}).
+   */
+  protected boolean isPresentOnLHS(ITFElement child) {
+    return isPresentOn(child, IReplacement::isPresentLhs, IReplacement::getLhs);
+  }
+
+  /**
+   * Checks whether the child exists on the RHS of the rule, i.e. whether a composition has to be
+   * created for it on the RHS (see {@link #isPresentOn}).
+   */
+  protected boolean isPresentOnRHS(ITFElement child) {
+    return isPresentOn(child, IReplacement::isPresentRhs, IReplacement::getRhs);
+  }
+
+  /**
+   * Checks whether the child exists on one side of the rule. Like
+   * {@link #getElementAsObject}, it looks through optionals and lists, which only group elements,
+   * and through replacements, which refer to the element of the side. A replacement may lack the
+   * side, also if nested in an optional or a list: e.g. in {@code opt [[ [[ x :- ]] ]]}, the
+   * element x is deleted and thus only exists on the LHS, in {@code opt [[ [[ :- x ]] ]]}, it is
+   * created and thus only exists on the RHS.
+   *
+   * @param child     the child of a pattern
+   * @param isPresent whether a replacement has the side
+   * @param side      the side of a replacement
+   * @return whether the child exists on the side
+   */
+  protected boolean isPresentOn(ITFElement child, Predicate<IReplacement> isPresent,
+      Function<IReplacement, ITFElement> side) {
+    if (child instanceof IReplacement replacement) {
+      return isPresent.test(replacement) && isPresentOn(side.apply(replacement), isPresent, side);
+    }
+    ITFElement elem = child.getTFElement();
+    // only patterns return themselves as their element
+    return elem == child || isPresentOn(elem, isPresent, side);
   }
 
   protected ASTODLink createLHSComposition(ITFObject parent, ITFElement child, String roleName, String genericType, boolean attrIsIterated, boolean attrIsOptional) {

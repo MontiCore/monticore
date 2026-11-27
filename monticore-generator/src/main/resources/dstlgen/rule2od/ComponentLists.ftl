@@ -15,12 +15,15 @@
     // Generating code for component list  ${Name}
 
     for (${typePackage}.${attributeHelper.getTypeGrammarName(ast)}tr._ast.ASTITF${Type} child: node.get${Name}List()) {
-      if ((isOnLHS()) && ( !(child instanceof IReplacement) || ((IReplacement)child).isPresentLhs())) {
+      // a replacement, also within an optional or a list, may lack a side (e.g. opt [[ [[ x :- ]] ]])
+      if (isOnLHS() && isPresentOnLHS(child)) {
         state.getLhs().getODLinkList().add(createLHSComposition(node,child, "${name}", "${fullType}", true, ${isAttributeOptional?string("true", "false")}));
       }
       if (isOnRHS()) {
         if (!(child instanceof IReplacement)) {
-          state.getRhs().getODLinkList().add(createRHSComposition(node, child, "${name}", "${fullType}", true, ${isAttributeOptional?string("true", "false")}));
+          if (isPresentOnRHS(child)) {
+            state.getRhs().getODLinkList().add(createRHSComposition(node, child, "${name}", "${fullType}", true, ${isAttributeOptional?string("true", "false")}));
+          }
         }
         else if (((IReplacement) child).isPresentRhs()) {
           IReplacement replacement = (IReplacement) child;
