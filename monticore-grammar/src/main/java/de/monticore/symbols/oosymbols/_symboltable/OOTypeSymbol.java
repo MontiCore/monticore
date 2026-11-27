@@ -108,7 +108,7 @@ public class OOTypeSymbol extends OOTypeSymbolTOP {
   public List<SymTypeExpression> getSuperClassesOnly() {
     List<SymTypeExpression> normalSuperTypes = super.getSuperClassesOnly().stream()
       .filter(type -> !(type.getTypeInfo() instanceof OOTypeSymbol)).collect(Collectors.toList());
-    List<SymTypeExpression> oOSuperTypes = superTypes.stream()
+    List<SymTypeExpression> oOSuperTypes = getSuperTypesList().stream()
       .filter(type -> type.getTypeInfo() instanceof OOTypeSymbol)
       .filter(type -> ((OOTypeSymbol) type.getTypeInfo()).isIsClass())
       .toList();
@@ -118,7 +118,7 @@ public class OOTypeSymbol extends OOTypeSymbolTOP {
 
   @Override
   public List<SymTypeExpression> getInterfaceList() {
-    return superTypes.stream()
+    return getSuperTypesList().stream()
       .filter(type -> type.getTypeInfo() instanceof OOTypeSymbol)
       .filter(type -> ((OOTypeSymbol) type.getTypeInfo()).isIsInterface())
       .collect(Collectors.toList());

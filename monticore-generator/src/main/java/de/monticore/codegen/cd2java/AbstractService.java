@@ -21,7 +21,6 @@ import de.monticore.codegen.mc2cd.MC2CDStereotypes;
 import de.monticore.symbols.basicsymbols._symboltable.DiagramSymbol;
 import de.monticore.symbols.basicsymbols._symboltable.IBasicSymbolsScope;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbol;
-import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolSurrogate;
 import de.monticore.symboltable.ImportStatement;
 import de.monticore.types.MCTypeFacade;
 import de.monticore.types.check.SymTypeExpression;
@@ -169,18 +168,25 @@ public class AbstractService<T extends AbstractService> {
   protected List<TypeSymbol> getAllSuperClassesTransitive(TypeSymbol cdTypeSymbol) {
     List<TypeSymbol> superSymbolList = new ArrayList<>();
     if (cdTypeSymbol.isPresentSuperClass()) {
-      TypeSymbol superSymbol = cdTypeSymbol.getSuperClass().getTypeInfo();
-      if (superSymbol instanceof TypeSymbolSurrogate) {
-        if (!((TypeSymbolSurrogate) superSymbol).checkLazyLoadDelegate()) {
-          return superSymbolList;
-        }
-        superSymbol = ((TypeSymbolSurrogate) superSymbol).lazyLoadDelegate();
+      Optional<TypeSymbol> superSymbol = resolveTypeInfo(cdTypeSymbol.getSuperClass());
+      if (superSymbol.isEmpty()) {
+        return superSymbolList;
       }
-
-      superSymbolList.add(superSymbol);
-      superSymbolList.addAll(getAllSuperClassesTransitive(superSymbol));
+      superSymbolList.add(superSymbol.get());
+      superSymbolList.addAll(getAllSuperClassesTransitive(superSymbol.get()));
     }
     return superSymbolList;
+  }
+
+  public Optional<TypeSymbol> resolveTypeInfo(SymTypeExpression symType) {
+    if (!symType.hasTypeInfo()) {
+      return Optional.empty();
+    }
+    TypeSymbol typeInfo = symType.getTypeInfo();
+    if (typeInfo.getEnclosingScope() == null) {
+      return Optional.of(typeInfo);
+    }
+    return typeInfo.getEnclosingScope().resolveType(typeInfo.getName());
   }
 
   public List<String> getAllSuperInterfacesTransitive(TypeSymbol cdTypeSymbol) {
@@ -188,8 +194,9 @@ public class AbstractService<T extends AbstractService> {
         List<CDTypeSymbol> localSuperInterfaces = Lists.newArrayList();
         cdTypeSymbol.getSuperTypesList().stream()
                 .filter(s -> !isTFInterface(s))
-            .filter(s -> ((TypeSymbolSurrogate)s.getTypeInfo()).checkLazyLoadDelegate())
-                    .map(s -> ((TypeSymbolSurrogate)s.getTypeInfo()).lazyLoadDelegate())
+            .map(this::resolveTypeInfo)
+            .filter(Optional::isPresent)
+            .map(Optional::get)
             .forEach(t -> {if(t instanceof CDTypeSymbol && ((CDTypeSymbol)t).isIsInterface()) localSuperInterfaces.add((CDTypeSymbol) t);});
     for (CDTypeSymbol superInterface : localSuperInterfaces) {
       superSymbolList.add(createASTFullName(superInterface));
